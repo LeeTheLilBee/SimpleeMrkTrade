@@ -40,5 +40,19 @@
     "strategy": "CALL",
     "score": 140,
     "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-18T21:17:20.462345",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 120,
+    "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-18T21:17:21.194729",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 250,
+    "confidence": "MEDIUM"
   }
 ]

@@ -1,17 +1,34 @@
 [
   {
+    "symbol": "MU",
+    "strategy": "CALL",
+    "price": 461.7300109863281,
+    "score": 250,
+    "confidence": "MEDIUM",
+    "option": {
+      "symbol": "MU",
+      "strike": 460.0,
+      "expiry": "2026-03-27",
+      "volume": 1750,
+      "openInterest": 1136,
+      "score": 110,
+      "type": "CALL"
+    },
+    "atr": 24.587142944335938
+  },
+  {
     "symbol": "MPC",
     "strategy": "CALL",
-    "price": 236.3699951171875,
-    "score": 140,
+    "price": 236.24000549316406,
+    "score": 120,
     "confidence": "MEDIUM",
     "option": {
       "symbol": "MPC",
-      "strike": 260.0,
+      "strike": 250.0,
       "expiry": "2026-04-17",
-      "volume": 151,
-      "openInterest": 1878,
-      "score": 80,
+      "volume": 237,
+      "openInterest": 807,
+      "score": 60,
       "type": "CALL"
     },
     "atr": 9.059998648507255
