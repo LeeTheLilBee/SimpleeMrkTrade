@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+flask.log
+streamlit.log
+.env
+.ipynb_checkpoints/
