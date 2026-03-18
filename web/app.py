@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from engine.api_state import get_dashboard_state
 from engine.trade_analytics import analytics
 from engine.portfolio_summary import portfolio_summary
@@ -18,7 +18,6 @@ from engine.strategy_performance import strategy_breakdown
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
 CURRENT_USER = {"username": None, "tier": "Starter"}
-BOT_PROCESS = None
 
 def load_json(path, default):
     file = Path(path)
@@ -45,7 +44,8 @@ def home_page():
         strategies=strategy_breakdown(),
         drawdown=load_json("data/drawdown_history.json", []),
         equity_values=equity_values,
-        equity_labels=equity_labels
+        equity_labels=equity_labels,
+        signals=load_json("data/live_signals.json", [])
     )
 
 @app.route("/dashboard")
@@ -97,23 +97,29 @@ def signals_page():
 def positions_page():
     return render_template("positions.html", unreal=unrealized_pnl())
 
+@app.route("/closed-trades")
+def closed_trades_page():
+    return render_template("closed_trades.html", closed_trades=load_json("data/closed_positions.json", []))
+
 @app.route("/control")
 def control_page():
     return render_template("control.html", bot_status=load_json("data/bot_status.json", {}))
 
 @app.route("/runbot", methods=["POST"])
 def runbot_action():
-    global BOT_PROCESS
     status = load_json("data/bot_status.json", {})
-    if status.get("running"):
-        return "Bot already running"
-    BOT_PROCESS = subprocess.Popen(["python", "-m", "engine.bot"])
-    return "Bot Started"
+    if not status.get("running"):
+        subprocess.Popen(["python", "-m", "engine.bot"])
+    return redirect(url_for("control_page"))
 
 @app.route("/stopbot", methods=["POST"])
 def stopbot_action():
     subprocess.Popen(["pkill", "-f", "python -m engine.bot"])
-    return "Stop signal sent"
+    return redirect(url_for("control_page"))
+
+@app.route("/refreshstatus", methods=["POST"])
+def refresh_status():
+    return redirect(url_for("control_page"))
 
 @app.route("/login")
 def login_page():
@@ -130,7 +136,7 @@ def login_submit():
     for user in users:
         if user["username"] == username and user["password"] == password:
             CURRENT_USER = {"username": user["username"], "tier": user["tier"]}
-            return f"Logged in as {user['username']} ({user['tier']})"
+            return redirect(url_for("tier_page"))
 
     return "Login failed"
 

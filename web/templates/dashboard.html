@@ -4,51 +4,81 @@
 <h2>SimpleeMrkTrade Dashboard</h2>
 
 <div class="grid">
-<div class="card"><h3>Account Value</h3><div class="metric">${{ snapshot.estimated_account_value }}</div></div>
-<div class="card"><h3>Cash</h3><div class="metric">${{ snapshot.cash }}</div></div>
-<div class="card"><h3>Buying Power</h3><div class="metric">${{ snapshot.buying_power }}</div></div>
-<div class="card"><h3>Open Positions</h3><div class="metric">{{ snapshot.open_positions }}</div></div>
+    <div class="card"><h3>Account Value</h3><div class="metric">${{ snapshot.estimated_account_value }}</div></div>
+    <div class="card"><h3>Cash</h3><div class="metric">${{ snapshot.cash }}</div></div>
+    <div class="card"><h3>Buying Power</h3><div class="metric">${{ snapshot.buying_power }}</div></div>
+    <div class="card"><h3>Open Positions</h3><div class="metric">{{ snapshot.open_positions }}</div></div>
 </div>
 
 <div class="card">
-<h3>Equity Curve</h3>
-<canvas id="equityChart"></canvas>
+    <h3>Equity Curve</h3>
+    <canvas id="equityChart"></canvas>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>System Status</h3>
+        <p><b>Regime:</b> {{ system.regime }}</p>
+        <p><b>Volatility:</b> {{ system.volatility }}</p>
+        <p><b>Mode:</b> {{ system.mode }}</p>
+        <p><b>Executed Trades:</b> {{ system.executed_trades }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Proof Engine</h3>
+        <p><b>Total Trades:</b> {{ proof.trades }}</p>
+        <p><b>Wins:</b> {{ proof.wins }}</p>
+        <p><b>Losses:</b> {{ proof.losses }}</p>
+        <p><b>Win Rate:</b> {{ proof.winrate }}</p>
+        <p><b>Total PnL:</b> {{ proof.total_pnl }}</p>
+        <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
+    </div>
 </div>
 
 <div class="card">
-<h3>System Status</h3>
-<p>Regime: {{ system.regime }}</p>
-<p>Volatility: {{ system.volatility }}</p>
-<p>Mode: {{ system.mode }}</p>
-<p>Executed Trades: {{ system.executed_trades }}</p>
+    <h3>Top Candidates</h3>
+    <table class="table">
+        <tr><th>Symbol</th><th>Strategy</th><th>Score</th><th>Confidence</th></tr>
+        {% for trade in top_candidates %}
+        <tr>
+            <td>{{ trade.symbol }}</td>
+            <td>{{ trade.strategy }}</td>
+            <td>{{ trade.score }}</td>
+            <td>{{ trade.confidence }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 
 <div class="card">
-<h3>Top Candidates</h3>
-<table class="table">
-{% for trade in top_candidates %}
-<tr><td>{{ trade.symbol }}</td><td>{{ trade.strategy }}</td><td>{{ trade.score }}</td><td>{{ trade.confidence }}</td></tr>
-{% endfor %}
-</table>
+    <h3>Last 10 Signals</h3>
+    <table class="table">
+        <tr><th>Time</th><th>Symbol</th><th>Strategy</th><th>Score</th><th>Confidence</th></tr>
+        {% for s in signals[-10:]|reverse %}
+        <tr>
+            <td>{{ s.timestamp }}</td>
+            <td>{{ s.symbol }}</td>
+            <td>{{ s.strategy }}</td>
+            <td>{{ s.score }}</td>
+            <td>{{ s.confidence }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 
 <div class="card">
-<h3>Proof Engine</h3>
-<p>Total Trades: {{ proof.trades }}</p>
-<p>Wins: {{ proof.wins }}</p>
-<p>Losses: {{ proof.losses }}</p>
-<p>Win Rate: {{ proof.winrate }}</p>
-<p>Total PnL: {{ proof.total_pnl }}</p>
-<p>Max Drawdown: {{ proof.max_drawdown }}</p>
-</div>
-
-<div class="card">
-<h3>Open Position PnL</h3>
-<table class="table">
-{% for pos in unreal.positions %}
-<tr><td>{{ pos.symbol }}</td><td>{{ pos.entry }}</td><td>{{ pos.current }}</td><td>{{ pos.pnl }}</td></tr>
-{% endfor %}
-</table>
+    <h3>Open Position PnL</h3>
+    <table class="table">
+        <tr><th>Symbol</th><th>Entry</th><th>Current</th><th>PnL</th></tr>
+        {% for pos in unreal.positions %}
+        <tr>
+            <td>{{ pos.symbol }}</td>
+            <td>{{ pos.entry }}</td>
+            <td>{{ pos.current }}</td>
+            <td>{{ pos.pnl }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 
 <script>
@@ -60,7 +90,9 @@ new Chart(ctx, {
     datasets: [{
       label: 'Account Equity',
       data: {{ equity_values|tojson }},
-      borderColor: '#6bb8ff',
+      borderColor: '#7dd3fc',
+      backgroundColor: 'rgba(125, 211, 252, 0.12)',
+      fill: true,
       tension: 0.3
     }]
   }

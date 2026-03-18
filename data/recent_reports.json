@@ -23,5 +23,30 @@
       "unrealized_pnl": 0.0,
       "estimated_account_value": 1000.0
     }
+  },
+  {
+    "timestamp": "2026-03-18T19:34:50.426107",
+    "performance": {
+      "trades": 2,
+      "wins": 0,
+      "losses": 0,
+      "winrate": 0.0,
+      "total_pnl": 0,
+      "max_drawdown": 0
+    },
+    "portfolio": {
+      "open_positions": 2,
+      "closed_positions": 0,
+      "realized_pnl": 0
+    },
+    "snapshot": {
+      "cash": 128.74,
+      "buying_power": 128.74,
+      "equity": 1000.0,
+      "open_positions": 2,
+      "realized_pnl": 0,
+      "unrealized_pnl": 3.92,
+      "estimated_account_value": 1003.92
+    }
   }
 ]

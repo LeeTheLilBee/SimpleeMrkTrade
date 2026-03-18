@@ -2,35 +2,52 @@
   {
     "symbol": "MU",
     "strategy": "CALL",
-    "price": 461.69000244140625,
-    "score": 160,
+    "price": 465.7099914550781,
+    "score": 240,
     "confidence": "MEDIUM",
     "option": {
       "symbol": "MU",
-      "strike": 455.0,
+      "strike": 460.0,
       "expiry": "2026-03-27",
-      "volume": 783,
-      "openInterest": 0,
-      "score": 60,
+      "volume": 1321,
+      "openInterest": 1136,
+      "score": 110,
       "type": "CALL"
     },
-    "atr": 25.94427708217076
+    "atr": 24.587142944335938
   },
   {
-    "symbol": "XLE",
+    "symbol": "COP",
     "strategy": "CALL",
-    "price": 58.5099983215332,
-    "score": 130,
+    "price": 124.0999984741211,
+    "score": 160,
     "confidence": "MEDIUM",
     "option": {
-      "symbol": "XLE",
-      "strike": 60.0,
+      "symbol": "COP",
+      "strike": 131.0,
       "expiry": "2026-03-27",
-      "volume": 857,
-      "openInterest": 0,
-      "score": 50,
+      "volume": 121,
+      "openInterest": 2054,
+      "score": 80,
       "type": "CALL"
     },
-    "atr": 1.2563863481794084
+    "atr": 3.393571581159319
+  },
+  {
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "price": 236.4250030517578,
+    "score": 140,
+    "confidence": "MEDIUM",
+    "option": {
+      "symbol": "MPC",
+      "strike": 260.0,
+      "expiry": "2026-04-17",
+      "volume": 135,
+      "openInterest": 1878,
+      "score": 80,
+      "type": "CALL"
+    },
+    "atr": 9.059998648507255
   }
 ]

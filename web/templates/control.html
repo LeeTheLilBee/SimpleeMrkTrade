@@ -1,20 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Bot Control Panel</h2>
 
-<div class="card">
-<p>Running: {{ bot_status.running }}</p>
-<p>Last Run: {{ bot_status.last_run }}</p>
-<p>Message: {{ bot_status.last_message }}</p>
+<h2>Bot Control Center</h2>
+
+<div class="grid">
+    <div class="card">
+        <h3>Bot Status</h3>
+        <p><b>Running:</b> {{ bot_status.running }}</p>
+        <p><b>Last Run:</b> {{ bot_status.last_run }}</p>
+        <p><b>Message:</b> {{ bot_status.last_message }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Actions</h3>
+
+        <form action="/runbot" method="post">
+            <button class="btn btn-green" type="submit">Start Bot</button>
+        </form>
+
+        <br>
+
+        <form action="/stopbot" method="post">
+            <button class="btn btn-red" type="submit">Stop Bot</button>
+        </form>
+
+        <br>
+
+        <form action="/refreshstatus" method="post">
+            <button class="btn btn-blue" type="submit">Refresh Status</button>
+        </form>
+    </div>
 </div>
 
-<form action="/runbot" method="post">
-<button type="submit">Run Trading Bot</button>
-</form>
+<div class="card">
+    <h3>Quick Navigation</h3>
+    <p>
+        <a href="/dashboard">Go to Dashboard</a><br>
+        <a href="/signals">Go to Signals</a><br>
+        <a href="/positions">Go to Positions</a><br>
+        <a href="/closed-trades">Go to Closed Trades</a>
+    </p>
+</div>
 
-<br>
-
-<form action="/stopbot" method="post">
-<button type="submit">Stop Trading Bot</button>
-</form>
 {% endblock %}
