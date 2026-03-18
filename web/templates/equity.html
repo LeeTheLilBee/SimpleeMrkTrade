@@ -1,31 +1,5 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-<h2>Equity Curve</h2>
-
-<canvas id="equityChart" width="800" height="400"></canvas>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-
-const data = {{ curve|tojson }}
-
-const ctx = document.getElementById('equityChart').getContext('2d')
-
-new Chart(ctx, {
-type: 'line',
-data: {
-labels: data.map((_,i)=>i),
-datasets: [{
-label: 'Account Equity',
-data: data,
-borderWidth: 2
-}]
-}
-})
-
-</script>
-
+<h2>Equity Curve Raw</h2>
+<div class="card"><pre>{{ curve }}</pre></div>
 {% endblock %}

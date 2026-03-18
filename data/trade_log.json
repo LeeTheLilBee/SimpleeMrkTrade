@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "timestamp": "2026-03-18T08:30:28.840876",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "price": 461.69,
+    "size": 1,
+    "score": 160,
+    "confidence": "MEDIUM",
+    "status": "OPEN",
+    "pnl": 0
+  },
+  {
+    "timestamp": "2026-03-18T08:30:28.841857",
+    "symbol": "XLE",
+    "strategy": "CALL",
+    "price": 58.51,
+    "size": 7,
+    "score": 130,
+    "confidence": "MEDIUM",
+    "status": "OPEN",
+    "pnl": 0
+  }
+]

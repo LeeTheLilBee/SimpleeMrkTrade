@@ -1,8 +1,7 @@
 {% extends "base.html" %}
-
 {% block content %}
 <h2>System Status</h2>
-
+<div class="card">
 <p>Timestamp: {{ system.timestamp }}</p>
 <p>Cash: {{ system.cash }}</p>
 <p>Buying Power: {{ system.buying_power }}</p>
@@ -15,11 +14,13 @@
 <p>Total Trades: {{ system.total_trades }}</p>
 <p>Win Rate: {{ system.winrate }}</p>
 <p>Max Drawdown: {{ system.max_drawdown }}</p>
+</div>
 
-<h3>Market Snapshot</h3>
-<p>Regime: {{ market.regime }}</p>
+<div class="card">
+<p>Market Regime: {{ market.regime }}</p>
 <p>Breadth: {{ market.breadth }}</p>
 <p>Mode: {{ market.mode }}</p>
 <p>Watchlist Count: {{ market.watchlist_count }}</p>
 <p>Approved Count: {{ market.approved_count }}</p>
+</div>
 {% endblock %}

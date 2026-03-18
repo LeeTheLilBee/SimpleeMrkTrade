@@ -1,1 +1,36 @@
-[]
+[
+  {
+    "symbol": "MU",
+    "strategy": "CALL",
+    "price": 461.69000244140625,
+    "score": 160,
+    "confidence": "MEDIUM",
+    "option": {
+      "symbol": "MU",
+      "strike": 455.0,
+      "expiry": "2026-03-27",
+      "volume": 783,
+      "openInterest": 0,
+      "score": 60,
+      "type": "CALL"
+    },
+    "atr": 25.94427708217076
+  },
+  {
+    "symbol": "XLE",
+    "strategy": "CALL",
+    "price": 58.5099983215332,
+    "score": 130,
+    "confidence": "MEDIUM",
+    "option": {
+      "symbol": "XLE",
+      "strike": 60.0,
+      "expiry": "2026-03-27",
+      "volume": 857,
+      "openInterest": 0,
+      "score": 50,
+      "type": "CALL"
+    },
+    "atr": 1.2563863481794084
+  }
+]

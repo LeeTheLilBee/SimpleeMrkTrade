@@ -1,36 +1,20 @@
 {% extends "base.html" %}
-
 {% block content %}
 <h2>Analytics</h2>
-
+<div class="card">
 <p>Total Trades: {{ stats.trades }}</p>
 <p>Win Rate: {{ stats.winrate }}</p>
 <p>Open Positions: {{ summary.open_positions }}</p>
 <p>Closed Positions: {{ summary.closed_positions }}</p>
 <p>Realized PnL: {{ summary.realized_pnl }}</p>
-
-<h3>Proof Engine</h3>
 <p>Total PnL: {{ proof.total_pnl }}</p>
 <p>Max Drawdown: {{ proof.max_drawdown }}</p>
+</div>
 
+<div class="card">
 <h3>Strategy Breakdown</h3>
-<ul>
 {% for name, stat in strategies.items() %}
-<li>{{ name }} | Trades: {{ stat.trades }} | Wins: {{ stat.wins }} | Win Rate: {{ stat.winrate }} | PnL: {{ stat.pnl }}</li>
+<p>{{ name }} | Trades: {{ stat.trades }} | Wins: {{ stat.wins }} | Win Rate: {{ stat.winrate }} | PnL: {{ stat.pnl }}</p>
 {% endfor %}
-</ul>
-
-<h3>Recent Drawdown</h3>
-<ul>
-{% for row in drawdown[-10:] %}
-<li>Equity: {{ row.equity }} | Drawdown: {{ row.drawdown }}</li>
-{% endfor %}
-</ul>
-
-<h3>Recent Reports</h3>
-<ul>
-{% for report in reports[-5:] %}
-<li>{{ report.timestamp }} | Trades: {{ report.performance.trades }} | Realized PnL: {{ report.portfolio.realized_pnl }}</li>
-{% endfor %}
-</ul>
+</div>
 {% endblock %}

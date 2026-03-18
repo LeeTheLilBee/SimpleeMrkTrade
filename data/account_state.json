@@ -1,6 +1,21 @@
 {
   "equity": 1000,
-  "cash": 1000,
-  "buying_power": 1000,
-  "trade_history": []
+  "cash": 128.74,
+  "buying_power": 128.74,
+  "trade_history": [
+    {
+      "symbol": "MU",
+      "price": 461.69000244140625,
+      "size": 1,
+      "timestamp": "2026-03-18T08:30:28.840450",
+      "settle_date": "2026-03-19T08:30:28.840460"
+    },
+    {
+      "symbol": "XLE",
+      "price": 58.5099983215332,
+      "size": 7,
+      "timestamp": "2026-03-18T08:30:28.841387",
+      "settle_date": "2026-03-19T08:30:28.841394"
+    }
+  ]
 }

@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "equity": 1000,
+    "drawdown": 0
+  },
+  {
+    "equity": 1000,
+    "drawdown": 0
+  }
+]

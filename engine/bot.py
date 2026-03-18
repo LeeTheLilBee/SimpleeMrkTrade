@@ -1,8 +1,6 @@
-from engine.drawdown_brake import drawdown_brake
-from engine.correlation_risk import correlation_risk_status
-from engine.signal_feed import push_signal
 from engine.regime import get_market_regime
 from engine.market_volatility import get_volatility_environment
+from engine.signal_feed import push_signal
 from engine.rsi_engine import calculate_rsi
 from engine.volume_engine import volume_surge
 from engine.breakout_engine import breakout
@@ -52,7 +50,9 @@ from engine.account_snapshot import account_snapshot
 from engine.account_snapshot_view import print_account_snapshot
 from engine.system_status import write_system_status
 from engine.report_archive import archive_report
-
+from engine.drawdown_brake import drawdown_brake
+from engine.correlation_risk import correlation_risk_status
+from engine.bot_status import write_bot_status
 
 def scan_stock(symbol, regime):
     df = safe_download(symbol, period="3mo", auto_adjust=True, progress=False)
@@ -91,7 +91,6 @@ def scan_stock(symbol, regime):
         "breakout": breakout_signal,
         "atr": atr,
     }
-
 
 def process_signals(results, regime, volatility_payload):
     breadth = market_breadth(results)
@@ -181,40 +180,100 @@ def process_signals(results, regime, volatility_payload):
 
     return selected_trades, mode
 
-
 def run():
-    settle_cash()
-    clear_candidates()
+    write_bot_status(True, "starting")
+    try:
+        settle_cash()
+        clear_candidates()
 
-    snapshot = account_snapshot()
-    print_account_snapshot(snapshot)
+        snapshot = account_snapshot()
+        print_account_snapshot(snapshot)
 
-    write_system_status(regime="STARTING", volatility="UNKNOWN", mode="BOOT")
+        write_system_status(regime="STARTING", volatility="UNKNOWN", mode="BOOT")
 
-    current_open = open_count()
-    executed_today = executed_trade_count()
+        current_open = open_count()
+        executed_today = executed_trade_count()
 
-    governor = governor_status(
-        current_open_positions=current_open,
-        executed_trades_today=executed_today,
-    )
+        governor = governor_status(
+            current_open_positions=current_open,
+            executed_trades_today=executed_today,
+        )
 
-    print("Governor:", governor)
+        brake = drawdown_brake()
+        corr = correlation_risk_status()
 
-    if governor["blocked"]:
-        print("RISK GOVERNOR BLOCKED NEW TRADES")
-        print("Reasons:", governor["reasons"])
+        print("Governor:", governor)
+        print("Drawdown Brake:", brake)
+        print("Correlation Risk:", corr)
+
+        if brake["blocked"]:
+            print("DRAWDOWN BRAKE BLOCKED NEW TRADES")
+            write_bot_status(False, "blocked by drawdown brake")
+            return
+
+        if governor["blocked"]:
+            print("RISK GOVERNOR BLOCKED NEW TRADES")
+            print("Reasons:", governor["reasons"])
+
+            print_positions()
+            review_positions()
+
+            build_equity_curve()
+            report = write_daily_report()
+            archive_report()
+            write_system_status(
+                regime="BLOCKED",
+                volatility="UNKNOWN",
+                mode="RISK_GOVERNOR_BLOCKED",
+            )
+
+            print("Performance:", performance_summary())
+            print("Analytics:", analytics())
+            print("Portfolio Summary:", portfolio_summary())
+            print("Unrealized PnL:", unrealized_pnl())
+            print("Strategy Performance:", strategy_breakdown())
+            dd = build_drawdown_history()
+            print("Drawdown History Built:", dd[-5:] if dd else [])
+            print("Daily Report Written:", report["timestamp"])
+            print("Final Account Snapshot:", account_snapshot())
+            print_backtest_summary()
+            write_bot_status(False, "blocked by governor")
+            return
+
+        regime = get_market_regime()
+        volatility_payload = get_volatility_environment()
+
+        print("Market Regime:", regime)
+        print("Building rotating watchlist...")
+
+        watchlist = get_watchlist()
+        print("Watchlist:", watchlist)
+
+        print("Scanning watchlist...")
+        results = []
+
+        for symbol in watchlist:
+            result = scan_stock(symbol, regime)
+            if result is not None:
+                results.append(result)
+
+        selected_trades, mode = process_signals(results, regime, volatility_payload)
+
+        print("Processing trade queue...")
+        execute_trades(selected_trades, limit=trades_left_today(executed_trade_count()))
 
         print_positions()
         review_positions()
+        show_candidates()
 
         build_equity_curve()
+        export_journal()
         report = write_daily_report()
         archive_report()
         write_system_status(
-            regime="BLOCKED",
-            volatility="UNKNOWN",
-            mode="RISK_GOVERNOR_BLOCKED",
+            regime=regime,
+            volatility=volatility_payload.get("volatility", "UNKNOWN"),
+            mode=mode,
         )
 
         print("Performance:", performance_summary())
@@ -227,55 +286,10 @@ def run():
         print("Daily Report Written:", report["timestamp"])
         print("Final Account Snapshot:", account_snapshot())
         print_backtest_summary()
-        return
-
-    regime = get_market_regime()
-    volatility_payload = get_volatility_environment()
-
-    print("Market Regime:", regime)
-    print("Building rotating watchlist...")
-
-    watchlist = get_watchlist()
-    print("Watchlist:", watchlist)
-
-    print("Scanning watchlist...")
-    results = []
-
-    for symbol in watchlist:
-        result = scan_stock(symbol, regime)
-        if result is not None:
-            results.append(result)
-
-    selected_trades, mode = process_signals(results, regime, volatility_payload)
-
-    print("Processing trade queue...")
-    execute_trades(selected_trades, limit=trades_left_today(executed_trade_count()))
-
-    print_positions()
-    review_positions()
-    show_candidates()
-
-    build_equity_curve()
-    export_journal()
-    report = write_daily_report()
-    archive_report()
-    write_system_status(
-        regime=regime,
-        volatility=volatility_payload.get("volatility", "UNKNOWN"),
-        mode=mode,
-    )
-
-    print("Performance:", performance_summary())
-    print("Analytics:", analytics())
-    print("Portfolio Summary:", portfolio_summary())
-    print("Unrealized PnL:", unrealized_pnl())
-    print("Strategy Performance:", strategy_breakdown())
-    dd = build_drawdown_history()
-    print("Drawdown History Built:", dd[-5:] if dd else [])
-    print("Daily Report Written:", report["timestamp"])
-    print("Final Account Snapshot:", account_snapshot())
-    print_backtest_summary()
-
+        write_bot_status(False, "completed")
+    except Exception as e:
+        write_bot_status(False, f"error: {e}")
+        raise
 
 if __name__ == "__main__":
     run()

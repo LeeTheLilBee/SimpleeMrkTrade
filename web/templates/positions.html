@@ -1,16 +1,10 @@
 {% extends "base.html" %}
-
 {% block content %}
 <h2>Open Positions</h2>
-
-<ul>
-{% for pos in positions %}
-<li>
-{{ pos.symbol }} |
-Entry: {{ pos.entry }} |
-Current: {{ pos.current }} |
-PnL: {{ pos.pnl }}
-</li>
+<table class="table">
+<tr><th>Symbol</th><th>Entry</th><th>Current</th><th>PnL</th></tr>
+{% for p in unreal.positions %}
+<tr><td>{{ p.symbol }}</td><td>{{ p.entry }}</td><td>{{ p.current }}</td><td>{{ p.pnl }}</td></tr>
 {% endfor %}
-</ul>
+</table>
 {% endblock %}

@@ -1,15 +1,13 @@
 {% extends "base.html" %}
-
 {% block content %}
 <h2>Subscription Tier</h2>
-
+<div class="card">
 <p>Username: {{ user.username }}</p>
 <p>Tier: {{ user.tier }}</p>
-
-<h3>Features</h3>
-<ul>
-    <li>Dashboard: {{ features.dashboard }}</li>
-    <li>Signals: {{ features.signals }}</li>
-    <li>API: {{ features.api }}</li>
-</ul>
+</div>
+<div class="card">
+<p>Dashboard: {{ features.dashboard }}</p>
+<p>Signals: {{ features.signals }}</p>
+<p>API: {{ features.api }}</p>
+</div>
 {% endblock %}

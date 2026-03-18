@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "timestamp": "2026-03-18T08:30:27.507599",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 160,
+    "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-18T08:30:28.223926",
+    "symbol": "XLE",
+    "strategy": "CALL",
+    "score": 130,
+    "confidence": "MEDIUM"
+  }
+]

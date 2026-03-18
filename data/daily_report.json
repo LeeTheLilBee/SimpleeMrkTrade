@@ -1,1 +1,29 @@
-{}
+{
+  "timestamp": "2026-03-18T08:30:29.170379",
+  "performance": {
+    "trades": 2,
+    "wins": 0,
+    "losses": 0,
+    "winrate": 0.0,
+    "total_pnl": 0,
+    "max_drawdown": 0
+  },
+  "portfolio": {
+    "open_positions": 2,
+    "closed_positions": 0,
+    "realized_pnl": 0
+  },
+  "analytics": {
+    "trades": 2,
+    "winrate": 0.0,
+    "strategies": {
+      "CALL": 2
+    },
+    "last_trade": "XLE",
+    "portfolio": {
+      "open_positions": 2,
+      "closed_positions": 0,
+      "realized_pnl": 0
+    }
+  }
+}

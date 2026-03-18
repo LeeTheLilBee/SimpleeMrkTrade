@@ -18,6 +18,7 @@ from engine.strategy_performance import strategy_breakdown
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
 CURRENT_USER = {"username": None, "tier": "Starter"}
+BOT_PROCESS = None
 
 def load_json(path, default):
     file = Path(path)
@@ -27,104 +28,92 @@ def load_json(path, default):
         return json.load(f)
 
 @app.route("/")
-def home():
-    state = get_dashboard_state()
-    snapshot = account_snapshot()
-    market = load_json("data/market_snapshot.json", {})
-    system = load_json("data/system_status.json", {})
-    return render_template("home.html", state=state, snapshot=snapshot, market=market, system=system)
+def home_page():
+    reports = load_json("data/recent_reports.json", [])
+    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if "snapshot" in r]
+    equity_labels = [r["timestamp"] for r in reports]
 
-@app.route("/dashboard")
-def dashboard():
-    state = get_dashboard_state()
-    stats = analytics()
-    summary = portfolio_summary()
-    proof = performance_summary()
-    snapshot = account_snapshot()
-    market = load_json("data/market_snapshot.json", {})
-    top_candidates = load_json("data/top_candidates.json", [])
-    unreal = unrealized_pnl()
-    strategies = strategy_breakdown()
-    drawdown = load_json("data/drawdown_history.json", [])
-    system = load_json("data/system_status.json", {})
     return render_template(
         "dashboard.html",
-        state=state,
-        stats=stats,
-        summary=summary,
-        proof=proof,
-        snapshot=snapshot,
-        market=market,
-        top_candidates=top_candidates,
-        unreal=unreal,
-        strategies=strategies,
-        drawdown=drawdown,
-        system=system
+        state=get_dashboard_state(),
+        snapshot=account_snapshot(),
+        market=load_json("data/market_snapshot.json", {}),
+        system=load_json("data/system_status.json", {}),
+        top_candidates=load_json("data/top_candidates.json", []),
+        proof=performance_summary(),
+        unreal=unrealized_pnl(),
+        strategies=strategy_breakdown(),
+        drawdown=load_json("data/drawdown_history.json", []),
+        equity_values=equity_values,
+        equity_labels=equity_labels
     )
+
+@app.route("/dashboard")
+def dashboard_page():
+    return home_page()
 
 @app.route("/analytics")
 def analytics_page():
-    stats = analytics()
-    summary = portfolio_summary()
-    proof = performance_summary()
-    unreal = unrealized_pnl()
-    strategies = strategy_breakdown()
-    drawdown = load_json("data/drawdown_history.json", [])
-    reports = load_json("data/recent_reports.json", [])
     return render_template(
         "analytics.html",
-        stats=stats,
-        summary=summary,
-        proof=proof,
-        unreal=unreal,
-        strategies=strategies,
-        drawdown=drawdown,
-        reports=reports
+        stats=analytics(),
+        summary=portfolio_summary(),
+        proof=performance_summary(),
+        unreal=unrealized_pnl(),
+        strategies=strategy_breakdown(),
+        drawdown=load_json("data/drawdown_history.json", []),
+        reports=load_json("data/recent_reports.json", [])
     )
 
 @app.route("/knowledge")
-def knowledge():
+def knowledge_page():
     return render_template("knowledge.html")
 
 @app.route("/candidates")
-def candidates():
-    top_candidates = load_json("data/top_candidates.json", [])
-    return render_template("candidates.html", top_candidates=top_candidates)
+def candidates_page():
+    return render_template("candidates.html", top_candidates=load_json("data/top_candidates.json", []))
 
 @app.route("/equity")
-def equity():
-    curve = load_json("data/equity_curve.json", [1000])
-    return render_template("equity.html", curve=curve)
+def equity_page():
+    return render_template("equity.html", curve=load_json("data/equity_curve.json", [1000]))
 
 @app.route("/status")
-def status():
-    system = load_json("data/system_status.json", {})
-    market = load_json("data/market_snapshot.json", {})
-    return render_template("status.html", system=system, market=market)
+def status_page():
+    return render_template(
+        "status.html",
+        system=load_json("data/system_status.json", {}),
+        market=load_json("data/market_snapshot.json", {})
+    )
 
 @app.route("/reports")
-def reports():
-    reports = load_json("data/recent_reports.json", [])
-    return render_template("reports.html", reports=reports)
+def reports_page():
+    return render_template("reports.html", reports=load_json("data/recent_reports.json", []))
 
 @app.route("/signals")
-def signals():
-    signals = load_json("data/live_signals.json", [])
-    return render_template("signals.html", signals=signals)
+def signals_page():
+    return render_template("signals.html", signals=load_json("data/live_signals.json", []))
 
 @app.route("/positions")
-def positions():
-    unreal = unrealized_pnl()
-    return render_template("positions.html", positions=unreal["positions"])
+def positions_page():
+    return render_template("positions.html", unreal=unrealized_pnl())
 
 @app.route("/control")
-def control():
-    return render_template("control.html")
+def control_page():
+    return render_template("control.html", bot_status=load_json("data/bot_status.json", {}))
 
 @app.route("/runbot", methods=["POST"])
-def runbot():
-    subprocess.Popen(["python", "-m", "engine.bot"])
+def runbot_action():
+    global BOT_PROCESS
+    status = load_json("data/bot_status.json", {})
+    if status.get("running"):
+        return "Bot already running"
+    BOT_PROCESS = subprocess.Popen(["python", "-m", "engine.bot"])
     return "Bot Started"
+
+@app.route("/stopbot", methods=["POST"])
+def stopbot_action():
+    subprocess.Popen(["pkill", "-f", "python -m engine.bot"])
+    return "Stop signal sent"
 
 @app.route("/login")
 def login_page():
@@ -140,20 +129,15 @@ def login_submit():
 
     for user in users:
         if user["username"] == username and user["password"] == password:
-            CURRENT_USER = {
-                "username": user["username"],
-                "tier": user["tier"]
-            }
+            CURRENT_USER = {"username": user["username"], "tier": user["tier"]}
             return f"Logged in as {user['username']} ({user['tier']})"
 
     return "Login failed"
 
 @app.route("/tier")
-def tier():
+def tier_page():
     tiers = load_json("data/subscription_tiers.json", {})
-    user = CURRENT_USER
-    features = tiers.get(user["tier"], {})
-    return render_template("tier.html", user=user, features=features)
+    return render_template("tier.html", user=CURRENT_USER, features=tiers.get(CURRENT_USER["tier"], {}))
 
 @app.route("/api/signals")
 def api_signals():
@@ -166,6 +150,10 @@ def api_top_candidates():
 @app.route("/api/account")
 def api_account():
     return jsonify(account_snapshot())
+
+@app.route("/api/bot-status")
+def api_bot_status():
+    return jsonify(load_json("data/bot_status.json", {}))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

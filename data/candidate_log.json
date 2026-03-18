@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "symbol": "COP",
+    "strategy": "CALL",
+    "score": 60,
+    "confidence": "MEDIUM",
+    "type": "STOCK_ONLY_CANDIDATE"
+  },
+  {
+    "symbol": "ABNB",
+    "strategy": "CALL",
+    "score": 60,
+    "confidence": "MEDIUM",
+    "type": "STOCK_ONLY_CANDIDATE"
+  }
+]

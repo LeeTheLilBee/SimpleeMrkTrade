@@ -1,9 +1,20 @@
 {% extends "base.html" %}
-
 {% block content %}
 <h2>Bot Control Panel</h2>
 
+<div class="card">
+<p>Running: {{ bot_status.running }}</p>
+<p>Last Run: {{ bot_status.last_run }}</p>
+<p>Message: {{ bot_status.last_message }}</p>
+</div>
+
 <form action="/runbot" method="post">
-    <button type="submit">Run Trading Bot</button>
+<button type="submit">Run Trading Bot</button>
+</form>
+
+<br>
+
+<form action="/stopbot" method="post">
+<button type="submit">Stop Trading Bot</button>
 </form>
 {% endblock %}
