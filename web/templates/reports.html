@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Recent Reports</h2>
+
+<ul>
+{% for report in reports %}
+<li>
+    {{ report.timestamp }} |
+    Trades: {{ report.performance.trades }} |
+    Win Rate: {{ report.performance.winrate }} |
+    Total PnL: {{ report.performance.total_pnl }} |
+    Realized PnL: {{ report.portfolio.realized_pnl }}
+</li>
+{% endfor %}
+</ul>
+{% endblock %}

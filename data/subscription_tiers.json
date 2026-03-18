@@ -1,0 +1,17 @@
+{
+  "Starter": {
+    "dashboard": true,
+    "signals": false,
+    "api": false
+  },
+  "Pro": {
+    "dashboard": true,
+    "signals": true,
+    "api": false
+  },
+  "Elite": {
+    "dashboard": true,
+    "signals": true,
+    "api": true
+  }
+}

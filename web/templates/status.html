@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>System Status</h2>
+
+<p>Timestamp: {{ system.timestamp }}</p>
+<p>Cash: {{ system.cash }}</p>
+<p>Buying Power: {{ system.buying_power }}</p>
+<p>Equity: {{ system.equity }}</p>
+<p>Open Positions: {{ system.open_positions }}</p>
+<p>Executed Trades: {{ system.executed_trades }}</p>
+<p>Regime: {{ system.regime }}</p>
+<p>Volatility: {{ system.volatility }}</p>
+<p>Mode: {{ system.mode }}</p>
+<p>Total Trades: {{ system.total_trades }}</p>
+<p>Win Rate: {{ system.winrate }}</p>
+<p>Max Drawdown: {{ system.max_drawdown }}</p>
+
+<h3>Market Snapshot</h3>
+<p>Regime: {{ market.regime }}</p>
+<p>Breadth: {{ market.breadth }}</p>
+<p>Mode: {{ market.mode }}</p>
+<p>Watchlist Count: {{ market.watchlist_count }}</p>
+<p>Approved Count: {{ market.approved_count }}</p>
+{% endblock %}

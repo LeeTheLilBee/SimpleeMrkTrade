@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<h3>Account Snapshot</h3>
+<p>Cash: {{ snapshot.cash }}</p>
+<p>Buying Power: {{ snapshot.buying_power }}</p>
+<p>Equity: {{ snapshot.equity }}</p>
+<p>Open Positions: {{ snapshot.open_positions }}</p>
+<p>Realized PnL: {{ snapshot.realized_pnl }}</p>
+<p>Unrealized PnL: {{ snapshot.unrealized_pnl }}</p>
+<p>Estimated Account Value: {{ snapshot.estimated_account_value }}</p>
+
+<h3>System Status</h3>
+<p>Timestamp: {{ system.timestamp }}</p>
+<p>Regime: {{ system.regime }}</p>
+<p>Volatility: {{ system.volatility }}</p>
+<p>Mode: {{ system.mode }}</p>
+<p>Executed Trades: {{ system.executed_trades }}</p>
+
+<h3>Top Candidates</h3>
+<ul>
+{% for trade in top_candidates %}
+<li>{{ trade.symbol }} | {{ trade.strategy }} | Score: {{ trade.score }} | Confidence: {{ trade.confidence }}</li>
+{% endfor %}
+</ul>
+
+<h3>Proof Engine</h3>
+<p>Total Trades: {{ proof.trades }}</p>
+<p>Wins: {{ proof.wins }}</p>
+<p>Losses: {{ proof.losses }}</p>
+<p>Win Rate: {{ proof.winrate }}</p>
+<p>Total PnL: {{ proof.total_pnl }}</p>
+<p>Max Drawdown: {{ proof.max_drawdown }}</p>
+
+<h3>Unrealized PnL</h3>
+<p>Total Unrealized: {{ unreal.total_unrealized }}</p>
+<ul>
+{% for pos in unreal.positions %}
+<li>{{ pos.symbol }} | Entry: {{ pos.entry }} | Current: {{ pos.current }} | PnL: {{ pos.pnl }}</li>
+{% endfor %}
+</ul>
+{% endblock %}

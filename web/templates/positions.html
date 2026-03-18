@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Open Positions</h2>
+
+<ul>
+{% for pos in positions %}
+<li>
+{{ pos.symbol }} |
+Entry: {{ pos.entry }} |
+Current: {{ pos.current }} |
+PnL: {{ pos.pnl }}
+</li>
+{% endfor %}
+</ul>
+{% endblock %}

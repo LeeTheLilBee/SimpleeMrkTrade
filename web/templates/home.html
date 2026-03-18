@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Home</h2>
+
+<h3>Account Snapshot</h3>
+<p>Cash: {{ snapshot.cash }}</p>
+<p>Buying Power: {{ snapshot.buying_power }}</p>
+<p>Equity: {{ snapshot.equity }}</p>
+<p>Open Positions: {{ snapshot.open_positions }}</p>
+<p>Realized PnL: {{ snapshot.realized_pnl }}</p>
+<p>Unrealized PnL: {{ snapshot.unrealized_pnl }}</p>
+<p>Estimated Account Value: {{ snapshot.estimated_account_value }}</p>
+
+<h3>Market Snapshot</h3>
+<p>Regime: {{ market.regime }}</p>
+<p>Breadth: {{ market.breadth }}</p>
+<p>Mode: {{ market.mode }}</p>
+
+<h3>System Status</h3>
+<p>Timestamp: {{ system.timestamp }}</p>
+<p>Volatility: {{ system.volatility }}</p>
+<p>Total Trades: {{ system.total_trades }}</p>
+<p>Win Rate: {{ system.winrate }}</p>
+{% endblock %}

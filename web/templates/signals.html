@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Live Signal Feed</h2>
+
+<ul>
+{% for signal in signals[::-1] %}
+<li>
+{{ signal.timestamp }} |
+{{ signal.symbol }} |
+{{ signal.strategy }} |
+Score: {{ signal.score }} |
+Confidence: {{ signal.confidence }}
+</li>
+{% endfor %}
+</ul>
+{% endblock %}
