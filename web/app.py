@@ -27,6 +27,9 @@ def load_json(path, default):
     with open(file, "r") as f:
         return json.load(f)
 
+def tier_allows_premium():
+    return CURRENT_USER.get("tier") in ["Pro", "Elite"]
+
 @app.route("/")
 def home_page():
     reports = load_json("data/recent_reports.json", [])
@@ -105,6 +108,24 @@ def closed_trades_page():
 @app.route("/control")
 def control_page():
     return render_template("control.html", bot_status=load_json("data/bot_status.json", {}))
+
+@app.route("/premium-analysis")
+def premium_analysis_page():
+    if not tier_allows_premium():
+        return render_template("paywall.html", user=CURRENT_USER)
+
+    analysis = load_json("data/premium_analysis.json", [])
+    reports = load_json("data/recent_reports.json", [])
+    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if "snapshot" in r]
+    equity_labels = [r["timestamp"] for r in reports]
+
+    return render_template(
+        "premium_analysis.html",
+        analysis=analysis,
+        user=CURRENT_USER,
+        equity_values=equity_values,
+        equity_labels=equity_labels
+    )
 
 @app.route("/runbot", methods=["POST"])
 def runbot_action():

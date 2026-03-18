@@ -1,3 +1,4 @@
+from engine.premium_analysis_builder import save_premium_analysis
 from engine.regime import get_market_regime
 from engine.market_volatility import get_volatility_environment
 from engine.signal_feed import push_signal
@@ -258,6 +259,12 @@ def run():
                 results.append(result)
 
         selected_trades, mode = process_signals(results, regime, volatility_payload)
+
+        save_premium_analysis(
+            selected_trades,
+            regime=regime,
+        volatility=volatility_payload.get("volatility", "UNKNOWN")
+        )
 
         print("Processing trade queue...")
         execute_trades(selected_trades, limit=trades_left_today(executed_trade_count()))

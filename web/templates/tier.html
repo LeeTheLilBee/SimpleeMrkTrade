@@ -1,13 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Subscription Tier</h2>
+
 <div class="card">
-<p>Username: {{ user.username }}</p>
-<p>Tier: {{ user.tier }}</p>
+    <p><b>Username:</b> {{ user.username }}</p>
+    <p><b>Tier:</b> {{ user.tier }}</p>
 </div>
+
 <div class="card">
-<p>Dashboard: {{ features.dashboard }}</p>
-<p>Signals: {{ features.signals }}</p>
-<p>API: {{ features.api }}</p>
+    <h3>Features</h3>
+    <p>Dashboard: {{ features.dashboard }}</p>
+    <p>Signals: {{ features.signals }}</p>
+    <p>API: {{ features.api }}</p>
+</div>
+
+<div class="card">
+    <h3>Premium Access</h3>
+    <p>Pro and Elite unlock the Premium Analysis page.</p>
+    <p><a href="/premium-analysis">Go to Premium Analysis</a></p>
 </div>
 {% endblock %}

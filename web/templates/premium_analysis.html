@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Premium Analysis</h2>
+
+<div class="card">
+    <p><b>User:</b> {{ user.username }}</p>
+    <p><b>Tier:</b> {{ user.tier }}</p>
+    <p>This page highlights the most important setup details, ranked opportunities, and supporting analysis snippets.</p>
+</div>
+
+<div class="card">
+    <h3>Equity Context</h3>
+    <canvas id="premiumEquityChart"></canvas>
+</div>
+
+{% for item in analysis %}
+<div class="card">
+    <h3>{{ item.symbol }} | {{ item.strategy }}</h3>
+    <p><b>Score:</b> {{ item.score }}</p>
+    <p><b>Confidence:</b> {{ item.confidence }}</p>
+    <p><b>Entry:</b> {{ item.price }}</p>
+    <p><b>Stop:</b> {{ item.stop }}</p>
+    <p><b>Target:</b> {{ item.target }}</p>
+
+    <h4>Key Snippets</h4>
+    <ul>
+    {% for s in item.snippets %}
+        <li>{{ s }}</li>
+    {% endfor %}
+    </ul>
+
+    <h4>Why It Made the Cut</h4>
+    <ul>
+    {% for r in item.reasons %}
+        <li>{{ r }}</li>
+    {% endfor %}
+    </ul>
+
+    <h4>Option Context</h4>
+    <p>{{ item.option }}</p>
+</div>
+{% endfor %}
+
+<script>
+const ctx = document.getElementById('premiumEquityChart');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: {{ equity_labels|tojson }},
+    datasets: [{
+      label: 'Equity Context',
+      data: {{ equity_values|tojson }},
+      borderColor: '#a78bfa',
+      backgroundColor: 'rgba(167,139,250,0.10)',
+      fill: true,
+      tension: 0.3
+    }]
+  }
+});
+</script>
+
+{% endblock %}

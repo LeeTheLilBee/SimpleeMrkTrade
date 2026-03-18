@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Premium Analysis Locked</h2>
+
+<div class="card">
+    <p>This page is available for Pro and Elite members.</p>
+    <p>Your current tier: <b>{{ user.tier }}</b></p>
+    <p>Upgrade to unlock deeper setup summaries, premium ranked analysis, and chart-backed opportunity review pages.</p>
+    <p><a href="/tier">View your current tier</a></p>
+    <p><a href="/login">Login</a></p>
+</div>
+
+{% endblock %}
