@@ -1,49 +1,15 @@
 [
   {
-    "symbol": "MU",
-    "strategy": "CALL",
-    "price": 465.7099914550781,
-    "score": 240,
-    "confidence": "MEDIUM",
-    "option": {
-      "symbol": "MU",
-      "strike": 460.0,
-      "expiry": "2026-03-27",
-      "volume": 1321,
-      "openInterest": 1136,
-      "score": 110,
-      "type": "CALL"
-    },
-    "atr": 24.587142944335938
-  },
-  {
-    "symbol": "COP",
-    "strategy": "CALL",
-    "price": 124.0999984741211,
-    "score": 160,
-    "confidence": "MEDIUM",
-    "option": {
-      "symbol": "COP",
-      "strike": 131.0,
-      "expiry": "2026-03-27",
-      "volume": 121,
-      "openInterest": 2054,
-      "score": 80,
-      "type": "CALL"
-    },
-    "atr": 3.393571581159319
-  },
-  {
     "symbol": "MPC",
     "strategy": "CALL",
-    "price": 236.4250030517578,
+    "price": 236.3699951171875,
     "score": 140,
     "confidence": "MEDIUM",
     "option": {
       "symbol": "MPC",
       "strike": 260.0,
       "expiry": "2026-04-17",
-      "volume": 135,
+      "volume": 151,
       "openInterest": 1878,
       "score": 80,
       "type": "CALL"

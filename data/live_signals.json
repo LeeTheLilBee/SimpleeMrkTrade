@@ -33,5 +33,12 @@
     "strategy": "CALL",
     "score": 240,
     "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-18T20:10:26.199024",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 140,
+    "confidence": "MEDIUM"
   }
 ]

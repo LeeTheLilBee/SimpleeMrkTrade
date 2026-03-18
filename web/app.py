@@ -14,6 +14,7 @@ from engine.performance_tracker import performance_summary
 from engine.account_snapshot import account_snapshot
 from engine.unrealized_pnl import unrealized_pnl
 from engine.strategy_performance import strategy_breakdown
+from engine.position_monitor import monitor_open_positions
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
@@ -95,7 +96,7 @@ def signals_page():
 
 @app.route("/positions")
 def positions_page():
-    return render_template("positions.html", unreal=unrealized_pnl())
+    return render_template("positions.html", positions=monitor_open_positions())
 
 @app.route("/closed-trades")
 def closed_trades_page():
@@ -138,7 +139,7 @@ def login_submit():
             CURRENT_USER = {"username": user["username"], "tier": user["tier"]}
             return redirect(url_for("tier_page"))
 
-    return "Login failed"
+    return redirect(url_for("login_page"))
 
 @app.route("/tier")
 def tier_page():

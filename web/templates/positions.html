@@ -1,10 +1,44 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Open Positions</h2>
+
+<h2>Open Position Monitor</h2>
+
+<div class="card">
+    <p>This page shows when positions are getting close to a stop, a target, or an exit trigger.</p>
+</div>
+
 <table class="table">
-<tr><th>Symbol</th><th>Entry</th><th>Current</th><th>PnL</th></tr>
-{% for p in unreal.positions %}
-<tr><td>{{ p.symbol }}</td><td>{{ p.entry }}</td><td>{{ p.current }}</td><td>{{ p.pnl }}</td></tr>
-{% endfor %}
+    <tr>
+        <th>Symbol</th>
+        <th>Strategy</th>
+        <th>Entry</th>
+        <th>Current</th>
+        <th>PnL</th>
+        <th>Stop</th>
+        <th>Target</th>
+        <th>To Stop</th>
+        <th>To Target</th>
+        <th>Action</th>
+        <th>Health</th>
+        <th>Last Checked</th>
+    </tr>
+
+    {% for p in positions %}
+    <tr>
+        <td>{{ p.symbol }}</td>
+        <td>{{ p.strategy }}</td>
+        <td>{{ p.entry }}</td>
+        <td>{{ p.current }}</td>
+        <td>{{ p.pnl }}</td>
+        <td>{{ p.stop }}</td>
+        <td>{{ p.target }}</td>
+        <td>{{ p.stop_distance }}</td>
+        <td>{{ p.target_distance }}</td>
+        <td>{{ p.action }}</td>
+        <td>{{ p.health }}</td>
+        <td>{{ p.last_checked }}</td>
+    </tr>
+    {% endfor %}
 </table>
+
 {% endblock %}
