@@ -14,5 +14,21 @@
     "level": "success",
     "link": "/reports",
     "read": false
+  },
+  {
+    "timestamp": "2026-03-19T05:07:41.177638",
+    "title": "Bot Started",
+    "message": "A new bot cycle has started.",
+    "level": "info",
+    "link": "/live-activity",
+    "read": false
+  },
+  {
+    "timestamp": "2026-03-19T05:08:08.448029",
+    "title": "Bot Completed",
+    "message": "The latest bot cycle finished successfully.",
+    "level": "success",
+    "link": "/reports",
+    "read": false
   }
 ]

@@ -3,6 +3,13 @@
 
 <h2>SimpleeMrkTrade Dashboard</h2>
 
+<div class="card">
+    <p>
+        This dashboard gives a high-level view of account condition, market state, and system activity.
+        Deeper analysis, richer interpretation, and premium explanation layers live behind subscriber access.
+    </p>
+</div>
+
 <div class="grid">
     <div class="card">
         <h3>Account Value</h3>
@@ -25,14 +32,14 @@
     <div class="card">
         <h3>Open Positions</h3>
         <div class="metric">{{ snapshot.open_positions }}</div>
-        <p><a href="/knowledge#open-positions">Learn More</a></p>
+        <p><a href="/positions">Open Position Monitor</a></p>
     </div>
 </div>
 
 <div class="card">
     <h3>Equity Curve</h3>
     <canvas id="equityChart"></canvas>
-    <p><a href="/knowledge#equity-curve">Learn More</a></p>
+    <p><a href="/equity">Open Full Equity Page</a></p>
 </div>
 
 <div class="grid">
@@ -52,12 +59,10 @@
     <div class="card">
         <h3>Proof Engine</h3>
         <p><b>Total Trades:</b> {{ proof.trades }}</p>
-        <p><b>Wins:</b> {{ proof.wins }}</p>
-        <p><b>Losses:</b> {{ proof.losses }}</p>
         <p><b>Win Rate:</b> {{ proof.winrate }}</p>
         <p><b>Total PnL:</b> {{ proof.total_pnl }}</p>
         <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
-        <p><a href="/knowledge#proof-engine">Learn More</a></p>
+        <p><a href="/proof">View Public Proof Account</a></p>
     </div>
 </div>
 
@@ -65,7 +70,7 @@
     <h3>Top Candidates</h3>
     <table class="table">
         <tr><th>Symbol</th><th>Strategy</th><th>Score</th><th>Confidence</th></tr>
-        {% for trade in top_candidates %}
+        {% for trade in top_candidates[:3] %}
         <tr>
             <td>{{ trade.symbol }}</td>
             <td>{{ trade.strategy }}</td>
@@ -75,35 +80,28 @@
         {% endfor %}
     </table>
     <p>
-        <a href="/knowledge#candidates">Candidates</a> |
-        <a href="/knowledge#score">Score</a> |
-        <a href="/knowledge#confidence">Confidence</a>
+        <a href="/research">Open Research</a> |
+        <a href="/upgrade">Unlock deeper research context</a>
     </p>
 </div>
 
 <div class="card">
-    <h3>Last 10 Signals</h3>
+    <h3>Recent Signals Snapshot</h3>
     <table class="table">
-        <tr><th>Time</th><th>Symbol</th><th>Strategy</th><th>Score</th><th>Confidence</th></tr>
-        {% for s in signals[-10:]|reverse %}
+        <tr><th>Time</th><th>Symbol</th><th>Strategy</th></tr>
+        {% for s in signals[-5:]|reverse %}
         <tr>
             <td>{{ s.timestamp }}</td>
             <td>{{ s.symbol }}</td>
             <td>{{ s.strategy }}</td>
-            <td>{{ s.score }}</td>
-            <td>{{ s.confidence }}</td>
         </tr>
         {% endfor %}
     </table>
-    <p>
-        <a href="/knowledge#signals">Signals</a> |
-        <a href="/knowledge#score">Score</a> |
-        <a href="/knowledge#confidence">Confidence</a>
-    </p>
+    <p><a href="/upgrade">Unlock full signal workflow</a></p>
 </div>
 
 <div class="card">
-    <h3>Open Position PnL</h3>
+    <h3>Open Position Snapshot</h3>
     <table class="table">
         <tr><th>Symbol</th><th>Entry</th><th>Current</th><th>PnL</th></tr>
         {% for pos in unreal.positions %}
@@ -115,7 +113,7 @@
         </tr>
         {% endfor %}
     </table>
-    <p><a href="/knowledge#pnl">Learn More</a></p>
+    <p><a href="/positions">Open Full Position Intelligence</a></p>
 </div>
 
 <script>

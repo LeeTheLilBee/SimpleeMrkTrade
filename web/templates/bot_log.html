@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Bot Log</h2>
+
+<div class="card">
+    <p>This page shows internal engine notes, operational events, and system messages produced during bot runs.</p>
+</div>
+
+{% if bot_log and bot_log|length > 0 %}
+    {% for row in bot_log[::-1] %}
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+            <p style="margin:0;"><b>{{ row.level }}</b></p>
+            <p style="margin:0;"><b>{{ row.timestamp }}</b></p>
+        </div>
+        <p style="margin-top:10px;">{{ row.message }}</p>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="card">
+        <p>No bot log entries yet.</p>
+    </div>
+{% endif %}
+
+{% endblock %}
