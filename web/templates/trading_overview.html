@@ -2,26 +2,60 @@
 {% block content %}
 
 <h2>Trading Overview</h2>
+<h2>Trading Overview</h2>
 
-<div class="grid">
-    <div class="card">
-        <h3>Open Positions</h3>
-        <p>{{ positions|length }}</p>
-    </div>
-
-    <div class="card">
-        <h3>Recent Signals</h3>
-        <p>{{ signals|length }}</p>
-    </div>
+<div class="card">
+    <h3>What This Section Does</h3>
+    <p>
+        The Trading section is where live opportunities, open exposures, and execution-aware decision support come together.
+        It is designed to help users understand what the system is seeing right now, what is currently active, and where
+        the strongest trade setups are beginning to form.
+    </p>
 </div>
 
 <div class="card">
-    <h3>Latest Signals</h3>
+    <h3>Why It Matters</h3>
+    <p>
+        Most traders lose consistency because they react to isolated signals without enough context. The Trading section is
+        important because it organizes market opportunities into a usable workflow. Instead of guessing what deserves attention,
+        users can review active setups, open positions, and signal quality in one place.
+    </p>
+    <p>
+        This reduces noise, improves decision discipline, and helps separate random movement from actionable opportunity.
+    </p>
+</div>
+
+<div class="card">
+    <h3>How To Use It</h3>
+    <p>
+        Start with current signals and position status. Look for alignment between active opportunities and the broader market
+        environment. If multiple signals appear, focus first on the ones that rank well, show stronger confidence, and fit the
+        current account and risk profile.
+    </p>
+    <p>
+        This section is best used as a prioritization layer. It helps users decide which setups deserve attention first, which
+        positions need monitoring, and which trades may no longer justify capital.
+    </p>
+</div>
+
+<div class="card">
+    <h3>What You’ll Find Here</h3>
     <ul>
-    {% for s in signals[:5] %}
-        <li>{{ s.symbol }} | {{ s.strategy }} | {{ s.score }}</li>
-    {% endfor %}
+        <li>Live signal flow</li>
+        <li>Open position monitoring</li>
+        <li>Position health and exit proximity</li>
+        <li>Trade activity and execution tracking</li>
+        <li>Decision-ready market opportunities</li>
     </ul>
+</div>
+
+<div class="card">
+    <h3>What Makes It Different</h3>
+    <p>
+        This section does not rely on one indicator or one trigger. It reflects a layered decision process that evaluates
+        opportunity quality, current conditions, and account-aware constraints before surfacing what matters most.
+        Specific internal ranking logic remains proprietary.
+    </p>
 </div>
 
 {% endblock %}
