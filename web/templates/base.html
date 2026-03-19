@@ -61,6 +61,7 @@
         </a>
 
         {% if user and user.username %}
+            <a href="/account">Account</a>
             <span class="user-badge">{{ user.username }} | {{ user.tier }}</span>
             <a href="/logout">Logout</a>
         {% else %}

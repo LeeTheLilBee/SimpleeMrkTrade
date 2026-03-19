@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Account Settings</h2>
+
+<div class="card">
+    <p><b>Username:</b> {{ user.username }}</p>
+    <p><b>Current Tier:</b> {{ user.tier }}</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Manage Access</h3>
+        <p>Review plans and change your tier level.</p>
+        <a href="/upgrade" class="cta-btn">View Plans</a>
+    </div>
+
+    <div class="card">
+        <h3>Notifications</h3>
+        <p>See the most important system events available to your access level.</p>
+        <a href="/notifications" class="cta-btn secondary">Open Notifications</a>
+    </div>
+
+    <div class="card">
+        <h3>Logout</h3>
+        <p>End your current session.</p>
+        <a href="/logout" class="btn-red">Logout</a>
+    </div>
+</div>
+
+{% endblock %}
