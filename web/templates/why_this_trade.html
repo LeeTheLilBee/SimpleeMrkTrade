@@ -5,20 +5,20 @@
 
 <div class="card">
     <p>
-        This page explains why specific setups were surfaced, why they mattered in context,
-        and how they should be interpreted without exposing proprietary ranking mechanics.
+        This page now includes both execution-linked trade explanations and research intelligence explanations,
+        so it can keep generating edge even when live execution is capped.
     </p>
     <p><b>User:</b> {{ user.username }}</p>
     <p><b>Tier:</b> {{ user.tier }}</p>
     <p><b>Depth:</b> {{ premium_depth }}</p>
 </div>
 
-{% if explanations and explanations|length > 0 %}
-    {% for item in explanations %}
+{% if all_explanations and all_explanations|length > 0 %}
+    {% for item in all_explanations %}
     <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
             <h3 style="margin:0;">{{ item.symbol or "Unknown" }} | {{ item.strategy or "N/A" }}</h3>
-            <span class="badge-blue">Premium Context</span>
+            <span class="badge-gray">{{ item.source or "research" }}</span>
         </div>
 
         <div class="grid">
@@ -26,7 +26,7 @@
                 <h3>Trade Snapshot</h3>
                 <p><b>Score:</b> {{ item.score or "N/A" }}</p>
                 <p><b>Confidence:</b> {{ item.confidence or "N/A" }}</p>
-                <p><b>Entry:</b> {{ item.entry or item.price or "N/A" }}</p>
+                <p><b>Entry:</b> {{ item.entry or "N/A" }}</p>
                 <p><b>Stop:</b> {{ item.stop or "N/A" }}</p>
                 <p><b>Target:</b> {{ item.target or "N/A" }}</p>
             </div>

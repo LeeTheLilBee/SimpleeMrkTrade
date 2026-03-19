@@ -1,36 +1,67 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Live Signals</h2>
+<h2>Signals</h2>
 
 <div class="card">
-    <p>This page shows the latest approved trade opportunities available to your access level.</p>
+    <p>
+        This page now separates execution-linked signals from research signals.
+        The research layer is not limited by the simulated account’s daily trade cap.
+    </p>
 </div>
 
-{% if signals and signals|length > 0 %}
-<table class="table">
-    <tr>
-        <th>Timestamp</th>
-        <th>Symbol</th>
-        <th>Strategy</th>
-        <th>Score</th>
-        <th>Confidence</th>
-    </tr>
-
-    {% for s in signals[::-1] %}
-    <tr>
-        <td>{{ s.timestamp }}</td>
-        <td>{{ s.symbol }}</td>
-        <td>{{ s.strategy }}</td>
-        <td>{{ s.score }}</td>
-        <td>{{ s.confidence }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
 <div class="card">
-    <p>No live signals yet.</p>
+    <h3>Research Signals</h3>
+    {% if research_signals and research_signals|length > 0 %}
+    <table class="table">
+        <tr>
+            <th>Timestamp</th>
+            <th>Symbol</th>
+            <th>Strategy</th>
+            <th>Score</th>
+            <th>Confidence</th>
+            <th>Source</th>
+        </tr>
+        {% for s in research_signals[::-1] %}
+        <tr>
+            <td>{{ s.timestamp }}</td>
+            <td>{{ s.symbol }}</td>
+            <td>{{ s.strategy }}</td>
+            <td>{{ s.score }}</td>
+            <td>{{ s.confidence }}</td>
+            <td>{{ s.source }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No research signals yet.</p>
+    {% endif %}
 </div>
-{% endif %}
+
+<div class="card">
+    <h3>Execution Signals</h3>
+    {% if signals and signals|length > 0 %}
+    <table class="table">
+        <tr>
+            <th>Timestamp</th>
+            <th>Symbol</th>
+            <th>Strategy</th>
+            <th>Score</th>
+            <th>Confidence</th>
+        </tr>
+        {% for s in signals[::-1] %}
+        <tr>
+            <td>{{ s.timestamp }}</td>
+            <td>{{ s.symbol }}</td>
+            <td>{{ s.strategy }}</td>
+            <td>{{ s.score }}</td>
+            <td>{{ s.confidence }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No execution signals yet.</p>
+    {% endif %}
+</div>
 
 {% endblock %}

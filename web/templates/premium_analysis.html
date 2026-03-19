@@ -8,8 +8,8 @@
         <div>
             <h3 style="margin:0;">Premium Market Intelligence</h3>
             <p style="margin-top:10px;">
-                This page is designed to feel less like raw data and more like a decision brief.
-                It highlights the strongest setups with structure, context, and premium interpretation.
+                This page now combines execution-grade premium entries with research-grade premium intelligence.
+                That means the page can stay rich even when the simulated account is capped out.
             </p>
             <p><b>User:</b> {{ user.username }} | <b>Tier:</b> {{ user.tier }} | <b>Depth:</b> {{ premium_depth }}</p>
         </div>
@@ -19,20 +19,20 @@
 
 <div class="card">
     <h3>Equity Context</h3>
-    <p>This chart gives context for how the account has been behaving while these opportunities are being generated.</p>
     <canvas id="premiumEquityChart"></canvas>
 </div>
 
-{% if analysis and analysis|length > 0 %}
-    {% for item in analysis %}
+{% if all_analysis and all_analysis|length > 0 %}
+    {% for item in all_analysis %}
     <div class="premium-analysis-card">
         <div class="premium-analysis-top">
             <div>
                 <h3 style="margin:0;">{{ item.symbol or "Unknown" }} | {{ item.strategy or "N/A" }}</h3>
-                <p class="muted-line">Priority setup surfaced by the premium layer</p>
+                <p class="muted-line">{{ item.source or "research" | title }} intelligence entry</p>
             </div>
-            <div class="premium-score-pill">
-                Score {{ item.score or "N/A" }}
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <span class="badge-gray">{{ item.source or "research" }}</span>
+                <div class="premium-score-pill">Score {{ item.score or "N/A" }}</div>
             </div>
         </div>
 
@@ -40,10 +40,9 @@
             <div class="card">
                 <h3>Setup Snapshot</h3>
                 <p><b>Confidence:</b> {{ item.confidence or "N/A" }}</p>
-                <p><b>Entry:</b> {{ item.price or item.entry or "N/A" }}</p>
+                <p><b>Entry:</b> {{ item.entry or "N/A" }}</p>
                 <p><b>Stop:</b> {{ item.stop or "N/A" }}</p>
                 <p><b>Target:</b> {{ item.target or "N/A" }}</p>
-                <p><b>Structure:</b> Ranked high enough to survive premium review.</p>
             </div>
 
             <div class="card">
@@ -65,12 +64,12 @@
                     {% endfor %}
                     </ul>
                 {% else %}
-                    <p>The broader environment supported this setup enough for it to remain in the premium tier.</p>
+                    <p>No additional market snippets saved.</p>
                 {% endif %}
             </div>
 
             <div class="card">
-                <h3>Interpretation Layer</h3>
+                <h3>Edge Notes</h3>
                 {% if item.reasons %}
                     <ul>
                     {% for r in item.reasons %}
@@ -78,17 +77,9 @@
                     {% endfor %}
                     </ul>
                 {% else %}
-                    <p>This opportunity maintained enough strength, structure, and contextual support to remain premium-worthy.</p>
+                    <p>No edge notes saved.</p>
                 {% endif %}
             </div>
-        </div>
-
-        <div class="card premium-note">
-            <h3>Premium Read</h3>
-            <p>
-                This section is meant to help the user think better, not trade blindly.
-                The goal is clarity without exposing proprietary weighting mechanics.
-            </p>
         </div>
     </div>
     {% endfor %}

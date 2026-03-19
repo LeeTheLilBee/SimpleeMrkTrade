@@ -55,7 +55,10 @@ from engine.bot_logger import log_bot
 from engine.live_activity import push_activity
 from engine.auto_close_positions import auto_close_positions
 
-from engine.premium_intelligence import save_premium_analysis
+from engine.premium_intelligence import (
+    save_premium_analysis,
+    save_research_premium_analysis,
+)
 from engine.trade_timeline_manager import add_trade_timeline_event
 from engine.smart_notification_router import (
     notify_trade_approved,
@@ -63,6 +66,7 @@ from engine.smart_notification_router import (
     notify_trade_closed,
     notify_trade_edge,
 )
+from engine.research_signal_writer import save_research_signal
 
 try:
     from engine.drawdown_brake import drawdown_brake
@@ -163,12 +167,7 @@ def process_signals(results, regime, volatility_payload):
         elif strategy == "PUT":
             option = get_best_put(symbol)
 
-        if option is None:
-            candidate = stock_only_candidate(symbol, strategy, score, conf)
-            remember_candidate(candidate)
-            continue
-
-        total_score = final_trade_score(score, option, price)
+        total_score = final_trade_score(score, option, price) if option is not None else score
 
         trade = {
             "symbol": symbol,
@@ -203,7 +202,7 @@ def process_signals(results, regime, volatility_payload):
         approved_count=len(selected_trades),
     )
 
-    return selected_trades, mode, breadth, volatility_state
+    return approved_trades, selected_trades, mode, breadth, volatility_state
 
 def run():
     write_bot_status(True, "starting")
@@ -234,21 +233,6 @@ def run():
         print("Sector Cap:", sector_cap)
         print("Exposure Bucket:", exposure)
 
-        if brake.get("blocked"):
-            write_bot_status(False, "blocked by drawdown brake")
-            push_activity("RISK", "Blocked by drawdown brake")
-            return
-
-        if corr.get("blocked"):
-            write_bot_status(False, "blocked by correlation risk")
-            push_activity("RISK", "Blocked by correlation risk")
-            return
-
-        if sector_cap.get("blocked"):
-            write_bot_status(False, "blocked by sector concentration cap")
-            push_activity("RISK", "Blocked by sector concentration cap")
-            return
-
         regime = get_market_regime()
         volatility_payload = get_volatility_environment()
 
@@ -268,12 +252,8 @@ def run():
             if result is not None:
                 results.append(result)
 
-        selected_trades, mode, breadth, volatility_state = process_signals(results, regime, volatility_payload)
-        push_activity("QUEUE", f"Selected {len(selected_trades)} trades in mode {mode}")
-
-        if _reduced_risk_mode(brake, exposure):
-            selected_trades = _trim_for_reduced_risk(selected_trades)
-            push_activity("RISK", "Reduced-risk mode active: trimmed trade queue")
+        approved_trades, selected_trades, mode, breadth, volatility_state = process_signals(results, regime, volatility_payload)
+        push_activity("QUEUE", f"Approved {len(approved_trades)} research trades; selected {len(selected_trades)} execution trades in mode {mode}")
 
         market_context = [
             f"Market regime: {regime}",
@@ -281,6 +261,55 @@ def run():
             f"Market breadth: {breadth}",
             f"Mode: {mode}",
         ]
+
+        # RESEARCH LAYER: always write these, independent of execution blocks
+        for trade in approved_trades:
+            save_research_signal(
+                trade,
+                regime=regime,
+                mode=mode,
+                volatility=volatility_state,
+                source="research",
+            )
+
+            if trade.get("score", 0) >= 120:
+                research_entry = save_research_premium_analysis(
+                    trade,
+                    market_context=market_context,
+                    mode=mode,
+                    regime=regime,
+                    volatility=volatility_state,
+                )
+                notify_trade_edge(trade["symbol"], research_entry.get("reasons", []))
+
+        # EXECUTION RISK BLOCKS stay strict
+        if brake.get("blocked"):
+            write_bot_status(False, "blocked by drawdown brake")
+            push_activity("RISK", "Blocked by drawdown brake")
+            notify_trade_risk("PORTFOLIO", "Drawdown brake blocked new execution trades")
+            return
+
+        if corr.get("blocked"):
+            write_bot_status(False, "blocked by correlation risk")
+            push_activity("RISK", "Blocked by correlation risk")
+            notify_trade_risk("PORTFOLIO", corr.get("reason", "Correlation block"))
+            return
+
+        if sector_cap.get("blocked"):
+            write_bot_status(False, "blocked by sector concentration cap")
+            push_activity("RISK", "Blocked by sector concentration cap")
+            notify_trade_risk("PORTFOLIO", sector_cap.get("reason", "Sector cap block"))
+            return
+
+        if governor.get("blocked"):
+            write_bot_status(False, "blocked by governor")
+            push_activity("RISK", f"Blocked by governor: {', '.join(governor.get('reasons', []))}")
+            notify_trade_risk("PORTFOLIO", f"Governor blocked execution: {', '.join(governor.get('reasons', []))}")
+            return
+
+        if _reduced_risk_mode(brake, exposure):
+            selected_trades = _trim_for_reduced_risk(selected_trades)
+            push_activity("RISK", "Reduced-risk mode active: trimmed trade queue")
 
         for trade in selected_trades:
             alert_trade(trade)
@@ -307,6 +336,7 @@ def run():
                     "strategy": trade["strategy"],
                     "score": trade["score"],
                     "confidence": trade["confidence"],
+                    "source": "execution",
                 }
             )
 
@@ -319,6 +349,7 @@ def run():
                     mode=mode,
                     regime=regime,
                     volatility=volatility_state,
+                    source="execution",
                 )
                 notify_trade_edge(trade["symbol"], premium_entry.get("reasons", []))
 
@@ -332,6 +363,7 @@ def run():
                 {
                     "strategy": trade["strategy"],
                     "score": trade["score"],
+                    "source": "execution",
                 }
             )
 

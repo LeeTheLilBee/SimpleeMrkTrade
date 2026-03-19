@@ -15,5 +15,14 @@
       "type": "CALL"
     },
     "atr": 24.587142944335938
+  },
+  {
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "price": 236.24000549316406,
+    "score": 60,
+    "confidence": "MEDIUM",
+    "option": null,
+    "atr": 9.059998648507255
   }
 ]

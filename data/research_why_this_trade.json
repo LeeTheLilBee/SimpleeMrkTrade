@@ -1,0 +1,23 @@
+[
+  {
+    "timestamp": "2026-03-19T10:07:13.900941",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 160,
+    "confidence": "MEDIUM",
+    "entry": 461.73,
+    "stop": 424.85,
+    "target": 510.9,
+    "source": "research",
+    "market_context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "why_selected": [
+      "Strong alignment across multiple factors",
+      "Bullish directional bias"
+    ]
+  }
+]

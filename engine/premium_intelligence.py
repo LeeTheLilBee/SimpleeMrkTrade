@@ -6,6 +6,9 @@ from engine.signal_explainer import explain_signal
 PREMIUM_FILE = "data/premium_analysis.json"
 WHY_FILE = "data/why_this_trade.json"
 
+RESEARCH_PREMIUM_FILE = "data/research_premium_analysis.json"
+RESEARCH_WHY_FILE = "data/research_why_this_trade.json"
+
 def _load(path):
     if not Path(path).exists():
         return []
@@ -14,9 +17,9 @@ def _load(path):
 
 def _save(path, data):
     with open(path, "w") as f:
-        json.dump(data[-100:], f, indent=2)
+        json.dump(data[-150:], f, indent=2)
 
-def build_premium_entry(trade, market_context=None, mode=None, regime=None, volatility=None):
+def build_premium_entry(trade, market_context=None, mode=None, regime=None, volatility=None, source="execution"):
     price = trade.get("price")
     atr = trade.get("atr", 0) or 0
 
@@ -39,12 +42,13 @@ def build_premium_entry(trade, market_context=None, mode=None, regime=None, vola
         "mode": mode,
         "regime": regime,
         "volatility": volatility,
+        "source": source,
         "snippets": market_context or [],
         "reasons": explain_signal(trade),
     }
     return entry
 
-def save_premium_analysis(trade, market_context=None, mode=None, regime=None, volatility=None):
+def save_premium_analysis(trade, market_context=None, mode=None, regime=None, volatility=None, source="execution"):
     data = _load(PREMIUM_FILE)
     entry = build_premium_entry(
         trade,
@@ -52,6 +56,7 @@ def save_premium_analysis(trade, market_context=None, mode=None, regime=None, vo
         mode=mode,
         regime=regime,
         volatility=volatility,
+        source=source,
     )
     data.append(entry)
     _save(PREMIUM_FILE, data)
@@ -69,9 +74,44 @@ def save_why_this_trade(entry):
         "entry": entry["entry"],
         "stop": entry["stop"],
         "target": entry["target"],
+        "source": entry.get("source", "execution"),
         "market_context": entry.get("snippets", []),
         "why_selected": entry.get("reasons", []),
     }
     data.append(explanation)
     _save(WHY_FILE, data)
+    return explanation
+
+def save_research_premium_analysis(trade, market_context=None, mode=None, regime=None, volatility=None):
+    data = _load(RESEARCH_PREMIUM_FILE)
+    entry = build_premium_entry(
+        trade,
+        market_context=market_context,
+        mode=mode,
+        regime=regime,
+        volatility=volatility,
+        source="research",
+    )
+    data.append(entry)
+    _save(RESEARCH_PREMIUM_FILE, data)
+    save_research_why_this_trade(entry)
+    return entry
+
+def save_research_why_this_trade(entry):
+    data = _load(RESEARCH_WHY_FILE)
+    explanation = {
+        "timestamp": entry["timestamp"],
+        "symbol": entry["symbol"],
+        "strategy": entry["strategy"],
+        "score": entry["score"],
+        "confidence": entry["confidence"],
+        "entry": entry["entry"],
+        "stop": entry["stop"],
+        "target": entry["target"],
+        "source": "research",
+        "market_context": entry.get("snippets", []),
+        "why_selected": entry.get("reasons", []),
+    }
+    data.append(explanation)
+    _save(RESEARCH_WHY_FILE, data)
     return explanation

@@ -74,5 +74,27 @@
     "members_only": true,
     "min_tier": "Pro",
     "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T10:07:13.901510",
+    "title": "Edge Detected",
+    "message": "MU: Strong alignment across multiple factors | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T10:07:13.902655",
+    "title": "Risk Alert",
+    "message": "PORTFOLIO risk condition triggered: Too many positions concentrated in one sector..",
+    "level": "warning",
+    "link": "/positions",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "risk"
   }
 ]

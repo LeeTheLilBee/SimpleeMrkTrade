@@ -301,6 +301,7 @@ def signals_page():
         return redirect(url_for("upgrade_page"))
     return render_template("signals.html", **template_context({
         "signals": load_json("data/live_signals.json", []),
+        "research_signals": load_json("data/research_signals.json", []),
     }))
 
 @app.route("/positions")
@@ -354,16 +355,26 @@ def premium_analysis_page():
     if not has_access("premium_analysis"):
         return redirect(url_for("upgrade_page"))
 
-    analysis = load_json("data/premium_analysis.json", [])
-    if not isinstance(analysis, list):
-        analysis = []
+    execution_analysis = load_json("data/premium_analysis.json", [])
+    research_analysis = load_json("data/research_premium_analysis.json", [])
+
+    if not isinstance(execution_analysis, list):
+        execution_analysis = []
+    if not isinstance(research_analysis, list):
+        research_analysis = []
+
+    all_analysis = sorted(
+        execution_analysis + research_analysis,
+        key=lambda x: x.get("timestamp", ""),
+        reverse=True
+    )
 
     reports = load_json("data/recent_reports.json", [])
     equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if isinstance(r, dict) and "snapshot" in r]
     equity_labels = [r["timestamp"] for r in reports if isinstance(r, dict) and "snapshot" in r]
 
     return render_template("premium_analysis.html", **template_context({
-        "analysis": analysis,
+        "all_analysis": all_analysis,
         "equity_values": equity_values,
         "equity_labels": equity_labels,
         "premium_depth": premium_depth(),
@@ -376,12 +387,22 @@ def why_this_trade_page():
     if not has_access("why_this_trade"):
         return redirect(url_for("upgrade_page"))
 
-    explanations = load_json("data/why_this_trade.json", [])
-    if not isinstance(explanations, list):
-        explanations = []
+    execution_explanations = load_json("data/why_this_trade.json", [])
+    research_explanations = load_json("data/research_why_this_trade.json", [])
+
+    if not isinstance(execution_explanations, list):
+        execution_explanations = []
+    if not isinstance(research_explanations, list):
+        research_explanations = []
+
+    all_explanations = sorted(
+        execution_explanations + research_explanations,
+        key=lambda x: x.get("timestamp", ""),
+        reverse=True
+    )
 
     return render_template("why_this_trade.html", **template_context({
-        "explanations": explanations,
+        "all_explanations": all_explanations,
         "premium_depth": premium_depth(),
     }))
 
