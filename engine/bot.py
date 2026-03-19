@@ -67,6 +67,7 @@ from engine.smart_notification_router import (
     notify_trade_edge,
 )
 from engine.research_signal_writer import save_research_signal
+from engine.trade_detail_builder import build_trade_detail, save_trade_detail
 
 try:
     from engine.drawdown_brake import drawdown_brake
@@ -92,11 +93,14 @@ except Exception:
     def exposure_bucket_status():
         return {"blocked": False, "bucket": "NORMAL", "reason": "exposure buckets unavailable"}
 
+
 def _reduced_risk_mode(brake_payload, exposure_payload):
     return brake_payload.get("mode") == "REDUCED_RISK" or exposure_payload.get("bucket") in ["ELEVATED", "HIGH"]
 
+
 def _trim_for_reduced_risk(selected_trades):
     return selected_trades[:1] if selected_trades else selected_trades
+
 
 def scan_stock(symbol, regime):
     df = safe_download(symbol, period="3mo", auto_adjust=True, progress=False)
@@ -134,6 +138,7 @@ def scan_stock(symbol, regime):
         "breakout": breakout_signal,
         "atr": atr,
     }
+
 
 def process_signals(results, regime, volatility_payload):
     breadth = market_breadth(results)
@@ -181,7 +186,6 @@ def process_signals(results, regime, volatility_payload):
 
         approved_trades.append(trade)
         remember_signal(symbol, total_score, strategy)
-        push_signal(symbol, strategy, total_score, conf)
 
     print_leaderboard(approved_trades)
     print_top_candidates(approved_trades, limit=5)
@@ -203,6 +207,7 @@ def process_signals(results, regime, volatility_payload):
     )
 
     return approved_trades, selected_trades, mode, breadth, volatility_state
+
 
 def run():
     write_bot_status(True, "starting")
@@ -253,7 +258,10 @@ def run():
                 results.append(result)
 
         approved_trades, selected_trades, mode, breadth, volatility_state = process_signals(results, regime, volatility_payload)
-        push_activity("QUEUE", f"Approved {len(approved_trades)} research trades; selected {len(selected_trades)} execution trades in mode {mode}")
+        push_activity(
+            "QUEUE",
+            f"Approved {len(approved_trades)} research trades; selected {len(selected_trades)} execution trades in mode {mode}"
+        )
 
         market_context = [
             f"Market regime: {regime}",
@@ -262,14 +270,38 @@ def run():
             f"Mode: {mode}",
         ]
 
-        # RESEARCH LAYER: always write these, independent of execution blocks
+        # RESEARCH LAYER: always generate intelligence even if execution is capped
         for trade in approved_trades:
+            trade_id, detail = build_trade_detail(trade, market_context)
+            save_trade_detail(detail)
+            trade["trade_id"] = trade_id
+
+            push_signal(
+                trade["symbol"],
+                trade["strategy"],
+                trade["score"],
+                trade["confidence"],
+                trade_id=trade_id
+            )
+
             save_research_signal(
                 trade,
                 regime=regime,
                 mode=mode,
                 volatility=volatility_state,
                 source="research",
+            )
+
+            add_trade_timeline_event(
+                trade["symbol"],
+                "RESEARCH_APPROVED",
+                {
+                    "trade_id": trade_id,
+                    "strategy": trade["strategy"],
+                    "score": trade["score"],
+                    "confidence": trade["confidence"],
+                    "source": "research",
+                }
             )
 
             if trade.get("score", 0) >= 120:
@@ -282,7 +314,7 @@ def run():
                 )
                 notify_trade_edge(trade["symbol"], research_entry.get("reasons", []))
 
-        # EXECUTION RISK BLOCKS stay strict
+        # EXECUTION LAYER: stays strict
         if brake.get("blocked"):
             write_bot_status(False, "blocked by drawdown brake")
             push_activity("RISK", "Blocked by drawdown brake")
@@ -312,6 +344,11 @@ def run():
             push_activity("RISK", "Reduced-risk mode active: trimmed trade queue")
 
         for trade in selected_trades:
+            if not trade.get("trade_id"):
+                trade_id, detail = build_trade_detail(trade, market_context)
+                save_trade_detail(detail)
+                trade["trade_id"] = trade_id
+
             alert_trade(trade)
 
             print("APPROVED:", trade["symbol"], "| Strategy:", trade["strategy"], "| Confidence:", trade["confidence"])
@@ -323,6 +360,7 @@ def run():
                 f"{trade['symbol']} approved as {trade['strategy']} with score {trade['score']}",
                 symbol=trade["symbol"],
                 meta={
+                    "trade_id": trade["trade_id"],
                     "strategy": trade["strategy"],
                     "score": trade["score"],
                     "confidence": trade["confidence"]
@@ -331,8 +369,9 @@ def run():
 
             add_trade_timeline_event(
                 trade["symbol"],
-                "APPROVED",
+                "EXECUTION_APPROVED",
                 {
+                    "trade_id": trade["trade_id"],
                     "strategy": trade["strategy"],
                     "score": trade["score"],
                     "confidence": trade["confidence"],
@@ -361,6 +400,7 @@ def run():
                 trade["symbol"],
                 "EXECUTED",
                 {
+                    "trade_id": trade.get("trade_id"),
                     "strategy": trade["strategy"],
                     "score": trade["score"],
                     "source": "execution",
@@ -410,6 +450,7 @@ def run():
         write_bot_status(False, f"error: {e}")
         push_activity("ERROR", f"Bot error: {e}")
         raise
+
 
 if __name__ == "__main__":
     run()

@@ -152,5 +152,51 @@
     "strategy": "CALL",
     "score": 160,
     "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-19T10:48:30.680629",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 60,
+    "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-19T10:48:31.409076",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 160,
+    "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-19T11:10:43.155199",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 60,
+    "confidence": "MEDIUM",
+    "trade_id": "9d4d140b-6214-4a61-b3eb-5ffcd83dd543"
+  },
+  {
+    "timestamp": "2026-03-19T11:10:43.157509",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "MEDIUM",
+    "trade_id": "de943033-54a0-45d7-94c8-1330af40a924"
+  },
+  {
+    "timestamp": "2026-03-19T11:11:52.704714",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 60,
+    "confidence": "MEDIUM",
+    "trade_id": "c6700ca1-0b57-44f9-91ff-00bffa3deed6"
+  },
+  {
+    "timestamp": "2026-03-19T11:11:52.706413",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "MEDIUM",
+    "trade_id": "b8d7f095-d4ee-430d-8a02-1c27b8be1957"
   }
 ]

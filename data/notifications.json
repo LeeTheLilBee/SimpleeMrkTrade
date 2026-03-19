@@ -96,5 +96,71 @@
     "members_only": true,
     "min_tier": "Pro",
     "category": "risk"
+  },
+  {
+    "timestamp": "2026-03-19T10:48:31.414054",
+    "title": "Edge Detected",
+    "message": "MU: Strong alignment across multiple factors | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T10:48:31.415767",
+    "title": "Risk Alert",
+    "message": "PORTFOLIO risk condition triggered: Too many positions concentrated in one sector..",
+    "level": "warning",
+    "link": "/positions",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "risk"
+  },
+  {
+    "timestamp": "2026-03-19T11:10:43.160039",
+    "title": "Edge Detected",
+    "message": "MU: Extremely high conviction setup | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T11:10:43.162054",
+    "title": "Risk Alert",
+    "message": "PORTFOLIO risk condition triggered: Too many positions concentrated in one sector..",
+    "level": "warning",
+    "link": "/positions",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "risk"
+  },
+  {
+    "timestamp": "2026-03-19T11:11:52.708339",
+    "title": "Edge Detected",
+    "message": "MU: Extremely high conviction setup | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T11:11:52.709805",
+    "title": "Risk Alert",
+    "message": "PORTFOLIO risk condition triggered: Too many positions concentrated in one sector..",
+    "level": "warning",
+    "link": "/positions",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "risk"
   }
 ]

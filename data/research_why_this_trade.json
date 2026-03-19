@@ -19,5 +19,68 @@
       "Strong alignment across multiple factors",
       "Bullish directional bias"
     ]
+  },
+  {
+    "timestamp": "2026-03-19T10:48:31.413420",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 160,
+    "confidence": "MEDIUM",
+    "entry": 461.73,
+    "stop": 424.85,
+    "target": 510.9,
+    "source": "research",
+    "market_context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "why_selected": [
+      "Strong alignment across multiple factors",
+      "Bullish directional bias"
+    ]
+  },
+  {
+    "timestamp": "2026-03-19T11:10:43.159006",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "MEDIUM",
+    "entry": 461.73,
+    "stop": 424.85,
+    "target": 510.9,
+    "source": "research",
+    "market_context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "why_selected": [
+      "Extremely high conviction setup",
+      "Bullish directional bias"
+    ]
+  },
+  {
+    "timestamp": "2026-03-19T11:11:52.707605",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "MEDIUM",
+    "entry": 461.73,
+    "stop": 424.85,
+    "target": 510.9,
+    "source": "research",
+    "market_context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "why_selected": [
+      "Extremely high conviction setup",
+      "Bullish directional bias"
+    ]
   }
 ]

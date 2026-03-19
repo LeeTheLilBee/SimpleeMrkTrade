@@ -3,19 +3,31 @@
 
 <h2>Signals</h2>
 
-<div class="card">
+<div class="card premium-card">
+    <h3>Signal Intelligence Layer</h3>
     <p>
-        This page now separates execution-linked signals from research signals.
-        The research layer is not limited by the simulated account’s daily trade cap.
+        This page separates live execution signals from research signals.
+        Research ideas continue to populate even when the simulated account is capped out.
     </p>
 </div>
 
-<div class="card">
+<div class="grid">
+    <div class="card">
+        <h3>Research Signal Engine</h3>
+        <p>Independent of simulated account limits.</p>
+    </div>
+    <div class="card">
+        <h3>Execution Signal Engine</h3>
+        <p>Subject to daily caps, open-position limits, and risk blocks.</p>
+    </div>
+</div>
+
+<div class="card premium-card">
     <h3>Research Signals</h3>
     {% if research_signals and research_signals|length > 0 %}
     <table class="table">
         <tr>
-            <th>Timestamp</th>
+            <th>Time</th>
             <th>Symbol</th>
             <th>Strategy</th>
             <th>Score</th>
@@ -25,11 +37,17 @@
         {% for s in research_signals[::-1] %}
         <tr>
             <td>{{ s.timestamp }}</td>
-            <td>{{ s.symbol }}</td>
+            <td>
+                {% if s.trade_id %}
+                <a href="/trade/{{ s.trade_id }}">{{ s.symbol }}</a>
+                {% else %}
+                {{ s.symbol }}
+                {% endif %}
+            </td>
             <td>{{ s.strategy }}</td>
-            <td>{{ s.score }}</td>
+            <td><span class="pill">{{ s.score }}</span></td>
             <td>{{ s.confidence }}</td>
-            <td>{{ s.source }}</td>
+            <td><span class="badge badge-purple">{{ s.source or "research" }}</span></td>
         </tr>
         {% endfor %}
     </table>
@@ -43,7 +61,7 @@
     {% if signals and signals|length > 0 %}
     <table class="table">
         <tr>
-            <th>Timestamp</th>
+            <th>Time</th>
             <th>Symbol</th>
             <th>Strategy</th>
             <th>Score</th>
@@ -52,9 +70,15 @@
         {% for s in signals[::-1] %}
         <tr>
             <td>{{ s.timestamp }}</td>
-            <td>{{ s.symbol }}</td>
+            <td>
+                {% if s.trade_id %}
+                <a href="/trade/{{ s.trade_id }}">{{ s.symbol }}</a>
+                {% else %}
+                {{ s.symbol }}
+                {% endif %}
+            </td>
             <td>{{ s.strategy }}</td>
-            <td>{{ s.score }}</td>
+            <td><span class="pill">{{ s.score }}</span></td>
             <td>{{ s.confidence }}</td>
         </tr>
         {% endfor %}

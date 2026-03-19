@@ -17,5 +17,53 @@
       "strategy": "CALL",
       "score": 160
     }
+  },
+  {
+    "timestamp": "2026-03-19T11:10:43.156524",
+    "symbol": "MPC",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "9d4d140b-6214-4a61-b3eb-5ffcd83dd543",
+      "strategy": "CALL",
+      "score": 60,
+      "confidence": "MEDIUM",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-19T11:10:43.158621",
+    "symbol": "MU",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "de943033-54a0-45d7-94c8-1330af40a924",
+      "strategy": "CALL",
+      "score": 210,
+      "confidence": "MEDIUM",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-19T11:11:52.705551",
+    "symbol": "MPC",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "c6700ca1-0b57-44f9-91ff-00bffa3deed6",
+      "strategy": "CALL",
+      "score": 60,
+      "confidence": "MEDIUM",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-19T11:11:52.707271",
+    "symbol": "MU",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "b8d7f095-d4ee-430d-8a02-1c27b8be1957",
+      "strategy": "CALL",
+      "score": 210,
+      "confidence": "MEDIUM",
+      "source": "research"
+    }
   }
 ]

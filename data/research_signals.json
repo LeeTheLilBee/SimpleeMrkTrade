@@ -22,5 +22,77 @@
     "regime": "BEAR_TREND",
     "mode": "DEFENSIVE_BEAR",
     "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-19T10:48:31.412415",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 60,
+    "confidence": "MEDIUM",
+    "price": 236.24000549316406,
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-19T10:48:31.413065",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 160,
+    "confidence": "MEDIUM",
+    "price": 461.7300109863281,
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-19T11:10:43.156023",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 60,
+    "confidence": "MEDIUM",
+    "price": 236.24000549316406,
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-19T11:10:43.158223",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "MEDIUM",
+    "price": 461.7300109863281,
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-19T11:11:52.705212",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 60,
+    "confidence": "MEDIUM",
+    "price": 236.24000549316406,
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-19T11:11:52.706858",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "MEDIUM",
+    "price": 461.7300109863281,
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
   }
 ]

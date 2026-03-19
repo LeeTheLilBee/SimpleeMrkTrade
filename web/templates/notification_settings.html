@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Notification Settings</h2>
+
+<form method="POST" class="card">
+    <label>
+        <input type="checkbox" name="high_conviction_only" {% if settings.high_conviction_only %}checked{% endif %}>
+        High Conviction Only
+    </label><br>
+
+    <label>
+        <input type="checkbox" name="research_alerts" {% if settings.research_alerts %}checked{% endif %}>
+        Research Alerts
+    </label><br>
+
+    <label>
+        <input type="checkbox" name="execution_alerts" {% if settings.execution_alerts %}checked{% endif %}>
+        Execution Alerts
+    </label><br>
+
+    <button type="submit">Save</button>
+</form>
+
+{% endblock %}

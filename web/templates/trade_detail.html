@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>{{ detail.symbol }} | {{ detail.strategy }}</h2>
+
+<div class="card">
+    <h3>Trade Thesis</h3>
+    <ul>
+        {% for t in detail.thesis %}
+        <li>{{ t }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Setup</h3>
+        <p>Score: {{ detail.score }}</p>
+        <p>Confidence: {{ detail.confidence }}</p>
+        <p>Entry: {{ detail.entry }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Risk</h3>
+        <p>{{ detail.risk.note }}</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Market Context</h3>
+    <ul>
+        {% for c in detail.context %}
+        <li>{{ c }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

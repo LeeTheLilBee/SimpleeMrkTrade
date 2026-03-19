@@ -12,9 +12,9 @@ def _load():
 
 def _save(data):
     with open(FILE, "w") as f:
-        json.dump(data, f, indent=2)
+        json.dump(data[-200:], f, indent=2)
 
-def push_signal(symbol, strategy, score, confidence):
+def push_signal(symbol, strategy, score, confidence, trade_id=None):
     data = _load()
 
     entry = {
@@ -22,11 +22,9 @@ def push_signal(symbol, strategy, score, confidence):
         "symbol": symbol,
         "strategy": strategy,
         "score": score,
-        "confidence": confidence
+        "confidence": confidence,
+        "trade_id": trade_id
     }
 
     data.append(entry)
-    data = data[-50:]
     _save(data)
-
-    return entry
