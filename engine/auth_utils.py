@@ -144,15 +144,21 @@ def delete_secure_user(username):
 
 def seed_master_password(password):
     users = ensure_secure_user_store()
-    changed = False
 
+    found = False
     for user in users:
         if user.get("username") == "admin":
             user["password_hash"] = _hash_password(password)
-            changed = True
+            found = True
             break
 
-    if changed:
-        save_secure_users(users)
+    if not found:
+        users.append({
+            "username": "admin",
+            "password_hash": _hash_password(password),
+            "tier": "Elite",
+            "role": "master"
+        })
 
-    return changed
+    save_secure_users(users)
+    return True
