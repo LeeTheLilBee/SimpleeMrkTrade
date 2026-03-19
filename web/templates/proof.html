@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Public Proof Account</h2>
+
+<div class="card">
+    <p>This is a live simulated account used to demonstrate system performance and consistency over time.</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Account Value</h3>
+        <p class="metric">${{ snapshot.estimated_account_value }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Trades</h3>
+        <p class="metric">{{ proof.trades }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Win Rate</h3>
+        <p class="metric">{{ proof.winrate }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Max Drawdown</h3>
+        <p class="metric">{{ proof.max_drawdown }}</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Equity Curve</h3>
+    <canvas id="proofChart"></canvas>
+</div>
+
+<div class="card">
+    <h3>Open Positions</h3>
+    {% for p in positions %}
+        <p>{{ p.symbol }} | {{ p.pnl }}</p>
+    {% endfor %}
+</div>
+
+<div class="card">
+    <h3>Closed Trades</h3>
+    {% for t in closed[-10:] %}
+        <p>{{ t.symbol }} | {{ t.pnl }}</p>
+    {% endfor %}
+</div>
+
+<script>
+new Chart(document.getElementById('proofChart'), {
+  type: 'line',
+  data: {
+    labels: {{ equity_labels|tojson }},
+    datasets: [{
+      label: 'Equity',
+      data: {{ equity_values|tojson }},
+      borderColor: '#38bdf8',
+      fill: true
+    }]
+  }
+});
+</script>
+
+{% endblock %}
