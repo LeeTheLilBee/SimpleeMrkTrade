@@ -7,31 +7,32 @@
     <div class="card">
         <h3>Account Value</h3>
         <div class="metric">${{ snapshot.estimated_account_value }}</div>
-        <p><a href="/knowledge">Learn More</a></p>
+        <p><a href="/knowledge#account-value">Learn More</a></p>
     </div>
 
     <div class="card">
         <h3>Cash</h3>
         <div class="metric">${{ snapshot.cash }}</div>
-        <p><a href="/knowledge">Learn More</a></p>
+        <p><a href="/knowledge#cash">Learn More</a></p>
     </div>
 
     <div class="card">
         <h3>Buying Power</h3>
         <div class="metric">${{ snapshot.buying_power }}</div>
-        <p><a href="/knowledge">Learn More</a></p>
+        <p><a href="/knowledge#buying-power">Learn More</a></p>
     </div>
 
     <div class="card">
         <h3>Open Positions</h3>
         <div class="metric">{{ snapshot.open_positions }}</div>
-        <p><a href="/positions">Open Position Monitor</a></p>
+        <p><a href="/knowledge#open-positions">Learn More</a></p>
     </div>
 </div>
 
 <div class="card">
     <h3>Equity Curve</h3>
     <canvas id="equityChart"></canvas>
+    <p><a href="/knowledge#equity-curve">Learn More</a></p>
 </div>
 
 <div class="grid">
@@ -41,7 +42,11 @@
         <p><b>Volatility:</b> {{ system.volatility }}</p>
         <p><b>Mode:</b> {{ system.mode }}</p>
         <p><b>Executed Trades:</b> {{ system.executed_trades }}</p>
-        <p><a href="/knowledge">Learn More</a></p>
+        <p>
+            <a href="/knowledge#market-regime">Regime</a> |
+            <a href="/knowledge#volatility">Volatility</a> |
+            <a href="/knowledge#mode">Mode</a>
+        </p>
     </div>
 
     <div class="card">
@@ -52,7 +57,7 @@
         <p><b>Win Rate:</b> {{ proof.winrate }}</p>
         <p><b>Total PnL:</b> {{ proof.total_pnl }}</p>
         <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
-        <p><a href="/analytics">Learn More</a></p>
+        <p><a href="/knowledge#proof-engine">Learn More</a></p>
     </div>
 </div>
 
@@ -69,7 +74,11 @@
         </tr>
         {% endfor %}
     </table>
-    <p><a href="/research">Learn More</a></p>
+    <p>
+        <a href="/knowledge#candidates">Candidates</a> |
+        <a href="/knowledge#score">Score</a> |
+        <a href="/knowledge#confidence">Confidence</a>
+    </p>
 </div>
 
 <div class="card">
@@ -86,7 +95,11 @@
         </tr>
         {% endfor %}
     </table>
-    <p><a href="/signals">Learn More</a></p>
+    <p>
+        <a href="/knowledge#signals">Signals</a> |
+        <a href="/knowledge#score">Score</a> |
+        <a href="/knowledge#confidence">Confidence</a>
+    </p>
 </div>
 
 <div class="card">
@@ -102,7 +115,7 @@
         </tr>
         {% endfor %}
     </table>
-    <p><a href="/positions">Learn More</a></p>
+    <p><a href="/knowledge#pnl">Learn More</a></p>
 </div>
 
 <script>
