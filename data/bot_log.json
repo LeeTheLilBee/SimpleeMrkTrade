@@ -38,5 +38,145 @@
     "timestamp": "2026-03-19T02:22:01.707587",
     "level": "INFO",
     "message": "Bot run completed"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:09.906702",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:10.404489",
+    "level": "INFO",
+    "message": "Governor: {'blocked': False, 'reasons': [], 'cash': 128.74, 'max_drawdown': 0.0}"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:10.404763",
+    "level": "INFO",
+    "message": "Drawdown Brake: {'blocked': False, 'mode': 'NORMAL', 'reason': 'Drawdown within acceptable range.'}"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:10.404986",
+    "level": "INFO",
+    "message": "Correlation Risk: {'blocked': False, 'crowded_sectors': {}, 'reason': 'Sector exposure balanced.'}"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:10.405226",
+    "level": "INFO",
+    "message": "Sector Cap: {'blocked': False, 'sector_counts': {}, 'reason': 'sector cap unavailable'}"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:10.405454",
+    "level": "INFO",
+    "message": "Exposure Bucket: {'blocked': False, 'bucket': 'NORMAL', 'reason': 'exposure buckets unavailable'}"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:10.699319",
+    "level": "INFO",
+    "message": "Market regime: BEAR_TREND"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:21.035631",
+    "level": "INFO",
+    "message": "Watchlist built with 20 symbols"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:24.165124",
+    "level": "INFO",
+    "message": "NFLX filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:24.165569",
+    "level": "INFO",
+    "message": "COIN filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:24.794500",
+    "level": "INFO",
+    "message": "VLO filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:24.794945",
+    "level": "INFO",
+    "message": "OXY filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:24.795376",
+    "level": "INFO",
+    "message": "PLTR filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:24.795716",
+    "level": "INFO",
+    "message": "PSX filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:24.796061",
+    "level": "INFO",
+    "message": "PANW filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:24.796760",
+    "level": "INFO",
+    "message": "EOG filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:24.797109",
+    "level": "INFO",
+    "message": "COP filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:25.570977",
+    "level": "INFO",
+    "message": "CVX filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:25.571453",
+    "level": "INFO",
+    "message": "PYPL filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:25.571872",
+    "level": "INFO",
+    "message": "ROKU filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:25.572301",
+    "level": "INFO",
+    "message": "XLE filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:25.572731",
+    "level": "INFO",
+    "message": "UBER filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:25.573224",
+    "level": "INFO",
+    "message": "CRM filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:25.573646",
+    "level": "INFO",
+    "message": "XOM filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:25.574079",
+    "level": "INFO",
+    "message": "ABNB filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:25.574523",
+    "level": "INFO",
+    "message": "AMZN filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:25.575485",
+    "level": "INFO",
+    "message": "Selected 0 trades in mode DEFENSIVE_BEAR"
+  },
+  {
+    "timestamp": "2026-03-19T02:45:39.254239",
+    "level": "INFO",
+    "message": "Bot run completed"
   }
 ]

@@ -1,4 +1,3 @@
-from engine.why_this_trade_builder import save_why_this_trade
 from engine.regime import get_market_regime
 from engine.market_volatility import get_volatility_environment
 from engine.signal_feed import push_signal
@@ -54,14 +53,52 @@ from engine.report_archive import archive_report
 from engine.bot_status import write_bot_status
 from engine.bot_logger import log_bot
 from engine.premium_analysis_builder import save_premium_analysis
-from engine.drawdown_brake import drawdown_brake
-from engine.correlation_risk import correlation_risk_status
+from engine.why_this_trade_builder import save_why_this_trade
+
+# hedge-fund style controls
+try:
+    from engine.drawdown_brake import drawdown_brake
+except Exception:
+    def drawdown_brake():
+        return {"blocked": False, "mode": "NORMAL", "reason": "drawdown brake unavailable"}
+
+try:
+    from engine.correlation_risk import correlation_risk_status
+except Exception:
+    def correlation_risk_status():
+        return {"blocked": False, "crowded_sectors": {}, "reason": "correlation risk unavailable"}
+
+# optional portfolio-manager upgrades
+try:
+    from engine.sector_concentration_cap import sector_concentration_status
+except Exception:
+    def sector_concentration_status():
+        return {"blocked": False, "sector_counts": {}, "reason": "sector cap unavailable"}
+
+try:
+    from engine.exposure_buckets import exposure_bucket_status
+except Exception:
+    def exposure_bucket_status():
+        return {"blocked": False, "bucket": "NORMAL", "reason": "exposure buckets unavailable"}
+
+def _reduced_risk_mode(brake_payload, exposure_payload):
+    if brake_payload.get("mode") == "REDUCED_RISK":
+        return True
+    if exposure_payload.get("bucket") in ["ELEVATED", "HIGH"]:
+        return True
+    return False
+
+def _trim_for_reduced_risk(selected_trades):
+    if not selected_trades:
+        return selected_trades
+    return selected_trades[:1]
 
 def scan_stock(symbol, regime):
     df = safe_download(symbol, period="3mo", auto_adjust=True, progress=False)
 
     if df is None or df.empty or len(df) < 50:
         print(symbol, "| Not enough data")
+        log_bot(f"{symbol} skipped: not enough data", "WARN")
         return None
 
     price = float(df["Close"].iloc[-1].item())
@@ -119,6 +156,7 @@ def process_signals(results, regime, volatility_payload):
         approved = advanced_trade_filter(score, conf, volatility_state, strategy)
 
         if not approved:
+            log_bot(f"{symbol} filtered out by advanced trade filter", "INFO")
             continue
 
         option = None
@@ -131,6 +169,7 @@ def process_signals(results, regime, volatility_payload):
         if option is None:
             candidate = stock_only_candidate(symbol, strategy, score, conf)
             remember_candidate(candidate)
+            log_bot(f"{symbol} moved to stock-only candidate flow", "INFO")
             continue
 
         total_score = final_trade_score(score, option, price)
@@ -199,31 +238,44 @@ def run():
 
         brake = drawdown_brake()
         corr = correlation_risk_status()
+        sector_cap = sector_concentration_status()
+        exposure = exposure_bucket_status()
 
         print("Governor:", governor)
         print("Drawdown Brake:", brake)
         print("Correlation Risk:", corr)
+        print("Sector Cap:", sector_cap)
+        print("Exposure Bucket:", exposure)
 
         log_bot(f"Governor: {governor}", "INFO")
         log_bot(f"Drawdown Brake: {brake}", "INFO")
         log_bot(f"Correlation Risk: {corr}", "INFO")
+        log_bot(f"Sector Cap: {sector_cap}", "INFO")
+        log_bot(f"Exposure Bucket: {exposure}", "INFO")
 
-        if brake["blocked"]:
+        if brake.get("blocked"):
             print("DRAWDOWN BRAKE BLOCKED NEW TRADES")
             write_bot_status(False, "blocked by drawdown brake")
             log_bot("Blocked by drawdown brake", "WARN")
             return
 
-        if corr["blocked"]:
+        if corr.get("blocked"):
             print("CORRELATION RISK CONTROL BLOCKED NEW TRADES")
-            print(corr["reason"])
+            print(corr.get("reason"))
             write_bot_status(False, "blocked by correlation risk")
             log_bot("Blocked by correlation risk", "WARN")
             return
 
-        if governor["blocked"]:
+        if sector_cap.get("blocked"):
+            print("SECTOR CONCENTRATION CAP BLOCKED NEW TRADES")
+            print(sector_cap.get("reason"))
+            write_bot_status(False, "blocked by sector cap")
+            log_bot("Blocked by sector concentration cap", "WARN")
+            return
+
+        if governor.get("blocked"):
             print("RISK GOVERNOR BLOCKED NEW TRADES")
-            print("Reasons:", governor["reasons"])
+            print("Reasons:", governor.get("reasons"))
 
             print_positions()
             review_positions()
@@ -273,10 +325,21 @@ def run():
         selected_trades, mode = process_signals(results, regime, volatility_payload)
         log_bot(f"Selected {len(selected_trades)} trades in mode {mode}", "INFO")
 
+        if _reduced_risk_mode(brake, exposure):
+            selected_trades = _trim_for_reduced_risk(selected_trades)
+            log_bot("Reduced-risk mode active: trimmed trade queue", "WARN")
+
         save_premium_analysis(
             selected_trades,
             regime=regime,
             volatility=volatility_payload.get("volatility", "UNKNOWN")
+        )
+
+        save_why_this_trade(
+            selected_trades,
+            regime=regime,
+            volatility=volatility_payload.get("volatility", "UNKNOWN"),
+            mode=mode
         )
 
         print("Processing trade queue...")
