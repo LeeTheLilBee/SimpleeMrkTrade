@@ -162,5 +162,38 @@
     "members_only": true,
     "min_tier": "Pro",
     "category": "risk"
+  },
+  {
+    "timestamp": "2026-03-19T11:16:39.297910",
+    "title": "Edge Detected",
+    "message": "MPC: Moderate quality setup with supportive structure | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T11:16:39.301394",
+    "title": "Edge Detected",
+    "message": "MU: Extremely high conviction setup | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T11:16:39.302854",
+    "title": "Risk Alert",
+    "message": "PORTFOLIO risk condition triggered: Too many positions concentrated in one sector..",
+    "level": "warning",
+    "link": "/positions",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "risk"
   }
 ]

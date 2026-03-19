@@ -94,5 +94,31 @@
     "regime": "BEAR_TREND",
     "mode": "DEFENSIVE_BEAR",
     "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-19T11:16:39.296307",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 120,
+    "confidence": "MEDIUM",
+    "price": 236.24000549316406,
+    "trade_id": "dc536ab1-b086-4f2d-a9ba-d5b1b0599c91",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-19T11:16:39.299494",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "MEDIUM",
+    "price": 461.7300109863281,
+    "trade_id": "d0e10508-f0f1-420b-b6de-f99cfff12f3e",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
   }
 ]

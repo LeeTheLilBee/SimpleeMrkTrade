@@ -82,5 +82,47 @@
       "Extremely high conviction setup",
       "Bullish directional bias"
     ]
+  },
+  {
+    "timestamp": "2026-03-19T11:16:39.297122",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 120,
+    "confidence": "MEDIUM",
+    "entry": 236.24,
+    "stop": 222.65,
+    "target": 254.36,
+    "source": "research",
+    "market_context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "why_selected": [
+      "Moderate quality setup with supportive structure",
+      "Bullish directional bias"
+    ]
+  },
+  {
+    "timestamp": "2026-03-19T11:16:39.300506",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "MEDIUM",
+    "entry": 461.73,
+    "stop": 424.85,
+    "target": 510.9,
+    "source": "research",
+    "market_context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "why_selected": [
+      "Extremely high conviction setup",
+      "Bullish directional bias"
+    ]
   }
 ]

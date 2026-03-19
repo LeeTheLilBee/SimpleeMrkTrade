@@ -3,54 +3,91 @@
 
 <h2>Premium Intelligence</h2>
 
-<div class="card premium-card">
-    <h3>Elite Trade Intelligence Layer</h3>
-    <p>
-        This is where high-conviction setups are broken down into actionable edge.
-        Includes both execution trades and research-grade opportunities.
-    </p>
+<div class="card premium-hero">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div>
+            <h3 style="margin:0;">Elite Trade Intelligence Layer</h3>
+            <p class="muted-line">
+                This view combines premium execution intelligence with research-grade premium entries,
+                so the edge layer stays alive even when live execution is blocked.
+            </p>
+            <p><b>User:</b> {{ user.username }} | <b>Tier:</b> {{ user.tier }} | <b>Depth:</b> {{ premium_depth }}</p>
+        </div>
+        <span class="badge-blue">Premium Context</span>
+    </div>
 </div>
 
-{% if all_analysis %}
+<div class="card">
+    <h3>Equity Context</h3>
+    <p class="muted-line">
+        Account behavior around the time these ideas were generated.
+    </p>
+    <canvas id="premiumEquityChart"></canvas>
+</div>
+
+{% if all_analysis and all_analysis|length > 0 %}
     {% for t in all_analysis %}
-    <div class="card premium-card">
+    <div class="premium-analysis-card">
+        <div class="premium-analysis-top">
+            <div>
+                <h3 style="margin:0;">
+                    {{ t.symbol or "Unknown" }} | {{ t.strategy or "N/A" }}
+                </h3>
+                <p class="muted-line">
+                    {{ (t.source or "research")|title }} intelligence entry
+                </p>
+            </div>
 
-        <div style="display:flex;justify-content:space-between;">
-            <h3>{{ t.symbol }} | {{ t.strategy }}</h3>
-            <span class="pill">Score {{ t.score }}</span>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <span class="badge-gray">{{ t.source or "research" }}</span>
+                <span class="premium-score-pill">Score {{ t.score or "N/A" }}</span>
+            </div>
         </div>
 
-        <div class="grid">
-
+        <div class="premium-analysis-grid">
             <div class="card">
-                <h3>Setup</h3>
-                <p>Entry: {{ t.entry }}</p>
-                <p>Stop: {{ t.stop }}</p>
-                <p>Target: {{ t.target }}</p>
+                <h3>Setup Snapshot</h3>
+                <p><b>Confidence:</b> {{ t.confidence or "N/A" }}</p>
+                <p><b>Entry:</b> {{ t.entry or "N/A" }}</p>
+                <p><b>Stop:</b> {{ t.stop or "N/A" }}</p>
+                <p><b>Target:</b> {{ t.target or "N/A" }}</p>
             </div>
 
             <div class="card">
-                <h3>Confidence</h3>
-                <p>{{ t.confidence }}</p>
-                <p>{{ t.source }}</p>
+                <h3>Environment</h3>
+                <p><b>Mode:</b> {{ t.mode or "N/A" }}</p>
+                <p><b>Regime:</b> {{ t.regime or "N/A" }}</p>
+                <p><b>Volatility:</b> {{ t.volatility or "N/A" }}</p>
+            </div>
+        </div>
+
+        <div class="premium-analysis-grid">
+            <div class="card">
+                <h3>Market Context</h3>
+                {% if t.snippets %}
+                    <ul>
+                    {% for c in t.snippets %}
+                        <li>{{ c }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No market context saved.</p>
+                {% endif %}
             </div>
 
+            <div class="card">
+                <h3>Why It Matters</h3>
+                {% if t.reasons %}
+                    <ul>
+                    {% for r in t.reasons %}
+                        <li>{{ r }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No premium reasons saved.</p>
+                {% endif %}
+            </div>
         </div>
-
-        <div class="card">
-            <h3>Market Context</h3>
-            {% for c in t.snippets %}
-                <p>- {{ c }}</p>
-            {% endfor %}
-        </div>
-
-        <div class="card">
-            <h3>Why This Trade</h3>
-            {% for r in t.reasons %}
-                <p>- {{ r }}</p>
-            {% endfor %}
-        </div>
-
     </div>
     {% endfor %}
 {% else %}
@@ -58,5 +95,23 @@
     <p>No premium intelligence yet.</p>
 </div>
 {% endif %}
+
+<script>
+const ctx = document.getElementById('premiumEquityChart');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: {{ equity_labels|tojson }},
+    datasets: [{
+      label: 'Equity Context',
+      data: {{ equity_values|tojson }},
+      borderColor: '#a78bfa',
+      backgroundColor: 'rgba(167,139,250,0.10)',
+      fill: true,
+      tension: 0.3
+    }]
+  }
+});
+</script>
 
 {% endblock %}

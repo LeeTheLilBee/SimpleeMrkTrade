@@ -65,5 +65,29 @@
       "confidence": "MEDIUM",
       "source": "research"
     }
+  },
+  {
+    "timestamp": "2026-03-19T11:16:39.296690",
+    "symbol": "MPC",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "dc536ab1-b086-4f2d-a9ba-d5b1b0599c91",
+      "strategy": "CALL",
+      "score": 120,
+      "confidence": "MEDIUM",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-19T11:16:39.299877",
+    "symbol": "MU",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "d0e10508-f0f1-420b-b6de-f99cfff12f3e",
+      "strategy": "CALL",
+      "score": 210,
+      "confidence": "MEDIUM",
+      "source": "research"
+    }
   }
 ]

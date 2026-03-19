@@ -3,27 +3,39 @@
 
 <h2>Signals</h2>
 
-<div class="card premium-card">
-    <h3>Signal Intelligence Layer</h3>
-    <p>
-        This page separates live execution signals from research signals.
-        Research ideas continue to populate even when the simulated account is capped out.
-    </p>
+<div class="card premium-hero">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div>
+            <h3 style="margin:0;">Signal Intelligence Center</h3>
+            <p class="muted-line">
+                Research signals continue to populate even when the simulated account is capped by trade limits, correlation rules, or exposure controls.
+                Execution signals reflect what the live Mode A environment can actually take.
+            </p>
+        </div>
+        <span class="badge-blue">Research + Execution</span>
+    </div>
 </div>
 
 <div class="grid">
     <div class="card">
-        <h3>Research Signal Engine</h3>
-        <p>Independent of simulated account limits.</p>
+        <h3>Research Engine</h3>
+        <div class="metric">{{ research_signals|length if research_signals else 0 }}</div>
+        <p class="muted-line">Independent of simulated account execution caps.</p>
     </div>
+
     <div class="card">
-        <h3>Execution Signal Engine</h3>
-        <p>Subject to daily caps, open-position limits, and risk blocks.</p>
+        <h3>Execution Feed</h3>
+        <div class="metric">{{ signals|length if signals else 0 }}</div>
+        <p class="muted-line">Subject to live portfolio and risk controls.</p>
     </div>
 </div>
 
 <div class="card premium-card">
     <h3>Research Signals</h3>
+    <p class="muted-line">
+        These ideas keep the platform rich with edge even when new trades cannot be placed in the simulated account.
+    </p>
+
     {% if research_signals and research_signals|length > 0 %}
     <table class="table">
         <tr>
@@ -33,31 +45,45 @@
             <th>Score</th>
             <th>Confidence</th>
             <th>Source</th>
+            <th>Detail</th>
         </tr>
         {% for s in research_signals[::-1] %}
         <tr>
             <td>{{ s.timestamp }}</td>
             <td>
                 {% if s.trade_id %}
-                <a href="/trade/{{ s.trade_id }}">{{ s.symbol }}</a>
+                    <a href="/trade/{{ s.trade_id }}">{{ s.symbol }}</a>
                 {% else %}
-                {{ s.symbol }}
+                    {{ s.symbol }}
                 {% endif %}
             </td>
             <td>{{ s.strategy }}</td>
             <td><span class="pill">{{ s.score }}</span></td>
             <td>{{ s.confidence }}</td>
-            <td><span class="badge badge-purple">{{ s.source or "research" }}</span></td>
+            <td><span class="badge-purple">{{ s.source or "research" }}</span></td>
+            <td>
+                {% if s.trade_id %}
+                    <a href="/trade/{{ s.trade_id }}">Open</a>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>
     {% else %}
-    <p>No research signals yet.</p>
+    <div class="card">
+        <p>No research signals yet.</p>
+    </div>
     {% endif %}
 </div>
 
 <div class="card">
     <h3>Execution Signals</h3>
+    <p class="muted-line">
+        These are the live feed entries written into the execution stream.
+    </p>
+
     {% if signals and signals|length > 0 %}
     <table class="table">
         <tr>
@@ -66,25 +92,35 @@
             <th>Strategy</th>
             <th>Score</th>
             <th>Confidence</th>
+            <th>Detail</th>
         </tr>
         {% for s in signals[::-1] %}
         <tr>
             <td>{{ s.timestamp }}</td>
             <td>
                 {% if s.trade_id %}
-                <a href="/trade/{{ s.trade_id }}">{{ s.symbol }}</a>
+                    <a href="/trade/{{ s.trade_id }}">{{ s.symbol }}</a>
                 {% else %}
-                {{ s.symbol }}
+                    {{ s.symbol }}
                 {% endif %}
             </td>
             <td>{{ s.strategy }}</td>
             <td><span class="pill">{{ s.score }}</span></td>
             <td>{{ s.confidence }}</td>
+            <td>
+                {% if s.trade_id %}
+                    <a href="/trade/{{ s.trade_id }}">Open</a>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>
     {% else %}
-    <p>No execution signals yet.</p>
+    <div class="card">
+        <p>No execution signals yet.</p>
+    </div>
     {% endif %}
 </div>
 

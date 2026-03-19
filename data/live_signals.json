@@ -198,5 +198,21 @@
     "score": 210,
     "confidence": "MEDIUM",
     "trade_id": "b8d7f095-d4ee-430d-8a02-1c27b8be1957"
+  },
+  {
+    "timestamp": "2026-03-19T11:16:39.295724",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 120,
+    "confidence": "MEDIUM",
+    "trade_id": "dc536ab1-b086-4f2d-a9ba-d5b1b0599c91"
+  },
+  {
+    "timestamp": "2026-03-19T11:16:39.299015",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "MEDIUM",
+    "trade_id": "d0e10508-f0f1-420b-b6de-f99cfff12f3e"
   }
 ]
