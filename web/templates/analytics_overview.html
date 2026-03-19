@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Analytics Overview</h2>
+
+<div class="grid">
+    <div class="card">
+        <h3>Total Trades</h3>
+        <p>{{ proof.trades }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Win Rate</h3>
+        <p>{{ proof.winrate }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total PnL</h3>
+        <p>{{ proof.total_pnl }}</p>
+    </div>
+</div>
+
+{% endblock %}

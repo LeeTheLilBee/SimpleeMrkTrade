@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Trading Overview</h2>
+
+<div class="grid">
+    <div class="card">
+        <h3>Open Positions</h3>
+        <p>{{ positions|length }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Recent Signals</h3>
+        <p>{{ signals|length }}</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Latest Signals</h3>
+    <ul>
+    {% for s in signals[:5] %}
+        <li>{{ s.symbol }} | {{ s.strategy }} | {{ s.score }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

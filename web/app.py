@@ -40,7 +40,18 @@ def tier_allows_premium():
 
 @app.route("/")
 def landing_page():
-    return render_template("landing.html", user=CURRENT_USER)
+    reports = load_json("data/recent_reports.json", [])
+    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if "snapshot" in r]
+    equity_labels = [r["timestamp"] for r in reports]
+
+    return render_template(
+        "landing.html",
+        user=CURRENT_USER,
+        snapshot=account_snapshot(),
+        proof=performance_summary(),
+        equity_values=equity_values,
+        equity_labels=equity_labels
+    )
 
 @app.route("/dashboard")
 def dashboard_page():
@@ -62,6 +73,32 @@ def dashboard_page():
         equity_values=equity_values,
         equity_labels=equity_labels,
         signals=load_json("data/live_signals.json", []),
+        user=CURRENT_USER
+    )
+
+@app.route("/trading")
+def trading_overview():
+    return render_template(
+        "trading_overview.html",
+        signals=load_json("data/live_signals.json", []),
+        positions=monitor_open_positions(),
+        user=CURRENT_USER
+    )
+
+@app.route("/analytics-overview")
+def analytics_overview():
+    return render_template(
+        "analytics_overview.html",
+        stats=analytics(),
+        proof=performance_summary(),
+        user=CURRENT_USER
+    )
+
+@app.route("/research")
+def research_overview():
+    return render_template(
+        "research_overview.html",
+        candidates=load_json("data/top_candidates.json", []),
         user=CURRENT_USER
     )
 

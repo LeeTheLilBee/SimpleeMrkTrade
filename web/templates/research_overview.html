@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Research Overview</h2>
+
+<div class="card">
+    <h3>Top Candidates</h3>
+    <ul>
+    {% for c in candidates[:5] %}
+        <li>{{ c.symbol }} | {{ c.strategy }} | {{ c.score }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

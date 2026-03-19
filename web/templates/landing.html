@@ -14,6 +14,37 @@
     </div>
 </div>
 
+<div class="card">
+    <h2>Live Trading Proof</h2>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Account Value</h3>
+            <p class="metric">${{ snapshot.estimated_account_value }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Trades</h3>
+            <p class="metric">{{ proof.trades }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Win Rate</h3>
+            <p class="metric">{{ proof.winrate }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Total PnL</h3>
+            <p class="metric">{{ proof.total_pnl }}</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Equity Curve</h3>
+        <canvas id="landingEquity"></canvas>
+    </div>
+</div>
+
 <div class="grid">
     <div class="card">
         <h3>What It Does</h3>
@@ -52,5 +83,22 @@
         </ul>
     </div>
 </div>
+
+<script>
+new Chart(document.getElementById('landingEquity'), {
+  type: 'line',
+  data: {
+    labels: {{ equity_labels|tojson }},
+    datasets: [{
+      label: 'Live Equity',
+      data: {{ equity_values|tojson }},
+      borderColor: '#22c55e',
+      backgroundColor: 'rgba(34,197,94,0.1)',
+      fill: true,
+      tension: 0.3
+    }]
+  }
+});
+</script>
 
 {% endblock %}
