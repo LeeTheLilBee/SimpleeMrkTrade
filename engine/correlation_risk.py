@@ -3,15 +3,17 @@ from engine.sector_strength import sector_bias
 
 def correlation_risk_status():
     positions = show_positions()
-    sectors = {}
+    sector_counts = {}
 
     for pos in positions:
-        sector = sector_bias(pos["symbol"])
-        sectors[sector] = sectors.get(sector, 0) + 1
+        symbol = pos.get("symbol")
+        sector = sector_bias(symbol)
+        sector_counts[sector] = sector_counts.get(sector, 0) + 1
 
-    crowded = {k: v for k, v in sectors.items() if v >= 2}
+    crowded = {sector: count for sector, count in sector_counts.items() if count >= 2}
 
     return {
+        "blocked": len(crowded) > 0,
         "crowded_sectors": crowded,
-        "blocked": len(crowded) > 0
+        "reason": "Too many positions concentrated in one sector." if crowded else "Sector exposure balanced."
     }

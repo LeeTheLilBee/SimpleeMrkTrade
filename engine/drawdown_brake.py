@@ -2,21 +2,24 @@ from engine.performance_tracker import performance_summary
 
 def drawdown_brake():
     perf = performance_summary()
-    dd = perf.get("max_drawdown", 0)
+    max_drawdown = float(perf.get("max_drawdown", 0) or 0)
 
-    if dd >= 200:
+    if max_drawdown >= 200:
         return {
             "blocked": True,
-            "reason": "hard_drawdown_brake"
+            "mode": "HARD_BRAKE",
+            "reason": "Max drawdown exceeded hard threshold."
         }
 
-    if dd >= 100:
+    if max_drawdown >= 100:
         return {
             "blocked": False,
-            "reason": "reduced_risk_mode"
+            "mode": "REDUCED_RISK",
+            "reason": "Drawdown elevated. Reduce aggression."
         }
 
     return {
         "blocked": False,
-        "reason": "normal"
+        "mode": "NORMAL",
+        "reason": "Drawdown within acceptable range."
     }

@@ -1,4 +1,3 @@
-from engine.premium_analysis_builder import save_premium_analysis
 from engine.regime import get_market_regime
 from engine.market_volatility import get_volatility_environment
 from engine.signal_feed import push_signal
@@ -51,9 +50,11 @@ from engine.account_snapshot import account_snapshot
 from engine.account_snapshot_view import print_account_snapshot
 from engine.system_status import write_system_status
 from engine.report_archive import archive_report
+from engine.bot_status import write_bot_status
+from engine.bot_logger import log_bot
+from engine.premium_analysis_builder import save_premium_analysis
 from engine.drawdown_brake import drawdown_brake
 from engine.correlation_risk import correlation_risk_status
-from engine.bot_status import write_bot_status
 
 def scan_stock(symbol, regime):
     df = safe_download(symbol, period="3mo", auto_adjust=True, progress=False)
@@ -160,14 +161,7 @@ def process_signals(results, regime, volatility_payload):
 
     for trade in selected_trades:
         alert_trade(trade)
-        print(
-            "APPROVED:",
-            trade["symbol"],
-            "| Strategy:",
-            trade["strategy"],
-            "| Confidence:",
-            trade["confidence"],
-        )
+        print("APPROVED:", trade["symbol"], "| Strategy:", trade["strategy"], "| Confidence:", trade["confidence"])
         if trade["option"]:
             print("Best Option:", trade["option"])
 
@@ -183,6 +177,8 @@ def process_signals(results, regime, volatility_payload):
 
 def run():
     write_bot_status(True, "starting")
+    log_bot("Bot run started", "INFO")
+
     try:
         settle_cash()
         clear_candidates()
@@ -207,9 +203,21 @@ def run():
         print("Drawdown Brake:", brake)
         print("Correlation Risk:", corr)
 
+        log_bot(f"Governor: {governor}", "INFO")
+        log_bot(f"Drawdown Brake: {brake}", "INFO")
+        log_bot(f"Correlation Risk: {corr}", "INFO")
+
         if brake["blocked"]:
             print("DRAWDOWN BRAKE BLOCKED NEW TRADES")
             write_bot_status(False, "blocked by drawdown brake")
+            log_bot("Blocked by drawdown brake", "WARN")
+            return
+
+        if corr["blocked"]:
+            print("CORRELATION RISK CONTROL BLOCKED NEW TRADES")
+            print(corr["reason"])
+            write_bot_status(False, "blocked by correlation risk")
+            log_bot("Blocked by correlation risk", "WARN")
             return
 
         if governor["blocked"]:
@@ -239,16 +247,19 @@ def run():
             print("Final Account Snapshot:", account_snapshot())
             print_backtest_summary()
             write_bot_status(False, "blocked by governor")
+            log_bot("Blocked by governor", "WARN")
             return
 
         regime = get_market_regime()
         volatility_payload = get_volatility_environment()
 
         print("Market Regime:", regime)
-        print("Building rotating watchlist...")
+        log_bot(f"Market regime: {regime}", "INFO")
 
+        print("Building rotating watchlist...")
         watchlist = get_watchlist()
         print("Watchlist:", watchlist)
+        log_bot(f"Watchlist built with {len(watchlist)} symbols", "INFO")
 
         print("Scanning watchlist...")
         results = []
@@ -259,11 +270,12 @@ def run():
                 results.append(result)
 
         selected_trades, mode = process_signals(results, regime, volatility_payload)
+        log_bot(f"Selected {len(selected_trades)} trades in mode {mode}", "INFO")
 
         save_premium_analysis(
             selected_trades,
             regime=regime,
-        volatility=volatility_payload.get("volatility", "UNKNOWN")
+            volatility=volatility_payload.get("volatility", "UNKNOWN")
         )
 
         print("Processing trade queue...")
@@ -293,9 +305,13 @@ def run():
         print("Daily Report Written:", report["timestamp"])
         print("Final Account Snapshot:", account_snapshot())
         print_backtest_summary()
+
         write_bot_status(False, "completed")
+        log_bot("Bot run completed", "INFO")
+
     except Exception as e:
         write_bot_status(False, f"error: {e}")
+        log_bot(f"Bot error: {e}", "ERROR")
         raise
 
 if __name__ == "__main__":

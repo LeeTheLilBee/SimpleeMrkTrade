@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "timestamp": "2026-03-19T02:21:33.096086",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-19T02:21:33.548677",
+    "level": "INFO",
+    "message": "Governor: {'blocked': False, 'reasons': [], 'cash': 128.74, 'max_drawdown': 0.0}"
+  },
+  {
+    "timestamp": "2026-03-19T02:21:33.548868",
+    "level": "INFO",
+    "message": "Drawdown Brake: {'blocked': False, 'mode': 'NORMAL', 'reason': 'Drawdown within acceptable range.'}"
+  },
+  {
+    "timestamp": "2026-03-19T02:21:33.549078",
+    "level": "INFO",
+    "message": "Correlation Risk: {'blocked': False, 'crowded_sectors': {}, 'reason': 'Sector exposure balanced.'}"
+  },
+  {
+    "timestamp": "2026-03-19T02:21:33.902081",
+    "level": "INFO",
+    "message": "Market regime: BEAR_TREND"
+  },
+  {
+    "timestamp": "2026-03-19T02:21:43.548773",
+    "level": "INFO",
+    "message": "Watchlist built with 20 symbols"
+  },
+  {
+    "timestamp": "2026-03-19T02:21:48.174747",
+    "level": "INFO",
+    "message": "Selected 0 trades in mode DEFENSIVE_BEAR"
+  },
+  {
+    "timestamp": "2026-03-19T02:22:01.707587",
+    "level": "INFO",
+    "message": "Bot run completed"
+  }
+]
