@@ -1,1 +1,10 @@
-{}
+{
+  "admin": {
+    "email_notifications": true,
+    "signal_notifications": true,
+    "risk_notifications": true,
+    "premium_notifications": true,
+    "system_notifications": true,
+    "theme": "dark"
+  }
+}

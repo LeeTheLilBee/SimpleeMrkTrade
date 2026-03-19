@@ -1,1 +1,10 @@
-{}
+{
+  "admin": {
+    "plan": "Elite",
+    "status": "active",
+    "renewal_date": null,
+    "customer_id": "master-admin",
+    "subscription_id": "master-admin-sub",
+    "provider": "internal"
+  }
+}
