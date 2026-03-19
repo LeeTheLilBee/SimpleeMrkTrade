@@ -54,6 +54,7 @@ def list_users():
         username = user.get("username")
         rows.append({
             "username": username,
+            "email": user.get("email"),
             "tier": user.get("tier", "Starter"),
             "role": user.get("role", "member"),
             "billing_status": billing.get(username, {}).get("status", "inactive"),
@@ -72,6 +73,7 @@ def get_user(username):
         if user.get("username") == username:
             safe_user = {
                 "username": user.get("username"),
+                "email": user.get("email"),
                 "tier": user.get("tier", "Starter"),
                 "role": user.get("role", "member"),
                 "force_password_reset": get_force_password_reset(username)
@@ -122,8 +124,8 @@ def set_billing_status(username, status=None, plan=None, provider=None):
     _save(BILLING_FILE, billing)
     return current
 
-def create_user(username, password, tier="Starter", role="member"):
-    ok, msg = create_secure_user(username, password, tier=tier, role=role)
+def create_user(username, password, email=None, tier="Starter", role="member"):
+    ok, msg = create_secure_user(username, password, email=email, tier=tier, role=role)
     if not ok:
         return ok, msg
 

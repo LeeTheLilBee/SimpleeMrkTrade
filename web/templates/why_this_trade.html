@@ -17,66 +17,56 @@
     {% for item in explanations %}
     <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-            <h3 style="margin:0;">{{ item.symbol }} | {{ item.strategy }}</h3>
+            <h3 style="margin:0;">{{ item.symbol or "Unknown" }} | {{ item.strategy or "N/A" }}</h3>
             <span class="badge-blue">Premium Context</span>
         </div>
 
         <div class="grid">
             <div class="card">
                 <h3>Trade Snapshot</h3>
-                <p><b>Score:</b> {{ item.score }}</p>
-                <p><b>Confidence:</b> {{ item.confidence }}</p>
-                {% if premium_depth in ["deep", "max", "standard", "full"] %}
-                <p><b>Entry:</b> {{ item.entry }}</p>
-                <p><b>Stop:</b> {{ item.stop }}</p>
-                <p><b>Target:</b> {{ item.target }}</p>
-                {% endif %}
+                <p><b>Score:</b> {{ item.score or "N/A" }}</p>
+                <p><b>Confidence:</b> {{ item.confidence or "N/A" }}</p>
+                <p><b>Entry:</b> {{ item.entry or item.price or "N/A" }}</p>
+                <p><b>Stop:</b> {{ item.stop or "N/A" }}</p>
+                <p><b>Target:</b> {{ item.target or "N/A" }}</p>
             </div>
 
             <div class="card">
                 <h3>Decision Summary</h3>
-                {% if premium_depth in ["max", "full"] %}
-                    <p>This setup cleared multi-layer review and remained strong enough to survive context, queue, and risk scrutiny.</p>
-                {% elif premium_depth in ["deep", "standard"] %}
-                    <p>This setup ranked high enough to pass premium review and deserved closer attention than lower-priority opportunities.</p>
-                {% else %}
-                    <p>Upgrade for deeper trade reasoning and richer structured interpretation.</p>
-                {% endif %}
+                <p>
+                    This setup ranked high enough to pass premium review and deserved closer
+                    attention than lower-priority opportunities.
+                </p>
             </div>
         </div>
 
-        {% if premium_depth in ["deep", "max", "standard", "full"] %}
         <div class="grid">
             <div class="card">
                 <h3>Market Context</h3>
-                <ul>
-                {% for row in item.market_context %}
-                    <li>{{ row }}</li>
-                {% endfor %}
-                </ul>
+                {% if item.market_context %}
+                    <ul>
+                    {% for row in item.market_context %}
+                        <li>{{ row }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No detailed market context saved yet.</p>
+                {% endif %}
             </div>
 
             <div class="card">
                 <h3>Why It Was Selected</h3>
-                <ul>
-                {% for row in item.why_selected %}
-                    <li>{{ row }}</li>
-                {% endfor %}
-                </ul>
+                {% if item.why_selected %}
+                    <ul>
+                    {% for row in item.why_selected %}
+                        <li>{{ row }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No detailed selection notes saved yet.</p>
+                {% endif %}
             </div>
         </div>
-        {% endif %}
-
-        {% if premium_depth in ["max", "full"] %}
-        <div class="card">
-            <h3>How To Think About It</h3>
-            <ul>
-            {% for row in item.how_to_think_about_it %}
-                <li>{{ row }}</li>
-            {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
     </div>
     {% endfor %}
 {% else %}

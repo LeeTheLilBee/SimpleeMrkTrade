@@ -28,39 +28,33 @@
     <div class="premium-analysis-card">
         <div class="premium-analysis-top">
             <div>
-                <h3 style="margin:0;">{{ item.symbol }} | {{ item.strategy }}</h3>
+                <h3 style="margin:0;">{{ item.symbol or "Unknown" }} | {{ item.strategy or "N/A" }}</h3>
                 <p class="muted-line">Priority setup surfaced by the premium layer</p>
             </div>
             <div class="premium-score-pill">
-                Score {{ item.score }}
+                Score {{ item.score or "N/A" }}
             </div>
         </div>
 
         <div class="premium-analysis-grid">
             <div class="card">
                 <h3>Setup Snapshot</h3>
-                <p><b>Confidence:</b> {{ item.confidence }}</p>
-                {% if premium_depth in ["deep", "max", "standard", "full"] %}
-                <p><b>Entry:</b> {{ item.price or item.entry }}</p>
-                <p><b>Stop:</b> {{ item.stop }}</p>
-                <p><b>Target:</b> {{ item.target }}</p>
-                {% endif %}
+                <p><b>Confidence:</b> {{ item.confidence or "N/A" }}</p>
+                <p><b>Entry:</b> {{ item.price or item.entry or "N/A" }}</p>
+                <p><b>Stop:</b> {{ item.stop or "N/A" }}</p>
+                <p><b>Target:</b> {{ item.target or "N/A" }}</p>
                 <p><b>Structure:</b> Ranked high enough to survive premium review.</p>
             </div>
 
             <div class="card">
                 <h3>Why It Matters</h3>
-                {% if premium_depth in ["max", "full"] %}
-                    <p>This setup did not just appear attractive on one dimension. It remained strong after context, ranking, and eligibility review.</p>
-                {% elif premium_depth in ["deep", "standard"] %}
-                    <p>This setup showed enough strength and alignment to deserve priority attention over lower-ranked opportunities.</p>
-                {% else %}
-                    <p>This is a premium-priority setup. Upgrade for deeper reasoning and richer context.</p>
-                {% endif %}
+                <p>
+                    This setup remained strong enough after context, ranking, and eligibility review
+                    to be elevated into the premium layer.
+                </p>
             </div>
         </div>
 
-        {% if premium_depth in ["deep", "max", "standard", "full"] %}
         <div class="premium-analysis-grid">
             <div class="card">
                 <h3>Market Context</h3>
@@ -88,17 +82,14 @@
                 {% endif %}
             </div>
         </div>
-        {% endif %}
 
-        {% if premium_depth in ["max", "full"] %}
         <div class="card premium-note">
             <h3>Premium Read</h3>
             <p>
-                This section is where the platform gives its highest-context interpretation. It is meant to help the user think better,
-                not trade blindly. The intent is clarity without revealing proprietary weighting mechanics.
+                This section is meant to help the user think better, not trade blindly.
+                The goal is clarity without exposing proprietary weighting mechanics.
             </p>
         </div>
-        {% endif %}
     </div>
     {% endfor %}
 {% else %}

@@ -37,25 +37,42 @@ def save_secure_users(users):
 
 def ensure_secure_user_store():
     secure_users = load_secure_users()
-    if secure_users:
-        return secure_users
 
     legacy_users = _load(LEGACY_FILE, [])
-    migrated = []
 
-    for user in legacy_users:
-        password = user.get("password", "")
-        migrated.append({
-            "username": user.get("username"),
-            "password_hash": _hash_password(password) if password else "",
-            "tier": user.get("tier", "Starter"),
-            "role": user.get("role", "member")
-        })
-
-    if migrated:
+    if not secure_users and legacy_users:
+        migrated = []
+        for user in legacy_users:
+            password = user.get("password", "")
+            migrated.append({
+                "username": user.get("username"),
+                "email": user.get("email"),
+                "password_hash": _hash_password(password) if password else "",
+                "tier": user.get("tier", "Starter"),
+                "role": user.get("role", "member")
+            })
         save_secure_users(migrated)
+        return migrated
 
-    return migrated
+    # also merge in any legacy users not already present
+    if secure_users and legacy_users:
+        existing = {u.get("username") for u in secure_users}
+        changed = False
+        for user in legacy_users:
+            uname = user.get("username")
+            if uname not in existing:
+                secure_users.append({
+                    "username": uname,
+                    "email": user.get("email"),
+                    "password_hash": _hash_password(user.get("password", "")) if user.get("password") else "",
+                    "tier": user.get("tier", "Starter"),
+                    "role": user.get("role", "member")
+                })
+                changed = True
+        if changed:
+            save_secure_users(secure_users)
+
+    return load_secure_users()
 
 def authenticate_user(username, password):
     users = ensure_secure_user_store()
@@ -65,20 +82,25 @@ def authenticate_user(username, password):
         if user.get("username") == username and _verify_password(password, user.get("password_hash", "")):
             return {
                 "username": user.get("username"),
+                "email": user.get("email"),
                 "tier": user.get("tier", "Starter"),
                 "role": user.get("role", "member"),
                 "force_password_reset": force_reset.get(username, False)
             }
     return None
 
-def create_secure_user(username, password, tier="Starter", role="member"):
+def create_secure_user(username, password, email=None, tier="Starter", role="member"):
     users = ensure_secure_user_store()
 
     if any(u.get("username") == username for u in users):
         return False, "Username already exists."
 
+    if email and any((u.get("email") or "").lower() == email.lower() for u in users if u.get("email")):
+        return False, "Email already exists."
+
     users.append({
         "username": username,
+        "email": email,
         "password_hash": _hash_password(password),
         "tier": tier,
         "role": role
@@ -175,6 +197,7 @@ def seed_master_password(password):
     if not found:
         users.append({
             "username": "admin",
+            "email": "admin@simpleemrktrade.local",
             "password_hash": _hash_password(password),
             "tier": "Elite",
             "role": "master"

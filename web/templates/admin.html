@@ -12,21 +12,28 @@
     <div class="card">
         <h3>Create User</h3>
         <form action="/admin/create-user" method="post">
+            <p>Email</p>
+            <input type="email" name="email">
+
             <p>Username</p>
             <input type="text" name="username" required>
+
             <p>Password</p>
             <input type="text" name="password" required>
+
             <p>Tier</p>
             <select name="tier">
                 <option value="Starter">Starter</option>
                 <option value="Pro">Pro</option>
                 <option value="Elite">Elite</option>
             </select>
+
             <p>Role</p>
             <select name="role">
                 <option value="member">member</option>
                 <option value="master">master</option>
             </select>
+
             <br><br>
             <button type="submit" class="cta-btn">Create User</button>
         </form>
@@ -45,6 +52,7 @@
     <table class="table">
         <tr>
             <th>Username</th>
+            <th>Email</th>
             <th>Tier</th>
             <th>Role</th>
             <th>Billing Status</th>
@@ -55,6 +63,7 @@
         {% for row in users %}
         <tr>
             <td>{{ row.username }}</td>
+            <td>{{ row.email }}</td>
             <td>{{ row.tier }}</td>
             <td>{{ row.role }}</td>
             <td>{{ row.billing_status }}</td>
