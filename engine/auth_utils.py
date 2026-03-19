@@ -5,6 +5,7 @@ from pathlib import Path
 
 LEGACY_FILE = "data/users.json"
 SECURE_FILE = "data/users_secure.json"
+FORCE_RESET_FILE = "data/force_password_resets.json"
 
 def _load(path, default):
     if not Path(path).exists():
@@ -58,13 +59,15 @@ def ensure_secure_user_store():
 
 def authenticate_user(username, password):
     users = ensure_secure_user_store()
+    force_reset = _load(FORCE_RESET_FILE, {})
 
     for user in users:
         if user.get("username") == username and _verify_password(password, user.get("password_hash", "")):
             return {
                 "username": user.get("username"),
                 "tier": user.get("tier", "Starter"),
-                "role": user.get("role", "member")
+                "role": user.get("role", "member"),
+                "force_password_reset": force_reset.get(username, False)
             }
     return None
 
@@ -96,6 +99,11 @@ def reset_secure_password(username, new_password):
     if changed:
         save_secure_users(users)
 
+    force_reset = _load(FORCE_RESET_FILE, {})
+    if username in force_reset:
+        force_reset[username] = False
+        _save(FORCE_RESET_FILE, force_reset)
+
     return changed
 
 def rename_secure_user(old_username, new_username):
@@ -115,6 +123,12 @@ def rename_secure_user(old_username, new_username):
 
     target["username"] = new_username
     save_secure_users(users)
+
+    force_reset = _load(FORCE_RESET_FILE, {})
+    if old_username in force_reset:
+        force_reset[new_username] = force_reset.pop(old_username)
+        _save(FORCE_RESET_FILE, force_reset)
+
     return True, "Username updated."
 
 def update_secure_user_tier(username, new_tier):
@@ -140,6 +154,12 @@ def delete_secure_user(username):
         return False, "User not found."
 
     save_secure_users(new_users)
+
+    force_reset = _load(FORCE_RESET_FILE, {})
+    if username in force_reset:
+        del force_reset[username]
+        _save(FORCE_RESET_FILE, force_reset)
+
     return True, "User deleted."
 
 def seed_master_password(password):
@@ -162,3 +182,13 @@ def seed_master_password(password):
 
     save_secure_users(users)
     return True
+
+def set_force_password_reset(username, required=True):
+    data = _load(FORCE_RESET_FILE, {})
+    data[username] = bool(required)
+    _save(FORCE_RESET_FILE, data)
+    return True
+
+def get_force_password_reset(username):
+    data = _load(FORCE_RESET_FILE, {})
+    return bool(data.get(username, False))

@@ -2,12 +2,13 @@ import json
 from pathlib import Path
 from engine.auth_utils import (
     load_secure_users,
-    save_secure_users,
     create_secure_user,
     reset_secure_password,
     rename_secure_user,
     update_secure_user_tier,
-    delete_secure_user
+    delete_secure_user,
+    set_force_password_reset,
+    get_force_password_reset,
 )
 
 PREFS_FILE = "data/user_preferences.json"
@@ -56,7 +57,8 @@ def list_users():
             "tier": user.get("tier", "Starter"),
             "role": user.get("role", "member"),
             "billing_status": billing.get(username, {}).get("status", "inactive"),
-            "billing_plan": billing.get(username, {}).get("plan", user.get("tier", "Starter"))
+            "billing_plan": billing.get(username, {}).get("plan", user.get("tier", "Starter")),
+            "force_password_reset": get_force_password_reset(username)
         })
 
     return rows
@@ -71,7 +73,8 @@ def get_user(username):
             safe_user = {
                 "username": user.get("username"),
                 "tier": user.get("tier", "Starter"),
-                "role": user.get("role", "member")
+                "role": user.get("role", "member"),
+                "force_password_reset": get_force_password_reset(username)
             }
             return {
                 "user": safe_user,
@@ -151,3 +154,6 @@ def delete_user(username):
         _save(BILLING_FILE, billing)
 
     return True, "User deleted."
+
+def force_password_reset(username, required=True):
+    return set_force_password_reset(username, required)
