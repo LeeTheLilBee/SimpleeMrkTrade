@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Onboarding Guide</h2>
+
+<div class="card">
+    <h3>Step 1 — Create Your Account</h3>
+    <p>
+        Start by signing up so the platform can assign you a subscriber tier. Different features become visible
+        depending on your level of access.
+    </p>
+    <a href="/signup" class="cta-btn">Create Account</a>
+</div>
+
+<div class="card">
+    <h3>Step 2 — Login</h3>
+    <p>
+        After logging in, your account can access the parts of the platform associated with your subscription level.
+    </p>
+    <a href="/login" class="cta-btn secondary">Login</a>
+</div>
+
+<div class="card">
+    <h3>Step 3 — Learn The Modes First</h3>
+    <p>
+        Before using signals or premium analysis, understand the system’s operating modes. Modes help explain how the platform
+        behaves under different market conditions.
+    </p>
+    <a href="/modes" class="cta-btn secondary">Open Modes Guide</a>
+</div>
+
+<div class="card">
+    <h3>Step 4 — Use The Dashboard</h3>
+    <p>
+        The Dashboard is your command center. Use it to understand account state, market context, active signals, top candidates,
+        and open-position behavior.
+    </p>
+    <a href="/dashboard" class="cta-btn secondary">Open Dashboard</a>
+</div>
+
+<div class="card">
+    <h3>Step 5 — Use Research and Premium Properly</h3>
+    <p>
+        Research helps you narrow attention. Premium helps you add context. Neither should be treated as blind certainty.
+        Both are designed to improve decision quality.
+    </p>
+    <a href="/research" class="cta-btn secondary">Open Research</a>
+</div>
+
+<div class="card">
+    <h3>About Connected Accounts</h3>
+    <p>
+        At this stage, the platform is operating as a structured intelligence and simulation environment. Future account connection
+        workflows can be layered in when live execution integrations are ready.
+    </p>
+</div>
+
+{% endblock %}

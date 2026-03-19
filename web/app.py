@@ -59,6 +59,14 @@ def landing_page():
 def get_started_page():
     return render_template("get_started.html", user=CURRENT_USER)
 
+@app.route("/onboarding")
+def onboarding_page():
+    return render_template("onboarding.html", user=CURRENT_USER)
+
+@app.route("/modes")
+def modes_page():
+    return render_template("modes.html", user=CURRENT_USER)
+
 @app.route("/dashboard")
 def dashboard_page():
     reports = load_json("data/recent_reports.json", [])
@@ -163,7 +171,6 @@ def reports_page():
 def signals_page():
     if not has_access("signals"):
         return render_template("paywall.html", user=CURRENT_USER)
-
     return render_template("signals.html", signals=load_json("data/live_signals.json", []), user=CURRENT_USER)
 
 @app.route("/positions")

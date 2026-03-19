@@ -4,6 +4,15 @@
 <h2>Knowledge Center</h2>
 
 <div class="card">
+    <h3>Start Here First</h3>
+    <p>
+        Before interpreting signals, candidates, or premium analysis, understand the platform’s modes.
+        Modes explain how the system is behaving and why the same setup may be treated differently across market conditions.
+    </p>
+    <p><a href="/modes">Open Modes Guide</a></p>
+</div>
+
+<div class="card">
     <h3>How To Use This Page</h3>
     <p>
         This page explains the platform’s most important terms, pages, and outputs without exposing
@@ -41,184 +50,84 @@
 
 <div id="account-value" class="knowledge-item card">
     <h3>Account Value</h3>
-    <p>
-        Account Value is the platform’s estimate of total account worth at the moment you are viewing it.
-        It combines the account base with the effect of open-position value changes and realized results that
-        have already been recorded.
-    </p>
-    <p>
-        This matters because it is the clearest high-level view of whether the system is growing, flat, or under pressure.
-    </p>
-    <p>
-        Use it as a top-level health metric, not a single-trade decision metric.
-    </p>
+    <p>Account Value is the platform’s estimate of total account worth at the moment you are viewing it.</p>
+    <p>This matters because it is the clearest top-level health signal for the account.</p>
 </div>
 
 <div id="cash" class="knowledge-item card">
     <h3>Cash</h3>
-    <p>
-        Cash is the amount of capital currently not tied up in active positions. It represents what is immediately
-        available before additional controls and limits are applied.
-    </p>
-    <p>
-        This matters because low cash can prevent new trades even when strong setups appear.
-    </p>
+    <p>Cash is the amount of capital not currently tied up in active positions.</p>
 </div>
 
 <div id="buying-power" class="knowledge-item card">
     <h3>Buying Power</h3>
-    <p>
-        Buying Power is the amount of capital the system can still deploy after applying account constraints.
-        It is more useful than raw cash when thinking about whether a new trade can actually be taken.
-    </p>
-    <p>
-        Use Buying Power to understand why trades may be skipped even when they rank well.
-    </p>
+    <p>Buying Power is the amount of capital the system can still deploy after applying internal account limits.</p>
 </div>
 
 <div id="open-positions" class="knowledge-item card">
     <h3>Open Positions</h3>
-    <p>
-        Open Positions are the trades the system is currently carrying. They are still active and have not yet
-        been closed by a target, stop, or other exit condition.
-    </p>
-    <p>
-        This matters because the system is always balancing new opportunities against what is already open.
-    </p>
+    <p>Open Positions are trades that are still active and have not yet been closed by an exit condition.</p>
 </div>
 
 <div id="equity-curve" class="knowledge-item card">
     <h3>Equity Curve</h3>
-    <p>
-        The Equity Curve is the visual history of account progression over time. It helps users see how stable or unstable
-        system performance has been, rather than focusing on isolated wins or losses.
-    </p>
-    <p>
-        A smoother curve generally suggests more consistent behavior. A jagged curve may suggest unstable performance or uneven results.
-    </p>
+    <p>The Equity Curve is the visual history of account progression over time.</p>
 </div>
 
 <div id="market-regime" class="knowledge-item card">
     <h3>Market Regime</h3>
-    <p>
-        Market Regime describes the broader market environment the system believes it is operating in.
-        Examples include bullish, bearish, defensive, or neutral behavior.
-    </p>
-    <p>
-        This matters because not all strategies behave the same way in all market states. Regime context influences selection,
-        ranking, and risk behavior.
-    </p>
+    <p>Market Regime describes the broader condition the market is in, such as trending, bearish, or defensive behavior.</p>
 </div>
 
 <div id="volatility" class="knowledge-item card">
     <h3>Volatility</h3>
-    <p>
-        Volatility refers to how aggressively price is moving. Elevated volatility usually means more opportunity,
-        but it also means more risk and wider price movement.
-    </p>
-    <p>
-        This matters because a setup that looks strong in a calm environment may need tighter filtering in a more unstable one.
-    </p>
+    <p>Volatility refers to how aggressively price is moving. Higher volatility can increase both opportunity and risk.</p>
 </div>
 
 <div id="mode" class="knowledge-item card">
     <h3>Market Mode</h3>
-    <p>
-        Market Mode is the system’s practical operating posture after combining broader regime and internal market conditions.
-        It helps define whether the platform should behave more aggressively, selectively, or defensively.
-    </p>
-    <p>
-        Think of Mode as the system’s situational stance, not just a label.
-    </p>
+    <p>Market Mode is the system’s practical operating stance after combining regime, breadth, and internal conditions.</p>
+    <p>Use the full explanation page here: <a href="/modes">Modes Guide</a></p>
 </div>
 
 <div id="signals" class="knowledge-item card">
     <h3>Signals</h3>
-    <p>
-        Signals are possible trade opportunities identified by the platform after passing through multiple layers of analysis.
-        They are not guarantees and should be understood as ranked opportunities rather than promises.
-    </p>
-    <p>
-        The Signals page is best used to see what the system is noticing right now.
-    </p>
+    <p>Signals are possible trade opportunities identified after passing through multiple layers of analysis.</p>
 </div>
 
 <div id="score" class="knowledge-item card">
     <h3>Score</h3>
-    <p>
-        Score is a relative strength measure for a setup. Higher scores generally indicate stronger alignment across the platform’s
-        internal conditions.
-    </p>
-    <p>
-        Score is useful for prioritizing attention, but it should always be read with context such as confidence, market regime,
-        and current account exposure.
-    </p>
+    <p>Score is a relative strength measure for a setup compared to other opportunities in the same environment.</p>
 </div>
 
 <div id="confidence" class="knowledge-item card">
     <h3>Confidence</h3>
-    <p>
-        Confidence reflects how well the setup matches the current environment. It is a measure of alignment and structure,
-        not certainty.
-    </p>
-    <p>
-        A high-confidence setup may still lose. Confidence helps compare setups against one another, not eliminate risk.
-    </p>
+    <p>Confidence reflects how well a setup matches the current environment. It is a measure of alignment, not certainty.</p>
 </div>
 
 <div id="candidates" class="knowledge-item card">
     <h3>Top Candidates</h3>
-    <p>
-        Top Candidates are the names the system considers most worthy of attention after ranking and filtering.
-        They are not always executed trades. Some remain research-worthy but may fail later account, risk, or liquidity checks.
-    </p>
-    <p>
-        Use Candidates as a research prioritization tool.
-    </p>
+    <p>Top Candidates are the opportunities the system believes deserve deeper attention after ranking and filtering.</p>
 </div>
 
 <div id="proof-engine" class="knowledge-item card">
     <h3>Proof Engine</h3>
-    <p>
-        The Proof Engine is the reporting layer that tracks what the system actually does over time. It includes outcomes such as
-        trade count, win rate, drawdown, and realized results.
-    </p>
-    <p>
-        This matters because strategy quality is measured over time, not by one trade.
-    </p>
+    <p>The Proof Engine is the reporting layer that tracks outcomes such as trade count, win rate, drawdown, and realized performance.</p>
 </div>
 
 <div id="pnl" class="knowledge-item card">
     <h3>PnL</h3>
-    <p>
-        PnL means profit and loss. Unrealized PnL shows how open positions are currently performing if marked at current prices.
-        Realized PnL reflects positions that have already been closed.
-    </p>
-    <p>
-        Use unrealized PnL to monitor open exposure and realized PnL to understand completed results.
-    </p>
+    <p>PnL means profit and loss. Unrealized PnL reflects open positions. Realized PnL reflects closed positions.</p>
 </div>
 
 <div id="premium-analysis" class="knowledge-item card">
     <h3>Premium Analysis</h3>
-    <p>
-        Premium Analysis is the deeper context layer of the platform. It is designed to explain why a setup matters, what context
-        supports it, and how users should think about it without exposing the full proprietary engine.
-    </p>
-    <p>
-        This section exists to add depth, not just more noise.
-    </p>
+    <p>Premium Analysis provides deeper context around selected setups without exposing the platform’s full proprietary logic.</p>
 </div>
 
 <div id="risk-governor" class="knowledge-item card">
     <h3>Risk Governor</h3>
-    <p>
-        The Risk Governor is a system-level protection layer that limits exposure when conditions become unfavorable.
-        It helps prevent overtrading, protect capital, and keep behavior disciplined.
-    </p>
-    <p>
-        If a strong setup is blocked, the reason may be risk governance rather than signal weakness.
-    </p>
+    <p>The Risk Governor is a system-level protection layer that helps control exposure when conditions become unfavorable.</p>
 </div>
 
 <div id="faq" class="card">
@@ -227,40 +136,22 @@
 
 <details class="knowledge-item card">
     <summary><b>Is this financial advice?</b></summary>
-    <p>
-        No. SimpleeMrkTrade is a market intelligence and decision-support platform. Users remain responsible for their own trading decisions.
-    </p>
+    <p>No. SimpleeMrkTrade is a market intelligence and decision-support platform.</p>
 </details>
 
 <details class="knowledge-item card">
     <summary><b>How are signals generated?</b></summary>
-    <p>
-        Signals are generated through a multi-layer evaluation process involving market structure, context, and internal ranking logic.
-        Specific formulas, weightings, and filters are proprietary.
-    </p>
+    <p>Signals are generated through a multi-layer evaluation process using proprietary ranking and filtering logic.</p>
 </details>
 
 <details class="knowledge-item card">
-    <summary><b>Why don’t all signals win?</b></summary>
-    <p>
-        Markets are uncertain by nature. The platform is built for structured consistency over time, not perfect prediction on every setup.
-    </p>
+    <summary><b>Why do strong setups sometimes get skipped?</b></summary>
+    <p>Because account limits, buying power, market mode, and risk protections can block otherwise attractive opportunities.</p>
 </details>
 
 <details class="knowledge-item card">
-    <summary><b>Why do some strong setups get skipped?</b></summary>
-    <p>
-        A setup can rank well and still be skipped because of buying power, position caps, account exposure, market mode, or other
-        system-level protections.
-    </p>
-</details>
-
-<details class="knowledge-item card">
-    <summary><b>Why does Premium exist?</b></summary>
-    <p>
-        Premium exists to provide deeper context while protecting the platform’s internal edge. It gives users better interpretation
-        without giving away the full underlying architecture.
-    </p>
+    <summary><b>Why do modes matter so much?</b></summary>
+    <p>Because the same setup can deserve a different response depending on whether the platform is operating normally, defensively, or under elevated stress.</p>
 </details>
 
 <script>

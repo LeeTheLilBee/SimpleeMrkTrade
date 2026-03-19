@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Platform Modes</h2>
+
+<div class="card">
+    <p>
+        Modes describe how the platform is behaving in response to broader market conditions. They help explain why the system
+        may become more aggressive, more selective, or more defensive.
+    </p>
+</div>
+
+<div class="card">
+    <h3>Normal Mode</h3>
+    <p>
+        Normal Mode means the system is operating without elevated stress signals. Opportunities can be ranked and processed
+        under standard account and risk rules.
+    </p>
+</div>
+
+<div class="card">
+    <h3>Reduced-Risk Mode</h3>
+    <p>
+        Reduced-Risk Mode means the system is seeing reasons to become more selective. This may happen during elevated drawdown,
+        unstable market conditions, or exposure-related pressure.
+    </p>
+    <p>
+        In this mode, the platform may trim trade count, slow aggressiveness, or prioritize only the strongest setups.
+    </p>
+</div>
+
+<div class="card">
+    <h3>Defensive Bear Mode</h3>
+    <p>
+        Defensive Bear Mode means the system sees a more hostile or unstable environment and shifts toward protection-first behavior.
+        In this state, weaker setups may be ignored even if they look attractive in isolation.
+    </p>
+</div>
+
+<div class="card">
+    <h3>High Volatility Conditions</h3>
+    <p>
+        High volatility increases opportunity, but it also increases risk. During elevated volatility, the platform becomes more
+        sensitive to quality, stability, and capital protection.
+    </p>
+</div>
+
+<div class="card">
+    <h3>Why Modes Matter</h3>
+    <p>
+        Modes help users understand that a trade idea is never judged in a vacuum. The same setup may be treated differently
+        depending on whether the platform is operating in a stable, defensive, or elevated-risk environment.
+    </p>
+</div>
+
+{% endblock %}
