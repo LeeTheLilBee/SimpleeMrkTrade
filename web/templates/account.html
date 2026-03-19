@@ -3,6 +3,18 @@
 
 <h2>Account Settings</h2>
 
+{% if message %}
+<div class="card" style="border:1px solid rgba(34,197,94,0.35);">
+    <p><b>{{ message }}</b></p>
+</div>
+{% endif %}
+
+{% if error %}
+<div class="card" style="border:1px solid rgba(239,68,68,0.45);">
+    <p><b>{{ error }}</b></p>
+</div>
+{% endif %}
+
 <div class="grid">
     <div class="card">
         <h3>Profile</h3>
@@ -22,12 +34,27 @@
 </div>
 
 <div class="card">
+    <h3>Change My Password</h3>
+    <form action="/account/change-password" method="post">
+        <p>Current Password</p>
+        <input type="password" name="current_password" required>
+
+        <p>New Password</p>
+        <input type="password" name="new_password" required>
+
+        <br><br>
+        <button type="submit" class="cta-btn">Update Password</button>
+    </form>
+</div>
+
+<div class="card">
     <h3>Notification Preferences</h3>
     <form action="/account/preferences" method="post">
         <p><label><input type="checkbox" name="email_notifications" {% if prefs.email_notifications %}checked{% endif %}> Email notifications</label></p>
         <p><label><input type="checkbox" name="signal_notifications" {% if prefs.signal_notifications %}checked{% endif %}> Signal notifications</label></p>
         <p><label><input type="checkbox" name="risk_notifications" {% if prefs.risk_notifications %}checked{% endif %}> Risk notifications</label></p>
         <p><label><input type="checkbox" name="premium_notifications" {% if prefs.premium_notifications %}checked{% endif %}> Premium notifications</label></p>
+        <p><label><input type="checkbox" name="system_notifications" {% if prefs.system_notifications %}checked{% endif %}> System notifications</label></p>
 
         <p>Theme</p>
         <select name="theme">
@@ -43,6 +70,7 @@
 <div class="card">
     <h3>Account Actions</h3>
     <a href="/upgrade" class="cta-btn secondary">View Plans</a>
+    <a href="/auth-status" class="cta-btn secondary">Auth Status</a>
     <a href="/logout" class="btn-red">Logout</a>
 </div>
 

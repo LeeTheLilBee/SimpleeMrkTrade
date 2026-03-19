@@ -7,6 +7,12 @@
     <p>New accounts are created with secure password hashing and start on the Starter tier by default.</p>
 </div>
 
+{% if error %}
+<div class="card" style="border:1px solid rgba(239,68,68,0.45);">
+    <p><b>{{ error }}</b></p>
+</div>
+{% endif %}
+
 <div class="card">
     <form action="/signup" method="post">
         <p>Username</p>

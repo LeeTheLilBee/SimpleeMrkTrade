@@ -9,6 +9,7 @@
     <p><b>Role:</b> {{ record.user.role or "member" }}</p>
     <p><b>Billing Status:</b> {{ record.billing.status }}</p>
     <p><b>Billing Plan:</b> {{ record.billing.plan }}</p>
+    <p><b>Force Password Reset:</b> {{ record.user.force_password_reset }}</p>
 </div>
 
 <div class="grid">
@@ -79,6 +80,18 @@
     </div>
 
     <div class="card">
+        <h3>Force Password Reset</h3>
+        <form action="/admin/user/{{ record.user.username }}/force-reset" method="post">
+            <select name="required">
+                <option value="true">true</option>
+                <option value="false">false</option>
+            </select>
+            <br><br>
+            <button type="submit" class="cta-btn secondary">Update Reset Flag</button>
+        </form>
+    </div>
+
+    <div class="card">
         <h3>User Preferences</h3>
         <p><b>Email:</b> {{ record.preferences.email_notifications }}</p>
         <p><b>Signals:</b> {{ record.preferences.signal_notifications }}</p>
@@ -87,13 +100,13 @@
         <p><b>System:</b> {{ record.preferences.system_notifications }}</p>
         <p><b>Theme:</b> {{ record.preferences.theme }}</p>
     </div>
+</div>
 
-    <div class="card">
-        <h3>Danger Zone</h3>
-        <form action="/admin/user/{{ record.user.username }}/delete" method="post">
-            <button type="submit" class="btn-red">Delete User</button>
-        </form>
-    </div>
+<div class="card">
+    <h3>Danger Zone</h3>
+    <form action="/admin/user/{{ record.user.username }}/delete" method="post">
+        <button type="submit" class="btn-red">Delete User</button>
+    </form>
 </div>
 
 <div class="card">

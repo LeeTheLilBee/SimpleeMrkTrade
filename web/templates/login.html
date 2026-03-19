@@ -4,11 +4,23 @@
 <h2>Login</h2>
 
 <div class="card">
-    <p>Secure login is enabled. Passwords are verified through hashed authentication rather than direct plain-text matching.</p>
+    <p>Secure login is enabled. Passwords are verified through hashed authentication.</p>
 </div>
 
+{% if error %}
+<div class="card" style="border:1px solid rgba(239,68,68,0.45);">
+    <p><b>{{ error }}</b></p>
+</div>
+{% endif %}
+
+{% if info %}
+<div class="card" style="border:1px solid rgba(59,130,246,0.45);">
+    <p><b>{{ info }}</b></p>
+</div>
+{% endif %}
+
 <div class="card">
-    <form action="/login" method="post">
+    <form action="/login{% if next_url %}?next={{ next_url }}{% endif %}" method="post">
         <p>Username</p>
         <input type="text" name="username" required>
 

@@ -33,15 +33,10 @@
     </div>
 
     <div class="card">
-        <h3>Troubleshooting Notes</h3>
-        <p>Use this page to:</p>
-        <ul>
-            <li>change tiers</li>
-            <li>reset passwords</li>
-            <li>rename usernames</li>
-            <li>fix mock billing states</li>
-            <li>review user status quickly</li>
-        </ul>
+        <h3>Admin Tools</h3>
+        <p><a href="/admin/audit-log">Open Audit Log</a></p>
+        <p><a href="/admin/session-debug">Open Session Debug</a></p>
+        <p><a href="/auth-status">Open Auth Status</a></p>
     </div>
 </div>
 
@@ -54,6 +49,7 @@
             <th>Role</th>
             <th>Billing Status</th>
             <th>Billing Plan</th>
+            <th>Force Reset</th>
             <th>Open</th>
         </tr>
         {% for row in users %}
@@ -63,6 +59,7 @@
             <td>{{ row.role }}</td>
             <td>{{ row.billing_status }}</td>
             <td>{{ row.billing_plan }}</td>
+            <td>{{ row.force_password_reset }}</td>
             <td><a href="/admin/user/{{ row.username }}">Manage</a></td>
         </tr>
         {% endfor %}

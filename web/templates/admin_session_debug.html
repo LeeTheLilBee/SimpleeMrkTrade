@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Admin Session Debug</h2>
+
+<div class="card">
+    <p>This page helps confirm the current session state for troubleshooting access and redirect issues.</p>
+</div>
+
+<div class="card">
+    <p><b>Logged In:</b> {{ session_debug.logged_in }}</p>
+    <p><b>Username:</b> {{ session_debug.username }}</p>
+    <p><b>Tier:</b> {{ session_debug.tier }}</p>
+    <p><b>Role:</b> {{ session_debug.role }}</p>
+    <p><b>Last Seen:</b> {{ session_debug.last_seen }}</p>
+    <p><b>Force Password Reset:</b> {{ session_debug.force_password_reset }}</p>
+</div>
+
+{% endblock %}
