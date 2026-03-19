@@ -1,50 +1,146 @@
 {% extends "base.html" %}
 {% block content %}
+
 <h2>Knowledge Center</h2>
 
 <div class="card">
-    <h3>What This Section Does</h3>
+    <h3>How To Use This Page</h3>
     <p>
-        The Knowledge Center explains how to interpret the platform’s outputs. It is designed to help users understand what they
-        are seeing across dashboards, positions, signals, analytics, and premium research without needing access to the underlying
-        proprietary engine.
+        This page explains the most important concepts behind SimpleeMrkTrade without exposing
+        the platform’s proprietary internal logic. Use it to understand what each section means,
+        how to interpret signals, and how to navigate the platform with more confidence.
     </p>
 </div>
 
 <div class="card">
-    <h3>Why It Matters</h3>
+    <input type="text" id="knowledgeSearch" placeholder="Search terms like signal, regime, confidence, premium..." onkeyup="filterKnowledge()" style="width:100%;padding:12px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:white;">
+</div>
+
+<div class="knowledge-item card">
+    <h3>What This Platform Is</h3>
     <p>
-        A strong platform is not just about generating information. It also needs to teach users how to read the information
-        correctly. This section matters because it reduces confusion, improves decision quality, and creates a more consistent
-        user experience.
+        SimpleeMrkTrade is a structured market intelligence platform built to identify, rank,
+        monitor, and evaluate trade opportunities while applying layered risk controls.
+    </p>
+    <p>
+        It is not just a watchlist or simple signal feed. It is a decision-support system.
     </p>
 </div>
 
-<div class="card">
-    <h3>How To Use It</h3>
-    <p>
-        Use the Knowledge Center whenever you need more context on a page, metric, or workflow. It is especially useful for
-        understanding how to move from signal discovery to trade review, how to read position health, and how to interpret
-        platform-level performance.
-    </p>
-</div>
-
-<div class="card">
-    <h3>What It Covers</h3>
+<div class="knowledge-item card">
+    <h3>How To Use The Platform</h3>
     <ul>
-        <li>How to read signals</li>
-        <li>How to interpret position monitoring</li>
-        <li>What the analytics mean</li>
-        <li>How to think about ranked candidates</li>
-        <li>How premium analysis should be used</li>
+        <li>Start with Dashboard to understand market state and account context.</li>
+        <li>Use Trading to review active signals and position conditions.</li>
+        <li>Use Research to study ranked candidates and setup quality.</li>
+        <li>Use Analytics to understand results, drawdown, and performance behavior.</li>
+        <li>Use Premium for deeper context and protected analysis where available.</li>
     </ul>
 </div>
 
-<div class="card">
-    <h3>Important Note</h3>
+<div class="knowledge-item card">
+    <h3>Signal</h3>
     <p>
-        Educational explanations are provided here for usability and interpretation. Internal methods, scoring relationships,
-        filters, and engine-specific weighting logic remain proprietary.
+        A signal is a possible trade setup identified by the platform after evaluating multiple layers
+        of market information. Signals are not guarantees. They are ranked opportunities.
     </p>
 </div>
+
+<div class="knowledge-item card">
+    <h3>Score</h3>
+    <p>
+        A score reflects the relative strength of a setup compared to other setups being evaluated at
+        the same time. A higher score generally means stronger alignment across internal conditions.
+    </p>
+</div>
+
+<div class="knowledge-item card">
+    <h3>Confidence</h3>
+    <p>
+        Confidence reflects how well the opportunity matches the current environment. It is a measure
+        of alignment, not certainty.
+    </p>
+</div>
+
+<div class="knowledge-item card">
+    <h3>Market Regime</h3>
+    <p>
+        Market regime describes the broader condition the market is in, such as trending, defensive,
+        or neutral behavior. This context affects how setups are interpreted and prioritized.
+    </p>
+</div>
+
+<div class="knowledge-item card">
+    <h3>Risk Governor</h3>
+    <p>
+        The risk governor is a system-level capital protection layer. It helps control exposure,
+        trade frequency, and unfavorable behavior during difficult conditions.
+    </p>
+</div>
+
+<div class="knowledge-item card">
+    <h3>Premium Analysis</h3>
+    <p>
+        Premium Analysis gives deeper context around selected opportunities. It is designed to provide
+        more useful interpretation without exposing the full proprietary structure behind the engine.
+    </p>
+</div>
+
+<div class="card">
+    <h2>FAQ</h2>
+</div>
+
+<details class="knowledge-item card">
+    <summary><b>Is this financial advice?</b></summary>
+    <p>
+        No. SimpleeMrkTrade provides structured market information and decision support. Users remain
+        responsible for their own trading decisions.
+    </p>
+</details>
+
+<details class="knowledge-item card">
+    <summary><b>How are signals generated?</b></summary>
+    <p>
+        Signals are generated through a multi-layer process that evaluates market context, structure,
+        and opportunity alignment. The full internal mechanics are proprietary.
+    </p>
+</details>
+
+<details class="knowledge-item card">
+    <summary><b>Why don’t all signals win?</b></summary>
+    <p>
+        No system can remove uncertainty from markets. The objective is not perfection on every trade,
+        but stronger consistency over time through structured selection and disciplined risk control.
+    </p>
+</details>
+
+<details class="knowledge-item card">
+    <summary><b>What makes this different from normal indicator tools?</b></summary>
+    <p>
+        Most tools isolate one metric. This platform evaluates opportunities across multiple layers
+        and presents them in a context-aware framework.
+    </p>
+</details>
+
+<details class="knowledge-item card">
+    <summary><b>Why is some information hidden or locked?</b></summary>
+    <p>
+        Certain content is restricted to protect proprietary methods and to separate public platform
+        utility from premium research depth.
+    </p>
+</details>
+
+<script>
+function filterKnowledge() {
+    const input = document.getElementById("knowledgeSearch");
+    const filter = input.value.toLowerCase();
+    const items = document.getElementsByClassName("knowledge-item");
+
+    for (let i = 0; i < items.length; i++) {
+        const txt = items[i].innerText.toLowerCase();
+        items[i].style.display = txt.includes(filter) ? "" : "none";
+    }
+}
+</script>
+
 {% endblock %}

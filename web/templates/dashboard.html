@@ -4,10 +4,29 @@
 <h2>SimpleeMrkTrade Dashboard</h2>
 
 <div class="grid">
-    <div class="card"><h3>Account Value</h3><div class="metric">${{ snapshot.estimated_account_value }}</div></div>
-    <div class="card"><h3>Cash</h3><div class="metric">${{ snapshot.cash }}</div></div>
-    <div class="card"><h3>Buying Power</h3><div class="metric">${{ snapshot.buying_power }}</div></div>
-    <div class="card"><h3>Open Positions</h3><div class="metric">{{ snapshot.open_positions }}</div></div>
+    <div class="card">
+        <h3>Account Value</h3>
+        <div class="metric">${{ snapshot.estimated_account_value }}</div>
+        <p><a href="/knowledge">Learn More</a></p>
+    </div>
+
+    <div class="card">
+        <h3>Cash</h3>
+        <div class="metric">${{ snapshot.cash }}</div>
+        <p><a href="/knowledge">Learn More</a></p>
+    </div>
+
+    <div class="card">
+        <h3>Buying Power</h3>
+        <div class="metric">${{ snapshot.buying_power }}</div>
+        <p><a href="/knowledge">Learn More</a></p>
+    </div>
+
+    <div class="card">
+        <h3>Open Positions</h3>
+        <div class="metric">{{ snapshot.open_positions }}</div>
+        <p><a href="/positions">Open Position Monitor</a></p>
+    </div>
 </div>
 
 <div class="card">
@@ -22,6 +41,7 @@
         <p><b>Volatility:</b> {{ system.volatility }}</p>
         <p><b>Mode:</b> {{ system.mode }}</p>
         <p><b>Executed Trades:</b> {{ system.executed_trades }}</p>
+        <p><a href="/knowledge">Learn More</a></p>
     </div>
 
     <div class="card">
@@ -32,6 +52,7 @@
         <p><b>Win Rate:</b> {{ proof.winrate }}</p>
         <p><b>Total PnL:</b> {{ proof.total_pnl }}</p>
         <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
+        <p><a href="/analytics">Learn More</a></p>
     </div>
 </div>
 
@@ -48,6 +69,7 @@
         </tr>
         {% endfor %}
     </table>
+    <p><a href="/research">Learn More</a></p>
 </div>
 
 <div class="card">
@@ -64,6 +86,7 @@
         </tr>
         {% endfor %}
     </table>
+    <p><a href="/signals">Learn More</a></p>
 </div>
 
 <div class="card">
@@ -79,6 +102,7 @@
         </tr>
         {% endfor %}
     </table>
+    <p><a href="/positions">Learn More</a></p>
 </div>
 
 <script>

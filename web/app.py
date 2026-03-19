@@ -38,6 +38,11 @@ def is_logged_in():
 def tier_allows_premium():
     return CURRENT_USER.get("tier") in ["Pro", "Elite"]
 
+def has_access(feature):
+    tiers = load_json("data/subscription_tiers.json", {})
+    user_tier = CURRENT_USER.get("tier", "Guest")
+    return tiers.get(user_tier, {}).get(feature, False)
+
 @app.route("/")
 def landing_page():
     reports = load_json("data/recent_reports.json", [])

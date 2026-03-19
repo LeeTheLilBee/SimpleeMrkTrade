@@ -1,3 +1,4 @@
+%%writefile web/templates/premium_analysis.html
 {% extends "base.html" %}
 {% block content %}
 
@@ -22,6 +23,10 @@
     <p><b>Entry:</b> {{ item.price }}</p>
     <p><b>Stop:</b> {{ item.stop }}</p>
     <p><b>Target:</b> {{ item.target }}</p>
+
+    <div style="margin-bottom:20px;">
+        <canvas id="chart_{{ loop.index }}"></canvas>
+    </div>
 
     <h4>Key Snippets</h4>
     <ul>
@@ -59,5 +64,35 @@ new Chart(ctx, {
   }
 });
 </script>
+
+{% for item in analysis %}
+<script>
+new Chart(document.getElementById('chart_{{ loop.index }}'), {
+  type: 'line',
+  data: {
+    labels: {{ item.chart_labels|tojson }},
+    datasets: [{
+      label: '{{ item.symbol }}',
+      data: {{ item.chart_prices|tojson }},
+      borderColor: '#34d399',
+      backgroundColor: 'rgba(52,211,153,0.10)',
+      fill: true,
+      tension: 0.25
+    }]
+  }
+});
+</script>
+
+@app.route("/premium-analysis")
+def premium_analysis_page():
+    if not has_access("premium_analysis"):
+        return render_template("paywall.html", user=CURRENT_USER)
+
+    return render_template(
+        "premium_analysis.html",
+        analysis=load_json("data/premium_analysis.json", []),
+        user=CURRENT_USER
+    )
+{% endfor %}
 
 {% endblock %}

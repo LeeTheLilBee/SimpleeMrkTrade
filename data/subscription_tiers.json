@@ -1,17 +1,23 @@
 {
-  "Starter": {
-    "dashboard": true,
+  "Guest": {
     "signals": false,
-    "api": false
+    "premium_analysis": false,
+    "full_analytics": false
+  },
+  "Starter": {
+    "signals": true,
+    "premium_analysis": false,
+    "full_analytics": false
   },
   "Pro": {
-    "dashboard": true,
     "signals": true,
-    "api": false
+    "premium_analysis": true,
+    "full_analytics": true
   },
   "Elite": {
-    "dashboard": true,
     "signals": true,
-    "api": true
+    "premium_analysis": true,
+    "full_analytics": true,
+    "priority_signals": true
   }
 }

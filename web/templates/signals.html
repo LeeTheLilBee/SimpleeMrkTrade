@@ -5,5 +5,16 @@
 <div class="card">
 <b>{{ s.symbol }}</b> | {{ s.strategy }} | Score: {{ s.score }} | Confidence: {{ s.confidence }} | {{ s.timestamp }}
 </div>
+
+@app.route("/signals")
+def signals_page():
+    if not has_access("signals"):
+        return render_template("paywall.html", user=CURRENT_USER)
+
+    return render_template(
+        "signals.html",
+        signals=load_json("data/live_signals.json", []),
+        user=CURRENT_USER
+    )
 {% endfor %}
 {% endblock %}
