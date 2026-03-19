@@ -20,5 +20,16 @@
     "confidence": "MEDIUM",
     "status": "OPEN",
     "pnl": 0
+  },
+  {
+    "timestamp": "2026-03-19T09:09:36.952163",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "price": 461.73,
+    "size": 1,
+    "score": 160,
+    "confidence": "MEDIUM",
+    "status": "OPEN",
+    "pnl": 0
   }
 ]

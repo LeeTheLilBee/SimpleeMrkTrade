@@ -52,5 +52,27 @@
     "members_only": true,
     "min_tier": "Starter",
     "category": "system"
+  },
+  {
+    "timestamp": "2026-03-19T09:09:36.948581",
+    "title": "Approved Trade",
+    "message": "MU approved as CALL with premium score 160.",
+    "level": "info",
+    "link": "/signals",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Starter",
+    "category": "signal"
+  },
+  {
+    "timestamp": "2026-03-19T09:09:36.949643",
+    "title": "Edge Detected",
+    "message": "MU: Strong alignment across multiple factors | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
   }
 ]

@@ -32,5 +32,22 @@
       "type": "CALL"
     },
     "atr": 1.2563863481794084
+  },
+  {
+    "symbol": "MU",
+    "strategy": "CALL",
+    "price": 461.7300109863281,
+    "score": 160,
+    "confidence": "MEDIUM",
+    "option": {
+      "symbol": "MU",
+      "strike": 455.0,
+      "expiry": "2026-03-27",
+      "volume": 1226,
+      "openInterest": 0,
+      "score": 60,
+      "type": "CALL"
+    },
+    "atr": 24.587142944335938
   }
 ]

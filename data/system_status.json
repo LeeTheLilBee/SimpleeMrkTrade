@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-03-19T05:58:38.881555",
-  "cash": 128.74,
-  "buying_power": 128.74,
+  "timestamp": "2026-03-19T09:09:38.211293",
+  "cash": 538.27,
+  "buying_power": 538.27,
   "equity": 1000.0,
-  "open_positions": 2,
-  "executed_trades": 2,
+  "open_positions": 3,
+  "executed_trades": 3,
   "regime": "BEAR_TREND",
   "volatility": "ELEVATED",
   "mode": "DEFENSIVE_BEAR",
-  "total_trades": 2,
+  "total_trades": 3,
   "winrate": 0.0,
   "max_drawdown": 0
 }

@@ -52,11 +52,17 @@ from engine.system_status import write_system_status
 from engine.report_archive import archive_report
 from engine.bot_status import write_bot_status
 from engine.bot_logger import log_bot
-from engine.premium_analysis_builder import save_premium_analysis
-from engine.why_this_trade_builder import save_why_this_trade
 from engine.live_activity import push_activity
 from engine.auto_close_positions import auto_close_positions
-from engine.notifications import push_notification
+
+from engine.premium_intelligence import save_premium_analysis
+from engine.trade_timeline_manager import add_trade_timeline_event
+from engine.smart_notification_router import (
+    notify_trade_approved,
+    notify_trade_risk,
+    notify_trade_closed,
+    notify_trade_edge,
+)
 
 try:
     from engine.drawdown_brake import drawdown_brake
@@ -189,12 +195,6 @@ def process_signals(results, regime, volatility_payload):
 
     selected_trades = queue_top_trades_plus(approved_trades, limit=limit)
 
-    for trade in selected_trades:
-        alert_trade(trade)
-        print("APPROVED:", trade["symbol"], "| Strategy:", trade["strategy"], "| Confidence:", trade["confidence"])
-        if trade["option"]:
-            print("Best Option:", trade["option"])
-
     save_market_snapshot(
         regime=regime,
         breadth=breadth,
@@ -203,13 +203,12 @@ def process_signals(results, regime, volatility_payload):
         approved_count=len(selected_trades),
     )
 
-    return selected_trades, mode
+    return selected_trades, mode, breadth, volatility_state
 
 def run():
     write_bot_status(True, "starting")
     log_bot("Bot run started", "INFO")
     push_activity("SYSTEM", "Bot run started")
-    push_notification("Bot Started", "A new bot cycle has started.", "info", "/live-activity", True, "Starter", "system")
 
     try:
         settle_cash()
@@ -238,19 +237,16 @@ def run():
         if brake.get("blocked"):
             write_bot_status(False, "blocked by drawdown brake")
             push_activity("RISK", "Blocked by drawdown brake")
-            push_notification("Risk Block", "Drawdown brake blocked new trades.", "warning", "/live-activity", True, "Pro", "risk")
             return
 
         if corr.get("blocked"):
             write_bot_status(False, "blocked by correlation risk")
             push_activity("RISK", "Blocked by correlation risk")
-            push_notification("Risk Block", "Correlation risk blocked new trades.", "warning", "/live-activity", True, "Pro", "risk")
             return
 
         if sector_cap.get("blocked"):
-            write_bot_status(False, "blocked by sector cap")
+            write_bot_status(False, "blocked by sector concentration cap")
             push_activity("RISK", "Blocked by sector concentration cap")
-            push_notification("Sector Cap Triggered", "Sector concentration blocked new trades.", "warning", "/live-activity", True, "Pro", "risk")
             return
 
         regime = get_market_regime()
@@ -272,28 +268,27 @@ def run():
             if result is not None:
                 results.append(result)
 
-        selected_trades, mode = process_signals(results, regime, volatility_payload)
+        selected_trades, mode, breadth, volatility_state = process_signals(results, regime, volatility_payload)
         push_activity("QUEUE", f"Selected {len(selected_trades)} trades in mode {mode}")
 
         if _reduced_risk_mode(brake, exposure):
             selected_trades = _trim_for_reduced_risk(selected_trades)
             push_activity("RISK", "Reduced-risk mode active: trimmed trade queue")
-            push_notification("Reduced Risk Mode", "Trade queue was trimmed due to elevated portfolio stress.", "warning", "/positions", True, "Pro", "risk")
 
-        save_premium_analysis(
-            selected_trades,
-            regime=regime,
-            volatility=volatility_payload.get("volatility", "UNKNOWN")
-        )
-
-        save_why_this_trade(
-            selected_trades,
-            regime=regime,
-            volatility=volatility_payload.get("volatility", "UNKNOWN"),
-            mode=mode
-        )
+        market_context = [
+            f"Market regime: {regime}",
+            f"Volatility state: {volatility_state}",
+            f"Market breadth: {breadth}",
+            f"Mode: {mode}",
+        ]
 
         for trade in selected_trades:
+            alert_trade(trade)
+
+            print("APPROVED:", trade["symbol"], "| Strategy:", trade["strategy"], "| Confidence:", trade["confidence"])
+            if trade.get("option"):
+                print("Best Option:", trade["option"])
+
             push_activity(
                 "SIGNAL",
                 f"{trade['symbol']} approved as {trade['strategy']} with score {trade['score']}",
@@ -304,27 +299,41 @@ def run():
                     "confidence": trade["confidence"]
                 }
             )
-            push_notification(
-                "New Approved Trade",
-                f"{trade['symbol']} approved as {trade['strategy']} with score {trade['score']}.",
-                "success",
-                "/signals",
-                True,
-                "Starter",
-                "signal"
+
+            add_trade_timeline_event(
+                trade["symbol"],
+                "APPROVED",
+                {
+                    "strategy": trade["strategy"],
+                    "score": trade["score"],
+                    "confidence": trade["confidence"],
+                }
             )
-            push_notification(
-                "Premium Setup Context",
-                f"{trade['symbol']} has premium reasoning available.",
-                "info",
-                "/why-this-trade",
-                True,
-                "Pro",
-                "premium"
-            )
+
+            notify_trade_approved(trade)
+
+            if trade.get("score", 0) >= 120:
+                premium_entry = save_premium_analysis(
+                    trade,
+                    market_context=market_context,
+                    mode=mode,
+                    regime=regime,
+                    volatility=volatility_state,
+                )
+                notify_trade_edge(trade["symbol"], premium_entry.get("reasons", []))
 
         print("Processing trade queue...")
         execute_trades(selected_trades, limit=trades_left_today(executed_trade_count()))
+
+        for trade in selected_trades:
+            add_trade_timeline_event(
+                trade["symbol"],
+                "EXECUTED",
+                {
+                    "strategy": trade["strategy"],
+                    "score": trade["score"],
+                }
+            )
 
         print_positions()
         review_positions()
@@ -332,7 +341,11 @@ def run():
         closed_now = auto_close_positions()
         if closed_now:
             push_activity("AUTO_CLOSE", f"Auto-closed {len(closed_now)} position(s)")
-            push_notification("Positions Closed", f"{len(closed_now)} position(s) were auto-closed.", "warning", "/closed-trades", True, "Pro", "risk")
+            for closed in closed_now:
+                symbol = closed.get("symbol", "UNKNOWN")
+                reason = closed.get("reason", "AUTO_CLOSE")
+                add_trade_timeline_event(symbol, "CLOSED", {"reason": reason})
+                notify_trade_closed(symbol, reason)
 
         show_candidates()
 
@@ -360,12 +373,10 @@ def run():
 
         write_bot_status(False, "completed")
         push_activity("SYSTEM", "Bot run completed")
-        push_notification("Bot Completed", "The latest bot cycle finished successfully.", "success", "/reports", True, "Starter", "system")
 
     except Exception as e:
         write_bot_status(False, f"error: {e}")
         push_activity("ERROR", f"Bot error: {e}")
-        push_notification("Bot Error", f"{e}", "error", "/live-activity", True, "Pro", "system")
         raise
 
 if __name__ == "__main__":

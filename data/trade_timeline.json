@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "timestamp": "2026-03-19T09:09:36.948251",
+    "symbol": "MU",
+    "event": "APPROVED",
+    "details": {
+      "strategy": "CALL",
+      "score": 160,
+      "confidence": "MEDIUM"
+    }
+  },
+  {
+    "timestamp": "2026-03-19T09:09:36.952581",
+    "symbol": "MU",
+    "event": "EXECUTED",
+    "details": {
+      "strategy": "CALL",
+      "score": 160
+    }
+  }
+]
