@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Manage User</h2>
+
+<div class="card">
+    <p><b>Username:</b> {{ record.user.username }}</p>
+    <p><b>Tier:</b> {{ record.user.tier }}</p>
+    <p><b>Role:</b> {{ record.user.role or "member" }}</p>
+    <p><b>Billing Status:</b> {{ record.billing.status }}</p>
+    <p><b>Billing Plan:</b> {{ record.billing.plan }}</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Change Tier</h3>
+        <form action="/admin/user/{{ record.user.username }}/tier" method="post">
+            <select name="tier">
+                <option value="Starter">Starter</option>
+                <option value="Pro">Pro</option>
+                <option value="Elite">Elite</option>
+            </select>
+            <br><br>
+            <button type="submit" class="cta-btn">Update Tier</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Reset Password</h3>
+        <form action="/admin/user/{{ record.user.username }}/password" method="post">
+            <p>New Password</p>
+            <input type="text" name="password" required>
+            <br><br>
+            <button type="submit" class="cta-btn secondary">Reset Password</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Rename Username</h3>
+        <form action="/admin/user/{{ record.user.username }}/rename" method="post">
+            <p>New Username</p>
+            <input type="text" name="new_username" required>
+            <br><br>
+            <button type="submit" class="cta-btn secondary">Rename User</button>
+        </form>
+    </div>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Billing Troubleshooting</h3>
+        <form action="/admin/user/{{ record.user.username }}/billing" method="post">
+            <p>Status</p>
+            <select name="status">
+                <option value="active">active</option>
+                <option value="inactive">inactive</option>
+                <option value="past_due">past_due</option>
+                <option value="canceled">canceled</option>
+            </select>
+
+            <p>Plan</p>
+            <select name="plan">
+                <option value="Starter">Starter</option>
+                <option value="Pro">Pro</option>
+                <option value="Elite">Elite</option>
+            </select>
+
+            <p>Provider</p>
+            <select name="provider">
+                <option value="mock">mock</option>
+                <option value="internal">internal</option>
+                <option value="stripe">stripe</option>
+                <option value="not_connected">not_connected</option>
+            </select>
+
+            <br><br>
+            <button type="submit" class="cta-btn">Update Billing</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>User Preferences</h3>
+        <p><b>Email:</b> {{ record.preferences.email_notifications }}</p>
+        <p><b>Signals:</b> {{ record.preferences.signal_notifications }}</p>
+        <p><b>Risk:</b> {{ record.preferences.risk_notifications }}</p>
+        <p><b>Premium:</b> {{ record.preferences.premium_notifications }}</p>
+        <p><b>System:</b> {{ record.preferences.system_notifications }}</p>
+        <p><b>Theme:</b> {{ record.preferences.theme }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Danger Zone</h3>
+        <form action="/admin/user/{{ record.user.username }}/delete" method="post">
+            <button type="submit" class="btn-red">Delete User</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <p><a href="/admin">Back to Admin Console</a></p>
+</div>
+
+{% endblock %}

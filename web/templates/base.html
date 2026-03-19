@@ -62,6 +62,9 @@
         </a>
 
         {% if user and user.username %}
+            {% if user.role == "master" %}
+                <a href="/admin">Admin</a>
+            {% endif %}
             <a href="/account">Account</a>
             <span class="user-badge">{{ user.username }} | {{ user.tier }}</span>
             <a href="/logout">Logout</a>

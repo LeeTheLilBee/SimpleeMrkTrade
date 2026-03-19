@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Admin Console</h2>
+
+<div class="card">
+    <p><b>Master Profile:</b> {{ user.username }}</p>
+    <p>This console is for account support, subscription troubleshooting, and user-level administration.</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Create User</h3>
+        <form action="/admin/create-user" method="post">
+            <p>Username</p>
+            <input type="text" name="username" required>
+            <p>Password</p>
+            <input type="text" name="password" required>
+            <p>Tier</p>
+            <select name="tier">
+                <option value="Starter">Starter</option>
+                <option value="Pro">Pro</option>
+                <option value="Elite">Elite</option>
+            </select>
+            <p>Role</p>
+            <select name="role">
+                <option value="member">member</option>
+                <option value="master">master</option>
+            </select>
+            <br><br>
+            <button type="submit" class="cta-btn">Create User</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Troubleshooting Notes</h3>
+        <p>Use this page to:</p>
+        <ul>
+            <li>change tiers</li>
+            <li>reset passwords</li>
+            <li>rename usernames</li>
+            <li>fix mock billing states</li>
+            <li>review user status quickly</li>
+        </ul>
+    </div>
+</div>
+
+<div class="card">
+    <h3>User Directory</h3>
+    <table class="table">
+        <tr>
+            <th>Username</th>
+            <th>Tier</th>
+            <th>Role</th>
+            <th>Billing Status</th>
+            <th>Billing Plan</th>
+            <th>Open</th>
+        </tr>
+        {% for row in users %}
+        <tr>
+            <td>{{ row.username }}</td>
+            <td>{{ row.tier }}</td>
+            <td>{{ row.role }}</td>
+            <td>{{ row.billing_status }}</td>
+            <td>{{ row.billing_plan }}</td>
+            <td><a href="/admin/user/{{ row.username }}">Manage</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

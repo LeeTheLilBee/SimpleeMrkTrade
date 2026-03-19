@@ -20,6 +20,15 @@ from engine.notifications import filtered_notifications_for_user, unread_count_f
 from engine.subscription_manager import update_user_tier
 from engine.user_preferences import get_preferences, save_preferences
 from engine.billing_hooks import get_billing_status, set_billing_status
+from engine.admin_tools import (
+    list_users,
+    get_user,
+    reset_user_password,
+    rename_user,
+    set_billing_status as admin_set_billing_status,
+    create_user,
+    delete_user
+)
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "change_this_secret_key_later"
@@ -38,11 +47,15 @@ def save_json(path, data):
 def get_current_user():
     return {
         "username": session.get("username"),
-        "tier": session.get("tier", "Guest")
+        "tier": session.get("tier", "Guest"),
+        "role": session.get("role", "member")
     }
 
 def is_logged_in():
     return session.get("username") is not None
+
+def is_master():
+    return session.get("role") == "master"
 
 def get_tier_config():
     tiers = load_json("data/subscription_tiers.json", {})
@@ -59,14 +72,16 @@ def visible_notifications():
     user = get_current_user()
     return filtered_notifications_for_user(
         user_tier=user["tier"],
-        logged_in=is_logged_in()
+        logged_in=is_logged_in(),
+        username=user["username"]
     )
 
 def visible_unread_count():
     user = get_current_user()
     return unread_count_for_user(
         user_tier=user["tier"],
-        logged_in=is_logged_in()
+        logged_in=is_logged_in(),
+        username=user["username"]
     )
 
 @app.route("/")
@@ -428,11 +443,106 @@ def account_preferences_save():
         "signal_notifications": bool(request.form.get("signal_notifications")),
         "risk_notifications": bool(request.form.get("risk_notifications")),
         "premium_notifications": bool(request.form.get("premium_notifications")),
+        "system_notifications": bool(request.form.get("system_notifications")),
         "theme": request.form.get("theme", "dark")
     }
 
     save_preferences(session["username"], prefs)
     return redirect(url_for("account_page"))
+
+@app.route("/admin")
+def admin_console():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    return render_template(
+        "admin.html",
+        user=get_current_user(),
+        users=list_users(),
+        unread_notifications=visible_unread_count()
+    )
+
+@app.route("/admin/create-user", methods=["POST"])
+def admin_create_user():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    create_user(
+        username=request.form.get("username"),
+        password=request.form.get("password"),
+        tier=request.form.get("tier", "Starter"),
+        role=request.form.get("role", "member")
+    )
+    return redirect(url_for("admin_console"))
+
+@app.route("/admin/user/<username>")
+def admin_user_page(username):
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    record = get_user(username)
+    if record is None:
+        return redirect(url_for("admin_console"))
+
+    return render_template(
+        "admin_user.html",
+        user=get_current_user(),
+        record=record,
+        unread_notifications=visible_unread_count()
+    )
+
+@app.route("/admin/user/<username>/tier", methods=["POST"])
+def admin_user_tier(username):
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    new_tier = request.form.get("tier", "Starter")
+    update_user_tier(username, new_tier)
+    admin_set_billing_status(username, plan=new_tier)
+    return redirect(url_for("admin_user_page", username=username))
+
+@app.route("/admin/user/<username>/password", methods=["POST"])
+def admin_user_password(username):
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    reset_user_password(username, request.form.get("password"))
+    return redirect(url_for("admin_user_page", username=username))
+
+@app.route("/admin/user/<username>/rename", methods=["POST"])
+def admin_user_rename(username):
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    new_username = request.form.get("new_username")
+    ok, _ = rename_user(username, new_username)
+    if ok:
+        return redirect(url_for("admin_user_page", username=new_username))
+    return redirect(url_for("admin_user_page", username=username))
+
+@app.route("/admin/user/<username>/billing", methods=["POST"])
+def admin_user_billing(username):
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    admin_set_billing_status(
+        username,
+        status=request.form.get("status"),
+        plan=request.form.get("plan"),
+        provider=request.form.get("provider")
+    )
+    return redirect(url_for("admin_user_page", username=username))
+
+@app.route("/admin/user/<username>/delete", methods=["POST"])
+def admin_user_delete(username):
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    if username == session.get("username"):
+        return redirect(url_for("admin_user_page", username=username))
+
+    delete_user(username)
+    return redirect(url_for("admin_console"))
 
 @app.route("/login")
 def login_page():
@@ -449,6 +559,7 @@ def login_submit():
         if user["username"] == username and user["password"] == password:
             session["username"] = user["username"]
             session["tier"] = user["tier"]
+            session["role"] = user.get("role", "member")
             return redirect(url_for("dashboard_page"))
 
     return redirect(url_for("login_page"))
@@ -470,7 +581,8 @@ def signup_submit():
     users.append({
         "username": username,
         "password": password,
-        "tier": "Starter"
+        "tier": "Starter",
+        "role": "member"
     })
     save_json("data/users.json", users)
     set_billing_status(username, "Starter", status="active", provider="mock")
