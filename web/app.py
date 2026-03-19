@@ -3,6 +3,7 @@ import os
 import json
 import subprocess
 from pathlib import Path
+from datetime import datetime, timedelta
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -36,18 +37,23 @@ from engine.admin_tools import (
     create_user,
     delete_user,
     update_user_tier,
+    force_password_reset as admin_force_password_reset,
 )
 
 from engine.auth_utils import (
     authenticate_user,
     ensure_secure_user_store,
+    get_force_password_reset,
 )
+from engine.auth_policy import password_policy_check
+from engine.admin_audit import log_admin_action, get_admin_audit_log
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "change_this_secret_key_later_to_something_long_random"
 
-# Initialize secure auth store once
 ensure_secure_user_store()
+
+SESSION_TIMEOUT_MINUTES = 720
 
 
 def load_json(path, default):
@@ -113,6 +119,48 @@ def visible_unread_count():
         logged_in=is_logged_in(),
         username=user["username"],
     )
+
+
+def session_debug_payload():
+    username = session.get("username")
+    return {
+        "logged_in": is_logged_in(),
+        "username": username,
+        "tier": session.get("tier", "Guest"),
+        "role": session.get("role", "member"),
+        "last_seen": session.get("last_seen"),
+        "force_password_reset": get_force_password_reset(username) if username else False,
+    }
+
+
+@app.before_request
+def enforce_session_timeout():
+    exempt = {
+        "login_page",
+        "signup_page",
+        "landing_page",
+        "static",
+        "api_activity",
+        "api_notifications",
+    }
+
+    if request.endpoint in exempt:
+        return
+
+    if is_logged_in():
+        now = datetime.utcnow()
+        last_seen_raw = session.get("last_seen")
+
+        if last_seen_raw:
+            try:
+                last_seen = datetime.fromisoformat(last_seen_raw)
+                if now - last_seen > timedelta(minutes=SESSION_TIMEOUT_MINUTES):
+                    session.clear()
+                    return redirect(url_for("login_page", info="Your session expired. Please log in again."))
+            except Exception:
+                pass
+
+        session["last_seen"] = now.isoformat()
 
 
 @app.route("/")
@@ -430,7 +478,7 @@ def control_page():
 @app.route("/premium")
 def premium_hub():
     if not is_logged_in():
-        return redirect(url_for("login_page"))
+        return redirect(url_for("login_page", next=request.path))
 
     return render_template(
         "premium_hub.html",
@@ -443,7 +491,7 @@ def premium_hub():
 @app.route("/premium-analysis")
 def premium_analysis_page():
     if not is_logged_in():
-        return redirect(url_for("login_page"))
+        return redirect(url_for("login_page", next=request.path))
     if not has_access("premium_analysis"):
         return redirect(url_for("upgrade_page"))
 
@@ -474,7 +522,7 @@ def premium_analysis_page():
 @app.route("/why-this-trade")
 def why_this_trade_page():
     if not is_logged_in():
-        return redirect(url_for("login_page"))
+        return redirect(url_for("login_page", next=request.path))
     if not has_access("why_this_trade"):
         return redirect(url_for("upgrade_page"))
 
@@ -501,7 +549,7 @@ def upgrade_page():
 @app.route("/upgrade-tier/<tier>")
 def upgrade_tier_action(tier):
     if not is_logged_in():
-        return redirect(url_for("login_page"))
+        return redirect(url_for("login_page", next=request.path))
 
     update_user_tier(session["username"], tier)
     session["tier"] = tier
@@ -512,7 +560,7 @@ def upgrade_tier_action(tier):
 @app.route("/billing")
 def billing_page():
     if not is_logged_in():
-        return redirect(url_for("login_page"))
+        return redirect(url_for("login_page", next=request.path))
 
     return render_template(
         "billing.html",
@@ -525,7 +573,7 @@ def billing_page():
 @app.route("/billing/mock/<plan>")
 def billing_mock(plan):
     if not is_logged_in():
-        return redirect(url_for("login_page"))
+        return redirect(url_for("login_page", next=request.path))
 
     set_billing_status(session["username"], plan, status="active", provider="mock")
     update_user_tier(session["username"], plan)
@@ -536,7 +584,7 @@ def billing_mock(plan):
 @app.route("/account")
 def account_page():
     if not is_logged_in():
-        return redirect(url_for("login_page"))
+        return redirect(url_for("login_page", next=request.path))
 
     return render_template(
         "account.html",
@@ -544,13 +592,15 @@ def account_page():
         prefs=get_preferences(session["username"]),
         billing=get_billing_status(session["username"]),
         unread_notifications=visible_unread_count(),
+        message=request.args.get("message"),
+        error=request.args.get("error"),
     )
 
 
 @app.route("/account/preferences", methods=["POST"])
 def account_preferences_save():
     if not is_logged_in():
-        return redirect(url_for("login_page"))
+        return redirect(url_for("login_page", next=request.path))
 
     prefs = {
         "email_notifications": bool(request.form.get("email_notifications")),
@@ -562,7 +612,37 @@ def account_preferences_save():
     }
 
     save_preferences(session["username"], prefs)
-    return redirect(url_for("account_page"))
+    return redirect(url_for("account_page", message="Preferences saved."))
+
+
+@app.route("/account/change-password", methods=["POST"])
+def account_change_password():
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+
+    current_password = request.form.get("current_password", "")
+    new_password = request.form.get("new_password", "")
+
+    auth = authenticate_user(session["username"], current_password)
+    if not auth:
+        return redirect(url_for("account_page", error="Current password is incorrect."))
+
+    policy = password_policy_check(new_password)
+    if not policy["ok"]:
+        return redirect(url_for("account_page", error=" ".join(policy["errors"])))
+
+    reset_user_password(session["username"], new_password)
+    return redirect(url_for("account_page", message="Password updated successfully."))
+
+
+@app.route("/auth-status")
+def auth_status_page():
+    return render_template(
+        "auth_status.html",
+        auth=session_debug_payload(),
+        user=get_current_user(),
+        unread_notifications=visible_unread_count(),
+    )
 
 
 @app.route("/admin")
@@ -578,17 +658,48 @@ def admin_console():
     )
 
 
+@app.route("/admin/audit-log")
+def admin_audit_log_page():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    return render_template(
+        "admin_audit_log.html",
+        user=get_current_user(),
+        audit=get_admin_audit_log(),
+        unread_notifications=visible_unread_count(),
+    )
+
+
+@app.route("/admin/session-debug")
+def admin_session_debug_page():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    return render_template(
+        "admin_session_debug.html",
+        user=get_current_user(),
+        session_debug=session_debug_payload(),
+        unread_notifications=visible_unread_count(),
+    )
+
+
 @app.route("/admin/create-user", methods=["POST"])
 def admin_create_user():
     if not is_master():
         return redirect(url_for("dashboard_page"))
 
-    create_user(
-        username=request.form.get("username"),
-        password=request.form.get("password"),
-        tier=request.form.get("tier", "Starter"),
-        role=request.form.get("role", "member"),
-    )
+    username = request.form.get("username")
+    password = request.form.get("password")
+    tier = request.form.get("tier", "Starter")
+    role = request.form.get("role", "member")
+
+    policy = password_policy_check(password)
+    if not policy["ok"]:
+        return redirect(url_for("admin_console"))
+
+    create_user(username=username, password=password, tier=tier, role=role)
+    log_admin_action(session["username"], "create_user", username, {"tier": tier, "role": role})
     return redirect(url_for("admin_console"))
 
 
@@ -617,6 +728,7 @@ def admin_user_tier(username):
     new_tier = request.form.get("tier", "Starter")
     update_user_tier(username, new_tier)
     admin_set_billing_status(username, plan=new_tier)
+    log_admin_action(session["username"], "update_tier", username, {"tier": new_tier})
     return redirect(url_for("admin_user_page", username=username))
 
 
@@ -625,7 +737,13 @@ def admin_user_password(username):
     if not is_master():
         return redirect(url_for("dashboard_page"))
 
-    reset_user_password(username, request.form.get("password"))
+    new_password = request.form.get("password", "")
+    policy = password_policy_check(new_password)
+    if not policy["ok"]:
+        return redirect(url_for("admin_user_page", username=username))
+
+    reset_user_password(username, new_password)
+    log_admin_action(session["username"], "reset_password", username, {})
     return redirect(url_for("admin_user_page", username=username))
 
 
@@ -637,7 +755,9 @@ def admin_user_rename(username):
     new_username = request.form.get("new_username")
     ok, _ = rename_user(username, new_username)
     if ok:
+        log_admin_action(session["username"], "rename_user", username, {"new_username": new_username})
         return redirect(url_for("admin_user_page", username=new_username))
+
     return redirect(url_for("admin_user_page", username=username))
 
 
@@ -646,12 +766,28 @@ def admin_user_billing(username):
     if not is_master():
         return redirect(url_for("dashboard_page"))
 
-    admin_set_billing_status(
+    status = request.form.get("status")
+    plan = request.form.get("plan")
+    provider = request.form.get("provider")
+
+    admin_set_billing_status(username, status=status, plan=plan, provider=provider)
+    log_admin_action(
+        session["username"],
+        "update_billing",
         username,
-        status=request.form.get("status"),
-        plan=request.form.get("plan"),
-        provider=request.form.get("provider"),
+        {"status": status, "plan": plan, "provider": provider},
     )
+    return redirect(url_for("admin_user_page", username=username))
+
+
+@app.route("/admin/user/<username>/force-reset", methods=["POST"])
+def admin_user_force_reset(username):
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    required = request.form.get("required", "true").lower() == "true"
+    admin_force_password_reset(username, required=required)
+    log_admin_action(session["username"], "force_password_reset", username, {"required": required})
     return redirect(url_for("admin_user_page", username=username))
 
 
@@ -664,14 +800,18 @@ def admin_user_delete(username):
         return redirect(url_for("admin_user_page", username=username))
 
     delete_user(username)
+    log_admin_action(session["username"], "delete_user", username, {})
     return redirect(url_for("admin_console"))
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
+    next_url = request.args.get("next", "")
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+        next_url = request.args.get("next", "")
 
         auth = authenticate_user(username, password)
 
@@ -679,6 +819,14 @@ def login_page():
             session["username"] = auth["username"]
             session["tier"] = auth["tier"]
             session["role"] = auth["role"]
+            session["last_seen"] = datetime.utcnow().isoformat()
+
+            if auth.get("force_password_reset"):
+                return redirect(url_for("account_page", error="You must change your password before continuing."))
+
+            if next_url:
+                return redirect(next_url)
+
             return redirect(url_for("dashboard_page"))
 
         return render_template(
@@ -686,45 +834,58 @@ def login_page():
             user=get_current_user(),
             unread_notifications=visible_unread_count(),
             error="Invalid username or password.",
+            info=request.args.get("info"),
+            next_url=next_url,
         )
 
     return render_template(
         "login.html",
         user=get_current_user(),
         unread_notifications=visible_unread_count(),
+        error=request.args.get("error"),
+        info=request.args.get("info"),
+        next_url=next_url,
     )
 
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup_page():
     if request.method == "POST":
-        ok, _ = create_user(
-            username=request.form.get("username"),
-            password=request.form.get("password"),
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        policy = password_policy_check(password)
+        if not policy["ok"]:
+            return render_template(
+                "signup.html",
+                user=get_current_user(),
+                unread_notifications=visible_unread_count(),
+                error=" ".join(policy["errors"]),
+            )
+
+        ok, msg = create_user(
+            username=username,
+            password=password,
             tier="Starter",
             role="member",
         )
 
         if ok:
-            set_billing_status(
-                request.form.get("username"),
-                "Starter",
-                status="active",
-                provider="mock",
-            )
-            return redirect(url_for("login_page"))
+            set_billing_status(username, "Starter", status="active", provider="mock")
+            return redirect(url_for("login_page", info="Account created. Please log in."))
 
         return render_template(
             "signup.html",
             user=get_current_user(),
             unread_notifications=visible_unread_count(),
-            error="Username already exists.",
+            error=msg,
         )
 
     return render_template(
         "signup.html",
         user=get_current_user(),
         unread_notifications=visible_unread_count(),
+        error=request.args.get("error"),
     )
 
 
