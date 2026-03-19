@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Trade Timeline</h2>
+
+<div class="card">
+    <p>This page shows the life cycle of trade events over time, including opens, closes, skips, and system actions.</p>
+</div>
+
+{% if timeline and timeline|length > 0 %}
+<table class="table">
+    <tr>
+        <th>Timestamp</th>
+        <th>Symbol</th>
+        <th>Event</th>
+        <th>Details</th>
+    </tr>
+    {% for row in timeline[::-1] %}
+    <tr>
+        <td>{{ row.timestamp }}</td>
+        <td>{{ row.symbol }}</td>
+        <td>{{ row.event }}</td>
+        <td>{{ row.details }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<div class="card">
+    <p>No timeline events yet.</p>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -55,8 +55,8 @@ def premium_depth():
 @app.route("/")
 def landing_page():
     reports = load_json("data/recent_reports.json", [])
-    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if "snapshot" in r]
-    equity_labels = [r["timestamp"] for r in reports if "snapshot" in r]
+    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if isinstance(r, dict) and "snapshot" in r]
+    equity_labels = [r["timestamp"] for r in reports if isinstance(r, dict) and "snapshot" in r]
 
     return render_template(
         "landing.html",
@@ -83,8 +83,8 @@ def modes_page():
 @app.route("/proof")
 def public_proof():
     reports = load_json("data/recent_reports.json", [])
-    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if "snapshot" in r]
-    equity_labels = [r["timestamp"] for r in reports if "snapshot" in r]
+    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if isinstance(r, dict) and "snapshot" in r]
+    equity_labels = [r["timestamp"] for r in reports if isinstance(r, dict) and "snapshot" in r]
 
     return render_template(
         "proof.html",
@@ -125,8 +125,8 @@ def notifications_read_all():
 @app.route("/dashboard")
 def dashboard_page():
     reports = load_json("data/recent_reports.json", [])
-    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if "snapshot" in r]
-    equity_labels = [r["timestamp"] for r in reports if "snapshot" in r]
+    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if isinstance(r, dict) and "snapshot" in r]
+    equity_labels = [r["timestamp"] for r in reports if isinstance(r, dict) and "snapshot" in r]
 
     return render_template(
         "dashboard.html",
@@ -267,9 +267,12 @@ def closed_trades_page():
 
 @app.route("/trade-timeline")
 def trade_timeline_page():
+    timeline = load_json("data/trade_timeline.json", [])
+    if not isinstance(timeline, list):
+        timeline = []
     return render_template(
         "trade_timeline.html",
-        timeline=load_json("data/trade_timeline.json", []),
+        timeline=timeline,
         user=get_current_user(),
         unread_notifications=unread_count()
     )
@@ -312,8 +315,8 @@ def premium_analysis_page():
 
     analysis = load_json("data/premium_analysis.json", [])
     reports = load_json("data/recent_reports.json", [])
-    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if "snapshot" in r]
-    equity_labels = [r["timestamp"] for r in reports if "snapshot" in r]
+    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if isinstance(r, dict) and "snapshot" in r]
+    equity_labels = [r["timestamp"] for r in reports if isinstance(r, dict) and "snapshot" in r]
 
     return render_template(
         "premium_analysis.html",

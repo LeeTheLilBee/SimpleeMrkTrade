@@ -14,7 +14,6 @@
         <a href="/dashboard">Dashboard</a>
         <a href="/proof">Proof</a>
         <a href="/live-activity">Live Activity</a>
-        <a href="/notifications">Notifications{% if unread_notifications and unread_notifications > 0 %} ({{ unread_notifications }}){% endif %}</a>
 
         <div class="dropdown">
             <a href="/trading" class="dropbtn">Trading</a>
@@ -57,6 +56,10 @@
     </div>
 
     <div class="nav-right">
+        <a href="/notifications" class="notification-link">
+            Notifications{% if unread_notifications and unread_notifications > 0 %} ({{ unread_notifications }}){% endif %}
+        </a>
+
         {% if user and user.username %}
             <span class="user-badge">{{ user.username }} | {{ user.tier }}</span>
             <a href="/logout">Logout</a>
