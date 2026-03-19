@@ -15,22 +15,5 @@
       "type": "CALL"
     },
     "atr": 24.587142944335938
-  },
-  {
-    "symbol": "MPC",
-    "strategy": "CALL",
-    "price": 236.24000549316406,
-    "score": 120,
-    "confidence": "MEDIUM",
-    "option": {
-      "symbol": "MPC",
-      "strike": 250.0,
-      "expiry": "2026-04-17",
-      "volume": 237,
-      "openInterest": 807,
-      "score": 60,
-      "type": "CALL"
-    },
-    "atr": 9.059998648507255
   }
 ]

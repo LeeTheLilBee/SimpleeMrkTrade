@@ -110,5 +110,12 @@
     "strategy": "CALL",
     "score": 250,
     "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:01.593185",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 250,
+    "confidence": "MEDIUM"
   }
 ]

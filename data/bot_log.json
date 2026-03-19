@@ -458,5 +458,110 @@
     "timestamp": "2026-03-19T04:30:21.340751",
     "level": "INFO",
     "message": "Bot run completed"
+  },
+  {
+    "timestamp": "2026-03-19T04:53:47.878285",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:00.223425",
+    "level": "INFO",
+    "message": "NFLX filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:00.224242",
+    "level": "INFO",
+    "message": "COIN filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:00.810456",
+    "level": "INFO",
+    "message": "MPC moved to stock-only candidate flow"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:00.811098",
+    "level": "INFO",
+    "message": "VLO filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:00.811740",
+    "level": "INFO",
+    "message": "OXY filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:00.812368",
+    "level": "INFO",
+    "message": "PLTR filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:00.812958",
+    "level": "INFO",
+    "message": "PSX filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:00.813934",
+    "level": "INFO",
+    "message": "PANW filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:00.814615",
+    "level": "INFO",
+    "message": "EOG filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:00.815270",
+    "level": "INFO",
+    "message": "COP filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:01.593739",
+    "level": "INFO",
+    "message": "CVX filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:01.594473",
+    "level": "INFO",
+    "message": "PYPL filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:01.595121",
+    "level": "INFO",
+    "message": "ROKU filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:01.595898",
+    "level": "INFO",
+    "message": "XLE filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:01.596577",
+    "level": "INFO",
+    "message": "UBER filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:01.597275",
+    "level": "INFO",
+    "message": "CRM filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:01.598007",
+    "level": "INFO",
+    "message": "XOM filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:01.598752",
+    "level": "INFO",
+    "message": "ABNB filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:01.599404",
+    "level": "INFO",
+    "message": "AMZN filtered out by advanced trade filter"
+  },
+  {
+    "timestamp": "2026-03-19T04:54:14.306753",
+    "level": "INFO",
+    "message": "Bot run completed"
   }
 ]

@@ -56,6 +56,7 @@ from engine.premium_analysis_builder import save_premium_analysis
 from engine.why_this_trade_builder import save_why_this_trade
 from engine.live_activity import push_activity
 from engine.auto_close_positions import auto_close_positions
+from engine.notifications import push_notification
 
 try:
     from engine.drawdown_brake import drawdown_brake
@@ -218,6 +219,7 @@ def run():
     write_bot_status(True, "starting")
     log_bot("Bot run started", "INFO")
     push_activity("SYSTEM", "Bot run started")
+    push_notification("Bot Started", "A new bot cycle has started.", "info", "/live-activity")
 
     try:
         settle_cash()
@@ -247,49 +249,40 @@ def run():
         print("Sector Cap:", sector_cap)
         print("Exposure Bucket:", exposure)
 
-        log_bot(f"Governor: {governor}", "INFO")
-        log_bot(f"Drawdown Brake: {brake}", "INFO")
-        log_bot(f"Correlation Risk: {corr}", "INFO")
-        log_bot(f"Sector Cap: {sector_cap}", "INFO")
-        log_bot(f"Exposure Bucket: {exposure}", "INFO")
-
         if brake.get("blocked"):
-            print("DRAWDOWN BRAKE BLOCKED NEW TRADES")
             write_bot_status(False, "blocked by drawdown brake")
             log_bot("Blocked by drawdown brake", "WARN")
             push_activity("RISK", "Blocked by drawdown brake")
+            push_notification("Risk Block", "Drawdown brake blocked new trades.", "warning", "/live-activity")
             return
 
         if corr.get("blocked"):
-            print("CORRELATION RISK CONTROL BLOCKED NEW TRADES")
-            print(corr.get("reason"))
             write_bot_status(False, "blocked by correlation risk")
             log_bot("Blocked by correlation risk", "WARN")
             push_activity("RISK", "Blocked by correlation risk")
+            push_notification("Risk Block", "Correlation risk blocked new trades.", "warning", "/live-activity")
             return
 
         if sector_cap.get("blocked"):
-            print("SECTOR CONCENTRATION CAP BLOCKED NEW TRADES")
-            print(sector_cap.get("reason"))
             write_bot_status(False, "blocked by sector cap")
             log_bot("Blocked by sector concentration cap", "WARN")
             push_activity("RISK", "Blocked by sector concentration cap")
+            push_notification("Sector Cap Triggered", "Sector concentration blocked new trades.", "warning", "/live-activity")
             return
 
         if governor.get("blocked"):
-            print("RISK GOVERNOR BLOCKED NEW TRADES")
-            print("Reasons:", governor.get("reasons"))
-
             print_positions()
             review_positions()
 
             closed_now = auto_close_positions()
             if closed_now:
                 push_activity("AUTO_CLOSE", f"Auto-closed {len(closed_now)} position(s)")
+                push_notification("Auto Close", f"{len(closed_now)} position(s) auto-closed under risk controls.", "warning", "/closed-trades")
 
             build_equity_curve()
             report = write_daily_report()
             archive_report()
+
             write_system_status(
                 regime="BLOCKED",
                 volatility="UNKNOWN",
@@ -310,19 +303,18 @@ def run():
             write_bot_status(False, "blocked by governor")
             log_bot("Blocked by governor", "WARN")
             push_activity("RISK", "Blocked by governor")
+            push_notification("Governor Block", "Risk governor blocked new trades.", "warning", "/control")
             return
 
         regime = get_market_regime()
         volatility_payload = get_volatility_environment()
 
         print("Market Regime:", regime)
-        log_bot(f"Market regime: {regime}", "INFO")
         push_activity("MARKET", f"Market regime identified as {regime}")
 
         print("Building rotating watchlist...")
         watchlist = get_watchlist()
         print("Watchlist:", watchlist)
-        log_bot(f"Watchlist built with {len(watchlist)} symbols", "INFO")
         push_activity("WATCHLIST", f"Watchlist built with {len(watchlist)} symbols")
 
         print("Scanning watchlist...")
@@ -334,13 +326,13 @@ def run():
                 results.append(result)
 
         selected_trades, mode = process_signals(results, regime, volatility_payload)
-        log_bot(f"Selected {len(selected_trades)} trades in mode {mode}", "INFO")
         push_activity("QUEUE", f"Selected {len(selected_trades)} trades in mode {mode}")
 
         if _reduced_risk_mode(brake, exposure):
             selected_trades = _trim_for_reduced_risk(selected_trades)
             log_bot("Reduced-risk mode active: trimmed trade queue", "WARN")
             push_activity("RISK", "Reduced-risk mode active: trimmed trade queue")
+            push_notification("Reduced Risk Mode", "Trade queue was trimmed due to elevated portfolio stress.", "warning", "/positions")
 
         save_premium_analysis(
             selected_trades,
@@ -366,6 +358,12 @@ def run():
                     "confidence": trade["confidence"]
                 }
             )
+            push_notification(
+                "New Approved Trade",
+                f"{trade['symbol']} approved as {trade['strategy']} with score {trade['score']}.",
+                "success",
+                "/signals"
+            )
 
         print("Processing trade queue...")
         execute_trades(selected_trades, limit=trades_left_today(executed_trade_count()))
@@ -376,6 +374,7 @@ def run():
         closed_now = auto_close_positions()
         if closed_now:
             push_activity("AUTO_CLOSE", f"Auto-closed {len(closed_now)} position(s)")
+            push_notification("Positions Closed", f"{len(closed_now)} position(s) were auto-closed.", "warning", "/closed-trades")
 
         show_candidates()
 
@@ -383,6 +382,7 @@ def run():
         export_journal()
         report = write_daily_report()
         archive_report()
+
         write_system_status(
             regime=regime,
             volatility=volatility_payload.get("volatility", "UNKNOWN"),
@@ -403,11 +403,13 @@ def run():
         write_bot_status(False, "completed")
         log_bot("Bot run completed", "INFO")
         push_activity("SYSTEM", "Bot run completed")
+        push_notification("Bot Completed", "The latest bot cycle finished successfully.", "success", "/reports")
 
     except Exception as e:
         write_bot_status(False, f"error: {e}")
         log_bot(f"Bot error: {e}", "ERROR")
         push_activity("ERROR", f"Bot error: {e}")
+        push_notification("Bot Error", f"{e}", "error", "/live-activity")
         raise
 
 if __name__ == "__main__":

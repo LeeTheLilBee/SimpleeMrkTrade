@@ -16,6 +16,7 @@ from engine.unrealized_pnl import unrealized_pnl
 from engine.strategy_performance import strategy_breakdown
 from engine.position_monitor import monitor_open_positions
 from engine.closed_trade_stats import closed_trade_stats
+from engine.notifications import list_notifications, unread_count, mark_all_read
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "change_this_secret_key_later"
@@ -55,7 +56,7 @@ def premium_depth():
 def landing_page():
     reports = load_json("data/recent_reports.json", [])
     equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if "snapshot" in r]
-    equity_labels = [r["timestamp"] for r in reports]
+    equity_labels = [r["timestamp"] for r in reports if "snapshot" in r]
 
     return render_template(
         "landing.html",
@@ -63,26 +64,27 @@ def landing_page():
         snapshot=account_snapshot(),
         proof=performance_summary(),
         equity_values=equity_values,
-        equity_labels=equity_labels
+        equity_labels=equity_labels,
+        unread_notifications=unread_count()
     )
 
 @app.route("/get-started")
 def get_started_page():
-    return render_template("get_started.html", user=get_current_user())
+    return render_template("get_started.html", user=get_current_user(), unread_notifications=unread_count())
 
 @app.route("/onboarding")
 def onboarding_page():
-    return render_template("onboarding.html", user=get_current_user())
+    return render_template("onboarding.html", user=get_current_user(), unread_notifications=unread_count())
 
 @app.route("/modes")
 def modes_page():
-    return render_template("modes.html", user=get_current_user())
+    return render_template("modes.html", user=get_current_user(), unread_notifications=unread_count())
 
 @app.route("/proof")
 def public_proof():
     reports = load_json("data/recent_reports.json", [])
     equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if "snapshot" in r]
-    equity_labels = [r["timestamp"] for r in reports]
+    equity_labels = [r["timestamp"] for r in reports if "snapshot" in r]
 
     return render_template(
         "proof.html",
@@ -93,7 +95,8 @@ def public_proof():
         equity_values=equity_values,
         equity_labels=equity_labels,
         proof_detail=has_access("proof_detail"),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/live-activity")
@@ -101,14 +104,29 @@ def live_activity_page():
     return render_template(
         "live_activity.html",
         activity=load_json("data/live_activity.json", []),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
+
+@app.route("/notifications")
+def notifications_page():
+    return render_template(
+        "notifications.html",
+        notifications=list_notifications(),
+        user=get_current_user(),
+        unread_notifications=unread_count()
+    )
+
+@app.route("/notifications/read-all")
+def notifications_read_all():
+    mark_all_read()
+    return redirect(url_for("notifications_page"))
 
 @app.route("/dashboard")
 def dashboard_page():
     reports = load_json("data/recent_reports.json", [])
     equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if "snapshot" in r]
-    equity_labels = [r["timestamp"] for r in reports]
+    equity_labels = [r["timestamp"] for r in reports if "snapshot" in r]
 
     return render_template(
         "dashboard.html",
@@ -124,7 +142,8 @@ def dashboard_page():
         equity_values=equity_values,
         equity_labels=equity_labels,
         signals=load_json("data/live_signals.json", []),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/trading")
@@ -133,7 +152,8 @@ def trading_overview():
         "trading_overview.html",
         signals=load_json("data/live_signals.json", []),
         positions=monitor_open_positions(),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/analytics-overview")
@@ -142,7 +162,8 @@ def analytics_overview():
         "analytics_overview.html",
         stats=analytics(),
         proof=performance_summary(),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/research")
@@ -150,7 +171,8 @@ def research_overview():
     return render_template(
         "research_overview.html",
         candidates=load_json("data/top_candidates.json", []),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/analytics")
@@ -167,19 +189,21 @@ def analytics_page():
         strategies=strategy_breakdown(),
         drawdown=load_json("data/drawdown_history.json", []),
         reports=load_json("data/recent_reports.json", []),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/knowledge")
 def knowledge_page():
-    return render_template("knowledge.html", user=get_current_user())
+    return render_template("knowledge.html", user=get_current_user(), unread_notifications=unread_count())
 
 @app.route("/candidates")
 def candidates_page():
     return render_template(
         "candidates.html",
         top_candidates=load_json("data/top_candidates.json", []),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/equity")
@@ -187,7 +211,8 @@ def equity_page():
     return render_template(
         "equity.html",
         curve=load_json("data/equity_curve.json", [1000]),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/status")
@@ -196,7 +221,8 @@ def status_page():
         "status.html",
         system=load_json("data/system_status.json", {}),
         market=load_json("data/market_snapshot.json", {}),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/reports")
@@ -205,7 +231,8 @@ def reports_page():
         "reports.html",
         reports=load_json("data/recent_reports.json", []),
         closed_stats=closed_trade_stats(),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/signals")
@@ -216,7 +243,8 @@ def signals_page():
     return render_template(
         "signals.html",
         signals=load_json("data/live_signals.json", []),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/positions")
@@ -224,7 +252,8 @@ def positions_page():
     return render_template(
         "positions.html",
         positions=monitor_open_positions(),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/closed-trades")
@@ -232,7 +261,8 @@ def closed_trades_page():
     return render_template(
         "closed_trades.html",
         closed_trades=load_json("data/closed_positions.json", []),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/trade-timeline")
@@ -240,7 +270,8 @@ def trade_timeline_page():
     return render_template(
         "trade_timeline.html",
         timeline=load_json("data/trade_timeline.json", []),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/bot-log")
@@ -248,7 +279,8 @@ def bot_log_page():
     return render_template(
         "bot_log.html",
         bot_log=load_json("data/bot_log.json", []),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/control")
@@ -256,7 +288,8 @@ def control_page():
     return render_template(
         "control.html",
         bot_status=load_json("data/bot_status.json", {}),
-        user=get_current_user()
+        user=get_current_user(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/premium")
@@ -266,7 +299,8 @@ def premium_hub():
     return render_template(
         "premium_hub.html",
         user=get_current_user(),
-        tier_config=get_tier_config()
+        tier_config=get_tier_config(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/premium-analysis")
@@ -279,7 +313,7 @@ def premium_analysis_page():
     analysis = load_json("data/premium_analysis.json", [])
     reports = load_json("data/recent_reports.json", [])
     equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if "snapshot" in r]
-    equity_labels = [r["timestamp"] for r in reports]
+    equity_labels = [r["timestamp"] for r in reports if "snapshot" in r]
 
     return render_template(
         "premium_analysis.html",
@@ -287,7 +321,8 @@ def premium_analysis_page():
         user=get_current_user(),
         equity_values=equity_values,
         equity_labels=equity_labels,
-        premium_depth=premium_depth()
+        premium_depth=premium_depth(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/why-this-trade")
@@ -301,7 +336,8 @@ def why_this_trade_page():
         "why_this_trade.html",
         explanations=load_json("data/why_this_trade.json", []),
         user=get_current_user(),
-        premium_depth=premium_depth()
+        premium_depth=premium_depth(),
+        unread_notifications=unread_count()
     )
 
 @app.route("/upgrade")
@@ -310,12 +346,13 @@ def upgrade_page():
     return render_template(
         "upgrade.html",
         user=get_current_user(),
-        tiers=tiers
+        tiers=tiers,
+        unread_notifications=unread_count()
     )
 
 @app.route("/login")
 def login_page():
-    return render_template("login.html", user=get_current_user())
+    return render_template("login.html", user=get_current_user(), unread_notifications=unread_count())
 
 @app.route("/login", methods=["POST"])
 def login_submit():
@@ -334,7 +371,7 @@ def login_submit():
 
 @app.route("/signup")
 def signup_page():
-    return render_template("signup.html", user=get_current_user())
+    return render_template("signup.html", user=get_current_user(), unread_notifications=unread_count())
 
 @app.route("/signup", methods=["POST"])
 def signup_submit():
@@ -391,6 +428,14 @@ def api_account():
 @app.route("/api/bot-status")
 def api_bot_status():
     return jsonify(load_json("data/bot_status.json", {}))
+
+@app.route("/api/activity")
+def api_activity():
+    return jsonify(load_json("data/live_activity.json", []))
+
+@app.route("/api/notifications")
+def api_notifications():
+    return jsonify(list_notifications())
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

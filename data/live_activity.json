@@ -68,5 +68,40 @@
     "message": "Bot run completed",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T04:53:47.878982",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T04:53:48.587909",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T04:53:57.086806",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T04:54:01.600474",
+    "event_type": "QUEUE",
+    "message": "Selected 0 trades in mode DEFENSIVE_BEAR",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T04:54:14.307413",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed",
+    "symbol": null,
+    "meta": {}
   }
 ]

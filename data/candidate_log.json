@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 60,
+    "confidence": "MEDIUM",
+    "type": "STOCK_ONLY_CANDIDATE"
+  }
+]
