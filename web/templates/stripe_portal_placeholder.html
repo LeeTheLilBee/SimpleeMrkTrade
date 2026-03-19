@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Stripe Customer Portal Placeholder</h2>
+
+<div class="card">
+    <p>This is where a real Stripe billing portal would open for subscription management.</p>
+    <p><b>User:</b> {{ payload.username }}</p>
+    <p><b>Provider:</b> {{ payload.provider }}</p>
+</div>
+
+<div class="card">
+    <p>When Stripe is wired in for real, users will manage cancellation, payment methods, and invoices here.</p>
+    <p><a href="/billing" class="cta-btn">Back to Billing</a></p>
+</div>
+
+{% endblock %}

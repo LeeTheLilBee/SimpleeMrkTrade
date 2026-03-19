@@ -4,7 +4,7 @@
 <h2>Billing & Subscription</h2>
 
 <div class="card">
-    <p>This page is billing-ready. It is structured so a real payment provider like Stripe can be plugged in later without changing your user flow.</p>
+    <p>This page is now structured for real Stripe integration later. Right now it includes working mock actions and Stripe-ready placeholders.</p>
 </div>
 
 <div class="grid">
@@ -16,19 +16,35 @@
         <p><b>Renewal Date:</b> {{ billing.renewal_date or "Not set" }}</p>
         <p><b>Checkout Ready:</b> {{ billing.checkout_ready }}</p>
         <p><b>Portal Ready:</b> {{ billing.portal_ready }}</p>
+        <p><b>Price ID:</b> {{ billing.stripe_price_id or "Not set" }}</p>
+        <p><b>Last Event:</b> {{ billing.last_event or "None" }}</p>
     </div>
 
     <div class="card">
-        <h3>Available Actions</h3>
+        <h3>Mock Billing Actions</h3>
         <p><a href="/billing/mock/Starter" class="cta-btn secondary">Mock Starter</a></p>
         <p><a href="/billing/mock/Pro" class="cta-btn">Mock Pro</a></p>
         <p><a href="/billing/mock/Elite" class="cta-btn secondary">Mock Elite</a></p>
     </div>
 </div>
 
+<div class="grid">
+    <div class="card">
+        <h3>Stripe Checkout Prep</h3>
+        <p><a href="/billing/stripe/checkout/Starter" class="cta-btn secondary">Stripe Starter</a></p>
+        <p><a href="/billing/stripe/checkout/Pro" class="cta-btn">Stripe Pro</a></p>
+        <p><a href="/billing/stripe/checkout/Elite" class="cta-btn secondary">Stripe Elite</a></p>
+    </div>
+
+    <div class="card">
+        <h3>Stripe Portal Prep</h3>
+        <p><a href="/billing/stripe/portal" class="cta-btn">Open Portal Placeholder</a></p>
+    </div>
+</div>
+
 <div class="card">
     <h3>Why This Matters</h3>
-    <p>This is the hook layer that future billing will connect to. Today it can simulate plan changes. Later it can receive Stripe checkout results, customer portal updates, and renewal events.</p>
+    <p>Today this simulates plan changes. Later, the same flow can receive Stripe checkout completions, customer portal updates, and webhook events without changing your product structure.</p>
 </div>
 
 {% endblock %}

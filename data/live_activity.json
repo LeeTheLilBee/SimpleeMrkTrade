@@ -219,5 +219,33 @@
     "message": "Bot run completed",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T09:33:18.519870",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T09:33:19.054571",
+    "event_type": "RISK",
+    "message": "Blocked by correlation risk",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T09:33:29.242638",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T09:33:29.971439",
+    "event_type": "RISK",
+    "message": "Blocked by correlation risk",
+    "symbol": null,
+    "meta": {}
   }
 ]

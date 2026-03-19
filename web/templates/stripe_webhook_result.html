@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Stripe Webhook Result</h2>
+
+<div class="card">
+    <p><b>Processed:</b> {{ result.ok }}</p>
+    <p><b>Message:</b> {{ result.message if result.message else "Event processed." }}</p>
+</div>
+
+{% if result.billing %}
+<div class="card">
+    <p><b>Plan:</b> {{ result.billing.plan }}</p>
+    <p><b>Status:</b> {{ result.billing.status }}</p>
+    <p><b>Provider:</b> {{ result.billing.provider }}</p>
+    <p><b>Last Event:</b> {{ result.billing.last_event }}</p>
+</div>
+{% endif %}
+
+{% endblock %}

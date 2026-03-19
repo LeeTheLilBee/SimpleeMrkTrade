@@ -38,6 +38,7 @@ from engine.auth_utils import (
 )
 from engine.auth_policy import password_policy_check
 from engine.admin_audit import log_admin_action, get_admin_audit_log
+from engine.stripe_stub import start_checkout, open_customer_portal, simulate_checkout_success, process_webhook_event
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "change_this_secret_key_later_to_something_long_random"
@@ -46,7 +47,6 @@ ensure_secure_user_store()
 
 SESSION_TIMEOUT_MINUTES = 720
 
-
 def load_json(path, default):
     file = Path(path)
     if not file.exists():
@@ -54,11 +54,9 @@ def load_json(path, default):
     with open(file, "r") as f:
         return json.load(f)
 
-
 def save_json(path, data):
     with open(path, "w") as f:
-        json.dump(data, f, indent=2)
-
+        return json.dump(data, f, indent=2)
 
 def get_current_user():
     return {
@@ -67,32 +65,26 @@ def get_current_user():
         "role": session.get("role", "member"),
     }
 
-
 def is_logged_in():
     return session.get("username") is not None
 
-
 def is_master():
     return session.get("role") == "master"
-
 
 def get_tier_config():
     tiers = load_json("data/subscription_tiers.json", {})
     tier = session.get("tier", "Guest")
     return tiers.get(tier, tiers.get("Guest", {}))
 
-
 def has_access(feature):
     if is_master():
         return True
     return bool(get_tier_config().get(feature, False))
 
-
 def premium_depth():
     if is_master():
         return "max"
     return get_tier_config().get("premium_depth", "none")
-
 
 def visible_notifications():
     user = get_current_user()
@@ -102,7 +94,6 @@ def visible_notifications():
         username=user["username"],
     )
 
-
 def visible_unread_count():
     user = get_current_user()
     return unread_count_for_user(
@@ -110,7 +101,6 @@ def visible_unread_count():
         logged_in=is_logged_in(),
         username=user["username"],
     )
-
 
 def session_debug_payload():
     username = session.get("username")
@@ -122,7 +112,6 @@ def session_debug_payload():
         "last_seen": session.get("last_seen"),
         "force_password_reset": get_force_password_reset(username) if username else False,
     }
-
 
 def template_context(extra=None):
     user = get_current_user()
@@ -136,7 +125,6 @@ def template_context(extra=None):
         base.update(extra)
     return base
 
-
 @app.before_request
 def enforce_session_timeout():
     exempt = {
@@ -146,6 +134,7 @@ def enforce_session_timeout():
         "static",
         "api_activity",
         "api_notifications",
+        "stripe_webhook_page",
     }
 
     if request.endpoint in exempt:
@@ -166,20 +155,11 @@ def enforce_session_timeout():
 
         session["last_seen"] = now.isoformat()
 
-
 @app.route("/")
 def landing_page():
     reports = load_json("data/recent_reports.json", [])
-    equity_values = [
-        r["snapshot"]["estimated_account_value"]
-        for r in reports
-        if isinstance(r, dict) and "snapshot" in r
-    ]
-    equity_labels = [
-        r["timestamp"]
-        for r in reports
-        if isinstance(r, dict) and "snapshot" in r
-    ]
+    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if isinstance(r, dict) and "snapshot" in r]
+    equity_labels = [r["timestamp"] for r in reports if isinstance(r, dict) and "snapshot" in r]
     return render_template("landing.html", **template_context({
         "snapshot": account_snapshot(),
         "proof": performance_summary(),
@@ -187,35 +167,23 @@ def landing_page():
         "equity_labels": equity_labels,
     }))
 
-
 @app.route("/get-started")
 def get_started_page():
     return render_template("get_started.html", **template_context())
-
 
 @app.route("/onboarding")
 def onboarding_page():
     return render_template("onboarding.html", **template_context())
 
-
 @app.route("/modes")
 def modes_page():
     return render_template("modes.html", **template_context())
 
-
 @app.route("/proof")
 def public_proof():
     reports = load_json("data/recent_reports.json", [])
-    equity_values = [
-        r["snapshot"]["estimated_account_value"]
-        for r in reports
-        if isinstance(r, dict) and "snapshot" in r
-    ]
-    equity_labels = [
-        r["timestamp"]
-        for r in reports
-        if isinstance(r, dict) and "snapshot" in r
-    ]
+    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if isinstance(r, dict) and "snapshot" in r]
+    equity_labels = [r["timestamp"] for r in reports if isinstance(r, dict) and "snapshot" in r]
     return render_template("proof.html", **template_context({
         "snapshot": account_snapshot(),
         "proof": performance_summary(),
@@ -226,13 +194,11 @@ def public_proof():
         "proof_detail": has_access("proof_detail"),
     }))
 
-
 @app.route("/live-activity")
 def live_activity_page():
     return render_template("live_activity.html", **template_context({
         "activity": load_json("data/live_activity.json", []),
     }))
-
 
 @app.route("/notifications")
 def notifications_page():
@@ -240,26 +206,16 @@ def notifications_page():
         "notifications": visible_notifications(),
     }))
 
-
 @app.route("/notifications/read-all")
 def notifications_read_all():
     mark_all_read()
     return redirect(url_for("notifications_page"))
 
-
 @app.route("/dashboard")
 def dashboard_page():
     reports = load_json("data/recent_reports.json", [])
-    equity_values = [
-        r["snapshot"]["estimated_account_value"]
-        for r in reports
-        if isinstance(r, dict) and "snapshot" in r
-    ]
-    equity_labels = [
-        r["timestamp"]
-        for r in reports
-        if isinstance(r, dict) and "snapshot" in r
-    ]
+    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if isinstance(r, dict) and "snapshot" in r]
+    equity_labels = [r["timestamp"] for r in reports if isinstance(r, dict) and "snapshot" in r]
     return render_template("dashboard.html", **template_context({
         "state": get_dashboard_state(),
         "snapshot": account_snapshot(),
@@ -275,14 +231,12 @@ def dashboard_page():
         "signals": load_json("data/live_signals.json", []),
     }))
 
-
 @app.route("/trading")
 def trading_overview():
     return render_template("trading_overview.html", **template_context({
         "signals": load_json("data/live_signals.json", []),
         "positions": monitor_open_positions(),
     }))
-
 
 @app.route("/analytics-overview")
 def analytics_overview():
@@ -291,13 +245,11 @@ def analytics_overview():
         "proof": performance_summary(),
     }))
 
-
 @app.route("/research")
 def research_overview():
     return render_template("research_overview.html", **template_context({
         "candidates": load_json("data/top_candidates.json", []),
     }))
-
 
 @app.route("/analytics")
 def analytics_page():
@@ -313,11 +265,9 @@ def analytics_page():
         "reports": load_json("data/recent_reports.json", []),
     }))
 
-
 @app.route("/knowledge")
 def knowledge_page():
     return render_template("knowledge.html", **template_context())
-
 
 @app.route("/candidates")
 def candidates_page():
@@ -325,13 +275,11 @@ def candidates_page():
         "top_candidates": load_json("data/top_candidates.json", []),
     }))
 
-
 @app.route("/equity")
 def equity_page():
     return render_template("equity.html", **template_context({
         "curve": load_json("data/equity_curve.json", [1000]),
     }))
-
 
 @app.route("/status")
 def status_page():
@@ -340,14 +288,12 @@ def status_page():
         "market": load_json("data/market_snapshot.json", {}),
     }))
 
-
 @app.route("/reports")
 def reports_page():
     return render_template("reports.html", **template_context({
         "reports": load_json("data/recent_reports.json", []),
         "closed_stats": closed_trade_stats(),
     }))
-
 
 @app.route("/signals")
 def signals_page():
@@ -357,20 +303,17 @@ def signals_page():
         "signals": load_json("data/live_signals.json", []),
     }))
 
-
 @app.route("/positions")
 def positions_page():
     return render_template("positions.html", **template_context({
         "positions": monitor_open_positions(),
     }))
 
-
 @app.route("/closed-trades")
 def closed_trades_page():
     return render_template("closed_trades.html", **template_context({
         "closed_trades": load_json("data/closed_positions.json", []),
     }))
-
 
 @app.route("/trade-timeline")
 def trade_timeline_page():
@@ -381,7 +324,6 @@ def trade_timeline_page():
         "timeline": timeline,
     }))
 
-
 @app.route("/bot-log")
 def bot_log_page():
     bot_log = load_json("data/bot_log.json", [])
@@ -391,13 +333,11 @@ def bot_log_page():
         "bot_log": bot_log,
     }))
 
-
 @app.route("/control")
 def control_page():
     return render_template("control.html", **template_context({
         "bot_status": load_json("data/bot_status.json", {}),
     }))
-
 
 @app.route("/premium")
 def premium_hub():
@@ -406,7 +346,6 @@ def premium_hub():
     return render_template("premium_hub.html", **template_context({
         "tier_config": get_tier_config(),
     }))
-
 
 @app.route("/premium-analysis")
 def premium_analysis_page():
@@ -420,16 +359,8 @@ def premium_analysis_page():
         analysis = []
 
     reports = load_json("data/recent_reports.json", [])
-    equity_values = [
-        r["snapshot"]["estimated_account_value"]
-        for r in reports
-        if isinstance(r, dict) and "snapshot" in r
-    ]
-    equity_labels = [
-        r["timestamp"]
-        for r in reports
-        if isinstance(r, dict) and "snapshot" in r
-    ]
+    equity_values = [r["snapshot"]["estimated_account_value"] for r in reports if isinstance(r, dict) and "snapshot" in r]
+    equity_labels = [r["timestamp"] for r in reports if isinstance(r, dict) and "snapshot" in r]
 
     return render_template("premium_analysis.html", **template_context({
         "analysis": analysis,
@@ -437,7 +368,6 @@ def premium_analysis_page():
         "equity_labels": equity_labels,
         "premium_depth": premium_depth(),
     }))
-
 
 @app.route("/why-this-trade")
 def why_this_trade_page():
@@ -455,14 +385,12 @@ def why_this_trade_page():
         "premium_depth": premium_depth(),
     }))
 
-
 @app.route("/upgrade")
 def upgrade_page():
     tiers = load_json("data/subscription_tiers.json", {})
     return render_template("upgrade.html", **template_context({
         "tiers": tiers,
     }))
-
 
 @app.route("/upgrade-tier/<tier>")
 def upgrade_tier_action(tier):
@@ -474,7 +402,6 @@ def upgrade_tier_action(tier):
     set_billing_status(session["username"], tier, status="active", provider="mock")
     return redirect(url_for("premium_hub"))
 
-
 @app.route("/billing")
 def billing_page():
     if not is_logged_in():
@@ -482,7 +409,6 @@ def billing_page():
     return render_template("billing.html", **template_context({
         "billing": get_billing_status(session["username"]),
     }))
-
 
 @app.route("/billing/mock/<plan>")
 def billing_mock(plan):
@@ -493,6 +419,60 @@ def billing_mock(plan):
     session["tier"] = plan
     return redirect(url_for("billing_page"))
 
+@app.route("/billing/stripe/checkout/<plan>")
+def stripe_checkout_page(plan):
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+    payload = start_checkout(session["username"], plan)
+    return render_template("stripe_checkout_placeholder.html", **template_context({
+        "payload": payload,
+    }))
+
+@app.route("/billing/stripe/portal")
+def stripe_portal_page():
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+    payload = open_customer_portal(session["username"])
+    return render_template("stripe_portal_placeholder.html", **template_context({
+        "payload": payload,
+    }))
+
+@app.route("/billing/stripe/simulated-success")
+def stripe_simulated_success():
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+
+    username = request.args.get("user", session["username"])
+    plan = request.args.get("plan", "Starter")
+
+    simulate_checkout_success(username, plan)
+    update_user_tier(username, plan)
+
+    if username == session["username"]:
+        session["tier"] = plan
+
+    return redirect(url_for("billing_page"))
+
+@app.route("/stripe/webhook", methods=["POST"])
+def stripe_webhook_page():
+    payload = request.get_json(silent=True) or {}
+    event_type = payload.get("type")
+    username = payload.get("username")
+    plan = payload.get("plan")
+
+    result = process_webhook_event(event_type, username=username, plan=plan)
+    return jsonify(result)
+
+@app.route("/stripe/webhook/test")
+def stripe_webhook_test_page():
+    username = request.args.get("user", session.get("username"))
+    event_type = request.args.get("type", "invoice.paid")
+    plan = request.args.get("plan")
+
+    result = process_webhook_event(event_type, username=username, plan=plan)
+    return render_template("stripe_webhook_result.html", **template_context({
+        "result": result,
+    }))
 
 @app.route("/account")
 def account_page():
@@ -504,7 +484,6 @@ def account_page():
         "message": request.args.get("message"),
         "error": request.args.get("error"),
     }))
-
 
 @app.route("/account/preferences", methods=["POST"])
 def account_preferences_save():
@@ -522,7 +501,6 @@ def account_preferences_save():
 
     save_preferences(session["username"], prefs)
     return redirect(url_for("account_page", message="Preferences saved."))
-
 
 @app.route("/account/change-password", methods=["POST"])
 def account_change_password():
@@ -543,13 +521,11 @@ def account_change_password():
     reset_user_password(session["username"], new_password)
     return redirect(url_for("account_page", message="Password updated successfully."))
 
-
 @app.route("/auth-status")
 def auth_status_page():
     return render_template("auth_status.html", **template_context({
         "auth": session_debug_payload(),
     }))
-
 
 @app.route("/admin")
 def admin_console():
@@ -559,7 +535,6 @@ def admin_console():
         "users": list_users(),
     }))
 
-
 @app.route("/admin/audit-log")
 def admin_audit_log_page():
     if not is_master():
@@ -568,7 +543,6 @@ def admin_audit_log_page():
         "audit": get_admin_audit_log(),
     }))
 
-
 @app.route("/admin/session-debug")
 def admin_session_debug_page():
     if not is_master():
@@ -576,7 +550,6 @@ def admin_session_debug_page():
     return render_template("admin_session_debug.html", **template_context({
         "session_debug": session_debug_payload(),
     }))
-
 
 @app.route("/admin/create-user", methods=["POST"])
 def admin_create_user():
@@ -597,7 +570,6 @@ def admin_create_user():
     log_admin_action(session["username"], "create_user", username, {"tier": tier, "role": role, "email": email})
     return redirect(url_for("admin_console"))
 
-
 @app.route("/admin/user/<username>")
 def admin_user_page(username):
     if not is_master():
@@ -611,7 +583,6 @@ def admin_user_page(username):
         "record": record,
     }))
 
-
 @app.route("/admin/user/<username>/tier", methods=["POST"])
 def admin_user_tier(username):
     if not is_master():
@@ -622,7 +593,6 @@ def admin_user_tier(username):
     admin_set_billing_status(username, plan=new_tier)
     log_admin_action(session["username"], "update_tier", username, {"tier": new_tier})
     return redirect(url_for("admin_user_page", username=username))
-
 
 @app.route("/admin/user/<username>/password", methods=["POST"])
 def admin_user_password(username):
@@ -638,7 +608,6 @@ def admin_user_password(username):
     log_admin_action(session["username"], "reset_password", username, {})
     return redirect(url_for("admin_user_page", username=username))
 
-
 @app.route("/admin/user/<username>/rename", methods=["POST"])
 def admin_user_rename(username):
     if not is_master():
@@ -652,7 +621,6 @@ def admin_user_rename(username):
 
     return redirect(url_for("admin_user_page", username=username))
 
-
 @app.route("/admin/user/<username>/billing", methods=["POST"])
 def admin_user_billing(username):
     if not is_master():
@@ -663,14 +631,8 @@ def admin_user_billing(username):
     provider = request.form.get("provider")
 
     admin_set_billing_status(username, status=status, plan=plan, provider=provider)
-    log_admin_action(
-        session["username"],
-        "update_billing",
-        username,
-        {"status": status, "plan": plan, "provider": provider},
-    )
+    log_admin_action(session["username"], "update_billing", username, {"status": status, "plan": plan, "provider": provider})
     return redirect(url_for("admin_user_page", username=username))
-
 
 @app.route("/admin/user/<username>/force-reset", methods=["POST"])
 def admin_user_force_reset(username):
@@ -681,7 +643,6 @@ def admin_user_force_reset(username):
     admin_force_password_reset(username, required=required)
     log_admin_action(session["username"], "force_password_reset", username, {"required": required})
     return redirect(url_for("admin_user_page", username=username))
-
 
 @app.route("/admin/user/<username>/delete", methods=["POST"])
 def admin_user_delete(username):
@@ -694,7 +655,6 @@ def admin_user_delete(username):
     delete_user(username)
     log_admin_action(session["username"], "delete_user", username, {})
     return redirect(url_for("admin_console"))
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
@@ -733,7 +693,6 @@ def login_page():
         "next_url": next_url,
     }))
 
-
 @app.route("/signup", methods=["GET", "POST"])
 def signup_page():
     if request.method == "POST":
@@ -767,12 +726,10 @@ def signup_page():
         "error": request.args.get("error"),
     }))
 
-
 @app.route("/logout")
 def logout_page():
     session.clear()
     return redirect(url_for("landing_page"))
-
 
 @app.route("/runbot", methods=["POST"])
 def runbot_action():
@@ -781,47 +738,38 @@ def runbot_action():
         subprocess.Popen(["python", "-m", "engine.bot"])
     return redirect(url_for("control_page"))
 
-
 @app.route("/stopbot", methods=["POST"])
 def stopbot_action():
     subprocess.Popen(["pkill", "-f", "python -m engine.bot"])
     return redirect(url_for("control_page"))
 
-
 @app.route("/refreshstatus", methods=["POST"])
 def refresh_status():
     return redirect(url_for("control_page"))
-
 
 @app.route("/api/signals")
 def api_signals():
     return jsonify(load_json("data/live_signals.json", []))
 
-
 @app.route("/api/top-candidates")
 def api_top_candidates():
     return jsonify(load_json("data/top_candidates.json", []))
-
 
 @app.route("/api/account")
 def api_account():
     return jsonify(account_snapshot())
 
-
 @app.route("/api/bot-status")
 def api_bot_status():
     return jsonify(load_json("data/bot_status.json", {}))
-
 
 @app.route("/api/activity")
 def api_activity():
     return jsonify(load_json("data/live_activity.json", []))
 
-
 @app.route("/api/notifications")
 def api_notifications():
     return jsonify(visible_notifications())
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

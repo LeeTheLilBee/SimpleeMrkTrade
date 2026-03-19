@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Stripe Checkout Placeholder</h2>
+
+<div class="card">
+    <p>This is the future checkout handoff point.</p>
+    <p><b>User:</b> {{ payload.username }}</p>
+    <p><b>Plan:</b> {{ payload.plan }}</p>
+    <p><b>Provider:</b> {{ payload.provider }}</p>
+    <p><b>Price ID:</b> {{ payload.price_id }}</p>
+</div>
+
+<div class="card">
+    <p>In production, this would redirect to a real Stripe Checkout Session.</p>
+    <p><a href="{{ payload.checkout_url }}" class="cta-btn">Simulate Successful Checkout</a></p>
+</div>
+
+{% endblock %}
