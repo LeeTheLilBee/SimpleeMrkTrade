@@ -6,7 +6,7 @@
 <div class="card">
     <p>
         This dashboard gives a high-level view of account condition, market state, and system activity.
-        Deeper analysis, richer interpretation, and premium explanation layers live behind subscriber access.
+        Premium layers unlock deeper context and richer interpretation depending on tier.
     </p>
 </div>
 
@@ -79,10 +79,15 @@
         </tr>
         {% endfor %}
     </table>
-    <p>
-        <a href="/research">Open Research</a> |
-        <a href="/upgrade">Unlock deeper research context</a>
-    </p>
+
+    {% if user.tier in ["Pro", "Elite"] or user.role == "master" %}
+        <p><a href="/research">Open Research</a></p>
+    {% else %}
+        <p>
+            <a href="/research">Open Research</a> |
+            <a href="/upgrade">Unlock deeper research context</a>
+        </p>
+    {% endif %}
 </div>
 
 <div class="card">
@@ -97,7 +102,12 @@
         </tr>
         {% endfor %}
     </table>
-    <p><a href="/upgrade">Unlock full signal workflow</a></p>
+
+    {% if user.tier in ["Starter", "Pro", "Elite"] or user.role == "master" %}
+        <p><a href="/signals">Open Full Signals</a></p>
+    {% else %}
+        <p><a href="/upgrade">Unlock full signal workflow</a></p>
+    {% endif %}
 </div>
 
 <div class="card">
@@ -113,7 +123,15 @@
         </tr>
         {% endfor %}
     </table>
-    <p><a href="/positions">Open Full Position Intelligence</a></p>
+
+    {% if user.tier in ["Pro", "Elite"] or user.role == "master" %}
+        <p><a href="/positions">Open Full Position Intelligence</a></p>
+    {% else %}
+        <p>
+            <a href="/positions">Open Position Snapshot</a> |
+            <a href="/upgrade">Unlock deeper position intelligence</a>
+        </p>
+    {% endif %}
 </div>
 
 <script>

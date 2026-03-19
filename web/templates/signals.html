@@ -1,20 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
+
 <h2>Live Signals</h2>
-{% for s in signals[::-1] %}
+
 <div class="card">
-<b>{{ s.symbol }}</b> | {{ s.strategy }} | Score: {{ s.score }} | Confidence: {{ s.confidence }} | {{ s.timestamp }}
+    <p>This page shows the latest approved trade opportunities available to your access level.</p>
 </div>
 
-@app.route("/signals")
-def signals_page():
-    if not has_access("signals"):
-        return render_template("paywall.html", user=CURRENT_USER)
+{% if signals and signals|length > 0 %}
+<table class="table">
+    <tr>
+        <th>Timestamp</th>
+        <th>Symbol</th>
+        <th>Strategy</th>
+        <th>Score</th>
+        <th>Confidence</th>
+    </tr>
 
-    return render_template(
-        "signals.html",
-        signals=load_json("data/live_signals.json", []),
-        user=CURRENT_USER
-    )
-{% endfor %}
+    {% for s in signals[::-1] %}
+    <tr>
+        <td>{{ s.timestamp }}</td>
+        <td>{{ s.symbol }}</td>
+        <td>{{ s.strategy }}</td>
+        <td>{{ s.score }}</td>
+        <td>{{ s.confidence }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<div class="card">
+    <p>No live signals yet.</p>
+</div>
+{% endif %}
+
 {% endblock %}

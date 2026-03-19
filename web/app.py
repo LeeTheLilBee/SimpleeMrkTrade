@@ -63,9 +63,13 @@ def get_tier_config():
     return tiers.get(tier, tiers.get("Guest", {}))
 
 def has_access(feature):
+    if is_master():
+        return True
     return bool(get_tier_config().get(feature, False))
 
 def premium_depth():
+    if is_master():
+        return "max"
     return get_tier_config().get("premium_depth", "none")
 
 def visible_notifications():

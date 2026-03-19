@@ -6,13 +6,14 @@
 <div class="card">
     <p><b>User:</b> {{ user.username }}</p>
     <p><b>Tier:</b> {{ user.tier }}</p>
+    <p><b>Role:</b> {{ user.role }}</p>
 </div>
 
 <div class="grid">
     <div class="card">
         <h3>Premium Analysis</h3>
         <p>Chart-backed setup reviews and protected research context.</p>
-        {% if tier_config.premium_analysis %}
+        {% if tier_config.premium_analysis or user.role == "master" %}
             <a href="/premium-analysis">Open Premium Analysis</a>
         {% else %}
             <a href="/upgrade">Upgrade to Unlock</a>
@@ -22,7 +23,7 @@
     <div class="card">
         <h3>Why This Trade</h3>
         <p>Deeper explanation of why important trades were selected.</p>
-        {% if tier_config.why_this_trade %}
+        {% if tier_config.why_this_trade or user.role == "master" %}
             <a href="/why-this-trade">Open Why This Trade</a>
         {% else %}
             <a href="/upgrade">Upgrade to Unlock</a>
