@@ -35,9 +35,6 @@ def save_json(path, data):
 def is_logged_in():
     return CURRENT_USER.get("username") is not None
 
-def tier_allows_premium():
-    return CURRENT_USER.get("tier") in ["Pro", "Elite"]
-
 def has_access(feature):
     tiers = load_json("data/subscription_tiers.json", {})
     user_tier = CURRENT_USER.get("tier", "Guest")
@@ -57,6 +54,10 @@ def landing_page():
         equity_values=equity_values,
         equity_labels=equity_labels
     )
+
+@app.route("/get-started")
+def get_started_page():
+    return render_template("get_started.html", user=CURRENT_USER)
 
 @app.route("/dashboard")
 def dashboard_page():
@@ -109,6 +110,9 @@ def research_overview():
 
 @app.route("/analytics")
 def analytics_page():
+    if not has_access("full_analytics"):
+        return render_template("paywall.html", user=CURRENT_USER)
+
     return render_template(
         "analytics.html",
         stats=analytics(),
@@ -157,6 +161,9 @@ def reports_page():
 
 @app.route("/signals")
 def signals_page():
+    if not has_access("signals"):
+        return render_template("paywall.html", user=CURRENT_USER)
+
     return render_template("signals.html", signals=load_json("data/live_signals.json", []), user=CURRENT_USER)
 
 @app.route("/positions")
@@ -193,7 +200,7 @@ def premium_hub():
 def premium_analysis_page():
     if not is_logged_in():
         return redirect(url_for("login_page"))
-    if not tier_allows_premium():
+    if not has_access("premium_analysis"):
         return render_template("paywall.html", user=CURRENT_USER)
 
     analysis = load_json("data/premium_analysis.json", [])
@@ -207,6 +214,19 @@ def premium_analysis_page():
         user=CURRENT_USER,
         equity_values=equity_values,
         equity_labels=equity_labels
+    )
+
+@app.route("/why-this-trade")
+def why_this_trade_page():
+    if not is_logged_in():
+        return redirect(url_for("login_page"))
+    if not has_access("premium_analysis"):
+        return render_template("paywall.html", user=CURRENT_USER)
+
+    return render_template(
+        "why_this_trade.html",
+        explanations=load_json("data/why_this_trade.json", []),
+        user=CURRENT_USER
     )
 
 @app.route("/runbot", methods=["POST"])
@@ -272,13 +292,6 @@ def logout_page():
     global CURRENT_USER
     CURRENT_USER = {"username": None, "tier": "Guest"}
     return redirect(url_for("landing_page"))
-
-@app.route("/tier")
-def tier_page():
-    if not is_logged_in():
-        return redirect(url_for("login_page"))
-    tiers = load_json("data/subscription_tiers.json", {})
-    return render_template("tier.html", user=CURRENT_USER, features=tiers.get(CURRENT_USER["tier"], {}))
 
 @app.route("/api/signals")
 def api_signals():

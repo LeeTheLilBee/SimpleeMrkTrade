@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Get Started</h2>
+
+<div class="grid">
+    <div class="card">
+        <h3>Step 1 — Explore The Platform</h3>
+        <p>Start with the landing page and dashboard preview to understand what the system does and how it presents opportunity quality.</p>
+    </div>
+
+    <div class="card">
+        <h3>Step 2 — Create Your Account</h3>
+        <p>Create an account to unlock access to subscriber features and platform workflow tools.</p>
+        <a href="/signup" class="cta-btn">Create Account</a>
+    </div>
+
+    <div class="card">
+        <h3>Step 3 — Login</h3>
+        <p>Once logged in, your access level determines what information and analysis become available.</p>
+        <a href="/login" class="cta-btn secondary">Login</a>
+    </div>
+
+    <div class="card">
+        <h3>Step 4 — Unlock Premium</h3>
+        <p>Premium unlocks deeper analysis, protected setup explanations, and chart-backed research pages.</p>
+        <a href="/premium" class="cta-btn secondary">Explore Premium</a>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Why This Trade</h2>
+
+<div class="card">
+    <p>This page explains why premium setups mattered, why they were surfaced, and how to think about them without exposing proprietary system internals.</p>
+</div>
+
+{% for item in explanations %}
+<div class="card">
+    <h3>{{ item.symbol }} | {{ item.strategy }}</h3>
+    <p><b>Score:</b> {{ item.score }}</p>
+    <p><b>Confidence:</b> {{ item.confidence }}</p>
+    <p><b>Entry:</b> {{ item.entry }}</p>
+    <p><b>Stop:</b> {{ item.stop }}</p>
+    <p><b>Target:</b> {{ item.target }}</p>
+
+    <h4>Market Context</h4>
+    <ul>
+    {% for row in item.market_context %}
+        <li>{{ row }}</li>
+    {% endfor %}
+    </ul>
+
+    <h4>Why It Was Selected</h4>
+    <ul>
+    {% for row in item.why_selected %}
+        <li>{{ row }}</li>
+    {% endfor %}
+    </ul>
+
+    <h4>How To Think About It</h4>
+    <ul>
+    {% for row in item.how_to_think_about_it %}
+        <li>{{ row }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endfor %}
+
+{% endblock %}

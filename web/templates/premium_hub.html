@@ -4,53 +4,23 @@
 <h2>Premium Hub</h2>
 
 <div class="card">
-    <h3>What This Section Does</h3>
-    <p>
-        Premium is the deeper intelligence layer of the platform. It gives qualified users access to curated analysis, richer
-        setup summaries, chart-backed reviews, and higher-context interpretation of why certain opportunities matter.
-    </p>
+    <p><b>User:</b> {{ user.username }}</p>
+    <p><b>Tier:</b> {{ user.tier }}</p>
+    <p>This area contains deeper analysis, protected setup interpretation, and premium research features.</p>
 </div>
 
-<div class="card">
-    <h3>Why It Matters</h3>
-    <p>
-        Public signal lists can show what the platform sees. Premium is where users begin to understand how to work with that
-        information more effectively. This section matters because it adds context, not just more data.
-    </p>
-    <p>
-        It helps users think through stronger opportunities with more structure while protecting the proprietary internals that
-        make the platform unique.
-    </p>
-</div>
+<div class="grid">
+    <div class="card">
+        <h3>Premium Analysis</h3>
+        <p>Chart-backed setup reviews and structured opportunity context.</p>
+        <a href="/premium-analysis">Open Premium Analysis</a>
+    </div>
 
-<div class="card">
-    <h3>How To Use It</h3>
-    <p>
-        Use Premium after reviewing the broader dashboard and research views. Start with the highest-priority setups, then move
-        into premium analysis to understand the most important supporting details, scenario framing, and chart context.
-    </p>
-    <p>
-        Premium is best used to improve judgment, not replace it.
-    </p>
-</div>
-
-<div class="card">
-    <h3>What You’ll Find Here</h3>
-    <ul>
-        <li>Chart-backed premium analysis</li>
-        <li>Priority setup summaries</li>
-        <li>Protected reasoning snippets</li>
-        <li>Tier-based access to deeper insights</li>
-        <li>Higher-context review of selected opportunities</li>
-    </ul>
-</div>
-
-<div class="card">
-    <h3>Protected By Design</h3>
-    <p>
-        Premium is intentionally built to reveal the most useful decision-support information without exposing the system’s full
-        internal architecture, scoring formulas, or proprietary ranking mechanics.
-    </p>
+    <div class="card">
+        <h3>Why This Trade</h3>
+        <p>Protected explanations of why important setups were selected and how to think about them.</p>
+        <a href="/why-this-trade">Open Why This Trade</a>
+    </div>
 </div>
 
 {% endblock %}
