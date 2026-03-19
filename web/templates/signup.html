@@ -4,13 +4,19 @@
 <h2>Create Account</h2>
 
 <div class="card">
+    <p>New accounts are created with secure password hashing and start on the Starter tier by default.</p>
+</div>
+
+<div class="card">
     <form action="/signup" method="post">
         <p>Username</p>
-        <input type="text" name="username">
+        <input type="text" name="username" required>
+
         <p>Password</p>
-        <input type="password" name="password">
+        <input type="password" name="password" required>
+
         <br><br>
-        <button class="btn btn-blue" type="submit">Sign Up</button>
+        <button type="submit" class="cta-btn">Create Account</button>
     </form>
 </div>
 

@@ -266,6 +266,54 @@ button, .btn, .cta-btn{
     color: #94a3b8;
 }
 
+.premium-hero{
+    border: 1px solid rgba(167,139,250,0.35);
+    box-shadow: 0 12px 30px rgba(167,139,250,0.10);
+}
+
+.premium-analysis-card{
+    background: linear-gradient(180deg, rgba(19,24,39,0.98) 0%, rgba(17,24,39,0.92) 100%);
+    border: 1px solid #2c3550;
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 24px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.28);
+}
+
+.premium-analysis-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+
+.premium-score-pill{
+    background: linear-gradient(135deg, #7c3aed, #a78bfa);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-weight: bold;
+}
+
+.premium-analysis-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap:18px;
+    margin-bottom: 18px;
+}
+
+.premium-note{
+    border: 1px solid rgba(59,130,246,0.25);
+    background: rgba(30,41,59,0.75);
+}
+
+.muted-line{
+    color: #94a3b8;
+    margin-top: 8px;
+}
+
 h1, h2, h3{
     color: #f9fafb;
 }
@@ -287,7 +335,7 @@ h1, h2, h3{
     flex-wrap: wrap;
 }
 
-input{
+input, select{
     width: 100%;
     max-width: 420px;
     padding: 12px;

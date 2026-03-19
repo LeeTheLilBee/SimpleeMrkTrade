@@ -4,19 +4,20 @@
 <h2>Login</h2>
 
 <div class="card">
-    <form action="/login" method="post">
-        <p>Username</p>
-        <input type="text" name="username">
-        <p>Password</p>
-        <input type="password" name="password">
-        <br><br>
-        <button class="btn btn-blue" type="submit">Login</button>
-    </form>
+    <p>Secure login is enabled. Passwords are verified through hashed authentication rather than direct plain-text matching.</p>
 </div>
 
 <div class="card">
-    <p>No account yet?</p>
-    <a href="/signup">Create one here</a>
+    <form action="/login" method="post">
+        <p>Username</p>
+        <input type="text" name="username" required>
+
+        <p>Password</p>
+        <input type="password" name="password" required>
+
+        <br><br>
+        <button type="submit" class="cta-btn">Login</button>
+    </form>
 </div>
 
 {% endblock %}

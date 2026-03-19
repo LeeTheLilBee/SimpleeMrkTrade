@@ -3,53 +3,109 @@
 
 <h2>Premium Analysis</h2>
 
-<div class="card">
-    <p><b>User:</b> {{ user.username }}</p>
-    <p><b>Tier:</b> {{ user.tier }}</p>
-    <p><b>Depth:</b> {{ premium_depth }}</p>
+<div class="card premium-hero">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div>
+            <h3 style="margin:0;">Premium Market Intelligence</h3>
+            <p style="margin-top:10px;">
+                This page is designed to feel less like raw data and more like a decision brief.
+                It highlights the strongest setups with structure, context, and premium interpretation.
+            </p>
+            <p><b>User:</b> {{ user.username }} | <b>Tier:</b> {{ user.tier }} | <b>Depth:</b> {{ premium_depth }}</p>
+        </div>
+        <span class="badge-blue">Subscriber Layer</span>
+    </div>
 </div>
 
 <div class="card">
     <h3>Equity Context</h3>
+    <p>This chart gives context for how the account has been behaving while these opportunities are being generated.</p>
     <canvas id="premiumEquityChart"></canvas>
 </div>
 
-{% for item in analysis %}
-<div class="card">
-    <h3>{{ item.symbol }} | {{ item.strategy }}</h3>
-    <p><b>Score:</b> {{ item.score }}</p>
-    <p><b>Confidence:</b> {{ item.confidence }}</p>
+{% if analysis and analysis|length > 0 %}
+    {% for item in analysis %}
+    <div class="premium-analysis-card">
+        <div class="premium-analysis-top">
+            <div>
+                <h3 style="margin:0;">{{ item.symbol }} | {{ item.strategy }}</h3>
+                <p class="muted-line">Priority setup surfaced by the premium layer</p>
+            </div>
+            <div class="premium-score-pill">
+                Score {{ item.score }}
+            </div>
+        </div>
 
-    {% if premium_depth in ["standard", "full"] %}
-    <p><b>Entry:</b> {{ item.price }}</p>
-    <p><b>Stop:</b> {{ item.stop }}</p>
-    <p><b>Target:</b> {{ item.target }}</p>
-    {% endif %}
+        <div class="premium-analysis-grid">
+            <div class="card">
+                <h3>Setup Snapshot</h3>
+                <p><b>Confidence:</b> {{ item.confidence }}</p>
+                {% if premium_depth in ["deep", "max", "standard", "full"] %}
+                <p><b>Entry:</b> {{ item.price or item.entry }}</p>
+                <p><b>Stop:</b> {{ item.stop }}</p>
+                <p><b>Target:</b> {{ item.target }}</p>
+                {% endif %}
+                <p><b>Structure:</b> Ranked high enough to survive premium review.</p>
+            </div>
 
-    {% if premium_depth == "full" %}
-    <h4>Key Snippets</h4>
-    <ul>
-    {% for s in item.snippets %}
-        <li>{{ s }}</li>
+            <div class="card">
+                <h3>Why It Matters</h3>
+                {% if premium_depth in ["max", "full"] %}
+                    <p>This setup did not just appear attractive on one dimension. It remained strong after context, ranking, and eligibility review.</p>
+                {% elif premium_depth in ["deep", "standard"] %}
+                    <p>This setup showed enough strength and alignment to deserve priority attention over lower-ranked opportunities.</p>
+                {% else %}
+                    <p>This is a premium-priority setup. Upgrade for deeper reasoning and richer context.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if premium_depth in ["deep", "max", "standard", "full"] %}
+        <div class="premium-analysis-grid">
+            <div class="card">
+                <h3>Market Context</h3>
+                {% if item.snippets %}
+                    <ul>
+                    {% for s in item.snippets %}
+                        <li>{{ s }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>The broader environment supported this setup enough for it to remain in the premium tier.</p>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <h3>Interpretation Layer</h3>
+                {% if item.reasons %}
+                    <ul>
+                    {% for r in item.reasons %}
+                        <li>{{ r }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>This opportunity maintained enough strength, structure, and contextual support to remain premium-worthy.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if premium_depth in ["max", "full"] %}
+        <div class="card premium-note">
+            <h3>Premium Read</h3>
+            <p>
+                This section is where the platform gives its highest-context interpretation. It is meant to help the user think better,
+                not trade blindly. The intent is clarity without revealing proprietary weighting mechanics.
+            </p>
+        </div>
+        {% endif %}
+    </div>
     {% endfor %}
-    </ul>
-
-    <h4>Why It Made the Cut</h4>
-    <ul>
-    {% for r in item.reasons %}
-        <li>{{ r }}</li>
-    {% endfor %}
-    </ul>
-
-    <h4>Option Context</h4>
-    <p>{{ item.option }}</p>
-    {% elif premium_depth == "standard" %}
-    <p>This setup passed premium-level review and ranked above lower-priority opportunities.</p>
-    {% else %}
-    <p>Upgrade for deeper context, structured snippets, and richer setup interpretation.</p>
-    {% endif %}
-</div>
-{% endfor %}
+{% else %}
+    <div class="card">
+        <p>No premium analysis entries yet.</p>
+    </div>
+{% endif %}
 
 <script>
 const ctx = document.getElementById('premiumEquityChart');
