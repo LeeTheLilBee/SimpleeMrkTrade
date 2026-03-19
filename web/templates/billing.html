@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Billing & Subscription</h2>
+
+<div class="card">
+    <p>This page is billing-ready. It is structured so a real payment provider like Stripe can be plugged in later without changing your user flow.</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Current Billing Status</h3>
+        <p><b>Plan:</b> {{ billing.plan }}</p>
+        <p><b>Status:</b> {{ billing.status }}</p>
+        <p><b>Provider:</b> {{ billing.provider }}</p>
+        <p><b>Renewal Date:</b> {{ billing.renewal_date or "Not set" }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Available Actions</h3>
+        <p><a href="/billing/mock/Starter" class="cta-btn secondary">Mock Starter</a></p>
+        <p><a href="/billing/mock/Pro" class="cta-btn">Mock Pro</a></p>
+        <p><a href="/billing/mock/Elite" class="cta-btn secondary">Mock Elite</a></p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Why This Matters</h3>
+    <p>This is the hook layer that future billing will connect to. Today it can simulate plan changes. Later it can receive Stripe checkout results, customer portal updates, and renewal events.</p>
+</div>
+
+{% endblock %}

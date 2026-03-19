@@ -1,58 +1,57 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Upgrade Your Access</h2>
+<h2>Choose Your Plan</h2>
 
 <div class="card">
     <p>Your current tier: <b>{{ user.tier }}</b></p>
-    <p>This upgrade flow is the pricing and access layer of the platform. Billing can be connected later without changing the overall structure.</p>
+    <p>Starter gives access. Pro adds depth. Elite adds maximum context and the strongest premium release layer.</p>
 </div>
 
 <div class="pricing-grid">
     <div class="price-card">
         <h3>Starter</h3>
         <p class="price-tag">$19<span>/mo</span></p>
-        <p>For users who want structured signals and core workflow access.</p>
+        <p>For core workflow access.</p>
         <ul>
             <li>Signals access</li>
-            <li>Core platform pages</li>
-            <li>Basic proof visibility</li>
+            <li>Core workflow pages</li>
+            <li>Basic notification layer</li>
         </ul>
-        <a href="/signup" class="cta-btn secondary">Start Here</a>
+        <a href="/upgrade-tier/Starter" class="cta-btn secondary">Choose Starter</a>
     </div>
 
     <div class="price-card featured">
         <div class="featured-badge">Most Popular</div>
         <h3>Pro</h3>
         <p class="price-tag">$79<span>/mo</span></p>
-        <p>For users who want full analytics, premium analysis, and deeper explanations.</p>
+        <p>For premium analysis, why-this-trade, and full analytics.</p>
         <ul>
             <li>Everything in Starter</li>
             <li>Premium Analysis</li>
-            <li>Full Analytics</li>
             <li>Why This Trade</li>
-            <li>Proof detail</li>
+            <li>Full Analytics</li>
+            <li>Tiered premium notifications</li>
         </ul>
-        <a href="/signup" class="cta-btn">Go Pro</a>
+        <a href="/upgrade-tier/Pro" class="cta-btn">Go Pro</a>
     </div>
 
     <div class="price-card">
         <h3>Elite</h3>
         <p class="price-tag">$199<span>/mo</span></p>
-        <p>For highest-context users who want the deepest premium layer and strongest information access.</p>
+        <p>For maximum premium depth and strongest information access.</p>
         <ul>
             <li>Everything in Pro</li>
-            <li>Full premium depth</li>
-            <li>Highest-context research flow</li>
-            <li>Advanced interpretation layer</li>
+            <li>Maximum depth</li>
+            <li>Highest-tier notifications</li>
+            <li>Deepest premium context</li>
         </ul>
-        <a href="/signup" class="cta-btn secondary">Unlock Elite</a>
+        <a href="/upgrade-tier/Elite" class="cta-btn secondary">Unlock Elite</a>
     </div>
 </div>
 
 <div class="card">
-    <h3>Why Upgrade?</h3>
-    <p>Starter gives you access. Pro adds depth. Elite adds context density. The idea is not just to show more information, but to release the right depth of information at the right level.</p>
+    <p><a href="/billing">Open Billing Hooks</a></p>
 </div>
 
 {% endblock %}

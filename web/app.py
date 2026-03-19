@@ -18,6 +18,8 @@ from engine.position_monitor import monitor_open_positions
 from engine.closed_trade_stats import closed_trade_stats
 from engine.notifications import filtered_notifications_for_user, unread_count_for_user, mark_all_read
 from engine.subscription_manager import update_user_tier
+from engine.user_preferences import get_preferences, save_preferences
+from engine.billing_hooks import get_billing_status, set_billing_status
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "change_this_secret_key_later"
@@ -378,15 +380,59 @@ def upgrade_tier_action(tier):
 
     update_user_tier(session["username"], tier)
     session["tier"] = tier
+    set_billing_status(session["username"], tier, status="active", provider="mock")
     return redirect(url_for("premium_hub"))
 
-@app.route("/account")
-def account_page():
+@app.route("/billing")
+def billing_page():
+    if not is_logged_in():
+        return redirect(url_for("login_page"))
+
     return render_template(
-        "account.html",
+        "billing.html",
+        billing=get_billing_status(session["username"]),
         user=get_current_user(),
         unread_notifications=visible_unread_count()
     )
+
+@app.route("/billing/mock/<plan>")
+def billing_mock(plan):
+    if not is_logged_in():
+        return redirect(url_for("login_page"))
+
+    set_billing_status(session["username"], plan, status="active", provider="mock")
+    update_user_tier(session["username"], plan)
+    session["tier"] = plan
+    return redirect(url_for("billing_page"))
+
+@app.route("/account")
+def account_page():
+    if not is_logged_in():
+        return redirect(url_for("login_page"))
+
+    return render_template(
+        "account.html",
+        user=get_current_user(),
+        prefs=get_preferences(session["username"]),
+        billing=get_billing_status(session["username"]),
+        unread_notifications=visible_unread_count()
+    )
+
+@app.route("/account/preferences", methods=["POST"])
+def account_preferences_save():
+    if not is_logged_in():
+        return redirect(url_for("login_page"))
+
+    prefs = {
+        "email_notifications": bool(request.form.get("email_notifications")),
+        "signal_notifications": bool(request.form.get("signal_notifications")),
+        "risk_notifications": bool(request.form.get("risk_notifications")),
+        "premium_notifications": bool(request.form.get("premium_notifications")),
+        "theme": request.form.get("theme", "dark")
+    }
+
+    save_preferences(session["username"], prefs)
+    return redirect(url_for("account_page"))
 
 @app.route("/login")
 def login_page():
@@ -427,6 +473,7 @@ def signup_submit():
         "tier": "Starter"
     })
     save_json("data/users.json", users)
+    set_billing_status(username, "Starter", status="active", provider="mock")
 
     return redirect(url_for("login_page"))
 

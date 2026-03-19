@@ -4,24 +4,32 @@
 <h2>Notifications</h2>
 
 <div class="card">
-    <p>This panel highlights the most important system events so you do not have to hunt through logs.</p>
+    <p>This panel shows only the notifications available to your membership level.</p>
+    <p><b>Current Tier:</b> {{ user.tier }}</p>
     <p><a href="/notifications/read-all">Mark all as read</a></p>
 </div>
 
-{% for n in notifications[::-1] %}
-<div class="card notification-card notification-{{ n.level }}">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-        <p style="margin:0;"><b>{{ n.title }}</b></p>
-        <p style="margin:0;"><b>{{ n.timestamp }}</b></p>
+{% if notifications and notifications|length > 0 %}
+    {% for n in notifications[::-1] %}
+    <div class="card notification-card notification-{{ n.level }}">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+            <p style="margin:0;"><b>{{ n.title }}</b></p>
+            <p style="margin:0;"><b>{{ n.timestamp }}</b></p>
+        </div>
+        <p style="margin-top:10px;">{{ n.message }}</p>
+        <p><b>Tier Gate:</b> {{ n.min_tier }}</p>
+        {% if n.link %}
+            <p><a href="{{ n.link }}">Open</a></p>
+        {% endif %}
+        {% if not n.read %}
+            <span class="badge-blue">NEW</span>
+        {% endif %}
     </div>
-    <p style="margin-top:10px;">{{ n.message }}</p>
-    {% if n.link %}
-        <p><a href="{{ n.link }}">Open</a></p>
-    {% endif %}
-    {% if not n.read %}
-        <span class="badge-blue">NEW</span>
-    {% endif %}
-</div>
-{% endfor %}
+    {% endfor %}
+{% else %}
+    <div class="card">
+        <p>No notifications available for your current tier yet.</p>
+    </div>
+{% endif %}
 
 {% endblock %}
