@@ -40,10 +40,16 @@ def get_current_user():
 def is_logged_in():
     return session.get("username") is not None
 
-def has_access(feature):
+def get_tier_config():
     tiers = load_json("data/subscription_tiers.json", {})
     tier = session.get("tier", "Guest")
-    return tiers.get(tier, {}).get(feature, False)
+    return tiers.get(tier, tiers.get("Guest", {}))
+
+def has_access(feature):
+    return bool(get_tier_config().get(feature, False))
+
+def premium_depth():
+    return get_tier_config().get("premium_depth", "none")
 
 @app.route("/")
 def landing_page():
@@ -86,6 +92,7 @@ def public_proof():
         closed=load_json("data/closed_positions.json", []),
         equity_values=equity_values,
         equity_labels=equity_labels,
+        proof_detail=has_access("proof_detail"),
         user=get_current_user()
     )
 
@@ -141,7 +148,7 @@ def research_overview():
 @app.route("/analytics")
 def analytics_page():
     if not has_access("full_analytics"):
-        return render_template("paywall.html", user=get_current_user())
+        return redirect(url_for("upgrade_page"))
 
     return render_template(
         "analytics.html",
@@ -196,7 +203,7 @@ def reports_page():
 @app.route("/signals")
 def signals_page():
     if not has_access("signals"):
-        return render_template("paywall.html", user=get_current_user())
+        return redirect(url_for("upgrade_page"))
 
     return render_template(
         "signals.html",
@@ -248,14 +255,18 @@ def control_page():
 def premium_hub():
     if not is_logged_in():
         return redirect(url_for("login_page"))
-    return render_template("premium_hub.html", user=get_current_user())
+    return render_template(
+        "premium_hub.html",
+        user=get_current_user(),
+        tier_config=get_tier_config()
+    )
 
 @app.route("/premium-analysis")
 def premium_analysis_page():
     if not is_logged_in():
         return redirect(url_for("login_page"))
     if not has_access("premium_analysis"):
-        return render_template("paywall.html", user=get_current_user())
+        return redirect(url_for("upgrade_page"))
 
     analysis = load_json("data/premium_analysis.json", [])
     reports = load_json("data/recent_reports.json", [])
@@ -267,20 +278,31 @@ def premium_analysis_page():
         analysis=analysis,
         user=get_current_user(),
         equity_values=equity_values,
-        equity_labels=equity_labels
+        equity_labels=equity_labels,
+        premium_depth=premium_depth()
     )
 
 @app.route("/why-this-trade")
 def why_this_trade_page():
     if not is_logged_in():
         return redirect(url_for("login_page"))
-    if not has_access("premium_analysis"):
-        return render_template("paywall.html", user=get_current_user())
+    if not has_access("why_this_trade"):
+        return redirect(url_for("upgrade_page"))
 
     return render_template(
         "why_this_trade.html",
         explanations=load_json("data/why_this_trade.json", []),
-        user=get_current_user()
+        user=get_current_user(),
+        premium_depth=premium_depth()
+    )
+
+@app.route("/upgrade")
+def upgrade_page():
+    tiers = load_json("data/subscription_tiers.json", {})
+    return render_template(
+        "upgrade.html",
+        user=get_current_user(),
+        tiers=tiers
     )
 
 @app.route("/login")

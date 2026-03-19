@@ -2,22 +2,33 @@
   "Guest": {
     "signals": false,
     "premium_analysis": false,
-    "full_analytics": false
+    "full_analytics": false,
+    "why_this_trade": false,
+    "proof_detail": false,
+    "premium_depth": "none"
   },
   "Starter": {
     "signals": true,
     "premium_analysis": false,
-    "full_analytics": false
+    "full_analytics": false,
+    "why_this_trade": false,
+    "proof_detail": true,
+    "premium_depth": "light"
   },
   "Pro": {
     "signals": true,
     "premium_analysis": true,
-    "full_analytics": true
+    "full_analytics": true,
+    "why_this_trade": true,
+    "proof_detail": true,
+    "premium_depth": "standard"
   },
   "Elite": {
     "signals": true,
     "premium_analysis": true,
     "full_analytics": true,
-    "priority_signals": true
+    "why_this_trade": true,
+    "proof_detail": true,
+    "premium_depth": "full"
   }
 }

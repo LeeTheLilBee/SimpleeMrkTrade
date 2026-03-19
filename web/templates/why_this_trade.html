@@ -4,7 +4,9 @@
 <h2>Why This Trade</h2>
 
 <div class="card">
-    <p>This page explains why premium setups mattered, why they were surfaced, and how to think about them without exposing proprietary system internals.</p>
+    <p><b>User:</b> {{ user.username }}</p>
+    <p><b>Tier:</b> {{ user.tier }}</p>
+    <p><b>Depth:</b> {{ premium_depth }}</p>
 </div>
 
 {% for item in explanations %}
@@ -12,10 +14,14 @@
     <h3>{{ item.symbol }} | {{ item.strategy }}</h3>
     <p><b>Score:</b> {{ item.score }}</p>
     <p><b>Confidence:</b> {{ item.confidence }}</p>
+
+    {% if premium_depth in ["standard", "full"] %}
     <p><b>Entry:</b> {{ item.entry }}</p>
     <p><b>Stop:</b> {{ item.stop }}</p>
     <p><b>Target:</b> {{ item.target }}</p>
+    {% endif %}
 
+    {% if premium_depth == "full" %}
     <h4>Market Context</h4>
     <ul>
     {% for row in item.market_context %}
@@ -36,6 +42,11 @@
         <li>{{ row }}</li>
     {% endfor %}
     </ul>
+    {% elif premium_depth == "standard" %}
+    <p>This trade ranked strongly enough to pass premium review and matched the system’s broader market context.</p>
+    {% else %}
+    <p>Upgrade for protected setup reasoning and richer trade context.</p>
+    {% endif %}
 </div>
 {% endfor %}
 

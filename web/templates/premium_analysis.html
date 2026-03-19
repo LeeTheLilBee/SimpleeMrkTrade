@@ -1,4 +1,3 @@
-%%writefile web/templates/premium_analysis.html
 {% extends "base.html" %}
 {% block content %}
 
@@ -7,7 +6,7 @@
 <div class="card">
     <p><b>User:</b> {{ user.username }}</p>
     <p><b>Tier:</b> {{ user.tier }}</p>
-    <p>This page highlights the most important setup details, ranked opportunities, and supporting analysis snippets.</p>
+    <p><b>Depth:</b> {{ premium_depth }}</p>
 </div>
 
 <div class="card">
@@ -20,14 +19,14 @@
     <h3>{{ item.symbol }} | {{ item.strategy }}</h3>
     <p><b>Score:</b> {{ item.score }}</p>
     <p><b>Confidence:</b> {{ item.confidence }}</p>
+
+    {% if premium_depth in ["standard", "full"] %}
     <p><b>Entry:</b> {{ item.price }}</p>
     <p><b>Stop:</b> {{ item.stop }}</p>
     <p><b>Target:</b> {{ item.target }}</p>
+    {% endif %}
 
-    <div style="margin-bottom:20px;">
-        <canvas id="chart_{{ loop.index }}"></canvas>
-    </div>
-
+    {% if premium_depth == "full" %}
     <h4>Key Snippets</h4>
     <ul>
     {% for s in item.snippets %}
@@ -44,6 +43,11 @@
 
     <h4>Option Context</h4>
     <p>{{ item.option }}</p>
+    {% elif premium_depth == "standard" %}
+    <p>This setup passed premium-level review and ranked above lower-priority opportunities.</p>
+    {% else %}
+    <p>Upgrade for deeper context, structured snippets, and richer setup interpretation.</p>
+    {% endif %}
 </div>
 {% endfor %}
 
@@ -64,35 +68,5 @@ new Chart(ctx, {
   }
 });
 </script>
-
-{% for item in analysis %}
-<script>
-new Chart(document.getElementById('chart_{{ loop.index }}'), {
-  type: 'line',
-  data: {
-    labels: {{ item.chart_labels|tojson }},
-    datasets: [{
-      label: '{{ item.symbol }}',
-      data: {{ item.chart_prices|tojson }},
-      borderColor: '#34d399',
-      backgroundColor: 'rgba(52,211,153,0.10)',
-      fill: true,
-      tension: 0.25
-    }]
-  }
-});
-</script>
-
-@app.route("/premium-analysis")
-def premium_analysis_page():
-    if not has_access("premium_analysis"):
-        return render_template("paywall.html", user=CURRENT_USER)
-
-    return render_template(
-        "premium_analysis.html",
-        analysis=load_json("data/premium_analysis.json", []),
-        user=CURRENT_USER
-    )
-{% endfor %}
 
 {% endblock %}

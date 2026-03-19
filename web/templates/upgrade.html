@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Upgrade Your Access</h2>
+
+<div class="card">
+    <p>Your current tier: <b>{{ user.tier }}</b></p>
+    <p>Some features are available only on higher plans. Upgrade prompts here are product placeholders until billing is connected.</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Starter</h3>
+        <p>Entry access to platform flow and core signals.</p>
+        <ul>
+            <li>Signals</li>
+            <li>Basic proof access</li>
+            <li>Core platform pages</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>Pro</h3>
+        <p>Deeper research and full analytics workflow.</p>
+        <ul>
+            <li>Everything in Starter</li>
+            <li>Premium Analysis</li>
+            <li>Full Analytics</li>
+            <li>Why This Trade</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>Elite</h3>
+        <p>Full premium depth and highest-context experience.</p>
+        <ul>
+            <li>Everything in Pro</li>
+            <li>Full premium depth</li>
+            <li>Highest-context analysis access</li>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

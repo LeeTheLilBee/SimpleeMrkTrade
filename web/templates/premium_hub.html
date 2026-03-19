@@ -6,20 +6,27 @@
 <div class="card">
     <p><b>User:</b> {{ user.username }}</p>
     <p><b>Tier:</b> {{ user.tier }}</p>
-    <p>This area contains deeper analysis, protected setup interpretation, and premium research features.</p>
 </div>
 
 <div class="grid">
     <div class="card">
         <h3>Premium Analysis</h3>
-        <p>Chart-backed setup reviews and structured opportunity context.</p>
-        <a href="/premium-analysis">Open Premium Analysis</a>
+        <p>Chart-backed setup reviews and protected research context.</p>
+        {% if tier_config.premium_analysis %}
+            <a href="/premium-analysis">Open Premium Analysis</a>
+        {% else %}
+            <a href="/upgrade">Upgrade to Unlock</a>
+        {% endif %}
     </div>
 
     <div class="card">
         <h3>Why This Trade</h3>
-        <p>Protected explanations of why important setups were selected and how to think about them.</p>
-        <a href="/why-this-trade">Open Why This Trade</a>
+        <p>Deeper explanation of why important trades were selected.</p>
+        {% if tier_config.why_this_trade %}
+            <a href="/why-this-trade">Open Why This Trade</a>
+        {% else %}
+            <a href="/upgrade">Upgrade to Unlock</a>
+        {% endif %}
     </div>
 </div>
 
