@@ -18,6 +18,7 @@ from engine.strategy_performance import strategy_breakdown
 from engine.position_monitor import monitor_open_positions
 from engine.closed_trade_stats import closed_trade_stats
 from engine.notifications import filtered_notifications_for_user, unread_count_for_user, mark_all_read
+from engine.notification_engine import notifications_for_tier
 from engine.user_preferences import get_preferences, save_preferences
 from engine.billing_hooks import get_billing_status, set_billing_status
 from engine.admin_tools import (
@@ -39,12 +40,12 @@ from engine.auth_utils import (
 from engine.auth_policy import password_policy_check
 from engine.admin_audit import log_admin_action, get_admin_audit_log
 from engine.stripe_stub import start_checkout, open_customer_portal, simulate_checkout_success, process_webhook_event
+from engine.trade_detail_builder import get_trade_detail_by_id
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "change_this_secret_key_later_to_something_long_random"
 
 ensure_secure_user_store()
-
 SESSION_TIMEOUT_MINUTES = 720
 
 def load_json(path, default):
@@ -56,7 +57,7 @@ def load_json(path, default):
 
 def save_json(path, data):
     with open(path, "w") as f:
-        return json.dump(data, f, indent=2)
+        json.dump(data, f, indent=2)
 
 def get_current_user():
     return {
@@ -88,19 +89,18 @@ def premium_depth():
 
 def visible_notifications():
     user = get_current_user()
-    return filtered_notifications_for_user(
+    legacy_visible = filtered_notifications_for_user(
         user_tier=user["tier"],
         logged_in=is_logged_in(),
         username=user["username"],
     )
+    tier_visible = notifications_for_tier(user["tier"] or "guest")
+    combined = legacy_visible + tier_visible
+    combined = sorted(combined, key=lambda x: x.get("timestamp", ""), reverse=True)
+    return combined
 
 def visible_unread_count():
-    user = get_current_user()
-    return unread_count_for_user(
-        user_tier=user["tier"],
-        logged_in=is_logged_in(),
-        username=user["username"],
-    )
+    return len(visible_notifications())
 
 def session_debug_payload():
     username = session.get("username")
@@ -404,6 +404,33 @@ def why_this_trade_page():
     return render_template("why_this_trade.html", **template_context({
         "all_explanations": all_explanations,
         "premium_depth": premium_depth(),
+    }))
+
+@app.route("/trade/<trade_id>")
+def trade_detail_page(trade_id):
+    detail = get_trade_detail_by_id(trade_id)
+    if not detail:
+        return render_template("trade_detail.html", **template_context({
+            "detail": {
+                "symbol": "Not Found",
+                "strategy": "N/A",
+                "score": "N/A",
+                "confidence": "N/A",
+                "entry": "N/A",
+                "atr": "N/A",
+                "risk": {"stop_logic": "N/A", "note": "Trade not found.", "story": "Trade detail could not be located."},
+                "thesis": ["Trade detail could not be located."],
+                "narrative": {
+                    "entry_story": "No entry story available.",
+                    "management_story": "No management story available.",
+                    "exit_story": "No exit story available.",
+                },
+                "context": [],
+                "timeline": [],
+            }
+        }))
+    return render_template("trade_detail.html", **template_context({
+        "detail": detail,
     }))
 
 @app.route("/upgrade")

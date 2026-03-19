@@ -422,5 +422,40 @@
     "message": "Blocked by correlation risk",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T23:03:12.413617",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T23:03:13.631048",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T23:03:25.484918",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.906732",
+    "event_type": "QUEUE",
+    "message": "Approved 6 research trades; selected 0 execution trades in mode DEFENSIVE_BEAR",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.943588",
+    "event_type": "RISK",
+    "message": "Blocked by correlation risk",
+    "symbol": null,
+    "meta": {}
   }
 ]

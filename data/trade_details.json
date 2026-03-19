@@ -204,5 +204,293 @@
       "note": "Position risk aligned with volatility"
     },
     "timeline": []
+  },
+  {
+    "id": "cf15fe04-562d-465e-a0b2-5b9fd89cdb8b",
+    "timestamp": "2026-03-19T23:03:31.907407",
+    "symbol": "NFLX",
+    "strategy": "PUT",
+    "score": 250,
+    "confidence": "LOW",
+    "entry": 91.73999786376953,
+    "atr": 2.501784188406808,
+    "thesis": [
+      "NFLX surfaced with a structured PUT setup.",
+      "Score 250 confirmed enough strength to pass the current ranking logic.",
+      "Confidence registered as LOW, which shapes how aggressively it should be interpreted."
+    ],
+    "context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "risk": {
+      "stop_logic": "ATR-based dynamic stop",
+      "note": "Position risk aligned with volatility",
+      "story": "Bearish setup using ATR-aware downside framing. Current ATR is 2.5."
+    },
+    "narrative": {
+      "entry_story": "NFLX became interesting because its structure, score, and context aligned strongly enough to create a tradable thesis.",
+      "management_story": "This setup belongs to the highest-conviction bucket and deserves closer monitoring for follow-through.",
+      "exit_story": "Exit logic should respond to stop pressure, target progress, weakening structure, or automated close conditions."
+    },
+    "timeline": [
+      {
+        "timestamp": "2026-03-19T23:03:31.907428",
+        "event": "DETAIL_CREATED",
+        "note": "NFLX detail record created."
+      },
+      {
+        "timestamp": "2026-03-19T23:03:31.910077",
+        "event": "RESEARCH_APPROVED",
+        "note": "NFLX approved in the research layer.",
+        "extra": {
+          "strategy": "PUT",
+          "score": 250,
+          "confidence": "LOW"
+        }
+      }
+    ]
+  },
+  {
+    "id": "ffe1abfa-2c0b-4daf-8ff1-21f786c22634",
+    "timestamp": "2026-03-19T23:03:31.913062",
+    "symbol": "OXY",
+    "strategy": "CALL",
+    "score": 225,
+    "confidence": "MEDIUM",
+    "entry": 59.58000183105469,
+    "atr": 2.0086912664524768,
+    "thesis": [
+      "OXY surfaced with a structured CALL setup.",
+      "Score 225 confirmed enough strength to pass the current ranking logic.",
+      "Confidence registered as MEDIUM, which shapes how aggressively it should be interpreted."
+    ],
+    "context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "risk": {
+      "stop_logic": "ATR-based dynamic stop",
+      "note": "Position risk aligned with volatility",
+      "story": "Bullish setup using ATR-aware upside framing. Current ATR is 2.01."
+    },
+    "narrative": {
+      "entry_story": "OXY became interesting because its structure, score, and context aligned strongly enough to create a tradable thesis.",
+      "management_story": "This setup belongs to the highest-conviction bucket and deserves closer monitoring for follow-through.",
+      "exit_story": "Exit logic should respond to stop pressure, target progress, weakening structure, or automated close conditions."
+    },
+    "timeline": [
+      {
+        "timestamp": "2026-03-19T23:03:31.913079",
+        "event": "DETAIL_CREATED",
+        "note": "OXY detail record created."
+      },
+      {
+        "timestamp": "2026-03-19T23:03:31.915315",
+        "event": "RESEARCH_APPROVED",
+        "note": "OXY approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 225,
+          "confidence": "MEDIUM"
+        }
+      }
+    ]
+  },
+  {
+    "id": "99019e0a-8612-48b7-9bb2-714e12c577e6",
+    "timestamp": "2026-03-19T23:03:31.918661",
+    "symbol": "COP",
+    "strategy": "CALL",
+    "score": 190,
+    "confidence": "MEDIUM",
+    "entry": 126.0199966430664,
+    "atr": 3.3657139369419644,
+    "thesis": [
+      "COP surfaced with a structured CALL setup.",
+      "Score 190 confirmed enough strength to pass the current ranking logic.",
+      "Confidence registered as MEDIUM, which shapes how aggressively it should be interpreted."
+    ],
+    "context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "risk": {
+      "stop_logic": "ATR-based dynamic stop",
+      "note": "Position risk aligned with volatility",
+      "story": "Bullish setup using ATR-aware upside framing. Current ATR is 3.37."
+    },
+    "narrative": {
+      "entry_story": "COP became interesting because its structure, score, and context aligned strongly enough to create a tradable thesis.",
+      "management_story": "This setup is premium-worthy and should be monitored for confirmation, persistence, and risk stability.",
+      "exit_story": "Exit logic should respond to stop pressure, target progress, weakening structure, or automated close conditions."
+    },
+    "timeline": [
+      {
+        "timestamp": "2026-03-19T23:03:31.918677",
+        "event": "DETAIL_CREATED",
+        "note": "COP detail record created."
+      },
+      {
+        "timestamp": "2026-03-19T23:03:31.921016",
+        "event": "RESEARCH_APPROVED",
+        "note": "COP approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 190,
+          "confidence": "MEDIUM"
+        }
+      }
+    ]
+  },
+  {
+    "id": "c41aec98-6577-4e2b-ab86-9f6a6e66b1cf",
+    "timestamp": "2026-03-19T23:03:31.924092",
+    "symbol": "CVX",
+    "strategy": "CALL",
+    "score": 225,
+    "confidence": "MEDIUM",
+    "entry": 201.44000244140625,
+    "atr": 4.114279610770089,
+    "thesis": [
+      "CVX surfaced with a structured CALL setup.",
+      "Score 225 confirmed enough strength to pass the current ranking logic.",
+      "Confidence registered as MEDIUM, which shapes how aggressively it should be interpreted."
+    ],
+    "context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "risk": {
+      "stop_logic": "ATR-based dynamic stop",
+      "note": "Position risk aligned with volatility",
+      "story": "Bullish setup using ATR-aware upside framing. Current ATR is 4.11."
+    },
+    "narrative": {
+      "entry_story": "CVX became interesting because its structure, score, and context aligned strongly enough to create a tradable thesis.",
+      "management_story": "This setup belongs to the highest-conviction bucket and deserves closer monitoring for follow-through.",
+      "exit_story": "Exit logic should respond to stop pressure, target progress, weakening structure, or automated close conditions."
+    },
+    "timeline": [
+      {
+        "timestamp": "2026-03-19T23:03:31.924116",
+        "event": "DETAIL_CREATED",
+        "note": "CVX detail record created."
+      },
+      {
+        "timestamp": "2026-03-19T23:03:31.926592",
+        "event": "RESEARCH_APPROVED",
+        "note": "CVX approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 225,
+          "confidence": "MEDIUM"
+        }
+      }
+    ]
+  },
+  {
+    "id": "525a3fc0-2495-434d-baa9-b55d0bb07ead",
+    "timestamp": "2026-03-19T23:03:31.930016",
+    "symbol": "XLE",
+    "strategy": "CALL",
+    "score": 255,
+    "confidence": "MEDIUM",
+    "entry": 59.36000061035156,
+    "atr": 1.189286368233817,
+    "thesis": [
+      "XLE surfaced with a structured CALL setup.",
+      "Score 255 confirmed enough strength to pass the current ranking logic.",
+      "Confidence registered as MEDIUM, which shapes how aggressively it should be interpreted."
+    ],
+    "context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "risk": {
+      "stop_logic": "ATR-based dynamic stop",
+      "note": "Position risk aligned with volatility",
+      "story": "Bullish setup using ATR-aware upside framing. Current ATR is 1.19."
+    },
+    "narrative": {
+      "entry_story": "XLE became interesting because its structure, score, and context aligned strongly enough to create a tradable thesis.",
+      "management_story": "This setup belongs to the highest-conviction bucket and deserves closer monitoring for follow-through.",
+      "exit_story": "Exit logic should respond to stop pressure, target progress, weakening structure, or automated close conditions."
+    },
+    "timeline": [
+      {
+        "timestamp": "2026-03-19T23:03:31.930032",
+        "event": "DETAIL_CREATED",
+        "note": "XLE detail record created."
+      },
+      {
+        "timestamp": "2026-03-19T23:03:31.932721",
+        "event": "RESEARCH_APPROVED",
+        "note": "XLE approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 255,
+          "confidence": "MEDIUM"
+        }
+      }
+    ]
+  },
+  {
+    "id": "a999ed5f-0c83-4efa-a6dc-4a3a337bd21c",
+    "timestamp": "2026-03-19T23:03:31.936313",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 290,
+    "confidence": "MEDIUM",
+    "entry": 444.2699890136719,
+    "atr": 26.290002005440847,
+    "thesis": [
+      "MU surfaced with a structured CALL setup.",
+      "Score 290 confirmed enough strength to pass the current ranking logic.",
+      "Confidence registered as MEDIUM, which shapes how aggressively it should be interpreted."
+    ],
+    "context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: ELEVATED",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "risk": {
+      "stop_logic": "ATR-based dynamic stop",
+      "note": "Position risk aligned with volatility",
+      "story": "Bullish setup using ATR-aware upside framing. Current ATR is 26.29."
+    },
+    "narrative": {
+      "entry_story": "MU became interesting because its structure, score, and context aligned strongly enough to create a tradable thesis.",
+      "management_story": "This setup belongs to the highest-conviction bucket and deserves closer monitoring for follow-through.",
+      "exit_story": "Exit logic should respond to stop pressure, target progress, weakening structure, or automated close conditions."
+    },
+    "timeline": [
+      {
+        "timestamp": "2026-03-19T23:03:31.936329",
+        "event": "DETAIL_CREATED",
+        "note": "MU detail record created."
+      },
+      {
+        "timestamp": "2026-03-19T23:03:31.939021",
+        "event": "RESEARCH_APPROVED",
+        "note": "MU approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 290,
+          "confidence": "MEDIUM"
+        }
+      }
+    ]
   }
 ]

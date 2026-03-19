@@ -67,7 +67,12 @@ from engine.smart_notification_router import (
     notify_trade_edge,
 )
 from engine.research_signal_writer import save_research_signal
-from engine.trade_detail_builder import build_trade_detail, save_trade_detail
+from engine.trade_detail_builder import (
+    build_trade_detail,
+    save_trade_detail,
+    append_trade_detail_timeline,
+)
+from engine.notification_engine import push_notification
 
 try:
     from engine.drawdown_brake import drawdown_brake
@@ -93,14 +98,11 @@ except Exception:
     def exposure_bucket_status():
         return {"blocked": False, "bucket": "NORMAL", "reason": "exposure buckets unavailable"}
 
-
 def _reduced_risk_mode(brake_payload, exposure_payload):
     return brake_payload.get("mode") == "REDUCED_RISK" or exposure_payload.get("bucket") in ["ELEVATED", "HIGH"]
 
-
 def _trim_for_reduced_risk(selected_trades):
     return selected_trades[:1] if selected_trades else selected_trades
-
 
 def scan_stock(symbol, regime):
     df = safe_download(symbol, period="3mo", auto_adjust=True, progress=False)
@@ -138,7 +140,6 @@ def scan_stock(symbol, regime):
         "breakout": breakout_signal,
         "atr": atr,
     }
-
 
 def process_signals(results, regime, volatility_payload):
     breadth = market_breadth(results)
@@ -208,7 +209,6 @@ def process_signals(results, regime, volatility_payload):
 
     return approved_trades, selected_trades, mode, breadth, volatility_state
 
-
 def run():
     write_bot_status(True, "starting")
     log_bot("Bot run started", "INFO")
@@ -270,7 +270,7 @@ def run():
             f"Mode: {mode}",
         ]
 
-        # RESEARCH LAYER: always generate intelligence even if execution is capped
+        # Research layer
         for trade in approved_trades:
             trade_id, detail = build_trade_detail(trade, market_context)
             save_trade_detail(detail)
@@ -304,6 +304,26 @@ def run():
                 }
             )
 
+            append_trade_detail_timeline(
+                trade_id,
+                "RESEARCH_APPROVED",
+                f"{trade['symbol']} approved in the research layer.",
+                {
+                    "strategy": trade["strategy"],
+                    "score": trade["score"],
+                    "confidence": trade["confidence"],
+                }
+            )
+
+            if trade.get("score", 0) >= 200:
+                push_notification(
+                    notif_type="HIGH_CONVICTION",
+                    message=f"{trade['symbol']} high-conviction research setup detected (Score {trade['score']}).",
+                    trade_id=trade_id,
+                    min_tier="pro",
+                    level="success",
+                )
+
             if trade.get("score", 0) >= 120:
                 research_entry = save_research_premium_analysis(
                     trade,
@@ -314,35 +334,69 @@ def run():
                 )
                 notify_trade_edge(trade["symbol"], research_entry.get("reasons", []))
 
-        # EXECUTION LAYER: stays strict
+                push_notification(
+                    notif_type="RESEARCH_ALPHA",
+                    message=f"{trade['symbol']} research alpha added to premium intelligence.",
+                    trade_id=trade_id,
+                    min_tier="elite",
+                    level="info",
+                )
+
+        # Execution blocks stay strict
         if brake.get("blocked"):
             write_bot_status(False, "blocked by drawdown brake")
             push_activity("RISK", "Blocked by drawdown brake")
             notify_trade_risk("PORTFOLIO", "Drawdown brake blocked new execution trades")
+            push_notification(
+                notif_type="RISK_WARNING",
+                message="Execution blocked by drawdown brake.",
+                min_tier="starter",
+                level="warning",
+            )
             return
 
         if corr.get("blocked"):
             write_bot_status(False, "blocked by correlation risk")
             push_activity("RISK", "Blocked by correlation risk")
             notify_trade_risk("PORTFOLIO", corr.get("reason", "Correlation block"))
+            push_notification(
+                notif_type="RISK_WARNING",
+                message=f"Execution blocked by correlation risk: {corr.get('reason', 'Correlation block')}",
+                min_tier="starter",
+                level="warning",
+            )
             return
 
         if sector_cap.get("blocked"):
             write_bot_status(False, "blocked by sector concentration cap")
             push_activity("RISK", "Blocked by sector concentration cap")
             notify_trade_risk("PORTFOLIO", sector_cap.get("reason", "Sector cap block"))
+            push_notification(
+                notif_type="RISK_WARNING",
+                message=f"Execution blocked by sector cap: {sector_cap.get('reason', 'Sector cap block')}",
+                min_tier="starter",
+                level="warning",
+            )
             return
 
         if governor.get("blocked"):
             write_bot_status(False, "blocked by governor")
-            push_activity("RISK", f"Blocked by governor: {', '.join(governor.get('reasons', []))}")
-            notify_trade_risk("PORTFOLIO", f"Governor blocked execution: {', '.join(governor.get('reasons', []))}")
+            joined = ", ".join(governor.get("reasons", []))
+            push_activity("RISK", f"Blocked by governor: {joined}")
+            notify_trade_risk("PORTFOLIO", f"Governor blocked execution: {joined}")
+            push_notification(
+                notif_type="RISK_WARNING",
+                message=f"Execution blocked by governor: {joined}",
+                min_tier="starter",
+                level="warning",
+            )
             return
 
         if _reduced_risk_mode(brake, exposure):
             selected_trades = _trim_for_reduced_risk(selected_trades)
             push_activity("RISK", "Reduced-risk mode active: trimmed trade queue")
 
+        # Execution layer
         for trade in selected_trades:
             if not trade.get("trade_id"):
                 trade_id, detail = build_trade_detail(trade, market_context)
@@ -379,7 +433,26 @@ def run():
                 }
             )
 
+            append_trade_detail_timeline(
+                trade["trade_id"],
+                "EXECUTION_APPROVED",
+                f"{trade['symbol']} approved in the execution layer.",
+                {
+                    "strategy": trade["strategy"],
+                    "score": trade["score"],
+                    "confidence": trade["confidence"],
+                }
+            )
+
             notify_trade_approved(trade)
+
+            push_notification(
+                notif_type="EXECUTION_APPROVED",
+                message=f"{trade['symbol']} approved for live execution review.",
+                trade_id=trade["trade_id"],
+                min_tier="starter",
+                level="info",
+            )
 
             if trade.get("score", 0) >= 120:
                 premium_entry = save_premium_analysis(
@@ -407,6 +480,16 @@ def run():
                 }
             )
 
+            append_trade_detail_timeline(
+                trade.get("trade_id"),
+                "EXECUTED",
+                f"{trade['symbol']} entered execution flow.",
+                {
+                    "strategy": trade["strategy"],
+                    "score": trade["score"],
+                }
+            )
+
         print_positions()
         review_positions()
 
@@ -416,8 +499,25 @@ def run():
             for closed in closed_now:
                 symbol = closed.get("symbol", "UNKNOWN")
                 reason = closed.get("reason", "AUTO_CLOSE")
-                add_trade_timeline_event(symbol, "CLOSED", {"reason": reason})
+                trade_id = closed.get("trade_id")
+
+                add_trade_timeline_event(symbol, "CLOSED", {"reason": reason, "trade_id": trade_id})
                 notify_trade_closed(symbol, reason)
+
+                append_trade_detail_timeline(
+                    trade_id,
+                    "CLOSED",
+                    f"{symbol} closed with reason: {reason}.",
+                    {"reason": reason}
+                )
+
+                push_notification(
+                    notif_type="AUTO_CLOSE",
+                    message=f"{symbol} position auto-closed: {reason}",
+                    trade_id=trade_id,
+                    min_tier="starter",
+                    level="warning",
+                )
 
         show_candidates()
 
@@ -450,7 +550,6 @@ def run():
         write_bot_status(False, f"error: {e}")
         push_activity("ERROR", f"Bot error: {e}")
         raise
-
 
 if __name__ == "__main__":
     run()

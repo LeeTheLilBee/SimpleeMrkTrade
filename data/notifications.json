@@ -195,5 +195,178 @@
     "members_only": true,
     "min_tier": "Pro",
     "category": "risk"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.910688",
+    "type": "HIGH_CONVICTION",
+    "message": "NFLX high-conviction research setup detected (Score 250).",
+    "trade_id": "cf15fe04-562d-465e-a0b2-5b9fd89cdb8b",
+    "tier_required": "pro",
+    "level": "success"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.912080",
+    "title": "Edge Detected",
+    "message": "NFLX: Extremely high conviction setup | Bearish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.912613",
+    "type": "RESEARCH_ALPHA",
+    "message": "NFLX research alpha added to premium intelligence.",
+    "trade_id": "cf15fe04-562d-465e-a0b2-5b9fd89cdb8b",
+    "tier_required": "elite",
+    "level": "info"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.916001",
+    "type": "HIGH_CONVICTION",
+    "message": "OXY high-conviction research setup detected (Score 225).",
+    "trade_id": "ffe1abfa-2c0b-4daf-8ff1-21f786c22634",
+    "tier_required": "pro",
+    "level": "success"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.917464",
+    "title": "Edge Detected",
+    "message": "OXY: Extremely high conviction setup | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.918216",
+    "type": "RESEARCH_ALPHA",
+    "message": "OXY research alpha added to premium intelligence.",
+    "trade_id": "ffe1abfa-2c0b-4daf-8ff1-21f786c22634",
+    "tier_required": "elite",
+    "level": "info"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.923080",
+    "title": "Edge Detected",
+    "message": "COP: Strong alignment across multiple factors | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.923663",
+    "type": "RESEARCH_ALPHA",
+    "message": "COP research alpha added to premium intelligence.",
+    "trade_id": "99019e0a-8612-48b7-9bb2-714e12c577e6",
+    "tier_required": "elite",
+    "level": "info"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.927340",
+    "type": "HIGH_CONVICTION",
+    "message": "CVX high-conviction research setup detected (Score 225).",
+    "trade_id": "c41aec98-6577-4e2b-ab86-9f6a6e66b1cf",
+    "tier_required": "pro",
+    "level": "success"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.928949",
+    "title": "Edge Detected",
+    "message": "CVX: Extremely high conviction setup | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.929513",
+    "type": "RESEARCH_ALPHA",
+    "message": "CVX research alpha added to premium intelligence.",
+    "trade_id": "c41aec98-6577-4e2b-ab86-9f6a6e66b1cf",
+    "tier_required": "elite",
+    "level": "info"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.933501",
+    "type": "HIGH_CONVICTION",
+    "message": "XLE high-conviction research setup detected (Score 255).",
+    "trade_id": "525a3fc0-2495-434d-baa9-b55d0bb07ead",
+    "tier_required": "pro",
+    "level": "success"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.935183",
+    "title": "Edge Detected",
+    "message": "XLE: Extremely high conviction setup | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.935852",
+    "type": "RESEARCH_ALPHA",
+    "message": "XLE research alpha added to premium intelligence.",
+    "trade_id": "525a3fc0-2495-434d-baa9-b55d0bb07ead",
+    "tier_required": "elite",
+    "level": "info"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.939933",
+    "type": "HIGH_CONVICTION",
+    "message": "MU high-conviction research setup detected (Score 290).",
+    "trade_id": "a999ed5f-0c83-4efa-a6dc-4a3a337bd21c",
+    "tier_required": "pro",
+    "level": "success"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.941938",
+    "title": "Edge Detected",
+    "message": "MU: Extremely high conviction setup | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.942707",
+    "type": "RESEARCH_ALPHA",
+    "message": "MU research alpha added to premium intelligence.",
+    "trade_id": "a999ed5f-0c83-4efa-a6dc-4a3a337bd21c",
+    "tier_required": "elite",
+    "level": "info"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.944693",
+    "title": "Risk Alert",
+    "message": "PORTFOLIO risk condition triggered: Too many positions concentrated in one sector..",
+    "level": "warning",
+    "link": "/positions",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "risk"
+  },
+  {
+    "timestamp": "2026-03-19T23:03:31.945389",
+    "type": "RISK_WARNING",
+    "message": "Execution blocked by correlation risk: Too many positions concentrated in one sector.",
+    "trade_id": null,
+    "tier_required": "starter",
+    "level": "warning"
   }
 ]

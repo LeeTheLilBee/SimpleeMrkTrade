@@ -3,36 +3,89 @@
 
 <h2>{{ detail.symbol }} | {{ detail.strategy }}</h2>
 
-<div class="card">
+<div class="card premium-hero">
+    <h3>Trade Intelligence Narrative</h3>
+    <p class="muted-line">
+        This page tells the story of the setup: why it mattered, how it should be interpreted, and how it evolved through the system.
+    </p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Setup Snapshot</h3>
+        <p><b>Score:</b> {{ detail.score }}</p>
+        <p><b>Confidence:</b> {{ detail.confidence }}</p>
+        <p><b>Entry:</b> {{ detail.entry }}</p>
+        <p><b>ATR:</b> {{ detail.atr }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Risk View</h3>
+        <p><b>Stop Logic:</b> {{ detail.risk.stop_logic }}</p>
+        <p><b>Risk Note:</b> {{ detail.risk.note }}</p>
+        <p>{{ detail.risk.story }}</p>
+    </div>
+</div>
+
+<div class="card premium-card">
     <h3>Trade Thesis</h3>
     <ul>
-        {% for t in detail.thesis %}
-        <li>{{ t }}</li>
+        {% for row in detail.thesis %}
+        <li>{{ row }}</li>
         {% endfor %}
     </ul>
 </div>
 
 <div class="grid">
     <div class="card">
-        <h3>Setup</h3>
-        <p>Score: {{ detail.score }}</p>
-        <p>Confidence: {{ detail.confidence }}</p>
-        <p>Entry: {{ detail.entry }}</p>
+        <h3>Entry Story</h3>
+        <p>{{ detail.narrative.entry_story }}</p>
     </div>
 
     <div class="card">
-        <h3>Risk</h3>
-        <p>{{ detail.risk.note }}</p>
+        <h3>Management Story</h3>
+        <p>{{ detail.narrative.management_story }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Exit Story</h3>
+        <p>{{ detail.narrative.exit_story }}</p>
     </div>
 </div>
 
 <div class="card">
     <h3>Market Context</h3>
-    <ul>
-        {% for c in detail.context %}
-        <li>{{ c }}</li>
+    {% if detail.context %}
+        <ul>
+        {% for row in detail.context %}
+            <li>{{ row }}</li>
         {% endfor %}
-    </ul>
+        </ul>
+    {% else %}
+        <p>No additional market context saved.</p>
+    {% endif %}
+</div>
+
+<div class="card premium-card">
+    <h3>Timeline</h3>
+    {% if detail.timeline %}
+        <table class="table">
+            <tr>
+                <th>Time</th>
+                <th>Event</th>
+                <th>Note</th>
+            </tr>
+            {% for row in detail.timeline[::-1] %}
+            <tr>
+                <td>{{ row.timestamp }}</td>
+                <td>{{ row.event }}</td>
+                <td>{{ row.note }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No timeline events yet.</p>
+    {% endif %}
 </div>
 
 {% endblock %}
