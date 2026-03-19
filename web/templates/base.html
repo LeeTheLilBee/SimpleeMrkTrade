@@ -7,21 +7,62 @@
 <meta http-equiv="refresh" content="20">
 </head>
 <body>
-<nav>
-<a href="/">Dashboard</a>
-<a href="/signals">Signals</a>
-<a href="/positions">Positions</a>
-<a href="/closed-trades">Closed Trades</a>
-<a href="/candidates">Candidates</a>
-<a href="/equity">Equity</a>
-<a href="/analytics">Analytics</a>
-<a href="/status">Status</a>
-<a href="/reports">Reports</a>
-<a href="/control">Control</a>
-<a href="/premium-analysis">Premium Analysis</a>
-<a href="/login">Login</a>
-<a href="/tier">Tier</a>
-<a href="/knowledge">Knowledge</a>
+
+<nav class="topnav">
+    <div class="nav-left">
+        <a href="/">Home</a>
+        <a href="/dashboard">Dashboard</a>
+
+        <div class="dropdown">
+            <button class="dropbtn">Trading</button>
+            <div class="dropdown-content">
+                <a href="/signals">Signals</a>
+                <a href="/positions">Positions</a>
+                <a href="/closed-trades">Closed Trades</a>
+                <a href="/trade-timeline">Timeline</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropbtn">Analytics</button>
+            <div class="dropdown-content">
+                <a href="/analytics">Analytics</a>
+                <a href="/reports">Reports</a>
+                <a href="/equity">Equity</a>
+                <a href="/status">Status</a>
+                <a href="/bot-log">Bot Log</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropbtn">Research</button>
+            <div class="dropdown-content">
+                <a href="/candidates">Candidates</a>
+                <a href="/knowledge">Knowledge</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropbtn">Premium</button>
+            <div class="dropdown-content">
+                <a href="/premium">Premium Hub</a>
+                <a href="/premium-analysis">Premium Analysis</a>
+                <a href="/tier">Tier</a>
+            </div>
+        </div>
+
+        <a href="/control">Control</a>
+    </div>
+
+    <div class="nav-right">
+        {% if user and user.username %}
+            <span class="user-badge">{{ user.username }} | {{ user.tier }}</span>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/signup" class="signup-btn">Sign Up</a>
+        {% endif %}
+    </div>
 </nav>
 
 <div class="container">

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Premium Hub</h2>
+
+<div class="card">
+    <p><b>User:</b> {{ user.username }}</p>
+    <p><b>Tier:</b> {{ user.tier }}</p>
+    <p>This area contains paid research, deeper signal context, and protected analysis tools.</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Premium Analysis</h3>
+        <p>Chart-backed setup review pages with important snippets and reasoning.</p>
+        <a href="/premium-analysis">Open</a>
+    </div>
+
+    <div class="card">
+        <h3>Your Tier</h3>
+        <p>Review your current subscription access and premium feature availability.</p>
+        <a href="/tier">View Tier</a>
+    </div>
+</div>
+
+{% endblock %}
