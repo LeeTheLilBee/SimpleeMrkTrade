@@ -54,8 +54,9 @@ from engine.bot_status import write_bot_status
 from engine.bot_logger import log_bot
 from engine.premium_analysis_builder import save_premium_analysis
 from engine.why_this_trade_builder import save_why_this_trade
+from engine.live_activity import push_activity
+from engine.auto_close_positions import auto_close_positions
 
-# hedge-fund style controls
 try:
     from engine.drawdown_brake import drawdown_brake
 except Exception:
@@ -68,7 +69,6 @@ except Exception:
     def correlation_risk_status():
         return {"blocked": False, "crowded_sectors": {}, "reason": "correlation risk unavailable"}
 
-# optional portfolio-manager upgrades
 try:
     from engine.sector_concentration_cap import sector_concentration_status
 except Exception:
@@ -160,7 +160,6 @@ def process_signals(results, regime, volatility_payload):
             continue
 
         option = None
-
         if strategy == "CALL":
             option = get_best_call(symbol)
         elif strategy == "PUT":
@@ -218,6 +217,7 @@ def process_signals(results, regime, volatility_payload):
 def run():
     write_bot_status(True, "starting")
     log_bot("Bot run started", "INFO")
+    push_activity("SYSTEM", "Bot run started")
 
     try:
         settle_cash()
@@ -257,6 +257,7 @@ def run():
             print("DRAWDOWN BRAKE BLOCKED NEW TRADES")
             write_bot_status(False, "blocked by drawdown brake")
             log_bot("Blocked by drawdown brake", "WARN")
+            push_activity("RISK", "Blocked by drawdown brake")
             return
 
         if corr.get("blocked"):
@@ -264,6 +265,7 @@ def run():
             print(corr.get("reason"))
             write_bot_status(False, "blocked by correlation risk")
             log_bot("Blocked by correlation risk", "WARN")
+            push_activity("RISK", "Blocked by correlation risk")
             return
 
         if sector_cap.get("blocked"):
@@ -271,6 +273,7 @@ def run():
             print(sector_cap.get("reason"))
             write_bot_status(False, "blocked by sector cap")
             log_bot("Blocked by sector concentration cap", "WARN")
+            push_activity("RISK", "Blocked by sector concentration cap")
             return
 
         if governor.get("blocked"):
@@ -279,6 +282,10 @@ def run():
 
             print_positions()
             review_positions()
+
+            closed_now = auto_close_positions()
+            if closed_now:
+                push_activity("AUTO_CLOSE", f"Auto-closed {len(closed_now)} position(s)")
 
             build_equity_curve()
             report = write_daily_report()
@@ -299,8 +306,10 @@ def run():
             print("Daily Report Written:", report["timestamp"])
             print("Final Account Snapshot:", account_snapshot())
             print_backtest_summary()
+
             write_bot_status(False, "blocked by governor")
             log_bot("Blocked by governor", "WARN")
+            push_activity("RISK", "Blocked by governor")
             return
 
         regime = get_market_regime()
@@ -308,11 +317,13 @@ def run():
 
         print("Market Regime:", regime)
         log_bot(f"Market regime: {regime}", "INFO")
+        push_activity("MARKET", f"Market regime identified as {regime}")
 
         print("Building rotating watchlist...")
         watchlist = get_watchlist()
         print("Watchlist:", watchlist)
         log_bot(f"Watchlist built with {len(watchlist)} symbols", "INFO")
+        push_activity("WATCHLIST", f"Watchlist built with {len(watchlist)} symbols")
 
         print("Scanning watchlist...")
         results = []
@@ -324,10 +335,12 @@ def run():
 
         selected_trades, mode = process_signals(results, regime, volatility_payload)
         log_bot(f"Selected {len(selected_trades)} trades in mode {mode}", "INFO")
+        push_activity("QUEUE", f"Selected {len(selected_trades)} trades in mode {mode}")
 
         if _reduced_risk_mode(brake, exposure):
             selected_trades = _trim_for_reduced_risk(selected_trades)
             log_bot("Reduced-risk mode active: trimmed trade queue", "WARN")
+            push_activity("RISK", "Reduced-risk mode active: trimmed trade queue")
 
         save_premium_analysis(
             selected_trades,
@@ -342,11 +355,28 @@ def run():
             mode=mode
         )
 
+        for trade in selected_trades:
+            push_activity(
+                "SIGNAL",
+                f"{trade['symbol']} approved as {trade['strategy']} with score {trade['score']}",
+                symbol=trade["symbol"],
+                meta={
+                    "strategy": trade["strategy"],
+                    "score": trade["score"],
+                    "confidence": trade["confidence"]
+                }
+            )
+
         print("Processing trade queue...")
         execute_trades(selected_trades, limit=trades_left_today(executed_trade_count()))
 
         print_positions()
         review_positions()
+
+        closed_now = auto_close_positions()
+        if closed_now:
+            push_activity("AUTO_CLOSE", f"Auto-closed {len(closed_now)} position(s)")
+
         show_candidates()
 
         build_equity_curve()
@@ -372,10 +402,12 @@ def run():
 
         write_bot_status(False, "completed")
         log_bot("Bot run completed", "INFO")
+        push_activity("SYSTEM", "Bot run completed")
 
     except Exception as e:
         write_bot_status(False, f"error: {e}")
         log_bot(f"Bot error: {e}", "ERROR")
+        push_activity("ERROR", f"Bot error: {e}")
         raise
 
 if __name__ == "__main__":

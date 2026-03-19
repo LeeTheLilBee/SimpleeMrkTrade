@@ -1,6 +1,9 @@
 import json
 from pathlib import Path
 from engine.account_state import apply_realized_pnl
+from engine.trade_timeline import add_timeline_event
+from engine.bot_logger import log_bot
+from engine.live_activity import push_activity
 
 OPEN_FILE = "data/open_positions.json"
 CLOSED_FILE = "data/closed_positions.json"
@@ -26,7 +29,7 @@ def close_position(symbol, exit_price, reason):
 
     for pos in open_positions:
         if closed is None and pos["symbol"] == symbol:
-            entry = pos["price"]
+            entry = float(pos["price"])
             pnl = exit_price - entry if pos["strategy"] == "CALL" else entry - exit_price
             pos["exit_price"] = round(exit_price, 2)
             pos["reason"] = reason
@@ -51,5 +54,17 @@ def close_position(symbol, exit_price, reason):
 
         _save(TRADE_LOG, trade_log)
         apply_realized_pnl(closed["pnl"])
+        add_timeline_event(symbol, "CLOSED", {
+            "exit_price": round(exit_price, 2),
+            "reason": reason,
+            "pnl": round(closed["pnl"], 2)
+        })
+        log_bot(f"Closed {symbol} at {exit_price} due to {reason}", "INFO")
+        push_activity(
+            "CLOSE",
+            f"{symbol} closed for {round(closed['pnl'], 2)} due to {reason}",
+            symbol=symbol,
+            meta={"exit_price": round(exit_price, 2), "pnl": round(closed["pnl"], 2), "reason": reason}
+        )
 
     return closed

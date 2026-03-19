@@ -96,6 +96,14 @@ def public_proof():
         user=get_current_user()
     )
 
+@app.route("/live-activity")
+def live_activity_page():
+    return render_template(
+        "live_activity.html",
+        activity=load_json("data/live_activity.json", []),
+        user=get_current_user()
+    )
+
 @app.route("/dashboard")
 def dashboard_page():
     reports = load_json("data/recent_reports.json", [])

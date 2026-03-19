@@ -4,7 +4,8 @@
 <h2>Public Proof Account</h2>
 
 <div class="card">
-    <p>This is a live simulated account used to demonstrate system performance and consistency over time.</p>
+    <p>This is a live simulated account used to publicly demonstrate system health, discipline, and ongoing track record behavior.</p>
+    <p><b>Disclosure:</b> This is simulated performance and should be viewed as a public proof layer, not a brokerage statement.</p>
 </div>
 
 <div class="grid">
@@ -34,19 +35,36 @@
     <canvas id="proofChart"></canvas>
 </div>
 
-<div class="card">
-    <h3>Open Positions</h3>
-    {% for p in positions %}
-        <p>{{ p.symbol }} | {{ p.pnl }}</p>
-    {% endfor %}
-</div>
+{% if proof_detail %}
+<div class="grid">
+    <div class="card">
+        <h3>Open Positions</h3>
+        {% if positions %}
+            {% for p in positions %}
+                <p>{{ p.symbol }} | {{ p.strategy }} | {{ p.price }}</p>
+            {% endfor %}
+        {% else %}
+            <p>No open positions.</p>
+        {% endif %}
+    </div>
 
-<div class="card">
-    <h3>Closed Trades</h3>
-    {% for t in closed[-10:] %}
-        <p>{{ t.symbol }} | {{ t.pnl }}</p>
-    {% endfor %}
+    <div class="card">
+        <h3>Recent Closed Trades</h3>
+        {% if closed %}
+            {% for t in closed[-10:] %}
+                <p>{{ t.symbol }} | {{ t.pnl }} | {{ t.reason }}</p>
+            {% endfor %}
+        {% else %}
+            <p>No closed trades yet.</p>
+        {% endif %}
+    </div>
 </div>
+{% else %}
+<div class="card">
+    <p>Detailed proof breakdowns unlock at higher access levels.</p>
+    <a href="/upgrade">Upgrade Access</a>
+</div>
+{% endif %}
 
 <script>
 new Chart(document.getElementById('proofChart'), {
@@ -54,10 +72,12 @@ new Chart(document.getElementById('proofChart'), {
   data: {
     labels: {{ equity_labels|tojson }},
     datasets: [{
-      label: 'Equity',
+      label: 'Proof Equity',
       data: {{ equity_values|tojson }},
       borderColor: '#38bdf8',
-      fill: true
+      backgroundColor: 'rgba(56,189,248,0.10)',
+      fill: true,
+      tension: 0.3
     }]
   }
 });

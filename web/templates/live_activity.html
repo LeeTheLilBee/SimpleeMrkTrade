@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Live Activity Stream</h2>
+
+<div class="card">
+    <p>This page shows the latest important system events: market reads, signal approvals, risk responses, closes, and errors.</p>
+</div>
+
+<div class="card">
+    <p><b>Auto-refresh:</b> every 5 seconds</p>
+</div>
+
+<div id="activity-container">
+{% for row in activity[::-1] %}
+<div class="card activity-card {{ row.event_type }}">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+        <p style="margin:0;"><b>{{ row.event_type }}</b>{% if row.symbol %} | {{ row.symbol }}{% endif %}</p>
+        <p style="margin:0;"><b>{{ row.timestamp }}</b></p>
+    </div>
+    <p style="margin-top:10px;">{{ row.message }}</p>
+</div>
+{% endfor %}
+</div>
+
+<script>
+async function refreshActivity() {
+    const res = await fetch("/api/activity");
+    const data = await res.json();
+
+    let html = "";
+    data.slice().reverse().forEach(row => {
+        html += `
+        <div class="card activity-card ${row.event_type}">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                <p style="margin:0;"><b>${row.event_type}</b> ${row.symbol ? "| " + row.symbol : ""}</p>
+                <p style="margin:0;"><b>${row.timestamp}</b></p>
+            </div>
+            <p style="margin-top:10px;">${row.message}</p>
+        </div>
+        `;
+    });
+
+    document.getElementById("activity-container").innerHTML = html;
+}
+
+setInterval(refreshActivity, 5000);
+</script>
+
+{% endblock %}

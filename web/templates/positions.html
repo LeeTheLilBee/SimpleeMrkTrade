@@ -1,44 +1,66 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Open Position Monitor</h2>
+<h2>Position Intelligence</h2>
 
 <div class="card">
-    <p>This page shows when positions are getting close to a stop, a target, or an exit trigger.</p>
+    <p>This page shows position strength, current risk posture, warnings, and how close a trade may be to needing action.</p>
 </div>
 
-<table class="table">
-    <tr>
-        <th>Symbol</th>
-        <th>Strategy</th>
-        <th>Entry</th>
-        <th>Current</th>
-        <th>PnL</th>
-        <th>Stop</th>
-        <th>Target</th>
-        <th>To Stop</th>
-        <th>To Target</th>
-        <th>Action</th>
-        <th>Health</th>
-        <th>Last Checked</th>
-    </tr>
-
+<div class="grid">
     {% for p in positions %}
-    <tr>
-        <td>{{ p.symbol }}</td>
-        <td>{{ p.strategy }}</td>
-        <td>{{ p.entry }}</td>
-        <td>{{ p.current }}</td>
-        <td>{{ p.pnl }}</td>
-        <td>{{ p.stop }}</td>
-        <td>{{ p.target }}</td>
-        <td>{{ p.stop_distance }}</td>
-        <td>{{ p.target_distance }}</td>
-        <td>{{ p.action }}</td>
-        <td>{{ p.health }}</td>
-        <td>{{ p.last_checked }}</td>
-    </tr>
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+            <h3 style="margin:0;">{{ p.symbol }} | {{ p.strategy }}</h3>
+            <span class="{{ p.badge_class }}">{{ p.health }}</span>
+        </div>
+
+        <p><b>Health Score:</b> {{ p.health_score }}</p>
+        <p><b>Entry:</b> {{ p.entry }}</p>
+        <p><b>Current:</b> {{ p.current }}</p>
+        <p><b>PnL:</b> {{ p.pnl }}</p>
+        <p><b>Stop:</b> {{ p.stop }}</p>
+        <p><b>Target:</b> {{ p.target }}</p>
+        <p><b>Risk:</b> {{ p.risk }}</p>
+        <p><b>Warning:</b> {{ p.warning or "None" }}</p>
+        <p><b>Age (min):</b> {{ p.age_minutes }}</p>
+        <p><b>Last Checked:</b> {{ p.last_checked }}</p>
+
+        <div class="mini-meter-wrap">
+            <div class="mini-meter-label">Health</div>
+            <div class="mini-meter">
+                <div class="mini-meter-fill" style="width: {{ p.health_score }}%;"></div>
+            </div>
+        </div>
+    </div>
     {% endfor %}
-</table>
+</div>
+
+<div class="card">
+    <h3>Full Position Table</h3>
+    <table class="table">
+        <tr>
+            <th>Symbol</th>
+            <th>Score</th>
+            <th>Health</th>
+            <th>PnL</th>
+            <th>Risk</th>
+            <th>Warning</th>
+            <th>Age</th>
+        </tr>
+
+        {% for p in positions %}
+        <tr>
+            <td>{{ p.symbol }}</td>
+            <td><b>{{ p.health_score }}</b></td>
+            <td><span class="{{ p.badge_class }}">{{ p.health }}</span></td>
+            <td>{{ p.pnl }}</td>
+            <td>{{ p.risk }}</td>
+            <td>{{ p.warning }}</td>
+            <td>{{ p.age_minutes }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
 {% endblock %}

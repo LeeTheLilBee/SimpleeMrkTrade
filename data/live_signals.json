@@ -82,5 +82,33 @@
     "strategy": "CALL",
     "score": 250,
     "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-19T04:18:10.659460",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 120,
+    "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-19T04:18:11.278728",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 250,
+    "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-19T04:30:07.906997",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 120,
+    "confidence": "MEDIUM"
+  },
+  {
+    "timestamp": "2026-03-19T04:30:08.662366",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 250,
+    "confidence": "MEDIUM"
   }
 ]

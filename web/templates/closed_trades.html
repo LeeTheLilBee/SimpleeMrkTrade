@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Closed Trades</h2>
+
+<div class="card">
+    <p>This page tracks completed trades, realized outcomes, and the reason each trade was closed.</p>
+</div>
+
+<table class="table">
+    <tr>
+        <th>Symbol</th>
+        <th>Strategy</th>
+        <th>Entry</th>
+        <th>Exit</th>
+        <th>PnL</th>
+        <th>Reason</th>
+    </tr>
+
+    {% for trade in closed_trades[::-1] %}
+    <tr>
+        <td>{{ trade.symbol }}</td>
+        <td>{{ trade.strategy }}</td>
+        <td>{{ trade.price }}</td>
+        <td>{{ trade.exit_price }}</td>
+        <td>{{ trade.pnl }}</td>
+        <td>
+            {% if trade.reason in ["CRITICAL WEAKNESS", "DEGRADING TRADE", "MOMENTUM LOST"] %}
+                <span class="badge-red">{{ trade.reason }}</span>
+            {% elif trade.reason in ["TAKE_PROFIT", "TARGET HIT"] %}
+                <span class="badge-green">{{ trade.reason }}</span>
+            {% elif trade.reason in ["STOP", "EXIT", "STOP_LOSS"] %}
+                <span class="badge-yellow">{{ trade.reason }}</span>
+            {% else %}
+                <span class="badge-gray">{{ trade.reason }}</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
