@@ -1,6 +1,6 @@
 {
   "admin": {
-    "plan": "Elite",
+    "plan": "Starter",
     "status": "active",
     "renewal_date": null,
     "customer_id": "master-admin",

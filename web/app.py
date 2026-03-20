@@ -822,9 +822,11 @@ def billing_page():
 def billing_mock(plan):
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
+
     set_billing_status(session["username"], plan, status="active", provider="mock")
     update_user_tier(session["username"], plan)
     session["tier"] = plan
+
     return redirect(url_for("billing_page"))
 
 
@@ -838,7 +840,19 @@ def stripe_checkout_page(plan):
         **template_context({"payload": payload}),
     )
 
+@app.route("/debug-tier")
+def debug_tier():
+    if not is_logged_in():
+        return jsonify({"logged_in": False})
 
+    return jsonify({
+        "username": session.get("username"),
+        "session_tier": session.get("tier"),
+        "session_role": session.get("role"),
+        "billing": get_billing_status(session["username"]),
+        "user_record": get_user(session["username"]),
+    })
+    
 @app.route("/billing/stripe/portal")
 def stripe_portal_page():
     if not is_logged_in():
@@ -1030,11 +1044,15 @@ def admin_user_tier(username):
         return redirect(url_for("dashboard_page"))
 
     new_tier = request.form.get("tier", "Starter")
+
     update_user_tier(username, new_tier)
     admin_set_billing_status(username, plan=new_tier)
+
+    if session.get("username") == username:
+        session["tier"] = new_tier
+
     log_admin_action(session["username"], "update_tier", username, {"tier": new_tier})
     return redirect(url_for("admin_user_page", username=username))
-
 
 @app.route("/admin/user/<username>/password", methods=["POST"])
 def admin_user_password(username):

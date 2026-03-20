@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "timestamp": "2026-03-20T09:07:35.473103",
+    "actor": "admin",
+    "action": "update_tier",
+    "target": "admin",
+    "details": {
+      "tier": "Starter"
+    }
+  }
+]
