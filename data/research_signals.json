@@ -198,5 +198,83 @@
     "regime": "BEAR_TREND",
     "mode": "DEFENSIVE_BEAR",
     "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.352106",
+    "symbol": "NFLX",
+    "strategy": "PUT",
+    "score": 140,
+    "confidence": "LOW",
+    "price": 91.73999786376953,
+    "trade_id": "0ed9b803-d7a9-437b-9580-8123e3d5c622",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.358903",
+    "symbol": "OXY",
+    "strategy": "CALL",
+    "score": 150,
+    "confidence": "MEDIUM",
+    "price": 59.58000183105469,
+    "trade_id": "c4485892-b065-4b50-9609-81cd06ffca49",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.365875",
+    "symbol": "COP",
+    "strategy": "CALL",
+    "score": 60,
+    "confidence": "MEDIUM",
+    "price": 126.0199966430664,
+    "trade_id": "23a03faa-6c3e-4321-a70d-f55368fee760",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.369953",
+    "symbol": "CVX",
+    "strategy": "CALL",
+    "score": 150,
+    "confidence": "MEDIUM",
+    "price": 201.44000244140625,
+    "trade_id": "31193b52-8201-4864-901c-89acb6174f4c",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.377082",
+    "symbol": "XLE",
+    "strategy": "CALL",
+    "score": 150,
+    "confidence": "MEDIUM",
+    "price": 59.36000061035156,
+    "trade_id": "5a659682-5a02-4c82-aacd-7d2191f0fece",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.385332",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 160,
+    "confidence": "MEDIUM",
+    "price": 444.2699890136719,
+    "trade_id": "b7208bb2-2337-493a-b51a-b2c227da8a5c",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "ELEVATED"
   }
 ]

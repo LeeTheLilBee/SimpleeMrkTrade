@@ -6,7 +6,7 @@
 <div class="card premium-hero">
     <h3>Trade Intelligence Narrative</h3>
     <p class="muted-line">
-        This page tells the story of the setup: why it mattered, how it should be interpreted, and how it evolved through the system.
+        This page explains the setup, pressure, decay, and failure risk around the trade.
     </p>
 </div>
 
@@ -24,6 +24,22 @@
         <p><b>Stop Logic:</b> {{ detail.risk.stop_logic }}</p>
         <p><b>Risk Note:</b> {{ detail.risk.note }}</p>
         <p>{{ detail.risk.story }}</p>
+    </div>
+</div>
+
+<div class="grid">
+    <div class="card premium-card">
+        <h3>Signal Decay</h3>
+        <p><b>Signal Age:</b> {{ detail.signal_decay.minutes_old if detail.signal_decay is defined else "N/A" }} min</p>
+        <p><b>Decay:</b> {{ detail.signal_decay.decay_pct if detail.signal_decay is defined else "N/A" }}%</p>
+        <p><b>Adjusted Score:</b> {{ detail.signal_decay.adjusted_score if detail.signal_decay is defined else "N/A" }}</p>
+    </div>
+
+    <div class="card premium-card">
+        <h3>Crowd Pressure</h3>
+        <p><b>Pressure Score:</b> {{ detail.crowd_pressure.score if detail.crowd_pressure is defined else "N/A" }}</p>
+        <p><b>Label:</b> {{ detail.crowd_pressure.label if detail.crowd_pressure is defined else "N/A" }}</p>
+        <p>{{ detail.crowd_pressure.note if detail.crowd_pressure is defined else "No crowd pressure data." }}</p>
     </div>
 </div>
 
@@ -63,6 +79,19 @@
         </ul>
     {% else %}
         <p>No additional market context saved.</p>
+    {% endif %}
+</div>
+
+<div class="card premium-card">
+    <h3>Why Not This Trade</h3>
+    {% if detail.why_not_this_trade %}
+        <ul>
+        {% for row in detail.why_not_this_trade %}
+            <li>{{ row }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No failure-risk notes saved.</p>
     {% endif %}
 </div>
 

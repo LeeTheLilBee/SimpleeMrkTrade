@@ -161,5 +161,77 @@
       "confidence": "MEDIUM",
       "source": "research"
     }
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.352669",
+    "symbol": "NFLX",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "0ed9b803-d7a9-437b-9580-8123e3d5c622",
+      "strategy": "PUT",
+      "score": 140,
+      "confidence": "LOW",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.359407",
+    "symbol": "OXY",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "c4485892-b065-4b50-9609-81cd06ffca49",
+      "strategy": "CALL",
+      "score": 150,
+      "confidence": "MEDIUM",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.366393",
+    "symbol": "COP",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "23a03faa-6c3e-4321-a70d-f55368fee760",
+      "strategy": "CALL",
+      "score": 60,
+      "confidence": "MEDIUM",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.370483",
+    "symbol": "CVX",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "31193b52-8201-4864-901c-89acb6174f4c",
+      "strategy": "CALL",
+      "score": 150,
+      "confidence": "MEDIUM",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.377700",
+    "symbol": "XLE",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "5a659682-5a02-4c82-aacd-7d2191f0fece",
+      "strategy": "CALL",
+      "score": 150,
+      "confidence": "MEDIUM",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.385950",
+    "symbol": "MU",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "b7208bb2-2337-493a-b51a-b2c227da8a5c",
+      "strategy": "CALL",
+      "score": 160,
+      "confidence": "MEDIUM",
+      "source": "research"
+    }
   }
 ]

@@ -262,5 +262,53 @@
     "score": 290,
     "confidence": "MEDIUM",
     "trade_id": "a999ed5f-0c83-4efa-a6dc-4a3a337bd21c"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.351357",
+    "symbol": "NFLX",
+    "strategy": "PUT",
+    "score": 140,
+    "confidence": "LOW",
+    "trade_id": "0ed9b803-d7a9-437b-9580-8123e3d5c622"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.358276",
+    "symbol": "OXY",
+    "strategy": "CALL",
+    "score": 150,
+    "confidence": "MEDIUM",
+    "trade_id": "c4485892-b065-4b50-9609-81cd06ffca49"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.365215",
+    "symbol": "COP",
+    "strategy": "CALL",
+    "score": 60,
+    "confidence": "MEDIUM",
+    "trade_id": "23a03faa-6c3e-4321-a70d-f55368fee760"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.369321",
+    "symbol": "CVX",
+    "strategy": "CALL",
+    "score": 150,
+    "confidence": "MEDIUM",
+    "trade_id": "31193b52-8201-4864-901c-89acb6174f4c"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.376484",
+    "symbol": "XLE",
+    "strategy": "CALL",
+    "score": 150,
+    "confidence": "MEDIUM",
+    "trade_id": "5a659682-5a02-4c82-aacd-7d2191f0fece"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.384736",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 160,
+    "confidence": "MEDIUM",
+    "trade_id": "b7208bb2-2337-493a-b51a-b2c227da8a5c"
   }
 ]

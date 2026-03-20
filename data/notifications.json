@@ -368,5 +368,143 @@
     "trade_id": null,
     "tier_required": "starter",
     "level": "warning"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.355721",
+    "title": "Edge Detected",
+    "message": "NFLX: Moderate quality setup with supportive structure | Bearish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.356391",
+    "type": "RESEARCH_ALPHA",
+    "message": "NFLX research alpha added to premium intelligence.",
+    "trade_id": "0ed9b803-d7a9-437b-9580-8123e3d5c622",
+    "tier_required": "elite",
+    "level": "info",
+    "score": null,
+    "strategy": null,
+    "volatility": null,
+    "source": null
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.362311",
+    "title": "Edge Detected",
+    "message": "OXY: Strong alignment across multiple factors | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.363075",
+    "type": "RESEARCH_ALPHA",
+    "message": "OXY research alpha added to premium intelligence.",
+    "trade_id": "c4485892-b065-4b50-9609-81cd06ffca49",
+    "tier_required": "elite",
+    "level": "info",
+    "score": null,
+    "strategy": null,
+    "volatility": null,
+    "source": null
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.373656",
+    "title": "Edge Detected",
+    "message": "CVX: Strong alignment across multiple factors | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.374399",
+    "type": "RESEARCH_ALPHA",
+    "message": "CVX research alpha added to premium intelligence.",
+    "trade_id": "31193b52-8201-4864-901c-89acb6174f4c",
+    "tier_required": "elite",
+    "level": "info",
+    "score": null,
+    "strategy": null,
+    "volatility": null,
+    "source": null
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.381021",
+    "title": "Edge Detected",
+    "message": "XLE: Strong alignment across multiple factors | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.381784",
+    "type": "RESEARCH_ALPHA",
+    "message": "XLE research alpha added to premium intelligence.",
+    "trade_id": "5a659682-5a02-4c82-aacd-7d2191f0fece",
+    "tier_required": "elite",
+    "level": "info",
+    "score": null,
+    "strategy": null,
+    "volatility": null,
+    "source": null
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.389324",
+    "title": "Edge Detected",
+    "message": "MU: Strong alignment across multiple factors | Bullish directional bias",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.390128",
+    "type": "RESEARCH_ALPHA",
+    "message": "MU research alpha added to premium intelligence.",
+    "trade_id": "b7208bb2-2337-493a-b51a-b2c227da8a5c",
+    "tier_required": "elite",
+    "level": "info",
+    "score": null,
+    "strategy": null,
+    "volatility": null,
+    "source": null
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.391978",
+    "title": "Risk Alert",
+    "message": "PORTFOLIO risk condition triggered: Too many positions concentrated in one sector..",
+    "level": "warning",
+    "link": "/positions",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "risk"
+  },
+  {
+    "timestamp": "2026-03-20T06:30:58.392826",
+    "type": "RISK_WARNING",
+    "message": "Execution blocked by correlation risk: Too many positions concentrated in one sector.",
+    "trade_id": null,
+    "tier_required": "starter",
+    "level": "warning",
+    "score": null,
+    "strategy": null,
+    "volatility": null,
+    "source": null
   }
 ]
