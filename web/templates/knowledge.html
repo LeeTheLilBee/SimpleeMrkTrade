@@ -1,176 +1,179 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Knowledge Center</h2>
-
-<div class="card premium-hero">
-    <div class="hero-brand-row">
-        <img src="/static/logo.png" alt="SimpleeMrkTrade logo" class="hero-logo">
+<div class="knowledge-hero">
+    <div class="knowledge-hero-inner">
         <div>
-            <h3 style="margin:0;">How to Think Better, Not Just Trade Faster</h3>
-            <p class="muted-line">
-                This knowledge center is split into two sections:
-                general trading knowledge and program-specific intelligence.
-                The goal is not to give away every proprietary detail, but to explain enough
-                that users understand why the system behaves the way it does.
+            <div class="section-kicker">Knowledge Center</div>
+            <h1 class="knowledge-title">Think Better. Trade Smarter.</h1>
+            <p class="knowledge-subtitle">
+                This page is split into two layers: general trading knowledge and program-specific system knowledge.
+                The goal is to explain the logic deeply enough to build trust and understanding without exposing every proprietary detail.
+            </p>
+        </div>
+        <img src="/static/logo.png" alt="SimpleeMrkTrade logo" class="knowledge-hero-logo"
+             onerror="this.style.display='none';">
+    </div>
+</div>
+
+<div class="knowledge-section-shell">
+    <div class="section-kicker">Section 1</div>
+    <h2 class="knowledge-section-title">General Trading Knowledge</h2>
+    <p class="knowledge-section-intro">
+        These are the core concepts many traders misunderstand. This section explains the market ideas that shape better decision-making.
+    </p>
+
+    <div class="knowledge-grid">
+        <div class="knowledge-card">
+            <h3>Market Structure</h3>
+            <p>
+                Markets do not behave the same way all the time. Trend, range, and transition conditions each reward and punish different behaviors.
+            </p>
+            <ul>
+                <li><b>Trend:</b> continuation setups usually work better when direction is established.</li>
+                <li><b>Range:</b> many breakouts fail because price snaps back into the middle.</li>
+                <li><b>Transition:</b> unstable structure creates fake moves and messy signals.</li>
+            </ul>
+        </div>
+
+        <div class="knowledge-card">
+            <h3>Volatility Regimes</h3>
+            <p>
+                Volatility affects how aggressive or defensive a trader should be. It changes risk, speed, and signal reliability.
+            </p>
+            <ul>
+                <li><b>LOW:</b> slower movement, cleaner structure, less explosive follow-through.</li>
+                <li><b>NORMAL:</b> balanced conditions and more stable signal interpretation.</li>
+                <li><b>ELEVATED:</b> larger moves, more emotion, faster invalidation risk.</li>
+            </ul>
+        </div>
+
+        <div class="knowledge-card">
+            <h3>Signal vs Edge</h3>
+            <p>
+                A signal is an event. An edge is a repeatable advantage. Many traders confuse a flashing indicator with a true decision advantage.
+            </p>
+            <ul>
+                <li>A signal can be interesting and still be weak.</li>
+                <li>An edge requires context, filtering, and discipline.</li>
+                <li>The same signal can help in one regime and fail in another.</li>
+            </ul>
+        </div>
+
+        <div class="knowledge-card">
+            <h3>Why Drawdown Matters</h3>
+            <p>
+                Drawdown is not just a number on a chart. It changes behavior, confidence, and future recovery difficulty.
+            </p>
+            <ul>
+                <li>Large losses distort later decisions.</li>
+                <li>Recovery math gets harder as losses deepen.</li>
+                <li>Systems that survive usually respect drawdown early.</li>
+            </ul>
+        </div>
+
+        <div class="knowledge-card">
+            <h3>Position Clustering Risk</h3>
+            <p>
+                Several good trades can become one oversized bet when they all point at the same sector or theme.
+            </p>
+            <ul>
+                <li>Correlation hides inside “different” symbols.</li>
+                <li>Sector crowding reduces real diversification.</li>
+                <li>Portfolio risk matters as much as signal quality.</li>
+            </ul>
+        </div>
+
+        <div class="knowledge-card">
+            <h3>Overtrading</h3>
+            <p>
+                Many accounts do not fail because there were no opportunities. They fail because weak opportunities were treated like necessary action.
+            </p>
+            <ul>
+                <li>More trades does not mean more edge.</li>
+                <li>Weak setups dilute strong ones.</li>
+                <li>Discipline often looks like inactivity.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="knowledge-section-shell premium-knowledge-shell">
+    <div class="section-kicker">Section 2</div>
+    <h2 class="knowledge-section-title">Program-Specific Knowledge</h2>
+    <p class="knowledge-section-intro">
+        This section explains how the platform thinks. It gives users a real understanding of the system without fully exposing proprietary weighting logic.
+    </p>
+
+    <div class="knowledge-grid">
+        <div class="knowledge-card premium-knowledge-card">
+            <h3>Signal Engine</h3>
+            <p>
+                The signal engine combines trend, RSI behavior, breakout structure, and momentum context into a unified score.
+                Higher scores mean stronger alignment across multiple factors, not certainty.
+            </p>
+        </div>
+
+        <div class="knowledge-card premium-knowledge-card">
+            <h3>Trade Filter Engine</h3>
+            <p>
+                Not every signal deserves deeper attention. The filter engine removes weaker or context-misaligned ideas before they reach premium layers.
+            </p>
+        </div>
+
+        <div class="knowledge-card premium-knowledge-card">
+            <h3>Risk Governor</h3>
+            <p>
+                The risk governor can block deployment even when a trade looks strong. That is intentional.
+                The platform protects the account from overtrading, overconcentration, and poor capital behavior.
+            </p>
+        </div>
+
+        <div class="knowledge-card premium-knowledge-card">
+            <h3>Research Engine</h3>
+            <p>
+                One of the platform’s strongest advantages is that research keeps running even when live execution is blocked.
+                This keeps edge discovery alive without forcing bad deployment into the simulated account.
+            </p>
+        </div>
+
+        <div class="knowledge-card premium-knowledge-card">
+            <h3>Market Regime Engine</h3>
+            <p>
+                The regime engine helps the system decide whether market conditions look bullish, bearish, or unstable.
+                That broader framing changes how signals are interpreted.
+            </p>
+        </div>
+
+        <div class="knowledge-card premium-knowledge-card">
+            <h3>Volatility Engine</h3>
+            <p>
+                The volatility engine classifies the market environment and changes system posture.
+                A good setup in normal volatility may not deserve the same treatment in elevated volatility.
+            </p>
+        </div>
+
+        <div class="knowledge-card premium-knowledge-card">
+            <h3>Correlation Risk Engine</h3>
+            <p>
+                This engine catches hidden concentration. Several strong ideas in the same sector can quietly become one oversized exposure cluster.
+            </p>
+        </div>
+
+        <div class="knowledge-card premium-knowledge-card">
+            <h3>Trade Detail Intelligence</h3>
+            <p>
+                The trade detail layer converts a signal into a readable decision record with thesis, narrative, risk framing, and timeline support.
             </p>
         </div>
     </div>
 </div>
 
-<div class="section-label">General Trading Knowledge</div>
-
-<div class="grid">
-    <div class="card">
-        <h3>Market Structure</h3>
-        <p>
-            Markets rotate through trend, range, and transition phases. Many traders lose because they apply the same logic to all three.
-        </p>
-        <ul>
-            <li><b>Trend:</b> continuation setups behave better when direction is established.</li>
-            <li><b>Range:</b> breakout traders often get trapped because price reverts back into the middle.</li>
-            <li><b>Transition:</b> fake moves and unstable structure become more common.</li>
-        </ul>
-    </div>
-
-    <div class="card">
-        <h3>Volatility Regimes</h3>
-        <p>
-            Volatility is not just “how much price moves.” It changes how aggressive, defensive, or selective a strategy should be.
-        </p>
-        <ul>
-            <li><b>LOW:</b> slower motion, cleaner structure, less explosive follow-through.</li>
-            <li><b>NORMAL:</b> balanced environment, usually best for stable execution.</li>
-            <li><b>ELEVATED:</b> larger moves, more emotion, faster invalidation risk.</li>
-        </ul>
-    </div>
-
-    <div class="card">
-        <h3>Signal vs Edge</h3>
-        <p>
-            A signal is an event. An edge is a repeatable advantage. Many traders confuse the two.
-        </p>
-        <ul>
-            <li>A signal can be interesting but still low quality.</li>
-            <li>An edge requires context, selectivity, and risk discipline.</li>
-            <li>The same indicator can be useful in one regime and harmful in another.</li>
-        </ul>
-    </div>
-
-    <div class="card">
-        <h3>Why Drawdown Matters</h3>
-        <p>
-            Win rate alone is not enough. A system that wins often but takes oversized losses can still destroy capital.
-        </p>
-        <ul>
-            <li>Drawdown changes future decision quality.</li>
-            <li>Large losses increase emotional pressure.</li>
-            <li>Recovery math gets harder as losses deepen.</li>
-        </ul>
-    </div>
-
-    <div class="card">
-        <h3>Position Clustering Risk</h3>
-        <p>
-            Several “good” trades in the same sector can quietly become one oversized idea.
-        </p>
-        <ul>
-            <li>Correlation can turn multiple trades into one concentrated bet.</li>
-            <li>Sector crowding reduces diversification.</li>
-            <li>Portfolio-level risk matters as much as signal-level quality.</li>
-        </ul>
-    </div>
-
-    <div class="card">
-        <h3>Why Overtrading Kills Accounts</h3>
-        <p>
-            Many losses come from forcing activity, not from missing opportunities.
-        </p>
-        <ul>
-            <li>Too many trades increase friction and error rate.</li>
-            <li>Weak setups dilute strong setups.</li>
-            <li>Good systems protect against unnecessary deployment.</li>
-        </ul>
-    </div>
-</div>
-
-<div class="section-label">Program-Specific Knowledge</div>
-
-<div class="grid">
-    <div class="card premium-card">
-        <h3>Signal Engine</h3>
-        <p>
-            The signal engine combines trend, RSI behavior, breakout structure, and momentum context into a unified score.
-            A higher score does not mean certainty. It means stronger alignment across multiple factors.
-        </p>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Trade Filter Engine</h3>
-        <p>
-            Not every signal becomes a trade candidate. The trade filter blocks low-quality or context-misaligned ideas
-            before they reach deeper parts of the system.
-        </p>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Risk Governor</h3>
-        <p>
-            The risk governor enforces discipline at the portfolio level. It can block trades even when signal quality is high.
-        </p>
-        <ul>
-            <li>Daily trade caps</li>
-            <li>Max open position limits</li>
-            <li>Portfolio stress controls</li>
-        </ul>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Research Engine</h3>
-        <p>
-            This is one of the system’s biggest differentiators. Research can continue generating ideas even when live execution is blocked.
-            That means the intelligence layer can stay rich without forcing bad deployments in the simulated account.
-        </p>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Market Regime Engine</h3>
-        <p>
-            The regime engine identifies the broader condition the market is operating in, such as bullish trend,
-            bearish trend, or unstable/transition states. This helps determine which ideas deserve more weight.
-        </p>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Volatility Engine</h3>
-        <p>
-            The volatility engine classifies conditions like LOW, NORMAL, or ELEVATED.
-            Those classifications help shape aggressiveness, selectivity, and risk tolerance.
-        </p>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Correlation Risk Engine</h3>
-        <p>
-            Even strong trades can become dangerous when too many point at the same sector or theme.
-            This engine helps reduce hidden concentration risk.
-        </p>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Trade Detail Intelligence</h3>
-        <p>
-            The trade detail system turns raw signals into an explainable decision record.
-            It stores thesis, context, narrative, timeline, and risk framing so the user can understand the setup better.
-        </p>
-    </div>
-</div>
-
-<div class="card premium-card">
-    <h3>What This Platform Intentionally Does Not Reveal</h3>
+<div class="knowledge-footer-note">
+    <h3>What the Platform Explains vs What It Protects</h3>
     <p>
-        The system explains its logic in a useful way, but not every weighting rule or ranking mechanic is exposed publicly.
-        That balance matters. Users need clarity without losing the value of the proprietary architecture underneath.
+        The system is designed to be unusually transparent about how it behaves, but not every internal weighting rule is exposed.
+        That balance is intentional. Users get clarity without the architecture losing its value.
     </p>
 </div>
 
