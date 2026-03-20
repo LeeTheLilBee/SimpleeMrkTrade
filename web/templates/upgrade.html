@@ -1,57 +1,59 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Choose Your Plan</h2>
+<h2>Membership Plans</h2>
 
-<div class="card">
-    <p>Your current tier: <b>{{ user.tier }}</b></p>
-    <p>Starter gives access. Pro adds depth. Elite adds maximum context and the strongest premium release layer.</p>
+<div class="card premium-hero">
+    <h3>Choose Your Access Level</h3>
+    <p class="muted-line">
+        Plans control how much intelligence, explanation depth, and signal history is visible.
+    </p>
 </div>
 
 <div class="pricing-grid">
-    <div class="price-card">
-        <h3>Starter</h3>
-        <p class="price-tag">$19<span>/mo</span></p>
-        <p>For core workflow access.</p>
-        <ul>
-            <li>Signals access</li>
-            <li>Core workflow pages</li>
-            <li>Basic notification layer</li>
-        </ul>
-        <a href="/upgrade-tier/Starter" class="cta-btn secondary">Choose Starter</a>
-    </div>
+    {% for tier_name, tier_data in tiers.items() %}
+        {% if tier_name != "Guest" %}
+        <div class="card {% if tier_name in ['Pro', 'Elite'] %}premium-card{% endif %}">
+            <h3>{{ tier_name }}</h3>
 
-    <div class="price-card featured">
-        <div class="featured-badge">Most Popular</div>
-        <h3>Pro</h3>
-        <p class="price-tag">$79<span>/mo</span></p>
-        <p>For premium analysis, why-this-trade, and full analytics.</p>
-        <ul>
-            <li>Everything in Starter</li>
-            <li>Premium Analysis</li>
-            <li>Why This Trade</li>
-            <li>Full Analytics</li>
-            <li>Tiered premium notifications</li>
-        </ul>
-        <a href="/upgrade-tier/Pro" class="cta-btn">Go Pro</a>
-    </div>
+            <p class="muted-line">
+                Premium Depth:
+                <b>{{ tier_data.premium_depth if tier_data.premium_depth is defined else "standard" }}</b>
+            </p>
 
-    <div class="price-card">
-        <h3>Elite</h3>
-        <p class="price-tag">$199<span>/mo</span></p>
-        <p>For maximum premium depth and strongest information access.</p>
-        <ul>
-            <li>Everything in Pro</li>
-            <li>Maximum depth</li>
-            <li>Highest-tier notifications</li>
-            <li>Deepest premium context</li>
-        </ul>
-        <a href="/upgrade-tier/Elite" class="cta-btn secondary">Unlock Elite</a>
-    </div>
+            <ul>
+                <li>Signals: {{ "Yes" if tier_data.signals else "No" }}</li>
+                <li>Premium Analysis: {{ "Yes" if tier_data.premium_analysis else "No" }}</li>
+                <li>Why This Trade: {{ "Yes" if tier_data.why_this_trade else "No" }}</li>
+                <li>Full Analytics: {{ "Yes" if tier_data.full_analytics else "No" }}</li>
+            </ul>
+
+            {% if user.tier == tier_name %}
+                <button class="cta-btn secondary" disabled>Current Plan</button>
+            {% else %}
+                <a href="/upgrade-tier/{{ tier_name }}" class="cta-btn">Choose {{ tier_name }}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% endfor %}
 </div>
 
-<div class="card">
-    <p><a href="/billing">Open Billing Hooks</a></p>
+<div class="card premium-card">
+    <h3>À La Carte Access</h3>
+    <p class="muted-line">
+        For users who do not want a full membership, selected premium modules can be offered individually.
+    </p>
+
+    <div class="pricing-grid">
+        {% for item in alacarte_products %}
+        <div class="card">
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.description }}</p>
+            <p><b>Price:</b> {{ item.price_label }}</p>
+            <button class="cta-btn secondary" disabled>Coming Soon</button>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}

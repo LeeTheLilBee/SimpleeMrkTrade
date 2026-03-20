@@ -6,13 +6,16 @@
 <div class="card premium-hero">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
         <div>
-            <h3 style="margin:0;">Signal Intelligence Center</h3>
+            <h3 style="margin:0;">Symbol Intelligence Boards</h3>
             <p class="muted-line">
-                Research signals continue to populate even when the simulated account is capped.
-                Execution signals reflect what the live environment can actually take.
+                Symbols are ranked by strongest latest score first. Each board keeps recent signal history nested underneath it,
+                instead of showing a flat stream.
             </p>
         </div>
-        <span class="badge-blue">Research + Execution</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="badge-blue">Last 100 Signals Retained</span>
+            <span class="badge-purple">Tier-Limited History</span>
+        </div>
     </div>
 </div>
 
@@ -28,122 +31,167 @@
         <div class="metric">{{ signals|length if signals else 0 }}</div>
         <p class="muted-line">Subject to portfolio and risk controls.</p>
     </div>
+
+    <div class="card premium-card">
+        <h3>Your Signal Depth</h3>
+        <div class="metric">{{ signal_history_limit }}</div>
+        <p class="muted-line">Visible signal history entries per symbol on your current tier.</p>
+    </div>
 </div>
 
-<div class="card premium-card">
-    <h3>Research Signals</h3>
-    <p class="muted-line">
-        These are the edge engine outputs. They keep idea flow alive even when execution is blocked.
-    </p>
+<div id="signalBoardsContainer">
+    {% if signal_boards and signal_boards|length > 0 %}
+        {% for board in signal_boards %}
+        <div class="card premium-card signal-board">
+            <div class="signal-board-head">
+                <div>
+                    <h3 style="margin:0;">{{ board.symbol }}</h3>
+                    <p class="muted-line">
+                        Latest: {{ board.latest_strategy }} | Score {{ board.latest_score }} | {{ board.latest_confidence }}
+                    </p>
+                </div>
 
-    {% if research_signals and research_signals|length > 0 %}
-    <table class="table">
-        <tr>
-            <th>Time</th>
-            <th>Symbol</th>
-            <th>Strategy</th>
-            <th>Score</th>
-            <th>Confidence</th>
-            <th>Mode</th>
-            <th>Volatility</th>
-            <th>Signal Type</th>
-            <th>Detail</th>
-        </tr>
-        {% for s in research_signals[::-1] %}
-        <tr>
-            <td>{{ s.timestamp }}</td>
-            <td>
-                {% if s.trade_id %}
-                    <a href="/trade/{{ s.trade_id }}">{{ s.symbol }}</a>
-                {% else %}
-                    {{ s.symbol }}
-                {% endif %}
-            </td>
-            <td>{{ s.strategy }}</td>
-            <td><span class="pill">{{ s.score }}</span></td>
-            <td>{{ s.confidence }}</td>
-            <td>{{ s.mode or "N/A" }}</td>
-            <td>{{ s.volatility or "N/A" }}</td>
-            <td>
-                {% if s.score >= 200 %}
-                    <span class="badge-purple">High Conviction</span>
-                {% elif s.score >= 120 %}
-                    <span class="badge-blue">Premium Edge</span>
-                {% else %}
-                    <span class="badge-gray">Research</span>
-                {% endif %}
-            </td>
-            <td>
-                {% if s.trade_id %}
-                    <a href="/trade/{{ s.trade_id }}">Open</a>
-                {% else %}
-                    —
-                {% endif %}
-            </td>
-        </tr>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    {% if board.latest_score >= 200 %}
+                        <span class="badge-purple">High Conviction</span>
+                    {% elif board.latest_score >= 120 %}
+                        <span class="badge-blue">Premium Edge</span>
+                    {% else %}
+                        <span class="badge-gray">Active</span>
+                    {% endif %}
+
+                    {% if board.latest_trade_id %}
+                        <a href="/trade/{{ board.latest_trade_id }}" class="cta-btn secondary">Open Trade</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="signal-board-meta">
+                <div class="signal-stat-chip">Signals Stored: {{ board.signal_count }}</div>
+                <div class="signal-stat-chip">Visible: {{ board.signals|length }}</div>
+            </div>
+
+            {% if board.signals and board.signals|length > 0 %}
+            <table class="table">
+                <tr>
+                    <th>Time</th>
+                    <th>Strategy</th>
+                    <th>Score</th>
+                    <th>Confidence</th>
+                    <th>Source</th>
+                    <th>Mode</th>
+                    <th>Volatility</th>
+                </tr>
+                {% for s in board.signals %}
+                <tr>
+                    <td>{{ s.timestamp }}</td>
+                    <td>{{ s.strategy }}</td>
+                    <td><span class="pill">{{ s.score }}</span></td>
+                    <td>{{ s.confidence }}</td>
+                    <td>{{ s.source or "execution" }}</td>
+                    <td>{{ s.mode or "N/A" }}</td>
+                    <td>{{ s.volatility or "N/A" }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p>No signal history available for this symbol.</p>
+            {% endif %}
+        </div>
         {% endfor %}
-    </table>
     {% else %}
     <div class="card">
-        <p>No research signals yet.</p>
+        <p>No signal boards yet.</p>
     </div>
     {% endif %}
 </div>
 
-<div class="card">
-    <h3>Execution Signals</h3>
-    <p class="muted-line">
-        These are the signals flowing into the live execution stream.
-    </p>
+<script>
+async function refreshSignalBoards() {
+    try {
+        const res = await fetch("/api/signal-boards");
+        if (!res.ok) return;
+        const boards = await res.json();
+        const container = document.getElementById("signalBoardsContainer");
+        if (!container) return;
 
-    {% if signals and signals|length > 0 %}
-    <table class="table">
-        <tr>
-            <th>Time</th>
-            <th>Symbol</th>
-            <th>Strategy</th>
-            <th>Score</th>
-            <th>Confidence</th>
-            <th>Signal Type</th>
-            <th>Detail</th>
-        </tr>
-        {% for s in signals[::-1] %}
-        <tr>
-            <td>{{ s.timestamp }}</td>
-            <td>
-                {% if s.trade_id %}
-                    <a href="/trade/{{ s.trade_id }}">{{ s.symbol }}</a>
-                {% else %}
-                    {{ s.symbol }}
-                {% endif %}
-            </td>
-            <td>{{ s.strategy }}</td>
-            <td><span class="pill">{{ s.score }}</span></td>
-            <td>{{ s.confidence }}</td>
-            <td>
-                {% if s.score >= 200 %}
-                    <span class="badge-purple">High Conviction</span>
-                {% elif s.score >= 120 %}
-                    <span class="badge-blue">Execution Edge</span>
-                {% else %}
-                    <span class="badge-gray">Execution</span>
-                {% endif %}
-            </td>
-            <td>
-                {% if s.trade_id %}
-                    <a href="/trade/{{ s.trade_id }}">Open</a>
-                {% else %}
-                    —
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    <div class="card">
-        <p>No execution signals yet.</p>
-    </div>
-    {% endif %}
-</div>
+        if (!Array.isArray(boards) || boards.length === 0) {
+            container.innerHTML = `<div class="card"><p>No signal boards yet.</p></div>`;
+            return;
+        }
+
+        let html = "";
+        boards.forEach(board => {
+            let badge = `<span class="badge-gray">Active</span>`;
+            if ((board.latest_score || 0) >= 200) {
+                badge = `<span class="badge-purple">High Conviction</span>`;
+            } else if ((board.latest_score || 0) >= 120) {
+                badge = `<span class="badge-blue">Premium Edge</span>`;
+            }
+
+            let rows = "";
+            (board.signals || []).forEach(s => {
+                rows += `
+                    <tr>
+                        <td>${s.timestamp ?? ""}</td>
+                        <td>${s.strategy ?? ""}</td>
+                        <td><span class="pill">${s.score ?? ""}</span></td>
+                        <td>${s.confidence ?? ""}</td>
+                        <td>${s.source ?? "execution"}</td>
+                        <td>${s.mode ?? "N/A"}</td>
+                        <td>${s.volatility ?? "N/A"}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                <div class="card premium-card signal-board">
+                    <div class="signal-board-head">
+                        <div>
+                            <h3 style="margin:0;">${board.symbol ?? ""}</h3>
+                            <p class="muted-line">
+                                Latest: ${board.latest_strategy ?? ""} | Score ${board.latest_score ?? ""} | ${board.latest_confidence ?? ""}
+                            </p>
+                        </div>
+
+                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                            ${badge}
+                            ${board.latest_trade_id ? `<a href="/trade/${board.latest_trade_id}" class="cta-btn secondary">Open Trade</a>` : ""}
+                        </div>
+                    </div>
+
+                    <div class="signal-board-meta">
+                        <div class="signal-stat-chip">Signals Stored: ${board.signal_count ?? 0}</div>
+                        <div class="signal-stat-chip">Visible: ${(board.signals || []).length}</div>
+                    </div>
+
+                    ${
+                        (board.signals || []).length > 0
+                        ? `
+                        <table class="table">
+                            <tr>
+                                <th>Time</th>
+                                <th>Strategy</th>
+                                <th>Score</th>
+                                <th>Confidence</th>
+                                <th>Source</th>
+                                <th>Mode</th>
+                                <th>Volatility</th>
+                            </tr>
+                            ${rows}
+                        </table>
+                        `
+                        : `<p>No signal history available for this symbol.</p>`
+                    }
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    } catch (e) {}
+}
+
+setInterval(refreshSignalBoards, 15000);
+</script>
 
 {% endblock %}

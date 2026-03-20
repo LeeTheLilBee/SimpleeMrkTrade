@@ -54,6 +54,7 @@ from engine.user_portfolio_store import (
     clear_user_portfolio,
 )
 from engine.user_position_health import build_user_position_health
+from engine.signal_feed import grouped_signals, load_signals
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "change_this_secret_key_later_to_something_long_random"
@@ -105,6 +106,21 @@ def premium_depth():
     if is_master():
         return "max"
     return get_tier_config().get("premium_depth", "none")
+
+
+def signal_history_limit_for_tier():
+    if is_master():
+        return 100
+
+    tier = (session.get("tier") or "Guest").lower()
+    limits = {
+        "guest": 2,
+        "free": 3,
+        "starter": 10,
+        "pro": 25,
+        "elite": 100,
+    }
+    return limits.get(tier, 3)
 
 
 def visible_notifications():
@@ -173,6 +189,31 @@ def build_capital_state(snapshot, system, market):
     }
 
 
+def alacarte_catalog():
+    return [
+        {
+            "name": "Signals Pro",
+            "description": "Expanded symbol boards and deeper signal history without full membership.",
+            "price_label": "$19/mo",
+        },
+        {
+            "name": "Premium Analysis",
+            "description": "Research-grade trade breakdowns and richer premium intelligence.",
+            "price_label": "$29/mo",
+        },
+        {
+            "name": "Portfolio Health",
+            "description": "Customer-facing position health bars and portfolio monitoring layer.",
+            "price_label": "$15/mo",
+        },
+        {
+            "name": "Why This Trade",
+            "description": "Narrative trade explanation layer without full plan commitment.",
+            "price_label": "$12/mo",
+        },
+    ]
+
+
 def template_context(extra=None):
     user = get_current_user()
     prefs = get_preferences(user["username"]) if user["username"] else {"theme": "dark"}
@@ -201,6 +242,11 @@ def enforce_session_timeout():
         "api_activity",
         "api_notifications",
         "stripe_webhook_page",
+        "api_signal_boards",
+        "api_top_candidates",
+        "api_signals",
+        "api_account",
+        "api_bot_status",
     }
 
     if request.endpoint in exempt:
@@ -376,7 +422,8 @@ def dashboard_page():
                 "drawdown": load_json("data/drawdown_history.json", []),
                 "equity_values": equity_values,
                 "equity_labels": equity_labels,
-                "signals": load_json("data/live_signals.json", []),
+                "signals": load_signals(),
+                "signal_boards": grouped_signals(limit_per_symbol=3),
             }
         ),
     )
@@ -388,7 +435,7 @@ def trading_overview():
         "trading_overview.html",
         **template_context(
             {
-                "signals": load_json("data/live_signals.json", []),
+                "signals": load_signals(),
                 "positions": monitor_open_positions(),
             }
         ),
@@ -482,12 +529,16 @@ def reports_page():
 def signals_page():
     if not has_access("signals"):
         return redirect(url_for("upgrade_page"))
+
+    limit = signal_history_limit_for_tier()
     return render_template(
         "signals.html",
         **template_context(
             {
-                "signals": load_json("data/live_signals.json", []),
+                "signals": load_signals(),
                 "research_signals": load_json("data/research_signals.json", []),
+                "signal_boards": grouped_signals(limit_per_symbol=limit),
+                "signal_history_limit": limit,
             }
         ),
     )
@@ -735,7 +786,15 @@ def trade_detail_page(trade_id):
 @app.route("/upgrade")
 def upgrade_page():
     tiers = load_json("data/subscription_tiers.json", {})
-    return render_template("upgrade.html", **template_context({"tiers": tiers}))
+    return render_template(
+        "upgrade.html",
+        **template_context(
+            {
+                "tiers": tiers,
+                "alacarte_products": alacarte_catalog(),
+            }
+        ),
+    )
 
 
 @app.route("/upgrade-tier/<tier>")
@@ -1171,7 +1230,13 @@ def refresh_status():
 
 @app.route("/api/signals")
 def api_signals():
-    return jsonify(load_json("data/live_signals.json", []))
+    return jsonify(load_signals())
+
+
+@app.route("/api/signal-boards")
+def api_signal_boards():
+    limit = signal_history_limit_for_tier()
+    return jsonify(grouped_signals(limit_per_symbol=limit))
 
 
 @app.route("/api/top-candidates")

@@ -4,7 +4,6 @@
     <title>SimpleeMrkTrade</title>
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <meta http-equiv="refresh" content="20">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body class="{{ theme }}">
@@ -64,7 +63,7 @@
     </div>
 
     <div class="nav-right">
-        <a href="/notifications" class="notification-link">
+        <a href="/notifications" class="notification-link" id="navNotificationsLink">
             Notifications{% if unread_notifications and unread_notifications > 0 %} ({{ unread_notifications }}){% endif %}
         </a>
 
@@ -93,6 +92,22 @@
     </div>
     <p class="footer-line">Structured market intelligence, premium research, and disciplined execution.</p>
 </footer>
+
+<script>
+async function refreshNotificationBadge() {
+    try {
+        const res = await fetch("/api/notifications");
+        if (!res.ok) return;
+        const data = await res.json();
+        const el = document.getElementById("navNotificationsLink");
+        if (!el) return;
+        const count = Array.isArray(data) ? data.length : 0;
+        el.textContent = count > 0 ? `Notifications (${count})` : "Notifications";
+    } catch (e) {}
+}
+
+setInterval(refreshNotificationBadge, 15000);
+</script>
 
 </body>
 </html>
