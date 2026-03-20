@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>My Portfolio</h2>
+
+<div class="card premium-hero">
+    <h3>User Portfolio Health</h3>
+    <p class="muted-line">
+        This page is the customer-facing version of the health monitoring layer.
+        It is built to evolve into the brokerage-linked experience.
+    </p>
+</div>
+
+<div class="grid">
+    <div class="card premium-card">
+        <h3>Portfolio Snapshot</h3>
+        <p><b>Broker:</b> {{ portfolio.broker or "Not linked" }}</p>
+        <p><b>Linked:</b> {{ portfolio.linked }}</p>
+        <p><b>Cash:</b> ${{ portfolio.cash }}</p>
+        <p><b>Buying Power:</b> ${{ portfolio.buying_power }}</p>
+        <p><b>Portfolio Health:</b> {{ portfolio.portfolio_health }}/100</p>
+    </div>
+
+    <div class="card premium-card">
+        <h3>What This Means</h3>
+        <p>
+            Health scores estimate how well a position is behaving relative to its structure, pressure, and risk posture.
+        </p>
+        <p class="muted-line">
+            This is a monitoring layer, not a promise. It is designed to help the user triage attention.
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Mock Link / Update Portfolio</h3>
+    <form action="/my-portfolio" method="post">
+        <p>Broker</p>
+        <select name="broker">
+            <option value="IBKR" {% if portfolio.broker == "IBKR" %}selected{% endif %}>IBKR</option>
+            <option value="Mock" {% if portfolio.broker == "Mock" %}selected{% endif %}>Mock</option>
+        </select>
+
+        <p>Cash</p>
+        <input type="number" step="0.01" name="cash" value="{{ portfolio.cash }}">
+
+        <p>Buying Power</p>
+        <input type="number" step="0.01" name="buying_power" value="{{ portfolio.buying_power }}">
+
+        <p>Notes</p>
+        <textarea name="notes" rows="4">{{ portfolio.notes }}</textarea>
+
+        <p class="muted-line">Example positions are pre-seeded below in the route if nothing is submitted.</p>
+
+        <button type="submit" class="cta-btn">Save Portfolio</button>
+        <a href="/my-portfolio/clear" class="cta-btn secondary">Clear Portfolio</a>
+    </form>
+</div>
+
+{% if portfolio.positions and portfolio.positions|length > 0 %}
+    <div class="grid">
+        {% for p in portfolio.positions %}
+        {% set health = p.health_score %}
+        <div class="card premium-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                <div>
+                    <h3 style="margin:0;">{{ p.symbol }}</h3>
+                    <p class="muted-line">{{ p.strategy if p.strategy is defined else "Position" }}</p>
+                </div>
+
+                <div>
+                    {% if health >= 80 %}
+                        <span class="badge-green">{{ p.health_label }}</span>
+                    {% elif health >= 65 %}
+                        <span class="badge-blue">{{ p.health_label }}</span>
+                    {% elif health >= 45 %}
+                        <span class="badge-yellow">{{ p.health_label }}</span>
+                    {% else %}
+                        <span class="badge-red">{{ p.health_label }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="grid" style="margin-top:14px;">
+                <div class="card">
+                    <h3>Snapshot</h3>
+                    <p><b>Entry:</b> {{ p.entry }}</p>
+                    <p><b>Current:</b> {{ p.current }}</p>
+                    <p><b>PnL:</b> {{ p.pnl }}</p>
+                    <p><b>Size:</b> {{ p.quantity if p.quantity is defined else "N/A" }}</p>
+                </div>
+
+                <div class="card">
+                    <h3>Risk Structure</h3>
+                    <p><b>Stop:</b> {{ p.stop if p.stop is defined else "N/A" }}</p>
+                    <p><b>Distance to Stop %:</b> {{ p.distance_to_stop_pct if p.distance_to_stop_pct is defined else "N/A" }}</p>
+                    <p><b>Conviction:</b> {{ p.conviction if p.conviction is defined else "N/A" }}</p>
+                </div>
+            </div>
+
+            <div class="card premium-note">
+                <h3>Health Bar</h3>
+                <div class="health-bar-shell">
+                    <div class="health-bar-fill
+                        {% if health >= 80 %}health-strong
+                        {% elif health >= 65 %}health-good
+                        {% elif health >= 45 %}health-risk
+                        {% else %}health-weak{% endif %}"
+                        style="width: {{ health }}%;">
+                    </div>
+                </div>
+                <p class="muted-line" style="margin-top:10px;">
+                    Health Score: <b>{{ health }}/100</b>
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card">
+        <p>No user positions saved yet.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

@@ -1,54 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Account Settings</h2>
+<h2>Account</h2>
+
+<div class="card premium-hero">
+    <h3>Profile, Preferences, and Brokerage Path</h3>
+    <p class="muted-line">
+        This page controls your account settings, notification preferences, and your path toward a user-linked portfolio.
+    </p>
+</div>
 
 {% if message %}
-<div class="card" style="border:1px solid rgba(34,197,94,0.35);">
+<div class="card">
     <p><b>{{ message }}</b></p>
 </div>
 {% endif %}
 
 {% if error %}
-<div class="card" style="border:1px solid rgba(239,68,68,0.45);">
+<div class="card">
     <p><b>{{ error }}</b></p>
 </div>
 {% endif %}
 
 <div class="grid">
-    <div class="card">
-        <h3>Profile</h3>
+    <div class="card premium-card">
+        <h3>Account Snapshot</h3>
         <p><b>Username:</b> {{ user.username }}</p>
-        <p><b>Current Tier:</b> {{ user.tier }}</p>
+        <p><b>Tier:</b> {{ user.tier }}</p>
         <p><b>Theme:</b> {{ prefs.theme }}</p>
     </div>
 
-    <div class="card">
-        <h3>Billing</h3>
-        <p><b>Plan:</b> {{ billing.plan }}</p>
-        <p><b>Status:</b> {{ billing.status }}</p>
-        <p><b>Provider:</b> {{ billing.provider }}</p>
-        <p><b>Renewal:</b> {{ billing.renewal_date or "Not set" }}</p>
-        <a href="/billing" class="cta-btn">Manage Billing</a>
+    <div class="card premium-card">
+        <h3>Brokerage Direction</h3>
+        <p><b>Chosen Path:</b> Interactive Brokers (IBKR)</p>
+        <p class="muted-line">
+            The customer portfolio layer is being built around the chosen brokerage integration direction, with a mock-linked portfolio phase first.
+        </p>
     </div>
 </div>
 
 <div class="card">
-    <h3>Change My Password</h3>
-    <form action="/account/change-password" method="post">
-        <p>Current Password</p>
-        <input type="password" name="current_password" required>
-
-        <p>New Password</p>
-        <input type="password" name="new_password" required>
-
-        <br><br>
-        <button type="submit" class="cta-btn">Update Password</button>
-    </form>
-</div>
-
-<div class="card">
-    <h3>Notification Preferences</h3>
+    <h3>Preferences</h3>
     <form action="/account/preferences" method="post">
         <p><label><input type="checkbox" name="email_notifications" {% if prefs.email_notifications %}checked{% endif %}> Email notifications</label></p>
         <p><label><input type="checkbox" name="signal_notifications" {% if prefs.signal_notifications %}checked{% endif %}> Signal notifications</label></p>
@@ -68,10 +60,21 @@
 </div>
 
 <div class="card">
-    <h3>Account Actions</h3>
-    <a href="/upgrade" class="cta-btn secondary">View Plans</a>
-    <a href="/auth-status" class="cta-btn secondary">Auth Status</a>
-    <a href="/logout" class="btn-red">Logout</a>
+    <h3>Change Password</h3>
+    <form action="/account/change-password" method="post">
+        <p><input type="password" name="current_password" placeholder="Current password"></p>
+        <p><input type="password" name="new_password" placeholder="New password"></p>
+        <button type="submit" class="cta-btn secondary">Update Password</button>
+    </form>
+</div>
+
+<div class="card premium-card">
+    <h3>Linked Portfolio</h3>
+    <p class="muted-line">
+        Add a mock-linked portfolio now so the platform can start scoring your positions with customer-facing health bars.
+        This is the first stage of the IBKR-aligned experience.
+    </p>
+    <p><a href="/my-portfolio" class="cta-btn">Open My Portfolio</a></p>
 </div>
 
 {% endblock %}

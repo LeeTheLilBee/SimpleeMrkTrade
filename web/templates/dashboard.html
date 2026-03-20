@@ -1,16 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Dashboard</h2>
-
 <div class="card premium-hero">
     <div class="hero-brand-row">
-        <img src="/static/logo.png" alt="SimpleeMrkTrade logo" class="hero-logo">
+        <img src="/static/logo3.png" alt="SimpleeMrkTrade full logo" class="hero-logo"
+             onerror="this.style.display='none';">
         <div>
-            <h3 style="margin:0;">Capital, Risk, and Execution State</h3>
+            <h2 style="margin:0;">Dashboard</h2>
             <p class="muted-line">
-                This dashboard does more than show account metrics. It explains how much capital is available,
-                whether the system is allowed to deploy it, and why it may be holding back.
+                Capital, risk, research, and execution state in one place.
             </p>
         </div>
     </div>
@@ -63,10 +61,9 @@
         <h3>Unused Capital Efficiency</h3>
         <p><b>Unused Capital:</b> {{ capital_state.unused_capital_pct }}%</p>
         <p class="muted-line">
-            This measures how much deployable capital remained unused during the session.
-            High unused capital can be healthy when the system is deliberately protecting against overtrading,
-            crowded sector exposure, or unstable market conditions.
+            High unused capital is not automatically bad. It can mean the system chose discipline over forced deployment.
         </p>
+        <p><b>Mode:</b> {{ capital_state.mode }}</p>
     </div>
 </div>
 
@@ -98,10 +95,10 @@
 <div class="card premium-card">
     <h3>What Other Platforms Usually Miss</h3>
     <ul>
-        <li>Buying power does not automatically mean the system should deploy more risk.</li>
-        <li>Good signals can still be blocked when portfolio-level risk becomes too concentrated.</li>
-        <li>Unused capital can be a sign of discipline, not weakness.</li>
-        <li>Execution quality depends on account state, not just signal quality.</li>
+        <li>Buying power does not automatically mean deployment is appropriate.</li>
+        <li>Good signals can still be blocked by portfolio-level risk.</li>
+        <li>Research opportunity and execution permission are different things.</li>
+        <li>Unused capital can reflect discipline, not weakness.</li>
     </ul>
 </div>
 

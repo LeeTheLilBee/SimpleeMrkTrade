@@ -48,6 +48,12 @@ from engine.stripe_stub import (
     process_webhook_event,
 )
 from engine.trade_detail_builder import get_trade_detail_by_id
+from engine.user_portfolio_store import (
+    load_user_portfolio,
+    save_mock_portfolio_from_form,
+    clear_user_portfolio,
+)
+from engine.user_position_health import build_user_position_health
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "change_this_secret_key_later_to_something_long_random"
@@ -178,6 +184,11 @@ def template_context(extra=None):
     if extra:
         base.update(extra)
     return base
+
+
+@app.context_processor
+def inject_global_template_context():
+    return template_context()
 
 
 @app.before_request
@@ -488,6 +499,76 @@ def positions_page():
         "positions.html",
         **template_context({"positions": monitor_open_positions()}),
     )
+
+
+@app.route("/my-portfolio", methods=["GET", "POST"])
+def my_portfolio_page():
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+
+    username = session["username"]
+
+    if request.method == "POST":
+        broker = request.form.get("broker", "IBKR")
+        cash = request.form.get("cash", 0)
+        buying_power = request.form.get("buying_power", 0)
+        notes = request.form.get("notes", "")
+
+        existing = load_user_portfolio(username)
+        positions = existing.get("positions", [])
+
+        if not positions:
+            positions = [
+                {
+                    "symbol": "AAPL",
+                    "strategy": "LONG",
+                    "entry": 208.50,
+                    "current": 212.10,
+                    "pnl": 3.6,
+                    "quantity": 10,
+                    "stop": 201.00,
+                    "distance_to_stop_pct": 5.2,
+                    "trend_alignment": 1,
+                    "conviction": 74,
+                },
+                {
+                    "symbol": "NVDA",
+                    "strategy": "LONG",
+                    "entry": 118.00,
+                    "current": 114.20,
+                    "pnl": -3.2,
+                    "quantity": 8,
+                    "stop": 109.00,
+                    "distance_to_stop_pct": 4.5,
+                    "trend_alignment": 0,
+                    "conviction": 67,
+                },
+            ]
+
+        save_mock_portfolio_from_form(
+            username=username,
+            broker=broker,
+            cash=cash,
+            buying_power=buying_power,
+            notes=notes,
+            positions=positions,
+        )
+
+        return redirect(url_for("my_portfolio_page"))
+
+    portfolio = build_user_position_health(load_user_portfolio(username))
+    return render_template(
+        "my_portfolio.html",
+        **template_context({"portfolio": portfolio}),
+    )
+
+
+@app.route("/my-portfolio/clear")
+def clear_my_portfolio():
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+    clear_user_portfolio(session["username"])
+    return redirect(url_for("my_portfolio_page"))
 
 
 @app.route("/closed-trades")
