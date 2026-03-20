@@ -65,7 +65,7 @@ body.light .topnav {
     align-items: center;
     gap: 10px;
     text-decoration: none;
-    margin-right: 6px;
+    margin-right: 8px;
 }
 
 .brand-logo {
@@ -220,6 +220,15 @@ body.light .premium-hero {
     border: 1px solid rgba(96,165,250,0.22);
 }
 
+.premium-note {
+    background: rgba(30,41,59,0.65);
+    border: 1px solid rgba(96,165,250,0.12);
+}
+
+body.light .premium-note {
+    background: rgba(239,246,255,0.90);
+}
+
 .grid,
 .pricing-grid,
 .premium-analysis-grid,
@@ -284,6 +293,13 @@ button,
     text-decoration: none;
     color: white;
     font-weight: 700;
+}
+
+button[disabled],
+.btn[disabled],
+.cta-btn[disabled] {
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 .cta-btn,
@@ -384,7 +400,8 @@ body.light h3 {
 }
 
 input,
-select {
+select,
+textarea {
     width: 100%;
     max-width: 440px;
     padding: 12px;
@@ -392,10 +409,12 @@ select {
     border: 1px solid rgba(148,163,184,0.22);
     background: #0f172a;
     color: white;
+    box-sizing: border-box;
 }
 
 body.light input,
-body.light select {
+body.light select,
+body.light textarea {
     background: white;
     color: #111827;
     border: 1px solid rgba(148,163,184,0.30);
@@ -414,6 +433,37 @@ body.light a {
     flex-wrap: wrap;
     gap: 14px;
     margin-top: 20px;
+}
+
+.health-bar-shell {
+    width: 100%;
+    height: 16px;
+    border-radius: 999px;
+    background: rgba(51, 65, 85, 0.45);
+    overflow: hidden;
+    border: 1px solid rgba(148,163,184,0.18);
+}
+
+.health-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.35s ease;
+}
+
+.health-strong {
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+}
+
+.health-good {
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+}
+
+.health-risk {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.health-weak {
+    background: linear-gradient(90deg, #ef4444, #f87171);
 }
 
 .landing-hero {
@@ -470,6 +520,136 @@ body.light .landing-subtitle {
     color: #475569;
 }
 
+.knowledge-hero {
+    margin-bottom: 28px;
+}
+
+.knowledge-hero-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 28px;
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(167,139,250,0.14), transparent 30%),
+        linear-gradient(145deg, rgba(15,23,42,0.98), rgba(2,6,23,0.98));
+    border: 1px solid rgba(96,165,250,0.16);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.24);
+}
+
+body.light .knowledge-hero-inner {
+    background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.08), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(167,139,250,0.08), transparent 30%),
+        linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,252,0.98));
+    border: 1px solid rgba(148,163,184,0.24);
+}
+
+.knowledge-title {
+    font-size: 38px;
+    margin-bottom: 10px;
+}
+
+.knowledge-subtitle {
+    max-width: 800px;
+    line-height: 1.6;
+    color: #cbd5e1;
+}
+
+body.light .knowledge-subtitle {
+    color: #475569;
+}
+
+.knowledge-hero-logo {
+    height: 88px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 0 18px rgba(212,175,55,0.18);
+}
+
+.knowledge-section-shell {
+    margin-top: 26px;
+    margin-bottom: 30px;
+}
+
+.knowledge-section-title {
+    margin-bottom: 8px;
+}
+
+.knowledge-section-intro {
+    color: #94a3b8;
+    max-width: 920px;
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+body.light .knowledge-section-intro {
+    color: #64748b;
+}
+
+.knowledge-card {
+    background: linear-gradient(145deg, rgba(15,23,42,0.96), rgba(2,6,23,0.96));
+    border: 1px solid rgba(148,163,184,0.10);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+}
+
+body.light .knowledge-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.97), rgba(241,245,249,0.96));
+    border: 1px solid rgba(148,163,184,0.22);
+}
+
+.premium-knowledge-shell {
+    padding-top: 10px;
+}
+
+.premium-knowledge-card {
+    background:
+        radial-gradient(circle at top right, rgba(167,139,250,0.12), transparent 30%),
+        linear-gradient(145deg, rgba(30,27,75,0.96), rgba(2,6,23,0.96));
+    border: 1px solid rgba(167,139,250,0.24);
+}
+
+body.light .premium-knowledge-card {
+    background:
+        radial-gradient(circle at top right, rgba(167,139,250,0.08), transparent 30%),
+        linear-gradient(145deg, rgba(245,243,255,0.98), rgba(255,255,255,0.98));
+    border: 1px solid rgba(167,139,250,0.24);
+}
+
+.knowledge-footer-note {
+    margin-top: 20px;
+    padding: 24px;
+    border-radius: 18px;
+    background: rgba(15,23,42,0.7);
+    border: 1px solid rgba(148,163,184,0.12);
+}
+
+body.light .knowledge-footer-note {
+    background: rgba(255,255,255,0.88);
+    border: 1px solid rgba(148,163,184,0.20);
+}
+
+.section-kicker,
+.section-label {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #93c5fd;
+    margin: 8px 0 14px 4px;
+}
+
+body.light .section-kicker,
+body.light .section-label {
+    color: #2563eb;
+}
+
 .site-footer {
     margin-top: 40px;
     padding: 34px 24px 44px;
@@ -487,6 +667,9 @@ body.light .landing-subtitle {
 .footer-logo {
     max-width: 220px;
     width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
     opacity: 0.85;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.25));
 }
@@ -539,6 +722,10 @@ pre {
     }
 
     .footer-logo {
-        max-width: 220px;
+        max-width: 200px;
+    }
+
+    .knowledge-title {
+        font-size: 32px;
     }
 }
