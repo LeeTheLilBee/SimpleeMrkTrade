@@ -1,25 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Notification Settings</h2>
+<h2>Notification Control Center</h2>
 
-<form method="POST" class="card">
-    <label>
-        <input type="checkbox" name="high_conviction_only" {% if settings.high_conviction_only %}checked{% endif %}>
-        High Conviction Only
-    </label><br>
+<div class="card premium-hero">
+    <h3>Alert Preferences</h3>
+    <p class="muted-line">
+        Tune the firehose. Decide what kind of intelligence reaches you and how selective the system should be.
+    </p>
+</div>
 
-    <label>
-        <input type="checkbox" name="research_alerts" {% if settings.research_alerts %}checked{% endif %}>
-        Research Alerts
-    </label><br>
+<div class="card">
+    <form action="/notification-settings" method="post">
+        <p><label><input type="checkbox" name="high_conviction_only" {% if settings.high_conviction_only %}checked{% endif %}> High conviction only</label></p>
+        <p><label><input type="checkbox" name="research_alerts" {% if settings.research_alerts %}checked{% endif %}> Research alerts</label></p>
+        <p><label><input type="checkbox" name="execution_alerts" {% if settings.execution_alerts %}checked{% endif %}> Execution alerts</label></p>
+        <p><label><input type="checkbox" name="risk_alerts" {% if settings.risk_alerts %}checked{% endif %}> Risk alerts</label></p>
+        <p><label><input type="checkbox" name="system_alerts" {% if settings.system_alerts %}checked{% endif %}> System alerts</label></p>
 
-    <label>
-        <input type="checkbox" name="execution_alerts" {% if settings.execution_alerts %}checked{% endif %}>
-        Execution Alerts
-    </label><br>
+        <p>Minimum score</p>
+        <select name="min_score">
+            <option value="0" {% if settings.min_score == 0 %}selected{% endif %}>0+</option>
+            <option value="80" {% if settings.min_score == 80 %}selected{% endif %}>80+</option>
+            <option value="120" {% if settings.min_score == 120 %}selected{% endif %}>120+</option>
+            <option value="150" {% if settings.min_score == 150 %}selected{% endif %}>150+</option>
+            <option value="200" {% if settings.min_score == 200 %}selected{% endif %}>200+</option>
+        </select>
 
-    <button type="submit">Save</button>
-</form>
+        <p>Strategy filter</p>
+        <select name="strategy_filter">
+            <option value="ALL" {% if settings.strategy_filter == "ALL" %}selected{% endif %}>All</option>
+            <option value="CALL" {% if settings.strategy_filter == "CALL" %}selected{% endif %}>CALL only</option>
+            <option value="PUT" {% if settings.strategy_filter == "PUT" %}selected{% endif %}>PUT only</option>
+        </select>
+
+        <p>Volatility filter</p>
+        <select name="volatility_filter">
+            <option value="ALL" {% if settings.volatility_filter == "ALL" %}selected{% endif %}>All</option>
+            <option value="LOW" {% if settings.volatility_filter == "LOW" %}selected{% endif %}>LOW</option>
+            <option value="NORMAL" {% if settings.volatility_filter == "NORMAL" %}selected{% endif %}>NORMAL</option>
+            <option value="ELEVATED" {% if settings.volatility_filter == "ELEVATED" %}selected{% endif %}>ELEVATED</option>
+        </select>
+
+        <br><br>
+        <button type="submit" class="cta-btn">Save Notification Settings</button>
+    </form>
+</div>
 
 {% endblock %}

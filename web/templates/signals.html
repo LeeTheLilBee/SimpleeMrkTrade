@@ -8,8 +8,8 @@
         <div>
             <h3 style="margin:0;">Signal Intelligence Center</h3>
             <p class="muted-line">
-                Research signals continue to populate even when the simulated account is capped by trade limits, correlation rules, or exposure controls.
-                Execution signals reflect what the live Mode A environment can actually take.
+                Research signals continue to populate even when the simulated account is capped.
+                Execution signals reflect what the live environment can actually take.
             </p>
         </div>
         <span class="badge-blue">Research + Execution</span>
@@ -26,14 +26,14 @@
     <div class="card">
         <h3>Execution Feed</h3>
         <div class="metric">{{ signals|length if signals else 0 }}</div>
-        <p class="muted-line">Subject to live portfolio and risk controls.</p>
+        <p class="muted-line">Subject to portfolio and risk controls.</p>
     </div>
 </div>
 
 <div class="card premium-card">
     <h3>Research Signals</h3>
     <p class="muted-line">
-        These ideas keep the platform rich with edge even when new trades cannot be placed in the simulated account.
+        These are the edge engine outputs. They keep idea flow alive even when execution is blocked.
     </p>
 
     {% if research_signals and research_signals|length > 0 %}
@@ -44,7 +44,9 @@
             <th>Strategy</th>
             <th>Score</th>
             <th>Confidence</th>
-            <th>Source</th>
+            <th>Mode</th>
+            <th>Volatility</th>
+            <th>Signal Type</th>
             <th>Detail</th>
         </tr>
         {% for s in research_signals[::-1] %}
@@ -60,7 +62,17 @@
             <td>{{ s.strategy }}</td>
             <td><span class="pill">{{ s.score }}</span></td>
             <td>{{ s.confidence }}</td>
-            <td><span class="badge-purple">{{ s.source or "research" }}</span></td>
+            <td>{{ s.mode or "N/A" }}</td>
+            <td>{{ s.volatility or "N/A" }}</td>
+            <td>
+                {% if s.score >= 200 %}
+                    <span class="badge-purple">High Conviction</span>
+                {% elif s.score >= 120 %}
+                    <span class="badge-blue">Premium Edge</span>
+                {% else %}
+                    <span class="badge-gray">Research</span>
+                {% endif %}
+            </td>
             <td>
                 {% if s.trade_id %}
                     <a href="/trade/{{ s.trade_id }}">Open</a>
@@ -81,7 +93,7 @@
 <div class="card">
     <h3>Execution Signals</h3>
     <p class="muted-line">
-        These are the live feed entries written into the execution stream.
+        These are the signals flowing into the live execution stream.
     </p>
 
     {% if signals and signals|length > 0 %}
@@ -92,6 +104,7 @@
             <th>Strategy</th>
             <th>Score</th>
             <th>Confidence</th>
+            <th>Signal Type</th>
             <th>Detail</th>
         </tr>
         {% for s in signals[::-1] %}
@@ -107,6 +120,15 @@
             <td>{{ s.strategy }}</td>
             <td><span class="pill">{{ s.score }}</span></td>
             <td>{{ s.confidence }}</td>
+            <td>
+                {% if s.score >= 200 %}
+                    <span class="badge-purple">High Conviction</span>
+                {% elif s.score >= 120 %}
+                    <span class="badge-blue">Execution Edge</span>
+                {% else %}
+                    <span class="badge-gray">Execution</span>
+                {% endif %}
+            </td>
             <td>
                 {% if s.trade_id %}
                     <a href="/trade/{{ s.trade_id }}">Open</a>

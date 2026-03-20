@@ -18,7 +18,8 @@ from engine.strategy_performance import strategy_breakdown
 from engine.position_monitor import monitor_open_positions
 from engine.closed_trade_stats import closed_trade_stats
 from engine.notifications import filtered_notifications_for_user, unread_count_for_user, mark_all_read
-from engine.notification_engine import notifications_for_tier
+from engine.notification_engine import notifications_for_user
+from engine.notification_settings import get_notification_settings, save_notification_settings
 from engine.user_preferences import get_preferences, save_preferences
 from engine.billing_hooks import get_billing_status, set_billing_status
 from engine.admin_tools import (
@@ -94,8 +95,8 @@ def visible_notifications():
         logged_in=is_logged_in(),
         username=user["username"],
     )
-    tier_visible = notifications_for_tier(user["tier"] or "guest")
-    combined = legacy_visible + tier_visible
+    tuned_visible = notifications_for_user(user["username"], user["tier"] or "guest")
+    combined = legacy_visible + tuned_visible
     combined = sorted(combined, key=lambda x: x.get("timestamp", ""), reverse=True)
     return combined
 
@@ -204,6 +205,31 @@ def live_activity_page():
 def notifications_page():
     return render_template("notifications.html", **template_context({
         "notifications": visible_notifications(),
+    }))
+
+@app.route("/notification-settings", methods=["GET", "POST"])
+def notification_settings_page():
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+
+    username = session["username"]
+
+    if request.method == "POST":
+        settings = {
+            "high_conviction_only": bool(request.form.get("high_conviction_only")),
+            "research_alerts": bool(request.form.get("research_alerts")),
+            "execution_alerts": bool(request.form.get("execution_alerts")),
+            "risk_alerts": bool(request.form.get("risk_alerts")),
+            "system_alerts": bool(request.form.get("system_alerts")),
+            "min_score": int(request.form.get("min_score", 0)),
+            "strategy_filter": request.form.get("strategy_filter", "ALL"),
+            "volatility_filter": request.form.get("volatility_filter", "ALL"),
+        }
+        save_notification_settings(username, settings)
+        return redirect(url_for("notification_settings_page"))
+
+    return render_template("notification_settings.html", **template_context({
+        "settings": get_notification_settings(username),
     }))
 
 @app.route("/notifications/read-all")
