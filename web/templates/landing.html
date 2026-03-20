@@ -1,103 +1,75 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="hero card">
-    <h1>SimpleeMrkTrade</h1>
-    <p class="hero-text">
-        A market intelligence and trade-ranking platform built to identify high-probability setups,
-        manage risk, and turn trading logic into a structured decision engine.
-    </p>
-    <div class="hero-actions">
-        <a href="/get-started" class="cta-btn">Get Started</a>
-        <a href="/signup" class="cta-btn secondary">Create Account</a>
-        <a href="/login" class="cta-btn secondary">Login</a>
-        <a href="/upgrade" class="cta-btn secondary">View Plans</a>
+<div class="landing-hero">
+    <div class="landing-hero-inner">
+        <img src="/static/logo_full.png" alt="SimpleeMrkTrade full logo" class="landing-hero-logo"
+             onerror="this.style.display='none';">
+
+        <h1 class="landing-title">SimpleeMrkTrade</h1>
+
+        <p class="landing-subtitle">
+            A structured market intelligence and execution platform built to separate raw signals from real edge.
+        </p>
+
+        <div class="hero-actions">
+            <a href="/get-started" class="cta-btn">Get Started</a>
+            <a href="/proof" class="cta-btn secondary">View Proof</a>
+        </div>
     </div>
 </div>
 
 <div class="grid">
-    <div class="card">
-        <h3>1. Learn The Modes</h3>
-        <p>Understand how the platform behaves in normal, defensive, and elevated-risk conditions before using signals.</p>
-        <a href="/modes" class="cta-btn secondary">Explore Modes</a>
+    <div class="card premium-card">
+        <h3>Live Proof Layer</h3>
+        <p>Track ongoing simulated account health, current structure, and account behavior over time.</p>
+        <p><b>Estimated Account Value:</b> ${{ snapshot.estimated_account_value }}</p>
     </div>
 
-    <div class="card">
-        <h3>2. Create Your Account</h3>
-        <p>Start your account journey and unlock the platform workflow according to your subscriber level.</p>
-        <a href="/signup" class="cta-btn">Create Account</a>
-    </div>
-
-    <div class="card">
-        <h3>3. Upgrade For Depth</h3>
-        <p>Starter opens access. Pro and Elite unlock deeper context, richer interpretation, and premium explanations.</p>
-        <a href="/upgrade" class="cta-btn secondary">See Plans</a>
+    <div class="card premium-card">
+        <h3>Research Intelligence</h3>
+        <p>Premium trade ideas can continue to populate even when execution is blocked by risk controls.</p>
+        <p><b>Total Trades:</b> {{ proof.trades }}</p>
     </div>
 </div>
 
 <div class="card">
-    <h2>Live Trading Proof</h2>
-
-    <div class="grid">
-        <div class="card">
-            <h3>Account Value</h3>
-            <p class="metric">${{ snapshot.estimated_account_value }}</p>
-        </div>
-
-        <div class="card">
-            <h3>Total Trades</h3>
-            <p class="metric">{{ proof.trades }}</p>
-        </div>
-
-        <div class="card">
-            <h3>Win Rate</h3>
-            <p class="metric">{{ proof.winrate }}</p>
-        </div>
-
-        <div class="card">
-            <h3>Total PnL</h3>
-            <p class="metric">{{ proof.total_pnl }}</p>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>Equity Curve</h3>
-        <canvas id="landingEquity"></canvas>
-    </div>
-
-    <p><a href="/proof">Open Public Proof Account</a></p>
+    <h3>Equity Curve</h3>
+    <canvas id="landingEquityChart"></canvas>
 </div>
 
 <div class="grid">
     <div class="card">
-        <h3>Premium Analysis</h3>
-        <p>Chart-backed setup context and higher-level interpretation designed for subscriber depth.</p>
-        <a href="/premium" class="cta-btn secondary">Explore Premium</a>
+        <h3>Why This Platform Feels Different</h3>
+        <ul>
+            <li>Signals are separated from execution.</li>
+            <li>Portfolio risk can block deployment even when capital exists.</li>
+            <li>Premium intelligence explains the setup instead of just flashing alerts.</li>
+        </ul>
     </div>
 
     <div class="card">
-        <h3>Why This Trade</h3>
-        <p>Protected explanations of why setups mattered and how they should be interpreted.</p>
-        <a href="/premium" class="cta-btn secondary">See Premium Tools</a>
-    </div>
-
-    <div class="card">
-        <h3>Knowledge Center</h3>
-        <p>Learn the terminology, the workflow, and how to use the platform the right way.</p>
-        <a href="/knowledge" class="cta-btn secondary">Open Knowledge</a>
+        <h3>Designed for Clarity</h3>
+        <ul>
+            <li>Market regime context</li>
+            <li>Volatility-aware posture</li>
+            <li>Trade-level detail pages</li>
+            <li>Knowledge center with general and system-specific education</li>
+        </ul>
     </div>
 </div>
 
 <script>
-new Chart(document.getElementById('landingEquity'), {
+const ctx = document.getElementById('landingEquityChart');
+new Chart(ctx, {
   type: 'line',
   data: {
     labels: {{ equity_labels|tojson }},
     datasets: [{
-      label: 'Live Equity',
+      label: 'Account Equity',
       data: {{ equity_values|tojson }},
-      borderColor: '#22c55e',
-      backgroundColor: 'rgba(34,197,94,0.1)',
+      borderColor: '#a78bfa',
+      backgroundColor: 'rgba(167,139,250,0.10)',
       fill: true,
       tension: 0.3
     }]
