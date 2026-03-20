@@ -1,11 +1,11 @@
 {
   "admin": {
-    "plan": "Elite",
-    "status": "active",
+    "plan": "Pro",
+    "status": "inactive",
     "renewal_date": null,
     "customer_id": "master-admin",
     "subscription_id": "master-admin-sub",
-    "provider": "internal"
+    "provider": "mock"
   },
   "Test": {
     "plan": "Starter",
