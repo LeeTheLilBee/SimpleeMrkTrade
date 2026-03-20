@@ -1,136 +1,163 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>SimpleeMrkTrade Dashboard</h2>
+<h2>Dashboard</h2>
 
-<div class="card">
-    <p>
-        This dashboard gives a high-level view of account condition, market state, and system activity.
-        Premium layers unlock deeper context and richer interpretation depending on tier.
-    </p>
+<div class="card premium-hero">
+    <div class="hero-brand-row">
+        <img src="/static/logo.png" alt="SimpleeMrkTrade logo" class="hero-logo">
+        <div>
+            <h3 style="margin:0;">Capital, Risk, and Execution State</h3>
+            <p class="muted-line">
+                This dashboard does more than show account metrics. It explains how much capital is available,
+                whether the system is allowed to deploy it, and why it may be holding back.
+            </p>
+        </div>
+    </div>
 </div>
 
 <div class="grid">
     <div class="card">
         <h3>Account Value</h3>
         <div class="metric">${{ snapshot.estimated_account_value }}</div>
-        <p><a href="/knowledge#account-value">Learn More</a></p>
     </div>
-
     <div class="card">
         <h3>Cash</h3>
         <div class="metric">${{ snapshot.cash }}</div>
-        <p><a href="/knowledge#cash">Learn More</a></p>
     </div>
-
     <div class="card">
         <h3>Buying Power</h3>
         <div class="metric">${{ snapshot.buying_power }}</div>
-        <p><a href="/knowledge#buying-power">Learn More</a></p>
     </div>
-
     <div class="card">
         <h3>Open Positions</h3>
         <div class="metric">{{ snapshot.open_positions }}</div>
-        <p><a href="/positions">Open Position Monitor</a></p>
+    </div>
+</div>
+
+<div class="grid">
+    <div class="card premium-card">
+        <h3>Capital State Panel</h3>
+        <p><b>Buying Power Available:</b> ${{ capital_state.buying_power }}</p>
+        <p>
+            <b>Execution Permission:</b>
+            {% if capital_state.execution_blocked %}
+                <span class="badge-red">Blocked</span>
+            {% else %}
+                <span class="badge-green">Available</span>
+            {% endif %}
+        </p>
+        <p><b>Blocked Reasons:</b></p>
+        {% if capital_state.block_reasons %}
+            <ul>
+                {% for reason in capital_state.block_reasons %}
+                <li>{{ reason }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No active execution blocks detected.</p>
+        {% endif %}
+    </div>
+
+    <div class="card premium-card">
+        <h3>Unused Capital Efficiency</h3>
+        <p><b>Unused Capital:</b> {{ capital_state.unused_capital_pct }}%</p>
+        <p class="muted-line">
+            This measures how much deployable capital remained unused during the session.
+            High unused capital can be healthy when the system is deliberately protecting against overtrading,
+            crowded sector exposure, or unstable market conditions.
+        </p>
+    </div>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>System Status</h3>
+        <p><b>Regime:</b> {{ market.regime or system.regime or "N/A" }}</p>
+        <p><b>Volatility:</b> {{ market.volatility or system.volatility or "N/A" }}</p>
+        <p><b>Mode:</b> {{ market.mode or system.mode or "N/A" }}</p>
+        <p><b>Executed Trades:</b> {{ proof.trades }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Proof Engine</h3>
+        <p><b>Total Trades:</b> {{ proof.trades }}</p>
+        <p><b>Wins:</b> {{ proof.wins }}</p>
+        <p><b>Losses:</b> {{ proof.losses }}</p>
+        <p><b>Win Rate:</b> {{ proof.winrate }}</p>
+        <p><b>Total PnL:</b> {{ proof.total_pnl }}</p>
+        <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
     </div>
 </div>
 
 <div class="card">
     <h3>Equity Curve</h3>
     <canvas id="equityChart"></canvas>
-    <p><a href="/equity">Open Full Equity Page</a></p>
 </div>
 
-<div class="grid">
-    <div class="card">
-        <h3>System Status</h3>
-        <p><b>Regime:</b> {{ system.regime }}</p>
-        <p><b>Volatility:</b> {{ system.volatility }}</p>
-        <p><b>Mode:</b> {{ system.mode }}</p>
-        <p><b>Executed Trades:</b> {{ system.executed_trades }}</p>
-        <p>
-            <a href="/knowledge#market-regime">Regime</a> |
-            <a href="/knowledge#volatility">Volatility</a> |
-            <a href="/knowledge#mode">Mode</a>
-        </p>
-    </div>
-
-    <div class="card">
-        <h3>Proof Engine</h3>
-        <p><b>Total Trades:</b> {{ proof.trades }}</p>
-        <p><b>Win Rate:</b> {{ proof.winrate }}</p>
-        <p><b>Total PnL:</b> {{ proof.total_pnl }}</p>
-        <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
-        <p><a href="/proof">View Public Proof Account</a></p>
-    </div>
+<div class="card premium-card">
+    <h3>What Other Platforms Usually Miss</h3>
+    <ul>
+        <li>Buying power does not automatically mean the system should deploy more risk.</li>
+        <li>Good signals can still be blocked when portfolio-level risk becomes too concentrated.</li>
+        <li>Unused capital can be a sign of discipline, not weakness.</li>
+        <li>Execution quality depends on account state, not just signal quality.</li>
+    </ul>
 </div>
 
 <div class="card">
     <h3>Top Candidates</h3>
+    {% if top_candidates and top_candidates|length > 0 %}
     <table class="table">
-        <tr><th>Symbol</th><th>Strategy</th><th>Score</th><th>Confidence</th></tr>
-        {% for trade in top_candidates[:3] %}
         <tr>
-            <td>{{ trade.symbol }}</td>
-            <td>{{ trade.strategy }}</td>
-            <td>{{ trade.score }}</td>
-            <td>{{ trade.confidence }}</td>
+            <th>Symbol</th>
+            <th>Strategy</th>
+            <th>Score</th>
+            <th>Confidence</th>
+        </tr>
+        {% for t in top_candidates %}
+        <tr>
+            <td>{{ t.symbol }}</td>
+            <td>{{ t.strategy }}</td>
+            <td>{{ t.score }}</td>
+            <td>{{ t.confidence }}</td>
         </tr>
         {% endfor %}
     </table>
-
-    {% if user.tier in ["Pro", "Elite"] or user.role == "master" %}
-        <p><a href="/research">Open Research</a></p>
     {% else %}
-        <p>
-            <a href="/research">Open Research</a> |
-            <a href="/upgrade">Unlock deeper research context</a>
-        </p>
+    <p>No candidates yet.</p>
     {% endif %}
 </div>
 
 <div class="card">
-    <h3>Recent Signals Snapshot</h3>
+    <h3>Latest Execution Feed</h3>
+    {% if signals and signals|length > 0 %}
     <table class="table">
-        <tr><th>Time</th><th>Symbol</th><th>Strategy</th></tr>
-        {% for s in signals[-5:]|reverse %}
+        <tr>
+            <th>Time</th>
+            <th>Symbol</th>
+            <th>Strategy</th>
+            <th>Score</th>
+            <th>Confidence</th>
+        </tr>
+        {% for s in signals[::-1][:10] %}
         <tr>
             <td>{{ s.timestamp }}</td>
-            <td>{{ s.symbol }}</td>
+            <td>
+                {% if s.trade_id %}
+                    <a href="/trade/{{ s.trade_id }}">{{ s.symbol }}</a>
+                {% else %}
+                    {{ s.symbol }}
+                {% endif %}
+            </td>
             <td>{{ s.strategy }}</td>
+            <td>{{ s.score }}</td>
+            <td>{{ s.confidence }}</td>
         </tr>
         {% endfor %}
     </table>
-
-    {% if user.tier in ["Starter", "Pro", "Elite"] or user.role == "master" %}
-        <p><a href="/signals">Open Full Signals</a></p>
     {% else %}
-        <p><a href="/upgrade">Unlock full signal workflow</a></p>
-    {% endif %}
-</div>
-
-<div class="card">
-    <h3>Open Position Snapshot</h3>
-    <table class="table">
-        <tr><th>Symbol</th><th>Entry</th><th>Current</th><th>PnL</th></tr>
-        {% for pos in unreal.positions %}
-        <tr>
-            <td>{{ pos.symbol }}</td>
-            <td>{{ pos.entry }}</td>
-            <td>{{ pos.current }}</td>
-            <td>{{ pos.pnl }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    {% if user.tier in ["Pro", "Elite"] or user.role == "master" %}
-        <p><a href="/positions">Open Full Position Intelligence</a></p>
-    {% else %}
-        <p>
-            <a href="/positions">Open Position Snapshot</a> |
-            <a href="/upgrade">Unlock deeper position intelligence</a>
-        </p>
+    <p>No execution signals yet.</p>
     {% endif %}
 </div>
 
@@ -143,8 +170,8 @@ new Chart(ctx, {
     datasets: [{
       label: 'Account Equity',
       data: {{ equity_values|tojson }},
-      borderColor: '#7dd3fc',
-      backgroundColor: 'rgba(125, 211, 252, 0.12)',
+      borderColor: '#a78bfa',
+      backgroundColor: 'rgba(167,139,250,0.10)',
       fill: true,
       tension: 0.3
     }]
