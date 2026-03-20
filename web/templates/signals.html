@@ -8,8 +8,7 @@
         <div>
             <h3 style="margin:0;">Symbol Intelligence Boards</h3>
             <p class="muted-line">
-                Symbols are ranked by strongest latest score first. Each board keeps recent signal history nested underneath it,
-                instead of showing a flat stream.
+                Symbols are ranked by strongest latest score first. Each board keeps recent signal history nested underneath it.
             </p>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
@@ -21,21 +20,18 @@
 
 <div class="grid">
     <div class="card">
-        <h3>Research Engine</h3>
-        <div class="metric">{{ research_signals|length if research_signals else 0 }}</div>
-        <p class="muted-line">Independent of simulated account execution caps.</p>
-    </div>
-
-    <div class="card">
-        <h3>Execution Feed</h3>
-        <div class="metric">{{ signals|length if signals else 0 }}</div>
-        <p class="muted-line">Subject to portfolio and risk controls.</p>
-    </div>
-
-    <div class="card premium-card">
         <h3>Your Signal Depth</h3>
         <div class="metric">{{ signal_history_limit }}</div>
         <p class="muted-line">Visible signal history entries per symbol on your current tier.</p>
+    </div>
+
+    <div class="card gold-accent-card">
+        <h3>Current Membership</h3>
+        <p><b>Tier:</b> {{ user.tier }}</p>
+        <p class="muted-line">
+            Higher tiers unlock deeper signal history and richer premium context.
+        </p>
+        <p><a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade Access</a></p>
     </div>
 </div>
 
@@ -94,8 +90,17 @@
                 </tr>
                 {% endfor %}
             </table>
-            {% else %}
-            <p>No signal history available for this symbol.</p>
+            {% endif %}
+
+            {% if teaser_upgrade and board.signal_count > board.signals|length %}
+            <div class="card teaser-card">
+                <h4>Unlock More {{ board.symbol }} Signal History</h4>
+                <p class="muted-line">
+                    Your current plan shows {{ board.signals|length }} recent entries.
+                    Upgrade to see deeper symbol history and stronger research context.
+                </p>
+                <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
+            </div>
             {% endif %}
         </div>
         {% endfor %}
@@ -181,7 +186,21 @@ async function refreshSignalBoards() {
                             ${rows}
                         </table>
                         `
-                        : `<p>No signal history available for this symbol.</p>`
+                        : ``
+                    }
+
+                    ${
+                        (board.signal_count || 0) > (board.visible_count || 0)
+                        ? `
+                        <div class="card teaser-card">
+                            <h4>Unlock More ${board.symbol} Signal History</h4>
+                            <p class="muted-line">
+                                Upgrade to see deeper symbol history and stronger research context.
+                            </p>
+                            <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
+                        </div>
+                        `
+                        : ``
                     }
                 </div>
             `;

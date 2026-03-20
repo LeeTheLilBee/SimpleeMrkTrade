@@ -103,6 +103,8 @@ body.light .dropbtn {
     color: #334155;
 }
 
+
+
 .topnav a:hover,
 .dropbtn:hover {
     color: #a78bfa;
@@ -170,6 +172,86 @@ body.light .user-badge {
 
 .notification-link {
     color: #7dd3fc !important;
+}
+
+.premium-gold-btn {
+    background: linear-gradient(135deg, #b8860b, #d4af37);
+    color: #111827 !important;
+}
+
+.gold-accent-card {
+    border: 1px solid rgba(212, 175, 55, 0.28) !important;
+    box-shadow: 0 14px 34px rgba(212, 175, 55, 0.08);
+}
+
+.teaser-card {
+    margin-top: 16px;
+    background:
+        linear-gradient(145deg, rgba(34, 24, 8, 0.88), rgba(15, 23, 42, 0.96));
+    border: 1px solid rgba(212, 175, 55, 0.22);
+}
+
+body.light .teaser-card {
+    background:
+        linear-gradient(145deg, rgba(255, 251, 235, 0.96), rgba(255,255,255,0.98));
+    border: 1px solid rgba(212, 175, 55, 0.30);
+}
+
+.premium-hub-hero {
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.premium-hub-logo-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.premium-hub-logo {
+    max-width: 250px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.28));
+}
+
+.premium-hub-copy {
+    max-width: 780px;
+    margin: 0 auto;
+}
+
+.login-shell {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.login-card {
+    text-align: center;
+}
+
+.login-logo-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.login-logo {
+    max-width: 220px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+.login-upgrade-strip {
+    margin-top: 18px;
 }
 
 .card {

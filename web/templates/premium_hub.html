@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="card premium-hero">
-    <div class="hero-brand-row">
-        <img src="/static/logo3.png" alt="SimpleeMrkTrade full logo" class="hero-logo"
+<div class="card premium-hero premium-hub-hero">
+    <div class="premium-hub-logo-wrap">
+        <img src="/static/logo3.png" alt="SimpleeMrkTrade full logo" class="premium-hub-logo"
              onerror="this.style.display='none';">
-        <div>
-            <h2 style="margin:0;">Premium Hub</h2>
-            <p class="muted-line">
-                This is the intelligence desk of the platform — where research, execution framing, account monitoring,
-                and trade storytelling come together.
-            </p>
-        </div>
+    </div>
+    <div class="premium-hub-copy">
+        <h2 style="margin:0;">Premium Hub</h2>
+        <p class="muted-line">
+            This is the intelligence desk of the platform — where research, execution framing,
+            trade storytelling, and portfolio monitoring come together.
+        </p>
     </div>
 </div>
 
@@ -19,8 +19,8 @@
     <div class="card premium-card">
         <h3>Why Premium Exists</h3>
         <p>
-            Premium is not just extra pages. It is deeper context, stronger interpretation, richer trade logic,
-            and a more advanced understanding of what matters now.
+            Premium is not just extra pages. It is deeper context, stronger interpretation,
+            richer trade logic, and a more advanced understanding of what matters now.
         </p>
     </div>
 
@@ -29,6 +29,7 @@
         <p><b>User:</b> {{ user.username }}</p>
         <p><b>Tier:</b> {{ user.tier }}</p>
         <p><b>Premium Depth:</b> {{ tier_config.premium_depth if tier_config.premium_depth is defined else "standard" }}</p>
+        <p><a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade Membership</a></p>
     </div>
 </div>
 
@@ -36,7 +37,8 @@
     <div class="card">
         <h3>Premium Analysis</h3>
         <p>
-            Research-grade trade breakdowns with environment context, signal quality, and premium reasoning.
+            Research-grade trade breakdowns with environment context, signal quality,
+            and premium reasoning.
         </p>
         <p><a href="/premium-analysis" class="cta-btn">Open Premium Analysis</a></p>
     </div>
@@ -44,7 +46,8 @@
     <div class="card">
         <h3>Why This Trade</h3>
         <p>
-            See why a setup mattered, what made it interesting, and what risk conditions shape how it should be interpreted.
+            See why a setup mattered, what made it interesting,
+            and what risk conditions shape how it should be interpreted.
         </p>
         <p><a href="/why-this-trade" class="cta-btn secondary">Open Why This Trade</a></p>
     </div>
@@ -64,7 +67,8 @@
         <div class="card">
             <h3>Research Layer</h3>
             <p>
-                Keeps generating ideas even when live execution is blocked. This preserves edge discovery.
+                Keeps generating ideas even when live execution is blocked.
+                This preserves edge discovery.
             </p>
         </div>
         <div class="card">
@@ -77,7 +81,7 @@
 </div>
 
 <div class="grid">
-    <div class="card premium-card">
+    <div class="card premium-card gold-accent-card">
         <h3>What Makes This Different</h3>
         <ul>
             <li>Portfolio-aware blocking logic</li>
@@ -87,7 +91,7 @@
         </ul>
     </div>
 
-    <div class="card premium-card">
+    <div class="card premium-card gold-accent-card">
         <h3>What Full Adoption Looks Like</h3>
         <ul>
             <li>Account created</li>

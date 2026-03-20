@@ -13,7 +13,7 @@
 <div class="pricing-grid">
     {% for tier_name, tier_data in tiers.items() %}
         {% if tier_name != "Guest" %}
-        <div class="card {% if tier_name in ['Pro', 'Elite'] %}premium-card{% endif %}">
+        <div class="card {% if tier_name in ['Pro', 'Elite'] %}premium-card gold-accent-card{% endif %}">
             <h3>{{ tier_name }}</h3>
 
             <p class="muted-line">
@@ -31,14 +31,14 @@
             {% if user.tier == tier_name %}
                 <button class="cta-btn secondary" disabled>Current Plan</button>
             {% else %}
-                <a href="/upgrade-tier/{{ tier_name }}" class="cta-btn">Choose {{ tier_name }}</a>
+                <a href="/upgrade-tier/{{ tier_name }}" class="cta-btn {% if tier_name in ['Pro','Elite'] %}premium-gold-btn{% endif %}">Choose {{ tier_name }}</a>
             {% endif %}
         </div>
         {% endif %}
     {% endfor %}
 </div>
 
-<div class="card premium-card">
+<div class="card premium-card gold-accent-card">
     <h3>À La Carte Access</h3>
     <p class="muted-line">
         For users who do not want a full membership, selected premium modules can be offered individually.

@@ -90,6 +90,10 @@ def is_master():
     return session.get("role") == "master"
 
 
+def current_tier_lower():
+    return (session.get("tier") or "Guest").lower()
+
+
 def get_tier_config():
     tiers = load_json("data/subscription_tiers.json", {})
     tier = session.get("tier", "Guest")
@@ -111,8 +115,6 @@ def premium_depth():
 def signal_history_limit_for_tier():
     if is_master():
         return 100
-
-    tier = (session.get("tier") or "Guest").lower()
     limits = {
         "guest": 2,
         "free": 3,
@@ -120,7 +122,33 @@ def signal_history_limit_for_tier():
         "pro": 25,
         "elite": 100,
     }
-    return limits.get(tier, 3)
+    return limits.get(current_tier_lower(), 3)
+
+
+def premium_visible_count():
+    if is_master():
+        return 999
+    counts = {
+        "starter": 1,
+        "pro": 4,
+        "elite": 999,
+    }
+    return counts.get(current_tier_lower(), 1)
+
+
+def why_visible_count():
+    if is_master():
+        return 999
+    counts = {
+        "starter": 1,
+        "pro": 4,
+        "elite": 999,
+    }
+    return counts.get(current_tier_lower(), 1)
+
+
+def teaser_needed(total_count, visible_count):
+    return total_count > visible_count and current_tier_lower() != "elite" and not is_master()
 
 
 def visible_notifications():
@@ -531,14 +559,20 @@ def signals_page():
         return redirect(url_for("upgrade_page"))
 
     limit = signal_history_limit_for_tier()
+    boards = grouped_signals(limit_per_symbol=limit)
+
+    for b in boards:
+        b["visible_count"] = len(b.get("signals", []))
+
     return render_template(
         "signals.html",
         **template_context(
             {
                 "signals": load_signals(),
                 "research_signals": load_json("data/research_signals.json", []),
-                "signal_boards": grouped_signals(limit_per_symbol=limit),
+                "signal_boards": boards,
                 "signal_history_limit": limit,
+                "teaser_upgrade": current_tier_lower() != "elite" and not is_master(),
             }
         ),
     )
@@ -691,26 +725,15 @@ def premium_analysis_page():
         reverse=True,
     )
 
-    reports = load_json("data/recent_reports.json", [])
-    equity_values = [
-        r["snapshot"]["estimated_account_value"]
-        for r in reports
-        if isinstance(r, dict) and "snapshot" in r
-    ]
-    equity_labels = [
-        r["timestamp"]
-        for r in reports
-        if isinstance(r, dict) and "snapshot" in r
-    ]
+    visible_count = premium_visible_count()
 
     return render_template(
         "premium_analysis.html",
         **template_context(
             {
                 "all_analysis": all_analysis,
-                "equity_values": equity_values,
-                "equity_labels": equity_labels,
-                "premium_depth": premium_depth(),
+                "visible_premium_count": visible_count,
+                "premium_teaser": teaser_needed(len(all_analysis), visible_count),
             }
         ),
     )
@@ -737,12 +760,15 @@ def why_this_trade_page():
         reverse=True,
     )
 
+    visible_count = why_visible_count()
+
     return render_template(
         "why_this_trade.html",
         **template_context(
             {
                 "all_explanations": all_explanations,
-                "premium_depth": premium_depth(),
+                "visible_why_count": visible_count,
+                "why_teaser": teaser_needed(len(all_explanations), visible_count),
             }
         ),
     )
@@ -802,6 +828,9 @@ def upgrade_tier_action(tier):
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
 
+    if session.get("tier") == tier:
+        return redirect(url_for("upgrade_page"))
+
     update_user_tier(session["username"], tier)
     session["tier"] = tier
     set_billing_status(session["username"], tier, status="active", provider="mock")
@@ -822,11 +851,9 @@ def billing_page():
 def billing_mock(plan):
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
-
     set_billing_status(session["username"], plan, status="active", provider="mock")
     update_user_tier(session["username"], plan)
     session["tier"] = plan
-
     return redirect(url_for("billing_page"))
 
 
@@ -840,19 +867,7 @@ def stripe_checkout_page(plan):
         **template_context({"payload": payload}),
     )
 
-@app.route("/debug-tier")
-def debug_tier():
-    if not is_logged_in():
-        return jsonify({"logged_in": False})
 
-    return jsonify({
-        "username": session.get("username"),
-        "session_tier": session.get("tier"),
-        "session_role": session.get("role"),
-        "billing": get_billing_status(session["username"]),
-        "user_record": get_user(session["username"]),
-    })
-    
 @app.route("/billing/stripe/portal")
 def stripe_portal_page():
     if not is_logged_in():
@@ -1044,7 +1059,6 @@ def admin_user_tier(username):
         return redirect(url_for("dashboard_page"))
 
     new_tier = request.form.get("tier", "Starter")
-
     update_user_tier(username, new_tier)
     admin_set_billing_status(username, plan=new_tier)
 
@@ -1053,6 +1067,7 @@ def admin_user_tier(username):
 
     log_admin_action(session["username"], "update_tier", username, {"tier": new_tier})
     return redirect(url_for("admin_user_page", username=username))
+
 
 @app.route("/admin/user/<username>/password", methods=["POST"])
 def admin_user_password(username):
@@ -1254,7 +1269,10 @@ def api_signals():
 @app.route("/api/signal-boards")
 def api_signal_boards():
     limit = signal_history_limit_for_tier()
-    return jsonify(grouped_signals(limit_per_symbol=limit))
+    boards = grouped_signals(limit_per_symbol=limit)
+    for b in boards:
+        b["visible_count"] = len(b.get("signals", []))
+    return jsonify(boards)
 
 
 @app.route("/api/top-candidates")
@@ -1280,6 +1298,20 @@ def api_activity():
 @app.route("/api/notifications")
 def api_notifications():
     return jsonify(visible_notifications())
+
+
+@app.route("/debug-tier")
+def debug_tier():
+    if not is_logged_in():
+        return jsonify({"logged_in": False})
+
+    return jsonify({
+        "username": session.get("username"),
+        "session_tier": session.get("tier"),
+        "session_role": session.get("role"),
+        "billing": get_billing_status(session["username"]),
+        "user_record": get_user(session["username"]),
+    })
 
 
 if __name__ == "__main__":

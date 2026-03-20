@@ -1,35 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Login</h2>
+<div class="login-shell">
+    <div class="card premium-hero login-card">
+        <div class="login-logo-wrap">
+            <img src="/static/logo3.png" alt="SimpleeMrkTrade full logo" class="login-logo"
+                 onerror="this.style.display='none';">
+        </div>
 
-<div class="card">
-    <p>Secure login is enabled. Passwords are verified through hashed authentication.</p>
-</div>
+        <h2>Log In</h2>
+        <p class="muted-line">
+            Access your dashboard, premium research, portfolio health, and signal intelligence.
+        </p>
 
-{% if error %}
-<div class="card" style="border:1px solid rgba(239,68,68,0.45);">
-    <p><b>{{ error }}</b></p>
-</div>
-{% endif %}
+        {% if error %}
+        <div class="card">
+            <p><b>{{ error }}</b></p>
+        </div>
+        {% endif %}
 
-{% if info %}
-<div class="card" style="border:1px solid rgba(59,130,246,0.45);">
-    <p><b>{{ info }}</b></p>
-</div>
-{% endif %}
+        {% if info %}
+        <div class="card">
+            <p><b>{{ info }}</b></p>
+        </div>
+        {% endif %}
 
-<div class="card">
-    <form action="/login{% if next_url %}?next={{ next_url }}{% endif %}" method="post">
-        <p>Username</p>
-        <input type="text" name="username" required>
+        <form method="post">
+            <p><input type="text" name="username" placeholder="Username"></p>
+            <p><input type="password" name="password" placeholder="Password"></p>
+            <button type="submit" class="cta-btn">Log In</button>
+        </form>
 
-        <p>Password</p>
-        <input type="password" name="password" required>
-
-        <br><br>
-        <button type="submit" class="cta-btn">Login</button>
-    </form>
+        <div class="login-upgrade-strip">
+            <div class="card gold-accent-card">
+                <h3>Need More Access?</h3>
+                <p class="muted-line">
+                    Upgrade for deeper signal history, richer premium analysis, and stronger trade intelligence.
+                </p>
+                <a href="/upgrade" class="cta-btn premium-gold-btn">View Plans</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

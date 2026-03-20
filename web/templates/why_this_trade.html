@@ -3,76 +3,64 @@
 
 <h2>Why This Trade</h2>
 
-<div class="card">
-    <p>
-        This page now includes both execution-linked trade explanations and research intelligence explanations,
-        so it can keep generating edge even when live execution is capped.
+<div class="card premium-hero">
+    <h3>Trade Narrative Layer</h3>
+    <p class="muted-line">
+        This page explains why a setup mattered without exposing every internal weighting rule.
     </p>
-    <p><b>User:</b> {{ user.username }}</p>
-    <p><b>Tier:</b> {{ user.tier }}</p>
-    <p><b>Depth:</b> {{ premium_depth }}</p>
 </div>
 
 {% if all_explanations and all_explanations|length > 0 %}
-    {% for item in all_explanations %}
-    <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-            <h3 style="margin:0;">{{ item.symbol or "Unknown" }} | {{ item.strategy or "N/A" }}</h3>
-            <span class="badge-gray">{{ item.source or "research" }}</span>
-        </div>
-
-        <div class="grid">
-            <div class="card">
-                <h3>Trade Snapshot</h3>
-                <p><b>Score:</b> {{ item.score or "N/A" }}</p>
-                <p><b>Confidence:</b> {{ item.confidence or "N/A" }}</p>
-                <p><b>Entry:</b> {{ item.entry or "N/A" }}</p>
-                <p><b>Stop:</b> {{ item.stop or "N/A" }}</p>
-                <p><b>Target:</b> {{ item.target or "N/A" }}</p>
+    {% for item in all_explanations[:visible_why_count] %}
+    <div class="card premium-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+            <div>
+                <h3 style="margin:0;">{{ item.symbol }} | {{ item.strategy }}</h3>
+                <p class="muted-line">{{ item.timestamp }}</p>
             </div>
-
-            <div class="card">
-                <h3>Decision Summary</h3>
-                <p>
-                    This setup ranked high enough to pass premium review and deserved closer
-                    attention than lower-priority opportunities.
-                </p>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <span class="pill">{{ item.score }}</span>
+                <span class="badge-blue">{{ item.confidence }}</span>
             </div>
         </div>
 
-        <div class="grid">
-            <div class="card">
-                <h3>Market Context</h3>
-                {% if item.market_context %}
-                    <ul>
-                    {% for row in item.market_context %}
-                        <li>{{ row }}</li>
-                    {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No detailed market context saved yet.</p>
-                {% endif %}
-            </div>
-
-            <div class="card">
-                <h3>Why It Was Selected</h3>
-                {% if item.why_selected %}
-                    <ul>
-                    {% for row in item.why_selected %}
-                        <li>{{ row }}</li>
-                    {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No detailed selection notes saved yet.</p>
-                {% endif %}
-            </div>
+        {% if item.market_context %}
+        <div class="card">
+            <h3>Market Context</h3>
+            <ul>
+                {% for row in item.market_context %}
+                <li>{{ row }}</li>
+                {% endfor %}
+            </ul>
         </div>
+        {% endif %}
+
+        {% if item.why_selected %}
+        <div class="card">
+            <h3>Why Selected</h3>
+            <ul>
+                {% for row in item.why_selected %}
+                <li>{{ row }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
     </div>
     {% endfor %}
 {% else %}
-    <div class="card">
-        <p>No premium trade explanations yet.</p>
-    </div>
+<div class="card">
+    <p>No trade explanations yet.</p>
+</div>
+{% endif %}
+
+{% if why_teaser %}
+<div class="card teaser-card gold-accent-card">
+    <h3>Unlock Deeper Trade Narrative</h3>
+    <p class="muted-line">
+        Upgrade for fuller reasoning, more historical entries, and deeper explanation of why setups matter.
+    </p>
+    <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade Access</a>
+</div>
 {% endif %}
 
 {% endblock %}
