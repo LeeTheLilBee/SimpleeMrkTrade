@@ -74,11 +74,23 @@ def load_json(path, default):
         return default
 
 
+def effective_tier():
+    if session.get("preview_tier"):
+        return session["preview_tier"]
+    return session.get("tier", "Guest")
+
+
+def current_tier_lower():
+    return (effective_tier() or "Guest").lower()
+
+
 def get_current_user():
     return {
         "username": session.get("username"),
-        "tier": session.get("tier", "Guest"),
+        "tier": effective_tier(),
+        "real_tier": session.get("tier", "Guest"),
         "role": session.get("role", "member"),
+        "preview_tier": session.get("preview_tier"),
     }
 
 
@@ -90,31 +102,28 @@ def is_master():
     return session.get("role") == "master"
 
 
-def current_tier_lower():
-    return (session.get("tier") or "Guest").lower()
-
-
 def get_tier_config():
     tiers = load_json("data/subscription_tiers.json", {})
-    tier = session.get("tier", "Guest")
+    tier = effective_tier()
     return tiers.get(tier, tiers.get("Guest", {}))
 
 
 def has_access(feature):
-    if is_master():
+    if is_master() and not session.get("preview_tier"):
         return True
     return bool(get_tier_config().get(feature, False))
 
 
 def premium_depth():
-    if is_master():
+    if is_master() and not session.get("preview_tier"):
         return "max"
     return get_tier_config().get("premium_depth", "none")
 
 
 def signal_history_limit_for_tier():
-    if is_master():
+    if is_master() and not session.get("preview_tier"):
         return 100
+
     limits = {
         "guest": 2,
         "free": 3,
@@ -126,8 +135,9 @@ def signal_history_limit_for_tier():
 
 
 def premium_visible_count():
-    if is_master():
+    if is_master() and not session.get("preview_tier"):
         return 999
+
     counts = {
         "starter": 1,
         "pro": 4,
@@ -137,8 +147,9 @@ def premium_visible_count():
 
 
 def why_visible_count():
-    if is_master():
+    if is_master() and not session.get("preview_tier"):
         return 999
+
     counts = {
         "starter": 1,
         "pro": 4,
@@ -148,7 +159,7 @@ def why_visible_count():
 
 
 def teaser_needed(total_count, visible_count):
-    return total_count > visible_count and current_tier_lower() != "elite" and not is_master()
+    return total_count > visible_count and current_tier_lower() != "elite"
 
 
 def visible_notifications():
@@ -172,7 +183,9 @@ def session_debug_payload():
     return {
         "logged_in": is_logged_in(),
         "username": username,
-        "tier": session.get("tier", "Guest"),
+        "session_tier": session.get("tier", "Guest"),
+        "effective_tier": effective_tier(),
+        "preview_tier": session.get("preview_tier"),
         "role": session.get("role", "member"),
         "last_seen": session.get("last_seen"),
         "force_password_reset": get_force_password_reset(username) if username else False,
@@ -529,12 +542,35 @@ def equity_page():
 
 @app.route("/status")
 def status_page():
+    system = load_json("data/system_status.json", {})
+    market = load_json("data/market_snapshot.json", {})
+
+    volatility = system.get("volatility")
+    mode = system.get("mode")
+    regime = system.get("regime")
+
+    if not volatility or volatility == "UNKNOWN":
+        volatility = market.get("volatility", "Awaiting fresh bot run")
+
+    if not mode or mode == "BOOT":
+        mode = market.get("mode", "Awaiting fresh bot run")
+
+    if not regime or regime == "STARTING":
+        regime = market.get("regime", "Awaiting fresh bot run")
+
+    cleaned_system = {
+        **system,
+        "volatility": volatility,
+        "mode": mode,
+        "regime": regime,
+    }
+
     return render_template(
         "status.html",
         **template_context(
             {
-                "system": load_json("data/system_status.json", {}),
-                "market": load_json("data/market_snapshot.json", {}),
+                "system": cleaned_system,
+                "market": market,
             }
         ),
     )
@@ -572,7 +608,7 @@ def signals_page():
                 "research_signals": load_json("data/research_signals.json", []),
                 "signal_boards": boards,
                 "signal_history_limit": limit,
-                "teaser_upgrade": current_tier_lower() != "elite" and not is_master(),
+                "teaser_upgrade": current_tier_lower() != "elite",
             }
         ),
     )
@@ -828,7 +864,7 @@ def upgrade_tier_action(tier):
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
 
-    if session.get("tier") == tier:
+    if effective_tier() == tier:
         return redirect(url_for("upgrade_page"))
 
     update_user_tier(session["username"], tier)
@@ -1013,6 +1049,24 @@ def admin_session_debug_page():
     )
 
 
+@app.route("/admin/preview-tier/<tier>")
+def admin_preview_tier(tier):
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    session["preview_tier"] = tier
+    return redirect(url_for("dashboard_page"))
+
+
+@app.route("/admin/preview-tier/clear")
+def admin_clear_preview_tier():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    session.pop("preview_tier", None)
+    return redirect(url_for("dashboard_page"))
+
+
 @app.route("/admin/create-user", methods=["POST"])
 def admin_create_user():
     if not is_master():
@@ -1167,6 +1221,7 @@ def login_page():
             session["tier"] = auth["tier"]
             session["role"] = auth["role"]
             session["last_seen"] = datetime.utcnow().isoformat()
+            session.pop("preview_tier", None)
 
             if auth.get("force_password_reset"):
                 return redirect(url_for("account_page", error="You must change your password before continuing."))
@@ -1308,6 +1363,8 @@ def debug_tier():
     return jsonify({
         "username": session.get("username"),
         "session_tier": session.get("tier"),
+        "effective_tier": effective_tier(),
+        "preview_tier": session.get("preview_tier"),
         "session_role": session.get("role"),
         "billing": get_billing_status(session["username"]),
         "user_record": get_user(session["username"]),

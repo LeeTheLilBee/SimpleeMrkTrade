@@ -3,57 +3,82 @@
 
 <h2>Analytics Overview</h2>
 
-<div class="card">
-    <h3>What This Section Does</h3>
-    <p>
-        The Analytics section translates system activity into measurable performance. It shows how the platform is behaving
-        over time by tracking outcomes, efficiency, drawdown behavior, trade frequency, and strategy-level results.
+<div class="card premium-hero gold-accent-card section-sparkle">
+    <h3>Analytics Desk</h3>
+    <p class="muted-line">
+        A cleaner view of performance, risk, strategy behavior, and proof structure.
     </p>
 </div>
 
-<div class="card">
-    <h3>Why It Matters</h3>
-    <p>
-        Signals alone are not enough. A trading system becomes useful when it can prove what is working, what is weakening,
-        and where risk is increasing. This section matters because it turns activity into evidence.
-    </p>
-    <p>
-        It helps users understand whether performance is improving, whether risk is staying controlled, and whether the engine
-        is producing stable behavior over time.
-    </p>
+<div class="analytics-toolbar card">
+    <div class="analytics-toolbar-row">
+        <input type="text" id="analyticsSearch" placeholder="Search analytics sections...">
+        <select id="analyticsCategory">
+            <option value="all">All Categories</option>
+            <option value="performance">Performance</option>
+            <option value="risk">Risk</option>
+            <option value="strategy">Strategy</option>
+            <option value="proof">Proof</option>
+        </select>
+    </div>
 </div>
 
-<div class="card">
-    <h3>How To Use It</h3>
-    <p>
-        Use Analytics to review overall system quality rather than react to one trade at a time. Focus on larger patterns:
-        trade count, win rate, realized performance, drawdown, and strategy behavior across multiple runs.
-    </p>
-    <p>
-        When evaluating the platform, this is the section that answers: Is the system behaving consistently? Is risk remaining
-        controlled? Are certain approaches contributing more than others?
-    </p>
+<div class="grid" id="analyticsSectionGrid">
+    <div class="card analytics-category" data-category="performance">
+        <h3>Performance</h3>
+        <div class="passage-frame">
+            <p><b>Trades:</b> {{ stats.trades if stats.trades is defined else "N/A" }}</p>
+            <p><b>Win Rate:</b> {{ stats.winrate if stats.winrate is defined else "N/A" }}</p>
+            <p><b>Total PnL:</b> {{ stats.total_pnl if stats.total_pnl is defined else "N/A" }}</p>
+        </div>
+    </div>
+
+    <div class="card analytics-category" data-category="risk">
+        <h3>Risk</h3>
+        <div class="passage-frame">
+            <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
+            <p><b>Wins:</b> {{ proof.wins }}</p>
+            <p><b>Losses:</b> {{ proof.losses }}</p>
+        </div>
+    </div>
+
+    <div class="card analytics-category" data-category="strategy">
+        <h3>Strategy Behavior</h3>
+        <div class="passage-frame">
+            <p>
+                Use the deeper analytics page for more advanced breakdowns by strategy, market posture, and trade style.
+            </p>
+        </div>
+    </div>
+
+    <div class="card analytics-category" data-category="proof">
+        <h3>Proof</h3>
+        <div class="passage-frame">
+            <p><b>Tracked Trades:</b> {{ proof.trades }}</p>
+            <p><b>Win Rate:</b> {{ proof.winrate }}</p>
+        </div>
+    </div>
 </div>
 
-<div class="card">
-    <h3>What You’ll Find Here</h3>
-    <ul>
-        <li>Performance summaries</li>
-        <li>Closed trade statistics</li>
-        <li>Drawdown behavior</li>
-        <li>Equity progression</li>
-        <li>Strategy-level breakdowns</li>
-        <li>Bot activity logs and reporting history</li>
-    </ul>
-</div>
+<script>
+const analyticsSearch = document.getElementById("analyticsSearch");
+const analyticsCategory = document.getElementById("analyticsCategory");
 
-<div class="card">
-    <h3>What Makes It Different</h3>
-    <p>
-        This section is designed as a proof layer, not just a stats page. It connects decisions, execution, and portfolio
-        behavior so users can evaluate system quality in a structured way. Internal performance attribution methods and ranking
-        relationships remain proprietary.
-    </p>
-</div>
+function filterAnalyticsCards() {
+    const q = (analyticsSearch.value || "").toLowerCase();
+    const cat = analyticsCategory.value;
+    const cards = document.querySelectorAll("#analyticsSectionGrid .analytics-category");
+
+    cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        const matchesText = text.includes(q);
+        const matchesCat = cat === "all" || card.dataset.category === cat;
+        card.style.display = (matchesText && matchesCat) ? "" : "none";
+    });
+}
+
+analyticsSearch.addEventListener("input", filterAnalyticsCards);
+analyticsCategory.addEventListener("change", filterAnalyticsCards);
+</script>
 
 {% endblock %}

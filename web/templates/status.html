@@ -1,26 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
+
 <h2>System Status</h2>
-<div class="card">
-<p>Timestamp: {{ system.timestamp }}</p>
-<p>Cash: {{ system.cash }}</p>
-<p>Buying Power: {{ system.buying_power }}</p>
-<p>Equity: {{ system.equity }}</p>
-<p>Open Positions: {{ system.open_positions }}</p>
-<p>Executed Trades: {{ system.executed_trades }}</p>
-<p>Regime: {{ system.regime }}</p>
-<p>Volatility: {{ system.volatility }}</p>
-<p>Mode: {{ system.mode }}</p>
-<p>Total Trades: {{ system.total_trades }}</p>
-<p>Win Rate: {{ system.winrate }}</p>
-<p>Max Drawdown: {{ system.max_drawdown }}</p>
+
+<div class="grid">
+    <div class="card premium-card gold-accent-card">
+        <h3>System View</h3>
+        <p><b>Regime:</b> {{ system.regime }}</p>
+        <p><b>Volatility:</b> {{ system.volatility }}</p>
+        <p><b>Mode:</b> {{ system.mode }}</p>
+    </div>
+
+    <div class="card premium-card gold-accent-card">
+        <h3>Market Snapshot</h3>
+        <p><b>Regime:</b> {{ market.regime or "Awaiting fresh bot run" }}</p>
+        <p><b>Volatility:</b> {{ market.volatility or "Awaiting fresh bot run" }}</p>
+        <p><b>Mode:</b> {{ market.mode or "Awaiting fresh bot run" }}</p>
+    </div>
 </div>
 
 <div class="card">
-<p>Market Regime: {{ market.regime }}</p>
-<p>Breadth: {{ market.breadth }}</p>
-<p>Mode: {{ market.mode }}</p>
-<p>Watchlist Count: {{ market.watchlist_count }}</p>
-<p>Approved Count: {{ market.approved_count }}</p>
+    <h3>Interpretation</h3>
+    <div class="passage-frame">
+        <p>
+            This page shows the most recent system state written by the bot. If the values look stale,
+            the next bot cycle should refresh them. Placeholder startup values are now cleaned up before display.
+        </p>
+    </div>
 </div>
+
 {% endblock %}

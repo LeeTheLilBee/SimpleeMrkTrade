@@ -7,5 +7,14 @@
     "details": {
       "tier": "Starter"
     }
+  },
+  {
+    "timestamp": "2026-03-20T20:49:11.044046",
+    "actor": "admin",
+    "action": "update_tier",
+    "target": "admin",
+    "details": {
+      "tier": "Elite"
+    }
   }
 ]

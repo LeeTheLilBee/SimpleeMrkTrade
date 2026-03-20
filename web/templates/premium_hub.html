@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="card premium-hero premium-hub-hero">
+<div class="card premium-hero premium-hub-hero section-sparkle">
     <div class="premium-hub-logo-wrap">
         <img src="/static/logo3.png" alt="SimpleeMrkTrade full logo" class="premium-hub-logo"
              onerror="this.style.display='none';">
@@ -16,18 +16,23 @@
 </div>
 
 <div class="grid">
-    <div class="card premium-card">
+    <div class="card premium-card gold-accent-card">
         <h3>Why Premium Exists</h3>
-        <p>
-            Premium is not just extra pages. It is deeper context, stronger interpretation,
-            richer trade logic, and a more advanced understanding of what matters now.
-        </p>
+        <div class="passage-frame">
+            <p>
+                Premium is not just extra pages. It is deeper context, stronger interpretation,
+                richer trade logic, and a more advanced understanding of what matters now.
+            </p>
+        </div>
     </div>
 
-    <div class="card premium-card">
+    <div class="card premium-card gold-accent-card">
         <h3>Your Current Access</h3>
         <p><b>User:</b> {{ user.username }}</p>
         <p><b>Tier:</b> {{ user.tier }}</p>
+        {% if user.preview_tier %}
+        <p><b>Admin Preview:</b> {{ user.preview_tier }}</p>
+        {% endif %}
         <p><b>Premium Depth:</b> {{ tier_config.premium_depth if tier_config.premium_depth is defined else "standard" }}</p>
         <p><a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade Membership</a></p>
     </div>
@@ -36,46 +41,56 @@
 <div class="grid">
     <div class="card">
         <h3>Premium Analysis</h3>
-        <p>
-            Research-grade trade breakdowns with environment context, signal quality,
-            and premium reasoning.
-        </p>
+        <div class="passage-frame">
+            <p>
+                Research-grade trade breakdowns with environment context, signal quality,
+                and premium reasoning.
+            </p>
+        </div>
         <p><a href="/premium-analysis" class="cta-btn">Open Premium Analysis</a></p>
     </div>
 
     <div class="card">
         <h3>Why This Trade</h3>
-        <p>
-            See why a setup mattered, what made it interesting,
-            and what risk conditions shape how it should be interpreted.
-        </p>
+        <div class="passage-frame">
+            <p>
+                See why a setup mattered, what made it interesting,
+                and what risk conditions shape how it should be interpreted.
+            </p>
+        </div>
         <p><a href="/why-this-trade" class="cta-btn secondary">Open Why This Trade</a></p>
     </div>
 
     <div class="card">
         <h3>Portfolio Health</h3>
-        <p>
-            Customer-facing position health bars and monitoring structure for linked portfolios.
-        </p>
+        <div class="passage-frame">
+            <p>
+                Customer-facing position health bars and monitoring structure for linked portfolios.
+            </p>
+        </div>
         <p><a href="/my-portfolio" class="cta-btn secondary">Open My Portfolio</a></p>
     </div>
 </div>
 
-<div class="card premium-card">
+<div class="card premium-card gold-accent-card section-sparkle">
     <h3>Research vs Execution</h3>
     <div class="grid">
         <div class="card">
             <h3>Research Layer</h3>
-            <p>
-                Keeps generating ideas even when live execution is blocked.
-                This preserves edge discovery.
-            </p>
+            <div class="passage-frame">
+                <p>
+                    Keeps generating ideas even when live execution is blocked.
+                    This preserves edge discovery.
+                </p>
+            </div>
         </div>
         <div class="card">
             <h3>Execution Layer</h3>
-            <p>
-                Applies account and portfolio discipline. Not every good idea deserves deployment right now.
-            </p>
+            <div class="passage-frame">
+                <p>
+                    Applies account and portfolio discipline. Not every good idea deserves deployment right now.
+                </p>
+            </div>
         </div>
     </div>
 </div>

@@ -1,9 +1,68 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Recent Reports</h2>
-{% for report in reports[::-1] %}
-<div class="card">
-{{ report.timestamp }} | Trades: {{ report.performance.trades }} | Win Rate: {{ report.performance.winrate }} | Total PnL: {{ report.performance.total_pnl }}
+
+<h2>Reports</h2>
+
+<div class="card premium-hero gold-accent-card section-sparkle">
+    <h3>Reports Center</h3>
+    <p class="muted-line">
+        Daily reporting, archived summaries, and closed-trade stats in a cleaner structure.
+    </p>
 </div>
-{% endfor %}
+
+<div class="analytics-toolbar card">
+    <div class="analytics-toolbar-row">
+        <input type="text" id="reportSearch" placeholder="Search reports...">
+        <select id="reportCategory">
+            <option value="all">All Categories</option>
+            <option value="daily">Daily Reports</option>
+            <option value="closed">Closed Trade Stats</option>
+        </select>
+    </div>
+</div>
+
+<div class="grid" id="reportSectionGrid">
+    <div class="card report-category" data-category="closed">
+        <h3>Closed Trade Stats</h3>
+        <div class="passage-frame">
+            <pre>{{ closed_stats }}</pre>
+        </div>
+    </div>
+
+    <div class="card report-category" data-category="daily">
+        <h3>Recent Reports</h3>
+        {% if reports and reports|length > 0 %}
+            {% for r in reports %}
+            <div class="passage-frame" style="margin-bottom:12px;">
+                <p><b>Timestamp:</b> {{ r.timestamp if r.timestamp is defined else "N/A" }}</p>
+                <pre>{{ r }}</pre>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No reports yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+const reportSearch = document.getElementById("reportSearch");
+const reportCategory = document.getElementById("reportCategory");
+
+function filterReportCards() {
+    const q = (reportSearch.value || "").toLowerCase();
+    const cat = reportCategory.value;
+    const cards = document.querySelectorAll("#reportSectionGrid .report-category");
+
+    cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        const matchesText = text.includes(q);
+        const matchesCat = cat === "all" || card.dataset.category === cat;
+        card.style.display = (matchesText && matchesCat) ? "" : "none";
+    });
+}
+
+reportSearch.addEventListener("input", filterReportCards);
+reportCategory.addEventListener("change", filterReportCards);
+</script>
+
 {% endblock %}
