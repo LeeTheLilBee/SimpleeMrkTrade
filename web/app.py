@@ -57,8 +57,8 @@ from engine.user_position_health import build_user_position_health
 from engine.signal_feed import grouped_signals, load_signals
 from engine.symbol_metadata import get_symbol_meta
 from engine.symbol_news import get_symbol_news
-from engine.admin_product_analytics import track_event, summarize_events
 from engine.signal_explainer import explain_signal
+from engine.admin_product_analytics import track_event, summarize_events
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "change_this_secret_key_later_to_something_long_random"
@@ -118,21 +118,16 @@ def has_access(feature):
     return bool(get_tier_config().get(feature, False))
 
 
-def premium_depth():
-    if is_master() and not session.get("preview_tier"):
-        return "max"
-    return get_tier_config().get("premium_depth", "none")
-
-
 def signal_history_limit_for_tier():
     if is_master() and not session.get("preview_tier"):
-        return 100
+        return 9999
+
     limits = {
         "guest": 2,
         "free": 3,
-        "starter": 10,
-        "pro": 25,
-        "elite": 100,
+        "starter": 5,
+        "pro": 10,
+        "elite": 9999,
     }
     return limits.get(current_tier_lower(), 3)
 
@@ -141,6 +136,7 @@ def premium_visible_count():
     if is_master() and not session.get("preview_tier"):
         return 999
     counts = {
+        "free": 0,
         "starter": 1,
         "pro": 4,
         "elite": 999,
@@ -152,6 +148,7 @@ def why_visible_count():
     if is_master() and not session.get("preview_tier"):
         return 999
     counts = {
+        "free": 0,
         "starter": 1,
         "pro": 4,
         "elite": 999,
@@ -161,6 +158,10 @@ def why_visible_count():
 
 def teaser_needed(total_count, visible_count):
     return total_count > visible_count and current_tier_lower() != "elite"
+
+
+def should_show_upgrade():
+    return (not is_logged_in()) or effective_tier() != "Elite"
 
 
 def visible_notifications():
@@ -231,68 +232,38 @@ def build_capital_state(snapshot, system, market):
     }
 
 
-def alacarte_catalog():
-    return [
-        {
-            "name": "Signals Pro",
-            "description": "Expanded symbol pages and deeper signal history without full membership.",
-            "price_label": "$19/mo",
-        },
-        {
-            "name": "Premium Analysis",
-            "description": "Research-grade trade breakdowns and richer premium intelligence.",
-            "price_label": "$29/mo",
-        },
-        {
-            "name": "Portfolio Health",
-            "description": "Customer-facing position health bars and portfolio monitoring layer.",
-            "price_label": "$15/mo",
-        },
-        {
-            "name": "Why This Trade",
-            "description": "Narrative trade explanation layer without full plan commitment.",
-            "price_label": "$12/mo",
-        },
-    ]
-
 def maybe_track_page_view(page, symbol=None):
     if request.endpoint == "static":
         return
-    username = session.get("username")
     track_event(
         event_type="page_view" if not symbol else "symbol_view",
-        username=username,
+        username=session.get("username"),
         page=page,
         symbol=symbol,
     )
 
+
 def template_context(extra=None):
     user = get_current_user()
     prefs = get_preferences(user["username"]) if user["username"] else {"theme": "dark"}
+    snapshot = account_snapshot()
+    market = load_json("data/market_snapshot.json", {})
+    system = load_json("data/system_status.json", {})
+    capital_state = build_capital_state(snapshot, system, market)
+
     base = {
         "user": user,
         "unread_notifications": visible_unread_count(),
         "theme": prefs.get("theme", "dark"),
+        "snapshot": snapshot,
+        "market": market,
+        "system": system,
+        "capital_state": capital_state,
+        "show_upgrade": should_show_upgrade(),
     }
     if extra:
         base.update(extra)
     return base
-
-
-def decorated_signal_boards(limit_per_symbol=None):
-    boards = grouped_signals(limit_per_symbol=limit_per_symbol)
-    for board in boards:
-        meta = get_symbol_meta(board["symbol"])
-        board["company_name"] = meta["name"]
-        board["company_blurb"] = meta["blurb"]
-        board["visible_count"] = len(board.get("signals", []))
-        board["explanation"] = explain_signal(
-            board.get("latest_score", 0),
-            board.get("latest_confidence", "LOW"),
-            regime=board.get("regime"),
-            volatility=board.get("volatility")
-      )
-    return boards
 
 
 @app.context_processor
@@ -315,6 +286,7 @@ def enforce_session_timeout():
         "api_signals",
         "api_account",
         "api_bot_status",
+        "api_all_symbols",
     }
 
     if request.endpoint in exempt:
@@ -336,13 +308,67 @@ def enforce_session_timeout():
         session["last_seen"] = now.isoformat()
 
 
+def decorated_signal_boards(limit_per_symbol=None):
+    boards = grouped_signals(limit_per_symbol=limit_per_symbol)
+    decorated = []
+
+    for board in boards:
+        meta = get_symbol_meta(board["symbol"])
+        latest_score = board.get("latest_score", 0)
+        latest_conf = board.get("latest_confidence", "LOW")
+        explanation = explain_signal(
+            latest_score,
+            latest_conf,
+            regime=board.get("regime"),
+            volatility=board.get("volatility"),
+        )
+
+        opinion = "Early setup worth monitoring."
+        if latest_score >= 200:
+            opinion = "High-conviction setup with strong alignment."
+        elif latest_score >= 150:
+            opinion = "Strong setup with meaningful confirmation."
+        elif latest_score >= 100:
+            opinion = "Developing setup with some alignment."
+
+        board["company_name"] = meta["name"]
+        board["company_blurb"] = meta["blurb"]
+        board["visible_count"] = len(board.get("signals", []))
+        board["explanation"] = explanation
+        board["opinion"] = opinion
+        decorated.append(board)
+
+    return sorted(decorated, key=lambda x: x.get("latest_score", 0), reverse=True)
+
+
+def all_symbol_rows():
+    rows = []
+    seen = set()
+    for board in decorated_signal_boards(limit_per_symbol=signal_history_limit_for_tier()):
+        symbol = board["symbol"]
+        if symbol in seen:
+            continue
+        seen.add(symbol)
+        rows.append({
+            "symbol": symbol,
+            "company_name": board["company_name"],
+            "latest_score": board.get("latest_score", 0),
+            "latest_confidence": board.get("latest_confidence", "LOW"),
+            "latest_timestamp": board.get("latest_timestamp", ""),
+            "opinion": board.get("opinion", ""),
+            "trade_id": board.get("latest_trade_id"),
+        })
+    return rows
+
+
 @app.route("/")
 def landing_page():
+    maybe_track_page_view("/")
     reports = load_json("data/recent_reports.json", [])
     equity_values = [
         r["snapshot"]["estimated_account_value"]
         for r in reports
-        if isinstance(r, dict) and "snapshot" in r
+        if isinstance(r, dict) and "snapshot" in r and isinstance(r["snapshot"], dict)
     ]
     equity_labels = [
         r["timestamp"]
@@ -353,7 +379,6 @@ def landing_page():
         "landing.html",
         **template_context(
             {
-                "snapshot": account_snapshot(),
                 "proof": performance_summary(),
                 "equity_values": equity_values,
                 "equity_labels": equity_labels,
@@ -362,28 +387,14 @@ def landing_page():
     )
 
 
-@app.route("/get-started")
-def get_started_page():
-    return render_template("get_started.html", **template_context())
-
-
-@app.route("/onboarding")
-def onboarding_page():
-    return render_template("onboarding.html", **template_context())
-
-
-@app.route("/modes")
-def modes_page():
-    return render_template("modes.html", **template_context())
-
-
 @app.route("/proof")
 def public_proof():
+    maybe_track_page_view("/proof")
     reports = load_json("data/recent_reports.json", [])
     equity_values = [
         r["snapshot"]["estimated_account_value"]
         for r in reports
-        if isinstance(r, dict) and "snapshot" in r
+        if isinstance(r, dict) and "snapshot" in r and isinstance(r["snapshot"], dict)
     ]
     equity_labels = [
         r["timestamp"]
@@ -394,7 +405,6 @@ def public_proof():
         "proof.html",
         **template_context(
             {
-                "snapshot": account_snapshot(),
                 "proof": performance_summary(),
                 "positions": load_json("data/open_positions.json", []),
                 "closed": load_json("data/closed_positions.json", []),
@@ -406,55 +416,6 @@ def public_proof():
     )
 
 
-@app.route("/live-activity")
-def live_activity_page():
-    return render_template(
-        "live_activity.html",
-        **template_context({"activity": load_json("data/live_activity.json", [])}),
-    )
-
-
-@app.route("/notifications")
-def notifications_page():
-    return render_template(
-        "notifications.html",
-        **template_context({"notifications": visible_notifications()}),
-    )
-
-
-@app.route("/notification-settings", methods=["GET", "POST"])
-def notification_settings_page():
-    if not is_logged_in():
-        return redirect(url_for("login_page", next=request.path))
-
-    username = session["username"]
-
-    if request.method == "POST":
-        settings = {
-            "high_conviction_only": bool(request.form.get("high_conviction_only")),
-            "research_alerts": bool(request.form.get("research_alerts")),
-            "execution_alerts": bool(request.form.get("execution_alerts")),
-            "risk_alerts": bool(request.form.get("risk_alerts")),
-            "system_alerts": bool(request.form.get("system_alerts")),
-            "min_score": int(request.form.get("min_score", 0)),
-            "strategy_filter": request.form.get("strategy_filter", "ALL"),
-            "volatility_filter": request.form.get("volatility_filter", "ALL"),
-        }
-        save_notification_settings(username, settings)
-        return redirect(url_for("notification_settings_page"))
-
-    return render_template(
-        "notification_settings.html",
-        **template_context({"settings": get_notification_settings(username)}),
-    )
-
-
-@app.route("/notifications/read-all")
-def notifications_read_all():
-    mark_all_read()
-    return redirect(url_for("notifications_page"))
-
-
 @app.route("/dashboard")
 def dashboard_page():
     maybe_track_page_view("/dashboard")
@@ -462,7 +423,7 @@ def dashboard_page():
     equity_values = [
         r["snapshot"]["estimated_account_value"]
         for r in reports
-        if isinstance(r, dict) and "snapshot" in r
+        if isinstance(r, dict) and "snapshot" in r and isinstance(r["snapshot"], dict)
     ]
     equity_labels = [
         r["timestamp"]
@@ -470,42 +431,176 @@ def dashboard_page():
         if isinstance(r, dict) and "snapshot" in r
     ]
 
-    snapshot = account_snapshot()
-    market = load_json("data/market_snapshot.json", {})
-    system = load_json("data/system_status.json", {})
-    capital_state = build_capital_state(snapshot, system, market)
-
     return render_template(
         "dashboard.html",
         **template_context(
             {
                 "state": get_dashboard_state(),
-                "snapshot": snapshot,
-                "market": market,
-                "system": system,
-                "capital_state": capital_state,
-                "top_candidates": load_json("data/top_candidates.json", []),
                 "proof": performance_summary(),
                 "unreal": unrealized_pnl(),
                 "strategies": strategy_breakdown(),
                 "drawdown": load_json("data/drawdown_history.json", []),
                 "equity_values": equity_values,
                 "equity_labels": equity_labels,
-                "signals": load_signals(),
-                "signal_boards": decorated_signal_boards(limit_per_symbol=3),
             }
         ),
     )
 
 
-@app.route("/trading")
-def trading_overview():
+@app.route("/live-activity")
+def live_activity_page():
+    maybe_track_page_view("/live-activity")
     return render_template(
-        "trading_overview.html",
+        "live_activity.html",
+        **template_context({"activity": load_json("data/live_activity.json", [])}),
+    )
+
+
+@app.route("/positions")
+def positions_page():
+    maybe_track_page_view("/positions")
+    return render_template(
+        "positions.html",
+        **template_context({"positions": monitor_open_positions()}),
+    )
+
+
+@app.route("/equity")
+def equity_page():
+    maybe_track_page_view("/equity")
+    return render_template(
+        "equity.html",
+        **template_context({"curve": load_json("data/equity_curve.json", [1000])}),
+    )
+
+
+@app.route("/reports")
+def reports_page():
+    maybe_track_page_view("/reports")
+    return render_template(
+        "reports.html",
         **template_context(
             {
-                "signals": load_signals(),
-                "positions": monitor_open_positions(),
+                "reports": load_json("data/recent_reports.json", []),
+                "closed_stats": closed_trade_stats(),
+            }
+        ),
+    )
+
+
+@app.route("/bot-log")
+def bot_log_page():
+    maybe_track_page_view("/bot-log")
+    return render_template(
+        "bot_log.html",
+        **template_context({"bot_log": load_json("data/bot_log.json", [])}),
+    )
+
+
+@app.route("/research")
+def research_overview():
+    maybe_track_page_view("/research")
+    return render_template(
+        "research_overview.html",
+        **template_context({"candidates": load_json("data/top_candidates.json", [])}),
+    )
+
+
+@app.route("/signals")
+def signals_page():
+    maybe_track_page_view("/signals")
+    if not has_access("signals"):
+        return redirect(url_for("upgrade_page"))
+
+    boards = decorated_signal_boards(limit_per_symbol=signal_history_limit_for_tier())
+    top_five = boards[:5]
+
+    tier = current_tier_lower()
+    next_cap = 0
+    if tier == "free":
+        next_cap = 0
+    elif tier == "starter":
+        next_cap = 5
+    elif tier == "pro":
+        next_cap = 10
+    elif tier == "elite":
+        next_cap = 20
+    elif is_master() and not session.get("preview_tier"):
+        next_cap = 20
+
+    next_twenty = boards[5:5 + next_cap]
+    hidden_remaining = max(0, len(boards) - (5 + next_cap))
+
+    return render_template(
+        "signals.html",
+        **template_context(
+            {
+                "top_five": top_five,
+                "next_twenty": next_twenty,
+                "hidden_remaining": hidden_remaining,
+                "signal_history_limit": signal_history_limit_for_tier(),
+            }
+        ),
+    )
+
+
+@app.route("/all-symbols")
+def all_symbols_page():
+    maybe_track_page_view("/all-symbols")
+    if not has_access("signals"):
+        return redirect(url_for("upgrade_page"))
+
+    return render_template(
+        "all_symbols.html",
+        **template_context({"rows": all_symbol_rows()}),
+    )
+
+
+@app.route("/signals/<symbol>")
+def signal_symbol_page(symbol):
+    symbol = (symbol or "").upper()
+    maybe_track_page_view(f"/signals/{symbol}", symbol=symbol)
+    if not has_access("signals"):
+        return redirect(url_for("upgrade_page"))
+
+    limit = signal_history_limit_for_tier()
+    all_signals = [s for s in load_signals() if (s.get("symbol") or "").upper() == symbol]
+    all_signals = sorted(all_signals, key=lambda x: x.get("timestamp", ""), reverse=True)
+
+    visible_signals = all_signals[:limit]
+    company = get_symbol_meta(symbol)
+    news_items = get_symbol_news(symbol, limit=8)
+
+    latest_score = visible_signals[0].get("score", 0) if visible_signals else 0
+    latest_conf = visible_signals[0].get("confidence", "LOW") if visible_signals else "LOW"
+    explanation = explain_signal(
+        latest_score,
+        latest_conf,
+        regime=visible_signals[0].get("regime") if visible_signals else None,
+        volatility=visible_signals[0].get("volatility") if visible_signals else None,
+    )
+
+    opinion = "Early setup worth monitoring."
+    if latest_score >= 200:
+        opinion = "High-conviction setup with strong alignment."
+    elif latest_score >= 150:
+        opinion = "Strong setup with meaningful confirmation."
+    elif latest_score >= 100:
+        opinion = "Developing setup with some alignment."
+
+    return render_template(
+        "signal_symbol.html",
+        **template_context(
+            {
+                "symbol": symbol,
+                "company": company,
+                "symbol_signals": visible_signals,
+                "visible_signal_count": len(visible_signals),
+                "total_signal_count": len(all_signals),
+                "show_teaser": teaser_needed(len(all_signals), len(visible_signals)),
+                "news_items": news_items,
+                "opinion": opinion,
+                "explanation": explanation,
             }
         ),
     )
@@ -513,24 +608,28 @@ def trading_overview():
 
 @app.route("/analytics-overview")
 def analytics_overview():
+    maybe_track_page_view("/analytics-overview")
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
     return render_template(
         "analytics_overview.html",
-        **template_context({"stats": analytics(), "proof": performance_summary()}),
-    )
-
-
-@app.route("/research")
-def research_overview():
-    return render_template(
-        "research_overview.html",
-        **template_context({"candidates": load_json("data/top_candidates.json", [])}),
+        **template_context(
+            {
+                "stats": analytics(),
+                "proof": performance_summary(),
+            }
+        ),
     )
 
 
 @app.route("/analytics")
 def analytics_page():
+    maybe_track_page_view("/analytics")
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
     if not has_access("full_analytics"):
         return redirect(url_for("upgrade_page"))
+
     return render_template(
         "analytics.html",
         **template_context(
@@ -547,240 +646,66 @@ def analytics_page():
     )
 
 
-@app.route("/knowledge")
-def knowledge_page():
-    return render_template("knowledge.html", **template_context())
-
-
-@app.route("/candidates")
-def candidates_page():
-    return render_template(
-        "candidates.html",
-        **template_context({"top_candidates": load_json("data/top_candidates.json", [])}),
-    )
-
-
-@app.route("/equity")
-def equity_page():
-    return render_template(
-        "equity.html",
-        **template_context({"curve": load_json("data/equity_curve.json", [1000])}),
-    )
-
-
-@app.route("/status")
-def status_page():
-    system = load_json("data/system_status.json", {})
-    market = load_json("data/market_snapshot.json", {})
-
-    volatility = system.get("volatility")
-    mode = system.get("mode")
-    regime = system.get("regime")
-
-    if not volatility or volatility == "UNKNOWN":
-        volatility = market.get("volatility", "Awaiting fresh bot run")
-
-    if not mode or mode == "BOOT":
-        mode = market.get("mode", "Awaiting fresh bot run")
-
-    if not regime or regime == "STARTING":
-        regime = market.get("regime", "Awaiting fresh bot run")
-
-    cleaned_system = {
-        **system,
-        "volatility": volatility,
-        "mode": mode,
-        "regime": regime,
-    }
+@app.route("/analytics/performance")
+def analytics_performance_page():
+    maybe_track_page_view("/analytics/performance")
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+    if not has_access("full_analytics"):
+        return redirect(url_for("upgrade_page"))
 
     return render_template(
-        "status.html",
+        "analytics_performance.html",
         **template_context(
             {
-                "system": cleaned_system,
-                "market": market,
-            }
-        ),
-    )
-
-
-@app.route("/reports")
-def reports_page():
-    return render_template(
-        "reports.html",
-        **template_context(
-            {
+                "stats": analytics(),
+                "proof": performance_summary(),
                 "reports": load_json("data/recent_reports.json", []),
-                "closed_stats": closed_trade_stats(),
+                "summary": portfolio_summary(),
             }
         ),
     )
 
 
-@app.route("/signals")
-def signals_page():
-    maybe_track_page_view("/signals")
-    if not has_access("signals"):
-        return redirect(url_for("upgrade_page"))
-
-    limit = signal_history_limit_for_tier()
-    boards = decorated_signal_boards(limit_per_symbol=limit)
-
-    return render_template(
-        "signals.html",
-        **template_context(
-            {
-                "signal_boards": boards,
-                "signal_history_limit": limit,
-            }
-        ),
-    )
-
-
-@app.route("/signals/<symbol>")
-def signal_symbol_page(symbol):
-    maybe_track_page_view(f"/signals/{symbol.upper()}", symbol=symbol.upper())
-    if not has_access("signals"):
-        return redirect(url_for("upgrade_page"))
-
-    symbol = (symbol or "").upper()
-    limit = signal_history_limit_for_tier()
-    all_signals = [s for s in load_signals() if (s.get("symbol") or "").upper() == symbol]
-    all_signals = sorted(all_signals, key=lambda x: x.get("timestamp", ""), reverse=True)
-
-    visible_signals = all_signals[:limit]
-    company = get_symbol_meta(symbol)
-    news_items = get_symbol_news(symbol, limit=8)
-
-    return render_template(
-        "signal_symbol.html",
-        **template_context(
-            {
-                "symbol": symbol,
-                "company": company,
-                "symbol_signals": visible_signals,
-                "visible_signal_count": len(visible_signals),
-                "total_signal_count": len(all_signals),
-                "show_teaser": len(all_signals) > len(visible_signals),
-                "news_items": news_items,
-            }
-        ),
-    )
-
-
-@app.route("/positions")
-def positions_page():
-    return render_template(
-        "positions.html",
-        **template_context({"positions": monitor_open_positions()}),
-    )
-
-
-@app.route("/my-portfolio", methods=["GET", "POST"])
-def my_portfolio_page():
+@app.route("/analytics/strategy")
+def analytics_strategy_page():
+    maybe_track_page_view("/analytics/strategy")
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
+    if not has_access("full_analytics"):
+        return redirect(url_for("upgrade_page"))
 
-    username = session["username"]
-
-    if request.method == "POST":
-        broker = request.form.get("broker", "IBKR")
-        cash = request.form.get("cash", 0)
-        buying_power = request.form.get("buying_power", 0)
-        notes = request.form.get("notes", "")
-
-        existing = load_user_portfolio(username)
-        positions = existing.get("positions", [])
-
-        if not positions:
-            positions = [
-                {
-                    "symbol": "AAPL",
-                    "strategy": "LONG",
-                    "entry": 208.50,
-                    "current": 212.10,
-                    "pnl": 3.6,
-                    "quantity": 10,
-                    "stop": 201.00,
-                    "distance_to_stop_pct": 5.2,
-                    "trend_alignment": 1,
-                    "conviction": 74,
-                },
-                {
-                    "symbol": "NVDA",
-                    "strategy": "LONG",
-                    "entry": 118.00,
-                    "current": 114.20,
-                    "pnl": -3.2,
-                    "quantity": 8,
-                    "stop": 109.00,
-                    "distance_to_stop_pct": 4.5,
-                    "trend_alignment": 0,
-                    "conviction": 67,
-                },
-            ]
-
-        save_mock_portfolio_from_form(
-            username=username,
-            broker=broker,
-            cash=cash,
-            buying_power=buying_power,
-            notes=notes,
-            positions=positions,
-        )
-
-        return redirect(url_for("my_portfolio_page"))
-
-    portfolio = build_user_position_health(load_user_portfolio(username))
     return render_template(
-        "my_portfolio.html",
-        **template_context({"portfolio": portfolio}),
+        "analytics_strategy.html",
+        **template_context(
+            {
+                "strategies": strategy_breakdown(),
+                "stats": analytics(),
+                "system": load_json("data/system_status.json", {}),
+                "market": load_json("data/market_snapshot.json", {}),
+            }
+        ),
     )
 
 
-@app.route("/my-portfolio/clear")
-def clear_my_portfolio():
+@app.route("/analytics/risk")
+def analytics_risk_page():
+    maybe_track_page_view("/analytics/risk")
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
-    clear_user_portfolio(session["username"])
-    return redirect(url_for("my_portfolio_page"))
+    if not has_access("full_analytics"):
+        return redirect(url_for("upgrade_page"))
 
-
-@app.route("/closed-trades")
-def closed_trades_page():
     return render_template(
-        "closed_trades.html",
-        **template_context({"closed_trades": load_json("data/closed_positions.json", [])}),
-    )
-
-
-@app.route("/trade-timeline")
-def trade_timeline_page():
-    timeline = load_json("data/trade_timeline.json", [])
-    if not isinstance(timeline, list):
-        timeline = []
-    return render_template(
-        "trade_timeline.html",
-        **template_context({"timeline": timeline}),
-    )
-
-
-@app.route("/bot-log")
-def bot_log_page():
-    bot_log = load_json("data/bot_log.json", [])
-    if not isinstance(bot_log, list):
-        bot_log = []
-    return render_template(
-        "bot_log.html",
-        **template_context({"bot_log": bot_log}),
-    )
-
-
-@app.route("/control")
-def control_page():
-    return render_template(
-        "control.html",
-        **template_context({"bot_status": load_json("data/bot_status.json", {})}),
+        "analytics_risk.html",
+        **template_context(
+            {
+                "proof": performance_summary(),
+                "summary": portfolio_summary(),
+                "system": load_json("data/system_status.json", {}),
+                "drawdown": load_json("data/drawdown_history.json", []),
+            }
+        ),
     )
 
 
@@ -911,7 +836,7 @@ def upgrade_page():
         **template_context(
             {
                 "tiers": tiers,
-                "alacarte_products": alacarte_catalog(),
+                "alacarte_products": [],
             }
         ),
     )
@@ -925,6 +850,7 @@ def upgrade_tier_action(tier):
         page="/upgrade",
         meta={"target_tier": tier},
     )
+
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
 
@@ -939,6 +865,7 @@ def upgrade_tier_action(tier):
 
 @app.route("/billing")
 def billing_page():
+    maybe_track_page_view("/billing")
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
     return render_template(
@@ -947,81 +874,94 @@ def billing_page():
     )
 
 
-@app.route("/billing/mock/<plan>")
-def billing_mock(plan):
+@app.route("/my-portfolio", methods=["GET", "POST"])
+def my_portfolio_page():
+    maybe_track_page_view("/my-portfolio")
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
-    set_billing_status(session["username"], plan, status="active", provider="mock")
-    update_user_tier(session["username"], plan)
-    session["tier"] = plan
-    return redirect(url_for("billing_page"))
 
+    username = session["username"]
 
-@app.route("/billing/stripe/checkout/<plan>")
-def stripe_checkout_page(plan):
-    if not is_logged_in():
-        return redirect(url_for("login_page", next=request.path))
-    payload = start_checkout(session["username"], plan)
+    if request.method == "POST":
+        broker = request.form.get("broker", "IBKR")
+        cash = request.form.get("cash", 0)
+        buying_power = request.form.get("buying_power", 0)
+        notes = request.form.get("notes", "")
+
+        existing = load_user_portfolio(username)
+        positions = existing.get("positions", [])
+
+        save_mock_portfolio_from_form(
+            username=username,
+            broker=broker,
+            cash=cash,
+            buying_power=buying_power,
+            notes=notes,
+            positions=positions,
+        )
+        return redirect(url_for("my_portfolio_page"))
+
+    portfolio = build_user_position_health(load_user_portfolio(username))
     return render_template(
-        "stripe_checkout_placeholder.html",
-        **template_context({"payload": payload}),
+        "my_portfolio.html",
+        **template_context({"portfolio": portfolio}),
     )
 
 
-@app.route("/billing/stripe/portal")
-def stripe_portal_page():
+@app.route("/my-portfolio/clear")
+def clear_my_portfolio():
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
-    payload = open_customer_portal(session["username"])
+    clear_user_portfolio(session["username"])
+    return redirect(url_for("my_portfolio_page"))
+
+
+@app.route("/notifications")
+def notifications_page():
+    maybe_track_page_view("/notifications")
     return render_template(
-        "stripe_portal_placeholder.html",
-        **template_context({"payload": payload}),
+        "notifications.html",
+        **template_context({"notifications": visible_notifications()}),
     )
 
 
-@app.route("/billing/stripe/simulated-success")
-def stripe_simulated_success():
+@app.route("/notification-settings", methods=["GET", "POST"])
+def notification_settings_page():
+    maybe_track_page_view("/notification-settings")
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
 
-    username = request.args.get("user", session["username"])
-    plan = request.args.get("plan", "Starter")
+    username = session["username"]
 
-    simulate_checkout_success(username, plan)
-    update_user_tier(username, plan)
+    if request.method == "POST":
+        settings = {
+            "high_conviction_only": bool(request.form.get("high_conviction_only")),
+            "research_alerts": bool(request.form.get("research_alerts")),
+            "execution_alerts": bool(request.form.get("execution_alerts")),
+            "risk_alerts": bool(request.form.get("risk_alerts")),
+            "system_alerts": bool(request.form.get("system_alerts")),
+            "min_score": int(request.form.get("min_score", 0)),
+            "strategy_filter": request.form.get("strategy_filter", "ALL"),
+            "volatility_filter": request.form.get("volatility_filter", "ALL"),
+        }
+        save_notification_settings(username, settings)
+        return redirect(url_for("notification_settings_page"))
 
-    if username == session["username"]:
-        session["tier"] = plan
-
-    return redirect(url_for("billing_page"))
-
-
-@app.route("/stripe/webhook", methods=["POST"])
-def stripe_webhook_page():
-    payload = request.get_json(silent=True) or {}
-    event_type = payload.get("type")
-    username = payload.get("username")
-    plan = payload.get("plan")
-
-    result = process_webhook_event(event_type, username=username, plan=plan)
-    return jsonify(result)
-
-
-@app.route("/stripe/webhook/test")
-def stripe_webhook_test_page():
-    username = request.args.get("user", session.get("username"))
-    event_type = request.args.get("type", "invoice.paid")
-    plan = request.args.get("plan")
-
-    result = process_webhook_event(event_type, username=username, plan=plan)
     return render_template(
-        "stripe_webhook_result.html",
-        **template_context({"result": result}),
+        "notification_settings.html",
+        **template_context({"settings": get_notification_settings(username)}),
     )
+
+
+@app.route("/notifications/read-all")
+def notifications_read_all():
+    mark_all_read()
+    return redirect(url_for("notifications_page"))
 
 
 @app.route("/account")
 def account_page():
+    maybe_track_page_view("/account")
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
     return render_template(
@@ -1073,200 +1013,6 @@ def account_change_password():
 
     reset_user_password(session["username"], new_password)
     return redirect(url_for("account_page", message="Password updated successfully."))
-
-
-@app.route("/auth-status")
-def auth_status_page():
-    return render_template(
-        "auth_status.html",
-        **template_context({"auth": session_debug_payload()}),
-    )
-
-
-@app.route("/admin")
-def admin_console():
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-    return render_template(
-        "admin.html",
-        **template_context({"users": list_users()}),
-    )
-
-
-@app.route("/admin/audit-log")
-def admin_audit_log_page():
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-    return render_template(
-        "admin_audit_log.html",
-        **template_context({"audit": get_admin_audit_log()}),
-    )
-
-
-@app.route("/admin/session-debug")
-def admin_session_debug_page():
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-    return render_template(
-        "admin_session_debug.html",
-        **template_context({"session_debug": session_debug_payload()}),
-    )
-
-
-@app.route("/admin/preview-tier/<tier>")
-def admin_preview_tier(tier):
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    session["preview_tier"] = tier
-    return redirect(url_for("dashboard_page"))
-
-
-@app.route("/admin/preview-tier/clear")
-def admin_clear_preview_tier():
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    session.pop("preview_tier", None)
-    return redirect(url_for("dashboard_page"))
-
-
-@app.route("/admin/create-user", methods=["POST"])
-def admin_create_user():
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    username = request.form.get("username")
-    password = request.form.get("password")
-    email = request.form.get("email")
-    tier = request.form.get("tier", "Starter")
-    role = request.form.get("role", "member")
-
-    policy = password_policy_check(password)
-    if not policy["ok"]:
-        return redirect(url_for("admin_console"))
-
-    create_user(username=username, password=password, email=email, tier=tier, role=role)
-    log_admin_action(
-        session["username"],
-        "create_user",
-        username,
-        {"tier": tier, "role": role, "email": email},
-    )
-    return redirect(url_for("admin_console"))
-
-
-@app.route("/admin/user/<username>")
-def admin_user_page(username):
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    record = get_user(username)
-    if record is None:
-        return redirect(url_for("admin_console"))
-
-    return render_template(
-        "admin_user.html",
-        **template_context({"record": record}),
-    )
-
-
-@app.route("/admin/user/<username>/tier", methods=["POST"])
-def admin_user_tier(username):
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    new_tier = request.form.get("tier", "Starter")
-    update_user_tier(username, new_tier)
-    admin_set_billing_status(username, plan=new_tier)
-
-    if session.get("username") == username:
-        session["tier"] = new_tier
-
-    log_admin_action(session["username"], "update_tier", username, {"tier": new_tier})
-    return redirect(url_for("admin_user_page", username=username))
-
-
-@app.route("/admin/user/<username>/password", methods=["POST"])
-def admin_user_password(username):
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    new_password = request.form.get("password", "")
-    policy = password_policy_check(new_password)
-    if not policy["ok"]:
-        return redirect(url_for("admin_user_page", username=username))
-
-    reset_user_password(username, new_password)
-    log_admin_action(session["username"], "reset_password", username, {})
-    return redirect(url_for("admin_user_page", username=username))
-
-
-@app.route("/admin/user/<username>/rename", methods=["POST"])
-def admin_user_rename(username):
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    new_username = request.form.get("new_username")
-    ok, _ = rename_user(username, new_username)
-    if ok:
-        log_admin_action(
-            session["username"],
-            "rename_user",
-            username,
-            {"new_username": new_username},
-        )
-        return redirect(url_for("admin_user_page", username=new_username))
-
-    return redirect(url_for("admin_user_page", username=username))
-
-
-@app.route("/admin/user/<username>/billing", methods=["POST"])
-def admin_user_billing(username):
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    status = request.form.get("status")
-    plan = request.form.get("plan")
-    provider = request.form.get("provider")
-
-    admin_set_billing_status(username, status=status, plan=plan, provider=provider)
-    log_admin_action(
-        session["username"],
-        "update_billing",
-        username,
-        {"status": status, "plan": plan, "provider": provider},
-    )
-    return redirect(url_for("admin_user_page", username=username))
-
-
-@app.route("/admin/user/<username>/force-reset", methods=["POST"])
-def admin_user_force_reset(username):
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    required = request.form.get("required", "true").lower() == "true"
-    admin_force_password_reset(username, required=required)
-    log_admin_action(
-        session["username"],
-        "force_password_reset",
-        username,
-        {"required": required},
-    )
-    return redirect(url_for("admin_user_page", username=username))
-
-
-@app.route("/admin/user/<username>/delete", methods=["POST"])
-def admin_user_delete(username):
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    if username == session.get("username"):
-        return redirect(url_for("admin_user_page", username=username))
-
-    delete_user(username)
-    log_admin_action(session["username"], "delete_user", username, {})
-    return redirect(url_for("admin_console"))
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -1342,12 +1088,12 @@ def signup_page():
             username=username,
             password=password,
             email=email,
-            tier="Starter",
+            tier="Free",
             role="member",
         )
 
         if ok:
-            set_billing_status(username, "Starter", status="active", provider="mock")
+            set_billing_status(username, "Free", status="active", provider="mock")
             return redirect(url_for("login_page", info="Account created. Please log in."))
 
         return render_template(
@@ -1367,23 +1113,62 @@ def logout_page():
     return redirect(url_for("landing_page"))
 
 
-@app.route("/runbot", methods=["POST"])
-def runbot_action():
-    status = load_json("data/bot_status.json", {})
-    if not status.get("running"):
-        subprocess.Popen(["python", "-m", "engine.bot"])
-    return redirect(url_for("control_page"))
+@app.route("/admin")
+def admin_console():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+    return render_template(
+        "admin.html",
+        **template_context({"users": list_users()}),
+    )
 
 
-@app.route("/stopbot", methods=["POST"])
-def stopbot_action():
-    subprocess.Popen(["pkill", "-f", "python -m engine.bot"])
-    return redirect(url_for("control_page"))
+@app.route("/admin/product-analytics")
+def admin_product_analytics_page():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    summary = summarize_events(days=30)
+    return render_template(
+        "admin_product_analytics.html",
+        **template_context({"summary": summary}),
+    )
 
 
-@app.route("/refreshstatus", methods=["POST"])
-def refresh_status():
-    return redirect(url_for("control_page"))
+@app.route("/admin/session-debug")
+def admin_session_debug_page():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+    return render_template(
+        "admin_session_debug.html",
+        **template_context({"session_debug": session_debug_payload()}),
+    )
+
+
+@app.route("/admin/audit-log")
+def admin_audit_log_page():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+    return render_template(
+        "admin_audit_log.html",
+        **template_context({"audit": get_admin_audit_log()}),
+    )
+
+
+@app.route("/admin/preview-tier/<tier>")
+def admin_preview_tier(tier):
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+    session["preview_tier"] = tier
+    return redirect(url_for("dashboard_page"))
+
+
+@app.route("/admin/preview-tier/clear")
+def admin_clear_preview_tier():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+    session.pop("preview_tier", None)
+    return redirect(url_for("dashboard_page"))
 
 
 @app.route("/api/signals")
@@ -1393,9 +1178,12 @@ def api_signals():
 
 @app.route("/api/signal-boards")
 def api_signal_boards():
-    limit = signal_history_limit_for_tier()
-    boards = decorated_signal_boards(limit_per_symbol=limit)
-    return jsonify(boards)
+    return jsonify(decorated_signal_boards(limit_per_symbol=signal_history_limit_for_tier()))
+
+
+@app.route("/api/all-symbols")
+def api_all_symbols():
+    return jsonify(all_symbol_rows())
 
 
 @app.route("/api/top-candidates")
@@ -1422,16 +1210,6 @@ def api_activity():
 def api_notifications():
     return jsonify(visible_notifications())
 
-@app.route("/admin/product-analytics")
-def admin_product_analytics_page():
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    summary = summarize_events(days=30)
-    return render_template(
-        "admin_product_analytics.html",
-        **template_context({"summary": summary}),
-    )
 
 @app.route("/debug-tier")
 def debug_tier():

@@ -3,18 +3,34 @@
 
 <div class="card premium-hero section-sparkle">
     <div class="symbol-page-head">
-        <div>
-            <h2 style="margin-bottom:6px;">{{ symbol }}</h2>
-            <p class="symbol-page-company">{{ company.name }}</p>
+        <div class="symbol-page-left">
+            <a href="/signals" class="back-link" aria-label="Back">←</a>
+            <div>
+                <h2 style="margin-bottom:6px;">{{ symbol }}</h2>
+                <p class="symbol-page-company">{{ company.name }}</p>
+            </div>
         </div>
+
         <div class="symbol-page-actions">
-            <a href="/signals" class="cta-btn secondary">Back to Spotlight</a>
+            <a href="/all-symbols" class="cta-btn secondary">All Symbols</a>
+            {% if show_upgrade %}
             <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
+            {% endif %}
         </div>
     </div>
 </div>
 
 <div class="grid">
+    <div class="card gold-accent-card">
+        <h3>Updated Opinion</h3>
+        <div class="passage-frame">
+            <p><b>{{ opinion }}</b></p>
+            {% for line in explanation %}
+            <p>{{ line }}</p>
+            {% endfor %}
+        </div>
+    </div>
+
     <div class="card gold-accent-card">
         <h3>What This Company Does</h3>
         <div class="passage-frame">
@@ -26,12 +42,6 @@
         <h3>Signal Visibility</h3>
         <div class="metric">{{ visible_signal_count }}</div>
         <p class="muted-line">Visible on your current tier.</p>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Total Stored</h3>
-        <div class="metric">{{ total_signal_count }}</div>
-        <p class="muted-line">Stored history for this symbol.</p>
     </div>
 </div>
 

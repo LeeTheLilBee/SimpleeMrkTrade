@@ -11,7 +11,6 @@
 
 <nav class="topnav">
     <div class="nav-left brand-block">
-
         <a href="/" class="brand-link">
             {% if theme == "light" %}
                 <img src="/static/4.png" alt="SimpleeMrkTrade logo" class="brand-logo">
@@ -30,16 +29,21 @@
             </div>
         </div>
 
+        {% if user and user.username %}
         <div class="dropdown">
             <a href="/research" class="dropbtn">Trading</a>
             <div class="dropdown-content">
                 <a href="/research">Research</a>
                 <a href="/analytics-overview">Analytics Overview</a>
                 <a href="/analytics">Analytics</a>
+                <a href="/analytics/performance">Performance</a>
+                <a href="/analytics/strategy">Strategy Behavior</a>
+                <a href="/analytics/risk">Risk Metrics</a>
                 <a href="/premium-analysis">Premium Analysis</a>
                 <a href="/why-this-trade">Why This Trade</a>
             </div>
         </div>
+        {% endif %}
 
         <div class="dropdown">
             <a href="/dashboard" class="dropbtn">Simulation</a>
@@ -75,7 +79,7 @@
                     <a href="/account">Settings</a>
                     <a href="/my-portfolio">My Portfolio</a>
                     <a href="/billing">Billing</a>
-                    {% if user.tier != "Elite" %}
+                    {% if show_upgrade %}
                     <a href="/upgrade">Upgrade</a>
                     {% endif %}
                 </div>
@@ -125,7 +129,6 @@
         <p><b>Open Positions:</b> {{ snapshot.open_positions if snapshot else 0 }}</p>
         <p><b>Buying Power:</b> ${{ snapshot.buying_power if snapshot else 0 }}</p>
         <p><b>Estimated Value:</b> ${{ snapshot.estimated_account_value if snapshot else 0 }}</p>
-
         {% if capital_state %}
         <p class="muted-line">Capital posture</p>
         <div class="fd-health-bar">

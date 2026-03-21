@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card premium-hero section-sparkle">
+    <h2 style="margin-bottom:8px;">All Symbols</h2>
+    <div class="passage-frame">
+        <p>
+            A calmer full-market directory with searchable symbols, opinion summaries,
+            and click-through into deeper symbol pages.
+        </p>
+    </div>
+</div>
+
+<div class="card gold-accent-card search-panel">
+    <h3>Search Symbols</h3>
+    <input type="text" id="allSymbolsSearch" placeholder="Search ticker or company name...">
+</div>
+
+<div class="card">
+    <table class="table all-symbols-table" id="allSymbolsTable">
+        <tr>
+            <th>Symbol</th>
+            <th>Company</th>
+            <th>Score</th>
+            <th>Confidence</th>
+            <th>Opinion</th>
+            <th>Updated</th>
+        </tr>
+        {% for row in rows %}
+        <tr class="all-symbols-row" data-symbol="{{ row.symbol|lower }}" data-company="{{ row.company_name|lower }}">
+            <td><a href="/signals/{{ row.symbol }}"><b>{{ row.symbol }}</b></a></td>
+            <td>{{ row.company_name }}</td>
+            <td>{{ row.latest_score }}</td>
+            <td>{{ row.latest_confidence }}</td>
+            <td>{{ row.opinion }}</td>
+            <td>{{ row.latest_timestamp[:16].replace("T", " ") if row.latest_timestamp else "N/A" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<script>
+const allSymbolsSearch = document.getElementById("allSymbolsSearch");
+allSymbolsSearch.addEventListener("input", () => {
+    const q = (allSymbolsSearch.value || "").toLowerCase().trim();
+    document.querySelectorAll(".all-symbols-row").forEach(row => {
+        const s = row.dataset.symbol || "";
+        const c = row.dataset.company || "";
+        row.style.display = (!q || s.includes(q) || c.includes(q)) ? "" : "none";
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,84 +1,61 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Analytics Overview</h2>
-
 <div class="card premium-hero gold-accent-card section-sparkle">
-    <h3>Analytics Desk</h3>
-    <p class="muted-line">
-        A cleaner view of performance, risk, strategy behavior, and proof structure.
-    </p>
-</div>
-
-<div class="analytics-toolbar card">
-    <div class="analytics-toolbar-row">
-        <input type="text" id="analyticsSearch" placeholder="Search analytics sections...">
-        <select id="analyticsCategory">
-            <option value="all">All Categories</option>
-            <option value="performance">Performance</option>
-            <option value="risk">Risk</option>
-            <option value="strategy">Strategy</option>
-            <option value="proof">Proof</option>
-        </select>
+    <h2>Analytics Overview</h2>
+    <div class="passage-frame">
+        <p>
+            This is the entry point for performance, strategy behavior, and risk.
+            Use the submenu cards below to go deeper into the analytics system.
+        </p>
     </div>
 </div>
 
-<div class="grid" id="analyticsSectionGrid">
-    <div class="card analytics-category" data-category="performance">
+<div class="grid">
+    <a href="/analytics" class="card analytics-nav-card">
+        <h3>Analytics</h3>
+        <div class="passage-frame">
+            <p>Open the full analytics workspace.</p>
+        </div>
+    </a>
+
+    <a href="/analytics/performance" class="card analytics-nav-card">
         <h3>Performance</h3>
         <div class="passage-frame">
-            <p><b>Trades:</b> {{ stats.trades if stats.trades is defined else "N/A" }}</p>
-            <p><b>Win Rate:</b> {{ stats.winrate if stats.winrate is defined else "N/A" }}</p>
-            <p><b>Total PnL:</b> {{ stats.total_pnl if stats.total_pnl is defined else "N/A" }}</p>
+            <p>Look at results, consistency, and account behavior over time.</p>
         </div>
-    </div>
+    </a>
 
-    <div class="card analytics-category" data-category="risk">
-        <h3>Risk</h3>
-        <div class="passage-frame">
-            <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
-            <p><b>Wins:</b> {{ proof.wins }}</p>
-            <p><b>Losses:</b> {{ proof.losses }}</p>
-        </div>
-    </div>
-
-    <div class="card analytics-category" data-category="strategy">
+    <a href="/analytics/strategy" class="card analytics-nav-card">
         <h3>Strategy Behavior</h3>
         <div class="passage-frame">
-            <p>
-                Use the deeper analytics page for more advanced breakdowns by strategy, market posture, and trade style.
-            </p>
+            <p>See how the system behaves under different market conditions and why.</p>
         </div>
-    </div>
+    </a>
 
-    <div class="card analytics-category" data-category="proof">
-        <h3>Proof</h3>
+    <a href="/analytics/risk" class="card analytics-nav-card">
+        <h3>Risk Metrics</h3>
         <div class="passage-frame">
-            <p><b>Tracked Trades:</b> {{ proof.trades }}</p>
-            <p><b>Win Rate:</b> {{ proof.winrate }}</p>
+            <p>Drawdown, capital posture, and defensive behavior all in one place.</p>
         </div>
-    </div>
+    </a>
 </div>
 
-<script>
-const analyticsSearch = document.getElementById("analyticsSearch");
-const analyticsCategory = document.getElementById("analyticsCategory");
+<div class="grid">
+    <div class="card gold-accent-card">
+        <h3>Trades</h3>
+        <div class="metric">{{ stats.trades if stats.trades is defined else "N/A" }}</div>
+    </div>
 
-function filterAnalyticsCards() {
-    const q = (analyticsSearch.value || "").toLowerCase();
-    const cat = analyticsCategory.value;
-    const cards = document.querySelectorAll("#analyticsSectionGrid .analytics-category");
+    <div class="card gold-accent-card">
+        <h3>Win Rate</h3>
+        <div class="metric">{{ proof.winrate }}</div>
+    </div>
 
-    cards.forEach(card => {
-        const text = card.innerText.toLowerCase();
-        const matchesText = text.includes(q);
-        const matchesCat = cat === "all" || card.dataset.category === cat;
-        card.style.display = (matchesText && matchesCat) ? "" : "none";
-    });
-}
-
-analyticsSearch.addEventListener("input", filterAnalyticsCards);
-analyticsCategory.addEventListener("change", filterAnalyticsCards);
-</script>
+    <div class="card gold-accent-card">
+        <h3>Max Drawdown</h3>
+        <div class="metric">{{ proof.max_drawdown }}</div>
+    </div>
+</div>
 
 {% endblock %}

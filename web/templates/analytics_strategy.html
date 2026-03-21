@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card premium-hero gold-accent-card section-sparkle">
+    <h2>Strategy Behavior</h2>
+    <div class="passage-frame">
+        <p>
+            This page explains how the system behaves under changing market regimes,
+            volatility states, and defensive conditions.
+        </p>
+    </div>
+</div>
+
+<div class="analytics-subnav">
+    <a href="/analytics-overview" class="cta-btn secondary">Overview</a>
+    <a href="/analytics" class="cta-btn secondary">Analytics</a>
+    <a href="/analytics/performance" class="cta-btn secondary">Performance</a>
+    <a href="/analytics/risk" class="cta-btn secondary">Risk Metrics</a>
+</div>
+
+<div class="grid">
+    <div class="card gold-accent-card">
+        <h3>Current Market State</h3>
+        <div class="passage-frame">
+            <p><b>Regime:</b> {{ market.regime if market.regime is defined else "N/A" }}</p>
+            <p><b>Mode:</b> {{ market.mode if market.mode is defined else "N/A" }}</p>
+            <p><b>Volatility:</b> {{ market.volatility if market.volatility is defined else "N/A" }}</p>
+        </div>
+    </div>
+
+    <div class="card gold-accent-card">
+        <h3>System State</h3>
+        <div class="passage-frame">
+            <pre>{{ system }}</pre>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Strategy Breakdown</h3>
+    <div class="passage-frame">
+        <pre>{{ strategies }}</pre>
+    </div>
+</div>
+
+{% endblock %}

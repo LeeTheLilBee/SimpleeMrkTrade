@@ -5,123 +5,127 @@
     <h2 style="margin-bottom:8px;">Signal Spotlight</h2>
     <div class="passage-frame">
         <p>
-            The signals page is symbol-first. Click into a symbol to see the deeper view,
-            recent signals, company context, and live news.
+            This page ranks the strongest current symbols first, then opens into a wider watchlist.
+            Click into any symbol for the deeper view.
         </p>
     </div>
 </div>
 
-<div class="card gold-accent-card">
-    <div class="signals-toolbar">
-        <div>
-            <h3 style="margin-bottom:6px;">Search Symbols</h3>
-            <p class="muted-line">Find tickers or company names quickly.</p>
-        </div>
-        <div class="signals-toolbar-controls search-wrap">
-            <input type="text" id="symbolSearch" placeholder="Search by ticker or company name...">
-            <div id="searchDropdown" class="search-dropdown"></div>
-            <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
-        </div>
-    </div>
-</div>
-
-<div class="spotlight-header-row">
-    <h3>Spotlight</h3>
-    <p class="muted-line">Featured symbols with the cleanest current signal view.</p>
-</div>
-
-<div id="symbolCardGrid" class="symbol-card-grid spotlight-grid">
-    {% if signal_boards and signal_boards|length > 0 %}
-        {% for board in signal_boards %}
-        <a href="/signals/{{ board.symbol }}" class="symbol-card-link symbol-search-card"
-           data-symbol="{{ board.symbol|lower }}"
-           data-company="{{ board.company_name|lower }}">
-            <div class="card premium-card symbol-card">
-                <div class="symbol-card-top">
-                    <div>
-                        <h3 class="symbol-card-ticker">{{ board.symbol }}</h3>
-                        <p class="symbol-card-company">{{ board.company_name }}</p>
-                    </div>
-
-                    <div class="symbol-card-badges">
-                        {% if board.latest_score >= 200 %}
-                            <span class="badge-purple">High Conviction</span>
-                        {% elif board.latest_score >= 120 %}
-                            <span class="badge-blue">Premium Edge</span>
-                        {% else %}
-                            <span class="badge-gray">Active</span>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="symbol-card-stats">
-                    <div class="signal-stat-chip">Score {{ board.latest_score }}</div>
-                    <div class="signal-stat-chip">{{ board.latest_confidence }}</div>
-                </div>
-
-                <div class="passage-frame">
-                    <p class="signal-explain">{{ board.explanation[0] }}</p>
-                    <p class="muted-line">Updated {{ board.latest_timestamp[:16].replace("T", " ") }}</p>
-                </div>
-            </div>
-        </a>
-        {% endfor %}
-    {% else %}
-        <div class="card">
-            <p>No symbol boards yet.</p>
-        </div>
+<div class="signals-top-actions">
+    <a href="/all-symbols" class="cta-btn secondary">All Symbols</a>
+    {% if show_upgrade %}
+    <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
     {% endif %}
 </div>
 
-<script>
-const symbolSearch = document.getElementById("symbolSearch");
-const dropdown = document.getElementById("searchDropdown");
+<div class="spotlight-header-row">
+    <div>
+        <h3>Top 5 Ranked Now</h3>
+        <p class="muted-line">Highest-priority symbols right now.</p>
+    </div>
+</div>
 
-function filterSymbolCards() {
-    const query = (symbolSearch.value || "").toLowerCase().trim();
-    const cards = document.querySelectorAll(".symbol-search-card");
+<div class="symbol-card-grid spotlight-grid">
+    {% for board in top_five %}
+    <a href="/signals/{{ board.symbol }}" class="symbol-card-link">
+        <div class="card premium-card symbol-card top-rank-card">
+            <div class="rank-badge">#{{ loop.index }}</div>
 
-    cards.forEach(card => {
-        const symbol = card.dataset.symbol || "";
-        const company = card.dataset.company || "";
-        const visible = !query || symbol.includes(query) || company.includes(query);
-        card.style.display = visible ? "" : "none";
-    });
-}
+            <div class="symbol-card-top">
+                <div>
+                    <h3 class="symbol-card-ticker">{{ board.symbol }}</h3>
+                    <p class="symbol-card-company">{{ board.company_name }}</p>
+                </div>
 
-symbolSearch.addEventListener("input", () => {
-    filterSymbolCards();
-    const query = (symbolSearch.value || "").toLowerCase().trim();
-    dropdown.innerHTML = "";
+                <div class="symbol-card-badges">
+                    {% if board.latest_score >= 200 %}
+                        <span class="badge-purple">High Conviction</span>
+                    {% elif board.latest_score >= 150 %}
+                        <span class="badge-blue">Strong Setup</span>
+                    {% else %}
+                        <span class="badge-gray">Active</span>
+                    {% endif %}
+                </div>
+            </div>
 
-    if (!query) {
-        dropdown.style.display = "none";
-        return;
-    }
+            <div class="symbol-card-stats">
+                <div class="signal-stat-chip">Score {{ board.latest_score }}</div>
+                <div class="signal-stat-chip">{{ board.latest_confidence }}</div>
+            </div>
 
-    let matches = 0;
-    document.querySelectorAll(".symbol-search-card").forEach(card => {
-        const symbol = card.dataset.symbol || "";
-        const company = card.dataset.company || "";
+            <div class="passage-frame">
+                <p><b>Opinion:</b> {{ board.opinion }}</p>
+                <p class="signal-explain">{{ board.explanation[0] }}</p>
+                <p class="muted-line">Updated {{ board.latest_timestamp[:16].replace("T", " ") }}</p>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
 
-        if ((symbol.includes(query) || company.includes(query)) && matches < 8) {
-            const item = document.createElement("div");
-            item.className = "dropdown-item";
-            item.innerText = symbol.toUpperCase() + " — " + company;
-            item.onclick = () => window.location = card.href;
-            dropdown.appendChild(item);
-            matches++;
-        }
-    });
+<div class="spotlight-header-row" style="margin-top: 8px;">
+    <div>
+        <h3>Extended Watchlist</h3>
+        <p class="muted-line">
+            {% if user.tier == "Elite" %}
+            Next 20 symbols for broader market coverage.
+            {% elif user.tier == "Pro" %}
+            Extended watchlist for your current access level.
+            {% elif user.tier == "Starter" %}
+            A smaller extended watchlist is visible on Starter.
+            {% else %}
+            Upgrade to unlock a wider symbol view.
+            {% endif %}
+        </p>
+    </div>
+</div>
 
-    dropdown.style.display = matches > 0 ? "block" : "none";
-});
+{% if next_twenty and next_twenty|length > 0 %}
+<div class="symbol-card-grid extended-grid">
+    {% for board in next_twenty %}
+    <a href="/signals/{{ board.symbol }}" class="symbol-card-link">
+        <div class="card symbol-card compact-symbol-card">
+            <div class="symbol-card-top">
+                <div>
+                    <h3 class="symbol-card-ticker">{{ board.symbol }}</h3>
+                    <p class="symbol-card-company">{{ board.company_name }}</p>
+                </div>
 
-document.addEventListener("click", (e) => {
-    if (!dropdown.contains(e.target) && e.target !== symbolSearch) {
-        dropdown.style.display = "none";
-    }
-});
-</script>
+                <div class="symbol-card-badges">
+                    <span class="signal-stat-chip">{{ board.latest_score }}</span>
+                </div>
+            </div>
+
+            <div class="passage-frame">
+                <p><b>Opinion:</b> {{ board.opinion }}</p>
+                <p class="muted-line">Updated {{ board.latest_timestamp[:16].replace("T", " ") }}</p>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card gold-accent-card">
+    <div class="passage-frame">
+        <p>
+            Your current plan is focused on the strongest headline ideas first.
+            Upgrade to unlock a wider watchlist and deeper symbol coverage.
+        </p>
+    </div>
+</div>
+{% endif %}
+
+{% if hidden_remaining > 0 %}
+<div class="card gold-accent-card all-symbols-cta-card">
+    <h3>See the rest of the market view</h3>
+    <div class="passage-frame">
+        <p>
+            There are {{ hidden_remaining }} more symbols behind the spotlight view.
+            Open the full directory to search everything more calmly.
+        </p>
+    </div>
+    <a href="/all-symbols" class="cta-btn">Open All Symbols</a>
+</div>
+{% endif %}
 
 {% endblock %}

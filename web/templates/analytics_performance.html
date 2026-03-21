@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card premium-hero gold-accent-card section-sparkle">
+    <h2>Performance</h2>
+    <div class="passage-frame">
+        <p>
+            This page focuses on account results, proof metrics, and consistency over time.
+        </p>
+    </div>
+</div>
+
+<div class="analytics-subnav">
+    <a href="/analytics-overview" class="cta-btn secondary">Overview</a>
+    <a href="/analytics" class="cta-btn secondary">Analytics</a>
+    <a href="/analytics/strategy" class="cta-btn secondary">Strategy Behavior</a>
+    <a href="/analytics/risk" class="cta-btn secondary">Risk Metrics</a>
+</div>
+
+<div class="grid">
+    <div class="card gold-accent-card">
+        <h3>Trades</h3>
+        <div class="metric">{{ proof.trades }}</div>
+    </div>
+    <div class="card gold-accent-card">
+        <h3>Win Rate</h3>
+        <div class="metric">{{ proof.winrate }}</div>
+    </div>
+    <div class="card gold-accent-card">
+        <h3>Max Drawdown</h3>
+        <div class="metric">{{ proof.max_drawdown }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Recent Reports</h3>
+    <div class="passage-frame">
+        <pre>{{ reports }}</pre>
+    </div>
+</div>
+
+{% endblock %}

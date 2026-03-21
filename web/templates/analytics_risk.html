@@ -2,54 +2,43 @@
 {% block content %}
 
 <div class="card premium-hero gold-accent-card section-sparkle">
-    <h2>Analytics</h2>
+    <h2>Risk Metrics</h2>
     <div class="passage-frame">
         <p>
-            The full analytics workspace pulls together results, drawdown, strategy behavior,
-            and portfolio state into one view.
+            This page focuses on drawdown, capital posture, and how defensive controls shape behavior.
         </p>
     </div>
 </div>
 
 <div class="analytics-subnav">
     <a href="/analytics-overview" class="cta-btn secondary">Overview</a>
+    <a href="/analytics" class="cta-btn secondary">Analytics</a>
     <a href="/analytics/performance" class="cta-btn secondary">Performance</a>
     <a href="/analytics/strategy" class="cta-btn secondary">Strategy Behavior</a>
-    <a href="/analytics/risk" class="cta-btn secondary">Risk Metrics</a>
 </div>
 
 <div class="grid">
     <div class="card gold-accent-card">
-        <h3>Performance Summary</h3>
+        <h3>Proof Summary</h3>
         <div class="passage-frame">
+            <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
             <p><b>Trades:</b> {{ proof.trades }}</p>
             <p><b>Win Rate:</b> {{ proof.winrate }}</p>
-            <p><b>Wins:</b> {{ proof.wins }}</p>
-            <p><b>Losses:</b> {{ proof.losses }}</p>
         </div>
     </div>
 
     <div class="card gold-accent-card">
-        <h3>Portfolio Summary</h3>
+        <h3>System Controls</h3>
         <div class="passage-frame">
-            <pre>{{ summary }}</pre>
+            <pre>{{ system }}</pre>
         </div>
     </div>
 </div>
 
-<div class="grid">
-    <div class="card">
-        <h3>Unrealized PnL</h3>
-        <div class="passage-frame">
-            <pre>{{ unreal }}</pre>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>Strategy Breakdown</h3>
-        <div class="passage-frame">
-            <pre>{{ strategies }}</pre>
-        </div>
+<div class="card">
+    <h3>Portfolio Summary</h3>
+    <div class="passage-frame">
+        <pre>{{ summary }}</pre>
     </div>
 </div>
 
