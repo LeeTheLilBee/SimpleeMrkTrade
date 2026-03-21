@@ -1,39 +1,100 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="card premium-hero">
+<div class="card premium-hero gold-accent-card">
     <h2>Dashboard</h2>
-    <p class="muted-line">Quick snapshot of system + positions</p>
+    <p class="muted-line">Clean system overview with teaser intelligence that routes into Positions.</p>
+</div>
+
+<div class="dashboard-subnav">
+    <a href="/positions" class="cta-btn secondary">Positions</a>
+    <a href="/live-activity" class="cta-btn secondary">Live Activity</a>
+    <a href="/equity" class="cta-btn secondary">Equity</a>
+    <a href="/reports" class="cta-btn secondary">Reports</a>
+    <a href="/proof" class="cta-btn secondary">Proof</a>
 </div>
 
 <div class="grid">
+    <div class="card gold-accent-card">
+        <h3>Estimated Value</h3>
+        <div class="metric">${{ snapshot.estimated_account_value if snapshot and snapshot.estimated_account_value is defined else 0 }}</div>
+    </div>
 
-    {% for p in positions %}
+    <div class="card gold-accent-card">
+        <h3>Buying Power</h3>
+        <div class="metric">${{ snapshot.buying_power if snapshot and snapshot.buying_power is defined else 0 }}</div>
+    </div>
+
+    <div class="card gold-accent-card">
+        <h3>Open Positions</h3>
+        <div class="metric">{{ snapshot.open_positions if snapshot and snapshot.open_positions is defined else 0 }}</div>
+    </div>
+</div>
+
+<div class="card premium-card">
+    <h3>Position Intelligence Teaser</h3>
+    <div class="passage-frame">
+        <p>
+            The dashboard gives you the clean top-line read. Full warnings, risk context,
+            targets, and deeper health logic live inside Positions.
+        </p>
+    </div>
+</div>
+
+{% if positions is defined and positions %}
+<div class="grid">
+    {% for p in positions[:4] %}
     <div class="card teaser-card">
-
-        <h3>{{ p.symbol }}</h3>
-        <p>PnL: {{ p.pnl }}</p>
-
-        <!-- BLURRED PREMIUM DATA -->
-        <div class="blur-box">
-            <p>Risk: {{ p.risk }}</p>
-            <p>Target: {{ p.target }}</p>
-            <p>Warnings: {{ p.warning }}</p>
+        <div class="section-head-row">
+            <h3 style="margin-bottom:0;">{{ p.symbol }}</h3>
+            <span class="signal-stat-chip">{{ p.status if p.status is defined else "Watching" }}</span>
         </div>
+
+        <p class="muted-line">
+            {% if p.pnl is defined %}PnL: {{ p.pnl }}{% else %}PnL: N/A{% endif %}
+        </p>
 
         <div class="health-bar">
-            <div class="health-fill" style="width: {{ p.health_score }}%"></div>
+            <div class="health-fill" style="width: {{ p.health_score if p.health_score is defined else 50 }}%;"></div>
         </div>
 
-        <p>Status: {{ p.status }}</p>
+        <div class="blur-box">
+            <p><b>Risk:</b> {{ p.risk if p.risk is defined else "Structured risk view available in Positions" }}</p>
+            <p><b>Target:</b> {{ p.target if p.target is defined else "Target details available in Positions" }}</p>
+            <p><b>Warnings:</b> {{ p.warning if p.warning is defined else "Additional warnings available in Positions" }}</p>
+        </div>
 
-        <a href="/positions" class="cta-btn premium-gold-btn">
-            View Full Position
-        </a>
-
+        <a href="/positions" class="cta-btn premium-gold-btn">Open Positions</a>
     </div>
     {% endfor %}
-
 </div>
+{% else %}
+<div class="card">
+    <div class="passage-frame">
+        <p>
+            No dashboard teaser positions are available right now. The system overview is still live,
+            and full position intelligence will appear here once positions are present.
+        </p>
+    </div>
+    <a href="/positions" class="cta-btn secondary">Go to Positions</a>
+</div>
+{% endif %}
+
+{% if proof is defined %}
+<div class="grid">
+    <div class="card gold-accent-card">
+        <h3>Trades</h3>
+        <div class="metric">{{ proof.trades if proof.trades is defined else "N/A" }}</div>
+    </div>
+    <div class="card gold-accent-card">
+        <h3>Win Rate</h3>
+        <div class="metric">{{ proof.winrate if proof.winrate is defined else "N/A" }}</div>
+    </div>
+    <div class="card gold-accent-card">
+        <h3>Max Drawdown</h3>
+        <div class="metric">{{ proof.max_drawdown if proof.max_drawdown is defined else "N/A" }}</div>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}

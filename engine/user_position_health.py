@@ -1,46 +1,55 @@
 """
 ===========================================================
-ENGINE CORE
-POSITION HEALTH ENGINE (V2 - STRONGER)
+ENGINE
+USER POSITION HEALTH
+-----------------------------------------------------------
+Stronger and more discriminating position health scoring.
 ===========================================================
 """
 
 def build_user_position_health(portfolio):
-
     positions = portfolio.get("positions", [])
     enriched = []
 
     for p in positions:
-        entry = float(p.get("entry", 0))
-        current = float(p.get("current_price", entry))
-        stop = float(p.get("stop", entry * 0.95))
-        size = float(p.get("size", 1))
+        entry = float(p.get("entry", 0) or 0)
+        current = float(p.get("current_price", entry) or entry)
+        stop = float(p.get("stop", entry * 0.95) or (entry * 0.95))
+        size = float(p.get("size", 1) or 1)
 
-        pnl = (current - entry) * size
+        pnl = (current - entry) * size if entry else 0
 
-        # --- Distance to stop ---
-        stop_distance = abs(current - stop) / max(abs(entry - stop), 1e-6)
+        if entry != stop:
+            stop_distance_ratio = abs((current - stop) / (entry - stop))
+        else:
+            stop_distance_ratio = 1
 
-        health = 100
+        health_score = 100
 
         if pnl < 0:
-            health -= 25
+            health_score -= 22
 
-        if stop_distance < 0.5:
-            health -= 35
-        elif stop_distance < 1:
-            health -= 15
+        if stop_distance_ratio < 0.35:
+            health_score -= 35
+        elif stop_distance_ratio < 0.75:
+            health_score -= 18
 
-        if abs(current - entry) < entry * 0.01:
-            health -= 10
+        if entry > 0 and abs(current - entry) < (entry * 0.008):
+            health_score -= 8
 
-        health = max(0, min(100, health))
+        if p.get("warning"):
+            health_score -= 10
 
-        if health > 75:
+        if p.get("risk") in ["high", "HIGH", "elevated", "ELEVATED"]:
+            health_score -= 12
+
+        health_score = max(0, min(100, int(round(health_score))))
+
+        if health_score >= 80:
             status = "Strong"
-        elif health > 50:
+        elif health_score >= 60:
             status = "Healthy"
-        elif health > 30:
+        elif health_score >= 40:
             status = "At Risk"
         else:
             status = "Weak"
@@ -48,8 +57,8 @@ def build_user_position_health(portfolio):
         enriched.append({
             **p,
             "pnl": round(pnl, 2),
-            "health_score": health,
-            "status": status
+            "health_score": health_score,
+            "status": status,
         })
 
     portfolio["positions"] = enriched

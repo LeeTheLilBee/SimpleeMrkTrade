@@ -1,28 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="card premium-hero">
+<div class="card premium-hero gold-accent-card section-sparkle">
     <h2>Research Overview</h2>
-    <p>Explore the system intelligence</p>
+    <div class="passage-frame">
+        <p>
+            This is the doorway into the platform’s deeper intelligence layers.
+        </p>
+    </div>
 </div>
 
 <div class="grid">
-
-    <a href="/signals" class="card">
+    <a href="/signals" class="card research-nav-card">
         <h3>Signals</h3>
-        <p>Live ranked opportunities</p>
+        <div class="passage-frame">
+            <p>Live ranked opportunities designed for clean scanning and deeper click-through.</p>
+        </div>
     </a>
 
-    <a href="/why-this-trade" class="card">
+    <a href="/why-this-trade" class="card research-nav-card">
         <h3>Why This Trade</h3>
-        <p>Deep breakdown of trades</p>
+        <div class="passage-frame">
+            <p>Structured trade breakdowns that explain signal alignment, context, risk, and interpretation.</p>
+        </div>
     </a>
 
-    <a href="/premium-analysis" class="card">
+    <a href="/premium-analysis" class="card research-nav-card">
         <h3>Premium Analysis</h3>
-        <p>System-wide intelligence</p>
+        <div class="passage-frame">
+            <p>Feed-style macro and system interpretation for users who want the broader market read.</p>
+        </div>
     </a>
 
+    <a href="/analytics-overview" class="card research-nav-card">
+        <h3>Analytics Overview</h3>
+        <div class="passage-frame">
+            <p>Performance, strategy behavior, and risk metrics organized into a cleaner analytics system.</p>
+        </div>
+    </a>
 </div>
 
 {% endblock %}

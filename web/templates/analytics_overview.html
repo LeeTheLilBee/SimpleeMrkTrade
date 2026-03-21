@@ -1,60 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
 
+<a href="/research" class="back-link" aria-label="Back">←</a>
+
 <div class="card premium-hero gold-accent-card section-sparkle">
     <h2>Analytics Overview</h2>
     <div class="passage-frame">
         <p>
-            This is the entry point for performance, strategy behavior, and risk.
-            Use the submenu cards below to go deeper into the analytics system.
+            Use this page as the clean entry point into Analytics, Performance, Strategy Behavior, and Risk Metrics.
         </p>
     </div>
 </div>
 
-<div class="grid">
-    <a href="/analytics" class="card analytics-nav-card">
-        <h3>Analytics</h3>
-        <div class="passage-frame">
-            <p>Open the full analytics workspace.</p>
-        </div>
-    </a>
-
-    <a href="/analytics/performance" class="card analytics-nav-card">
-        <h3>Performance</h3>
-        <div class="passage-frame">
-            <p>Look at results, consistency, and account behavior over time.</p>
-        </div>
-    </a>
-
-    <a href="/analytics/strategy" class="card analytics-nav-card">
-        <h3>Strategy Behavior</h3>
-        <div class="passage-frame">
-            <p>See how the system behaves under different market conditions and why.</p>
-        </div>
-    </a>
-
-    <a href="/analytics/risk" class="card analytics-nav-card">
-        <h3>Risk Metrics</h3>
-        <div class="passage-frame">
-            <p>Drawdown, capital posture, and defensive behavior all in one place.</p>
-        </div>
-    </a>
+<div class="analytics-subnav">
+    <a href="/analytics" class="cta-btn secondary">Analytics</a>
+    <a href="/analytics/performance" class="cta-btn secondary">Performance</a>
+    <a href="/analytics/strategy" class="cta-btn secondary">Strategy Behavior</a>
+    <a href="/analytics/risk" class="cta-btn secondary">Risk Metrics</a>
 </div>
 
 <div class="grid">
     <div class="card gold-accent-card">
         <h3>Trades</h3>
-        <div class="metric">{{ stats.trades if stats.trades is defined else "N/A" }}</div>
+        <div class="metric">{{ stats.trades if stats is defined and stats.trades is defined else "N/A" }}</div>
     </div>
 
     <div class="card gold-accent-card">
         <h3>Win Rate</h3>
-        <div class="metric">{{ proof.winrate }}</div>
+        <div class="metric">{{ proof.winrate if proof is defined and proof.winrate is defined else "N/A" }}</div>
     </div>
 
     <div class="card gold-accent-card">
         <h3>Max Drawdown</h3>
-        <div class="metric">{{ proof.max_drawdown }}</div>
+        <div class="metric">{{ proof.max_drawdown if proof is defined and proof.max_drawdown is defined else "N/A" }}</div>
     </div>
 </div>
 
