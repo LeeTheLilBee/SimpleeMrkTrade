@@ -78,5 +78,101 @@
     "page": "/why-this-trade",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:27:13.739777",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:27:13.838452",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/upgrade",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:27:23.865422",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/premium-analysis",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:27:28.738704",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/premium-analysis",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:27:43.203502",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:27:56.670679",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/why-this-trade",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:28:41.180673",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:29:10.813839",
+    "event_type": "symbol_view",
+    "username": "admin",
+    "page": "/signals/MU",
+    "symbol": "MU",
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:29:18.011833",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:29:21.430037",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:29:29.118273",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:30:10.559115",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
   }
 ]
