@@ -1,21 +1,29 @@
-def explain_signal(trade):
-    explanations = []
 
-    score = trade.get("score", 0)
+def explain_signal(score, confidence, trend=None, volatility=None, regime=None):
+    explanation = []
 
+    # Score meaning
     if score >= 200:
-        explanations.append("Extremely high conviction setup")
+        explanation.append("Extremely strong setup with multiple aligned factors.")
     elif score >= 150:
-        explanations.append("Strong alignment across multiple factors")
+        explanation.append("Strong setup with multiple confirmations.")
     elif score >= 100:
-        explanations.append("Moderate quality setup with supportive structure")
+        explanation.append("Developing setup with partial alignment.")
+    else:
+        explanation.append("Weak or early-stage setup.")
 
-    if trade.get("confidence") == "HIGH":
-        explanations.append("High confidence signal confirmation")
+    # Confidence meaning
+    if confidence == "HIGH":
+        explanation.append("High conviction based on strong confirmation signals.")
+    elif confidence == "MEDIUM":
+        explanation.append("Moderate conviction; setup is valid but not fully confirmed.")
+    else:
+        explanation.append("Low conviction; requires caution.")
 
-    if trade.get("strategy") == "CALL":
-        explanations.append("Bullish directional bias")
-    elif trade.get("strategy") == "PUT":
-        explanations.append("Bearish directional bias")
+    # Context
+    if volatility == "ELEVATED":
+        explanation.append("Volatility is elevated — expect faster moves and risk.")
+    if regime:
+        explanation.append(f"Market regime: {regime.replace('_', ' ').title()}.")
 
-    return explanations
+    return explanation

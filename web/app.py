@@ -55,6 +55,9 @@ from engine.user_portfolio_store import (
 )
 from engine.user_position_health import build_user_position_health
 from engine.signal_feed import grouped_signals, load_signals
+from engine.symbol_metadata import get_symbol_meta
+from engine.symbol_news import get_symbol_news
+from engine.signal_explainer import explain_signal
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "change_this_secret_key_later_to_something_long_random"
@@ -123,7 +126,6 @@ def premium_depth():
 def signal_history_limit_for_tier():
     if is_master() and not session.get("preview_tier"):
         return 100
-
     limits = {
         "guest": 2,
         "free": 3,
@@ -137,7 +139,6 @@ def signal_history_limit_for_tier():
 def premium_visible_count():
     if is_master() and not session.get("preview_tier"):
         return 999
-
     counts = {
         "starter": 1,
         "pro": 4,
@@ -149,7 +150,6 @@ def premium_visible_count():
 def why_visible_count():
     if is_master() and not session.get("preview_tier"):
         return 999
-
     counts = {
         "starter": 1,
         "pro": 4,
@@ -234,7 +234,7 @@ def alacarte_catalog():
     return [
         {
             "name": "Signals Pro",
-            "description": "Expanded symbol boards and deeper signal history without full membership.",
+            "description": "Expanded symbol pages and deeper signal history without full membership.",
             "price_label": "$19/mo",
         },
         {
@@ -266,6 +266,22 @@ def template_context(extra=None):
     if extra:
         base.update(extra)
     return base
+
+
+def decorated_signal_boards(limit_per_symbol=None):
+    boards = grouped_signals(limit_per_symbol=limit_per_symbol)
+    for board in boards:
+        meta = get_symbol_meta(board["symbol"])
+        board["company_name"] = meta["name"]
+        board["company_blurb"] = meta["blurb"]
+        board["visible_count"] = len(board.get("signals", []))
+        board["explanation"] = explain_signal(
+            board.get("latest_score", 0),
+            board.get("latest_confidence", "LOW"),
+            regime=board.get("regime"),
+            volatility=board.get("volatility")
+      )
+    return boards
 
 
 @app.context_processor
@@ -464,7 +480,7 @@ def dashboard_page():
                 "equity_values": equity_values,
                 "equity_labels": equity_labels,
                 "signals": load_signals(),
-                "signal_boards": grouped_signals(limit_per_symbol=3),
+                "signal_boards": decorated_signal_boards(limit_per_symbol=3),
             }
         ),
     )
@@ -595,20 +611,44 @@ def signals_page():
         return redirect(url_for("upgrade_page"))
 
     limit = signal_history_limit_for_tier()
-    boards = grouped_signals(limit_per_symbol=limit)
-
-    for b in boards:
-        b["visible_count"] = len(b.get("signals", []))
+    boards = decorated_signal_boards(limit_per_symbol=limit)
 
     return render_template(
         "signals.html",
         **template_context(
             {
-                "signals": load_signals(),
-                "research_signals": load_json("data/research_signals.json", []),
                 "signal_boards": boards,
                 "signal_history_limit": limit,
-                "teaser_upgrade": current_tier_lower() != "elite",
+            }
+        ),
+    )
+
+
+@app.route("/signals/<symbol>")
+def signal_symbol_page(symbol):
+    if not has_access("signals"):
+        return redirect(url_for("upgrade_page"))
+
+    symbol = (symbol or "").upper()
+    limit = signal_history_limit_for_tier()
+    all_signals = [s for s in load_signals() if (s.get("symbol") or "").upper() == symbol]
+    all_signals = sorted(all_signals, key=lambda x: x.get("timestamp", ""), reverse=True)
+
+    visible_signals = all_signals[:limit]
+    company = get_symbol_meta(symbol)
+    news_items = get_symbol_news(symbol, limit=8)
+
+    return render_template(
+        "signal_symbol.html",
+        **template_context(
+            {
+                "symbol": symbol,
+                "company": company,
+                "symbol_signals": visible_signals,
+                "visible_signal_count": len(visible_signals),
+                "total_signal_count": len(all_signals),
+                "show_teaser": len(all_signals) > len(visible_signals),
+                "news_items": news_items,
             }
         ),
     )
@@ -1324,9 +1364,7 @@ def api_signals():
 @app.route("/api/signal-boards")
 def api_signal_boards():
     limit = signal_history_limit_for_tier()
-    boards = grouped_signals(limit_per_symbol=limit)
-    for b in boards:
-        b["visible_count"] = len(b.get("signals", []))
+    boards = decorated_signal_boards(limit_per_symbol=limit)
     return jsonify(boards)
 
 

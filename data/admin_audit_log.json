@@ -49,5 +49,23 @@
       "plan": "Pro",
       "provider": "mock"
     }
+  },
+  {
+    "timestamp": "2026-03-20T22:47:27.242295",
+    "actor": "admin",
+    "action": "update_tier",
+    "target": "admin",
+    "details": {
+      "tier": "Elite"
+    }
+  },
+  {
+    "timestamp": "2026-03-20T22:47:34.885581",
+    "actor": "admin",
+    "action": "update_tier",
+    "target": "admin",
+    "details": {
+      "tier": "Pro"
+    }
   }
 ]

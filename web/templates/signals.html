@@ -81,8 +81,20 @@
                 </div>
 
                 <div class="passage-frame">
-                    <p><b>Latest Strategy:</b> {{ board.latest_strategy }}</p>
-                    <p><b>Last Update:</b> {{ board.latest_timestamp }}</p>
+                    <div class="passage-frame">
+                        <p><b>Score:</b> {{ board.latest_score }}</p>
+                        <p><b>Confidence:</b> {{ board.latest_confidence }}</p>
+
+                        <p class="signal-explain">
+                            {{ board.explanation[0] }}
+                        </p>
+
+                        <p class="muted-line">
+                            Updated 
+                    {{ board.latest_timestamp[:16].replace("T", " 
+                    ") }}
+                        </p>
+                    </div>
                 </div>
             </div>
         </a>
@@ -110,6 +122,25 @@ function filterSymbolCards() {
 }
 
 symbolSearch.addEventListener("input", filterSymbolCards);
+const dropdown = document.getElementById("searchDropdown");
+
+symbolSearch.addEventListener("input", () => {
+    const query = symbolSearch.value.toLowerCase();
+    dropdown.innerHTML = "";
+
+    document.querySelectorAll(".symbol-search-card").forEach(card => {
+        const symbol = card.dataset.symbol;
+        const company = card.dataset.company;
+
+        if (symbol.includes(query) || company.includes(query)) {
+            const item = document.createElement("div");
+            item.className = "dropdown-item";
+            item.innerText = symbol.toUpperCase() + " — " + company;
+            item.onclick = () => window.location = card.href;
+            dropdown.appendChild(item);
+        }
+    });
+});
 </script>
 
 {% endblock %}

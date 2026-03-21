@@ -660,6 +660,69 @@ pre {
     white-space: pre-wrap;
 }
 
+/* FLOATING DASHBOARD */
+.floating-dashboard {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 260px;
+    background: rgba(15,23,42,0.95);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 16px;
+    z-index: 9999;
+    transition: all 0.3s ease;
+}
+
+.floating-dashboard.collapsed .fd-body {
+    display: none;
+}
+
+.fd-header {
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.fd-body {
+    padding: 12px;
+}
+
+.fd-health-bar {
+    height: 6px;
+    background: rgba(148,163,184,0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.fd-health-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #84cc16);
+}
+
+/* SEARCH DROPDOWN */
+.search-dropdown {
+    position: absolute;
+    background: #111827;
+    border: 1px solid #374151;
+    width: 300px;
+    z-index: 10000;
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background: #1f2937;
+}
+
+/* SIGNAL EXPLANATION */
+.signal-explain {
+    font-size: 13px;
+    color: #cbd5f5;
+}
+
 @media (max-width: 900px) {
     .topnav {
         align-items: flex-start;
