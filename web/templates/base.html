@@ -12,12 +12,11 @@
 <nav class="topnav">
     <div class="nav-left brand-block">
 
-        <!-- SMALL LOGO -->
         <a href="/" class="brand-link">
             {% if theme == "light" %}
-                <img src="/static/2.png" class="brand-logo">
+                <img src="/static/4.png" alt="SimpleeMrkTrade logo" class="brand-logo">
             {% else %}
-                <img src="/static/1.png" class="brand-logo">
+                <img src="/static/3.png" alt="SimpleeMrkTrade logo" class="brand-logo">
             {% endif %}
         </a>
 
@@ -35,6 +34,7 @@
             <a href="/research" class="dropbtn">Trading</a>
             <div class="dropdown-content">
                 <a href="/research">Research</a>
+                <a href="/analytics-overview">Analytics Overview</a>
                 <a href="/analytics">Analytics</a>
                 <a href="/premium-analysis">Premium Analysis</a>
                 <a href="/why-this-trade">Why This Trade</a>
@@ -54,10 +54,20 @@
             </div>
         </div>
 
+        {% if user and user.role == "master" %}
+        <div class="dropdown">
+            <a href="/admin" class="dropbtn">Admin</a>
+            <div class="dropdown-content">
+                <a href="/admin">Admin Console</a>
+                <a href="/admin/product-analytics">Product Analytics</a>
+                <a href="/admin/session-debug">Session Debug</a>
+                <a href="/admin/audit-log">Audit Log</a>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <div class="nav-right">
-
         {% if user and user.username %}
             <div class="dropdown">
                 <a href="/account" class="dropbtn">Account</a>
@@ -65,7 +75,6 @@
                     <a href="/account">Settings</a>
                     <a href="/my-portfolio">My Portfolio</a>
                     <a href="/billing">Billing</a>
-
                     {% if user.tier != "Elite" %}
                     <a href="/upgrade">Upgrade</a>
                     {% endif %}
@@ -74,38 +83,79 @@
 
             <span class="user-badge">
                 {{ user.username }} | {{ user.tier }}
+                {% if user.preview_tier %}
+                | Preview: {{ user.preview_tier }}
+                {% endif %}
             </span>
 
             <a href="/logout">Logout</a>
-
         {% else %}
             <a href="/login">Login</a>
             <a href="/signup" class="signup-btn">Sign Up</a>
         {% endif %}
-
     </div>
 </nav>
+
+{% if user and user.role == "master" %}
+<div class="admin-preview-bar">
+    <div class="admin-preview-left">
+        <span class="admin-preview-label">Admin Mode</span>
+        <a href="/admin/preview-tier/clear" class="preview-chip {% if not user.preview_tier %}active{% endif %}">Real</a>
+        <a href="/admin/preview-tier/Guest" class="preview-chip {% if user.preview_tier == 'Guest' %}active{% endif %}">Guest</a>
+        <a href="/admin/preview-tier/Free" class="preview-chip {% if user.preview_tier == 'Free' %}active{% endif %}">Free</a>
+        <a href="/admin/preview-tier/Starter" class="preview-chip {% if user.preview_tier == 'Starter' %}active{% endif %}">Starter</a>
+        <a href="/admin/preview-tier/Pro" class="preview-chip {% if user.preview_tier == 'Pro' %}active{% endif %}">Pro</a>
+        <a href="/admin/preview-tier/Elite" class="preview-chip {% if user.preview_tier == 'Elite' %}active{% endif %}">Elite</a>
+    </div>
+</div>
+{% endif %}
 
 <div class="container">
     {% block content %}{% endblock %}
 </div>
 
-<footer class="site-footer">
+{% if user and user.username %}
+<div id="floatingDashboard" class="floating-dashboard collapsed">
+    <div class="fd-header" onclick="toggleFD()">
+        <span>My Account</span>
+        <span class="fd-tier">{{ user.tier }}</span>
+    </div>
 
-    <!-- BIG LOGO -->
+    <div class="fd-body">
+        <p><b>Open Positions:</b> {{ snapshot.open_positions if snapshot else 0 }}</p>
+        <p><b>Buying Power:</b> ${{ snapshot.buying_power if snapshot else 0 }}</p>
+        <p><b>Estimated Value:</b> ${{ snapshot.estimated_account_value if snapshot else 0 }}</p>
+
+        {% if capital_state %}
+        <p class="muted-line">Capital posture</p>
+        <div class="fd-health-bar">
+            <div class="fd-health-fill" style="width: {{ capital_state.unused_capital_pct if capital_state.unused_capital_pct is defined else 50 }}%;"></div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<footer class="site-footer">
     <div class="footer-logo-wrap">
         {% if theme == "light" %}
-            <img src="/static/4.png" class="footer-logo">
+            <img src="/static/2.png" alt="SimpleeMrkTrade full logo" class="footer-logo">
         {% else %}
-            <img src="/static/3.png" class="footer-logo">
+            <img src="/static/1.png" alt="SimpleeMrkTrade full logo" class="footer-logo">
         {% endif %}
     </div>
 
     <p class="footer-tagline">
         Structured market intelligence, simulation, and premium trade interpretation.
     </p>
-
 </footer>
+
+<script>
+function toggleFD() {
+    const el = document.getElementById("floatingDashboard");
+    if (el) el.classList.toggle("collapsed");
+}
+</script>
 
 </body>
 </html>
