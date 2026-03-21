@@ -174,5 +174,173 @@
     "page": "/dashboard",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:33:11.028512",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:33:11.153291",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/upgrade",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:35:14.279641",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:37:12.216503",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/premium-analysis",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:37:17.489071",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/premium-analysis",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:37:52.834555",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:37:59.764000",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:38:00.878709",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:38:05.778926",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:38:08.934147",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:39:07.857511",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/premium-analysis",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:39:17.063768",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:39:19.349283",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:39:22.599507",
+    "event_type": "symbol_view",
+    "username": "admin",
+    "page": "/signals/NFLX",
+    "symbol": "NFLX",
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:40:41.147847",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:40:41.686436",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/upgrade",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:41:28.960067",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:42:18.419951",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:43:38.245644",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T03:45:27.001203",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/why-this-trade",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T04:02:53.706832",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
   }
 ]
