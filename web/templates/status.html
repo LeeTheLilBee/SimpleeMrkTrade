@@ -6,26 +6,20 @@
 <div class="grid">
     <div class="card premium-card gold-accent-card">
         <h3>System View</h3>
-        <p><b>Regime:</b> {{ system.regime }}</p>
-        <p><b>Volatility:</b> {{ system.volatility }}</p>
-        <p><b>Mode:</b> {{ system.mode }}</p>
+        <div class="passage-frame">
+            <p><b>Regime:</b> {{ system.regime }}</p>
+            <p><b>Volatility:</b> {{ system.volatility }}</p>
+            <p><b>Mode:</b> {{ system.mode }}</p>
+        </div>
     </div>
 
     <div class="card premium-card gold-accent-card">
         <h3>Market Snapshot</h3>
-        <p><b>Regime:</b> {{ market.regime or "Awaiting fresh bot run" }}</p>
-        <p><b>Volatility:</b> {{ market.volatility or "Awaiting fresh bot run" }}</p>
-        <p><b>Mode:</b> {{ market.mode or "Awaiting fresh bot run" }}</p>
-    </div>
-</div>
-
-<div class="card">
-    <h3>Interpretation</h3>
-    <div class="passage-frame">
-        <p>
-            This page shows the most recent system state written by the bot. If the values look stale,
-            the next bot cycle should refresh them. Placeholder startup values are now cleaned up before display.
-        </p>
+        <div class="passage-frame">
+            <p><b>Regime:</b> {{ market.regime or "Awaiting fresh bot run" }}</p>
+            <p><b>Volatility:</b> {{ market.volatility or "Awaiting fresh bot run" }}</p>
+            <p><b>Mode:</b> {{ market.mode or "Awaiting fresh bot run" }}</p>
+        </div>
     </div>
 </div>
 

@@ -1,14 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Signals</h2>
-
 <div class="card premium-hero section-sparkle">
-    <h3>Symbol Intelligence</h3>
+    <h2 style="margin-bottom:8px;">Signal Spotlight</h2>
     <div class="passage-frame">
         <p>
-            This page is now symbol-first. Instead of flooding the screen with every signal event,
-            the platform shows organized symbol cards. Click a symbol to go deeper.
+            The signals page is symbol-first. Click into a symbol to see the deeper view,
+            recent signals, company context, and live news.
         </p>
     </div>
 </div>
@@ -17,40 +15,22 @@
     <div class="signals-toolbar">
         <div>
             <h3 style="margin-bottom:6px;">Search Symbols</h3>
-            <p class="muted-line">Find tickers quickly as the watch universe expands.</p>
+            <p class="muted-line">Find tickers or company names quickly.</p>
         </div>
-        <div class="signals-toolbar-controls">
+        <div class="signals-toolbar-controls search-wrap">
             <input type="text" id="symbolSearch" placeholder="Search by ticker or company name...">
+            <div id="searchDropdown" class="search-dropdown"></div>
             <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
         </div>
     </div>
 </div>
 
-<div class="grid">
-    <div class="card">
-        <h3>Your Tier</h3>
-        <div class="metric">{{ user.tier }}</div>
-        <p class="muted-line">Signal depth and symbol history are controlled by membership tier.</p>
-    </div>
-
-    <div class="card">
-        <h3>Visible Symbol History</h3>
-        <div class="metric">{{ signal_history_limit }}</div>
-        <p class="muted-line">Per-symbol visible entries on detail pages.</p>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Structure</h3>
-        <div class="passage-frame">
-            <p>
-                Spotlight the symbol, then let the user click in for deeper signal history,
-                company context, and live news.
-            </p>
-        </div>
-    </div>
+<div class="spotlight-header-row">
+    <h3>Spotlight</h3>
+    <p class="muted-line">Featured symbols with the cleanest current signal view.</p>
 </div>
 
-<div id="symbolCardGrid" class="symbol-card-grid">
+<div id="symbolCardGrid" class="symbol-card-grid spotlight-grid">
     {% if signal_boards and signal_boards|length > 0 %}
         {% for board in signal_boards %}
         <a href="/signals/{{ board.symbol }}" class="symbol-card-link symbol-search-card"
@@ -77,24 +57,11 @@
                 <div class="symbol-card-stats">
                     <div class="signal-stat-chip">Score {{ board.latest_score }}</div>
                     <div class="signal-stat-chip">{{ board.latest_confidence }}</div>
-                    <div class="signal-stat-chip">{{ board.signal_count }} Stored</div>
                 </div>
 
                 <div class="passage-frame">
-                    <div class="passage-frame">
-                        <p><b>Score:</b> {{ board.latest_score }}</p>
-                        <p><b>Confidence:</b> {{ board.latest_confidence }}</p>
-
-                        <p class="signal-explain">
-                            {{ board.explanation[0] }}
-                        </p>
-
-                        <p class="muted-line">
-                            Updated 
-                    {{ board.latest_timestamp[:16].replace("T", " 
-                    ") }}
-                        </p>
-                    </div>
+                    <p class="signal-explain">{{ board.explanation[0] }}</p>
+                    <p class="muted-line">Updated {{ board.latest_timestamp[:16].replace("T", " ") }}</p>
                 </div>
             </div>
         </a>
@@ -108,6 +75,7 @@
 
 <script>
 const symbolSearch = document.getElementById("symbolSearch");
+const dropdown = document.getElementById("searchDropdown");
 
 function filterSymbolCards() {
     const query = (symbolSearch.value || "").toLowerCase().trim();
@@ -121,25 +89,38 @@ function filterSymbolCards() {
     });
 }
 
-symbolSearch.addEventListener("input", filterSymbolCards);
-const dropdown = document.getElementById("searchDropdown");
-
 symbolSearch.addEventListener("input", () => {
-    const query = symbolSearch.value.toLowerCase();
+    filterSymbolCards();
+    const query = (symbolSearch.value || "").toLowerCase().trim();
     dropdown.innerHTML = "";
 
-    document.querySelectorAll(".symbol-search-card").forEach(card => {
-        const symbol = card.dataset.symbol;
-        const company = card.dataset.company;
+    if (!query) {
+        dropdown.style.display = "none";
+        return;
+    }
 
-        if (symbol.includes(query) || company.includes(query)) {
+    let matches = 0;
+    document.querySelectorAll(".symbol-search-card").forEach(card => {
+        const symbol = card.dataset.symbol || "";
+        const company = card.dataset.company || "";
+
+        if ((symbol.includes(query) || company.includes(query)) && matches < 8) {
             const item = document.createElement("div");
             item.className = "dropdown-item";
             item.innerText = symbol.toUpperCase() + " — " + company;
             item.onclick = () => window.location = card.href;
             dropdown.appendChild(item);
+            matches++;
         }
     });
+
+    dropdown.style.display = matches > 0 ? "block" : "none";
+});
+
+document.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target) && e.target !== symbolSearch) {
+        dropdown.style.display = "none";
+    }
 });
 </script>
 

@@ -9,8 +9,7 @@
     <div class="premium-hub-copy">
         <h2 style="margin:0;">Premium Hub</h2>
         <p class="muted-line">
-            This is the intelligence desk of the platform — where research, execution framing,
-            trade storytelling, and portfolio monitoring come together.
+            Premium exists to explain what ordinary signal feeds leave vague.
         </p>
     </div>
 </div>
@@ -20,101 +19,20 @@
         <h3>Why Premium Exists</h3>
         <div class="passage-frame">
             <p>
-                Premium is not just extra pages. It is deeper context, stronger interpretation,
-                richer trade logic, and a more advanced understanding of what matters now.
+                Premium adds context, explanation, historical depth, and trade interpretation.
+                It is designed to show why something matters, not just that it exists.
             </p>
         </div>
     </div>
 
     <div class="card premium-card gold-accent-card">
         <h3>Your Current Access</h3>
-        <p><b>User:</b> {{ user.username }}</p>
-        <p><b>Tier:</b> {{ user.tier }}</p>
-        {% if user.preview_tier %}
-        <p><b>Admin Preview:</b> {{ user.preview_tier }}</p>
-        {% endif %}
-        <p><b>Premium Depth:</b> {{ tier_config.premium_depth if tier_config.premium_depth is defined else "standard" }}</p>
+        <div class="passage-frame">
+            <p><b>User:</b> {{ user.username }}</p>
+            <p><b>Tier:</b> {{ user.tier }}</p>
+            <p><b>Premium Depth:</b> {{ tier_config.premium_depth if tier_config.premium_depth is defined else "standard" }}</p>
+        </div>
         <p><a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade Membership</a></p>
-    </div>
-</div>
-
-<div class="grid">
-    <div class="card">
-        <h3>Premium Analysis</h3>
-        <div class="passage-frame">
-            <p>
-                Research-grade trade breakdowns with environment context, signal quality,
-                and premium reasoning.
-            </p>
-        </div>
-        <p><a href="/premium-analysis" class="cta-btn">Open Premium Analysis</a></p>
-    </div>
-
-    <div class="card">
-        <h3>Why This Trade</h3>
-        <div class="passage-frame">
-            <p>
-                See why a setup mattered, what made it interesting,
-                and what risk conditions shape how it should be interpreted.
-            </p>
-        </div>
-        <p><a href="/why-this-trade" class="cta-btn secondary">Open Why This Trade</a></p>
-    </div>
-
-    <div class="card">
-        <h3>Portfolio Health</h3>
-        <div class="passage-frame">
-            <p>
-                Customer-facing position health bars and monitoring structure for linked portfolios.
-            </p>
-        </div>
-        <p><a href="/my-portfolio" class="cta-btn secondary">Open My Portfolio</a></p>
-    </div>
-</div>
-
-<div class="card premium-card gold-accent-card section-sparkle">
-    <h3>Research vs Execution</h3>
-    <div class="grid">
-        <div class="card">
-            <h3>Research Layer</h3>
-            <div class="passage-frame">
-                <p>
-                    Keeps generating ideas even when live execution is blocked.
-                    This preserves edge discovery.
-                </p>
-            </div>
-        </div>
-        <div class="card">
-            <h3>Execution Layer</h3>
-            <div class="passage-frame">
-                <p>
-                    Applies account and portfolio discipline. Not every good idea deserves deployment right now.
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="grid">
-    <div class="card premium-card gold-accent-card">
-        <h3>What Makes This Different</h3>
-        <ul>
-            <li>Portfolio-aware blocking logic</li>
-            <li>Trade-level narrative intelligence</li>
-            <li>Premium reasoning instead of just signals</li>
-            <li>User-specific health scoring path</li>
-        </ul>
-    </div>
-
-    <div class="card premium-card gold-accent-card">
-        <h3>What Full Adoption Looks Like</h3>
-        <ul>
-            <li>Account created</li>
-            <li>Broker path selected</li>
-            <li>Portfolio linked or uploaded</li>
-            <li>Health bars and monitoring enabled</li>
-            <li>Premium research and trade detail workflows active</li>
-        </ul>
     </div>
 </div>
 

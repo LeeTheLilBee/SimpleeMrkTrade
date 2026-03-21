@@ -8,7 +8,7 @@
             <p class="symbol-page-company">{{ company.name }}</p>
         </div>
         <div class="symbol-page-actions">
-            <a href="/signals" class="cta-btn secondary">Back to Symbols</a>
+            <a href="/signals" class="cta-btn secondary">Back to Spotlight</a>
             <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
         </div>
     </div>
@@ -16,27 +16,27 @@
 
 <div class="grid">
     <div class="card gold-accent-card">
-        <h3>Company Blurb</h3>
+        <h3>What This Company Does</h3>
         <div class="passage-frame">
             <p>{{ company.blurb }}</p>
         </div>
     </div>
 
-    <div class="card">
+    <div class="card gold-accent-card">
         <h3>Signal Visibility</h3>
         <div class="metric">{{ visible_signal_count }}</div>
-        <p class="muted-line">Entries visible on your current tier.</p>
+        <p class="muted-line">Visible on your current tier.</p>
     </div>
 
-    <div class="card">
+    <div class="card gold-accent-card">
         <h3>Total Stored</h3>
         <div class="metric">{{ total_signal_count }}</div>
-        <p class="muted-line">Stored signal history for this symbol.</p>
+        <p class="muted-line">Stored history for this symbol.</p>
     </div>
 </div>
 
 <div class="card premium-card">
-    <h3>Signal History</h3>
+    <h3>Recent Signal History</h3>
 
     {% if symbol_signals and symbol_signals|length > 0 %}
         {% for s in symbol_signals %}
@@ -45,7 +45,7 @@
                 <div>
                     <h4 style="margin:0;">{{ s.strategy }} | Score {{ s.score }}</h4>
                     <p class="muted-line" style="margin:6px 0 0 0;">
-                        {{ s.timestamp }} | {{ s.confidence }} | {{ s.source or "execution" }}
+                        {{ s.timestamp[:16].replace("T", " ") }} | {{ s.confidence }} | {{ s.source or "execution" }}
                     </p>
                 </div>
                 <button class="cta-btn secondary signal-more-btn" type="button" onclick="toggleSignalDetail('detail-{{ loop.index }}')">
@@ -87,7 +87,7 @@
     <div class="passage-frame">
         <p>
             Your current plan shows {{ visible_signal_count }} entries for {{ symbol }}.
-            Upgrade to unlock more historical signals, deeper intelligence, and fuller context.
+            Upgrade to unlock more signal history and richer interpretation.
         </p>
     </div>
     <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade Access</a>
@@ -100,7 +100,7 @@
         {% for item in news_items %}
         <div class="news-item">
             <h4 style="margin-bottom:6px;">{{ item.title }}</h4>
-            <p class="muted-line" style="margin-top:0;">{{ item.publisher }}{% if item.published_at %} | {{ item.published_at }}{% endif %}</p>
+            <p class="muted-line" style="margin-top:0;">{{ item.publisher }}{% if item.published_at %} | {{ item.published_at[:16].replace("T", " ") }}{% endif %}</p>
             {% if item.link %}
             <p><a href="{{ item.link }}" target="_blank" rel="noopener noreferrer">Open Article</a></p>
             {% endif %}

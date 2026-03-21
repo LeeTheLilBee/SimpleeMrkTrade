@@ -1,0 +1,82 @@
+[
+  {
+    "timestamp": "2026-03-21T02:33:58.229379",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T02:34:20.521329",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T02:42:45.343136",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T02:44:03.113642",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T02:44:03.325568",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/upgrade",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T02:46:25.864489",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/upgrade",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T02:49:37.639759",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/premium-analysis",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T02:49:41.658865",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/premium-analysis",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T02:58:53.561485",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/premium",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T02:58:56.199299",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/why-this-trade",
+    "symbol": null,
+    "meta": {}
+  }
+]

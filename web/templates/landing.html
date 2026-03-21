@@ -3,78 +3,57 @@
 
 <div class="landing-hero">
     <div class="landing-hero-inner">
-        <img src="/static/logo3.png" alt="SimpleeMrkTrade full logo" class="landing-hero-logo"
-             onerror="this.style.display='none';">
+        <div class="landing-logo-wrap">
+            <img src="/static/logo3.png" alt="SimpleeMrkTrade full logo" class="landing-hero-logo"
+                 onerror="this.style.display='none';">
+        </div>
 
-        <h1 class="landing-title">SimpleeMrkTrade</h1>
+        <div class="landing-copy">
+            <h1 class="landing-title">SimpleeMrkTrade</h1>
+            <p class="landing-subtitle">
+                Trading intelligence that separates noisy signals from structured opportunity.
+                The platform is designed to explain what matters, why it matters, and where risk actually lives.
+            </p>
 
-        <p class="landing-subtitle">
-            A structured market intelligence and execution platform built to separate raw signals from real edge.
-        </p>
-
-        <div class="hero-actions">
-            <a href="/get-started" class="cta-btn">Get Started</a>
-            <a href="/proof" class="cta-btn secondary">View Proof</a>
+            <div class="hero-actions">
+                <a href="/login" class="cta-btn">Log In</a>
+                <a href="/proof" class="cta-btn secondary">View Proof</a>
+                <a href="/upgrade" class="cta-btn premium-gold-btn">View Plans</a>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="grid">
-    <div class="card premium-card">
-        <h3>Live Proof Layer</h3>
-        <p>Track ongoing simulated account health, current structure, and account behavior over time.</p>
-        <p><b>Estimated Account Value:</b> ${{ snapshot.estimated_account_value }}</p>
+    <div class="card premium-card gold-accent-card">
+        <h3>Signals, But Cleaner</h3>
+        <div class="passage-frame">
+            <p>
+                Instead of dumping raw alerts, the platform organizes symbols into a spotlight system
+                and lets users click deeper only when they want the extra detail.
+            </p>
+        </div>
     </div>
 
-    <div class="card premium-card">
-        <h3>Research Intelligence</h3>
-        <p>Premium trade ideas can continue to populate even when execution is blocked by risk controls.</p>
-        <p><b>Total Trades:</b> {{ proof.trades }}</p>
-    </div>
-</div>
-
-<div class="card">
-    <h3>Equity Curve</h3>
-    <canvas id="landingEquityChart"></canvas>
-</div>
-
-<div class="grid">
-    <div class="card">
-        <h3>Why This Platform Feels Different</h3>
-        <ul>
-            <li>Signals are separated from execution.</li>
-            <li>Portfolio risk can block deployment even when capital exists.</li>
-            <li>Premium intelligence explains the setup instead of just flashing alerts.</li>
-        </ul>
+    <div class="card premium-card gold-accent-card">
+        <h3>Simulation In One Place</h3>
+        <div class="passage-frame">
+            <p>
+                Dashboard, proof, equity, live activity, reports, and bot output live together under Simulation,
+                so the app feels intentional instead of scattered.
+            </p>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>Designed for Clarity</h3>
-        <ul>
-            <li>Market regime context</li>
-            <li>Volatility-aware posture</li>
-            <li>Trade-level detail pages</li>
-            <li>Knowledge center with general and system-specific education</li>
-        </ul>
+    <div class="card premium-card gold-accent-card">
+        <h3>Premium Interpretation</h3>
+        <div class="passage-frame">
+            <p>
+                Premium layers do more than show trades. They explain context, confidence, setup quality,
+                and what could break the thesis.
+            </p>
+        </div>
     </div>
 </div>
-
-<script>
-const ctx = document.getElementById('landingEquityChart');
-new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: {{ equity_labels|tojson }},
-    datasets: [{
-      label: 'Account Equity',
-      data: {{ equity_values|tojson }},
-      borderColor: '#a78bfa',
-      backgroundColor: 'rgba(167,139,250,0.10)',
-      fill: true,
-      tension: 0.3
-    }]
-  }
-});
-</script>
 
 {% endblock %}

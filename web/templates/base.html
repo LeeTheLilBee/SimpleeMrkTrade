@@ -17,49 +17,48 @@
         </a>
 
         <a href="/">Home</a>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/proof">Proof</a>
-        <a href="/live-activity">Live Activity</a>
 
         <div class="dropdown">
-            <a href="/trading" class="dropbtn">Trading</a>
+            <a href="/signals" class="dropbtn">Signals</a>
             <div class="dropdown-content">
-                <a href="/signals">Signals</a>
-                <a href="/positions">Positions</a>
-                <a href="/closed-trades">Closed Trades</a>
-                <a href="/trade-timeline">Timeline</a>
+                <a href="/signals">Symbol Spotlight</a>
             </div>
         </div>
 
         <div class="dropdown">
-            <a href="/analytics-overview" class="dropbtn">Analytics</a>
+            <a href="/research" class="dropbtn">Trading</a>
             <div class="dropdown-content">
-                <a href="/analytics">Analytics</a>
-                <a href="/reports">Reports</a>
+                <a href="/research">Research</a>
+                <a href="/analytics-overview">Analytics</a>
+                <a href="/premium-analysis">Premium Analysis</a>
+                <a href="/why-this-trade">Why This Trade</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <a href="/dashboard" class="dropbtn">Simulation</a>
+            <div class="dropdown-content">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/proof">Proof</a>
+                <a href="/positions">Positions</a>
+                <a href="/live-activity">Live Activity</a>
                 <a href="/equity">Equity</a>
-                <a href="/status">Status</a>
+                <a href="/reports">Reports</a>
                 <a href="/bot-log">Bot Log</a>
             </div>
         </div>
 
+        {% if user and user.role == "master" %}
         <div class="dropdown">
-            <a href="/research" class="dropbtn">Research</a>
+            <a href="/admin" class="dropbtn">Admin</a>
             <div class="dropdown-content">
-                <a href="/candidates">Candidates</a>
-                <a href="/knowledge">Knowledge</a>
+                <a href="/admin">Admin Console</a>
+                <a href="/admin/product-analytics">Product Analytics</a>
+                <a href="/admin/session-debug">Session Debug</a>
+                <a href="/admin/audit-log">Audit Log</a>
             </div>
         </div>
-
-        <div class="dropdown">
-            <a href="/premium" class="dropbtn">Premium</a>
-            <div class="dropdown-content">
-                <a href="/premium-analysis">Premium Analysis</a>
-                <a href="/why-this-trade">Why This Trade</a>
-                <a href="/upgrade">Plans</a>
-            </div>
-        </div>
-
-        <a href="/control">Control</a>
+        {% endif %}
     </div>
 
     <div class="nav-right">
@@ -68,11 +67,23 @@
         </a>
 
         {% if user and user.username %}
-            {% if user.role == "master" %}
-                <a href="/admin">Admin</a>
-            {% endif %}
-            <a href="/account">Account</a>
-            <span class="user-badge">{{ user.username }} | {{ user.tier }}</span>
+            <div class="dropdown">
+                <a href="/account" class="dropbtn">Account</a>
+                <div class="dropdown-content dropdown-right">
+                    <a href="/account">Settings</a>
+                    <a href="/my-portfolio">My Portfolio</a>
+                    <a href="/billing">Billing</a>
+                    <a href="/upgrade">Upgrade</a>
+                </div>
+            </div>
+
+            <span class="user-badge">
+                {{ user.username }} | {{ user.tier }}
+                {% if user.preview_tier %}
+                | Preview: {{ user.preview_tier }}
+                {% endif %}
+            </span>
+
             <a href="/logout">Logout</a>
         {% else %}
             <a href="/login">Login</a>
@@ -81,19 +92,59 @@
     </div>
 </nav>
 
+{% if user and user.role == "master" %}
+<div class="admin-preview-bar">
+    <div class="admin-preview-left">
+        <span class="admin-preview-label">Admin Mode</span>
+        <a href="/admin/preview-tier/clear" class="preview-chip {% if not user.preview_tier %}active{% endif %}">Real</a>
+        <a href="/admin/preview-tier/Guest" class="preview-chip {% if user.preview_tier == 'Guest' %}active{% endif %}">Guest</a>
+        <a href="/admin/preview-tier/Starter" class="preview-chip {% if user.preview_tier == 'Starter' %}active{% endif %}">Starter</a>
+        <a href="/admin/preview-tier/Pro" class="preview-chip {% if user.preview_tier == 'Pro' %}active{% endif %}">Pro</a>
+        <a href="/admin/preview-tier/Elite" class="preview-chip {% if user.preview_tier == 'Elite' %}active{% endif %}">Elite</a>
+    </div>
+</div>
+{% endif %}
+
 <div class="container">
     {% block content %}{% endblock %}
 </div>
+
+{% if user and user.username %}
+<div id="floatingDashboard" class="floating-dashboard collapsed">
+    <div class="fd-header" onclick="toggleFD()">
+        <span>My Account</span>
+        <span class="fd-tier">{{ user.tier }}</span>
+    </div>
+
+    <div class="fd-body">
+        <p><b>Open Positions:</b> {{ snapshot.open_positions if snapshot else 0 }}</p>
+        <p><b>Buying Power:</b> ${{ snapshot.buying_power if snapshot else 0 }}</p>
+        <p><b>Estimated Value:</b> ${{ snapshot.estimated_account_value if snapshot else 0 }}</p>
+
+        {% if capital_state %}
+        <p class="muted-line">Capital posture</p>
+        <div class="fd-health-bar">
+            <div class="fd-health-fill" style="width: {{ capital_state.unused_capital_pct if capital_state.unused_capital_pct is defined else 50 }}%;"></div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
 
 <footer class="site-footer">
     <div class="footer-logo-wrap">
         <img src="/static/logo3.png" alt="SimpleeMrkTrade full logo" class="footer-logo"
              onerror="this.style.display='none';">
     </div>
-    <p class="footer-line">Structured market intelligence, premium research, and disciplined execution.</p>
+    <p class="footer-line">Structured market intelligence, simulation, and premium trade interpretation.</p>
 </footer>
 
 <script>
+function toggleFD() {
+    const el = document.getElementById("floatingDashboard");
+    if (el) el.classList.toggle("collapsed");
+}
+
 async function refreshNotificationBadge() {
     try {
         const res = await fetch("/api/notifications");
@@ -105,7 +156,6 @@ async function refreshNotificationBadge() {
         el.textContent = count > 0 ? `Notifications (${count})` : "Notifications";
     } catch (e) {}
 }
-
 setInterval(refreshNotificationBadge, 15000);
 </script>
 

@@ -1,33 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="card premium-hero dashboard-hero-centered">
-    <div class="dashboard-hero-logo-wrap">
-        <img src="/static/logo3.png" alt="SimpleeMrkTrade full logo" class="hero-logo-centered"
-             onerror="this.style.display='none';">
-    </div>
+<div class="card premium-hero dashboard-hero-centered section-sparkle">
     <div class="dashboard-hero-copy">
-        <h2 style="margin:0;">Dashboard</h2>
+        <h2 style="margin:0;">Simulation Dashboard</h2>
         <p class="muted-line">
-            Capital, risk, research, and execution state in one place.
+            A cleaner summary of the simulated account, current capital posture, and portfolio state.
         </p>
     </div>
 </div>
 
 <div class="grid">
-    <div class="card">
-        <h3>Account Value</h3>
+    <div class="card gold-accent-card">
+        <h3>Estimated Value</h3>
         <div class="metric">${{ snapshot.estimated_account_value }}</div>
     </div>
-    <div class="card">
+
+    <div class="card gold-accent-card">
         <h3>Cash</h3>
         <div class="metric">${{ snapshot.cash }}</div>
     </div>
-    <div class="card">
+
+    <div class="card gold-accent-card">
         <h3>Buying Power</h3>
         <div class="metric">${{ snapshot.buying_power }}</div>
     </div>
-    <div class="card">
+
+    <div class="card gold-accent-card">
         <h3>Open Positions</h3>
         <div class="metric">{{ snapshot.open_positions }}</div>
     </div>
@@ -35,120 +34,33 @@
 
 <div class="grid">
     <div class="card premium-card">
-        <h3>Capital State Panel</h3>
-        <p><b>Buying Power Available:</b> ${{ capital_state.buying_power }}</p>
-        <p>
-            <b>Execution Permission:</b>
-            {% if capital_state.execution_blocked %}
-                <span class="badge-red">Blocked</span>
-            {% else %}
-                <span class="badge-green">Available</span>
-            {% endif %}
-        </p>
-        <p><b>Blocked Reasons:</b></p>
-        {% if capital_state.block_reasons %}
-            <ul>
-                {% for reason in capital_state.block_reasons %}
-                <li>{{ reason }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No active execution blocks detected.</p>
-        {% endif %}
+        <h3>Capital State</h3>
+        <div class="passage-frame">
+            <p><b>Execution Permission:</b>
+                {% if capital_state.execution_blocked %}
+                    <span class="badge-red">Blocked</span>
+                {% else %}
+                    <span class="badge-green">Available</span>
+                {% endif %}
+            </p>
+            <p><b>Unused Capital:</b> {{ capital_state.unused_capital_pct }}%</p>
+            <p><b>Mode:</b> {{ capital_state.mode }}</p>
+        </div>
     </div>
 
     <div class="card premium-card">
-        <h3>Unused Capital Efficiency</h3>
-        <p><b>Unused Capital:</b> {{ capital_state.unused_capital_pct }}%</p>
-        <p class="muted-line">
-            High unused capital can reflect discipline, not inactivity.
-        </p>
-        <p><b>Mode:</b> {{ capital_state.mode }}</p>
-    </div>
-</div>
-
-<div class="grid">
-    <div class="card">
-        <h3>System Status</h3>
-        <p><b>Regime:</b> {{ market.regime or system.regime or "N/A" }}</p>
-        <p><b>Volatility:</b> {{ market.volatility or system.volatility or "N/A" }}</p>
-        <p><b>Mode:</b> {{ market.mode or system.mode or "N/A" }}</p>
-        <p><b>Executed Trades:</b> {{ proof.trades }}</p>
-    </div>
-
-    <div class="card">
-        <h3>Proof Engine</h3>
-        <p><b>Total Trades:</b> {{ proof.trades }}</p>
-        <p><b>Wins:</b> {{ proof.wins }}</p>
-        <p><b>Losses:</b> {{ proof.losses }}</p>
-        <p><b>Win Rate:</b> {{ proof.winrate }}</p>
-        <p><b>Total PnL:</b> {{ proof.total_pnl }}</p>
-        <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
+        <h3>Simulation Summary</h3>
+        <div class="passage-frame">
+            <p><b>Trades:</b> {{ proof.trades }}</p>
+            <p><b>Win Rate:</b> {{ proof.winrate }}</p>
+            <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
+        </div>
     </div>
 </div>
 
 <div class="card">
     <h3>Equity Curve</h3>
     <canvas id="equityChart"></canvas>
-</div>
-
-<div class="card premium-card">
-    <h3>What Other Platforms Usually Miss</h3>
-    <ul>
-        <li>Buying power does not automatically mean deployment is appropriate.</li>
-        <li>Good signals can still be blocked by portfolio-level risk.</li>
-        <li>Research opportunity and execution permission are different things.</li>
-        <li>Unused capital can reflect discipline, not weakness.</li>
-    </ul>
-</div>
-
-<div class="card">
-    <h3>Top Candidates</h3>
-    <div id="topCandidatesBlock">
-        {% if top_candidates and top_candidates|length > 0 %}
-        <table class="table">
-            <tr>
-                <th>Symbol</th>
-                <th>Strategy</th>
-                <th>Score</th>
-                <th>Confidence</th>
-            </tr>
-            {% for t in top_candidates %}
-            <tr>
-                <td>{{ t.symbol }}</td>
-                <td>{{ t.strategy }}</td>
-                <td>{{ t.score }}</td>
-                <td>{{ t.confidence }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-        <p>No candidates yet.</p>
-        {% endif %}
-    </div>
-</div>
-
-<div class="card">
-    <h3>Latest Execution Feed</h3>
-    <div id="latestSignalsBlock">
-        {% if signal_boards and signal_boards|length > 0 %}
-            {% for board in signal_boards[:5] %}
-            <div class="signal-mini-board">
-                <div class="signal-mini-head">
-                    <div>
-                        <h4 style="margin:0;">{{ board.symbol }}</h4>
-                        <p class="muted-line" style="margin:6px 0 0 0;">{{ board.latest_strategy }} | Score {{ board.latest_score }} | {{ board.latest_confidence }}</p>
-                    </div>
-                    {% if board.latest_trade_id %}
-                    <a href="/trade/{{ board.latest_trade_id }}">Open</a>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
-        {% else %}
-        <p>No execution signals yet.</p>
-        {% endif %}
-    </div>
 </div>
 
 <script>
@@ -167,79 +79,6 @@ new Chart(ctx, {
     }]
   }
 });
-
-async function refreshTopCandidates() {
-    try {
-        const res = await fetch("/api/top-candidates");
-        if (!res.ok) return;
-        const data = await res.json();
-        const block = document.getElementById("topCandidatesBlock");
-        if (!block) return;
-
-        if (!Array.isArray(data) || data.length === 0) {
-            block.innerHTML = "<p>No candidates yet.</p>";
-            return;
-        }
-
-        let html = `
-            <table class="table">
-                <tr>
-                    <th>Symbol</th>
-                    <th>Strategy</th>
-                    <th>Score</th>
-                    <th>Confidence</th>
-                </tr>
-        `;
-        data.forEach(t => {
-            html += `
-                <tr>
-                    <td>${t.symbol ?? ""}</td>
-                    <td>${t.strategy ?? ""}</td>
-                    <td>${t.score ?? ""}</td>
-                    <td>${t.confidence ?? ""}</td>
-                </tr>
-            `;
-        });
-        html += "</table>";
-        block.innerHTML = html;
-    } catch (e) {}
-}
-
-async function refreshLatestSignalBoards() {
-    try {
-        const res = await fetch("/api/signal-boards");
-        if (!res.ok) return;
-        const data = await res.json();
-        const block = document.getElementById("latestSignalsBlock");
-        if (!block) return;
-
-        if (!Array.isArray(data) || data.length === 0) {
-            block.innerHTML = "<p>No execution signals yet.</p>";
-            return;
-        }
-
-        let html = "";
-        data.slice(0, 5).forEach(board => {
-            html += `
-                <div class="signal-mini-board">
-                    <div class="signal-mini-head">
-                        <div>
-                            <h4 style="margin:0;">${board.symbol ?? ""}</h4>
-                            <p class="muted-line" style="margin:6px 0 0 0;">
-                                ${board.latest_strategy ?? ""} | Score ${board.latest_score ?? ""} | ${board.latest_confidence ?? ""}
-                            </p>
-                        </div>
-                        ${board.latest_trade_id ? `<a href="/trade/${board.latest_trade_id}">Open</a>` : ""}
-                    </div>
-                </div>
-            `;
-        });
-        block.innerHTML = html;
-    } catch (e) {}
-}
-
-setInterval(refreshTopCandidates, 15000);
-setInterval(refreshLatestSignalBoards, 15000);
 </script>
 
 {% endblock %}
