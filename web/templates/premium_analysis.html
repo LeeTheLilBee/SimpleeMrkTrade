@@ -1,71 +1,73 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Premium Analysis</h2>
-
-<div class="card premium-hero">
-    <h3>Research-Grade Trade Breakdown</h3>
-    <p class="muted-line">
-        Premium Analysis turns raw signals into context-rich opportunity framing.
-    </p>
+<div class="card premium-hero gold-accent-card section-sparkle">
+    <h2>Premium Analysis</h2>
+    <div class="passage-frame">
+        <p>
+            Premium Analysis is a live research feed. It is designed to show what the system is seeing
+            across the market, not just what it sees in one trade.
+        </p>
+    </div>
 </div>
 
-{% if all_analysis and all_analysis|length > 0 %}
-    {% for item in all_analysis[:visible_premium_count] %}
-    <div class="card premium-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+{% if feed_items and feed_items|length > 0 %}
+    {% for item in feed_items %}
+    <div class="card premium-feed-card">
+        <div class="premium-feed-top">
             <div>
-                <h3 style="margin:0;">{{ item.symbol }} | {{ item.strategy }}</h3>
-                <p class="muted-line">{{ item.timestamp }}</p>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                <span class="pill">{{ item.score }}</span>
-                <span class="badge-blue">{{ item.confidence }}</span>
-            </div>
-        </div>
-
-        <div class="grid" style="margin-top:14px;">
-            <div class="card">
-                <h3>Trade Frame</h3>
-                <p><b>Entry:</b> {{ item.entry }}</p>
-                <p><b>Stop:</b> {{ item.stop }}</p>
-                <p><b>Target:</b> {{ item.target }}</p>
-            </div>
-
-            <div class="card">
-                <h3>Environment</h3>
-                <p><b>Mode:</b> {{ item.mode }}</p>
-                <p><b>Regime:</b> {{ item.regime }}</p>
-                <p><b>Volatility:</b> {{ item.volatility }}</p>
+                <h3 style="margin-bottom:6px;">{{ item.title }}</h3>
+                <p class="muted-line" style="margin-top:0;">
+                    {{ item.timestamp[:16].replace("T", " ") if item.timestamp else "Now" }}
+                    {% if item.mode %} | {{ item.mode }}{% endif %}
+                </p>
             </div>
         </div>
 
-        {% if item.reasons %}
-        <div class="card">
-            <h3>Why It Matters</h3>
-            <ul>
-                {% for reason in item.reasons %}
-                <li>{{ reason }}</li>
-                {% endfor %}
-            </ul>
+        <div class="passage-frame">
+            <p><b>Summary:</b> {{ item.summary }}</p>
+
+            {% if premium_mode in ["starter", "pro", "elite"] %}
+                <div class="structured-feed-block">
+                    <h4>Strategic Read</h4>
+                    {% for line in item.pro_lines %}
+                    <p>{{ line }}</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="upgrade-cutoff-box">
+                    <div class="lock-label">🔒 Premium Feed Depth Locked</div>
+                    <p>
+                        Upgrade to unlock the deeper strategic read behind this market view.
+                    </p>
+                    <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade Access</a>
+                </div>
+            {% endif %}
+
+            {% if premium_mode == "elite" %}
+                <div class="structured-feed-block elite-feed-block">
+                    <h4>⭐ Elite Insight</h4>
+                    {% for line in item.elite_lines %}
+                    <p>{{ line }}</p>
+                    {% endfor %}
+                </div>
+            {% elif premium_mode == "pro" %}
+                <div class="upgrade-cutoff-box">
+                    <div class="lock-label">🔒 Elite Insight Locked</div>
+                    <p>
+                        Elite members see deeper system interpretation and higher-order market context.
+                    </p>
+                    <a href="/upgrade" class="cta-btn premium-gold-btn">Go Elite</a>
+                </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
     {% endfor %}
 {% else %}
 <div class="card">
-    <p>No premium analysis entries yet.</p>
-</div>
-{% endif %}
-
-{% if premium_teaser %}
-<div class="card teaser-card gold-accent-card">
-    <h3>Unlock Deeper Premium Analysis</h3>
-    <p class="muted-line">
-        Your current plan shows a controlled portion of Premium Analysis.
-        Upgrade for deeper reasoning, more entries, and fuller research context.
-    </p>
-    <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade Access</a>
+    <div class="passage-frame">
+        <p>No premium feed entries are available yet.</p>
+    </div>
 </div>
 {% endif %}
 

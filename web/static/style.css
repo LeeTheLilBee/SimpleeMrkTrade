@@ -377,7 +377,8 @@ body.light .premium-gold-btn {
 .badge-gray,
 .badge-purple,
 .signal-stat-chip,
-.rank-badge {
+.rank-badge,
+.section-tier-pill {
     display: inline-block;
     padding: 6px 10px;
     border-radius: 999px;
@@ -401,6 +402,16 @@ body.light .premium-gold-btn {
     background: linear-gradient(135deg, #b8860b, #d4af37);
     color: #111827;
     margin-bottom: 12px;
+}
+
+.section-tier-pill {
+    background: rgba(59,130,246,0.12);
+    color: #93c5fd;
+}
+
+.elite-pill {
+    background: linear-gradient(135deg, #b8860b, #d4af37);
+    color: #111827;
 }
 
 body.light .signal-stat-chip {
@@ -626,7 +637,9 @@ body.light .landing-login-divider {
 
 .symbol-card-top,
 .symbol-page-head,
-.symbol-signal-head {
+.symbol-signal-head,
+.why-trade-top,
+.premium-feed-top {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -656,7 +669,8 @@ body.light .landing-login-divider {
 
 .symbol-card-badges,
 .symbol-card-stats,
-.symbol-page-actions {
+.symbol-page-actions,
+.why-trade-actions {
     display: flex;
     gap: 8px;
     align-items: center;
@@ -705,6 +719,63 @@ body.light .back-link {
     background: rgba(167,139,250,0.18);
 }
 
+.explanation-section-card {
+    margin-top: 0;
+}
+
+.inner-section-card {
+    margin-top: 14px;
+}
+
+.section-head-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.elite-insight-box {
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(212,175,55,0.40);
+    background: linear-gradient(145deg, rgba(212,175,55,0.10), rgba(212,175,55,0.04));
+}
+
+.elite-label {
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #f6d365;
+}
+
+.upgrade-cutoff-box {
+    margin-top: 14px;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px dashed rgba(212,175,55,0.55);
+    background: linear-gradient(145deg, rgba(212,175,55,0.08), rgba(212,175,55,0.03));
+}
+
+.lock-label {
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #f6d365;
+}
+
+.structured-feed-block {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(59,130,246,0.20);
+    background: linear-gradient(145deg, rgba(59,130,246,0.07), rgba(59,130,246,0.03));
+}
+
+.elite-feed-block {
+    border-color: rgba(212,175,55,0.35);
+    background: linear-gradient(145deg, rgba(212,175,55,0.08), rgba(212,175,55,0.03));
+}
+
 .symbol-signal-entry,
 .news-item {
     padding: 14px 0;
@@ -714,10 +785,6 @@ body.light .back-link {
 .symbol-signal-entry:last-child,
 .news-item:last-child {
     border-bottom: none;
-}
-
-.signal-detail-panel {
-    margin-top: 14px;
 }
 
 .floating-dashboard {
