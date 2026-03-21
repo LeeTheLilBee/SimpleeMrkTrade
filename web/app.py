@@ -57,6 +57,7 @@ from engine.user_position_health import build_user_position_health
 from engine.signal_feed import grouped_signals, load_signals
 from engine.symbol_metadata import get_symbol_meta
 from engine.symbol_news import get_symbol_news
+from engine.admin_product_analytics import track_event, summarize_events
 from engine.signal_explainer import explain_signal
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
@@ -254,6 +255,16 @@ def alacarte_catalog():
         },
     ]
 
+def maybe_track_page_view(page, symbol=None):
+    if request.endpoint == "static":
+        return
+    username = session.get("username")
+    track_event(
+        event_type="page_view" if not symbol else "symbol_view",
+        username=username,
+        page=page,
+        symbol=symbol,
+    )
 
 def template_context(extra=None):
     user = get_current_user()
@@ -446,6 +457,7 @@ def notifications_read_all():
 
 @app.route("/dashboard")
 def dashboard_page():
+    maybe_track_page_view("/dashboard")
     reports = load_json("data/recent_reports.json", [])
     equity_values = [
         r["snapshot"]["estimated_account_value"]
@@ -607,6 +619,7 @@ def reports_page():
 
 @app.route("/signals")
 def signals_page():
+    maybe_track_page_view("/signals")
     if not has_access("signals"):
         return redirect(url_for("upgrade_page"))
 
@@ -626,6 +639,7 @@ def signals_page():
 
 @app.route("/signals/<symbol>")
 def signal_symbol_page(symbol):
+    maybe_track_page_view(f"/signals/{symbol.upper()}", symbol=symbol.upper())
     if not has_access("signals"):
         return redirect(url_for("upgrade_page"))
 
@@ -772,6 +786,7 @@ def control_page():
 
 @app.route("/premium")
 def premium_hub():
+    maybe_track_page_view("/premium")
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
     return render_template(
@@ -782,6 +797,7 @@ def premium_hub():
 
 @app.route("/premium-analysis")
 def premium_analysis_page():
+    maybe_track_page_view("/premium-analysis")
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
     if not has_access("premium_analysis"):
@@ -817,6 +833,7 @@ def premium_analysis_page():
 
 @app.route("/why-this-trade")
 def why_this_trade_page():
+    maybe_track_page_view("/why-this-trade")
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
     if not has_access("why_this_trade"):
@@ -887,6 +904,7 @@ def trade_detail_page(trade_id):
 
 @app.route("/upgrade")
 def upgrade_page():
+    maybe_track_page_view("/upgrade")
     tiers = load_json("data/subscription_tiers.json", {})
     return render_template(
         "upgrade.html",
@@ -901,6 +919,12 @@ def upgrade_page():
 
 @app.route("/upgrade-tier/<tier>")
 def upgrade_tier_action(tier):
+    track_event(
+        event_type="upgrade_click",
+        username=session.get("username"),
+        page="/upgrade",
+        meta={"target_tier": tier},
+    )
     if not is_logged_in():
         return redirect(url_for("login_page", next=request.path))
 
@@ -1271,6 +1295,12 @@ def login_page():
 
             return redirect(url_for("dashboard_page"))
 
+        track_event(
+            event_type="login_failure",
+            username=username,
+            page="/login",
+        )
+
         return render_template(
             "login.html",
             **template_context(
@@ -1392,6 +1422,16 @@ def api_activity():
 def api_notifications():
     return jsonify(visible_notifications())
 
+@app.route("/admin/product-analytics")
+def admin_product_analytics_page():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    summary = summarize_events(days=30)
+    return render_template(
+        "admin_product_analytics.html",
+        **template_context({"summary": summary}),
+    )
 
 @app.route("/debug-tier")
 def debug_tier():
