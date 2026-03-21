@@ -48,7 +48,7 @@ from engine.signal_feed import grouped_signals, load_signals
 from engine.symbol_metadata import get_symbol_meta
 from engine.symbol_news import get_symbol_news
 from engine.admin_product_analytics import track_event, summarize_events
-from engine_core.explanation_engine import (
+from engine.explanation_engine import (
     build_explanation_layers,
     slice_by_tier,
     build_premium_feed_post,
@@ -926,3 +926,370 @@ def billing_page():
         return redirect(url_for("login_page", next=request.path))
     return render_template(
         "billing.html",
+        **template_context({"billing": get_billing_status(session["username"])}),
+    )
+
+
+@app.route("/my-portfolio", methods=["GET", "POST"])
+def my_portfolio_page():
+    maybe_track_page_view("/my-portfolio")
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+
+    username = session["username"]
+
+    if request.method == "POST":
+        broker = request.form.get("broker", "IBKR")
+        cash = request.form.get("cash", 0)
+        buying_power = request.form.get("buying_power", 0)
+        notes = request.form.get("notes", "")
+
+        existing = load_user_portfolio(username)
+        positions = existing.get("positions", [])
+
+        save_mock_portfolio_from_form(
+            username=username,
+            broker=broker,
+            cash=cash,
+            buying_power=buying_power,
+            notes=notes,
+            positions=positions,
+        )
+        return redirect(url_for("my_portfolio_page"))
+
+    portfolio = build_user_position_health(load_user_portfolio(username))
+    return render_template(
+        "my_portfolio.html",
+        **template_context({"portfolio": portfolio}),
+    )
+
+
+@app.route("/my-portfolio/clear")
+def clear_my_portfolio():
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+    clear_user_portfolio(session["username"])
+    return redirect(url_for("my_portfolio_page"))
+
+
+@app.route("/notifications")
+def notifications_page():
+    maybe_track_page_view("/notifications")
+    return render_template(
+        "notifications.html",
+        **template_context({"notifications": visible_notifications()}),
+    )
+
+
+@app.route("/notification-settings", methods=["GET", "POST"])
+def notification_settings_page():
+    maybe_track_page_view("/notification-settings")
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+
+    username = session["username"]
+
+    if request.method == "POST":
+        settings = {
+            "high_conviction_only": bool(request.form.get("high_conviction_only")),
+            "research_alerts": bool(request.form.get("research_alerts")),
+            "execution_alerts": bool(request.form.get("execution_alerts")),
+            "risk_alerts": bool(request.form.get("risk_alerts")),
+            "system_alerts": bool(request.form.get("system_alerts")),
+            "min_score": int(request.form.get("min_score", 0)),
+            "strategy_filter": request.form.get("strategy_filter", "ALL"),
+            "volatility_filter": request.form.get("volatility_filter", "ALL"),
+        }
+        save_notification_settings(username, settings)
+        return redirect(url_for("notification_settings_page"))
+
+    return render_template(
+        "notification_settings.html",
+        **template_context({"settings": get_notification_settings(username)}),
+    )
+
+
+@app.route("/notifications/read-all")
+def notifications_read_all():
+    mark_all_read()
+    return redirect(url_for("notifications_page"))
+
+
+@app.route("/account")
+def account_page():
+    maybe_track_page_view("/account")
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+    return render_template(
+        "account.html",
+        **template_context(
+            {
+                "prefs": get_preferences(session["username"]),
+                "billing": get_billing_status(session["username"]),
+                "message": request.args.get("message"),
+                "error": request.args.get("error"),
+            }
+        ),
+    )
+
+
+@app.route("/account/preferences", methods=["POST"])
+def account_preferences_save():
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+
+    prefs = {
+        "email_notifications": bool(request.form.get("email_notifications")),
+        "signal_notifications": bool(request.form.get("signal_notifications")),
+        "risk_notifications": bool(request.form.get("risk_notifications")),
+        "premium_notifications": bool(request.form.get("premium_notifications")),
+        "system_notifications": bool(request.form.get("system_notifications")),
+        "theme": request.form.get("theme", "dark"),
+    }
+
+    save_preferences(session["username"], prefs)
+    return redirect(url_for("account_page", message="Preferences saved."))
+
+
+@app.route("/account/change-password", methods=["POST"])
+def account_change_password():
+    if not is_logged_in():
+        return redirect(url_for("login_page", next=request.path))
+
+    current_password = request.form.get("current_password", "")
+    new_password = request.form.get("new_password", "")
+
+    auth = authenticate_user(session["username"], current_password)
+    if not auth:
+        return redirect(url_for("account_page", error="Current password is incorrect."))
+
+    policy = password_policy_check(new_password)
+    if not policy["ok"]:
+        return redirect(url_for("account_page", error=" ".join(policy["errors"])))
+
+    reset_user_password(session["username"], new_password)
+    return redirect(url_for("account_page", message="Password updated successfully."))
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login_page():
+    next_url = request.args.get("next", "")
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        next_url = request.args.get("next", "")
+
+        auth = authenticate_user(username, password)
+
+        if auth:
+            session["username"] = auth["username"]
+            session["tier"] = auth["tier"]
+            session["role"] = auth["role"]
+            session["last_seen"] = datetime.utcnow().isoformat()
+            session.pop("preview_tier", None)
+
+            if auth.get("force_password_reset"):
+                return redirect(url_for("account_page", error="You must change your password before continuing."))
+
+            if next_url:
+                return redirect(next_url)
+
+            return redirect(url_for("dashboard_page"))
+
+        track_event(
+            event_type="login_failure",
+            username=username,
+            page="/login",
+        )
+
+        return render_template(
+            "login.html",
+            **template_context(
+                {
+                    "error": "Invalid username or password.",
+                    "info": request.args.get("info"),
+                    "next_url": next_url,
+                }
+            ),
+        )
+
+    return render_template(
+        "login.html",
+        **template_context(
+            {
+                "error": request.args.get("error"),
+                "info": request.args.get("info"),
+                "next_url": next_url,
+            }
+        ),
+    )
+
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup_page():
+    if request.method == "POST":
+        email = request.form.get("email")
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        policy = password_policy_check(password)
+        if not policy["ok"]:
+            return render_template(
+                "signup.html",
+                **template_context({"error": " ".join(policy["errors"])}),
+            )
+
+        ok, msg = create_user(
+            username=username,
+            password=password,
+            email=email,
+            tier="Free",
+            role="member",
+        )
+
+        if ok:
+            set_billing_status(username, "Free", status="active", provider="mock")
+            return redirect(url_for("login_page", info="Account created. Please log in."))
+
+        return render_template(
+            "signup.html",
+            **template_context({"error": msg}),
+        )
+
+    return render_template(
+        "signup.html",
+        **template_context({"error": request.args.get("error")}),
+    )
+
+
+@app.route("/logout")
+def logout_page():
+    session.clear()
+    return redirect(url_for("landing_page"))
+
+
+# ===========================================================
+# ROUTES - ADMIN
+# ===========================================================
+
+@app.route("/admin")
+def admin_console():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+    return render_template(
+        "admin.html",
+        **template_context({"users": list_users()}),
+    )
+
+
+@app.route("/admin/product-analytics")
+def admin_product_analytics_page():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    summary = summarize_events(days=30)
+    return render_template(
+        "admin_product_analytics.html",
+        **template_context({"summary": summary}),
+    )
+
+
+@app.route("/admin/session-debug")
+def admin_session_debug_page():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+    return render_template(
+        "admin_session_debug.html",
+        **template_context({"session_debug": session_debug_payload()}),
+    )
+
+
+@app.route("/admin/audit-log")
+def admin_audit_log_page():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+    return render_template(
+        "admin_audit_log.html",
+        **template_context({"audit": get_admin_audit_log()}),
+    )
+
+
+@app.route("/admin/preview-tier/<tier>")
+def admin_preview_tier(tier):
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+    session["preview_tier"] = tier
+    return redirect(url_for("dashboard_page"))
+
+
+@app.route("/admin/preview-tier/clear")
+def admin_clear_preview_tier():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+    session.pop("preview_tier", None)
+    return redirect(url_for("dashboard_page"))
+
+
+# ===========================================================
+# API
+# ===========================================================
+
+@app.route("/api/signals")
+def api_signals():
+    return jsonify(load_signals())
+
+
+@app.route("/api/signal-boards")
+def api_signal_boards():
+    return jsonify(decorated_signal_boards(limit_per_symbol=signal_history_limit_for_tier()))
+
+
+@app.route("/api/all-symbols")
+def api_all_symbols():
+    return jsonify(all_symbol_rows())
+
+
+@app.route("/api/top-candidates")
+def api_top_candidates():
+    return jsonify(load_json("data/top_candidates.json", []))
+
+
+@app.route("/api/account")
+def api_account():
+    return jsonify(account_snapshot())
+
+
+@app.route("/api/bot-status")
+def api_bot_status():
+    return jsonify(load_json("data/bot_status.json", {}))
+
+
+@app.route("/api/activity")
+def api_activity():
+    return jsonify(load_json("data/live_activity.json", []))
+
+
+@app.route("/api/notifications")
+def api_notifications():
+    return jsonify(visible_notifications())
+
+
+@app.route("/debug-tier")
+def debug_tier():
+    if not is_logged_in():
+        return jsonify({"logged_in": False})
+
+    return jsonify({
+        "username": session.get("username"),
+        "session_tier": session.get("tier"),
+        "effective_tier": effective_tier(),
+        "preview_tier": session.get("preview_tier"),
+        "session_role": session.get("role"),
+        "billing": get_billing_status(session["username"]),
+        "user_record": get_user(session["username"]),
+    })
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
