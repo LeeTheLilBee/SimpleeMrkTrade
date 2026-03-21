@@ -595,13 +595,16 @@ def signals_page():
         top_count = 3
         next_cap = 0
 
-    if is_master() and not session.get("preview_tier"):
+    if is_master() and not 
+    session.get("preview_tier"):
         top_count = 5
         next_cap = 20
 
     top_five = boards[:top_count]
-    next_twenty = boards[top_count:top_count + next_cap]
-    hidden_remaining = max(0, len(boards) - (top_count + next_cap))
+    next_twenty = boards[top_count:top_count + 
+    next_cap]
+    hidden_remaining = max(0, len(boards) - 
+    (top_count + next_cap))
 
     return render_template(
         "signals.html",

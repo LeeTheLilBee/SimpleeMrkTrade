@@ -1,52 +1,56 @@
-def _health_label(score):
-    if score >= 80:
-        return "Strong"
-    if score >= 65:
-        return "Healthy"
-    if score >= 45:
-        return "At Risk"
-    return "Weak"
-
-def _score_position(position):
-    pnl = float(position.get("pnl", 0) or 0)
-    distance_to_stop = float(position.get("distance_to_stop_pct", 8) or 0)
-    trend_alignment = float(position.get("trend_alignment", 1) or 0)  # 1 good, 0 neutral, -1 bad
-    conviction = float(position.get("conviction", 60) or 60)
-
-    score = 55
-
-    score += min(20, max(-20, pnl * 2))
-    score += min(15, max(-15, distance_to_stop))
-    score += 10 if trend_alignment > 0 else (-10 if trend_alignment < 0 else 0)
-    score += min(15, max(-5, (conviction - 50) / 2))
-
-    score = max(0, min(100, round(score)))
-    return score
+"""
+===========================================================
+ENGINE CORE
+POSITION HEALTH ENGINE (V2 - STRONGER)
+===========================================================
+"""
 
 def build_user_position_health(portfolio):
+
     positions = portfolio.get("positions", [])
     enriched = []
 
     for p in positions:
-        score = _score_position(p)
-        label = _health_label(score)
+        entry = float(p.get("entry", 0))
+        current = float(p.get("current_price", entry))
+        stop = float(p.get("stop", entry * 0.95))
+        size = float(p.get("size", 1))
+
+        pnl = (current - entry) * size
+
+        # --- Distance to stop ---
+        stop_distance = abs(current - stop) / max(abs(entry - stop), 1e-6)
+
+        health = 100
+
+        if pnl < 0:
+            health -= 25
+
+        if stop_distance < 0.5:
+            health -= 35
+        elif stop_distance < 1:
+            health -= 15
+
+        if abs(current - entry) < entry * 0.01:
+            health -= 10
+
+        health = max(0, min(100, health))
+
+        if health > 75:
+            status = "Strong"
+        elif health > 50:
+            status = "Healthy"
+        elif health > 30:
+            status = "At Risk"
+        else:
+            status = "Weak"
 
         enriched.append({
             **p,
-            "health_score": score,
-            "health_label": label,
+            "pnl": round(pnl, 2),
+            "health_score": health,
+            "status": status
         })
 
-    portfolio_health = round(
-        sum([p["health_score"] for p in enriched]) / len(enriched), 2
-    ) if enriched else 0
-
-    return {
-        "broker": portfolio.get("broker"),
-        "linked": portfolio.get("linked", False),
-        "cash": portfolio.get("cash", 0),
-        "buying_power": portfolio.get("buying_power", 0),
-        "notes": portfolio.get("notes", ""),
-        "positions": enriched,
-        "portfolio_health": portfolio_health,
-    }
+    portfolio["positions"] = enriched
+    return portfolio

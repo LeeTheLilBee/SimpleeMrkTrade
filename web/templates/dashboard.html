@@ -1,84 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="card premium-hero dashboard-hero-centered section-sparkle">
-    <div class="dashboard-hero-copy">
-        <h2 style="margin:0;">Simulation Dashboard</h2>
-        <p class="muted-line">
-            A cleaner summary of the simulated account, current capital posture, and portfolio state.
-        </p>
-    </div>
+<div class="card premium-hero">
+    <h2>Dashboard</h2>
+    <p class="muted-line">Quick snapshot of system + positions</p>
 </div>
 
 <div class="grid">
-    <div class="card gold-accent-card">
-        <h3>Estimated Value</h3>
-        <div class="metric">${{ snapshot.estimated_account_value }}</div>
-    </div>
 
-    <div class="card gold-accent-card">
-        <h3>Cash</h3>
-        <div class="metric">${{ snapshot.cash }}</div>
-    </div>
+    {% for p in positions %}
+    <div class="card teaser-card">
 
-    <div class="card gold-accent-card">
-        <h3>Buying Power</h3>
-        <div class="metric">${{ snapshot.buying_power }}</div>
-    </div>
+        <h3>{{ p.symbol }}</h3>
+        <p>PnL: {{ p.pnl }}</p>
 
-    <div class="card gold-accent-card">
-        <h3>Open Positions</h3>
-        <div class="metric">{{ snapshot.open_positions }}</div>
-    </div>
-</div>
-
-<div class="grid">
-    <div class="card premium-card">
-        <h3>Capital State</h3>
-        <div class="passage-frame">
-            <p><b>Execution Permission:</b>
-                {% if capital_state.execution_blocked %}
-                    <span class="badge-red">Blocked</span>
-                {% else %}
-                    <span class="badge-green">Available</span>
-                {% endif %}
-            </p>
-            <p><b>Unused Capital:</b> {{ capital_state.unused_capital_pct }}%</p>
-            <p><b>Mode:</b> {{ capital_state.mode }}</p>
+        <!-- BLURRED PREMIUM DATA -->
+        <div class="blur-box">
+            <p>Risk: {{ p.risk }}</p>
+            <p>Target: {{ p.target }}</p>
+            <p>Warnings: {{ p.warning }}</p>
         </div>
-    </div>
 
-    <div class="card premium-card">
-        <h3>Simulation Summary</h3>
-        <div class="passage-frame">
-            <p><b>Trades:</b> {{ proof.trades }}</p>
-            <p><b>Win Rate:</b> {{ proof.winrate }}</p>
-            <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
+        <div class="health-bar">
+            <div class="health-fill" style="width: {{ p.health_score }}%"></div>
         </div>
+
+        <p>Status: {{ p.status }}</p>
+
+        <a href="/positions" class="cta-btn premium-gold-btn">
+            View Full Position
+        </a>
+
     </div>
-</div>
+    {% endfor %}
 
-<div class="card">
-    <h3>Equity Curve</h3>
-    <canvas id="equityChart"></canvas>
 </div>
-
-<script>
-const ctx = document.getElementById('equityChart');
-new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: {{ equity_labels|tojson }},
-    datasets: [{
-      label: 'Account Equity',
-      data: {{ equity_values|tojson }},
-      borderColor: '#a78bfa',
-      backgroundColor: 'rgba(167,139,250,0.10)',
-      fill: true,
-      tension: 0.3
-    }]
-  }
-});
-</script>
 
 {% endblock %}

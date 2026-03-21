@@ -37,6 +37,22 @@ def push_signal(symbol, strategy, score, confidence, trade_id=None, source="exec
 def load_signals():
     return _load()
 
+def tier_signal_limit(tier):
+    tier = (tier or "").lower()
+
+    if tier == "guest":
+        return 2
+    if tier == "free":
+        return 3
+    if tier == "starter":
+        return 5
+    if tier == "pro":
+        return 10
+    if tier == "elite":
+        return 100
+
+    return 3
+    
 def grouped_signals(limit_per_symbol=None):
     data = sorted(_load(), key=lambda x: x.get("timestamp", ""), reverse=True)
     grouped = {}
