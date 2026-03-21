@@ -1,47 +1,77 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="login-shell">
-    <div class="card premium-hero login-card section-sparkle">
-        <div class="login-logo-wrap">
-            <img src="/static/logo3.png" alt="SimpleeMrkTrade full logo" class="login-logo"
-                 onerror="this.style.display='none';">
-        </div>
+<div class="login-page-shell">
+    <div class="login-layout">
 
-        <h2>Log In</h2>
-        <p class="muted-line">
-            Access your dashboard, premium research, portfolio health, and signal intelligence.
-        </p>
+        <div class="login-blurb-card card gold-accent-card">
+            <div class="login-blurb-inner">
+                <h1 class="login-blurb-title">SimpleeMrkTrade</h1>
 
-        {% if error %}
-        <div class="card">
-            <p><b>{{ error }}</b></p>
-        </div>
-        {% endif %}
+                <p class="login-blurb-copy">
+                    A structured trading intelligence platform built to help you understand not just
+                    what to trade, but what your trades are becoming.
+                </p>
 
-        {% if info %}
-        <div class="card">
-            <p><b>{{ info }}</b></p>
-        </div>
-        {% endif %}
+                <p class="muted-line login-blurb-copy-small">
+                    From signal discovery to deeper trade interpretation, every layer is designed for
+                    clarity, discipline, and better decision-making.
+                </p>
 
-        <form method="post">
-            <p><input type="text" name="username" placeholder="Username"></p>
-            <p><input type="password" name="password" placeholder="Password"></p>
-            <button type="submit" class="cta-btn">Log In</button>
-        </form>
+                <div class="login-blurb-points">
+                    <div class="login-point">
+                        <h3>Signals</h3>
+                        <p>Ranked opportunities with cleaner scan flow and deeper symbol pages.</p>
+                    </div>
 
-        <div class="login-upgrade-strip">
-            <div class="card gold-accent-card">
-                <h3>Need More Access?</h3>
-                <div class="passage-frame">
-                    <p class="muted-line">
-                        Upgrade for deeper signal history, richer premium analysis, and stronger trade intelligence.
-                    </p>
+                    <div class="login-point">
+                        <h3>Trade Intelligence</h3>
+                        <p>Why This Trade, Premium Analysis, and evolving position insight.</p>
+                    </div>
+
+                    <div class="login-point">
+                        <h3>Simulation + Proof</h3>
+                        <p>Track performance, proof, and account behavior inside one system.</p>
+                    </div>
                 </div>
-                <a href="/upgrade" class="cta-btn premium-gold-btn">View Plans</a>
             </div>
         </div>
+
+        <div class="login-box card premium-hero gold-accent-card">
+            <div class="login-logo-wrap">
+                {% if theme == "light" %}
+                    <img src="/static/2.png" alt="SimpleeMrkTrade" class="login-logo">
+                {% else %}
+                    <img src="/static/1.png" alt="SimpleeMrkTrade" class="login-logo">
+                {% endif %}
+            </div>
+
+            <h2 class="login-title">Login</h2>
+
+            {% if info %}
+            <div class="form-message form-info">{{ info }}</div>
+            {% endif %}
+
+            {% if error %}
+            <div class="form-message form-error">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" class="login-form">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" placeholder="Enter your username" required>
+
+                <label class="form-label">Password</label>
+                <input type="password" name="password" placeholder="Enter your password" required>
+
+                <button type="submit" class="cta-btn login-submit">Login</button>
+            </form>
+
+            <div class="login-secondary-actions">
+                <a href="/signup" class="cta-btn premium-gold-btn">Create Account</a>
+                <a href="/upgrade" class="cta-btn secondary">See Plans</a>
+            </div>
+        </div>
+
     </div>
 </div>
 
