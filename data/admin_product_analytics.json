@@ -342,5 +342,53 @@
     "page": "/dashboard",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T04:39:55.149714",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/signals",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T04:39:55.250800",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/upgrade",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T04:41:08.048983",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T04:42:59.410162",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/dashboard",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T04:49:30.074950",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/premium-analysis",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-21T04:49:35.249142",
+    "event_type": "page_view",
+    "username": "admin",
+    "page": "/why-this-trade",
+    "symbol": null,
+    "meta": {}
   }
 ]

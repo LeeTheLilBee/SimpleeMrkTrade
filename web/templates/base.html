@@ -3,16 +3,16 @@
 <head>
     <title>SimpleeMrkTrade</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body class="{{ theme }}">
 
-<!-- NAV -->
 <nav class="topnav">
     <div class="nav-left brand-block">
 
-        <!-- LOGO (SMALL) -->
+        <!-- SMALL LOGO -->
         <a href="/" class="brand-link">
             {% if theme == "light" %}
                 <img src="/static/2.png" class="brand-logo">
@@ -23,7 +23,6 @@
 
         <a href="/">Home</a>
 
-        <!-- SIGNALS -->
         <div class="dropdown">
             <a href="/signals" class="dropbtn">Signals</a>
             <div class="dropdown-content">
@@ -32,18 +31,16 @@
             </div>
         </div>
 
-        <!-- TRADING -->
         <div class="dropdown">
             <a href="/research" class="dropbtn">Trading</a>
             <div class="dropdown-content">
                 <a href="/research">Research</a>
-                <a href="/analytics-overview">Analytics</a>
+                <a href="/analytics">Analytics</a>
                 <a href="/premium-analysis">Premium Analysis</a>
                 <a href="/why-this-trade">Why This Trade</a>
             </div>
         </div>
 
-        <!-- SIMULATION -->
         <div class="dropdown">
             <a href="/dashboard" class="dropbtn">Simulation</a>
             <div class="dropdown-content">
@@ -62,12 +59,23 @@
     <div class="nav-right">
 
         {% if user and user.username %}
+            <div class="dropdown">
+                <a href="/account" class="dropbtn">Account</a>
+                <div class="dropdown-content dropdown-right">
+                    <a href="/account">Settings</a>
+                    <a href="/my-portfolio">My Portfolio</a>
+                    <a href="/billing">Billing</a>
+
+                    {% if user.tier != "Elite" %}
+                    <a href="/upgrade">Upgrade</a>
+                    {% endif %}
+                </div>
+            </div>
+
             <span class="user-badge">
                 {{ user.username }} | {{ user.tier }}
             </span>
 
-            <a href="/account">Account</a>
-            <a href="/upgrade">Upgrade</a>
             <a href="/logout">Logout</a>
 
         {% else %}
@@ -78,27 +86,13 @@
     </div>
 </nav>
 
-<!-- CONTENT -->
 <div class="container">
     {% block content %}{% endblock %}
 </div>
 
-<!-- FLOATING DASHBOARD -->
-{% if user and user.username %}
-<div class="floating-dashboard collapsed" onclick="this.classList.toggle('collapsed')">
-    <div class="fd-header">
-        <span>Account</span>
-        <span>{{ user.tier }}</span>
-    </div>
-    <div class="fd-body">
-        <p>Positions: {{ snapshot.open_positions if snapshot else 0 }}</p>
-        <p>Buying Power: ${{ snapshot.buying_power if snapshot else 0 }}</p>
-    </div>
-</div>
-{% endif %}
-
-<!-- FOOTER LOGO -->
 <footer class="site-footer">
+
+    <!-- BIG LOGO -->
     <div class="footer-logo-wrap">
         {% if theme == "light" %}
             <img src="/static/4.png" class="footer-logo">
@@ -106,6 +100,11 @@
             <img src="/static/3.png" class="footer-logo">
         {% endif %}
     </div>
+
+    <p class="footer-tagline">
+        Structured market intelligence, simulation, and premium trade interpretation.
+    </p>
+
 </footer>
 
 </body>
