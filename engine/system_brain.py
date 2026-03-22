@@ -1,40 +1,63 @@
 """
 SYSTEM BRAIN
-Turns data into readable, decision-guiding narrative
+Generates portfolio-level narration + attention focus
 """
 
 def build_system_brain(positions, portfolio, alerts):
-    total = len(positions)
+    if not positions:
+        return {
+            "summary": "No active positions.",
+            "focus": None,
+            "tone": "idle"
+        }
+
+    # ---------------------------
+    # FIND MOST CRITICAL POSITION
+    # ---------------------------
+    most_critical = None
+    lowest_health = 100
+
+    for p in positions:
+        h = p.get("health", {}).get("score", 100)
+        if h < lowest_health:
+            lowest_health = h
+            most_critical = p
+
+    # ---------------------------
+    # PORTFOLIO STATE
+    # ---------------------------
+    avg = portfolio.get("avg_health", 0)
     weak = portfolio.get("weak_positions", 0)
-    avg_health = portfolio.get("avg_health", 0)
 
-    # ---------------------------
-    # SYSTEM MOOD
-    # ---------------------------
-    if avg_health >= 75:
-        mood = "confident"
-    elif avg_health >= 55:
-        mood = "balanced"
+    if avg >= 75:
+        summary = "Portfolio structure is strong with stable positioning."
+        tone = "confident"
+    elif avg >= 55:
+        summary = "Portfolio is stable but showing mixed strength."
+        tone = "neutral"
     else:
-        mood = "defensive"
+        summary = f"Portfolio weakening with {weak} positions deteriorating."
+        tone = "defensive"
 
     # ---------------------------
-    # PRIMARY FOCUS
+    # ALERT CONTEXT
     # ---------------------------
-    focus_symbol = None
-
     if alerts:
-        focus_symbol = alerts[0]["symbol"]
-
-    # fallback if no alerts
-    if not focus_symbol and positions:
-        lowest = sorted(positions, key=lambda x: x["health"]["score"])[0]
-        focus_symbol = lowest["symbol"]
+        summary += f" {len(alerts)} active alerts require attention."
 
     # ---------------------------
-    # NARRATIVE
+    # FOCUS TARGET
     # ---------------------------
-    if mood == "confident":
-        narrative = f"Portfolio is stable with strong structure across most positions. Only {weak} positions showing weakness."
-    elif mood == "balanced":
-        narrative = f"Portfolio
+    if most_critical:
+        focus = {
+            "symbol": most_critical.get("symbol", "Unknown"),
+            "message": f"{most_critical.get('symbol', 'This position')} requires immediate attention due to low health."
+        }
+    else:
+        focus = None
+
+    return {
+        "summary": summary,
+        "focus": focus,
+        "tone": tone
+    }
