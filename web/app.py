@@ -344,7 +344,11 @@ def get_symbol_detail(symbol: str) -> Dict[str, Any]:
     if not isinstance(news_items, list):
         news_items = []
 
+    from engine.trade_intelligence import attach_trade_intelligence
+
     all_signals = [s for s in get_signals() if s.get("symbol") == symbol]
+
+    all_signals = attach_trade_intelligence(all_signals)
 
     return {
         "symbol": symbol,
@@ -479,7 +483,13 @@ def all_symbols_page():
 @app.route("/symbol/<symbol>")
 def signal_symbol_page(symbol: str):
     detail = get_symbol_detail(symbol)
+from engine.intelligence_tiering import filter_intelligence_by_tier
 
+tier = current_tier_title()
+
+for sig in detail["signals"]:
+    if "intelligence" in sig:
+        sig["intelligence"] = filter_intelligence_by_tier(sig["intelligence"], tier)
     return render_template_safe(
         "signal_symbol.html",
         **template_context(
@@ -502,11 +512,21 @@ def signal_symbol_page(symbol: str):
 @app.route("/positions")
 def positions_page():
     positions = get_positions_with_intelligence()
+from engine.portfolio_intelligence import evaluate_portfolio
+from engine.alert_engine import generate_alerts
+from engine.trade_journal import log_trade_state
 
+portfolio = evaluate_portfolio(positions)
+alerts = generate_alerts(positions)
+journal = log_trade_state(positions)
     return render_template_safe(
-        "positions.html",
-        **template_context({"positions": positions}),
-    )
+    "positions.html",
+    **template_context({
+        "positions": positions,
+        "portfolio": portfolio,
+        "alerts": alerts
+    }),
+)
 
 
 @app.route("/proof")

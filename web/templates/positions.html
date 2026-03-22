@@ -1,140 +1,95 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="page-hero card premium-hero gold-accent-card">
-    <h2>Positions</h2>
+<div class="card premium-hero gold-accent-card">
+    <h3>Portfolio Intelligence</h3>
+
     <div class="passage-frame">
-        <p>
-            Follow how active trades are evolving through structured condition, thesis,
-            pressure, forward paths, and action bias.
-        </p>
+        <p><b>Health:</b> {{ portfolio.health }}</p>
+        <p><b>Risk:</b> {{ portfolio.risk }}</p>
+        <p><b>Avg Health Score:</b> {{ portfolio.avg_health }}</p>
     </div>
 </div>
 
-{% if positions and positions|length > 0 %}
-    {% for p in positions %}
-    {% set intel = p.intelligence if p.intelligence is defined else None %}
-
-    <div class="card gold-accent-card">
-        <div class="section-head-row">
-            <div>
-                <h3 style="margin-bottom:4px;">{{ p.symbol }}</h3>
-                {% if intel %}
-                <p class="muted-line" style="margin-top:0;">
-                    {{ intel.snapshot.status }} · {{ intel.snapshot.direction }} · {{ intel.snapshot.phase }}
-                </p>
-                {% endif %}
-            </div>
-
-            {% if intel %}
-            <div class="signal-stat-chip">Score {{ intel.snapshot.score }}</div>
-            {% endif %}
-        </div>
-
-        {% if intel %}
-        <div class="grid">
-            <div class="card">
-                <h3>Thesis</h3>
-                <div class="passage-frame">
-                    <p><b>{{ intel.thesis.type }}</b> · {{ intel.thesis.status }}</p>
-                    <p>{{ intel.thesis.summary }}</p>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Action Bias</h3>
-                <div class="passage-frame">
-                    <p>{{ intel.action_bias }}</p>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Opportunity</h3>
-                <div class="passage-frame">
-                    <p><b>Opportunity Score:</b> {{ intel.opportunity_score }}</p>
-                    <p class="muted-line">Separate from condition — this tracks remaining upside potential.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid">
-            <div class="card">
-                <h3>Damage Report</h3>
-                <div class="passage-frame">
-                    {% for item in intel.damage_report %}
-                    <p>{{ item }}</p>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Forward Paths</h3>
-                <div class="passage-frame">
-                    {% for path in intel.forward_paths %}
-                    <p>{{ path }}</p>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Invalidation</h3>
-                <div class="passage-frame">
-                    <p>{{ intel.invalidation_map }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Pressure Map</h3>
-            <div class="grid">
-                <div class="card">
-                    <p><b>Price</b></p>
-                    <div class="metric">{{ intel.pressure_map.price }}</div>
-                </div>
-                <div class="card">
-                    <p><b>Trend</b></p>
-                    <div class="metric">{{ intel.pressure_map.trend }}</div>
-                </div>
-                <div class="card">
-                    <p><b>Momentum</b></p>
-                    <div class="metric">{{ intel.pressure_map.momentum }}</div>
-                </div>
-                <div class="card">
-                    <p><b>Volatility</b></p>
-                    <div class="metric">{{ intel.pressure_map.volatility }}</div>
-                </div>
-                <div class="card">
-                    <p><b>Signal</b></p>
-                    <div class="metric">{{ intel.pressure_map.signal }}</div>
-                </div>
-                <div class="card">
-                    <p><b>Time</b></p>
-                    <div class="metric">{{ intel.pressure_map.time }}</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>What Changed</h3>
-            <div class="passage-frame">
-                {% for item in intel.what_changed %}
-                <p>{{ item }}</p>
-                {% endfor %}
-            </div>
-        </div>
-        {% else %}
-        <div class="passage-frame">
-            <p>No intelligence object is attached to this position yet.</p>
-        </div>
-        {% endif %}
-    </div>
-    {% endfor %}
-{% else %}
+{% if alerts %}
 <div class="card">
-    <div class="passage-frame">
-        <p>No positions are available right now.</p>
-    </div>
+    <h3>Active Alerts</h3>
+    <ul>
+        {% for a in alerts %}
+        <li>{{ a }}</li>
+        {% endfor %}
+    </ul>
 </div>
 {% endif %}
+
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>Positions Command Center</h2>
+    <div class="passage-frame">
+        <p>Live intelligence, structural health, and evolving trade context.</p>
+    </div>
+</div>
+
+{% for p in positions %}
+<div class="card premium-card">
+
+    <div class="symbol-card-top">
+        <h3>{{ p.symbol }}</h3>
+        <span class="signal-stat-chip">{{ p.health.label }}</span>
+    </div>
+
+    <!-- HEALTH BAR -->
+    <div class="health-bar">
+        <div class="health-fill" style="width: {{ p.health.score }}%;"></div>
+    </div>
+
+    <div class="passage-frame">
+        <p><b>Health:</b> {{ p.health.score }}</p>
+        <p><b>Direction:</b> {{ p.health.direction }}</p>
+        <p><b>Action:</b> {{ p.health.action }}</p>
+    </div>
+
+    <!-- BREAKDOWN -->
+    {% if p.health.breakdown %}
+    <div class="card">
+        <h4>Why This Changed</h4>
+        <ul>
+            {% for b in p.health.breakdown %}
+            <li>{{ b }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- EVENTS -->
+    {% if p.health.events %}
+    <div class="card">
+        <h4>Critical Events</h4>
+        <ul>
+            {% for e in p.health.events %}
+            <li>{{ e }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- TIMELINE -->
+    <div class="card">
+        <h4>Trade Timeline</h4>
+        <ul>
+            {% for t in p.timeline %}
+            <li>{{ t }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- INTELLIGENCE -->
+    <div class="card">
+        <h4>Trade Intelligence</h4>
+        <p><b>Status:</b> {{ p.intelligence.thesis.status }}</p>
+        <p><b>Action Bias:</b> {{ p.intelligence.action_bias }}</p>
+    </div>
+
+</div>
+{% endfor %}
 
 {% endblock %}

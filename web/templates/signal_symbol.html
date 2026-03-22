@@ -1,145 +1,177 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="symbol-page-hero card premium-hero gold-accent-card">
-    <div class="symbol-page-head">
-        <div class="symbol-page-left">
-            <a href="/signals" class="back-link" aria-label="Back">←</a>
-            <div>
-                <h2 style="margin-bottom:6px;">{{ symbol }}</h2>
-                <p class="symbol-page-company">{{ company.name }}</p>
-            </div>
-        </div>
-
-        <div class="symbol-page-actions">
-            {% if show_upgrade %}
-            <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<div class="grid">
-    <div class="card gold-accent-card">
-        <h3>Company Overview</h3>
-        <div class="passage-frame">
-            <p>{{ company.blurb }}</p>
-        </div>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Signal Snapshot</h3>
-        <div class="passage-frame">
-            <p><b>Visible Signal Entries:</b> {{ visible_signal_count }}</p>
-            <p><b>Total Stored:</b> {{ total_signal_count }}</p>
-            {% if symbol_signals and symbol_signals|length > 0 %}
-            <p><b>Latest Score:</b> {{ symbol_signals[0].score }}</p>
-            <p><b>Confidence:</b> {{ symbol_signals[0].confidence }}</p>
-            <p><b>Updated:</b> {{ symbol_signals[0].timestamp[:16].replace("T", " ") }}</p>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Market Opinion</h3>
-        <div class="passage-frame">
-            <p>{{ opinion }}</p>
-        </div>
-    </div>
-</div>
-
-{% for section, lines in explanation.items() %}
-<div class="card explanation-section-card">
-    <div class="section-head-row">
-        <h3>{{ section.replace("_", " ").title() }}</h3>
-        {% if show_elite %}
-        <span class="section-tier-pill elite-pill">Elite Enabled</span>
-        {% endif %}
-    </div>
-
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>{{ symbol }} — {{ company.name }}</h2>
     <div class="passage-frame">
-        {% for line in lines %}
-            {% if line is mapping and line.elite %}
-            <div class="elite-insight-box">
-                <div class="elite-label">⭐ Elite Insight</div>
-                <p>{{ line.text }}</p>
-            </div>
-            {% else %}
-            <p>{{ line }}</p>
-            {% endif %}
-        {% endfor %}
-
-        {% if show_teaser %}
-        <div class="upgrade-cutoff-box">
-            <div class="lock-label">🔒 Full Trade Intelligence Locked</div>
-            <p>
-                Unlock the deeper reasoning behind this setup, including the rest of this section,
-                structured risk context, and richer interpretation.
-            </p>
-            <a href="/upgrade" class="cta-btn premium-gold-btn">Unlock Full Insight</a>
-        </div>
-        {% endif %}
+        <p>{{ company.blurb }}</p>
     </div>
 </div>
-{% endfor %}
+
+{% if symbol_signals and symbol_signals|length > 0 %}
+    {% set latest = symbol_signals[0] %}
+    {% set intel = latest.intelligence %}
+{% else %}
+    {% set intel = None %}
+{% endif %}
+
+<!-- INTELLIGENCE -->
+<div class="card premium-card">
+    <h3>Trade Intelligence</h3>
+
+    {% if intel.teaser %}
+        <div class="passage-frame">
+            <p>{{ intel.teaser }}</p>
+        </div>
+        <a href="/upgrade" class="cta-btn premium-gold-btn">Unlock Intelligence</a>
+
+    {% else %}
+
+        {% if intel.snapshot %}
+        <div class="passage-frame">
+            <p><b>Snapshot:</b></p>
+            <ul>
+                {% for line in intel.snapshot.trade_snapshot %}
+                <li>{{ line }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if intel.thesis %}
+        <div class="passage-frame">
+            <p><b>Thesis:</b> {{ intel.thesis.status }}</p>
+        </div>
+        {% endif %}
+
+        {% if intel.pressure %}
+        <div class="card">
+            <h3>Pressure</h3>
+            <ul>
+                {% for line in intel.pressure %}
+                <li>{{ line }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if intel.damage %}
+        <div class="card">
+            <h3>Structural Damage</h3>
+            <ul>
+                {% for line in intel.damage %}
+                <li>{{ line }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if intel.forward_paths %}
+        <div class="card">
+            <h3>Forward Paths</h3>
+
+            <div class="passage-frame">
+                <p><b>Bull Case:</b></p>
+                <ul>
+                    {% for line in intel.forward_paths.bull_case %}
+                    <li>{{ line }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="passage-frame">
+                <p><b>Bear Case:</b></p>
+                <ul>
+                    {% for line in intel.forward_paths.bear_case %}
+                    <li>{{ line }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if intel.invalidation %}
+        <div class="card">
+            <h3>Invalidation</h3>
+            <ul>
+                {% for line in intel.invalidation %}
+                <li>{{ line }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="passage-frame">
+            <p><b>Action Bias:</b> {{ intel.action_bias }}</p>
+        </div>
+
+    {% endif %}
+</div>
+
+<!-- PRESSURE -->
+{% if intel %}
+<div class="card">
+    <h3>Pressure</h3>
+    <ul>
+        {% for line in intel.pressure %}
+        <li>{{ line }}</li>
+        {% endfor %}
+    </ul>
+</div>
 
 <div class="card">
-    <h3>Signals</h3>
-    {% if symbol_signals and symbol_signals|length > 0 %}
-        {% for s in symbol_signals %}
-        <div class="symbol-signal-entry">
-            <div class="symbol-signal-head">
-                <div>
-                    <h4 style="margin:0;">{{ s.strategy }} | Score {{ s.score }}</h4>
-                    <p class="muted-line" style="margin:6px 0 0 0;">
-                        {{ s.timestamp[:16].replace("T", " ") }} | {{ s.confidence }} | {{ s.source or "execution" }}
-                    </p>
-                </div>
-                {% if s.trade_id %}
-                <a href="/trade/{{ s.trade_id }}" class="cta-btn secondary">Trade Detail</a>
-                {% endif %}
-            </div>
-        </div>
+    <h3>Structural Damage</h3>
+    <ul>
+        {% for line in intel.damage %}
+        <li>{{ line }}</li>
         {% endfor %}
-    {% else %}
-    <div class="passage-frame">
-        <p>No signals stored for this symbol yet.</p>
-    </div>
-    {% endif %}
+    </ul>
 </div>
 
-<div class="card gold-accent-card">
-    <div class="section-head-row">
-        <h3>Why This Trade</h3>
-        <a href="/why-this-trade" class="cta-btn secondary">Open Library</a>
-    </div>
+<div class="card">
+    <h3>Forward Paths</h3>
+
     <div class="passage-frame">
-        <p>
-            The dedicated Why This Trade area contains structured deep dives for active opportunities,
-            built to explain not just what is happening, but why it matters.
-        </p>
+        <p><b>Bull Case:</b></p>
+        <ul>
+            {% for line in intel.forward_paths.bull_case %}
+            <li>{{ line }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="passage-frame">
+        <p><b>Bear Case:</b></p>
+        <ul>
+            {% for line in intel.forward_paths.bear_case %}
+            <li>{{ line }}</li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 
-<div class="card gold-accent-card">
-    <h3>Live News</h3>
-    {% if news_items and news_items|length > 0 %}
-        {% for item in news_items %}
-        <div class="news-item">
-            <h4 style="margin-bottom:6px;">{{ item.title }}</h4>
-            <p class="muted-line" style="margin-top:0;">
-                {{ item.publisher }}{% if item.published_at %} | {{ item.published_at[:16].replace("T", " ") }}{% endif %}
-            </p>
-            {% if item.link %}
-            <p><a href="{{ item.link }}" target="_blank" rel="noopener noreferrer">Open Article</a></p>
-            {% endif %}
-        </div>
+<div class="card">
+    <h3>Invalidation</h3>
+    <ul>
+        {% for line in intel.invalidation %}
+        <li>{{ line }}</li>
         {% endfor %}
-    {% else %}
-    <div class="passage-frame">
-        <p>No live news available right now for this symbol.</p>
+    </ul>
+</div>
+{% endif %}
+
+<!-- SIGNAL HISTORY -->
+<div class="card">
+    <h3>Recent Signals</h3>
+
+    {% for sig in symbol_signals[:10] %}
+    <div class="mini-signal">
+        <span>Score {{ sig.score }} | {{ sig.confidence }}</span>
+        <div class="passage-frame">
+            <p>{{ sig.opinion }}</p>
+        </div>
     </div>
-    {% endif %}
+    {% endfor %}
 </div>
 
 {% endblock %}
