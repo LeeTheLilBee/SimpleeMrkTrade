@@ -1,138 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="card premium-hero section-sparkle">
-    <h2 style="margin-bottom:8px;">Signal Spotlight</h2>
-    <div class="passage-frame">
-        <p>
-            Clean ranked symbols first. Click deeper into the symbol page for the full read.
-        </p>
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>Signal Spotlight</h2>
+    <p class="muted-line">Ranked opportunities based on current engine conditions.</p>
+</div>
+
+<div class="grid">
+    {% for signal in visible_signals %}
+    <div class="card gold-accent-card">
+        <h3>{{ signal.symbol }}</h3>
+
+        <p><b>Score:</b> {{ signal.score }}</p>
+        <p><b>Confidence:</b> {{ signal.confidence }}</p>
+
+        <a href="/symbol/{{ signal.symbol }}" class="cta-btn">View Symbol</a>
     </div>
-</div>
-
-<div class="signals-top-actions">
-    {% if can_access_all_symbols is defined and can_access_all_symbols %}
-    <a href="/all-symbols" class="cta-btn secondary">All Symbols</a>
-    {% else %}
-    <a href="/upgrade" class="cta-btn secondary">Unlock All Symbols</a>
-    {% endif %}
-
-    {% if show_upgrade %}
-    <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
-    {% endif %}
-</div>
-
-<div class="spotlight-header-row">
-    <div>
-        <h3>Top Ranked Now</h3>
-        <p class="muted-line">Fast scan first, deeper read on click.</p>
-    </div>
-</div>
-
-{% if top_five is defined and top_five %}
-<div class="symbol-card-grid spotlight-grid">
-    {% for board in top_five %}
-    <a href="/signals/{{ board.symbol }}" class="symbol-card-link">
-        <div class="card premium-card symbol-card top-rank-card">
-            <div class="rank-badge">#{{ loop.index }}</div>
-
-            <div class="symbol-card-top">
-                <div>
-                    <h3 class="symbol-card-ticker">{{ board.symbol }}</h3>
-                    <p class="symbol-card-company">{{ board.company_name if board.company_name is defined else board.symbol }}</p>
-                </div>
-
-                <div class="symbol-card-badges">
-                    <span class="signal-stat-chip">Score {{ board.latest_score if board.latest_score is defined else 0 }}</span>
-                    <span class="signal-stat-chip">{{ board.latest_confidence if board.latest_confidence is defined else "LOW" }}</span>
-                </div>
-            </div>
-
-            <div class="passage-frame">
-                <p><b>Opinion:</b> {{ board.opinion if board.opinion is defined else "Active setup." }}</p>
-                <p class="muted-line">
-                    Updated {{ board.latest_timestamp[:16].replace("T", " ") if board.latest_timestamp is defined and board.latest_timestamp else "Recently" }}
-                </p>
-            </div>
-        </div>
-    </a>
     {% endfor %}
 </div>
-{% else %}
-<div class="card">
-    <div class="passage-frame">
-        <p>No spotlight symbols are available right now.</p>
-    </div>
-</div>
-{% endif %}
 
-<div class="spotlight-header-row" style="margin-top: 8px;">
-    <div>
-        <h3>Extended Watchlist</h3>
-        <p class="muted-line">
-            {% if user and user.tier == "Elite" %}
-            Next 20 symbols for your broadest view.
-            {% elif user and user.tier == "Pro" %}
-            Wider symbol coverage for Pro.
-            {% elif user and user.tier == "Starter" %}
-            Broader coverage than Free, still intentionally curated.
-            {% elif user and user.tier == "Free" %}
-            Free focuses on the strongest headline ideas first.
-            {% else %}
-            Upgrade to unlock broader symbol coverage.
-            {% endif %}
-        </p>
-    </div>
-</div>
-
-{% if next_twenty is defined and next_twenty %}
-<div class="symbol-card-grid extended-grid">
-    {% for board in next_twenty %}
-    <a href="/signals/{{ board.symbol }}" class="symbol-card-link">
-        <div class="card symbol-card compact-symbol-card">
-            <div class="symbol-card-top">
-                <div>
-                    <h3 class="symbol-card-ticker">{{ board.symbol }}</h3>
-                    <p class="symbol-card-company">{{ board.company_name if board.company_name is defined else board.symbol }}</p>
-                </div>
-                <div class="symbol-card-badges">
-                    <span class="signal-stat-chip">{{ board.latest_score if board.latest_score is defined else 0 }}</span>
-                </div>
-            </div>
-
-            <div class="passage-frame">
-                <p><b>Opinion:</b> {{ board.opinion if board.opinion is defined else "Active setup." }}</p>
-            </div>
-        </div>
-    </a>
-    {% endfor %}
-</div>
-{% else %}
+{% if hidden_count > 0 %}
 <div class="card gold-accent-card">
-    <div class="passage-frame">
-        <p>
-            This tier is focused on the strongest front-page ideas first.
-            Upgrade to unlock a wider watchlist and the full symbol directory.
-        </p>
-    </div>
-    {% if show_upgrade %}
-    <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade for More Coverage</a>
-    {% endif %}
-</div>
-{% endif %}
+    <h3>More Opportunities</h3>
 
-{% if hidden_remaining is defined and hidden_remaining > 0 %}
-<div class="card gold-accent-card all-symbols-cta-card">
-    <h3>See more symbols</h3>
-    <div class="passage-frame">
-        <p>
-            There are {{ hidden_remaining }} more symbols beyond the spotlight view.
-        </p>
-    </div>
-    {% if can_access_all_symbols is defined and can_access_all_symbols %}
-    <a href="/all-symbols" class="cta-btn">Open All Symbols</a>
-    {% else %}
-    <a href="/upgrade" class="cta-btn premium-gold-btn">Unlock All Symbols</a>
+    <p class="muted-line">
+        {{ hidden_count }} additional signals available at higher tiers.
+    </p>
+
+    {% if tier != "Elite" %}
+    <a href="/upgrade" class="cta-btn premium-gold-btn">Unlock More Signals</a>
     {% endif %}
 </div>
 {% endif %}

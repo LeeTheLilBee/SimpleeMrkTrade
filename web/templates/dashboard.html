@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="card premium-hero gold-accent-card">
+<div class="page-hero card premium-hero gold-accent-card">
     <h2>Dashboard</h2>
-    <p class="muted-line">Clean system overview with teaser intelligence that routes into Positions.</p>
+    <div class="passage-frame">
+        <p>
+            A cleaner system snapshot with fast visibility into account posture, recent position condition,
+            and the next layer of deeper position intelligence.
+        </p>
+    </div>
 </div>
 
 <div class="dashboard-subnav">
@@ -18,25 +23,32 @@
     <div class="card gold-accent-card">
         <h3>Estimated Value</h3>
         <div class="metric">${{ snapshot.estimated_account_value if snapshot and snapshot.estimated_account_value is defined else 0 }}</div>
+        <p class="muted-line">Current simulated account value.</p>
     </div>
 
     <div class="card gold-accent-card">
         <h3>Buying Power</h3>
         <div class="metric">${{ snapshot.buying_power if snapshot and snapshot.buying_power is defined else 0 }}</div>
+        <p class="muted-line">Available capital for new activity.</p>
     </div>
 
     <div class="card gold-accent-card">
         <h3>Open Positions</h3>
         <div class="metric">{{ snapshot.open_positions if snapshot and snapshot.open_positions is defined else 0 }}</div>
+        <p class="muted-line">Tracked positions currently active.</p>
     </div>
 </div>
 
-<div class="card premium-card">
-    <h3>Position Intelligence Teaser</h3>
+<div class="card premium-card gold-accent-card">
+    <div class="section-head-row">
+        <h3>Position Intelligence Preview</h3>
+        <a href="/positions" class="cta-btn premium-gold-btn">Open Positions</a>
+    </div>
+
     <div class="passage-frame">
         <p>
-            The dashboard gives you the clean top-line read. Full warnings, risk context,
-            targets, and deeper health logic live inside Positions.
+            The dashboard stays calm on purpose. It gives you the fast read first, then routes you into
+            Positions for full trade condition, damage, pressure, and deeper intelligence.
         </p>
     </div>
 </div>
@@ -44,27 +56,45 @@
 {% if positions is defined and positions %}
 <div class="grid">
     {% for p in positions[:4] %}
-    <div class="card teaser-card">
+    <div class="card teaser-card gold-accent-card">
         <div class="section-head-row">
-            <h3 style="margin-bottom:0;">{{ p.symbol }}</h3>
-            <span class="signal-stat-chip">{{ p.status if p.status is defined else "Watching" }}</span>
+            <div>
+                <h3 style="margin-bottom:4px;">{{ p.symbol }}</h3>
+                <p class="muted-line" style="margin-top:0;">
+                    {{ p.status if p.status is defined else "Watching" }}
+                </p>
+            </div>
+
+            <div class="signal-stat-chip">
+                {{ p.health_score if p.health_score is defined else 50 }}
+            </div>
         </div>
 
-        <p class="muted-line">
-            {% if p.pnl is defined %}PnL: {{ p.pnl }}{% else %}PnL: N/A{% endif %}
+        <p>
+            <b>PnL:</b>
+            {{ p.pnl if p.pnl is defined else "N/A" }}
         </p>
 
         <div class="health-bar">
             <div class="health-fill" style="width: {{ p.health_score if p.health_score is defined else 50 }}%;"></div>
         </div>
 
-        <div class="blur-box">
-            <p><b>Risk:</b> {{ p.risk if p.risk is defined else "Structured risk view available in Positions" }}</p>
-            <p><b>Target:</b> {{ p.target if p.target is defined else "Target details available in Positions" }}</p>
-            <p><b>Warnings:</b> {{ p.warning if p.warning is defined else "Additional warnings available in Positions" }}</p>
+        <div class="teaser-row">
+            <span><b>Warning</b></span>
+            <span class="blurred">{{ p.warning if p.warning is defined else "Momentum pressure forming" }}</span>
         </div>
 
-        <a href="/positions" class="cta-btn premium-gold-btn">Open Positions</a>
+        <div class="teaser-row">
+            <span><b>Risk</b></span>
+            <span class="blurred">{{ p.risk if p.risk is defined else "Support under pressure" }}</span>
+        </div>
+
+        <div class="teaser-row">
+            <span><b>Target</b></span>
+            <span class="blurred">{{ p.target if p.target is defined else "Upside zone in play" }}</span>
+        </div>
+
+        <a href="/positions" class="cta-btn secondary">View Full Position</a>
     </div>
     {% endfor %}
 </div>
@@ -72,8 +102,8 @@
 <div class="card">
     <div class="passage-frame">
         <p>
-            No dashboard teaser positions are available right now. The system overview is still live,
-            and full position intelligence will appear here once positions are present.
+            No position previews are available right now. The system overview is live,
+            and full position intelligence will appear here as positions populate.
         </p>
     </div>
     <a href="/positions" class="cta-btn secondary">Go to Positions</a>
@@ -85,14 +115,19 @@
     <div class="card gold-accent-card">
         <h3>Trades</h3>
         <div class="metric">{{ proof.trades if proof.trades is defined else "N/A" }}</div>
+        <p class="muted-line">Tracked completed trades.</p>
     </div>
+
     <div class="card gold-accent-card">
         <h3>Win Rate</h3>
         <div class="metric">{{ proof.winrate if proof.winrate is defined else "N/A" }}</div>
+        <p class="muted-line">Current proof win rate.</p>
     </div>
+
     <div class="card gold-accent-card">
         <h3>Max Drawdown</h3>
         <div class="metric">{{ proof.max_drawdown if proof.max_drawdown is defined else "N/A" }}</div>
+        <p class="muted-line">Largest drawdown seen in proof history.</p>
     </div>
 </div>
 {% endif %}

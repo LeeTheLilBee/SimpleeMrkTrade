@@ -787,3 +787,39 @@ body.light .footer-tagline {
         bottom: 12px;
     }
 }
+.blurred {
+    filter: blur(6px);
+    opacity: 0.6;
+}
+
+.teaser-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+}
+%%writefile /tmp/dashboard_teaser_css_patch.css
+.blurred {
+    filter: blur(6px);
+    opacity: 0.62;
+    user-select: none;
+}
+
+.teaser-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 10px 0;
+}
+
+.health-bar {
+    height: 8px;
+    background: rgba(148,163,184,0.18);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 12px 0 16px 0;
+}
+
+.health-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #84cc16);
+}    
