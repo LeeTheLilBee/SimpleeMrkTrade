@@ -1,0 +1,30 @@
+{
+  "core_equities": [
+    "AAPL", "MSFT", "NVDA", "AMZN", "META", "GOOGL", "TSLA", "AMD", "NFLX", "AVGO",
+    "CRM", "ORCL", "ADBE", "PLTR", "SNOW", "SHOP", "UBER", "COIN", "INTC", "QCOM"
+  ],
+  "semiconductors": [
+    "NVDA", "AMD", "AVGO", "QCOM", "MU", "INTC", "MRVL", "ARM", "SMCI", "TSM"
+  ],
+  "ai_data_cloud": [
+    "MSFT", "NVDA", "PLTR", "SNOW", "CRM", "ORCL", "ADBE", "AMZN", "GOOGL", "MDB"
+  ],
+  "energy": [
+    "XOM", "CVX", "COP", "SLB", "EOG", "OXY", "HAL", "DVN", "MPC", "PSX"
+  ],
+  "financials": [
+    "JPM", "BAC", "GS", "MS", "WFC", "BLK", "AXP", "SCHW", "C", "PYPL"
+  ],
+  "industrials": [
+    "CAT", "DE", "GE", "HON", "BA", "LMT", "RTX", "ETN", "PH", "UNP"
+  ],
+  "consumer": [
+    "WMT", "COST", "HD", "MCD", "SBUX", "NKE", "TGT", "LOW", "DIS", "CMG"
+  ],
+  "healthcare": [
+    "LLY", "UNH", "JNJ", "MRK", "ABBV", "PFE", "TMO", "ISRG", "VRTX", "DHR"
+  ],
+  "etfs": [
+    "SPY", "QQQ", "IWM", "DIA", "XLE", "XLK", "XLF", "XLV", "SMH", "ARKK"
+  ]
+}
