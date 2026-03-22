@@ -1,78 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
 
-<section class="landing-shell">
+<section class="landing-shell landing-clean-shell">
 
-    <div class="landing-hero card premium-hero gold-accent-card">
-        <div class="landing-hero-inner">
+    <div class="landing-clean-hero card premium-hero gold-accent-card">
+        <div class="landing-clean-logo-wrap">
+            {% if theme == "light" %}
+                <img src="/static/2.png" alt="SimpleeMrkTrade" class="landing-clean-logo">
+            {% else %}
+                <img src="/static/1.png" alt="SimpleeMrkTrade" class="landing-clean-logo">
+            {% endif %}
+        </div>
 
-            <div class="landing-logo-wrap">
-                {% if theme == "light" %}
-                    <img src="/static/2.png" alt="SimpleeMrkTrade" class="landing-hero-logo">
-                {% else %}
-                    <img src="/static/1.png" alt="SimpleeMrkTrade" class="landing-hero-logo">
-                {% endif %}
-            </div>
+        <div class="landing-clean-actions">
+            <a href="/signals" class="cta-btn">Explore Signals</a>
+            <a href="/proof" class="cta-btn secondary">View Proof</a>
 
-            <div class="landing-copy">
-                <h1 class="landing-title">Structured market intelligence that actually explains itself.</h1>
+            {% if user and user.username %}
+                <a href="/dashboard" class="cta-btn premium-gold-btn">Open Dashboard</a>
+            {% else %}
+                <a href="/signup" class="cta-btn premium-gold-btn">Create Account</a>
+            {% endif %}
+        </div>
 
-                <p class="landing-subtitle">
-                    SimpleeMrkTrade is built to help users understand what matters, why it matters,
-                    and how to move through signals, simulation, and premium trade interpretation
-                    without getting buried in noise.
-                </p>
-
-                <div class="hero-actions">
-                    <a href="/signals" class="cta-btn">Explore Signals</a>
-                    <a href="/proof" class="cta-btn secondary">View Proof</a>
-                    {% if not user or not user.username %}
-                    <a href="/signup" class="cta-btn premium-gold-btn">Create Account</a>
-                    {% endif %}
-                </div>
-            </div>
-
+        <div class="landing-clean-blurb">
+            <p>
+                Structured market intelligence, simulation, and premium trade interpretation
+                built to help users understand not just what matters, but why it matters.
+            </p>
         </div>
     </div>
 
-    {% if not user or not user.username %}
-    <section class="landing-login-split">
-        <div class="card landing-value-card gold-accent-card">
-            <h2>Why SimpleeMrkTrade is different</h2>
-            <div class="passage-frame">
-                <p>
-                    Most trading tools dump information on you and leave you to figure out what actually matters.
-                    SimpleeMrkTrade is designed to organize the market into a cleaner flow: discovery, interpretation,
-                    monitoring, and proof.
-                </p>
-
-                <p>
-                    Instead of forcing users to jump between disconnected tools, it brings signals, trade reasoning,
-                    premium analysis, position tracking, and proof into one structured experience.
-                </p>
-            </div>
-        </div>
-
-        <div class="card landing-login-card gold-accent-card">
-            <h2>Enter the platform</h2>
-            <p class="muted-line">Access your dashboard, positions, research, and account tools.</p>
-
-            <div class="landing-login-actions">
-                <a href="/login" class="cta-btn">Login</a>
-                <a href="/signup" class="cta-btn premium-gold-btn">Create Account</a>
-                <a href="/upgrade" class="cta-btn secondary">See Plans</a>
-            </div>
-        </div>
-    </section>
-    {% endif %}
-
-    <section class="landing-feature-grid">
+    <section class="landing-feature-grid landing-clean-grid">
         <div class="card gold-accent-card landing-feature-card">
             <h3>Signals</h3>
             <div class="passage-frame">
                 <p>
-                    A symbol-first discovery layer with ranked opportunities, cleaner scanning,
-                    and deeper click-through into the symbols that matter most.
+                    Discover ranked symbols, spotlight setups, and cleaner scan flow that
+                    leads naturally into deeper symbol pages.
                 </p>
             </div>
         </div>
@@ -81,8 +46,8 @@
             <h3>Trade Intelligence</h3>
             <div class="passage-frame">
                 <p>
-                    Why This Trade, Premium Analysis, and evolving position context work together
-                    so the platform explains not just what is happening, but why it matters.
+                    Move from raw signal visibility into structured reasoning, deeper interpretation,
+                    and clearer understanding of active opportunities.
                 </p>
             </div>
         </div>
@@ -91,8 +56,8 @@
             <h3>Simulation + Proof</h3>
             <div class="passage-frame">
                 <p>
-                    Follow the engine, evaluate proof, and understand system behavior through
-                    a cleaner simulation and analytics experience.
+                    Follow the engine, evaluate results, and understand how the system behaves
+                    through simulation, analytics, and proof.
                 </p>
             </div>
         </div>

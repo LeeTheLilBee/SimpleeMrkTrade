@@ -718,5 +718,13 @@
     "page": "/",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-22T00:17:52.095205",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/",
+    "symbol": null,
+    "meta": {}
   }
 ]
