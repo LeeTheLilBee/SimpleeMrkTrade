@@ -2,7 +2,8 @@
 {% block content %}
 
 <section class="landing-shell">
-    <div class="landing-hero card premium-hero section-sparkle">
+
+    <div class="landing-hero card premium-hero gold-accent-card">
         <div class="landing-hero-inner">
 
             <div class="landing-logo-wrap">
@@ -15,6 +16,7 @@
 
             <div class="landing-copy">
                 <h1 class="landing-title">Structured market intelligence that actually explains itself.</h1>
+
                 <p class="landing-subtitle">
                     SimpleeMrkTrade is built to help users understand what matters, why it matters,
                     and how to move through signals, simulation, and premium trade interpretation
@@ -29,6 +31,7 @@
                     {% endif %}
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -38,29 +41,25 @@
             <h2>Why SimpleeMrkTrade is different</h2>
             <div class="passage-frame">
                 <p>
-                    Most trading tools dump information on you and leave you to figure out what is important.
-                    SimpleeMrkTrade is designed to organize the market into symbol intelligence, simulation,
-                    and premium explanation layers so the user can understand not just the signal, but the context.
+                    Most trading tools dump information on you and leave you to figure out what actually matters.
+                    SimpleeMrkTrade is designed to organize the market into a cleaner flow: discovery, interpretation,
+                    monitoring, and proof.
                 </p>
+
                 <p>
-                    It combines cleaner symbol-first navigation, account-aware simulation, and deeper explanation
-                    of conviction, risk, and opportunity quality in one platform.
+                    Instead of forcing users to jump between disconnected tools, it brings signals, trade reasoning,
+                    premium analysis, position tracking, and proof into one structured experience.
                 </p>
             </div>
         </div>
 
-        <div class="card landing-login-card">
-            <h2>Log in</h2>
-            <p class="muted-line">Access your dashboard, portfolio tools, and trading workspace.</p>
-
-            <form action="/login" method="get" class="landing-login-form">
-                <button type="submit" class="cta-btn">Go to Login</button>
-            </form>
-
-            <div class="landing-login-divider"><span>or</span></div>
+        <div class="card landing-login-card gold-accent-card">
+            <h2>Enter the platform</h2>
+            <p class="muted-line">Access your dashboard, positions, research, and account tools.</p>
 
             <div class="landing-login-actions">
-                <a href="/signup" class="cta-btn premium-gold-btn">Create New Account</a>
+                <a href="/login" class="cta-btn">Login</a>
+                <a href="/signup" class="cta-btn premium-gold-btn">Create Account</a>
                 <a href="/upgrade" class="cta-btn secondary">See Plans</a>
             </div>
         </div>
@@ -68,36 +67,37 @@
     {% endif %}
 
     <section class="landing-feature-grid">
-        <div class="card gold-accent-card">
+        <div class="card gold-accent-card landing-feature-card">
             <h3>Signals</h3>
             <div class="passage-frame">
                 <p>
-                    A symbol-first experience with spotlight rankings, searchable coverage,
-                    and deeper symbol pages that explain score, confidence, and current opinion.
+                    A symbol-first discovery layer with ranked opportunities, cleaner scanning,
+                    and deeper click-through into the symbols that matter most.
                 </p>
             </div>
         </div>
 
-        <div class="card gold-accent-card">
-            <h3>Simulation</h3>
+        <div class="card gold-accent-card landing-feature-card">
+            <h3>Trade Intelligence</h3>
             <div class="passage-frame">
                 <p>
-                    Proof, positions, reports, bot activity, equity, and dashboard tools are grouped together
-                    so account behavior is easy to follow.
+                    Why This Trade, Premium Analysis, and evolving position context work together
+                    so the platform explains not just what is happening, but why it matters.
                 </p>
             </div>
         </div>
 
-        <div class="card gold-accent-card">
-            <h3>Premium Interpretation</h3>
+        <div class="card gold-accent-card landing-feature-card">
+            <h3>Simulation + Proof</h3>
             <div class="passage-frame">
                 <p>
-                    Premium layers turn raw signal activity into context-rich explanation,
-                    structured reasoning, and better trade clarity.
+                    Follow the engine, evaluate proof, and understand system behavior through
+                    a cleaner simulation and analytics experience.
                 </p>
             </div>
         </div>
     </section>
+
 </section>
 
 {% endblock %}
