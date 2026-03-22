@@ -492,6 +492,22 @@ def dashboard_page():
         ),
     )
 
+@app.route("/admin")
+def admin_dashboard():
+    return render_template_safe(
+        "admin.html",
+        **template_context(
+            {
+                "positions": get_positions_with_intelligence(),
+                "signals": get_signals(),
+                "users": load_json("data/users.json", []),
+                "metrics": get_admin_metrics() if "get_admin_metrics" in globals() else {},
+                "proof": performance_summary(),
+                "snapshot": get_dashboard_snapshot(),
+                "system": get_system_state(),
+            }
+        ),
+    )
 
 @app.route("/signals")
 def signals_page():
@@ -788,8 +804,8 @@ def login_page():
     if request.method == "POST":
         username = (request.form.get("username") or "").strip() or "demo_user"
         session["username"] = username
-        session["tier"] = session.get("tier", "Free")
-        session["role"] = session.get("role", "member")
+        session["tier"] = session.get("tier", "Elite")
+        session["role"] = "master"
         return redirect(url_for("dashboard_page"))
 
     return render_template_safe(

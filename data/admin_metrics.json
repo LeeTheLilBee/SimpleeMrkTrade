@@ -1,7 +1,7 @@
 {
   "page_views": {
-    "/": 124,
-    "/dashboard": 87,
+    "/": 126,
+    "/dashboard": 89,
     "/signals": 142,
     "/positions": 59,
     "/all-symbols": 41,
@@ -9,7 +9,7 @@
     "/why-this-trade": 26,
     "/analytics-overview": 18,
     "/upgrade": 21,
-    "/login": 49,
+    "/login": 51,
     "/signup": 28
   },
   "clicks": {
