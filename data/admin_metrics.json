@@ -1,0 +1,35 @@
+{
+  "page_views": {
+    "/": 124,
+    "/dashboard": 87,
+    "/signals": 142,
+    "/positions": 59,
+    "/all-symbols": 41,
+    "/premium-analysis": 33,
+    "/why-this-trade": 26,
+    "/analytics-overview": 18,
+    "/upgrade": 21,
+    "/login": 49,
+    "/signup": 28
+  },
+  "clicks": {
+    "upgrade_button": 17,
+    "all_symbols_link": 22,
+    "positions_cta": 13,
+    "proof_cta": 8,
+    "login_submit": 31,
+    "signup_submit": 16
+  },
+  "friction_signals": {
+    "starter_spotlight_errors": 0,
+    "upgrade_dead_ends": 2,
+    "empty_pages_seen": 1,
+    "login_failures": 3
+  },
+  "engagement": {
+    "active_users_estimate": 9,
+    "avg_pages_per_session": 5.7,
+    "signals_to_symbol_clickthrough_pct": 38,
+    "dashboard_to_positions_clickthrough_pct": 24
+  }
+}

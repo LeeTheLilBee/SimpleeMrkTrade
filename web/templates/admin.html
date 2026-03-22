@@ -1,78 +1,137 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Admin Console</h2>
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>Admin Control Center</h2>
+    <div class="passage-frame">
+        <p>
+            Monitor usage, friction, engagement, system state, and fast navigation across the platform.
+        </p>
+    </div>
+</div>
 
-<div class="card">
-    <p><b>Master Profile:</b> {{ user.username }}</p>
-    <p>This console is for account support, subscription troubleshooting, and user-level administration.</p>
+<div class="dashboard-subnav">
+    <a href="/dashboard" class="cta-btn secondary">Simulation Dashboard</a>
+    <a href="/signals" class="cta-btn secondary">Signals</a>
+    <a href="/all-symbols" class="cta-btn secondary">All Symbols</a>
+    <a href="/positions" class="cta-btn secondary">Positions</a>
+    <a href="/proof" class="cta-btn secondary">Proof</a>
+</div>
+
+<div class="card gold-accent-card">
+    <h3>Tier Preview</h3>
+    <div class="dashboard-subnav">
+        <a href="/admin/preview-tier/Guest" class="cta-btn secondary">Guest</a>
+        <a href="/admin/preview-tier/Free" class="cta-btn secondary">Free</a>
+        <a href="/admin/preview-tier/Starter" class="cta-btn secondary">Starter</a>
+        <a href="/admin/preview-tier/Pro" class="cta-btn secondary">Pro</a>
+        <a href="/admin/preview-tier/Elite" class="cta-btn secondary">Elite</a>
+        <a href="/admin/preview-tier/clear" class="cta-btn premium-gold-btn">Clear Preview</a>
+    </div>
+</div>
+
+<div class="grid">
+    <div class="card gold-accent-card">
+        <h3>Estimated Value</h3>
+        <div class="metric">${{ snapshot.estimated_account_value }}</div>
+        <p class="muted-line">Simulation snapshot</p>
+    </div>
+
+    <div class="card gold-accent-card">
+        <h3>Open Positions</h3>
+        <div class="metric">{{ snapshot.open_positions }}</div>
+        <p class="muted-line">Current active positions</p>
+    </div>
+
+    <div class="card gold-accent-card">
+        <h3>Engine State</h3>
+        <div class="metric">{{ system.engine_state }}</div>
+        <p class="muted-line">Bot status</p>
+    </div>
 </div>
 
 <div class="grid">
     <div class="card">
-        <h3>Create User</h3>
-        <form action="/admin/create-user" method="post">
-            <p>Email</p>
-            <input type="email" name="email">
-
-            <p>Username</p>
-            <input type="text" name="username" required>
-
-            <p>Password</p>
-            <input type="text" name="password" required>
-
-            <p>Tier</p>
-            <select name="tier">
-                <option value="Starter">Starter</option>
-                <option value="Pro">Pro</option>
-                <option value="Elite">Elite</option>
-            </select>
-
-            <p>Role</p>
-            <select name="role">
-                <option value="member">member</option>
-                <option value="master">master</option>
-            </select>
-
-            <br><br>
-            <button type="submit" class="cta-btn">Create User</button>
-        </form>
+        <h3>Page Views</h3>
+        {% for path, count in metrics.page_views.items() %}
+        <div class="admin-stat-row">
+            <span>{{ path }}</span>
+            <strong>{{ count }}</strong>
+        </div>
+        {% endfor %}
     </div>
 
     <div class="card">
-        <h3>Admin Tools</h3>
-        <p><a href="/admin/audit-log">Open Audit Log</a></p>
-        <p><a href="/admin/session-debug">Open Session Debug</a></p>
-        <p><a href="/auth-status">Open Auth Status</a></p>
+        <h3>Key Clicks</h3>
+        {% for key, count in metrics.clicks.items() %}
+        <div class="admin-stat-row">
+            <span>{{ key.replace("_", " ").title() }}</span>
+            <strong>{{ count }}</strong>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Friction Signals</h3>
+        {% for key, count in metrics.friction_signals.items() %}
+        <div class="admin-stat-row">
+            <span>{{ key.replace("_", " ").title() }}</span>
+            <strong>{{ count }}</strong>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <h3>Engagement</h3>
+        {% for key, value in metrics.engagement.items() %}
+        <div class="admin-stat-row">
+            <span>{{ key.replace("_", " ").title() }}</span>
+            <strong>{{ value }}</strong>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card gold-accent-card">
+    <h3>Proof Snapshot</h3>
+    <div class="grid">
+        <div class="card">
+            <p><b>Trades</b></p>
+            <div class="metric">{{ proof.trades }}</div>
+        </div>
+        <div class="card">
+            <p><b>Win Rate</b></p>
+            <div class="metric">{{ proof.winrate }}</div>
+        </div>
+        <div class="card">
+            <p><b>Max Drawdown</b></p>
+            <div class="metric">{{ proof.max_drawdown }}</div>
+        </div>
     </div>
 </div>
 
 <div class="card">
-    <h3>User Directory</h3>
-    <table class="table">
-        <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Tier</th>
-            <th>Role</th>
-            <th>Billing Status</th>
-            <th>Billing Plan</th>
-            <th>Force Reset</th>
-            <th>Open</th>
-        </tr>
-        {% for row in users %}
-        <tr>
-            <td>{{ row.username }}</td>
-            <td>{{ row.email }}</td>
-            <td>{{ row.tier }}</td>
-            <td>{{ row.role }}</td>
-            <td>{{ row.billing_status }}</td>
-            <td>{{ row.billing_plan }}</td>
-            <td>{{ row.force_password_reset }}</td>
-            <td><a href="/admin/user/{{ row.username }}">Manage</a></td>
-        </tr>
+    <h3>Most Recent Positions</h3>
+    {% if positions %}
+        {% for p in positions[:8] %}
+        <div class="admin-stat-row">
+            <span>{{ p.symbol }}</span>
+            <strong>
+                {% if p.intelligence is defined and p.intelligence.snapshot is defined %}
+                    {{ p.intelligence.snapshot.status }}
+                {% else %}
+                    Loaded
+                {% endif %}
+            </strong>
+        </div>
         {% endfor %}
-    </table>
+    {% else %}
+        <div class="passage-frame">
+            <p>No positions loaded.</p>
+        </div>
+    {% endif %}
 </div>
 
 {% endblock %}

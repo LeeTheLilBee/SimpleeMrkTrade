@@ -877,3 +877,16 @@ body.light .footer-tagline {
     border-left: 4px solid gold;
     font-weight: bold;
 }
+%%writefile /tmp/admin_css_patch.css
+.admin-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(148,163,184,0.12);
+}
+
+.admin-stat-row:last-child {
+    border-bottom: none;
+}

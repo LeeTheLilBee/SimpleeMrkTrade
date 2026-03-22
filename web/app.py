@@ -176,6 +176,37 @@ def inject_global_context():
         "system": system,
     }
 
+def get_admin_metrics() -> Dict[str, Any]:
+    metrics = load_json("data/admin_metrics.json", {})
+    if not isinstance(metrics, dict):
+        metrics = {}
+
+    return {
+        "page_views": metrics.get("page_views", {}),
+        "clicks": metrics.get("clicks", {}),
+        "friction_signals": metrics.get("friction_signals", {}),
+        "engagement": metrics.get("engagement", {}),
+    }
+
+
+def maybe_track_page_view(path: str) -> None:
+    """
+    Super lightweight page view counter.
+    Safe for local/dev use.
+    """
+    metrics = load_json("data/admin_metrics.json", {})
+    if not isinstance(metrics, dict):
+        metrics = {}
+
+    page_views = metrics.get("page_views", {})
+    if not isinstance(page_views, dict):
+        page_views = {}
+
+    page_views[path] = int(page_views.get(path, 0)) + 1
+    metrics["page_views"] = page_views
+
+    save_json("data/admin_metrics.json", metrics)
+
 
 # ============================================================
 # DATA BUILDERS
@@ -388,9 +419,29 @@ def template_context(extra: Dict[str, Any]) -> Dict[str, Any]:
 
 @app.route("/")
 def landing_page():
+    maybe_track_page_view("/")
+    if is_logged_in():
+        return redirect(url_for("dashboard_page"))
+
     return render_template_safe(
         "landing.html",
         **template_context({})
+    )
+
+@app.route("/dashboard")
+def dashboard_page():
+    maybe_track_page_view("/dashboard")
+
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    return render_template_safe(
+        "admin.html",
+        **template_context({
+            "positions": get_positions_with_intelligence(),
+            "signals": get_signals(),
+            "users": load_json("data/users.json", [])
+        }),
     )
 
 @app.route("/api/live-state")
@@ -419,6 +470,7 @@ def live_state():
 
 @app.route("/dashboard")
 def dashboard_page():
+    maybe_track_page_view("/dashboard")
     snapshot = get_dashboard_snapshot()
     system = get_system_state()
     proof = performance_summary()
@@ -459,6 +511,7 @@ def dashboard_page():
 
 @app.route("/signals")
 def signals_page():
+    maybe_track_page_view("/signals")
     tier = current_tier_title()
     boards = get_signal_boards()
 
@@ -538,6 +591,7 @@ def signal_symbol_page(symbol: str):
 
 @app.route("/positions")
 def positions_page():
+    maybe_track_page_view("/positions") 
 
     from engine.position_health import attach_position_health
     from engine.trade_timeline import attach_timeline
@@ -593,6 +647,7 @@ def research_overview():
 
 @app.route("/analytics-overview")
 def analytics_overview():
+    maybe_track_page_view("/analytics-overview")
     stats = load_json("data/analytics_overview.json", {})
     if not isinstance(stats, dict):
         stats = {}
@@ -710,6 +765,7 @@ def bot_log_page():
 
 @app.route("/why-this-trade")
 def why_this_trade_page():
+    maybe_track_page_view("/why-this-trade")
     trades = load_json("data/trade_details.json", [])
     if not isinstance(trades, list):
         trades = []
@@ -722,6 +778,7 @@ def why_this_trade_page():
 
 @app.route("/premium-analysis")
 def premium_analysis_page():
+    maybe_track_page_view("/premium-analysis")
     feed_items = load_json("data/premium_feed.json", [])
     if not isinstance(feed_items, list):
         feed_items = []
@@ -743,6 +800,7 @@ def premium_analysis_page():
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
+    maybe_track_page_view("/login")
     if request.method == "POST":
         username = (request.form.get("username") or "").strip() or "demo_user"
         session["username"] = username
@@ -763,6 +821,7 @@ def login_page():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup_page():
+    maybe_track_page_view("/signup")
     if request.method == "POST":
         username = (request.form.get("username") or "").strip() or "new_user"
         session["username"] = username
@@ -828,6 +887,7 @@ def notifications_page():
 
 @app.route("/upgrade")
 def upgrade_page():
+    maybe_track_page_view("/upgrade")
     tiers = load_json("data/subscription_tiers.json", {})
     if not isinstance(tiers, dict):
         tiers = {}
