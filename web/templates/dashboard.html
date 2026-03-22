@@ -1,134 +1,153 @@
 {% extends "base.html" %}
 {% block content %}
 
+<!-- HERO -->
 <div class="page-hero card premium-hero gold-accent-card">
-    <h2>Dashboard</h2>
+    <h2>Simulation Dashboard</h2>
+
     <div class="passage-frame">
         <p>
-            A cleaner system snapshot with fast visibility into account posture, recent position condition,
-            and the next layer of deeper position intelligence.
+            Monitor the system, track performance, and move through positions,
+            activity, and proof from a single control layer.
         </p>
     </div>
 </div>
 
+<!-- SUBMENU -->
 <div class="dashboard-subnav">
     <a href="/positions" class="cta-btn secondary">Positions</a>
     <a href="/live-activity" class="cta-btn secondary">Live Activity</a>
+    <a href="/proof" class="cta-btn secondary">Proof</a>
     <a href="/equity" class="cta-btn secondary">Equity</a>
     <a href="/reports" class="cta-btn secondary">Reports</a>
-    <a href="/proof" class="cta-btn secondary">Proof</a>
+    <a href="/bot-log" class="cta-btn secondary">Bot Log</a>
 </div>
 
+<!-- CORE SYSTEM SNAPSHOT -->
 <div class="grid">
     <div class="card gold-accent-card">
         <h3>Estimated Value</h3>
-        <div class="metric">${{ snapshot.estimated_account_value if snapshot and snapshot.estimated_account_value is defined else 0 }}</div>
-        <p class="muted-line">Current simulated account value.</p>
+        <div class="metric">
+            ${{ snapshot.estimated_account_value if snapshot and snapshot.estimated_account_value is defined else 0 }}
+        </div>
+        <p class="muted-line">Simulated account value.</p>
     </div>
 
     <div class="card gold-accent-card">
         <h3>Buying Power</h3>
-        <div class="metric">${{ snapshot.buying_power if snapshot and snapshot.buying_power is defined else 0 }}</div>
-        <p class="muted-line">Available capital for new activity.</p>
+        <div class="metric">
+            ${{ snapshot.buying_power if snapshot and snapshot.buying_power is defined else 0 }}
+        </div>
+        <p class="muted-line">Capital available for deployment.</p>
     </div>
 
     <div class="card gold-accent-card">
         <h3>Open Positions</h3>
-        <div class="metric">{{ snapshot.open_positions if snapshot and snapshot.open_positions is defined else 0 }}</div>
-        <p class="muted-line">Tracked positions currently active.</p>
+        <div class="metric">
+            {{ snapshot.open_positions if snapshot and snapshot.open_positions is defined else 0 }}
+        </div>
+        <p class="muted-line">Active simulated positions.</p>
     </div>
 </div>
 
-<div class="card premium-card gold-accent-card">
+<!-- SYSTEM STATE -->
+<div class="grid">
+    <div class="card gold-accent-card">
+        <h3>Market Regime</h3>
+        <div class="metric">
+            {{ system.regime if system and system.regime is defined else "Neutral" }}
+        </div>
+        <p class="muted-line">Current market condition.</p>
+    </div>
+
+    <div class="card gold-accent-card">
+        <h3>Volatility State</h3>
+        <div class="metric">
+            {{ system.volatility if system and system.volatility is defined else "Normal" }}
+        </div>
+        <p class="muted-line">Volatility environment.</p>
+    </div>
+
+    <div class="card gold-accent-card">
+        <h3>Engine State</h3>
+        <div class="metric">
+            {{ system.engine_state if system and system.engine_state is defined else "Active" }}
+        </div>
+        <p class="muted-line">Bot execution status.</p>
+    </div>
+</div>
+
+<!-- PROOF SNAPSHOT -->
+{% if proof is defined %}
+<div class="grid">
+    <div class="card gold-accent-card">
+        <h3>Trades</h3>
+        <div class="metric">{{ proof.trades if proof.trades is defined else "N/A" }}</div>
+    </div>
+
+    <div class="card gold-accent-card">
+        <h3>Win Rate</h3>
+        <div class="metric">{{ proof.winrate if proof.winrate is defined else "N/A" }}</div>
+    </div>
+
+    <div class="card gold-accent-card">
+        <h3>Max Drawdown</h3>
+        <div class="metric">{{ proof.max_drawdown if proof.max_drawdown is defined else "N/A" }}</div>
+    </div>
+</div>
+{% endif %}
+
+<!-- POSITIONS TEASER -->
+<div class="card gold-accent-card">
     <div class="section-head-row">
-        <h3>Position Intelligence Preview</h3>
+        <h3>Position Intelligence</h3>
         <a href="/positions" class="cta-btn premium-gold-btn">Open Positions</a>
     </div>
 
     <div class="passage-frame">
         <p>
-            The dashboard stays calm on purpose. It gives you the fast read first, then routes you into
-            Positions for full trade condition, damage, pressure, and deeper intelligence.
+            Move into Positions to see full trade condition, damage signals,
+            forward paths, and evolving setup intelligence.
         </p>
     </div>
 </div>
 
 {% if positions is defined and positions %}
 <div class="grid">
-    {% for p in positions[:4] %}
-    <div class="card teaser-card gold-accent-card">
-        <div class="section-head-row">
-            <div>
-                <h3 style="margin-bottom:4px;">{{ p.symbol }}</h3>
-                <p class="muted-line" style="margin-top:0;">
-                    {{ p.status if p.status is defined else "Watching" }}
-                </p>
-            </div>
+    {% for p in positions[:3] %}
+    <div class="card gold-accent-card">
 
+        <div class="section-head-row">
+            <h3>{{ p.symbol }}</h3>
             <div class="signal-stat-chip">
                 {{ p.health_score if p.health_score is defined else 50 }}
             </div>
         </div>
 
-        <p>
-            <b>PnL:</b>
-            {{ p.pnl if p.pnl is defined else "N/A" }}
-        </p>
+        <p><b>PnL:</b> {{ p.pnl if p.pnl is defined else "N/A" }}</p>
 
         <div class="health-bar">
             <div class="health-fill" style="width: {{ p.health_score if p.health_score is defined else 50 }}%;"></div>
         </div>
 
         <div class="teaser-row">
-            <span><b>Warning</b></span>
-            <span class="blurred">{{ p.warning if p.warning is defined else "Momentum pressure forming" }}</span>
+            <span>Warning</span>
+            <span class="blurred">Momentum pressure forming</span>
         </div>
 
         <div class="teaser-row">
-            <span><b>Risk</b></span>
-            <span class="blurred">{{ p.risk if p.risk is defined else "Support under pressure" }}</span>
+            <span>Risk</span>
+            <span class="blurred">Support being tested</span>
         </div>
 
         <div class="teaser-row">
-            <span><b>Target</b></span>
-            <span class="blurred">{{ p.target if p.target is defined else "Upside zone in play" }}</span>
+            <span>Target</span>
+            <span class="blurred">Upside zone developing</span>
         </div>
 
-        <a href="/positions" class="cta-btn secondary">View Full Position</a>
+        <a href="/positions" class="cta-btn secondary">View Details</a>
     </div>
     {% endfor %}
-</div>
-{% else %}
-<div class="card">
-    <div class="passage-frame">
-        <p>
-            No position previews are available right now. The system overview is live,
-            and full position intelligence will appear here as positions populate.
-        </p>
-    </div>
-    <a href="/positions" class="cta-btn secondary">Go to Positions</a>
-</div>
-{% endif %}
-
-{% if proof is defined %}
-<div class="grid">
-    <div class="card gold-accent-card">
-        <h3>Trades</h3>
-        <div class="metric">{{ proof.trades if proof.trades is defined else "N/A" }}</div>
-        <p class="muted-line">Tracked completed trades.</p>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Win Rate</h3>
-        <div class="metric">{{ proof.winrate if proof.winrate is defined else "N/A" }}</div>
-        <p class="muted-line">Current proof win rate.</p>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Max Drawdown</h3>
-        <div class="metric">{{ proof.max_drawdown if proof.max_drawdown is defined else "N/A" }}</div>
-        <p class="muted-line">Largest drawdown seen in proof history.</p>
-    </div>
 </div>
 {% endif %}
 

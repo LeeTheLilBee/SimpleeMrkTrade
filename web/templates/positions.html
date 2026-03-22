@@ -1,66 +1,140 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Position Intelligence</h2>
-
-<div class="card">
-    <p>This page shows position strength, current risk posture, warnings, and how close a trade may be to needing action.</p>
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>Positions</h2>
+    <div class="passage-frame">
+        <p>
+            Follow how active trades are evolving through structured condition, thesis,
+            pressure, forward paths, and action bias.
+        </p>
+    </div>
 </div>
 
-<div class="grid">
+{% if positions and positions|length > 0 %}
     {% for p in positions %}
-    <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-            <h3 style="margin:0;">{{ p.symbol }} | {{ p.strategy }}</h3>
-            <span class="{{ p.badge_class }}">{{ p.health }}</span>
+    {% set intel = p.intelligence if p.intelligence is defined else None %}
+
+    <div class="card gold-accent-card">
+        <div class="section-head-row">
+            <div>
+                <h3 style="margin-bottom:4px;">{{ p.symbol }}</h3>
+                {% if intel %}
+                <p class="muted-line" style="margin-top:0;">
+                    {{ intel.snapshot.status }} · {{ intel.snapshot.direction }} · {{ intel.snapshot.phase }}
+                </p>
+                {% endif %}
+            </div>
+
+            {% if intel %}
+            <div class="signal-stat-chip">Score {{ intel.snapshot.score }}</div>
+            {% endif %}
         </div>
 
-        <p><b>Health Score:</b> {{ p.health_score }}</p>
-        <p><b>Entry:</b> {{ p.entry }}</p>
-        <p><b>Current:</b> {{ p.current }}</p>
-        <p><b>PnL:</b> {{ p.pnl }}</p>
-        <p><b>Stop:</b> {{ p.stop }}</p>
-        <p><b>Target:</b> {{ p.target }}</p>
-        <p><b>Risk:</b> {{ p.risk }}</p>
-        <p><b>Warning:</b> {{ p.warning or "None" }}</p>
-        <p><b>Age (min):</b> {{ p.age_minutes }}</p>
-        <p><b>Last Checked:</b> {{ p.last_checked }}</p>
+        {% if intel %}
+        <div class="grid">
+            <div class="card">
+                <h3>Thesis</h3>
+                <div class="passage-frame">
+                    <p><b>{{ intel.thesis.type }}</b> · {{ intel.thesis.status }}</p>
+                    <p>{{ intel.thesis.summary }}</p>
+                </div>
+            </div>
 
-        <div class="mini-meter-wrap">
-            <div class="mini-meter-label">Health</div>
-            <div class="mini-meter">
-                <div class="mini-meter-fill" style="width: {{ p.health_score }}%;"></div>
+            <div class="card">
+                <h3>Action Bias</h3>
+                <div class="passage-frame">
+                    <p>{{ intel.action_bias }}</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Opportunity</h3>
+                <div class="passage-frame">
+                    <p><b>Opportunity Score:</b> {{ intel.opportunity_score }}</p>
+                    <p class="muted-line">Separate from condition — this tracks remaining upside potential.</p>
+                </div>
             </div>
         </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Damage Report</h3>
+                <div class="passage-frame">
+                    {% for item in intel.damage_report %}
+                    <p>{{ item }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Forward Paths</h3>
+                <div class="passage-frame">
+                    {% for path in intel.forward_paths %}
+                    <p>{{ path }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Invalidation</h3>
+                <div class="passage-frame">
+                    <p>{{ intel.invalidation_map }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Pressure Map</h3>
+            <div class="grid">
+                <div class="card">
+                    <p><b>Price</b></p>
+                    <div class="metric">{{ intel.pressure_map.price }}</div>
+                </div>
+                <div class="card">
+                    <p><b>Trend</b></p>
+                    <div class="metric">{{ intel.pressure_map.trend }}</div>
+                </div>
+                <div class="card">
+                    <p><b>Momentum</b></p>
+                    <div class="metric">{{ intel.pressure_map.momentum }}</div>
+                </div>
+                <div class="card">
+                    <p><b>Volatility</b></p>
+                    <div class="metric">{{ intel.pressure_map.volatility }}</div>
+                </div>
+                <div class="card">
+                    <p><b>Signal</b></p>
+                    <div class="metric">{{ intel.pressure_map.signal }}</div>
+                </div>
+                <div class="card">
+                    <p><b>Time</b></p>
+                    <div class="metric">{{ intel.pressure_map.time }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>What Changed</h3>
+            <div class="passage-frame">
+                {% for item in intel.what_changed %}
+                <p>{{ item }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="passage-frame">
+            <p>No intelligence object is attached to this position yet.</p>
+        </div>
+        {% endif %}
     </div>
     {% endfor %}
-</div>
-
+{% else %}
 <div class="card">
-    <h3>Full Position Table</h3>
-    <table class="table">
-        <tr>
-            <th>Symbol</th>
-            <th>Score</th>
-            <th>Health</th>
-            <th>PnL</th>
-            <th>Risk</th>
-            <th>Warning</th>
-            <th>Age</th>
-        </tr>
-
-        {% for p in positions %}
-        <tr>
-            <td>{{ p.symbol }}</td>
-            <td><b>{{ p.health_score }}</b></td>
-            <td><span class="{{ p.badge_class }}">{{ p.health }}</span></td>
-            <td>{{ p.pnl }}</td>
-            <td>{{ p.risk }}</td>
-            <td>{{ p.warning }}</td>
-            <td>{{ p.age_minutes }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="passage-frame">
+        <p>No positions are available right now.</p>
+    </div>
 </div>
+{% endif %}
 
 {% endblock %}
