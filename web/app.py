@@ -428,22 +428,6 @@ def landing_page():
         **template_context({})
     )
 
-@app.route("/dashboard")
-def dashboard_page():
-    maybe_track_page_view("/dashboard")
-
-    if not is_master():
-        return redirect(url_for("dashboard_page"))
-
-    return render_template_safe(
-        "admin.html",
-        **template_context({
-            "positions": get_positions_with_intelligence(),
-            "signals": get_signals(),
-            "users": load_json("data/users.json", [])
-        }),
-    )
-
 @app.route("/api/live-state")
 def live_state():
     positions = get_positions_with_intelligence()
