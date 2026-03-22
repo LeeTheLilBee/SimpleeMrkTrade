@@ -710,5 +710,13 @@
     "page": "/why-this-trade",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-22T00:15:51.370008",
+    "event_type": "page_view",
+    "username": null,
+    "page": "/",
+    "symbol": null,
+    "meta": {}
   }
 ]
