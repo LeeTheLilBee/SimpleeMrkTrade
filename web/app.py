@@ -393,6 +393,29 @@ def landing_page():
         **template_context({})
     )
 
+@app.route("/api/live-state")
+def live_state():
+    positions = get_positions_with_intelligence()
+
+    from engine.position_health import attach_position_health
+    from engine.trade_timeline import attach_timeline
+    from engine.portfolio_intelligence import evaluate_portfolio
+    from engine.alert_engine import generate_alerts
+    from engine.system_brain import build_system_brain
+
+    positions = attach_position_health(positions)
+    positions = attach_timeline(positions)
+
+    portfolio = evaluate_portfolio(positions)
+    alerts = generate_alerts(positions)
+    brain = build_system_brain(positions, portfolio, alerts)
+
+    return {
+        "positions": positions,
+        "portfolio": portfolio,
+        "alerts": alerts,
+        "brain": brain
+    }
 
 @app.route("/dashboard")
 def dashboard_page():
@@ -482,14 +505,19 @@ def all_symbols_page():
 @app.route("/signals/<symbol>")
 @app.route("/symbol/<symbol>")
 def signal_symbol_page(symbol: str):
+
+    from engine.intelligence_tiering import filter_intelligence_by_tier
+
     detail = get_symbol_detail(symbol)
-from engine.intelligence_tiering import filter_intelligence_by_tier
 
-tier = current_tier_title()
+    tier = current_tier_title()
 
-for sig in detail["signals"]:
-    if "intelligence" in sig:
-        sig["intelligence"] = filter_intelligence_by_tier(sig["intelligence"], tier)
+    for sig in detail["signals"]:
+        if "intelligence" in sig:
+            sig["intelligence"] = filter_intelligence_by_tier(
+                sig["intelligence"], tier
+            )
+
     return render_template_safe(
         "signal_symbol.html",
         **template_context(
@@ -508,27 +536,45 @@ for sig in detail["signals"]:
         ),
     )
 
-
 @app.route("/positions")
 def positions_page():
+
+    from engine.position_health import attach_position_health
+    from engine.trade_timeline import attach_timeline
+    from engine.portfolio_intelligence import evaluate_portfolio
+    from engine.alert_engine import generate_alerts
+    from engine.system_brain import build_system_brain
+
+    # ---------------------------
+    # LOAD POSITIONS
+    # ---------------------------
     positions = get_positions_with_intelligence()
-from engine.portfolio_intelligence import evaluate_portfolio
-from engine.alert_engine import generate_alerts
-from engine.trade_journal import log_trade_state
 
-portfolio = evaluate_portfolio(positions)
-alerts = generate_alerts(positions)
-journal = log_trade_state(positions)
+    # ---------------------------
+    # ENRICH POSITIONS
+    # ---------------------------
+    positions = attach_position_health(positions)
+    positions = attach_timeline(positions)
+
+    # ---------------------------
+    # SYSTEM LAYERS
+    # ---------------------------
+    portfolio = evaluate_portfolio(positions)
+    alerts = generate_alerts(positions)
+    brain = build_system_brain(positions, portfolio, alerts)
+
+    # ---------------------------
+    # RETURN PAGE
+    # ---------------------------
     return render_template_safe(
-    "positions.html",
-    **template_context({
-        "positions": positions,
-        "portfolio": portfolio,
-        "alerts": alerts
-    }),
-)
-
-
+        "positions.html",
+        **template_context({
+            "positions": positions,
+            "portfolio": portfolio,
+            "alerts": alerts,
+            "brain": brain
+        }),
+    )
 @app.route("/proof")
 def proof_page():
     return render_template_safe(

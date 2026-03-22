@@ -3,6 +3,28 @@
 
 <div class="card premium-hero gold-accent-card">
 
+    <h3>System Overview</h3>
+
+    <div class="passage-frame">
+        <p id="brain-summary">{{ brain.summary }}</p>
+    </div>
+
+    <div class="card">
+        <h4>Primary Focus</h4>
+
+        <p id="brain-focus">
+            {% if brain.focus %}
+                {{ brain.focus.symbol }} → {{ brain.focus.message }}
+            {% else %}
+                Monitoring all positions...
+            {% endif %}
+        </p>
+    </div>
+
+</div>
+
+<div class="card premium-hero gold-accent-card">
+
     <h3>{{ voice.headline }}</h3>
 
     <div class="passage-frame">
@@ -31,25 +53,19 @@
 <div class="card premium-card">
     <h3>System Alerts</h3>
 
-    {% for a in alerts %}
-    <div class="alert-row {{ a.severity }}">
-        
-        <div class="alert-left">
-            <strong>{{ a.symbol }}</strong>
-        </div>
+    {<div id="alerts-container">
 
-        <div class="alert-center">
-            {{ a.message }}
-        </div>
+{% for a in alerts %}
+<div class="alert-row {{ a.severity }}">
+    <strong>{{ a.symbol }}</strong>
+    <span>{{ a.message }}</span>
+    <span class="severity-badge {{ a.severity }}">
+        {{ a.severity }}
+    </span>
+</div>
+{% endfor %}
 
-        <div class="alert-right">
-            <span class="severity-badge {{ a.severity }}">
-                {{ a.severity|upper }}
-            </span>
-        </div>
-
-    </div>
-    {% endfor %}
+</div>
 </div>
 {% endif %}
 
@@ -70,7 +86,7 @@
 
     <!-- HEALTH BAR -->
     <div class="health-bar">
-        <div class="health-fill" style="width: {{ p.health.score }}%;"></div>
+        <div id="health-{{ p.symbol }}" class="health-fill" style="width: {{ p.health.score }}%;"></div>
     </div>
 
     <div class="passage-frame">
@@ -121,6 +137,70 @@
     </div>
 
 </div>
+
 {% endfor %}
 
 {% endblock %}
+
+<script>
+async function fetchLiveState() {
+    try {
+        const res = await fetch("/api/live-state");
+        const data = await res.json();
+
+        updateBrain(data.brain);
+        updateAlerts(data.alerts);
+        updatePositions(data.positions);
+
+    } catch (err) {
+        console.log("Live update error:", err);
+    }
+}
+
+function updateBrain(brain) {
+    const el = document.getElementById("brain-summary");
+    if (el) el.innerText = brain.summary;
+
+    const focus = document.getElementById("brain-focus");
+    if (focus && brain.focus) {
+        focus.innerText = brain.focus.symbol + " → " + brain.focus.message;
+    }
+}
+
+function updateAlerts(alerts) {
+    const container = document.getElementById("alerts-container");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    alerts.forEach(a => {
+        const row = document.createElement("div");
+        row.className = "alert-row " + a.severity;
+
+        row.innerHTML = `
+            <strong>${a.symbol}</strong>
+            <span>${a.message}</span>
+            <span class="severity-badge ${a.severity}">
+                ${a.severity.toUpperCase()}
+            </span>
+        `;
+
+        container.appendChild(row);
+    });
+}
+
+function updatePositions(positions) {
+    positions.forEach(p => {
+        const bar = document.getElementById("health-" + p.symbol);
+        if (bar) {
+            bar.style.width = p.health.score + "%";
+        }
+    });
+}
+
+// 🔄 LOOP (heartbeat)
+setInterval(fetchLiveState, 4000);
+
+// initial load
+fetchLiveState();
+</script>
