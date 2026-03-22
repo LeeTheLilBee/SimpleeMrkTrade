@@ -822,4 +822,58 @@ body.light .footer-tagline {
 .health-fill {
     height: 100%;
     background: linear-gradient(90deg, #22c55e, #84cc16);
-}    
+}
+
+.alert-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.alert-row.critical {
+    background: rgba(255, 0, 0, 0.15);
+    border-left: 4px solid red;
+}
+
+.alert-row.high {
+    background: rgba(255, 165, 0, 0.15);
+    border-left: 4px solid orange;
+}
+
+.alert-row.medium {
+    background: rgba(255, 255, 0, 0.15);
+    border-left: 4px solid yellow;
+}
+
+.severity-badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+}
+
+.severity-badge.critical {
+    background: red;
+    color: white;
+}
+
+.severity-badge.high {
+    background: orange;
+    color: black;
+}
+
+.severity-badge.medium {
+    background: yellow;
+    color: black;
+}
+
+.focus-box {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255, 215, 0, 0.15);
+    border-left: 4px solid gold;
+    font-weight: bold;
+}

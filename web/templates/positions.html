@@ -2,6 +2,22 @@
 {% block content %}
 
 <div class="card premium-hero gold-accent-card">
+
+    <h3>{{ voice.headline }}</h3>
+
+    <div class="passage-frame">
+        <p>{{ voice.message }}</p>
+    </div>
+
+    {% if voice.focus %}
+    <div class="focus-box">
+        <p><b>Focus:</b> {{ voice.focus }}</p>
+    </div>
+    {% endif %}
+
+</div>
+
+<div class="card premium-hero gold-accent-card">
     <h3>Portfolio Intelligence</h3>
 
     <div class="passage-frame">
@@ -12,13 +28,28 @@
 </div>
 
 {% if alerts %}
-<div class="card">
-    <h3>Active Alerts</h3>
-    <ul>
-        {% for a in alerts %}
-        <li>{{ a }}</li>
-        {% endfor %}
-    </ul>
+<div class="card premium-card">
+    <h3>System Alerts</h3>
+
+    {% for a in alerts %}
+    <div class="alert-row {{ a.severity }}">
+        
+        <div class="alert-left">
+            <strong>{{ a.symbol }}</strong>
+        </div>
+
+        <div class="alert-center">
+            {{ a.message }}
+        </div>
+
+        <div class="alert-right">
+            <span class="severity-badge {{ a.severity }}">
+                {{ a.severity|upper }}
+            </span>
+        </div>
+
+    </div>
+    {% endfor %}
 </div>
 {% endif %}
 
