@@ -2,7 +2,6 @@ import os
 import sys
 import json
 from pathlib import Path
-from datetime import datetime
 from typing import Any, Dict, List
 
 from flask import (
@@ -14,14 +13,16 @@ from flask import (
     session,
     url_for,
 )
-
 from jinja2 import TemplateNotFound
 
-# IMPORTANT: make the parent project folder visible so /engine can be imported
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from engine.trade_intelligence import attach_trade_intelligence
-from engine.signal_tiering import slice_signals_by_tier
+from engine.signal_tiering import slice_signals_by_tier, spotlight_sections
+from engine.position_health import attach_position_health
+from engine.portfolio_intelligence import evaluate_portfolio
+from engine.alert_engine import generate_alerts
+from engine.system_brain import build_system_brain
 
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
@@ -70,7 +71,6 @@ def render_template_safe(template_name: str, **context):
       <style>
         body { font-family: Arial, sans-serif; background: #0b1020; color: #f8fafc; padding: 40px; }
         .card { max-width: 900px; margin: 0 auto; background: #111827; padding: 24px; border-radius: 16px; }
-        a { color: #93c5fd; }
       </style>
     </head>
     <body>
@@ -165,16 +165,19 @@ def get_unread_notifications() -> int:
 
 @app.context_processor
 def inject_global_context():
-    snapshot = get_dashboard_snapshot()
-    system = get_system_state()
     return {
         "user": get_current_user(),
         "theme": get_theme(),
         "show_upgrade": should_show_upgrade(),
         "unread_notifications": get_unread_notifications(),
-        "snapshot": snapshot,
-        "system": system,
+        "snapshot": get_dashboard_snapshot(),
+        "system": get_system_state(),
     }
+
+
+# ============================================================
+# ANALYTICS HELPERS
+# ============================================================
 
 def get_admin_metrics() -> Dict[str, Any]:
     metrics = load_json("data/admin_metrics.json", {})
@@ -190,10 +193,6 @@ def get_admin_metrics() -> Dict[str, Any]:
 
 
 def maybe_track_page_view(path: str) -> None:
-    """
-    Super lightweight page view counter.
-    Safe for local/dev use.
-    """
     metrics = load_json("data/admin_metrics.json", {})
     if not isinstance(metrics, dict):
         metrics = {}
@@ -204,7 +203,6 @@ def maybe_track_page_view(path: str) -> None:
 
     page_views[path] = int(page_views.get(path, 0)) + 1
     metrics["page_views"] = page_views
-
     save_json("data/admin_metrics.json", metrics)
 
 
@@ -213,20 +211,138 @@ def maybe_track_page_view(path: str) -> None:
 # ============================================================
 
 def get_dashboard_snapshot() -> Dict[str, Any]:
-    snapshot = load_json("data/account_snapshot.json", {})
-    if not isinstance(snapshot, dict):
-        snapshot = {}
+    summary = load_json("data/portfolio_summary.json", {})
+    if not isinstance(summary, dict):
+        summary = {}
 
-    positions = load_json("data/positions.json", [])
+    reports = load_json("data/recent_reports.json", [])
+    if not isinstance(reports, list):
+        reports = []
+
+    snapshot_file = load_json("data/account_snapshot.json", {})
+    if not isinstance(snapshot_file, dict):
+        snapshot_file = {}
+
+    latest_report = reports[-1] if reports and isinstance(reports[-1], dict) else {}
+    latest_snapshot = latest_report.get("snapshot", {}) if isinstance(latest_report, dict) else {}
+    if not isinstance(latest_snapshot, dict):
+        latest_snapshot = {}
+
+    positions = summary.get("positions", [])
     if not isinstance(positions, list):
         positions = []
 
+    estimated_account_value = (
+        latest_snapshot.get("estimated_account_value")
+        or summary.get("estimated_account_value")
+        or snapshot_file.get("estimated_account_value")
+        or 10000
+    )
+
+    buying_power = (
+        latest_snapshot.get("buying_power")
+        or summary.get("buying_power")
+        or snapshot_file.get("buying_power")
+        or 5000
+    )
+
+    open_positions = (
+        latest_snapshot.get("open_positions")
+        or summary.get("open_positions")
+        or snapshot_file.get("open_positions")
+        or len(positions)
+    )
+
     return {
-        "estimated_account_value": snapshot.get("estimated_account_value", 10000),
-        "buying_power": snapshot.get("buying_power", 5000),
-        "open_positions": snapshot.get("open_positions", len(positions)),
+        "estimated_account_value": estimated_account_value,
+        "buying_power": buying_power,
+        "open_positions": open_positions,
     }
 
+def get_execution_summary() -> Dict[str, Any]:
+    summary = load_json("data/execution_summary.json", {})
+    if not isinstance(summary, dict):
+        summary = {}
+
+    return {
+        "selected_symbols": summary.get("selected_symbols", []),
+        "selected_count": summary.get("selected_count", 0),
+        "eligible_count": summary.get("eligible_count", 0),
+        "rejected_count": summary.get("rejected_count", 0),
+        "cap": summary.get("cap", 0),
+        "regime": summary.get("regime", "neutral"),
+        "volatility": summary.get("volatility", "normal"),
+    }
+
+def performance_summary() -> Dict[str, Any]:
+    summary = load_json("data/portfolio_summary.json", {})
+    if not isinstance(summary, dict):
+        summary = {}
+
+    perf_file = load_json("data/performance_summary.json", {})
+    if not isinstance(perf_file, dict):
+        perf_file = {}
+
+    reports = load_json("data/recent_reports.json", [])
+    if not isinstance(reports, list):
+        reports = []
+
+    latest_report = reports[-1] if reports and isinstance(reports[-1], dict) else {}
+    latest_proof = latest_report.get("proof", {}) if isinstance(latest_report, dict) else {}
+    if not isinstance(latest_proof, dict):
+        latest_proof = {}
+
+    return {
+        "trades": (
+            latest_proof.get("trades")
+            or perf_file.get("trades")
+            or summary.get("trades")
+            or 0
+        ),
+        "winrate": (
+            latest_proof.get("winrate")
+            or perf_file.get("winrate")
+            or summary.get("winrate")
+            or "N/A"
+        ),
+        "max_drawdown": (
+            latest_proof.get("max_drawdown")
+            or perf_file.get("max_drawdown")
+            or summary.get("max_drawdown")
+            or "N/A"
+        ),
+    }
+
+
+def get_positions() -> List[Dict[str, Any]]:
+    positions = load_json("data/positions.json", [])
+    if isinstance(positions, list) and positions:
+        return positions
+
+    summary = load_json("data/portfolio_summary.json", {})
+    if isinstance(summary, dict):
+        summary_positions = summary.get("positions", [])
+        if isinstance(summary_positions, list):
+            return summary_positions
+
+    reports = load_json("data/recent_reports.json", [])
+    if isinstance(reports, list) and reports:
+        latest_report = reports[-1]
+        if isinstance(latest_report, dict):
+            report_positions = latest_report.get("positions", [])
+            if isinstance(report_positions, list):
+                return report_positions
+
+    return []
+
+def get_dashboard_state() -> Dict[str, Any]:
+    snapshot = get_dashboard_snapshot()
+    system = get_system_state()
+
+    return {
+        "snapshot": snapshot,
+        "system": system,
+    }
 
 def get_system_state() -> Dict[str, Any]:
     system = load_json("data/system_state.json", {})
@@ -279,12 +395,6 @@ def get_positions() -> List[Dict[str, Any]]:
         positions = []
     return positions
 
-
-def get_positions_with_intelligence() -> List[Dict[str, Any]]:
-    positions = get_positions()
-    return attach_trade_intelligence(positions)
-
-
 def get_signals() -> List[Dict[str, Any]]:
     signals = load_json("data/signals.json", [])
     if not isinstance(signals, list):
@@ -295,28 +405,94 @@ def get_signals() -> List[Dict[str, Any]]:
         if not isinstance(item, dict):
             continue
 
-        score = item.get("score", item.get("latest_score", 0))
-        confidence = item.get("confidence", item.get("latest_confidence", "LOW"))
-        symbol = item.get("symbol", "N/A")
-        company_name = item.get("company_name", item.get("name", symbol))
-        opinion = item.get("opinion", "Active setup.")
-        timestamp = item.get("timestamp", item.get("latest_timestamp", ""))
+        cleaned.append({
+            "symbol": item.get("symbol"),
+            "score": item.get("score", 0),
+            "previous_score": item.get("previous_score", item.get("score", 0)),
+            "confidence": item.get("confidence", "LOW"),
+            "company_name": item.get("company_name", item.get("symbol")),
+            "opinion": item.get("opinion", "Active setup."),
+            "timestamp": item.get("timestamp", ""),
+        })
 
-        cleaned.append(
-            {
-                "symbol": symbol,
-                "score": score,
-                "confidence": confidence,
-                "company_name": company_name,
-                "opinion": opinion,
-                "latest_score": score,
-                "latest_confidence": confidence,
-                "latest_timestamp": timestamp,
-            }
-        )
-
-    cleaned.sort(key=lambda x: x.get("score", 0), reverse=True)
     return cleaned
+    
+def get_positions_with_intelligence() -> List[Dict[str, Any]]:
+    positions = get_positions()
+    positions = attach_trade_intelligence(positions)
+    positions = attach_position_health(positions)
+    return positions
+
+
+def get_symbol_detail(symbol: str) -> Dict[str, Any]:
+    symbol = (symbol or "").upper()
+
+    # --- LOAD SOURCES ---
+    signals = get_signals()
+
+    symbol_intel_map = load_json("data/symbol_intelligence.json", {})
+    if not isinstance(symbol_intel_map, dict):
+        symbol_intel_map = {}
+
+    meta = load_json("data/symbol_meta.json", {})
+    if not isinstance(meta, dict):
+        meta = {}
+
+    news = load_json("data/symbol_news.json", {})
+    if not isinstance(news, dict):
+        news = {}
+
+    # --- MATCH DATA ---
+    symbol_signals = [s for s in signals if s.get("symbol") == symbol]
+    symbol_signals = attach_trade_intelligence(symbol_signals)
+
+    primary_intel = symbol_intel_map.get(symbol, {})
+
+    company = meta.get(symbol, {})
+    if not isinstance(company, dict):
+        company = {}
+
+    news_items = news.get(symbol, [])
+    if not isinstance(news_items, list):
+        news_items = []
+
+    # --- BOARD SNAPSHOT ---
+    board = None
+    if symbol_signals:
+        top = symbol_signals[0]
+        board = {
+            "symbol": symbol,
+            "company_name": top.get("company_name", symbol),
+            "latest_score": top.get("score", 0),
+            "latest_confidence": top.get("confidence", "LOW"),
+            "latest_timestamp": top.get("timestamp", ""),
+            "opinion": top.get("opinion", "Active setup."),
+        }
+    else:
+        board = {
+            "symbol": symbol,
+            "company_name": symbol,
+            "latest_score": 0,
+            "latest_confidence": "LOW",
+            "latest_timestamp": "",
+            "opinion": "No active opinion available.",
+        }
+
+    return {
+        "symbol": symbol,
+        "company": {
+            "name": company.get("name", board["company_name"]),
+            "blurb": company.get("blurb", "No company overview available yet."),
+        },
+        "board": board,
+
+        # 🔥 NEW PRIMARY INTELLIGENCE
+        "primary_intelligence": primary_intel,
+
+        # SUPPORTING DATA
+        "signals": symbol_signals,
+        "news_items": news_items[:8],
+    }
 
 
 def get_signal_boards() -> List[Dict[str, Any]]:
@@ -360,26 +536,35 @@ def get_all_symbol_rows() -> List[Dict[str, Any]]:
 
 
 def get_symbol_detail(symbol: str) -> Dict[str, Any]:
-    symbol = (symbol or "").upper()
+    symbol_intel = load_json("data/symbol_intelligence.json", {})
 
-    boards = get_signal_boards()
-    board_match = next((b for b in boards if b.get("symbol") == symbol), None)
-
-    meta = load_json("data/symbol_meta.json", {})
-    company = meta.get(symbol, {}) if isinstance(meta, dict) else {}
-    if not isinstance(company, dict):
-        company = {}
-
-    news = load_json("data/symbol_news.json", {})
-    news_items = news.get(symbol, []) if isinstance(news, dict) else []
-    if not isinstance(news_items, list):
-        news_items = []
-
-    from engine.trade_intelligence import attach_trade_intelligence
+    intel = symbol_intel.get(symbol, {})
 
     all_signals = [s for s in get_signals() if s.get("symbol") == symbol]
-
     all_signals = attach_trade_intelligence(all_signals)
+
+    return {
+        "symbol": symbol,
+        "company": {
+            "name": company.get("name", symbol),
+            "blurb": company.get("blurb", "No company overview available yet."),
+        },
+        "board": board_match or {
+            "symbol": symbol,
+            "company_name": symbol,
+            "latest_score": 0,
+            "latest_confidence": "LOW",
+            "latest_timestamp": "",
+            "opinion": "No active opinion available yet.",
+        },
+
+        # 🔥 PRIMARY INTELLIGENCE
+        "primary_intelligence": intel,
+
+        # supporting context
+        "signals": all_signals,
+        "news_items": news_items[:8],
+    }
 
     return {
         "symbol": symbol,
@@ -414,47 +599,24 @@ def template_context(extra: Dict[str, Any]) -> Dict[str, Any]:
 
 
 # ============================================================
-# ROUTES - CORE
+# ROUTES
 # ============================================================
 
 @app.route("/")
 def landing_page():
     maybe_track_page_view("/")
     if is_logged_in():
+        if is_master():
+            return redirect(url_for("admin_dashboard"))
         return redirect(url_for("dashboard_page"))
 
-    return render_template_safe(
-        "landing.html",
-        **template_context({})
-    )
+    return render_template_safe("landing.html", **template_context({}))
 
-@app.route("/api/live-state")
-def live_state():
-    positions = get_positions_with_intelligence()
-
-    from engine.position_health import attach_position_health
-    from engine.trade_timeline import attach_timeline
-    from engine.portfolio_intelligence import evaluate_portfolio
-    from engine.alert_engine import generate_alerts
-    from engine.system_brain import build_system_brain
-
-    positions = attach_position_health(positions)
-    positions = attach_timeline(positions)
-
-    portfolio = evaluate_portfolio(positions)
-    alerts = generate_alerts(positions)
-    brain = build_system_brain(positions, portfolio, alerts)
-
-    return {
-        "positions": positions,
-        "portfolio": portfolio,
-        "alerts": alerts,
-        "brain": brain
-    }
 
 @app.route("/dashboard")
 def dashboard_page():
     maybe_track_page_view("/dashboard")
+
     snapshot = get_dashboard_snapshot()
     system = get_system_state()
     proof = performance_summary()
@@ -466,12 +628,15 @@ def dashboard_page():
 
     equity_values = []
     equity_labels = []
+
     for item in reports:
         if not isinstance(item, dict):
             continue
+
         snapshot_block = item.get("snapshot", {})
         if isinstance(snapshot_block, dict):
             equity_values.append(snapshot_block.get("estimated_account_value", 0))
+
         equity_labels.append(item.get("timestamp", ""))
 
     return render_template_safe(
@@ -488,30 +653,16 @@ def dashboard_page():
                 "positions": positions,
                 "snapshot": snapshot,
                 "system": system,
+                "reports": reports,
             }
         ),
     )
 
-@app.route("/admin")
-def admin_dashboard():
-    return render_template_safe(
-        "admin.html",
-        **template_context(
-            {
-                "positions": get_positions_with_intelligence(),
-                "signals": get_signals(),
-                "users": load_json("data/users.json", []),
-                "metrics": get_admin_metrics() if "get_admin_metrics" in globals() else {},
-                "proof": performance_summary(),
-                "snapshot": get_dashboard_snapshot(),
-                "system": get_system_state(),
-            }
-        ),
-    )
 
 @app.route("/signals")
 def signals_page():
     maybe_track_page_view("/signals")
+
     tier = current_tier_title()
     boards = get_signal_boards()
 
@@ -522,8 +673,12 @@ def signals_page():
         preview_tier=session.get("preview_tier"),
     )
 
-    top_five = visible_signals[: min(len(visible_signals), 5)]
-    next_twenty = visible_signals[5:]
+    top_five, next_twenty = spotlight_sections(
+        visible_signals=visible_signals,
+        tier=tier,
+        is_master=is_master(),
+        preview_tier=session.get("preview_tier"),
+    )
 
     return render_template_safe(
         "signals.html",
@@ -558,19 +713,7 @@ def all_symbols_page():
 @app.route("/signals/<symbol>")
 @app.route("/symbol/<symbol>")
 def signal_symbol_page(symbol: str):
-
-    from engine.intelligence_tiering import filter_intelligence_by_tier
-
     detail = get_symbol_detail(symbol)
-
-    tier = current_tier_title()
-
-    for sig in detail["signals"]:
-        if "intelligence" in sig:
-            sig["intelligence"] = filter_intelligence_by_tier(
-                sig["intelligence"], tier
-            )
-
     return render_template_safe(
         "signal_symbol.html",
         **template_context(
@@ -589,37 +732,16 @@ def signal_symbol_page(symbol: str):
         ),
     )
 
+
 @app.route("/positions")
 def positions_page():
-    maybe_track_page_view("/positions") 
+    maybe_track_page_view("/positions")
 
-    from engine.position_health import attach_position_health
-    from engine.trade_timeline import attach_timeline
-    from engine.portfolio_intelligence import evaluate_portfolio
-    from engine.alert_engine import generate_alerts
-    from engine.system_brain import build_system_brain
-
-    # ---------------------------
-    # LOAD POSITIONS
-    # ---------------------------
     positions = get_positions_with_intelligence()
-
-    # ---------------------------
-    # ENRICH POSITIONS
-    # ---------------------------
-    positions = attach_position_health(positions)
-    positions = attach_timeline(positions)
-
-    # ---------------------------
-    # SYSTEM LAYERS
-    # ---------------------------
     portfolio = evaluate_portfolio(positions)
     alerts = generate_alerts(positions)
     brain = build_system_brain(positions, portfolio, alerts)
 
-    # ---------------------------
-    # RETURN PAGE
-    # ---------------------------
     return render_template_safe(
         "positions.html",
         **template_context({
@@ -629,37 +751,29 @@ def positions_page():
             "brain": brain
         }),
     )
+
+
 @app.route("/proof")
 def proof_page():
-    return render_template_safe(
-        "proof.html",
-        **template_context({"proof": performance_summary()}),
-    )
+    return render_template_safe("proof.html", **template_context({"proof": performance_summary()}))
 
 
 @app.route("/research")
 def research_overview():
-    return render_template_safe(
-        "research_overview.html",
-        **template_context({}),
-    )
+    return render_template_safe("research_overview.html", **template_context({}))
 
 
 @app.route("/analytics-overview")
 def analytics_overview():
     maybe_track_page_view("/analytics-overview")
+
     stats = load_json("data/analytics_overview.json", {})
     if not isinstance(stats, dict):
         stats = {}
 
     return render_template_safe(
         "analytics_overview.html",
-        **template_context(
-            {
-                "stats": stats,
-                "proof": performance_summary(),
-            }
-        ),
+        **template_context({"stats": stats, "proof": performance_summary()}),
     )
 
 
@@ -703,12 +817,7 @@ def analytics_performance_page():
 def analytics_strategy_page():
     return render_template_safe(
         "analytics_strategy.html",
-        **template_context(
-            {
-                "strategies": strategy_breakdown(),
-                "system": get_system_state(),
-            }
-        ),
+        **template_context({"strategies": strategy_breakdown(), "system": get_system_state()}),
     )
 
 
@@ -747,11 +856,7 @@ def equity_page():
 def reports_page():
     return render_template_safe(
         "reports.html",
-        **template_context(
-            {
-                "reports": load_json("data/recent_reports.json", []),
-            }
-        ),
+        **template_context({"reports": load_json("data/recent_reports.json", [])}),
     )
 
 
@@ -769,11 +874,7 @@ def why_this_trade_page():
     trades = load_json("data/trade_details.json", [])
     if not isinstance(trades, list):
         trades = []
-
-    return render_template_safe(
-        "why_this_trade.html",
-        **template_context({"trades": trades}),
-    )
+    return render_template_safe("why_this_trade.html", **template_context({"trades": trades}))
 
 
 @app.route("/premium-analysis")
@@ -782,46 +883,68 @@ def premium_analysis_page():
     feed_items = load_json("data/premium_feed.json", [])
     if not isinstance(feed_items, list):
         feed_items = []
-
     return render_template_safe(
         "premium_analysis.html",
-        **template_context(
-            {
-                "feed_items": feed_items,
-                "premium_mode": current_tier_lower(),
-            }
-        ),
+        **template_context({"feed_items": feed_items, "premium_mode": current_tier_lower()}),
     )
 
 
-# ============================================================
-# ROUTES - USER / SIMPLE AUTH
-# ============================================================
+@app.route("/admin")
+def admin_dashboard():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    metrics = get_admin_metrics()
+    positions = get_positions_with_intelligence()
+    proof = performance_summary()
+    snapshot = get_dashboard_snapshot()
+    system = get_system_state()
+
+    return render_template_safe(
+        "admin.html",
+        **template_context({
+            "positions": positions,
+            "signals": get_signals(),
+            "users": load_json("data/users.json", []),
+            "metrics": metrics,
+            "proof": proof,
+            "snapshot": snapshot,
+            "system": system
+        }),
+    )
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
     maybe_track_page_view("/login")
+
     if request.method == "POST":
         username = (request.form.get("username") or "").strip() or "demo_user"
         session["username"] = username
-        session["tier"] = session.get("tier", "Elite")
-        session["role"] = "master"
+
+        # Keep admin/master redirect behavior locked in
+        if username.lower() in {"admin", "master", "solice"}:
+            session["tier"] = "Elite"
+            session["role"] = "master"
+        else:
+            session["tier"] = session.get("tier", "Free")
+            session["role"] = session.get("role", "member")
+
+        if session.get("role") == "master":
+            return redirect(url_for("admin_dashboard"))
+
         return redirect(url_for("dashboard_page"))
 
     return render_template_safe(
         "login.html",
-        **template_context(
-            {
-                "info": request.args.get("info"),
-                "error": request.args.get("error"),
-            }
-        ),
+        **template_context({"info": request.args.get("info"), "error": request.args.get("error")}),
     )
 
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup_page():
     maybe_track_page_view("/signup")
+
     if request.method == "POST":
         username = (request.form.get("username") or "").strip() or "new_user"
         session["username"] = username
@@ -829,10 +952,7 @@ def signup_page():
         session["role"] = "member"
         return redirect(url_for("dashboard_page"))
 
-    return render_template_safe(
-        "signup.html",
-        **template_context({}),
-    )
+    return render_template_safe("signup.html", **template_context({}))
 
 
 @app.route("/logout")
@@ -845,24 +965,14 @@ def logout_page():
 def account_page():
     return render_template_safe(
         "account.html",
-        **template_context(
-            {
-                "billing": load_json("data/billing.json", {}),
-                "prefs": {"theme": get_theme()},
-            }
-        ),
+        **template_context({"billing": load_json("data/billing.json", {}), "prefs": {"theme": get_theme()}}),
     )
 
 
 @app.route("/my-portfolio")
 def my_portfolio_page():
-    portfolio = {
-        "positions": get_positions_with_intelligence(),
-    }
-    return render_template_safe(
-        "my_portfolio.html",
-        **template_context({"portfolio": portfolio}),
-    )
+    portfolio = {"positions": get_positions_with_intelligence()}
+    return render_template_safe("my_portfolio.html", **template_context({"portfolio": portfolio}))
 
 
 @app.route("/billing")
@@ -878,11 +988,7 @@ def notifications_page():
     notifications = load_json("data/notifications.json", [])
     if not isinstance(notifications, list):
         notifications = []
-
-    return render_template_safe(
-        "notifications.html",
-        **template_context({"notifications": notifications}),
-    )
+    return render_template_safe("notifications.html", **template_context({"notifications": notifications}))
 
 
 @app.route("/upgrade")
@@ -891,15 +997,9 @@ def upgrade_page():
     tiers = load_json("data/subscription_tiers.json", {})
     if not isinstance(tiers, dict):
         tiers = {}
-
     return render_template_safe(
         "upgrade.html",
-        **template_context(
-            {
-                "tiers": tiers,
-                "alacarte_products": [],
-            }
-        ),
+        **template_context({"tiers": tiers, "alacarte_products": []}),
     )
 
 
@@ -909,25 +1009,19 @@ def set_theme(theme: str):
     return redirect(request.referrer or url_for("landing_page"))
 
 
-# ============================================================
-# ROUTES - ADMIN PREVIEW
-# ============================================================
-
 @app.route("/admin/preview-tier/<tier>")
 def admin_preview_tier(tier: str):
-    session["preview_tier"] = tier.title()
-    return redirect(request.referrer or url_for("dashboard_page"))
+    if is_master():
+        session["preview_tier"] = tier.title()
+    return redirect(request.referrer or url_for("admin_dashboard"))
 
 
 @app.route("/admin/preview-tier/clear")
 def admin_clear_preview_tier():
-    session.pop("preview_tier", None)
-    return redirect(request.referrer or url_for("dashboard_page"))
+    if is_master():
+        session.pop("preview_tier", None)
+    return redirect(request.referrer or url_for("admin_dashboard"))
 
-
-# ============================================================
-# APP ENTRY
-# ============================================================
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
