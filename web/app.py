@@ -259,6 +259,7 @@ def get_dashboard_snapshot() -> Dict[str, Any]:
         "open_positions": open_positions,
     }
 
+
 def get_execution_summary() -> Dict[str, Any]:
     summary = load_json("data/execution_summary.json", {})
     if not isinstance(summary, dict):
@@ -273,6 +274,19 @@ def get_execution_summary() -> Dict[str, Any]:
         "regime": summary.get("regime", "neutral"),
         "volatility": summary.get("volatility", "normal"),
     }
+
+
+def get_system_state() -> Dict[str, Any]:
+    system = load_json("data/system_state.json", {})
+    if not isinstance(system, dict):
+        system = {}
+
+    return {
+        "regime": system.get("regime", "Neutral"),
+        "volatility": system.get("volatility", "Normal"),
+        "engine_state": system.get("engine_state", "Active"),
+    }
+
 
 def performance_summary() -> Dict[str, Any]:
     summary = load_json("data/portfolio_summary.json", {})
@@ -314,60 +328,6 @@ def performance_summary() -> Dict[str, Any]:
     }
 
 
-def get_positions() -> List[Dict[str, Any]]:
-    positions = load_json("data/positions.json", [])
-    if isinstance(positions, list) and positions:
-        return positions
-
-    summary = load_json("data/portfolio_summary.json", {})
-    if isinstance(summary, dict):
-        summary_positions = summary.get("positions", [])
-        if isinstance(summary_positions, list):
-            return summary_positions
-
-    reports = load_json("data/recent_reports.json", [])
-    if isinstance(reports, list) and reports:
-        latest_report = reports[-1]
-        if isinstance(latest_report, dict):
-            report_positions = latest_report.get("positions", [])
-            if isinstance(report_positions, list):
-                return report_positions
-
-    return []
-
-def get_dashboard_state() -> Dict[str, Any]:
-    snapshot = get_dashboard_snapshot()
-    system = get_system_state()
-
-    return {
-        "snapshot": snapshot,
-        "system": system,
-    }
-
-def get_system_state() -> Dict[str, Any]:
-    system = load_json("data/system_state.json", {})
-    if not isinstance(system, dict):
-        system = {}
-
-    return {
-        "regime": system.get("regime", "Neutral"),
-        "volatility": system.get("volatility", "Normal"),
-        "engine_state": system.get("engine_state", "Active"),
-    }
-
-
-def performance_summary() -> Dict[str, Any]:
-    proof = load_json("data/performance_summary.json", {})
-    if not isinstance(proof, dict):
-        proof = {}
-
-    return {
-        "trades": proof.get("trades", 0),
-        "winrate": proof.get("winrate", "N/A"),
-        "max_drawdown": proof.get("max_drawdown", "N/A"),
-    }
-
-
 def unrealized_pnl() -> Any:
     summary = load_json("data/unrealized_pnl.json", {})
     if isinstance(summary, dict):
@@ -391,9 +351,25 @@ def get_dashboard_state() -> Dict[str, Any]:
 
 def get_positions() -> List[Dict[str, Any]]:
     positions = load_json("data/positions.json", [])
-    if not isinstance(positions, list):
-        positions = []
-    return positions
+    if isinstance(positions, list) and positions:
+        return positions
+
+    summary = load_json("data/portfolio_summary.json", {})
+    if isinstance(summary, dict):
+        summary_positions = summary.get("positions", [])
+        if isinstance(summary_positions, list):
+            return summary_positions
+
+    reports = load_json("data/recent_reports.json", [])
+    if isinstance(reports, list) and reports:
+        latest_report = reports[-1]
+        if isinstance(latest_report, dict):
+            report_positions = latest_report.get("positions", [])
+            if isinstance(report_positions, list):
+                return report_positions
+
+    return []
+
 
 def get_signals() -> List[Dict[str, Any]]:
     signals = load_json("data/signals.json", [])
@@ -413,10 +389,14 @@ def get_signals() -> List[Dict[str, Any]]:
             "company_name": item.get("company_name", item.get("symbol")),
             "opinion": item.get("opinion", "Active setup."),
             "timestamp": item.get("timestamp", ""),
+            "setup_type": item.get("setup_type", "Continuation"),
+            "eligible": item.get("eligible", False),
+            "execution_quality": item.get("execution_quality", 0),
         })
 
     return cleaned
-    
+
+
 def get_positions_with_intelligence() -> List[Dict[str, Any]]:
     positions = get_positions()
     positions = attach_trade_intelligence(positions)
@@ -424,10 +404,53 @@ def get_positions_with_intelligence() -> List[Dict[str, Any]]:
     return positions
 
 
+def get_signal_boards() -> List[Dict[str, Any]]:
+    signals = get_signals()
+    boards = []
+
+    for item in signals:
+        boards.append(
+            {
+                "symbol": item["symbol"],
+                "company_name": item["company_name"],
+                "latest_score": item["score"],
+                "latest_confidence": item["confidence"],
+                "latest_timestamp": item.get("timestamp", ""),
+                "opinion": item.get("opinion", "Active setup."),
+            }
+        )
+
+    return boards
+
+
+def get_all_symbol_rows() -> List[Dict[str, Any]]:
+    boards = get_signal_boards()
+    rows = []
+    seen = set()
+
+    for board in boards:
+        symbol = board.get("symbol")
+        if symbol in seen:
+            continue
+
+        seen.add(symbol)
+        rows.append(
+            {
+                "symbol": symbol,
+                "company_name": board.get("company_name", symbol),
+                "latest_score": board.get("latest_score", 0),
+                "latest_confidence": board.get("latest_confidence", "LOW"),
+                "latest_timestamp": board.get("latest_timestamp", ""),
+                "opinion": board.get("opinion", "Active setup."),
+            }
+        )
+
+    return rows
+
+
 def get_symbol_detail(symbol: str) -> Dict[str, Any]:
     symbol = (symbol or "").upper()
 
-    # --- LOAD SOURCES ---
     signals = get_signals()
 
     symbol_intel_map = load_json("data/symbol_intelligence.json", {})
@@ -442,7 +465,6 @@ def get_symbol_detail(symbol: str) -> Dict[str, Any]:
     if not isinstance(news, dict):
         news = {}
 
-    # --- MATCH DATA ---
     symbol_signals = [s for s in signals if s.get("symbol") == symbol]
     symbol_signals = attach_trade_intelligence(symbol_signals)
 
@@ -456,8 +478,6 @@ def get_symbol_detail(symbol: str) -> Dict[str, Any]:
     if not isinstance(news_items, list):
         news_items = []
 
-    # --- BOARD SNAPSHOT ---
-    board = None
     if symbol_signals:
         top = symbol_signals[0]
         board = {
@@ -485,102 +505,8 @@ def get_symbol_detail(symbol: str) -> Dict[str, Any]:
             "blurb": company.get("blurb", "No company overview available yet."),
         },
         "board": board,
-
-        # 🔥 NEW PRIMARY INTELLIGENCE
         "primary_intelligence": primary_intel,
-
-        # SUPPORTING DATA
         "signals": symbol_signals,
-        "news_items": news_items[:8],
-    }
-
-
-def get_signal_boards() -> List[Dict[str, Any]]:
-    signals = get_signals()
-    boards = []
-    for item in signals:
-        boards.append(
-            {
-                "symbol": item["symbol"],
-                "company_name": item["company_name"],
-                "latest_score": item["score"],
-                "latest_confidence": item["confidence"],
-                "latest_timestamp": item.get("latest_timestamp", ""),
-                "opinion": item.get("opinion", "Active setup."),
-            }
-        )
-    return boards
-
-
-def get_all_symbol_rows() -> List[Dict[str, Any]]:
-    boards = get_signal_boards()
-    rows = []
-    seen = set()
-
-    for board in boards:
-        symbol = board.get("symbol")
-        if symbol in seen:
-            continue
-        seen.add(symbol)
-        rows.append(
-            {
-                "symbol": symbol,
-                "company_name": board.get("company_name", symbol),
-                "latest_score": board.get("latest_score", 0),
-                "latest_confidence": board.get("latest_confidence", "LOW"),
-                "latest_timestamp": board.get("latest_timestamp", ""),
-                "opinion": board.get("opinion", "Active setup."),
-            }
-        )
-    return rows
-
-
-def get_symbol_detail(symbol: str) -> Dict[str, Any]:
-    symbol_intel = load_json("data/symbol_intelligence.json", {})
-
-    intel = symbol_intel.get(symbol, {})
-
-    all_signals = [s for s in get_signals() if s.get("symbol") == symbol]
-    all_signals = attach_trade_intelligence(all_signals)
-
-    return {
-        "symbol": symbol,
-        "company": {
-            "name": company.get("name", symbol),
-            "blurb": company.get("blurb", "No company overview available yet."),
-        },
-        "board": board_match or {
-            "symbol": symbol,
-            "company_name": symbol,
-            "latest_score": 0,
-            "latest_confidence": "LOW",
-            "latest_timestamp": "",
-            "opinion": "No active opinion available yet.",
-        },
-
-        # 🔥 PRIMARY INTELLIGENCE
-        "primary_intelligence": intel,
-
-        # supporting context
-        "signals": all_signals,
-        "news_items": news_items[:8],
-    }
-
-    return {
-        "symbol": symbol,
-        "company": {
-            "name": company.get("name", board_match.get("company_name", symbol) if board_match else symbol),
-            "blurb": company.get("blurb", "No company overview available yet."),
-        },
-        "board": board_match or {
-            "symbol": symbol,
-            "company_name": symbol,
-            "latest_score": 0,
-            "latest_confidence": "LOW",
-            "latest_timestamp": "",
-            "opinion": "No active opinion available yet.",
-        },
-        "signals": all_signals,
         "news_items": news_items[:8],
     }
 
@@ -596,7 +522,6 @@ def template_context(extra: Dict[str, Any]) -> Dict[str, Any]:
     }
     base.update(extra)
     return base
-
 
 # ============================================================
 # ROUTES
