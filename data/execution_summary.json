@@ -1,0 +1,18 @@
+{
+  "selected_symbols": [
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "AMZN",
+    "META",
+    "GOOGL",
+    "TSLA",
+    "AMD"
+  ],
+  "selected_count": 8,
+  "eligible_count": 46,
+  "rejected_count": 40,
+  "cap": 8,
+  "regime": "neutral",
+  "volatility": "normal"
+}

@@ -1,0 +1,862 @@
+[
+  {
+    "symbol": "AAPL",
+    "score": 210,
+    "confidence": "HIGH",
+    "company_name": "AAPL",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "MSFT",
+    "score": 207,
+    "confidence": "HIGH",
+    "company_name": "MSFT",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "NVDA",
+    "score": 204,
+    "confidence": "HIGH",
+    "company_name": "NVDA",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "AMZN",
+    "score": 201,
+    "confidence": "HIGH",
+    "company_name": "AMZN",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "META",
+    "score": 198,
+    "confidence": "HIGH",
+    "company_name": "META",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "GOOGL",
+    "score": 195,
+    "confidence": "HIGH",
+    "company_name": "GOOGL",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "TSLA",
+    "score": 192,
+    "confidence": "HIGH",
+    "company_name": "TSLA",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "AMD",
+    "score": 189,
+    "confidence": "HIGH",
+    "company_name": "AMD",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "NFLX",
+    "score": 186,
+    "confidence": "HIGH",
+    "company_name": "NFLX",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "AVGO",
+    "score": 183,
+    "confidence": "HIGH",
+    "company_name": "AVGO",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "CRM",
+    "score": 180,
+    "confidence": "HIGH",
+    "company_name": "CRM",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "ORCL",
+    "score": 177,
+    "confidence": "MEDIUM",
+    "company_name": "ORCL",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "ADBE",
+    "score": 174,
+    "confidence": "MEDIUM",
+    "company_name": "ADBE",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "PLTR",
+    "score": 171,
+    "confidence": "MEDIUM",
+    "company_name": "PLTR",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "SNOW",
+    "score": 168,
+    "confidence": "MEDIUM",
+    "company_name": "SNOW",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "SHOP",
+    "score": 165,
+    "confidence": "MEDIUM",
+    "company_name": "SHOP",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "UBER",
+    "score": 162,
+    "confidence": "MEDIUM",
+    "company_name": "UBER",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "COIN",
+    "score": 159,
+    "confidence": "MEDIUM",
+    "company_name": "COIN",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "INTC",
+    "score": 156,
+    "confidence": "MEDIUM",
+    "company_name": "INTC",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "QCOM",
+    "score": 153,
+    "confidence": "MEDIUM",
+    "company_name": "QCOM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Core Equities",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "MU",
+    "score": 150,
+    "confidence": "MEDIUM",
+    "company_name": "MU",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Semiconductors",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "MRVL",
+    "score": 147,
+    "confidence": "MEDIUM",
+    "company_name": "MRVL",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Semiconductors",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "ARM",
+    "score": 144,
+    "confidence": "MEDIUM",
+    "company_name": "ARM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Semiconductors",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "SMCI",
+    "score": 141,
+    "confidence": "MEDIUM",
+    "company_name": "SMCI",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Semiconductors",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "TSM",
+    "score": 138,
+    "confidence": "MEDIUM",
+    "company_name": "TSM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Semiconductors",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "MDB",
+    "score": 135,
+    "confidence": "MEDIUM",
+    "company_name": "MDB",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Ai Data Cloud",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "XOM",
+    "score": 132,
+    "confidence": "MEDIUM",
+    "company_name": "XOM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Energy",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "CVX",
+    "score": 129,
+    "confidence": "LOW",
+    "company_name": "CVX",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Energy",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "COP",
+    "score": 126,
+    "confidence": "LOW",
+    "company_name": "COP",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Energy",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "SLB",
+    "score": 123,
+    "confidence": "LOW",
+    "company_name": "SLB",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Energy",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "EOG",
+    "score": 120,
+    "confidence": "LOW",
+    "company_name": "EOG",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Energy",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "OXY",
+    "score": 117,
+    "confidence": "LOW",
+    "company_name": "OXY",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Energy",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "HAL",
+    "score": 114,
+    "confidence": "LOW",
+    "company_name": "HAL",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Energy",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "DVN",
+    "score": 111,
+    "confidence": "LOW",
+    "company_name": "DVN",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Energy",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "MPC",
+    "score": 108,
+    "confidence": "LOW",
+    "company_name": "MPC",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Energy",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "PSX",
+    "score": 105,
+    "confidence": "LOW",
+    "company_name": "PSX",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Energy",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "JPM",
+    "score": 102,
+    "confidence": "LOW",
+    "company_name": "JPM",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Financials",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "BAC",
+    "score": 99,
+    "confidence": "LOW",
+    "company_name": "BAC",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Financials",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "GS",
+    "score": 96,
+    "confidence": "LOW",
+    "company_name": "GS",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Financials",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "MS",
+    "score": 93,
+    "confidence": "LOW",
+    "company_name": "MS",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Financials",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "WFC",
+    "score": 90,
+    "confidence": "LOW",
+    "company_name": "WFC",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Financials",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "BLK",
+    "score": 87,
+    "confidence": "LOW",
+    "company_name": "BLK",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Financials",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "AXP",
+    "score": 84,
+    "confidence": "LOW",
+    "company_name": "AXP",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Financials",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "SCHW",
+    "score": 81,
+    "confidence": "LOW",
+    "company_name": "SCHW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Financials",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "C",
+    "score": 78,
+    "confidence": "LOW",
+    "company_name": "C",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Financials",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "PYPL",
+    "score": 75,
+    "confidence": "LOW",
+    "company_name": "PYPL",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Financials",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "CAT",
+    "score": 72,
+    "confidence": "LOW",
+    "company_name": "CAT",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Industrials",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "DE",
+    "score": 69,
+    "confidence": "LOW",
+    "company_name": "DE",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Industrials",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "GE",
+    "score": 66,
+    "confidence": "LOW",
+    "company_name": "GE",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Industrials",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "HON",
+    "score": 63,
+    "confidence": "LOW",
+    "company_name": "HON",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Industrials",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "BA",
+    "score": 60,
+    "confidence": "LOW",
+    "company_name": "BA",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Industrials",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "LMT",
+    "score": 57,
+    "confidence": "LOW",
+    "company_name": "LMT",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Industrials",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "RTX",
+    "score": 54,
+    "confidence": "LOW",
+    "company_name": "RTX",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Industrials",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "ETN",
+    "score": 51,
+    "confidence": "LOW",
+    "company_name": "ETN",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Industrials",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "PH",
+    "score": 48,
+    "confidence": "LOW",
+    "company_name": "PH",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Industrials",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "UNP",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "UNP",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Industrials",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "WMT",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "WMT",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Consumer",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "COST",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "COST",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Consumer",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "HD",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "HD",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Consumer",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "MCD",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "MCD",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Consumer",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "SBUX",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "SBUX",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Consumer",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "NKE",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "NKE",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Consumer",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "TGT",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "TGT",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Consumer",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "LOW",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Consumer",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "DIS",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "DIS",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Consumer",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "CMG",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "CMG",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Consumer",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "LLY",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "LLY",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Healthcare",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "UNH",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "UNH",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Healthcare",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "JNJ",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "JNJ",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Healthcare",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "MRK",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "MRK",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Healthcare",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "ABBV",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "ABBV",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Healthcare",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "PFE",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "PFE",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Healthcare",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "TMO",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "TMO",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Healthcare",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "ISRG",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "ISRG",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Healthcare",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "VRTX",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "VRTX",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Healthcare",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "DHR",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "DHR",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Healthcare",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "SPY",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "SPY",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Etfs",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "QQQ",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "QQQ",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Etfs",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "IWM",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "IWM",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Etfs",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "DIA",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "DIA",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Etfs",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "XLE",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "XLE",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Etfs",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "XLK",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "XLK",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Etfs",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "XLF",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "XLF",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Etfs",
+    "setup_type": "Breakout"
+  },
+  {
+    "symbol": "XLV",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "XLV",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Etfs",
+    "setup_type": "Pullback"
+  },
+  {
+    "symbol": "SMH",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "SMH",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Etfs",
+    "setup_type": "Continuation"
+  },
+  {
+    "symbol": "ARKK",
+    "score": 45,
+    "confidence": "LOW",
+    "company_name": "ARKK",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "sector": "Etfs",
+    "setup_type": "Breakout"
+  }
+]

@@ -1,0 +1,105 @@
+{
+  "selected": [
+    {
+      "symbol": "AAPL",
+      "score": 210,
+      "confidence": "HIGH",
+      "company_name": "AAPL",
+      "opinion": "High-conviction setup with strong alignment.",
+      "timestamp": "2026-03-21T15:00:00",
+      "sector": "Core Equities",
+      "setup_type": "Continuation",
+      "execution_quality": 230,
+      "eligible": true
+    },
+    {
+      "symbol": "MSFT",
+      "score": 207,
+      "confidence": "HIGH",
+      "company_name": "MSFT",
+      "opinion": "High-conviction setup with strong alignment.",
+      "timestamp": "2026-03-21T15:00:00",
+      "sector": "Core Equities",
+      "setup_type": "Breakout",
+      "execution_quality": 230,
+      "eligible": true
+    },
+    {
+      "symbol": "NVDA",
+      "score": 204,
+      "confidence": "HIGH",
+      "company_name": "NVDA",
+      "opinion": "High-conviction setup with strong alignment.",
+      "timestamp": "2026-03-21T15:00:00",
+      "sector": "Core Equities",
+      "setup_type": "Pullback",
+      "execution_quality": 222,
+      "eligible": true
+    },
+    {
+      "symbol": "AMZN",
+      "score": 201,
+      "confidence": "HIGH",
+      "company_name": "AMZN",
+      "opinion": "High-conviction setup with strong alignment.",
+      "timestamp": "2026-03-21T15:00:00",
+      "sector": "Core Equities",
+      "setup_type": "Continuation",
+      "execution_quality": 221,
+      "eligible": true
+    },
+    {
+      "symbol": "META",
+      "score": 198,
+      "confidence": "HIGH",
+      "company_name": "META",
+      "opinion": "High-conviction setup with strong alignment.",
+      "timestamp": "2026-03-21T15:00:00",
+      "sector": "Core Equities",
+      "setup_type": "Breakout",
+      "execution_quality": 221,
+      "eligible": true
+    },
+    {
+      "symbol": "GOOGL",
+      "score": 195,
+      "confidence": "HIGH",
+      "company_name": "GOOGL",
+      "opinion": "High-conviction setup with strong alignment.",
+      "timestamp": "2026-03-21T15:00:00",
+      "sector": "Core Equities",
+      "setup_type": "Pullback",
+      "execution_quality": 213,
+      "eligible": true
+    },
+    {
+      "symbol": "TSLA",
+      "score": 192,
+      "confidence": "HIGH",
+      "company_name": "TSLA",
+      "opinion": "High-conviction setup with strong alignment.",
+      "timestamp": "2026-03-21T15:00:00",
+      "sector": "Core Equities",
+      "setup_type": "Continuation",
+      "execution_quality": 212,
+      "eligible": true
+    },
+    {
+      "symbol": "AMD",
+      "score": 189,
+      "confidence": "HIGH",
+      "company_name": "AMD",
+      "opinion": "High-conviction setup with strong alignment.",
+      "timestamp": "2026-03-21T15:00:00",
+      "sector": "Core Equities",
+      "setup_type": "Breakout",
+      "execution_quality": 212,
+      "eligible": true
+    }
+  ],
+  "eligible_count": 46,
+  "rejected_count": 40,
+  "cap": 8,
+  "regime": "neutral",
+  "volatility": "normal"
+}

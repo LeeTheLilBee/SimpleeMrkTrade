@@ -1,5 +1,10 @@
+import os
+import sys
 import json
 from pathlib import Path
+
+# 🔥 FIX IMPORT PATH (CRITICAL)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from engine.ticker_universe import flattened_ticker_list, sector_map
 
