@@ -68,20 +68,22 @@
 {% for p in positions %}
 <div class="card premium-card">
 
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:4px;">{{ p.symbol }}</h3>
-            <p class="muted-line" style="margin:0;">
-                {{ p.company_name if p.company_name is defined else "Live monitored position" }}
-            </p>
-        </div>
+    <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+            <div>
+                <h3 style="margin-bottom:4px;">{{ p.symbol }}</h3>
+                <p class="muted-line" style="margin:0;">
+                    {{ p.company_name if p.company_name is defined else "Live monitored position" }}
+                </p>
+            </div>
 
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <span class="signal-stat-chip">{{ p.health.label }}</span>
-            {% if p.action_bias is defined %}<span class="signal-stat-chip">{{ p.action_bias }}</span>{% endif %}
-            {% if p.risk_state is defined %}<span class="signal-stat-chip">{{ p.risk_state }}</span>{% endif %}
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <span class="signal-stat-chip">{{ p.health.label }}</span>
+                {% if p.action_bias is defined %}<span class="signal-stat-chip">{{ p.action_bias }}</span>{% endif %}
+                {% if p.risk_state is defined %}<span class="signal-stat-chip">{{ p.risk_state }}</span>{% endif %}
+            </div>
         </div>
-    </div>
+    </a>
 
     <div style="margin-top:14px;">
         <div class="health-bar">
@@ -90,96 +92,34 @@
     </div>
 
     <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 14px;">
-        <div class="card" style="margin:0;">
-            <h4>Status</h4>
-            <p><strong>Health:</strong> <span id="score-{{ p.symbol }}">{{ p.health.score }}</span></p>
-            <p><strong>Direction:</strong> {{ p.health.direction }}</p>
-            <p><strong>Action:</strong> {{ p.health.action }}</p>
-        </div>
+        <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0;">
+                <h4>Status</h4>
+                <p><strong>Health:</strong> <span id="score-{{ p.symbol }}">{{ p.health.score }}</span></p>
+                <p><strong>Direction:</strong> {{ p.health.direction }}</p>
+                <p><strong>Action:</strong> {{ p.health.action }}</p>
+            </div>
+        </a>
 
-        <div class="card" style="margin:0;">
-            <h4>Trade Frame</h4>
-            <p><strong>Entry:</strong> {{ p.entry if p.entry is defined else p.price }}</p>
-            <p><strong>Current:</strong> {{ p.current_price if p.current_price is defined else "N/A" }}</p>
-            <p><strong>Target:</strong> {{ p.target if p.target is defined else "N/A" }}</p>
-            <p><strong>Stop:</strong> {{ p.stop if p.stop is defined else "N/A" }}</p>
-        </div>
+        <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0;">
+                <h4>Trade Frame</h4>
+                <p><strong>Entry:</strong> {{ p.entry if p.entry is defined else p.price }}</p>
+                <p><strong>Current:</strong> {{ p.current_price if p.current_price is defined else "N/A" }}</p>
+                <p><strong>Target:</strong> {{ p.target if p.target is defined else "N/A" }}</p>
+                <p><strong>Stop:</strong> {{ p.stop if p.stop is defined else "N/A" }}</p>
+            </div>
+        </a>
 
-        <div class="card" style="margin:0;">
-            <h4>Position State</h4>
-            <p><strong>Days Open:</strong> {{ p.days_open if p.days_open is defined else "N/A" }}</p>
-            <p><strong>Progress:</strong> {{ p.position_progress if p.position_progress is defined else "N/A" }}</p>
-            <p><strong>Bias:</strong> {{ p.action_bias if p.action_bias is defined else "HOLD" }}</p>
-        </div>
+        <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0;">
+                <h4>Position State</h4>
+                <p><strong>Days Open:</strong> {{ p.days_open if p.days_open is defined else "N/A" }}</p>
+                <p><strong>Progress:</strong> {{ p.position_progress if p.position_progress is defined else "N/A" }}</p>
+                <p><strong>Bias:</strong> {{ p.action_bias if p.action_bias is defined else "HOLD" }}</p>
+            </div>
+        </a>
     </div>
-
-    {% if p.position_explanation %}
-    <div class="card" style="margin-top:14px;">
-        <h4>Why This Position Looks Like This</h4>
-        <div style="display:grid; gap:8px;">
-            {% for line in p.position_explanation %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ line }}</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if p.intelligence %}
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 14px;">
-        <div class="card" style="margin:0;">
-            <h4>Trade Intelligence</h4>
-            <p><strong>Status:</strong> {{ p.intelligence.thesis.status }}</p>
-            <p><strong>Action Bias:</strong> {{ p.intelligence.action_bias }}</p>
-            {% if p.intelligence.thesis.summary %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ p.intelligence.thesis.summary }}</p>
-            </div>
-            {% endif %}
-        </div>
-
-        {% if p.intelligence.damage %}
-        <div class="card" style="margin:0;">
-            <h4>Structural Damage</h4>
-            <div style="display:grid; gap:8px;">
-                {% for line in p.intelligence.damage %}
-                <div class="passage-frame">
-                    <p style="margin:0;">{{ line }}</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if p.intelligence.forward_paths %}
-        <div class="card" style="margin:0;">
-            <h4>Forward Paths</h4>
-            <div class="passage-frame" style="margin-bottom:10px;">
-                <p style="margin:0;"><strong>Bull Case:</strong></p>
-                <p style="margin:6px 0 0 0;">{{ p.intelligence.forward_paths.bull_case|join(" • ") }}</p>
-            </div>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>Bear Case:</strong></p>
-                <p style="margin:6px 0 0 0;">{{ p.intelligence.forward_paths.bear_case|join(" • ") }}</p>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-    {% endif %}
-
-    {% if p.timeline %}
-    <div class="card" style="margin-top:14px;">
-        <h4>Timeline</h4>
-        <div style="display:grid; gap:8px;">
-            {% for t in p.timeline %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ t }}</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
 
 </div>
 {% endfor %}

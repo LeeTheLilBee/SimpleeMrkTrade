@@ -635,6 +635,31 @@ def all_symbols_page():
         **template_context({"rows": rows}),
     )
 
+@app.route("/position/<trade_id>")
+def position_detail_page(trade_id):
+    positions = get_positions_with_intelligence()
+
+    target = None
+    for p in positions:
+        if p.get("trade_id") == trade_id:
+            target = p
+            break
+
+    if not target:
+        return render_template_safe(
+            "position_detail.html",
+            **template_context({
+                "detail": None,
+                "error": "Position not found.",
+            }),
+        )
+
+    return render_template_safe(
+        "position_detail.html",
+        **template_context({
+            "detail": target,
+        }),
+    )
 
 @app.route("/signals/<symbol>")
 @app.route("/symbol/<symbol>")

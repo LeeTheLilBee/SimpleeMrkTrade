@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if not detail %}
+<div class="card premium-card">
+    <h3>Position Not Found</h3>
+    <p>{{ error or "No detail available." }}</p>
+</div>
+{% else %}
+
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>{{ detail.symbol }} Position Detail</h2>
+    <div class="passage-frame">
+        <p>{{ detail.company_name if detail.company_name is defined else "Live monitored position" }}</p>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+    <div class="card premium-card">
+        <h4>Status</h4>
+        <p><strong>Health:</strong> {{ detail.health.score if detail.health else "N/A" }}</p>
+        <p><strong>Label:</strong> {{ detail.health.label if detail.health else "N/A" }}</p>
+        <p><strong>Direction:</strong> {{ detail.health.direction if detail.health else "N/A" }}</p>
+        <p><strong>Action:</strong> {{ detail.health.action if detail.health else "N/A" }}</p>
+    </div>
+
+    <div class="card premium-card">
+        <h4>Trade Frame</h4>
+        <p><strong>Entry:</strong> {{ detail.entry if detail.entry is defined else detail.price }}</p>
+        <p><strong>Current:</strong> {{ detail.current_price if detail.current_price is defined else "N/A" }}</p>
+        <p><strong>Stop:</strong> {{ detail.stop if detail.stop is defined else "N/A" }}</p>
+        <p><strong>Target:</strong> {{ detail.target if detail.target is defined else "N/A" }}</p>
+    </div>
+
+    <div class="card premium-card">
+        <h4>Position State</h4>
+        <p><strong>Bias:</strong> {{ detail.action_bias if detail.action_bias is defined else "HOLD" }}</p>
+        <p><strong>Risk:</strong> {{ detail.risk_state if detail.risk_state is defined else "NORMAL" }}</p>
+        <p><strong>Days Open:</strong> {{ detail.days_open if detail.days_open is defined else "N/A" }}</p>
+        <p><strong>Progress:</strong> {{ detail.position_progress if detail.position_progress is defined else "N/A" }}</p>
+    </div>
+</div>
+
+{% if detail.position_explanation %}
+<div class="card premium-card" style="margin-top: 16px;">
+    <h3>Position Explanation</h3>
+    <div style="display:grid; gap:8px;">
+        {% for line in detail.position_explanation %}
+        <div class="passage-frame">
+            <p style="margin:0;">{{ line }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if detail.intelligence %}
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 16px;">
+    <div class="card premium-card">
+        <h4>Trade Intelligence</h4>
+        <p><strong>Status:</strong> {{ detail.intelligence.thesis.status }}</p>
+        <p><strong>Action Bias:</strong> {{ detail.intelligence.action_bias }}</p>
+        {% if detail.intelligence.thesis.summary %}
+        <div class="passage-frame">
+            <p style="margin:0;">{{ detail.intelligence.thesis.summary }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if detail.intelligence.damage %}
+    <div class="card premium-card">
+        <h4>Structural Damage</h4>
+        <div style="display:grid; gap:8px;">
+            {% for line in detail.intelligence.damage %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ line }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if detail.intelligence.forward_paths %}
+    <div class="card premium-card">
+        <h4>Forward Paths</h4>
+        <div class="passage-frame" style="margin-bottom:10px;">
+            <p style="margin:0;"><strong>Bull Case:</strong></p>
+            <p style="margin:6px 0 0 0;">{{ detail.intelligence.forward_paths.bull_case|join(" • ") }}</p>
+        </div>
+        <div class="passage-frame">
+            <p style="margin:0;"><strong>Bear Case:</strong></p>
+            <p style="margin:6px 0 0 0;">{{ detail.intelligence.forward_paths.bear_case|join(" • ") }}</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if detail.timeline %}
+<div class="card premium-card" style="margin-top: 16px;">
+    <h3>Timeline</h3>
+    <div style="display:grid; gap:8px;">
+        {% for t in detail.timeline %}
+        <div class="passage-frame">
+            <p style="margin:0;">{{ t }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endif %}
+{% endblock %}
