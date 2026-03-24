@@ -669,6 +669,7 @@ def signal_symbol_page(symbol: str):
         "signal_symbol.html",
         **template_context(
             {
+                "detail": detail,
                 "symbol": detail["symbol"],
                 "company": detail["company"],
                 "symbol_signals": detail["signals"],
@@ -682,7 +683,6 @@ def signal_symbol_page(symbol: str):
             }
         ),
     )
-
 
 @app.route("/positions")
 def positions_page():
