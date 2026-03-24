@@ -1,53 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="card premium-hero gold-accent-card">
-    <h3>System Overview</h3>
-
-    <div class="passage-frame">
-        <p id="brain-summary">{{ brain.summary }}</p>
-    </div>
-
-    <div class="card">
-        <h4>Primary Focus</h4>
-        <p id="brain-focus">
-            {% if brain.focus %}
-                {{ brain.focus.symbol }} → {{ brain.focus.message }}
-            {% else %}
-                Monitoring all positions...
-            {% endif %}
-        </p>
-    </div>
-</div>
-
-<div class="card premium-hero gold-accent-card">
-    <h3>Portfolio Intelligence</h3>
-
-    <div class="passage-frame">
-        <p><b>Health:</b> {{ portfolio.health }}</p>
-        <p><b>Risk:</b> {{ portfolio.risk }}</p>
-        <p><b>Avg Health Score:</b> {{ portfolio.avg_health }}</p>
-    </div>
-</div>
-
-{% if alerts %}
-<div class="card premium-card">
-    <h3>System Alerts</h3>
-
-    <div id="alerts-container">
-        {% for a in alerts %}
-        <div class="alert-row {{ a.severity }}">
-            <strong>{{ a.symbol }}</strong>
-            <span>{{ a.message }}</span>
-            <span class="severity-badge {{ a.severity }}">
-                {{ a.severity|upper }}
-            </span>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
 <div class="page-hero card premium-hero gold-accent-card">
     <h2>Positions Command Center</h2>
     <div class="passage-frame">
@@ -55,97 +8,182 @@
     </div>
 </div>
 
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 18px;">
+    <div class="card premium-card">
+        <h4>System Tone</h4>
+        <p id="brain-summary">{{ brain.summary if brain and brain.summary else "No active positions." }}</p>
+    </div>
+
+    <div class="card premium-card">
+        <h4>Primary Focus</h4>
+        <p id="brain-focus">
+            {% if brain and brain.focus %}
+                {{ brain.focus.symbol }} → {{ brain.focus.message }}
+            {% else %}
+                Monitoring all positions...
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="card premium-card">
+        <h4>Portfolio Health</h4>
+        <p><strong>{{ portfolio.health if portfolio and portfolio.health else "No positions" }}</strong></p>
+        <p class="muted-line">Avg score: {{ portfolio.avg_health if portfolio and portfolio.avg_health is not none else 0 }}</p>
+    </div>
+
+    <div class="card premium-card">
+        <h4>Risk State</h4>
+        <p><strong>{{ portfolio.risk if portfolio and portfolio.risk else "None" }}</strong></p>
+        <p class="muted-line">Open positions: {{ positions|length }}</p>
+    </div>
+</div>
+
+{% if alerts %}
+<div class="card premium-card" style="margin-bottom: 18px;">
+    <h3>System Alerts</h3>
+    <div id="alerts-container" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px;">
+        {% for a in alerts %}
+        <div class="card" style="margin:0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                <strong>{{ a.symbol }}</strong>
+                <span class="severity-badge {{ a.severity }}">{{ a.severity|upper }}</span>
+            </div>
+            <p style="margin-top:8px;">{{ a.message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if not positions %}
+<div class="card premium-card">
+    <h3>No Open Positions</h3>
+    <div class="passage-frame">
+        <p>The command center is ready. When positions are active, this page will show health, risk, action bias, and live intelligence.</p>
+    </div>
+</div>
+{% endif %}
+
+<div style="display:grid; gap:18px;">
 {% for p in positions %}
 <div class="card premium-card">
 
-    <div class="symbol-card-top">
-        <h3>{{ p.symbol }}</h3>
-        <span class="signal-stat-chip">{{ p.health.label }}</span>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:4px;">{{ p.symbol }}</h3>
+            <p class="muted-line" style="margin:0;">
+                {{ p.company_name if p.company_name is defined else "Live monitored position" }}
+            </p>
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span class="signal-stat-chip">{{ p.health.label }}</span>
+            {% if p.action_bias is defined %}<span class="signal-stat-chip">{{ p.action_bias }}</span>{% endif %}
+            {% if p.risk_state is defined %}<span class="signal-stat-chip">{{ p.risk_state }}</span>{% endif %}
+        </div>
     </div>
 
-    <div class="health-bar">
-        <div id="health-{{ p.symbol }}" class="health-fill" style="width: {{ p.health.score }}%;"></div>
+    <div style="margin-top:14px;">
+        <div class="health-bar">
+            <div id="health-{{ p.symbol }}" class="health-fill" style="width: {{ p.health.score }}%;"></div>
+        </div>
     </div>
 
-    <div class="passage-frame">
-        <p><b>Health:</b> {{ p.health.score }}</p>
-        <p><b>Direction:</b> {{ p.health.direction }}</p>
-        <p><b>Action:</b> {{ p.health.action }}</p>
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 14px;">
+        <div class="card" style="margin:0;">
+            <h4>Status</h4>
+            <p><strong>Health:</strong> <span id="score-{{ p.symbol }}">{{ p.health.score }}</span></p>
+            <p><strong>Direction:</strong> {{ p.health.direction }}</p>
+            <p><strong>Action:</strong> {{ p.health.action }}</p>
+        </div>
+
+        <div class="card" style="margin:0;">
+            <h4>Trade Frame</h4>
+            <p><strong>Entry:</strong> {{ p.entry if p.entry is defined else p.price }}</p>
+            <p><strong>Current:</strong> {{ p.current_price if p.current_price is defined else "N/A" }}</p>
+            <p><strong>Target:</strong> {{ p.target if p.target is defined else "N/A" }}</p>
+            <p><strong>Stop:</strong> {{ p.stop if p.stop is defined else "N/A" }}</p>
+        </div>
+
+        <div class="card" style="margin:0;">
+            <h4>Position State</h4>
+            <p><strong>Days Open:</strong> {{ p.days_open if p.days_open is defined else "N/A" }}</p>
+            <p><strong>Progress:</strong> {{ p.position_progress if p.position_progress is defined else "N/A" }}</p>
+            <p><strong>Bias:</strong> {{ p.action_bias if p.action_bias is defined else "HOLD" }}</p>
+        </div>
     </div>
 
-    {% if p.health.breakdown %}
-    <div class="card">
-        <h4>Why This Changed</h4>
-        <ul>
-            {% for b in p.health.breakdown %}
-            <li>{{ b }}</li>
+    {% if p.position_explanation %}
+    <div class="card" style="margin-top:14px;">
+        <h4>Why This Position Looks Like This</h4>
+        <div style="display:grid; gap:8px;">
+            {% for line in p.position_explanation %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ line }}</p>
+            </div>
             {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
-
-    {% if p.health.events %}
-    <div class="card">
-        <h4>Critical Events</h4>
-        <ul>
-            {% for e in p.health.events %}
-            <li>{{ e }}</li>
-            {% endfor %}
-        </ul>
+        </div>
     </div>
     {% endif %}
 
     {% if p.intelligence %}
-    <div class="card">
-        <h4>Trade Intelligence</h4>
-
-        <div class="passage-frame">
-            <p><b>Status:</b> {{ p.intelligence.thesis.status }}</p>
-            <p><b>Action Bias:</b> {{ p.intelligence.action_bias }}</p>
-        </div>
-
-        <div class="passage-frame">
-            <p><b>Snapshot:</b></p>
-            <ul>
-                {% for line in p.intelligence.snapshot.trade_snapshot %}
-                <li>{{ line }}</li>
-                {% endfor %}
-            </ul>
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 14px;">
+        <div class="card" style="margin:0;">
+            <h4>Trade Intelligence</h4>
+            <p><strong>Status:</strong> {{ p.intelligence.thesis.status }}</p>
+            <p><strong>Action Bias:</strong> {{ p.intelligence.action_bias }}</p>
+            {% if p.intelligence.thesis.summary %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ p.intelligence.thesis.summary }}</p>
+            </div>
+            {% endif %}
         </div>
 
         {% if p.intelligence.damage %}
-        <div class="passage-frame">
-            <p><b>Structural Damage:</b></p>
-            <ul>
+        <div class="card" style="margin:0;">
+            <h4>Structural Damage</h4>
+            <div style="display:grid; gap:8px;">
                 {% for line in p.intelligence.damage %}
-                <li>{{ line }}</li>
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ line }}</p>
+                </div>
                 {% endfor %}
-            </ul>
+            </div>
         </div>
         {% endif %}
 
         {% if p.intelligence.forward_paths %}
-        <div class="passage-frame">
-            <p><b>Forward Paths:</b></p>
-            <p><b>Bull Case:</b></p>
-            <ul>
-                {% for line in p.intelligence.forward_paths.bull_case %}
-                <li>{{ line }}</li>
-                {% endfor %}
-            </ul>
-
-            <p><b>Bear Case:</b></p>
-            <ul>
-                {% for line in p.intelligence.forward_paths.bear_case %}
-                <li>{{ line }}</li>
-                {% endfor %}
-            </ul>
+        <div class="card" style="margin:0;">
+            <h4>Forward Paths</h4>
+            <div class="passage-frame" style="margin-bottom:10px;">
+                <p style="margin:0;"><strong>Bull Case:</strong></p>
+                <p style="margin:6px 0 0 0;">{{ p.intelligence.forward_paths.bull_case|join(" • ") }}</p>
+            </div>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>Bear Case:</strong></p>
+                <p style="margin:6px 0 0 0;">{{ p.intelligence.forward_paths.bear_case|join(" • ") }}</p>
+            </div>
         </div>
         {% endif %}
     </div>
     {% endif %}
+
+    {% if p.timeline %}
+    <div class="card" style="margin-top:14px;">
+        <h4>Timeline</h4>
+        <div style="display:grid; gap:8px;">
+            {% for t in p.timeline %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ t }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
 </div>
 {% endfor %}
+</div>
 
 <script>
 async function fetchLiveState() {
@@ -155,12 +193,16 @@ async function fetchLiveState() {
 
         const summary = document.getElementById("brain-summary");
         if (summary && data.brain) {
-            summary.innerText = data.brain.summary;
+            summary.innerText = data.brain.summary || "No active positions.";
         }
 
         const focus = document.getElementById("brain-focus");
-        if (focus && data.brain && data.brain.focus) {
-            focus.innerText = data.brain.focus.symbol + " → " + data.brain.focus.message;
+        if (focus) {
+            if (data.brain && data.brain.focus) {
+                focus.innerText = data.brain.focus.symbol + " → " + data.brain.focus.message;
+            } else {
+                focus.innerText = "Monitoring all positions...";
+            }
         }
 
         const alertsContainer = document.getElementById("alerts-container");
@@ -169,13 +211,14 @@ async function fetchLiveState() {
 
             data.alerts.forEach(a => {
                 const row = document.createElement("div");
-                row.className = "alert-row " + a.severity;
+                row.className = "card";
+                row.style.margin = "0";
                 row.innerHTML = `
-                    <strong>${a.symbol}</strong>
-                    <span>${a.message}</span>
-                    <span class="severity-badge ${a.severity}">
-                        ${a.severity.toUpperCase()}
-                    </span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                        <strong>${a.symbol}</strong>
+                        <span class="severity-badge ${a.severity}">${a.severity.toUpperCase()}</span>
+                    </div>
+                    <p style="margin-top:8px;">${a.message}</p>
                 `;
                 alertsContainer.appendChild(row);
             });
@@ -187,13 +230,17 @@ async function fetchLiveState() {
                 if (bar && p.health) {
                     bar.style.width = p.health.score + "%";
                 }
+
+                const score = document.getElementById("score-" + p.symbol);
+                if (score && p.health) {
+                    score.innerText = p.health.score;
+                }
             });
         }
     } catch (err) {
         console.log("Live update error:", err);
     }
 }
-
 setInterval(fetchLiveState, 4000);
 fetchLiveState();
 </script>
