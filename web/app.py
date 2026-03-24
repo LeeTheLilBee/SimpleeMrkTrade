@@ -838,6 +838,36 @@ def bot_log_page():
     )
 
 
+@app.route("/trade/<trade_id>")
+def trade_detail_page(trade_id):
+    pools = [
+        load_json("data/trade_details.json", []),
+        load_json("data/open_positions.json", []),
+        load_json("data/closed_positions.json", []),
+        load_json("data/candidate_log.json", []),
+        load_json("data/trade_log.json", []),
+    ]
+
+    target = None
+    for pool in pools:
+        if not isinstance(pool, list):
+            continue
+        for item in pool:
+            if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
+                target = item
+                break
+        if target:
+            break
+
+    return render_template_safe(
+        "trade_detail.html",
+        **template_context({
+            "detail": target,
+            "error": None if target else "Trade detail not found.",
+        }),
+    )
+    
+
 @app.route("/why-this-trade")
 def why_this_trade_page():
     maybe_track_page_view("/why-this-trade")

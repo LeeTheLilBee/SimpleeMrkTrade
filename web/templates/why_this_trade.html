@@ -30,10 +30,11 @@
             </div>
             <div class="why-trade-actions">
                 <a href="/signals/{{ trade.symbol }}" class="cta-btn secondary">Open Symbol</a>
-                {% if trade.id %}
-                <a href="/trade/{{ trade.id }}" class="cta-btn secondary">Trade Detail</a>
-                {% endif %}
-            </div>
+                {% if trade.trade_id %}
+                <a href="/trade/{{ trade.trade_id }}" class="cta-btn secondary">Trade Detail</a>
+                {% elif trade.id %}
+<a href="/trade/{{ trade.id }}" class="cta-btn secondary">Trade Detail</a>
+{% endif %}
         </div>
 
         {% if trade.why %}
