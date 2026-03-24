@@ -33,9 +33,8 @@
                 {% if trade.trade_id %}
                 <a href="/trade/{{ trade.trade_id }}" class="cta-btn secondary">Trade Detail</a>
                 {% elif trade.id %}
-<a href="/trade/{{ trade.id }}" class="cta-btn secondary">Trade Detail</a>
-{% endif %}
-        </div>
+                <a href="/trade/{{ trade.id }}" class="cta-btn secondary">Trade Detail</a>
+                {% endif %}
 
         {% if trade.why %}
         <div class="card explanation-section-card inner-section-card">

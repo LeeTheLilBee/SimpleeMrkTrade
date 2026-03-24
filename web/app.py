@@ -261,6 +261,160 @@ def get_dashboard_snapshot() -> Dict[str, Any]:
     }
 
 
+def build_trade_detail_payload(trade_id):
+    trade_details = load_json("data/trade_details.json", [])
+    open_positions = load_json("data/open_positions.json", [])
+    closed_positions = load_json("data/closed_positions.json", [])
+    candidate_log = load_json("data/candidate_log.json", [])
+    trade_log = load_json("data/trade_log.json", [])
+    timelines = load_json("data/trade_timeline.json", [])
+
+    if not isinstance(trade_details, list):
+        trade_details = []
+    if not isinstance(open_positions, list):
+        open_positions = []
+    if not isinstance(closed_positions, list):
+        closed_positions = []
+    if not isinstance(candidate_log, list):
+        candidate_log = []
+    if not isinstance(trade_log, list):
+        trade_log = []
+    if not isinstance(timelines, list):
+        timelines = []
+
+    target = None
+
+    # 1) Prefer rich saved trade_details
+    for item in trade_details:
+        if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
+            target = dict(item)
+            break
+
+    # 2) Fall back to open / closed positions
+    if not target:
+        for pool in [open_positions, closed_positions]:
+            for item in pool:
+                if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
+                    target = dict(item)
+                    break
+            if target:
+                break
+
+    # 3) Fall back to trade log
+    if not target:
+        for item in trade_log:
+            if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
+                target = dict(item)
+                break
+
+    if not target:
+        return None
+
+    symbol = target.get("symbol")
+    strategy = target.get("strategy", "CALL")
+    entry = target.get("entry", target.get("price"))
+    atr = target.get("atr")
+    score = target.get("score")
+    confidence = target.get("confidence")
+
+    # Candidate context
+    candidate = None
+    for row in candidate_log:
+        same_trade = str(row.get("trade_id")) == str(trade_id)
+        same_symbol = row.get("symbol") == symbol
+        if same_trade or same_symbol:
+            candidate = row
+            break
+
+    # Timeline
+    trade_timeline = []
+    for row in timelines:
+        same_trade = str(row.get("trade_id")) == str(trade_id)
+        same_symbol = row.get("symbol") == symbol
+        if same_trade or same_symbol:
+            trade_timeline.append(row)
+
+    # Enrich fallback blocks if missing
+    target.setdefault("entry", entry)
+    target.setdefault("atr", atr)
+    target.setdefault("score", score)
+    target.setdefault("confidence", confidence)
+
+    target.setdefault("risk", {
+        "stop_logic": (
+            f"Stop anchored near {target.get('stop')}"
+            if target.get("stop") is not None else
+            "Stop logic not fully defined yet."
+        ),
+        "note": (
+            "Risk is framed around stop/target distance."
+            if target.get("stop") is not None and target.get("target") is not None else
+            "Risk note unavailable."
+        ),
+        "story": (
+            "This trade should stay healthy above the stop and improve as it moves toward target."
+            if target.get("stop") is not None else
+            "No deeper risk story saved yet."
+        ),
+    })
+
+    target.setdefault("signal_decay", {
+        "minutes_old": "N/A",
+        "decay_pct": "N/A",
+        "adjusted_score": score if score is not None else "N/A",
+    })
+
+    target.setdefault("crowd_pressure", {
+        "score": "N/A",
+        "label": "UNKNOWN",
+        "note": "No crowd pressure data saved.",
+    })
+
+    target.setdefault("thesis", target.get("why", [
+        "No thesis lines saved yet."
+    ]))
+
+    target.setdefault("narrative", {
+        "entry_story": (
+            f"Trade entered in {strategy} direction around {entry}."
+            if entry is not None else
+            "No entry story saved yet."
+        ),
+        "management_story": (
+            "Management will depend on follow-through, stop integrity, and progress toward target."
+        ),
+        "exit_story": (
+            target.get("exit_explanation")
+            or "No exit story saved yet."
+        ),
+    })
+
+    target.setdefault("context", [
+        f"Mode: {target.get('mode', 'UNKNOWN')}",
+        f"Regime: {target.get('regime', 'UNKNOWN')}",
+        f"Breadth: {target.get('breadth', 'UNKNOWN')}",
+        f"Volatility: {target.get('volatility_state', 'UNKNOWN')}",
+    ])
+
+    target.setdefault(
+        "why_not_this_trade",
+        [target.get("rejection_reason")] if target.get("rejection_reason") else []
+    )
+
+    target["timeline"] = trade_timeline
+
+    # Pull explainability from candidate log if missing
+    if candidate:
+        if not target.get("why") and candidate.get("why"):
+            target["why"] = candidate.get("why", [])
+        if not target.get("option_explanation") and candidate.get("option_explanation"):
+            target["option_explanation"] = candidate.get("option_explanation", [])
+        if not target.get("rejection_reason") and candidate.get("rejection_reason"):
+            target["rejection_reason"] = candidate.get("rejection_reason")
+
+    return target
+
+
 def get_execution_summary() -> Dict[str, Any]:
     summary = load_json("data/execution_summary.json", {})
     if not isinstance(summary, dict):
@@ -840,33 +994,15 @@ def bot_log_page():
 
 @app.route("/trade/<trade_id>")
 def trade_detail_page(trade_id):
-    pools = [
-        load_json("data/trade_details.json", []),
-        load_json("data/open_positions.json", []),
-        load_json("data/closed_positions.json", []),
-        load_json("data/candidate_log.json", []),
-        load_json("data/trade_log.json", []),
-    ]
-
-    target = None
-    for pool in pools:
-        if not isinstance(pool, list):
-            continue
-        for item in pool:
-            if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
-                target = item
-                break
-        if target:
-            break
-
+    maybe_track_page_view(f"/trade/{trade_id}")
+    detail = build_trade_detail_payload(trade_id)
     return render_template_safe(
         "trade_detail.html",
         **template_context({
-            "detail": target,
-            "error": None if target else "Trade detail not found.",
+            "detail": detail,
+            "error": None if detail else "Trade detail not found.",
         }),
     )
-    
 
 @app.route("/why-this-trade")
 def why_this_trade_page():
