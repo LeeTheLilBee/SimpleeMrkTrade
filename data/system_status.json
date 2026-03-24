@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-03-24T04:27:17.979188",
-  "cash": 3.5,
-  "buying_power": 3.5,
-  "equity": 4793.76,
-  "open_positions": 1,
+  "timestamp": "2026-03-24T04:52:06.605749",
+  "cash": 4781.81,
+  "buying_power": 4781.81,
+  "equity": 4781.79,
+  "open_positions": 0,
   "executed_trades": 3,
   "regime": "STARTING",
   "volatility": "UNKNOWN",
   "mode": "BOOT",
   "total_trades": 3,
   "winrate": 0.67,
-  "max_drawdown": 0.0
+  "max_drawdown": 11.97
 }

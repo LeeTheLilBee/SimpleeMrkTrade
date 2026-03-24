@@ -1437,5 +1437,40 @@
     "message": "Blocked by governor: daily_entry_cap, cash_reserve_too_low",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-24T04:52:06.597816",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-24T04:52:07.069818",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-24T04:52:14.594702",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-24T04:52:14.607178",
+    "event_type": "QUEUE",
+    "message": "Approved 8 research trades; selected 2 execution trades in mode DEFENSIVE_BEAR",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-24T04:52:15.331971",
+    "event_type": "RISK",
+    "message": "Blocked by governor: daily_entry_cap",
+    "symbol": null,
+    "meta": {}
   }
 ]

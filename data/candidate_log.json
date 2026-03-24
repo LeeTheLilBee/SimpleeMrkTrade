@@ -5,14 +5,22 @@
     "score": 210,
     "confidence": "HIGH",
     "price": 100.0,
-    "status": "rejected",
-    "reason": "failed_execution_guard",
+    "status": "selected",
+    "reason": "selected_for_execution",
     "mode": "DEFENSIVE_BEAR",
     "breadth": "BULLISH",
     "volatility_state": "NORMAL",
     "timestamp": "2026-03-21T15:00:00",
-    "why": [],
-    "rejection_reason": "Rejected because execution controls did not allow the trade."
+    "why": [
+      "High conviction signal strength.",
+      "Confidence is high based on the current signal stack.",
+      "Strategy is aligned with the current upward trend.",
+      "Market mode at decision time: DEFENSIVE_BEAR.",
+      "Broader regime context: BEAR_TREND.",
+      "Market breadth context: BULLISH.",
+      "Volatility state: NORMAL."
+    ],
+    "rejection_reason": null
   },
   {
     "symbol": "MSFT",
@@ -20,14 +28,22 @@
     "score": 207,
     "confidence": "HIGH",
     "price": 100.0,
-    "status": "rejected",
-    "reason": "failed_execution_guard",
+    "status": "approved_not_selected",
+    "reason": "approved_but_ranked_below_execution_cut",
     "mode": "DEFENSIVE_BEAR",
     "breadth": "BULLISH",
     "volatility_state": "NORMAL",
     "timestamp": "2026-03-21T15:00:00",
-    "why": [],
-    "rejection_reason": "Rejected because execution controls did not allow the trade."
+    "why": [
+      "High conviction signal strength.",
+      "Confidence is high based on the current signal stack.",
+      "Strategy is aligned with the current upward trend.",
+      "Market mode at decision time: DEFENSIVE_BEAR.",
+      "Broader regime context: BEAR_TREND.",
+      "Market breadth context: BULLISH.",
+      "Volatility state: NORMAL."
+    ],
+    "rejection_reason": "Approved in research but not selected for execution."
   },
   {
     "symbol": "NVDA",
@@ -35,14 +51,22 @@
     "score": 204,
     "confidence": "HIGH",
     "price": 100.0,
-    "status": "rejected",
-    "reason": "failed_execution_guard",
+    "status": "approved_not_selected",
+    "reason": "approved_but_ranked_below_execution_cut",
     "mode": "DEFENSIVE_BEAR",
     "breadth": "BULLISH",
     "volatility_state": "NORMAL",
     "timestamp": "2026-03-21T15:00:00",
-    "why": [],
-    "rejection_reason": "Rejected because execution controls did not allow the trade."
+    "why": [
+      "High conviction signal strength.",
+      "Confidence is high based on the current signal stack.",
+      "Strategy is aligned with the current upward trend.",
+      "Market mode at decision time: DEFENSIVE_BEAR.",
+      "Broader regime context: BEAR_TREND.",
+      "Market breadth context: BULLISH.",
+      "Volatility state: NORMAL."
+    ],
+    "rejection_reason": "Approved in research but not selected for execution."
   },
   {
     "symbol": "AMZN",
@@ -50,14 +74,22 @@
     "score": 201,
     "confidence": "HIGH",
     "price": 100.0,
-    "status": "rejected",
-    "reason": "failed_execution_guard",
+    "status": "selected",
+    "reason": "selected_for_execution",
     "mode": "DEFENSIVE_BEAR",
     "breadth": "BULLISH",
     "volatility_state": "NORMAL",
     "timestamp": "2026-03-21T15:00:00",
-    "why": [],
-    "rejection_reason": "Rejected because execution controls did not allow the trade."
+    "why": [
+      "High conviction signal strength.",
+      "Confidence is high based on the current signal stack.",
+      "Strategy is aligned with the current upward trend.",
+      "Market mode at decision time: DEFENSIVE_BEAR.",
+      "Broader regime context: BEAR_TREND.",
+      "Market breadth context: BULLISH.",
+      "Volatility state: NORMAL."
+    ],
+    "rejection_reason": null
   },
   {
     "symbol": "META",
@@ -65,14 +97,22 @@
     "score": 198,
     "confidence": "HIGH",
     "price": 100.0,
-    "status": "rejected",
-    "reason": "failed_execution_guard",
+    "status": "approved_not_selected",
+    "reason": "approved_but_ranked_below_execution_cut",
     "mode": "DEFENSIVE_BEAR",
     "breadth": "BULLISH",
     "volatility_state": "NORMAL",
     "timestamp": "2026-03-21T15:00:00",
-    "why": [],
-    "rejection_reason": "Rejected because execution controls did not allow the trade."
+    "why": [
+      "Strong signal quality with meaningful alignment.",
+      "Confidence is high based on the current signal stack.",
+      "Strategy is aligned with the current upward trend.",
+      "Market mode at decision time: DEFENSIVE_BEAR.",
+      "Broader regime context: BEAR_TREND.",
+      "Market breadth context: BULLISH.",
+      "Volatility state: NORMAL."
+    ],
+    "rejection_reason": "Approved in research but not selected for execution."
   },
   {
     "symbol": "GOOGL",
@@ -80,14 +120,22 @@
     "score": 195,
     "confidence": "HIGH",
     "price": 100.0,
-    "status": "rejected",
-    "reason": "failed_execution_guard",
+    "status": "approved_not_selected",
+    "reason": "approved_but_ranked_below_execution_cut",
     "mode": "DEFENSIVE_BEAR",
     "breadth": "BULLISH",
     "volatility_state": "NORMAL",
     "timestamp": "2026-03-21T15:00:00",
-    "why": [],
-    "rejection_reason": "Rejected because execution controls did not allow the trade."
+    "why": [
+      "Strong signal quality with meaningful alignment.",
+      "Confidence is high based on the current signal stack.",
+      "Strategy is aligned with the current upward trend.",
+      "Market mode at decision time: DEFENSIVE_BEAR.",
+      "Broader regime context: BEAR_TREND.",
+      "Market breadth context: BULLISH.",
+      "Volatility state: NORMAL."
+    ],
+    "rejection_reason": "Approved in research but not selected for execution."
   },
   {
     "symbol": "TSLA",
@@ -95,14 +143,22 @@
     "score": 192,
     "confidence": "HIGH",
     "price": 100.0,
-    "status": "rejected",
-    "reason": "failed_execution_guard",
+    "status": "approved_not_selected",
+    "reason": "approved_but_ranked_below_execution_cut",
     "mode": "DEFENSIVE_BEAR",
     "breadth": "BULLISH",
     "volatility_state": "NORMAL",
     "timestamp": "2026-03-21T15:00:00",
-    "why": [],
-    "rejection_reason": "Rejected because execution controls did not allow the trade."
+    "why": [
+      "Strong signal quality with meaningful alignment.",
+      "Confidence is high based on the current signal stack.",
+      "Strategy is aligned with the current upward trend.",
+      "Market mode at decision time: DEFENSIVE_BEAR.",
+      "Broader regime context: BEAR_TREND.",
+      "Market breadth context: BULLISH.",
+      "Volatility state: NORMAL."
+    ],
+    "rejection_reason": "Approved in research but not selected for execution."
   },
   {
     "symbol": "AMD",
@@ -110,13 +166,21 @@
     "score": 189,
     "confidence": "HIGH",
     "price": 100.0,
-    "status": "rejected",
-    "reason": "failed_execution_guard",
+    "status": "approved_not_selected",
+    "reason": "approved_but_ranked_below_execution_cut",
     "mode": "DEFENSIVE_BEAR",
     "breadth": "BULLISH",
     "volatility_state": "NORMAL",
     "timestamp": "2026-03-21T15:00:00",
-    "why": [],
-    "rejection_reason": "Rejected because execution controls did not allow the trade."
+    "why": [
+      "Strong signal quality with meaningful alignment.",
+      "Confidence is high based on the current signal stack.",
+      "Strategy is aligned with the current upward trend.",
+      "Market mode at decision time: DEFENSIVE_BEAR.",
+      "Broader regime context: BEAR_TREND.",
+      "Market breadth context: BULLISH.",
+      "Volatility state: NORMAL."
+    ],
+    "rejection_reason": "Approved in research but not selected for execution."
   }
 ]

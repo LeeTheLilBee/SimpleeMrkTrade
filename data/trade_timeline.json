@@ -1956,5 +1956,101 @@
       "pnl": -11.97,
       "size": 19.0
     }
+  },
+  {
+    "timestamp": "2026-03-24T04:52:14.639052",
+    "symbol": "AAPL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AAPL-CALL-20260324045214",
+      "strategy": "CALL",
+      "score": 210,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-24T04:52:14.733319",
+    "symbol": "MSFT",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "MSFT-CALL-20260324045214",
+      "strategy": "CALL",
+      "score": 207,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-24T04:52:14.824477",
+    "symbol": "NVDA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "NVDA-CALL-20260324045214",
+      "strategy": "CALL",
+      "score": 204,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-24T04:52:14.917914",
+    "symbol": "AMZN",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMZN-CALL-20260324045214",
+      "strategy": "CALL",
+      "score": 201,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-24T04:52:15.013002",
+    "symbol": "META",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "META-CALL-20260324045214",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-24T04:52:15.097828",
+    "symbol": "GOOGL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260324045215",
+      "strategy": "CALL",
+      "score": 195,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-24T04:52:15.188497",
+    "symbol": "TSLA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260324045215",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-24T04:52:15.275072",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260324045215",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "research"
+    }
   }
 ]
