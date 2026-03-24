@@ -3,9 +3,13 @@ from engine.performance_tracker import entries_today
 from engine.position_monitor import monitor_open_positions
 from engine.execution_source import get_execution_candidates
 from engine.regime import get_market_regime
-from engine.explainability_engine import explain_exit
 from engine.candidate_log import remember_candidate
 from engine.market_volatility import get_volatility_environment
+from engine.options_intelligence import (
+    choose_best_option,
+    option_is_executable,
+    explain_option_choice,
+)
 from engine.signal_feed import push_signal
 from engine.rsi_engine import calculate_rsi
 from engine.volume_engine import volume_surge
@@ -137,6 +141,9 @@ def log_candidate_decision(
         "breadth": breadth,
         "volatility_state": volatility_state,
         "timestamp": trade.get("timestamp"),
+        "option_contract_score": trade.get("option_contract_score"),
+        "option_explanation": trade.get("option_explanation", []),
+        "option": trade.get("option"),
     }
 
     if extra:
@@ -262,6 +269,19 @@ def process_signals(results, regime, volatility_payload):
         trade["volatility_state"] = volatility_state
         trade["breadth"] = breadth
 
+        # STEP 6: options intelligence
+        option_chain = trade.get("option_chain", [])
+        best_option, option_score, option_notes = choose_best_option(
+            option_chain,
+            price,
+            strategy,
+        )
+
+        if best_option:
+            trade["option"] = best_option
+            trade["option_contract_score"] = option_score
+            trade["option_explanation"] = option_notes
+
         if not breadth_allows_trade(strategy, breadth):
             trade["rejection_reason"] = explain_rejection(trade, "breadth_blocked")
             log_candidate_decision(
@@ -282,8 +302,8 @@ def process_signals(results, regime, volatility_payload):
             rsi,
         )
         if chosen_strategy and strategy != chosen_strategy:
-            trade["strategy"] = chosen_strategy
             strategy = chosen_strategy
+            trade["strategy"] = strategy
 
         if mode == "DEFENSIVE_BEAR" and strategy != "CALL":
             trade["rejection_reason"] = explain_rejection(trade, "execution_blocked")
@@ -341,11 +361,25 @@ def process_signals(results, regime, volatility_payload):
             )
             continue
 
-        option = trade.get("option")
-        if option:
-            trade["option"] = option
+        if trade.get("option"):
+            allowed, option_reason = option_is_executable(trade["option"], min_score=50)
+            if not allowed:
+                trade["rejection_reason"] = (
+                    f"Rejected because the option contract quality was too weak: {option_reason}."
+                )
+                log_candidate_decision(
+                    trade,
+                    status="rejected",
+                    reason=option_reason,
+                    mode=mode,
+                    breadth=breadth,
+                    volatility_state=volatility_state,
+                )
+                continue
 
-        # STEP 4: approval explanation gets attached ONLY after the trade passes filters
+            trade["option_explanation"] = explain_option_choice(trade["option"])
+
+        # STEP 4: approval explanation only after all filters pass
         trade["why"] = explain_trade_decision(
             trade,
             mode=mode,
