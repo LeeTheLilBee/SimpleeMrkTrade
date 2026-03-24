@@ -1,17 +1,17 @@
 {
   "page_views": {
-    "/": 140,
-    "/dashboard": 93,
+    "/": 142,
+    "/dashboard": 94,
     "/signals": 147,
-    "/positions": 62,
+    "/positions": 64,
     "/all-symbols": 41,
     "/premium-analysis": 34,
-    "/why-this-trade": 33,
+    "/why-this-trade": 35,
     "/analytics-overview": 18,
     "/upgrade": 21,
-    "/login": 76,
+    "/login": 80,
     "/signup": 28,
-    "/trade/MPC_1773917311.412609": 1
+    "/trade/MPC_1773917311.412609": 2
   },
   "clicks": {
     "upgrade_button": 17,

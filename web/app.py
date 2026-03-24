@@ -857,6 +857,39 @@ def positions_page():
         }),
     )
 
+
+@app.route("/my-positions")
+def user_positions_page():
+    maybe_track_page_view("/my-positions")
+    positions = load_json("data/user_positions.json", [])
+    if not isinstance(positions, list):
+        positions = []
+    return render_template_safe(
+        "user_positions.html",
+        **template_context({
+            "positions": positions
+        }),
+    )
+
+
+@app.route("/simulation")
+def simulation_dashboard():
+    maybe_track_page_view("/simulation")
+    positions = get_positions_with_intelligence()
+    portfolio = evaluate_portfolio(positions)
+    alerts = generate_alerts(positions)
+    brain = build_system_brain(positions, portfolio, alerts)
+    return render_template_safe(
+        "simulation.html",
+        **template_context({
+            "positions": positions,
+            "portfolio": portfolio,
+            "alerts": alerts,
+            "brain": brain,
+        }),
+    )
+
+
 @app.route("/api/live-state")
 def api_live_state():
     positions = get_positions_with_intelligence()
