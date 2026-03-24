@@ -298,5 +298,173 @@
       "unrealized_pnl": -0.04,
       "estimated_account_value": 999.96
     }
+  },
+  {
+    "timestamp": "2026-03-24T01:30:24.859942",
+    "performance": {
+      "trades": 3,
+      "wins": 0,
+      "losses": 3,
+      "winrate": 0.0,
+      "total_pnl": -29.46,
+      "max_drawdown": 29.46,
+      "trades_today": 0,
+      "realized_pnl_today": -29.46
+    },
+    "portfolio": {
+      "open_positions": 0,
+      "closed_positions": 3,
+      "realized_pnl": -29.46
+    },
+    "snapshot": {
+      "cash": 1000.0,
+      "buying_power": 1000.0,
+      "equity": 1000.0,
+      "open_positions": 0,
+      "realized_pnl": -29.46,
+      "unrealized_pnl": 0,
+      "estimated_account_value": 1000.0
+    }
+  },
+  {
+    "timestamp": "2026-03-24T02:11:42.111392",
+    "performance": {
+      "trades": 5,
+      "wins": 2,
+      "losses": 3,
+      "winrate": 0.4,
+      "total_pnl": 273.52,
+      "max_drawdown": 29.46,
+      "trades_today": 2,
+      "realized_pnl_today": 273.52
+    },
+    "portfolio": {
+      "open_positions": 0,
+      "closed_positions": 5,
+      "realized_pnl": 273.52
+    },
+    "snapshot": {
+      "cash": 0.0,
+      "buying_power": 0.0,
+      "equity": 1000.0,
+      "open_positions": 0,
+      "realized_pnl": 273.52,
+      "unrealized_pnl": 0,
+      "estimated_account_value": 1000.0
+    }
+  },
+  {
+    "timestamp": "2026-03-24T02:38:17.763584",
+    "performance": {
+      "trades": 6,
+      "wins": 3,
+      "losses": 3,
+      "winrate": 0.5,
+      "total_pnl": 1182.46,
+      "max_drawdown": 29.46,
+      "trades_today": 3,
+      "realized_pnl_today": 1182.46
+    },
+    "portfolio": {
+      "open_positions": 0,
+      "closed_positions": 6,
+      "realized_pnl": 1182.46
+    },
+    "snapshot": {
+      "cash": 2182.46,
+      "buying_power": 2182.46,
+      "equity": 2182.46,
+      "open_positions": 0,
+      "realized_pnl": 1182.46,
+      "unrealized_pnl": 0,
+      "estimated_account_value": 2182.46
+    }
+  },
+  {
+    "timestamp": "2026-03-24T03:14:35.637372",
+    "performance": {
+      "trades": 2,
+      "wins": 2,
+      "losses": 0,
+      "winrate": 1.0,
+      "total_pnl": 2611.3,
+      "max_drawdown": 0.0,
+      "entries_today": 2,
+      "closes_today": 2,
+      "round_trips_today": 2,
+      "realized_pnl_today": 2611.3
+    },
+    "portfolio": {
+      "open_positions": 0,
+      "closed_positions": 8,
+      "realized_pnl": 3793.76
+    },
+    "snapshot": {
+      "cash": 4793.76,
+      "buying_power": 4793.76,
+      "equity": 4793.76,
+      "open_positions": 0,
+      "realized_pnl": 3793.76,
+      "unrealized_pnl": 0,
+      "estimated_account_value": 4793.76
+    }
+  },
+  {
+    "timestamp": "2026-03-24T03:41:17.649698",
+    "performance": {
+      "trades": 2,
+      "wins": 2,
+      "losses": 0,
+      "winrate": 1.0,
+      "total_pnl": 2611.3,
+      "max_drawdown": 0.0,
+      "entries_today": 2,
+      "closes_today": 2,
+      "round_trips_today": 2,
+      "realized_pnl_today": 2611.3
+    },
+    "portfolio": {
+      "open_positions": 0,
+      "closed_positions": 8,
+      "realized_pnl": 3793.76
+    },
+    "snapshot": {
+      "cash": 4793.76,
+      "buying_power": 4793.76,
+      "equity": 4793.76,
+      "open_positions": 0,
+      "realized_pnl": 3793.76,
+      "unrealized_pnl": 0,
+      "estimated_account_value": 4793.76
+    }
+  },
+  {
+    "timestamp": "2026-03-24T03:52:50.896893",
+    "performance": {
+      "trades": 3,
+      "wins": 2,
+      "losses": 0,
+      "winrate": 0.67,
+      "total_pnl": 2611.3,
+      "max_drawdown": 0.0,
+      "entries_today": 3,
+      "closes_today": 2,
+      "round_trips_today": 2,
+      "realized_pnl_today": 2611.3
+    },
+    "portfolio": {
+      "open_positions": 1,
+      "closed_positions": 8,
+      "realized_pnl": 3793.76
+    },
+    "snapshot": {
+      "cash": 3.5,
+      "buying_power": 3.5,
+      "equity": 4793.76,
+      "open_positions": 1,
+      "realized_pnl": 3793.76,
+      "unrealized_pnl": -0.63,
+      "estimated_account_value": 4793.13
+    }
   }
 ]

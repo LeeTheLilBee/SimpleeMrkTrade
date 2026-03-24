@@ -1,10 +1,17 @@
+from engine.explainability_engine import explain_trade_decision, explain_rejection
+from engine.performance_tracker import entries_today
+from engine.position_monitor import monitor_open_positions
+from engine.execution_source import get_execution_candidates
 from engine.regime import get_market_regime
+from engine.explainability_engine import explain_exit
+from engine.candidate_log import remember_candidate
 from engine.market_volatility import get_volatility_environment
 from engine.signal_feed import push_signal
 from engine.rsi_engine import calculate_rsi
 from engine.volume_engine import volume_surge
 from engine.breakout_engine import breakout
 from engine.signal_engine import build_signal
+from engine.execution_guard import can_execute_trade
 from engine.confidence_engine import confidence
 from engine.dashboard import dashboard
 from engine.watchlist import get_watchlist
@@ -22,8 +29,7 @@ from engine.daily_risk import trades_left_today
 from engine.signal_history import remember_signal
 from engine.atr_engine import calculate_atr
 from engine.leaderboard import print_leaderboard
-from engine.stock_fallback import stock_only_candidate
-from engine.candidate_log import remember_candidate, show_candidates, clear_candidates
+from engine.candidate_log import show_candidates, clear_candidates
 from engine.position_review import review_positions
 from engine.data_utils import safe_download
 from engine.execution_loop import execute_trades
@@ -31,10 +37,12 @@ from engine.capital_guard import affordable_trade_count
 from engine.backtest_summary import print_backtest_summary
 from engine.portfolio_summary import portfolio_summary
 from engine.account_state import settle_cash
+from engine.account_state import buying_power
 from engine.alerts import alert_trade
 from engine.equity_curve import build_equity_curve
 from engine.journal_export import export_journal
 from engine.trade_analytics import analytics
+from engine.performance_tracker import entries_today
 from engine.performance_tracker import performance_summary
 from engine.market_snapshot import save_market_snapshot
 from engine.top_candidates_store import save_top_candidates
@@ -43,6 +51,7 @@ from engine.daily_report import write_daily_report
 from engine.risk_governor import governor_status
 from engine.unrealized_pnl import unrealized_pnl
 from engine.strategy_performance import strategy_breakdown
+from engine.breadth_filter import breadth_allows_trade
 from engine.drawdown_tracker import build_drawdown_history
 from engine.strategy_router import choose_trade_strategy
 from engine.trade_filter_plus import advanced_trade_filter
@@ -98,11 +107,43 @@ except Exception:
     def exposure_bucket_status():
         return {"blocked": False, "bucket": "NORMAL", "reason": "exposure buckets unavailable"}
 
+
 def _reduced_risk_mode(brake_payload, exposure_payload):
     return brake_payload.get("mode") == "REDUCED_RISK" or exposure_payload.get("bucket") in ["ELEVATED", "HIGH"]
 
+
 def _trim_for_reduced_risk(selected_trades):
     return selected_trades[:1] if selected_trades else selected_trades
+
+
+def log_candidate_decision(
+    trade,
+    status,
+    reason,
+    mode=None,
+    breadth=None,
+    volatility_state=None,
+    extra=None,
+):
+    payload = {
+        "symbol": trade.get("symbol"),
+        "strategy": trade.get("strategy"),
+        "score": trade.get("score"),
+        "confidence": trade.get("confidence"),
+        "price": trade.get("price"),
+        "status": status,  # selected | approved_not_selected | rejected
+        "reason": reason,
+        "mode": mode,
+        "breadth": breadth,
+        "volatility_state": volatility_state,
+        "timestamp": trade.get("timestamp"),
+    }
+
+    if extra:
+        payload.update(extra)
+
+    remember_candidate(payload)
+
 
 def scan_stock(symbol, regime):
     df = safe_download(symbol, period="3mo", auto_adjust=True, progress=False)
@@ -141,78 +182,226 @@ def scan_stock(symbol, regime):
         "atr": atr,
     }
 
+
+def log_candidate_decision(
+    trade,
+    status,
+    reason,
+    mode=None,
+    breadth=None,
+    volatility_state=None,
+    extra=None,
+):
+    payload = {
+        "symbol": trade.get("symbol"),
+        "strategy": trade.get("strategy"),
+        "score": trade.get("score"),
+        "confidence": trade.get("confidence"),
+        "price": trade.get("price"),
+        "status": status,  # selected | approved_not_selected | rejected
+        "reason": reason,
+        "mode": mode,
+        "breadth": breadth,
+        "volatility_state": volatility_state,
+        "timestamp": trade.get("timestamp"),
+        "why": trade.get("why", []),
+        "rejection_reason": trade.get("rejection_reason"),
+    }
+
+    if extra:
+        payload.update(extra)
+
+    remember_candidate(payload)
+
+
+def resolve_market_mode(regime, breadth, volatility_payload):
+    try:
+        return market_mode(regime, breadth, volatility_payload)
+    except TypeError:
+        try:
+            vol_state = volatility_payload.get("state", "NORMAL")
+            return market_mode(regime, breadth, vol_state)
+        except TypeError:
+            return market_mode(regime, breadth)
+
+
 def process_signals(results, regime, volatility_payload):
-    breadth = market_breadth(results)
-    mode = market_mode(regime, breadth)
-    volatility_state = volatility_payload.get("volatility", "UNKNOWN")
-
-    print("Market Breadth:", breadth)
-    print("Market Mode:", mode)
-    print("Volatility State:", volatility_state, "| VIX:", volatility_payload.get("vix"))
-
     approved_trades = []
 
-    for item in results:
-        symbol = item["symbol"]
-        trend = item["trend"]
-        score = item["score"]
-        conf = item["confidence"]
-        price = item["price"]
-        atr = item["atr"]
-        rsi = item["rsi"]
+    breadth = market_breadth(results)
+    print("Market Breadth:", breadth)
 
-        strategy = choose_trade_strategy(regime, volatility_state, trend, score, rsi)
-        approved = advanced_trade_filter(score, conf, volatility_state, strategy)
+    mode = resolve_market_mode(regime, breadth, volatility_payload)
+    print("Market Mode:", mode)
 
-        if not approved:
+    volatility_state = volatility_payload.get("state", "NORMAL")
+    print(
+        "Volatility State:",
+        volatility_state,
+        "| VIX:",
+        volatility_payload.get("vix", "N/A"),
+    )
+
+    for trade in results:
+        symbol = trade.get("symbol", "UNKNOWN")
+        strategy = trade.get("strategy", "CALL")
+        score = float(trade.get("score", 0) or 0)
+        confidence = trade.get("confidence", "LOW")
+        price = float(trade.get("price", 0) or 0)
+        atr = float(trade.get("atr", 0) or 0)
+        trend = trade.get("trend", "UPTREND")
+        rsi = float(trade.get("rsi", 55) or 55)
+
+        trade["strategy"] = strategy
+        trade["price"] = price
+        trade["atr"] = atr
+        trade["trend"] = trend
+        trade["rsi"] = rsi
+        trade["regime"] = regime
+        trade["mode"] = mode
+        trade["volatility_state"] = volatility_state
+        trade["breadth"] = breadth
+
+        if not breadth_allows_trade(strategy, breadth):
+            trade["rejection_reason"] = explain_rejection(trade, "breadth_blocked")
+            log_candidate_decision(
+                trade,
+                status="rejected",
+                reason="failed_breadth_filter",
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+            )
             continue
 
-        option = None
-        if strategy == "CALL":
-            option = get_best_call(symbol)
-        elif strategy == "PUT":
-            option = get_best_put(symbol)
+        chosen_strategy = choose_trade_strategy(
+            regime,
+            volatility_state,
+            trend,
+            score,
+            rsi,
+        )
+        if chosen_strategy and strategy != chosen_strategy:
+            trade["strategy"] = chosen_strategy
+            strategy = chosen_strategy
 
-        total_score = final_trade_score(score, option, price) if option is not None else score
+        if mode == "DEFENSIVE_BEAR" and strategy != "CALL":
+            trade["rejection_reason"] = explain_rejection(trade, "execution_blocked")
+            log_candidate_decision(
+                trade,
+                status="rejected",
+                reason="failed_mode_filter",
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+            )
+            continue
 
-        trade = {
-            "symbol": symbol,
-            "strategy": strategy,
-            "price": price,
-            "score": total_score,
-            "confidence": conf,
-            "option": option,
-            "atr": atr,
-        }
+        exec_guard = can_execute_trade(trade, buying_power())
+        if isinstance(exec_guard, dict):
+            blocked = exec_guard.get("blocked", False)
+            exec_reason = exec_guard.get("reason", "failed_execution_guard")
+        else:
+            blocked = not bool(exec_guard)
+            exec_reason = "failed_execution_guard"
+
+        if blocked:
+            trade["rejection_reason"] = explain_rejection(trade, "execution_blocked")
+            log_candidate_decision(
+                trade,
+                status="rejected",
+                reason=exec_reason,
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+            )
+            continue
+
+        if score < 90:
+            trade["rejection_reason"] = explain_rejection(trade, "execution_blocked")
+            log_candidate_decision(
+                trade,
+                status="rejected",
+                reason="failed_score_threshold",
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+            )
+            continue
+
+        if volatility_state == "ELEVATED" and confidence == "LOW":
+            trade["rejection_reason"] = explain_rejection(trade, "execution_blocked")
+            log_candidate_decision(
+                trade,
+                status="rejected",
+                reason="failed_volatility_filter",
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+            )
+            continue
+
+        option = trade.get("option")
+        if option:
+            trade["option"] = option
+
+        # STEP 4: approval explanation gets attached ONLY after the trade passes filters
+        trade["why"] = explain_trade_decision(
+            trade,
+            mode=mode,
+            regime=regime,
+            breadth=breadth,
+            volatility=volatility_state,
+        )
 
         approved_trades.append(trade)
-        remember_signal(symbol, total_score, strategy)
 
     print_leaderboard(approved_trades)
     print_top_candidates(approved_trades, limit=5)
     save_top_candidates(approved_trades, limit=10)
 
-    slots = trade_slots_left(open_count())
-    remaining = trades_left_today(executed_trade_count())
     affordable = affordable_trade_count(approved_trades)
-    limit = min(slots, remaining, affordable)
+    limit = min(affordable, 3) if affordable > 0 else 0
+    if approved_trades and limit <= 0:
+        limit = 1
 
     selected_trades = queue_top_trades_plus(approved_trades, limit=limit)
+    selected_keys = {
+        (t.get("symbol"), t.get("strategy"))
+        for t in selected_trades
+    }
 
-    save_market_snapshot(
-        regime=regime,
-        breadth=breadth,
-        mode=mode,
-        watchlist_count=len(results),
-        approved_count=len(selected_trades),
-    )
+    for trade in approved_trades:
+        key = (trade.get("symbol"), trade.get("strategy"))
+        if key in selected_keys:
+            log_candidate_decision(
+                trade,
+                status="selected",
+                reason="selected_for_execution",
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+            )
+        else:
+            trade["rejection_reason"] = explain_rejection(trade, "not_selected")
+            log_candidate_decision(
+                trade,
+                status="approved_not_selected",
+                reason="approved_but_ranked_below_execution_cut",
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+            )
 
     return approved_trades, selected_trades, mode, breadth, volatility_state
+
 
 def run():
     write_bot_status(True, "starting")
     log_bot("Bot run started", "INFO")
     push_activity("SYSTEM", "Bot run started")
+
+    monitor_open_positions()
 
     try:
         settle_cash()
@@ -220,11 +409,12 @@ def run():
 
         snapshot = account_snapshot()
         print_account_snapshot(snapshot)
+
         write_system_status(regime="STARTING", volatility="UNKNOWN", mode="BOOT")
 
         governor = governor_status(
             current_open_positions=open_count(),
-            executed_trades_today=executed_trade_count(),
+            executed_trades_today=entries_today(),
         )
 
         brake = drawdown_brake()
@@ -240,6 +430,8 @@ def run():
 
         regime = get_market_regime()
         volatility_payload = get_volatility_environment()
+        volatility_state = volatility_payload.get("volatility", "UNKNOWN")
+        sector_counts = sector_cap.get("sector_counts", {}) if isinstance(sector_cap, dict) else {}
 
         print("Market Regime:", regime)
         push_activity("MARKET", f"Market regime identified as {regime}")
@@ -250,12 +442,10 @@ def run():
         push_activity("WATCHLIST", f"Watchlist built with {len(watchlist)} symbols")
 
         print("Scanning watchlist...")
-        results = []
+        results = get_execution_candidates()
 
-        for symbol in watchlist:
-            result = scan_stock(symbol, regime)
-            if result is not None:
-                results.append(result)
+        print("Execution candidates:", [r.get("symbol") for r in results[:15]])
+        print("Execution candidate count:", len(results))
 
         approved_trades, selected_trades, mode, breadth, volatility_state = process_signals(results, regime, volatility_payload)
         push_activity(
@@ -270,9 +460,13 @@ def run():
             f"Mode: {mode}",
         ]
 
-        # Research layer
         for trade in approved_trades:
-            trade_id, detail = build_trade_detail(trade, market_context)
+            trade_id, detail = build_trade_detail(
+                trade,
+                market_context=market_context,
+                volatility_state=volatility_state,
+                sector_counts=sector_counts,
+            )
             save_trade_detail(detail)
             trade["trade_id"] = trade_id
 
@@ -322,6 +516,10 @@ def run():
                     trade_id=trade_id,
                     min_tier="pro",
                     level="success",
+                    score=trade["score"],
+                    strategy=trade["strategy"],
+                    volatility=volatility_state,
+                    source="research",
                 )
 
             if trade.get("score", 0) >= 120:
@@ -340,9 +538,12 @@ def run():
                     trade_id=trade_id,
                     min_tier="elite",
                     level="info",
+                    score=trade["score"],
+                    strategy=trade["strategy"],
+                    volatility=volatility_state,
+                    source="research",
                 )
 
-        # Execution blocks stay strict
         if brake.get("blocked"):
             write_bot_status(False, "blocked by drawdown brake")
             push_activity("RISK", "Blocked by drawdown brake")
@@ -352,6 +553,8 @@ def run():
                 message="Execution blocked by drawdown brake.",
                 min_tier="starter",
                 level="warning",
+                volatility=volatility_state,
+                source="execution",
             )
             return
 
@@ -364,6 +567,8 @@ def run():
                 message=f"Execution blocked by correlation risk: {corr.get('reason', 'Correlation block')}",
                 min_tier="starter",
                 level="warning",
+                volatility=volatility_state,
+                source="execution",
             )
             return
 
@@ -376,6 +581,8 @@ def run():
                 message=f"Execution blocked by sector cap: {sector_cap.get('reason', 'Sector cap block')}",
                 min_tier="starter",
                 level="warning",
+                volatility=volatility_state,
+                source="execution",
             )
             return
 
@@ -389,6 +596,8 @@ def run():
                 message=f"Execution blocked by governor: {joined}",
                 min_tier="starter",
                 level="warning",
+                volatility=volatility_state,
+                source="execution",
             )
             return
 
@@ -396,10 +605,14 @@ def run():
             selected_trades = _trim_for_reduced_risk(selected_trades)
             push_activity("RISK", "Reduced-risk mode active: trimmed trade queue")
 
-        # Execution layer
         for trade in selected_trades:
             if not trade.get("trade_id"):
-                trade_id, detail = build_trade_detail(trade, market_context)
+                trade_id, detail = build_trade_detail(
+                    trade,
+                    market_context=market_context,
+                    volatility_state=volatility_state,
+                    sector_counts=sector_counts,
+                )
                 save_trade_detail(detail)
                 trade["trade_id"] = trade_id
 
@@ -452,6 +665,10 @@ def run():
                 trade_id=trade["trade_id"],
                 min_tier="starter",
                 level="info",
+                score=trade["score"],
+                strategy=trade["strategy"],
+                volatility=volatility_state,
+                source="execution",
             )
 
             if trade.get("score", 0) >= 120:
@@ -466,29 +683,40 @@ def run():
                 notify_trade_edge(trade["symbol"], premium_entry.get("reasons", []))
 
         print("Processing trade queue...")
-        execute_trades(selected_trades, limit=trades_left_today(executed_trade_count()))
 
-        for trade in selected_trades:
-            add_trade_timeline_event(
-                trade["symbol"],
-                "EXECUTED",
-                {
-                    "trade_id": trade.get("trade_id"),
-                    "strategy": trade["strategy"],
-                    "score": trade["score"],
-                    "source": "execution",
-                }
-            )
+        today_count = entries_today()
+        trades_remaining = max(0, 3 - today_count)
 
-            append_trade_detail_timeline(
-                trade.get("trade_id"),
-                "EXECUTED",
-                f"{trade['symbol']} entered execution flow.",
-                {
-                    "strategy": trade["strategy"],
-                    "score": trade["score"],
-                }
-            )
+        print("Trades today:", today_count)
+        print("Trades remaining today:", trades_remaining)
+        print("Selected trades for execution:", [t.get("symbol") for t in selected_trades])
+
+        if trades_remaining > 0 and selected_trades:
+            execute_trades(selected_trades, limit=trades_remaining)
+
+            for trade in selected_trades[:trades_remaining]:
+              add_trade_timeline_event(
+                  trade["symbol"],
+                  "EXECUTED",
+                  {
+                      "trade_id": trade.get("trade_id"),
+                      "strategy": trade["strategy"],
+                      "score": trade["score"],
+                      "source": "execution",
+                  }
+              )
+
+              append_trade_detail_timeline(
+                  trade.get("trade_id"),
+                  "EXECUTED",
+                  f"{trade['symbol']} entered execution flow.",
+                  {
+                      "strategy": trade["strategy"],
+                      "score": trade["score"],
+                  }
+              )
+        else:
+            print("No trades executed. Either no selected trades or no daily capacity left.")
 
         print_positions()
         review_positions()
@@ -517,6 +745,8 @@ def run():
                     trade_id=trade_id,
                     min_tier="starter",
                     level="warning",
+                    volatility=volatility_state,
+                    source="execution",
                 )
 
         show_candidates()
@@ -550,6 +780,7 @@ def run():
         write_bot_status(False, f"error: {e}")
         push_activity("ERROR", f"Bot error: {e}")
         raise
+
 
 if __name__ == "__main__":
     run()

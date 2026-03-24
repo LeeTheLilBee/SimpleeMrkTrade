@@ -1,0 +1,4904 @@
+{
+  "AAPL": {
+    "symbol": "AAPL",
+    "score": 210,
+    "previous_score": 210,
+    "confidence": "HIGH",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "selected",
+      "selected": true,
+      "eligible": true,
+      "execution_quality": 230,
+      "cap_context": 8,
+      "reason": "Selected for active execution because it ranked inside the current execution cap."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 210.",
+          "Confidence is HIGH.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Strong continuation structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Add on strength"
+    }
+  },
+  "MSFT": {
+    "symbol": "MSFT",
+    "score": 207,
+    "previous_score": 207,
+    "confidence": "HIGH",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "selected",
+      "selected": true,
+      "eligible": true,
+      "execution_quality": 230,
+      "cap_context": 8,
+      "reason": "Selected for active execution because it ranked inside the current execution cap."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 207.",
+          "Confidence is HIGH.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Strong continuation structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Add on strength"
+    }
+  },
+  "NVDA": {
+    "symbol": "NVDA",
+    "score": 204,
+    "previous_score": 204,
+    "confidence": "HIGH",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "selected",
+      "selected": true,
+      "eligible": true,
+      "execution_quality": 222,
+      "cap_context": 8,
+      "reason": "Selected for active execution because it ranked inside the current execution cap."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 204.",
+          "Confidence is HIGH.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Strong continuation structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Add on strength"
+    }
+  },
+  "AMZN": {
+    "symbol": "AMZN",
+    "score": 201,
+    "previous_score": 201,
+    "confidence": "HIGH",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "selected",
+      "selected": true,
+      "eligible": true,
+      "execution_quality": 221,
+      "cap_context": 8,
+      "reason": "Selected for active execution because it ranked inside the current execution cap."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 201.",
+          "Confidence is HIGH.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Strong continuation structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Add on strength"
+    }
+  },
+  "META": {
+    "symbol": "META",
+    "score": 198,
+    "previous_score": 198,
+    "confidence": "HIGH",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "selected",
+      "selected": true,
+      "eligible": true,
+      "execution_quality": 221,
+      "cap_context": 8,
+      "reason": "Selected for active execution because it ranked inside the current execution cap."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 198.",
+          "Confidence is HIGH.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Strong continuation structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Add on strength"
+    }
+  },
+  "GOOGL": {
+    "symbol": "GOOGL",
+    "score": 195,
+    "previous_score": 195,
+    "confidence": "HIGH",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "selected",
+      "selected": true,
+      "eligible": true,
+      "execution_quality": 213,
+      "cap_context": 8,
+      "reason": "Selected for active execution because it ranked inside the current execution cap."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 195.",
+          "Confidence is HIGH.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Strong continuation structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Add on strength"
+    }
+  },
+  "TSLA": {
+    "symbol": "TSLA",
+    "score": 192,
+    "previous_score": 192,
+    "confidence": "HIGH",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "selected",
+      "selected": true,
+      "eligible": true,
+      "execution_quality": 212,
+      "cap_context": 8,
+      "reason": "Selected for active execution because it ranked inside the current execution cap."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 192.",
+          "Confidence is HIGH.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Strong continuation structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Add on strength"
+    }
+  },
+  "AMD": {
+    "symbol": "AMD",
+    "score": 189,
+    "previous_score": 189,
+    "confidence": "HIGH",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "selected",
+      "selected": true,
+      "eligible": true,
+      "execution_quality": 212,
+      "cap_context": 8,
+      "reason": "Selected for active execution because it ranked inside the current execution cap."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 189.",
+          "Confidence is HIGH.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Strong continuation structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Add on strength"
+    }
+  },
+  "NFLX": {
+    "symbol": "NFLX",
+    "score": 186,
+    "previous_score": 186,
+    "confidence": "HIGH",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 186.",
+          "Confidence is HIGH.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Strong continuation structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Add on strength"
+    }
+  },
+  "AVGO": {
+    "symbol": "AVGO",
+    "score": 183,
+    "previous_score": 183,
+    "confidence": "HIGH",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 183.",
+          "Confidence is HIGH.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Strong continuation structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Add on strength"
+    }
+  },
+  "CRM": {
+    "symbol": "CRM",
+    "score": 180,
+    "previous_score": 180,
+    "confidence": "HIGH",
+    "opinion": "High-conviction setup with strong alignment.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 180.",
+          "Confidence is HIGH.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Strong continuation structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Add on strength"
+    }
+  },
+  "ORCL": {
+    "symbol": "ORCL",
+    "score": 177,
+    "previous_score": 177,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 177.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "ADBE": {
+    "symbol": "ADBE",
+    "score": 174,
+    "previous_score": 174,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 174.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "PLTR": {
+    "symbol": "PLTR",
+    "score": 171,
+    "previous_score": 171,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 171.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "SNOW": {
+    "symbol": "SNOW",
+    "score": 168,
+    "previous_score": 168,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 168.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "SHOP": {
+    "symbol": "SHOP",
+    "score": 165,
+    "previous_score": 165,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 165.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "UBER": {
+    "symbol": "UBER",
+    "score": 162,
+    "previous_score": 162,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 162.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "COIN": {
+    "symbol": "COIN",
+    "score": 159,
+    "previous_score": 159,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 159.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "INTC": {
+    "symbol": "INTC",
+    "score": 156,
+    "previous_score": 156,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 156.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "QCOM": {
+    "symbol": "QCOM",
+    "score": 153,
+    "previous_score": 153,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 153.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "MU": {
+    "symbol": "MU",
+    "score": 150,
+    "previous_score": 150,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 150.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "MRVL": {
+    "symbol": "MRVL",
+    "score": 147,
+    "previous_score": 147,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 147.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "ARM": {
+    "symbol": "ARM",
+    "score": 144,
+    "previous_score": 144,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 144.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "SMCI": {
+    "symbol": "SMCI",
+    "score": 141,
+    "previous_score": 141,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 141.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "TSM": {
+    "symbol": "TSM",
+    "score": 138,
+    "previous_score": 138,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 138.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "MDB": {
+    "symbol": "MDB",
+    "score": 135,
+    "previous_score": 135,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 135.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "XOM": {
+    "symbol": "XOM",
+    "score": 132,
+    "previous_score": 132,
+    "confidence": "MEDIUM",
+    "opinion": "Developing setup with meaningful support.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 132.",
+          "Confidence is MEDIUM.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Constructive but developing",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Hold / Monitor closely"
+    }
+  },
+  "CVX": {
+    "symbol": "CVX",
+    "score": 129,
+    "previous_score": 129,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 129.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "COP": {
+    "symbol": "COP",
+    "score": 126,
+    "previous_score": 126,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 126.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "SLB": {
+    "symbol": "SLB",
+    "score": 123,
+    "previous_score": 123,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 123.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "EOG": {
+    "symbol": "EOG",
+    "score": 120,
+    "previous_score": 120,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 120.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "OXY": {
+    "symbol": "OXY",
+    "score": 117,
+    "previous_score": 117,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 117.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "HAL": {
+    "symbol": "HAL",
+    "score": 114,
+    "previous_score": 114,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 114.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "DVN": {
+    "symbol": "DVN",
+    "score": 111,
+    "previous_score": 111,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 111.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "MPC": {
+    "symbol": "MPC",
+    "score": 108,
+    "previous_score": 108,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 108.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "PSX": {
+    "symbol": "PSX",
+    "score": 105,
+    "previous_score": 105,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 105.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "JPM": {
+    "symbol": "JPM",
+    "score": 102,
+    "previous_score": 102,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 102.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "BAC": {
+    "symbol": "BAC",
+    "score": 99,
+    "previous_score": 99,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 99.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "GS": {
+    "symbol": "GS",
+    "score": 96,
+    "previous_score": 96,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 96.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "MS": {
+    "symbol": "MS",
+    "score": 93,
+    "previous_score": 93,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 93.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "WFC": {
+    "symbol": "WFC",
+    "score": 90,
+    "previous_score": 90,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 90.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Early or weakening structure",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Cautious / Reduce risk"
+    }
+  },
+  "BLK": {
+    "symbol": "BLK",
+    "score": 87,
+    "previous_score": 87,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 87.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "AXP": {
+    "symbol": "AXP",
+    "score": 84,
+    "previous_score": 84,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 84.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "SCHW": {
+    "symbol": "SCHW",
+    "score": 81,
+    "previous_score": 81,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 81.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "C": {
+    "symbol": "C",
+    "score": 78,
+    "previous_score": 78,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 78.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "PYPL": {
+    "symbol": "PYPL",
+    "score": 75,
+    "previous_score": 75,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 75.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "CAT": {
+    "symbol": "CAT",
+    "score": 72,
+    "previous_score": 72,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 72.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "DE": {
+    "symbol": "DE",
+    "score": 69,
+    "previous_score": 69,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 69.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "GE": {
+    "symbol": "GE",
+    "score": 66,
+    "previous_score": 66,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 66.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "HON": {
+    "symbol": "HON",
+    "score": 63,
+    "previous_score": 63,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 63.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "BA": {
+    "symbol": "BA",
+    "score": 60,
+    "previous_score": 60,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 60.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "LMT": {
+    "symbol": "LMT",
+    "score": 57,
+    "previous_score": 57,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 57.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "RTX": {
+    "symbol": "RTX",
+    "score": 54,
+    "previous_score": 54,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 54.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "ETN": {
+    "symbol": "ETN",
+    "score": 51,
+    "previous_score": 51,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 51.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "PH": {
+    "symbol": "PH",
+    "score": 48,
+    "previous_score": 48,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 48.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "UNP": {
+    "symbol": "UNP",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "WMT": {
+    "symbol": "WMT",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "COST": {
+    "symbol": "COST",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "HD": {
+    "symbol": "HD",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "MCD": {
+    "symbol": "MCD",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "SBUX": {
+    "symbol": "SBUX",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "NKE": {
+    "symbol": "NKE",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "TGT": {
+    "symbol": "TGT",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "LOW": {
+    "symbol": "LOW",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "DIS": {
+    "symbol": "DIS",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "CMG": {
+    "symbol": "CMG",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "LLY": {
+    "symbol": "LLY",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "UNH": {
+    "symbol": "UNH",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "JNJ": {
+    "symbol": "JNJ",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "MRK": {
+    "symbol": "MRK",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "ABBV": {
+    "symbol": "ABBV",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "PFE": {
+    "symbol": "PFE",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "TMO": {
+    "symbol": "TMO",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "ISRG": {
+    "symbol": "ISRG",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "VRTX": {
+    "symbol": "VRTX",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "DHR": {
+    "symbol": "DHR",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "SPY": {
+    "symbol": "SPY",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "QQQ": {
+    "symbol": "QQQ",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "IWM": {
+    "symbol": "IWM",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "DIA": {
+    "symbol": "DIA",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "XLE": {
+    "symbol": "XLE",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "XLK": {
+    "symbol": "XLK",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "XLF": {
+    "symbol": "XLF",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "XLV": {
+    "symbol": "XLV",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "SMH": {
+    "symbol": "SMH",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  },
+  "ARKK": {
+    "symbol": "ARKK",
+    "score": 45,
+    "previous_score": 45,
+    "confidence": "LOW",
+    "opinion": "Early setup worth monitoring.",
+    "timestamp": "2026-03-21T15:00:00",
+    "execution": {
+      "status": "rejected",
+      "selected": false,
+      "eligible": false,
+      "execution_quality": 0,
+      "cap_context": 8,
+      "reason": "Rejected by the current execution filters for market conditions, score, or confidence."
+    },
+    "intelligence": {
+      "snapshot": {
+        "trade_snapshot": [
+          "Current score is 45.",
+          "Confidence is LOW.",
+          "Structure is stable structure."
+        ],
+        "signal_alignment": [
+          "Trend alignment is present.",
+          "Momentum behavior supports current direction.",
+          "Participation is consistent with the move."
+        ]
+      },
+      "thesis": {
+        "status": "Weak / breakdown risk",
+        "summary": "This setup reflects current structural alignment across trend, momentum, and participation."
+      },
+      "pressure": [
+        "Momentum slowing slightly in shorter timeframes.",
+        "Crowding risk may increase near resistance."
+      ],
+      "damage": [
+        "Loss of momentum continuation would weaken structure.",
+        "Failure to hold recent levels would degrade setup quality."
+      ],
+      "forward_paths": {
+        "bull_case": [
+          "Continuation with expanding momentum.",
+          "Higher highs supported by participation."
+        ],
+        "bear_case": [
+          "Loss of structure and pullback into prior range.",
+          "Breakdown if key levels fail."
+        ]
+      },
+      "invalidation": [
+        "Break below key support.",
+        "Sharp drop in score and confidence alignment."
+      ],
+      "action_bias": "Exit or avoid"
+    }
+  }
+}

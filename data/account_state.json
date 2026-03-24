@@ -1,14 +1,35 @@
 {
-  "equity": 1000,
-  "cash": 538.27,
-  "buying_power": 538.27,
+  "equity": 4781.79,
+  "cash": 4781.81,
+  "buying_power": 4781.81,
+  "account_type": "margin",
   "trade_history": [
     {
-      "symbol": "MU",
-      "price": 461.7300109863281,
-      "size": 1,
-      "timestamp": "2026-03-19T09:09:36.950649",
-      "settle_date": "2026-03-20T09:09:36.950657"
+      "symbol": "AAPL",
+      "price": 100.25,
+      "size": 10.0,
+      "timestamp": "2026-03-24T03:14:35.371023",
+      "settle_date": "2026-03-25T03:14:35.371030",
+      "cost": 1002.5,
+      "status": "OPEN"
+    },
+    {
+      "symbol": "AMZN",
+      "price": 100.25,
+      "size": 10.0,
+      "timestamp": "2026-03-24T03:14:35.379476",
+      "settle_date": "2026-03-25T03:14:35.379483",
+      "cost": 1002.5,
+      "status": "OPEN"
+    },
+    {
+      "symbol": "AAPL",
+      "price": 252.1187,
+      "size": 19.0,
+      "timestamp": "2026-03-24T03:52:50.597658",
+      "settle_date": "2026-03-25T03:52:50.597665",
+      "cost": 4790.26,
+      "status": "OPEN"
     }
   ]
 }

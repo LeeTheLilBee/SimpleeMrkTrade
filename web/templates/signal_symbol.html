@@ -10,6 +10,19 @@
     </div>
 </div>
 
+<div class="card premium-card">
+    <h3>{{ detail.symbol }} Chart</h3>
+    <div class="passage-frame">
+        <iframe
+            src="https://s.tradingview.com/widgetembed/?symbol={{ detail.symbol }}&interval=60&theme=dark"
+            width="100%"
+            height="420"
+            frameborder="0"
+            allowtransparency="true"
+            scrolling="no">
+        </iframe>
+    </div>
+</div>
 {% if primary_intelligence and primary_intelligence.intelligence %}
 <div class="card premium-hero gold-accent-card">
     <div class="section-head-row">

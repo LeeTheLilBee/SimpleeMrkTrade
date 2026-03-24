@@ -53,5 +53,170 @@
     "timestamp": "2026-03-20T06:30:43.671148",
     "level": "INFO",
     "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-23T22:57:17.447254",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-23T23:04:59.599447",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-23T23:22:12.198397",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-23T23:25:57.178457",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-23T23:44:28.282329",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-23T23:47:16.123683",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-23T23:52:23.429104",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-23T23:57:44.784548",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-23T23:59:43.455066",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T00:01:25.047133",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T00:59:21.834798",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T01:07:06.144476",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T01:19:57.990022",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T01:30:16.802877",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T01:57:59.380997",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T01:58:07.814373",
+    "level": "INFO",
+    "message": "Executed AAPL CALL at 100.0 size 5"
+  },
+  {
+    "timestamp": "2026-03-24T02:11:33.623419",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T02:11:41.769409",
+    "level": "INFO",
+    "message": "Executed AAPL CALL at 100.0 size 5"
+  },
+  {
+    "timestamp": "2026-03-24T02:11:41.770404",
+    "level": "WARN",
+    "message": "Skipped AMZN due to buying power"
+  },
+  {
+    "timestamp": "2026-03-24T02:34:43.280160",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T02:38:09.331170",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T02:38:17.617735",
+    "level": "INFO",
+    "message": "Executed AAPL CALL at 100.0 size 6"
+  },
+  {
+    "timestamp": "2026-03-24T02:59:36.759559",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T03:12:10.310528",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T03:14:27.022409",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T03:14:35.377732",
+    "level": "INFO",
+    "message": "Executed AAPL CALL at 100.25 size 10.0"
+  },
+  {
+    "timestamp": "2026-03-24T03:14:35.385648",
+    "level": "INFO",
+    "message": "Executed AMZN CALL at 100.25 size 10.0"
+  },
+  {
+    "timestamp": "2026-03-24T03:41:09.381575",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T03:41:17.540468",
+    "level": "WARN",
+    "message": "Skipped AAPL due to buying power"
+  },
+  {
+    "timestamp": "2026-03-24T03:41:17.618589",
+    "level": "WARN",
+    "message": "Skipped AMZN due to buying power"
+  },
+  {
+    "timestamp": "2026-03-24T03:52:41.072841",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-24T03:52:50.604201",
+    "level": "INFO",
+    "message": "Executed AAPL CALL at 252.12 size 19.0"
+  },
+  {
+    "timestamp": "2026-03-24T04:27:17.561491",
+    "level": "INFO",
+    "message": "Bot run started"
   }
 ]
