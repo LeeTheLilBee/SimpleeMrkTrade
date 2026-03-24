@@ -1010,7 +1010,27 @@ def why_this_trade_page():
     trades = load_json("data/trade_details.json", [])
     if not isinstance(trades, list):
         trades = []
-    return render_template_safe("why_this_trade.html", **template_context({"trades": trades}))
+
+    enriched = []
+    for trade in trades:
+        row = dict(trade)
+
+        if not row.get("why") and row.get("trade_id"):
+            built = build_trade_detail_payload(row.get("trade_id"))
+            if built:
+                if built.get("why"):
+                    row["why"] = built.get("why", [])
+                if built.get("option_explanation"):
+                    row["option_explanation"] = built.get("option_explanation", [])
+                if built.get("exit_explanation"):
+                    row["exit_explanation"] = built.get("exit_explanation")
+
+        enriched.append(row)
+
+    return render_template_safe(
+        "why_this_trade.html",
+        **template_context({"trades": enriched}),
+    )
 
 
 @app.route("/premium-analysis")

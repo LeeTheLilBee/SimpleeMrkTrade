@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>Simulated Account</h2>
+    <div class="passage-frame">
+        <p>This dashboard tracks the system-managed paper account, including active positions, account health, and live intelligence.</p>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 18px;">
+    <div class="card premium-card">
+        <h4>System Tone</h4>
+        <p id="brain-summary">{{ brain.summary if brain and brain.summary else "No active positions." }}</p>
+    </div>
+
+    <div class="card premium-card">
+        <h4>Primary Focus</h4>
+        <p id="brain-focus">
+            {% if brain and brain.focus %}
+                {{ brain.focus.symbol }} → {{ brain.focus.message }}
+            {% else %}
+                Monitoring all positions...
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="card premium-card">
+        <h4>Portfolio Health</h4>
+        <p><strong>{{ portfolio.health if portfolio and portfolio.health else "No positions" }}</strong></p>
+        <p class="muted-line">Avg score: {{ portfolio.avg_health if portfolio and portfolio.avg_health is not none else 0 }}</p>
+    </div>
+
+    <div class="card premium-card">
+        <h4>Risk State</h4>
+        <p><strong>{{ portfolio.risk if portfolio and portfolio.risk else "None" }}</strong></p>
+        <p class="muted-line">Open positions: {{ positions|length }}</p>
+    </div>
+</div>
+
+{% if alerts %}
+<div class="card premium-card" style="margin-bottom: 18px;">
+    <h3>System Alerts</h3>
+    <div id="alerts-container" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px;">
+        {% for a in alerts %}
+        <div class="card" style="margin:0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                <strong>{{ a.symbol }}</strong>
+                <span class="severity-badge {{ a.severity }}">{{ a.severity|upper }}</span>
+            </div>
+            <p style="margin-top:8px;">{{ a.message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if not positions %}
+<div class="card premium-card">
+    <h3>No Simulated Positions</h3>
+    <div class="passage-frame">
+        <p>The system is not currently holding any paper positions.</p>
+    </div>
+</div>
+{% endif %}
+
+<div style="display:grid; gap:18px;">
+{% for p in positions %}
+<div class="card premium-card">
+
+    <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+            <div>
+                <h3 style="margin-bottom:4px;">{{ p.symbol }}</h3>
+                <p class="muted-line" style="margin:0;">
+                    {{ p.company_name if p.company_name is defined else "Live monitored position" }}
+                </p>
+            </div>
+
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <span class="signal-stat-chip">{{ p.health.label }}</span>
+                {% if p.action_bias is defined %}<span class="signal-stat-chip">{{ p.action_bias }}</span>{% endif %}
+                {% if p.risk_state is defined %}<span class="signal-stat-chip">{{ p.risk_state }}</span>{% endif %}
+            </div>
+        </div>
+    </a>
+
+    <div style="margin-top:14px;">
+        <div class="health-bar">
+            <div id="health-{{ p.symbol }}" class="health-fill" style="width: {{ p.health.score }}%;"></div>
+        </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 14px;">
+        <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0;">
+                <h4>Status</h4>
+                <p><strong>Health:</strong> <span id="score-{{ p.symbol }}">{{ p.health.score }}</span></p>
+                <p><strong>Direction:</strong> {{ p.health.direction }}</p>
+                <p><strong>Action:</strong> {{ p.health.action }}</p>
+            </div>
+        </a>
+
+        <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0;">
+                <h4>Trade Frame</h4>
+                <p><strong>Entry:</strong> {{ p.entry if p.entry is defined else p.price }}</p>
+                <p><strong>Current:</strong> {{ p.current_price if p.current_price is defined else "N/A" }}</p>
+                <p><strong>Target:</strong> {{ p.target if p.target is defined else "N/A" }}</p>
+                <p><strong>Stop:</strong> {{ p.stop if p.stop is defined else "N/A" }}</p>
+            </div>
+        </a>
+
+        <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0;">
+                <h4>Position State</h4>
+                <p><strong>Days Open:</strong> {{ p.days_open if p.days_open is defined else "N/A" }}</p>
+                <p><strong>Progress:</strong> {{ p.position_progress if p.position_progress is defined else "N/A" }}</p>
+                <p><strong>Bias:</strong> {{ p.action_bias if p.action_bias is defined else "HOLD" }}</p>
+            </div>
+        </a>
+    </div>
+
+</div>
+{% endfor %}
+</div>
+
+<script>
+async function fetchLiveState() {
+    try {
+        const res = await fetch("/api/live-state");
+        const data = await res.json();
+
+        const summary = document.getElementById("brain-summary");
+        if (summary && data.brain) {
+            summary.innerText = data.brain.summary || "No active positions.";
+        }
+
+        const focus = document.getElementById("brain-focus");
+        if (focus) {
+            if (data.brain && data.brain.focus) {
+                focus.innerText = data.brain.focus.symbol + " → " + data.brain.focus.message;
+            } else {
+                focus.innerText = "Monitoring all positions...";
+            }
+        }
+
+        const alertsContainer = document.getElementById("alerts-container");
+        if (alertsContainer && data.alerts) {
+            alertsContainer.innerHTML = "";
+
+            data.alerts.forEach(a => {
+                const row = document.createElement("div");
+                row.className = "card";
+                row.style.margin = "0";
+                row.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                        <strong>${a.symbol}</strong>
+                        <span class="severity-badge ${a.severity}">${a.severity.toUpperCase()}</span>
+                    </div>
+                    <p style="margin-top:8px;">${a.message}</p>
+                `;
+                alertsContainer.appendChild(row);
+            });
+        }
+
+        if (data.positions) {
+            data.positions.forEach(p => {
+                const bar = document.getElementById("health-" + p.symbol);
+                if (bar && p.health) {
+                    bar.style.width = p.health.score + "%";
+                }
+
+                const score = document.getElementById("score-" + p.symbol);
+                if (score && p.health) {
+                    score.innerText = p.health.score;
+                }
+            });
+        }
+    } catch (err) {
+        console.log("Live update error:", err);
+    }
+}
+setInterval(fetchLiveState, 4000);
+fetchLiveState();
+</script>
+
+{% endblock %}

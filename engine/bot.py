@@ -10,6 +10,7 @@ from engine.options_intelligence import (
     option_is_executable,
     explain_option_choice,
 )
+from engine.premium_feed import write_premium_feed_item
 from engine.signal_feed import push_signal
 from engine.rsi_engine import calculate_rsi
 from engine.volume_engine import volume_surge
@@ -284,15 +285,25 @@ def process_signals(results, regime, volatility_payload):
 
         if not breadth_allows_trade(strategy, breadth):
             trade["rejection_reason"] = explain_rejection(trade, "breadth_blocked")
-            log_candidate_decision(
-                trade,
-                status="rejected",
-                reason="failed_breadth_filter",
-                mode=mode,
-                breadth=breadth,
-                volatility_state=volatility_state,
-            )
-            continue
+
+        write_premium_feed_item({
+            "title": f"{symbol} Rejected",
+            "summary": trade["rejection_reason"],
+            "pro_lines": trade.get("why", []),
+            "elite_lines": trade.get("option_explanation", []),
+            "timestamp": trade.get("timestamp"),
+            "mode": mode,
+        })
+
+        log_candidate_decision(
+            trade,
+            status="rejected",
+            reason="failed_breadth_filter",
+            mode=mode,
+            breadth=breadth,
+            volatility_state=volatility_state,
+        )
+        continue
 
         chosen_strategy = choose_trade_strategy(
             regime,
@@ -306,7 +317,17 @@ def process_signals(results, regime, volatility_payload):
             trade["strategy"] = strategy
 
         if mode == "DEFENSIVE_BEAR" and strategy != "CALL":
-            trade["rejection_reason"] = explain_rejection(trade, "execution_blocked")
+           trade["rejection_reason"] = explain_rejection(trade, "mode_blocked")
+
+           write_premium_feed_item({
+               "title": f"{symbol} Rejected",
+               "summary": trade["rejection_reason"],
+               "pro_lines": trade.get("why", []),
+               "elite_lines": trade.get("option_explanation", []),
+               "timestamp": trade.get("timestamp"),
+               "mode": mode,
+            })
+
             log_candidate_decision(
                 trade,
                 status="rejected",
@@ -327,6 +348,16 @@ def process_signals(results, regime, volatility_payload):
 
         if blocked:
             trade["rejection_reason"] = explain_rejection(trade, "execution_blocked")
+
+            write_premium_feed_item({
+                "title": f"{symbol} Rejected",
+                "summary": trade["rejection_reason"],
+                "pro_lines": trade.get("why", []),
+                "elite_lines": trade.get("option_explanation", []),
+                "timestamp": trade.get("timestamp"),
+                "mode": mode,
+            })
+
             log_candidate_decision(
                 trade,
                 status="rejected",
@@ -338,7 +369,7 @@ def process_signals(results, regime, volatility_payload):
             continue
 
         if score < 90:
-            trade["rejection_reason"] = explain_rejection(trade, "execution_blocked")
+            trade["rejection_reason"] =  "execution_blocked")
             log_candidate_decision(
                 trade,
                 status="rejected",
@@ -350,23 +381,41 @@ def process_signals(results, regime, volatility_payload):
             continue
 
         if volatility_state == "ELEVATED" and confidence == "LOW":
-            trade["rejection_reason"] = explain_rejection(trade, "execution_blocked")
+            trade["rejection_reason"] = explain_rejection(trade, "volatility_blocked")
+
+            write_premium_feed_item({
+                "title": f"{symbol} Rejected",
+                "summary": trade["rejection_reason"],
+                "pro_lines": trade.get("why", []),
+                "elite_lines": trade.get("option_explanation", []),
+                "timestamp": trade.get("timestamp"),
+                "mode": mode,
+            })
+
             log_candidate_decision(
                 trade,
                 status="rejected",
                 reason="failed_volatility_filter",
                 mode=mode,
                 breadth=breadth,
-                volatility_state=volatility_state,
+              volatility_state=volatility_state,
             )
             continue
 
         if trade.get("option"):
             allowed, option_reason = option_is_executable(trade["option"], min_score=50)
             if not allowed:
-                trade["rejection_reason"] = (
-                    f"Rejected because the option contract quality was too weak: {option_reason}."
-                )
+                trade["rejection_reason"] = explain_rejection(trade, "weak_option_contract")
+
+                write_premium_feed_item({
+                    "title": f"{symbol} Rejected",
+                    "summary": trade["rejection_reason"],
+                    "pro_lines": trade.get("why", []),
+                    "elite_lines": trade.get("option_explanation", []),
+                    "timestamp": trade.get("timestamp"),
+                    "mode": mode,
+                })
+
                 log_candidate_decision(
                     trade,
                     status="rejected",
@@ -387,6 +436,15 @@ def process_signals(results, regime, volatility_payload):
             breadth=breadth,
             volatility=volatility_state,
         )
+
+        write_premium_feed_item({
+            "title": f"{trade.get('symbol')} Setup",
+            "summary": "High-conviction setup aligned with system conditions.",
+            "pro_lines": trade.get("why", []),
+            "elite_lines": trade.get("option_explanation", []),
+            "timestamp": trade.get("timestamp"),
+            "mode": trade.get("mode"),
+        })
 
         approved_trades.append(trade)
 

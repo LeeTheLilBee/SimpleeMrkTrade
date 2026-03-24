@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>Your Positions</h2>
+    <div class="passage-frame">
+        <p>This page is for user-owned positions, separate from the system-managed simulated account.</p>
+    </div>
+</div>
+
+{% if not positions %}
+<div class="card premium-card">
+    <h3>No User Positions Yet</h3>
+    <div class="passage-frame">
+        <p>Your personal positions will appear here once they are added or connected.</p>
+    </div>
+</div>
+{% endif %}
+
+<div style="display:grid; gap:18px;">
+{% for p in positions %}
+<div class="card premium-card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:4px;">{{ p.symbol }}</h3>
+            <p class="muted-line" style="margin:0;">User-owned position</p>
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            {% if p.status %}<span class="signal-stat-chip">{{ p.status }}</span>{% endif %}
+            {% if p.strategy %}<span class="signal-stat-chip">{{ p.strategy }}</span>{% endif %}
+        </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 14px;">
+        <div class="card" style="margin:0;">
+            <h4>Entry</h4>
+            <p><strong>Price:</strong> {{ p.entry if p.entry is defined else "N/A" }}</p>
+            <p><strong>Size:</strong> {{ p.size if p.size is defined else "N/A" }}</p>
+        </div>
+
+        <div class="card" style="margin:0;">
+            <h4>Risk</h4>
+            <p><strong>Stop:</strong> {{ p.stop if p.stop is defined else "N/A" }}</p>
+            <p><strong>Target:</strong> {{ p.target if p.target is defined else "N/A" }}</p>
+        </div>
+
+        <div class="card" style="margin:0;">
+            <h4>Status</h4>
+            <p><strong>Current:</strong> {{ p.current_price if p.current_price is defined else "N/A" }}</p>
+            <p><strong>PnL:</strong> {{ p.pnl if p.pnl is defined else "N/A" }}</p>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+
+{% endblock %}
