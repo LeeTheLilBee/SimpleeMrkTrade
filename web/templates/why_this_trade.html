@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div style="margin-bottom:14px;">
+    <a href="javascript:history.back()" class="signal-stat-chip" style="text-decoration:none;">
+        ← Back
+    </a>
+</div>
+
 <div class="card premium-hero gold-accent-card section-sparkle">
     <h2>Why This Trade</h2>
     <div class="passage-frame">
@@ -22,7 +28,6 @@
                     {% if trade.timestamp %} | {{ trade.timestamp[:16].replace("T", " ") }}{% endif %}
                 </p>
             </div>
-
             <div class="why-trade-actions">
                 <a href="/signals/{{ trade.symbol }}" class="cta-btn secondary">Open Symbol</a>
                 {% if trade.id %}
@@ -31,40 +36,54 @@
             </div>
         </div>
 
-        {% for section, lines in trade.explanation.items() %}
+        {% if trade.why %}
         <div class="card explanation-section-card inner-section-card">
             <div class="section-head-row">
-                <h4 style="margin:0;">{{ section.replace("_", " ").title() }}</h4>
-                {% if trade.show_elite %}
-                <span class="section-tier-pill elite-pill">Elite Enabled</span>
-                {% endif %}
+                <h4 style="margin:0;">Trade Reasoning</h4>
             </div>
-
-            <div class="passage-frame">
-                {% for line in lines %}
-                    {% if line is mapping and line.elite %}
-                    <div class="elite-insight-box">
-                        <div class="elite-label">⭐ Elite Insight</div>
-                        <p>{{ line.text }}</p>
-                    </div>
-                    {% else %}
-                    <p>{{ line }}</p>
-                    {% endif %}
-                {% endfor %}
-
-                {% if trade.show_teaser %}
-                <div class="upgrade-cutoff-box">
-                    <div class="lock-label">🔒 Unlock Deeper Reasoning</div>
-                    <p>
-                        Upgrade to see the rest of this section, deeper trade logic,
-                        and richer interpretation of the setup.
-                    </p>
-                    <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade Access</a>
+            <div style="display:grid; gap:8px;">
+                {% for line in trade.why %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ line }}</p>
                 </div>
-                {% endif %}
+                {% endfor %}
             </div>
         </div>
-        {% endfor %}
+        {% endif %}
+
+        {% if trade.option_explanation %}
+        <div class="card explanation-section-card inner-section-card">
+            <div class="section-head-row">
+                <h4 style="margin:0;">Option Contract Reasoning</h4>
+            </div>
+            <div style="display:grid; gap:8px;">
+                {% for line in trade.option_explanation %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ line }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if trade.exit_explanation %}
+        <div class="card explanation-section-card inner-section-card">
+            <div class="section-head-row">
+                <h4 style="margin:0;">Exit Explanation</h4>
+            </div>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ trade.exit_explanation }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not trade.why and not trade.option_explanation and not trade.exit_explanation %}
+        <div class="card explanation-section-card inner-section-card">
+            <div class="passage-frame">
+                <p style="margin:0;">No explanation available for this trade yet.</p>
+            </div>
+        </div>
+        {% endif %}
     </div>
     {% endfor %}
 {% else %}

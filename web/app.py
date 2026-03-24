@@ -778,10 +778,16 @@ def analytics_performance_page():
 
 
 @app.route("/analytics/strategy")
-def analytics_strategy_page():
+@app.route("/strategy-behavior")
+def strategy_behavior_page():
     return render_template_safe(
-        "analytics_strategy.html",
-        **template_context({"strategies": strategy_breakdown(), "system": get_system_state()}),
+        "strategy_behavior.html",
+        **template_context({
+            "behavior": {
+                "summary": "Strategy behavior view is active.",
+                "items": []
+            }
+        }),
     )
 
 
