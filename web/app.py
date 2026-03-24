@@ -677,6 +677,19 @@ def positions_page():
         }),
     )
 
+@app.route("/api/live-state")
+def api_live_state():
+    positions = get_positions_with_intelligence()
+    portfolio = evaluate_portfolio(positions)
+    alerts = generate_alerts(positions)
+    brain = build_system_brain(positions, portfolio, alerts)
+
+    return jsonify({
+        "positions": positions,
+        "portfolio": portfolio,
+        "alerts": alerts,
+        "brain": brain,
+    })
 
 @app.route("/proof")
 def proof_page():
