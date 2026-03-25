@@ -24,6 +24,14 @@ from engine.position_health import attach_position_health
 from engine.portfolio_intelligence import evaluate_portfolio
 from engine.alert_engine import generate_alerts
 from engine.system_brain import build_system_brain
+from engine.admin_product_analytics import (
+    maybe_track_page_view,
+    track_symbol_click,
+    track_trade_click,
+    track_upgrade_click,
+    track_cta_click,
+    build_product_analytics,
+)
 
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
@@ -1279,6 +1287,18 @@ def admin_clear_preview_tier():
     if is_master():
         session.pop("preview_tier", None)
     return redirect(request.referrer or url_for("admin_dashboard"))
+
+
+@app.route("/admin/product-analytics")
+def admin_product_analytics_page():
+    maybe_track_page_view("/admin/product-analytics")
+    analytics = build_product_analytics()
+    return render_template_safe(
+        "admin_product_analytics.html",
+        **template_context({
+            "analytics": analytics,
+        }),
+    )
 
 
 if __name__ == "__main__":

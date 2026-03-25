@@ -1,64 +1,153 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Admin Product Analytics</h2>
+<div style="margin-bottom:14px;">
+    <a href="javascript:history.back()" class="signal-stat-chip" style="text-decoration:none;">
+        ← Back
+    </a>
+</div>
 
-<div class="card premium-hero gold-accent-card section-sparkle">
-    <h3>Usage + Friction</h3>
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>Admin Product Intelligence</h2>
     <div class="passage-frame">
         <p>
-            This page shows what users are using, where they are clicking, and where friction may exist.
+            A behavioral view of how people move through the product, what draws attention, and where follow-through breaks down.
         </p>
     </div>
 </div>
 
-<div class="grid">
-    <div class="card gold-accent-card">
-        <h3>Total Events</h3>
-        <div class="metric">{{ summary.total_events }}</div>
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 18px;">
+    <div class="card premium-card">
+        <h4>Total Events</h4>
+        <p><strong>{{ analytics.totals.events }}</strong></p>
     </div>
-    <div class="card gold-accent-card">
-        <h3>Unique Users</h3>
-        <div class="metric">{{ summary.unique_users }}</div>
+    <div class="card premium-card">
+        <h4>Page Views</h4>
+        <p><strong>{{ analytics.totals.page_views }}</strong></p>
     </div>
-    <div class="card gold-accent-card">
-        <h3>Page Views</h3>
-        <div class="metric">{{ summary.page_view_count }}</div>
+    <div class="card premium-card">
+        <h4>Symbol Clicks</h4>
+        <p><strong>{{ analytics.totals.symbol_clicks }}</strong></p>
     </div>
-    <div class="card gold-accent-card">
-        <h3>Upgrade Clicks</h3>
-        <div class="metric">{{ summary.upgrade_click_count }}</div>
+    <div class="card premium-card">
+        <h4>Trade Clicks</h4>
+        <p><strong>{{ analytics.totals.trade_clicks }}</strong></p>
+    </div>
+    <div class="card premium-card">
+        <h4>Upgrade Clicks</h4>
+        <p><strong>{{ analytics.totals.upgrade_clicks }}</strong></p>
+    </div>
+    <div class="card premium-card">
+        <h4>CTA Clicks</h4>
+        <p><strong>{{ analytics.totals.cta_clicks }}</strong></p>
     </div>
 </div>
 
-<div class="grid">
-    <div class="card">
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px;">
+
+    <div class="card premium-card">
         <h3>Top Pages</h3>
-        {% if summary.top_pages %}
-        <table class="table">
-            <tr><th>Page</th><th>Count</th></tr>
-            {% for row in summary.top_pages %}
-            <tr><td>{{ row.name }}</td><td>{{ row.count }}</td></tr>
-            {% endfor %}
-        </table>
+        {% if analytics.top_pages %}
+            <div style="display:grid; gap:8px;">
+                {% for page, count in analytics.top_pages %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ page }} — {{ count }}</p>
+                </div>
+                {% endfor %}
+            </div>
         {% else %}
-        <p>No page data yet.</p>
+            <div class="passage-frame"><p style="margin:0;">No page data yet.</p></div>
         {% endif %}
     </div>
 
-    <div class="card">
+    <div class="card premium-card">
         <h3>Top Symbols</h3>
-        {% if summary.top_symbols %}
-        <table class="table">
-            <tr><th>Symbol</th><th>Views</th></tr>
-            {% for row in summary.top_symbols %}
-            <tr><td>{{ row.name }}</td><td>{{ row.count }}</td></tr>
-            {% endfor %}
-        </table>
+        {% if analytics.top_symbols %}
+            <div style="display:grid; gap:8px;">
+                {% for symbol, count in analytics.top_symbols %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ symbol }} — {{ count }}</p>
+                </div>
+                {% endfor %}
+            </div>
         {% else %}
-        <p>No symbol data yet.</p>
+            <div class="passage-frame"><p style="margin:0;">No symbol click data yet.</p></div>
         {% endif %}
     </div>
+
+    <div class="card premium-card">
+        <h3>Top CTAs</h3>
+        {% if analytics.top_ctas %}
+            <div style="display:grid; gap:8px;">
+                {% for cta, count in analytics.top_ctas %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ cta }} — {{ count }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="passage-frame"><p style="margin:0;">No CTA activity yet.</p></div>
+        {% endif %}
+    </div>
+
+    <div class="card premium-card">
+        <h3>Upgrade Interest</h3>
+        {% if analytics.upgrade_interest %}
+            <div style="display:grid; gap:8px;">
+                {% for tier, count in analytics.upgrade_interest %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ tier }} — {{ count }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="passage-frame"><p style="margin:0;">No upgrade interest recorded yet.</p></div>
+        {% endif %}
+    </div>
+
+</div>
+
+<div class="card premium-card" style="margin-top:18px;">
+    <h3>Friction Signals</h3>
+    {% if analytics.friction_signals %}
+        <div style="display:grid; gap:10px;">
+            {% for row in analytics.friction_signals %}
+            <div class="card" style="margin:0;">
+                <p style="margin:0;"><strong>{{ row.page }}</strong></p>
+                <p class="muted-line" style="margin:6px 0 0 0;">
+                    Views: {{ row.views }} | Follow-ups: {{ row.followups }} | Follow-through: {{ row.followup_rate }}%
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="passage-frame">
+            <p style="margin:0;">No friction patterns detected yet.</p>
+        </div>
+    {% endif %}
+</div>
+
+<div class="card premium-card" style="margin-top:18px;">
+    <h3>Recent Events</h3>
+    {% if analytics.recent_events %}
+        <div style="display:grid; gap:8px;">
+            {% for event in analytics.recent_events %}
+            <div class="passage-frame">
+                <p style="margin:0;">
+                    {{ event.timestamp }} — {{ event.event_type }}
+                    {% if event.page %} | page: {{ event.page }}{% endif %}
+                    {% if event.symbol %} | symbol: {{ event.symbol }}{% endif %}
+                    {% if event.cta_name %} | cta: {{ event.cta_name }}{% endif %}
+                    {% if event.tier %} | tier: {{ event.tier }}{% endif %}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="passage-frame">
+            <p style="margin:0;">No events recorded yet.</p>
+        </div>
+    {% endif %}
 </div>
 
 {% endblock %}

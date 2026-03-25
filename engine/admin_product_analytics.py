@@ -1,105 +1,170 @@
 import json
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime
 from collections import Counter, defaultdict
 
-ANALYTICS_FILE = Path("data/admin_product_analytics.json")
-ANALYTICS_FILE.parent.mkdir(parents=True, exist_ok=True)
+EVENTS_FILE = "data/product_events.json"
 
-def _load():
-    if not ANALYTICS_FILE.exists():
-        return []
+
+def _load(path, default):
+    file_path = Path(path)
+    if not file_path.exists():
+        return default
     try:
-        with open(ANALYTICS_FILE, "r") as f:
-            data = json.load(f)
-            return data if isinstance(data, list) else []
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
     except Exception:
-        return []
+        return default
 
-def _save(data):
-    trimmed = data[-5000:]
-    with open(ANALYTICS_FILE, "w") as f:
-        json.dump(trimmed, f, indent=2)
 
-def track_event(event_type, username=None, page=None, symbol=None, meta=None):
-    data = _load()
-    row = {
-        "timestamp": datetime.utcnow().isoformat(),
+def _save(path, data):
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+
+def log_event(event_type, payload=None):
+    events = _load(EVENTS_FILE, [])
+    if not isinstance(events, list):
+        events = []
+
+    payload = payload or {}
+    event = {
         "event_type": event_type,
-        "username": username,
-        "page": page,
+        "timestamp": datetime.now().isoformat(),
+        **payload,
+    }
+    events.append(event)
+
+    # keep last 5000 events
+    events = events[-5000:]
+    _save(EVENTS_FILE, events)
+    return event
+
+
+def maybe_track_page_view(path, extra=None):
+    return log_event("page_view", {"page": path, **(extra or {})})
+
+
+def track_symbol_click(symbol, source=None, extra=None):
+    payload = {
         "symbol": symbol,
-        "meta": meta or {},
+        "source": source or "unknown",
     }
-    data.append(row)
-    _save(data)
-    return row
+    if extra:
+        payload.update(extra)
+    return log_event("symbol_click", payload)
 
-def get_events():
-    return _load()
 
-def summarize_events(days=30):
-    events = _load()
-    cutoff = datetime.utcnow() - timedelta(days=days)
+def track_trade_click(symbol, trade_id=None, source=None, extra=None):
+    payload = {
+        "symbol": symbol,
+        "trade_id": trade_id,
+        "source": source or "unknown",
+    }
+    if extra:
+        payload.update(extra)
+    return log_event("trade_click", payload)
 
-    recent = []
+
+def track_upgrade_click(source=None, tier=None, extra=None):
+    payload = {
+        "source": source or "unknown",
+        "tier": tier or "unknown",
+    }
+    if extra:
+        payload.update(extra)
+    return log_event("upgrade_click", payload)
+
+
+def track_cta_click(cta_name, source=None, extra=None):
+    payload = {
+        "cta_name": cta_name,
+        "source": source or "unknown",
+    }
+    if extra:
+        payload.update(extra)
+    return log_event("cta_click", payload)
+
+
+def load_product_events():
+    events = _load(EVENTS_FILE, [])
+    return events if isinstance(events, list) else []
+
+
+def build_product_analytics():
+    events = load_product_events()
+
+    event_counts = Counter()
+    page_counts = Counter()
+    symbol_counts = Counter()
+    cta_counts = Counter()
+    upgrade_counts = Counter()
+    source_counts = Counter()
+
+    recent_events = events[-30:][::-1]
+
+    page_to_followups = defaultdict(int)
+    page_views = Counter()
+
     for e in events:
-        try:
-            ts = datetime.fromisoformat(e.get("timestamp"))
-            if ts >= cutoff:
-                recent.append(e)
-        except Exception:
-            continue
+        event_type = e.get("event_type", "unknown")
+        event_counts[event_type] += 1
 
-    total_events = len(recent)
-    unique_users = len(set(e.get("username") for e in recent if e.get("username")))
-    page_views = [e for e in recent if e.get("event_type") == "page_view"]
-    upgrade_clicks = [e for e in recent if e.get("event_type") == "upgrade_click"]
-    login_failures = [e for e in recent if e.get("event_type") == "login_failure"]
-    symbol_views = [e for e in recent if e.get("event_type") == "symbol_view"]
+        page = e.get("page")
+        symbol = e.get("symbol")
+        source = e.get("source")
+        cta_name = e.get("cta_name")
+        tier = e.get("tier")
 
-    page_counts = Counter(e.get("page") for e in page_views if e.get("page"))
-    symbol_counts = Counter(e.get("symbol") for e in symbol_views if e.get("symbol"))
-    user_counts = Counter(e.get("username") for e in recent if e.get("username"))
+        if page:
+            page_counts[page] += 1
+        if symbol:
+            symbol_counts[symbol] += 1
+        if cta_name:
+            cta_counts[cta_name] += 1
+        if tier and event_type == "upgrade_click":
+            upgrade_counts[tier] += 1
+        if source:
+            source_counts[source] += 1
 
-    user_event_buckets = defaultdict(list)
-    for e in recent:
-        user = e.get("username")
-        if user:
-            user_event_buckets[user].append(e)
+        if event_type == "page_view" and page:
+            page_views[page] += 1
+        elif source:
+            page_to_followups[source] += 1
 
-    friction_alerts = []
-    for user, rows in user_event_buckets.items():
-        fail_count = sum(1 for r in rows if r.get("event_type") == "login_failure")
-        upgrade_visits = sum(1 for r in rows if r.get("page") == "/upgrade")
-        premium_hits = sum(1 for r in rows if r.get("page") in ["/premium", "/premium-analysis", "/why-this-trade"])
-
-        if fail_count >= 3:
-            friction_alerts.append({
-                "user": user,
-                "type": "login_friction",
-                "detail": f"{fail_count} login failures",
+    friction_signals = []
+    for page, views in page_views.items():
+        followups = page_to_followups.get(page, 0)
+        followup_rate = round((followups / views) * 100, 1) if views else 0.0
+        if views >= 3 and followup_rate < 25:
+            friction_signals.append({
+                "page": page,
+                "views": views,
+                "followups": followups,
+                "followup_rate": followup_rate,
+                "signal": "high_attention_low_followthrough",
             })
 
-        if upgrade_visits >= 2 and premium_hits >= 2:
-            friction_alerts.append({
-                "user": user,
-                "type": "conversion_interest",
-                "detail": "Repeated premium/upgrade interest detected",
-            })
+    friction_signals = sorted(
+        friction_signals,
+        key=lambda x: (x["followup_rate"], -x["views"])
+    )
 
-    summary = {
-        "days": days,
-        "total_events": total_events,
-        "unique_users": unique_users,
-        "page_view_count": len(page_views),
-        "upgrade_click_count": len(upgrade_clicks),
-        "login_failure_count": len(login_failures),
-        "symbol_view_count": len(symbol_views),
-        "top_pages": [{"name": k, "count": v} for k, v in page_counts.most_common(10)],
-        "top_symbols": [{"name": k, "count": v} for k, v in symbol_counts.most_common(10)],
-        "top_users": [{"name": k, "count": v} for k, v in user_counts.most_common(10)],
-        "friction_alerts": friction_alerts[:20],
-        "recent_events": recent[-50:][::-1],
+    return {
+        "totals": {
+            "events": len(events),
+            "page_views": event_counts.get("page_view", 0),
+            "symbol_clicks": event_counts.get("symbol_click", 0),
+            "trade_clicks": event_counts.get("trade_click", 0),
+            "upgrade_clicks": event_counts.get("upgrade_click", 0),
+            "cta_clicks": event_counts.get("cta_click", 0),
+        },
+        "top_pages": page_counts.most_common(10),
+        "top_symbols": symbol_counts.most_common(10),
+        "top_ctas": cta_counts.most_common(10),
+        "upgrade_interest": upgrade_counts.most_common(10),
+        "top_sources": source_counts.most_common(10),
+        "friction_signals": friction_signals[:10],
+        "recent_events": recent_events,
     }
-    return summary
