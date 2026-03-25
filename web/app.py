@@ -1061,7 +1061,7 @@ def why_this_trade_page():
                 f"Mode: {row.get('mode', 'UNKNOWN')}",
                 f"Regime: {row.get('regime', 'UNKNOWN')}",
                 f"Breadth: {row.get('breadth', 'UNKNOWN')}",
-                f"Volatility: {row.get('volatility_state', 'UNKNOWN
+                f"Volatility: {row.get('volatility_state', 'UNKNOWN)}
 
 
 @app.route("/premium-analysis")
