@@ -1,4 +1,9 @@
-from engine.explainability_engine import explain_trade_decision, explain_rejection
+from engine.explainability_engine import (
+    explain_trade_decision,
+    explain_rejection,
+    build_rejection_analysis,
+    explain_reentry_detail,
+)
 from engine.position_monitor import monitor_open_positions
 from engine.execution_source import get_execution_candidates
 from engine.regime import get_market_regime
@@ -134,21 +139,47 @@ def log_candidate_decision(
         "score": trade.get("score"),
         "confidence": trade.get("confidence"),
         "price": trade.get("price"),
-        "status": status,  # selected | approved_not_selected | rejected
+        "status": status,
         "reason": reason,
         "mode": mode,
         "breadth": breadth,
         "volatility_state": volatility_state,
         "timestamp": trade.get("timestamp"),
+        "why": trade.get("why", []),
+        "rejection_reason": trade.get("rejection_reason"),
+        "rejection_analysis": trade.get("rejection_analysis", []),
+        "option": trade.get("option"),
         "option_contract_score": trade.get("option_contract_score"),
         "option_explanation": trade.get("option_explanation", []),
-        "option": trade.get("option"),
+        "trade_id": trade.get("trade_id"),
+        "stronger_competing_setups": trade.get("stronger_competing_setups", []),
     }
-
     if extra:
         payload.update(extra)
-
     remember_candidate(payload)
+
+
+def stronger_competing_setups(trade, selected_trades):
+    current_score = float(trade.get("score", 0) or 0)
+
+    stronger = []
+    for other in selected_trades:
+        other_symbol = other.get("symbol")
+        other_strategy = other.get("strategy")
+        other_score = float(other.get("score", 0) or 0)
+
+        if other_symbol == trade.get("symbol") and other_strategy == trade.get("strategy"):
+            continue
+
+        if other_score >= current_score:
+            stronger.append({
+                "symbol": other_symbol,
+                "strategy": other_strategy,
+                "score": other_score,
+            })
+
+    stronger.sort(key=lambda x: x["score"], reverse=True)
+    return stronger
 
 
 def scan_stock(symbol, regime):
@@ -228,6 +259,11 @@ def resolve_market_mode(regime, breadth, volatility_payload=None):
 
 def log_rejection(trade, symbol, reason_key, machine_reason, mode, breadth, volatility_state):
     trade["rejection_reason"] = explain_rejection(trade, reason_key)
+    trade["rejection_analysis"] = build_rejection_analysis(
+        trade,
+        reason_key,
+        machine_reason,
+    )
 
     summary = trade.get("rejection_reason", "Rejected for unspecified reason.")
 
@@ -236,14 +272,12 @@ def log_rejection(trade, symbol, reason_key, machine_reason, mode, breadth, vola
         clean_detail = explain_reentry_detail(detail)
         summary = f"{summary} Specifically, {clean_detail}."
 
-    rejection_lines = build_rejection_analysis(trade, reason_key, machine_reason)
-
-    trade["rejection_analysis"] = rejection_lines
+    trade["rejection_reason"] = summary
 
     write_premium_feed_item({
         "title": f"{symbol} Rejected",
         "summary": summary,
-        "pro_lines": rejection_lines,
+        "pro_lines": trade.get("rejection_analysis", []),
         "elite_lines": trade.get("option_explanation", []),
         "timestamp": trade.get("timestamp"),
         "mode": mode,
@@ -257,7 +291,7 @@ def log_rejection(trade, symbol, reason_key, machine_reason, mode, breadth, vola
         breadth=breadth,
         volatility_state=volatility_state,
         extra={
-            "rejection_analysis": rejection_lines,
+            "rejection_analysis": trade.get("rejection_analysis", []),
         },
     )
 
@@ -352,7 +386,7 @@ def process_signals(results, regime, volatility_payload):
         if chosen_strategy and strategy != chosen_strategy:
             strategy = chosen_strategy
             trade["strategy"] = strategy
-        
+
         allowed_reentry, reentry_reason = reentry_allowed(trade)
         if not allowed_reentry:
             log_rejection(
@@ -468,7 +502,33 @@ def process_signals(results, regime, volatility_payload):
                 volatility_state=volatility_state,
             )
         else:
+            stronger = stronger_competing_setups(trade, selected_trades)
+
+            trade["stronger_competing_setups"] = stronger
             trade["rejection_reason"] = explain_rejection(trade, "not_selected")
+            trade["rejection_analysis"] = build_rejection_analysis(
+                trade,
+                "not_selected",
+                "approved_but_ranked_below_execution_cut",
+            )
+
+            if stronger:
+                lead = stronger[0]
+                trade["rejection_reason"] = (
+                    f"{trade['rejection_reason']} "
+                    f"The leading competing setup was {lead.get('symbol', 'UNKNOWN')} "
+                    f"{lead.get('strategy', 'N/A')} with a score of {lead.get('score', 'N/A')}."
+                )
+
+            write_premium_feed_item({
+                "title": f"{trade.get('symbol')} Not Selected",
+                "summary": trade.get("rejection_reason", "The setup was not selected."),
+                "pro_lines": trade.get("rejection_analysis", []),
+                "elite_lines": trade.get("option_explanation", []),
+                "timestamp": trade.get("timestamp"),
+                "mode": trade.get("mode"),
+            })
+
             log_candidate_decision(
                 trade,
                 status="approved_not_selected",
@@ -476,9 +536,11 @@ def process_signals(results, regime, volatility_payload):
                 mode=mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
+                extra={
+                    "stronger_competing_setups": stronger,
+                    "rejection_analysis": trade.get("rejection_analysis", []),
+                },
             )
-
-    return approved_trades, selected_trades, mode, breadth, volatility_state
 
 
 def run():

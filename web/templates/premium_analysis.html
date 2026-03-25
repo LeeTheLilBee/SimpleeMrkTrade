@@ -11,45 +11,40 @@
     <h2>Premium Analysis</h2>
     <div class="passage-frame">
         <p>
-            A live intelligence surface showing what the system is seeing, avoiding, and prioritizing across the market.
+            A live intelligence surface showing what the system is prioritizing, rejecting, and protecting across the market.
         </p>
     </div>
 </div>
 
 {% if feed_items and feed_items|length > 0 %}
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 18px;">
-    {% for item in feed_items[:4] %}
-    <div class="card premium-card" style="margin:0;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
-            <div>
-                <h3 style="margin-bottom:6px;">{{ item.title }}</h3>
-                <p class="muted-line" style="margin:0;">
-                    {{ item.timestamp[:16].replace("T", " ") if item.timestamp else "Now" }}
-                    {% if item.mode %} | {{ item.mode }}{% endif %}
-                </p>
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3 style="margin-bottom:6px;">Latest Intelligence</h3>
+    <p class="muted-line" style="margin-top:0;">The newest decisions, filtered setups, and system reads.</p>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-top:14px;">
+        {% for item in feed_items[:5] %}
+        <div class="card" style="margin:0; height:100%;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                <div>
+                    <h4 style="margin:0 0 4px 0;">{{ item.title }}</h4>
+                    <p class="muted-line" style="margin:0;">
+                        {{ item.timestamp[:16].replace("T", " ") if item.timestamp else "Now" }}
+                        {% if item.mode %} | {{ item.mode }}{% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="passage-frame" style="margin-top:12px;">
+                <p style="margin:0;">{{ item.summary }}</p>
             </div>
         </div>
-
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ item.summary }}</p>
-        </div>
-
-        {% if premium_mode in ["starter", "pro", "elite"] and item.pro_lines %}
-        <div style="display:grid; gap:8px; margin-top:12px;">
-            {% for line in item.pro_lines[:2] %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ line }}</p>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 
 <div style="display:grid; gap:18px;">
-    {% for item in feed_items[4:] %}
+    {% for item in feed_items[5:] %}
     <div class="card premium-card">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
             <div>
@@ -61,16 +56,16 @@
             </div>
         </div>
 
-        <div class="grid" style="grid-template-columns: 1.2fr 1fr; gap: 14px; margin-top: 14px;">
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 14px;">
             <div class="card" style="margin:0;">
-                <h4>Core Read</h4>
+                <h4>System Summary</h4>
                 <div class="passage-frame">
                     <p style="margin:0;">{{ item.summary }}</p>
                 </div>
             </div>
 
             <div class="card" style="margin:0;">
-                <h4>System View</h4>
+                <h4>Strategic Read</h4>
 
                 {% if premium_mode in ["starter", "pro", "elite"] %}
                     {% if item.pro_lines %}
@@ -83,7 +78,7 @@
                     </div>
                     {% else %}
                     <div class="passage-frame">
-                        <p style="margin:0;">No deeper strategic read saved yet.</p>
+                        <p style="margin:0;">The system logged the outcome, but a deeper strategic read was not attached.</p>
                     </div>
                     {% endif %}
                 {% else %}
@@ -98,7 +93,7 @@
 
         {% if premium_mode == "elite" and item.elite_lines %}
         <div class="card elite-feed-block" style="margin-top:14px;">
-            <h4>Elite Insight</h4>
+            <h4>Contract / Elite Insight</h4>
             <div style="display:grid; gap:8px;">
                 {% for line in item.elite_lines %}
                 <div class="passage-frame">
@@ -110,7 +105,7 @@
         {% elif premium_mode == "pro" %}
         <div class="upgrade-cutoff-box" style="margin-top:14px;">
             <div class="lock-label">🔒 Elite Insight Locked</div>
-            <p>Elite members see deeper system interpretation and higher-order market context.</p>
+            <p>Elite members see deeper contract and system interpretation.</p>
             <a href="/upgrade" class="cta-btn premium-gold-btn">Go Elite</a>
         </div>
         {% endif %}
@@ -122,7 +117,7 @@
 <div class="card premium-card">
     <h3>No Premium Analysis Yet</h3>
     <div class="passage-frame">
-        <p>The intelligence layer is ready. New market reads will appear here as the engine evaluates setups and rejections.</p>
+        <p>The intelligence layer is ready. New system reads will appear here as setups are evaluated, rejected, and prioritized.</p>
     </div>
 </div>
 {% endif %}

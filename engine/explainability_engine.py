@@ -72,31 +72,39 @@ def build_rejection_analysis(trade, reason_key, machine_reason=None):
     volatility = trade.get("volatility_state", "UNKNOWN")
 
     lines = [
-        f"{symbol} presented a {confidence.lower()} confidence setup with a score of {score}.",
-        f"The system was operating in {mode} mode with {breadth.lower()} breadth and {volatility.lower()} volatility conditions.",
+        f"{symbol} came through the engine with a score of {score} and {str(confidence).lower()} confidence.",
+        f"The system was operating in {str(mode).replace('_', ' ').title()} mode with {str(breadth).lower()} breadth and {str(volatility).lower()} volatility conditions.",
     ]
 
     if reason_key == "breadth_blocked":
-        lines.append("Market participation did not align with the direction required for this setup.")
+        lines.append("The broader market participation profile did not support the direction required for this setup.")
     elif reason_key == "mode_blocked":
-        lines.append("The system shifted into a defensive posture, prioritizing protection over opportunity.")
+        lines.append("The market environment forced a more defensive posture, and this setup did not fit that posture.")
     elif reason_key == "execution_blocked":
-        lines.append("Execution constraints overrode the setup, preventing entry despite acceptable structure.")
+        lines.append("The structure may have been acceptable, but capital, risk, or execution controls prevented deployment.")
     elif reason_key == "score_too_low":
-        lines.append("The setup lacked sufficient edge relative to competing opportunities.")
+        lines.append("The setup did not clear the internal quality bar needed to compete for capital.")
     elif reason_key == "volatility_blocked":
-        lines.append("Volatility conditions introduced instability relative to the setup’s confidence level.")
+        lines.append("Volatility conditions made the setup too unstable relative to its conviction level.")
     elif reason_key == "weak_option_contract":
-        lines.append("The options market did not provide a clean or efficient way to express this idea.")
+        lines.append("The underlying idea was not matched by an efficient or liquid enough option contract.")
     elif reason_key == "reentry_blocked":
-        lines.append("The system requires stronger confirmation before attempting another entry on this symbol.")
+        lines.append("The symbol was recently exited, and the system requires materially better re-entry conditions before trying again.")
     elif reason_key == "not_selected":
-        lines.append("Stronger opportunities were available and prioritized instead.")
+        lines.append("The setup passed baseline checks, but stronger competing opportunities were prioritized instead.")
+        stronger = trade.get("stronger_competing_setups", [])
+        if stronger:
+            lead = stronger[0]
+            lines.append(
+                f"The leading competing setup was {lead.get('symbol', 'UNKNOWN')} "
+                f"{lead.get('strategy', 'N/A')} with a score of {lead.get('score', 'N/A')}."
+            )
     else:
-        lines.append("The setup was filtered out by system-level constraints.")
+        lines.append("The setup was filtered out by system-level controls before execution.")
 
     if machine_reason:
-        lines.append(f"Internal trigger: {machine_reason.replace('_', ' ')}.")
+        machine_text = str(machine_reason).replace("_", " ")
+        lines.append(f"Internal trigger: {machine_text}.")
 
     return lines
 
