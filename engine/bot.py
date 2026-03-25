@@ -231,10 +231,19 @@ def log_rejection(trade, symbol, reason_key, machine_reason, mode, breadth, vola
 
     summary = trade.get("rejection_reason", "Rejected for unspecified reason.")
 
+    if str(machine_reason).startswith("reentry_blocked:"):
+        detail = str(machine_reason).split("reentry_blocked:", 1)[1]
+        clean_detail = explain_reentry_detail(detail)
+        summary = f"{summary} Specifically, {clean_detail}."
+
+    rejection_lines = build_rejection_analysis(trade, reason_key, machine_reason)
+
+    trade["rejection_analysis"] = rejection_lines
+
     write_premium_feed_item({
         "title": f"{symbol} Rejected",
         "summary": summary,
-        "pro_lines": trade.get("why", []),
+        "pro_lines": rejection_lines,
         "elite_lines": trade.get("option_explanation", []),
         "timestamp": trade.get("timestamp"),
         "mode": mode,
@@ -247,6 +256,9 @@ def log_rejection(trade, symbol, reason_key, machine_reason, mode, breadth, vola
         mode=mode,
         breadth=breadth,
         volatility_state=volatility_state,
+        extra={
+            "rejection_analysis": rejection_lines,
+        },
     )
 
 

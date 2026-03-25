@@ -40,34 +40,49 @@
         </div>
 
         {% if trade.why %}
-        <div class="card explanation-section-card inner-section-card">
-            <div class="section-head-row">
-                <h4 style="margin:0;">Trade Reasoning</h4>
-            </div>
-            <div style="display:grid; gap:8px;">
-                {% for line in trade.why %}
-                <div class="passage-frame">
-                    <p style="margin:0;">{{ line }}</p>
-                </div>
-                {% endfor %}
-            </div>
+<div class="card explanation-section-card inner-section-card">
+    <div class="section-head-row">
+        <h4 style="margin:0;">Trade Reasoning</h4>
+    </div>
+    <div style="display:grid; gap:8px;">
+        {% for line in trade.why %}
+        <div class="passage-frame">
+            <p style="margin:0;">{{ line }}</p>
         </div>
-        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
-        {% if trade.option_explanation %}
-        <div class="card explanation-section-card inner-section-card">
-            <div class="section-head-row">
-                <h4 style="margin:0;">Option Contract Reasoning</h4>
-            </div>
-            <div style="display:grid; gap:8px;">
-                {% for line in trade.option_explanation %}
-                <div class="passage-frame">
-                    <p style="margin:0;">{{ line }}</p>
-                </div>
-                {% endfor %}
-            </div>
+{% if trade.rejection_analysis %}
+<div class="card explanation-section-card inner-section-card">
+    <div class="section-head-row">
+        <h4 style="margin:0;">Why It Was Rejected</h4>
+    </div>
+    <div style="display:grid; gap:8px;">
+        {% for line in trade.rejection_analysis %}
+        <div class="passage-frame">
+            <p style="margin:0;">{{ line }}</p>
         </div>
-        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if trade.option_explanation %}
+<div class="card explanation-section-card inner-section-card">
+    <div class="section-head-row">
+        <h4 style="margin:0;">Option Contract Reasoning</h4>
+    </div>
+    <div style="display:grid; gap:8px;">
+        {% for line in trade.option_explanation %}
+        <div class="passage-frame">
+            <p style="margin:0;">{{ line }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
         {% if trade.exit_explanation %}
         <div class="card explanation-section-card inner-section-card">

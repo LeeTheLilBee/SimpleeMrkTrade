@@ -72,6 +72,44 @@ def explain_rejection(trade, reason_key):
     return f"{symbol} was rejected due to current system conditions."
 
 
+def build_rejection_analysis(trade, reason_key, machine_reason=None):
+    symbol = trade.get("symbol", "This setup")
+    score = trade.get("score", "N/A")
+    confidence = trade.get("confidence", "N/A")
+    mode = trade.get("mode", "UNKNOWN")
+    breadth = trade.get("breadth", "UNKNOWN")
+    volatility = trade.get("volatility_state", "UNKNOWN")
+
+    lines = [
+        f"{symbol} carried a score of {score} with {confidence} confidence.",
+        f"The system was operating in {mode} mode with {breadth} breadth and {volatility} volatility conditions.",
+    ]
+
+    if reason_key == "breadth_blocked":
+        lines.append("The setup direction conflicted with the broader market participation profile.")
+    elif reason_key == "mode_blocked":
+        lines.append("The setup was filtered out because current market mode favored more defensive behavior.")
+    elif reason_key == "execution_blocked":
+        lines.append("The trade thesis may have been acceptable, but account or execution constraints prevented entry.")
+    elif reason_key == "score_too_low":
+        lines.append("The setup did not clear the internal quality threshold required for deployment.")
+    elif reason_key == "volatility_blocked":
+        lines.append("The setup was downgraded because volatility conditions were too unstable for the conviction level.")
+    elif reason_key == "weak_option_contract":
+        lines.append("The underlying idea may have been viable, but the option chain did not offer an efficient vehicle.")
+    elif reason_key == "reentry_blocked":
+        lines.append("The symbol was recently exited and the system requires materially better re-entry conditions before trying again.")
+    elif reason_key == "not_selected":
+        lines.append("The setup passed baseline checks, but stronger competing setups took priority.")
+    else:
+        lines.append("The setup was filtered out by system controls before execution.")
+
+    if machine_reason:
+        lines.append(f"Internal trigger: {machine_reason}.")
+
+    return lines
+    
+
 def explain_exit(reason, pnl):
     pnl = float(pnl or 0)
 
