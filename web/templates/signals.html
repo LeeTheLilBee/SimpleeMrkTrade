@@ -5,10 +5,75 @@
     <h2>Signal Spotlight</h2>
     <div class="passage-frame">
         <p>
-            Start with the strongest symbols first, then expand into broader coverage based on your tier.
+            Ranked opportunities based on current engine conditions, organized so each tier feels broader and more useful than the last.
         </p>
     </div>
 </div>
+
+{% if engaged_spotlight %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3 style="margin-bottom:6px;">Engaged Spotlight</h3>
+    <p class="muted-line" style="margin-top:0;">The symbol drawing the strongest user attention right now.</p>
+
+    <a href="/signals/{{ engaged_spotlight.symbol }}" style="text-decoration:none; color:inherit;">
+        <div class="card" style="margin:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                <div>
+                    <h2 style="margin:0 0 6px 0;">{{ engaged_spotlight.symbol }}</h2>
+                    <p class="muted-line" style="margin:0;">Tracked interactions: {{ engaged_spotlight.count }}</p>
+                </div>
+                <span class="signal-stat-chip">Spotlight</span>
+            </div>
+        </div>
+    </a>
+</div>
+{% endif %}
+
+{% if most_viewed_symbols %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3 style="margin-bottom:6px;">Most Viewed Right Now</h3>
+    <p class="muted-line" style="margin-top:0;">The symbols drawing the most user attention across the platform.</p>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px;">
+        {% for item in most_viewed_symbols %}
+        <a href="/signals/{{ item.symbol }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0; height:100%;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                    <div>
+                        <h4 style="margin:0 0 4px 0;">{{ item.symbol }}</h4>
+                        <p class="muted-line" style="margin:0;">Views: {{ item.count }}</p>
+                    </div>
+                    <span class="signal-stat-chip">Hot</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if most_viewed_symbols %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3 style="margin-bottom:6px;">Most Viewed Right Now</h3>
+    <p class="muted-line" style="margin-top:0;">The symbols drawing the most user attention across the platform.</p>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px;">
+        {% for item in most_viewed_symbols %}
+        <a href="/signals/{{ item.symbol }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0; height:100%;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                    <div>
+                        <h4 style="margin:0 0 4px 0;">{{ item.symbol }}</h4>
+                        <p class="muted-line" style="margin:0;">Views: {{ item.count }}</p>
+                    </div>
+                    <span class="signal-stat-chip">Hot</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
 <div class="signals-top-actions">
     {% if can_access_all_symbols %}
@@ -22,22 +87,49 @@
     {% endif %}
 </div>
 
+<div class="card gold-accent-card">
+    <div class="section-head-row">
+        <div>
+            <h3>{{ tier }} Access</h3>
+            <p class="muted-line">
+                {% if tier == "Guest" %}
+                Guest preview keeps the page simple with only a few top-ranked symbols.
+                {% elif tier == "Free" %}
+                Free shows your 3 strongest live opportunities.
+                {% elif tier == "Starter" %}
+                Starter expands spotlight coverage to 5 ranked symbols.
+                {% elif tier == "Pro" %}
+                Pro adds an extended watchlist and unlocks All Symbols.
+                {% elif tier == "Elite" %}
+                Elite keeps the spotlight clean while opening the widest symbol visibility.
+                {% else %}
+                Ranked access based on your current tier.
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="signal-stat-chip">
+            {{ visible_signals|length }} visible
+        </div>
+    </div>
+</div>
+
 <div class="spotlight-header-row">
     <div>
         <h3>Top Ranked Now</h3>
         <p class="muted-line">
             {% if tier == "Guest" %}
-            Guest preview of the strongest setups.
+            Two strongest symbols to give a clean preview.
             {% elif tier == "Free" %}
-            Your highest-priority front-page signals.
+            Three strongest symbols for your front page.
             {% elif tier == "Starter" %}
-            Expanded spotlight access for Starter.
+            Five ranked symbols with a fuller spotlight.
             {% elif tier == "Pro" %}
-            Broader spotlight plus deeper watchlist access.
+            Five top-ranked symbols before the extended watchlist.
             {% elif tier == "Elite" %}
-            Full top-ranked view with the broadest active coverage.
+            Five leaders at the top, with broader expansion below.
             {% else %}
-            Ranked opportunities based on current engine conditions.
+            Current top-ranked active symbols.
             {% endif %}
         </p>
     </div>
@@ -86,16 +178,16 @@
 {% endif %}
 
 {% if next_twenty and next_twenty|length > 0 %}
-<div class="spotlight-header-row" style="margin-top: 8px;">
+<div class="spotlight-header-row" style="margin-top: 10px;">
     <div>
         <h3>Extended Watchlist</h3>
         <p class="muted-line">
             {% if tier == "Pro" %}
-            Pro unlocks a broader live watchlist beyond the front-page leaders.
+            Pro unlocks 5 additional symbols beyond the top-ranked spotlight.
             {% elif tier == "Elite" %}
-            Elite extends into much deeper live coverage across the active universe.
+            Elite extends beyond the leaders into a much broader live watchlist.
             {% else %}
-            Expanded symbol coverage beyond the main spotlight.
+            Additional live symbol coverage.
             {% endif %}
         </p>
     </div>
@@ -130,16 +222,44 @@
     <h3>More Opportunities</h3>
     <div class="passage-frame">
         <p>
-            There are {{ hidden_remaining }} additional symbols beyond what this tier can currently see.
+            {{ hidden_remaining }} additional symbols are available beyond this tier’s current view.
         </p>
     </div>
 
-    {% if can_access_all_symbols %}
-    <a href="/all-symbols" class="cta-btn">Open All Symbols</a>
-    {% else %}
-    <a href="/upgrade" class="cta-btn premium-gold-btn">Unlock More Signals</a>
-    {% endif %}
+    <div class="dashboard-subnav">
+        {% if can_access_all_symbols %}
+        <a href="/all-symbols" class="cta-btn">Open All Symbols</a>
+        {% else %}
+        <a href="/upgrade" class="cta-btn premium-gold-btn">Unlock More Signals</a>
+        {% endif %}
+    </div>
 </div>
 {% endif %}
+
+<div class="card">
+    <h3>Tier Visibility Guide</h3>
+    <div class="grid">
+        <div class="card">
+            <p><b>Guest</b></p>
+            <p class="muted-line">2 spotlight symbols</p>
+        </div>
+        <div class="card">
+            <p><b>Free</b></p>
+            <p class="muted-line">3 spotlight symbols</p>
+        </div>
+        <div class="card">
+            <p><b>Starter</b></p>
+            <p class="muted-line">5 spotlight symbols</p>
+        </div>
+        <div class="card">
+            <p><b>Pro</b></p>
+            <p class="muted-line">5 top + 5 extended + All Symbols</p>
+        </div>
+        <div class="card">
+            <p><b>Elite</b></p>
+            <p class="muted-line">5 top + 20 extended + All Symbols</p>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

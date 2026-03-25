@@ -2,7 +2,7 @@
   {
     "username": "admin",
     "email": "admin@simpleemrktrade.local",
-    "password_hash": "115c0a50b979dc5ece560233d991f278$d86733d3fc348167058ef88d79f584c017165e97b77c2cf2fa317ae05ef51a27",
+    "password_hash": "c49a35a59b65003cecebf2c589842db8$75f06bb93017532ea1ed33326ceec302ea27492cc1c9af7cf60cae55d34fc145",
     "tier": "Pro",
     "role": "master"
   }

@@ -1,7 +1,21 @@
 import os
 import sys
 from flask import jsonify
+from engine.admin_product_analytics import top_engaged_symbols
 import json
+from engine.admin_product_analytics import (
+    log_event,
+    maybe_track_page_view,
+    track_symbol_click,
+    track_trade_click,
+    track_upgrade_click,
+    track_cta_click,
+    track_premium_wall_seen,
+    track_premium_content_view,
+    build_product_analytics,
+    top_engaged_symbols_with_counts,
+    most_underrated_symbols,
+)
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -768,6 +782,9 @@ def signals_page():
         preview_tier=session.get("preview_tier"),
     )
 
+    most_viewed_symbols = top_engaged_symbols_with_counts(limit=5)
+    engaged_spotlight = most_viewed_symbols[0] if most_viewed_symbols else None
+
     return render_template_safe(
         "signals.html",
         **template_context(
@@ -777,6 +794,8 @@ def signals_page():
                 "hidden_count": hidden_count,
                 "tier": tier,
                 "top_five": top_five,
+                "most_viewed_symbols": most_viewed_symbols,
+                "engaged_spotlight": engaged_spotlight,
                 "next_twenty": next_twenty,
                 "hidden_remaining": hidden_count,
                 "can_access_all_symbols": can_access_all_symbols(),
@@ -826,12 +845,18 @@ def position_detail_page(trade_id):
 @app.route("/signals/<symbol>")
 @app.route("/symbol/<symbol>")
 def signal_symbol_page(symbol: str):
+    maybe_track_page_view(f"/signals/{symbol}")
+    log_event("symbol_exposed", {
+        "symbol": symbol,
+        "source": "/signals",
+    })
+    track_symbol_click(symbol, source="/signals")
+
     detail = get_symbol_detail(symbol)
     return render_template_safe(
         "signal_symbol.html",
         **template_context(
             {
-                "detail": detail,
                 "symbol": detail["symbol"],
                 "company": detail["company"],
                 "symbol_signals": detail["signals"],
@@ -919,7 +944,15 @@ def proof_page():
 
 @app.route("/research")
 def research_overview():
-    return render_template_safe("research_overview.html", **template_context({}))
+    most_underrated = most_underrated_symbols(limit=5)
+    underrated_spotlight = most_underrated[0] if most_underrated else None
+    return render_template_safe("research_overview.html", 
+                                **template_context(
+                                    {
+                                      "most_underrated": most_underrated,
+                                      "underrated_spotlight": underrated_spotlight,  
+                                    }),
+                                )
 
 
 @app.route("/analytics-overview")
@@ -1035,8 +1068,13 @@ def bot_log_page():
 
 @app.route("/trade/<trade_id>")
 def trade_detail_page(trade_id):
-    maybe_track_page_view(f"/trade/{trade_id}")
     detail = build_trade_detail_payload(trade_id)
+    if detail:
+        track_trade_click(
+            detail.get("symbol", "UNKNOWN"),
+            trade_id=trade_id,
+            source="/why-this-trade",
+        )
     return render_template_safe(
         "trade_detail.html",
         **template_context({
@@ -1049,6 +1087,8 @@ def trade_detail_page(trade_id):
 @app.route("/why-this-trade")
 def why_this_trade_page():
     maybe_track_page_view("/why-this-trade")
+    track_premium_content_view(source="/why-this-trade", section="why_this_trade_page")
+    track_premium_wall_seen(source="/why-this-trade", section="why_this_trade_page")
 
     trades = load_json("data/trade_details.json", [])
     if not isinstance(trades, list):
@@ -1146,6 +1186,9 @@ def why_this_trade_page():
 @app.route("/premium-analysis")
 def premium_analysis_page():
     maybe_track_page_view("/premium-analysis")
+    track_premium_content_view(source="/premium-analysis", section="premium_analysis_page")
+    if current_tier_lower() not in {"starter", "pro", "elite"}:
+      track_premium_wall_seen(source="/premium-analysis", section="premium_analysis_page")
     feed_items = load_json("data/premium_feed.json", [])
     if not isinstance(feed_items, list):
         feed_items = []
@@ -1260,6 +1303,8 @@ def notifications_page():
 @app.route("/upgrade")
 def upgrade_page():
     maybe_track_page_view("/upgrade")
+    maybe_track_page_view("/upgrade")
+    track_upgrade_click(source="/upgrade", tier="unknown")
     tiers = load_json("data/subscription_tiers.json", {})
     if not isinstance(tiers, dict):
         tiers = {}

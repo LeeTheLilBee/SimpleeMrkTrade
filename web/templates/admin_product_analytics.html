@@ -11,12 +11,12 @@
     <h2>Admin Product Intelligence</h2>
     <div class="passage-frame">
         <p>
-            A behavioral view of how people move through the product, what draws attention, and where follow-through breaks down.
+            A live behavioral view of what people are seeing, clicking, ignoring, and where the product is creating friction.
         </p>
     </div>
 </div>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 18px;">
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 18px;">
     <div class="card premium-card">
         <h4>Total Events</h4>
         <p><strong>{{ analytics.totals.events }}</strong></p>
@@ -43,6 +43,23 @@
     </div>
 </div>
 
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>System Insights</h3>
+    {% if analytics.insights %}
+        <div style="display:grid; gap:10px;">
+            {% for line in analytics.insights %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ line }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="passage-frame">
+            <p style="margin:0;">No insights generated yet.</p>
+        </div>
+    {% endif %}
+</div>
+
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px;">
 
     <div class="card premium-card">
@@ -51,12 +68,15 @@
             <div style="display:grid; gap:8px;">
                 {% for page, count in analytics.top_pages %}
                 <div class="passage-frame">
-                    <p style="margin:0;">{{ page }} — {{ count }}</p>
+                    <p style="margin:0;"><strong>{{ page }}</strong></p>
+                    <p class="muted-line" style="margin:4px 0 0 0;">Views: {{ count }}</p>
                 </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="passage-frame"><p style="margin:0;">No page data yet.</p></div>
+            <div class="passage-frame">
+                <p style="margin:0;">No page data yet.</p>
+            </div>
         {% endif %}
     </div>
 
@@ -66,12 +86,15 @@
             <div style="display:grid; gap:8px;">
                 {% for symbol, count in analytics.top_symbols %}
                 <div class="passage-frame">
-                    <p style="margin:0;">{{ symbol }} — {{ count }}</p>
+                    <p style="margin:0;"><strong>{{ symbol }}</strong></p>
+                    <p class="muted-line" style="margin:4px 0 0 0;">Interactions: {{ count }}</p>
                 </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="passage-frame"><p style="margin:0;">No symbol click data yet.</p></div>
+            <div class="passage-frame">
+                <p style="margin:0;">No symbol interaction data yet.</p>
+            </div>
         {% endif %}
     </div>
 
@@ -81,12 +104,15 @@
             <div style="display:grid; gap:8px;">
                 {% for cta, count in analytics.top_ctas %}
                 <div class="passage-frame">
-                    <p style="margin:0;">{{ cta }} — {{ count }}</p>
+                    <p style="margin:0;"><strong>{{ cta }}</strong></p>
+                    <p class="muted-line" style="margin:4px 0 0 0;">Clicks: {{ count }}</p>
                 </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="passage-frame"><p style="margin:0;">No CTA activity yet.</p></div>
+            <div class="passage-frame">
+                <p style="margin:0;">No CTA activity yet.</p>
+            </div>
         {% endif %}
     </div>
 
@@ -96,12 +122,15 @@
             <div style="display:grid; gap:8px;">
                 {% for tier, count in analytics.upgrade_interest %}
                 <div class="passage-frame">
-                    <p style="margin:0;">{{ tier }} — {{ count }}</p>
+                    <p style="margin:0;"><strong>{{ tier }}</strong></p>
+                    <p class="muted-line" style="margin:4px 0 0 0;">Clicks: {{ count }}</p>
                 </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="passage-frame"><p style="margin:0;">No upgrade interest recorded yet.</p></div>
+            <div class="passage-frame">
+                <p style="margin:0;">No upgrade interest recorded yet.</p>
+            </div>
         {% endif %}
     </div>
 
@@ -113,10 +142,15 @@
         <div style="display:grid; gap:10px;">
             {% for row in analytics.friction_signals %}
             <div class="card" style="margin:0;">
-                <p style="margin:0;"><strong>{{ row.page }}</strong></p>
-                <p class="muted-line" style="margin:6px 0 0 0;">
-                    Views: {{ row.views }} | Follow-ups: {{ row.followups }} | Follow-through: {{ row.followup_rate }}%
-                </p>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                    <div>
+                        <p style="margin:0;"><strong>{{ row.page }}</strong></p>
+                        <p class="muted-line" style="margin:6px 0 0 0;">
+                            Views: {{ row.views }} | Follow-ups: {{ row.followups }} | Follow-through: {{ row.followup_rate }}%
+                        </p>
+                    </div>
+                    <span class="signal-stat-chip">{{ row.signal|replace("_", " ")|title }}</span>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -139,6 +173,7 @@
                     {% if event.symbol %} | symbol: {{ event.symbol }}{% endif %}
                     {% if event.cta_name %} | cta: {{ event.cta_name }}{% endif %}
                     {% if event.tier %} | tier: {{ event.tier }}{% endif %}
+                    {% if event.source %} | source: {{ event.source }}{% endif %}
                 </p>
             </div>
             {% endfor %}

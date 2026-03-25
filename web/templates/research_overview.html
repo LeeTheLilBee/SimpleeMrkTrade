@@ -11,6 +11,86 @@
     </div>
 </div>
 
+{% if underrated_spotlight %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3 style="margin-bottom:6px;">Sleeping Giant</h3>
+    <p class="muted-line" style="margin-top:0;">A strong system-rated setup that users are not paying enough attention to yet.</p>
+
+    <a href="/signals/{{ underrated_spotlight.symbol }}" style="text-decoration:none; color:inherit;">
+        <div class="card" style="margin:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                <div>
+                    <h2 style="margin:0 0 6px 0;">{{ underrated_spotlight.symbol }}</h2>
+                    <p class="muted-line" style="margin:0;">
+                        Score {{ underrated_spotlight.score }}
+                        {% if underrated_spotlight.confidence %} | {{ underrated_spotlight.confidence }}{% endif %}
+                    </p>
+                </div>
+                <span class="signal-stat-chip">Underrated</span>
+            </div>
+
+            <div class="passage-frame" style="margin-top:12px;">
+                <p style="margin:0;">
+                    Views: {{ underrated_spotlight.views }} | Underrated score: {{ underrated_spotlight.underrated_score }}
+                </p>
+            </div>
+        </div>
+    </a>
+</div>
+{% endif %}
+
+{% if most_underrated %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3 style="margin-bottom:6px;">Most Underrated Setups</h3>
+    <p class="muted-line" style="margin-top:0;">Strong system setups getting little attention.</p>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-top:12px;">
+        {% for item in most_underrated %}
+        <a href="/signals/{{ item.symbol }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0;">
+                <h4 style="margin:0 0 4px 0;">{{ item.symbol }}</h4>
+                <p class="muted-line" style="margin:0;">
+                    Score {{ item.score }}{% if item.confidence %} | {{ item.confidence }}{% endif %}
+                </p>
+
+                <div class="passage-frame" style="margin-top:10px;">
+                    <p style="margin:0;">
+                        Views: {{ item.views }} | Underrated: {{ item.underrated_score }}
+                    </p>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if most_underrated %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>Most Underrated Setups</h3>
+    <p class="muted-line">Strong system setups getting little attention.</p>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-top:12px;">
+        {% for item in most_underrated %}
+        <a href="/signals/{{ item.symbol }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0;">
+                <h4 style="margin:0 0 4px 0;">{{ item.symbol }}</h4>
+                <p class="muted-line" style="margin:0;">
+                    Score {{ item.score }} | {{ item.confidence }}
+                </p>
+
+                <div class="passage-frame" style="margin-top:10px;">
+                    <p style="margin:0;">
+                        Views: {{ item.views }} | Underrated: {{ item.underrated_score }}
+                    </p>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 <div class="section-nav-grid">
     <a href="/signals" class="card section-nav-card">
         <h3>Signals</h3>
