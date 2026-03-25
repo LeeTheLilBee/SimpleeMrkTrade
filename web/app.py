@@ -1049,19 +1049,19 @@ def why_this_trade_page():
     enriched = []
     for trade in trades:
         row = dict(trade)
+
         trade_id = row.get("trade_id") or row.get("id")
         if trade_id:
             built = build_trade_detail_payload(trade_id)
             if built:
                 row = built
-        enriched.append(row)
 
-    return render_template_safe(
-        "why_this_trade.html",
-        **template_context({
-            "trades": enriched,
-        }),
-    )
+        if not row.get("context"):
+            row["context"] = [
+                f"Mode: {row.get('mode', 'UNKNOWN')}",
+                f"Regime: {row.get('regime', 'UNKNOWN')}",
+                f"Breadth: {row.get('breadth', 'UNKNOWN')}",
+                f"Volatility: {row.get('volatility_state', 'UNKNOWN
 
 
 @app.route("/premium-analysis")

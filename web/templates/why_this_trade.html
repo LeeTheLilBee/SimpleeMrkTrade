@@ -11,17 +11,60 @@
     <h2>Why This Trade</h2>
     <div class="passage-frame">
         <p>
-            This library explains both accepted and rejected setups so the system's thinking stays visible,
-            not just its actions.
+            A rolling explanation surface showing what the system acted on, what it passed on, and the context behind each decision.
         </p>
     </div>
 </div>
 
-{% if trades and trades|length > 0 %}
-<div style="display:grid; gap:18px;">
-    {% for trade in trades %}
-    <div class="card premium-card why-trade-card">
+{% if featured_trades and featured_trades|length > 0 %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:6px;">Latest 5 Moves</h3>
+            <p class="muted-line" style="margin:0;">Recent decisions, exits, and rejected opportunities.</p>
+        </div>
+    </div>
 
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-top:14px;">
+        {% for trade in featured_trades %}
+        <a href="{% if trade.trade_id %}/trade/{{ trade.trade_id }}{% elif trade.id %}/trade/{{ trade.id }}{% else %}/signals/{{ trade.symbol }}{% endif %}"
+           style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0; height:100%;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                    <div>
+                        <h4 style="margin:0 0 4px 0;">{{ trade.symbol }}</h4>
+                        <p class="muted-line" style="margin:0;">
+                            {{ trade.strategy if trade.strategy is defined else "N/A" }}
+                            {% if trade.score is defined %} | {{ trade.score }}{% endif %}
+                        </p>
+                    </div>
+                    <span class="signal-stat-chip">
+                        {% if trade.rejection_reason %}
+                            Rejected
+                        {% elif trade.exit_explanation %}
+                            Closed
+                        {% elif trade.why %}
+                            Approved
+                        {% else %}
+                            Logged
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="passage-frame" style="margin-top:12px;">
+                    <p style="margin:0;">{{ trade.summary_text }}</p>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if trades and trades|length > 0 %}
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px;">
+    {% for trade in trades %}
+    <div class="card premium-card" style="height:100%;">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
             <div>
                 <h3 style="margin-bottom:6px;">{{ trade.symbol }}</h3>
@@ -29,7 +72,6 @@
                     {{ trade.strategy if trade.strategy is defined else "N/A" }}
                     {% if trade.score is defined %} | Score {{ trade.score }}{% endif %}
                     {% if trade.confidence is defined %} | {{ trade.confidence }}{% endif %}
-                    {% if trade.timestamp %} | {{ trade.timestamp[:16].replace("T", " ") }}{% endif %}
                 </p>
             </div>
 
@@ -43,103 +85,16 @@
             </div>
         </div>
 
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 14px;">
-            <div class="card" style="margin:0;">
-                <h4>Status</h4>
-                <p><strong>State:</strong>
-                    {% if trade.status is defined %}
-                        {{ trade.status|replace("_", " ")|title }}
-                    {% elif trade.rejection_reason %}
-                        Rejected
-                    {% elif trade.why %}
-                        Approved
-                    {% else %}
-                        Observed
-                    {% endif %}
-                </p>
-                <p><strong>Symbol:</strong> {{ trade.symbol }}</p>
-                <p><strong>Strategy:</strong> {{ trade.strategy if trade.strategy is defined else "N/A" }}</p>
-            </div>
-
-            <div class="card" style="margin:0;">
-                <h4>System Summary</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;">
-                        {% if trade.rejection_reason %}
-                            {{ trade.rejection_reason }}
-                        {% elif trade.why and trade.why|length > 0 %}
-                            {{ trade.why[0] }}
-                        {% elif trade.exit_explanation %}
-                            {{ trade.exit_explanation }}
-                        {% else %}
-                            No explanation available for this trade yet.
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        {% if trade.why %}
-        <div class="card inner-section-card" style="margin-top:14px;">
-            <div class="section-head-row">
-                <h4 style="margin:0;">Trade Reasoning</h4>
-            </div>
-            <div style="display:grid; gap:8px;">
-                {% for line in trade.why %}
-                <div class="passage-frame">
-                    <p style="margin:0;">{{ line }}</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if trade.rejection_analysis %}
-        <div class="card inner-section-card" style="margin-top:14px;">
-            <div class="section-head-row">
-                <h4 style="margin:0;">Why It Was Rejected</h4>
-            </div>
-            <div style="display:grid; gap:8px;">
-                {% for line in trade.rejection_analysis %}
-                <div class="passage-frame">
-                    <p style="margin:0;">{{ line }}</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if trade.option_explanation %}
-        <div class="card inner-section-card" style="margin-top:14px;">
-            <div class="section-head-row">
-                <h4 style="margin:0;">Why This Contract</h4>
-            </div>
-            <div style="display:grid; gap:8px;">
-                {% for line in trade.option_explanation %}
-                <div class="passage-frame">
-                    <p style="margin:0;">{{ line }}</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if trade.exit_explanation %}
-        <div class="card inner-section-card" style="margin-top:14px;">
-            <div class="section-head-row">
-                <h4 style="margin:0;">Exit Explanation</h4>
-            </div>
+        <div class="card" style="margin-top:14px;">
+            <h4>System Summary</h4>
             <div class="passage-frame">
-                <p style="margin:0;">{{ trade.exit_explanation }}</p>
+                <p style="margin:0;">{{ trade.summary_text }}</p>
             </div>
         </div>
-        {% endif %}
 
         {% if trade.context %}
-        <div class="card inner-section-card" style="margin-top:14px;">
-            <div class="section-head-row">
-                <h4 style="margin:0;">Context</h4>
-            </div>
+        <div class="card" style="margin-top:14px;">
+            <h4>Context</h4>
             <div style="display:grid; gap:8px;">
                 {% for line in trade.context %}
                 <div class="passage-frame">
@@ -150,14 +105,44 @@
         </div>
         {% endif %}
 
-        {% if not trade.why and not trade.rejection_analysis and not trade.option_explanation and not trade.exit_explanation %}
-        <div class="card inner-section-card" style="margin-top:14px;">
-            <div class="passage-frame">
-                <p style="margin:0;">No explanation package has been attached to this setup yet.</p>
+        {% if trade.why %}
+        <div class="card" style="margin-top:14px;">
+            <h4>Trade Reasoning</h4>
+            <div style="display:grid; gap:8px;">
+                {% for line in trade.why[:3] %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ line }}</p>
+                </div>
+                {% endfor %}
             </div>
         </div>
         {% endif %}
 
+        {% if trade.rejection_analysis %}
+        <div class="card" style="margin-top:14px;">
+            <h4>Why It Was Rejected</h4>
+            <div style="display:grid; gap:8px;">
+                {% for line in trade.rejection_analysis[:3] %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ line }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if trade.option_explanation %}
+        <div class="card" style="margin-top:14px;">
+            <h4>Why This Contract</h4>
+            <div style="display:grid; gap:8px;">
+                {% for line in trade.option_explanation[:2] %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ line }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
     {% endfor %}
 </div>
