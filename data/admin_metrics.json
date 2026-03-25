@@ -1,21 +1,21 @@
 {
   "page_views": {
-    "/": 151,
+    "/": 152,
     "/dashboard": 96,
     "/signals": 147,
     "/positions": 66,
     "/all-symbols": 41,
-    "/premium-analysis": 36,
-    "/why-this-trade": 50,
+    "/premium-analysis": 37,
+    "/why-this-trade": 52,
     "/analytics-overview": 18,
     "/upgrade": 21,
-    "/login": 98,
+    "/login": 100,
     "/signup": 28,
     "/trade/MPC_1773917311.412609": 2,
     "/simulation": 1,
     "/my-positions": 1,
     "/trade/<trade_id>": 1,
-    "/trade/AMD-CALL-20260325031132": 2
+    "/trade/AMD-CALL-20260325031132": 3
   },
   "clicks": {
     "upgrade_button": 17,
