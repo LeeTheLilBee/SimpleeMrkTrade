@@ -1065,16 +1065,13 @@ def why_this_trade_page():
             ]
 
         if not row.get("summary_text"):
-            if row.get("rejection_reason"):
-                row["summary_text"] = row["rejection_reason"]
-            elif row.get("why"):
-                row["summary_text"] = row["why"][0]
-            elif row.get("exit_explanation"):
-                row["summary_text"] = row["exit_explanation"]
-            elif row.get("rejection_analysis"):
-                row["summary_text"] = row["rejection_analysis"][0]
-            else:
-                row["summary_text"] = "This setup has been recorded, but its explanation package has not been fully attached yet."
+            row["summary_text"] = (
+                row.get("rejection_reason")
+                or (row.get("why")[0] if row.get("why") else None)
+                or row.get("exit_explanation")
+                or (row.get("rejection_analysis")[0] if row.get("rejection_analysis") else None)
+                or "The system evaluated this setup but has not yet attached a full explanation."
+            )
 
         enriched.append(row)
 

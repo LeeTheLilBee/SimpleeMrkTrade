@@ -45,31 +45,22 @@ def explain_trade_decision(trade, mode=None, regime=None, breadth=None, volatili
 def explain_rejection(trade, reason_key):
     symbol = trade.get("symbol", "This setup")
 
-    if reason_key == "breadth_blocked":
-        return f"{symbol} was skipped because overall market breadth is not supporting this direction."
+    base = f"{symbol} was not taken."
 
-    if reason_key == "mode_blocked":
-        return f"{symbol} was blocked due to the current market mode being defensive against this type of trade."
+    mapping = {
+        "breadth_blocked": "Market participation did not support the direction of this setup.",
+        "mode_blocked": "Current market mode favors defensive positioning and did not allow this structure.",
+        "execution_blocked": "Execution controls prevented entry despite the setup conditions.",
+        "score_too_low": "The setup did not meet the internal quality threshold required for deployment.",
+        "volatility_blocked": "Volatility conditions reduced confidence below acceptable levels.",
+        "weak_option_contract": "No suitable option contract provided efficient exposure for this idea.",
+        "reentry_blocked": "The system requires stronger confirmation before re-entering this symbol.",
+        "not_selected": "The setup passed filters but ranked below stronger opportunities.",
+    }
 
-    if reason_key == "execution_blocked":
-        return f"{symbol} could not be executed due to capital, risk, or execution constraints."
+    detail = mapping.get(reason_key, "The setup was filtered out by system controls.")
 
-    if reason_key == "failed_score_threshold":
-        return f"{symbol} did not meet the minimum quality threshold required for execution."
-
-    if reason_key == "failed_volatility_filter":
-        return f"{symbol} was filtered out due to elevated volatility combined with weak conviction."
-
-    if reason_key == "weak_option_contract":
-        return f"{symbol} was rejected because available option contracts did not meet execution quality standards."
-
-    if reason_key == "reentry_blocked":
-        return f"{symbol} was recently exited and has not yet shown strong enough conditions for a re-entry."
-
-    if reason_key == "not_selected":
-        return f"{symbol} passed initial checks but was not selected for execution due to stronger competing setups."
-
-    return f"{symbol} was rejected due to current system conditions."
+    return f"{base} {detail}"
 
 
 def build_rejection_analysis(trade, reason_key, machine_reason=None):
@@ -81,34 +72,34 @@ def build_rejection_analysis(trade, reason_key, machine_reason=None):
     volatility = trade.get("volatility_state", "UNKNOWN")
 
     lines = [
-        f"{symbol} carried a score of {score} with {confidence} confidence.",
-        f"The system was operating in {mode} mode with {breadth} breadth and {volatility} volatility conditions.",
+        f"{symbol} presented a {confidence.lower()} confidence setup with a score of {score}.",
+        f"The system was operating in {mode} mode with {breadth.lower()} breadth and {volatility.lower()} volatility conditions.",
     ]
 
     if reason_key == "breadth_blocked":
-        lines.append("The setup direction conflicted with the broader market participation profile.")
+        lines.append("Market participation did not align with the direction required for this setup.")
     elif reason_key == "mode_blocked":
-        lines.append("The setup was filtered out because current market mode favored more defensive behavior.")
+        lines.append("The system shifted into a defensive posture, prioritizing protection over opportunity.")
     elif reason_key == "execution_blocked":
-        lines.append("The trade thesis may have been acceptable, but account or execution constraints prevented entry.")
+        lines.append("Execution constraints overrode the setup, preventing entry despite acceptable structure.")
     elif reason_key == "score_too_low":
-        lines.append("The setup did not clear the internal quality threshold required for deployment.")
+        lines.append("The setup lacked sufficient edge relative to competing opportunities.")
     elif reason_key == "volatility_blocked":
-        lines.append("The setup was downgraded because volatility conditions were too unstable for the conviction level.")
+        lines.append("Volatility conditions introduced instability relative to the setup’s confidence level.")
     elif reason_key == "weak_option_contract":
-        lines.append("The underlying idea may have been viable, but the option chain did not offer an efficient vehicle.")
+        lines.append("The options market did not provide a clean or efficient way to express this idea.")
     elif reason_key == "reentry_blocked":
-        lines.append("The symbol was recently exited and the system requires materially better re-entry conditions before trying again.")
+        lines.append("The system requires stronger confirmation before attempting another entry on this symbol.")
     elif reason_key == "not_selected":
-        lines.append("The setup passed baseline checks, but stronger competing setups took priority.")
+        lines.append("Stronger opportunities were available and prioritized instead.")
     else:
-        lines.append("The setup was filtered out by system controls before execution.")
+        lines.append("The setup was filtered out by system-level constraints.")
 
     if machine_reason:
-        lines.append(f"Internal trigger: {machine_reason}.")
+        lines.append(f"Internal trigger: {machine_reason.replace('_', ' ')}.")
 
     return lines
-    
+
 
 def explain_exit(reason, pnl):
     pnl = float(pnl or 0)
@@ -130,7 +121,7 @@ def explain_exit(reason, pnl):
 
     direction = "profit" if pnl >= 0 else "loss"
     return f"Position closed due to {reason}, resulting in a {direction} of {round(pnl, 2)}."
-    
+
 
 def explain_reentry_detail(detail_string):
     mapping = {

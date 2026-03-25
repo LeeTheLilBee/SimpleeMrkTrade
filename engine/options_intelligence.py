@@ -217,19 +217,15 @@ def explain_option_choice(option):
         return ["No suitable option contract was selected."]
 
     notes = list(option.get("contract_notes", []))
-    intent = option.get("trade_intent", "UNKNOWN")
     score = option.get("contract_score", 0)
-    dte = option.get("dte", "N/A")
     strike = option.get("strike", "N/A")
+    dte = option.get("dte", "N/A")
 
-    polished = [
-        f"This contract was chosen for a {intent.lower()} setup.",
-        f"The strike selection centers around {strike} and is aligned with the expected move profile.",
-        f"Time to expiry is {dte} day(s), which fits the trade structure the system is trying to express.",
+    return [
+        f"This contract was selected to efficiently express the trade idea.",
+        f"The strike at {strike} aligns with the expected move profile.",
+        f"Time to expiry ({dte} days) supports the intended trade duration.",
+        *notes,
+        f"Final contract quality score: {score}.",
     ]
-
-    polished.extend(notes)
-    polished.append(
-        f"Final contract score: {score}, combining expiry fit, liquidity quality, spread quality, and strike alignment."
-    )
     return polished
