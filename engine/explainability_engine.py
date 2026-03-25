@@ -42,20 +42,34 @@ def explain_trade_decision(trade, mode=None, regime=None, breadth=None, volatili
     return reasons
 
 
-def explain_rejection(trade, reason):
-    mapping = {
-        "sector_blocked": "Rejected because the portfolio already has too much exposure in this sector.",
-        "correlation_blocked": "Rejected because the symbol is too correlated with existing exposure.",
-        "breadth_blocked": "Rejected because market breadth does not support this setup.",
-        "execution_blocked": "Rejected because execution controls did not allow the trade.",
-        "buying_power": "Rejected because there was not enough buying power.",
-        "buying_power_min_size": "Rejected because the account could not afford even the minimum size.",
-        "existing_open_position": "Rejected because a position in this symbol is already open.",
-        "daily_entry_cap": "Rejected because the daily entry limit was reached.",
-        "governor_blocked": "Rejected by governor rules.",
-        "not_selected": "Approved in research but not selected for execution.",
-    }
-    return mapping.get(reason, f"Rejected due to: {reason}.")
+def explain_rejection(trade, reason_key):
+    symbol = trade.get("symbol", "This setup")
+
+    if reason_key == "breadth_blocked":
+        return f"{symbol} was skipped because overall market breadth is not supporting this direction."
+
+    if reason_key == "mode_blocked":
+        return f"{symbol} was blocked due to the current market mode being defensive against this type of trade."
+
+    if reason_key == "execution_blocked":
+        return f"{symbol} could not be executed due to capital, risk, or execution constraints."
+
+    if reason_key == "failed_score_threshold":
+        return f"{symbol} did not meet the minimum quality threshold required for execution."
+
+    if reason_key == "failed_volatility_filter":
+        return f"{symbol} was filtered out due to elevated volatility combined with weak conviction."
+
+    if reason_key == "weak_option_contract":
+        return f"{symbol} was rejected because available option contracts did not meet execution quality standards."
+
+    if reason_key == "reentry_blocked":
+        return f"{symbol} was recently exited and has not yet shown strong enough conditions for a re-entry."
+
+    if reason_key == "not_selected":
+        return f"{symbol} passed initial checks but was not selected for execution due to stronger competing setups."
+
+    return f"{symbol} was rejected due to current system conditions."
 
 
 def explain_exit(reason, pnl):
@@ -78,6 +92,26 @@ def explain_exit(reason, pnl):
 
     direction = "profit" if pnl >= 0 else "loss"
     return f"Position closed due to {reason}, resulting in a {direction} of {round(pnl, 2)}."
+    
+
+def explain_reentry_detail(detail_string):
+    mapping = {
+        "score_not_improved_enough": "score has not improved enough",
+        "confidence_not_improved": "confidence has not strengthened",
+        "price_not_reclaimed": "price has not reclaimed strength",
+        "trend_not_supportive": "trend does not support the trade direction",
+    }
+
+    parts = str(detail_string).split(",")
+    translated = [mapping.get(p.strip(), p.strip().replace("_", " ")) for p in parts if p.strip()]
+
+    if not translated:
+        return ""
+
+    if len(translated) == 1:
+        return translated[0]
+
+    return ", ".join(translated[:-1]) + " and " + translated[-1]
 
 
 def explain_position_state(position, current_price=None):

@@ -1,16 +1,17 @@
 from engine.explainability_engine import explain_trade_decision, explain_rejection
-from engine.performance_tracker import entries_today
 from engine.position_monitor import monitor_open_positions
 from engine.execution_source import get_execution_candidates
 from engine.regime import get_market_regime
-from engine.candidate_log import remember_candidate
 from engine.market_volatility import get_volatility_environment
+
 from engine.options_intelligence import (
     choose_best_option,
     option_is_executable,
     explain_option_choice,
 )
 from engine.premium_feed import write_premium_feed_item
+
+from engine.reentry_guard import reentry_allowed
 from engine.signal_feed import push_signal
 from engine.rsi_engine import calculate_rsi
 from engine.volume_engine import volume_surge
@@ -27,6 +28,7 @@ from engine.market_breadth import market_breadth
 from engine.market_mode import market_mode
 from engine.queue_manager_plus import queue_top_trades_plus
 from engine.trade_ranker import final_trade_score
+
 from engine.paper_portfolio import open_count, print_positions
 from engine.position_cap import trade_slots_left
 from engine.trade_history import executed_trade_count
@@ -34,21 +36,19 @@ from engine.daily_risk import trades_left_today
 from engine.signal_history import remember_signal
 from engine.atr_engine import calculate_atr
 from engine.leaderboard import print_leaderboard
-from engine.candidate_log import show_candidates, clear_candidates
+from engine.candidate_log import remember_candidate, show_candidates, clear_candidates
 from engine.position_review import review_positions
 from engine.data_utils import safe_download
 from engine.execution_loop import execute_trades
 from engine.capital_guard import affordable_trade_count
 from engine.backtest_summary import print_backtest_summary
 from engine.portfolio_summary import portfolio_summary
-from engine.account_state import settle_cash
-from engine.account_state import buying_power
+from engine.account_state import settle_cash, buying_power
 from engine.alerts import alert_trade
 from engine.equity_curve import build_equity_curve
 from engine.journal_export import export_journal
 from engine.trade_analytics import analytics
-from engine.performance_tracker import entries_today
-from engine.performance_tracker import performance_summary
+from engine.performance_tracker import entries_today, performance_summary
 from engine.market_snapshot import save_market_snapshot
 from engine.top_candidates_store import save_top_candidates
 from engine.top_candidates_view import print_top_candidates
@@ -68,7 +68,6 @@ from engine.bot_status import write_bot_status
 from engine.bot_logger import log_bot
 from engine.live_activity import push_activity
 from engine.auto_close_positions import auto_close_positions
-
 from engine.premium_intelligence import (
     save_premium_analysis,
     save_research_premium_analysis,
@@ -91,27 +90,26 @@ from engine.notification_engine import push_notification
 try:
     from engine.drawdown_brake import drawdown_brake
 except Exception:
-    def drawdown_brake():
+  def drawdown_brake():
         return {"blocked": False, "mode": "NORMAL", "reason": "drawdown brake unavailable"}
 
 try:
     from engine.correlation_risk import correlation_risk_status
 except Exception:
-    def correlation_risk_status():
+  def correlation_risk_status():
         return {"blocked": False, "crowded_sectors": {}, "reason": "correlation risk unavailable"}
 
 try:
     from engine.sector_concentration_cap import sector_concentration_status
 except Exception:
-    def sector_concentration_status():
+  def sector_concentration_status():
         return {"blocked": False, "sector_counts": {}, "reason": "sector cap unavailable"}
 
 try:
     from engine.exposure_buckets import exposure_bucket_status
 except Exception:
-    def exposure_bucket_status():
+  def exposure_bucket_status():
         return {"blocked": False, "bucket": "NORMAL", "reason": "exposure buckets unavailable"}
-
 
 def _reduced_risk_mode(brake_payload, exposure_payload):
     return brake_payload.get("mode") == "REDUCED_RISK" or exposure_payload.get("bucket") in ["ELEVATED", "HIGH"]
@@ -206,7 +204,7 @@ def log_candidate_decision(
         "score": trade.get("score"),
         "confidence": trade.get("confidence"),
         "price": trade.get("price"),
-        "status": status,  # selected | approved_not_selected | rejected
+        "status": status,
         "reason": reason,
         "mode": mode,
         "breadth": breadth,
@@ -214,23 +212,61 @@ def log_candidate_decision(
         "timestamp": trade.get("timestamp"),
         "why": trade.get("why", []),
         "rejection_reason": trade.get("rejection_reason"),
+        "option": trade.get("option"),
+        "option_contract_score": trade.get("option_contract_score"),
+        "option_explanation": trade.get("option_explanation", []),
+        "trade_id": trade.get("trade_id"),
     }
-
     if extra:
         payload.update(extra)
-
     remember_candidate(payload)
 
 
-def resolve_market_mode(regime, breadth, volatility_payload):
-    try:
-        return market_mode(regime, breadth, volatility_payload)
-    except TypeError:
-        try:
-            vol_state = volatility_payload.get("state", "NORMAL")
-            return market_mode(regime, breadth, vol_state)
-        except TypeError:
-            return market_mode(regime, breadth)
+def resolve_market_mode(regime, breadth, volatility_payload=None):
+    return market_mode(regime, breadth)
+
+
+def log_rejection(trade, symbol, reason_key, machine_reason, mode, breadth, volatility_state):
+    trade["rejection_reason"] = explain_rejection(trade, reason_key)
+
+    summary = trade.get("rejection_reason", "Rejected for unspecified reason.")
+
+    write_premium_feed_item({
+        "title": f"{symbol} Rejected",
+        "summary": summary,
+        "pro_lines": trade.get("why", []),
+        "elite_lines": trade.get("option_explanation", []),
+        "timestamp": trade.get("timestamp"),
+        "mode": mode,
+    })
+
+    log_candidate_decision(
+        trade,
+        status="rejected",
+        reason=machine_reason,
+        mode=mode,
+        breadth=breadth,
+        volatility_state=volatility_state,
+    )
+
+
+def log_approval(trade, mode, regime, breadth, volatility_state):
+    trade["why"] = explain_trade_decision(
+        trade,
+        mode=mode,
+        regime=regime,
+        breadth=breadth,
+        volatility=volatility_state,
+    )
+
+    write_premium_feed_item({
+        "title": f"{trade.get('symbol')} Setup",
+        "summary": trade["why"][0] if trade.get("why") else "High-conviction setup aligned with system conditions.",
+        "pro_lines": trade.get("why", []),
+        "elite_lines": trade.get("option_explanation", []),
+        "timestamp": trade.get("timestamp"),
+        "mode": trade.get("mode"),
+    })
 
 
 def process_signals(results, regime, volatility_payload):
@@ -270,7 +306,6 @@ def process_signals(results, regime, volatility_payload):
         trade["volatility_state"] = volatility_state
         trade["breadth"] = breadth
 
-        # STEP 6: options intelligence
         option_chain = trade.get("option_chain", [])
         best_option, option_score, option_notes = choose_best_option(
             option_chain,
@@ -284,26 +319,16 @@ def process_signals(results, regime, volatility_payload):
             trade["option_explanation"] = option_notes
 
         if not breadth_allows_trade(strategy, breadth):
-            trade["rejection_reason"] = explain_rejection(trade, "breadth_blocked")
-
-        write_premium_feed_item({
-            "title": f"{symbol} Rejected",
-            "summary": trade["rejection_reason"],
-            "pro_lines": trade.get("why", []),
-            "elite_lines": trade.get("option_explanation", []),
-            "timestamp": trade.get("timestamp"),
-            "mode": mode,
-        })
-
-        log_candidate_decision(
-            trade,
-            status="rejected",
-            reason="failed_breadth_filter",
-            mode=mode,
-            breadth=breadth,
-            volatility_state=volatility_state,
-        )
-        continue
+            log_rejection(
+                trade,
+                symbol,
+                "breadth_blocked",
+                "failed_breadth_filter",
+                mode,
+                breadth,
+                volatility_state,
+            )
+            continue
 
         chosen_strategy = choose_trade_strategy(
             regime,
@@ -315,26 +340,29 @@ def process_signals(results, regime, volatility_payload):
         if chosen_strategy and strategy != chosen_strategy:
             strategy = chosen_strategy
             trade["strategy"] = strategy
+        
+        allowed_reentry, reentry_reason = reentry_allowed(trade)
+        if not allowed_reentry:
+            log_rejection(
+                trade,
+                symbol,
+                "reentry_blocked",
+                f"reentry_blocked:{reentry_reason}",
+                mode,
+                breadth,
+                volatility_state,
+            )
+            continue
 
         if mode == "DEFENSIVE_BEAR" and strategy != "CALL":
-           trade["rejection_reason"] = explain_rejection(trade, "mode_blocked")
-
-           write_premium_feed_item({
-               "title": f"{symbol} Rejected",
-               "summary": trade["rejection_reason"],
-               "pro_lines": trade.get("why", []),
-               "elite_lines": trade.get("option_explanation", []),
-               "timestamp": trade.get("timestamp"),
-               "mode": mode,
-            })
-
-            log_candidate_decision(
+            log_rejection(
                 trade,
-                status="rejected",
-                reason="failed_mode_filter",
-                mode=mode,
-                breadth=breadth,
-                volatility_state=volatility_state,
+                symbol,
+                "mode_blocked",
+                "failed_mode_filter",
+                mode,
+                breadth,
+                volatility_state,
             )
             continue
 
@@ -347,105 +375,58 @@ def process_signals(results, regime, volatility_payload):
             exec_reason = "failed_execution_guard"
 
         if blocked:
-            trade["rejection_reason"] = explain_rejection(trade, "execution_blocked")
-
-            write_premium_feed_item({
-                "title": f"{symbol} Rejected",
-                "summary": trade["rejection_reason"],
-                "pro_lines": trade.get("why", []),
-                "elite_lines": trade.get("option_explanation", []),
-                "timestamp": trade.get("timestamp"),
-                "mode": mode,
-            })
-
-            log_candidate_decision(
+            log_rejection(
                 trade,
-                status="rejected",
-                reason=exec_reason,
-                mode=mode,
-                breadth=breadth,
-                volatility_state=volatility_state,
+                symbol,
+                "execution_blocked",
+                exec_reason,
+                mode,
+                breadth,
+                volatility_state,
             )
             continue
 
         if score < 90:
-            trade["rejection_reason"] =  "execution_blocked")
-            log_candidate_decision(
+            log_rejection(
                 trade,
-                status="rejected",
-                reason="failed_score_threshold",
-                mode=mode,
-                breadth=breadth,
-                volatility_state=volatility_state,
+                symbol,
+                "score_too_low",
+                "failed_score_threshold",
+                mode,
+                breadth,
+                volatility_state,
             )
             continue
 
         if volatility_state == "ELEVATED" and confidence == "LOW":
-            trade["rejection_reason"] = explain_rejection(trade, "volatility_blocked")
-
-            write_premium_feed_item({
-                "title": f"{symbol} Rejected",
-                "summary": trade["rejection_reason"],
-                "pro_lines": trade.get("why", []),
-                "elite_lines": trade.get("option_explanation", []),
-                "timestamp": trade.get("timestamp"),
-                "mode": mode,
-            })
-
-            log_candidate_decision(
+            log_rejection(
                 trade,
-                status="rejected",
-                reason="failed_volatility_filter",
-                mode=mode,
-                breadth=breadth,
-              volatility_state=volatility_state,
+                symbol,
+                "volatility_blocked",
+                "failed_volatility_filter",
+                mode,
+                breadth,
+                volatility_state,
             )
             continue
 
         if trade.get("option"):
             allowed, option_reason = option_is_executable(trade["option"], min_score=50)
             if not allowed:
-                trade["rejection_reason"] = explain_rejection(trade, "weak_option_contract")
-
-                write_premium_feed_item({
-                    "title": f"{symbol} Rejected",
-                    "summary": trade["rejection_reason"],
-                    "pro_lines": trade.get("why", []),
-                    "elite_lines": trade.get("option_explanation", []),
-                    "timestamp": trade.get("timestamp"),
-                    "mode": mode,
-                })
-
-                log_candidate_decision(
+                log_rejection(
                     trade,
-                    status="rejected",
-                    reason=option_reason,
-                    mode=mode,
-                    breadth=breadth,
-                    volatility_state=volatility_state,
+                    symbol,
+                    "weak_option_contract",
+                    option_reason,
+                    mode,
+                    breadth,
+                    volatility_state,
                 )
                 continue
 
             trade["option_explanation"] = explain_option_choice(trade["option"])
 
-        # STEP 4: approval explanation only after all filters pass
-        trade["why"] = explain_trade_decision(
-            trade,
-            mode=mode,
-            regime=regime,
-            breadth=breadth,
-            volatility=volatility_state,
-        )
-
-        write_premium_feed_item({
-            "title": f"{trade.get('symbol')} Setup",
-            "summary": "High-conviction setup aligned with system conditions.",
-            "pro_lines": trade.get("why", []),
-            "elite_lines": trade.get("option_explanation", []),
-            "timestamp": trade.get("timestamp"),
-            "mode": trade.get("mode"),
-        })
-
+        log_approval(trade, mode, regime, breadth, volatility_state)
         approved_trades.append(trade)
 
     print_leaderboard(approved_trades)

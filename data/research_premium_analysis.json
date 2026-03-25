@@ -1,513 +1,5 @@
 [
   {
-    "timestamp": "2026-03-19T10:07:13.900941",
-    "symbol": "MU",
-    "strategy": "CALL",
-    "score": 160,
-    "confidence": "MEDIUM",
-    "entry": 461.73,
-    "stop": 424.85,
-    "target": 510.9,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Strong alignment across multiple factors",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-19T10:48:31.413420",
-    "symbol": "MU",
-    "strategy": "CALL",
-    "score": 160,
-    "confidence": "MEDIUM",
-    "entry": 461.73,
-    "stop": 424.85,
-    "target": 510.9,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Strong alignment across multiple factors",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-19T11:10:43.159006",
-    "symbol": "MU",
-    "strategy": "CALL",
-    "score": 210,
-    "confidence": "MEDIUM",
-    "entry": 461.73,
-    "stop": 424.85,
-    "target": 510.9,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely high conviction setup",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-19T11:11:52.707605",
-    "symbol": "MU",
-    "strategy": "CALL",
-    "score": 210,
-    "confidence": "MEDIUM",
-    "entry": 461.73,
-    "stop": 424.85,
-    "target": 510.9,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely high conviction setup",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-19T11:16:39.297122",
-    "symbol": "MPC",
-    "strategy": "CALL",
-    "score": 120,
-    "confidence": "MEDIUM",
-    "entry": 236.24,
-    "stop": 222.65,
-    "target": 254.36,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Moderate quality setup with supportive structure",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-19T11:16:39.300506",
-    "symbol": "MU",
-    "strategy": "CALL",
-    "score": 210,
-    "confidence": "MEDIUM",
-    "entry": 461.73,
-    "stop": 424.85,
-    "target": 510.9,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely high conviction setup",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-19T23:03:31.911180",
-    "symbol": "NFLX",
-    "strategy": "PUT",
-    "score": 250,
-    "confidence": "LOW",
-    "entry": 91.74,
-    "stop": 95.49,
-    "target": 86.74,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely high conviction setup",
-      "Bearish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-19T23:03:31.916495",
-    "symbol": "OXY",
-    "strategy": "CALL",
-    "score": 225,
-    "confidence": "MEDIUM",
-    "entry": 59.58,
-    "stop": 56.57,
-    "target": 63.6,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely high conviction setup",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-19T23:03:31.921699",
-    "symbol": "COP",
-    "strategy": "CALL",
-    "score": 190,
-    "confidence": "MEDIUM",
-    "entry": 126.02,
-    "stop": 120.97,
-    "target": 132.75,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Strong alignment across multiple factors",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-19T23:03:31.927954",
-    "symbol": "CVX",
-    "strategy": "CALL",
-    "score": 225,
-    "confidence": "MEDIUM",
-    "entry": 201.44,
-    "stop": 195.27,
-    "target": 209.67,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely high conviction setup",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-19T23:03:31.934130",
-    "symbol": "XLE",
-    "strategy": "CALL",
-    "score": 255,
-    "confidence": "MEDIUM",
-    "entry": 59.36,
-    "stop": 57.58,
-    "target": 61.74,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely high conviction setup",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-19T23:03:31.940550",
-    "symbol": "MU",
-    "strategy": "CALL",
-    "score": 290,
-    "confidence": "MEDIUM",
-    "entry": 444.27,
-    "stop": 404.83,
-    "target": 496.85,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely high conviction setup",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-20T06:30:58.354463",
-    "symbol": "NFLX",
-    "strategy": "PUT",
-    "score": 140,
-    "confidence": "LOW",
-    "entry": 91.74,
-    "stop": 95.49,
-    "target": 86.74,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Moderate quality setup with supportive structure",
-      "Bearish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-20T06:30:58.361059",
-    "symbol": "OXY",
-    "strategy": "CALL",
-    "score": 150,
-    "confidence": "MEDIUM",
-    "entry": 59.58,
-    "stop": 56.57,
-    "target": 63.6,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Strong alignment across multiple factors",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-20T06:30:58.372274",
-    "symbol": "CVX",
-    "strategy": "CALL",
-    "score": 150,
-    "confidence": "MEDIUM",
-    "entry": 201.44,
-    "stop": 195.27,
-    "target": 209.67,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Strong alignment across multiple factors",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-20T06:30:58.379636",
-    "symbol": "XLE",
-    "strategy": "CALL",
-    "score": 150,
-    "confidence": "MEDIUM",
-    "entry": 59.36,
-    "stop": 57.58,
-    "target": 61.74,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Strong alignment across multiple factors",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-20T06:30:58.387907",
-    "symbol": "MU",
-    "strategy": "CALL",
-    "score": 160,
-    "confidence": "MEDIUM",
-    "entry": 444.27,
-    "stop": 404.83,
-    "target": 496.85,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Strong alignment across multiple factors",
-      "Bullish directional bias"
-    ]
-  },
-  {
-    "timestamp": "2026-03-23T23:26:08.233175",
-    "symbol": "AAPL",
-    "strategy": "CALL",
-    "score": 345,
-    "confidence": "HIGH",
-    "entry": 100.0,
-    "stop": 97.0,
-    "target": 104.0,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-03-23T23:26:08.251170",
-    "symbol": "MSFT",
-    "strategy": "CALL",
-    "score": 362,
-    "confidence": "HIGH",
-    "entry": 100.0,
-    "stop": 97.0,
-    "target": 104.0,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-03-23T23:26:08.268206",
-    "symbol": "NVDA",
-    "strategy": "CALL",
-    "score": 379,
-    "confidence": "HIGH",
-    "entry": 100.0,
-    "stop": 97.0,
-    "target": 104.0,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-03-23T23:26:08.285941",
-    "symbol": "AMZN",
-    "strategy": "CALL",
-    "score": 361,
-    "confidence": "HIGH",
-    "entry": 100.0,
-    "stop": 97.0,
-    "target": 104.0,
-    "mode": "DEFENSIVE_BEAR",
-    "regime": "BEAR_TREND",
-    "volatility": "ELEVATED",
-    "source": "research",
-    "snippets": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: ELEVATED",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "reasons": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
     "timestamp": "2026-03-23T23:26:08.304385",
     "symbol": "META",
     "strategy": "CALL",
@@ -3495,6 +2987,890 @@
   },
   {
     "timestamp": "2026-03-24T11:00:46.492246",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:22:08.761208",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:22:08.850406",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:22:08.943829",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.034851",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 201,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.119734",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.210970",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 195,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.300906",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.389263",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.091792",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.196872",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.294138",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.391389",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 201,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.483734",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.572249",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 195,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.659713",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.750642",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:28:24.729921",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:28:24.830700",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:28:24.923216",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:28:25.014935",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 195,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:28:25.106274",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:28:25.197378",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.075245",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.174084",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.268500",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.360705",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 195,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.461945",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.555443",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T03:11:31.829939",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T03:11:31.971552",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T03:11:32.143300",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T03:11:32.311048",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 195,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T03:11:32.479466",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "research",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-25T03:11:32.630662",
     "symbol": "AMD",
     "strategy": "CALL",
     "score": 189,

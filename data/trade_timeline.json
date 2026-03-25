@@ -2148,5 +2148,569 @@
       "confidence": "HIGH",
       "source": "research"
     }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:08.726530",
+    "symbol": "AAPL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AAPL-CALL-20260325012208",
+      "strategy": "CALL",
+      "score": 210,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:08.817745",
+    "symbol": "MSFT",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "MSFT-CALL-20260325012208",
+      "strategy": "CALL",
+      "score": 207,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:08.908877",
+    "symbol": "NVDA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "NVDA-CALL-20260325012208",
+      "strategy": "CALL",
+      "score": 204,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.001040",
+    "symbol": "AMZN",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMZN-CALL-20260325012208",
+      "strategy": "CALL",
+      "score": 201,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.091848",
+    "symbol": "META",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "META-CALL-20260325012209",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.180824",
+    "symbol": "GOOGL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260325012209",
+      "strategy": "CALL",
+      "score": 195,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.274013",
+    "symbol": "TSLA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260325012209",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.362234",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260325012209",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.453567",
+    "symbol": "AAPL",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "AAPL-CALL-20260325012209",
+      "strategy": "CALL",
+      "score": 210,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.534343",
+    "symbol": "AMZN",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "AMZN-CALL-20260325012209",
+      "strategy": "CALL",
+      "score": 201,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.739642",
+    "symbol": "AAPL",
+    "event": "OPENED",
+    "details": {
+      "strategy": "CALL",
+      "requested_price": 251.64,
+      "fill_price": 252.27,
+      "commission": 1.0,
+      "size": 18.0,
+      "stop": 250.27,
+      "target": 256.27
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.859411",
+    "symbol": "AMZN",
+    "event": "OPENED",
+    "details": {
+      "strategy": "CALL",
+      "requested_price": 207.24,
+      "fill_price": 207.76,
+      "commission": 1.0,
+      "size": 1.0,
+      "stop": 205.76,
+      "target": 211.76
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.866199",
+    "symbol": "AAPL",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "AAPL-CALL-20260325012209",
+      "strategy": "CALL",
+      "score": 210,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.892609",
+    "symbol": "AMZN",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "AMZN-CALL-20260325012209",
+      "strategy": "CALL",
+      "score": 201,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:29.128907",
+    "symbol": "AAPL",
+    "event": "CLOSED",
+    "details": {
+      "exit_price": 251.64,
+      "reason": "cut_weakness",
+      "pnl": -11.34,
+      "size": 18.0
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:29.239177",
+    "symbol": "AMZN",
+    "event": "CLOSED",
+    "details": {
+      "exit_price": 207.24,
+      "reason": "cut_weakness",
+      "pnl": -0.52,
+      "size": 1.0
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.058232",
+    "symbol": "AAPL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AAPL-CALL-20260325014240",
+      "strategy": "CALL",
+      "score": 210,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.152467",
+    "symbol": "MSFT",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "MSFT-CALL-20260325014240",
+      "strategy": "CALL",
+      "score": 207,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.260368",
+    "symbol": "NVDA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "NVDA-CALL-20260325014240",
+      "strategy": "CALL",
+      "score": 204,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.354079",
+    "symbol": "AMZN",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMZN-CALL-20260325014240",
+      "strategy": "CALL",
+      "score": 201,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.455340",
+    "symbol": "META",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "META-CALL-20260325014240",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.544544",
+    "symbol": "GOOGL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260325014240",
+      "strategy": "CALL",
+      "score": 195,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.631814",
+    "symbol": "TSLA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260325014240",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.721762",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260325014240",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.808186",
+    "symbol": "AAPL",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "AAPL-CALL-20260325014240",
+      "strategy": "CALL",
+      "score": 210,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:40.892163",
+    "symbol": "AMZN",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "AMZN-CALL-20260325014240",
+      "strategy": "CALL",
+      "score": 201,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:41.115182",
+    "symbol": "AAPL",
+    "event": "OPENED",
+    "details": {
+      "strategy": "CALL",
+      "requested_price": 251.64,
+      "fill_price": 252.27,
+      "commission": 1.0,
+      "size": 18.0,
+      "stop": 250.27,
+      "target": 256.27
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:41.122242",
+    "symbol": "AAPL",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "AAPL-CALL-20260325014240",
+      "strategy": "CALL",
+      "score": 210,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T01:42:41.524634",
+    "symbol": "AAPL",
+    "event": "CLOSED",
+    "details": {
+      "exit_price": 251.64,
+      "reason": "cut_weakness",
+      "pnl": -11.34,
+      "size": 18.0
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:28:24.694147",
+    "symbol": "MSFT",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "MSFT-CALL-20260325022824",
+      "strategy": "CALL",
+      "score": 207,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:28:24.792854",
+    "symbol": "NVDA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "NVDA-CALL-20260325022824",
+      "strategy": "CALL",
+      "score": 204,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:28:24.894402",
+    "symbol": "META",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "META-CALL-20260325022824",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:28:24.984365",
+    "symbol": "GOOGL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260325022824",
+      "strategy": "CALL",
+      "score": 195,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:28:25.077307",
+    "symbol": "TSLA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260325022825",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:28:25.167642",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260325022825",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.038341",
+    "symbol": "MSFT",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "MSFT-CALL-20260325025202",
+      "strategy": "CALL",
+      "score": 207,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.136797",
+    "symbol": "NVDA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "NVDA-CALL-20260325025202",
+      "strategy": "CALL",
+      "score": 204,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.238167",
+    "symbol": "META",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "META-CALL-20260325025202",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.330163",
+    "symbol": "GOOGL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260325025202",
+      "strategy": "CALL",
+      "score": 195,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.425577",
+    "symbol": "TSLA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260325025202",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T02:52:02.526388",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260325025202",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T03:11:31.763354",
+    "symbol": "MSFT",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "MSFT-CALL-20260325031131",
+      "strategy": "CALL",
+      "score": 207,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T03:11:31.925011",
+    "symbol": "NVDA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "NVDA-CALL-20260325031131",
+      "strategy": "CALL",
+      "score": 204,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T03:11:32.090337",
+    "symbol": "META",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "META-CALL-20260325031132",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T03:11:32.259167",
+    "symbol": "GOOGL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260325031132",
+      "strategy": "CALL",
+      "score": 195,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T03:11:32.424701",
+    "symbol": "TSLA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260325031132",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-25T03:11:32.576900",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260325031132",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "research"
+    }
   }
 ]

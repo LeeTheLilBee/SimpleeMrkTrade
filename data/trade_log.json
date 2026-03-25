@@ -41,5 +41,50 @@
     "closed_at": "2026-03-24T04:40:34.407556",
     "reason": "manual",
     "exit_explanation": "Position was closed manually."
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.738304",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "price": 252.27,
+    "size": 18.0,
+    "score": 210,
+    "confidence": "HIGH",
+    "status": "CLOSED",
+    "pnl": -11.34,
+    "exit_price": 251.64,
+    "closed_at": "2026-03-25T01:42:29.125402",
+    "reason": "cut_weakness",
+    "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.34."
+  },
+  {
+    "timestamp": "2026-03-25T01:22:09.857704",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "price": 207.76,
+    "size": 1.0,
+    "score": 201,
+    "confidence": "HIGH",
+    "status": "CLOSED",
+    "pnl": -0.52,
+    "exit_price": 207.24,
+    "closed_at": "2026-03-25T01:42:29.235661",
+    "reason": "cut_weakness",
+    "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -0.52."
+  },
+  {
+    "timestamp": "2026-03-25T01:42:41.113711",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "price": 252.27,
+    "size": 18.0,
+    "score": 210,
+    "confidence": "HIGH",
+    "status": "CLOSED",
+    "pnl": -11.34,
+    "exit_price": 251.64,
+    "closed_at": "2026-03-25T01:42:41.520722",
+    "reason": "cut_weakness",
+    "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.34."
   }
 ]
