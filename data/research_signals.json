@@ -2291,5 +2291,83 @@
     "regime": "BEAR_TREND",
     "mode": "DEFENSIVE_BEAR",
     "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-25T15:37:40.645977",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "MSFT-CALL-20260325153740",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-25T15:37:40.802530",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "NVDA-CALL-20260325153740",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-25T15:37:40.968241",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "META-CALL-20260325153740",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-25T15:37:41.117464",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 195,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "GOOGL-CALL-20260325153741",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-25T15:37:41.227341",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "TSLA-CALL-20260325153741",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-25T15:37:41.396684",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "AMD-CALL-20260325153741",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
   }
 ]

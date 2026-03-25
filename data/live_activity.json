@@ -1821,5 +1821,96 @@
     "message": "Blocked by governor: daily_entry_cap",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:22:56.277803",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:22:57.216049",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:23:12.555896",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:23:12.572570",
+    "event_type": "ERROR",
+    "message": "Bot error: cannot access local variable 'stronger' where it is not associated with a value",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:28:59.956549",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:29:00.437646",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:29:10.576281",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:29:10.590173",
+    "event_type": "ERROR",
+    "message": "Bot error: cannot access local variable 'stronger' where it is not associated with a value",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:37:29.678818",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:37:30.124293",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:37:40.555890",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:37:40.590877",
+    "event_type": "QUEUE",
+    "message": "Approved 6 research trades; selected 2 execution trades in mode DEFENSIVE_BEAR",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-25T15:37:41.496861",
+    "event_type": "RISK",
+    "message": "Blocked by governor: daily_entry_cap",
+    "symbol": null,
+    "meta": {}
   }
 ]

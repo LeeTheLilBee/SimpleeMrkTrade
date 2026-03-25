@@ -461,6 +461,7 @@ def process_signals(results, regime, volatility_payload):
 
     for trade in approved_trades:
         key = (trade.get("symbol"), trade.get("strategy"))
+
         if key in selected_keys:
             log_candidate_decision(
                 trade,
@@ -472,8 +473,8 @@ def process_signals(results, regime, volatility_payload):
             )
         else:
             stronger = stronger_competing_setups(trade, selected_trades)
-
             trade["stronger_competing_setups"] = stronger
+
             trade["rejection_reason"] = explain_rejection(trade, "not_selected")
             trade["rejection_analysis"] = build_rejection_analysis(
                 trade,
@@ -511,6 +512,8 @@ def process_signals(results, regime, volatility_payload):
                     "rejection_analysis": trade.get("rejection_analysis", []),
                 },
             )
+
+    return approved_trades, selected_trades, mode, breadth, volatility_state
 
 
 def run():
