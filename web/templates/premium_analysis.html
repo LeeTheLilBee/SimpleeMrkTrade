@@ -92,19 +92,19 @@
         </div>
 
         {% if item.stronger_competing_setups %}
-<div class="card" style="margin-top:14px;">
-    <h4>What Beat It</h4>
-    <div style="display:grid; gap:8px;">
-        {% for setup in item.stronger_competing_setups[:3] %}
-        <div class="passage-frame">
-            <p style="margin:0;">
-                {{ setup.symbol }} {{ setup.strategy }} scored {{ setup.score }}
-            </p>
+        <div class="card" style="margin-top:14px;">
+            <h4>What Beat It</h4>
+            <div style="display:grid; gap:8px;">
+                {% for setup in item.stronger_competing_setups[:3] %}
+                <div class="passage-frame">
+                    <p style="margin:0;">
+                        {{ setup.symbol }} {{ setup.strategy }} scored {{ setup.score }}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
+        {% endif %}
 
         {% if premium_mode == "elite" and item.elite_lines %}
         <div class="card elite-feed-block" style="margin-top:14px;">

@@ -78,18 +78,25 @@ def build_rejection_analysis(trade, reason_key, machine_reason=None):
 
     if reason_key == "breadth_blocked":
         lines.append("The broader market participation profile did not support the direction required for this setup.")
+
     elif reason_key == "mode_blocked":
         lines.append("The market environment forced a more defensive posture, and this setup did not fit that posture.")
+
     elif reason_key == "execution_blocked":
         lines.append("The structure may have been acceptable, but capital, risk, or execution controls prevented deployment.")
+
     elif reason_key == "score_too_low":
         lines.append("The setup did not clear the internal quality bar needed to compete for capital.")
+
     elif reason_key == "volatility_blocked":
         lines.append("Volatility conditions made the setup too unstable relative to its conviction level.")
+
     elif reason_key == "weak_option_contract":
         lines.append("The underlying idea was not matched by an efficient or liquid enough option contract.")
+
     elif reason_key == "reentry_blocked":
         lines.append("The symbol was recently exited, and the system requires materially better re-entry conditions before trying again.")
+
     elif reason_key == "not_selected":
         lines.append("The setup passed baseline checks, but stronger competing opportunities were prioritized instead.")
         stronger = trade.get("stronger_competing_setups", [])
@@ -99,6 +106,7 @@ def build_rejection_analysis(trade, reason_key, machine_reason=None):
                 f"The leading competing setup was {lead.get('symbol', 'UNKNOWN')} "
                 f"{lead.get('strategy', 'N/A')} with a score of {lead.get('score', 'N/A')}."
             )
+
     else:
         lines.append("The setup was filtered out by system-level controls before execution.")
 

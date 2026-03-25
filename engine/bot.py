@@ -220,39 +220,6 @@ def scan_stock(symbol, regime):
     }
 
 
-def log_candidate_decision(
-    trade,
-    status,
-    reason,
-    mode=None,
-    breadth=None,
-    volatility_state=None,
-    extra=None,
-):
-    payload = {
-        "symbol": trade.get("symbol"),
-        "strategy": trade.get("strategy"),
-        "score": trade.get("score"),
-        "confidence": trade.get("confidence"),
-        "price": trade.get("price"),
-        "status": status,
-        "reason": reason,
-        "mode": mode,
-        "breadth": breadth,
-        "volatility_state": volatility_state,
-        "timestamp": trade.get("timestamp"),
-        "why": trade.get("why", []),
-        "rejection_reason": trade.get("rejection_reason"),
-        "option": trade.get("option"),
-        "option_contract_score": trade.get("option_contract_score"),
-        "option_explanation": trade.get("option_explanation", []),
-        "trade_id": trade.get("trade_id"),
-    }
-    if extra:
-        payload.update(extra)
-    remember_candidate(payload)
-
-
 def resolve_market_mode(regime, breadth, volatility_payload=None):
     return market_mode(regime, breadth)
 
@@ -281,6 +248,7 @@ def log_rejection(trade, symbol, reason_key, machine_reason, mode, breadth, vola
         "elite_lines": trade.get("option_explanation", []),
         "timestamp": trade.get("timestamp"),
         "mode": mode,
+        "stronger_competing_setups": trade.get("stronger_competing_setups", []),
     })
 
     log_candidate_decision(
@@ -292,6 +260,7 @@ def log_rejection(trade, symbol, reason_key, machine_reason, mode, breadth, vola
         volatility_state=volatility_state,
         extra={
             "rejection_analysis": trade.get("rejection_analysis", []),
+            "stronger_competing_setups": trade.get("stronger_competing_setups", []),
         },
     )
 
@@ -527,6 +496,7 @@ def process_signals(results, regime, volatility_payload):
                 "elite_lines": trade.get("option_explanation", []),
                 "timestamp": trade.get("timestamp"),
                 "mode": trade.get("mode"),
+                "stronger_competing_setups": trade.get("stronger_competing_setups", []),
             })
 
             log_candidate_decision(
@@ -537,7 +507,7 @@ def process_signals(results, regime, volatility_payload):
                 breadth=breadth,
                 volatility_state=volatility_state,
                 extra={
-                    "stronger_competing_setups": stronger,
+                    "stronger_competing_setups": trade.get("stronger_competing_setups", []),
                     "rejection_analysis": trade.get("rejection_analysis", []),
                 },
             )
