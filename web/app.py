@@ -1064,6 +1064,35 @@ def why_this_trade_page():
                 f"Volatility: {row.get('volatility_state', 'UNKNOWN')}",
             ]
 
+        if not row.get("summary_text"):
+            if row.get("rejection_reason"):
+                row["summary_text"] = row["rejection_reason"]
+            elif row.get("why"):
+                row["summary_text"] = row["why"][0]
+            elif row.get("exit_explanation"):
+                row["summary_text"] = row["exit_explanation"]
+            elif row.get("rejection_analysis"):
+                row["summary_text"] = row["rejection_analysis"][0]
+            else:
+                row["summary_text"] = "This setup has been recorded, but its explanation package has not been fully attached yet."
+
+        enriched.append(row)
+
+    enriched.sort(
+        key=lambda x: x.get("timestamp", x.get("opened_at", x.get("closed_at", ""))),
+        reverse=True,
+    )
+
+    featured_trades = enriched[:5]
+
+    return render_template_safe(
+        "why_this_trade.html",
+        **template_context({
+            "trades": enriched,
+            "featured_trades": featured_trades,
+        }),
+    )
+
 @app.route("/premium-analysis")
 def premium_analysis_page():
     maybe_track_page_view("/premium-analysis")
