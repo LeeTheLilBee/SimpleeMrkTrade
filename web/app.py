@@ -1037,9 +1037,11 @@ def trade_detail_page(trade_id):
         }),
     )
 
+
 @app.route("/why-this-trade")
 def why_this_trade_page():
     maybe_track_page_view("/why-this-trade")
+
     trades = load_json("data/trade_details.json", [])
     if not isinstance(trades, list):
         trades = []
@@ -1047,22 +1049,18 @@ def why_this_trade_page():
     enriched = []
     for trade in trades:
         row = dict(trade)
-
-        if not row.get("why") and row.get("trade_id"):
-            built = build_trade_detail_payload(row.get("trade_id"))
+        trade_id = row.get("trade_id") or row.get("id")
+        if trade_id:
+            built = build_trade_detail_payload(trade_id)
             if built:
-                if built.get("why"):
-                    row["why"] = built.get("why", [])
-                if built.get("option_explanation"):
-                    row["option_explanation"] = built.get("option_explanation", [])
-                if built.get("exit_explanation"):
-                    row["exit_explanation"] = built.get("exit_explanation")
-
+                row = built
         enriched.append(row)
 
     return render_template_safe(
         "why_this_trade.html",
-        **template_context({"trades": enriched}),
+        **template_context({
+            "trades": enriched,
+        }),
     )
 
 

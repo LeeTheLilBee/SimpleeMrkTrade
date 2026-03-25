@@ -1,6 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% if not detail %}
+<div style="margin-bottom:14px;">
+    <a href="javascript:history.back()" class="signal-stat-chip" style="text-decoration:none;">
+        ← Back
+    </a>
+</div>
+
+<div class="card premium-card">
+    <h3>Trade Detail Not Found</h3>
+    <div class="passage-frame">
+        <p>{{ error or "No trade detail is available for this record yet." }}</p>
+    </div>
+</div>
+{% else %}
+
 <h2>{{ detail.symbol }} | {{ detail.strategy }}</h2>
 
 <div class="card premium-hero">
@@ -116,5 +131,5 @@
         <p>No timeline events yet.</p>
     {% endif %}
 </div>
-
+{% endif %}
 {% endblock %}

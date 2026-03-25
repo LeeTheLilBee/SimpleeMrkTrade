@@ -28,6 +28,7 @@
                     {% if trade.timestamp %} | {{ trade.timestamp[:16].replace("T", " ") }}{% endif %}
                 </p>
             </div>
+
             <div class="why-trade-actions">
                 <a href="/signals/{{ trade.symbol }}" class="cta-btn secondary">Open Symbol</a>
                 {% if trade.trade_id %}
@@ -35,6 +36,8 @@
                 {% elif trade.id %}
                 <a href="/trade/{{ trade.id }}" class="cta-btn secondary">Trade Detail</a>
                 {% endif %}
+            </div>
+        </div>
 
         {% if trade.why %}
         <div class="card explanation-section-card inner-section-card">
