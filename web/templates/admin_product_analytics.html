@@ -7,6 +7,58 @@
     </a>
 </div>
 
+  <div class="card premium-card" style="margin-top:18px;">
+    <h3>Premium Curiosity</h3>
+
+    {% if analytics.premium_curiosity %}
+        <div style="display:grid; gap:10px;">
+            {% for row in analytics.premium_curiosity %}
+            <div class="card" style="margin:0;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                    <div>
+                        <h4 style="margin:0 0 4px 0;">{{ row.section }}</h4>
+                        <p class="muted-line" style="margin:0;">
+                            Source: {{ row.source }} | Wall views: {{ row.wall_views }} | Content views: {{ row.content_views }} | Follow-through: {{ row.followthrough_rate }}%
+                        </p>
+                    </div>
+                    <span class="signal-stat-chip">Premium</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="passage-frame">
+            <p style="margin:0;">No premium curiosity patterns detected yet.</p>
+        </div>
+    {% endif %}
+</div>
+
+<div class="card premium-card" style="margin-top:18px;">
+    <h3>Rejection Interest</h3>
+
+    {% if analytics.rejection_interest %}
+        <div style="display:grid; gap:10px;">
+            {% for row in analytics.rejection_interest %}
+            <div class="card" style="margin:0;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                    <div>
+                        <h4 style="margin:0 0 4px 0;">{{ row.symbol }}</h4>
+                        <p class="muted-line" style="margin:0;">
+                            Rejected-trade explanation views: {{ row.count }}
+                        </p>
+                    </div>
+                    <span class="signal-stat-chip">Learning</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="passage-frame">
+            <p style="margin:0;">No rejection-interest patterns detected yet.</p>
+        </div>
+    {% endif %}
+</div>
+
 <div class="page-hero card premium-hero gold-accent-card">
     <h2>Admin Product Intelligence</h2>
     <div class="passage-frame">
@@ -56,6 +108,24 @@
     {% else %}
         <div class="passage-frame">
             <p style="margin:0;">No insights generated yet.</p>
+        </div>
+    {% endif %}
+</div>
+
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>Recommended Product Actions</h3>
+
+    {% if analytics.recommendations %}
+        <div style="display:grid; gap:10px;">
+            {% for line in analytics.recommendations %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ line }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="passage-frame">
+            <p style="margin:0;">No recommendations generated yet.</p>
         </div>
     {% endif %}
 </div>

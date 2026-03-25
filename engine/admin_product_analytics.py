@@ -87,6 +87,16 @@ def track_trade_click(symbol, trade_id=None, source=None, extra=None):
     return log_event("trade_click", payload)
 
 
+def track_rejection_interest(symbol, source=None, extra=None):
+    payload = {
+        "symbol": symbol,
+        "source": source or "unknown",
+    }
+    if extra:
+        payload.update(extra)
+    return log_event("rejection_interest", payload)
+
+
 def track_upgrade_click(source=None, tier=None, extra=None):
     payload = {
         "source": source or "unknown",
@@ -295,6 +305,18 @@ def build_product_analytics():
         key=lambda x: (x["action_rate"], -x["views"])
     )
     
+    rejection_interest_counts = Counter()
+
+    for e in events:
+        if e.get("event_type") == "rejection_interest":
+            symbol = e.get("symbol")
+            if symbol:
+                rejection_interest_counts[symbol] += 1
+
+    rejection_interest = [
+        {"symbol": symbol, "count": count}
+        for symbol, count in rejection_interest_counts.most_common(10)
+    ]
 
     premium_wall_counts = Counter()
     premium_content_counts = Counter()
@@ -351,6 +373,11 @@ def build_product_analytics():
             insights.append(
                 f"Premium curiosity is forming around {row['section']} from {row['source']}, but follow-through is only {row['followthrough_rate']}%."
             )
+    
+    for row in rejection_interest[:3]:
+        insights.append(
+            f"{row['symbol']} is generating repeated interest in rejected-trade explanations ({row['count']} views)."
+        )
 
     for row in most_revisited[:3]:
         insights.append(
@@ -372,6 +399,45 @@ def build_product_analytics():
         top_page, count = page_counts.most_common(1)[0]
         insights.append(f"{top_page} is the highest traffic page ({count} visits).")
 
+
+    recommendations = []
+
+    for row in high_attention_low_action[:3]:
+        recommendations.append(
+            f"Consider clarifying conviction or next-step guidance for {row['symbol']}. "
+            f"It has strong attention ({row['views']} views) but weak action ({row['action_rate']}% follow-through)."
+        )
+
+    for row in friction_signals[:3]:
+        recommendations.append(
+            f"Review {row['page']} for friction. It is attracting traffic but only converting at {row['followup_rate']}% follow-through."
+        )
+
+    for row in premium_curiosity[:3]:
+        if row["wall_views"] >= 2 and row["followthrough_rate"] < 35:
+            recommendations.append(
+                f"Strengthen premium messaging around {row['section']} from {row['source']}. "
+                f"Curiosity exists, but follow-through is only {row['followthrough_rate']}%."
+            )
+
+    for row in rejection_interest[:3]:
+        recommendations.append(
+            f"Rejected-trade explanations for {row['symbol']} are drawing repeated interest. "
+            f"Consider spotlighting rejection education more clearly."
+        )
+
+    for row in most_revisited[:3]:
+        recommendations.append(
+            f"{row['symbol']} is being revisited frequently ({row['revisits']} sessions). "
+            f"Consider elevating it into a stronger spotlight or guided opportunity surface."
+        )
+
+    if not recommendations:
+        recommendations.append(
+            "No strong product recommendations yet. Keep gathering behavior data for a fuller signal."
+        )
+
+
     return {
         "totals": {
             "events": len(events),
@@ -391,5 +457,7 @@ def build_product_analytics():
         "premium_curiosity": premium_curiosity[:10],
         "most_revisited": most_revisited[:10],
         "recent_events": recent_events,
+        "recommendations": recommendations,
+        "rejection_interest": rejection_interest,
         "insights": insights,
     }

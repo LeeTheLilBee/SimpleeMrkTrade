@@ -16,6 +16,7 @@ from engine.admin_product_analytics import (
     track_cta_click,
     track_premium_wall_seen,
     track_premium_content_view,
+    track_rejection_interest,
     build_product_analytics,
     top_engaged_symbols_with_counts,
     most_underrated_symbols,
@@ -1132,6 +1133,13 @@ def why_this_trade_page():
             )
 
         enriched.append(row)
+
+        for row in enriched[:5]:
+            if row.get("rejection_reason"):
+                track_rejection_interest(
+                    row.get("symbol", "UNKNOWN"),
+                    source="/why-this-trade",
+                )
 
     # Second: approved-not-selected records from candidate_log
     for row in candidate_rows:
