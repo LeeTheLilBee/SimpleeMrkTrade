@@ -1046,7 +1046,13 @@ def why_this_trade_page():
     if not isinstance(trades, list):
         trades = []
 
+    candidate_rows = load_json("data/candidate_log.json", [])
+    if not isinstance(candidate_rows, list):
+        candidate_rows = []
+
     enriched = []
+
+    # First: rich trade detail records
     for trade in trades:
         row = dict(trade)
 
@@ -1070,10 +1076,49 @@ def why_this_trade_page():
                 or (row.get("why")[0] if row.get("why") else None)
                 or row.get("exit_explanation")
                 or (row.get("rejection_analysis")[0] if row.get("rejection_analysis") else None)
-                or "The system evaluated this setup but has not yet attached a full explanation."
+                or "This setup has been recorded, but its explanation package has not been fully attached yet."
             )
 
         enriched.append(row)
+
+    # Second: approved-not-selected records from candidate_log
+    for row in candidate_rows:
+        if row.get("status") != "approved_not_selected":
+            continue
+
+        item = dict(row)
+
+        if not item.get("context"):
+            item["context"] = [
+                f"Mode: {item.get('mode', 'UNKNOWN')}",
+                f"Regime: {item.get('regime', 'UNKNOWN')}",
+                f"Breadth: {item.get('breadth', 'UNKNOWN')}",
+                f"Volatility: {item.get('volatility_state', 'UNKNOWN')}",
+            ]
+
+        if not item.get("summary_text"):
+            item["summary_text"] = (
+                item.get("rejection_reason")
+                or (item.get("rejection_analysis")[0] if item.get("rejection_analysis") else None)
+                or "This setup passed baseline checks but was not selected."
+            )
+
+        enriched.append(item)
+
+    enriched.sort(
+        key=lambda x: x.get("timestamp", x.get("opened_at", x.get("closed_at", ""))),
+        reverse=True,
+    )
+
+    featured_trades = enriched[:5]
+
+    return render_template_safe(
+        "why_this_trade.html",
+        **template_context({
+            "trades": enriched,
+            "featured_trades": featured_trades,
+        }),
+    )
 
     enriched.sort(
         key=lambda x: x.get("timestamp", x.get("opened_at", x.get("closed_at", ""))),
