@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="margin-bottom:14px;">
+    <a href="/my-positions" class="signal-stat-chip" style="text-decoration:none;">
+        ← Back to My Positions
+    </a>
+</div>
+
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>Analyze My Trades</h2>
+    <div class="passage-frame">
+        <p>
+            A simple review layer for your archived positions so you can spot patterns in decision quality, trade direction, and close behavior.
+        </p>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:18px;">
+    <div class="card premium-card">
+        <h4>Archived Trades</h4>
+        <p><strong>{{ analysis.totals.archived }}</strong></p>
+    </div>
+    <div class="card premium-card">
+        <h4>Wins</h4>
+        <p><strong>{{ analysis.totals.wins }}</strong></p>
+    </div>
+    <div class="card premium-card">
+        <h4>Losses</h4>
+        <p><strong>{{ analysis.totals.losses }}</strong></p>
+    </div>
+    <div class="card premium-card">
+        <h4>Flat</h4>
+        <p><strong>{{ analysis.totals.flat }}</strong></p>
+    </div>
+    <div class="card premium-card">
+        <h4>Average Health at Close</h4>
+        <p><strong>{{ analysis.average_health }}</strong></p>
+    </div>
+</div>
+
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>Insights</h3>
+    {% if analysis.insights %}
+        <div style="display:grid; gap:10px;">
+            {% for line in analysis.insights %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ line }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="passage-frame">
+            <p style="margin:0;">No trade insights yet.</p>
+        </div>
+    {% endif %}
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:18px;">
+    <div class="card premium-card">
+        <h3>Direction Mix</h3>
+        {% if analysis.direction_counts %}
+            <div style="display:grid; gap:8px;">
+                {% for direction, count in analysis.direction_counts.items() %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ direction }} — {{ count }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="passage-frame">
+                <p style="margin:0;">No direction data yet.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="card premium-card">
+        <h3>Conviction Mix</h3>
+        {% if analysis.conviction_counts %}
+            <div style="display:grid; gap:8px;">
+                {% for conviction, count in analysis.conviction_counts.items() %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ conviction }} — {{ count }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="passage-frame">
+                <p style="margin:0;">No conviction data yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card premium-card" style="margin-top:18px;">
+    <h3>Archived Trade Review</h3>
+    {% if analysis.trades %}
+        <div style="display:grid; gap:10px;">
+            {% for trade in analysis.trades %}
+            <div class="card" style="margin:0;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                    <div>
+                        <h4 style="margin:0 0 4px 0;">{{ trade.symbol }}</h4>
+                        <p class="muted-line" style="margin:0;">
+                            {{ trade.direction }} | Entry {{ trade.entry }} | Current {{ trade.current_price }} | Outcome {{ trade.outcome }}
+                        </p>
+                    </div>
+                    <span class="signal-stat-chip">{{ trade.health.label }}</span>
+                </div>
+
+                <div class="passage-frame" style="margin-top:10px;">
+                    <p style="margin:0;">
+                        Conviction: {{ trade.conviction }} | Health at review: {{ trade.health.score }}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="passage-frame">
+            <p style="margin:0;">No archived trades to analyze yet.</p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

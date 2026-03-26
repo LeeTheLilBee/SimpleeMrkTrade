@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="margin-bottom:14px;">
+    <a href="/my-positions" class="signal-stat-chip" style="text-decoration:none;">
+        ← Back to Active Positions
+    </a>
+</div>
+
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>Archived Positions</h2>
+    <div class="passage-frame">
+        <p>
+            Your closed positions — a record of your past decisions and outcomes.
+        </p>
+    </div>
+</div>
+
+{% if positions %}
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px;">
+    {% for pos in positions %}
+    <div class="card premium-card">
+        <h3 style="margin-bottom:6px;">{{ pos.symbol }}</h3>
+        <p class="muted-line">
+            {{ pos.direction }} | Entry {{ pos.entry }} → Target {{ pos.target }}
+        </p>
+
+        <div class="card" style="margin-top:12px;">
+            <h4>Final State</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>Status:</strong> {{ pos.status }}</p>
+                <p style="margin:6px 0 0 0;"><strong>Health Score:</strong> {{ pos.health.score }}</p>
+                <p style="margin:6px 0 0 0;">{{ pos.health.note }}</p>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+            <h4>Original Thesis</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ pos.thesis or "No thesis recorded." }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card premium-card">
+    <div class="passage-frame">
+        <p>No archived positions yet.</p>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

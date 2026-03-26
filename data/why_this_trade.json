@@ -478,5 +478,51 @@
       "Market regime: Bear Trend.",
       "Trend context: Uptrend."
     ]
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.893120",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "source": "execution",
+    "market_context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.936634",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "source": "execution",
+    "market_context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
   }
 ]

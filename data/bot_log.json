@@ -313,5 +313,20 @@
     "timestamp": "2026-03-26T01:35:10.411436",
     "level": "WARN",
     "message": "Skipped META due to insufficient buying power for minimum size"
+  },
+  {
+    "timestamp": "2026-03-26T02:53:20.695272",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-26T02:53:39.200960",
+    "level": "INFO",
+    "message": "Executed NVDA CALL at 179.13 size 23.0"
+  },
+  {
+    "timestamp": "2026-03-26T02:53:39.450910",
+    "level": "INFO",
+    "message": "Executed META CALL at 596.38 size 1.0"
   }
 ]

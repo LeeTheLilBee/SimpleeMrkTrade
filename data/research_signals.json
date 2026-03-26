@@ -2447,5 +2447,70 @@
     "regime": "BEAR_TREND",
     "mode": "DEFENSIVE_BEAR",
     "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.632243",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "NVDA-CALL-20260326025338",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.682594",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "META-CALL-20260326025338",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.733045",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 195,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "GOOGL-CALL-20260326025338",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.779468",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "TSLA-CALL-20260326025338",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.826665",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "AMD-CALL-20260326025338",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
   }
 ]

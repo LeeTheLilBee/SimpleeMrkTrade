@@ -101,5 +101,35 @@
     "closed_at": "2026-03-26T01:35:11.052549",
     "reason": "cut_weakness",
     "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.16."
+  },
+  {
+    "timestamp": "2026-03-26T02:53:39.197217",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "price": 179.13,
+    "size": 23.0,
+    "score": 204,
+    "confidence": "HIGH",
+    "status": "CLOSED",
+    "pnl": -10.35,
+    "exit_price": 178.68,
+    "closed_at": "2026-03-26T02:53:40.230737",
+    "reason": "cut_weakness",
+    "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -10.35."
+  },
+  {
+    "timestamp": "2026-03-26T02:53:39.444749",
+    "symbol": "META",
+    "strategy": "CALL",
+    "price": 596.38,
+    "size": 1.0,
+    "score": 198,
+    "confidence": "HIGH",
+    "status": "CLOSED",
+    "pnl": -1.49,
+    "exit_price": 594.89,
+    "closed_at": "2026-03-26T02:53:40.420102",
+    "reason": "cut_weakness",
+    "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -1.49."
   }
 ]

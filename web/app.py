@@ -15,6 +15,7 @@ from engine.my_plays import (
     get_user_position,
     update_user_position,
     close_user_position,
+    analyze_user_trades,
 )
 from flask import jsonify
 from engine.admin_product_analytics import top_engaged_symbols
@@ -962,7 +963,38 @@ def edit_my_position(position_id):
 def close_my_position(position_id):
     close_user_position(position_id)
     return redirect("/my-positions")
-    
+
+
+@app.route("/my-positions/archived")
+def my_positions_archived_page():
+    maybe_track_page_view("/my-positions/archived")
+
+    positions = get_user_positions(include_closed=True)
+
+    archived = [
+        p for p in positions
+        if str(p.get("status", "")).lower() == "closed"
+    ]
+
+    return render_template_safe(
+        "my_positions_archived.html",
+        **template_context({
+            "positions": archived,
+        }),
+    )
+
+
+@app.route("/my-positions/analyze")
+def analyze_my_trades_page():
+    maybe_track_page_view("/my-positions/analyze")
+    analysis = analyze_user_trades()
+    return render_template_safe(
+        "my_trade_analysis.html",
+        **template_context({
+            "analysis": analysis,
+        }),
+    )
+
 
 @app.route("/simulation")
 def simulation_dashboard():

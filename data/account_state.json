@@ -1,7 +1,7 @@
 {
-  "equity": 4747.43,
-  "cash": 4747.52,
-  "buying_power": 4747.52,
+  "equity": 4735.59,
+  "cash": 4735.76,
+  "buying_power": 4735.76,
   "account_type": "margin",
   "trade_history": [
     {
@@ -65,6 +65,24 @@
       "timestamp": "2026-03-26T01:35:10.170421",
       "settle_date": "2026-03-27T01:35:10.170424",
       "cost": 4463.61,
+      "status": "OPEN"
+    },
+    {
+      "symbol": "NVDA",
+      "price": 179.1267,
+      "size": 23.0,
+      "timestamp": "2026-03-26T02:53:39.196510",
+      "settle_date": "2026-03-27T02:53:39.196513",
+      "cost": 4119.91,
+      "status": "OPEN"
+    },
+    {
+      "symbol": "META",
+      "price": 596.3772,
+      "size": 1.0,
+      "timestamp": "2026-03-26T02:53:39.443833",
+      "settle_date": "2026-03-27T02:53:39.443838",
+      "cost": 596.38,
       "status": "OPEN"
     }
   ]

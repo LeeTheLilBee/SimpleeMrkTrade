@@ -1971,5 +1971,64 @@
     "message": "Bot run completed",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-26T02:53:20.696060",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-26T02:53:21.912187",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.602323",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.614793",
+    "event_type": "QUEUE",
+    "message": "Approved 5 research trades; selected 2 execution trades in mode DEFENSIVE_BEAR",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.869129",
+    "event_type": "SIGNAL",
+    "message": "NVDA approved as CALL with score 204",
+    "symbol": "NVDA",
+    "meta": {
+      "trade_id": "NVDA-CALL-20260326025338",
+      "strategy": "CALL",
+      "score": 204,
+      "confidence": "HIGH"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.911239",
+    "event_type": "SIGNAL",
+    "message": "META approved as CALL with score 198",
+    "symbol": "META",
+    "meta": {
+      "trade_id": "META-CALL-20260326025338",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:54:03.304944",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed",
+    "symbol": null,
+    "meta": {}
   }
 ]

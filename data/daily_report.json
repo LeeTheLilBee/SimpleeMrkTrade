@@ -1,33 +1,33 @@
 {
-  "timestamp": "2026-03-26T01:35:11.059514",
+  "timestamp": "2026-03-26T02:53:40.428886",
   "performance": {
-    "trades": 7,
+    "trades": 9,
     "wins": 2,
-    "losses": 5,
-    "winrate": 0.29,
-    "total_pnl": 2564.97,
-    "max_drawdown": 46.33,
-    "entries_today": 1,
-    "closes_today": 1,
-    "round_trips_today": 1,
-    "realized_pnl_today": -11.16
+    "losses": 7,
+    "winrate": 0.22,
+    "total_pnl": 2553.13,
+    "max_drawdown": 58.17,
+    "entries_today": 3,
+    "closes_today": 3,
+    "round_trips_today": 3,
+    "realized_pnl_today": -23.0
   },
   "portfolio": {
     "open_positions": 0,
-    "closed_positions": 13,
-    "realized_pnl": 3747.43
+    "closed_positions": 15,
+    "realized_pnl": 3735.59
   },
   "analytics": {
-    "trades": 7,
-    "winrate": 0.29,
+    "trades": 9,
+    "winrate": 0.22,
     "strategies": {
-      "CALL": 7
+      "CALL": 9
     },
-    "last_trade": "MSFT",
+    "last_trade": "META",
     "portfolio": {
       "open_positions": 0,
-      "closed_positions": 13,
-      "realized_pnl": 3747.43
+      "closed_positions": 15,
+      "realized_pnl": 3735.59
     }
   }
 }

@@ -127,3 +127,117 @@
 {% endif %}
 
 {% endblock %}
+
+def classify_trade_outcome(position):
+    entry = _safe_float(position.get("entry"))
+    target = _safe_float(position.get("target"))
+    current = _safe_float(position.get("current_price", entry))
+    direction = determine_direction(position)
+
+    if not entry:
+        return "UNKNOWN"
+
+    if direction == "CALL":
+        if current > entry:
+            return "WIN"
+        if current < entry:
+            return "LOSS"
+    elif direction == "PUT":
+        if current < entry:
+            return "WIN"
+        if current > entry:
+            return "LOSS"
+
+    return "FLAT"
+
+
+def analyze_user_trades():
+    positions = get_user_positions(include_closed=True)
+    archived = [
+        p for p in positions
+        if str(p.get("status", "")).lower() == "closed"
+    ]
+
+    if not archived:
+        return {
+            "totals": {
+                "archived": 0,
+                "wins": 0,
+                "losses": 0,
+                "flat": 0,
+            },
+            "direction_counts": {},
+            "conviction_counts": {},
+            "average_health": 0,
+            "insights": ["No archived trades yet."],
+            "trades": [],
+        }
+
+    wins = 0
+    losses = 0
+    flat = 0
+    total_health = 0
+    direction_counts = {}
+    conviction_counts = {}
+
+    enriched = []
+
+    for pos in archived:
+        outcome = classify_trade_outcome(pos)
+        health_score = int(pos.get("health", {}).get("score", 0) or 0)
+
+        if outcome == "WIN":
+            wins += 1
+        elif outcome == "LOSS":
+            losses += 1
+        else:
+            flat += 1
+
+        direction = pos.get("direction", "UNKNOWN")
+        conviction = pos.get("conviction", "Unknown")
+
+        direction_counts[direction] = direction_counts.get(direction, 0) + 1
+        conviction_counts[conviction] = conviction_counts.get(conviction, 0) + 1
+        total_health += health_score
+
+        row = dict(pos)
+        row["outcome"] = outcome
+        enriched.append(row)
+
+    average_health = round(total_health / len(archived), 1) if archived else 0
+
+    insights = []
+
+    if wins > losses:
+        insights.append("Your archived trades are leaning net positive so far.")
+    elif losses > wins:
+        insights.append("Your archived trades are leaning net negative so far. Tightening entry quality may help.")
+    else:
+        insights.append("Your archived trades are currently balanced between wins and losses.")
+
+    if average_health < 40:
+        insights.append("Average health at close is low. You may be letting trades deteriorate before acting.")
+    elif average_health > 70:
+        insights.append("Average health at close is strong. You are generally closing from healthier states.")
+
+    top_direction = max(direction_counts, key=direction_counts.get) if direction_counts else None
+    if top_direction:
+        insights.append(f"Your most common trade direction has been {top_direction}.")
+
+    top_conviction = max(conviction_counts, key=conviction_counts.get) if conviction_counts else None
+    if top_conviction:
+        insights.append(f"Most of your archived trades were entered with {top_conviction} conviction.")
+
+    return {
+        "totals": {
+            "archived": len(archived),
+            "wins": wins,
+            "losses": losses,
+            "flat": flat,
+        },
+        "direction_counts": direction_counts,
+        "conviction_counts": conviction_counts,
+        "average_health": average_health,
+        "insights": insights,
+        "trades": enriched,
+    }

@@ -2935,5 +2935,161 @@
       "pnl": -11.16,
       "size": 12.0
     }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.634665",
+    "symbol": "NVDA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "NVDA-CALL-20260326025338",
+      "strategy": "CALL",
+      "score": 204,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.684862",
+    "symbol": "META",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "META-CALL-20260326025338",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.735235",
+    "symbol": "GOOGL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260326025338",
+      "strategy": "CALL",
+      "score": 195,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.781584",
+    "symbol": "TSLA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260326025338",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.828873",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260326025338",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.871139",
+    "symbol": "NVDA",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "NVDA-CALL-20260326025338",
+      "strategy": "CALL",
+      "score": 204,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:38.913364",
+    "symbol": "META",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "META-CALL-20260326025338",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:39.198348",
+    "symbol": "NVDA",
+    "event": "OPENED",
+    "details": {
+      "strategy": "CALL",
+      "requested_price": 178.68,
+      "fill_price": 179.13,
+      "commission": 1.0,
+      "size": 23.0,
+      "stop": 177.13,
+      "target": 183.13
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:39.446107",
+    "symbol": "META",
+    "event": "OPENED",
+    "details": {
+      "strategy": "CALL",
+      "requested_price": 594.89,
+      "fill_price": 596.38,
+      "commission": 1.0,
+      "size": 1.0,
+      "stop": 594.38,
+      "target": 600.38
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:39.452319",
+    "symbol": "NVDA",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "NVDA-CALL-20260326025338",
+      "strategy": "CALL",
+      "score": 204,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:39.471109",
+    "symbol": "META",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "META-CALL-20260326025338",
+      "strategy": "CALL",
+      "score": 198,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:40.235104",
+    "symbol": "NVDA",
+    "event": "CLOSED",
+    "details": {
+      "exit_price": 178.68,
+      "reason": "cut_weakness",
+      "pnl": -10.35,
+      "size": 23.0
+    }
+  },
+  {
+    "timestamp": "2026-03-26T02:53:40.423403",
+    "symbol": "META",
+    "event": "CLOSED",
+    "details": {
+      "exit_price": 594.89,
+      "reason": "cut_weakness",
+      "pnl": -1.49,
+      "size": 1.0
+    }
   }
 ]
