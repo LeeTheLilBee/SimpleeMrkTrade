@@ -7,11 +7,11 @@
     </a>
 </div>
 
-<div class="page-hero card premium-hero gold-accent-card">
+<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
     <h2>Analyze My Trades</h2>
     <div class="passage-frame">
         <p>
-            A decision review layer showing what your archived trades are teaching you about alignment, conviction, and execution.
+            A decision review layer showing what your archived trades are teaching you about alignment, conviction, execution, and repeatable behavior.
         </p>
     </div>
 </div>
@@ -40,9 +40,16 @@
 </div>
 
 <div class="card premium-card" style="margin-bottom:18px;">
-    <h3>What Your Trading Is Showing</h3>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:6px;">What Your Trading Is Showing</h3>
+            <p class="muted-line" style="margin:0;">Top-level coaching from your archived trade behavior.</p>
+        </div>
+        <span class="signal-stat-chip">Review Desk</span>
+    </div>
+
     {% if analysis.insights %}
-    <div style="display:grid; gap:10px; margin-top:12px;">
+    <div style="display:grid; gap:10px; margin-top:14px;">
         {% for line in analysis.insights %}
         <div class="passage-frame">
             <p style="margin:0;">{{ line }}</p>
@@ -50,8 +57,165 @@
         {% endfor %}
     </div>
     {% else %}
-    <div class="passage-frame" style="margin-top:12px;">
+    <div class="passage-frame" style="margin-top:14px;">
         <p style="margin:0;">No trade insights yet.</p>
+    </div>
+    {% endif %}
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
+    <div class="card premium-card gold-accent-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+            <div>
+                <h3 style="margin-bottom:6px;">{{ analysis.dominant_patterns.winning.headline }}</h3>
+                <p class="muted-line" style="margin:0;">The strongest repeatable win structure showing up in your archive.</p>
+            </div>
+            <span class="signal-stat-chip">{{ analysis.dominant_patterns.winning.count }}</span>
+        </div>
+        <div class="passage-frame" style="margin-top:14px;">
+            <p style="margin:0;">{{ analysis.dominant_patterns.winning.label }}</p>
+        </div>
+    </div>
+
+    <div class="card premium-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+            <div>
+                <h3 style="margin-bottom:6px;">{{ analysis.dominant_patterns.losing.headline }}</h3>
+                <p class="muted-line" style="margin:0;">The loss pattern you should recognize faster and respect earlier.</p>
+            </div>
+            <span class="signal-stat-chip">{{ analysis.dominant_patterns.losing.count }}</span>
+        </div>
+        <div class="passage-frame" style="margin-top:14px;">
+            <p style="margin:0;">{{ analysis.dominant_patterns.losing.label }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
+    <div class="card premium-card gold-accent-card">
+        <h3>{{ analysis.behavior_panels.repeat.headline }}</h3>
+        <div class="passage-frame" style="margin-top:12px;">
+            <p style="margin:0;">{{ analysis.behavior_panels.repeat.summary }}</p>
+        </div>
+        {% if analysis.behavior_panels.repeat.count %}
+        <div style="margin-top:12px;">
+            <span class="signal-stat-chip">Seen {{ analysis.behavior_panels.repeat.count }} times</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="card premium-card">
+        <h3>{{ analysis.behavior_panels.stop.headline }}</h3>
+        <div class="passage-frame" style="margin-top:12px;">
+            <p style="margin:0;">{{ analysis.behavior_panels.stop.summary }}</p>
+        </div>
+        {% if analysis.behavior_panels.stop.count %}
+        <div style="margin-top:12px;">
+            <span class="signal-stat-chip">Seen {{ analysis.behavior_panels.stop.count }} times</span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
+    <div class="card premium-card">
+        <h3>Alignment Read</h3>
+        <div class="passage-frame" style="margin-top:12px;">
+            <p style="margin:0;"><strong>{{ analysis.alignment_summary.headline }}</strong></p>
+        </div>
+        <div class="passage-frame" style="margin-top:10px;">
+            <p style="margin:0;">{{ analysis.alignment_summary.summary }}</p>
+        </div>
+        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
+            <div class="card" style="margin:0;">
+                <h4>High Agreement Wins</h4>
+                <p><strong>{{ analysis.alignment_summary.stats.high_agreement_wins }}</strong></p>
+            </div>
+            <div class="card" style="margin:0;">
+                <h4>High Agreement Losses</h4>
+                <p><strong>{{ analysis.alignment_summary.stats.high_agreement_losses }}</strong></p>
+            </div>
+            <div class="card" style="margin:0;">
+                <h4>Low Agreement Wins</h4>
+                <p><strong>{{ analysis.alignment_summary.stats.low_agreement_wins }}</strong></p>
+            </div>
+            <div class="card" style="margin:0;">
+                <h4>Low Agreement Losses</h4>
+                <p><strong>{{ analysis.alignment_summary.stats.low_agreement_losses }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card premium-card">
+        <h3>Conviction Read</h3>
+        <div class="passage-frame" style="margin-top:12px;">
+            <p style="margin:0;"><strong>{{ analysis.conviction_summary.headline }}</strong></p>
+        </div>
+        <div class="passage-frame" style="margin-top:10px;">
+            <p style="margin:0;">{{ analysis.conviction_summary.summary }}</p>
+        </div>
+        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
+            <div class="card" style="margin:0;">
+                <h4>High Conviction Wins</h4>
+                <p><strong>{{ analysis.conviction_summary.stats.high_conviction_wins }}</strong></p>
+            </div>
+            <div class="card" style="margin:0;">
+                <h4>High Conviction Losses</h4>
+                <p><strong>{{ analysis.conviction_summary.stats.high_conviction_losses }}</strong></p>
+            </div>
+            <div class="card" style="margin:0;">
+                <h4>Low Conviction Wins</h4>
+                <p><strong>{{ analysis.conviction_summary.stats.low_conviction_wins }}</strong></p>
+            </div>
+            <div class="card" style="margin:0;">
+                <h4>Low Conviction Losses</h4>
+                <p><strong>{{ analysis.conviction_summary.stats.low_conviction_losses }}</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>Condition Review</h3>
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Most Seen Backdrop</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ analysis.condition_summary.most_seen.label }}</p>
+            </div>
+            <div style="margin-top:10px;">
+                <span class="signal-stat-chip">{{ analysis.condition_summary.most_seen.count }} trades</span>
+            </div>
+        </div>
+
+        <div class="card" style="margin:0;">
+            <h4>Best Condition Cluster</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ analysis.condition_summary.best.label }}</p>
+            </div>
+            <div style="margin-top:10px;">
+                <span class="signal-stat-chip">{{ analysis.condition_summary.best.count }} wins</span>
+            </div>
+        </div>
+
+        <div class="card" style="margin:0;">
+            <h4>Weakest Condition Cluster</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ analysis.condition_summary.worst.label }}</p>
+            </div>
+            <div style="margin-top:10px;">
+                <span class="signal-stat-chip">{{ analysis.condition_summary.worst.count }} losses</span>
+            </div>
+        </div>
+    </div>
+
+    {% if analysis.condition_summary.summary %}
+    <div style="display:grid; gap:10px; margin-top:14px;">
+        {% for line in analysis.condition_summary.summary %}
+        <div class="passage-frame">
+            <p style="margin:0;">{{ line }}</p>
+        </div>
+        {% endfor %}
     </div>
     {% endif %}
 </div>
@@ -93,7 +257,13 @@
 </div>
 
 <div class="card premium-card">
-    <h3>Trade Lessons</h3>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:6px;">Trade Lessons</h3>
+            <p class="muted-line" style="margin:0;">Archived trade-by-trade coaching, context, and behavior signals.</p>
+        </div>
+        <span class="signal-stat-chip">{{ analysis.trades|length }} reviewed</span>
+    </div>
 
     {% if analysis.trades %}
     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-top:14px;">
@@ -120,25 +290,37 @@
                         <p style="margin:0;"><strong>{{ trade.outcome }}</strong></p>
                     </div>
                 </div>
-
                 <div class="card" style="margin:0;">
                     <h4>Health</h4>
                     <div class="passage-frame">
                         <p style="margin:0;"><strong>{{ trade.health.score }}</strong></p>
                     </div>
                 </div>
-
+                <div class="card" style="margin:0;">
+                    <h4>Agreement</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ trade.system_agreement.score }}</strong></p>
+                    </div>
+                </div>
                 <div class="card" style="margin:0;">
                     <h4>Conviction</h4>
                     <div class="passage-frame">
                         <p style="margin:0;"><strong>{{ trade.conviction }}</strong></p>
                     </div>
                 </div>
+            </div>
 
+            <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:10px;">
                 <div class="card" style="margin:0;">
-                    <h4>Agreement</h4>
+                    <h4>Health Bucket</h4>
                     <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ trade.system_agreement.score }}</strong></p>
+                        <p style="margin:0;"><strong>{{ trade.health_bucket }}</strong></p>
+                    </div>
+                </div>
+                <div class="card" style="margin:0;">
+                    <h4>Agreement Bucket</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ trade.agreement_bucket }}</strong></p>
                     </div>
                 </div>
             </div>

@@ -1,26 +1,116 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="page-hero card premium-hero gold-accent-card">
+<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
     <h2>Admin Control Center</h2>
     <div class="passage-frame">
         <p>
-            Monitor usage, friction, engagement, system state, and fast navigation across the platform.
+            Operator visibility across system intelligence, product monitoring, simulation health, proof, usage signals, and tier preview.
         </p>
     </div>
 </div>
 
-<div class="dashboard-subnav">
-    <a href="/dashboard" class="cta-btn secondary">Simulation Dashboard</a>
-    <a href="/signals" class="cta-btn secondary">Signals</a>
-    <a href="/all-symbols" class="cta-btn secondary">All Symbols</a>
-    <a href="/positions" class="cta-btn secondary">Positions</a>
-    <a href="/proof" class="cta-btn secondary">Proof</a>
+{% if admin_alerts and admin_alerts.top_alert %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Top Operator Alert</h3>
+            <p class="muted-line" style="margin:0;">The most important cross-system signal visible right now.</p>
+        </div>
+        <span class="signal-stat-chip">{{ admin_alerts.top_alert.level|upper }}</span>
+    </div>
+
+    <a href="{{ admin_alerts.top_alert.target }}" style="text-decoration:none; color:inherit;">
+        <div class="card" style="margin-top:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                <div>
+                    <h4 style="margin:0 0 8px 0;">{{ admin_alerts.top_alert.headline }}</h4>
+                </div>
+                <span class="signal-stat-chip">{{ admin_alerts.top_alert.target_label }}</span>
+            </div>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ admin_alerts.top_alert.body }}</p>
+            </div>
+        </div>
+    </a>
+
+    {% if admin_alerts.alerts %}
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
+        {% for alert in admin_alerts.alerts %}
+        <a href="{{ alert.target }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0; height:100%;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+                    <h4 style="margin:0;">{{ alert.headline }}</h4>
+                    <span class="signal-stat-chip">{{ alert.level|upper }}</span>
+                </div>
+                <div class="passage-frame" style="margin-top:10px;">
+                    <p style="margin:0;">{{ alert.body }}</p>
+                </div>
+                <div style="margin-top:10px;">
+                    <span class="signal-stat-chip">{{ alert.target_label }}</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-bottom:18px;">
+    <a href="/admin/intelligence" style="text-decoration:none; color:inherit;">
+        <div class="card premium-card gold-accent-card" style="height:100%;">
+            <h3>Admin Intelligence</h3>
+            <div class="passage-frame">
+                <p style="margin:0;">
+                    Review idea quality, activation discipline, disagreement behavior, and where system edge is being strengthened or leaked.
+                </p>
+            </div>
+        </div>
+    </a>
+
+    <a href="/admin/product-monitoring" style="text-decoration:none; color:inherit;">
+        <div class="card premium-card" style="height:100%;">
+            <h3>Product Monitoring</h3>
+            <div class="passage-frame">
+                <p style="margin:0;">
+                    Track product usage, friction points, setup quality, and whether the experience is getting stronger or more confusing.
+                </p>
+            </div>
+        </div>
+    </a>
 </div>
 
-<div class="card gold-accent-card">
-    <h3>Tier Preview</h3>
-    <div class="dashboard-subnav">
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Operator Navigation</h3>
+            <p class="muted-line" style="margin:0;">Jump between the core system surfaces without hunting through the app.</p>
+        </div>
+        <span class="signal-stat-chip">Control Layer</span>
+    </div>
+
+    <div class="dashboard-subnav" style="margin-top:14px;">
+        <a href="/dashboard" class="cta-btn secondary">Simulation Dashboard</a>
+        <a href="/signals" class="cta-btn secondary">Signals</a>
+        <a href="/all-symbols" class="cta-btn secondary">All Symbols</a>
+        <a href="/positions" class="cta-btn secondary">Positions</a>
+        <a href="/proof" class="cta-btn secondary">Proof</a>
+    </div>
+</div>
+
+<div class="card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Tier Preview</h3>
+            <p class="muted-line" style="margin:0;">
+                Switch product visibility states quickly so you can inspect the platform from each tier’s point of view.
+            </p>
+        </div>
+        <span class="signal-stat-chip">Preview Controls</span>
+    </div>
+
+    <div class="dashboard-subnav" style="margin-top:14px;">
         <a href="/admin/preview-tier/Guest" class="cta-btn secondary">Guest</a>
         <a href="/admin/preview-tier/Free" class="cta-btn secondary">Free</a>
         <a href="/admin/preview-tier/Starter" class="cta-btn secondary">Starter</a>
@@ -30,106 +120,156 @@
     </div>
 </div>
 
-<div class="grid">
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:18px;">
     <div class="card gold-accent-card">
-        <h3>Estimated Value</h3>
+        <h4>Estimated Value</h4>
         <div class="metric">${{ snapshot.estimated_account_value }}</div>
         <p class="muted-line">Simulation snapshot</p>
     </div>
 
     <div class="card gold-accent-card">
-        <h3>Open Positions</h3>
+        <h4>Open Positions</h4>
         <div class="metric">{{ snapshot.open_positions }}</div>
         <p class="muted-line">Current active positions</p>
     </div>
 
     <div class="card gold-accent-card">
-        <h3>Engine State</h3>
+        <h4>Engine State</h4>
         <div class="metric">{{ system.engine_state }}</div>
         <p class="muted-line">Bot status</p>
     </div>
+
+    <div class="card gold-accent-card">
+        <h4>Tracked Users</h4>
+        <div class="metric">{{ users|length }}</div>
+        <p class="muted-line">Loaded user records</p>
+    </div>
 </div>
 
-<div class="grid">
-    <div class="card">
-        <h3>Page Views</h3>
-        {% for path, count in metrics.page_views.items() %}
-        <div class="admin-stat-row">
-            <span>{{ path }}</span>
-            <strong>{{ count }}</strong>
-        </div>
-        {% endfor %}
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
+    <div class="card premium-card">
+        <h3>Traffic Signals</h3>
+        {% if metrics.page_views %}
+            <div style="display:grid; gap:8px; margin-top:12px;">
+                {% for path, count in metrics.page_views.items() %}
+                <div class="admin-stat-row">
+                    <span>{{ path }}</span>
+                    <strong>{{ count }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="passage-frame" style="margin-top:12px;">
+                <p style="margin:0;">No page view data yet.</p>
+            </div>
+        {% endif %}
     </div>
 
-    <div class="card">
+    <div class="card premium-card">
         <h3>Key Clicks</h3>
-        {% for key, count in metrics.clicks.items() %}
-        <div class="admin-stat-row">
-            <span>{{ key.replace("_", " ").title() }}</span>
-            <strong>{{ count }}</strong>
-        </div>
-        {% endfor %}
+        {% if metrics.clicks %}
+            <div style="display:grid; gap:8px; margin-top:12px;">
+                {% for key, count in metrics.clicks.items() %}
+                <div class="admin-stat-row">
+                    <span>{{ key.replace("_", " ").title() }}</span>
+                    <strong>{{ count }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="passage-frame" style="margin-top:12px;">
+                <p style="margin:0;">No click data yet.</p>
+            </div>
+        {% endif %}
     </div>
 </div>
 
-<div class="grid">
-    <div class="card">
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
+    <div class="card premium-card">
         <h3>Friction Signals</h3>
-        {% for key, count in metrics.friction_signals.items() %}
-        <div class="admin-stat-row">
-            <span>{{ key.replace("_", " ").title() }}</span>
-            <strong>{{ count }}</strong>
-        </div>
-        {% endfor %}
+        {% if metrics.friction_signals %}
+            <div style="display:grid; gap:8px; margin-top:12px;">
+                {% for key, count in metrics.friction_signals.items() %}
+                <div class="admin-stat-row">
+                    <span>{{ key.replace("_", " ").title() }}</span>
+                    <strong>{{ count }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="passage-frame" style="margin-top:12px;">
+                <p style="margin:0;">No friction signals yet.</p>
+            </div>
+        {% endif %}
     </div>
 
-    <div class="card">
+    <div class="card premium-card">
         <h3>Engagement</h3>
-        {% for key, value in metrics.engagement.items() %}
-        <div class="admin-stat-row">
-            <span>{{ key.replace("_", " ").title() }}</span>
-            <strong>{{ value }}</strong>
-        </div>
-        {% endfor %}
+        {% if metrics.engagement %}
+            <div style="display:grid; gap:8px; margin-top:12px;">
+                {% for key, value in metrics.engagement.items() %}
+                <div class="admin-stat-row">
+                    <span>{{ key.replace("_", " ").title() }}</span>
+                    <strong>{{ value }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="passage-frame" style="margin-top:12px;">
+                <p style="margin:0;">No engagement data yet.</p>
+            </div>
+        {% endif %}
     </div>
 </div>
 
-<div class="card gold-accent-card">
-    <h3>Proof Snapshot</h3>
-    <div class="grid">
-        <div class="card">
-            <p><b>Trades</b></p>
+<div class="card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Proof Snapshot</h3>
+            <p class="muted-line" style="margin:0;">A quick pulse check on the public proof / simulation performance layer.</p>
+        </div>
+        <span class="signal-stat-chip">Proof Layer</span>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Trades</h4>
             <div class="metric">{{ proof.trades }}</div>
         </div>
-        <div class="card">
-            <p><b>Win Rate</b></p>
+        <div class="card" style="margin:0;">
+            <h4>Win Rate</h4>
             <div class="metric">{{ proof.winrate }}</div>
         </div>
-        <div class="card">
-            <p><b>Max Drawdown</b></p>
+        <div class="card" style="margin:0;">
+            <h4>Max Drawdown</h4>
             <div class="metric">{{ proof.max_drawdown }}</div>
         </div>
     </div>
 </div>
 
-<div class="card">
-    <h3>Most Recent Positions</h3>
-    {% if positions %}
-        {% for p in positions[:8] %}
-        <div class="admin-stat-row">
-            <span>{{ p.symbol }}</span>
-            <strong>
-                {% if p.intelligence is defined and p.intelligence.snapshot is defined %}
-                    {{ p.intelligence.snapshot.status }}
-                {% else %}
-                    Loaded
-                {% endif %}
-            </strong>
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Most Recent Positions</h3>
+            <p class="muted-line" style="margin:0;">Recent loaded positions with their current health read.</p>
         </div>
-        {% endfor %}
+        <span class="signal-stat-chip">{{ positions[:8]|length }} shown</span>
+    </div>
+
+    {% if positions %}
+        <div style="display:grid; gap:10px; margin-top:14px;">
+            {% for p in positions[:8] %}
+            <div class="card" style="margin:0;">
+                <div class="admin-stat-row">
+                    <span>{{ p.symbol }}</span>
+                    <strong>{{ p.health.label if p.health is defined else "Loaded" }}</strong>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     {% else %}
-        <div class="passage-frame">
-            <p>No positions loaded.</p>
+        <div class="passage-frame" style="margin-top:12px;">
+            <p style="margin:0;">No positions loaded.</p>
         </div>
     {% endif %}
 </div>

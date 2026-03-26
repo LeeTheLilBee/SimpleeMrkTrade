@@ -32,6 +32,13 @@ def _safe_float(value, default=0.0):
         return default
 
 
+def _safe_int(value, default=0):
+    try:
+        return int(value)
+    except Exception:
+        return default
+
+
 def build_play_id(symbol):
     ts = datetime.now().strftime("%Y%m%d%H%M%S")
     return f"{symbol.upper()}-{ts}"
@@ -59,7 +66,6 @@ def latest_market_context():
     status = _load(SYSTEM_STATUS_FILE, {})
     if not isinstance(status, dict):
         status = {}
-
     return {
         "mode": status.get("mode", "UNKNOWN"),
         "breadth": status.get("breadth", "UNKNOWN"),
@@ -213,7 +219,6 @@ def build_play_feedback(play, market_context=None, candidate=None):
     mode = market_context.get("mode", "UNKNOWN")
     breadth = market_context.get("breadth", "UNKNOWN")
     regime = market_context.get("regime", "UNKNOWN")
-
     direction = determine_direction(play)
 
     if mode == "DEFENSIVE_BEAR" and direction == "CALL":
@@ -253,7 +258,6 @@ def build_play_feedback(play, market_context=None, candidate=None):
 def build_play_agreement(play, market_context=None, candidate=None):
     market_context = market_context or {}
     direction = determine_direction(play)
-
     score = 50
     reasons = []
 
@@ -335,7 +339,6 @@ def enrich_play(play):
     row["engine_candidate"] = candidate
     row["system_feedback"] = build_play_feedback(row, market_context, candidate)
     row["system_agreement"] = build_play_agreement(row, market_context, candidate)
-
     return row
 
 
@@ -383,7 +386,6 @@ def update_play(play_id, symbol=None, entry=None, stop=None, target=None, convic
         new_entry = entry if entry not in {None, ""} else play.get("entry")
         new_stop = stop if stop not in {None, ""} else play.get("stop")
         new_target = target if target not in {None, ""} else play.get("target")
-
         validated = validate_play_inputs(new_entry, new_stop, new_target)
 
         play["symbol"] = new_symbol
@@ -426,7 +428,6 @@ def add_user_position_from_play(play_id):
         return None
 
     positions = load_user_positions()
-
     for pos in positions:
         if str(pos.get("play_id")) == str(play_id) and str(pos.get("status", "Open")).lower() == "open":
             return enrich_user_position(pos)
@@ -453,10 +454,13 @@ def add_user_position_from_play(play_id):
 
 def enrich_user_position(position):
     row = dict(position)
+    row["symbol"] = str(row.get("symbol", "")).upper()
     row["entry"] = _safe_float(row.get("entry"))
     row["stop"] = _safe_float(row.get("stop"))
     row["target"] = _safe_float(row.get("target"))
     row["current_price"] = _safe_float(row.get("current_price", row["entry"]))
+    row["conviction"] = row.get("conviction", "Medium")
+    row["status"] = row.get("status", "Open")
     row["health"] = determine_play_health(row)
     row["direction"] = determine_direction(row)
 
@@ -472,14 +476,13 @@ def enrich_user_position(position):
 
 def get_user_positions(include_closed=False):
     positions = [enrich_user_position(p) for p in load_user_positions()]
-
     if include_closed:
         return positions
-
     return [
         p for p in positions
         if str(p.get("status", "Open")).lower() != "closed"
     ]
+
 
 def get_user_position(position_id):
     positions = load_user_positions()
@@ -522,7 +525,6 @@ def close_user_position(position_id):
     for position in positions:
         if str(position.get("position_id")) != str(position_id):
             continue
-
         position["status"] = "Closed"
         position["closed_at"] = datetime.now().isoformat()
         closed = position
@@ -554,26 +556,289 @@ def classify_trade_outcome(position):
     return "FLAT"
 
 
-def classify_trade_outcome(position):
-    entry = _safe_float(position.get("entry"))
-    current = _safe_float(position.get("current_price", entry))
-    direction = determine_direction(position)
+def _agreement_bucket(score):
+    score = _safe_int(score)
+    if score >= 75:
+        return "High"
+    if score >= 55:
+        return "Moderate"
+    if score >= 35:
+        return "Mixed"
+    return "Low"
 
-    if not entry:
-        return "UNKNOWN"
 
-    if direction == "CALL":
-        if current > entry:
-            return "WIN"
-        if current < entry:
-            return "LOSS"
-    elif direction == "PUT":
-        if current < entry:
-            return "WIN"
-        if current > entry:
-            return "LOSS"
+def _health_bucket(score):
+    score = _safe_int(score)
+    if score >= 75:
+        return "Strong"
+    if score >= 55:
+        return "Stable"
+    if score >= 35:
+        return "Weakening"
+    return "Broken"
 
-    return "FLAT"
+
+def _safe_upper(value, default="UNKNOWN"):
+    text = str(value or "").strip().upper()
+    return text if text else default
+
+
+def _build_pattern_label(outcome, agreement_bucket, conviction, direction, mode, breadth):
+    return " | ".join([
+        f"{outcome}",
+        f"{agreement_bucket} agreement",
+        f"{conviction} conviction",
+        f"{direction}",
+        f"{mode}",
+        f"{breadth}",
+    ])
+
+
+def _top_count_item(counts, fallback_label="Not enough data yet."):
+    if not counts:
+        return {
+            "label": fallback_label,
+            "count": 0,
+        }
+    label, count = max(counts.items(), key=lambda item: item[1])
+    return {
+        "label": label,
+        "count": count,
+    }
+
+
+def _build_repeat_and_stop_behaviors(enriched):
+    repeat_counts = {}
+    stop_counts = {}
+
+    for trade in enriched:
+        outcome = trade.get("outcome", "UNKNOWN")
+        agreement_bucket = _agreement_bucket((trade.get("system_agreement", {}) or {}).get("score", 0))
+        conviction = str(trade.get("conviction", "Unknown"))
+        direction = str(trade.get("direction", "UNKNOWN"))
+        market_context = trade.get("market_context", {}) or {}
+        mode = _safe_upper(market_context.get("mode"))
+        breadth = _safe_upper(market_context.get("breadth"))
+
+        label = _build_pattern_label(outcome, agreement_bucket, conviction, direction, mode, breadth)
+
+        if outcome == "WIN":
+            repeat_counts[label] = repeat_counts.get(label, 0) + 1
+        elif outcome == "LOSS":
+            stop_counts[label] = stop_counts.get(label, 0) + 1
+
+    repeat_top = _top_count_item(repeat_counts, "No repeat behavior identified yet.")
+    stop_top = _top_count_item(stop_counts, "No stop behavior identified yet.")
+
+    repeat_summary = (
+        f"Your most repeatable winning pattern so far is: {repeat_top['label']}."
+        if repeat_top["count"] > 0
+        else repeat_top["label"]
+    )
+    stop_summary = (
+        f"Your most common losing pattern so far is: {stop_top['label']}."
+        if stop_top["count"] > 0
+        else stop_top["label"]
+    )
+
+    return {
+        "repeat": {
+            "headline": "What to Repeat",
+            "label": repeat_top["label"],
+            "count": repeat_top["count"],
+            "summary": repeat_summary,
+        },
+        "stop": {
+            "headline": "What to Stop",
+            "label": stop_top["label"],
+            "count": stop_top["count"],
+            "summary": stop_summary,
+        },
+    }
+
+
+def _build_condition_summary(enriched):
+    condition_counts = {}
+    winning_conditions = {}
+    losing_conditions = {}
+
+    for trade in enriched:
+        market_context = trade.get("market_context", {}) or {}
+        regime = _safe_upper(market_context.get("regime"))
+        breadth = _safe_upper(market_context.get("breadth"))
+        mode = _safe_upper(market_context.get("mode"))
+
+        label = f"{regime} | {breadth} | {mode}"
+        condition_counts[label] = condition_counts.get(label, 0) + 1
+
+        outcome = trade.get("outcome", "UNKNOWN")
+        if outcome == "WIN":
+            winning_conditions[label] = winning_conditions.get(label, 0) + 1
+        elif outcome == "LOSS":
+            losing_conditions[label] = losing_conditions.get(label, 0) + 1
+
+    most_seen = _top_count_item(condition_counts, "No condition pattern identified yet.")
+    best = _top_count_item(winning_conditions, "No best-condition pattern identified yet.")
+    worst = _top_count_item(losing_conditions, "No weak-condition pattern identified yet.")
+
+    return {
+        "most_seen": most_seen,
+        "best": best,
+        "worst": worst,
+        "summary": [
+            f"Most seen market backdrop: {most_seen['label']}." if most_seen["count"] > 0 else most_seen["label"],
+            f"Best condition cluster: {best['label']}." if best["count"] > 0 else best["label"],
+            f"Weakest condition cluster: {worst['label']}." if worst["count"] > 0 else worst["label"],
+        ],
+    }
+
+
+def _build_alignment_summary(enriched):
+    high_wins = 0
+    high_losses = 0
+    low_wins = 0
+    low_losses = 0
+
+    for trade in enriched:
+        outcome = trade.get("outcome", "UNKNOWN")
+        agreement_score = _safe_int((trade.get("system_agreement", {}) or {}).get("score", 0))
+
+        if agreement_score >= 75 and outcome == "WIN":
+            high_wins += 1
+        elif agreement_score >= 75 and outcome == "LOSS":
+            high_losses += 1
+        elif agreement_score < 55 and outcome == "WIN":
+            low_wins += 1
+        elif agreement_score < 55 and outcome == "LOSS":
+            low_losses += 1
+
+    if high_wins > high_losses:
+        headline = "Alignment is helping when you respect it."
+        summary = "Your better trades are showing up when agreement is strong. The system is not random noise for you."
+    elif low_losses > low_wins:
+        headline = "You are paying for misalignment."
+        summary = "A meaningful share of your losses is coming from trades that lacked strong support from the system."
+    else:
+        headline = "Your alignment edge is still mixed."
+        summary = "The system is giving signals, but your results are not yet consistently separating strong alignment from weak alignment."
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "stats": {
+            "high_agreement_wins": high_wins,
+            "high_agreement_losses": high_losses,
+            "low_agreement_wins": low_wins,
+            "low_agreement_losses": low_losses,
+        },
+    }
+
+
+def _build_conviction_summary(enriched):
+    high_conviction_wins = 0
+    high_conviction_losses = 0
+    low_conviction_wins = 0
+    low_conviction_losses = 0
+
+    for trade in enriched:
+        conviction = str(trade.get("conviction", "Unknown")).strip().lower()
+        outcome = trade.get("outcome", "UNKNOWN")
+
+        if conviction == "high" and outcome == "WIN":
+            high_conviction_wins += 1
+        elif conviction == "high" and outcome == "LOSS":
+            high_conviction_losses += 1
+        elif conviction == "low" and outcome == "WIN":
+            low_conviction_wins += 1
+        elif conviction == "low" and outcome == "LOSS":
+            low_conviction_losses += 1
+
+    if high_conviction_losses > high_conviction_wins:
+        headline = "High conviction is sometimes turning into force."
+        summary = "Your high-conviction losses suggest confidence is occasionally outrunning alignment."
+    elif high_conviction_wins > high_conviction_losses:
+        headline = "High conviction is earning its keep."
+        summary = "Your stronger-conviction trades are producing enough wins to justify real trust when the setup is there."
+    elif low_conviction_wins > low_conviction_losses:
+        headline = "You may be under-trusting some valid ideas."
+        summary = "Some of your wins are coming from lower-conviction trades, which suggests hesitation may be muting your best instincts."
+    else:
+        headline = "Your conviction profile is still muddy."
+        summary = "Conviction is showing up, but it is not yet clearly separating your better decisions from your weaker ones."
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "stats": {
+            "high_conviction_wins": high_conviction_wins,
+            "high_conviction_losses": high_conviction_losses,
+            "low_conviction_wins": low_conviction_wins,
+            "low_conviction_losses": low_conviction_losses,
+        },
+    }
+
+
+def _build_dominant_patterns(enriched):
+    winning_patterns = {}
+    losing_patterns = {}
+
+    for trade in enriched:
+        agreement = trade.get("system_agreement", {}) or {}
+        agreement_bucket = _agreement_bucket(agreement.get("score", 0))
+        conviction = str(trade.get("conviction", "Unknown"))
+        direction = str(trade.get("direction", "UNKNOWN"))
+        market_context = trade.get("market_context", {}) or {}
+        regime = _safe_upper(market_context.get("regime"))
+        breadth = _safe_upper(market_context.get("breadth"))
+        mode = _safe_upper(market_context.get("mode"))
+
+        label = (
+            f"{direction} | {agreement_bucket} agreement | "
+            f"{conviction} conviction | {regime} | {breadth} | {mode}"
+        )
+
+        outcome = trade.get("outcome", "UNKNOWN")
+        if outcome == "WIN":
+            winning_patterns[label] = winning_patterns.get(label, 0) + 1
+        elif outcome == "LOSS":
+            losing_patterns[label] = losing_patterns.get(label, 0) + 1
+
+    top_win = _top_count_item(winning_patterns, "No dominant winning pattern yet.")
+    top_loss = _top_count_item(losing_patterns, "No dominant losing pattern yet.")
+
+    return {
+        "winning": {
+            "headline": "Dominant Winning Pattern",
+            "label": top_win["label"],
+            "count": top_win["count"],
+        },
+        "losing": {
+            "headline": "Dominant Losing Pattern",
+            "label": top_loss["label"],
+            "count": top_loss["count"],
+        },
+    }
+
+
+def _build_trade_coaching_summary(enriched, avg_health, wins, losses, flat):
+    insights = []
+
+    if wins > losses:
+        insights.append("You are net positive on archived trades, but that does not excuse weak process on the bad ones.")
+    elif losses > wins:
+        insights.append("Your archived losses are outweighing your wins. Entry quality and alignment need to get stricter.")
+    else:
+        insights.append("Your results are balanced, which usually means the edge is still too soft or inconsistent.")
+
+    if avg_health < 40:
+        insights.append("You tend to close trades after they have already weakened badly. That is a management problem, not just a market problem.")
+    elif avg_health > 70:
+        insights.append("You are generally exiting from stronger states, which suggests better discipline on closes.")
+
+    if flat > 0 and flat >= max(1, wins):
+        insights.append("A meaningful chunk of your trade history is not producing clean edge. You may be forcing setups that never really developed.")
+
+    return insights
 
 
 def build_trade_lesson(position):
@@ -585,7 +850,6 @@ def build_trade_lesson(position):
     health = position.get("health", {}) or {}
     health_score = int(health.get("score", 0) or 0)
     market_context = position.get("market_context", {}) or {}
-
     mode = market_context.get("mode", "UNKNOWN")
     breadth = market_context.get("breadth", "UNKNOWN")
     regime = market_context.get("regime", "UNKNOWN")
@@ -601,127 +865,4 @@ def build_trade_lesson(position):
             f"You were not guessing blindly here."
         )
         tag = "Aligned Win"
-
-    elif outcome == "WIN" and agreement_score < 75:
-        headline = "You got paid, but don’t romanticize it."
-        lesson = (
-            "This trade won without strong system alignment. That does not automatically make it repeatable. "
-            "A win can still be a sloppy decision."
-        )
-        tag = "Lucky Win"
-
-    elif outcome == "LOSS" and agreement_score >= 75:
-        headline = "Decent idea, weaker execution."
-        lesson = (
-            "The system was not strongly against this trade, so the loss is more likely tied to timing, management, or exit discipline than pure idea quality."
-        )
-        tag = "Execution Loss"
-
-    elif outcome == "LOSS" and agreement_score < 75:
-        headline = "The market told you no, and you did it anyway."
-        lesson = (
-            f"This trade likely failed because it lacked strong alignment. "
-            f"The environment ({regime}, {breadth}, {mode}) was not giving you real support."
-        )
-        tag = "Misaligned Loss"
-
-    elif outcome == "FLAT":
-        headline = "No edge captured."
-        lesson = (
-            "This trade did not produce meaningful edge. Either the idea lacked force, or the management failed to convert it."
-        )
-        tag = "Flat"
-
-    if health_score < 35:
-        lesson += " You also appear to be letting trades rot before acting."
-    elif health_score > 70:
-        lesson += " At least the exit did not come from complete deterioration."
-
-    if conviction == "High" and outcome == "LOSS":
-        lesson += " High conviction on weak alignment is not confidence — it is stubbornness."
-    elif conviction == "Low" and outcome == "WIN":
-        lesson += " You may be under-trusting some of your better ideas."
-
-    return {
-        "headline": headline,
-        "lesson": lesson,
-        "tag": tag,
-    }
-
-
-def analyze_user_trades():
-    positions = get_user_positions(include_closed=True)
-
-    archived = [
-        p for p in positions
-        if str(p.get("status", "")).lower() == "closed"
-    ]
-
-    if not archived:
-        return {
-            "totals": {"archived": 0, "wins": 0, "losses": 0, "flat": 0},
-            "direction_counts": {},
-            "conviction_counts": {},
-            "average_health": 0,
-            "insights": ["No archived trades yet."],
-            "trades": [],
-        }
-
-    wins, losses, flat = 0, 0, 0
-    total_health = 0
-    direction_counts = {}
-    conviction_counts = {}
-    enriched = []
-
-    for pos in archived:
-        outcome = classify_trade_outcome(pos)
-        health_score = int((pos.get("health", {}) or {}).get("score", 0) or 0)
-
-        if outcome == "WIN":
-            wins += 1
-        elif outcome == "LOSS":
-            losses += 1
-        else:
-            flat += 1
-
-        direction = pos.get("direction", "UNKNOWN")
-        conviction = pos.get("conviction", "Unknown")
-
-        direction_counts[direction] = direction_counts.get(direction, 0) + 1
-        conviction_counts[conviction] = conviction_counts.get(conviction, 0) + 1
-        total_health += health_score
-
-        row = dict(pos)
-        row["outcome"] = outcome
-        row["lesson"] = build_trade_lesson(pos)
-        enriched.append(row)
-
-    avg_health = round(total_health / len(archived), 1)
-
-    insights = []
-
-    if wins > losses:
-        insights.append("You are net positive on archived trades, but that does not excuse weak process on the bad ones.")
-    elif losses > wins:
-        insights.append("Your archived losses are outweighing your wins. Entry quality and alignment need to get stricter.")
-    else:
-        insights.append("Your results are balanced, which usually means the edge is still too soft or inconsistent.")
-
-    if avg_health < 40:
-        insights.append("You tend to close trades after they have already weakened badly. That is a management problem, not just a market problem.")
-    elif avg_health > 70:
-        insights.append("You are generally exiting from stronger states, which suggests better discipline on closes.")
-
-    return {
-        "totals": {
-            "archived": len(archived),
-            "wins": wins,
-            "losses": losses,
-            "flat": flat,
-        },
-        "direction_counts": direction_counts,
-        "conviction_counts": conviction_counts,
-        "average_health": avg_health,
-        "insights": insights,
-        "trades": enriched,
-    }
+    elif outcome == "WIN" and agreement_score <

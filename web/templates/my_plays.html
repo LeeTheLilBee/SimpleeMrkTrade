@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="page-hero card premium-hero gold-accent-card">
+<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
     <h2>My Plays</h2>
     <div class="passage-frame">
         <p>
-            Your personal trade ideas, tracked separately from system positions and scored against current engine conditions.
+            Your personal trade ideas, reviewed before activation and scored against current engine conditions so you can separate real setups from impulsive ones.
         </p>
     </div>
 </div>
@@ -19,9 +19,108 @@
 {% endif %}
 
 <div class="card premium-card" style="margin-bottom:18px;">
-    <h3 style="margin-bottom:10px;">Add a New Play</h3>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">{{ filter_title or "All Plays" }}</h3>
+            <p class="muted-line" style="margin:0;">{{ filter_note or "Showing your full idea book." }}</p>
+        </div>
+        <span class="signal-stat-chip">{{ plays|length }} shown</span>
+    </div>
 
-    <form method="POST" action="/my-plays/add">
+    <div class="dashboard-subnav" style="margin-top:14px;">
+        <a href="/my-plays" class="cta-btn secondary">All</a>
+        <a href="/my-plays?filter=ready" class="cta-btn secondary">Ready</a>
+        <a href="/my-plays?filter=close" class="cta-btn secondary">Close</a>
+        <a href="/my-plays?filter=weak" class="cta-btn secondary">Weak / Watch</a>
+        <a href="/my-plays?filter=high_agreement" class="cta-btn secondary">High Agreement</a>
+        <a href="/my-plays?filter=high_conviction" class="cta-btn secondary">High Conviction</a>
+        <a href="/my-plays?filter=watching" class="cta-btn secondary">Watching</a>
+        <a href="/my-plays?filter=archived" class="cta-btn secondary">Archived</a>
+    </div>
+</div>
+
+{% if plays_summary %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">{{ plays_summary.headline }}</h3>
+            <p class="muted-line" style="margin:0;">{{ plays_summary.summary }}</p>
+        </div>
+        <span class="signal-stat-chip">{{ plays_summary.total }} total plays</span>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Open</h4>
+            <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.open }}</strong></p></div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Watching</h4>
+            <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.watching }}</strong></p></div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Archived</h4>
+            <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.archived }}</strong></p></div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>High Agreement</h4>
+            <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.high_agreement }}</strong></p></div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Ready to Activate</h4>
+            <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.ready_to_activate }}</strong></p></div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Close to Ready</h4>
+            <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.close_to_ready }}</strong></p></div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Weak / Pressured</h4>
+            <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.weak_or_pressured }}</strong></p></div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>High Conviction</h4>
+            <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.high_conviction }}</strong></p></div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
+    <div class="card premium-card gold-accent-card">
+        <h3>Idea Desk</h3>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                Build, review, and pressure-test your ideas here before they earn a place in My Positions.
+            </p>
+        </div>
+    </div>
+
+    <div class="card premium-card">
+        <h3>Position Command Center</h3>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                Active ideas belong here first. Once they deserve live management, move them into your positions layer.
+            </p>
+        </div>
+        <div style="margin-top:12px;">
+            <a href="/my-positions" class="cta-btn secondary">Go to My Positions →</a>
+        </div>
+    </div>
+</div>
+
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Add a New Play</h3>
+            <p class="muted-line" style="margin:0;">
+                Capture the setup cleanly so the system can judge whether the idea deserves trust.
+            </p>
+        </div>
+        <span class="signal-stat-chip">New Idea</span>
+    </div>
+
+    <form method="POST" action="/my-plays/add" style="margin-top:14px;">
         <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
             <div>
                 <label>Symbol</label>
@@ -66,40 +165,63 @@
 </div>
 
 {% if plays %}
-<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px;">
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap:18px;">
     {% for play in plays %}
     <a href="/my-plays/{{ play.play_id }}" style="text-decoration:none; color:inherit;">
         <div class="card premium-card" style="height:100%;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
                 <div>
                     <h3 style="margin:0 0 6px 0;">{{ play.symbol }}</h3>
                     <p class="muted-line" style="margin:0;">
-                        {{ play.direction }} | Entry {{ play.entry }} | Stop {{ play.stop }} | Target {{ play.target }}
+                        {{ play.direction }} | Entry {{ play.entry }} | Current {{ play.current_price }}
                     </p>
                 </div>
                 <span class="signal-stat-chip">{{ play.system_agreement.label }}</span>
             </div>
 
-            <div class="card" style="margin-top:14px;">
-                <h4>Play Health</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>Score:</strong> {{ play.health.score }}</p>
-                    <p style="margin:8px 0 0 0;"><strong>Status:</strong> {{ play.health.status }}</p>
-                    <p style="margin:8px 0 0 0;">{{ play.health.note }}</p>
+            <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
+                <div class="card" style="margin:0;">
+                    <h4>Health Score</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ play.health.score }}</strong></p>
+                    </div>
+                </div>
+                <div class="card" style="margin:0;">
+                    <h4>Agreement Score</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ play.system_agreement.score }}</strong></p>
+                    </div>
+                </div>
+                <div class="card" style="margin:0;">
+                    <h4>Conviction</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ play.conviction }}</strong></p>
+                    </div>
+                </div>
+                <div class="card" style="margin:0;">
+                    <h4>Status</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ play.status }}</strong></p>
+                    </div>
                 </div>
             </div>
 
-            <div class="card" style="margin-top:14px;">
-                <h4>System Agreement</h4>
+            {% if play.activation_readiness %}
+            <div class="card gold-accent-card" style="margin-top:14px;">
+                <h4>{{ play.activation_readiness.headline }}</h4>
                 <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ play.system_agreement.score }}</strong> / 100</p>
-                    <p style="margin:8px 0 0 0;">{{ play.system_agreement.label }}</p>
+                    <p style="margin:0;">{{ play.activation_readiness.summary }}</p>
+                </div>
+                <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                    <span class="signal-stat-chip">Readiness {{ play.activation_readiness.score }}</span>
+                    <span class="signal-stat-chip">{{ play.activation_readiness.bucket }}</span>
                 </div>
             </div>
+            {% endif %}
 
             <div class="card" style="margin-top:14px;">
                 <h4>System Feedback</h4>
-                <div style="display:grid; gap:6px;">
+                <div style="display:grid; gap:8px;">
                     {% for line in play.system_feedback[:3] %}
                     <div class="passage-frame">
                         <p style="margin:0;">{{ line }}</p>
@@ -107,6 +229,32 @@
                     {% endfor %}
                 </div>
             </div>
+
+            {% if play.system_agreement.reasons %}
+            <div class="card" style="margin-top:14px;">
+                <h4>Why the System Sees It This Way</h4>
+                <div style="display:grid; gap:8px;">
+                    {% for line in play.system_agreement.reasons[:2] %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ line }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if play.activation_readiness and play.activation_readiness.reasons %}
+            <div class="card" style="margin-top:14px;">
+                <h4>Why This Readiness Score</h4>
+                <div style="display:grid; gap:8px;">
+                    {% for line in play.activation_readiness.reasons %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ line }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
 
             <div class="card" style="margin-top:14px;">
                 <h4>Thesis</h4>
@@ -121,123 +269,9 @@
 {% else %}
 <div class="card premium-card">
     <div class="passage-frame">
-        <p>No plays added yet.</p>
+        <p style="margin:0;">No plays found for this filter.</p>
     </div>
 </div>
 {% endif %}
 
 {% endblock %}
-
-def classify_trade_outcome(position):
-    entry = _safe_float(position.get("entry"))
-    target = _safe_float(position.get("target"))
-    current = _safe_float(position.get("current_price", entry))
-    direction = determine_direction(position)
-
-    if not entry:
-        return "UNKNOWN"
-
-    if direction == "CALL":
-        if current > entry:
-            return "WIN"
-        if current < entry:
-            return "LOSS"
-    elif direction == "PUT":
-        if current < entry:
-            return "WIN"
-        if current > entry:
-            return "LOSS"
-
-    return "FLAT"
-
-
-def analyze_user_trades():
-    positions = get_user_positions(include_closed=True)
-    archived = [
-        p for p in positions
-        if str(p.get("status", "")).lower() == "closed"
-    ]
-
-    if not archived:
-        return {
-            "totals": {
-                "archived": 0,
-                "wins": 0,
-                "losses": 0,
-                "flat": 0,
-            },
-            "direction_counts": {},
-            "conviction_counts": {},
-            "average_health": 0,
-            "insights": ["No archived trades yet."],
-            "trades": [],
-        }
-
-    wins = 0
-    losses = 0
-    flat = 0
-    total_health = 0
-    direction_counts = {}
-    conviction_counts = {}
-
-    enriched = []
-
-    for pos in archived:
-        outcome = classify_trade_outcome(pos)
-        health_score = int(pos.get("health", {}).get("score", 0) or 0)
-
-        if outcome == "WIN":
-            wins += 1
-        elif outcome == "LOSS":
-            losses += 1
-        else:
-            flat += 1
-
-        direction = pos.get("direction", "UNKNOWN")
-        conviction = pos.get("conviction", "Unknown")
-
-        direction_counts[direction] = direction_counts.get(direction, 0) + 1
-        conviction_counts[conviction] = conviction_counts.get(conviction, 0) + 1
-        total_health += health_score
-
-        row = dict(pos)
-        row["outcome"] = outcome
-        enriched.append(row)
-
-    average_health = round(total_health / len(archived), 1) if archived else 0
-
-    insights = []
-
-    if wins > losses:
-        insights.append("Your archived trades are leaning net positive so far.")
-    elif losses > wins:
-        insights.append("Your archived trades are leaning net negative so far. Tightening entry quality may help.")
-    else:
-        insights.append("Your archived trades are currently balanced between wins and losses.")
-
-    if average_health < 40:
-        insights.append("Average health at close is low. You may be letting trades deteriorate before acting.")
-    elif average_health > 70:
-        insights.append("Average health at close is strong. You are generally closing from healthier states.")
-
-    top_direction = max(direction_counts, key=direction_counts.get) if direction_counts else None
-    if top_direction:
-        insights.append(f"Your most common trade direction has been {top_direction}.")
-
-    top_conviction = max(conviction_counts, key=conviction_counts.get) if conviction_counts else None
-    if top_conviction:
-        insights.append(f"Most of your archived trades were entered with {top_conviction} conviction.")
-
-    return {
-        "totals": {
-            "archived": len(archived),
-            "wins": wins,
-            "losses": losses,
-            "flat": flat,
-        },
-        "direction_counts": direction_counts,
-        "conviction_counts": conviction_counts,
-        "average_health": average_health,
-        "insights": insights,
-        "trades": enriched,
-    }
