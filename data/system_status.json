@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-03-25T15:37:29.685089",
-  "cash": 4758.65,
-  "buying_power": 4758.65,
-  "equity": 4758.59,
+  "timestamp": "2026-03-26T01:35:11.062644",
+  "cash": 4747.52,
+  "buying_power": 4747.52,
+  "equity": 4747.43,
   "open_positions": 0,
-  "executed_trades": 6,
-  "regime": "STARTING",
-  "volatility": "UNKNOWN",
-  "mode": "BOOT",
-  "total_trades": 6,
-  "winrate": 0.33,
-  "max_drawdown": 35.17
+  "executed_trades": 7,
+  "regime": "BEAR_TREND",
+  "volatility": "ELEVATED",
+  "mode": "DEFENSIVE_BEAR",
+  "total_trades": 7,
+  "winrate": 0.29,
+  "max_drawdown": 46.33
 }

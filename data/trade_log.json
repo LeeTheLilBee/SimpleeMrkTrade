@@ -86,5 +86,20 @@
     "closed_at": "2026-03-25T01:42:41.520722",
     "reason": "cut_weakness",
     "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.34."
+  },
+  {
+    "timestamp": "2026-03-26T01:35:10.171093",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "price": 371.97,
+    "size": 12.0,
+    "score": 207,
+    "confidence": "HIGH",
+    "status": "CLOSED",
+    "pnl": -11.16,
+    "exit_price": 371.04,
+    "closed_at": "2026-03-26T01:35:11.052549",
+    "reason": "cut_weakness",
+    "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.16."
   }
 ]

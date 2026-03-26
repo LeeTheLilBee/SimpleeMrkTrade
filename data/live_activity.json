@@ -1912,5 +1912,64 @@
     "message": "Blocked by governor: daily_entry_cap",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-26T01:34:41.003323",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-26T01:34:42.719373",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.539257",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.548511",
+    "event_type": "QUEUE",
+    "message": "Approved 6 research trades; selected 2 execution trades in mode DEFENSIVE_BEAR",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.846075",
+    "event_type": "SIGNAL",
+    "message": "MSFT approved as CALL with score 207",
+    "symbol": "MSFT",
+    "meta": {
+      "trade_id": "MSFT-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 207,
+      "confidence": "HIGH"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.884702",
+    "event_type": "SIGNAL",
+    "message": "META approved as CALL with score 198",
+    "symbol": "META",
+    "meta": {
+      "trade_id": "META-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:33.300290",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed",
+    "symbol": null,
+    "meta": {}
   }
 ]

@@ -1158,18 +1158,6 @@ def activate_my_play(play_id):
     return redirect("/my-positions")
 
 
-@app.route("/my-positions")
-def my_positions_page():
-    maybe_track_page_view("/my-positions")
-    positions = get_user_positions()
-    return render_template_safe(
-        "my_positions.html",
-        **template_context({
-            "positions": positions,
-        }),
-    )
-
-
 @app.route("/analytics/risk")
 def analytics_risk_page():
     return render_template_safe(

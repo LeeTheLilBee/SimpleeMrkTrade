@@ -2784,5 +2784,156 @@
       "confidence": "HIGH",
       "source": "research"
     }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.565290",
+    "symbol": "MSFT",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "MSFT-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 207,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.612024",
+    "symbol": "NVDA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "NVDA-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 204,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.663929",
+    "symbol": "META",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "META-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.712198",
+    "symbol": "GOOGL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 195,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.761050",
+    "symbol": "TSLA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.804834",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.848094",
+    "symbol": "MSFT",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "MSFT-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 207,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:09.886693",
+    "symbol": "META",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "META-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 198,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:10.171962",
+    "symbol": "MSFT",
+    "event": "OPENED",
+    "details": {
+      "strategy": "CALL",
+      "requested_price": 371.04,
+      "fill_price": 371.97,
+      "commission": 1.0,
+      "size": 12.0,
+      "stop": 369.97,
+      "target": 375.97
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:10.412632",
+    "symbol": "META",
+    "event": "SKIPPED",
+    "details": {
+      "reason": "buying_power_min_size"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:10.415466",
+    "symbol": "MSFT",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "MSFT-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 207,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:10.430123",
+    "symbol": "META",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "META-CALL-20260326013509",
+      "strategy": "CALL",
+      "score": 198,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-26T01:35:11.054618",
+    "symbol": "MSFT",
+    "event": "CLOSED",
+    "details": {
+      "exit_price": 371.04,
+      "reason": "cut_weakness",
+      "pnl": -11.16,
+      "size": 12.0
+    }
   }
 ]

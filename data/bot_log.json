@@ -298,5 +298,20 @@
     "timestamp": "2026-03-25T15:37:29.676821",
     "level": "INFO",
     "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-26T01:34:41.002487",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-26T01:35:10.174704",
+    "level": "INFO",
+    "message": "Executed MSFT CALL at 371.97 size 12.0"
+  },
+  {
+    "timestamp": "2026-03-26T01:35:10.411436",
+    "level": "WARN",
+    "message": "Skipped META due to insufficient buying power for minimum size"
   }
 ]

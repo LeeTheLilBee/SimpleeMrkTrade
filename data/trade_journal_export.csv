@@ -5,3 +5,4 @@ timestamp,symbol,strategy,price,size,score,confidence,status,pnl,exit_price,clos
 2026-03-25T01:22:09.738304,AAPL,CALL,252.27,18.0,210,HIGH,CLOSED,-11.34,251.64,2026-03-25T01:42:29.125402,cut_weakness,"Position closed due to cut_weakness, resulting in a loss of -11.34."
 2026-03-25T01:22:09.857704,AMZN,CALL,207.76,1.0,201,HIGH,CLOSED,-0.52,207.24,2026-03-25T01:42:29.235661,cut_weakness,"Position closed due to cut_weakness, resulting in a loss of -0.52."
 2026-03-25T01:42:41.113711,AAPL,CALL,252.27,18.0,210,HIGH,CLOSED,-11.34,251.64,2026-03-25T01:42:41.520722,cut_weakness,"Position closed due to cut_weakness, resulting in a loss of -11.34."
+2026-03-26T01:35:10.171093,MSFT,CALL,371.97,12.0,207,HIGH,CLOSED,-11.16,371.04,2026-03-26T01:35:11.052549,cut_weakness,"Position closed due to cut_weakness, resulting in a loss of -11.16."

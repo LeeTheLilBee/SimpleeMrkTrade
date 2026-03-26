@@ -1,33 +1,33 @@
 {
-  "timestamp": "2026-03-25T01:42:41.531418",
+  "timestamp": "2026-03-26T01:35:11.059514",
   "performance": {
-    "trades": 6,
+    "trades": 7,
     "wins": 2,
-    "losses": 4,
-    "winrate": 0.33,
-    "total_pnl": 2576.13,
-    "max_drawdown": 35.17,
-    "entries_today": 3,
-    "closes_today": 3,
-    "round_trips_today": 3,
-    "realized_pnl_today": -23.2
+    "losses": 5,
+    "winrate": 0.29,
+    "total_pnl": 2564.97,
+    "max_drawdown": 46.33,
+    "entries_today": 1,
+    "closes_today": 1,
+    "round_trips_today": 1,
+    "realized_pnl_today": -11.16
   },
   "portfolio": {
     "open_positions": 0,
-    "closed_positions": 12,
-    "realized_pnl": 3758.59
+    "closed_positions": 13,
+    "realized_pnl": 3747.43
   },
   "analytics": {
-    "trades": 6,
-    "winrate": 0.33,
+    "trades": 7,
+    "winrate": 0.29,
     "strategies": {
-      "CALL": 6
+      "CALL": 7
     },
-    "last_trade": "AAPL",
+    "last_trade": "MSFT",
     "portfolio": {
       "open_positions": 0,
-      "closed_positions": 12,
-      "realized_pnl": 3758.59
+      "closed_positions": 13,
+      "realized_pnl": 3747.43
     }
   }
 }
