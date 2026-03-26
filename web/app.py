@@ -912,15 +912,13 @@ def positions_page():
 
 
 @app.route("/my-positions")
-def user_positions_page():
+def my_positions_page():
     maybe_track_page_view("/my-positions")
-    positions = load_json("data/user_positions.json", [])
-    if not isinstance(positions, list):
-        positions = []
+    positions = get_user_positions()
     return render_template_safe(
-        "user_positions.html",
+        "my_positions.html",
         **template_context({
-            "positions": positions
+            "positions": positions,
         }),
     )
 
@@ -1132,6 +1130,32 @@ def edit_my_play(play_id):
                 "error": str(e),
             }),
         )
+
+
+@app.route("/my-plays/<play_id>/activate", methods=["POST"])
+def activate_my_play(play_id):
+    position = add_user_position_from_play(play_id)
+    play = get_play(play_id)
+
+    if not play:
+        return render_template_safe(
+            "my_play_detail.html",
+            **template_context({
+                "play": None,
+                "error": f"Play {play_id} was not found.",
+            }),
+        )
+
+    if not position:
+        return render_template_safe(
+            "my_play_detail.html",
+            **template_context({
+                "play": play,
+                "error": "Could not activate this play.",
+            }),
+        )
+
+    return redirect("/my-positions")
 
 
 @app.route("/my-positions")
