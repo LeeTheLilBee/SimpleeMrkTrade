@@ -50,6 +50,14 @@
                 <p style="margin:0;">{{ pos.thesis or "No thesis added yet." }}</p>
             </div>
         </div>
+
+        <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="/my-positions/{{ pos.position_id }}" class="cta-btn secondary">Edit Position</a>
+
+            <form method="POST" action="/my-positions/{{ pos.position_id }}/close" style="margin:0;">
+                <button type="submit" class="cta-btn secondary">Close Position</button>
+            </form>
+        </div>
     </div>
     {% endfor %}
 </div>

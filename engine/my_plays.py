@@ -472,3 +472,54 @@ def enrich_user_position(position):
 
 def get_user_positions():
     return [enrich_user_position(p) for p in load_user_positions()]
+
+
+def get_user_position(position_id):
+    positions = load_user_positions()
+    for position in positions:
+        if str(position.get("position_id")) == str(position_id):
+            return enrich_user_position(position)
+    return None
+
+
+def update_user_position(position_id, stop=None, target=None, notes=None, conviction=None, status=None):
+    positions = load_user_positions()
+    updated = None
+
+    for position in positions:
+        if str(position.get("position_id")) != str(position_id):
+            continue
+
+        if stop not in {None, ""}:
+            position["stop"] = _safe_float(stop)
+        if target not in {None, ""}:
+            position["target"] = _safe_float(target)
+        if notes is not None:
+            position["notes"] = notes
+        if conviction is not None:
+            position["conviction"] = conviction
+        if status is not None:
+            position["status"] = status
+
+        updated = position
+        break
+
+    save_user_positions(positions)
+    return enrich_user_position(updated) if updated else None
+
+
+def close_user_position(position_id):
+    positions = load_user_positions()
+    closed = None
+
+    for position in positions:
+        if str(position.get("position_id")) != str(position_id):
+            continue
+
+        position["status"] = "Closed"
+        position["closed_at"] = datetime.now().isoformat()
+        closed = position
+        break
+
+    save_user_positions(positions)
+    return enrich_user_position(closed) if closed else None 

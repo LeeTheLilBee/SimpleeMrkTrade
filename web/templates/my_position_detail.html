@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="margin-bottom:14px;">
+    <a href="/my-positions" class="signal-stat-chip" style="text-decoration:none;">
+        ← Back to My Positions
+    </a>
+</div>
+
+{% if error %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div class="passage-frame">
+        <p style="margin:0;">{{ error }}</p>
+    </div>
+</div>
+{% endif %}
+
+{% if position %}
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>{{ position.symbol }} — My Position</h2>
+    <div class="passage-frame">
+        <p>
+            Adjust your position directly and keep your trade plan current.
+        </p>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:18px;">
+    <div class="card premium-card">
+        <h3>Position Snapshot</h3>
+        <p><strong>Direction:</strong> {{ position.direction }}</p>
+        <p><strong>Entry:</strong> {{ position.entry }}</p>
+        <p><strong>Stop:</strong> {{ position.stop }}</p>
+        <p><strong>Target:</strong> {{ position.target }}</p>
+        <p><strong>Status:</strong> {{ position.status }}</p>
+        <p><strong>Conviction:</strong> {{ position.conviction }}</p>
+    </div>
+
+    <div class="card premium-card">
+        <h3>Health</h3>
+        <p><strong>Score:</strong> {{ position.health.score }}</p>
+        <p><strong>Label:</strong> {{ position.health.label }}</p>
+        <p><strong>Status:</strong> {{ position.health.status }}</p>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ position.health.note }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="card premium-card" style="margin-top:18px;">
+    <h3>Edit Position</h3>
+    <form method="POST" action="/my-positions/{{ position.position_id }}/edit">
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+            <div>
+                <label>Stop</label>
+                <input type="number" step="0.01" name="stop" class="input" value="{{ position.stop }}" required>
+            </div>
+            <div>
+                <label>Target</label>
+                <input type="number" step="0.01" name="target" class="input" value="{{ position.target }}" required>
+            </div>
+            <div>
+                <label>Conviction</label>
+                <select name="conviction" class="input">
+                    <option {% if position.conviction == "Low" %}selected{% endif %}>Low</option>
+                    <option {% if position.conviction == "Medium" %}selected{% endif %}>Medium</option>
+                    <option {% if position.conviction == "High" %}selected{% endif %}>High</option>
+                </select>
+            </div>
+            <div>
+                <label>Status</label>
+                <select name="status" class="input">
+                    <option {% if position.status == "Open" %}selected{% endif %}>Open</option>
+                    <option {% if position.status == "Watching" %}selected{% endif %}>Watching</option>
+                    <option {% if position.status == "Closed" %}selected{% endif %}>Closed</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <label>Notes</label>
+            <textarea name="notes" class="input" rows="3">{{ position.notes }}</textarea>
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="submit" class="cta-btn premium-gold-btn">Save Changes</button>
+        </div>
+    </form>
+</div>
+
+<div class="card premium-card" style="margin-top:18px;">
+    <h3>Close Position</h3>
+    <form method="POST" action="/my-positions/{{ position.position_id }}/close">
+        <button type="submit" class="cta-btn secondary">Close Position</button>
+    </form>
+</div>
+{% endif %}
+
+{% endblock %}

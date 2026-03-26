@@ -12,6 +12,9 @@ from engine.my_plays import (
     archive_play,
     add_user_position_from_play,
     get_user_positions,
+    get_user_position,
+    update_user_position,
+    close_user_position,
 )
 from flask import jsonify
 from engine.admin_product_analytics import top_engaged_symbols
@@ -922,6 +925,44 @@ def my_positions_page():
         }),
     )
 
+
+@app.route("/my-positions/<position_id>")
+def my_position_detail_page(position_id):
+    maybe_track_page_view(f"/my-positions/{position_id}")
+    position = get_user_position(position_id)
+    return render_template_safe(
+        "my_position_detail.html",
+        **template_context({
+            "position": position,
+            "error": None if position else "Position not found.",
+        }),
+    )
+
+
+@app.route("/my-positions/<position_id>/edit", methods=["POST"])
+def edit_my_position(position_id):
+    stop = request.form.get("stop", "")
+    target = request.form.get("target", "")
+    conviction = request.form.get("conviction", "Medium")
+    notes = request.form.get("notes", "")
+    status = request.form.get("status", "Open")
+
+    update_user_position(
+        position_id=position_id,
+        stop=stop,
+        target=target,
+        conviction=conviction,
+        notes=notes,
+        status=status,
+    )
+    return redirect(f"/my-positions/{position_id}")
+
+
+@app.route("/my-positions/<position_id>/close", methods=["POST"])
+def close_my_position(position_id):
+    close_user_position(position_id)
+    return redirect("/my-positions")
+    
 
 @app.route("/simulation")
 def simulation_dashboard():

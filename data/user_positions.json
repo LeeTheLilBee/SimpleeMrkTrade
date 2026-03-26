@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "position_id": "POS-AAPL-20260326003615",
+    "play_id": "AAPL-20260326003615",
+    "symbol": "AAPL",
+    "entry": 180.0,
+    "stop": 174.0,
+    "target": 192.0,
+    "current_price": 180.0,
+    "conviction": "High",
+    "thesis": "breakout continuation idea",
+    "notes": "watching for follow-through, update",
+    "status": "Open",
+    "opened_at": "2026-03-26T01:42:33.501636"
+  }
+]
