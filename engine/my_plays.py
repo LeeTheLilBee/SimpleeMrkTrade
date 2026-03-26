@@ -529,7 +529,7 @@ def close_user_position(position_id):
         break
 
     save_user_positions(positions)
-    return enrich_user_position(closed) if closed else None 
+    return enrich_user_position(closed) if closed else None
 
 
 def classify_trade_outcome(position):
@@ -553,6 +553,172 @@ def classify_trade_outcome(position):
 
     return "FLAT"
 
+
+def classify_trade_outcome(position):
+    entry = _safe_float(position.get("entry"))
+    current = _safe_float(position.get("current_price", entry))
+    direction = determine_direction(position)
+
+    if not entry:
+        return "UNKNOWN"
+
+    if direction == "CALL":
+        if current > entry:
+            return "WIN"
+        if current < entry:
+            return "LOSS"
+    elif direction == "PUT":
+        if current < entry:
+            return "WIN"
+        if current > entry:
+            return "LOSS"
+
+    return "FLAT"
+
+
+def build_trade_lesson(position):
+    outcome = classify_trade_outcome(position)
+    agreement = position.get("system_agreement", {})
+    agreement_score = int(agreement.get("score", 0) or 0)
+    direction = position.get("direction", "UNKNOWN")
+    conviction = position.get("conviction", "Unknown")
+    health = position.get("health", {})
+    health_score = int(health.get("score", 0) or 0)
+    market_context = position.get("market_context", {})
+
+    mode = market_context.get("mode", "UNKNOWN")
+    breadth = market_context.get("breadth", "UNKNOWN")
+    regime = market_context.get("regime", "UNKNOWN")
+
+    headline = "Mixed result."
+    lesson = "This trade needs more review."
+    tag = "Neutral"
+
+    if outcome == "WIN" and agreement_score >= 70:
+        headline = "Strong alignment."
+        lesson = (
+            f"This trade worked because your {direction} aligned with conditions "
+            f"({regime}, {breadth}, {mode})."
+        )
+        tag = "Aligned Win"
+
+    elif outcome == "WIN" and agreement_score < 70:
+        headline = "Instinct win."
+        lesson = (
+            "This trade worked without strong system alignment. "
+            "Be careful — these are harder to repeat consistently."
+        )
+        tag = "Instinct Win"
+
+    elif outcome == "LOSS" and agreement_score >= 70:
+        headline = "Execution loss."
+        lesson = (
+            "The idea had support, but execution or timing likely failed."
+        )
+        tag = "Execution Loss"
+
+    elif outcome == "LOSS" and agreement_score < 70:
+        headline = "Misaligned loss."
+        lesson = (
+            f"This trade likely fought the environment ({regime}, {breadth}, {mode})."
+        )
+        tag = "Misaligned Loss"
+
+    if health_score < 35:
+        lesson += " You are letting trades weaken too much before exit."
+    elif health_score > 70:
+        lesson += " You are exiting from strong positions."
+
+    if conviction == "High" and outcome == "LOSS":
+        lesson += " High conviction + loss → tighten discipline."
+    elif conviction == "Low" and outcome == "WIN":
+        lesson += " Some low conviction ideas are working — you may be underestimating setups."
+
+    return {
+        "headline": headline,
+        "lesson": lesson,
+        "tag": tag,
+    }
+
+
+def analyze_user_trades():
+    positions = get_user_positions(include_closed=True)
+
+    archived = [
+        p for p in positions
+        if str(p.get("status", "")).lower() == "closed"
+    ]
+
+    if not archived:
+        return {
+            "totals": {"archived": 0, "wins": 0, "losses": 0, "flat": 0},
+            "direction_counts": {},
+            "conviction_counts": {},
+            "average_health": 0,
+            "insights": ["No archived trades yet."],
+            "trades": [],
+        }
+
+    wins = losses = flat = 0
+    total_health = 0
+    direction_counts = {}
+    conviction_counts = {}
+    enriched = []
+
+    for pos in archived:
+        outcome = classify_trade_outcome(pos)
+        lesson = build_trade_lesson(pos)
+        health_score = int(pos.get("health", {}).get("score", 0) or 0)
+
+        if outcome == "WIN":
+            wins += 1
+        elif outcome == "LOSS":
+            losses += 1
+        else:
+            flat += 1
+
+        direction = pos.get("direction", "UNKNOWN")
+        conviction = pos.get("conviction", "Unknown")
+
+        direction_counts[direction] = direction_counts.get(direction, 0) + 1
+        conviction_counts[conviction] = conviction_counts.get(conviction, 0) + 1
+        total_health += health_score
+
+        row = dict(pos)
+        row["outcome"] = outcome
+        row["lesson"] = lesson
+        enriched.append(row)
+
+    avg_health = round(total_health / len(archived), 1)
+
+    insights = []
+
+    if wins > losses:
+        insights.append("You are net profitable.")
+    elif losses > wins:
+        insights.append("Losses outweigh wins — improve selection.")
+    else:
+        insights.append("Results are balanced.")
+
+    if avg_health < 40:
+        insights.append("You tend to exit late.")
+    elif avg_health > 70:
+        insights.append("You exit from strength.")
+
+    return {
+        "totals": {
+            "archived": len(archived),
+            "wins": wins,
+            "losses": losses,
+            "flat": flat,
+        },
+        "direction_counts": direction_counts,
+        "conviction_counts": conviction_counts,
+        "average_health": avg_health,
+        "insights": insights,
+        "trades": enriched,
+    }
+    
 
 def analyze_user_trades():
     positions = get_user_positions(include_closed=True)

@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "event_type": "premium_content_view",
+    "timestamp": "2026-03-26T12:24:05.483379",
+    "source": "/why-this-trade",
+    "section": "why_this_trade_page"
+  },
+  {
+    "event_type": "premium_wall_seen",
+    "timestamp": "2026-03-26T12:24:05.484037",
+    "source": "/why-this-trade",
+    "section": "why_this_trade_page"
+  },
+  {
+    "event_type": "premium_content_view",
+    "timestamp": "2026-03-26T12:24:07.846927",
+    "source": "/why-this-trade",
+    "section": "why_this_trade_page"
+  },
+  {
+    "event_type": "premium_wall_seen",
+    "timestamp": "2026-03-26T12:24:07.847411",
+    "source": "/why-this-trade",
+    "section": "why_this_trade_page"
+  }
+]
