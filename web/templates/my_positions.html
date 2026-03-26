@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>My Positions</h2>
+    <div class="passage-frame">
+        <p>
+            Your active user-owned positions, tracked separately from the system account and scored against current conditions.
+        </p>
+    </div>
+</div>
+
+{% if positions %}
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px;">
+    {% for pos in positions %}
+    <div class="card premium-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+            <div>
+                <h3 style="margin:0 0 6px 0;">{{ pos.symbol }}</h3>
+                <p class="muted-line" style="margin:0;">
+                    {{ pos.direction }} | Entry {{ pos.entry }} | Stop {{ pos.stop }} | Target {{ pos.target }}
+                </p>
+            </div>
+            <span class="signal-stat-chip">{{ pos.system_agreement.label }}</span>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+            <h4>Position Health</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>Score:</strong> {{ pos.health.score }}</p>
+                <p style="margin:8px 0 0 0;"><strong>Status:</strong> {{ pos.health.status }}</p>
+                <p style="margin:8px 0 0 0;">{{ pos.health.note }}</p>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+            <h4>System Feedback</h4>
+            <div style="display:grid; gap:6px;">
+                {% for line in pos.system_feedback[:3] %}
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ line }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+            <h4>Thesis</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ pos.thesis or "No thesis added yet." }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card premium-card">
+    <div class="passage-frame">
+        <p>No user positions yet.</p>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>My Plays</h2>
+    <div class="passage-frame">
+        <p>
+            Your personal trade ideas, tracked separately from system positions and scored against current engine conditions.
+        </p>
+    </div>
+</div>
+
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3 style="margin-bottom:10px;">Add a New Play</h3>
+
+    <form method="POST" action="/my-plays/add">
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+            <div>
+                <label>Symbol</label>
+                <input type="text" name="symbol" class="input" placeholder="AAPL" required>
+            </div>
+            <div>
+                <label>Entry</label>
+                <input type="number" step="0.01" name="entry" class="input" placeholder="180.00" required>
+            </div>
+            <div>
+                <label>Stop</label>
+                <input type="number" step="0.01" name="stop" class="input" placeholder="174.00" required>
+            </div>
+            <div>
+                <label>Target</label>
+                <input type="number" step="0.01" name="target" class="input" placeholder="192.00" required>
+            </div>
+            <div>
+                <label>Conviction</label>
+                <select name="conviction" class="input">
+                    <option>Low</option>
+                    <option selected>Medium</option>
+                    <option>High</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <label>Thesis</label>
+            <textarea name="thesis" class="input" rows="3" placeholder="Why do you want this trade?"></textarea>
+        </div>
+
+        <div style="margin-top:12px;">
+            <label>Notes</label>
+            <textarea name="notes" class="input" rows="3" placeholder="Extra context, catalysts, or concerns..."></textarea>
+        </div>
+
+        <div style="margin-top:14px;">
+            <button type="submit" class="cta-btn premium-gold-btn">Add Play</button>
+        </div>
+    </form>
+</div>
+
+{% if plays %}
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px;">
+    {% for play in plays %}
+    <a href="/my-plays/{{ play.play_id }}" style="text-decoration:none; color:inherit;">
+        <div class="card premium-card" style="height:100%;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                <div>
+                    <h3 style="margin:0 0 6px 0;">{{ play.symbol }}</h3>
+                    <p class="muted-line" style="margin:0;">
+                        {{ play.direction }} | Entry {{ play.entry }} | Stop {{ play.stop }} | Target {{ play.target }}
+                    </p>
+                </div>
+                <span class="signal-stat-chip">{{ play.system_agreement.label }}</span>
+            </div>
+
+            <div class="card" style="margin-top:14px;">
+                <h4>Play Health</h4>
+                <div class="passage-frame">
+                    <p style="margin:0;"><strong>Score:</strong> {{ play.health.score }}</p>
+                    <p style="margin:8px 0 0 0;"><strong>Status:</strong> {{ play.health.status }}</p>
+                    <p style="margin:8px 0 0 0;">{{ play.health.note }}</p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:14px;">
+                <h4>System Agreement</h4>
+                <div class="passage-frame">
+                    <p style="margin:0;"><strong>{{ play.system_agreement.score }}</strong> / 100</p>
+                    <p style="margin:8px 0 0 0;">{{ play.system_agreement.label }}</p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:14px;">
+                <h4>System Feedback</h4>
+                <div style="display:grid; gap:6px;">
+                    {% for line in play.system_feedback[:3] %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ line }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:14px;">
+                <h4>Thesis</h4>
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ play.thesis or "No thesis added yet." }}</p>
+                </div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card premium-card">
+    <div class="passage-frame">
+        <p>No plays added yet.</p>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

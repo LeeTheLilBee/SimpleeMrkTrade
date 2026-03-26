@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="margin-bottom:14px; display:flex; gap:8px; flex-wrap:wrap;">
+    <a href="/my-plays" class="signal-stat-chip" style="text-decoration:none;">
+        ← Back to My Plays
+    </a>
+    <a href="/my-positions" class="signal-stat-chip" style="text-decoration:none;">
+        My Positions
+    </a>
+</div>
+
+{% if error %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div class="passage-frame">
+        <p style="margin:0;">{{ error }}</p>
+    </div>
+</div>
+{% endif %}
+
+{% if not play %}
+<div class="card premium-card">
+    <div class="passage-frame">
+        <p>Play not found.</p>
+    </div>
+</div>
+{% else %}
+
+<div class="page-hero card premium-hero gold-accent-card">
+    <h2>{{ play.symbol }} — My Play</h2>
+    <div class="passage-frame">
+        <p>
+            A personal trade idea evaluated against current system conditions.
+        </p>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:18px;">
+    <div class="card premium-card">
+        <h3>Setup</h3>
+        <p><strong>Direction:</strong> {{ play.direction }}</p>
+        <p><strong>Entry:</strong> {{ play.entry }}</p>
+        <p><strong>Stop:</strong> {{ play.stop }}</p>
+        <p><strong>Target:</strong> {{ play.target }}</p>
+        <p><strong>Current Price:</strong> {{ play.current_price }}</p>
+        <p><strong>Conviction:</strong> {{ play.conviction }}</p>
+        <p><strong>Status:</strong> {{ play.status }}</p>
+    </div>
+
+    <div class="card premium-card">
+        <h3>Health</h3>
+        <p><strong>Score:</strong> {{ play.health.score }}</p>
+        <p><strong>Label:</strong> {{ play.health.label }}</p>
+        <p><strong>Status:</strong> {{ play.health.status }}</p>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ play.health.note }}</p>
+        </div>
+    </div>
+
+    <div class="card premium-card">
+        <h3>System Agreement</h3>
+        <p><strong>Score:</strong> {{ play.system_agreement.score }}</p>
+        <p><strong>Label:</strong> {{ play.system_agreement.label }}</p>
+        <div style="display:grid; gap:8px;">
+            {% for line in play.system_agreement.reasons %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ line }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="card premium-card" style="margin-top:18px;">
+    <h3>Edit Play</h3>
+
+    <form method="POST" action="/my-plays/{{ play.play_id }}/edit">
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+            <div>
+                <label>Symbol</label>
+                <input type="text" name="symbol" class="input" value="{{ play.symbol }}" required>
+            </div>
+            <div>
+                <label>Entry</label>
+                <input type="number" step="0.01" name="entry" class="input" value="{{ play.entry }}" required>
+            </div>
+            <div>
+                <label>Stop</label>
+                <input type="number" step="0.01" name="stop" class="input" value="{{ play.stop }}" required>
+            </div>
+            <div>
+                <label>Target</label>
+                <input type="number" step="0.01" name="target" class="input" value="{{ play.target }}" required>
+            </div>
+            <div>
+                <label>Conviction</label>
+                <select name="conviction" class="input">
+                    <option {% if play.conviction == "Low" %}selected{% endif %}>Low</option>
+                    <option {% if play.conviction == "Medium" %}selected{% endif %}>Medium</option>
+                    <option {% if play.conviction == "High" %}selected{% endif %}>High</option>
+                </select>
+            </div>
+            <div>
+                <label>Status</label>
+                <select name="status" class="input">
+                    <option {% if play.status == "Open" %}selected{% endif %}>Open</option>
+                    <option {% if play.status == "Watching" %}selected{% endif %}>Watching</option>
+                    <option {% if play.status == "Archived" %}selected{% endif %}>Archived</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <label>Thesis</label>
+            <textarea name="thesis" class="input" rows="3">{{ play.thesis }}</textarea>
+        </div>
+
+        <div style="margin-top:12px;">
+            <label>Notes</label>
+            <textarea name="notes" class="input" rows="3">{{ play.notes }}</textarea>
+        </div>
+
+        <div style="margin-top:14px;">
+            <button type="submit" class="cta-btn premium-gold-btn">Save Changes</button>
+        </div>
+    </form>
+</div>
+
+<div class="card premium-card" style="margin-top:18px;">
+    <h3>System Feedback</h3>
+    <div style="display:grid; gap:8px;">
+        {% for line in play.system_feedback %}
+        <div class="passage-frame">
+            <p style="margin:0;">{{ line }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card premium-card" style="margin-top:18px;">
+    <h3>Market Context</h3>
+    <div style="display:grid; gap:8px;">
+        <div class="passage-frame"><p style="margin:0;">Mode: {{ play.market_context.mode }}</p></div>
+        <div class="passage-frame"><p style="margin:0;">Breadth: {{ play.market_context.breadth }}</p></div>
+        <div class="passage-frame"><p style="margin:0;">Regime: {{ play.market_context.regime }}</p></div>
+        <div class="passage-frame"><p style="margin:0;">Volatility: {{ play.market_context.volatility_state }}</p></div>
+    </div>
+</div>
+
+{% if play.engine_candidate %}
+<div class="card premium-card" style="margin-top:18px;">
+    <h3>Engine View on This Symbol</h3>
+    <div class="passage-frame">
+        <p style="margin:0;">
+            Score {{ play.engine_candidate.score }} | {{ play.engine_candidate.confidence }} | {{ play.engine_candidate.strategy }}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+<div class="card premium-card" style="margin-top:18px;">
+    <h3>Activate</h3>
+    <form method="POST" action="/my-plays/{{ play.play_id }}/activate">
+        <button type="submit" class="cta-btn premium-gold-btn">Move to My Positions</button>
+    </form>
+</div>
+
+{% endif %}
+
+{% endblock %}

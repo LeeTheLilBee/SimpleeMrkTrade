@@ -4,6 +4,15 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import os
 import sys
+from engine.my_plays import (
+    get_my_plays,
+    add_play,
+    get_play,
+    update_play,
+    archive_play,
+    add_user_position_from_play,
+    get_user_positions,
+)
 from flask import jsonify
 from engine.admin_product_analytics import top_engaged_symbols
 import json
@@ -766,6 +775,12 @@ def dashboard_page():
     )
 
 
+@app.route("/my-plays/<play_id>/archive", methods=["POST"])
+def archive_my_play(play_id):
+    archive_play(play_id)
+    return redirect("/my-plays")
+
+
 @app.route("/signals")
 def signals_page():
     maybe_track_page_view("/signals")
@@ -998,6 +1013,7 @@ def analytics_page():
 
 @app.route("/analytics/performance")
 def analytics_performance_page():
+    maybe_track_page_view("/analytics/performance")
     return render_template_safe(
         "analytics_performance.html",
         **template_context(
@@ -1013,6 +1029,7 @@ def analytics_performance_page():
 @app.route("/analytics/strategy")
 @app.route("/strategy-behavior")
 def strategy_behavior_page():
+    maybe_track_page_view("/analytics/strategy")
     return render_template_safe(
         "strategy_behavior.html",
         **template_context({
@@ -1020,6 +1037,111 @@ def strategy_behavior_page():
                 "summary": "Strategy behavior view is active.",
                 "items": []
             }
+        }),
+    )
+
+
+@app.route("/my-plays")
+def my_plays_page():
+    maybe_track_page_view("/my-plays")
+    plays = get_my_plays()
+    return render_template_safe(
+        "my_plays.html",
+        **template_context({
+            "plays": plays,
+        }),
+    )
+
+
+@app.route("/my-plays/add", methods=["POST"])
+def add_my_play():
+    symbol = request.form.get("symbol", "").strip().upper()
+    entry = request.form.get("entry", "")
+    stop = request.form.get("stop", "")
+    target = request.form.get("target", "")
+    conviction = request.form.get("conviction", "Medium")
+    thesis = request.form.get("thesis", "")
+    notes = request.form.get("notes", "")
+
+    try:
+        add_play(
+            symbol=symbol,
+            entry=entry,
+            stop=stop,
+            target=target,
+            conviction=conviction,
+            thesis=thesis,
+            notes=notes,
+        )
+        return redirect("/my-plays")
+    except ValueError as e:
+        plays = get_my_plays()
+        return render_template_safe(
+            "my_plays.html",
+            **template_context({
+                "plays": plays,
+                "error": str(e),
+            }),
+        )
+
+
+@app.route("/my-plays/<play_id>")
+def my_play_detail_page(play_id):
+    maybe_track_page_view(f"/my-plays/{play_id}")
+    play = get_play(play_id)
+    return render_template_safe(
+        "my_play_detail.html",
+        **template_context({
+            "play": play,
+            "error": None if play else "Play not found.",
+        }),
+    )
+
+
+@app.route("/my-plays/<play_id>/edit", methods=["POST"])
+def edit_my_play(play_id):
+    symbol = request.form.get("symbol", "").strip().upper()
+    entry = request.form.get("entry", "")
+    stop = request.form.get("stop", "")
+    target = request.form.get("target", "")
+    conviction = request.form.get("conviction", "Medium")
+    thesis = request.form.get("thesis", "")
+    notes = request.form.get("notes", "")
+    status = request.form.get("status", "Open")
+
+    try:
+        update_play(
+            play_id=play_id,
+            symbol=symbol,
+            entry=entry,
+            stop=stop,
+            target=target,
+            conviction=conviction,
+            thesis=thesis,
+            notes=notes,
+            status=status,
+        )
+        return redirect(f"/my-plays/{play_id}")
+
+    except ValueError as e:
+        play = get_play(play_id)
+        return render_template_safe(
+            "my_play_detail.html",
+            **template_context({
+                "play": play,
+                "error": str(e),
+            }),
+        )
+
+
+@app.route("/my-positions")
+def my_positions_page():
+    maybe_track_page_view("/my-positions")
+    positions = get_user_positions()
+    return render_template_safe(
+        "my_positions.html",
+        **template_context({
+            "positions": positions,
         }),
     )
 
@@ -1350,6 +1472,7 @@ def admin_clear_preview_tier():
 def admin_product_analytics_page():
     maybe_track_page_view("/admin/product-analytics")
     analytics = build_product_analytics()
+
     return render_template_safe(
         "admin_product_analytics.html",
         **template_context({
