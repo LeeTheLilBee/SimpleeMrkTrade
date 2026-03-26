@@ -578,61 +578,69 @@ def classify_trade_outcome(position):
 
 def build_trade_lesson(position):
     outcome = classify_trade_outcome(position)
-    agreement = position.get("system_agreement", {})
+    agreement = position.get("system_agreement", {}) or {}
     agreement_score = int(agreement.get("score", 0) or 0)
     direction = position.get("direction", "UNKNOWN")
     conviction = position.get("conviction", "Unknown")
-    health = position.get("health", {})
+    health = position.get("health", {}) or {}
     health_score = int(health.get("score", 0) or 0)
-    market_context = position.get("market_context", {})
+    market_context = position.get("market_context", {}) or {}
 
     mode = market_context.get("mode", "UNKNOWN")
     breadth = market_context.get("breadth", "UNKNOWN")
     regime = market_context.get("regime", "UNKNOWN")
 
-    headline = "Mixed result."
-    lesson = "This trade needs more review."
-    tag = "Neutral"
+    headline = "Needs harder review."
+    lesson = "This trade does not yet have enough context attached to judge cleanly."
+    tag = "Review"
 
-    if outcome == "WIN" and agreement_score >= 70:
-        headline = "Strong alignment."
+    if outcome == "WIN" and agreement_score >= 75:
+        headline = "You took the hint."
         lesson = (
-            f"This trade worked because your {direction} aligned with conditions "
-            f"({regime}, {breadth}, {mode})."
+            f"This trade worked because your {direction} idea was aligned with the system and the environment did not fight you. "
+            f"You were not guessing blindly here."
         )
         tag = "Aligned Win"
 
-    elif outcome == "WIN" and agreement_score < 70:
-        headline = "Instinct win."
+    elif outcome == "WIN" and agreement_score < 75:
+        headline = "You got paid, but don’t romanticize it."
         lesson = (
-            "This trade worked without strong system alignment. "
-            "Be careful — these are harder to repeat consistently."
+            "This trade won without strong system alignment. That does not automatically make it repeatable. "
+            "A win can still be a sloppy decision."
         )
-        tag = "Instinct Win"
+        tag = "Lucky Win"
 
-    elif outcome == "LOSS" and agreement_score >= 70:
-        headline = "Execution loss."
+    elif outcome == "LOSS" and agreement_score >= 75:
+        headline = "Decent idea, weaker execution."
         lesson = (
-            "The idea had support, but execution or timing likely failed."
+            "The system was not strongly against this trade, so the loss is more likely tied to timing, management, or exit discipline than pure idea quality."
         )
         tag = "Execution Loss"
 
-    elif outcome == "LOSS" and agreement_score < 70:
-        headline = "Misaligned loss."
+    elif outcome == "LOSS" and agreement_score < 75:
+        headline = "The market told you no, and you did it anyway."
         lesson = (
-            f"This trade likely fought the environment ({regime}, {breadth}, {mode})."
+            f"This trade likely failed because it lacked strong alignment. "
+            f"The environment ({regime}, {breadth}, {mode}) was not giving you real support."
         )
         tag = "Misaligned Loss"
 
+    elif outcome == "FLAT":
+        headline = "No edge captured."
+        lesson = (
+            "This trade did not produce meaningful edge. Either the idea lacked force, or the management failed to convert it."
+        )
+        tag = "Flat"
+
     if health_score < 35:
-        lesson += " You are letting trades weaken too much before exit."
+        lesson += " You also appear to be letting trades rot before acting."
     elif health_score > 70:
-        lesson += " You are exiting from strong positions."
+        lesson += " At least the exit did not come from complete deterioration."
 
     if conviction == "High" and outcome == "LOSS":
-        lesson += " High conviction + loss → tighten discipline."
+        lesson += " High conviction on weak alignment is not confidence — it is stubbornness."
     elif conviction == "Low" and outcome == "WIN":
-        lesson += " Some low conviction ideas are working — you may be underestimating setups."
+        lesson += " You may be under-trusting some of your better ideas."
 
     return {
         "headline": headline,
@@ -640,85 +648,6 @@ def build_trade_lesson(position):
         "tag": tag,
     }
 
-
-def analyze_user_trades():
-    positions = get_user_positions(include_closed=True)
-
-    archived = [
-        p for p in positions
-        if str(p.get("status", "")).lower() == "closed"
-    ]
-
-    if not archived:
-        return {
-            "totals": {"archived": 0, "wins": 0, "losses": 0, "flat": 0},
-            "direction_counts": {},
-            "conviction_counts": {},
-            "average_health": 0,
-            "insights": ["No archived trades yet."],
-            "trades": [],
-        }
-
-    wins = losses = flat = 0
-    total_health = 0
-    direction_counts = {}
-    conviction_counts = {}
-    enriched = []
-
-    for pos in archived:
-        outcome = classify_trade_outcome(pos)
-        lesson = build_trade_lesson(pos)
-        health_score = int(pos.get("health", {}).get("score", 0) or 0)
-
-        if outcome == "WIN":
-            wins += 1
-        elif outcome == "LOSS":
-            losses += 1
-        else:
-            flat += 1
-
-        direction = pos.get("direction", "UNKNOWN")
-        conviction = pos.get("conviction", "Unknown")
-
-        direction_counts[direction] = direction_counts.get(direction, 0) + 1
-        conviction_counts[conviction] = conviction_counts.get(conviction, 0) + 1
-        total_health += health_score
-
-        row = dict(pos)
-        row["outcome"] = outcome
-        row["lesson"] = lesson
-        enriched.append(row)
-
-    avg_health = round(total_health / len(archived), 1)
-
-    insights = []
-
-    if wins > losses:
-        insights.append("You are net profitable.")
-    elif losses > wins:
-        insights.append("Losses outweigh wins — improve selection.")
-    else:
-        insights.append("Results are balanced.")
-
-    if avg_health < 40:
-        insights.append("You tend to exit late.")
-    elif avg_health > 70:
-        insights.append("You exit from strength.")
-
-    return {
-        "totals": {
-            "archived": len(archived),
-            "wins": wins,
-            "losses": losses,
-            "flat": flat,
-        },
-        "direction_counts": direction_counts,
-        "conviction_counts": conviction_counts,
-        "average_health": avg_health,
-        "insights": insights,
-        "trades": enriched,
-    }
-    
 
 def analyze_user_trades():
     positions = get_user_positions(include_closed=True)
@@ -746,7 +675,7 @@ def analyze_user_trades():
 
     for pos in archived:
         outcome = classify_trade_outcome(pos)
-        health_score = int(pos.get("health", {}).get("score", 0) or 0)
+        health_score = int((pos.get("health", {}) or {}).get("score", 0) or 0)
 
         if outcome == "WIN":
             wins += 1
@@ -764,6 +693,7 @@ def analyze_user_trades():
 
         row = dict(pos)
         row["outcome"] = outcome
+        row["lesson"] = build_trade_lesson(pos)
         enriched.append(row)
 
     avg_health = round(total_health / len(archived), 1)
@@ -771,16 +701,16 @@ def analyze_user_trades():
     insights = []
 
     if wins > losses:
-        insights.append("You are net profitable on archived trades.")
+        insights.append("You are net positive on archived trades, but that does not excuse weak process on the bad ones.")
     elif losses > wins:
-        insights.append("Losses are outweighing wins — consider tightening entry quality.")
+        insights.append("Your archived losses are outweighing your wins. Entry quality and alignment need to get stricter.")
     else:
-        insights.append("Your results are currently balanced.")
+        insights.append("Your results are balanced, which usually means the edge is still too soft or inconsistent.")
 
     if avg_health < 40:
-        insights.append("You tend to close trades after they weaken significantly.")
+        insights.append("You tend to close trades after they have already weakened badly. That is a management problem, not just a market problem.")
     elif avg_health > 70:
-        insights.append("You are exiting trades from strong positions.")
+        insights.append("You are generally exiting from stronger states, which suggests better discipline on closes.")
 
     return {
         "totals": {

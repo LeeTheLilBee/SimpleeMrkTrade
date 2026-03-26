@@ -1,6 +1,6 @@
 {
   "page_views": {
-    "/": 168,
+    "/": 169,
     "/dashboard": 97,
     "/signals": 148,
     "/positions": 66,
@@ -9,7 +9,7 @@
     "/why-this-trade": 61,
     "/analytics-overview": 18,
     "/upgrade": 21,
-    "/login": 129,
+    "/login": 131,
     "/signup": 28,
     "/trade/MPC_1773917311.412609": 2,
     "/simulation": 1,
@@ -21,7 +21,8 @@
     "/my-plays": 4,
     "/my-plays/AAPL-20260326003615": 4,
     "/my-positions/POS-AAPL-20260326003615": 1,
-    "/my-positions/archived": 1
+    "/my-positions/archived": 1,
+    "/my-positions/analyze": 1
   },
   "clicks": {
     "upgrade_button": 17,
