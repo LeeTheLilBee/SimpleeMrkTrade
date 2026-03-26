@@ -1,6 +1,6 @@
 {
   "page_views": {
-    "/": 163,
+    "/": 164,
     "/dashboard": 96,
     "/signals": 148,
     "/positions": 66,
@@ -9,11 +9,11 @@
     "/why-this-trade": 59,
     "/analytics-overview": 18,
     "/upgrade": 21,
-    "/login": 120,
+    "/login": 122,
     "/signup": 28,
     "/trade/MPC_1773917311.412609": 2,
     "/simulation": 1,
-    "/my-positions": 3,
+    "/my-positions": 6,
     "/trade/<trade_id>": 1,
     "/trade/AMD-CALL-20260325031132": 6,
     "/trade/AMD-CALL-20260325153741": 1,
