@@ -137,28 +137,54 @@
     </div>
 
     {% if behavior_priority.top_fix %}
-    <div class="card" style="margin-top:14px;">
-        <h4>{{ behavior_priority.top_fix.headline }}</h4>
+<div class="card" style="margin-top:14px;">
+    <h4>{{ behavior_priority.top_fix.headline }}</h4>
+    <div class="passage-frame">
+        <p style="margin:0;">{{ behavior_priority.top_fix.body }}</p>
+        <p style="margin:8px 0 0 0;"><strong>Damage Type:</strong> {{ behavior_priority.top_fix.damage_type }}</p>
+        <p style="margin:8px 0 0 0;"><strong>Impact Score:</strong> {{ behavior_priority.top_fix.impact_score }}</p>
+        <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ behavior_priority.top_fix.fix }}</p>
+        {% if behavior_priority.totals %}
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:14px;">
+    <div class="card" style="margin:0;">
+        <h4>Archived</h4>
         <div class="passage-frame">
-            <p style="margin:0;">{{ behavior_priority.top_fix.body }}</p>
-            <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ behavior_priority.top_fix.fix }}</p>
+            <p style="margin:0;"><strong>{{ behavior_priority.totals.archived }}</strong></p>
         </div>
     </div>
-    {% endif %}
+    <div class="card" style="margin:0;">
+        <h4>Wins</h4>
+        <div class="passage-frame">
+            <p style="margin:0;"><strong>{{ behavior_priority.totals.wins }}</strong></p>
+        </div>
+    </div>
+    <div class="card" style="margin:0;">
+        <h4>Losses</h4>
+        <div class="passage-frame">
+            <p style="margin:0;"><strong>{{ behavior_priority.totals.losses }}</strong></p>
+        </div>
+    </div>
+</div>
+{% endif %}
+    </div>
+</div>
+{% endif %}
 
     {% if behavior_priority.items %}
-    <div style="display:grid; gap:12px; margin-top:14px;">
-        {% for item in behavior_priority.items %}
-        <div class="card" style="margin:0;">
-            <h4>{{ item.headline }}</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ item.body }}</p>
-                <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ item.fix }}</p>
-            </div>
+<div style="display:grid; gap:12px; margin-top:14px;">
+    {% for item in behavior_priority.items %}
+    <div class="card" style="margin:0;">
+        <h4>{{ item.headline }}</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ item.body }}</p>
+            <p style="margin:8px 0 0 0;"><strong>Damage Type:</strong> {{ item.damage_type }}</p>
+            <p style="margin:8px 0 0 0;"><strong>Impact Score:</strong> {{ item.impact_score }}</p>
+            <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ item.fix }}</p>
         </div>
-        {% endfor %}
     </div>
-    {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
 </div>
 {% endif %}
 

@@ -1556,8 +1556,7 @@ def build_admin_dashboard_context():
         "behavior_risk": shared["behavior_risk"],
     }
 
-
-    def build_all_symbols_page_summary(rows):
+def build_all_symbols_page_summary(rows):
     rows = rows or []
 
     total = len(rows)
