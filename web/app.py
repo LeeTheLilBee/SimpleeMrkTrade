@@ -1,9 +1,23 @@
-import sys
 import os
+import sys
+import json
+from pathlib import Path
+from typing import Any, Dict, List
+
+from flask import (
+    Flask,
+    jsonify,
+    redirect,
+    render_template,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
+from jinja2 import TemplateNotFound
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-import os
-import sys
+
 from engine.my_plays import (
     get_my_plays,
     add_play,
@@ -17,9 +31,9 @@ from engine.my_plays import (
     close_user_position,
     analyze_user_trades,
 )
-from flask import jsonify
-from engine.admin_product_analytics import top_engaged_symbols
-import json
+
+from engine.symbols import load_symbol_news, refresh_symbol_news
+
 from engine.admin_product_analytics import (
     log_event,
     maybe_track_page_view,
@@ -31,24 +45,10 @@ from engine.admin_product_analytics import (
     track_premium_content_view,
     track_rejection_interest,
     build_product_analytics,
+    top_engaged_symbols,
     top_engaged_symbols_with_counts,
     most_underrated_symbols,
 )
-from pathlib import Path
-from typing import Any, Dict, List
-
-from flask import (
-    Flask,
-    render_template,
-    render_template_string,
-    request,
-    redirect,
-    session,
-    url_for,
-)
-from jinja2 import TemplateNotFound
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from engine.trade_intelligence import attach_trade_intelligence
 from engine.signal_tiering import slice_signals_by_tier, spotlight_sections
@@ -56,14 +56,6 @@ from engine.position_health import attach_position_health
 from engine.portfolio_intelligence import evaluate_portfolio
 from engine.alert_engine import generate_alerts
 from engine.system_brain import build_system_brain
-from engine.admin_product_analytics import (
-    maybe_track_page_view,
-    track_symbol_click,
-    track_trade_click,
-    track_upgrade_click,
-    track_cta_click,
-    build_product_analytics,
-)
 
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
@@ -226,40 +218,437 @@ def get_admin_metrics() -> Dict[str, Any]:
         metrics = {}
 
     return {
-        "page_views": metrics.get("page_views", {}),
-        "clicks": metrics.get("clicks", {}),
-        "friction_signals": metrics.get("friction_signals", {}),
-        "engagement": metrics.get("engagement", {}),
+        "page_views": metrics.get("page_views", {}) if isinstance(metrics.get("page_views", {}), dict) else {},
+        "clicks": metrics.get("clicks", {}) if isinstance(metrics.get("clicks", {}), dict) else {},
+        "friction_signals": metrics.get("friction_signals", {}) if isinstance(metrics.get("friction_signals", {}), dict) else {},
+        "engagement": metrics.get("engagement", {}) if isinstance(metrics.get("engagement", {}), dict) else {},
     }
 
 
-def build_admin_surface_alerts(admin_summary=None, monitoring=None):
+def _safe_int(value, default=0):
+    try:
+        return int(value)
+    except Exception:
+        return default
+
+
+def _norm_text(value, default=""):
+    text = str(value or "").strip()
+    return text if text else default
+
+
+def _norm_upper(value, default="UNKNOWN"):
+    text = _norm_text(value, "").upper()
+    return text if text else default
+
+
+def _top_count_item(counts, fallback="Not enough data yet."):
+    if not counts:
+        return {"label": fallback, "count": 0}
+    label, count = max(counts.items(), key=lambda item: item[1])
+    return {"label": label, "count": count}
+
+
+def get_recent_behavior_events_for_symbol(symbol, limit=20):
+    symbol = str(symbol or "").strip().upper()
+    rows = get_event_log()
+    matches = []
+
+    for row in reversed(rows):
+        payload = row.get("payload", {}) or {}
+        row_symbol = str(payload.get("symbol", "")).strip().upper()
+        if row_symbol == symbol:
+            matches.append(row)
+        if len(matches) >= limit:
+            break
+
+    return matches
+
+
+def build_trade_behavior_flags(position):
+    symbol = str(position.get("symbol", "")).strip().upper()
+    conviction = str(position.get("conviction", "")).strip()
+    thesis = str(position.get("thesis", "") or "").strip()
+
+    flags = []
+    events = get_recent_behavior_events_for_symbol(symbol, limit=25)
+
+    activated_against_engine = False
+    edited_after_weak_health = False
+    closed_weak = False
+    created_after_loss_close = False
+
+    for row in events:
+        event_type = str(row.get("event_type", "")).strip()
+        payload = row.get("payload", {}) or {}
+
+        if event_type == "play_activated" and bool(payload.get("activated_against_engine", False)):
+            activated_against_engine = True
+
+        if event_type == "play_edited" and bool(payload.get("edited_after_weak_health", False)):
+            edited_after_weak_health = True
+
+        if event_type == "position_closed" and bool(payload.get("closed_weak", False)):
+            closed_weak = True
+
+        if event_type == "play_created" and bool(payload.get("created_after_loss_close", False)):
+            created_after_loss_close = True
+
+    if activated_against_engine:
+        flags.append({
+            "tag": "Against Engine",
+            "note": "This setup appears to have been activated against the engine direction."
+        })
+
+    if conviction.lower() == "high" and not thesis:
+        flags.append({
+            "tag": "High Conviction / No Thesis",
+            "note": "This trade carried high conviction without a written thesis."
+        })
+
+    if edited_after_weak_health:
+        flags.append({
+            "tag": "Late Edit",
+            "note": "This setup appears to have been edited after weakness was already showing."
+        })
+
+    if closed_weak:
+        flags.append({
+            "tag": "Late Weak Close",
+            "note": "This trade appears to have been closed after agreement or health was already weak."
+        })
+
+    if created_after_loss_close:
+        flags.append({
+            "tag": "Post-Loss Creation",
+            "note": "This setup may have been created shortly after a losing close."
+        })
+
+    return flags
+
+
+def build_behavior_coaching_line(position, flags):
+    if not flags:
+        return "No strong behavior warning is attached to this trade yet."
+
+    flag_tags = [f.get("tag", "Behavior") for f in flags]
+
+    if "Against Engine" in flag_tags and "Late Edit" in flag_tags:
+        return "This trade looks less like a clean miss and more like a discipline leak: you pushed against the system, then managed late."
+    if "High Conviction / No Thesis" in flag_tags:
+        return "This trade shows confidence outrunning structure. Strong belief without written reasoning is harder to review and harder to trust."
+    if "Late Weak Close" in flag_tags:
+        return "The issue here may not just be the idea. It may be that you stayed too long after the evidence weakened."
+    if "Post-Loss Creation" in flag_tags:
+        return "This trade may have been influenced by recent emotional flow rather than clean setup quality."
+    if "Against Engine" in flag_tags:
+        return "This trade carried a directional disagreement with the system, so the burden of proof needed to be higher."
+    if "Late Edit" in flag_tags:
+        return "This trade suggests reactive management. The system is warning that adjustment may have come after damage had already started."
+
+    return "This trade carries behavior flags that matter as much as the outcome itself."
+
+
+def build_behavior_habit_summary(enriched_trades):
+    counts = {
+        "against_engine": 0,
+        "high_conviction_no_thesis": 0,
+        "late_edit": 0,
+        "late_weak_close": 0,
+        "post_loss_creation": 0,
+    }
+
+    for trade in enriched_trades:
+        for flag in trade.get("behavior_flags", []):
+            tag = str(flag.get("tag", "")).strip()
+
+            if tag == "Against Engine":
+                counts["against_engine"] += 1
+            elif tag == "High Conviction / No Thesis":
+                counts["high_conviction_no_thesis"] += 1
+            elif tag == "Late Edit":
+                counts["late_edit"] += 1
+            elif tag == "Late Weak Close":
+                counts["late_weak_close"] += 1
+            elif tag == "Post-Loss Creation":
+                counts["post_loss_creation"] += 1
+
+    cards = []
+
+    if counts["against_engine"] > 0:
+        cards.append(f"{counts['against_engine']} archived trade(s) show against-engine activation behavior.")
+    if counts["high_conviction_no_thesis"] > 0:
+        cards.append(f"{counts['high_conviction_no_thesis']} archived trade(s) carried high conviction without a written thesis.")
+    if counts["late_edit"] > 0:
+        cards.append(f"{counts['late_edit']} archived trade(s) show edits happening after weakness was already visible.")
+    if counts["late_weak_close"] > 0:
+        cards.append(f"{counts['late_weak_close']} archived trade(s) appear to have been closed late after weakness.")
+    if counts["post_loss_creation"] > 0:
+        cards.append(f"{counts['post_loss_creation']} archived trade(s) may have been created too soon after a loss.")
+
+    if not cards:
+        cards.append("No strong behavior habit signals are standing out yet.")
+
+    return {
+        "counts": counts,
+        "cards": cards,
+    }
+
+
+def _is_closed_status(value):
+    return _norm_text(value, "").lower() == "closed"
+
+
+def _agreement_score(row):
+    return _safe_int((row.get("system_agreement", {}) or {}).get("score", 0), 0)
+
+
+def _health_score(row):
+    return _safe_int((row.get("health", {}) or {}).get("score", 0), 0)
+
+
+def _activation_bucket(play):
+    readiness = play.get("activation_readiness") or {}
+    return _norm_upper(readiness.get("bucket"), "UNKNOWN")
+
+
+def _ensure_activation_readiness(plays):
+    plays = plays or []
+    for play in plays:
+        if not play.get("activation_readiness"):
+            play["activation_readiness"] = classify_play_readiness(play)
+    return plays
+
+
+def build_admin_shared_context():
+    plays = _ensure_activation_readiness(get_my_plays())
+    positions = get_user_positions(include_closed=True)
+    analysis = analyze_user_trades()
+
+    admin_summary = build_admin_intelligence_summary(plays, positions, analysis)
+    monitoring = build_product_monitoring_summary(plays, positions, analysis)
+    behavioral_insights = build_behavioral_event_insights()
+    behavior_risk = build_behavior_risk_summary_from_analysis(analysis)
+    behavior_priority = build_behavior_priority_engine(analysis)
+
+    surface_alerts = build_admin_surface_alerts(
+        admin_summary=admin_summary,
+        monitoring=monitoring,
+        behavioral_insights=behavioral_insights,
+        behavior_risk=behavior_risk,
+    )
+    quick_actions = build_operator_quick_actions(
+        admin_summary=admin_summary,
+        monitoring=monitoring,
+        behavioral_insights=behavioral_insights,
+        behavior_risk=behavior_risk,
+    )
+
+    return {
+        "plays": plays,
+        "positions": positions,
+        "analysis": analysis,
+        "admin_summary": admin_summary,
+        "monitoring": monitoring,
+        "behavioral_insights": behavioral_insights,
+        "behavior_risk": behavior_risk,
+        "behavior_priority": behavior_priority,
+        "surface_alerts": surface_alerts,
+        "quick_actions": quick_actions,
+    }
+
+
+def build_operator_quick_actions(admin_summary=None, monitoring=None, behavioral_insights=None, behavior_risk=None):
     admin_summary = admin_summary or {}
     monitoring = monitoring or {}
+    behavioral_insights = behavioral_insights or {}
+    behavior_risk = behavior_risk or {}
+
+    ready_plays = _safe_int((admin_summary.get("counts", {}) or {}).get("ready_plays", 0))
+    weak_plays = _safe_int((admin_summary.get("counts", {}) or {}).get("weak_plays", 0))
+    weak_open_positions = _safe_int((monitoring.get("position_quality", {}) or {}).get("weak_open_positions", 0))
+    no_thesis = _safe_int((monitoring.get("thesis_quality", {}) or {}).get("without_thesis", 0))
+    losses = _safe_int((admin_summary.get("trade_totals", {}) or {}).get("losses", 0))
+    disagreement_count = _safe_int((admin_summary.get("disagreement", {}) or {}).get("disagreement_count", 0))
+
+    behavior_counts = behavioral_insights.get("counts", {}) or {}
+    activated_against_engine = _safe_int(behavior_counts.get("activated_against_engine", 0))
+    high_conviction_no_thesis = _safe_int(behavior_counts.get("high_conviction_no_thesis", 0))
+    edited_after_weak_health = _safe_int(behavior_counts.get("edited_after_weak_health", 0))
+    closed_weak = _safe_int(behavior_counts.get("closed_weak", 0))
+    created_after_loss_close = _safe_int(behavior_counts.get("created_after_loss_close", 0))
+
+    risk_counts = behavior_risk.get("counts", {}) or {}
+    archived_against_engine = _safe_int(risk_counts.get("against_engine", 0))
+    archived_late_edit = _safe_int(risk_counts.get("late_edit", 0))
+    archived_late_weak_close = _safe_int(risk_counts.get("late_weak_close", 0))
+
+    actions = [
+        {
+            "headline": "Ready Plays",
+            "body": f"{ready_plays} play(s) currently look ready for activation.",
+            "target": "/my-plays?filter=ready",
+            "target_label": "Open Ready Plays",
+            "tone": "gold",
+        },
+        {
+            "headline": "Weak Plays",
+            "body": f"{weak_plays} play(s) currently look weak or watch-only.",
+            "target": "/my-plays?filter=weak",
+            "target_label": "Open Weak Plays",
+            "tone": "standard",
+        },
+        {
+            "headline": "Weak Positions",
+            "body": f"{weak_open_positions} open position(s) need faster review.",
+            "target": "/my-positions?filter=weak",
+            "target_label": "Review Weak Positions",
+            "tone": "standard",
+        },
+        {
+            "headline": "Trade Analysis",
+            "body": f"{losses} archived loss(es) currently recorded in the coaching layer.",
+            "target": "/my-positions/analyze",
+            "target_label": "Open Trade Analysis",
+            "tone": "standard",
+        },
+        {
+            "headline": "Failure Cluster",
+            "body": "Open the current dominant failure pattern and review what keeps breaking down.",
+            "target": "/admin/intelligence?filter=failure",
+            "target_label": "Review Failure Cluster",
+            "tone": "standard",
+        },
+        {
+            "headline": "Disagreement Review",
+            "body": f"{disagreement_count} disagreement case(s) are currently visible.",
+            "target": "/admin/intelligence?filter=disagreement",
+            "target_label": "Review Disagreement",
+            "tone": "standard",
+        },
+        {
+            "headline": "Thesis Cleanup",
+            "body": f"{no_thesis} play(s) are missing a thesis.",
+            "target": "/admin/product-monitoring?filter=thesis",
+            "target_label": "Review Thesis Quality",
+            "tone": "standard",
+        },
+        {
+            "headline": "Readiness Distribution",
+            "body": "See how much of the playbook is actually actionable versus soft.",
+            "target": "/admin/product-monitoring?filter=readiness",
+            "target_label": "Open Readiness View",
+            "tone": "standard",
+        },
+    ]
+
+    if activated_against_engine > 0:
+        actions.append({
+            "headline": "Against-Engine Activations",
+            "body": f"{activated_against_engine} activation event(s) were recorded against the engine.",
+            "target": "/admin/intelligence?filter=disagreement",
+            "target_label": "Review Behavior Drift",
+            "tone": "standard",
+        })
+
+    if high_conviction_no_thesis > 0:
+        actions.append({
+            "headline": "High Conviction / No Thesis",
+            "body": f"{high_conviction_no_thesis} creation event(s) showed strong conviction without a written thesis.",
+            "target": "/admin/product-monitoring?filter=thesis",
+            "target_label": "Clean This Up",
+            "tone": "standard",
+        })
+
+    if edited_after_weak_health > 0:
+        actions.append({
+            "headline": "Edits After Weakness",
+            "body": f"{edited_after_weak_health} edit event(s) happened after setups were already weak.",
+            "target": "/my-plays?filter=weak",
+            "target_label": "Review Weak Setups",
+            "tone": "standard",
+        })
+
+    if closed_weak > 0:
+        actions.append({
+            "headline": "Late Weak Closes",
+            "body": f"{closed_weak} close event(s) happened while trades were already weak.",
+            "target": "/my-positions/analyze",
+            "target_label": "Review Late Closes",
+            "tone": "standard",
+        })
+
+    if created_after_loss_close > 0:
+        actions.append({
+            "headline": "Created After Loss",
+            "body": f"{created_after_loss_close} play creation event(s) happened after a losing close.",
+            "target": "/my-plays",
+            "target_label": "Review Reactive Behavior",
+            "tone": "standard",
+        })
+
+    if archived_against_engine > 0:
+        actions.append({
+            "headline": "Archived Against-Engine Trades",
+            "body": f"{archived_against_engine} archived trade(s) show against-engine activation behavior.",
+            "target": "/my-positions/analyze",
+            "target_label": "Review Archived Behavior",
+            "tone": "standard",
+        })
+
+    if archived_late_edit > 0 or archived_late_weak_close > 0:
+        actions.append({
+            "headline": "Management Leak Review",
+            "body": f"{archived_late_edit + archived_late_weak_close} archived trade(s) show late management behavior.",
+            "target": "/my-positions/analyze",
+            "target_label": "Review Management Leaks",
+            "tone": "standard",
+        })
+
+    return {
+        "actions": actions[:12]
+    }
+
+
+def build_admin_surface_alerts(admin_summary=None, monitoring=None, behavioral_insights=None, behavior_risk=None):
+    admin_summary = admin_summary or {}
+    monitoring = monitoring or {}
+    behavioral_insights = behavioral_insights or {}
+    behavior_risk = behavior_risk or {}
 
     alerts = []
 
     activation = admin_summary.get("activation_quality", {}) or {}
     disagreement = admin_summary.get("disagreement", {}) or {}
-    idea_quality = admin_summary.get("idea_quality", {}) or {}
     zones = admin_summary.get("zones", {}) or {}
-
     readiness = monitoring.get("readiness_buckets", {}) or {}
     thesis_quality = monitoring.get("thesis_quality", {}) or {}
     position_quality = monitoring.get("position_quality", {}) or {}
     strongest_friction = monitoring.get("strongest_friction", {}) or {}
+    behavior_counts = behavioral_insights.get("counts", {}) or {}
+    risk_counts = behavior_risk.get("counts", {}) or {}
 
-    weak_activations = int(activation.get("weak_activations", 0) or 0)
-    ready_activations = int(activation.get("ready_activations", 0) or 0)
-    disagreement_count = int(disagreement.get("disagreement_count", 0) or 0)
-    aligned_count = int(disagreement.get("aligned_count", 0) or 0)
+    weak_activations = _safe_int(activation.get("weak_activations", 0))
+    ready_activations = _safe_int(activation.get("ready_activations", 0))
+    disagreement_count = _safe_int(disagreement.get("disagreement_count", 0))
+    aligned_count = _safe_int(disagreement.get("aligned_count", 0))
+    weak_plays = _safe_int(readiness.get("WEAK", 0))
+    watch_plays = _safe_int(readiness.get("WATCH", 0))
+    ready_plays = _safe_int(readiness.get("READY", 0))
+    no_thesis = _safe_int(thesis_quality.get("without_thesis", 0))
+    weak_open_positions = _safe_int(position_quality.get("weak_open_positions", 0))
 
-    weak_plays = int(readiness.get("WEAK", 0) or 0)
-    watch_plays = int(readiness.get("WATCH", 0) or 0)
-    ready_plays = int(readiness.get("READY", 0) or 0)
+    activated_against_engine = _safe_int(behavior_counts.get("activated_against_engine", 0))
+    high_conviction_no_thesis = _safe_int(behavior_counts.get("high_conviction_no_thesis", 0))
+    edited_after_weak_health = _safe_int(behavior_counts.get("edited_after_weak_health", 0))
+    closed_weak = _safe_int(behavior_counts.get("closed_weak", 0))
+    created_after_loss_close = _safe_int(behavior_counts.get("created_after_loss_close", 0))
 
-    no_thesis = int(thesis_quality.get("without_thesis", 0) or 0)
-    weak_open_positions = int(position_quality.get("weak_open_positions", 0) or 0)
+    archived_against_engine = _safe_int(risk_counts.get("against_engine", 0))
+    archived_high_conviction_no_thesis = _safe_int(risk_counts.get("high_conviction_no_thesis", 0))
+    archived_late_edit = _safe_int(risk_counts.get("late_edit", 0))
+    archived_late_weak_close = _safe_int(risk_counts.get("late_weak_close", 0))
+    archived_post_loss_creation = _safe_int(risk_counts.get("post_loss_creation", 0))
 
     if weak_activations > ready_activations:
         alerts.append({
@@ -306,8 +695,89 @@ def build_admin_surface_alerts(admin_summary=None, monitoring=None):
             "target_label": "Review Open Positions",
         })
 
+    if activated_against_engine > 0:
+        alerts.append({
+            "level": "warning",
+            "headline": "Behavior drift: against-engine activations",
+            "body": f"{activated_against_engine} activation event(s) were recorded against engine direction.",
+            "target": "/admin/intelligence?filter=disagreement",
+            "target_label": "Review Behavior Drift",
+        })
+
+    if high_conviction_no_thesis > 0:
+        alerts.append({
+            "level": "warning",
+            "headline": "Behavior drift: confidence without structure",
+            "body": f"{high_conviction_no_thesis} creation event(s) showed high conviction without a written thesis.",
+            "target": "/admin/product-monitoring?filter=thesis",
+            "target_label": "Fix Thesis Discipline",
+        })
+
+    if edited_after_weak_health > 0:
+        alerts.append({
+            "level": "neutral",
+            "headline": "Edits are happening late",
+            "body": f"{edited_after_weak_health} edit event(s) happened after setups were already weak.",
+            "target": "/my-plays?filter=weak",
+            "target_label": "Review Weak Plays",
+        })
+
+    if closed_weak > 0:
+        alerts.append({
+            "level": "warning",
+            "headline": "Late weak closes are showing up",
+            "body": f"{closed_weak} position close event(s) happened after weakness was already obvious.",
+            "target": "/my-positions/analyze",
+            "target_label": "Review Late Closes",
+        })
+
+    if created_after_loss_close > 0:
+        alerts.append({
+            "level": "neutral",
+            "headline": "Reactive behavior may be forming",
+            "body": f"{created_after_loss_close} play creation event(s) happened after a losing close.",
+            "target": "/my-plays",
+            "target_label": "Review Post-Loss Behavior",
+        })
+
+    if archived_against_engine > 0:
+        alerts.append({
+            "level": "warning",
+            "headline": "Archived trades show against-engine behavior",
+            "body": f"{archived_against_engine} archived trade(s) show against-engine activation behavior.",
+            "target": "/my-positions/analyze",
+            "target_label": "Review Archived Behavior",
+        })
+
+    if archived_high_conviction_no_thesis > 0:
+        alerts.append({
+            "level": "warning",
+            "headline": "Archived trades show confidence without structure",
+            "body": f"{archived_high_conviction_no_thesis} archived trade(s) carried high conviction without a thesis.",
+            "target": "/my-positions/analyze",
+            "target_label": "Review Archived Discipline",
+        })
+
+    if archived_late_edit > 0 or archived_late_weak_close > 0:
+        alerts.append({
+            "level": "warning",
+            "headline": "Archived management behavior is leaking edge",
+            "body": f"{archived_late_edit + archived_late_weak_close} archived trade(s) show late edits or late closes.",
+            "target": "/my-positions/analyze",
+            "target_label": "Review Management Leaks",
+        })
+
+    if archived_post_loss_creation > 0:
+        alerts.append({
+            "level": "neutral",
+            "headline": "Archived trades show post-loss re-entry behavior",
+            "body": f"{archived_post_loss_creation} archived trade(s) may have been created too soon after a loss.",
+            "target": "/my-positions/analyze",
+            "target_label": "Review Emotional Flow",
+        })
+
     top_failure = zones.get("top_failure_cluster", {}) or {}
-    if int(top_failure.get("count", 0) or 0) > 0:
+    if _safe_int(top_failure.get("count", 0)) > 0:
         alerts.append({
             "level": "neutral",
             "headline": "Failure cluster is visible",
@@ -316,8 +786,8 @@ def build_admin_surface_alerts(admin_summary=None, monitoring=None):
             "target_label": "Review Failure Cluster",
         })
 
-    friction_headline = str(strongest_friction.get("headline", "") or "").strip()
-    friction_body = str(strongest_friction.get("body", "") or "").strip()
+    friction_headline = _norm_text(strongest_friction.get("headline", ""))
+    friction_body = _norm_text(strongest_friction.get("body", ""))
     if friction_headline:
         alerts.append({
             "level": "neutral",
@@ -336,12 +806,7 @@ def build_admin_surface_alerts(admin_summary=None, monitoring=None):
             "target_label": "Stay on Admin",
         })
 
-    priority_order = {
-        "danger": 0,
-        "warning": 1,
-        "neutral": 2,
-        "positive": 3,
-    }
+    priority_order = {"danger": 0, "warning": 1, "neutral": 2, "positive": 3}
     alerts = sorted(alerts, key=lambda a: priority_order.get(a.get("level", "neutral"), 99))
 
     return {
@@ -356,33 +821,24 @@ def build_admin_alerts(plays, positions, analysis):
     analysis = analysis or {}
 
     alerts = []
-
     ready_plays = 0
     weak_plays = 0
     disagreement_count = 0
     aligned_count = 0
     weak_open_positions = 0
 
-    open_positions = [
-        p for p in positions
-        if str(p.get("status", "")).strip().lower() != "closed"
-    ]
+    open_positions = [p for p in positions if not _is_closed_status(p.get("status", ""))]
 
-    for play in plays:
-        readiness = play.get("activation_readiness")
-        if not readiness:
-            readiness = classify_play_readiness(play)
-            play["activation_readiness"] = readiness
-
-        bucket = readiness.get("bucket", "UNKNOWN")
+    for play in _ensure_activation_readiness(plays):
+        bucket = _activation_bucket(play)
         if bucket == "READY":
             ready_plays += 1
         elif bucket in {"WATCH", "WEAK"}:
             weak_plays += 1
 
         candidate = play.get("engine_candidate") or {}
-        candidate_strategy = str(candidate.get("strategy", "")).strip().upper()
-        play_direction = str(play.get("direction", "UNKNOWN")).strip().upper()
+        candidate_strategy = _norm_upper(candidate.get("strategy", ""))
+        play_direction = _norm_upper(play.get("direction", ""))
 
         if candidate_strategy and play_direction in {"CALL", "PUT"}:
             if candidate_strategy == play_direction:
@@ -391,14 +847,12 @@ def build_admin_alerts(plays, positions, analysis):
                 disagreement_count += 1
 
     for pos in open_positions:
-        agreement_score = int((pos.get("system_agreement", {}) or {}).get("score", 0) or 0)
-        health_score = int((pos.get("health", {}) or {}).get("score", 0) or 0)
-        if agreement_score < 55 or health_score < 35:
+        if _agreement_score(pos) < 55 or _health_score(pos) < 35:
             weak_open_positions += 1
 
-    wins = int((analysis.get("totals", {}) or {}).get("wins", 0) or 0)
-    losses = int((analysis.get("totals", {}) or {}).get("losses", 0) or 0)
-    flat = int((analysis.get("totals", {}) or {}).get("flat", 0) or 0)
+    wins = _safe_int((analysis.get("totals", {}) or {}).get("wins", 0))
+    losses = _safe_int((analysis.get("totals", {}) or {}).get("losses", 0))
+    flat = _safe_int((analysis.get("totals", {}) or {}).get("flat", 0))
 
     if weak_plays > ready_plays:
         alerts.append({
@@ -463,33 +917,23 @@ def build_admin_alerts(plays, positions, analysis):
             "target_label": "Open Admin Intelligence",
         })
 
-    priority_order = {
-        "danger": 0,
-        "warning": 1,
-        "neutral": 2,
-        "positive": 3,
-    }
+    priority_order = {"danger": 0, "warning": 1, "neutral": 2, "positive": 3}
     alerts = sorted(alerts, key=lambda a: priority_order.get(a.get("level", "neutral"), 99))
 
-    top_alert = alerts[0] if alerts else None
-
     return {
-        "top_alert": top_alert,
+        "top_alert": alerts[0] if alerts else None,
         "alerts": alerts[:4],
     }
 
 
 def build_admin_intelligence_summary(plays, positions, analysis):
-    plays = plays or []
+    plays = _ensure_activation_readiness(plays or [])
     positions = positions or []
     analysis = analysis or {}
 
     total_plays = len(plays)
     total_positions = len(positions)
-    closed_positions = [
-        p for p in positions
-        if str(p.get("status", "")).strip().lower() == "closed"
-    ]
+    closed_positions = [p for p in positions if _is_closed_status(p.get("status", ""))]
 
     ready_plays = 0
     close_plays = 0
@@ -515,16 +959,11 @@ def build_admin_intelligence_summary(plays, positions, analysis):
     weakest_play = None
 
     for play in plays:
-        readiness = play.get("activation_readiness")
-        if not readiness:
-            readiness = classify_play_readiness(play)
-            play["activation_readiness"] = readiness
-
-        bucket = readiness.get("bucket", "UNKNOWN")
-        readiness_score = int(readiness.get("score", 0) or 0)
-        agreement = play.get("system_agreement", {}) or {}
-        agreement_score = int(agreement.get("score", 0) or 0)
-        conviction = str(play.get("conviction", "Medium")).strip()
+        readiness = play.get("activation_readiness") or {}
+        bucket = _activation_bucket(play)
+        readiness_score = _safe_int(readiness.get("score", 0))
+        agreement_score = _agreement_score(play)
+        conviction = _norm_text(play.get("conviction", "Medium"))
         candidate = play.get("engine_candidate")
         market_context = play.get("market_context", {}) or {}
 
@@ -539,12 +978,11 @@ def build_admin_intelligence_summary(plays, positions, analysis):
 
         if agreement_score >= 75:
             high_agreement_plays += 1
-
         if conviction.lower() == "high":
             high_conviction_plays += 1
 
-        candidate_strategy = str((candidate or {}).get("strategy", "")).strip().upper()
-        play_direction = str(play.get("direction", "UNKNOWN")).strip().upper()
+        candidate_strategy = _norm_upper((candidate or {}).get("strategy", ""))
+        play_direction = _norm_upper(play.get("direction", ""))
 
         if candidate_strategy and play_direction in {"CALL", "PUT"}:
             if candidate_strategy == play_direction:
@@ -554,16 +992,15 @@ def build_admin_intelligence_summary(plays, positions, analysis):
                 pattern = f"{play.get('symbol', 'UNKNOWN')} | {play_direction} vs {candidate_strategy}"
                 disagreement_patterns[pattern] = disagreement_patterns.get(pattern, 0) + 1
 
-        if strongest_play is None or readiness_score > strongest_play["activation_readiness"]["score"]:
+        if strongest_play is None or readiness_score > _safe_int(strongest_play.get("activation_readiness", {}).get("score", 0)):
             strongest_play = play
-
-        if weakest_play is None or readiness_score < weakest_play["activation_readiness"]["score"]:
+        if weakest_play is None or readiness_score < _safe_int(weakest_play.get("activation_readiness", {}).get("score", 0)):
             weakest_play = play
 
         condition_label = " | ".join([
-            str(market_context.get("regime", "UNKNOWN")).strip().upper(),
-            str(market_context.get("breadth", "UNKNOWN")).strip().upper(),
-            str(market_context.get("mode", "UNKNOWN")).strip().upper(),
+            _norm_upper(market_context.get("regime", "UNKNOWN")),
+            _norm_upper(market_context.get("breadth", "UNKNOWN")),
+            _norm_upper(market_context.get("mode", "UNKNOWN")),
         ])
 
         if bucket == "READY":
@@ -572,15 +1009,11 @@ def build_admin_intelligence_summary(plays, positions, analysis):
             condition_weakness[condition_label] = condition_weakness.get(condition_label, 0) + 1
 
     for pos in closed_positions:
-        agreement = pos.get("system_agreement", {}) or {}
-        agreement_score = int(agreement.get("score", 0) or 0)
-        health = pos.get("health", {}) or {}
-        health_score = int(health.get("score", 0) or 0)
+        agreement_score = _agreement_score(pos)
+        health_score = _health_score(pos)
         candidate = pos.get("engine_candidate")
-        direction = str(pos.get("direction", "UNKNOWN")).strip().upper()
-        candidate_strategy = str((candidate or {}).get("strategy", "")).strip().upper()
-
-        archived_play_status = "without candidate" if not candidate else "with candidate"
+        direction = _norm_upper(pos.get("direction", ""))
+        candidate_strategy = _norm_upper((candidate or {}).get("strategy", ""))
         outcome = classify_trade_outcome(pos)
 
         if agreement_score >= 75 and health_score >= 75:
@@ -599,14 +1032,14 @@ def build_admin_intelligence_summary(plays, positions, analysis):
             pattern = f"{pos.get('symbol', 'UNKNOWN')} | activated {direction} against {candidate_strategy}"
             weakest_activation_patterns[pattern] = weakest_activation_patterns.get(pattern, 0) + 1
 
-        if archived_play_status == "without candidate" and outcome == "LOSS":
+        if not candidate and outcome == "LOSS":
             pattern = f"{pos.get('symbol', 'UNKNOWN')} | no engine tracking"
             weakest_activation_patterns[pattern] = weakest_activation_patterns.get(pattern, 0) + 1
 
     trade_totals = analysis.get("totals", {}) or {}
-    wins = int(trade_totals.get("wins", 0) or 0)
-    losses = int(trade_totals.get("losses", 0) or 0)
-    flat = int(trade_totals.get("flat", 0) or 0)
+    wins = _safe_int(trade_totals.get("wins", 0))
+    losses = _safe_int(trade_totals.get("losses", 0))
+    flat = _safe_int(trade_totals.get("flat", 0))
 
     if wins > losses:
         performance_headline = "System-aligned behavior is producing more wins than losses."
@@ -648,43 +1081,32 @@ def build_admin_intelligence_summary(plays, positions, analysis):
         disagreement_headline = "Alignment vs disagreement is still mixed."
         disagreement_summary = "The operator posture is not clearly cooperative or clearly adversarial yet."
 
-def _top_item(counts, fallback="Not enough data yet."):
-        if not counts:
-            return {"label": fallback, "count": 0}
-        label, count = max(counts.items(), key=lambda item: item[1])
-        return {"label": label, "count": count}
-
-    strongest_condition = _top_item(condition_strength, "No strong condition cluster yet.")
-    weakest_condition = _top_item(condition_weakness, "No weak condition cluster yet.")
-    top_failure_cluster = _top_item(weakest_activation_patterns, "No failure cluster yet.")
-    top_disagreement_cluster = _top_item(disagreement_patterns, "No disagreement cluster yet.")
+    strongest_condition = _top_count_item(condition_strength, "No strong condition cluster yet.")
+    weakest_condition = _top_count_item(condition_weakness, "No weak condition cluster yet.")
+    top_failure_cluster = _top_count_item(weakest_activation_patterns, "No failure cluster yet.")
+    top_disagreement_cluster = _top_count_item(disagreement_patterns, "No disagreement cluster yet.")
 
     coaching_cards = []
-
     if weak_plays > ready_plays:
         coaching_cards.append({
             "headline": "Tighten the book",
             "body": "Your current play inventory has too many weak or watch-only ideas hanging around. Cleanliness matters."
         })
-
     if activated_weak > activated_ready:
         coaching_cards.append({
             "headline": "Promotions are too loose",
             "body": "You are moving too many soft setups into live management before they have earned it."
         })
-
     if disagreement_count > aligned_count:
         coaching_cards.append({
             "headline": "Respect the engine more",
             "body": "Disagreement is not automatically bad, but too much of it turns the system into decoration instead of edge."
         })
-
     if losses > wins:
         coaching_cards.append({
             "headline": "Loss pressure is real",
             "body": "Right now the product should prioritize better activation discipline and stronger alignment filters before scaling confidence."
         })
-
     if not coaching_cards:
         coaching_cards.append({
             "headline": "System posture is constructive",
@@ -738,33 +1160,28 @@ def _top_item(counts, fallback="Not enough data yet."):
         },
         "strongest_play": {
             "symbol": strongest_play.get("symbol"),
-            "score": strongest_play["activation_readiness"]["score"],
-            "headline": strongest_play["activation_readiness"]["headline"],
+            "score": _safe_int((strongest_play.get("activation_readiness", {}) or {}).get("score", 0)),
+            "headline": (strongest_play.get("activation_readiness", {}) or {}).get("headline"),
         } if strongest_play else None,
         "weakest_play": {
             "symbol": weakest_play.get("symbol"),
-            "score": weakest_play["activation_readiness"]["score"],
-            "headline": weakest_play["activation_readiness"]["headline"],
+            "score": _safe_int((weakest_play.get("activation_readiness", {}) or {}).get("score", 0)),
+            "headline": (weakest_play.get("activation_readiness", {}) or {}).get("headline"),
         } if weakest_play else None,
         "coaching_cards": coaching_cards,
     }
 
 
 def build_product_monitoring_summary(plays, positions, analysis):
-    plays = plays or []
+    plays = _ensure_activation_readiness(plays or [])
     positions = positions or []
     analysis = analysis or {}
 
     total_plays = len(plays)
     total_positions = len(positions)
-    open_positions = [
-        p for p in positions
-        if str(p.get("status", "")).strip().lower() != "closed"
-    ]
-    closed_positions = [
-        p for p in positions
-        if str(p.get("status", "")).strip().lower() == "closed"
-    ]
+
+    open_positions = [p for p in positions if not _is_closed_status(p.get("status", ""))]
+    closed_positions = [p for p in positions if _is_closed_status(p.get("status", ""))]
 
     no_thesis_count = 0
     no_notes_count = 0
@@ -772,7 +1189,6 @@ def build_product_monitoring_summary(plays, positions, analysis):
     watching_count = 0
     archived_count = 0
     open_play_count = 0
-
     weak_open_positions = 0
     strong_open_positions = 0
 
@@ -792,20 +1208,15 @@ def build_product_monitoring_summary(plays, positions, analysis):
     }
 
     for play in plays:
-        readiness = play.get("activation_readiness")
-        if not readiness:
-            readiness = classify_play_readiness(play)
-            play["activation_readiness"] = readiness
-
-        bucket = readiness.get("bucket", "INACTIVE")
+        bucket = _activation_bucket(play)
         readiness_buckets[bucket] = readiness_buckets.get(bucket, 0) + 1
 
-        status = str(play.get("status", "Open")).strip().lower()
-        thesis = str(play.get("thesis", "") or "").strip()
-        notes = str(play.get("notes", "") or "").strip()
-        conviction = str(play.get("conviction", "Medium")).strip().lower()
-        agreement_score = int((play.get("system_agreement", {}) or {}).get("score", 0) or 0)
-        health_score = int((play.get("health", {}) or {}).get("score", 0) or 0)
+        status = _norm_text(play.get("status", "Open")).lower()
+        thesis = _norm_text(play.get("thesis", ""))
+        notes = _norm_text(play.get("notes", ""))
+        conviction = _norm_text(play.get("conviction", "Medium")).lower()
+        agreement_score = _agreement_score(play)
+        health_score = _health_score(play)
 
         if not thesis:
             no_thesis_count += 1
@@ -830,8 +1241,8 @@ def build_product_monitoring_summary(plays, positions, analysis):
         setup_quality_counts[setup_label] = setup_quality_counts.get(setup_label, 0) + 1
 
     for pos in open_positions:
-        agreement_score = int((pos.get("system_agreement", {}) or {}).get("score", 0) or 0)
-        health_score = int((pos.get("health", {}) or {}).get("score", 0) or 0)
+        agreement_score = _agreement_score(pos)
+        health_score = _health_score(pos)
 
         if agreement_score >= 75 and health_score >= 75:
             strong_open_positions += 1
@@ -843,34 +1254,30 @@ def build_product_monitoring_summary(plays, positions, analysis):
             "headline": "Ideas without thesis",
             "body": f"{no_thesis_count} plays do not have a written thesis. That weakens coaching quality and later review quality."
         })
-
     if high_conviction_no_thesis > 0:
         friction_points.append({
             "headline": "High conviction without explanation",
             "body": f"{high_conviction_no_thesis} high-conviction plays were entered without a thesis. Confidence without reasoning is a product and behavior risk."
         })
-
     if weak_open_positions > 0:
         friction_points.append({
             "headline": "Weak positions still open",
             "body": f"{weak_open_positions} open positions currently look weak by health or agreement. That suggests active decision friction."
         })
-
     if readiness_buckets.get("WATCH", 0) + readiness_buckets.get("WEAK", 0) > readiness_buckets.get("READY", 0):
         friction_points.append({
             "headline": "Too many watch-only ideas",
             "body": "A large share of the playbook is sitting in weak or watch states instead of becoming clean activation candidates."
         })
-
     if not friction_points:
         friction_points.append({
             "headline": "Friction looks controlled",
             "body": "The current playbook and position behavior do not show obvious product-usage breakdowns right now."
         })
 
-    wins = int((analysis.get("totals", {}) or {}).get("wins", 0) or 0)
-    losses = int((analysis.get("totals", {}) or {}).get("losses", 0) or 0)
-    flat = int((analysis.get("totals", {}) or {}).get("flat", 0) or 0)
+    wins = _safe_int((analysis.get("totals", {}) or {}).get("wins", 0))
+    losses = _safe_int((analysis.get("totals", {}) or {}).get("losses", 0))
+    flat = _safe_int((analysis.get("totals", {}) or {}).get("flat", 0))
 
     if total_plays == 0:
         adoption_headline = "No meaningful usage yet."
@@ -894,7 +1301,7 @@ def build_product_monitoring_summary(plays, positions, analysis):
 
     strongest_friction = friction_points[0] if friction_points else {
         "headline": "No clear friction point yet.",
-        "body": "Not enough signal."
+        "body": "Not enough signal.",
     }
 
     return {
@@ -935,6 +1342,179 @@ def build_product_monitoring_summary(plays, positions, analysis):
     }
 
 
+from datetime import datetime
+
+
+def get_event_log() -> list:
+    rows = load_json("data/event_log.json", [])
+    return rows if isinstance(rows, list) else []
+
+
+def save_event_log(rows: list) -> None:
+    if not isinstance(rows, list):
+        rows = []
+    save_json("data/event_log.json", rows)
+
+
+def track_event(event_type: str, payload: Dict[str, Any] | None = None) -> None:
+    payload = payload or {}
+
+    rows = get_event_log()
+    rows.append({
+        "event_type": str(event_type or "").strip(),
+        "payload": payload,
+        "created_at": datetime.now().isoformat(),
+    })
+
+    # keep the file from growing forever
+    rows = rows[-5000:]
+    save_event_log(rows)
+
+
+def build_event_analytics_summary():
+    rows = get_event_log()
+
+    event_counts = {}
+    recent_events = rows[-25:] if rows else []
+
+    play_created = 0
+    play_activated = 0
+    position_closed = 0
+    play_edited = 0
+    position_updated = 0
+
+    for row in rows:
+        event_type = str(row.get("event_type", "")).strip()
+        event_counts[event_type] = event_counts.get(event_type, 0) + 1
+
+        if event_type == "play_created":
+            play_created += 1
+        elif event_type == "play_activated":
+            play_activated += 1
+        elif event_type == "position_closed":
+            position_closed += 1
+        elif event_type == "play_edited":
+            play_edited += 1
+        elif event_type == "position_updated":
+            position_updated += 1
+
+    if play_created == 0:
+        headline = "No event behavior recorded yet."
+        summary = "The behavioral event layer has not captured enough actions yet."
+    elif play_activated > play_created:
+        headline = "Activation flow is running hot."
+        summary = "More activation behavior is being recorded than expected relative to creation, so review event quality and user flow."
+    elif play_activated > 0:
+        headline = "Behavior tracking is live."
+        summary = "The system is capturing creation, activation, and management behavior well enough to build deeper operator insights."
+    else:
+        headline = "Ideas are being created, but activation is lagging."
+        summary = "Users are starting the workflow, but they are not progressing deeply enough into live action."
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "counts": {
+            "play_created": play_created,
+            "play_edited": play_edited,
+            "play_activated": play_activated,
+            "position_updated": position_updated,
+            "position_closed": position_closed,
+        },
+        "event_counts": event_counts,
+        "recent_events": recent_events,
+    }
+
+
+def build_behavioral_event_insights():
+    rows = get_event_log()
+
+    activated_against_engine = 0
+    high_conviction_no_thesis = 0
+    edited_after_weak_health = 0
+    closed_weak = 0
+    loss_closes = 0
+    created_after_loss_close = 0
+
+    last_loss_close_at = None
+
+    for row in rows:
+        event_type = str(row.get("event_type", "")).strip()
+        payload = row.get("payload", {}) or {}
+        created_at = str(row.get("created_at", "")).strip()
+
+        if event_type == "play_created":
+            if payload.get("conviction") == "High" and not payload.get("has_thesis", False):
+                high_conviction_no_thesis += 1
+            if last_loss_close_at:
+                created_after_loss_close += 1
+
+        elif event_type == "play_activated":
+            if bool(payload.get("activated_against_engine", False)):
+                activated_against_engine += 1
+
+        elif event_type == "play_edited":
+            if bool(payload.get("edited_after_weak_health", False)):
+                edited_after_weak_health += 1
+
+        elif event_type == "position_closed":
+            if bool(payload.get("closed_weak", False)):
+                closed_weak += 1
+            if str(payload.get("outcome", "")).strip().upper() == "LOSS":
+                loss_closes += 1
+                last_loss_close_at = created_at
+
+    cards = []
+
+    if activated_against_engine > 0:
+        cards.append({
+            "headline": "Activated against engine",
+            "body": f"{activated_against_engine} activation event(s) were recorded against the engine’s direction.",
+        })
+
+    if high_conviction_no_thesis > 0:
+        cards.append({
+            "headline": "High conviction without thesis",
+            "body": f"{high_conviction_no_thesis} play creation event(s) showed high conviction without a written thesis.",
+        })
+
+    if edited_after_weak_health > 0:
+        cards.append({
+            "headline": "Edits after weakness",
+            "body": f"{edited_after_weak_health} play edit event(s) happened after the setup was already weak.",
+        })
+
+    if closed_weak > 0:
+        cards.append({
+            "headline": "Late weak closes",
+            "body": f"{closed_weak} close event(s) happened while agreement or health was already weak.",
+        })
+
+    if created_after_loss_close > 0:
+        cards.append({
+            "headline": "Created after loss close",
+            "body": f"{created_after_loss_close} play creation event(s) happened after a recorded losing close, which may indicate reactive behavior.",
+        })
+
+    if not cards:
+        cards.append({
+            "headline": "Behavior layer still early",
+            "body": "Not enough behavioral signal yet to identify operator habit patterns.",
+        })
+
+    return {
+        "counts": {
+            "activated_against_engine": activated_against_engine,
+            "high_conviction_no_thesis": high_conviction_no_thesis,
+            "edited_after_weak_health": edited_after_weak_health,
+            "closed_weak": closed_weak,
+            "loss_closes": loss_closes,
+            "created_after_loss_close": created_after_loss_close,
+        },
+        "cards": cards,
+    }
+
+
 def maybe_track_page_view(path: str) -> None:
     metrics = load_json("data/admin_metrics.json", {})
     if not isinstance(metrics, dict):
@@ -944,9 +1524,82 @@ def maybe_track_page_view(path: str) -> None:
     if not isinstance(page_views, dict):
         page_views = {}
 
-    page_views[path] = int(page_views.get(path, 0)) + 1
+    page_views[path] = _safe_int(page_views.get(path, 0), 0) + 1
     metrics["page_views"] = page_views
     save_json("data/admin_metrics.json", metrics)
+
+
+def build_admin_dashboard_context():
+    shared = build_admin_shared_context()
+
+    users = load_json("data/users.json", [])
+    if not isinstance(users, list):
+        users = []
+
+    return {
+        "positions": shared["positions"],
+        "signals": get_signals(),
+        "users": users,
+        "metrics": get_admin_metrics(),
+        "proof": performance_summary(),
+        "snapshot": get_dashboard_snapshot(),
+        "system": get_system_state(),
+        "admin_alerts": build_admin_alerts(
+            shared["plays"],
+            shared["positions"],
+            shared["analysis"],
+        ),
+        "surface_alerts": shared["surface_alerts"],
+        "quick_actions": shared["quick_actions"],
+        "event_analytics": build_event_analytics_summary(),
+        "behavioral_insights": shared["behavioral_insights"],
+        "behavior_risk": shared["behavior_risk"],
+    }
+
+
+    def build_all_symbols_page_summary(rows):
+    rows = rows or []
+
+    total = len(rows)
+    strong = 0
+    medium = 0
+    weak = 0
+
+    for row in rows:
+        score = _safe_int(row.get("latest_score", 0))
+        if score >= 75:
+            strong += 1
+        elif score >= 55:
+            medium += 1
+        else:
+            weak += 1
+
+    if total == 0:
+        headline = "No symbol coverage loaded yet."
+        summary = "The broader symbol directory does not currently have enough coverage loaded."
+        chip = "Missing Coverage"
+    elif strong > weak:
+        headline = "Broad coverage is loaded and usable."
+        summary = "The symbol directory has enough strong candidates to feel like a real research surface instead of a placeholder list."
+        chip = "Constructive"
+    elif weak > strong:
+        headline = "Coverage exists, but the directory is still soft."
+        summary = "A larger share of the visible symbols is weak or mixed, so this page is giving breadth more than conviction."
+        chip = "Mixed"
+    else:
+        headline = "The symbol directory is balanced but not sharp."
+        summary = "Coverage is present, but the intelligence layer still needs stronger separation between high-quality and low-quality symbols."
+        chip = "Neutral"
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "chip": chip,
+        "total": total,
+        "strong": strong,
+        "medium": medium,
+        "weak": weak,
+    }
 
 
 # ============================================================
@@ -1349,6 +2002,8 @@ def get_symbol_detail(symbol: str) -> Dict[str, Any]:
     symbol = (symbol or "").upper()
 
     signals = get_signals()
+    if not isinstance(signals, list):
+        signals = []
 
     symbol_intel_map = load_json("data/symbol_intelligence.json", {})
     if not isinstance(symbol_intel_map, dict):
@@ -1366,6 +2021,8 @@ def get_symbol_detail(symbol: str) -> Dict[str, Any]:
     symbol_signals = attach_trade_intelligence(symbol_signals)
 
     primary_intel = symbol_intel_map.get(symbol, {})
+    if not isinstance(primary_intel, dict):
+        primary_intel = {}
 
     company = meta.get(symbol, {})
     if not isinstance(company, dict):
@@ -1532,14 +2189,18 @@ def signals_page():
 
 @app.route("/all-symbols")
 def all_symbols_page():
-    rows = get_all_symbol_rows()
-
     if not can_access_all_symbols():
         return redirect(url_for("upgrade_page"))
 
+    rows = get_all_symbol_rows()
+    page_summary = build_all_symbols_page_summary(rows)
+
     return render_template_safe(
         "all_symbols.html",
-        **template_context({"rows": rows}),
+        **template_context({
+            "rows": rows,
+            "page_summary": page_summary,
+        }),
     )
 
 @app.route("/position/<trade_id>")
@@ -1573,17 +2234,8 @@ def position_detail_page(trade_id):
 def admin_intelligence_page():
     maybe_track_page_view("/admin/intelligence")
 
-    plays = get_my_plays()
-    for play in plays:
-        if not play.get("activation_readiness"):
-            play["activation_readiness"] = classify_play_readiness(play)
-
-    positions = get_user_positions(include_closed=True)
-    analysis = analyze_user_trades()
-
-    admin_summary = build_admin_intelligence_summary(plays, positions, analysis)
-    monitoring = build_product_monitoring_summary(plays, positions, analysis)
-    surface_alerts = build_admin_surface_alerts(admin_summary=admin_summary, monitoring=monitoring)
+    shared = build_admin_shared_context()
+    admin_summary = shared["admin_summary"]
 
     filter_key = str(request.args.get("filter", "overview") or "overview").strip().lower()
 
@@ -1681,7 +2333,8 @@ def admin_intelligence_page():
         "admin_intelligence.html",
         **template_context({
             "admin": admin_summary,
-            "surface_alerts": surface_alerts,
+            "surface_alerts": shared["surface_alerts"],
+            "quick_actions": shared["quick_actions"],
             "filter_key": filter_key,
             "spotlight_title": spotlight_title,
             "spotlight_note": spotlight_note,
@@ -1689,7 +2342,7 @@ def admin_intelligence_page():
         }),
     )
 
-    
+
 @app.route("/signals/<symbol>")
 @app.route("/symbol/<symbol>")
 def signal_symbol_page(symbol: str):
@@ -1701,12 +2354,24 @@ def signal_symbol_page(symbol: str):
     track_symbol_click(symbol, source="/signals")
 
     detail = get_symbol_detail(symbol)
+
+    if not detail["news_items"]:
+        refreshed_news = refresh_symbol_news(
+            symbol=detail["symbol"],
+            company_name=detail["company"].get("name", ""),
+            limit=8,
+        )
+        detail["news_items"] = refreshed_news
+
     return render_template_safe(
         "signal_symbol.html",
         **template_context(
             {
+                "detail": detail,
                 "symbol": detail["symbol"],
                 "company": detail["company"],
+                "board": detail["board"],
+                "primary_intelligence": detail["primary_intelligence"],
                 "symbol_signals": detail["signals"],
                 "visible_signal_count": len(detail["signals"]),
                 "total_signal_count": len(detail["signals"]),
@@ -1743,17 +2408,8 @@ def positions_page():
 def admin_product_monitoring_page():
     maybe_track_page_view("/admin/product-monitoring")
 
-    plays = get_my_plays()
-    for play in plays:
-        if not play.get("activation_readiness"):
-            play["activation_readiness"] = classify_play_readiness(play)
-
-    positions = get_user_positions(include_closed=True)
-    analysis = analyze_user_trades()
-
-    monitoring = build_product_monitoring_summary(plays, positions, analysis)
-    admin_summary = build_admin_intelligence_summary(plays, positions, analysis)
-    surface_alerts = build_admin_surface_alerts(admin_summary=admin_summary, monitoring=monitoring)
+    shared = build_admin_shared_context()
+    monitoring = shared["monitoring"]
 
     filter_key = str(request.args.get("filter", "overview") or "overview").strip().lower()
 
@@ -1848,7 +2504,8 @@ def admin_product_monitoring_page():
         "admin_product_monitoring.html",
         **template_context({
             "monitoring": monitoring,
-            "surface_alerts": surface_alerts,
+            "surface_alerts": shared["surface_alerts"],
+            "quick_actions": shared["quick_actions"],
             "filter_key": filter_key,
             "spotlight_title": spotlight_title,
             "spotlight_note": spotlight_note,
@@ -1862,6 +2519,7 @@ def my_positions_page():
     maybe_track_page_view("/my-positions")
 
     positions = get_user_positions(include_closed=False)
+    page_summary = build_my_positions_page_summary(positions)
     filter_key = str(request.args.get("filter", "all") or "all").strip().lower()
 
     filtered_positions = positions
@@ -1871,30 +2529,25 @@ def my_positions_page():
     if filter_key == "weak":
         filtered_positions = [
             p for p in positions
-            if int((p.get("system_agreement", {}) or {}).get("score", 0) or 0) < 55
-            or int((p.get("health", {}) or {}).get("score", 0) or 0) < 35
+            if _agreement_score(p) < 55 or _health_score(p) < 35
         ]
         filter_title = "Weak Positions"
         filter_note = "Showing open positions that look weak by health or agreement."
     elif filter_key == "strong":
         filtered_positions = [
             p for p in positions
-            if int((p.get("system_agreement", {}) or {}).get("score", 0) or 0) >= 75
-            and int((p.get("health", {}) or {}).get("score", 0) or 0) >= 75
+            if _agreement_score(p) >= 75 and _health_score(p) >= 75
         ]
         filter_title = "Strong Positions"
         filter_note = "Showing open positions with stronger health and alignment."
     elif filter_key == "high_agreement":
-        filtered_positions = [
-            p for p in positions
-            if int((p.get("system_agreement", {}) or {}).get("score", 0) or 0) >= 75
-        ]
+        filtered_positions = [p for p in positions if _agreement_score(p) >= 75]
         filter_title = "High Agreement Positions"
         filter_note = "Showing positions with stronger system agreement."
     elif filter_key == "under_pressure":
         filtered_positions = [
             p for p in positions
-            if str((p.get("health", {}) or {}).get("label", "")).strip().upper() in {"UNDER PRESSURE", "BROKEN"}
+            if _norm_upper((p.get("health", {}) or {}).get("label", "")) in {"UNDER PRESSURE", "BROKEN"}
         ]
         filter_title = "Under Pressure Positions"
         filter_note = "Showing positions whose behavior is signaling pressure or damage."
@@ -1903,6 +2556,7 @@ def my_positions_page():
         "my_positions.html",
         **template_context({
             "positions": filtered_positions,
+            "page_summary": page_summary,
             "filter_key": filter_key,
             "filter_title": filter_title,
             "filter_note": filter_note,
@@ -1914,10 +2568,12 @@ def my_positions_page():
 def my_position_detail_page(position_id):
     maybe_track_page_view(f"/my-positions/{position_id}")
     position = get_user_position(position_id)
+
     return render_template_safe(
         "my_position_detail.html",
         **template_context({
             "position": position,
+            "page_summary": build_position_detail_summary(position),
             "error": None if position else "Position not found.",
         }),
     )
@@ -1931,20 +2587,48 @@ def edit_my_position(position_id):
     notes = request.form.get("notes", "")
     status = request.form.get("status", "Open")
 
-    update_user_position(
+    updated = update_user_position(
         position_id=position_id,
         stop=stop,
         target=target,
-        conviction=conviction,
         notes=notes,
+        conviction=conviction,
         status=status,
     )
+
+    if updated:
+        track_event("position_updated", {
+            "position_id": position_id,
+            "symbol": updated.get("symbol"),
+            "status": updated.get("status"),
+            "conviction": updated.get("conviction"),
+            "agreement_score": (updated.get("system_agreement", {}) or {}).get("score", 0),
+            "health_score": (updated.get("health", {}) or {}).get("score", 0),
+            "has_notes": bool(str(updated.get("notes", "")).strip()),
+        })
+
     return redirect(f"/my-positions/{position_id}")
 
 
 @app.route("/my-positions/<position_id>/close", methods=["POST"])
 def close_my_position(position_id):
-    close_user_position(position_id)
+    closed = close_user_position(position_id)
+
+    if closed:
+        track_event("position_closed", {
+            "position_id": position_id,
+            "symbol": closed.get("symbol"),
+            "direction": closed.get("direction"),
+            "conviction": closed.get("conviction"),
+            "agreement_score": (closed.get("system_agreement", {}) or {}).get("score", 0),
+            "health_score": (closed.get("health", {}) or {}).get("score", 0),
+            "outcome": classify_trade_outcome(closed),
+            "closed_weak": (
+                int((closed.get("system_agreement", {}) or {}).get("score", 0) or 0) < 55
+                or int((closed.get("health", {}) or {}).get("score", 0) or 0) < 35
+            ),
+        })
+
     return redirect("/my-positions")
 
 
@@ -1971,10 +2655,12 @@ def my_positions_archived_page():
 def analyze_my_trades_page():
     maybe_track_page_view("/my-positions/analyze")
     analysis = analyze_user_trades()
+
     return render_template_safe(
         "my_trade_analysis.html",
         **template_context({
             "analysis": analysis,
+            "page_summary": build_trade_analysis_summary(analysis),
         }),
     )
 
@@ -2301,6 +2987,7 @@ def my_plays_page():
 
     plays = get_my_plays()
     plays_summary = build_my_plays_summary(plays)
+    page_summary = build_my_plays_page_summary(plays)
 
     filter_key = str(request.args.get("filter", "all") or "all").strip().lower()
 
@@ -2321,7 +3008,7 @@ def my_plays_page():
             if (p.get("activation_readiness", {}) or {}).get("bucket") == "CLOSE"
         ]
         filter_title = "Close to Ready"
-        filter_note = "Showing ideas that are getting warmer but still need cleaner confirmation."
+        filter_note = "Showing ideas that are warming up but still need cleaner confirmation."
     elif filter_key == "weak":
         filtered_plays = [
             p for p in plays
@@ -2330,30 +3017,27 @@ def my_plays_page():
         filter_title = "Weak / Watch Plays"
         filter_note = "Showing ideas that currently look too soft, conflicted, or underdeveloped."
     elif filter_key == "high_agreement":
-        filtered_plays = [
-            p for p in plays
-            if int((p.get("system_agreement", {}) or {}).get("score", 0) or 0) >= 75
-        ]
+        filtered_plays = [p for p in plays if _agreement_score(p) >= 75]
         filter_title = "High Agreement Plays"
         filter_note = "Showing plays with stronger system agreement."
     elif filter_key == "high_conviction":
         filtered_plays = [
             p for p in plays
-            if str(p.get("conviction", "Medium")).strip().lower() == "high"
+            if _norm_text(p.get("conviction", "Medium")).lower() == "high"
         ]
         filter_title = "High Conviction Plays"
         filter_note = "Showing only high-conviction ideas."
     elif filter_key == "watching":
         filtered_plays = [
             p for p in plays
-            if str(p.get("status", "Open")).strip().lower() == "watching"
+            if _norm_text(p.get("status", "Open")).lower() == "watching"
         ]
         filter_title = "Watching Plays"
         filter_note = "Showing only plays currently marked as watching."
     elif filter_key == "archived":
         filtered_plays = [
             p for p in plays
-            if str(p.get("status", "Open")).strip().lower() == "archived"
+            if _norm_text(p.get("status", "Open")).lower() == "archived"
         ]
         filter_title = "Archived Plays"
         filter_note = "Showing archived ideas."
@@ -2363,6 +3047,7 @@ def my_plays_page():
         **template_context({
             "plays": filtered_plays,
             "plays_summary": plays_summary,
+            "page_summary": page_summary,
             "filter_key": filter_key,
             "filter_title": filter_title,
             "filter_note": filter_note,
@@ -2381,7 +3066,7 @@ def add_my_play():
     notes = request.form.get("notes", "")
 
     try:
-        add_play(
+        created = add_play(
             symbol=symbol,
             entry=entry,
             stop=stop,
@@ -2390,6 +3075,27 @@ def add_my_play():
             thesis=thesis,
             notes=notes,
         )
+
+        recent_events = list(reversed(get_event_log()))
+        created_after_loss_close = False
+
+        for row in recent_events[:10]:
+            if str(row.get("event_type", "")).strip() != "position_closed":
+                continue
+            payload = row.get("payload", {}) or {}
+            if str(payload.get("outcome", "")).strip().upper() == "LOSS":
+                created_after_loss_close = True
+                break
+
+        track_event("play_created", {
+            "symbol": created.get("symbol"),
+            "conviction": created.get("conviction"),
+            "direction": created.get("direction"),
+            "has_thesis": bool(str(created.get("thesis", "")).strip()),
+            "has_notes": bool(str(created.get("notes", "")).strip()),
+            "created_after_loss_close": False,
+        })
+
         return redirect("/my-plays")
     except ValueError as e:
         plays = get_my_plays()
@@ -2408,10 +3114,14 @@ def add_my_play():
 def my_play_detail_page(play_id):
     maybe_track_page_view(f"/my-plays/{play_id}")
     play = get_play(play_id)
+    if play:
+        play["activation_readiness"] = classify_play_readiness(play)
+
     return render_template_safe(
         "my_play_detail.html",
         **template_context({
             "play": play,
+            "page_summary": build_play_detail_summary(play),
             "error": None if play else "Play not found.",
         }),
     )
@@ -2429,7 +3139,7 @@ def edit_my_play(play_id):
     status = request.form.get("status", "Open")
 
     try:
-        update_play(
+        updated = update_play(
             play_id=play_id,
             symbol=symbol,
             entry=entry,
@@ -2440,9 +3150,26 @@ def edit_my_play(play_id):
             notes=notes,
             status=status,
         )
+
+        if updated:
+            track_event("play_edited", {
+                "play_id": play_id,
+                "symbol": updated.get("symbol"),
+                "status": updated.get("status"),
+                "conviction": updated.get("conviction"),
+                "direction": updated.get("direction"),
+                "agreement_score": (updated.get("system_agreement", {}) or {}).get("score", 0),
+                "health_score": (updated.get("health", {}) or {}).get("score", 0),
+                "has_thesis": bool(str(updated.get("thesis", "")).strip()),
+                "has_notes": bool(str(updated.get("notes", "")).strip()),
+                "edited_after_weak_health": int((updated.get("health", {}) or {}).get("score", 0) or 0) < 35,
+            })
+
         return redirect(f"/my-plays/{play_id}")
     except ValueError as e:
         play = get_play(play_id)
+        if play:
+            play["activation_readiness"] = classify_play_readiness(play)
         return render_template_safe(
             "my_play_detail.html",
             **template_context({
@@ -2466,6 +3193,8 @@ def activate_my_play(play_id):
             }),
         )
 
+    play["activation_readiness"] = classify_play_readiness(play)
+
     if not position:
         return render_template_safe(
             "my_play_detail.html",
@@ -2475,7 +3204,24 @@ def activate_my_play(play_id):
             }),
         )
 
+    track_event("play_activated", {
+        "play_id": play_id,
+        "position_id": position.get("position_id"),
+        "symbol": position.get("symbol"),
+        "direction": position.get("direction"),
+        "conviction": position.get("conviction"),
+        "agreement_score": (position.get("system_agreement", {}) or {}).get("score", 0),
+        "health_score": (position.get("health", {}) or {}).get("score", 0),
+        "engine_strategy": ((position.get("engine_candidate") or {}).get("strategy") if position.get("engine_candidate") else None),
+        "activated_against_engine": (
+            str(((position.get("engine_candidate") or {}).get("strategy", ""))).strip().upper() not in {"", str(position.get("direction", "")).strip().upper()}
+            if position.get("engine_candidate") else False
+        ),
+        "has_thesis": bool(str(position.get("thesis", "")).strip()),
+    })
+
     return redirect("/my-positions")
+
 
 @app.route("/analytics/risk")
 def analytics_risk_page():
@@ -2669,30 +3415,37 @@ def admin_dashboard():
         return redirect(url_for("dashboard_page"))
 
     metrics = get_admin_metrics()
-    positions = get_positions_with_intelligence()
     proof = performance_summary()
     snapshot = get_dashboard_snapshot()
     system = get_system_state()
 
-    plays = get_my_plays()
-    for play in plays:
-        if not play.get("activation_readiness"):
-            play["activation_readiness"] = classify_play_readiness(play)
+    shared = build_admin_shared_context()
 
-    analysis = analyze_user_trades()
-    admin_alerts = build_admin_alerts(plays, positions, analysis)
+    users = load_json("data/users.json", [])
+    if not isinstance(users, list):
+        users = []
 
     return render_template_safe(
         "admin.html",
         **template_context({
-            "positions": positions,
+            "positions": get_positions_with_intelligence(),
             "signals": get_signals(),
-            "users": load_json("data/users.json", []),
+            "users": users,
             "metrics": metrics,
             "proof": proof,
             "snapshot": snapshot,
             "system": system,
-            "admin_alerts": admin_alerts,
+            "admin_alerts": build_admin_alerts(
+                shared.get("plays", []),
+                shared.get("positions", []),
+                shared.get("analysis", {}),
+            ),
+            "surface_alerts": shared.get("surface_alerts", {}),
+            "quick_actions": shared.get("quick_actions", {}),
+            "event_analytics": build_event_analytics_summary(),
+            "behavior_priority": shared.get("behavior_priority", {}),
+            "behavioral_insights": shared.get("behavioral_insights", {}),
+            "behavior_risk": shared.get("behavior_risk", {}),
         }),
     )
 

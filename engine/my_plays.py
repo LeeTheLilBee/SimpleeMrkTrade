@@ -87,6 +87,152 @@ def get_candidate_for_symbol(symbol):
     return None
 
 
+def get_recent_behavior_events_for_symbol(symbol, limit=20):
+    symbol = str(symbol or "").strip().upper()
+    rows = get_event_log()
+    matches = []
+
+    for row in reversed(rows):
+        payload = row.get("payload", {}) or {}
+        row_symbol = str(payload.get("symbol", "")).strip().upper()
+        if row_symbol == symbol:
+            matches.append(row)
+        if len(matches) >= limit:
+            break
+
+    return matches
+
+
+def build_trade_behavior_flags(position):
+    symbol = str(position.get("symbol", "")).strip().upper()
+    conviction = str(position.get("conviction", "")).strip()
+    thesis = str(position.get("thesis", "") or "").strip()
+
+    flags = []
+    events = get_recent_behavior_events_for_symbol(symbol, limit=25)
+
+    activated_against_engine = False
+    edited_after_weak_health = False
+    closed_weak = False
+    created_after_loss_close = False
+
+    for row in events:
+        event_type = str(row.get("event_type", "")).strip()
+        payload = row.get("payload", {}) or {}
+
+        if event_type == "play_activated" and bool(payload.get("activated_against_engine", False)):
+            activated_against_engine = True
+
+        if event_type == "play_edited" and bool(payload.get("edited_after_weak_health", False)):
+            edited_after_weak_health = True
+
+        if event_type == "position_closed" and bool(payload.get("closed_weak", False)):
+            closed_weak = True
+
+        if event_type == "play_created" and bool(payload.get("created_after_loss_close", False)):
+            created_after_loss_close = True
+
+    if activated_against_engine:
+        flags.append({
+            "tag": "Against Engine",
+            "note": "This setup appears to have been activated against the engine direction."
+        })
+
+    if conviction.lower() == "high" and not thesis:
+        flags.append({
+            "tag": "High Conviction / No Thesis",
+            "note": "This trade carried high conviction without a written thesis."
+        })
+
+    if edited_after_weak_health:
+        flags.append({
+            "tag": "Late Edit",
+            "note": "This setup appears to have been edited after weakness was already showing."
+        })
+
+    if closed_weak:
+        flags.append({
+            "tag": "Late Weak Close",
+            "note": "This trade appears to have been closed after agreement or health was already weak."
+        })
+
+    if created_after_loss_close:
+        flags.append({
+            "tag": "Post-Loss Creation",
+            "note": "This setup may have been created shortly after a losing close."
+        })
+
+    return flags
+
+
+def build_behavior_coaching_line(position, flags):
+    if not flags:
+        return "No strong behavior warning is attached to this trade yet."
+
+    flag_tags = [f.get("tag", "Behavior") for f in flags]
+
+    if "Against Engine" in flag_tags and "Late Edit" in flag_tags:
+        return "This trade looks less like a clean miss and more like a discipline leak: you pushed against the system, then managed late."
+    if "High Conviction / No Thesis" in flag_tags:
+        return "This trade shows confidence outrunning structure. Strong belief without written reasoning is harder to review and harder to trust."
+    if "Late Weak Close" in flag_tags:
+        return "The issue here may not just be the idea. It may be that you stayed too long after the evidence weakened."
+    if "Post-Loss Creation" in flag_tags:
+        return "This trade may have been influenced by recent emotional flow rather than clean setup quality."
+    if "Against Engine" in flag_tags:
+        return "This trade carried a directional disagreement with the system, so the burden of proof needed to be higher."
+    if "Late Edit" in flag_tags:
+        return "This trade suggests reactive management. The system is warning that adjustment may have come after damage had already started."
+
+    return "This trade carries behavior flags that matter as much as the outcome itself."
+
+
+def build_behavior_habit_summary(enriched_trades):
+    counts = {
+        "against_engine": 0,
+        "high_conviction_no_thesis": 0,
+        "late_edit": 0,
+        "late_weak_close": 0,
+        "post_loss_creation": 0,
+    }
+
+    for trade in enriched_trades:
+        for flag in trade.get("behavior_flags", []):
+            tag = str(flag.get("tag", "")).strip()
+
+            if tag == "Against Engine":
+                counts["against_engine"] += 1
+            elif tag == "High Conviction / No Thesis":
+                counts["high_conviction_no_thesis"] += 1
+            elif tag == "Late Edit":
+                counts["late_edit"] += 1
+            elif tag == "Late Weak Close":
+                counts["late_weak_close"] += 1
+            elif tag == "Post-Loss Creation":
+                counts["post_loss_creation"] += 1
+
+    cards = []
+
+    if counts["against_engine"] > 0:
+        cards.append(f"{counts['against_engine']} archived trade(s) show against-engine activation behavior.")
+    if counts["high_conviction_no_thesis"] > 0:
+        cards.append(f"{counts['high_conviction_no_thesis']} archived trade(s) carried high conviction without a written thesis.")
+    if counts["late_edit"] > 0:
+        cards.append(f"{counts['late_edit']} archived trade(s) show edits happening after weakness was already visible.")
+    if counts["late_weak_close"] > 0:
+        cards.append(f"{counts['late_weak_close']} archived trade(s) appear to have been closed late after weakness.")
+    if counts["post_loss_creation"] > 0:
+        cards.append(f"{counts['post_loss_creation']} archived trade(s) may have been created too soon after a loss.")
+
+    if not cards:
+        cards.append("No strong behavior habit signals are standing out yet.")
+
+    return {
+        "counts": counts,
+        "cards": cards,
+    }
+
+
 def determine_direction(play):
     entry = _safe_float(play.get("entry"))
     target = _safe_float(play.get("target"))
@@ -317,6 +463,298 @@ def build_play_agreement(play, market_context=None, candidate=None):
         "score": score,
         "label": label,
         "reasons": reasons,
+    }
+
+
+def build_behavior_risk_summary_from_analysis(analysis):
+    analysis = analysis or {}
+    behavior_summary = analysis.get("behavior_summary", {}) or {}
+    counts = behavior_summary.get("counts", {}) or {}
+
+    against_engine = int(counts.get("against_engine", 0) or 0)
+    high_conviction_no_thesis = int(counts.get("high_conviction_no_thesis", 0) or 0)
+    late_edit = int(counts.get("late_edit", 0) or 0)
+    late_weak_close = int(counts.get("late_weak_close", 0) or 0)
+    post_loss_creation = int(counts.get("post_loss_creation", 0) or 0)
+
+    total_flags = (
+        against_engine
+        + high_conviction_no_thesis
+        + late_edit
+        + late_weak_close
+        + post_loss_creation
+    )
+
+    cards = []
+
+    if against_engine > 0:
+        cards.append({
+            "headline": "Against-engine behavior",
+            "body": f"{against_engine} archived trade(s) show against-engine activation behavior.",
+        })
+
+    if high_conviction_no_thesis > 0:
+        cards.append({
+            "headline": "Confidence without structure",
+            "body": f"{high_conviction_no_thesis} archived trade(s) carried high conviction without a written thesis.",
+        })
+
+    if late_edit > 0:
+        cards.append({
+            "headline": "Reactive editing",
+            "body": f"{late_edit} archived trade(s) show editing after weakness was already visible.",
+        })
+
+    if late_weak_close > 0:
+        cards.append({
+            "headline": "Late weak closes",
+            "body": f"{late_weak_close} archived trade(s) appear to have been closed after weakness was already obvious.",
+        })
+
+    if post_loss_creation > 0:
+        cards.append({
+            "headline": "Post-loss re-entry behavior",
+            "body": f"{post_loss_creation} archived trade(s) may have been created too soon after a loss.",
+        })
+
+    if total_flags == 0:
+        headline = "Behavior risk looks contained."
+        summary = "No major recurring behavior leak is standing out."
+    elif late_weak_close + late_edit >= max(1, against_engine):
+        headline = "Management behavior is the bigger leak."
+        summary = "Late edits and late closes are hurting you more than idea disagreement."
+    elif against_engine >= max(1, late_edit + late_weak_close):
+        headline = "Directional disagreement is the bigger leak."
+        summary = "Fighting the system is costing more than trade management."
+    else:
+        headline = "Multiple behavior leaks are active."
+        summary = "More than one discipline issue is showing up."
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "counts": counts,
+        "cards": cards,
+    }
+
+
+def build_behavior_priority_engine(analysis):
+    analysis = analysis or {}
+    behavior_summary = analysis.get("behavior_summary", {}) or {}
+    counts = behavior_summary.get("counts", {}) or {}
+    totals = analysis.get("totals", {}) or {}
+
+    wins = int(totals.get("wins", 0) or 0)
+    losses = int(totals.get("losses", 0) or 0)
+    archived = int(totals.get("archived", 0) or 0)
+
+    against_engine = int(counts.get("against_engine", 0) or 0)
+    high_conviction_no_thesis = int(counts.get("high_conviction_no_thesis", 0) or 0)
+    late_edit = int(counts.get("late_edit", 0) or 0)
+    late_weak_close = int(counts.get("late_weak_close", 0) or 0)
+    post_loss_creation = int(counts.get("post_loss_creation", 0) or 0)
+
+    loss_multiplier = 1.0
+    if losses > wins:
+        loss_multiplier = 1.5
+    elif losses == wins and losses > 0:
+        loss_multiplier = 1.2
+
+    items = []
+
+    if late_weak_close > 0:
+        base = late_weak_close * 4
+        impact_score = round(base * loss_multiplier, 1)
+        items.append({
+            "key": "late_weak_close",
+            "headline": "Stop letting weak trades drag on",
+            "body": f"{late_weak_close} archived trade(s) were closed after weakness was already obvious.",
+            "severity_score": base,
+            "impact_score": impact_score,
+            "damage_type": "Exit discipline leak",
+            "fix": "Tighten exit discipline earlier. Weakness should trigger action before deterioration turns into damage.",
+        })
+
+    if late_edit > 0:
+        base = late_edit * 3
+        impact_score = round(base * loss_multiplier, 1)
+        items.append({
+            "key": "late_edit",
+            "headline": "Stop editing after the market already voted",
+            "body": f"{late_edit} archived trade(s) were edited after weakness was already visible.",
+            "severity_score": base,
+            "impact_score": impact_score,
+            "damage_type": "Reactive management leak",
+            "fix": "Make earlier decisions. Edits should support a plan, not rescue a broken one.",
+        })
+
+    if against_engine > 0:
+        base = against_engine * 3
+        impact_score = round(base * loss_multiplier, 1)
+        items.append({
+            "key": "against_engine",
+            "headline": "You are fighting the engine too often",
+            "body": f"{against_engine} archived trade(s) show against-engine activation behavior.",
+            "severity_score": base,
+            "impact_score": impact_score,
+            "damage_type": "Alignment leak",
+            "fix": "Raise the standard for discretionary disagreement. If you fight the system, the proof needs to be stronger.",
+        })
+
+    if high_conviction_no_thesis > 0:
+        base = high_conviction_no_thesis * 2
+        impact_score = round(base * loss_multiplier, 1)
+        items.append({
+            "key": "high_conviction_no_thesis",
+            "headline": "Your conviction needs structure",
+            "body": f"{high_conviction_no_thesis} archived trade(s) carried high conviction without a written thesis.",
+            "severity_score": base,
+            "impact_score": impact_score,
+            "damage_type": "Decision structure leak",
+            "fix": "Do not allow high conviction without a written reason. Confidence should be documented before risk is taken.",
+        })
+
+    if post_loss_creation > 0:
+        base = post_loss_creation * 2
+        impact_score = round(base * loss_multiplier, 1)
+        items.append({
+            "key": "post_loss_creation",
+            "headline": "Watch emotional re-entry after losses",
+            "body": f"{post_loss_creation} archived trade(s) may have been created too soon after a loss.",
+            "severity_score": base,
+            "impact_score": impact_score,
+            "damage_type": "Emotional flow leak",
+            "fix": "Slow down after losses. A new trade should come from a setup, not from emotional recoil.",
+        })
+
+    items = sorted(
+        items,
+        key=lambda x: (x["impact_score"], x["severity_score"]),
+        reverse=True,
+    )
+
+    if not items:
+        return {
+            "headline": "No major behavior threat is dominating right now.",
+            "summary": "Your archived trade set is not showing a loud recurring discipline failure.",
+            "top_fix": None,
+            "items": [],
+            "totals": {
+                "archived": archived,
+                "wins": wins,
+                "losses": losses,
+            },
+        }
+
+    top = items[0]
+
+    if top["key"] in {"late_edit", "late_weak_close"}:
+        summary = "The strongest damage source is trade management after weakness appears."
+    elif top["key"] == "against_engine":
+        summary = "The strongest damage source is directional disagreement with the system."
+    elif top["key"] == "high_conviction_no_thesis":
+        summary = "The strongest damage source is confidence without written structure."
+    elif top["key"] == "post_loss_creation":
+        summary = "The strongest damage source is emotional re-entry after losses."
+    else:
+        summary = "The strongest damage source is a recurring discipline leak."
+
+    return {
+        "headline": "Behavior priority engine is active.",
+        "summary": summary,
+        "top_fix": top,
+        "items": items[:5],
+        "totals": {
+            "archived": archived,
+            "wins": wins,
+            "losses": losses,
+        },
+    }
+
+
+def analyze_user_trades():
+    positions = get_user_positions(include_closed=True)
+    archived = [
+        p for p in positions
+        if str(p.get("status", "")).lower() == "closed"
+    ]
+
+    if not archived:
+        return {
+            "totals": {"archived": 0, "wins": 0, "losses": 0, "flat": 0},
+            "direction_counts": {},
+            "conviction_counts": {},
+            "average_health": 0,
+            "insights": ["No archived trades yet."],
+            "behavior_summary": {
+                "counts": {},
+                "cards": ["No archived trades yet."],
+            },
+            "trades": [],
+        }
+
+    wins = 0
+    losses = 0
+    flat = 0
+    total_health = 0
+    direction_counts = {}
+    conviction_counts = {}
+    enriched = []
+
+    for pos in archived:
+        outcome = classify_trade_outcome(pos)
+        health_score = int((pos.get("health", {}) or {}).get("score", 0) or 0)
+
+        if outcome == "WIN":
+            wins += 1
+        elif outcome == "LOSS":
+            losses += 1
+        else:
+            flat += 1
+
+        direction = pos.get("direction", "UNKNOWN")
+        conviction = pos.get("conviction", "Unknown")
+        direction_counts[direction] = direction_counts.get(direction, 0) + 1
+        conviction_counts[conviction] = conviction_counts.get(conviction, 0) + 1
+        total_health += health_score
+
+        row = dict(pos)
+        row["outcome"] = outcome
+        row["lesson"] = build_trade_lesson(pos)
+        row["behavior_flags"] = build_trade_behavior_flags(pos)
+        row["behavior_coaching"] = build_behavior_coaching_line(pos, row["behavior_flags"])
+        enriched.append(row)
+
+    avg_health = round(total_health / len(archived), 1)
+
+    insights = []
+    if wins > losses:
+        insights.append("You are net positive on archived trades, but that does not excuse weak process on the bad ones.")
+    elif losses > wins:
+        insights.append("Your archived losses are outweighing your wins. Entry quality and alignment need to get stricter.")
+    else:
+        insights.append("Your results are balanced, which usually means the edge is still too soft or inconsistent.")
+
+    if avg_health < 40:
+        insights.append("You tend to close trades after they have already weakened badly. That is a management problem, not just a market problem.")
+    elif avg_health > 70:
+        insights.append("You are generally exiting from stronger states, which suggests better discipline on closes.")
+
+    behavior_summary = build_behavior_habit_summary(enriched)
+
+    return {
+        "totals": {
+            "archived": len(archived),
+            "wins": wins,
+            "losses": losses,
+            "flat": flat,
+        },
+        "direction_counts": direction_counts,
+        "conviction_counts": conviction_counts,
+        "average_health": avg_health,
+        "insights": insights,
+        "behavior_summary": behavior_summary,
+        "trades": enriched,
     }
 
 
@@ -866,3 +1304,225 @@ def build_trade_lesson(position):
         )
         tag = "Aligned Win"
     elif outcome == "WIN" and agreement_score <
+
+
+    def build_my_plays_page_summary(plays):
+    plays = _ensure_activation_readiness(plays or [])
+
+    total = len(plays)
+    ready = 0
+    close = 0
+    weak = 0
+    high_agreement = 0
+    high_conviction = 0
+
+    for play in plays:
+        bucket = _activation_bucket(play)
+        agreement_score = _agreement_score(play)
+        conviction = _norm_text(play.get("conviction", "Medium")).lower()
+
+        if bucket == "READY":
+            ready += 1
+        elif bucket == "CLOSE":
+            close += 1
+        elif bucket in {"WATCH", "WEAK"}:
+            weak += 1
+
+        if agreement_score >= 75:
+            high_agreement += 1
+        if conviction == "high":
+            high_conviction += 1
+
+    if total == 0:
+        headline = "No idea flow yet."
+        summary = "You do not have enough plays yet for the system to judge your decision quality."
+        chip = "Cold Start"
+    elif weak > ready:
+        headline = "Your idea book is still too soft."
+        summary = "You are carrying more weak or watch-only setups than truly ready ideas. Tightening your filter matters more than adding volume."
+        chip = "Needs Tightening"
+    elif ready > 0:
+        headline = "There are real candidates on deck."
+        summary = "You have playable setups with enough structure to matter. The goal now is disciplined promotion, not random activation."
+        chip = "Constructive"
+    else:
+        headline = "The book is forming, but still mixed."
+        summary = "Some ideas are getting closer, but the edge is not clean enough yet to treat the inventory as sharp."
+        chip = "Mixed"
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "chip": chip,
+        "total": total,
+        "ready": ready,
+        "close": close,
+        "weak": weak,
+        "high_agreement": high_agreement,
+        "high_conviction": high_conviction,
+    }
+
+
+def build_play_detail_summary(play):
+    if not play:
+        return {
+            "headline": "Play not found.",
+            "summary": "The requested play could not be loaded.",
+            "chip": "Missing",
+        }
+
+    readiness = play.get("activation_readiness", {}) or {}
+    bucket = _norm_upper(readiness.get("bucket", "UNKNOWN"))
+    agreement_score = _agreement_score(play)
+    health_score = _health_score(play)
+
+    if bucket == "READY" and agreement_score >= 75:
+        headline = "This setup is close to institutional-quality for your system."
+        summary = "The structure, agreement, and context are strong enough that activation can be justified if you stay disciplined."
+        chip = "Ready"
+    elif bucket == "CLOSE":
+        headline = "This setup is warming up, but it is not fully earned yet."
+        summary = "You may be early if you push this now. Let the system get cleaner confirmation before treating it like a live position."
+        chip = "Close"
+    elif bucket in {"WATCH", "WEAK"}:
+        headline = "This setup is not strong enough yet."
+        summary = "The system is telling you this idea still lacks the evidence required for trust. Do not confuse attention with quality."
+        chip = "Weak / Watch"
+    elif health_score < 35:
+        headline = "The setup is already under pressure."
+        summary = "This idea is not developing in a way that deserves confidence right now."
+        chip = "Under Pressure"
+    else:
+        headline = "This setup is still developing."
+        summary = "The idea is alive, but the edge is not clean enough yet to pretend certainty."
+        chip = "Developing"
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "chip": chip,
+    }
+
+
+def build_my_positions_page_summary(positions):
+    positions = positions or []
+
+    total = len(positions)
+    strong = 0
+    weak = 0
+    high_agreement = 0
+    under_pressure = 0
+
+    for pos in positions:
+        agreement_score = _agreement_score(pos)
+        health_score = _health_score(pos)
+        label = _norm_upper((pos.get("health", {}) or {}).get("label", ""))
+
+        if agreement_score >= 75 and health_score >= 75:
+            strong += 1
+        if agreement_score < 55 or health_score < 35:
+            weak += 1
+        if agreement_score >= 75:
+            high_agreement += 1
+        if label in {"UNDER PRESSURE", "BROKEN"} or health_score < 35:
+            under_pressure += 1
+
+    if total == 0:
+        headline = "No live exposure yet."
+        summary = "You do not currently have open user positions to manage."
+        chip = "Flat"
+    elif weak > 0:
+        headline = "Your live book needs attention."
+        summary = f"{weak} position(s) currently look weak by health or agreement. The goal is faster clarity, not passive hope."
+        chip = "Needs Review"
+    elif strong > 0:
+        headline = "The live book is behaving constructively."
+        summary = "You currently have positions that still hold real support. Protect quality and do not over-manage strength."
+        chip = "Constructive"
+    else:
+        headline = "The live book is mixed."
+        summary = "You have active exposure, but not enough clean strength yet to call the position layer truly healthy."
+        chip = "Mixed"
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "chip": chip,
+        "total": total,
+        "strong": strong,
+        "weak": weak,
+        "high_agreement": high_agreement,
+        "under_pressure": under_pressure,
+    }
+
+
+def build_position_detail_summary(position):
+    if not position:
+        return {
+            "headline": "Position not found.",
+            "summary": "The requested position could not be loaded.",
+            "chip": "Missing",
+        }
+
+    agreement_score = _agreement_score(position)
+    health_score = _health_score(position)
+
+    if agreement_score >= 75 and health_score >= 75:
+        headline = "This position still has real support."
+        summary = "The trade is behaving like something the system can justify. Do not ruin a good state with anxious over-management."
+        chip = "Strong"
+    elif agreement_score < 55 and health_score < 35:
+        headline = "This position is weak in both idea quality and live behavior."
+        summary = "The environment is not helping and the trade itself is deteriorating. Capital protection matters more than narrative right now."
+        chip = "Critical"
+    elif health_score < 35:
+        headline = "This position is under real pressure."
+        summary = "The setup may not be fully dead, but the live state is weak enough that passive management becomes its own mistake."
+        chip = "Under Pressure"
+    elif agreement_score < 55:
+        headline = "This position lacks strong contextual support."
+        summary = "Even if the trade is still alive, the system is not giving it high-quality backing."
+        chip = "Mixed"
+    else:
+        headline = "This position is still developing."
+        summary = "There is not enough evidence yet to call this either a clean success or a clean failure."
+        chip = "Developing"
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "chip": chip,
+    }
+
+
+def build_trade_analysis_summary(analysis):
+    analysis = analysis or {}
+    totals = analysis.get("totals", {}) or {}
+    wins = _safe_int(totals.get("wins", 0))
+    losses = _safe_int(totals.get("losses", 0))
+    flat = _safe_int(totals.get("flat", 0))
+    behavior_summary = analysis.get("behavior_summary", {}) or {}
+    behavior_counts = behavior_summary.get("counts", {}) or {}
+
+    if wins > losses and sum(_safe_int(v) for v in behavior_counts.values()) == 0:
+        headline = "Your archived book shows cleaner decision behavior."
+        summary = "The trades are not perfect, but there are fewer obvious behavior leaks contaminating the outcomes."
+        chip = "Constructive"
+    elif losses > wins:
+        headline = "The archived book is showing real decision leakage."
+        summary = "Losses are outweighing wins, and the focus should be on tightening idea quality, activation quality, and management quality together."
+        chip = "Needs Correction"
+    elif flat > max(1, wins):
+        headline = "Too much energy is producing too little edge."
+        summary = "The archived book suggests too many trades are going nowhere, which usually means weak selection or weak follow-through."
+        chip = "Soft Edge"
+    else:
+        headline = "The archived book is mixed."
+        summary = "There is signal here, but not yet enough clean separation between strong decisions and weak habits."
+        chip = "Mixed"
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "chip": chip,
+    }

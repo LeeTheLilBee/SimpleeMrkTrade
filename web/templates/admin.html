@@ -5,7 +5,7 @@
     <h2>Admin Control Center</h2>
     <div class="passage-frame">
         <p>
-            Operator visibility across system intelligence, product monitoring, simulation health, proof, usage signals, and tier preview.
+            Operator visibility across system intelligence, product monitoring, simulation health, proof, usage signals, behavior tracking, and tier preview.
         </p>
     </div>
 </div>
@@ -51,6 +51,111 @@
                 </div>
             </div>
         </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if quick_actions and quick_actions.actions %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Operator Quick Actions</h3>
+            <p class="muted-line" style="margin:0;">Jump directly into the zones that usually need the most attention.</p>
+        </div>
+        <span class="signal-stat-chip">{{ quick_actions.actions|length }} actions</span>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
+        {% for action in quick_actions.actions %}
+        <a href="{{ action.target }}" style="text-decoration:none; color:inherit;">
+            <div class="card {% if action.tone == 'gold' %}gold-accent-card{% endif %}" style="margin:0; height:100%;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+                    <h4 style="margin:0;">{{ action.headline }}</h4>
+                    <span class="signal-stat-chip">{{ action.target_label }}</span>
+                </div>
+                <div class="passage-frame" style="margin-top:10px;">
+                    <p style="margin:0;">{{ action.body }}</p>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if behavior_risk %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Behavior Risk</h3>
+            <p class="muted-line" style="margin:0;">
+                What your archived trades are revealing about decision discipline.
+            </p>
+        </div>
+        <span class="signal-stat-chip">Coaching Layer</span>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+        <h4>{{ behavior_risk.headline }}</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ behavior_risk.summary }}</p>
+        </div>
+    </div>
+
+    {% if behavior_risk.cards %}
+    <div style="display:grid; gap:12px; margin-top:14px;">
+        {% for card in behavior_risk.cards %}
+        <div class="card" style="margin:0;">
+            <h4>{{ card.headline }}</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ card.body }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if behavior_priority %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Fix This First</h3>
+            <p class="muted-line" style="margin:0;">
+                The strongest behavior leak the system thinks deserves attention right now.
+            </p>
+        </div>
+        <span class="signal-stat-chip">Priority Engine</span>
+    </div>
+
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;"><strong>{{ behavior_priority.headline }}</strong></p>
+        <p style="margin:8px 0 0 0;">{{ behavior_priority.summary }}</p>
+    </div>
+
+    {% if behavior_priority.top_fix %}
+    <div class="card" style="margin-top:14px;">
+        <h4>{{ behavior_priority.top_fix.headline }}</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ behavior_priority.top_fix.body }}</p>
+            <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ behavior_priority.top_fix.fix }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if behavior_priority.items %}
+    <div style="display:grid; gap:12px; margin-top:14px;">
+        {% for item in behavior_priority.items %}
+        <div class="card" style="margin:0;">
+            <h4>{{ item.headline }}</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item.body }}</p>
+                <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ item.fix }}</p>
+            </div>
+        </div>
         {% endfor %}
     </div>
     {% endif %}
@@ -144,6 +249,108 @@
         <div class="metric">{{ users|length }}</div>
         <p class="muted-line">Loaded user records</p>
     </div>
+</div>
+
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Behavior Event Layer</h3>
+            <p class="muted-line" style="margin:0;">Track how users actually move through the workflow, not just what the system currently looks like.</p>
+        </div>
+        <span class="signal-stat-chip">Live Behavior</span>
+    </div>
+
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;"><strong>{{ event_analytics.headline }}</strong></p>
+        <p style="margin:8px 0 0 0;">{{ event_analytics.summary }}</p>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Play Created</h4>
+            <p><strong>{{ event_analytics.counts.play_created }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Play Edited</h4>
+            <p><strong>{{ event_analytics.counts.play_edited }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Play Activated</h4>
+            <p><strong>{{ event_analytics.counts.play_activated }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Position Updated</h4>
+            <p><strong>{{ event_analytics.counts.position_updated }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Position Closed</h4>
+            <p><strong>{{ event_analytics.counts.position_closed }}</strong></p>
+        </div>
+    </div>
+</div>
+
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Behavior Pattern Signals</h3>
+            <p class="muted-line" style="margin:0;">Derived operator habits from event flow, not just static account state.</p>
+        </div>
+        <span class="signal-stat-chip">Behavioral Edge</span>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Against Engine</h4>
+            <p><strong>{{ behavioral_insights.counts.activated_against_engine }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>High Conviction / No Thesis</h4>
+            <p><strong>{{ behavioral_insights.counts.high_conviction_no_thesis }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Edited After Weakness</h4>
+            <p><strong>{{ behavioral_insights.counts.edited_after_weak_health }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Late Weak Closes</h4>
+            <p><strong>{{ behavioral_insights.counts.closed_weak }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Created After Loss</h4>
+            <p><strong>{{ behavioral_insights.counts.created_after_loss_close }}</strong></p>
+        </div>
+    </div>
+
+    <div style="display:grid; gap:12px; margin-top:14px;">
+        {% for card in behavioral_insights.cards %}
+        <div class="card" style="margin:0;">
+            <h4>{{ card.headline }}</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ card.body }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>Recent Behavior Events</h3>
+    {% if event_analytics.recent_events %}
+        <div style="display:grid; gap:10px; margin-top:12px;">
+            {% for row in event_analytics.recent_events|reverse %}
+            <div class="card" style="margin:0;">
+                <div class="admin-stat-row">
+                    <span>{{ row.event_type }}</span>
+                    <strong>{{ row.created_at }}</strong>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="passage-frame" style="margin-top:12px;">
+            <p style="margin:0;">No events tracked yet.</p>
+        </div>
+    {% endif %}
 </div>
 
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">

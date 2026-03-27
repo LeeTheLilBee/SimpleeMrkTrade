@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_ui_macros.html" import summary_card, stat_grid, note_card, behavior_flags, reason_list, passage_item %}
 {% block content %}
 
 <div style="margin-bottom:14px;">
@@ -7,215 +8,51 @@
     </a>
 </div>
 
-<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
+<div class="page-hero card premium-hero gold-accent-card">
     <h2>Analyze My Trades</h2>
     <div class="passage-frame">
         <p>
-            A decision review layer showing what your archived trades are teaching you about alignment, conviction, execution, and repeatable behavior.
+            A decision review layer showing what your archived trades are teaching you about alignment, conviction, execution, and behavior.
         </p>
     </div>
 </div>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h4>Archived Trades</h4>
-        <p><strong>{{ analysis.totals.archived }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Wins</h4>
-        <p><strong>{{ analysis.totals.wins }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Losses</h4>
-        <p><strong>{{ analysis.totals.losses }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Flat</h4>
-        <p><strong>{{ analysis.totals.flat }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Average Health at Close</h4>
-        <p><strong>{{ analysis.average_health }}</strong></p>
-    </div>
-</div>
+{{ summary_card(page_summary.headline, page_summary.summary, page_summary.chip) }}
+
+{{ stat_grid([
+    {"title": "Archived Trades", "value": analysis.totals.archived},
+    {"title": "Wins", "value": analysis.totals.wins},
+    {"title": "Losses", "value": analysis.totals.losses},
+    {"title": "Flat", "value": analysis.totals.flat},
+    {"title": "Average Health at Close", "value": analysis.average_health},
+]) }}
 
 <div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:6px;">What Your Trading Is Showing</h3>
-            <p class="muted-line" style="margin:0;">Top-level coaching from your archived trade behavior.</p>
-        </div>
-        <span class="signal-stat-chip">Review Desk</span>
-    </div>
-
+    <h3>What Your Trading Is Showing</h3>
     {% if analysis.insights %}
-    <div style="display:grid; gap:10px; margin-top:14px;">
+    <div style="display:grid; gap:10px; margin-top:12px;">
         {% for line in analysis.insights %}
-        <div class="passage-frame">
-            <p style="margin:0;">{{ line }}</p>
-        </div>
+        {{ passage_item(line) }}
         {% endfor %}
     </div>
     {% else %}
-    <div class="passage-frame" style="margin-top:14px;">
+    <div class="passage-frame" style="margin-top:12px;">
         <p style="margin:0;">No trade insights yet.</p>
     </div>
     {% endif %}
 </div>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card gold-accent-card">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
-            <div>
-                <h3 style="margin-bottom:6px;">{{ analysis.dominant_patterns.winning.headline }}</h3>
-                <p class="muted-line" style="margin:0;">The strongest repeatable win structure showing up in your archive.</p>
-            </div>
-            <span class="signal-stat-chip">{{ analysis.dominant_patterns.winning.count }}</span>
-        </div>
-        <div class="passage-frame" style="margin-top:14px;">
-            <p style="margin:0;">{{ analysis.dominant_patterns.winning.label }}</p>
-        </div>
-    </div>
-
-    <div class="card premium-card">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
-            <div>
-                <h3 style="margin-bottom:6px;">{{ analysis.dominant_patterns.losing.headline }}</h3>
-                <p class="muted-line" style="margin:0;">The loss pattern you should recognize faster and respect earlier.</p>
-            </div>
-            <span class="signal-stat-chip">{{ analysis.dominant_patterns.losing.count }}</span>
-        </div>
-        <div class="passage-frame" style="margin-top:14px;">
-            <p style="margin:0;">{{ analysis.dominant_patterns.losing.label }}</p>
-        </div>
-    </div>
-</div>
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card gold-accent-card">
-        <h3>{{ analysis.behavior_panels.repeat.headline }}</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ analysis.behavior_panels.repeat.summary }}</p>
-        </div>
-        {% if analysis.behavior_panels.repeat.count %}
-        <div style="margin-top:12px;">
-            <span class="signal-stat-chip">Seen {{ analysis.behavior_panels.repeat.count }} times</span>
-        </div>
-        {% endif %}
-    </div>
-
-    <div class="card premium-card">
-        <h3>{{ analysis.behavior_panels.stop.headline }}</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ analysis.behavior_panels.stop.summary }}</p>
-        </div>
-        {% if analysis.behavior_panels.stop.count %}
-        <div style="margin-top:12px;">
-            <span class="signal-stat-chip">Seen {{ analysis.behavior_panels.stop.count }} times</span>
-        </div>
-        {% endif %}
-    </div>
-</div>
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h3>Alignment Read</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;"><strong>{{ analysis.alignment_summary.headline }}</strong></p>
-        </div>
-        <div class="passage-frame" style="margin-top:10px;">
-            <p style="margin:0;">{{ analysis.alignment_summary.summary }}</p>
-        </div>
-        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
-            <div class="card" style="margin:0;">
-                <h4>High Agreement Wins</h4>
-                <p><strong>{{ analysis.alignment_summary.stats.high_agreement_wins }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>High Agreement Losses</h4>
-                <p><strong>{{ analysis.alignment_summary.stats.high_agreement_losses }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Low Agreement Wins</h4>
-                <p><strong>{{ analysis.alignment_summary.stats.low_agreement_wins }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Low Agreement Losses</h4>
-                <p><strong>{{ analysis.alignment_summary.stats.low_agreement_losses }}</strong></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Conviction Read</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;"><strong>{{ analysis.conviction_summary.headline }}</strong></p>
-        </div>
-        <div class="passage-frame" style="margin-top:10px;">
-            <p style="margin:0;">{{ analysis.conviction_summary.summary }}</p>
-        </div>
-        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
-            <div class="card" style="margin:0;">
-                <h4>High Conviction Wins</h4>
-                <p><strong>{{ analysis.conviction_summary.stats.high_conviction_wins }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>High Conviction Losses</h4>
-                <p><strong>{{ analysis.conviction_summary.stats.high_conviction_losses }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Low Conviction Wins</h4>
-                <p><strong>{{ analysis.conviction_summary.stats.low_conviction_wins }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Low Conviction Losses</h4>
-                <p><strong>{{ analysis.conviction_summary.stats.low_conviction_losses }}</strong></p>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Condition Review</h3>
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Most Seen Backdrop</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ analysis.condition_summary.most_seen.label }}</p>
-            </div>
-            <div style="margin-top:10px;">
-                <span class="signal-stat-chip">{{ analysis.condition_summary.most_seen.count }} trades</span>
-            </div>
-        </div>
-
-        <div class="card" style="margin:0;">
-            <h4>Best Condition Cluster</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ analysis.condition_summary.best.label }}</p>
-            </div>
-            <div style="margin-top:10px;">
-                <span class="signal-stat-chip">{{ analysis.condition_summary.best.count }} wins</span>
-            </div>
-        </div>
-
-        <div class="card" style="margin:0;">
-            <h4>Weakest Condition Cluster</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ analysis.condition_summary.worst.label }}</p>
-            </div>
-            <div style="margin-top:10px;">
-                <span class="signal-stat-chip">{{ analysis.condition_summary.worst.count }} losses</span>
-            </div>
-        </div>
-    </div>
-
-    {% if analysis.condition_summary.summary %}
-    <div style="display:grid; gap:10px; margin-top:14px;">
-        {% for line in analysis.condition_summary.summary %}
-        <div class="passage-frame">
-            <p style="margin:0;">{{ line }}</p>
-        </div>
+    <h3>Habit Signals Emerging</h3>
+    {% if analysis.behavior_summary and analysis.behavior_summary.cards %}
+    <div style="display:grid; gap:10px; margin-top:12px;">
+        {% for line in analysis.behavior_summary.cards %}
+        {{ passage_item(line) }}
         {% endfor %}
+    </div>
+    {% else %}
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;">No strong behavior signals yet.</p>
     </div>
     {% endif %}
 </div>
@@ -226,9 +63,7 @@
         {% if analysis.direction_counts %}
         <div style="display:grid; gap:8px; margin-top:12px;">
             {% for direction, count in analysis.direction_counts.items() %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ direction }} — {{ count }}</p>
-            </div>
+            {{ passage_item(direction ~ " — " ~ count) }}
             {% endfor %}
         </div>
         {% else %}
@@ -243,9 +78,7 @@
         {% if analysis.conviction_counts %}
         <div style="display:grid; gap:8px; margin-top:12px;">
             {% for conviction, count in analysis.conviction_counts.items() %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ conviction }} — {{ count }}</p>
-            </div>
+            {{ passage_item(conviction ~ " — " ~ count) }}
             {% endfor %}
         </div>
         {% else %}
@@ -257,101 +90,54 @@
 </div>
 
 <div class="card premium-card">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:6px;">Trade Lessons</h3>
-            <p class="muted-line" style="margin:0;">Archived trade-by-trade coaching, context, and behavior signals.</p>
-        </div>
-        <span class="signal-stat-chip">{{ analysis.trades|length }} reviewed</span>
-    </div>
-
+    <h3>Trade Lessons</h3>
     {% if analysis.trades %}
     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-top:14px;">
         {% for trade in analysis.trades %}
         <div class="card" style="margin:0; height:100%;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
                 <div>
                     <h4 style="margin:0 0 6px 0;">{{ trade.symbol }}</h4>
                     <p class="muted-line" style="margin:0;">
                         {{ trade.direction }} | Entry {{ trade.entry }} | Current {{ trade.current_price }}
                     </p>
                 </div>
-                {% if trade.lesson %}
-                <span class="signal-stat-chip">{{ trade.lesson.tag }}</span>
-                {% else %}
-                <span class="signal-stat-chip">{{ trade.outcome }}</span>
-                {% endif %}
+                <span class="signal-stat-chip">{{ trade.lesson.tag if trade.lesson else trade.outcome }}</span>
             </div>
 
             <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
                 <div class="card" style="margin:0;">
                     <h4>Outcome</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ trade.outcome }}</strong></p>
-                    </div>
+                    <div class="passage-frame"><p style="margin:0;"><strong>{{ trade.outcome }}</strong></p></div>
                 </div>
                 <div class="card" style="margin:0;">
                     <h4>Health</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ trade.health.score }}</strong></p>
-                    </div>
-                </div>
-                <div class="card" style="margin:0;">
-                    <h4>Agreement</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ trade.system_agreement.score }}</strong></p>
-                    </div>
+                    <div class="passage-frame"><p style="margin:0;"><strong>{{ trade.health.score }}</strong></p></div>
                 </div>
                 <div class="card" style="margin:0;">
                     <h4>Conviction</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ trade.conviction }}</strong></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:10px;">
-                <div class="card" style="margin:0;">
-                    <h4>Health Bucket</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ trade.health_bucket }}</strong></p>
-                    </div>
+                    <div class="passage-frame"><p style="margin:0;"><strong>{{ trade.conviction }}</strong></p></div>
                 </div>
                 <div class="card" style="margin:0;">
-                    <h4>Agreement Bucket</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ trade.agreement_bucket }}</strong></p>
-                    </div>
+                    <h4>Agreement</h4>
+                    <div class="passage-frame"><p style="margin:0;"><strong>{{ trade.system_agreement.score }}</strong></p></div>
                 </div>
             </div>
 
             {% if trade.lesson %}
-            <div class="card" style="margin-top:14px;">
-                <h4>{{ trade.lesson.headline }}</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;">{{ trade.lesson.lesson }}</p>
-                </div>
-            </div>
+            {{ note_card(trade.lesson.headline, trade.lesson.lesson) }}
             {% endif %}
 
-            <div class="card" style="margin-top:14px;">
-                <h4>Original Thesis</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;">{{ trade.thesis or "No thesis recorded." }}</p>
-                </div>
-            </div>
+            {{ behavior_flags(trade.behavior_flags) }}
+
+            {% if trade.behavior_coaching %}
+            {{ note_card("Behavior Coaching", trade.behavior_coaching) }}
+            {% endif %}
+
+            {{ note_card("Original Thesis", trade.thesis or "No thesis recorded.") }}
 
             {% if trade.system_feedback %}
-            <div class="card" style="margin-top:14px;">
-                <h4>System Context at Review</h4>
-                <div style="display:grid; gap:8px;">
-                    {% for line in trade.system_feedback[:3] %}
-                    <div class="passage-frame">
-                        <p style="margin:0;">{{ line }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
+            {{ reason_list("System Context at Review", trade.system_feedback, 3) }}
             {% endif %}
         </div>
         {% endfor %}
