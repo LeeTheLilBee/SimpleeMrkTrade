@@ -258,9 +258,9 @@
 </div>
 {% endif %}
 
-    {% if behavior_priority.items %}
+    {% if behavior_priority.items() %}
 <div style="display:grid; gap:12px; margin-top:14px;">
-    {% for item in behavior_priority.items %}
+    {% for item in behavior_priority.items() %}
     <div class="card" style="margin:0;">
         <h4>{{ item.headline }}</h4>
         <div class="passage-frame">
