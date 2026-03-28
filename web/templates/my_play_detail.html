@@ -1,28 +1,21 @@
 {% extends "base.html" %}
+{% from "_ui_macros.html" import summary_card, stat_grid, key_value_list, note_card, reason_list %}
 {% block content %}
 
 <div style="margin-bottom:14px; display:flex; gap:8px; flex-wrap:wrap;">
-    <a href="/my-plays" class="signal-stat-chip" style="text-decoration:none;">
-        ← Back to My Plays
-    </a>
-    <a href="/my-positions" class="signal-stat-chip" style="text-decoration:none;">
-        My Positions
-    </a>
+    <a href="/my-plays" class="signal-stat-chip" style="text-decoration:none;">← Back to My Plays</a>
+    <a href="/my-positions" class="signal-stat-chip" style="text-decoration:none;">My Positions</a>
 </div>
 
 {% if error %}
 <div class="card premium-card" style="margin-bottom:18px;">
-    <div class="passage-frame">
-        <p style="margin:0;">{{ error }}</p>
-    </div>
+    <div class="passage-frame"><p style="margin:0;">{{ error }}</p></div>
 </div>
 {% endif %}
 
 {% if not play %}
 <div class="card premium-card">
-    <div class="passage-frame">
-        <p style="margin:0;">Play not found.</p>
-    </div>
+    <div class="passage-frame"><p style="margin:0;">Play not found.</p></div>
 </div>
 {% else %}
 
@@ -30,202 +23,38 @@
     <h2>{{ play.symbol }} — My Play</h2>
     <div class="passage-frame">
         <p>
-            A personal trade idea reviewed against live system conditions before you decide whether it deserves activation.
+            A personal trade idea evaluated against current system conditions before it earns a place in your live position layer.
         </p>
     </div>
 </div>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h4>Direction</h4>
-        <p><strong>{{ play.direction }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Health Score</h4>
-        <p><strong>{{ play.health.score }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Agreement Score</h4>
-        <p><strong>{{ play.system_agreement.score }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Conviction</h4>
-        <p><strong>{{ play.conviction }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Status</h4>
-        <p><strong>{{ play.status }}</strong></p>
-    </div>
-</div>
+{{ summary_card(page_summary.headline, page_summary.summary, page_summary.chip) }}
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-            <div>
-                <h3 style="margin-bottom:6px;">Setup Snapshot</h3>
-                <p class="muted-line" style="margin:0;">The structure of the idea you are trying to express.</p>
-            </div>
-            <span class="signal-stat-chip">{{ play.system_agreement.label }}</span>
-        </div>
-
-        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
-            <div class="card" style="margin:0;">
-                <h4>Entry</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ play.entry }}</strong></p>
-                </div>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Current Price</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ play.current_price }}</strong></p>
-                </div>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Stop</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ play.stop }}</strong></p>
-                </div>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Target</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ play.target }}</strong></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card premium-card gold-accent-card">
-        <h3>Decision Read</h3>
-        <div style="display:grid; gap:8px; margin-top:12px;">
-            {% if play.health.score >= 75 and play.system_agreement.score >= 75 %}
-            <div class="passage-frame">
-                <p style="margin:0;">This play is showing real structural support. The idea and the environment are not fighting each other.</p>
-            </div>
-            <div class="passage-frame">
-                <p style="margin:0;">Best posture: keep the setup clean and only activate it if you are ready to manage it with discipline.</p>
-            </div>
-            {% elif play.health.score < 35 and play.system_agreement.score < 55 %}
-            <div class="passage-frame">
-                <p style="margin:0;">This play is weak both on its own behavior and in the eyes of the system. That is not a great combination.</p>
-            </div>
-            <div class="passage-frame">
-                <p style="margin:0;">Best posture: do not promote a weak idea just because you want action.</p>
-            </div>
-            {% elif play.health.score < 35 %}
-            <div class="passage-frame">
-                <p style="margin:0;">The setup is under pressure. Even if the thesis still sounds good, the current behavior is not doing it favors.</p>
-            </div>
-            <div class="passage-frame">
-                <p style="margin:0;">Best posture: tighten your thinking before turning this into a live position.</p>
-            </div>
-            {% elif play.system_agreement.score < 55 %}
-            <div class="passage-frame">
-                <p style="margin:0;">The system is not giving this idea strong support right now. That does not make it impossible, but it does make it more suspect.</p>
-            </div>
-            <div class="passage-frame">
-                <p style="margin:0;">Best posture: be careful not to confuse conviction with confirmation.</p>
-            </div>
-            {% else %}
-            <div class="passage-frame">
-                <p style="margin:0;">This play is still in a mixed zone. It has some support, but not enough to act careless.</p>
-            </div>
-            <div class="passage-frame">
-                <p style="margin:0;">Best posture: let the evidence get stronger before acting bigger than the setup deserves.</p>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h3>Health Read</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;"><strong>{{ play.health.label }}</strong></p>
-            <p style="margin:8px 0 0 0;"><strong>{{ play.health.status }}</strong></p>
-            <p style="margin:8px 0 0 0;">{{ play.health.note }}</p>
-        </div>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Why the System Sees It This Way</h3>
-        <div style="display:grid; gap:8px; margin-top:12px;">
-            {% for line in play.system_agreement.reasons %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ line }}</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>System Feedback</h3>
-    <div style="display:grid; gap:8px; margin-top:12px;">
-        {% for line in play.system_feedback %}
-        <div class="passage-frame">
-            <p style="margin:0;">{{ line }}</p>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h3>Market Context</h3>
-        <div style="display:grid; gap:8px; margin-top:12px;">
-            <div class="passage-frame"><p style="margin:0;">Mode: {{ play.market_context.mode }}</p></div>
-            <div class="passage-frame"><p style="margin:0;">Breadth: {{ play.market_context.breadth }}</p></div>
-            <div class="passage-frame"><p style="margin:0;">Regime: {{ play.market_context.regime }}</p></div>
-            <div class="passage-frame"><p style="margin:0;">Volatility: {{ play.market_context.volatility_state }}</p></div>
-        </div>
-    </div>
-
-    {% if play.engine_candidate %}
-    <div class="card premium-card gold-accent-card">
-        <h3>Engine View on This Symbol</h3>
-        <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-            <div class="card" style="margin:0;">
-                <h4>Score</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ play.engine_candidate.score }}</strong></p>
-                </div>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Confidence</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ play.engine_candidate.confidence }}</strong></p>
-                </div>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Strategy</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ play.engine_candidate.strategy }}</strong></p>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-</div>
+{{ stat_grid([
+    {"title": "Direction", "value": play.direction},
+    {"title": "Health Score", "value": play.health.score},
+    {"title": "Agreement Score", "value": play.system_agreement.score},
+    {"title": "Conviction", "value": play.conviction},
+    {"title": "Status", "value": play.status},
+]) }}
 
 {% if play.activation_readiness %}
 <div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <h3>{{ play.activation_readiness.headline }}</h3>
-    <div class="passage-frame">
-        <p style="margin:0;">{{ play.activation_readiness.summary }}</p>
-    </div>
-    <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
-        <span class="signal-stat-chip">Readiness {{ play.activation_readiness.score }}</span>
-        <span class="signal-stat-chip">{{ play.activation_readiness.bucket }}</span>
-    </div>
-    {% if play.activation_readiness.reasons %}
-    <div style="display:grid; gap:8px; margin-top:12px;">
-        {% for line in play.activation_readiness.reasons %}
-        <div class="passage-frame">
-            <p style="margin:0;">{{ line }}</p>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">{{ play.activation_readiness.headline }}</h3>
+            <p class="muted-line" style="margin:0;">{{ play.activation_readiness.summary }}</p>
         </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span class="signal-stat-chip">Readiness {{ play.activation_readiness.score }}</span>
+            <span class="signal-stat-chip">{{ play.activation_readiness.bucket }}</span>
+        </div>
+    </div>
+
+    {% if play.activation_readiness.reasons %}
+    <div style="display:grid; gap:8px; margin-top:14px;">
+        {% for line in play.activation_readiness.reasons %}
+        <div class="passage-frame"><p style="margin:0;">{{ line }}</p></div>
         {% endfor %}
     </div>
     {% endif %}
@@ -233,28 +62,63 @@
 {% endif %}
 
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h3>Original Thesis</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ play.thesis or "No thesis added yet." }}</p>
-        </div>
-    </div>
+    {{ key_value_list("Setup", [
+        {"label": "Entry", "value": play.entry},
+        {"label": "Stop", "value": play.stop},
+        {"label": "Target", "value": play.target},
+        {"label": "Current Price", "value": play.current_price},
+    ]) }}
+
+    {{ key_value_list("Health Read", [
+        {"label": "Label", "value": play.health.label},
+        {"label": "Status", "value": play.health.status},
+        {"label": "Note", "value": play.health.note},
+    ]) }}
 
     <div class="card premium-card">
-        <h3>Notes</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ play.notes or "No notes added yet." }}</p>
+        <h3>System Agreement</h3>
+        <div style="display:grid; gap:8px; margin-top:12px;">
+            <div class="passage-frame"><p style="margin:0;"><strong>{{ play.system_agreement.label }}</strong></p></div>
+            {% for line in play.system_agreement.reasons %}
+            <div class="passage-frame"><p style="margin:0;">{{ line }}</p></div>
+            {% endfor %}
         </div>
     </div>
 </div>
 
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
+    {{ reason_list("System Feedback", play.system_feedback) }}
+
+    {{ key_value_list("Market Context", [
+        {"label": "Mode", "value": play.market_context.mode},
+        {"label": "Breadth", "value": play.market_context.breadth},
+        {"label": "Regime", "value": play.market_context.regime},
+        {"label": "Volatility", "value": play.market_context.volatility_state},
+    ]) }}
+</div>
+
+{% if play.engine_candidate %}
+{{ note_card("Engine View on This Symbol", "Score " ~ play.engine_candidate.score ~ " | " ~ play.engine_candidate.confidence ~ " | " ~ play.engine_candidate.strategy) }}
+{% endif %}
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
+    {{ note_card("Thesis", play.thesis or "No thesis added yet.") }}
+    {{ note_card("Notes", play.notes or "No notes added yet.") }}
+</div>
+
 <div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <h3>Activate This Idea</h3>
-    <div class="passage-frame">
-        <p style="margin:0;">
-            Move this play into My Positions when it deserves live management, not just because you are tired of waiting.
-        </p>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Activate This Play</h3>
+            <p class="muted-line" style="margin:0;">
+                Move this idea into My Positions once it has earned live management.
+            </p>
+        </div>
+        {% if play.activation_readiness %}
+        <span class="signal-stat-chip">{{ play.activation_readiness.bucket }}</span>
+        {% endif %}
     </div>
+
     <form method="POST" action="/my-plays/{{ play.play_id }}/activate" style="margin-top:14px;">
         <button type="submit" class="cta-btn premium-gold-btn">Move to My Positions</button>
     </form>
@@ -262,24 +126,12 @@
 
 <div class="card premium-card">
     <h3>Edit Play</h3>
-    <form method="POST" action="/my-plays/{{ play.play_id }}/edit">
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:12px;">
-            <div>
-                <label>Symbol</label>
-                <input type="text" name="symbol" class="input" value="{{ play.symbol }}" required>
-            </div>
-            <div>
-                <label>Entry</label>
-                <input type="number" step="0.01" name="entry" class="input" value="{{ play.entry }}" required>
-            </div>
-            <div>
-                <label>Stop</label>
-                <input type="number" step="0.01" name="stop" class="input" value="{{ play.stop }}" required>
-            </div>
-            <div>
-                <label>Target</label>
-                <input type="number" step="0.01" name="target" class="input" value="{{ play.target }}" required>
-            </div>
+    <form method="POST" action="/my-plays/{{ play.play_id }}/edit" style="margin-top:14px;">
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+            <div><label>Symbol</label><input type="text" name="symbol" class="input" value="{{ play.symbol }}" required></div>
+            <div><label>Entry</label><input type="number" step="0.01" name="entry" class="input" value="{{ play.entry }}" required></div>
+            <div><label>Stop</label><input type="number" step="0.01" name="stop" class="input" value="{{ play.stop }}" required></div>
+            <div><label>Target</label><input type="number" step="0.01" name="target" class="input" value="{{ play.target }}" required></div>
             <div>
                 <label>Conviction</label>
                 <select name="conviction" class="input">

@@ -1,50 +1,31 @@
 {% extends "base.html" %}
+
 {% block content %}
 
 <h2>Equity Curve</h2>
 
-<div class="card">
-    <h3>What This Page Shows</h3>
-    <p>
-        The equity curve is the visual progression of account value over time. It helps you understand whether
-        the system is behaving consistently, whether performance is stable or unstable, and whether growth is
-        happening smoothly or with large swings.
-    </p>
-    <p>
-        This page matters because single trades can be misleading. The equity curve shows the bigger picture.
-    </p>
-</div>
+<canvas id="equityChart" width="800" height="400"></canvas>
 
-<div class="card">
-    <h3>How To Read It</h3>
-    <p>
-        A smoother upward curve usually suggests more controlled behavior. Sharp drops or jagged movement can
-        suggest drawdown pressure, unstable performance, or uneven trade outcomes.
-    </p>
-    <p>
-        Use this page to judge system behavior over time, not to react to one individual signal.
-    </p>
-</div>
-
-<div class="card">
-    <canvas id="equityPageChart"></canvas>
-</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-new Chart(document.getElementById('equityPageChart'), {
-  type: 'line',
-  data: {
-    labels: {{ curve|tojson }},
-    datasets: [{
-      label: 'Equity Curve',
-      data: {{ curve|tojson }},
-      borderColor: '#38bdf8',
-      backgroundColor: 'rgba(56,189,248,0.10)',
-      fill: true,
-      tension: 0.3
-    }]
-  }
-});
+
+const data = {{ curve|tojson }}
+
+const ctx = document.getElementById('equityChart').getContext('2d')
+
+new Chart(ctx, {
+type: 'line',
+data: {
+labels: data.map((_,i)=>i),
+datasets: [{
+label: 'Account Equity',
+data: data,
+borderWidth: 2
+}]
+}
+})
+
 </script>
 
 {% endblock %}

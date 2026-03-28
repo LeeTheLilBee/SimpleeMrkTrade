@@ -26,7 +26,7 @@
                 <a href="/signals" class="dropbtn">Signals</a>
                 <div class="dropdown-content">
                     <a href="/signals">Spotlight</a>
-                    {% if user and (user.tier in ["Starter", "Pro", "Elite"] or user.role == "master") %}
+                    {% if can_access_all_symbols is defined and can_access_all_symbols %}
                     <a href="/all-symbols">All Symbols</a>
                     {% else %}
                     <a href="/upgrade">Unlock All Symbols</a>
@@ -71,6 +71,24 @@
     </div>
 
     <div class="nav-right">
+        {% if user and user.role == "master" %}
+        <div class="admin-controls">
+            <a href="/admin" class="cta-btn secondary">Admin</a>
+
+            <div class="dropdown">
+                <button class="dropbtn account-trigger">Preview Tier</button>
+                <div class="dropdown-content dropdown-right">
+                    <a href="/admin/preview-tier/Guest">Guest</a>
+                    <a href="/admin/preview-tier/Free">Free</a>
+                    <a href="/admin/preview-tier/Starter">Starter</a>
+                    <a href="/admin/preview-tier/Pro">Pro</a>
+                    <a href="/admin/preview-tier/Elite">Elite</a>
+                    <a href="/admin/preview-tier/clear">Clear</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         {% if user and user.username %}
             <a href="/notifications" class="nav-utility">Alerts{% if unread_notifications %} ({{ unread_notifications }}){% endif %}</a>
 
@@ -129,13 +147,6 @@
         <p><b>Open Positions:</b> {{ snapshot.open_positions if snapshot else 0 }}</p>
         <p><b>Buying Power:</b> ${{ snapshot.buying_power if snapshot else 0 }}</p>
         <p><b>Estimated Value:</b> ${{ snapshot.estimated_account_value if snapshot else 0 }}</p>
-
-        {% if capital_state %}
-        <p class="muted-line">Capital posture</p>
-        <div class="fd-health-bar">
-            <div class="fd-health-fill" style="width: {{ capital_state.unused_capital_pct if capital_state.unused_capital_pct is defined else 50 }}%;"></div>
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endif %}

@@ -328,5 +328,20 @@
     "timestamp": "2026-03-26T02:53:39.450910",
     "level": "INFO",
     "message": "Executed META CALL at 596.38 size 1.0"
+  },
+  {
+    "timestamp": "2026-03-28T11:21:58.380085",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.651400",
+    "level": "INFO",
+    "message": "Executed GOOGL CALL at 275.03 size 17.0"
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.730898",
+    "level": "WARN",
+    "message": "Skipped TSLA due to insufficient buying power for minimum size"
   }
 ]

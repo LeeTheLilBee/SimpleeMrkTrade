@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
+{% from "_ui_macros.html" import summary_card %}
 
 <div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
     <h2>My Plays</h2>
     <div class="passage-frame">
         <p>
-            Your personal trade ideas, reviewed before activation and scored against current engine conditions so you can separate real setups from impulsive ones.
+            Your personal trade ideas, reviewed before activation and scored against current engine conditions so you can separate real setups from emotional ones.
         </p>
     </div>
 </div>
+
+{{ summary_card(page_summary.headline, page_summary.summary, page_summary.chip) }}
 
 {% if error %}
 <div class="card premium-card" style="margin-bottom:18px;">
@@ -67,11 +70,11 @@
             <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.high_agreement }}</strong></p></div>
         </div>
         <div class="card" style="margin:0;">
-            <h4>Ready to Activate</h4>
+            <h4>Ready</h4>
             <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.ready_to_activate }}</strong></p></div>
         </div>
         <div class="card" style="margin:0;">
-            <h4>Close to Ready</h4>
+            <h4>Close</h4>
             <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.close_to_ready }}</strong></p></div>
         </div>
         <div class="card" style="margin:0;">
@@ -91,7 +94,7 @@
         <h3>Idea Desk</h3>
         <div class="passage-frame">
             <p style="margin:0;">
-                Build, review, and pressure-test your ideas here before they earn a place in My Positions.
+                Build, inspect, and pressure-test ideas here before they earn a place in your live position layer.
             </p>
         </div>
     </div>
@@ -100,7 +103,7 @@
         <h3>Position Command Center</h3>
         <div class="passage-frame">
             <p style="margin:0;">
-                Active ideas belong here first. Once they deserve live management, move them into your positions layer.
+                When a play becomes real enough to manage live, move it into My Positions and let the coaching layer keep scoring it.
             </p>
         </div>
         <div style="margin-top:12px;">
@@ -114,7 +117,7 @@
         <div>
             <h3 style="margin-bottom:8px;">Add a New Play</h3>
             <p class="muted-line" style="margin:0;">
-                Capture the setup cleanly so the system can judge whether the idea deserves trust.
+                Capture the setup clearly so the system can judge whether the idea deserves trust, patience, or rejection.
             </p>
         </div>
         <span class="signal-stat-chip">New Idea</span>
@@ -262,6 +265,15 @@
                     <p style="margin:0;">{{ play.thesis or "No thesis added yet." }}</p>
                 </div>
             </div>
+
+            {% if play.notes %}
+            <div class="card" style="margin-top:14px;">
+                <h4>Notes</h4>
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ play.notes }}</p>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </a>
     {% endfor %}

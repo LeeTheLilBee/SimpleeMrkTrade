@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_ui_macros.html" import summary_card, stat_grid, simple_cta_card, note_card, reason_list %}
 {% block content %}
 
 <div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
@@ -9,6 +10,8 @@
         </p>
     </div>
 </div>
+
+{{ summary_card(page_summary.headline, page_summary.summary, page_summary.chip) }}
 
 <div class="card premium-card" style="margin-bottom:18px;">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
@@ -29,180 +32,72 @@
 </div>
 
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h3>Archived Positions</h3>
-        <div class="passage-frame">
-            <p style="margin:0;">
-                Review your past trades and decisions to improve future performance.
-            </p>
-        </div>
-        <div style="margin-top:12px;">
-            <a href="/my-positions/archived" class="cta-btn secondary">
-                View Archived Positions →
-            </a>
-        </div>
-    </div>
-
-    <div class="card premium-card gold-accent-card">
-        <h3>Trade Review Desk</h3>
-        <div class="passage-frame">
-            <p style="margin:0;">
-                Study archived decision quality, pattern behavior, alignment, and conviction through your coaching layer.
-            </p>
-        </div>
-        <div style="margin-top:12px;">
-            <a href="/my-positions/analyze" class="cta-btn secondary">
-                Analyze My Trades →
-            </a>
-        </div>
-    </div>
+    {{ simple_cta_card("Archived Positions", "Review your past trades and decisions to improve future performance.", "/my-positions/archived", "View Archived Positions →") }}
+    {{ simple_cta_card("Trade Review Desk", "Study archived decision quality, pattern behavior, alignment, conviction, and behavior flags through your coaching layer.", "/my-positions/analyze", "Analyze My Trades →", True) }}
 </div>
 
 {% if positions %}
 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap:18px;">
     {% for pos in positions %}
-    <div class="card premium-card" style="height:100%;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-            <div>
-                <h3 style="margin:0 0 6px 0;">{{ pos.symbol }}</h3>
-                <p class="muted-line" style="margin:0;">
-                    {{ pos.direction }} | Entry {{ pos.entry }} | Current {{ pos.current_price }}
-                </p>
+    <a href="/my-positions/{{ pos.position_id }}" style="text-decoration:none; color:inherit;">
+        <div class="card premium-card" style="height:100%;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                <div>
+                    <h3 style="margin:0 0 6px 0;">{{ pos.symbol }}</h3>
+                    <p class="muted-line" style="margin:0;">{{ pos.direction }} | Entry {{ pos.entry }} | Current {{ pos.current_price }}</p>
+                </div>
+                <span class="signal-stat-chip">{{ pos.system_agreement.label }}</span>
             </div>
-            <span class="signal-stat-chip">{{ pos.system_agreement.label }}</span>
-        </div>
 
-        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
-            <div class="card" style="margin:0;">
-                <h4>Health Score</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ pos.health.score }}</strong></p>
-                </div>
+            <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
+                <div class="card" style="margin:0;"><h4>Health Score</h4><div class="passage-frame"><p style="margin:0;"><strong>{{ pos.health.score }}</strong></p></div></div>
+                <div class="card" style="margin:0;"><h4>Agreement Score</h4><div class="passage-frame"><p style="margin:0;"><strong>{{ pos.system_agreement.score }}</strong></p></div></div>
+                <div class="card" style="margin:0;"><h4>Conviction</h4><div class="passage-frame"><p style="margin:0;"><strong>{{ pos.conviction }}</strong></p></div></div>
+                <div class="card" style="margin:0;"><h4>Status</h4><div class="passage-frame"><p style="margin:0;"><strong>{{ pos.status }}</strong></p></div></div>
             </div>
-            <div class="card" style="margin:0;">
-                <h4>Conviction</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ pos.conviction }}</strong></p>
-                </div>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Stop</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ pos.stop }}</strong></p>
-                </div>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Target</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>{{ pos.target }}</strong></p>
-                </div>
-            </div>
-        </div>
 
-        <div class="card gold-accent-card" style="margin-top:14px;">
-            <h4>Live Position Read</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ pos.health.status }}</strong></p>
-                <p style="margin:8px 0 0 0;">{{ pos.health.note }}</p>
-            </div>
-        </div>
+            {{ note_card("Live Position Read", pos.health.status ~ ". " ~ pos.health.note) }}
 
-        <div class="card" style="margin-top:14px;">
-            <h4>Decision Posture</h4>
-            <div style="display:grid; gap:8px;">
-                {% if pos.health.score >= 75 and pos.system_agreement.score >= 75 %}
-                <div class="passage-frame">
-                    <p style="margin:0;">This position is behaving like something the system can justify. The idea still has real support.</p>
+            <div class="card" style="margin-top:14px;">
+                <h4>Decision Posture</h4>
+                <div style="display:grid; gap:8px;">
+                    {% if pos.health.score >= 75 and pos.system_agreement.score >= 75 %}
+                    <div class="passage-frame"><p style="margin:0;">This position is behaving like something the system can justify. The idea still has real support.</p></div>
+                    <div class="passage-frame"><p style="margin:0;">Current posture: stay disciplined and avoid over-managing a position that is still working.</p></div>
+                    {% elif pos.health.score < 35 and pos.system_agreement.score < 55 %}
+                    <div class="passage-frame"><p style="margin:0;">This position is weak both internally and contextually. It is not just uncomfortable — it is poorly supported right now.</p></div>
+                    <div class="passage-frame"><p style="margin:0;">Current posture: protect capital first and stop pretending the environment is helping.</p></div>
+                    {% elif pos.health.score < 35 %}
+                    <div class="passage-frame"><p style="margin:0;">The idea may not be fully broken, but the position itself is under real pressure and needs attention now.</p></div>
+                    <div class="passage-frame"><p style="margin:0;">Current posture: review management quality, tighten discipline, and decide quickly instead of letting it drift.</p></div>
+                    {% elif pos.system_agreement.score < 55 %}
+                    <div class="passage-frame"><p style="margin:0;">This position is still alive, but the surrounding conditions are not giving it strong support.</p></div>
+                    <div class="passage-frame"><p style="margin:0;">Current posture: be cautious about forcing confidence where the system is still mixed or unsupportive.</p></div>
+                    {% else %}
+                    <div class="passage-frame"><p style="margin:0;">This position is still developing. Nothing here screams perfect or broken yet.</p></div>
+                    <div class="passage-frame"><p style="margin:0;">Current posture: stay attentive, let the evidence build, and do not confuse patience with passivity.</p></div>
+                    {% endif %}
                 </div>
-                <div class="passage-frame">
-                    <p style="margin:0;">Current posture: stay disciplined and avoid over-managing a position that is still working.</p>
-                </div>
-                {% elif pos.health.score < 35 and pos.system_agreement.score < 55 %}
-                <div class="passage-frame">
-                    <p style="margin:0;">This position is weak both internally and contextually. It is not just uncomfortable — it is poorly supported right now.</p>
-                </div>
-                <div class="passage-frame">
-                    <p style="margin:0;">Current posture: protect capital first and stop pretending the environment is helping.</p>
-                </div>
-                {% elif pos.health.score < 35 %}
-                <div class="passage-frame">
-                    <p style="margin:0;">The idea may not be fully broken, but the position itself is under real pressure and needs attention.</p>
-                </div>
-                <div class="passage-frame">
-                    <p style="margin:0;">Current posture: review management quality, tighten discipline, and decide quickly instead of letting it drift.</p>
-                </div>
-                {% elif pos.system_agreement.score < 55 %}
-                <div class="passage-frame">
-                    <p style="margin:0;">This position is still live, but the surrounding conditions are not giving it strong support.</p>
-                </div>
-                <div class="passage-frame">
-                    <p style="margin:0;">Current posture: be cautious about forcing confidence where the system is still mixed or unsupportive.</p>
-                </div>
-                {% else %}
-                <div class="passage-frame">
-                    <p style="margin:0;">This position is still developing. Nothing here screams perfect or broken yet.</p>
-                </div>
-                <div class="passage-frame">
-                    <p style="margin:0;">Current posture: stay attentive, let the evidence build, and do not confuse patience with passivity.</p>
-                </div>
-                {% endif %}
             </div>
-        </div>
 
-        <div class="card" style="margin-top:14px;">
-            <h4>System Feedback</h4>
-            <div style="display:grid; gap:8px;">
-                {% for line in pos.system_feedback[:3] %}
-                <div class="passage-frame">
-                    <p style="margin:0;">{{ line }}</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+            {{ reason_list("System Feedback", pos.system_feedback, 3) }}
 
-        {% if pos.system_agreement.reasons %}
-        <div class="card" style="margin-top:14px;">
-            <h4>Why the System Sees It This Way</h4>
-            <div style="display:grid; gap:8px;">
-                {% for reason in pos.system_agreement.reasons[:3] %}
-                <div class="passage-frame">
-                    <p style="margin:0;">{{ reason }}</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
+            {% if pos.system_agreement.reasons %}
+            {{ reason_list("Why the System Sees It This Way", pos.system_agreement.reasons, 3) }}
+            {% endif %}
 
-        <div class="card" style="margin-top:14px;">
-            <h4>Original Thesis</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ pos.thesis or "No thesis added yet." }}</p>
-            </div>
-        </div>
+            {{ note_card("Original Thesis", pos.thesis or "No thesis added yet.") }}
 
-        {% if pos.notes %}
-        <div class="card" style="margin-top:14px;">
-            <h4>Your Notes</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ pos.notes }}</p>
-            </div>
+            {% if pos.notes %}
+            {{ note_card("Your Notes", pos.notes) }}
+            {% endif %}
         </div>
-        {% endif %}
-
-        <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
-            <a href="/my-positions/{{ pos.position_id }}" class="cta-btn secondary">Edit Position</a>
-            <form method="POST" action="/my-positions/{{ pos.position_id }}/close" style="margin:0;">
-                <button type="submit" class="cta-btn secondary">Close Position</button>
-            </form>
-        </div>
-    </div>
+    </a>
     {% endfor %}
 </div>
 {% else %}
 <div class="card premium-card">
-    <div class="passage-frame">
-        <p style="margin:0;">No positions found for this filter.</p>
-    </div>
+    <div class="passage-frame"><p style="margin:0;">No positions found for this filter.</p></div>
 </div>
 {% endif %}
 

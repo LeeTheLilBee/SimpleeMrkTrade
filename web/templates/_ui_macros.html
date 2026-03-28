@@ -1,0 +1,149 @@
+{% macro metric_card(title, value, subtitle='') -%}
+<div class="card premium-card">
+    <h4>{{ title }}</h4>
+    <p><strong>{{ value }}</strong></p>
+    {% if subtitle %}
+    <p class="muted-line" style="margin:0;">{{ subtitle }}</p>
+    {% endif %}
+</div>
+{%- endmacro %}
+
+{% macro summary_card(title, body, chip='') -%}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">{{ title }}</h3>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ body }}</p>
+            </div>
+        </div>
+        {% if chip %}
+        <span class="signal-stat-chip">{{ chip }}</span>
+        {% endif %}
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro stat_tile(title, value) -%}
+<div class="card" style="margin:0;">
+    <h4>{{ title }}</h4>
+    <div class="passage-frame">
+        <p style="margin:0;"><strong>{{ value }}</strong></p>
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro stat_grid(items) -%}
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:18px;">
+    {% for item in items %}
+    {{ stat_tile(item.title, item.value) }}
+    {% endfor %}
+</div>
+{%- endmacro %}
+
+{% macro chip(text) -%}
+<span class="signal-stat-chip">{{ text }}</span>
+{%- endmacro %}
+
+{% macro passage_item(text) -%}
+<div class="passage-frame">
+    <p style="margin:0;">{{ text }}</p>
+</div>
+{%- endmacro %}
+
+{% macro passage_list(title, lines, empty_text='No signal yet.') -%}
+<div class="card premium-card">
+    <h3>{{ title }}</h3>
+    {% if lines %}
+    <div style="display:grid; gap:8px; margin-top:12px;">
+        {% for line in lines %}
+        {{ passage_item(line) }}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;">{{ empty_text }}</p>
+    </div>
+    {% endif %}
+</div>
+{%- endmacro %}
+
+{% macro key_value_list(title, pairs) -%}
+<div class="card premium-card">
+    <h3>{{ title }}</h3>
+    <div style="display:grid; gap:8px; margin-top:12px;">
+        {% for pair in pairs %}
+        <div class="passage-frame">
+            <p style="margin:0;"><strong>{{ pair.label }}:</strong> {{ pair.value }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro section_card(title, body, chip='') -%}
+<div class="card premium-card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+        <h3 style="margin-bottom:8px;">{{ title }}</h3>
+        {% if chip %}
+        <span class="signal-stat-chip">{{ chip }}</span>
+        {% endif %}
+    </div>
+    <div class="passage-frame">
+        <p style="margin:0;">{{ body }}</p>
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro note_card(title, body) -%}
+<div class="card" style="margin-top:14px;">
+    <h4>{{ title }}</h4>
+    <div class="passage-frame">
+        <p style="margin:0;">{{ body }}</p>
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro reason_list(title, lines, limit=None) -%}
+<div class="card" style="margin-top:14px;">
+    <h4>{{ title }}</h4>
+    <div style="display:grid; gap:8px;">
+        {% if limit %}
+            {% for line in lines[:limit] %}
+            {{ passage_item(line) }}
+            {% endfor %}
+        {% else %}
+            {% for line in lines %}
+            {{ passage_item(line) }}
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro behavior_flags(flags) -%}
+{% if flags %}
+<div class="card" style="margin-top:14px;">
+    <h4>Behavior Read</h4>
+    <div style="display:grid; gap:8px;">
+        {% for flag in flags %}
+        <div class="passage-frame">
+            <p style="margin:0;"><strong>{{ flag.tag }}</strong> — {{ flag.note }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{%- endmacro %}
+
+{% macro simple_cta_card(title, body, href, label, gold=False) -%}
+<div class="card premium-card {% if gold %}gold-accent-card{% endif %}">
+    <h3>{{ title }}</h3>
+    <div class="passage-frame">
+        <p style="margin:0;">{{ body }}</p>
+    </div>
+    <div style="margin-top:12px;">
+        <a href="{{ href }}" class="cta-btn secondary">{{ label }}</a>
+    </div>
+</div>
+{%- endmacro %}

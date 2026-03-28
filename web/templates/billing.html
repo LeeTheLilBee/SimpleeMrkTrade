@@ -1,50 +1,106 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Billing & Subscription</h2>
+<h2>Billing & Membership</h2>
 
-<div class="card">
-    <p>This page is now structured for real Stripe integration later. Right now it includes working mock actions and Stripe-ready placeholders.</p>
+<div class="card premium-hero">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div>
+            <h3 style="margin:0;">Subscription Control Center</h3>
+            <p class="muted-line">
+                Manage your membership, view current billing status, and prepare for real Stripe-connected subscription handling.
+            </p>
+        </div>
+        <span class="badge-purple">Member Billing</span>
+    </div>
 </div>
 
 <div class="grid">
-    <div class="card">
-        <h3>Current Billing Status</h3>
-        <p><b>Plan:</b> {{ billing.plan }}</p>
+    <div class="card premium-card">
+        <h3>Current Membership Status</h3>
+        <p><b>User:</b> {{ user.username }}</p>
+        <p><b>Current Plan:</b> {{ billing.plan }}</p>
         <p><b>Status:</b> {{ billing.status }}</p>
         <p><b>Provider:</b> {{ billing.provider }}</p>
         <p><b>Renewal Date:</b> {{ billing.renewal_date or "Not set" }}</p>
-        <p><b>Checkout Ready:</b> {{ billing.checkout_ready }}</p>
         <p><b>Portal Ready:</b> {{ billing.portal_ready }}</p>
-        <p><b>Price ID:</b> {{ billing.stripe_price_id or "Not set" }}</p>
-        <p><b>Last Event:</b> {{ billing.last_event or "None" }}</p>
     </div>
 
-    <div class="card">
-        <h3>Mock Billing Actions</h3>
-        <p><a href="/billing/mock/Starter" class="cta-btn secondary">Mock Starter</a></p>
-        <p><a href="/billing/mock/Pro" class="cta-btn">Mock Pro</a></p>
-        <p><a href="/billing/mock/Elite" class="cta-btn secondary">Mock Elite</a></p>
+    <div class="card premium-card">
+        <h3>Why This Matters</h3>
+        <p>
+            Membership does more than unlock pages. It controls how much signal depth, explanation, and intelligence layering the user can access.
+        </p>
+        <p class="muted-line">
+            Over time this page will also support invoices, payment methods, cancellations, reactivation, and verified webhook-driven plan state.
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Membership Actions</h3>
+    <div class="pricing-grid">
+        <div class="card">
+            <h3>Starter</h3>
+            <p>Entry access to structured signals and guided market context.</p>
+            {% if billing.plan == "Starter" %}
+                <button class="cta-btn secondary" disabled>Current Plan</button>
+            {% else %}
+                <a href="/billing/mock/Starter" class="cta-btn secondary">Switch to Starter</a>
+            {% endif %}
+        </div>
+
+        <div class="card premium-card">
+            <h3>Pro</h3>
+            <p>Deeper premium analysis, stronger signal detail, and more refined intelligence access.</p>
+            {% if billing.plan == "Pro" %}
+                <button class="cta-btn secondary" disabled>Current Plan</button>
+            {% else %}
+                <a href="/billing/mock/Pro" class="cta-btn">Switch to Pro</a>
+            {% endif %}
+        </div>
+
+        <div class="card premium-card">
+            <h3>Elite</h3>
+            <p>Full premium layer, higher-conviction intelligence, and the richest research experience.</p>
+            {% if billing.plan == "Elite" %}
+                <button class="cta-btn secondary" disabled>Current Plan</button>
+            {% else %}
+                <a href="/billing/mock/Elite" class="cta-btn">Switch to Elite</a>
+            {% endif %}
+        </div>
     </div>
 </div>
 
 <div class="grid">
     <div class="card">
         <h3>Stripe Checkout Prep</h3>
-        <p><a href="/billing/stripe/checkout/Starter" class="cta-btn secondary">Stripe Starter</a></p>
-        <p><a href="/billing/stripe/checkout/Pro" class="cta-btn">Stripe Pro</a></p>
-        <p><a href="/billing/stripe/checkout/Elite" class="cta-btn secondary">Stripe Elite</a></p>
+        {% if billing.plan == "Starter" %}
+            <button class="cta-btn secondary" disabled>Already on Starter</button>
+        {% else %}
+            <p><a href="/billing/stripe/checkout/Starter" class="cta-btn secondary">Stripe Starter</a></p>
+        {% endif %}
+
+        {% if billing.plan == "Pro" %}
+            <button class="cta-btn secondary" disabled>Already on Pro</button>
+        {% else %}
+            <p><a href="/billing/stripe/checkout/Pro" class="cta-btn">Stripe Pro</a></p>
+        {% endif %}
+
+        {% if billing.plan == "Elite" %}
+            <button class="cta-btn secondary" disabled>Already on Elite</button>
+        {% else %}
+            <p><a href="/billing/stripe/checkout/Elite" class="cta-btn">Stripe Elite</a></p>
+        {% endif %}
     </div>
 
     <div class="card">
-        <h3>Stripe Portal Prep</h3>
-        <p><a href="/billing/stripe/portal" class="cta-btn">Open Portal Placeholder</a></p>
+        <h3>Customer Portal</h3>
+        <p class="muted-line">
+            This will become the self-service area for payment methods, cancellations, reactivations, and invoices.
+        </p>
+        <p><a href="/billing/stripe/portal" class="cta-btn secondary">Open Portal</a></p>
     </div>
-</div>
-
-<div class="card">
-    <h3>Why This Matters</h3>
-    <p>Today this simulates plan changes. Later, the same flow can receive Stripe checkout completions, customer portal updates, and webhook events without changing your product structure.</p>
 </div>
 
 {% endblock %}

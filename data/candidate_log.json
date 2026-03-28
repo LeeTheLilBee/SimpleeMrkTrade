@@ -52,6 +52,32 @@
     "stronger_competing_setups": []
   },
   {
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "status": "rejected",
+    "reason": "reentry_blocked:score_not_improved_enough,price_not_reclaimed",
+    "mode": "DEFENSIVE_BEAR",
+    "breadth": "BULLISH",
+    "volatility_state": "NORMAL",
+    "timestamp": "2026-03-21T15:00:00",
+    "why": [],
+    "rejection_reason": "NVDA was not taken. The system requires stronger confirmation before re-entering this symbol. Specifically, score has not improved enough and price has not reclaimed strength.",
+    "rejection_analysis": [
+      "NVDA came through the engine with a score of 204 and high confidence.",
+      "The system was operating in Defensive Bear mode with bullish breadth and normal volatility conditions.",
+      "The symbol was recently exited, and the system requires materially better re-entry conditions before trying again.",
+      "Internal trigger: reentry blocked:score not improved enough,price not reclaimed."
+    ],
+    "option": null,
+    "option_contract_score": null,
+    "option_explanation": [],
+    "trade_id": null,
+    "stronger_competing_setups": []
+  },
+  {
     "symbol": "AMZN",
     "strategy": "CALL",
     "score": 201,
@@ -78,57 +104,25 @@
     "stronger_competing_setups": []
   },
   {
-    "symbol": "NVDA",
-    "strategy": "CALL",
-    "score": 204,
-    "confidence": "HIGH",
-    "price": 100.0,
-    "status": "selected",
-    "reason": "selected_for_execution",
-    "mode": "DEFENSIVE_BEAR",
-    "breadth": "BULLISH",
-    "volatility_state": "NORMAL",
-    "timestamp": "2026-03-21T15:00:00",
-    "why": [
-      "High conviction signal strength.",
-      "Confidence is high based on the current signal stack.",
-      "Strategy is aligned with the current upward trend.",
-      "Market mode at decision time: DEFENSIVE_BEAR.",
-      "Broader regime context: BEAR_TREND.",
-      "Market breadth context: BULLISH.",
-      "Volatility state: NORMAL."
-    ],
-    "rejection_reason": null,
-    "rejection_analysis": [],
-    "option": null,
-    "option_contract_score": null,
-    "option_explanation": [],
-    "trade_id": null,
-    "stronger_competing_setups": []
-  },
-  {
     "symbol": "META",
     "strategy": "CALL",
     "score": 198,
     "confidence": "HIGH",
     "price": 100.0,
-    "status": "selected",
-    "reason": "selected_for_execution",
+    "status": "rejected",
+    "reason": "reentry_blocked:score_not_improved_enough,price_not_reclaimed",
     "mode": "DEFENSIVE_BEAR",
     "breadth": "BULLISH",
     "volatility_state": "NORMAL",
     "timestamp": "2026-03-21T15:00:00",
-    "why": [
-      "Strong signal quality with meaningful alignment.",
-      "Confidence is high based on the current signal stack.",
-      "Strategy is aligned with the current upward trend.",
-      "Market mode at decision time: DEFENSIVE_BEAR.",
-      "Broader regime context: BEAR_TREND.",
-      "Market breadth context: BULLISH.",
-      "Volatility state: NORMAL."
+    "why": [],
+    "rejection_reason": "META was not taken. The system requires stronger confirmation before re-entering this symbol. Specifically, score has not improved enough and price has not reclaimed strength.",
+    "rejection_analysis": [
+      "META came through the engine with a score of 198 and high confidence.",
+      "The system was operating in Defensive Bear mode with bullish breadth and normal volatility conditions.",
+      "The symbol was recently exited, and the system requires materially better re-entry conditions before trying again.",
+      "Internal trigger: reentry blocked:score not improved enough,price not reclaimed."
     ],
-    "rejection_reason": null,
-    "rejection_analysis": [],
     "option": null,
     "option_contract_score": null,
     "option_explanation": [],
@@ -141,8 +135,8 @@
     "score": 195,
     "confidence": "HIGH",
     "price": 100.0,
-    "status": "approved_not_selected",
-    "reason": "approved_but_ranked_below_execution_cut",
+    "status": "selected",
+    "reason": "selected_for_execution",
     "mode": "DEFENSIVE_BEAR",
     "breadth": "BULLISH",
     "volatility_state": "NORMAL",
@@ -156,30 +150,13 @@
       "Market breadth context: BULLISH.",
       "Volatility state: NORMAL."
     ],
-    "rejection_reason": "GOOGL was not taken. The setup passed filters but ranked below stronger opportunities. The leading competing setup was NVDA CALL with a score of 204.0.",
-    "rejection_analysis": [
-      "GOOGL came through the engine with a score of 195 and high confidence.",
-      "The system was operating in Defensive Bear mode with bullish breadth and normal volatility conditions.",
-      "The setup passed baseline checks, but stronger competing opportunities were prioritized instead.",
-      "The leading competing setup was NVDA CALL with a score of 204.0.",
-      "Internal trigger: approved but ranked below execution cut."
-    ],
+    "rejection_reason": null,
+    "rejection_analysis": [],
     "option": null,
     "option_contract_score": null,
     "option_explanation": [],
     "trade_id": null,
-    "stronger_competing_setups": [
-      {
-        "symbol": "NVDA",
-        "strategy": "CALL",
-        "score": 204.0
-      },
-      {
-        "symbol": "META",
-        "strategy": "CALL",
-        "score": 198.0
-      }
-    ]
+    "stronger_competing_setups": []
   },
   {
     "symbol": "TSLA",
@@ -187,8 +164,8 @@
     "score": 192,
     "confidence": "HIGH",
     "price": 100.0,
-    "status": "approved_not_selected",
-    "reason": "approved_but_ranked_below_execution_cut",
+    "status": "selected",
+    "reason": "selected_for_execution",
     "mode": "DEFENSIVE_BEAR",
     "breadth": "BULLISH",
     "volatility_state": "NORMAL",
@@ -202,30 +179,13 @@
       "Market breadth context: BULLISH.",
       "Volatility state: NORMAL."
     ],
-    "rejection_reason": "TSLA was not taken. The setup passed filters but ranked below stronger opportunities. The leading competing setup was NVDA CALL with a score of 204.0.",
-    "rejection_analysis": [
-      "TSLA came through the engine with a score of 192 and high confidence.",
-      "The system was operating in Defensive Bear mode with bullish breadth and normal volatility conditions.",
-      "The setup passed baseline checks, but stronger competing opportunities were prioritized instead.",
-      "The leading competing setup was NVDA CALL with a score of 204.0.",
-      "Internal trigger: approved but ranked below execution cut."
-    ],
+    "rejection_reason": null,
+    "rejection_analysis": [],
     "option": null,
     "option_contract_score": null,
     "option_explanation": [],
     "trade_id": null,
-    "stronger_competing_setups": [
-      {
-        "symbol": "NVDA",
-        "strategy": "CALL",
-        "score": 204.0
-      },
-      {
-        "symbol": "META",
-        "strategy": "CALL",
-        "score": 198.0
-      }
-    ]
+    "stronger_competing_setups": []
   },
   {
     "symbol": "AMD",
@@ -248,12 +208,12 @@
       "Market breadth context: BULLISH.",
       "Volatility state: NORMAL."
     ],
-    "rejection_reason": "AMD was not taken. The setup passed filters but ranked below stronger opportunities. The leading competing setup was NVDA CALL with a score of 204.0.",
+    "rejection_reason": "AMD was not taken. The setup passed filters but ranked below stronger opportunities. The leading competing setup was GOOGL CALL with a score of 195.0.",
     "rejection_analysis": [
       "AMD came through the engine with a score of 189 and high confidence.",
       "The system was operating in Defensive Bear mode with bullish breadth and normal volatility conditions.",
       "The setup passed baseline checks, but stronger competing opportunities were prioritized instead.",
-      "The leading competing setup was NVDA CALL with a score of 204.0.",
+      "The leading competing setup was GOOGL CALL with a score of 195.0.",
       "Internal trigger: approved but ranked below execution cut."
     ],
     "option": null,
@@ -262,14 +222,14 @@
     "trade_id": null,
     "stronger_competing_setups": [
       {
-        "symbol": "NVDA",
+        "symbol": "GOOGL",
         "strategy": "CALL",
-        "score": 204.0
+        "score": 195.0
       },
       {
-        "symbol": "META",
+        "symbol": "TSLA",
         "strategy": "CALL",
-        "score": 198.0
+        "score": 192.0
       }
     ]
   }

@@ -1,0 +1,27 @@
+{% if quick_actions and quick_actions.actions %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Operator Quick Actions</h3>
+            <p class="muted-line" style="margin:0;">Jump directly into the zones that usually need the most attention.</p>
+        </div>
+        <span class="signal-stat-chip">{{ quick_actions.actions|length }} actions</span>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
+        {% for action in quick_actions.actions %}
+        <a href="{{ action.target }}" style="text-decoration:none; color:inherit;">
+            <div class="card {% if action.tone == 'gold' %}gold-accent-card{% endif %}" style="margin:0; height:100%;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+                    <h4 style="margin:0;">{{ action.headline }}</h4>
+                    <span class="signal-stat-chip">{{ action.target_label }}</span>
+                </div>
+                <div class="passage-frame" style="margin-top:10px;">
+                    <p style="margin:0;">{{ action.body }}</p>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}

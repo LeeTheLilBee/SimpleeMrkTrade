@@ -97,6 +97,56 @@
 </div>
 {% endif %}
 
+<div class="card gold-accent-card">
+    <div class="section-head-row">
+        <div>
+            <h3>Execution Universe</h3>
+            <p class="muted-line">
+                This is the controlled set of symbols the simulation is currently willing to trade.
+            </p>
+        </div>
+        <div class="signal-stat-chip">
+            {{ execution_summary.selected_count }} active
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <p><b>Eligible</b></p>
+            <div class="metric">{{ execution_summary.eligible_count }}</div>
+        </div>
+
+        <div class="card">
+            <p><b>Rejected</b></p>
+            <div class="metric">{{ execution_summary.rejected_count }}</div>
+        </div>
+
+        <div class="card">
+            <p><b>Cap</b></p>
+            <div class="metric">{{ execution_summary.cap }}</div>
+        </div>
+    </div>
+
+    <div class="passage-frame">
+        <p>
+            <b>Market posture:</b>
+            {{ execution_summary.regime|title }} regime · {{ execution_summary.volatility|title }} volatility
+        </p>
+    </div>
+
+    {% if execution_summary.selected_symbols %}
+    <div class="dashboard-subnav">
+        {% for sym in execution_summary.selected_symbols[:12] %}
+        <a href="/signals/{{ sym }}" class="cta-btn secondary">{{ sym }}</a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="passage-frame">
+        <p>No execution symbols are currently selected.</p>
+    </div>
+    {% endif %}
+</div>
+
 <!-- POSITIONS TEASER -->
 <div class="card gold-accent-card">
     <div class="section-head-row">
@@ -127,7 +177,7 @@
         <p><b>PnL:</b> {{ p.pnl if p.pnl is defined else "N/A" }}</p>
 
         <div class="health-bar">
-            <div class="health-fill" style="width: {{ p.health_score if p.health_score is defined else 50 }}%;"></div>
+            <div id="health-{{ p.symbol }}" class="health-fill" style="width: {{ p.health.score }}%;"></div>
         </div>
 
         <div class="teaser-row">

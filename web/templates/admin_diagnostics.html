@@ -8,6 +8,12 @@
     </div>
 </div>
 
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin: 14px 0 18px 0;">
+    <a href="/admin/refresh-market-universe" class="cta-btn secondary">Refresh Market Universe</a>
+    <a href="/admin/refresh-news-cache" class="cta-btn secondary">Refresh News Cache</a>
+    <a href="/admin/diagnostics" class="cta-btn secondary">Reload Diagnostics</a>
+</div>
+
 {% if diagnostics.cards %}
 <div class="card premium-card" style="margin-bottom:18px;">
     <h3>Top Findings</h3>
@@ -21,6 +27,63 @@
         </div>
         {% endfor %}
     </div>
+</div>
+{% endif %}
+
+{% if diagnostics.repair_recommendations %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Repair Recommendations</h3>
+            <p class="muted-line" style="margin:0;">
+                The system’s best read on what should be fixed first, why it matters, and who owns it.
+            </p>
+        </div>
+        <span class="signal-stat-chip">Repair Layer</span>
+    </div>
+
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;"><strong>{{ diagnostics.repair_recommendations.headline }}</strong></p>
+        <p style="margin:8px 0 0 0;">{{ diagnostics.repair_recommendations.summary }}</p>
+    </div>
+
+    {% if diagnostics.repair_recommendations.top_fix %}
+    <div class="card" style="margin-top:14px;">
+        <h4>{{ diagnostics.repair_recommendations.top_fix.headline }}</h4>
+        <div class="passage-frame">
+            <p style="margin:0;"><strong>Why:</strong> {{ diagnostics.repair_recommendations.top_fix.why }}</p>
+            <p style="margin:8px 0 0 0;"><strong>Action:</strong> {{ diagnostics.repair_recommendations.top_fix.action }}</p>
+            <p style="margin:8px 0 0 0;"><strong>Owner:</strong> {{ diagnostics.repair_recommendations.top_fix.owner }}</p>
+            <p style="margin:8px 0 0 0;"><strong>Severity:</strong> {{ diagnostics.repair_recommendations.top_fix.severity|upper }}</p>
+        </div>
+        <div style="margin-top:10px;">
+            <a href="{{ diagnostics.repair_recommendations.top_fix.target }}" class="cta-btn secondary">
+                {{ diagnostics.repair_recommendations.top_fix.target_label }}
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if diagnostics.repair_recommendations.items %}
+    <div style="display:grid; gap:12px; margin-top:14px;">
+        {% for item in diagnostics.repair_recommendations.items %}
+        <div class="card" style="margin:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                <h4 style="margin:0;">{{ item.headline }}</h4>
+                <span class="signal-stat-chip">{{ item.severity|upper }}</span>
+            </div>
+            <div class="passage-frame" style="margin-top:10px;">
+                <p style="margin:0;"><strong>Why:</strong> {{ item.why }}</p>
+                <p style="margin:8px 0 0 0;"><strong>Action:</strong> {{ item.action }}</p>
+                <p style="margin:8px 0 0 0;"><strong>Owner:</strong> {{ item.owner }}</p>
+            </div>
+            <div style="margin-top:10px;">
+                <a href="{{ item.target }}" class="cta-btn secondary">{{ item.target_label }}</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
 {% endif %}
 
@@ -110,6 +173,34 @@
         </div>
     </div>
 
+    {% if diagnostics.symbol_coverage.counts_by_type %}
+    <div class="card" style="margin-top:14px;">
+        <h4>Asset Type Mix</h4>
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for key, value in diagnostics.symbol_coverage.counts_by_type.items() %}
+            <div class="admin-stat-row">
+                <span>{{ key }}</span>
+                <strong>{{ value }}</strong>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if diagnostics.symbol_coverage.top_sources %}
+    <div class="card" style="margin-top:14px;">
+        <h4>Top Universe Sources</h4>
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for row in diagnostics.symbol_coverage.top_sources %}
+            <div class="admin-stat-row">
+                <span>{{ row.tag }}</span>
+                <strong>{{ row.count }}</strong>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <div style="display:grid; gap:10px; margin-top:14px;">
         {% for row in diagnostics.symbol_coverage.rows %}
         <div class="card" style="margin:0;">
@@ -121,10 +212,16 @@
                     News: {{ "Y" if row.has_news else "N" }}
                 </strong>
             </div>
+
+            <div class="passage-frame">
+                <p style="margin:0;">
+                    Type: {{ row.asset_type }}
+                    {% if row.source_tags %} | Sources: {{ row.source_tags|join(", ") }}{% endif %}
+                    | Priority: {{ row.priority_rank }}
+                </p>
+            </div>
         </div>
         {% endfor %}
     </div>
 </div>
 {% endif %}
-
-{% endblock %}

@@ -1,64 +1,116 @@
 {% extends "base.html" %}
+{% from "_ui_macros.html" import summary_card, stat_grid, key_value_list, note_card, reason_list %}
 {% block content %}
 
-<div style="margin-bottom:14px;">
-    <a href="/my-positions" class="signal-stat-chip" style="text-decoration:none;">
-        ← Back to My Positions
-    </a>
+<div style="margin-bottom:14px; display:flex; gap:8px; flex-wrap:wrap;">
+    <a href="/my-positions" class="signal-stat-chip" style="text-decoration:none;">← Back to My Positions</a>
+    <a href="/my-positions/analyze" class="signal-stat-chip" style="text-decoration:none;">Analyze My Trades</a>
 </div>
 
 {% if error %}
 <div class="card premium-card" style="margin-bottom:18px;">
-    <div class="passage-frame">
-        <p style="margin:0;">{{ error }}</p>
-    </div>
+    <div class="passage-frame"><p style="margin:0;">{{ error }}</p></div>
 </div>
 {% endif %}
 
-{% if position %}
-<div class="page-hero card premium-hero gold-accent-card">
+{% if not position %}
+<div class="card premium-card">
+    <div class="passage-frame"><p style="margin:0;">Position not found.</p></div>
+</div>
+{% else %}
+
+<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
     <h2>{{ position.symbol }} — My Position</h2>
     <div class="passage-frame">
         <p>
-            Adjust your position directly and keep your trade plan current.
+            A live user-managed position reviewed through health, agreement, context, and discipline rather than just raw price movement.
         </p>
     </div>
 </div>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:18px;">
-    <div class="card premium-card">
-        <h3>Position Snapshot</h3>
-        <p><strong>Direction:</strong> {{ position.direction }}</p>
-        <p><strong>Entry:</strong> {{ position.entry }}</p>
-        <p><strong>Stop:</strong> {{ position.stop }}</p>
-        <p><strong>Target:</strong> {{ position.target }}</p>
-        <p><strong>Status:</strong> {{ position.status }}</p>
-        <p><strong>Conviction:</strong> {{ position.conviction }}</p>
-    </div>
+{{ summary_card(page_summary.headline, page_summary.summary, page_summary.chip) }}
+
+{{ stat_grid([
+    {"title": "Direction", "value": position.direction},
+    {"title": "Health Score", "value": position.health.score},
+    {"title": "Agreement Score", "value": position.system_agreement.score},
+    {"title": "Conviction", "value": position.conviction},
+    {"title": "Status", "value": position.status},
+]) }}
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
+    {{ key_value_list("Position Setup", [
+        {"label": "Entry", "value": position.entry},
+        {"label": "Stop", "value": position.stop},
+        {"label": "Target", "value": position.target},
+        {"label": "Current Price", "value": position.current_price},
+    ]) }}
+
+    {{ key_value_list("Health Read", [
+        {"label": "Label", "value": position.health.label},
+        {"label": "Status", "value": position.health.status},
+        {"label": "Note", "value": position.health.note},
+    ]) }}
 
     <div class="card premium-card">
-        <h3>Health</h3>
-        <p><strong>Score:</strong> {{ position.health.score }}</p>
-        <p><strong>Label:</strong> {{ position.health.label }}</p>
-        <p><strong>Status:</strong> {{ position.health.status }}</p>
-        <div class="passage-frame">
-            <p style="margin:0;">{{ position.health.note }}</p>
+        <h3>System Agreement</h3>
+        <div style="display:grid; gap:8px; margin-top:12px;">
+            <div class="passage-frame"><p style="margin:0;"><strong>{{ position.system_agreement.label }}</strong></p></div>
+            {% for line in position.system_agreement.reasons %}
+            <div class="passage-frame"><p style="margin:0;">{{ line }}</p></div>
+            {% endfor %}
         </div>
     </div>
 </div>
 
-<div class="card premium-card" style="margin-top:18px;">
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <h3>Live Position Read</h3>
+    <div style="display:grid; gap:8px; margin-top:12px;">
+        {% if position.health.score >= 75 and position.system_agreement.score >= 75 %}
+        <div class="passage-frame"><p style="margin:0;">This position still has real support. The trade is behaving like something the system can justify.</p></div>
+        <div class="passage-frame"><p style="margin:0;">Current posture: do not ruin a good state with anxious over-management.</p></div>
+        {% elif position.health.score < 35 and position.system_agreement.score < 55 %}
+        <div class="passage-frame"><p style="margin:0;">This position is weak in both idea quality and live behavior.</p></div>
+        <div class="passage-frame"><p style="margin:0;">Current posture: capital protection matters more than narrative right now.</p></div>
+        {% elif position.health.score < 35 %}
+        <div class="passage-frame"><p style="margin:0;">The position is under real pressure. Passive management becomes its own mistake here.</p></div>
+        <div class="passage-frame"><p style="margin:0;">Current posture: tighten discipline and decide instead of drifting.</p></div>
+        {% elif position.system_agreement.score < 55 %}
+        <div class="passage-frame"><p style="margin:0;">The trade is still alive, but the system is not giving it strong contextual backing.</p></div>
+        <div class="passage-frame"><p style="margin:0;">Current posture: be cautious about forcing confidence where support is weak.</p></div>
+        {% else %}
+        <div class="passage-frame"><p style="margin:0;">The position is still developing. The evidence is not clean enough yet to call it a clean win or failure.</p></div>
+        <div class="passage-frame"><p style="margin:0;">Current posture: stay attentive and let the evidence build.</p></div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
+    {{ reason_list("System Feedback", position.system_feedback) }}
+
+    {{ key_value_list("Market Context", [
+        {"label": "Mode", "value": position.market_context.mode},
+        {"label": "Breadth", "value": position.market_context.breadth},
+        {"label": "Regime", "value": position.market_context.regime},
+        {"label": "Volatility", "value": position.market_context.volatility_state},
+    ]) }}
+</div>
+
+{% if position.engine_candidate %}
+{{ note_card("Engine View on This Symbol", "Score " ~ position.engine_candidate.score ~ " | " ~ position.engine_candidate.confidence ~ " | " ~ position.engine_candidate.strategy) }}
+{% endif %}
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
+    {{ note_card("Original Thesis", position.thesis or "No thesis added yet.") }}
+    {{ note_card("Your Notes", position.notes or "No notes added yet.") }}
+</div>
+
+<div class="card premium-card" style="margin-bottom:18px;">
     <h3>Edit Position</h3>
-    <form method="POST" action="/my-positions/{{ position.position_id }}/edit">
+    <form method="POST" action="/my-positions/{{ position.position_id }}/edit" style="margin-top:14px;">
         <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
-            <div>
-                <label>Stop</label>
-                <input type="number" step="0.01" name="stop" class="input" value="{{ position.stop }}" required>
-            </div>
-            <div>
-                <label>Target</label>
-                <input type="number" step="0.01" name="target" class="input" value="{{ position.target }}" required>
-            </div>
+            <div><label>Stop</label><input type="number" step="0.01" name="stop" class="input" value="{{ position.stop }}"></div>
+            <div><label>Target</label><input type="number" step="0.01" name="target" class="input" value="{{ position.target }}"></div>
             <div>
                 <label>Conviction</label>
                 <select name="conviction" class="input">
@@ -71,7 +123,6 @@
                 <label>Status</label>
                 <select name="status" class="input">
                     <option {% if position.status == "Open" %}selected{% endif %}>Open</option>
-                    <option {% if position.status == "Watching" %}selected{% endif %}>Watching</option>
                     <option {% if position.status == "Closed" %}selected{% endif %}>Closed</option>
                 </select>
             </div>
@@ -79,21 +130,25 @@
 
         <div style="margin-top:12px;">
             <label>Notes</label>
-            <textarea name="notes" class="input" rows="3">{{ position.notes }}</textarea>
+            <textarea name="notes" class="input" rows="4">{{ position.notes }}</textarea>
         </div>
 
-        <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+        <div style="margin-top:14px;">
             <button type="submit" class="cta-btn premium-gold-btn">Save Changes</button>
         </div>
     </form>
 </div>
 
-<div class="card premium-card" style="margin-top:18px;">
+<div class="card premium-card gold-accent-card">
     <h3>Close Position</h3>
-    <form method="POST" action="/my-positions/{{ position.position_id }}/close">
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;">Archive this live position and move it into your trade review layer.</p>
+    </div>
+
+    <form method="POST" action="/my-positions/{{ position.position_id }}/close" style="margin-top:14px;">
         <button type="submit" class="cta-btn secondary">Close Position</button>
     </form>
 </div>
-{% endif %}
 
+{% endif %}
 {% endblock %}

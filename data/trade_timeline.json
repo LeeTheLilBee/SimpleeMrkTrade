@@ -3091,5 +3091,120 @@
       "pnl": -1.49,
       "size": 1.0
     }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.205324",
+    "symbol": "GOOGL",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260328112210",
+      "strategy": "CALL",
+      "score": 195,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.274318",
+    "symbol": "TSLA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260328112210",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.351206",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260328112210",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.424121",
+    "symbol": "GOOGL",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260328112210",
+      "strategy": "CALL",
+      "score": 195,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.505454",
+    "symbol": "TSLA",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260328112210",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.647410",
+    "symbol": "GOOGL",
+    "event": "OPENED",
+    "details": {
+      "strategy": "CALL",
+      "requested_price": 274.34,
+      "fill_price": 275.03,
+      "commission": 1.0,
+      "size": 17.0,
+      "stop": 273.03,
+      "target": 279.03
+    }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.732586",
+    "symbol": "TSLA",
+    "event": "SKIPPED",
+    "details": {
+      "reason": "buying_power_min_size"
+    }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.737291",
+    "symbol": "GOOGL",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260328112210",
+      "strategy": "CALL",
+      "score": 195,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.761121",
+    "symbol": "TSLA",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260328112210",
+      "strategy": "CALL",
+      "score": 192,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.944088",
+    "symbol": "GOOGL",
+    "event": "CLOSED",
+    "details": {
+      "exit_price": 274.34,
+      "reason": "cut_weakness",
+      "pnl": -11.73,
+      "size": 17.0
+    }
   }
 ]

@@ -1,0 +1,46 @@
+{% if surface_alerts and surface_alerts.top_alert %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Shared Operator Alerts</h3>
+            <p class="muted-line" style="margin:0;">Cross-surface signals that matter no matter which admin page you are on.</p>
+        </div>
+        <span class="signal-stat-chip">{{ surface_alerts.top_alert.level|upper }}</span>
+    </div>
+
+    <a href="{{ surface_alerts.top_alert.target }}" style="text-decoration:none; color:inherit;">
+        <div class="card" style="margin-top:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                <div>
+                    <h4 style="margin:0 0 8px 0;">{{ surface_alerts.top_alert.headline }}</h4>
+                </div>
+                <span class="signal-stat-chip">{{ surface_alerts.top_alert.target_label }}</span>
+            </div>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ surface_alerts.top_alert.body }}</p>
+            </div>
+        </div>
+    </a>
+
+    {% if surface_alerts.alerts %}
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
+        {% for alert in surface_alerts.alerts %}
+        <a href="{{ alert.target }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0; height:100%;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+                    <h4 style="margin:0;">{{ alert.headline }}</h4>
+                    <span class="signal-stat-chip">{{ alert.level|upper }}</span>
+                </div>
+                <div class="passage-frame" style="margin-top:10px;">
+                    <p style="margin:0;">{{ alert.body }}</p>
+                </div>
+                <div style="margin-top:10px;">
+                    <span class="signal-stat-chip">{{ alert.target_label }}</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}

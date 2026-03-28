@@ -877,16 +877,34 @@ body.light .footer-tagline {
     border-left: 4px solid gold;
     font-weight: bold;
 }
-%%writefile /tmp/admin_css_patch.css
-.admin-stat-row {
+
+.admin-controls {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(148,163,184,0.12);
+    gap: 10px;
 }
 
-.admin-stat-row:last-child {
-    border-bottom: none;
+.symbols-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.symbols-table th,
+.symbols-table td {
+    text-align: left;
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(148,163,184,0.14);
+}
+
+.symbols-table tbody tr {
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.symbols-table tbody tr:hover {
+    background: rgba(148,163,184,0.08);
+}
+
+.table-wrap {
+    overflow-x: auto;
 }

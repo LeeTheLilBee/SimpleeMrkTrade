@@ -16,52 +16,8 @@
     </div>
 </div>
 
-{% if surface_alerts and surface_alerts.top_alert %}
-<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Shared Operator Alerts</h3>
-            <p class="muted-line" style="margin:0;">Cross-surface signals that matter no matter which admin page you are on.</p>
-        </div>
-        <span class="signal-stat-chip">{{ surface_alerts.top_alert.level|upper }}</span>
-    </div>
-
-    <a href="{{ surface_alerts.top_alert.target }}" style="text-decoration:none; color:inherit;">
-        <div class="card" style="margin-top:14px;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-                <div>
-                    <h4 style="margin:0 0 8px 0;">{{ surface_alerts.top_alert.headline }}</h4>
-                </div>
-                <span class="signal-stat-chip">{{ surface_alerts.top_alert.target_label }}</span>
-            </div>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ surface_alerts.top_alert.body }}</p>
-            </div>
-        </div>
-    </a>
-
-    {% if surface_alerts.alerts %}
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
-        {% for alert in surface_alerts.alerts %}
-        <a href="{{ alert.target }}" style="text-decoration:none; color:inherit;">
-            <div class="card" style="margin:0; height:100%;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
-                    <h4 style="margin:0;">{{ alert.headline }}</h4>
-                    <span class="signal-stat-chip">{{ alert.level|upper }}</span>
-                </div>
-                <div class="passage-frame" style="margin-top:10px;">
-                    <p style="margin:0;">{{ alert.body }}</p>
-                </div>
-                <div style="margin-top:10px;">
-                    <span class="signal-stat-chip">{{ alert.target_label }}</span>
-                </div>
-            </div>
-        </a>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-{% endif %}
+{% include "_admin_surface_alerts.html" %}
+{% include "_operator_quick_actions.html" %}
 
 <div class="card premium-card" style="margin-bottom:18px;">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
@@ -96,122 +52,48 @@
 {% endif %}
 
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h4>Total Plays</h4>
-        <p><strong>{{ admin.counts.plays }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Total Positions</h4>
-        <p><strong>{{ admin.counts.positions }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Closed Positions</h4>
-        <p><strong>{{ admin.counts.closed_positions }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Ready Plays</h4>
-        <p><strong>{{ admin.counts.ready_plays }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Close Plays</h4>
-        <p><strong>{{ admin.counts.close_plays }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>Weak Plays</h4>
-        <p><strong>{{ admin.counts.weak_plays }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>High Agreement</h4>
-        <p><strong>{{ admin.counts.high_agreement_plays }}</strong></p>
-    </div>
-    <div class="card premium-card">
-        <h4>High Conviction</h4>
-        <p><strong>{{ admin.counts.high_conviction_plays }}</strong></p>
-    </div>
+    <div class="card premium-card"><h4>Total Plays</h4><p><strong>{{ admin.counts.plays }}</strong></p></div>
+    <div class="card premium-card"><h4>Total Positions</h4><p><strong>{{ admin.counts.positions }}</strong></p></div>
+    <div class="card premium-card"><h4>Closed Positions</h4><p><strong>{{ admin.counts.closed_positions }}</strong></p></div>
+    <div class="card premium-card"><h4>Ready Plays</h4><p><strong>{{ admin.counts.ready_plays }}</strong></p></div>
+    <div class="card premium-card"><h4>Close Plays</h4><p><strong>{{ admin.counts.close_plays }}</strong></p></div>
+    <div class="card premium-card"><h4>Weak Plays</h4><p><strong>{{ admin.counts.weak_plays }}</strong></p></div>
+    <div class="card premium-card"><h4>High Agreement</h4><p><strong>{{ admin.counts.high_agreement_plays }}</strong></p></div>
+    <div class="card premium-card"><h4>High Conviction</h4><p><strong>{{ admin.counts.high_conviction_plays }}</strong></p></div>
 </div>
 
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card gold-accent-card">
-        <h3>{{ admin.performance.headline }}</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ admin.performance.summary }}</p>
-        </div>
-    </div>
-
-    <div class="card premium-card">
-        <h3>{{ admin.idea_quality.headline }}</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ admin.idea_quality.summary }}</p>
-        </div>
-    </div>
-
-    <div class="card premium-card">
-        <h3>{{ admin.activation_quality.headline }}</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ admin.activation_quality.summary }}</p>
-        </div>
-    </div>
-
-    <div class="card premium-card">
-        <h3>{{ admin.disagreement.headline }}</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ admin.disagreement.summary }}</p>
-        </div>
-    </div>
+    <div class="card premium-card gold-accent-card"><h3>{{ admin.performance.headline }}</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.performance.summary }}</p></div></div>
+    <div class="card premium-card"><h3>{{ admin.idea_quality.headline }}</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.idea_quality.summary }}</p></div></div>
+    <div class="card premium-card"><h3>{{ admin.activation_quality.headline }}</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.activation_quality.summary }}</p></div></div>
+    <div class="card premium-card"><h3>{{ admin.disagreement.headline }}</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.disagreement.summary }}</p></div></div>
 </div>
 
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-bottom:18px;">
     <div class="card premium-card">
         <h3>Trade Outcomes</h3>
         <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-            <div class="card" style="margin:0;">
-                <h4>Wins</h4>
-                <p><strong>{{ admin.trade_totals.wins }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Losses</h4>
-                <p><strong>{{ admin.trade_totals.losses }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Flat</h4>
-                <p><strong>{{ admin.trade_totals.flat }}</strong></p>
-            </div>
+            <div class="card" style="margin:0;"><h4>Wins</h4><p><strong>{{ admin.trade_totals.wins }}</strong></p></div>
+            <div class="card" style="margin:0;"><h4>Losses</h4><p><strong>{{ admin.trade_totals.losses }}</strong></p></div>
+            <div class="card" style="margin:0;"><h4>Flat</h4><p><strong>{{ admin.trade_totals.flat }}</strong></p></div>
         </div>
     </div>
 
     <div class="card premium-card">
         <h3>Activation Quality</h3>
         <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-            <div class="card" style="margin:0;">
-                <h4>Strong Activations</h4>
-                <p><strong>{{ admin.activation_quality.ready_activations }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Weak Activations</h4>
-                <p><strong>{{ admin.activation_quality.weak_activations }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Unclear Activations</h4>
-                <p><strong>{{ admin.activation_quality.unclear_activations }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>No Engine Tracking</h4>
-                <p><strong>{{ admin.activation_quality.without_candidate }}</strong></p>
-            </div>
+            <div class="card" style="margin:0;"><h4>Strong Activations</h4><p><strong>{{ admin.activation_quality.ready_activations }}</strong></p></div>
+            <div class="card" style="margin:0;"><h4>Weak Activations</h4><p><strong>{{ admin.activation_quality.weak_activations }}</strong></p></div>
+            <div class="card" style="margin:0;"><h4>Unclear Activations</h4><p><strong>{{ admin.activation_quality.unclear_activations }}</strong></p></div>
+            <div class="card" style="margin:0;"><h4>No Engine Tracking</h4><p><strong>{{ admin.activation_quality.without_candidate }}</strong></p></div>
         </div>
     </div>
 
     <div class="card premium-card">
         <h3>Alignment vs Disagreement</h3>
         <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-            <div class="card" style="margin:0;">
-                <h4>Aligned Ideas</h4>
-                <p><strong>{{ admin.disagreement.aligned_count }}</strong></p>
-            </div>
-            <div class="card" style="margin:0;">
-                <h4>Disagreements</h4>
-                <p><strong>{{ admin.disagreement.disagreement_count }}</strong></p>
-            </div>
+            <div class="card" style="margin:0;"><h4>Aligned Ideas</h4><p><strong>{{ admin.disagreement.aligned_count }}</strong></p></div>
+            <div class="card" style="margin:0;"><h4>Disagreements</h4><p><strong>{{ admin.disagreement.disagreement_count }}</strong></p></div>
         </div>
     </div>
 </div>
@@ -226,7 +108,6 @@
         </div>
     </div>
     {% endif %}
-
     {% if admin.weakest_play %}
     <div class="card premium-card">
         <h3>Weakest Play</h3>
@@ -239,29 +120,9 @@
 </div>
 
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h3>Strongest Condition Zone</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ admin.zones.strongest_condition.label }}</p>
-            <p style="margin:8px 0 0 0;">Count: {{ admin.zones.strongest_condition.count }}</p>
-        </div>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Weakest Condition Zone</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ admin.zones.weakest_condition.label }}</p>
-            <p style="margin:8px 0 0 0;">Count: {{ admin.zones.weakest_condition.count }}</p>
-        </div>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Top Failure Cluster</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ admin.zones.top_failure_cluster.label }}</p>
-            <p style="margin:8px 0 0 0;">Count: {{ admin.zones.top_failure_cluster.count }}</p>
-        </div>
-    </div>
+    <div class="card premium-card"><h3>Strongest Condition Zone</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.zones.strongest_condition.label }}</p><p style="margin:8px 0 0 0;">Count: {{ admin.zones.strongest_condition.count }}</p></div></div>
+    <div class="card premium-card"><h3>Weakest Condition Zone</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.zones.weakest_condition.label }}</p><p style="margin:8px 0 0 0;">Count: {{ admin.zones.weakest_condition.count }}</p></div></div>
+    <div class="card premium-card"><h3>Top Failure Cluster</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.zones.top_failure_cluster.label }}</p><p style="margin:8px 0 0 0;">Count: {{ admin.zones.top_failure_cluster.count }}</p></div></div>
 </div>
 
 <div class="card premium-card" style="margin-bottom:18px;">

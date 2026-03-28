@@ -131,5 +131,20 @@
     "closed_at": "2026-03-26T02:53:40.420102",
     "reason": "cut_weakness",
     "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -1.49."
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.646047",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "price": 275.03,
+    "size": 17.0,
+    "score": 195,
+    "confidence": "HIGH",
+    "status": "CLOSED",
+    "pnl": -11.73,
+    "exit_price": 274.34,
+    "closed_at": "2026-03-28T11:22:10.940737",
+    "reason": "cut_weakness",
+    "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.73."
   }
 ]

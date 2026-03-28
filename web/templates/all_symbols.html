@@ -1,54 +1,159 @@
 {% extends "base.html" %}
+{% from "_ui_macros.html" import summary_card, stat_grid, note_card %}
 {% block content %}
 
-<div class="card premium-hero section-sparkle">
-    <h2 style="margin-bottom:8px;">All Symbols</h2>
+<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
+    <h2>All Symbols</h2>
     <div class="passage-frame">
         <p>
-            A calmer full-market directory with searchable symbols, opinion summaries,
-            and click-through into deeper symbol pages.
+            A broader symbol directory for higher tiers, redesigned as a calmer intelligence surface instead of a raw table dump.
         </p>
     </div>
 </div>
 
-<div class="card gold-accent-card search-panel">
-    <h3>Search Symbols</h3>
-    <input type="text" id="allSymbolsSearch" placeholder="Search ticker or company name...">
+{% if user and user.tier in ["Pro", "Elite"] or (user and user.role == "master") %}
+
+{{ summary_card(page_summary.headline, page_summary.summary, page_summary.chip) }}
+
+{{ stat_grid([
+    {"title": "Total Symbols", "value": page_summary.total},
+    {"title": "Strong", "value": page_summary.strong},
+    {"title": "Middle", "value": page_summary.medium},
+    {"title": "Weak", "value": page_summary.weak},
+]) }}
+
+<div class="card gold-accent-card" style="margin-bottom:18px;">
+    <div class="section-head-row">
+        <div>
+            <h3>Broader Market Coverage</h3>
+            <p class="muted-line">
+                Use this page when you want a wider read than Spotlight gives you.
+            </p>
+        </div>
+        <div class="signal-stat-chip">{{ rows|length }} symbols</div>
+    </div>
 </div>
 
-<div class="card">
-    <table class="table all-symbols-table" id="allSymbolsTable">
-        <tr>
-            <th>Symbol</th>
-            <th>Company</th>
-            <th>Score</th>
-            <th>Confidence</th>
-            <th>Opinion</th>
-            <th>Updated</th>
-        </tr>
-        {% for row in rows %}
-        <tr class="all-symbols-row" data-symbol="{{ row.symbol|lower }}" data-company="{{ row.company_name|lower }}">
-            <td><a href="/signals/{{ row.symbol }}"><b>{{ row.symbol }}</b></a></td>
-            <td>{{ row.company_name }}</td>
-            <td>{{ row.latest_score }}</td>
-            <td>{{ row.latest_confidence }}</td>
-            <td>{{ row.opinion }}</td>
-            <td>{{ row.latest_timestamp[:16].replace("T", " ") if row.latest_timestamp else "N/A" }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Search the Directory</h3>
+            <p class="muted-line" style="margin:0;">Search by symbol or company name.</p>
+        </div>
+        <span class="signal-stat-chip">Research Surface</span>
+    </div>
+
+    <div style="margin-top:14px;">
+        <input
+            id="symbolSearch"
+            type="text"
+            placeholder="Search symbol or company..."
+            onkeyup="filterSymbols()"
+            class="input"
+            style="width:100%;"
+        />
+    </div>
 </div>
+
+{% if rows %}
+<div
+    id="symbolsGrid"
+    style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px;"
+>
+    {% for row in rows %}
+    <a
+        href="/signals/{{ row.symbol }}"
+        class="symbol-card-link"
+        data-symbol="{{ row.symbol }}"
+        data-company="{{ row.company_name }}"
+        style="text-decoration:none; color:inherit;"
+    >
+        <div class="card premium-card" style="height:100%;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                <div>
+                    <h3 style="margin:0 0 6px 0;">{{ row.symbol }}</h3>
+                    <p class="muted-line" style="margin:0;">{{ row.company_name }}</p>
+                </div>
+                <span class="signal-stat-chip">
+                    {% if row.latest_score|int >= 75 %}
+                    Strong
+                    {% elif row.latest_score|int >= 55 %}
+                    Mixed
+                    {% else %}
+                    Weak
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
+                <div class="card" style="margin:0;">
+                    <h4>Score</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ row.latest_score }}</strong></p>
+                    </div>
+                </div>
+                <div class="card" style="margin:0;">
+                    <h4>Confidence</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ row.latest_confidence }}</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            {{ note_card("Current Opinion", row.opinion or "No current opinion loaded yet.") }}
+
+            <div class="card" style="margin-top:14px;">
+                <h4>Why Open This Symbol</h4>
+                <div class="passage-frame">
+                    <p style="margin:0;">
+                        Open the symbol page to inspect its latest signal context, intelligence posture, and related research surface.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card premium-card">
+    <div class="passage-frame">
+        <p style="margin:0;">No symbol rows loaded yet.</p>
+    </div>
+</div>
+{% endif %}
 
 <script>
-const allSymbolsSearch = document.getElementById("allSymbolsSearch");
-allSymbolsSearch.addEventListener("input", () => {
-    const q = (allSymbolsSearch.value || "").toLowerCase().trim();
-    document.querySelectorAll(".all-symbols-row").forEach(row => {
-        const s = row.dataset.symbol || "";
-        const c = row.dataset.company || "";
-        row.style.display = (!q || s.includes(q) || c.includes(q)) ? "" : "none";
+function filterSymbols() {
+    const input = document.getElementById("symbolSearch");
+    const filter = (input.value || "").toUpperCase();
+    const cards = document.querySelectorAll(".symbol-card-link");
+
+    cards.forEach(card => {
+        const symbol = (card.dataset.symbol || "").toUpperCase();
+        const company = (card.dataset.company || "").toUpperCase();
+
+        if (symbol.indexOf(filter) > -1 || company.indexOf(filter) > -1) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
     });
-});
+}
 </script>
+
+{% else %}
+<div class="card gold-accent-card">
+    <h3>All Symbols is a higher-tier view</h3>
+    <div class="passage-frame">
+        <p>
+            This page is unlocked for Pro and Elite, where broader market coverage becomes part of the experience.
+        </p>
+    </div>
+    <div class="dashboard-subnav">
+        <a href="/signals" class="cta-btn secondary">Back to Spotlight</a>
+        <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}

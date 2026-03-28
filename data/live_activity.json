@@ -2030,5 +2030,64 @@
     "message": "Bot run completed",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-28T11:21:58.381315",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-28T11:21:59.073773",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.147251",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.164379",
+    "event_type": "QUEUE",
+    "message": "Approved 3 research trades; selected 2 execution trades in mode DEFENSIVE_BEAR",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.421075",
+    "event_type": "SIGNAL",
+    "message": "GOOGL approved as CALL with score 195",
+    "symbol": "GOOGL",
+    "meta": {
+      "trade_id": "GOOGL-CALL-20260328112210",
+      "strategy": "CALL",
+      "score": 195,
+      "confidence": "HIGH"
+    }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:10.499527",
+    "event_type": "SIGNAL",
+    "message": "TSLA approved as CALL with score 192",
+    "symbol": "TSLA",
+    "meta": {
+      "trade_id": "TSLA-CALL-20260328112210",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH"
+    }
+  },
+  {
+    "timestamp": "2026-03-28T11:22:20.170743",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed",
+    "symbol": null,
+    "meta": {}
   }
 ]

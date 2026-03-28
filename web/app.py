@@ -2,6 +2,12 @@ import os
 import sys
 import json
 from pathlib import Path
+from engine.market_universe import (
+    load_market_universe,
+    refresh_market_universe,
+    refresh_market_universe_if_stale,
+    get_market_universe_summary,
+)
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -41,7 +47,7 @@ from engine.my_plays import (
     build_trade_analysis_summary,
 )
 
-from engine.symbols import load_symbol_news, refresh_symbol_news
+from engine.symbols import load_symbol_news, refresh_symbol_news, refresh_news_for_symbols
 
 from engine.admin_product_analytics import (
     log_event,
@@ -68,6 +74,35 @@ from engine.system_brain import build_system_brain
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "simpleemrktrade-dev-key-change-later"
+app = Flask(__name__, template_folder="templates", static_folder="static")
+app.secret_key = "simpleemrktrade-dev-key-change-later"
+
+
+@app.before_request
+def auto_refresh_market_universe():
+    try:
+        refresh_market_universe_if_stale(max_age_hours=12)
+    except Exception as e:
+        print(f"[MARKET_UNIVERSE_AUTO_REFRESH] {e}")
+
+
+@app.before_request
+def auto_refresh_news_cache():
+    try:
+        pipeline = get_pipeline_status()
+        freshness = _freshness_bucket(pipeline.get("news_sync_at"), stale_after_minutes=180)
+
+        if freshness.get("is_stale"):
+            universe = load_market_universe()
+            if universe:
+                refresh_news_for_symbols(
+                    symbol_rows=universe,
+                    limit_per_symbol=6,
+                    max_symbols=250,
+                    force=False,
+                )
+    except Exception as e:
+        print(f"[NEWS_CACHE_AUTO_REFRESH] {e}")
 
 
 # ============================================================
@@ -685,6 +720,8 @@ def build_admin_shared_context():
     except Exception:
         quick_actions = {"actions": []}
 
+alert_explanations = build_shared_operator_alert_explanations(surface_alerts)
+
     return {
         "plays": plays,
         "positions": positions,
@@ -695,6 +732,7 @@ def build_admin_shared_context():
         "behavior_risk": behavior_risk,
         "behavior_priority": behavior_priority,
         "surface_alerts": surface_alerts,
+        "alert_explanations": alert_explanations,
         "quick_actions": quick_actions,
     }
 
@@ -1053,6 +1091,101 @@ def build_admin_surface_alerts(admin_summary=None, monitoring=None, behavioral_i
     return {
         "top_alert": alerts[0] if alerts else None,
         "alerts": alerts[:4],
+    }
+
+
+def build_shared_operator_alert_explanations(surface_alerts=None):
+    surface_alerts = surface_alerts or {}
+    alerts = surface_alerts.get("alerts", []) or []
+
+    explained = []
+
+    for alert in alerts:
+        headline = _norm_text(alert.get("headline", "Operator Alert"))
+        body = _norm_text(alert.get("body", ""))
+        target = _norm_text(alert.get("target", "/admin"))
+        target_label = _norm_text(alert.get("target_label", "Review"))
+        level = _norm_text(alert.get("level", "neutral")).lower()
+
+        trigger = "A cross-surface condition was detected."
+        why_it_matters = "This issue can weaken decision quality, trust, or product clarity."
+        first_action = f"Open {target_label.lower()} and review the underlying records."
+        if_ignored = "The system may keep leaking edge or hiding quality problems."
+
+        headline_lower = headline.lower()
+        body_lower = body.lower()
+
+        if "weak activations" in headline_lower:
+            trigger = "Closed trade behavior suggests too many promoted ideas were weak when they were moved forward."
+            why_it_matters = "Bad promotions contaminate trade outcomes and make the system look less accurate than it really is."
+            first_action = "Open Activation Quality and compare weak activations against ready activations."
+            if_ignored = "You will keep promoting soft setups and blaming the engine for avoidable losses."
+
+        elif "disagreement" in headline_lower or "against-engine" in headline_lower:
+            trigger = "The operator is taking or activating ideas that conflict with the engine direction more often than expected."
+            why_it_matters = "Disagreement is only valuable when it is rare and well-justified. Too much of it turns the system into decoration."
+            first_action = "Open Disagreement review and isolate the repeated symbols, setups, or conditions behind the conflict."
+            if_ignored = "You risk training yourself to ignore the best part of the system: alignment."
+
+        elif "soft ideas" in headline_lower or "readiness" in target.lower():
+            trigger = "The playbook currently contains more weak/watch ideas than truly ready setups."
+            why_it_matters = "A soft idea book makes the product feel noisy and makes activation discipline harder."
+            first_action = "Open Readiness review and trim or downgrade weak/watch setups aggressively."
+            if_ignored = "The inventory will keep bloating and signal quality will feel diluted."
+
+        elif "thesis quality" in headline_lower or "without structure" in headline_lower:
+            trigger = "Too many ideas are entering the system without enough written reasoning."
+            why_it_matters = "No-thesis ideas weaken coaching, reduce accountability, and make review quality worse."
+            first_action = "Open Thesis Quality and fix high-conviction plays that still have no written thesis."
+            if_ignored = "Confidence will keep outrunning structure, and later analysis will stay muddy."
+
+        elif "weak open positions" in headline_lower or "late weak closes" in headline_lower:
+            trigger = "The live position layer contains setups that are already weak by health or agreement."
+            why_it_matters = "Weak positions can turn manageable damage into larger losses if they are reviewed too late."
+            first_action = "Open Weak Positions or Trade Analysis and review late-management behavior first."
+            if_ignored = "The system will keep catching the weakness after the damage instead of before it."
+
+        elif "failure cluster" in headline_lower:
+            trigger = "A repeated failure pattern is appearing often enough to stand out as a cluster."
+            why_it_matters = "Clusters are where the real edge leaks live. They usually expose a repeated structural mistake."
+            first_action = "Open the failure cluster view and identify whether the leak is selection, disagreement, or management."
+            if_ignored = "The same bad pattern will keep repeating under different symbols and conditions."
+
+        elif "friction" in headline_lower or "friction" in body_lower:
+            trigger = "The product monitoring layer found repeated usage friction."
+            why_it_matters = "Friction causes abandonment, confusion, and lower trust in the workflow."
+            first_action = "Open Product Monitoring and inspect the strongest friction point first."
+            if_ignored = "Users will keep feeling the drag even if the engine itself improves."
+
+        explained.append({
+            "headline": headline,
+            "body": body,
+            "level": level,
+            "target": target,
+            "target_label": target_label,
+            "trigger": trigger,
+            "why_it_matters": why_it_matters,
+            "first_action": first_action,
+            "if_ignored": if_ignored,
+        })
+
+    if not explained:
+        explained.append({
+            "headline": "No shared operator alerts yet",
+            "body": "The shared alert layer is not currently surfacing a major cross-system issue.",
+            "level": "positive",
+            "target": "/admin",
+            "target_label": "Stay on Admin",
+            "trigger": "No cross-surface threat is currently dominating.",
+            "why_it_matters": "This usually means the system is stable enough to focus on refinement instead of repair.",
+            "first_action": "Continue monitoring readiness, behavior, and data health.",
+            "if_ignored": "Minor issues may still grow quietly if diagnostics are not checked regularly.",
+        })
+
+    return {
+        "headline": "Shared operator alerts explanation layer",
+        "summary": "These cards explain what triggered each alert, why it matters, and what to do next.",
+        "items": explained,
     }
 
 
@@ -1990,34 +2123,37 @@ def build_file_diagnostics() -> Dict[str, Any]:
 
 
 def build_symbol_coverage_diagnostics() -> Dict[str, Any]:
-    signals = safe_list(load_json("data/signals.json", []))
+    universe_summary = safe_run("get_market_universe_summary", get_market_universe_summary, {
+        "total": 0,
+        "counts_by_type": {},
+        "top_sources": [],
+        "rows": [],
+    })
+
     symbol_meta = safe_dict(load_json("data/symbol_meta.json", {}))
     symbol_intel = safe_dict(load_json("data/symbol_intelligence.json", {}))
     symbol_news = safe_dict(load_json("data/symbol_news.json", {}))
 
-    symbols = []
-    seen = set()
-
-    for row in signals:
-        if not isinstance(row, dict):
-            continue
-        symbol = _norm_upper(row.get("symbol"))
-        if not symbol or symbol in seen:
-            continue
-        seen.add(symbol)
-        symbols.append(symbol)
+    universe_rows = safe_list(universe_summary.get("rows", []))
 
     coverage_rows = []
     missing_meta = 0
     missing_intel = 0
     missing_news = 0
 
-    for symbol in symbols:
+    for item in universe_rows:
+        if not isinstance(item, dict):
+            continue
+
+        symbol = _norm_upper(item.get("symbol"))
+        if not symbol:
+            continue
+
         has_meta = isinstance(symbol_meta.get(symbol), dict)
         has_intel = isinstance(symbol_intel.get(symbol), dict)
+
         news_row = symbol_news.get(symbol, {})
         has_news = False
-
         if isinstance(news_row, dict):
             has_news = isinstance(news_row.get("items", []), list) and len(news_row.get("items", [])) > 0
         elif isinstance(news_row, list):
@@ -2035,25 +2171,29 @@ def build_symbol_coverage_diagnostics() -> Dict[str, Any]:
             "has_meta": has_meta,
             "has_intelligence": has_intel,
             "has_news": has_news,
+            "priority_rank": item.get("priority_rank", 0),
+            "source_tags": item.get("source_tags", []),
+            "asset_type": item.get("asset_type", "equity"),
         })
 
-    headline = "Symbol coverage is connected." if symbols else "No symbol coverage found."
+    headline = "Market universe coverage is connected." if universe_rows else "No market universe loaded yet."
     summary = (
-        f"{len(symbols)} symbol(s) checked across meta, intelligence, and news."
-        if symbols else
-        "Signals are empty, so symbol coverage cannot be evaluated yet."
+        f"{len(coverage_rows)} universe symbol(s) checked across meta, intelligence, and news."
+        if universe_rows else
+        "The market universe is empty, so coverage cannot be evaluated yet."
     )
 
     return {
         "headline": headline,
         "summary": summary,
-        "total_symbols": len(symbols),
+        "total_symbols": len(coverage_rows),
         "missing_meta": missing_meta,
         "missing_intelligence": missing_intel,
         "missing_news": missing_news,
-        "rows": coverage_rows[:100],
+        "counts_by_type": universe_summary.get("counts_by_type", {}),
+        "top_sources": universe_summary.get("top_sources", []),
+        "rows": coverage_rows[:150],
     }
-
 
 def build_admin_diagnostics() -> Dict[str, Any]:
     data_health = build_data_health_summary()
@@ -2098,7 +2238,7 @@ def build_admin_diagnostics() -> Dict[str, Any]:
             "level": "positive",
         })
 
-    return {
+    diagnostics = {
         "headline": "Admin diagnostics are live.",
         "summary": "This page checks whether the system has the files, templates, freshness, and symbol coverage it needs.",
         "cards": cards,
@@ -2106,6 +2246,259 @@ def build_admin_diagnostics() -> Dict[str, Any]:
         "file_diagnostics": file_diagnostics,
         "template_diagnostics": template_diagnostics,
         "symbol_coverage": symbol_coverage,
+    }
+
+    diagnostics["repair_recommendations"] = build_repair_recommendations(diagnostics)
+    return diagnostics
+
+
+def _recommendation_card(
+    key: str,
+    headline: str,
+    severity: str,
+    why: str,
+    action: str,
+    owner: str,
+    target: str = "/admin/diagnostics",
+    target_label: str = "Open Diagnostics",
+) -> Dict[str, Any]:
+    return {
+        "key": key,
+        "headline": headline,
+        "severity": severity,
+        "why": why,
+        "action": action,
+        "owner": owner,
+        "target": target,
+        "target_label": target_label,
+    }
+
+
+def build_repair_recommendations(diagnostics: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    diagnostics = diagnostics or build_admin_diagnostics()
+
+    data_health = diagnostics.get("data_health", {}) or {}
+    file_diag = diagnostics.get("file_diagnostics", {}) or {}
+    template_diag = diagnostics.get("template_diagnostics", {}) or {}
+    symbol_cov = diagnostics.get("symbol_coverage", {}) or {}
+
+    freshness = data_health.get("freshness", {}) or {}
+    file_rows = file_diag.get("rows", []) or []
+    template_rows = template_diag.get("rows", []) or []
+
+    recommendations = []
+
+    missing_files = [row for row in file_rows if not row.get("exists")]
+    missing_templates = [row for row in template_rows if not row.get("exists")]
+
+    critical_files = {
+        "data/signals.json": {
+            "why": "Signals power multiple pages and downstream intelligence layers.",
+            "action": "Re-run the signal-generation pipeline and confirm the file is being written.",
+            "owner": "signals pipeline",
+        },
+        "data/symbol_intelligence.json": {
+            "why": "Symbol pages lose their deep intelligence layer without this file.",
+            "action": "Rebuild symbol intelligence and verify the write step is completing.",
+            "owner": "symbol intelligence pipeline",
+        },
+        "data/recent_reports.json": {
+            "why": "Analytics and proof surfaces weaken when recent reports are missing.",
+            "action": "Re-run the report generation step and confirm report history is being saved.",
+            "owner": "reporting pipeline",
+        },
+        "data/pipeline_status.json": {
+            "why": "Freshness and diagnostics depend on this file for last-run visibility.",
+            "action": "Restore pipeline status writes after each major pipeline stage.",
+            "owner": "pipeline status writer",
+        },
+    }
+
+    optional_files = {
+        "data/equity_curve.json": {
+            "why": "Equity views and visual history can soften without this file.",
+            "action": "Rebuild the equity curve export if you want the visual equity surface restored.",
+            "owner": "analytics export layer",
+        },
+        "data/live_activity.json": {
+            "why": "Live activity surfaces become thinner without this file.",
+            "action": "Restore the activity writer if you want richer live-feed surfaces.",
+            "owner": "activity logging layer",
+        },
+        "data/notifications.json": {
+            "why": "Notification surfaces fall back quieter without this file.",
+            "action": "Rebuild or regenerate notifications if the notification center matters right now.",
+            "owner": "notification layer",
+        },
+    }
+
+    for row in missing_files:
+        path = row.get("path")
+        if path in critical_files:
+            meta = critical_files[path]
+            recommendations.append(
+                _recommendation_card(
+                    key=f"missing:{path}",
+                    headline=f"Restore critical file: {path}",
+                    severity="danger",
+                    why=meta["why"],
+                    action=meta["action"],
+                    owner=meta["owner"],
+                )
+            )
+        else:
+            meta = optional_files.get(path, {
+                "why": "This file is expected by at least one app surface.",
+                "action": "Restore the process that generates this file or mark it intentionally optional.",
+                "owner": "supporting data pipeline",
+            })
+            recommendations.append(
+                _recommendation_card(
+                    key=f"missing:{path}",
+                    headline=f"Restore supporting file: {path}",
+                    severity="warning",
+                    why=meta["why"],
+                    action=meta["action"],
+                    owner=meta["owner"],
+                )
+            )
+
+    if missing_templates:
+        names = ", ".join([row.get("name", "unknown") for row in missing_templates[:5]])
+        recommendations.append(
+            _recommendation_card(
+                key="missing_templates",
+                headline="Restore missing template coverage",
+                severity="warning",
+                why="Fallback rendering can keep the app alive, but missing templates weaken the product experience.",
+                action=f"Create or restore the missing template(s): {names}.",
+                owner="template layer",
+            )
+        )
+
+    engine_freshness = freshness.get("engine", {}) or {}
+    symbol_freshness = freshness.get("symbol_intelligence", {}) or {}
+    news_freshness = freshness.get("news", {}) or {}
+
+    if engine_freshness.get("is_stale"):
+        recommendations.append(
+            _recommendation_card(
+                key="stale_engine",
+                headline="Refresh stale engine state",
+                severity="warning" if engine_freshness.get("level") == "warning" else "danger",
+                why="Old engine state can make signals, admin views, and downstream logic feel stale or misleading.",
+                action="Re-run the engine pipeline and confirm pipeline_status is updated after completion.",
+                owner="engine runner",
+            )
+        )
+
+    if symbol_freshness.get("is_stale"):
+        recommendations.append(
+            _recommendation_card(
+                key="stale_symbol_intel",
+                headline="Refresh stale symbol intelligence",
+                severity="warning" if symbol_freshness.get("level") == "warning" else "danger",
+                why="Symbol pages lose quality when intelligence becomes old or disconnected from the latest signal layer.",
+                action="Rebuild symbol intelligence and confirm fresh writes to symbol_intelligence.json and pipeline_status.json.",
+                owner="symbol intelligence pipeline",
+            )
+        )
+
+    if news_freshness.get("is_stale"):
+        recommendations.append(
+            _recommendation_card(
+                key="stale_news",
+                headline="Refresh stale news cache",
+                severity="warning" if news_freshness.get("level") == "warning" else "danger",
+                why="Old news weakens symbol pages and reduces the system’s sense of current awareness.",
+                action="Run a bulk symbol news refresh and verify symbol_news.json is filling with current items.",
+                owner="news refresh pipeline",
+            )
+        )
+
+    total_symbols = _safe_int(symbol_cov.get("total_symbols", 0))
+    missing_intelligence = _safe_int(symbol_cov.get("missing_intelligence", 0))
+    missing_news = _safe_int(symbol_cov.get("missing_news", 0))
+    missing_meta = _safe_int(symbol_cov.get("missing_meta", 0))
+
+    if total_symbols > 0 and missing_intelligence > 0:
+        recommendations.append(
+            _recommendation_card(
+                key="coverage_intelligence",
+                headline="Repair symbol intelligence coverage gaps",
+                severity="warning",
+                why=f"{missing_intelligence} tracked symbol(s) do not currently have intelligence records.",
+                action="Backfill symbol intelligence across the tracked universe, then verify coverage counts improve.",
+                owner="symbol intelligence coverage builder",
+            )
+        )
+
+    if total_symbols > 0 and missing_news > 0:
+        recommendations.append(
+            _recommendation_card(
+                key="coverage_news",
+                headline="Repair cached news coverage gaps",
+                severity="warning",
+                why=f"{missing_news} tracked symbol(s) do not currently have cached news.",
+                action="Run a bulk tracked-symbol news refresh and confirm the symbol news cache begins filling.",
+                owner="news cache builder",
+            )
+        )
+
+    if total_symbols > 0 and missing_meta > 0:
+        recommendations.append(
+            _recommendation_card(
+                key="coverage_meta",
+                headline="Repair symbol metadata coverage gaps",
+                severity="neutral",
+                why=f"{missing_meta} tracked symbol(s) are missing metadata like company name or blurb.",
+                action="Backfill symbol_meta.json so coverage feels richer and less ticker-only.",
+                owner="symbol metadata builder",
+            )
+        )
+
+    if total_symbols < 200:
+        recommendations.append(
+            _recommendation_card(
+                key="broad_universe",
+                headline="Expand market universe coverage",
+                severity="warning",
+                why=f"Only {total_symbols} tracked symbol(s) are currently visible. That is not broad enough for near-market-wide awareness.",
+                action="Add a broader market-universe file and pipeline stage, then cull user-facing results from that larger base.",
+                owner="market universe pipeline",
+            )
+        )
+
+    if not recommendations:
+        recommendations.append(
+            _recommendation_card(
+                key="stable",
+                headline="No urgent repair recommendation",
+                severity="positive",
+                why="Diagnostics are not surfacing a major structural gap right now.",
+                action="Keep monitoring freshness, coverage, and behavior diagnostics regularly.",
+                owner="operator",
+            )
+        )
+
+    severity_order = {
+        "danger": 0,
+        "warning": 1,
+        "neutral": 2,
+        "positive": 3,
+    }
+    recommendations = sorted(
+        recommendations,
+        key=lambda x: severity_order.get(x.get("severity", "neutral"), 99),
+    )
+
+    top_fix = recommendations[0] if recommendations else None
+
+    return {
+        "headline": "Repair recommendations are active.",
+        "summary": "These recommendations translate diagnostics into action steps, priorities, and ownership.",
+        "top_fix": top_fix,
+        "items": recommendations[:12],
     }
 
 
@@ -2485,15 +2878,50 @@ def get_signal_boards() -> List[Dict[str, Any]]:
 
 def get_all_symbol_rows() -> List[Dict[str, Any]]:
     boards = get_signal_boards()
-    rows = []
-    seen = set()
+    board_map = {}
 
     for board in boards:
         symbol = board.get("symbol")
-        if symbol in seen:
+        if not symbol:
+            continue
+        board_map[symbol] = board
+
+    universe_rows = safe_run("load_market_universe", load_market_universe, [])
+    universe_rows = safe_list(universe_rows)
+
+    rows = []
+    seen = set()
+
+    # start from broad universe
+    for item in universe_rows:
+        if not isinstance(item, dict):
+            continue
+
+        symbol = item.get("symbol")
+        if not symbol or symbol in seen:
             continue
 
         seen.add(symbol)
+        board = board_map.get(symbol, {})
+
+        rows.append(
+            {
+                "symbol": symbol,
+                "company_name": board.get("company_name", item.get("company_name", symbol)),
+                "latest_score": board.get("latest_score", 0),
+                "latest_confidence": board.get("latest_confidence", "LOW"),
+                "latest_timestamp": board.get("latest_timestamp", ""),
+                "opinion": board.get("opinion", "No active opinion available yet."),
+                "priority_rank": item.get("priority_rank", 0),
+                "source_tags": item.get("source_tags", []),
+            }
+        )
+
+    # add any board symbols not already in universe
+    for symbol, board in board_map.items():
+        if symbol in seen:
+            continue
+
         rows.append(
             {
                 "symbol": symbol,
@@ -2502,78 +2930,90 @@ def get_all_symbol_rows() -> List[Dict[str, Any]]:
                 "latest_confidence": board.get("latest_confidence", "LOW"),
                 "latest_timestamp": board.get("latest_timestamp", ""),
                 "opinion": board.get("opinion", "Active setup."),
+                "priority_rank": 0,
+                "source_tags": ["signals"],
             }
         )
+
+    rows.sort(
+        key=lambda x: (
+            -_safe_int(x.get("latest_score", 0)),
+            -_safe_int(x.get("priority_rank", 0)),
+            x.get("symbol", ""),
+        )
+    )
 
     return rows
 
 
-def get_symbol_detail(symbol: str) -> Dict[str, Any]:
-    symbol = (symbol or "").upper()
+def get_all_symbol_rows() -> List[Dict[str, Any]]:
+    boards = get_signal_boards()
+    board_map = {}
 
-    signals = safe_run("get_signals", get_signals, [])
-    signals = safe_list(signals)
+    for board in boards:
+        symbol = board.get("symbol")
+        if not symbol:
+            continue
+        board_map[symbol] = board
 
-    symbol_intel_map = safe_dict(load_json("data/symbol_intelligence.json", {}))
-    meta = safe_dict(load_json("data/symbol_meta.json", {}))
-    news = safe_dict(load_json("data/symbol_news.json", {}))
+    universe_rows = safe_run("load_market_universe", load_market_universe, [])
+    universe_rows = safe_list(universe_rows)
 
-    symbol_signals = [s for s in signals if isinstance(s, dict) and s.get("symbol") == symbol]
-    symbol_signals = safe_run(
-        "attach_trade_intelligence_symbol",
-        lambda: attach_trade_intelligence(symbol_signals),
-        symbol_signals,
+    rows = []
+    seen = set()
+
+    for item in universe_rows:
+        if not isinstance(item, dict):
+            continue
+
+        symbol = item.get("symbol")
+        if not symbol or symbol in seen:
+            continue
+
+        seen.add(symbol)
+        board = board_map.get(symbol, {})
+
+        rows.append(
+            {
+                "symbol": symbol,
+                "company_name": board.get("company_name", item.get("company_name", symbol)),
+                "latest_score": board.get("latest_score", 0),
+                "latest_confidence": board.get("latest_confidence", "LOW"),
+                "latest_timestamp": board.get("latest_timestamp", ""),
+                "opinion": board.get("opinion", "No active opinion available yet."),
+                "priority_rank": item.get("priority_rank", 0),
+                "source_tags": item.get("source_tags", []),
+                "asset_type": item.get("asset_type", "equity"),
+            }
+        )
+
+    for symbol, board in board_map.items():
+        if symbol in seen:
+            continue
+
+        rows.append(
+            {
+                "symbol": symbol,
+                "company_name": board.get("company_name", symbol),
+                "latest_score": board.get("latest_score", 0),
+                "latest_confidence": board.get("latest_confidence", "LOW"),
+                "latest_timestamp": board.get("latest_timestamp", ""),
+                "opinion": board.get("opinion", "Active setup."),
+                "priority_rank": 0,
+                "source_tags": ["signals"],
+                "asset_type": "equity",
+            }
+        )
+
+    rows.sort(
+        key=lambda x: (
+            -_safe_int(x.get("latest_score", 0)),
+            -_safe_int(x.get("priority_rank", 0)),
+            x.get("symbol", ""),
+        )
     )
 
-    primary_intel = symbol_intel_map.get(symbol, {})
-    if not isinstance(primary_intel, dict):
-        primary_intel = {}
-
-    company = meta.get(symbol, {})
-    if not isinstance(company, dict):
-        company = {}
-
-    news_row = news.get(symbol, {})
-    if isinstance(news_row, dict):
-        news_items = news_row.get("items", [])
-    else:
-        news_items = news_row
-
-    if not isinstance(news_items, list):
-        news_items = []
-
-    if symbol_signals:
-        top = symbol_signals[0]
-        board = {
-            "symbol": symbol,
-            "company_name": top.get("company_name", symbol),
-            "latest_score": top.get("score", 0),
-            "latest_confidence": top.get("confidence", "LOW"),
-            "latest_timestamp": top.get("timestamp", ""),
-            "opinion": top.get("opinion", "Active setup."),
-        }
-    else:
-        board = {
-            "symbol": symbol,
-            "company_name": symbol,
-            "latest_score": 0,
-            "latest_confidence": "LOW",
-            "latest_timestamp": "",
-            "opinion": "No active opinion available.",
-        }
-
-    return {
-        "symbol": symbol,
-        "company": {
-            "name": company.get("name", board["company_name"]),
-            "blurb": company.get("blurb", "No company overview available yet."),
-        },
-        "board": board,
-        "primary_intelligence": primary_intel,
-        "signals": safe_list(symbol_signals),
-        "news_items": news_items[:8],
-    }
-
+    return rows
 
 def template_context(extra: Dict[str, Any]) -> Dict[str, Any]:
     base = {
@@ -3962,6 +4402,7 @@ def admin_dashboard():
             "surface_alerts": shared.get("surface_alerts", {}),
             "quick_actions": shared.get("quick_actions", {}),
             "event_analytics": build_event_analytics_summary(),
+            "alert_explanations": shared.get("alert_explanations", {}),
             "behavior_priority": shared.get("behavior_priority", {}),
             "behavioral_insights": shared.get("behavioral_insights", {}),
             "behavior_risk": shared.get("behavior_risk", {}),
@@ -4095,7 +4536,40 @@ def admin_diagnostics_page():
             "diagnostics": diagnostics,
         }),
     )
-    
+
+
+@app.route("/admin/refresh-market-universe")
+def admin_refresh_market_universe():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    try:
+        rows = refresh_market_universe()
+        print(f"[ADMIN_REFRESH_MARKET_UNIVERSE] refreshed {len(rows)} rows")
+    except Exception as e:
+        print(f"[ADMIN_REFRESH_MARKET_UNIVERSE] {e}")
+
+    return redirect(request.referrer or url_for("admin_diagnostics_page"))
+
+
+@app.route("/admin/refresh-news-cache")
+def admin_refresh_news_cache():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    try:
+        universe = load_market_universe()
+        refresh_news_for_symbols(
+            symbol_rows=universe,
+            limit_per_symbol=6,
+            max_symbols=500,
+            force=True,
+        )
+    except Exception as e:
+        print(f"[ADMIN_REFRESH_NEWS_CACHE] {e}")
+
+    return redirect(request.referrer or url_for("admin_diagnostics_page"))
+
 
 @app.route("/admin/product-analytics")
 def admin_product_analytics_page():
