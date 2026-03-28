@@ -1,6 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
 
+<!-- ADMIN ACTION BUTTONS -->
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin: 14px 0 18px 0;">
+
+    <a href="/admin/intelligence" class="cta-btn secondary">
+        Intelligence
+    </a>
+
+    <a href="/admin/product-monitoring" class="cta-btn secondary">
+        Product Monitoring
+    </a>
+
+    <a href="/admin/product-analytics" class="cta-btn secondary">
+        Product Analytics
+    </a>
+
+    <a href="/admin/diagnostics" class="cta-btn secondary">
+        Diagnostics
+    </a>
+
+</div>
+
 <div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
     <h2>Admin Control Center</h2>
     <div class="passage-frame">
@@ -33,6 +54,73 @@
             </div>
         </div>
     </a>
+
+{% if data_health %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Data Health</h3>
+            <p class="muted-line" style="margin:0;">
+                Core pipeline freshness and file coverage across the app.
+            </p>
+        </div>
+        <span class="signal-stat-chip">Stability Layer</span>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Signals</h4>
+            <p><strong>{{ data_health.counts.signals }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Symbol Intel</h4>
+            <p><strong>{{ data_health.counts.symbol_intelligence }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>News Cache</h4>
+            <p><strong>{{ data_health.counts.symbol_news }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Reports</h4>
+            <p><strong>{{ data_health.counts.recent_reports }}</strong></p>
+        </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Engine Freshness</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ data_health.freshness.engine.label }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Symbol Freshness</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ data_health.freshness.symbol_intelligence.label }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>News Freshness</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ data_health.freshness.news.label }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    {% if data_health.cards %}
+    <div style="display:grid; gap:12px; margin-top:14px;">
+        {% for card in data_health.cards %}
+        <div class="card" style="margin:0;">
+            <h4>{{ card.headline }}</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ card.body }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
 
     {% if admin_alerts.alerts %}
     <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
@@ -199,6 +287,17 @@
             </div>
         </div>
     </a>
+
+<a href="/admin/diagnostics" style="text-decoration:none; color:inherit;">
+    <div class="card premium-card" style="height:100%;">
+        <h3>Diagnostics</h3>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                Check pipeline freshness, missing files, symbol coverage gaps, and template health.
+            </p>
+        </div>
+    </div>
+</a>
 
     <a href="/admin/product-monitoring" style="text-decoration:none; color:inherit;">
         <div class="card premium-card" style="height:100%;">

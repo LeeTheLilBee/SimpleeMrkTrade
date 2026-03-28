@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
+    <h2>Admin Diagnostics</h2>
+    <div class="passage-frame">
+        <p>{{ diagnostics.summary }}</p>
+    </div>
+</div>
+
+{% if diagnostics.cards %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>Top Findings</h3>
+    <div style="display:grid; gap:12px; margin-top:12px;">
+        {% for card in diagnostics.cards %}
+        <div class="card" style="margin:0;">
+            <h4>{{ card.headline }}</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ card.body }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if diagnostics.data_health %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>Pipeline Freshness</h3>
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Engine</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ diagnostics.data_health.freshness.engine.label }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Symbol Intel</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ diagnostics.data_health.freshness.symbol_intelligence.label }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>News</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ diagnostics.data_health.freshness.news.label }}</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if diagnostics.file_diagnostics %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>Core File Diagnostics</h3>
+    <div style="display:grid; gap:10px; margin-top:12px;">
+        {% for row in diagnostics.file_diagnostics.rows %}
+        <div class="card" style="margin:0;">
+            <div class="admin-stat-row">
+                <span>{{ row.path }}</span>
+                <strong>{{ row.status }}</strong>
+            </div>
+            <div class="passage-frame">
+                <p style="margin:0;">
+                    Type: {{ row.parsed_type }}{% if row.item_count is not none %} | Count: {{ row.item_count }}{% endif %} | Size: {{ row.size }}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if diagnostics.template_diagnostics %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>Template Diagnostics</h3>
+    <div style="display:grid; gap:10px; margin-top:12px;">
+        {% for row in diagnostics.template_diagnostics.rows %}
+        <div class="card" style="margin:0;">
+            <div class="admin-stat-row">
+                <span>{{ row.name }}</span>
+                <strong>{{ row.status }}</strong>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if diagnostics.symbol_coverage %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>Symbol Coverage Diagnostics</h3>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Total Symbols</h4>
+            <p><strong>{{ diagnostics.symbol_coverage.total_symbols }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Missing Meta</h4>
+            <p><strong>{{ diagnostics.symbol_coverage.missing_meta }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Missing Intelligence</h4>
+            <p><strong>{{ diagnostics.symbol_coverage.missing_intelligence }}</strong></p>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Missing News</h4>
+            <p><strong>{{ diagnostics.symbol_coverage.missing_news }}</strong></p>
+        </div>
+    </div>
+
+    <div style="display:grid; gap:10px; margin-top:14px;">
+        {% for row in diagnostics.symbol_coverage.rows %}
+        <div class="card" style="margin:0;">
+            <div class="admin-stat-row">
+                <span>{{ row.symbol }}</span>
+                <strong>
+                    Meta: {{ "Y" if row.has_meta else "N" }} |
+                    Intel: {{ "Y" if row.has_intelligence else "N" }} |
+                    News: {{ "Y" if row.has_news else "N" }}
+                </strong>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

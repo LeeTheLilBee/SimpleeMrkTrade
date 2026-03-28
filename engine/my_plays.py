@@ -1021,6 +1021,34 @@ def _safe_upper(value, default="UNKNOWN"):
     return text if text else default
 
 
+def _norm_text(value, default=""):
+    text = str(value or "").strip()
+    return text if text else default
+
+def _norm_upper(value, default="UNKNOWN"):
+    text = str(value or "").strip().upper()
+    return text if text else default
+
+def _agreement_score(row):
+    return _safe_int((row.get("system_agreement", {}) or {}).get("score", 0))
+
+def _health_score(row):
+    return _safe_int((row.get("health", {}) or {}).get("score", 0))
+
+def _activation_bucket(play):
+    readiness = play.get("activation_readiness", {}) or {}
+    return _norm_upper(readiness.get("bucket", "UNKNOWN"))
+
+def _ensure_activation_readiness(plays):
+    rows = []
+    for play in plays or []:
+        row = dict(play)
+        if not row.get("activation_readiness"):
+            row["activation_readiness"] = classify_play_readiness(row)
+        rows.append(row)
+    return rows
+    
+
 def _build_pattern_label(outcome, agreement_bucket, conviction, direction, mode, breadth):
     return " | ".join([
         f"{outcome}",
@@ -1303,10 +1331,51 @@ def build_trade_lesson(position):
             f"You were not guessing blindly here."
         )
         tag = "Aligned Win"
-    elif outcome == "WIN" and agreement_score <
+    elif outcome == "WIN" and agreement_score < 75:
+        headline = "You got paid, but don’t romanticize it."
+        lesson = (
+            "This trade won without strong system alignment. That does not automatically make it repeatable. "
+            "A win can still be a sloppy decision."
+        )
+        tag = "Lucky Win"
+    elif outcome == "LOSS" and agreement_score >= 75:
+        headline = "Decent idea, weaker execution."
+        lesson = (
+            "The system was not strongly against this trade, so the loss is more likely tied to timing, management, or exit discipline than pure idea quality."
+        )
+        tag = "Execution Loss"
+    elif outcome == "LOSS" and agreement_score < 75:
+        headline = "The market told you no, and you did it anyway."
+        lesson = (
+            f"This trade likely failed because it lacked strong alignment. "
+            f"The environment ({regime}, {breadth}, {mode}) was not giving you real support."
+        )
+        tag = "Misaligned Loss"
+    elif outcome == "FLAT":
+        headline = "No edge captured."
+        lesson = (
+            "This trade did not produce meaningful edge. Either the idea lacked force, or the management failed to convert it."
+        )
+        tag = "Flat"
+
+    if health_score < 35:
+        lesson += " You also appear to be letting trades rot before acting."
+    elif health_score > 70:
+        lesson += " At least the exit did not come from complete deterioration."
+
+    if conviction == "High" and outcome == "LOSS":
+        lesson += " High conviction on weak alignment is not confidence — it is stubbornness."
+    elif conviction == "Low" and outcome == "WIN":
+        lesson += " You may be under-trusting some of your better ideas."
+
+    return {
+        "headline": headline,
+        "lesson": lesson,
+        "tag": tag,
+    }
 
 
-    def build_my_plays_page_summary(plays):
+def build_my_plays_page_summary(plays):
     plays = _ensure_activation_readiness(plays or [])
 
     total = len(plays)

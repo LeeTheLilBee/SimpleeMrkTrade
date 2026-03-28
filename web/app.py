@@ -2,7 +2,8 @@ import os
 import sys
 import json
 from pathlib import Path
-from typing import Any, Dict, List
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 from flask import (
     Flask,
@@ -30,13 +31,20 @@ from engine.my_plays import (
     update_user_position,
     close_user_position,
     analyze_user_trades,
+    classify_trade_outcome,
+    build_behavior_risk_summary_from_analysis,
+    build_behavior_priority_engine,
+    build_my_plays_page_summary,
+    build_play_detail_summary,
+    build_my_positions_page_summary,
+    build_position_detail_summary,
+    build_trade_analysis_summary,
 )
 
 from engine.symbols import load_symbol_news, refresh_symbol_news
 
 from engine.admin_product_analytics import (
     log_event,
-    maybe_track_page_view,
     track_symbol_click,
     track_trade_click,
     track_upgrade_click,
@@ -122,6 +130,169 @@ def render_template_safe(template_name: str, **context):
 
 
 # ============================================================
+# STABILITY HELPERS
+# ============================================================
+
+def safe_list(value):
+    return value if isinstance(value, list) else []
+
+
+def safe_dict(value):
+    return value if isinstance(value, dict) else {}
+
+
+def safe_run(label: str, fn, default):
+    try:
+        return fn()
+    except Exception as e:
+        print(f"[SAFE_RUN:{label}] {e}")
+        return default
+
+
+def get_pipeline_status() -> Dict[str, Any]:
+    status = load_json("data/pipeline_status.json", {})
+    if not isinstance(status, dict):
+        status = {}
+
+    return {
+        "engine_run_at": status.get("engine_run_at"),
+        "symbol_intelligence_run_at": status.get("symbol_intelligence_run_at"),
+        "news_sync_at": status.get("news_sync_at"),
+        "symbol_news_sync": safe_dict(status.get("symbol_news_sync")),
+    }
+
+
+def _freshness_bucket(iso_value: Any, stale_after_minutes: int = 60) -> Dict[str, Any]:
+    text = _norm_text(iso_value, "")
+    if not text:
+        return {
+            "label": "Missing",
+            "minutes_old": None,
+            "is_stale": True,
+            "level": "danger",
+        }
+
+    try:
+        then = datetime.fromisoformat(text)
+        now = datetime.now()
+        minutes_old = int((now - then).total_seconds() / 60)
+    except Exception:
+        return {
+            "label": "Unreadable",
+            "minutes_old": None,
+            "is_stale": True,
+            "level": "danger",
+        }
+
+    if minutes_old < stale_after_minutes:
+        return {
+            "label": f"{minutes_old}m old",
+            "minutes_old": minutes_old,
+            "is_stale": False,
+            "level": "positive",
+        }
+
+    if minutes_old < stale_after_minutes * 4:
+        return {
+            "label": f"{minutes_old}m old",
+            "minutes_old": minutes_old,
+            "is_stale": True,
+            "level": "warning",
+        }
+
+    return {
+        "label": f"{minutes_old}m old",
+        "minutes_old": minutes_old,
+        "is_stale": True,
+        "level": "danger",
+    }
+
+
+def build_data_health_summary() -> Dict[str, Any]:
+    pipeline = get_pipeline_status()
+
+    signals = load_json("data/signals.json", [])
+    symbol_intel = load_json("data/symbol_intelligence.json", {})
+    symbol_meta = load_json("data/symbol_meta.json", {})
+    symbol_news = load_json("data/symbol_news.json", {})
+    recent_reports = load_json("data/recent_reports.json", [])
+    users = load_json("data/users.json", [])
+
+    signals = safe_list(signals)
+    symbol_intel = safe_dict(symbol_intel)
+    symbol_meta = safe_dict(symbol_meta)
+    symbol_news = safe_dict(symbol_news)
+    recent_reports = safe_list(recent_reports)
+    users = safe_list(users)
+
+    engine_freshness = _freshness_bucket(pipeline.get("engine_run_at"), stale_after_minutes=90)
+    symbol_freshness = _freshness_bucket(pipeline.get("symbol_intelligence_run_at"), stale_after_minutes=120)
+    news_freshness = _freshness_bucket(pipeline.get("news_sync_at"), stale_after_minutes=120)
+
+    cards = []
+
+    if not signals:
+        cards.append({
+            "headline": "Signals data missing",
+            "body": "The signals layer is empty, so multiple downstream surfaces may soften or go blank.",
+            "level": "danger",
+        })
+
+    if not symbol_intel:
+        cards.append({
+            "headline": "Symbol intelligence missing",
+            "body": "Symbol pages may load without their richer intelligence layer.",
+            "level": "warning",
+        })
+
+    if not symbol_meta:
+        cards.append({
+            "headline": "Symbol meta missing",
+            "body": "Company names and blurbs may fall back to ticker-only display.",
+            "level": "neutral",
+        })
+
+    if not symbol_news:
+        cards.append({
+            "headline": "Symbol news cache missing",
+            "body": "News can still fetch on demand, but the cache currently looks empty.",
+            "level": "neutral",
+        })
+
+    if not recent_reports:
+        cards.append({
+            "headline": "Recent reports missing",
+            "body": "Analytics and proof views may have weaker historical context.",
+            "level": "warning",
+        })
+
+    if not cards:
+        cards.append({
+            "headline": "Core data surfaces are present",
+            "body": "The main data files are loaded and available.",
+            "level": "positive",
+        })
+
+    return {
+        "pipeline": pipeline,
+        "freshness": {
+            "engine": engine_freshness,
+            "symbol_intelligence": symbol_freshness,
+            "news": news_freshness,
+        },
+        "counts": {
+            "signals": len(signals),
+            "symbol_intelligence": len(symbol_intel),
+            "symbol_meta": len(symbol_meta),
+            "symbol_news": len(symbol_news),
+            "recent_reports": len(recent_reports),
+            "users": len(users),
+        },
+        "cards": cards,
+    }
+
+
+# ============================================================
 # BASIC STATE HELPERS
 # ============================================================
 
@@ -199,12 +370,26 @@ def get_unread_notifications() -> int:
 @app.context_processor
 def inject_global_context():
     return {
-        "user": get_current_user(),
-        "theme": get_theme(),
-        "show_upgrade": should_show_upgrade(),
-        "unread_notifications": get_unread_notifications(),
-        "snapshot": get_dashboard_snapshot(),
-        "system": get_system_state(),
+        "user": safe_run("get_current_user", get_current_user, {
+            "username": None,
+            "tier": "Guest",
+            "real_tier": "Guest",
+            "role": "member",
+            "preview_tier": None,
+        }),
+        "theme": safe_run("get_theme", get_theme, "dark"),
+        "show_upgrade": safe_run("should_show_upgrade", should_show_upgrade, True),
+        "unread_notifications": safe_run("get_unread_notifications", get_unread_notifications, 0),
+        "snapshot": safe_run("get_dashboard_snapshot", get_dashboard_snapshot, {
+            "estimated_account_value": 10000,
+            "buying_power": 5000,
+            "open_positions": 0,
+        }),
+        "system": safe_run("get_system_state", get_system_state, {
+            "regime": "Neutral",
+            "volatility": "Normal",
+            "engine_state": "Unknown",
+        }),
     }
 
 
@@ -421,28 +606,84 @@ def _ensure_activation_readiness(plays):
 
 
 def build_admin_shared_context():
-    plays = _ensure_activation_readiness(get_my_plays())
-    positions = get_user_positions(include_closed=True)
-    analysis = analyze_user_trades()
+    try:
+        plays = _ensure_activation_readiness(get_my_plays())
+    except Exception:
+        plays = []
 
-    admin_summary = build_admin_intelligence_summary(plays, positions, analysis)
-    monitoring = build_product_monitoring_summary(plays, positions, analysis)
-    behavioral_insights = build_behavioral_event_insights()
-    behavior_risk = build_behavior_risk_summary_from_analysis(analysis)
-    behavior_priority = build_behavior_priority_engine(analysis)
+    try:
+        positions = get_user_positions(include_closed=True)
+    except Exception:
+        positions = []
 
-    surface_alerts = build_admin_surface_alerts(
-        admin_summary=admin_summary,
-        monitoring=monitoring,
-        behavioral_insights=behavioral_insights,
-        behavior_risk=behavior_risk,
-    )
-    quick_actions = build_operator_quick_actions(
-        admin_summary=admin_summary,
-        monitoring=monitoring,
-        behavioral_insights=behavioral_insights,
-        behavior_risk=behavior_risk,
-    )
+    try:
+        analysis = analyze_user_trades()
+    except Exception:
+        analysis = {
+            "totals": {"archived": 0, "wins": 0, "losses": 0, "flat": 0},
+            "direction_counts": {},
+            "conviction_counts": {},
+            "average_health": 0,
+            "insights": ["Trade analysis is temporarily unavailable."],
+            "behavior_summary": {"counts": {}, "cards": ["Behavior summary is temporarily unavailable."]},
+            "trades": [],
+        }
+
+    try:
+        admin_summary = build_admin_intelligence_summary(plays, positions, analysis)
+    except Exception:
+        admin_summary = {}
+
+    try:
+        monitoring = build_product_monitoring_summary(plays, positions, analysis)
+    except Exception:
+        monitoring = {}
+
+    try:
+        behavioral_insights = build_behavioral_event_insights()
+    except Exception:
+        behavioral_insights = {"counts": {}, "cards": []}
+
+    try:
+        behavior_risk = build_behavior_risk_summary_from_analysis(analysis)
+    except Exception:
+        behavior_risk = {
+            "headline": "Behavior risk unavailable.",
+            "summary": "Could not compute behavior risk.",
+            "counts": {},
+            "cards": [],
+        }
+
+    try:
+        behavior_priority = build_behavior_priority_engine(analysis)
+    except Exception:
+        behavior_priority = {
+            "headline": "Behavior priority unavailable.",
+            "summary": "Could not compute behavior priority.",
+            "top_fix": None,
+            "items": [],
+            "totals": {"archived": 0, "wins": 0, "losses": 0},
+        }
+
+    try:
+        surface_alerts = build_admin_surface_alerts(
+            admin_summary=admin_summary,
+            monitoring=monitoring,
+            behavioral_insights=behavioral_insights,
+            behavior_risk=behavior_risk,
+        )
+    except Exception:
+        surface_alerts = {}
+
+    try:
+        quick_actions = build_operator_quick_actions(
+            admin_summary=admin_summary,
+            monitoring=monitoring,
+            behavioral_insights=behavioral_insights,
+            behavior_risk=behavior_risk,
+        )
+    except Exception:
+        quick_actions = {"actions": []}
 
     return {
         "plays": plays,
@@ -1345,43 +1586,47 @@ def build_product_monitoring_summary(plays, positions, analysis):
 from datetime import datetime
 
 
-def get_event_log() -> list:
-    rows = load_json("data/event_log.json", [])
+EVENT_LOG_FILE = "data/event_log.json"
+
+
+def get_event_log() -> List[Dict[str, Any]]:
+    rows = load_json(EVENT_LOG_FILE, [])
     return rows if isinstance(rows, list) else []
 
 
-def save_event_log(rows: list) -> None:
+def save_event_log(rows: List[Dict[str, Any]]) -> None:
     if not isinstance(rows, list):
         rows = []
-    save_json("data/event_log.json", rows)
+    save_json(EVENT_LOG_FILE, rows)
 
 
-def track_event(event_type: str, payload: Dict[str, Any] | None = None) -> None:
+def track_event(event_type: str, payload: Optional[Dict[str, Any]] = None) -> None:
     payload = payload or {}
 
     rows = get_event_log()
-    rows.append({
-        "event_type": str(event_type or "").strip(),
-        "payload": payload,
-        "created_at": datetime.now().isoformat(),
-    })
+    rows.append(
+        {
+            "event_type": str(event_type or "").strip(),
+            "payload": payload,
+            "created_at": datetime.now().isoformat(),
+        }
+    )
 
-    # keep the file from growing forever
     rows = rows[-5000:]
     save_event_log(rows)
 
 
-def build_event_analytics_summary():
+def build_event_analytics_summary() -> Dict[str, Any]:
     rows = get_event_log()
 
-    event_counts = {}
+    event_counts: Dict[str, int] = {}
     recent_events = rows[-25:] if rows else []
 
     play_created = 0
-    play_activated = 0
-    position_closed = 0
     play_edited = 0
+    play_activated = 0
     position_updated = 0
+    position_closed = 0
 
     for row in rows:
         event_type = str(row.get("event_type", "")).strip()
@@ -1389,14 +1634,14 @@ def build_event_analytics_summary():
 
         if event_type == "play_created":
             play_created += 1
-        elif event_type == "play_activated":
-            play_activated += 1
-        elif event_type == "position_closed":
-            position_closed += 1
         elif event_type == "play_edited":
             play_edited += 1
+        elif event_type == "play_activated":
+            play_activated += 1
         elif event_type == "position_updated":
             position_updated += 1
+        elif event_type == "position_closed":
+            position_closed += 1
 
     if play_created == 0:
         headline = "No event behavior recorded yet."
@@ -1426,7 +1671,7 @@ def build_event_analytics_summary():
     }
 
 
-def build_behavioral_event_insights():
+def build_behavioral_event_insights() -> Dict[str, Any]:
     rows = get_event_log()
 
     activated_against_engine = 0
@@ -1536,8 +1781,10 @@ def build_admin_dashboard_context():
     if not isinstance(users, list):
         users = []
 
+    data_health = build_data_health_summary()
+
     return {
-        "positions": shared["positions"],
+        "positions": shared.get("positions", []),
         "signals": get_signals(),
         "users": users,
         "metrics": get_admin_metrics(),
@@ -1545,15 +1792,17 @@ def build_admin_dashboard_context():
         "snapshot": get_dashboard_snapshot(),
         "system": get_system_state(),
         "admin_alerts": build_admin_alerts(
-            shared["plays"],
-            shared["positions"],
-            shared["analysis"],
+            shared.get("plays", []),
+            shared.get("positions", []),
+            shared.get("analysis", {}),
         ),
-        "surface_alerts": shared["surface_alerts"],
-        "quick_actions": shared["quick_actions"],
+        "surface_alerts": shared.get("surface_alerts", {}),
+        "quick_actions": shared.get("quick_actions", {}),
         "event_analytics": build_event_analytics_summary(),
-        "behavioral_insights": shared["behavioral_insights"],
-        "behavior_risk": shared["behavior_risk"],
+        "behavior_priority": shared.get("behavior_priority", {}),
+        "behavioral_insights": shared.get("behavioral_insights", {}),
+        "behavior_risk": shared.get("behavior_risk", {}),
+        "data_health": data_health,
     }
 
 def build_all_symbols_page_summary(rows):
@@ -1598,6 +1847,265 @@ def build_all_symbols_page_summary(rows):
         "strong": strong,
         "medium": medium,
         "weak": weak,
+    }
+
+
+# ============================================================
+# DIAGNOSTICS BUILDERS
+# ============================================================
+
+def build_template_diagnostics() -> Dict[str, Any]:
+    required_templates = [
+        "landing.html",
+        "dashboard.html",
+        "signals.html",
+        "signal_symbol.html",
+        "positions.html",
+        "proof.html",
+        "admin.html",
+        "admin_intelligence.html",
+        "admin_product_monitoring.html",
+        "my_plays.html",
+        "my_play_detail.html",
+        "my_positions.html",
+        "my_position_detail.html",
+        "my_trade_analysis.html",
+        "all_symbols.html",
+        "trade_detail.html",
+        "why_this_trade.html",
+        "premium_analysis.html",
+        "analytics.html",
+        "analytics_overview.html",
+        "analytics_performance.html",
+        "analytics_risk.html",
+        "strategy_behavior.html",
+        "simulation.html",
+        "login.html",
+        "signup.html",
+        "upgrade.html",
+        "notifications.html",
+        "account.html",
+    ]
+
+    rows = []
+    missing = 0
+
+    for name in required_templates:
+        exists = template_exists(name)
+        if not exists:
+            missing += 1
+        rows.append({
+            "name": name,
+            "exists": exists,
+            "status": "OK" if exists else "MISSING",
+        })
+
+    headline = "Template surface looks healthy." if missing == 0 else "Some templates are missing."
+    summary = (
+        "All expected templates were found."
+        if missing == 0 else
+        f"{missing} expected template(s) are missing, which may force fallback rendering."
+    )
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "missing_count": missing,
+        "rows": rows,
+    }
+
+
+def build_file_diagnostics() -> Dict[str, Any]:
+    targets = [
+        "data/signals.json",
+        "data/symbol_intelligence.json",
+        "data/symbol_meta.json",
+        "data/symbol_news.json",
+        "data/recent_reports.json",
+        "data/portfolio_summary.json",
+        "data/account_snapshot.json",
+        "data/performance_summary.json",
+        "data/drawdown_history.json",
+        "data/users.json",
+        "data/admin_metrics.json",
+        "data/event_log.json",
+        "data/notifications.json",
+        "data/trade_details.json",
+        "data/candidate_log.json",
+        "data/live_activity.json",
+        "data/equity_curve.json",
+        "data/system_state.json",
+        "data/pipeline_status.json",
+    ]
+
+    rows = []
+    missing = 0
+
+    for path in targets:
+        file_path = Path(path)
+        exists = file_path.exists()
+        size = file_path.stat().st_size if exists else 0
+
+        parsed_type = "missing"
+        item_count = None
+
+        if exists:
+            payload = load_json(path, None)
+            if isinstance(payload, list):
+                parsed_type = "list"
+                item_count = len(payload)
+            elif isinstance(payload, dict):
+                parsed_type = "dict"
+                item_count = len(payload)
+            elif payload is None:
+                parsed_type = "unreadable"
+            else:
+                parsed_type = type(payload).__name__
+
+        if not exists:
+            missing += 1
+
+        rows.append({
+            "path": path,
+            "exists": exists,
+            "size": size,
+            "parsed_type": parsed_type,
+            "item_count": item_count,
+            "status": "OK" if exists else "MISSING",
+        })
+
+    headline = "Core data files look present." if missing == 0 else "Some core data files are missing."
+    summary = (
+        "The main data files exist and are readable enough for the app to function."
+        if missing == 0 else
+        f"{missing} core data file(s) are missing."
+    )
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "missing_count": missing,
+        "rows": rows,
+    }
+
+
+def build_symbol_coverage_diagnostics() -> Dict[str, Any]:
+    signals = safe_list(load_json("data/signals.json", []))
+    symbol_meta = safe_dict(load_json("data/symbol_meta.json", {}))
+    symbol_intel = safe_dict(load_json("data/symbol_intelligence.json", {}))
+    symbol_news = safe_dict(load_json("data/symbol_news.json", {}))
+
+    symbols = []
+    seen = set()
+
+    for row in signals:
+        if not isinstance(row, dict):
+            continue
+        symbol = _norm_upper(row.get("symbol"))
+        if not symbol or symbol in seen:
+            continue
+        seen.add(symbol)
+        symbols.append(symbol)
+
+    coverage_rows = []
+    missing_meta = 0
+    missing_intel = 0
+    missing_news = 0
+
+    for symbol in symbols:
+        has_meta = isinstance(symbol_meta.get(symbol), dict)
+        has_intel = isinstance(symbol_intel.get(symbol), dict)
+        news_row = symbol_news.get(symbol, {})
+        has_news = False
+
+        if isinstance(news_row, dict):
+            has_news = isinstance(news_row.get("items", []), list) and len(news_row.get("items", [])) > 0
+        elif isinstance(news_row, list):
+            has_news = len(news_row) > 0
+
+        if not has_meta:
+            missing_meta += 1
+        if not has_intel:
+            missing_intel += 1
+        if not has_news:
+            missing_news += 1
+
+        coverage_rows.append({
+            "symbol": symbol,
+            "has_meta": has_meta,
+            "has_intelligence": has_intel,
+            "has_news": has_news,
+        })
+
+    headline = "Symbol coverage is connected." if symbols else "No symbol coverage found."
+    summary = (
+        f"{len(symbols)} symbol(s) checked across meta, intelligence, and news."
+        if symbols else
+        "Signals are empty, so symbol coverage cannot be evaluated yet."
+    )
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "total_symbols": len(symbols),
+        "missing_meta": missing_meta,
+        "missing_intelligence": missing_intel,
+        "missing_news": missing_news,
+        "rows": coverage_rows[:100],
+    }
+
+
+def build_admin_diagnostics() -> Dict[str, Any]:
+    data_health = build_data_health_summary()
+    file_diagnostics = build_file_diagnostics()
+    template_diagnostics = build_template_diagnostics()
+    symbol_coverage = build_symbol_coverage_diagnostics()
+
+    cards = []
+
+    if file_diagnostics["missing_count"] > 0:
+        cards.append({
+            "headline": "Missing data files detected",
+            "body": f"{file_diagnostics['missing_count']} core data file(s) are missing.",
+            "level": "danger",
+        })
+
+    if template_diagnostics["missing_count"] > 0:
+        cards.append({
+            "headline": "Template gaps detected",
+            "body": f"{template_diagnostics['missing_count']} expected template(s) are missing.",
+            "level": "warning",
+        })
+
+    if symbol_coverage["missing_news"] > 0:
+        cards.append({
+            "headline": "News coverage gaps detected",
+            "body": f"{symbol_coverage['missing_news']} tracked symbol(s) do not currently have cached news.",
+            "level": "warning",
+        })
+
+    if symbol_coverage["missing_intelligence"] > 0:
+        cards.append({
+            "headline": "Symbol intelligence gaps detected",
+            "body": f"{symbol_coverage['missing_intelligence']} tracked symbol(s) do not currently have symbol intelligence records.",
+            "level": "warning",
+        })
+
+    if not cards:
+        cards.append({
+            "headline": "Diagnostics surface looks healthy",
+            "body": "No major structural diagnostics issue is standing out right now.",
+            "level": "positive",
+        })
+
+    return {
+        "headline": "Admin diagnostics are live.",
+        "summary": "This page checks whether the system has the files, templates, freshness, and symbol coverage it needs.",
+        "cards": cards,
+        "data_health": data_health,
+        "file_diagnostics": file_diagnostics,
+        "template_diagnostics": template_diagnostics,
+        "symbol_coverage": symbol_coverage,
     }
 
 
@@ -1947,23 +2455,26 @@ def get_signals() -> List[Dict[str, Any]]:
 
 
 def get_positions_with_intelligence() -> List[Dict[str, Any]]:
-    positions = get_positions()
-    positions = attach_trade_intelligence(positions)
-    positions = attach_position_health(positions)
-    return positions
+    positions = safe_run("get_positions", get_positions, [])
+    positions = safe_run("attach_trade_intelligence", lambda: attach_trade_intelligence(positions), positions)
+    positions = safe_run("attach_position_health", lambda: attach_position_health(positions), positions)
+    return safe_list(positions)
 
 
 def get_signal_boards() -> List[Dict[str, Any]]:
-    signals = get_signals()
+    signals = safe_run("get_signals", get_signals, [])
     boards = []
 
-    for item in signals:
+    for item in safe_list(signals):
+        if not isinstance(item, dict):
+            continue
+
         boards.append(
             {
-                "symbol": item["symbol"],
-                "company_name": item["company_name"],
-                "latest_score": item["score"],
-                "latest_confidence": item["confidence"],
+                "symbol": item.get("symbol"),
+                "company_name": item.get("company_name", item.get("symbol")),
+                "latest_score": item.get("score", 0),
+                "latest_confidence": item.get("confidence", "LOW"),
                 "latest_timestamp": item.get("timestamp", ""),
                 "opinion": item.get("opinion", "Active setup."),
             }
@@ -2000,24 +2511,19 @@ def get_all_symbol_rows() -> List[Dict[str, Any]]:
 def get_symbol_detail(symbol: str) -> Dict[str, Any]:
     symbol = (symbol or "").upper()
 
-    signals = get_signals()
-    if not isinstance(signals, list):
-        signals = []
+    signals = safe_run("get_signals", get_signals, [])
+    signals = safe_list(signals)
 
-    symbol_intel_map = load_json("data/symbol_intelligence.json", {})
-    if not isinstance(symbol_intel_map, dict):
-        symbol_intel_map = {}
+    symbol_intel_map = safe_dict(load_json("data/symbol_intelligence.json", {}))
+    meta = safe_dict(load_json("data/symbol_meta.json", {}))
+    news = safe_dict(load_json("data/symbol_news.json", {}))
 
-    meta = load_json("data/symbol_meta.json", {})
-    if not isinstance(meta, dict):
-        meta = {}
-
-    news = load_json("data/symbol_news.json", {})
-    if not isinstance(news, dict):
-        news = {}
-
-    symbol_signals = [s for s in signals if s.get("symbol") == symbol]
-    symbol_signals = attach_trade_intelligence(symbol_signals)
+    symbol_signals = [s for s in signals if isinstance(s, dict) and s.get("symbol") == symbol]
+    symbol_signals = safe_run(
+        "attach_trade_intelligence_symbol",
+        lambda: attach_trade_intelligence(symbol_signals),
+        symbol_signals,
+    )
 
     primary_intel = symbol_intel_map.get(symbol, {})
     if not isinstance(primary_intel, dict):
@@ -2027,7 +2533,12 @@ def get_symbol_detail(symbol: str) -> Dict[str, Any]:
     if not isinstance(company, dict):
         company = {}
 
-    news_items = news.get(symbol, [])
+    news_row = news.get(symbol, {})
+    if isinstance(news_row, dict):
+        news_items = news_row.get("items", [])
+    else:
+        news_items = news_row
+
     if not isinstance(news_items, list):
         news_items = []
 
@@ -2059,7 +2570,7 @@ def get_symbol_detail(symbol: str) -> Dict[str, Any]:
         },
         "board": board,
         "primary_intelligence": primary_intel,
-        "signals": symbol_signals,
+        "signals": safe_list(symbol_signals),
         "news_items": news_items[:8],
     }
 
@@ -2352,15 +2863,39 @@ def signal_symbol_page(symbol: str):
     })
     track_symbol_click(symbol, source="/signals")
 
-    detail = get_symbol_detail(symbol)
+    detail = safe_run("get_symbol_detail", lambda: get_symbol_detail(symbol), {
+        "symbol": str(symbol or "").upper(),
+        "company": {
+            "name": str(symbol or "").upper(),
+            "blurb": "Symbol detail is temporarily unavailable.",
+        },
+        "board": {
+            "symbol": str(symbol or "").upper(),
+            "company_name": str(symbol or "").upper(),
+            "latest_score": 0,
+            "latest_confidence": "LOW",
+            "latest_timestamp": "",
+            "opinion": "No active opinion available.",
+        },
+        "primary_intelligence": {},
+        "signals": [],
+        "news_items": [],
+    })
 
-    if not detail["news_items"]:
-        refreshed_news = refresh_symbol_news(
-            symbol=detail["symbol"],
-            company_name=detail["company"].get("name", ""),
-            limit=8,
-        )
-        detail["news_items"] = refreshed_news
+    try:
+        if not detail.get("news_items"):
+            detail["news_items"] = refresh_symbol_news(
+                symbol=detail["symbol"],
+                company_name=detail["company"].get("name", ""),
+                limit=8,
+                max_age_minutes=30,
+            )
+    except Exception as e:
+        print(f"[SYMBOL_NEWS_REFRESH:{symbol}] {e}")
+        detail["news_items"] = detail.get("news_items", [])
+
+    data_health = build_data_health_summary()
+    symbol_news_meta = safe_dict(data_health.get("pipeline", {}).get("symbol_news_sync", {}).get(detail["symbol"], {}))
 
     return render_template_safe(
         "signal_symbol.html",
@@ -2370,15 +2905,17 @@ def signal_symbol_page(symbol: str):
                 "symbol": detail["symbol"],
                 "company": detail["company"],
                 "board": detail["board"],
-                "primary_intelligence": detail["primary_intelligence"],
-                "symbol_signals": detail["signals"],
-                "visible_signal_count": len(detail["signals"]),
-                "total_signal_count": len(detail["signals"]),
+                "primary_intelligence": detail.get("primary_intelligence", {}),
+                "symbol_signals": detail.get("signals", []),
+                "visible_signal_count": len(detail.get("signals", [])),
+                "total_signal_count": len(detail.get("signals", [])),
                 "show_teaser": current_tier_title() in {"Free", "Starter", "Guest"},
                 "show_elite": current_tier_title() == "Elite",
-                "news_items": detail["news_items"],
-                "opinion": detail["board"].get("opinion", "Active setup."),
+                "news_items": detail.get("news_items", []),
+                "opinion": detail.get("board", {}).get("opinion", "Active setup."),
                 "explanation": {},
+                "data_health": data_health,
+                "symbol_news_meta": symbol_news_meta,
             }
         ),
     )
@@ -3092,7 +3629,7 @@ def add_my_play():
             "direction": created.get("direction"),
             "has_thesis": bool(str(created.get("thesis", "")).strip()),
             "has_notes": bool(str(created.get("notes", "")).strip()),
-            "created_after_loss_close": False,
+            "created_after_loss_close": created_after_loss_close,
         })
 
         return redirect("/my-plays")
@@ -3303,7 +3840,6 @@ def why_this_trade_page():
 
     enriched = []
 
-    # First: rich trade detail records
     for trade in trades:
         row = dict(trade)
 
@@ -3332,14 +3868,6 @@ def why_this_trade_page():
 
         enriched.append(row)
 
-        for row in enriched[:5]:
-            if row.get("rejection_reason"):
-                track_rejection_interest(
-                    row.get("symbol", "UNKNOWN"),
-                    source="/why-this-trade",
-                )
-
-    # Second: approved-not-selected records from candidate_log
     for row in candidate_rows:
         if row.get("status") != "approved_not_selected":
             continue
@@ -3370,20 +3898,12 @@ def why_this_trade_page():
 
     featured_trades = enriched[:5]
 
-    return render_template_safe(
-        "why_this_trade.html",
-        **template_context({
-            "trades": enriched,
-            "featured_trades": featured_trades,
-        }),
-    )
-
-    enriched.sort(
-        key=lambda x: x.get("timestamp", x.get("opened_at", x.get("closed_at", ""))),
-        reverse=True,
-    )
-
-    featured_trades = enriched[:5]
+    for row in featured_trades:
+        if row.get("rejection_reason"):
+            track_rejection_interest(
+                row.get("symbol", "UNKNOWN"),
+                source="/why-this-trade",
+            )
 
     return render_template_safe(
         "why_this_trade.html",
@@ -3407,7 +3927,6 @@ def premium_analysis_page():
         **template_context({"feed_items": feed_items, "premium_mode": current_tier_lower()}),
     )
 
-
 @app.route("/admin")
 def admin_dashboard():
     if not is_master():
@@ -3419,6 +3938,7 @@ def admin_dashboard():
     system = get_system_state()
 
     shared = build_admin_shared_context()
+    data_health = build_data_health_summary()
 
     users = load_json("data/users.json", [])
     if not isinstance(users, list):
@@ -3445,6 +3965,7 @@ def admin_dashboard():
             "behavior_priority": shared.get("behavior_priority", {}),
             "behavioral_insights": shared.get("behavioral_insights", {}),
             "behavior_risk": shared.get("behavior_risk", {}),
+            "data_health": data_health,
         }),
     )
 
@@ -3529,7 +4050,6 @@ def notifications_page():
 @app.route("/upgrade")
 def upgrade_page():
     maybe_track_page_view("/upgrade")
-    maybe_track_page_view("/upgrade")
     track_upgrade_click(source="/upgrade", tier="unknown")
     tiers = load_json("data/subscription_tiers.json", {})
     if not isinstance(tiers, dict):
@@ -3559,6 +4079,23 @@ def admin_clear_preview_tier():
         session.pop("preview_tier", None)
     return redirect(request.referrer or url_for("admin_dashboard"))
 
+
+@app.route("/admin/diagnostics")
+def admin_diagnostics_page():
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    maybe_track_page_view("/admin/diagnostics")
+
+    diagnostics = build_admin_diagnostics()
+
+    return render_template_safe(
+        "admin_diagnostics.html",
+        **template_context({
+            "diagnostics": diagnostics,
+        }),
+    )
+    
 
 @app.route("/admin/product-analytics")
 def admin_product_analytics_page():
