@@ -18,6 +18,7 @@ body {
     margin: 0 !important;
 }
 
+/* ===== COSMOS ===== */
 .cosmos-shell {
     position: relative;
     width: 100%;
@@ -31,6 +32,7 @@ body {
         linear-gradient(180deg, #06040d 0%, #020107 100%);
 }
 
+/* ===== HEADER ===== */
 .cosmos-header {
     position: absolute;
     top: 24px;
@@ -50,7 +52,7 @@ body {
 .cosmos-sub {
     font-size: 0.9rem;
     opacity: 0.72;
-    max-width: 400px;
+    max-width: 420px;
     line-height: 1.35;
 }
 
@@ -72,6 +74,7 @@ body {
     backdrop-filter: blur(6px);
 }
 
+/* ===== NEBULA / FLOW ===== */
 .nebula-layer {
     position: absolute;
     inset: -22%;
@@ -136,6 +139,7 @@ body {
     100% { transform: rotate(-9deg) translateY(18px); }
 }
 
+/* ===== AMBIENT STARS ===== */
 .starfield {
     position: absolute;
     inset: 0;
@@ -188,6 +192,7 @@ body {
     50% { opacity: 1; transform: scale(1.22); }
 }
 
+/* ===== SPOTLIGHT FIELD ===== */
 .spotlight-layer {
     position: relative;
     min-height: 100vh;
@@ -205,32 +210,30 @@ body {
     position: absolute;
     transform: translate(-50%, -50%);
     z-index: 12;
+    width: 96px;
+    height: 96px;
 }
 
 .spot-object {
-    position: relative;
+    position: absolute;
+    inset: 0;
     display: block;
     text-decoration: none;
     color: white;
     isolation: isolate;
-    width: 88px;
-    height: 88px;
-    margin-left: -44px;
-    margin-top: -44px;
+    z-index: 2;
 }
 
-.spot-object:hover {
-    z-index: 22;
-}
-
-/* invisible hover target */
 .hover-zone {
     position: absolute;
     inset: 0;
     border-radius: 50%;
     background: transparent;
+    z-index: 3;
+    cursor: pointer;
 }
 
+/* visible star only */
 .spot-core {
     position: absolute;
     left: 50%;
@@ -277,6 +280,7 @@ body {
     box-shadow: 0 0 12px currentColor;
 }
 
+/* sizes */
 .object-hero .spot-core {
     width: 11px;
     height: 11px;
@@ -301,6 +305,7 @@ body {
     height: 10px;
 }
 
+/* pressure */
 .object-low .spot-core {
     animation: twinkleSlow 3.7s ease-in-out infinite;
 }
@@ -311,6 +316,7 @@ body {
     animation: twinkleFast 1.7s ease-in-out infinite;
 }
 
+/* lane colors */
 .object-options .spot-core {
     background: #ffd9ef;
     color: #ff92d4;
@@ -335,30 +341,32 @@ body {
     background: radial-gradient(circle, rgba(255, 214, 143, 0.68), rgba(255, 147, 193, 0.28), transparent 72%);
 }
 
-.spot-object:hover .spot-core {
+.spot-object-wrap:hover .spot-core {
     transform: translate(-50%, -50%) scale(1.12);
 }
 
-.spot-object:hover .spot-core::before {
+.spot-object-wrap:hover .spot-core::before {
     opacity: 0.78;
     filter: blur(16px);
 }
 
+/* ===== POPUP ===== */
 .star-hud {
     position: absolute;
-    left: 54px;
-    top: 12px;
+    left: 62px;
+    top: 6px;
     min-width: 220px;
-    max-width: 260px;
+    max-width: 270px;
     opacity: 0;
     transform: translateY(8px) scale(0.985);
     transition: opacity 220ms ease, transform 220ms ease;
     transition-delay: 0ms;
     pointer-events: none;
     text-shadow: 0 2px 10px rgba(0,0,0,0.45);
+    z-index: 10;
 }
 
-.spot-object:hover .star-hud {
+.spot-object-wrap:hover .star-hud {
     opacity: 1;
     transform: translateY(0) scale(1);
     transition-delay: 220ms;
@@ -391,129 +399,4 @@ body {
     border-radius: 999px;
     font-size: 0.66rem;
     font-weight: 700;
-    background: rgba(255,255,255,0.10);
-    border: 1px solid rgba(255,255,255,0.10);
-    backdrop-filter: blur(6px);
-}
-
-.hud-actions {
-    margin-top: 10px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    pointer-events: auto;
-}
-
-.hud-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 7px 11px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-decoration: none;
-    color: white;
-    background: rgba(255,255,255,0.10);
-    border: 1px solid rgba(255,255,255,0.12);
-}
-
-.hud-btn.execute {
-    background: linear-gradient(135deg, rgba(255, 126, 201, 0.28), rgba(124, 77, 255, 0.28));
-    border-color: rgba(255,255,255,0.16);
-}
-
-@media (max-width: 820px) {
-    .cosmos-header {
-        top: 18px;
-        left: 18px;
-        right: 18px;
-    }
-
-    .cosmos-sub {
-        max-width: 260px;
-    }
-
-    .star-hud {
-        left: 42px;
-        min-width: 160px;
-        max-width: 190px;
-    }
-
-    .spot-object {
-        width: 72px;
-        height: 72px;
-        margin-left: -36px;
-        margin-top: -36px;
-    }
-}
-</style>
-
-{% set sections = v2_spotlight.get("lane_sections", []) if v2_spotlight else [] %}
-{% set side_panels = v2_spotlight.get("side_panels", []) if v2_spotlight else [] %}
-{% set meta = v2_spotlight.get("meta", {}) if v2_spotlight else {} %}
-{% set modes = spotlight_modes if spotlight_modes else {} %}
-
-{% set ns = namespace(objects=[]) %}
-{% for section in sections %}
-    {% for item in section.get("items", []) %}
-        {% set lane = item.get("lane", "equity") %}
-        {% set lane_class = "object-options" if lane == "options" else "object-equity" %}
-        {% set pressure = item.get("pressure_level", "medium") %}
-        {% set pressure_class = "object-high" if pressure == "high" else "object-medium" if pressure == "medium" else "object-low" %}
-        {% set size_class = "object-hero" if section.get("key") == "featured_now" and loop.index0 < 2 else "object-strong" if pressure != "low" else "object-small" %}
-
-        {% set imminent = "move could be close" if pressure == "high" else "worth watching closely" if pressure == "medium" else "still early" %}
-        {% set action_line = "structure looks close" if item.get("structure") else "watch the setup tighten" %}
-
-        {% set object = {
-            "symbol": item.get("symbol"),
-            "summary": item.get("summary", ""),
-            "lane": lane,
-            "direction": item.get("direction", ""),
-            "pressure": pressure,
-            "destination": item.get("destination", "/signals"),
-            "target_dte": item.get("target_dte", ""),
-            "structure": item.get("structure", ""),
-            "size_class": size_class,
-            "lane_class": lane_class,
-            "pressure_class": pressure_class,
-            "imminent": imminent,
-            "action_line": action_line
-        } %}
-        {% set ns.objects = ns.objects + [object] %}
-    {% endfor %}
-{% endfor %}
-
-{% for panel in side_panels %}
-    {% for item in panel.get("items", [])[:12] %}
-        {% set object = {
-            "symbol": item.get("symbol"),
-            "summary": item.get("reason", ""),
-            "lane": item.get("lane", "equity"),
-            "direction": "",
-            "pressure": "low",
-            "destination": item.get("destination", "/signals"),
-            "target_dte": "",
-            "structure": "",
-            "size_class": "object-small",
-            "lane_class": "object-mixed",
-            "pressure_class": "object-low",
-            "imminent": "not ready yet",
-            "action_line": "leave it on watch"
-        } %}
-        {% set ns.objects = ns.objects + [object] %}
-    {% endfor %}
-{% endfor %}
-
-<div class="cosmos-shell">
-    <div class="nebula-layer nebula-a"></div>
-    <div class="nebula-layer nebula-b"></div>
-    <div class="milky-band"></div>
-
-    <div class="cosmos-header">
-        <div class="cosmos-title">spotlight</div>
-        <div class="cosmos-sub">drifting through what matters most right now</div>
-        <div class="cosmos-chip-row">
-            <span class="cosmos-chip">{{ meta.get("page_mode", "hybrid") }}</span>
-            <span class
+    background: rgba(255,255,255,
