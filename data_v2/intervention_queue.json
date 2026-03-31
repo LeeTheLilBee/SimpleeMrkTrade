@@ -1,0 +1,50 @@
+{
+  "solice": {
+    "username": "solice",
+    "items": [
+      {
+        "type": "low_stim_suggestion",
+        "headline": "Want to simplify the view for a second?",
+        "body": "You\u2019ve been moving quickly across the system. Low Stim Mode can soften visuals and reduce motion.",
+        "actions": [
+          {
+            "id": "enter_low_stim_mode",
+            "label": "Enter Low Stim Mode"
+          },
+          {
+            "id": "enter_focus_mode",
+            "label": "Enter Focus Mode"
+          },
+          {
+            "id": "keep_exploring",
+            "label": "Keep Exploring"
+          }
+        ],
+        "priority": "high",
+        "created_at": "2026-03-31T13:33:53.354308",
+        "seen": false,
+        "dismissed": false
+      },
+      {
+        "type": "focus_mode_suggestion",
+        "headline": "Want a cleaner view?",
+        "body": "Focus Mode can dim the noise and highlight the strongest opportunities.",
+        "actions": [
+          {
+            "id": "enter_focus_mode",
+            "label": "Enter Focus Mode"
+          },
+          {
+            "id": "keep_balanced_mode",
+            "label": "Stay in Current Mode"
+          }
+        ],
+        "priority": "medium",
+        "created_at": "2026-03-31T13:33:53.355869",
+        "seen": false,
+        "dismissed": false
+      }
+    ],
+    "updated_at": "2026-03-31T13:33:53.356079"
+  }
+}

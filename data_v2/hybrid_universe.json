@@ -1,0 +1,714 @@
+{
+  "equity_spotlight": [
+    {
+      "symbol": "USO",
+      "company_name": "United States Oil Fund",
+      "scanner": {
+        "direction": "CALL",
+        "score": 507.71,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.4077,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 128.89
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 1,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.4077.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.07."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176289"
+    },
+    {
+      "symbol": "OXY",
+      "company_name": "Occidental Petroleum Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 348.95,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.249,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 66.64
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 2,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.249.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.08."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176307"
+    },
+    {
+      "symbol": "DVN",
+      "company_name": "Devon Energy Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 295.45,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1955,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 51.72
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 3,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1955.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.06."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176315"
+    },
+    {
+      "symbol": "MRVL",
+      "company_name": "Marvell Technology, Inc.",
+      "scanner": {
+        "direction": "CALL",
+        "score": 294.76,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1948,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 93.3
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 4,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1948.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.4."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176322"
+    },
+    {
+      "symbol": "HAL",
+      "company_name": "Halliburton Company",
+      "scanner": {
+        "direction": "CALL",
+        "score": 258.29,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1583,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 39.88
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 5,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1583.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.04."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176329"
+    }
+  ],
+  "options_spotlight": [
+    {
+      "symbol": "USO",
+      "company_name": "United States Oil Fund",
+      "scanner": {
+        "direction": "CALL",
+        "score": 506.18,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "price": 128.75
+      },
+      "options_plan": {
+        "is_option_ready": true,
+        "strategy_type": "call_debit_spread",
+        "target_dte": 14,
+        "expiry_class": "near_monthly",
+        "strike_style": "slightly_otm_spread",
+        "contract_quality_score": 75,
+        "liquidity_score": 90,
+        "spread_score": 55,
+        "premium_efficiency_score": 80,
+        "time_decay_risk": "HIGH",
+        "expected_move_fit": "GOOD",
+        "iv_context": "NORMAL"
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 1,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_this_structure": [
+          "Underlying direction is CALL.",
+          "Strategy selected: call_debit_spread.",
+          "Time sensitivity is NEXT."
+        ],
+        "why_not_single_leg": [
+          "Spread structure improves premium efficiency."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Option-Ready",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:55.809153"
+    },
+    {
+      "symbol": "OXY",
+      "company_name": "Occidental Petroleum Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 348.21,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "price": 66.6
+      },
+      "options_plan": {
+        "is_option_ready": true,
+        "strategy_type": "call_debit_spread",
+        "target_dte": 14,
+        "expiry_class": "near_monthly",
+        "strike_style": "slightly_otm_spread",
+        "contract_quality_score": 75,
+        "liquidity_score": 90,
+        "spread_score": 55,
+        "premium_efficiency_score": 80,
+        "time_decay_risk": "HIGH",
+        "expected_move_fit": "GOOD",
+        "iv_context": "NORMAL"
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 2,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_this_structure": [
+          "Underlying direction is CALL.",
+          "Strategy selected: call_debit_spread.",
+          "Time sensitivity is NEXT."
+        ],
+        "why_not_single_leg": [
+          "Spread structure improves premium efficiency."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Option-Ready",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:55.809179"
+    },
+    {
+      "symbol": "MRVL",
+      "company_name": "Marvell Technology, Inc.",
+      "scanner": {
+        "direction": "CALL",
+        "score": 301.95,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "price": 93.86
+      },
+      "options_plan": {
+        "is_option_ready": true,
+        "strategy_type": "call_debit_spread",
+        "target_dte": 14,
+        "expiry_class": "near_monthly",
+        "strike_style": "slightly_otm_spread",
+        "contract_quality_score": 79,
+        "liquidity_score": 90,
+        "spread_score": 55,
+        "premium_efficiency_score": 80,
+        "time_decay_risk": "HIGH",
+        "expected_move_fit": "GOOD",
+        "iv_context": "NORMAL"
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 3,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_this_structure": [
+          "Underlying direction is CALL.",
+          "Strategy selected: call_debit_spread.",
+          "Time sensitivity is NEXT."
+        ],
+        "why_not_single_leg": [
+          "Spread structure improves premium efficiency."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Option-Ready",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:55.809192"
+    },
+    {
+      "symbol": "DVN",
+      "company_name": "Devon Energy Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 296.95,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "price": 51.78
+      },
+      "options_plan": {
+        "is_option_ready": true,
+        "strategy_type": "call_debit_spread",
+        "target_dte": 14,
+        "expiry_class": "near_monthly",
+        "strike_style": "slightly_otm_spread",
+        "contract_quality_score": 75,
+        "liquidity_score": 80,
+        "spread_score": 55,
+        "premium_efficiency_score": 80,
+        "time_decay_risk": "HIGH",
+        "expected_move_fit": "GOOD",
+        "iv_context": "NORMAL"
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 4,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_this_structure": [
+          "Underlying direction is CALL.",
+          "Strategy selected: call_debit_spread.",
+          "Time sensitivity is NEXT."
+        ],
+        "why_not_single_leg": [
+          "Spread structure improves premium efficiency."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Option-Ready",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:55.809206"
+    },
+    {
+      "symbol": "HAL",
+      "company_name": "Halliburton Company",
+      "scanner": {
+        "direction": "CALL",
+        "score": 260.33,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "price": 39.95
+      },
+      "options_plan": {
+        "is_option_ready": true,
+        "strategy_type": "call_debit_spread",
+        "target_dte": 14,
+        "expiry_class": "near_monthly",
+        "strike_style": "slightly_otm_spread",
+        "contract_quality_score": 75,
+        "liquidity_score": 80,
+        "spread_score": 55,
+        "premium_efficiency_score": 80,
+        "time_decay_risk": "HIGH",
+        "expected_move_fit": "GOOD",
+        "iv_context": "NORMAL"
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 5,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_this_structure": [
+          "Underlying direction is CALL.",
+          "Strategy selected: call_debit_spread.",
+          "Time sensitivity is NEXT."
+        ],
+        "why_not_single_leg": [
+          "Spread structure improves premium efficiency."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Option-Ready",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:55.809218"
+    }
+  ],
+  "mixed_spotlight": [
+    {
+      "symbol": "USO",
+      "company_name": "United States Oil Fund",
+      "scanner": {
+        "direction": "CALL",
+        "score": 506.18,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "price": 128.75
+      },
+      "options_plan": {
+        "is_option_ready": true,
+        "strategy_type": "call_debit_spread",
+        "target_dte": 14,
+        "expiry_class": "near_monthly",
+        "strike_style": "slightly_otm_spread",
+        "contract_quality_score": 75,
+        "liquidity_score": 90,
+        "spread_score": 55,
+        "premium_efficiency_score": 80,
+        "time_decay_risk": "HIGH",
+        "expected_move_fit": "GOOD",
+        "iv_context": "NORMAL"
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 1,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_this_structure": [
+          "Underlying direction is CALL.",
+          "Strategy selected: call_debit_spread.",
+          "Time sensitivity is NEXT."
+        ],
+        "why_not_single_leg": [
+          "Spread structure improves premium efficiency."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Option-Ready",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:55.809153"
+    },
+    {
+      "symbol": "OXY",
+      "company_name": "Occidental Petroleum Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 348.21,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "price": 66.6
+      },
+      "options_plan": {
+        "is_option_ready": true,
+        "strategy_type": "call_debit_spread",
+        "target_dte": 14,
+        "expiry_class": "near_monthly",
+        "strike_style": "slightly_otm_spread",
+        "contract_quality_score": 75,
+        "liquidity_score": 90,
+        "spread_score": 55,
+        "premium_efficiency_score": 80,
+        "time_decay_risk": "HIGH",
+        "expected_move_fit": "GOOD",
+        "iv_context": "NORMAL"
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 2,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_this_structure": [
+          "Underlying direction is CALL.",
+          "Strategy selected: call_debit_spread.",
+          "Time sensitivity is NEXT."
+        ],
+        "why_not_single_leg": [
+          "Spread structure improves premium efficiency."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Option-Ready",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:55.809179"
+    },
+    {
+      "symbol": "MRVL",
+      "company_name": "Marvell Technology, Inc.",
+      "scanner": {
+        "direction": "CALL",
+        "score": 301.95,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "price": 93.86
+      },
+      "options_plan": {
+        "is_option_ready": true,
+        "strategy_type": "call_debit_spread",
+        "target_dte": 14,
+        "expiry_class": "near_monthly",
+        "strike_style": "slightly_otm_spread",
+        "contract_quality_score": 79,
+        "liquidity_score": 90,
+        "spread_score": 55,
+        "premium_efficiency_score": 80,
+        "time_decay_risk": "HIGH",
+        "expected_move_fit": "GOOD",
+        "iv_context": "NORMAL"
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 3,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_this_structure": [
+          "Underlying direction is CALL.",
+          "Strategy selected: call_debit_spread.",
+          "Time sensitivity is NEXT."
+        ],
+        "why_not_single_leg": [
+          "Spread structure improves premium efficiency."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Option-Ready",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:55.809192"
+    },
+    {
+      "symbol": "DVN",
+      "company_name": "Devon Energy Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 296.95,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "price": 51.78
+      },
+      "options_plan": {
+        "is_option_ready": true,
+        "strategy_type": "call_debit_spread",
+        "target_dte": 14,
+        "expiry_class": "near_monthly",
+        "strike_style": "slightly_otm_spread",
+        "contract_quality_score": 75,
+        "liquidity_score": 80,
+        "spread_score": 55,
+        "premium_efficiency_score": 80,
+        "time_decay_risk": "HIGH",
+        "expected_move_fit": "GOOD",
+        "iv_context": "NORMAL"
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 4,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_this_structure": [
+          "Underlying direction is CALL.",
+          "Strategy selected: call_debit_spread.",
+          "Time sensitivity is NEXT."
+        ],
+        "why_not_single_leg": [
+          "Spread structure improves premium efficiency."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Option-Ready",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:55.809206"
+    },
+    {
+      "symbol": "HAL",
+      "company_name": "Halliburton Company",
+      "scanner": {
+        "direction": "CALL",
+        "score": 260.33,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "price": 39.95
+      },
+      "options_plan": {
+        "is_option_ready": true,
+        "strategy_type": "call_debit_spread",
+        "target_dte": 14,
+        "expiry_class": "near_monthly",
+        "strike_style": "slightly_otm_spread",
+        "contract_quality_score": 75,
+        "liquidity_score": 80,
+        "spread_score": 55,
+        "premium_efficiency_score": 80,
+        "time_decay_risk": "HIGH",
+        "expected_move_fit": "GOOD",
+        "iv_context": "NORMAL"
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 5,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_this_structure": [
+          "Underlying direction is CALL.",
+          "Strategy selected: call_debit_spread.",
+          "Time sensitivity is NEXT."
+        ],
+        "why_not_single_leg": [
+          "Spread structure improves premium efficiency."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Option-Ready",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:55.809218"
+    }
+  ],
+  "meta": {
+    "rebuilt_at": "2026-03-31T13:41:55.811588",
+    "engine_type": "hybrid",
+    "watchlist_limit": 50,
+    "universe_limit": 220,
+    "selected_limit": 20,
+    "spotlight_limit": 5,
+    "equity_spotlight_count": 5,
+    "options_spotlight_count": 5,
+    "mixed_spotlight_count": 5
+  }
+}

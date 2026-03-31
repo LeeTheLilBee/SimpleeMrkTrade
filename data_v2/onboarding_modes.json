@@ -1,0 +1,102 @@
+{
+  "modes": {
+    "balanced": {
+      "key": "balanced",
+      "label": "Balanced Mode",
+      "summary": "A full-featured experience with normal motion, full context, and standard visual intensity.",
+      "why_use_it": [
+        "Best default for most users.",
+        "Keeps the system rich without being too stripped down.",
+        "Good when you want the full experience."
+      ],
+      "best_for": [
+        "Users who want the full system experience.",
+        "People still exploring the platform.",
+        "Default daily use."
+      ],
+      "what_changes": [
+        "Motion profile: full",
+        "Map intensity: standard",
+        "Visual density: rich",
+        "Intervention sensitivity: standard"
+      ],
+      "recommended_when": "Choose this when you want the full experience without reducing signal richness.",
+      "settings": {
+        "experience_mode": "balanced",
+        "motion_profile": "full",
+        "sidebar_collapsed": false,
+        "map_intensity": "standard",
+        "focus_filter": "off",
+        "visual_density": "rich",
+        "intervention_sensitivity": "standard"
+      }
+    },
+    "focus": {
+      "key": "focus",
+      "label": "Focus Mode",
+      "summary": "A cleaner view that dims the noise and emphasizes the strongest ideas and most relevant information.",
+      "why_use_it": [
+        "Helpful when you want less clutter.",
+        "Pushes the strongest setups to the front.",
+        "Good when you want to make cleaner decisions faster."
+      ],
+      "best_for": [
+        "Users who want less clutter.",
+        "Decision-focused sessions.",
+        "High-conviction setup review."
+      ],
+      "what_changes": [
+        "Motion profile: reduced",
+        "Map intensity: focused",
+        "Visual density: medium",
+        "Intervention sensitivity: standard"
+      ],
+      "recommended_when": "Choose this when you want stronger prioritization and less noise.",
+      "settings": {
+        "experience_mode": "focus",
+        "motion_profile": "reduced",
+        "sidebar_collapsed": true,
+        "map_intensity": "focused",
+        "focus_filter": "high_conviction",
+        "visual_density": "medium",
+        "intervention_sensitivity": "standard"
+      }
+    },
+    "low_stim": {
+      "key": "low_stim",
+      "label": "Low Stim Mode",
+      "summary": "A calmer experience with softer motion, less visual pull, and more protective guidance when activity starts to spike.",
+      "why_use_it": [
+        "Helpful when the platform starts to feel too intense.",
+        "Reduces motion and visual pull.",
+        "Pairs well with overload detection and recovery prompts."
+      ],
+      "best_for": [
+        "Users who get overwhelmed by visual intensity.",
+        "Recovery periods after a lot of switching around.",
+        "Calmer, lower-motion sessions."
+      ],
+      "what_changes": [
+        "Motion profile: minimal",
+        "Map intensity: calm",
+        "Visual density: light",
+        "Intervention sensitivity: high"
+      ],
+      "recommended_when": "Choose this when you want a softer, calmer environment with more protective guidance.",
+      "settings": {
+        "experience_mode": "low_stim",
+        "motion_profile": "minimal",
+        "sidebar_collapsed": true,
+        "map_intensity": "calm",
+        "focus_filter": "guided",
+        "visual_density": "light",
+        "intervention_sensitivity": "high"
+      }
+    }
+  },
+  "default_mode": "balanced",
+  "meta": {
+    "rebuilt_at": "2026-03-31T14:17:37.341532",
+    "mode_count": 3
+  }
+}

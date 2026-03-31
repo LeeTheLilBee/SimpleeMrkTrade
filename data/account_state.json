@@ -1,7 +1,7 @@
 {
-  "equity": 4723.86,
-  "cash": 4724.1,
-  "buying_power": 4724.1,
+  "equity": 4712.29,
+  "cash": 4712.55,
+  "buying_power": 4712.55,
   "account_type": "margin",
   "trade_history": [
     {
@@ -92,6 +92,15 @@
       "timestamp": "2026-03-28T11:22:10.645172",
       "settle_date": "2026-03-29T11:22:10.645177",
       "cost": 4675.44,
+      "status": "OPEN"
+    },
+    {
+      "symbol": "TSLA",
+      "price": 356.1682,
+      "size": 13.0,
+      "timestamp": "2026-03-31T13:21:42.351078",
+      "settle_date": "2026-04-01T13:21:42.351083",
+      "cost": 4630.19,
       "status": "OPEN"
     }
   ]

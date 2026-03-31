@@ -1,0 +1,77 @@
+{
+  "items": [
+    {
+      "username": "solice",
+      "action_type": "apply_experience_preset",
+      "payload": {
+        "username": "solice",
+        "applied_preset": "focus",
+        "label": "Focus Mode",
+        "defaults_patch": {
+          "experience_mode": "focus",
+          "motion_profile": "reduced",
+          "sidebar_collapsed": true
+        },
+        "ui_patch": {
+          "experience_mode": "focus",
+          "motion_profile": "reduced",
+          "sidebar_expanded": false,
+          "map_layer": "pressure"
+        },
+        "timestamp": "2026-03-31T14:24:15.610207"
+      },
+      "timestamp": "2026-03-31T14:24:15.610422"
+    },
+    {
+      "username": "solice",
+      "action_type": "apply_experience_preset",
+      "payload": {
+        "username": "solice",
+        "applied_preset": "low_stim",
+        "label": "Low Stim Mode",
+        "defaults_patch": {
+          "experience_mode": "low_stim",
+          "motion_profile": "minimal",
+          "sidebar_collapsed": true
+        },
+        "ui_patch": {
+          "experience_mode": "low_stim",
+          "motion_profile": "minimal",
+          "sidebar_expanded": false,
+          "map_layer": "pressure"
+        },
+        "timestamp": "2026-03-31T14:24:15.617753"
+      },
+      "timestamp": "2026-03-31T14:24:15.619984"
+    },
+    {
+      "username": "solice",
+      "action_type": "apply_intervention_action",
+      "payload": {
+        "action_id": "enter_low_stim_mode",
+        "result": {
+          "username": "solice",
+          "applied_preset": "low_stim",
+          "label": "Low Stim Mode",
+          "defaults_patch": {
+            "experience_mode": "low_stim",
+            "motion_profile": "minimal",
+            "sidebar_collapsed": true
+          },
+          "ui_patch": {
+            "experience_mode": "low_stim",
+            "motion_profile": "minimal",
+            "sidebar_expanded": false,
+            "map_layer": "pressure"
+          },
+          "timestamp": "2026-03-31T14:24:15.617753"
+        }
+      },
+      "timestamp": "2026-03-31T14:24:15.620578"
+    }
+  ],
+  "meta": {
+    "updated_at": "2026-03-31T14:24:15.620591",
+    "count": 3
+  }
+}

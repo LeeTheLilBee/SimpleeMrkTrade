@@ -343,5 +343,20 @@
     "timestamp": "2026-03-28T11:22:10.730898",
     "level": "WARN",
     "message": "Skipped TSLA due to insufficient buying power for minimum size"
+  },
+  {
+    "timestamp": "2026-03-31T13:21:24.701476",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.357762",
+    "level": "INFO",
+    "message": "Executed TSLA CALL at 356.17 size 13.0"
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.484717",
+    "level": "WARN",
+    "message": "Skipped AMD due to insufficient buying power for minimum size"
   }
 ]

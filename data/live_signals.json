@@ -1,27 +1,5 @@
 [
   {
-    "timestamp": "2026-03-24T02:59:44.476761",
-    "symbol": "NVDA",
-    "strategy": "CALL",
-    "score": 204,
-    "confidence": "HIGH",
-    "trade_id": "NVDA-CALL-20260324025944",
-    "source": "execution",
-    "mode": null,
-    "volatility": null
-  },
-  {
-    "timestamp": "2026-03-24T02:59:44.548647",
-    "symbol": "AMZN",
-    "strategy": "CALL",
-    "score": 201,
-    "confidence": "HIGH",
-    "trade_id": "AMZN-CALL-20260324025944",
-    "source": "execution",
-    "mode": null,
-    "volatility": null
-  },
-  {
     "timestamp": "2026-03-24T02:59:44.621370",
     "symbol": "META",
     "strategy": "CALL",
@@ -1095,6 +1073,28 @@
     "score": 189,
     "confidence": "HIGH",
     "trade_id": "AMD-CALL-20260328112210",
+    "source": "execution",
+    "mode": null,
+    "volatility": null
+  },
+  {
+    "timestamp": "2026-03-31T13:21:41.994045",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "trade_id": "TSLA-CALL-20260331132141",
+    "source": "execution",
+    "mode": null,
+    "volatility": null
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.057177",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "trade_id": "AMD-CALL-20260331132142",
     "source": "execution",
     "mode": null,
     "volatility": null

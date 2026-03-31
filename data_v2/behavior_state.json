@@ -2,18 +2,18 @@
   "solice": {
     "username": "solice",
     "state": {
-      "page_switch_count_30s": 0,
-      "symbol_open_count_30s": 0,
-      "rapid_jump_score": 0,
-      "dwell_score": 100,
-      "overload_risk": "low",
-      "suggest_low_stim": false,
-      "suggest_focus_mode": false,
-      "last_intervention_at": "",
-      "last_page": "",
-      "last_symbol": "",
-      "last_event_at": ""
+      "page_switch_count_30s": 6,
+      "symbol_open_count_30s": 5,
+      "rapid_jump_score": 100,
+      "dwell_score": 15,
+      "overload_risk": "high",
+      "suggest_low_stim": true,
+      "suggest_focus_mode": true,
+      "last_intervention_at": "2026-03-31T14:24:15.617268",
+      "last_page": "/signals",
+      "last_symbol": "NVDA",
+      "last_event_at": "2026-03-31T13:33:53.355447"
     },
-    "updated_at": "2026-03-31T02:39:28.887726"
+    "updated_at": "2026-03-31T14:24:15.617492"
   }
 }

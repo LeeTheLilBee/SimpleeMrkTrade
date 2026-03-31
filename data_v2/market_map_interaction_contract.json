@@ -1,0 +1,316 @@
+{
+  "hover_cards": [
+    {
+      "symbol": "USO",
+      "headline": "USO CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/USO"
+    },
+    {
+      "symbol": "OXY",
+      "headline": "OXY CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/OXY"
+    },
+    {
+      "symbol": "MRVL",
+      "headline": "MRVL CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/MRVL"
+    },
+    {
+      "symbol": "DVN",
+      "headline": "DVN CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/DVN"
+    },
+    {
+      "symbol": "HAL",
+      "headline": "HAL CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/HAL"
+    },
+    {
+      "symbol": "XOM",
+      "headline": "XOM CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/XOM"
+    },
+    {
+      "symbol": "COP",
+      "headline": "COP CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/COP"
+    },
+    {
+      "symbol": "ARM",
+      "headline": "ARM CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/ARM"
+    },
+    {
+      "symbol": "CVX",
+      "headline": "CVX CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/CVX"
+    },
+    {
+      "symbol": "EOG",
+      "headline": "EOG CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/EOG"
+    },
+    {
+      "symbol": "XLE",
+      "headline": "XLE CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/XLE"
+    },
+    {
+      "symbol": "SLB",
+      "headline": "SLB CALL",
+      "summary": "Option-Ready | Steady Continuation",
+      "pressure_level": "high",
+      "glow_intensity": 95,
+      "destination": "/signals/SLB"
+    }
+  ],
+  "tile_actions": [
+    {
+      "symbol": "USO",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/USO"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/USO"
+        }
+      ]
+    },
+    {
+      "symbol": "OXY",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/OXY"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/OXY"
+        }
+      ]
+    },
+    {
+      "symbol": "MRVL",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/MRVL"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/MRVL"
+        }
+      ]
+    },
+    {
+      "symbol": "DVN",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/DVN"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/DVN"
+        }
+      ]
+    },
+    {
+      "symbol": "HAL",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/HAL"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/HAL"
+        }
+      ]
+    },
+    {
+      "symbol": "XOM",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/XOM"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/XOM"
+        }
+      ]
+    },
+    {
+      "symbol": "COP",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/COP"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/COP"
+        }
+      ]
+    },
+    {
+      "symbol": "ARM",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/ARM"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/ARM"
+        }
+      ]
+    },
+    {
+      "symbol": "CVX",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/CVX"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/CVX"
+        }
+      ]
+    },
+    {
+      "symbol": "EOG",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/EOG"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/EOG"
+        }
+      ]
+    },
+    {
+      "symbol": "XLE",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/XLE"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/XLE"
+        }
+      ]
+    },
+    {
+      "symbol": "SLB",
+      "primary_action": {
+        "label": "Open Symbol",
+        "destination": "/signals/SLB"
+      },
+      "secondary_actions": [
+        {
+          "label": "Open Spotlight",
+          "destination": "/spotlight"
+        },
+        {
+          "label": "Open Signals Lane",
+          "destination": "/signals/SLB"
+        }
+      ]
+    }
+  ],
+  "interaction_rules": {
+    "default_behavior": "hover_reveal",
+    "click_behavior": "open_symbol_page",
+    "secondary_behavior": "route_to_related_area",
+    "calm_mode_behavior": "reduce_hover_motion"
+  },
+  "meta": {
+    "rebuilt_at": "2026-03-31T14:59:58.795103",
+    "preview_tile_count": 12
+  }
+}

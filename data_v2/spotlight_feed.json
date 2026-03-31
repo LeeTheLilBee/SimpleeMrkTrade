@@ -1,0 +1,444 @@
+{
+  "featured": [
+    {
+      "symbol": "USO",
+      "company_name": "United States Oil Fund",
+      "lane": "options",
+      "headline": "USO CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 506.18,
+      "direction": "CALL",
+      "destination": "/signals/USO",
+      "timestamp": "2026-03-31T13:41:55.809153",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "OXY",
+      "company_name": "Occidental Petroleum Corporation",
+      "lane": "options",
+      "headline": "OXY CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 348.21,
+      "direction": "CALL",
+      "destination": "/signals/OXY",
+      "timestamp": "2026-03-31T13:41:55.809179",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "MRVL",
+      "company_name": "Marvell Technology, Inc.",
+      "lane": "options",
+      "headline": "MRVL CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 301.95,
+      "direction": "CALL",
+      "destination": "/signals/MRVL",
+      "timestamp": "2026-03-31T13:41:55.809192",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "DVN",
+      "company_name": "Devon Energy Corporation",
+      "lane": "options",
+      "headline": "DVN CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 296.95,
+      "direction": "CALL",
+      "destination": "/signals/DVN",
+      "timestamp": "2026-03-31T13:41:55.809206",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "HAL",
+      "company_name": "Halliburton Company",
+      "lane": "options",
+      "headline": "HAL CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 260.33,
+      "direction": "CALL",
+      "destination": "/signals/HAL",
+      "timestamp": "2026-03-31T13:41:55.809218",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    }
+  ],
+  "top_stocks": [
+    {
+      "symbol": "USO",
+      "company_name": "United States Oil Fund",
+      "lane": "equity",
+      "headline": "USO CALL \u2014 Steady Continuation",
+      "summary": "Building Cleanly. Trend is UPTREND. Momentum is 0.4077.",
+      "why_lines": [
+        "Momentum is 0.4077.",
+        "Trend is UPTREND.",
+        "Volume ratio is 0.07."
+      ],
+      "status_label": "Building Cleanly",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 507.71,
+      "direction": "CALL",
+      "destination": "/signals/USO",
+      "timestamp": "2026-03-31T13:41:28.176289"
+    },
+    {
+      "symbol": "OXY",
+      "company_name": "Occidental Petroleum Corporation",
+      "lane": "equity",
+      "headline": "OXY CALL \u2014 Steady Continuation",
+      "summary": "Building Cleanly. Trend is UPTREND. Momentum is 0.249.",
+      "why_lines": [
+        "Momentum is 0.249.",
+        "Trend is UPTREND.",
+        "Volume ratio is 0.08."
+      ],
+      "status_label": "Building Cleanly",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 348.95,
+      "direction": "CALL",
+      "destination": "/signals/OXY",
+      "timestamp": "2026-03-31T13:41:28.176307"
+    },
+    {
+      "symbol": "DVN",
+      "company_name": "Devon Energy Corporation",
+      "lane": "equity",
+      "headline": "DVN CALL \u2014 Steady Continuation",
+      "summary": "Building Cleanly. Trend is UPTREND. Momentum is 0.1955.",
+      "why_lines": [
+        "Momentum is 0.1955.",
+        "Trend is UPTREND.",
+        "Volume ratio is 0.06."
+      ],
+      "status_label": "Building Cleanly",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 295.45,
+      "direction": "CALL",
+      "destination": "/signals/DVN",
+      "timestamp": "2026-03-31T13:41:28.176315"
+    },
+    {
+      "symbol": "MRVL",
+      "company_name": "Marvell Technology, Inc.",
+      "lane": "equity",
+      "headline": "MRVL CALL \u2014 Steady Continuation",
+      "summary": "Building Cleanly. Trend is UPTREND. Momentum is 0.1948.",
+      "why_lines": [
+        "Momentum is 0.1948.",
+        "Trend is UPTREND.",
+        "Volume ratio is 0.4."
+      ],
+      "status_label": "Building Cleanly",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 294.76,
+      "direction": "CALL",
+      "destination": "/signals/MRVL",
+      "timestamp": "2026-03-31T13:41:28.176322"
+    },
+    {
+      "symbol": "HAL",
+      "company_name": "Halliburton Company",
+      "lane": "equity",
+      "headline": "HAL CALL \u2014 Steady Continuation",
+      "summary": "Building Cleanly. Trend is UPTREND. Momentum is 0.1583.",
+      "why_lines": [
+        "Momentum is 0.1583.",
+        "Trend is UPTREND.",
+        "Volume ratio is 0.04."
+      ],
+      "status_label": "Building Cleanly",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 258.29,
+      "direction": "CALL",
+      "destination": "/signals/HAL",
+      "timestamp": "2026-03-31T13:41:28.176329"
+    }
+  ],
+  "top_options": [
+    {
+      "symbol": "USO",
+      "company_name": "United States Oil Fund",
+      "lane": "options",
+      "headline": "USO CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 506.18,
+      "direction": "CALL",
+      "destination": "/signals/USO",
+      "timestamp": "2026-03-31T13:41:55.809153",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "OXY",
+      "company_name": "Occidental Petroleum Corporation",
+      "lane": "options",
+      "headline": "OXY CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 348.21,
+      "direction": "CALL",
+      "destination": "/signals/OXY",
+      "timestamp": "2026-03-31T13:41:55.809179",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "MRVL",
+      "company_name": "Marvell Technology, Inc.",
+      "lane": "options",
+      "headline": "MRVL CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 301.95,
+      "direction": "CALL",
+      "destination": "/signals/MRVL",
+      "timestamp": "2026-03-31T13:41:55.809192",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "DVN",
+      "company_name": "Devon Energy Corporation",
+      "lane": "options",
+      "headline": "DVN CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 296.95,
+      "direction": "CALL",
+      "destination": "/signals/DVN",
+      "timestamp": "2026-03-31T13:41:55.809206",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "HAL",
+      "company_name": "Halliburton Company",
+      "lane": "options",
+      "headline": "HAL CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 260.33,
+      "direction": "CALL",
+      "destination": "/signals/HAL",
+      "timestamp": "2026-03-31T13:41:55.809218",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    }
+  ],
+  "top_mixed": [
+    {
+      "symbol": "USO",
+      "company_name": "United States Oil Fund",
+      "lane": "options",
+      "headline": "USO CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 506.18,
+      "direction": "CALL",
+      "destination": "/signals/USO",
+      "timestamp": "2026-03-31T13:41:55.809153",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "OXY",
+      "company_name": "Occidental Petroleum Corporation",
+      "lane": "options",
+      "headline": "OXY CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 348.21,
+      "direction": "CALL",
+      "destination": "/signals/OXY",
+      "timestamp": "2026-03-31T13:41:55.809179",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "MRVL",
+      "company_name": "Marvell Technology, Inc.",
+      "lane": "options",
+      "headline": "MRVL CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 301.95,
+      "direction": "CALL",
+      "destination": "/signals/MRVL",
+      "timestamp": "2026-03-31T13:41:55.809192",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "DVN",
+      "company_name": "Devon Energy Corporation",
+      "lane": "options",
+      "headline": "DVN CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 296.95,
+      "direction": "CALL",
+      "destination": "/signals/DVN",
+      "timestamp": "2026-03-31T13:41:55.809206",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    },
+    {
+      "symbol": "HAL",
+      "company_name": "Halliburton Company",
+      "lane": "options",
+      "headline": "HAL CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "why_lines": [
+        "Underlying direction is CALL.",
+        "Strategy selected: call_debit_spread.",
+        "Time sensitivity is NEXT.",
+        "Spread structure improves premium efficiency."
+      ],
+      "status_label": "Option-Ready",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "score": 260.33,
+      "direction": "CALL",
+      "destination": "/signals/HAL",
+      "timestamp": "2026-03-31T13:41:55.809218",
+      "structure": "call_debit_spread",
+      "target_dte": 14
+    }
+  ],
+  "what_changed": [],
+  "meta": {
+    "rebuilt_at": "2026-03-31T14:36:08.832243",
+    "page_mode": "hybrid",
+    "featured_count": 5,
+    "stocks_count": 5,
+    "options_count": 5,
+    "mixed_count": 5
+  }
+}

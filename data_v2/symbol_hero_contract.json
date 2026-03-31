@@ -1,0 +1,95 @@
+{
+  "symbol": "USO",
+  "company_name": "United States Oil Fund",
+  "hero": {
+    "title": "USO Intelligence",
+    "summary": "Option-Ready",
+    "direction": "CALL",
+    "trend": "UPTREND",
+    "setup_type": "steady_continuation",
+    "pressure_level": "high",
+    "confidence_tier": 1,
+    "price": 128.75,
+    "destination": "/signals/USO"
+  },
+  "lanes": {
+    "equity": {
+      "available": true,
+      "scanner": {
+        "direction": "CALL",
+        "score": 507.71,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.4077,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 128.89
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.4077.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.07."
+        ],
+        "why_not": []
+      }
+    },
+    "options": {
+      "available": true,
+      "scanner": {
+        "direction": "CALL",
+        "score": 506.18,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "price": 128.75
+      },
+      "state": {
+        "status_label": "Option-Ready",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "reasoning": {
+        "why_this_structure": [
+          "Underlying direction is CALL.",
+          "Strategy selected: call_debit_spread.",
+          "Time sensitivity is NEXT."
+        ],
+        "why_not_single_leg": [
+          "Spread structure improves premium efficiency."
+        ],
+        "why_not": []
+      },
+      "options_plan": {
+        "is_option_ready": true,
+        "strategy_type": "call_debit_spread",
+        "target_dte": 14,
+        "expiry_class": "near_monthly",
+        "strike_style": "slightly_otm_spread",
+        "contract_quality_score": 75,
+        "liquidity_score": 90,
+        "spread_score": 55,
+        "premium_efficiency_score": 80,
+        "time_decay_risk": "HIGH",
+        "expected_move_fit": "GOOD",
+        "iv_context": "NORMAL"
+      }
+    }
+  },
+  "meta": {
+    "rebuilt_at": "2026-03-31T14:50:58.761803",
+    "has_equity_lane": true,
+    "has_options_lane": true
+  }
+}

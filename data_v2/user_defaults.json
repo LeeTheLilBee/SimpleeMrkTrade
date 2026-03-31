@@ -1,0 +1,16 @@
+{
+  "solice": {
+    "username": "solice",
+    "defaults": {
+      "intelligence_mode": "hybrid",
+      "control_mode": "manual",
+      "auto_scope": "both",
+      "experience_mode": "low_stim",
+      "motion_profile": "minimal",
+      "sidebar_collapsed": true,
+      "preferred_dashboard": "live_command",
+      "single_best_play_mode": false
+    },
+    "updated_at": "2026-03-31T14:24:15.616405"
+  }
+}

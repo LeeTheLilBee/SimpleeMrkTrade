@@ -2089,5 +2089,64 @@
     "message": "Bot run completed",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-03-31T13:21:24.702965",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-31T13:21:25.519192",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-31T13:21:41.960374",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-31T13:21:41.972791",
+    "event_type": "QUEUE",
+    "message": "Approved 2 research trades; selected 2 execution trades in mode DEFENSIVE_BEAR",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.120083",
+    "event_type": "SIGNAL",
+    "message": "TSLA approved as CALL with score 192",
+    "symbol": "TSLA",
+    "meta": {
+      "trade_id": "TSLA-CALL-20260331132142",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH"
+    }
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.178952",
+    "event_type": "SIGNAL",
+    "message": "AMD approved as CALL with score 189",
+    "symbol": "AMD",
+    "meta": {
+      "trade_id": "AMD-CALL-20260331132142",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH"
+    }
+  },
+  {
+    "timestamp": "2026-03-31T13:21:56.024659",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed",
+    "symbol": null,
+    "meta": {}
   }
 ]

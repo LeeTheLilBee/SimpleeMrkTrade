@@ -1,0 +1,39 @@
+{
+  "default_layer": "pressure",
+  "layers": [
+    {
+      "key": "pressure",
+      "label": "Pressure",
+      "summary": "Shows where the strongest visual pressure is building.",
+      "best_for": "Quick market scanning"
+    },
+    {
+      "key": "confidence",
+      "label": "Confidence",
+      "summary": "Shows where the system has the highest belief in the setup.",
+      "best_for": "Decision quality review"
+    },
+    {
+      "key": "lane",
+      "label": "Lane",
+      "summary": "Separates equity intelligence from options intelligence.",
+      "best_for": "Understanding how the system is framing the idea"
+    },
+    {
+      "key": "bucket",
+      "label": "Bucket",
+      "summary": "Groups the map into calmer category zones like energy, tech, finance, and healthcare.",
+      "best_for": "Big-picture sector scanning"
+    }
+  ],
+  "interaction_model": {
+    "single_select": true,
+    "allow_quick_switch": true,
+    "persist_user_choice": true,
+    "calm_mode_prefers": "pressure"
+  },
+  "meta": {
+    "rebuilt_at": "2026-03-31T15:03:48.322039",
+    "layer_count": 4
+  }
+}

@@ -146,5 +146,20 @@
     "closed_at": "2026-03-28T11:22:10.940737",
     "reason": "cut_weakness",
     "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.73."
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.352002",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "price": 356.17,
+    "size": 13.0,
+    "score": 192,
+    "confidence": "HIGH",
+    "status": "CLOSED",
+    "pnl": -11.57,
+    "exit_price": 355.28,
+    "closed_at": "2026-03-31T13:21:42.816587",
+    "reason": "cut_weakness",
+    "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.57."
   }
 ]

@@ -1,0 +1,18 @@
+{
+  "users": {
+    "solice": {
+      "username": "solice",
+      "current": {
+        "intelligence_mode": "hybrid",
+        "control_mode": "manual",
+        "auto_scope": "both",
+        "experience_mode": "low_stim",
+        "motion_profile": "minimal",
+        "sidebar_expanded": false,
+        "focus_symbol": null,
+        "map_layer": "pressure"
+      },
+      "updated_at": "2026-03-31T14:24:15.617019"
+    }
+  }
+}

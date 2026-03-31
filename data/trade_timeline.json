@@ -3206,5 +3206,108 @@
       "pnl": -11.73,
       "size": 17.0
     }
+  },
+  {
+    "timestamp": "2026-03-31T13:21:41.999236",
+    "symbol": "TSLA",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260331132141",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.062329",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260331132142",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.123242",
+    "symbol": "TSLA",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260331132142",
+      "strategy": "CALL",
+      "score": 192,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.181973",
+    "symbol": "AMD",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260331132142",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.353684",
+    "symbol": "TSLA",
+    "event": "OPENED",
+    "details": {
+      "strategy": "CALL",
+      "requested_price": 355.28,
+      "fill_price": 356.17,
+      "commission": 1.0,
+      "size": 13.0,
+      "stop": 354.17,
+      "target": 360.17
+    }
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.486367",
+    "symbol": "AMD",
+    "event": "SKIPPED",
+    "details": {
+      "reason": "buying_power_min_size"
+    }
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.491073",
+    "symbol": "TSLA",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "TSLA-CALL-20260331132142",
+      "strategy": "CALL",
+      "score": 192,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.514006",
+    "symbol": "AMD",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "AMD-CALL-20260331132142",
+      "strategy": "CALL",
+      "score": 189,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.819804",
+    "symbol": "TSLA",
+    "event": "CLOSED",
+    "details": {
+      "exit_price": 355.28,
+      "reason": "cut_weakness",
+      "pnl": -11.57,
+      "size": 13.0
+    }
   }
 ]

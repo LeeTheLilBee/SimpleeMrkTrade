@@ -1,0 +1,999 @@
+{
+  "selected": [
+    {
+      "symbol": "USO",
+      "company_name": "United States Oil Fund",
+      "scanner": {
+        "direction": "CALL",
+        "score": 507.71,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.4077,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 128.89
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 1,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.4077.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.07."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176289"
+    },
+    {
+      "symbol": "OXY",
+      "company_name": "Occidental Petroleum Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 348.95,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.249,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 66.64
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 2,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.249.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.08."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176307"
+    },
+    {
+      "symbol": "DVN",
+      "company_name": "Devon Energy Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 295.45,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1955,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 51.72
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 3,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1955.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.06."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176315"
+    },
+    {
+      "symbol": "MRVL",
+      "company_name": "Marvell Technology, Inc.",
+      "scanner": {
+        "direction": "CALL",
+        "score": 294.76,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1948,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 93.3
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 4,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1948.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.4."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176322"
+    },
+    {
+      "symbol": "HAL",
+      "company_name": "Halliburton Company",
+      "scanner": {
+        "direction": "CALL",
+        "score": 258.29,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1583,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 39.88
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 5,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1583.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.04."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176329"
+    },
+    {
+      "symbol": "XOM",
+      "company_name": "Exxon Mobil Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 255.05,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1551,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 173.05
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 6,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1551.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.06."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176335"
+    },
+    {
+      "symbol": "COP",
+      "company_name": "ConocoPhillips",
+      "scanner": {
+        "direction": "CALL",
+        "score": 251.53,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1515,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 133.18
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 7,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1515.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.06."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176342"
+    },
+    {
+      "symbol": "CVX",
+      "company_name": "Chevron Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 237.07,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1371,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 211.53
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 8,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1371.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.04."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176348"
+    },
+    {
+      "symbol": "ARM",
+      "company_name": "Arm Holdings plc",
+      "scanner": {
+        "direction": "CALL",
+        "score": 234.23,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.164,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 144.46
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 9,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.164.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.13."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176354"
+    },
+    {
+      "symbol": "EOG",
+      "company_name": "EOG Resources, Inc.",
+      "scanner": {
+        "direction": "CALL",
+        "score": 230.43,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1762,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 150.34
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 10,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1762.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.04."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176360"
+    },
+    {
+      "symbol": "XLE",
+      "company_name": "Energy Select Sector SPDR Fund",
+      "scanner": {
+        "direction": "CALL",
+        "score": 217.06,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1171,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 62.36
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 11,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1171.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.09."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176366"
+    },
+    {
+      "symbol": "SLB",
+      "company_name": "Schlumberger Limited",
+      "scanner": {
+        "direction": "CALL",
+        "score": 194.49,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.0945,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 52.42
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 12,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.0945.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.04."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176372"
+    },
+    {
+      "symbol": "PSX",
+      "company_name": "Phillips 66",
+      "scanner": {
+        "direction": "CALL",
+        "score": 169.07,
+        "confidence": "HIGH",
+        "grade": "B",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1314,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 186.37
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 13,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1314.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.03."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 2
+      },
+      "timestamp": "2026-03-31T13:41:28.176378"
+    },
+    {
+      "symbol": "VLO",
+      "company_name": "Valero Energy Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 165.34,
+        "confidence": "HIGH",
+        "grade": "B",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1175,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 252.1
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 14,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1175.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.05."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 2
+      },
+      "timestamp": "2026-03-31T13:41:28.176385"
+    },
+    {
+      "symbol": "U",
+      "company_name": "Unity Software Inc.",
+      "scanner": {
+        "direction": "CALL",
+        "score": 157.9,
+        "confidence": "HIGH",
+        "grade": "B",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.0579,
+        "volume_quality": "NORMAL",
+        "regime_fit": "MODERATE",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "DEVELOPING",
+        "price": 21.56
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 15,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.0579.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.13."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "medium",
+        "confidence_tier": 2
+      },
+      "timestamp": "2026-03-31T13:41:28.176391"
+    },
+    {
+      "symbol": "MPC",
+      "company_name": "Marathon Petroleum Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 154.96,
+        "confidence": "HIGH",
+        "grade": "B",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1249,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 248.34
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 16,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1249.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.03."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 2
+      },
+      "timestamp": "2026-03-31T13:41:28.176399"
+    },
+    {
+      "symbol": "PFE",
+      "company_name": "Pfizer Inc.",
+      "scanner": {
+        "direction": "CALL",
+        "score": 150.02,
+        "confidence": "HIGH",
+        "grade": "B",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.05,
+        "volume_quality": "NORMAL",
+        "regime_fit": "MODERATE",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "DEVELOPING",
+        "price": 27.95
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 17,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.05.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.07."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "medium",
+        "confidence_tier": 2
+      },
+      "timestamp": "2026-03-31T13:41:28.176406"
+    },
+    {
+      "symbol": "DAL",
+      "company_name": "Delta Air Lines, Inc.",
+      "scanner": {
+        "direction": "CALL",
+        "score": 103.76,
+        "confidence": "MEDIUM",
+        "grade": "C",
+        "trend": "SIDEWAYS",
+        "setup_type": "steady_continuation",
+        "momentum": 0.0038,
+        "volume_quality": "NORMAL",
+        "regime_fit": "MIXED",
+        "entry_quality": "EARLY",
+        "time_sensitivity": "WATCH",
+        "setup_maturity": "EARLY",
+        "price": 64.07
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 18,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.0038.",
+          "Trend is SIDEWAYS.",
+          "Volume ratio is 0.03."
+        ],
+        "why_not": [
+          "Entry quality is not yet elite.",
+          "Market fit is still mixed."
+        ]
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "low",
+        "confidence_tier": 3
+      },
+      "timestamp": "2026-03-31T13:41:28.176413"
+    },
+    {
+      "symbol": "MRK",
+      "company_name": "Merck & Co., Inc.",
+      "scanner": {
+        "direction": "CALL",
+        "score": 100.2,
+        "confidence": "MEDIUM",
+        "grade": "C",
+        "trend": "SIDEWAYS",
+        "setup_type": "steady_continuation",
+        "momentum": 0.0024,
+        "volume_quality": "NORMAL",
+        "regime_fit": "MIXED",
+        "entry_quality": "EARLY",
+        "time_sensitivity": "WATCH",
+        "setup_maturity": "EARLY",
+        "price": 119.68
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 19,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.0024.",
+          "Trend is SIDEWAYS.",
+          "Volume ratio is 0.05."
+        ],
+        "why_not": [
+          "Entry quality is not yet elite.",
+          "Market fit is still mixed."
+        ]
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "low",
+        "confidence_tier": 3
+      },
+      "timestamp": "2026-03-31T13:41:28.176420"
+    },
+    {
+      "symbol": "PATH",
+      "company_name": "UiPath Inc.",
+      "scanner": {
+        "direction": "PUT",
+        "score": 94.13,
+        "confidence": "MEDIUM",
+        "grade": "C",
+        "trend": "SIDEWAYS",
+        "setup_type": "weakening",
+        "momentum": -0.0059,
+        "volume_quality": "NORMAL",
+        "regime_fit": "MIXED",
+        "entry_quality": "EARLY",
+        "time_sensitivity": "WATCH",
+        "setup_maturity": "EARLY",
+        "price": 11.01
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 20,
+        "spotlight": false
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is -0.0059.",
+          "Trend is SIDEWAYS.",
+          "Volume ratio is 0.03."
+        ],
+        "why_not": [
+          "Entry quality is not yet elite.",
+          "Market fit is still mixed."
+        ]
+      },
+      "state": {
+        "status_label": "Weakening",
+        "pressure_level": "low",
+        "confidence_tier": 3
+      },
+      "timestamp": "2026-03-31T13:41:28.176427"
+    }
+  ],
+  "spotlight": [
+    {
+      "symbol": "USO",
+      "company_name": "United States Oil Fund",
+      "scanner": {
+        "direction": "CALL",
+        "score": 507.71,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.4077,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 128.89
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 1,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.4077.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.07."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176289"
+    },
+    {
+      "symbol": "OXY",
+      "company_name": "Occidental Petroleum Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 348.95,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.249,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 66.64
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 2,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.249.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.08."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176307"
+    },
+    {
+      "symbol": "DVN",
+      "company_name": "Devon Energy Corporation",
+      "scanner": {
+        "direction": "CALL",
+        "score": 295.45,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1955,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 51.72
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 3,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1955.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.06."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176315"
+    },
+    {
+      "symbol": "MRVL",
+      "company_name": "Marvell Technology, Inc.",
+      "scanner": {
+        "direction": "CALL",
+        "score": 294.76,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1948,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 93.3
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 4,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1948.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.4."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176322"
+    },
+    {
+      "symbol": "HAL",
+      "company_name": "Halliburton Company",
+      "scanner": {
+        "direction": "CALL",
+        "score": 258.29,
+        "confidence": "HIGH",
+        "grade": "A",
+        "trend": "UPTREND",
+        "setup_type": "steady_continuation",
+        "momentum": 0.1583,
+        "volume_quality": "NORMAL",
+        "regime_fit": "STRONG",
+        "entry_quality": "GOOD",
+        "time_sensitivity": "NEXT",
+        "setup_maturity": "MATURE",
+        "price": 39.88
+      },
+      "execution": {
+        "eligible": true,
+        "selected": true,
+        "selection_rank": 5,
+        "spotlight": true
+      },
+      "reasoning": {
+        "why_symbol": [
+          "Momentum is 0.1583.",
+          "Trend is UPTREND.",
+          "Volume ratio is 0.04."
+        ],
+        "why_not": []
+      },
+      "state": {
+        "status_label": "Building Cleanly",
+        "pressure_level": "high",
+        "confidence_tier": 1
+      },
+      "timestamp": "2026-03-31T13:41:28.176329"
+    }
+  ],
+  "rejected": [],
+  "meta": {
+    "rebuilt_at": "2026-03-31T13:41:28.176430",
+    "selected_count": 20,
+    "spotlight_count": 5,
+    "watchlist_limit": 50,
+    "universe_limit": 220,
+    "engine_type": "equity"
+  }
+}

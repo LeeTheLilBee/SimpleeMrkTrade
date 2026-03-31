@@ -1,0 +1,413 @@
+{
+  "equity_rejections": [],
+  "options_rejections": [
+    {
+      "symbol": "DAL",
+      "company_name": "Delta Air Lines, Inc.",
+      "lane": "options",
+      "headline": "DAL was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/DAL",
+      "timestamp": "2026-03-31T13:41:55.809378"
+    },
+    {
+      "symbol": "MRK",
+      "company_name": "Merck & Co., Inc.",
+      "lane": "options",
+      "headline": "MRK was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/MRK",
+      "timestamp": "2026-03-31T13:41:55.809381"
+    },
+    {
+      "symbol": "PATH",
+      "company_name": "UiPath Inc.",
+      "lane": "options",
+      "headline": "PATH was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/PATH",
+      "timestamp": "2026-03-31T13:41:55.809385"
+    },
+    {
+      "symbol": "T",
+      "company_name": "AT&T Inc.",
+      "lane": "options",
+      "headline": "T was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/T",
+      "timestamp": "2026-03-31T13:41:55.809388"
+    },
+    {
+      "symbol": "C",
+      "company_name": "Citigroup Inc.",
+      "lane": "options",
+      "headline": "C was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/C",
+      "timestamp": "2026-03-31T13:41:55.809390"
+    },
+    {
+      "symbol": "HYG",
+      "company_name": "iShares iBoxx $ High Yield Corporate Bond ETF",
+      "lane": "options",
+      "headline": "HYG was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/HYG",
+      "timestamp": "2026-03-31T13:41:55.809393"
+    },
+    {
+      "symbol": "NEE",
+      "company_name": "NextEra Energy, Inc.",
+      "lane": "options",
+      "headline": "NEE was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/NEE",
+      "timestamp": "2026-03-31T13:41:55.809396"
+    },
+    {
+      "symbol": "AMD",
+      "company_name": "Advanced Micro Devices, Inc.",
+      "lane": "options",
+      "headline": "AMD was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/AMD",
+      "timestamp": "2026-03-31T13:41:55.809399"
+    },
+    {
+      "symbol": "XBI",
+      "company_name": "SPDR S&P Biotech ETF",
+      "lane": "options",
+      "headline": "XBI was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/XBI",
+      "timestamp": "2026-03-31T13:41:55.809409"
+    },
+    {
+      "symbol": "LQD",
+      "company_name": "iShares iBoxx $ Investment Grade Corporate Bond ETF",
+      "lane": "options",
+      "headline": "LQD was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/LQD",
+      "timestamp": "2026-03-31T13:41:55.809412"
+    },
+    {
+      "symbol": "VZ",
+      "company_name": "Verizon Communications Inc.",
+      "lane": "options",
+      "headline": "VZ was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/VZ",
+      "timestamp": "2026-03-31T13:41:55.809415"
+    },
+    {
+      "symbol": "WMT",
+      "company_name": "Walmart Inc.",
+      "lane": "options",
+      "headline": "WMT was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/WMT",
+      "timestamp": "2026-03-31T13:41:55.809418"
+    },
+    {
+      "symbol": "TLT",
+      "company_name": "iShares 20+ Year Treasury Bond ETF",
+      "lane": "options",
+      "headline": "TLT was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/TLT",
+      "timestamp": "2026-03-31T13:41:55.809421"
+    },
+    {
+      "symbol": "XLU",
+      "company_name": "Utilities Select Sector SPDR Fund",
+      "lane": "options",
+      "headline": "XLU was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/XLU",
+      "timestamp": "2026-03-31T13:41:55.809423"
+    },
+    {
+      "symbol": "RIVN",
+      "company_name": "Rivian Automotive, Inc.",
+      "lane": "options",
+      "headline": "RIVN was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/RIVN",
+      "timestamp": "2026-03-31T13:41:55.809426"
+    },
+    {
+      "symbol": "JNJ",
+      "company_name": "Johnson & Johnson",
+      "lane": "options",
+      "headline": "JNJ was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/JNJ",
+      "timestamp": "2026-03-31T13:41:55.809429"
+    },
+    {
+      "symbol": "NFLX",
+      "company_name": "Netflix, Inc.",
+      "lane": "options",
+      "headline": "NFLX was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/NFLX",
+      "timestamp": "2026-03-31T13:41:55.809432"
+    },
+    {
+      "symbol": "PANW",
+      "company_name": "Palo Alto Networks, Inc.",
+      "lane": "options",
+      "headline": "PANW was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/PANW",
+      "timestamp": "2026-03-31T13:41:55.809435"
+    },
+    {
+      "symbol": "KRE",
+      "company_name": "SPDR S&P Regional Banking ETF",
+      "lane": "options",
+      "headline": "KRE was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/KRE",
+      "timestamp": "2026-03-31T13:41:55.809438"
+    },
+    {
+      "symbol": "JPM",
+      "company_name": "JPMorgan Chase & Co.",
+      "lane": "options",
+      "headline": "JPM was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/JPM",
+      "timestamp": "2026-03-31T13:41:55.809440"
+    }
+  ],
+  "combined": [
+    {
+      "symbol": "DAL",
+      "company_name": "Delta Air Lines, Inc.",
+      "lane": "options",
+      "headline": "DAL was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/DAL",
+      "timestamp": "2026-03-31T13:41:55.809378"
+    },
+    {
+      "symbol": "MRK",
+      "company_name": "Merck & Co., Inc.",
+      "lane": "options",
+      "headline": "MRK was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/MRK",
+      "timestamp": "2026-03-31T13:41:55.809381"
+    },
+    {
+      "symbol": "PATH",
+      "company_name": "UiPath Inc.",
+      "lane": "options",
+      "headline": "PATH was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/PATH",
+      "timestamp": "2026-03-31T13:41:55.809385"
+    },
+    {
+      "symbol": "T",
+      "company_name": "AT&T Inc.",
+      "lane": "options",
+      "headline": "T was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/T",
+      "timestamp": "2026-03-31T13:41:55.809388"
+    },
+    {
+      "symbol": "C",
+      "company_name": "Citigroup Inc.",
+      "lane": "options",
+      "headline": "C was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/C",
+      "timestamp": "2026-03-31T13:41:55.809390"
+    },
+    {
+      "symbol": "HYG",
+      "company_name": "iShares iBoxx $ High Yield Corporate Bond ETF",
+      "lane": "options",
+      "headline": "HYG was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/HYG",
+      "timestamp": "2026-03-31T13:41:55.809393"
+    },
+    {
+      "symbol": "NEE",
+      "company_name": "NextEra Energy, Inc.",
+      "lane": "options",
+      "headline": "NEE was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/NEE",
+      "timestamp": "2026-03-31T13:41:55.809396"
+    },
+    {
+      "symbol": "AMD",
+      "company_name": "Advanced Micro Devices, Inc.",
+      "lane": "options",
+      "headline": "AMD was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/AMD",
+      "timestamp": "2026-03-31T13:41:55.809399"
+    },
+    {
+      "symbol": "XBI",
+      "company_name": "SPDR S&P Biotech ETF",
+      "lane": "options",
+      "headline": "XBI was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/XBI",
+      "timestamp": "2026-03-31T13:41:55.809409"
+    },
+    {
+      "symbol": "LQD",
+      "company_name": "iShares iBoxx $ Investment Grade Corporate Bond ETF",
+      "lane": "options",
+      "headline": "LQD was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/LQD",
+      "timestamp": "2026-03-31T13:41:55.809412"
+    },
+    {
+      "symbol": "VZ",
+      "company_name": "Verizon Communications Inc.",
+      "lane": "options",
+      "headline": "VZ was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/VZ",
+      "timestamp": "2026-03-31T13:41:55.809415"
+    },
+    {
+      "symbol": "WMT",
+      "company_name": "Walmart Inc.",
+      "lane": "options",
+      "headline": "WMT was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/WMT",
+      "timestamp": "2026-03-31T13:41:55.809418"
+    },
+    {
+      "symbol": "TLT",
+      "company_name": "iShares 20+ Year Treasury Bond ETF",
+      "lane": "options",
+      "headline": "TLT was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/TLT",
+      "timestamp": "2026-03-31T13:41:55.809421"
+    },
+    {
+      "symbol": "XLU",
+      "company_name": "Utilities Select Sector SPDR Fund",
+      "lane": "options",
+      "headline": "XLU was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/XLU",
+      "timestamp": "2026-03-31T13:41:55.809423"
+    },
+    {
+      "symbol": "RIVN",
+      "company_name": "Rivian Automotive, Inc.",
+      "lane": "options",
+      "headline": "RIVN was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/RIVN",
+      "timestamp": "2026-03-31T13:41:55.809426"
+    },
+    {
+      "symbol": "JNJ",
+      "company_name": "Johnson & Johnson",
+      "lane": "options",
+      "headline": "JNJ was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/JNJ",
+      "timestamp": "2026-03-31T13:41:55.809429"
+    },
+    {
+      "symbol": "NFLX",
+      "company_name": "Netflix, Inc.",
+      "lane": "options",
+      "headline": "NFLX was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/NFLX",
+      "timestamp": "2026-03-31T13:41:55.809432"
+    },
+    {
+      "symbol": "PANW",
+      "company_name": "Palo Alto Networks, Inc.",
+      "lane": "options",
+      "headline": "PANW was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/PANW",
+      "timestamp": "2026-03-31T13:41:55.809435"
+    },
+    {
+      "symbol": "KRE",
+      "company_name": "SPDR S&P Regional Banking ETF",
+      "lane": "options",
+      "headline": "KRE was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/KRE",
+      "timestamp": "2026-03-31T13:41:55.809438"
+    },
+    {
+      "symbol": "JPM",
+      "company_name": "JPMorgan Chase & Co.",
+      "lane": "options",
+      "headline": "JPM was passed over for now",
+      "reason": "Not option-ready enough for current selection pass.",
+      "next_step": "Watch for stronger option-ready structure, better timing, or cleaner liquidity.",
+      "destination": "/signals/JPM",
+      "timestamp": "2026-03-31T13:41:55.809440"
+    }
+  ],
+  "meta": {
+    "rebuilt_at": "2026-03-31T14:36:08.837309",
+    "equity_rejection_count": 0,
+    "options_rejection_count": 20,
+    "combined_count": 20
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "username": "solice",
+  "collapsed_default": true,
+  "active_mode": {
+    "intelligence_mode": "hybrid",
+    "control_mode": "manual",
+    "auto_scope": "both",
+    "experience_mode": "balanced"
+  },
+  "sections": [
+    {
+      "key": "dashboard",
+      "label": "Dashboard",
+      "icon": "layout-dashboard",
+      "destination": "/dashboard",
+      "children": []
+    },
+    {
+      "key": "spotlight",
+      "label": "Spotlight",
+      "icon": "star",
+      "destination": "/spotlight",
+      "children": []
+    },
+    {
+      "key": "signals",
+      "label": "Signals",
+      "icon": "radar",
+      "destination": "/signals",
+      "children": [
+        {
+          "key": "signals_options",
+          "label": "Options Lane",
+          "destination": "/signals?lane=options"
+        },
+        {
+          "key": "signals_equity",
+          "label": "Stocks Lane",
+          "destination": "/signals?lane=equity"
+        }
+      ]
+    },
+    {
+      "key": "market_map",
+      "label": "Market Map",
+      "icon": "map",
+      "destination": "/market-map",
+      "children": []
+    },
+    {
+      "key": "research",
+      "label": "Research",
+      "icon": "book-open",
+      "destination": "/research/overview",
+      "children": [
+        {
+          "key": "research_rejections",
+          "label": "Passed Over",
+          "destination": "/research/rejections"
+        },
+        {
+          "key": "research_overview",
+          "label": "Overview",
+          "destination": "/research/overview"
+        }
+      ]
+    },
+    {
+      "key": "positions",
+      "label": "Positions",
+      "icon": "briefcase",
+      "destination": "/positions",
+      "children": []
+    },
+    {
+      "key": "settings",
+      "label": "Settings",
+      "icon": "sliders-horizontal",
+      "destination": "/settings",
+      "children": []
+    }
+  ],
+  "meta": {
+    "rebuilt_at": "2026-03-31T14:43:05.884187",
+    "section_count": 7
+  }
+}

@@ -645,5 +645,57 @@
       "Market regime: Bear Trend.",
       "Trend context: Uptrend."
     ]
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.154083",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.212043",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "mode": "DEFENSIVE_BEAR",
+    "regime": "BEAR_TREND",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "reasons": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
   }
 ]

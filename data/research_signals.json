@@ -2551,5 +2551,31 @@
     "regime": "BEAR_TREND",
     "mode": "DEFENSIVE_BEAR",
     "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-31T13:21:41.995959",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "TSLA-CALL-20260331132141",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.059069",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "AMD-CALL-20260331132142",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
   }
 ]

@@ -1,51 +1,5 @@
 [
   {
-    "timestamp": "2026-03-24T01:07:15.204909",
-    "symbol": "AAPL",
-    "strategy": "CALL",
-    "score": 210,
-    "confidence": "HIGH",
-    "entry": 100.0,
-    "stop": 97.0,
-    "target": 104.0,
-    "source": "research",
-    "market_context": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bear Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-03-24T01:07:15.255889",
-    "symbol": "MSFT",
-    "strategy": "CALL",
-    "score": 207,
-    "confidence": "HIGH",
-    "entry": 100.0,
-    "stop": 97.0,
-    "target": 104.0,
-    "source": "research",
-    "market_context": [
-      "Market regime: BEAR_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: DEFENSIVE_BEAR"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bear Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
     "timestamp": "2026-03-24T01:07:15.296346",
     "symbol": "NVDA",
     "strategy": "CALL",
@@ -3428,6 +3382,52 @@
   },
   {
     "timestamp": "2026-03-28T11:22:10.381880",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "source": "research",
+    "market_context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.021222",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "source": "research",
+    "market_context": [
+      "Market regime: BEAR_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: DEFENSIVE_BEAR"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bear Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-03-31T13:21:42.084471",
     "symbol": "AMD",
     "strategy": "CALL",
     "score": 189,
