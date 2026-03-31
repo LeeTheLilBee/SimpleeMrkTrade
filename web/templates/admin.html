@@ -55,7 +55,7 @@
         </div>
     </a>
 
-{% if alert_explanations and alert_explanations.items %}
+{% if alert_explanations and alert_explanations.items() %}
 <div class="card premium-card" style="margin-bottom:18px;">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
         <div>
@@ -68,7 +68,7 @@
     </div>
 
     <div style="display:grid; gap:12px; margin-top:14px;">
-        {% for item in alert_explanations.items %}
+        {% for item in alert_explanations.get("items", []) %}
         <div class="card" style="margin:0;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
                 <h4 style="margin:0;">{{ item.headline }}</h4>
