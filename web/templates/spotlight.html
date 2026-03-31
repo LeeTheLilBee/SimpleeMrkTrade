@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
+    <h2>Signals Spotlight</h2>
+    <div class="passage-frame">
+        <p style="margin:0;">
+            The strongest live ideas the system wants to put in front of you first.
+        </p>
+    </div>
+</div>
+
+{% if v2_spotlight %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>V2 Spotlight Bridge</h3>
+    <div class="passage-frame">
+        <p style="margin:0;">
+            Mode: {{ v2_spotlight.get("meta", {}).get("page_mode", "unknown") }}
+            | Lane Sections: {{ v2_spotlight.get("meta", {}).get("lane_section_count", 0) }}
+            | Side Panels: {{ v2_spotlight.get("meta", {}).get("side_panel_count", 0) }}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+{% set hero = v2_spotlight.get("hero", {}) if v2_spotlight else {} %}
+{% if hero %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">{{ hero.get("title", "Signals Spotlight") }}</h3>
+            <p class="muted-line" style="margin:0 0 8px 0;">{{ hero.get("summary", "") }}</p>
+            {% if hero.get("lead_symbol") %}
+            <p style="margin:0;">
+                <strong>{{ hero.get("lead_symbol") }}</strong>
+                {% if hero.get("lead_headline") %} — {{ hero.get("lead_headline") }}{% endif %}
+            </p>
+            {% endif %}
+            {% if hero.get("lead_summary") %}
+            <p style="margin:8px 0 0 0;">{{ hero.get("lead_summary") }}</p>
+            {% endif %}
+        </div>
+        {% if hero.get("destination") %}
+        <div>
+            <a href="{{ hero.get('destination') }}" class="cta-btn">Open Lead Idea</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% set lane_sections = v2_spotlight.get("lane_sections", []) if v2_spotlight else [] %}
+{% if lane_sections %}
+<div style="display:grid; gap:18px;">
+    {% for section in lane_sections %}
+    <div class="card premium-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+            <div>
+                <h3 style="margin-bottom:8px;">{{ section.get("title", "Section") }}</h3>
+                <p class="muted-line" style="margin:0;">{{ section.get("summary", "") }}</p>
+            </div>
+            {% if section.get("destination") %}
+            <div>
+                <a href="{{ section.get('destination') }}" class="cta-btn secondary">Open</a>
+            </div>
+            {% endif %}
+        </div>
+
+        {% set items = section.get("items", []) %}
+        {% if items %}
+        <div style="display:grid; gap:12px; margin-top:14px;">
+            {% for item in items %}
+            <div class="card" style="margin:0;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                    <div>
+                        <h4 style="margin:0 0 6px 0;">
+                            {{ item.get("symbol", "") }}
+                            {% if item.get("headline") %} — {{ item.get("headline") }}{% endif %}
+                        </h4>
+                        <p style="margin:0 0 8px 0;">{{ item.get("summary", "") }}</p>
+                        {% if item.get("why_lines") %}
+                        <div class="passage-frame">
+                            {% for line in item.get("why_lines", []) %}
+                            <p style="margin:0 0 6px 0;">• {{ line }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div style="text-align:right;">
+                        {% if item.get("lane") %}
+                        <div class="signal-stat-chip" style="margin-bottom:8px;">{{ item.get("lane")|upper }}</div>
+                        {% endif %}
+                        {% if item.get("destination") %}
+                        <div>
+                            <a href="{{ item.get('destination') }}" class="cta-btn secondary">Open Symbol</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% set side_panels = v2_spotlight.get("side_panels", []) if v2_spotlight else [] %}
+{% if side_panels %}
+<div style="display:grid; gap:18px; margin-top:18px;">
+    {% for panel in side_panels %}
+    <div class="card premium-card gold-accent-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+            <div>
+                <h3 style="margin-bottom:8px;">{{ panel.get("title", "Panel") }}</h3>
+                <p class="muted-line" style="margin:0;">{{ panel.get("summary", "") }}</p>
+            </div>
+            {% if panel.get("destination") %}
+            <div>
+                <a href="{{ panel.get('destination') }}" class="cta-btn secondary">Open</a>
+            </div>
+            {% endif %}
+        </div>
+
+        {% set items = panel.get("items", []) %}
+        {% if items %}
+        <div style="display:grid; gap:10px; margin-top:14px;">
+            {% for item in items %}
+            <div class="card" style="margin:0;">
+                <strong>{{ item.get("symbol", "") }}</strong>
+                {% if item.get("reason") %}
+                <p style="margin:8px 0 0 0;">{{ item.get("reason") }}</p>
+                {% endif %}
+                {% if item.get("destination") %}
+                <div style="margin-top:10px;">
+                    <a href="{{ item.get('destination') }}" class="cta-btn secondary">Open Symbol</a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

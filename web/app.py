@@ -9,6 +9,7 @@ from engine_v2.dashboard_contract import build_dashboard_contract
 
 import json
 from pathlib import Path
+from engine_v2.spotlight_page_contract import build_spotlight_page_contract
 from typing import Any, Dict, List, Optional
 
 from flask import (
@@ -263,6 +264,21 @@ def get_v2_dashboard_contract(username: str):
             },
         }
 
+
+def get_v2_spotlight_contract(username: str):
+    try:
+        return build_spotlight_page_contract(username)
+    except Exception as e:
+        print(f"[V2_SPOTLIGHT_CONTRACT] {e}")
+        return {
+            "username": username,
+            "hero": {},
+            "lane_sections": [],
+            "side_panels": [],
+            "meta": {
+                "error": str(e),
+            },
+        }
 
 def safe_list(value):
     return value if isinstance(value, list) else []
@@ -3760,6 +3776,35 @@ def my_positions_archived_page():
         **template_context({
             "positions": archived,
         }),
+    )
+
+
+@app.route("/spotlight")
+def spotlight_page():
+    maybe_track_page_view("/spotlight")
+
+    current_user = safe_run(
+        "get_current_user",
+        get_current_user,
+        {
+            "username": None,
+            "tier": "Guest",
+            "real_tier": "Guest",
+            "role": "member",
+            "preview_tier": None,
+        },
+    )
+
+    username = (current_user or {}).get("username") or "guest"
+    v2_spotlight = get_v2_spotlight_contract(username)
+
+    return render_template_safe(
+        "spotlight.html",
+        **template_context(
+            {
+                "v2_spotlight": v2_spotlight,
+            }
+        ),
     )
 
 
