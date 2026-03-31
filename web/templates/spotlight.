@@ -1,0 +1,519 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+html, body {
+    min-height: 100%;
+    background: radial-gradient(ellipse at bottom, #07050f 0%, #020107 100%);
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.main-container, .container, main {
+    max-width: none !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.cosmos-shell {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    color: #fff;
+    background:
+        radial-gradient(circle at 18% 24%, rgba(120, 82, 255, 0.10), transparent 24%),
+        radial-gradient(circle at 78% 34%, rgba(255, 98, 196, 0.08), transparent 20%),
+        radial-gradient(circle at 56% 78%, rgba(96, 166, 255, 0.07), transparent 24%),
+        linear-gradient(180deg, #06040d 0%, #020107 100%);
+}
+
+.cosmos-header {
+    position: absolute;
+    top: 24px;
+    left: 26px;
+    z-index: 30;
+    display: grid;
+    gap: 10px;
+}
+
+.cosmos-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: lowercase;
+}
+
+.cosmos-sub {
+    font-size: 0.9rem;
+    opacity: 0.72;
+    max-width: 400px;
+    line-height: 1.35;
+}
+
+.cosmos-chip-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cosmos-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(6px);
+}
+
+.nebula-layer {
+    position: absolute;
+    inset: -22%;
+    pointer-events: none;
+    filter: blur(74px);
+}
+
+.nebula-a {
+    opacity: 0.42;
+    background:
+        radial-gradient(circle at 28% 42%, rgba(128, 82, 255, 0.20), transparent 26%),
+        radial-gradient(circle at 48% 50%, rgba(255, 104, 194, 0.14), transparent 22%),
+        radial-gradient(circle at 70% 58%, rgba(92, 160, 255, 0.12), transparent 26%);
+    animation: nebulaFloatA 58s ease-in-out infinite alternate;
+}
+
+.nebula-b {
+    opacity: 0.28;
+    background:
+        radial-gradient(circle at 38% 44%, rgba(177, 114, 255, 0.12), transparent 20%),
+        radial-gradient(circle at 60% 47%, rgba(255, 202, 126, 0.08), transparent 16%),
+        radial-gradient(circle at 76% 54%, rgba(255, 129, 198, 0.10), transparent 18%);
+    animation: nebulaFloatB 82s linear infinite;
+}
+
+.milky-band {
+    position: absolute;
+    left: -8%;
+    top: 16%;
+    width: 136%;
+    height: 30%;
+    transform: rotate(-11deg);
+    pointer-events: none;
+    opacity: 0.24;
+    filter: blur(36px);
+    background:
+        linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(134, 96, 255, 0.10) 18%,
+            rgba(255, 124, 196, 0.14) 36%,
+            rgba(104, 168, 255, 0.11) 56%,
+            rgba(255, 220, 150, 0.06) 72%,
+            transparent 100%
+        );
+    animation: bandFloat 72s ease-in-out infinite alternate;
+}
+
+@keyframes nebulaFloatA {
+    0% { transform: translate(-2%, -1%) scale(1); }
+    100% { transform: translate(2%, 2%) scale(1.06); }
+}
+
+@keyframes nebulaFloatB {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(1deg) scale(1.03); }
+    100% { transform: rotate(0deg) scale(1); }
+}
+
+@keyframes bandFloat {
+    0% { transform: rotate(-11deg) translateY(0px); }
+    100% { transform: rotate(-9deg) translateY(18px); }
+}
+
+.starfield {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    animation: fieldDrift 90s linear infinite alternate;
+}
+
+@keyframes fieldDrift {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-1.5%, 1%, 0); }
+}
+
+.bg-star {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.bg-star.tiny { width: 1px; height: 1px; }
+.bg-star.small { width: 2px; height: 2px; }
+.bg-star.medium { width: 3px; height: 3px; }
+
+.bg-star.blue {
+    background: #8fc8ff;
+    box-shadow: 0 0 8px rgba(143, 200, 255, 0.42);
+}
+.bg-star.pink {
+    background: #ffb3df;
+    box-shadow: 0 0 8px rgba(255, 179, 223, 0.36);
+}
+.bg-star.gold {
+    background: #ffe4ae;
+    box-shadow: 0 0 8px rgba(255, 228, 174, 0.28);
+}
+.bg-star.purple {
+    background: #d7b8ff;
+    box-shadow: 0 0 8px rgba(215, 184, 255, 0.34);
+}
+
+@keyframes twinkleSlow {
+    0%,100% { opacity: 0.18; transform: scale(1); }
+    50% { opacity: 0.72; transform: scale(1.08); }
+}
+@keyframes twinkleMid {
+    0%,100% { opacity: 0.24; transform: scale(1); }
+    50% { opacity: 0.94; transform: scale(1.14); }
+}
+@keyframes twinkleFast {
+    0%,100% { opacity: 0.32; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.22); }
+}
+
+.spotlight-layer {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    z-index: 10;
+    animation: layerDrift 55s ease-in-out infinite alternate;
+}
+
+@keyframes layerDrift {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(0.8%, -0.6%, 0); }
+}
+
+.spot-object-wrap {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 12;
+}
+
+.spot-object {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: white;
+    isolation: isolate;
+    width: 88px;
+    height: 88px;
+    margin-left: -44px;
+    margin-top: -44px;
+}
+
+.spot-object:hover {
+    z-index: 22;
+}
+
+/* invisible hover target */
+.hover-zone {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.spot-core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: white;
+    transition: transform 180ms ease;
+}
+
+.spot-core::before {
+    content: "";
+    position: absolute;
+    inset: -10px;
+    border-radius: 50%;
+    filter: blur(12px);
+    opacity: 0.54;
+    z-index: -1;
+}
+
+.spot-core::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 180%;
+    height: 2px;
+    transform: translate(-50%, -50%);
+    opacity: 0.28;
+    border-radius: 999px;
+    box-shadow: 0 0 12px currentColor;
+    z-index: -1;
+}
+
+.spot-flare {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 2px;
+    transform: translate(-50%, -50%);
+    opacity: 0.22;
+    border-radius: 999px;
+    pointer-events: none;
+    box-shadow: 0 0 12px currentColor;
+}
+
+.object-hero .spot-core {
+    width: 11px;
+    height: 11px;
+}
+.object-hero .spot-flare {
+    height: 22px;
+}
+
+.object-strong .spot-core {
+    width: 8px;
+    height: 8px;
+}
+.object-strong .spot-flare {
+    height: 18px;
+}
+
+.object-small .spot-core {
+    width: 4px;
+    height: 4px;
+}
+.object-small .spot-flare {
+    height: 10px;
+}
+
+.object-low .spot-core {
+    animation: twinkleSlow 3.7s ease-in-out infinite;
+}
+.object-medium .spot-core {
+    animation: twinkleMid 2.5s ease-in-out infinite;
+}
+.object-high .spot-core {
+    animation: twinkleFast 1.7s ease-in-out infinite;
+}
+
+.object-options .spot-core {
+    background: #ffd9ef;
+    color: #ff92d4;
+}
+.object-options .spot-core::before {
+    background: radial-gradient(circle, rgba(255, 146, 212, 0.72), rgba(135, 88, 255, 0.32), transparent 72%);
+}
+
+.object-equity .spot-core {
+    background: #e5f3ff;
+    color: #90c7ff;
+}
+.object-equity .spot-core::before {
+    background: radial-gradient(circle, rgba(144, 199, 255, 0.74), rgba(124, 77, 255, 0.24), transparent 72%);
+}
+
+.object-mixed .spot-core {
+    background: #fff3dc;
+    color: #ffd68f;
+}
+.object-mixed .spot-core::before {
+    background: radial-gradient(circle, rgba(255, 214, 143, 0.68), rgba(255, 147, 193, 0.28), transparent 72%);
+}
+
+.spot-object:hover .spot-core {
+    transform: translate(-50%, -50%) scale(1.12);
+}
+
+.spot-object:hover .spot-core::before {
+    opacity: 0.78;
+    filter: blur(16px);
+}
+
+.star-hud {
+    position: absolute;
+    left: 54px;
+    top: 12px;
+    min-width: 220px;
+    max-width: 260px;
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+    transition: opacity 220ms ease, transform 220ms ease;
+    transition-delay: 0ms;
+    pointer-events: none;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.45);
+}
+
+.spot-object:hover .star-hud {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 220ms;
+}
+
+.hud-symbol {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.hud-line {
+    margin-top: 4px;
+    font-size: 0.82rem;
+    opacity: 0.88;
+    line-height: 1.35;
+}
+
+.hud-meta {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.hud-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.10);
+    backdrop-filter: blur(6px);
+}
+
+.hud-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    pointer-events: auto;
+}
+
+.hud-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-decoration: none;
+    color: white;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.12);
+}
+
+.hud-btn.execute {
+    background: linear-gradient(135deg, rgba(255, 126, 201, 0.28), rgba(124, 77, 255, 0.28));
+    border-color: rgba(255,255,255,0.16);
+}
+
+@media (max-width: 820px) {
+    .cosmos-header {
+        top: 18px;
+        left: 18px;
+        right: 18px;
+    }
+
+    .cosmos-sub {
+        max-width: 260px;
+    }
+
+    .star-hud {
+        left: 42px;
+        min-width: 160px;
+        max-width: 190px;
+    }
+
+    .spot-object {
+        width: 72px;
+        height: 72px;
+        margin-left: -36px;
+        margin-top: -36px;
+    }
+}
+</style>
+
+{% set sections = v2_spotlight.get("lane_sections", []) if v2_spotlight else [] %}
+{% set side_panels = v2_spotlight.get("side_panels", []) if v2_spotlight else [] %}
+{% set meta = v2_spotlight.get("meta", {}) if v2_spotlight else {} %}
+{% set modes = spotlight_modes if spotlight_modes else {} %}
+
+{% set ns = namespace(objects=[]) %}
+{% for section in sections %}
+    {% for item in section.get("items", []) %}
+        {% set lane = item.get("lane", "equity") %}
+        {% set lane_class = "object-options" if lane == "options" else "object-equity" %}
+        {% set pressure = item.get("pressure_level", "medium") %}
+        {% set pressure_class = "object-high" if pressure == "high" else "object-medium" if pressure == "medium" else "object-low" %}
+        {% set size_class = "object-hero" if section.get("key") == "featured_now" and loop.index0 < 2 else "object-strong" if pressure != "low" else "object-small" %}
+
+        {% set imminent = "move could be close" if pressure == "high" else "worth watching closely" if pressure == "medium" else "still early" %}
+        {% set action_line = "structure looks close" if item.get("structure") else "watch the setup tighten" %}
+
+        {% set object = {
+            "symbol": item.get("symbol"),
+            "summary": item.get("summary", ""),
+            "lane": lane,
+            "direction": item.get("direction", ""),
+            "pressure": pressure,
+            "destination": item.get("destination", "/signals"),
+            "target_dte": item.get("target_dte", ""),
+            "structure": item.get("structure", ""),
+            "size_class": size_class,
+            "lane_class": lane_class,
+            "pressure_class": pressure_class,
+            "imminent": imminent,
+            "action_line": action_line
+        } %}
+        {% set ns.objects = ns.objects + [object] %}
+    {% endfor %}
+{% endfor %}
+
+{% for panel in side_panels %}
+    {% for item in panel.get("items", [])[:12] %}
+        {% set object = {
+            "symbol": item.get("symbol"),
+            "summary": item.get("reason", ""),
+            "lane": item.get("lane", "equity"),
+            "direction": "",
+            "pressure": "low",
+            "destination": item.get("destination", "/signals"),
+            "target_dte": "",
+            "structure": "",
+            "size_class": "object-small",
+            "lane_class": "object-mixed",
+            "pressure_class": "object-low",
+            "imminent": "not ready yet",
+            "action_line": "leave it on watch"
+        } %}
+        {% set ns.objects = ns.objects + [object] %}
+    {% endfor %}
+{% endfor %}
+
+<div class="cosmos-shell">
+    <div class="nebula-layer nebula-a"></div>
+    <div class="nebula-layer nebula-b"></div>
+    <div class="milky-band"></div>
+
+    <div class="cosmos-header">
+        <div class="cosmos-title">spotlight</div>
+        <div class="cosmos-sub">drifting through what matters most right now</div>
+        <div class="cosmos-chip-row">
+            <span class="cosmos-chip">{{ meta.get("page_mode", "hybrid") }}</span>
+            <span class

@@ -124,5 +124,68 @@
     "refreshed_at": "2026-03-31T21:18:49.795525",
     "refreshed_at_ts": 1774991929,
     "source": "yfinance_then_google"
+  },
+  "DVN": {
+    "items": [
+      {
+        "title": "Devon Energy (DVN) Suffers a Larger Drop Than the General Market: Key Insights",
+        "summary": "In the latest trading session, Devon Energy (DVN) closed at $51.52, marking a -1.06% move from the previous day.",
+        "source": "Zacks",
+        "published_at": "2026-03-30T21:50:04Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/devon-energy-dvn-suffers-larger-215004955.html"
+      },
+      {
+        "title": "Devon Energy Corporation (DVN) is Attracting Investor Attention: Here is What You Should Know",
+        "summary": "Zacks.com users have recently been watching Devon Energy (DVN) quite a bit. Thus, it is worth knowing the facts that could determine the stock's prospects.",
+        "source": "Zacks",
+        "published_at": "2026-03-30T13:00:06Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/devon-energy-corporation-dvn-attracting-130006116.html"
+      },
+      {
+        "title": "Top oil and energy stocks to watch as crude swings on Iran war",
+        "summary": "Chevron, Exxon, Devon and other energy shares rally amid Middle East conflict and supply fears.",
+        "source": "Yahoo Finance UK",
+        "published_at": "2026-03-30T09:13:02Z",
+        "url": "https://uk.finance.yahoo.com/news/oil-stocks-prices-crude-iran-middle-east-130741431.html"
+      },
+      {
+        "title": "Does Devon Energy\u2019s (DVN) Cheaper, Longer Credit Line Quietly Reframe Its Balance Sheet Playbook?",
+        "summary": "On March 24, 2026, Devon Energy Corporation amended its revolving credit facility, extending the maturity to March 24, 2031 and removing a 10 basis point SOFR credit spread adjustment, while renewing options for three additional one-year extensions subject to lender approval. This shift in borrowing terms modestly enhances Devon\u2019s financial flexibility, potentially supporting its ability to sustain capital investment and balance sheet resilience through commodity cycles. Next, we\u2019ll examine...",
+        "source": "Simply Wall St.",
+        "published_at": "2026-03-28T06:07:09Z",
+        "url": "https://finance.yahoo.com/sectors/energy/articles/does-devon-energy-dvn-cheaper-060709759.html"
+      },
+      {
+        "title": "Why Is Permian Resources (PR) Up 18.4% Since Last Earnings Report?",
+        "summary": "Permian Resources (PR) reported earnings 30 days ago. What's next for the stock? We take a look at earnings estimates for some clues.",
+        "source": "Zacks",
+        "published_at": "2026-03-27T15:30:10Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/why-permian-resources-pr-18-153010610.html"
+      },
+      {
+        "title": "Devon Energy (DVN) Ascends While Market Falls: Some Facts to Note",
+        "summary": "Devon Energy (DVN) closed at $51.35 in the latest trading session, marking a +1.86% move from the prior day.",
+        "source": "Zacks",
+        "published_at": "2026-03-26T22:00:02Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/devon-energy-dvn-ascends-while-220002215.html"
+      },
+      {
+        "title": "TD Cowen Lifts PT on Devon Energy (DVN) to $50 From $46 \u2013 Here\u2019s Why",
+        "summary": "Devon Energy Corporation (NYSE:DVN) is one of the best undervalued stocks under $50 to invest in now. On March 17, TD Cowen lifted the price target on Devon Energy Corporation (NYSE:DVN) to $50 from $46 and maintained a Hold rating on the shares. The firm released the rating update as it updated exploration and production models [\u2026]",
+        "source": "Insider Monkey",
+        "published_at": "2026-03-25T19:07:11Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/td-cowen-lifts-pt-devon-190711397.html"
+      },
+      {
+        "title": "Red-Hot Oil Stock Flashing Ominous Bear Signal",
+        "summary": "Devon Energy has added over 37% this quarter, but is climbing into \"overbought\" territory",
+        "source": "Schaeffer's Investment Research",
+        "published_at": "2026-03-25T18:38:50Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/red-hot-oil-stock-flashing-183850169.html"
+      }
+    ],
+    "refreshed_at": "2026-03-31T22:00:01.405876",
+    "refreshed_at_ts": 1774994400,
+    "source": "yfinance_then_google"
   }
 }
