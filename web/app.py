@@ -526,6 +526,11 @@ def inject_global_context():
             "volatility": "Normal",
             "engine_state": "Unknown",
         }),
+        "execution_summary": safe_run(
+            "execution_summary",
+            lambda: load_json("data/execution_summary.json", {}),
+            {},
+        ),
     }
 
 
@@ -3172,7 +3177,9 @@ def dashboard_page():
 
         snapshot_block = item.get("snapshot", {})
         if isinstance(snapshot_block, dict):
-            equity_values.append(snapshot_block.get("estimated_account_value", 0))
+            equity_values.append(
+                snapshot_block.get("estimated_account_value", 0)
+            )
 
         equity_labels.append(item.get("timestamp", ""))
 
@@ -3206,6 +3213,11 @@ def dashboard_page():
                 "snapshot": snapshot,
                 "system": system,
                 "reports": reports,
+                "execution_summary": safe_run(
+                    "execution_summary",
+                    lambda: load_json("data/execution_summary.json", {}),
+                    {},
+                ),
                 "v2_dashboard": v2_dashboard,
             }
         ),
