@@ -1,0 +1,69 @@
+{
+  "market_universe_run_at": "2026-03-31T02:21:37.693369",
+  "market_universe_count": 163,
+  "market_universe_source_status": {
+    "diversity_seed": {
+      "ok": true,
+      "rows_added_estimate": 29
+    },
+    "equity_seed": {
+      "ok": true,
+      "rows_added_estimate": 125
+    },
+    "signals": {
+      "ok": true,
+      "rows_added_estimate": 9,
+      "source_rows": 86
+    },
+    "symbol_intelligence": {
+      "ok": true,
+      "rows_added_estimate": 0,
+      "source_rows": 86
+    },
+    "symbol_meta": {
+      "ok": true,
+      "rows_added_estimate": 0,
+      "source_rows": 86
+    },
+    "symbol_news": {
+      "ok": true,
+      "rows_added_estimate": 0,
+      "source_rows": 0
+    },
+    "candidate_log": {
+      "ok": true,
+      "rows_added_estimate": 0,
+      "source_rows": 8
+    },
+    "trade_details": {
+      "ok": true,
+      "rows_added_estimate": 0,
+      "source_rows": 217
+    },
+    "positions": {
+      "ok": true,
+      "rows_added_estimate": 0,
+      "source_rows": 0
+    },
+    "open_positions": {
+      "ok": true,
+      "rows_added_estimate": 0,
+      "source_rows": 0
+    },
+    "closed_positions": {
+      "ok": true,
+      "rows_added_estimate": 0,
+      "source_rows": 16
+    },
+    "user_positions": {
+      "ok": true,
+      "rows_added_estimate": 0,
+      "source_rows": 1
+    },
+    "my_plays": {
+      "ok": true,
+      "rows_added_estimate": 0,
+      "source_rows": 1
+    }
+  }
+}

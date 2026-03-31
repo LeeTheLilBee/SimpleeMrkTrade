@@ -28,7 +28,7 @@ Output shape per symbol:
 ===========================================================
 """
 
-from typing import Dict, List
+from typing import Any, Dict, List
 from engine.trade_intelligence import build_trade_intelligence
 
 

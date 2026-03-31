@@ -1,8 +1,16 @@
 """
+===========================================================
 ENGINE SELECTION SYSTEM
+-----------------------------------------------------------
+Builds a controlled execution universe from the broader
+signal universe.
+
+This is NOT the display layer.
+This is the simulation eligibility layer.
+===========================================================
 """
 
-from typing import Dict, List
+from typing import Any, Dict, List
 
 
 def normalize_market_regime(system_state: Dict) -> str:
@@ -54,19 +62,23 @@ def passes_trade_gate(signal: Dict, system_state: Dict) -> bool:
     raw_score = int(signal.get("score", signal.get("latest_score", 0)) or 0)
     confidence = str(signal.get("confidence", signal.get("latest_confidence", "LOW"))).upper()
 
+    # Base threshold
     min_score = 70
 
+    # Market-aware tightening
     if regime == "weak":
         min_score += 15
     elif regime == "neutral":
         min_score += 5
 
+    # Volatility-aware tightening
     if volatility == "high":
         min_score += 10
 
     if raw_score < min_score:
         return False
 
+    # Only block LOW confidence in weak markets
     if regime == "weak" and confidence == "LOW":
         return False
 
@@ -79,12 +91,16 @@ def max_active_candidates(system_state: Dict) -> int:
 
     if regime == "strong" and volatility in {"low", "normal"}:
         return 15
+
     if regime == "strong" and volatility == "high":
         return 10
+
     if regime == "neutral" and volatility == "normal":
         return 8
+
     if regime == "neutral" and volatility == "high":
         return 6
+
     if regime == "weak":
         return 4
 

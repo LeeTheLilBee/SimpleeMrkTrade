@@ -1,14 +1,12 @@
 import os
 import sys
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 import json
 from pathlib import Path
-from engine.market_universe import (
-    load_market_universe,
-    refresh_market_universe,
-    refresh_market_universe_if_stale,
-    get_market_universe_summary,
-)
-from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from flask import (
@@ -23,7 +21,20 @@ from flask import (
 )
 from jinja2 import TemplateNotFound
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import engine.market_universe as market_universe
+
+# compatibility wrappers so the rest of app.py does not need to change
+def load_market_universe():
+    return market_universe.load_market_universe()
+
+def refresh_market_universe():
+    return market_universe.refresh_market_universe()
+
+def refresh_market_universe_if_stale(max_age_hours: int = 12):
+    return market_universe.refresh_market_universe_if_stale(max_age_hours=max_age_hours)
+
+def get_market_universe_summary():
+    return market_universe.get_market_universe_summary()
 
 from engine.my_plays import (
     get_my_plays,
@@ -37,20 +48,13 @@ from engine.my_plays import (
     update_user_position,
     close_user_position,
     analyze_user_trades,
-    classify_trade_outcome,
-    build_behavior_risk_summary_from_analysis,
-    build_behavior_priority_engine,
-    build_my_plays_page_summary,
-    build_play_detail_summary,
-    build_my_positions_page_summary,
-    build_position_detail_summary,
-    build_trade_analysis_summary,
 )
 
-from engine.symbols import load_symbol_news, refresh_symbol_news, refresh_news_for_symbols
+from engine.symbols import load_symbol_news, refresh_symbol_news
 
 from engine.admin_product_analytics import (
     log_event,
+    maybe_track_page_view,
     track_symbol_click,
     track_trade_click,
     track_upgrade_click,
@@ -71,13 +75,87 @@ from engine.portfolio_intelligence import evaluate_portfolio
 from engine.alert_engine import generate_alerts
 from engine.system_brain import build_system_brain
 
-
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "simpleemrktrade-dev-key-change-later"
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "simpleemrktrade-dev-key-change-later"
 
+# SECTION 13G — AUTOMATIC market_universe HOOK
 
+from datetime import datetime, timedelta
+
+_AUTO_REFRESH_STATE = {
+    "last_attempt_at": None,
+    "last_success_at": None,
+    "last_error": "",
+}
+
+
+def ensure_market_universe_ready(force: bool = False, max_age_hours: int = 12, min_retry_seconds: int = 300):
+    """
+    Keeps market_universe wired in automatically without refreshing constantly.
+    - refreshes if missing
+    - refreshes if stale
+    - throttles repeated retries after failures
+    """
+    global _AUTO_REFRESH_STATE
+
+    now = datetime.now()
+    last_attempt_at = _AUTO_REFRESH_STATE.get("last_attempt_at")
+
+    if not force and last_attempt_at:
+        if now - last_attempt_at < timedelta(seconds=min_retry_seconds):
+            return {
+                "ok": bool(_AUTO_REFRESH_STATE.get("last_success_at")),
+                "skipped": True,
+                "reason": "retry_throttled",
+                "state": dict(_AUTO_REFRESH_STATE),
+            }
+
+    _AUTO_REFRESH_STATE["last_attempt_at"] = now
+    summary_before = {}
+
+    try:
+        summary_before = market_universe.get_market_universe_summary() or {}
+    except Exception:
+        summary_before = {}
+
+    total_before = int(summary_before.get("total", 0) or 0)
+
+    try:
+        needs_refresh = force or total_before == 0 or market_universe.market_universe_is_stale(max_age_hours=max_age_hours)
+
+        if needs_refresh:
+            rows = market_universe.refresh_market_universe()
+            _AUTO_REFRESH_STATE["last_success_at"] = datetime.now().isoformat()
+            _AUTO_REFRESH_STATE["last_error"] = ""
+            return {
+                "ok": True,
+                "refreshed": True,
+                "row_count": len(rows) if isinstance(rows, list) else 0,
+                "state": dict(_AUTO_REFRESH_STATE),
+            }
+
+        rows = market_universe.load_market_universe()
+        _AUTO_REFRESH_STATE["last_success_at"] = datetime.now().isoformat()
+        _AUTO_REFRESH_STATE["last_error"] = ""
+        return {
+            "ok": True,
+            "refreshed": False,
+            "row_count": len(rows) if isinstance(rows, list) else 0,
+            "state": dict(_AUTO_REFRESH_STATE),
+        }
+
+    except Exception as e:
+        _AUTO_REFRESH_STATE["last_error"] = str(e)
+        return {
+            "ok": False,
+            "refreshed": False,
+            "error": str(e),
+            "state": dict(_AUTO_REFRESH_STATE),
+        }
+
+        
 @app.before_request
 def auto_refresh_market_universe():
     try:
@@ -404,6 +482,11 @@ def get_unread_notifications() -> int:
 
 @app.context_processor
 def inject_global_context():
+    try:
+        ensure_market_universe_ready()
+    except Exception as e:
+        print(f"[MARKET_UNIVERSE_AUTO_CHECK] {e}")
+
     return {
         "user": safe_run("get_current_user", get_current_user, {
             "username": None,
@@ -720,7 +803,14 @@ def build_admin_shared_context():
     except Exception:
         quick_actions = {"actions": []}
 
-alert_explanations = build_shared_operator_alert_explanations(surface_alerts)
+    try:
+        alert_explanations = build_shared_operator_alert_explanations(surface_alerts)
+    except Exception:
+        alert_explanations = {
+            "headline": "Shared operator alerts explanation layer",
+            "summary": "Alert explanation is temporarily unavailable.",
+            "items": [],
+        }
 
     return {
         "plays": plays,
@@ -4544,13 +4634,16 @@ def admin_refresh_market_universe():
         return redirect(url_for("dashboard_page"))
 
     try:
-        rows = refresh_market_universe()
-        print(f"[ADMIN_REFRESH_MARKET_UNIVERSE] refreshed {len(rows)} rows")
+        result = ensure_market_universe_ready(
+            force=True,
+            max_age_hours=12,
+            min_retry_seconds=0,
+        )
+        print(f"[ADMIN_REFRESH_MARKET_UNIVERSE] {result}")
     except Exception as e:
         print(f"[ADMIN_REFRESH_MARKET_UNIVERSE] {e}")
 
     return redirect(request.referrer or url_for("admin_diagnostics_page"))
-
 
 @app.route("/admin/refresh-news-cache")
 def admin_refresh_news_cache():
@@ -4582,6 +4675,18 @@ def admin_product_analytics_page():
             "analytics": analytics,
         }),
     )
+
+
+# SECTION 13H — STARTUP SAFETY HOOK
+
+if __name__ == "__main__":
+    try:
+        startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
+        print("market_universe startup:", startup_result)
+    except Exception as e:
+        print("market_universe startup failed:", e)
+
+    app.run(host="0.0.0.0", port=5000, debug=True)
 
 
 if __name__ == "__main__":
