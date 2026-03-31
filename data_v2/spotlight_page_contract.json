@@ -1,5 +1,5 @@
 {
-  "username": "solice",
+  "username": "admin",
   "hero": {
     "title": "Signals Spotlight",
     "summary": "The strongest live ideas the system wants to put in front of you first.",
@@ -539,7 +539,7 @@
     }
   ],
   "meta": {
-    "rebuilt_at": "2026-03-31T14:36:08.840430",
+    "rebuilt_at": "2026-03-31T18:46:34.277630",
     "page_mode": "hybrid",
     "lane_section_count": 4,
     "side_panel_count": 1
