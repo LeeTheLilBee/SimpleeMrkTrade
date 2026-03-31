@@ -2,223 +2,526 @@
 
 {% block content %}
 <style>
+html, body {
+    min-height: 100%;
+    background: radial-gradient(ellipse at bottom, #080611 0%, #030208 100%);
+}
 
-/* ===== FULL SKY ===== */
 body {
-    background: radial-gradient(ellipse at bottom, #0b0a18 0%, #05040d 100%);
     overflow-x: hidden;
 }
 
-/* remove boxed feel */
-.main-container, .container {
+.main-container, .container, main {
     max-width: none !important;
+    width: 100% !important;
     padding: 0 !important;
+    margin: 0 !important;
 }
 
-/* ===== SKY CANVAS ===== */
-.sky {
+/* ===== FULL COSMIC SURFACE ===== */
+.cosmos-shell {
     position: relative;
+    min-height: 100vh;
     width: 100%;
-    height: 100vh;
     overflow: hidden;
-}
-
-/* ===== NEBULA (MILKY WAY FEEL) ===== */
-.nebula {
-    position: absolute;
-    width: 160%;
-    height: 160%;
-    top: -30%;
-    left: -30%;
-    pointer-events: none;
-    opacity: 0.35;
-    filter: blur(80px);
-
+    color: white;
     background:
-        radial-gradient(circle at 30% 40%, rgba(140, 90, 255, 0.25), transparent 40%),
-        radial-gradient(circle at 70% 60%, rgba(255, 90, 170, 0.20), transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(90, 160, 255, 0.15), transparent 60%);
-
-    animation: nebulaShift 60s linear infinite;
+        radial-gradient(circle at 20% 25%, rgba(122, 77, 255, 0.12), transparent 24%),
+        radial-gradient(circle at 72% 38%, rgba(255, 102, 196, 0.08), transparent 26%),
+        radial-gradient(circle at 58% 78%, rgba(84, 160, 255, 0.08), transparent 22%),
+        linear-gradient(180deg, #070510 0%, #04030a 100%);
 }
 
-@keyframes nebulaShift {
+/* ===== MILKY WAY / NEBULA LAYERS ===== */
+.nebula-layer {
+    position: absolute;
+    inset: -20%;
+    pointer-events: none;
+    filter: blur(70px);
+    opacity: 0.45;
+}
+
+.nebula-a {
+    background:
+        radial-gradient(circle at 30% 40%, rgba(124, 77, 255, 0.22), transparent 28%),
+        radial-gradient(circle at 52% 52%, rgba(255, 91, 181, 0.16), transparent 24%),
+        radial-gradient(circle at 68% 60%, rgba(88, 156, 255, 0.14), transparent 30%);
+    animation: nebulaDriftA 55s ease-in-out infinite alternate;
+}
+
+.nebula-b {
+    background:
+        radial-gradient(circle at 40% 48%, rgba(182, 108, 255, 0.14), transparent 24%),
+        radial-gradient(circle at 62% 46%, rgba(255, 184, 92, 0.08), transparent 18%),
+        radial-gradient(circle at 78% 54%, rgba(255, 121, 196, 0.10), transparent 18%);
+    opacity: 0.32;
+    animation: nebulaDriftB 80s linear infinite;
+}
+
+.milky-band {
+    position: absolute;
+    left: -10%;
+    top: 12%;
+    width: 140%;
+    height: 32%;
+    transform: rotate(-10deg);
+    pointer-events: none;
+    opacity: 0.22;
+    filter: blur(34px);
+    background:
+        linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(142, 96, 255, 0.12) 18%,
+            rgba(255, 124, 196, 0.18) 38%,
+            rgba(111, 166, 255, 0.14) 56%,
+            rgba(255, 220, 140, 0.08) 72%,
+            transparent 100%
+        );
+    animation: milkyFloat 70s ease-in-out infinite alternate;
+}
+
+@keyframes nebulaDriftA {
+    0% { transform: translate(-2%, -1%) scale(1); }
+    100% { transform: translate(2%, 2%) scale(1.06); }
+}
+
+@keyframes nebulaDriftB {
     0% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(2deg) scale(1.05); }
+    50% { transform: rotate(1deg) scale(1.03); }
     100% { transform: rotate(0deg) scale(1); }
 }
 
-/* ===== STAR FIELD ===== */
-.star {
-    position: absolute;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: transform 200ms ease, box-shadow 200ms ease;
+@keyframes milkyFloat {
+    0% { transform: rotate(-10deg) translateY(0px); }
+    100% { transform: rotate(-8deg) translateY(18px); }
 }
 
-/* glow */
-.star::before {
+/* ===== HEADER ===== */
+.cosmos-header {
+    position: absolute;
+    top: 26px;
+    left: 28px;
+    z-index: 30;
+    display: grid;
+    gap: 10px;
+}
+
+.cosmos-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: lowercase;
+}
+
+.cosmos-sub {
+    font-size: 0.88rem;
+    opacity: 0.72;
+    max-width: 340px;
+    line-height: 1.35;
+}
+
+.cosmos-chip-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cosmos-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(6px);
+}
+
+/* ===== STARFIELD LAYERS ===== */
+.starfield {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.bg-star {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 6px rgba(255,255,255,0.4);
+    pointer-events: none;
+}
+
+.bg-star.tiny {
+    width: 1px;
+    height: 1px;
+}
+
+.bg-star.small {
+    width: 2px;
+    height: 2px;
+}
+
+.bg-star.medium {
+    width: 3px;
+    height: 3px;
+}
+
+.bg-star.blue {
+    background: #8fc5ff;
+    box-shadow: 0 0 8px rgba(143,197,255,0.42);
+}
+
+.bg-star.pink {
+    background: #ffb0e0;
+    box-shadow: 0 0 8px rgba(255,176,224,0.38);
+}
+
+.bg-star.gold {
+    background: #ffe2a8;
+    box-shadow: 0 0 8px rgba(255,226,168,0.30);
+}
+
+.bg-star.purple {
+    background: #d2b3ff;
+    box-shadow: 0 0 8px rgba(210,179,255,0.36);
+}
+
+@keyframes twinkleSlow {
+    0%,100% { opacity: 0.22; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+@keyframes twinkleMid {
+    0%,100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.18); }
+}
+
+@keyframes twinkleFast {
+    0%,100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.24); }
+}
+
+/* ===== SPOTLIGHT OBJECT LAYER ===== */
+.spotlight-layer {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    z-index: 10;
+}
+
+.spot-object-wrap {
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.spot-object {
+    position: relative;
+    display: block;
+    border-radius: 50%;
+    text-decoration: none;
+    color: white;
+    transition: transform 220ms ease, filter 220ms ease;
+    isolation: isolate;
+}
+
+.spot-object:hover {
+    transform: scale(1.06);
+    z-index: 25;
+}
+
+/* shared aura */
+.spot-object::before {
     content: "";
     position: absolute;
-    inset: -6px;
+    inset: -18px;
     border-radius: 50%;
-    filter: blur(8px);
-    opacity: 0.6;
+    filter: blur(18px);
+    opacity: 0.48;
+    animation: auraPulse 4.2s ease-in-out infinite;
+    z-index: -1;
 }
 
-/* twinkle */
-@keyframes twinkleLow {
-    0%,100% { opacity: 0.4; }
-    50% { opacity: 0.7; }
+@keyframes auraPulse {
+    0%, 100% { transform: scale(0.96); opacity: 0.35; }
+    50% { transform: scale(1.08); opacity: 0.62; }
 }
 
-@keyframes twinkleMed {
-    0%,100% { opacity: 0.6; }
-    50% { opacity: 1; }
+/* object sizes */
+.object-planet {
+    width: 28px;
+    height: 28px;
 }
 
-@keyframes twinkleHigh {
-    0%,100% { opacity: 0.7; }
-    50% { opacity: 1.2; }
+.object-star {
+    width: 15px;
+    height: 15px;
 }
 
-/* sizes */
-.star.small { width: 6px; height: 6px; }
-.star.medium { width: 10px; height: 10px; }
-.star.large { width: 16px; height: 16px; }
-
-/* pressure = glow + animation */
-.star.low {
-    animation: twinkleLow 3s infinite ease-in-out;
-}
-.star.medium {
-    animation: twinkleMed 2.2s infinite ease-in-out;
-}
-.star.high {
-    animation: twinkleHigh 1.6s infinite ease-in-out;
+.object-distant {
+    width: 9px;
+    height: 9px;
 }
 
-/* colors */
-.star.blue { background: #7cc4ff; }
-.star.purple { background: #b07cff; }
-.star.pink { background: #ff7ccf; }
-.star.gold { background: #ffd27c; }
-
-/* glow colors */
-.star.blue::before { background: #7cc4ff; }
-.star.purple::before { background: #b07cff; }
-.star.pink::before { background: #ff7ccf; }
-.star.gold::before { background: #ffd27c; }
-
-/* hover bloom */
-.star:hover {
-    transform: scale(1.6);
-    box-shadow: 0 0 20px rgba(255,255,255,0.4);
+/* pressure / conviction animation */
+.object-low {
+    animation: twinkleSlow 3.8s ease-in-out infinite;
+}
+.object-medium {
+    animation: twinkleMid 2.6s ease-in-out infinite;
+}
+.object-high {
+    animation: twinkleFast 1.8s ease-in-out infinite;
 }
 
-/* ===== HUD INFO ===== */
-.star-info {
+/* lane colors */
+.object-options {
+    background: radial-gradient(circle at 35% 35%, #ffd6ef 0%, #ff89d0 35%, #8c59ff 100%);
+}
+.object-options::before {
+    background: radial-gradient(circle, rgba(255, 102, 196, 0.65), rgba(140, 89, 255, 0.40), transparent 72%);
+}
+
+.object-equity {
+    background: radial-gradient(circle at 35% 35%, #dff0ff 0%, #8ac3ff 42%, #7c4dff 100%);
+}
+.object-equity::before {
+    background: radial-gradient(circle, rgba(111, 178, 255, 0.62), rgba(124, 77, 255, 0.34), transparent 72%);
+}
+
+.object-mixed {
+    background: radial-gradient(circle at 35% 35%, #fff0d9 0%, #ffd58b 34%, #ff8fbb 62%, #7c4dff 100%);
+}
+.object-mixed::before {
+    background: radial-gradient(circle, rgba(255, 213, 139, 0.46), rgba(255, 143, 187, 0.42), rgba(124, 77, 255, 0.28), transparent 72%);
+}
+
+/* gas giant ring */
+.spot-object.object-planet::after {
+    content: "";
     position: absolute;
+    left: -10px;
+    top: 9px;
+    width: 48px;
+    height: 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.18);
+    transform: rotate(-18deg);
+    opacity: 0.42;
     pointer-events: none;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: all 200ms ease;
-    color: white;
-    font-size: 0.85rem;
 }
 
-/* delayed reveal (breath) */
-.star:hover + .star-info {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 180ms;
-}
-
-/* HUD text */
-.symbol {
-    font-weight: 700;
-}
-
-.label {
-    opacity: 0.8;
-    font-size: 0.8rem;
-}
-
-/* subtle header */
-.sky-header {
+/* ===== HUD REVEAL ===== */
+.star-hud {
     position: absolute;
-    top: 20px;
-    left: 24px;
-    z-index: 10;
-    color: white;
+    left: 18px;
+    top: 18px;
+    min-width: 170px;
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+    transition: opacity 220ms ease, transform 220ms ease;
+    transition-delay: 0ms;
+    pointer-events: none;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.45);
 }
 
-.sky-title {
-    font-size: 1.2rem;
+.spot-object:hover .star-hud {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 220ms;
+}
+
+.hud-symbol {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.hud-line {
+    margin-top: 4px;
+    font-size: 0.82rem;
+    opacity: 0.86;
+}
+
+.hud-meta {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.hud-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 0.66rem;
     font-weight: 700;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.10);
+    backdrop-filter: blur(6px);
 }
 
-.sky-sub {
-    font-size: 0.8rem;
-    opacity: 0.6;
+/* soft focus dimming */
+.spotlight-layer:hover .spot-object-wrap {
+    opacity: 0.48;
+    transition: opacity 200ms ease;
+}
+.spotlight-layer:hover .spot-object-wrap:hover {
+    opacity: 1;
 }
 
+/* mobile */
+@media (max-width: 820px) {
+    .cosmos-header {
+        top: 20px;
+        left: 18px;
+        right: 18px;
+    }
+
+    .cosmos-sub {
+        max-width: 260px;
+    }
+
+    .star-hud {
+        min-width: 130px;
+    }
+}
 </style>
 
-{% set sections = v2_spotlight.get("lane_sections", []) %}
+{% set sections = v2_spotlight.get("lane_sections", []) if v2_spotlight else [] %}
+{% set side_panels = v2_spotlight.get("side_panels", []) if v2_spotlight else [] %}
+{% set meta = v2_spotlight.get("meta", {}) if v2_spotlight else {} %}
 
-<div class="sky">
+{# Collect spotlight objects #}
+{% set ns = namespace(objects=[]) %}
+{% for section in sections %}
+    {% for item in section.get("items", []) %}
+        {% set lane = item.get("lane", "equity") %}
+        {% set lane_class = "object-options" if lane == "options" else "object-equity" %}
+        {% set pressure = item.get("pressure_level", "medium") %}
+        {% set pressure_class = "object-high" if pressure == "high" else "object-medium" if pressure == "medium" else "object-low" %}
+        {% set size_class = "object-planet" if section.get("key") == "featured_now" and loop.index0 < 2 else "object-star" if pressure != "low" else "object-distant" %}
 
-    <!-- nebula background -->
-    <div class="nebula"></div>
+        {% set object = {
+            "symbol": item.get("symbol"),
+            "headline": item.get("headline", ""),
+            "summary": item.get("summary", ""),
+            "lane": lane,
+            "direction": item.get("direction", ""),
+            "pressure": pressure,
+            "destination": item.get("destination", "/signals"),
+            "target_dte": item.get("target_dte", ""),
+            "structure": item.get("structure", ""),
+            "size_class": size_class,
+            "lane_class": lane_class,
+            "pressure_class": pressure_class
+        } %}
+        {% set ns.objects = ns.objects + [object] %}
+    {% endfor %}
+{% endfor %}
 
-    <!-- header -->
-    <div class="sky-header">
-        <div class="sky-title">spotlight</div>
-        <div class="sky-sub">look up. pick better.</div>
+{% for panel in side_panels %}
+    {% for item in panel.get("items", [])[:10] %}
+        {% set object = {
+            "symbol": item.get("symbol"),
+            "headline": "not ready yet",
+            "summary": item.get("reason", ""),
+            "lane": item.get("lane", "equity"),
+            "direction": "",
+            "pressure": "low",
+            "destination": item.get("destination", "/signals"),
+            "target_dte": "",
+            "structure": "",
+            "size_class": "object-distant",
+            "lane_class": "object-mixed",
+            "pressure_class": "object-low"
+        } %}
+        {% set ns.objects = ns.objects + [object] %}
+    {% endfor %}
+{% endfor %}
+
+<div class="cosmos-shell">
+    <div class="nebula-layer nebula-a"></div>
+    <div class="nebula-layer nebula-b"></div>
+    <div class="milky-band"></div>
+
+    <div class="cosmos-header">
+        <div class="cosmos-title">spotlight</div>
+        <div class="cosmos-sub">drifting through what matters most right now</div>
+        <div class="cosmos-chip-row">
+            <span class="cosmos-chip">{{ meta.get("page_mode", "hybrid") }}</span>
+            <span class="cosmos-chip">{{ meta.get("lane_section_count", 0) }} lanes</span>
+            <span class="cosmos-chip">live field</span>
+        </div>
     </div>
 
-    <!-- stars -->
-    {% for section in sections %}
-        {% for item in section.get("items", []) %}
+    {# Dense decorative stars #}
+    <div class="starfield">
+        {% for i in range(220) %}
+            {% set x = (i * 37 + 11) % 100 %}
+            {% set y = (i * 53 + 19) % 100 %}
+            {% set sz = "tiny" if i % 4 == 0 else "small" if i % 3 == 0 else "medium" %}
+            {% set col = "blue" if i % 5 == 0 else "pink" if i % 7 == 0 else "gold" if i % 11 == 0 else "purple" %}
+            {% set dur = "twinkleFast" if i % 9 == 0 else "twinkleMid" if i % 4 == 0 else "twinkleSlow" %}
+            <div
+                class="bg-star {{ sz }} {{ col }}"
+                style="left: {{ x }}%; top: {{ y }}%; animation: {{ dur }} {{ 2 + (i % 6) }}s ease-in-out infinite;"
+            ></div>
+        {% endfor %}
+    </div>
 
-            {% set pressure = item.get("pressure_level", "medium") %}
+    <div class="spotlight-layer">
+        {% for obj in ns.objects %}
+            {% set idx = loop.index0 %}
+            {% set x = (idx * 13 + 18) % 92 + 4 %}
+            {% set y = (idx * 17 + 24) % 78 + 12 %}
 
-            {% set size = "large" if loop.index0 < 2 else "medium" %}
-            {% set size = "small" if pressure == "low" else size %}
-
-            {% set color = "purple" %}
-            {% if item.get("lane") == "options" %}
-                {% set color = "pink" %}
-            {% elif item.get("lane") == "stocks" %}
-                {% set color = "blue" %}
+            {# Gentle clustering by lane #}
+            {% if obj.lane == "options" %}
+                {% set x = (x * 0.78) + 10 %}
+                {% set y = (y * 0.88) + 2 %}
+            {% elif obj.lane == "equity" %}
+                {% set x = (x * 0.82) + 18 %}
+                {% set y = (y * 0.84) + 8 %}
             {% endif %}
 
-            {% set x = (loop.index0 * 11 + 7) % 100 %}
-            {% set y = (loop.index0 * 17 + 13) % 100 %}
-
-            <a href="{{ item.get('destination') }}">
-                <div
-                    class="star {{ size }} {{ pressure }} {{ color }}"
-                    style="left: {{ x }}%; top: {{ y }}%;"
-                ></div>
-                <div class="star-info" style="left: {{ x }}%; top: calc({{ y }}% + 18px);">
-                    <div class="symbol">{{ item.get("symbol") }}</div>
-                    <div class="label">
-                        {% if pressure == "high" %}
-                            strong right now
-                        {% elif pressure == "medium" %}
-                            building
-                        {% else %}
-                            early
+            <div class="spot-object-wrap" style="left: {{ x }}%; top: {{ y }}%;">
+                <a href="{{ obj.destination }}" class="spot-object {{ obj.size_class }} {{ obj.lane_class }} {{ obj.pressure_class }}">
+                    <div class="star-hud">
+                        <div class="hud-symbol">{{ obj.symbol }}</div>
+                        <div class="hud-line">
+                            {% if obj.pressure == "high" %}
+                                strong right now
+                            {% elif obj.pressure == "medium" %}
+                                building quietly
+                            {% else %}
+                                early / outer field
+                            {% endif %}
+                        </div>
+                        {% if obj.summary %}
+                        <div class="hud-line">{{ obj.summary }}</div>
                         {% endif %}
+                        <div class="hud-meta">
+                            {% if obj.lane %}
+                            <span class="hud-pill">{{ obj.lane }}</span>
+                            {% endif %}
+                            {% if obj.direction %}
+                            <span class="hud-pill">{{ obj.direction }}</span>
+                            {% endif %}
+                            {% if obj.structure %}
+                            <span class="hud-pill">{{ obj.structure }}</span>
+                            {% endif %}
+                            {% if obj.target_dte %}
+                            <span class="hud-pill">DTE {{ obj.target_dte }}</span>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-            </a>
-
+                </a>
+            </div>
         {% endfor %}
-    {% endfor %}
-
+    </div>
 </div>
-
 {% endblock %}
