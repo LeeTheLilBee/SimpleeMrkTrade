@@ -1,0 +1,84 @@
+{
+  "status_cards": [
+    {
+      "key": "stage_1_core_system",
+      "label": "Stage 1 Core System",
+      "ok": true
+    },
+    {
+      "key": "stage_2_engine_split",
+      "label": "Stage 2 Engine Split",
+      "ok": true
+    },
+    {
+      "key": "stage_3_output_layer",
+      "label": "Stage 3 Output Layer",
+      "ok": true
+    },
+    {
+      "key": "stage_4_adaptive_ux",
+      "label": "Stage 4 Adaptive Ux",
+      "ok": true
+    },
+    {
+      "key": "stage_5_dashboard_nav",
+      "label": "Stage 5 Dashboard Nav",
+      "ok": true
+    },
+    {
+      "key": "stage_6_map_symbol_experience",
+      "label": "Stage 6 Map Symbol Experience",
+      "ok": true
+    },
+    {
+      "key": "stage_7_behavior_coaching",
+      "label": "Stage 7 Behavior Coaching",
+      "ok": true
+    }
+  ],
+  "route_cards": [
+    {
+      "route": "/dashboard",
+      "status": "ready",
+      "target_contract": "dashboard_contract.json"
+    },
+    {
+      "route": "/spotlight",
+      "status": "ready",
+      "target_contract": "spotlight_page_contract.json"
+    },
+    {
+      "route": "/market-map",
+      "status": "ready",
+      "target_contract": "market_map.json + market_map_interaction_contract.json + map_layer_toggle_contract.json"
+    },
+    {
+      "route": "/signals/<symbol>",
+      "status": "ready",
+      "target_contract": "symbol_hero_contract.json + symbol_deep_dive_contract.json + horizontal_hero_contract.json"
+    },
+    {
+      "route": "/research/rejections",
+      "status": "ready",
+      "target_contract": "rejection_feed.json"
+    },
+    {
+      "route": "/settings",
+      "status": "ready",
+      "target_contract": "experience_presets.json + onboarding_modes.json"
+    },
+    {
+      "route": "/admin/diagnostics",
+      "status": "ready",
+      "target_contract": "integration_status_contract.json"
+    }
+  ],
+  "summary": {
+    "all_groups_ready": true,
+    "route_ready_count": 7,
+    "status_group_count": 7
+  },
+  "meta": {
+    "rebuilt_at": "2026-03-31T16:34:25.743133"
+  }
+}

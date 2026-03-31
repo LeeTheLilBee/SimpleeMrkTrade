@@ -5,6 +5,8 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
+from engine_v2.dashboard_contract import build_dashboard_contract
+
 import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -155,7 +157,7 @@ def ensure_market_universe_ready(force: bool = False, max_age_hours: int = 12, m
             "state": dict(_AUTO_REFRESH_STATE),
         }
 
-        
+
 @app.before_request
 def auto_refresh_market_universe():
     try:
@@ -245,6 +247,22 @@ def render_template_safe(template_name: str, **context):
 # ============================================================
 # STABILITY HELPERS
 # ============================================================
+
+def get_v2_dashboard_contract(username: str):
+    try:
+        return build_dashboard_contract(username)
+    except Exception as e:
+        print(f"[V2_DASHBOARD_CONTRACT] {e}")
+        return {
+            "username": username,
+            "mode_bar": {},
+            "command_cards": [],
+            "sections": [],
+            "meta": {
+                "error": str(e),
+            },
+        }
+
 
 def safe_list(value):
     return value if isinstance(value, list) else []
@@ -3158,6 +3176,21 @@ def dashboard_page():
 
         equity_labels.append(item.get("timestamp", ""))
 
+    current_user = safe_run(
+        "get_current_user",
+        get_current_user,
+        {
+            "username": None,
+            "tier": "Guest",
+            "real_tier": "Guest",
+            "role": "member",
+            "preview_tier": None,
+        },
+    )
+
+    username = (current_user or {}).get("username") or "guest"
+    v2_dashboard = get_v2_dashboard_contract(username)
+
     return render_template_safe(
         "dashboard.html",
         **template_context(
@@ -3173,6 +3206,7 @@ def dashboard_page():
                 "snapshot": snapshot,
                 "system": system,
                 "reports": reports,
+                "v2_dashboard": v2_dashboard,
             }
         ),
     )

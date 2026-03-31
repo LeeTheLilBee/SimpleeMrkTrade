@@ -1,0 +1,29 @@
+{
+  "username": "solice",
+  "patterns": [
+    {
+      "key": "rapid_symbol_rotation",
+      "headline": "Rapid symbol rotation",
+      "message": "You opened several symbols in a short behavior window. That can dilute conviction and clarity.",
+      "severity": "medium"
+    },
+    {
+      "key": "repeat_focus_USO",
+      "headline": "Repeated focus on USO",
+      "message": "You came back to USO more than once. That may indicate stronger natural interest or unresolved uncertainty.",
+      "severity": "medium"
+    },
+    {
+      "key": "mode_shifting",
+      "headline": "Mode shifting behavior detected",
+      "message": "You changed system mode during this learning window. That can be useful, but it may also reflect searching for clarity.",
+      "severity": "low"
+    }
+  ],
+  "meta": {
+    "rebuilt_at": "2026-03-31T15:44:10.034855",
+    "pattern_count": 3,
+    "opened_symbol_count": 3,
+    "changed_mode_count": 1
+  }
+}

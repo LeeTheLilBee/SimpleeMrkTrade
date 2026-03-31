@@ -23,6 +23,19 @@
     <a href="/bot-log" class="cta-btn secondary">Bot Log</a>
 </div>
 
+{% if v2_dashboard %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>V2 Dashboard Bridge</h3>
+    <div class="passage-frame">
+        <p style="margin:0;">
+            Mode: {{ v2_dashboard.get("meta", {}).get("page_mode", "unknown") }}
+            | Sections: {{ v2_dashboard.get("meta", {}).get("section_count", 0) }}
+            | Cards: {{ v2_dashboard.get("meta", {}).get("command_card_count", 0) }}
+        </p>
+    </div>
+</div>
+{% endif %}
+
 <!-- CORE SYSTEM SNAPSHOT -->
 <div class="grid">
     <div class="card gold-accent-card">

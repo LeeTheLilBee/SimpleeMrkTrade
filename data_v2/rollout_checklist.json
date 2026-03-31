@@ -1,0 +1,37 @@
+{
+  "checklist": [
+    {
+      "key": "stage_groups_complete",
+      "label": "All stage groups complete",
+      "done": true
+    },
+    {
+      "key": "routes_planned",
+      "label": "Route wiring plan created",
+      "done": true
+    },
+    {
+      "key": "routes_ready",
+      "label": "All planned routes marked ready",
+      "done": true
+    },
+    {
+      "key": "admin_visibility_ready",
+      "label": "Admin diagnostics integration ready",
+      "done": true
+    },
+    {
+      "key": "safe_rollout_mode",
+      "label": "Safe contract-first rollout path in place",
+      "done": true
+    }
+  ],
+  "summary": {
+    "completed_count": 5,
+    "total_count": 5,
+    "ready_for_live_bridge": true
+  },
+  "meta": {
+    "rebuilt_at": "2026-03-31T16:42:49.192598"
+  }
+}

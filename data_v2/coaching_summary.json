@@ -1,0 +1,42 @@
+{
+  "username": "solice",
+  "insights": [
+    {
+      "type": "high_activity",
+      "headline": "You\u2019ve been moving quickly",
+      "message": "You\u2019ve opened several symbols in a short span. Consider slowing down to focus on your strongest ideas."
+    },
+    {
+      "type": "symbol_focus",
+      "headline": "You keep returning to USO",
+      "message": "This may be a signal worth deeper focus instead of jumping between symbols."
+    },
+    {
+      "type": "mode_shift",
+      "headline": "You changed your experience mode",
+      "message": "Your system state is adapting \u2014 keep an eye on whether it improves clarity."
+    }
+  ],
+  "event_summary": {
+    "username": "solice",
+    "event_count": 4,
+    "counts": {
+      "opened_symbol": 3,
+      "changed_mode": 1
+    },
+    "top_symbols": [
+      {
+        "symbol": "USO",
+        "count": 2
+      },
+      {
+        "symbol": "OXY",
+        "count": 1
+      }
+    ]
+  },
+  "meta": {
+    "rebuilt_at": "2026-03-31T15:44:10.032978",
+    "insight_count": 3
+  }
+}

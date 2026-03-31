@@ -1,0 +1,66 @@
+{
+  "enabled_on": [
+    "symbol_page"
+  ],
+  "disabled_on": [
+    "dashboard",
+    "market_map"
+  ],
+  "behavior": {
+    "layout": "horizontal_scroll",
+    "snap": true,
+    "dim_non_focus": true,
+    "focus_expand": true
+  },
+  "cards": [
+    {
+      "symbol": "USO",
+      "headline": "USO CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "lane": "options",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "destination": "/signals/USO"
+    },
+    {
+      "symbol": "OXY",
+      "headline": "OXY CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "lane": "options",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "destination": "/signals/OXY"
+    },
+    {
+      "symbol": "MRVL",
+      "headline": "MRVL CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "lane": "options",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "destination": "/signals/MRVL"
+    },
+    {
+      "symbol": "DVN",
+      "headline": "DVN CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "lane": "options",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "destination": "/signals/DVN"
+    },
+    {
+      "symbol": "HAL",
+      "headline": "HAL CALL \u2014 Steady Continuation",
+      "summary": "Options-ready CALL idea using call_debit_spread with target DTE around 14.",
+      "lane": "options",
+      "pressure_level": "high",
+      "confidence_tier": 1,
+      "destination": "/signals/HAL"
+    }
+  ],
+  "meta": {
+    "rebuilt_at": "2026-03-31T15:10:27.378649",
+    "card_count": 5
+  }
+}

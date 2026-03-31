@@ -1,0 +1,51 @@
+{
+  "username": "solice",
+  "lessons": [
+    {
+      "key": "slow_down",
+      "headline": "Slow the scan",
+      "lesson": "High activity can reduce clarity when too many symbols compete for attention.",
+      "action": "Try staying with the top one or two names before opening more.",
+      "severity": "medium"
+    },
+    {
+      "key": "follow_conviction",
+      "headline": "Follow repeated attention",
+      "lesson": "When you naturally return to the same symbol, it may deserve deeper structured review.",
+      "action": "Open the symbol deep dive instead of restarting a broad scan.",
+      "severity": "medium"
+    },
+    {
+      "key": "use_mode_changes_intentionally",
+      "headline": "Use mode changes intentionally",
+      "lesson": "Changing modes can help, but it works best when you know why you are switching.",
+      "action": "Pause and name what problem the new mode is solving before switching again.",
+      "severity": "low"
+    },
+    {
+      "key": "rotation_pattern",
+      "headline": "Rotation is becoming a pattern",
+      "lesson": "Repeated fast symbol switching may be turning exploration into noise.",
+      "action": "Use Focus Mode and commit to a shorter active list.",
+      "severity": "medium"
+    },
+    {
+      "key": "repeat_focus_USO",
+      "headline": "USO may deserve a deeper review",
+      "lesson": "You are coming back to USO, which may signal stronger conviction than your broader scanning behavior.",
+      "action": "Open USO in the symbol deep dive and compare both lanes carefully.",
+      "severity": "medium"
+    },
+    {
+      "key": "mode_shift_pattern",
+      "headline": "Mode shifting is showing up in your pattern log",
+      "lesson": "Repeated environment changes can either sharpen clarity or fragment it.",
+      "action": "Set a default mode for the session before scanning further.",
+      "severity": "low"
+    }
+  ],
+  "meta": {
+    "rebuilt_at": "2026-03-31T15:44:10.037768",
+    "lesson_count": 6
+  }
+}

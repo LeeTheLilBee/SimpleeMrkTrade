@@ -1,0 +1,49 @@
+{
+  "items": [
+    {
+      "username": "solice",
+      "event_type": "opened_symbol",
+      "symbol": "USO",
+      "context": {
+        "lane": "options"
+      },
+      "note": "Opened from spotlight",
+      "timestamp": "2026-03-31T15:19:24.236456"
+    },
+    {
+      "username": "solice",
+      "event_type": "opened_symbol",
+      "symbol": "OXY",
+      "context": {
+        "lane": "options"
+      },
+      "note": "Opened from market map",
+      "timestamp": "2026-03-31T15:19:24.237757"
+    },
+    {
+      "username": "solice",
+      "event_type": "changed_mode",
+      "symbol": "",
+      "context": {
+        "from": "balanced",
+        "to": "focus"
+      },
+      "note": "User switched modes",
+      "timestamp": "2026-03-31T15:19:24.239447"
+    },
+    {
+      "username": "solice",
+      "event_type": "opened_symbol",
+      "symbol": "USO",
+      "context": {
+        "lane": "options"
+      },
+      "note": "Returned to symbol",
+      "timestamp": "2026-03-31T15:19:24.240823"
+    }
+  ],
+  "meta": {
+    "updated_at": "2026-03-31T15:19:24.240842",
+    "count": 4
+  }
+}
