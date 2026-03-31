@@ -1,229 +1,224 @@
-{% extends "base.html" %}
+ {% extends "base.html" %}
 
 {% block content %}
 <style>
-/* ===== CORE ===== */
-.spotlight-shell {
-    display: grid;
-    gap: 18px;
+
+/* ===== FULL SKY ===== */
+body {
+    background: radial-gradient(ellipse at bottom, #0b0a18 0%, #05040d 100%);
+    overflow-x: hidden;
 }
 
-/* ===== HEADER ===== */
-.spotlight-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 16px;
-    border-radius: 18px;
-    background: linear-gradient(135deg, #0e0b1f, #15122b);
-    border: 1px solid rgba(150,120,255,0.18);
+/* remove boxed feel */
+.main-container, .container {
+    max-width: none !important;
+    padding: 0 !important;
 }
 
-.spotlight-title {
-    font-weight: 700;
+/* ===== SKY CANVAS ===== */
+.sky {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
 }
 
-.spotlight-sub {
-    font-size: 0.8rem;
+/* ===== NEBULA (MILKY WAY FEEL) ===== */
+.nebula {
+    position: absolute;
+    width: 160%;
+    height: 160%;
+    top: -30%;
+    left: -30%;
+    pointer-events: none;
+    opacity: 0.35;
+    filter: blur(80px);
+
+    background:
+        radial-gradient(circle at 30% 40%, rgba(140, 90, 255, 0.25), transparent 40%),
+        radial-gradient(circle at 70% 60%, rgba(255, 90, 170, 0.20), transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(90, 160, 255, 0.15), transparent 60%);
+
+    animation: nebulaShift 60s linear infinite;
+}
+
+@keyframes nebulaShift {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(2deg) scale(1.05); }
+    100% { transform: rotate(0deg) scale(1); }
+}
+
+/* ===== STAR FIELD ===== */
+.star {
+    position: absolute;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+/* glow */
+.star::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    filter: blur(8px);
     opacity: 0.6;
 }
 
-/* ===== GRID ===== */
-.spotlight-grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 14px;
+/* twinkle */
+@keyframes twinkleLow {
+    0%,100% { opacity: 0.4; }
+    50% { opacity: 0.7; }
 }
 
-/* ===== TILE ===== */
-.spotlight-tile {
-    position: relative;
-    border-radius: 18px;
-    padding: 16px;
-    min-height: 150px;
-    text-decoration: none;
-    color: white;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    background: linear-gradient(135deg, #141128, #0c0a18);
-    border: 1px solid rgba(255,255,255,0.05);
-
-    overflow: hidden;
-
-    transition: all 160ms ease;
+@keyframes twinkleMed {
+    0%,100% { opacity: 0.6; }
+    50% { opacity: 1; }
 }
 
-/* ===== GLOBAL GLOW FIELD ===== */
-.spotlight-tile::before {
-    content: "";
+@keyframes twinkleHigh {
+    0%,100% { opacity: 0.7; }
+    50% { opacity: 1.2; }
+}
+
+/* sizes */
+.star.small { width: 6px; height: 6px; }
+.star.medium { width: 10px; height: 10px; }
+.star.large { width: 16px; height: 16px; }
+
+/* pressure = glow + animation */
+.star.low {
+    animation: twinkleLow 3s infinite ease-in-out;
+}
+.star.medium {
+    animation: twinkleMed 2.2s infinite ease-in-out;
+}
+.star.high {
+    animation: twinkleHigh 1.6s infinite ease-in-out;
+}
+
+/* colors */
+.star.blue { background: #7cc4ff; }
+.star.purple { background: #b07cff; }
+.star.pink { background: #ff7ccf; }
+.star.gold { background: #ffd27c; }
+
+/* glow colors */
+.star.blue::before { background: #7cc4ff; }
+.star.purple::before { background: #b07cff; }
+.star.pink::before { background: #ff7ccf; }
+.star.gold::before { background: #ffd27c; }
+
+/* hover bloom */
+.star:hover {
+    transform: scale(1.6);
+    box-shadow: 0 0 20px rgba(255,255,255,0.4);
+}
+
+/* ===== HUD INFO ===== */
+.star-info {
     position: absolute;
-    inset: -50%;
-    opacity: 0.25;
-    filter: blur(50px);
-    animation: drift 8s linear infinite;
-}
-
-/* shared motion */
-@keyframes drift {
-    0% { transform: translateX(-10%) translateY(-10%); }
-    50% { transform: translateX(10%) translateY(10%); }
-    100% { transform: translateX(-10%) translateY(-10%); }
-}
-
-/* intensity colors */
-.tile-high::before {
-    background: radial-gradient(circle, #ff4db8, #7c4dff);
-}
-
-.tile-med::before {
-    background: radial-gradient(circle, #7c4dff, #ff9f4d);
-}
-
-.tile-low::before {
-    background: radial-gradient(circle, #4da6ff, #7c4dff);
-}
-
-/* ===== HOVER SYSTEM ===== */
-
-/* dim others */
-.spotlight-grid:hover .spotlight-tile {
-    opacity: 0.65;
-}
-
-.spotlight-tile:hover {
-    opacity: 1 !important;
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.45);
-}
-
-/* ===== CONTENT ===== */
-
-.symbol {
-    font-size: 1.2rem;
-    font-weight: 800;
-    letter-spacing: 0.03em;
-}
-
-/* ===== HOVER REVEAL ===== */
-
-.reveal {
+    pointer-events: none;
     opacity: 0;
-    transform: translateY(6px);
-    transition: all 220ms ease;
-    transition-delay: 0ms;
+    transform: translateY(8px);
+    transition: all 200ms ease;
+    color: white;
+    font-size: 0.85rem;
 }
 
-/* BREATH DELAY */
-.spotlight-tile:hover .reveal {
+/* delayed reveal (breath) */
+.star:hover + .star-info {
     opacity: 1;
     transform: translateY(0);
     transition-delay: 180ms;
 }
 
-/* ===== TEXT ===== */
-
-.reveal-label {
-    font-size: 0.85rem;
-    margin-top: 6px;
+/* HUD text */
+.symbol {
+    font-weight: 700;
 }
 
-.reveal-sub {
+.label {
+    opacity: 0.8;
     font-size: 0.8rem;
-    opacity: 0.75;
-    margin-top: 4px;
 }
 
-/* ===== SIZES ===== */
-
-.tile-featured { grid-column: span 6; min-height: 200px; }
-.tile-standard { grid-column: span 3; }
-.tile-side { grid-column: span 4; }
-
-/* ===== MOBILE ===== */
-@media (max-width: 900px) {
-    .tile-featured { grid-column: span 12; }
-    .tile-standard { grid-column: span 6; }
-    .tile-side { grid-column: span 12; }
+/* subtle header */
+.sky-header {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    z-index: 10;
+    color: white;
 }
+
+.sky-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.sky-sub {
+    font-size: 0.8rem;
+    opacity: 0.6;
+}
+
 </style>
 
 {% set sections = v2_spotlight.get("lane_sections", []) %}
-{% set side = v2_spotlight.get("side_panels", []) %}
 
-<div class="spotlight-shell">
+<div class="sky">
 
-    <div class="spotlight-header">
-        <div>
-            <div class="spotlight-title">Spotlight</div>
-            <div class="spotlight-sub">move slower. pick better.</div>
-        </div>
+    <!-- nebula background -->
+    <div class="nebula"></div>
+
+    <!-- header -->
+    <div class="sky-header">
+        <div class="sky-title">spotlight</div>
+        <div class="sky-sub">look up. pick better.</div>
     </div>
 
-    <div class="spotlight-grid">
+    <!-- stars -->
+    {% for section in sections %}
+        {% for item in section.get("items", []) %}
 
-        {% for section in sections %}
-            {% for item in section.get("items", []) %}
+            {% set pressure = item.get("pressure_level", "medium") %}
 
-                {% set pressure = item.get("pressure_level", "medium") %}
-                {% set cls = "tile-high" if pressure == "high" else "tile-med" if pressure == "medium" else "tile-low" %}
-                {% set size = "tile-featured" if loop.index0 < 2 and section.get("key") == "featured_now" else "tile-standard" %}
+            {% set size = "large" if loop.index0 < 2 else "medium" %}
+            {% set size = "small" if pressure == "low" else size %}
 
-                <a href="{{ item.get('destination') }}" class="spotlight-tile {{ cls }} {{ size }}">
+            {% set color = "purple" %}
+            {% if item.get("lane") == "options" %}
+                {% set color = "pink" %}
+            {% elif item.get("lane") == "stocks" %}
+                {% set color = "blue" %}
+            {% endif %}
 
-                    <!-- ALWAYS VISIBLE -->
-                    <div class="symbol">
-                        {{ item.get("symbol") }}
+            {% set x = (loop.index0 * 11 + 7) % 100 %}
+            {% set y = (loop.index0 * 17 + 13) % 100 %}
+
+            <a href="{{ item.get('destination') }}">
+                <div
+                    class="star {{ size }} {{ pressure }} {{ color }}"
+                    style="left: {{ x }}%; top: {{ y }}%;"
+                ></div>
+                <div class="star-info" style="left: {{ x }}%; top: calc({{ y }}% + 18px);">
+                    <div class="symbol">{{ item.get("symbol") }}</div>
+                    <div class="label">
+                        {% if pressure == "high" %}
+                            strong right now
+                        {% elif pressure == "medium" %}
+                            building
+                        {% else %}
+                            early
+                        {% endif %}
                     </div>
+                </div>
+            </a>
 
-                    <!-- HOVER REVEAL -->
-                    <div class="reveal">
-
-                        <div class="reveal-label">
-                            {% if pressure == "high" %}
-                                strong right now
-                            {% elif pressure == "medium" %}
-                                building quietly
-                            {% else %}
-                                early setup
-                            {% endif %}
-                        </div>
-
-                        <div class="reveal-sub">
-                            {% if item.get("direction") %}
-                                {{ item.get("direction") }}
-                            {% else %}
-                                watch this one
-                            {% endif %}
-                        </div>
-
-                    </div>
-
-                </a>
-
-            {% endfor %}
         {% endfor %}
+    {% endfor %}
 
-        <!-- REJECTIONS -->
-        {% for panel in side %}
-            {% for item in panel.get("items", []) %}
-                <a href="{{ item.get('destination') }}" class="spotlight-tile tile-side tile-low">
-
-                    <div class="symbol">
-                        {{ item.get("symbol") }}
-                    </div>
-
-                    <div class="reveal">
-                        <div class="reveal-label">not ready yet</div>
-                        <div class="reveal-sub">{{ item.get("reason", "") }}</div>
-                    </div>
-
-                </a>
-            {% endfor %}
-        {% endfor %}
-
-    </div>
 </div>
+
 {% endblock %}
