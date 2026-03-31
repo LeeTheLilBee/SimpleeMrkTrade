@@ -2,445 +2,250 @@
 
 {% block content %}
 <style>
+/* ===== FUTURISTIC SPOTLIGHT SYSTEM ===== */
+
 .spotlight-shell {
     display: grid;
-    gap: 18px;
+    gap: 20px;
 }
 
-.spotlight-topbar {
+/* ===== TOP BAR ===== */
+.spotlight-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 14px;
+    align-items: center;
+    gap: 16px;
     flex-wrap: wrap;
-    padding: 18px 20px;
-    border-radius: 24px;
-    background:
-        radial-gradient(circle at top left, rgba(170, 110, 255, 0.20), transparent 38%),
-        radial-gradient(circle at top right, rgba(255, 90, 170, 0.14), transparent 34%),
-        linear-gradient(135deg, rgba(28, 18, 52, 0.96), rgba(20, 16, 38, 0.96));
-    border: 1px solid rgba(184, 134, 255, 0.18);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+    padding: 16px 18px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #0f0b1f, #15112b);
+    border: 1px solid rgba(160, 120, 255, 0.18);
 }
 
-.spotlight-topbar-copy h2 {
-    margin: 0 0 8px 0;
+.spotlight-title {
+    font-size: 1.4rem;
+    font-weight: 700;
 }
 
-.spotlight-topbar-copy p {
-    margin: 0;
-    opacity: 0.88;
-    max-width: 760px;
-}
-
-.spotlight-chip-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+.spotlight-sub {
+    font-size: 0.9rem;
+    opacity: 0.7;
 }
 
 .spotlight-chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border-radius: 999px;
-    font-size: 0.88rem;
-    font-weight: 600;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(6px);
+    font-size: 0.75rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
-.spotlight-bridge-card {
-    padding: 14px 16px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, rgba(34, 22, 56, 0.96), rgba(18, 16, 32, 0.96));
-    border: 1px solid rgba(173, 120, 255, 0.16);
-}
-
+/* ===== GRID ===== */
 .spotlight-grid {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 14px;
 }
 
+/* ===== TILE ===== */
 .spotlight-tile {
     position: relative;
+    padding: 16px;
+    border-radius: 18px;
+    text-decoration: none;
+    color: white;
     overflow: hidden;
-    border-radius: 24px;
-    padding: 18px;
-    min-height: 220px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, filter 180ms ease;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.20);
+    min-height: 160px;
+
+    background: linear-gradient(135deg, #15122b, #0d0b1a);
+    border: 1px solid rgba(255,255,255,0.06);
+
+    transition: all 160ms ease;
 }
 
+/* glow */
 .spotlight-tile::before {
     content: "";
     position: absolute;
-    inset: -20% -10% auto auto;
-    width: 180px;
-    height: 180px;
-    border-radius: 999px;
-    opacity: 0.24;
-    filter: blur(26px);
+    inset: -40% -40%;
+    opacity: 0.25;
+    filter: blur(40px);
     pointer-events: none;
 }
 
-.spotlight-tile::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 28%, transparent 72%, rgba(255,255,255,0.04));
-    pointer-events: none;
+.tile-high::before {
+    background: radial-gradient(circle, #ff4db8, #7c4dff);
+}
+
+.tile-med::before {
+    background: radial-gradient(circle, #7c4dff, #ff9f4d);
+}
+
+.tile-low::before {
+    background: radial-gradient(circle, #4da6ff, #7c4dff);
+}
+
+/* hover system */
+.spotlight-grid:hover .spotlight-tile {
+    opacity: 0.7;
 }
 
 .spotlight-tile:hover {
-    transform: translateY(-3px) scale(1.01);
-    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28);
-    border-color: rgba(255, 255, 255, 0.16);
+    opacity: 1 !important;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-.spotlight-grid:hover .spotlight-tile {
-    filter: brightness(0.88);
-}
-
-.spotlight-grid:hover .spotlight-tile:hover {
-    filter: brightness(1);
-}
-
-.spotlight-tile.tile-pressure-high {
-    background:
-        radial-gradient(circle at top left, rgba(255, 92, 166, 0.22), transparent 34%),
-        radial-gradient(circle at top right, rgba(133, 92, 255, 0.20), transparent 36%),
-        linear-gradient(135deg, rgba(52, 20, 62, 0.98), rgba(22, 18, 38, 0.98));
-}
-
-.spotlight-tile.tile-pressure-high::before {
-    background: linear-gradient(135deg, rgba(255, 92, 166, 0.76), rgba(133, 92, 255, 0.58));
-}
-
-.spotlight-tile.tile-pressure-medium {
-    background:
-        radial-gradient(circle at top left, rgba(129, 104, 255, 0.18), transparent 32%),
-        radial-gradient(circle at top right, rgba(255, 144, 84, 0.12), transparent 36%),
-        linear-gradient(135deg, rgba(40, 24, 60, 0.98), rgba(19, 18, 34, 0.98));
-}
-
-.spotlight-tile.tile-pressure-medium::before {
-    background: linear-gradient(135deg, rgba(129, 104, 255, 0.72), rgba(255, 144, 84, 0.42));
-}
-
-.spotlight-tile.tile-pressure-low {
-    background:
-        radial-gradient(circle at top left, rgba(104, 174, 255, 0.14), transparent 32%),
-        radial-gradient(circle at top right, rgba(188, 132, 255, 0.10), transparent 34%),
-        linear-gradient(135deg, rgba(30, 24, 44, 0.98), rgba(18, 18, 30, 0.98));
-}
-
-.spotlight-tile.tile-pressure-low::before {
-    background: linear-gradient(135deg, rgba(104, 174, 255, 0.56), rgba(188, 132, 255, 0.38));
-}
-
-.spotlight-tile.tile-featured {
+/* sizes */
+.tile-featured {
     grid-column: span 6;
-    min-height: 280px;
+    min-height: 200px;
 }
 
-.spotlight-tile.tile-standard {
+.tile-standard {
     grid-column: span 3;
 }
 
-.spotlight-tile.tile-side {
+.tile-side {
     grid-column: span 4;
-    min-height: 180px;
 }
 
-.spotlight-tile-header {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-}
+/* ===== CONTENT ===== */
 
-.spotlight-symbol {
+.symbol {
     font-size: 1.2rem;
     font-weight: 800;
-    letter-spacing: 0.02em;
-    margin: 0 0 4px 0;
 }
 
-.spotlight-headline {
-    margin: 0;
-    opacity: 0.92;
-    line-height: 1.35;
-}
-
-.spotlight-badge-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: flex-end;
-}
-
-.spotlight-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 7px 10px;
-    border-radius: 999px;
-    font-size: 0.74rem;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.10);
-}
-
-.spotlight-tile-body {
-    position: relative;
-    z-index: 1;
-    margin-top: 16px;
-    display: grid;
-    gap: 12px;
-}
-
-.spotlight-summary {
-    margin: 0;
-    line-height: 1.45;
-    opacity: 0.92;
-}
-
-.spotlight-why {
-    display: grid;
-    gap: 8px;
-}
-
-.spotlight-why-line {
-    padding: 9px 11px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.06);
+.headline {
     font-size: 0.9rem;
-    line-height: 1.4;
+    opacity: 0.85;
 }
 
-.spotlight-tile-footer {
-    position: relative;
-    z-index: 1;
+/* SHORT + HUMAN TEXT */
+.summary {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-top: 6px;
+}
+
+/* badges */
+.badges {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-top: 18px;
+    gap: 6px;
     flex-wrap: wrap;
+    margin-top: 10px;
 }
 
-.spotlight-meta-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.spotlight-meta-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 7px 10px;
+.badge {
+    font-size: 0.65rem;
+    padding: 4px 8px;
     border-radius: 999px;
-    font-size: 0.76rem;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255,255,255,0.08);
 }
 
-.spotlight-open {
-    font-weight: 700;
-    opacity: 0.95;
+/* action */
+.open {
+    margin-top: 12px;
+    font-size: 0.75rem;
+    opacity: 0.85;
 }
 
-.spotlight-section-title {
-    margin: 8px 0 2px 0;
-}
-
-.spotlight-section-subtitle {
-    margin: 0 0 14px 0;
-    opacity: 0.82;
-}
-
-@media (max-width: 1100px) {
-    .spotlight-tile.tile-featured {
-        grid-column: span 12;
-    }
-    .spotlight-tile.tile-standard,
-    .spotlight-tile.tile-side {
-        grid-column: span 6;
-    }
-}
-
-@media (max-width: 720px) {
-    .spotlight-tile.tile-featured,
-    .spotlight-tile.tile-standard,
-    .spotlight-tile.tile-side {
-        grid-column: span 12;
-    }
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+    .tile-featured { grid-column: span 12; }
+    .tile-standard { grid-column: span 6; }
+    .tile-side { grid-column: span 12; }
 }
 </style>
 
-{% set meta = v2_spotlight.get("meta", {}) if v2_spotlight else {} %}
-{% set hero = v2_spotlight.get("hero", {}) if v2_spotlight else {} %}
-{% set lane_sections = v2_spotlight.get("lane_sections", []) if v2_spotlight else [] %}
-{% set side_panels = v2_spotlight.get("side_panels", []) if v2_spotlight else [] %}
+{% set meta = v2_spotlight.get("meta", {}) %}
+{% set hero = v2_spotlight.get("hero", {}) %}
+{% set sections = v2_spotlight.get("lane_sections", []) %}
+{% set side = v2_spotlight.get("side_panels", []) %}
 
 <div class="spotlight-shell">
-    <div class="spotlight-topbar">
-        <div class="spotlight-topbar-copy">
-            <h2>Signals Spotlight</h2>
-            <p>
-                Conviction surface for the strongest live ideas. Intensity here means something:
-                what deserves your eyes right now, why it matters, and where to go next.
-            </p>
-        </div>
-        <div class="spotlight-chip-row">
-            <span class="spotlight-chip">Mode: {{ meta.get("page_mode", "unknown")|upper }}</span>
-            <span class="spotlight-chip">Lane Sections: {{ meta.get("lane_section_count", 0) }}</span>
-            <span class="spotlight-chip">Side Panels: {{ meta.get("side_panel_count", 0) }}</span>
-        </div>
-    </div>
 
-    <div class="spotlight-bridge-card">
-        <strong>V2 Spotlight Bridge</strong>
-        <div class="passage-frame" style="margin-top:10px;">
-            <p style="margin:0;">
-                Live route is now reading the spotlight page contract.
-            </p>
+    <!-- HEADER -->
+    <div class="spotlight-header">
+        <div>
+            <div class="spotlight-title">Spotlight</div>
+            <div class="spotlight-sub">what’s actually worth your attention</div>
+        </div>
+
+        <div style="display:flex; gap:8px;">
+            <span class="spotlight-chip">{{ meta.get("page_mode", "mode") }}</span>
+            <span class="spotlight-chip">{{ meta.get("lane_section_count", 0) }} lanes</span>
         </div>
     </div>
 
-    {% if hero %}
-    <div>
-        <h3 class="spotlight-section-title">{{ hero.get("title", "Signals Spotlight") }}</h3>
-        <p class="spotlight-section-subtitle">
-            {{ hero.get("summary", "") }}
-        </p>
-    </div>
-    {% endif %}
+    <!-- MAIN GRID -->
+    <div class="spotlight-grid">
 
-    {% if lane_sections %}
-        {% for section in lane_sections %}
-            {% set items = section.get("items", []) %}
-            {% if items %}
-            <div>
-                <h3 class="spotlight-section-title">{{ section.get("title", "Section") }}</h3>
-                <p class="spotlight-section-subtitle">{{ section.get("summary", "") }}</p>
+        {% for section in sections %}
+            {% for item in section.get("items", []) %}
 
-                <div class="spotlight-grid">
-                    {% for item in items %}
-                        {% set pressure = item.get("pressure_level", "medium") %}
-                        {% set tile_class = "tile-featured" if loop.index0 < 2 and section.get("key") == "featured_now" else "tile-standard" %}
-                        <a
-                            href="{{ item.get('destination', '/signals') }}"
-                            class="spotlight-tile {{ tile_class }} tile-pressure-{{ pressure }}"
-                        >
-                            <div class="spotlight-tile-header">
-                                <div>
-                                    <p class="spotlight-symbol">{{ item.get("symbol", "") }}</p>
-                                    <p class="spotlight-headline">{{ item.get("headline", "") }}</p>
-                                </div>
+                {% set pressure = item.get("pressure_level", "medium") %}
+                {% set cls = "tile-high" if pressure == "high" else "tile-med" if pressure == "medium" else "tile-low" %}
+                {% set size = "tile-featured" if loop.index0 < 2 and section.get("key") == "featured_now" else "tile-standard" %}
 
-                                <div class="spotlight-badge-stack">
-                                    {% if item.get("lane") %}
-                                    <span class="spotlight-badge">{{ item.get("lane", "") }}</span>
-                                    {% endif %}
-                                    {% if item.get("pressure_level") %}
-                                    <span class="spotlight-badge">{{ item.get("pressure_level", "") }}</span>
-                                    {% endif %}
-                                </div>
-                            </div>
+                <a href="{{ item.get('destination') }}" class="spotlight-tile {{ cls }} {{ size }}">
 
-                            <div class="spotlight-tile-body">
-                                <p class="spotlight-summary">{{ item.get("summary", "") }}</p>
+                    <div>
+                        <div class="symbol">{{ item.get("symbol") }}</div>
+                        <div class="headline">{{ item.get("headline") }}</div>
 
-                                {% if item.get("why_lines") %}
-                                <div class="spotlight-why">
-                                    {% for line in item.get("why_lines", [])[:2] %}
-                                    <div class="spotlight-why-line">{{ line }}</div>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="spotlight-tile-footer">
-                                <div class="spotlight-meta-row">
-                                    {% if item.get("direction") %}
-                                    <span class="spotlight-meta-pill">{{ item.get("direction") }}</span>
-                                    {% endif %}
-                                    {% if item.get("structure") %}
-                                    <span class="spotlight-meta-pill">{{ item.get("structure") }}</span>
-                                    {% endif %}
-                                    {% if item.get("target_dte") %}
-                                    <span class="spotlight-meta-pill">DTE {{ item.get("target_dte") }}</span>
-                                    {% endif %}
-                                </div>
-                                <span class="spotlight-open">Open Symbol →</span>
-                            </div>
-                        </a>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-
-    {% if side_panels %}
-    <div>
-        <h3 class="spotlight-section-title">Why Not These?</h3>
-        <p class="spotlight-section-subtitle">
-            Names that were watched but did not beat the current leaders.
-        </p>
-
-        <div class="spotlight-grid">
-            {% for panel in side_panels %}
-                {% for item in panel.get("items", []) %}
-                <a
-                    href="{{ item.get('destination', '/signals') }}"
-                    class="spotlight-tile tile-side tile-pressure-low"
-                >
-                    <div class="spotlight-tile-header">
-                        <div>
-                            <p class="spotlight-symbol">{{ item.get("symbol", "") }}</p>
-                            <p class="spotlight-headline">{{ item.get("headline", "Passed over for now") }}</p>
+                        <!-- APPROACHABLE COPY -->
+                        <div class="summary">
+                            {% if pressure == "high" %}
+                                heating up
+                            {% elif pressure == "medium" %}
+                                building quietly
+                            {% else %}
+                                early setup
+                            {% endif %}
                         </div>
-                        <div class="spotlight-badge-stack">
+
+                        <div class="badges">
                             {% if item.get("lane") %}
-                            <span class="spotlight-badge">{{ item.get("lane", "") }}</span>
+                                <span class="badge">{{ item.get("lane") }}</span>
+                            {% endif %}
+                            {% if item.get("direction") %}
+                                <span class="badge">{{ item.get("direction") }}</span>
                             {% endif %}
                         </div>
                     </div>
 
-                    <div class="spotlight-tile-body">
-                        <p class="spotlight-summary">{{ item.get("reason", "") }}</p>
-                        {% if item.get("next_step") %}
-                        <div class="spotlight-why">
-                            <div class="spotlight-why-line">{{ item.get("next_step") }}</div>
+                    <div class="open">open →</div>
+
+                </a>
+
+            {% endfor %}
+        {% endfor %}
+
+        <!-- SIDE / REJECTIONS -->
+        {% for panel in side %}
+            {% for item in panel.get("items", []) %}
+                <a href="{{ item.get('destination') }}" class="spotlight-tile tile-side tile-low">
+
+                    <div>
+                        <div class="symbol">{{ item.get("symbol") }}</div>
+                        <div class="headline">not ready yet</div>
+
+                        <div class="summary">
+                            {{ item.get("reason", "needs a cleaner setup") }}
                         </div>
-                        {% endif %}
                     </div>
 
-                    <div class="spotlight-tile-footer">
-                        <div class="spotlight-meta-row">
-                            <span class="spotlight-meta-pill">Research</span>
-                        </div>
-                        <span class="spotlight-open">Open Symbol →</span>
-                    </div>
+                    <div class="open">watch →</div>
+
                 </a>
-                {% endfor %}
             {% endfor %}
-        </div>
+        {% endfor %}
+
     </div>
-    {% endif %}
 </div>
 {% endblock %}
