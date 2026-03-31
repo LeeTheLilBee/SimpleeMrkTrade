@@ -1,0 +1,19 @@
+{
+  "solice": {
+    "username": "solice",
+    "state": {
+      "page_switch_count_30s": 0,
+      "symbol_open_count_30s": 0,
+      "rapid_jump_score": 0,
+      "dwell_score": 100,
+      "overload_risk": "low",
+      "suggest_low_stim": false,
+      "suggest_focus_mode": false,
+      "last_intervention_at": "",
+      "last_page": "",
+      "last_symbol": "",
+      "last_event_at": ""
+    },
+    "updated_at": "2026-03-31T02:39:28.887726"
+  }
+}
