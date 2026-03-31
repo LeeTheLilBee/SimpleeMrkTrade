@@ -2,42 +2,30 @@
 
 {% block content %}
 <style>
-/* ===== FUTURISTIC SPOTLIGHT SYSTEM ===== */
-
+/* ===== CORE ===== */
 .spotlight-shell {
     display: grid;
-    gap: 20px;
+    gap: 18px;
 }
 
-/* ===== TOP BAR ===== */
+/* ===== HEADER ===== */
 .spotlight-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-    padding: 16px 18px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, #0f0b1f, #15112b);
-    border: 1px solid rgba(160, 120, 255, 0.18);
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #0e0b1f, #15122b);
+    border: 1px solid rgba(150,120,255,0.18);
 }
 
 .spotlight-title {
-    font-size: 1.4rem;
     font-weight: 700;
 }
 
 .spotlight-sub {
-    font-size: 0.9rem;
-    opacity: 0.7;
-}
-
-.spotlight-chip {
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.8rem;
+    opacity: 0.6;
 }
 
 /* ===== GRID ===== */
@@ -50,32 +38,42 @@
 /* ===== TILE ===== */
 .spotlight-tile {
     position: relative;
-    padding: 16px;
     border-radius: 18px;
+    padding: 16px;
+    min-height: 150px;
     text-decoration: none;
     color: white;
-    overflow: hidden;
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 160px;
 
-    background: linear-gradient(135deg, #15122b, #0d0b1a);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(135deg, #141128, #0c0a18);
+    border: 1px solid rgba(255,255,255,0.05);
+
+    overflow: hidden;
 
     transition: all 160ms ease;
 }
 
-/* glow */
+/* ===== GLOBAL GLOW FIELD ===== */
 .spotlight-tile::before {
     content: "";
     position: absolute;
-    inset: -40% -40%;
+    inset: -50%;
     opacity: 0.25;
-    filter: blur(40px);
-    pointer-events: none;
+    filter: blur(50px);
+    animation: drift 8s linear infinite;
 }
 
+/* shared motion */
+@keyframes drift {
+    0% { transform: translateX(-10%) translateY(-10%); }
+    50% { transform: translateX(10%) translateY(10%); }
+    100% { transform: translateX(-10%) translateY(-10%); }
+}
+
+/* intensity colors */
 .tile-high::before {
     background: radial-gradient(circle, #ff4db8, #7c4dff);
 }
@@ -88,29 +86,17 @@
     background: radial-gradient(circle, #4da6ff, #7c4dff);
 }
 
-/* hover system */
+/* ===== HOVER SYSTEM ===== */
+
+/* dim others */
 .spotlight-grid:hover .spotlight-tile {
-    opacity: 0.7;
+    opacity: 0.65;
 }
 
 .spotlight-tile:hover {
     opacity: 1 !important;
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-/* sizes */
-.tile-featured {
-    grid-column: span 6;
-    min-height: 200px;
-}
-
-.tile-standard {
-    grid-column: span 3;
-}
-
-.tile-side {
-    grid-column: span 4;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.45);
 }
 
 /* ===== CONTENT ===== */
@@ -118,41 +104,43 @@
 .symbol {
     font-size: 1.2rem;
     font-weight: 800;
+    letter-spacing: 0.03em;
 }
 
-.headline {
-    font-size: 0.9rem;
-    opacity: 0.85;
+/* ===== HOVER REVEAL ===== */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: all 220ms ease;
+    transition-delay: 0ms;
 }
 
-/* SHORT + HUMAN TEXT */
-.summary {
+/* BREATH DELAY */
+.spotlight-tile:hover .reveal {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 180ms;
+}
+
+/* ===== TEXT ===== */
+
+.reveal-label {
     font-size: 0.85rem;
-    opacity: 0.8;
     margin-top: 6px;
 }
 
-/* badges */
-.badges {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: 10px;
+.reveal-sub {
+    font-size: 0.8rem;
+    opacity: 0.75;
+    margin-top: 4px;
 }
 
-.badge {
-    font-size: 0.65rem;
-    padding: 4px 8px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.08);
-}
+/* ===== SIZES ===== */
 
-/* action */
-.open {
-    margin-top: 12px;
-    font-size: 0.75rem;
-    opacity: 0.85;
-}
+.tile-featured { grid-column: span 6; min-height: 200px; }
+.tile-standard { grid-column: span 3; }
+.tile-side { grid-column: span 4; }
 
 /* ===== MOBILE ===== */
 @media (max-width: 900px) {
@@ -162,27 +150,18 @@
 }
 </style>
 
-{% set meta = v2_spotlight.get("meta", {}) %}
-{% set hero = v2_spotlight.get("hero", {}) %}
 {% set sections = v2_spotlight.get("lane_sections", []) %}
 {% set side = v2_spotlight.get("side_panels", []) %}
 
 <div class="spotlight-shell">
 
-    <!-- HEADER -->
     <div class="spotlight-header">
         <div>
             <div class="spotlight-title">Spotlight</div>
-            <div class="spotlight-sub">what’s actually worth your attention</div>
-        </div>
-
-        <div style="display:flex; gap:8px;">
-            <span class="spotlight-chip">{{ meta.get("page_mode", "mode") }}</span>
-            <span class="spotlight-chip">{{ meta.get("lane_section_count", 0) }} lanes</span>
+            <div class="spotlight-sub">move slower. pick better.</div>
         </div>
     </div>
 
-    <!-- MAIN GRID -->
     <div class="spotlight-grid">
 
         {% for section in sections %}
@@ -194,14 +173,17 @@
 
                 <a href="{{ item.get('destination') }}" class="spotlight-tile {{ cls }} {{ size }}">
 
-                    <div>
-                        <div class="symbol">{{ item.get("symbol") }}</div>
-                        <div class="headline">{{ item.get("headline") }}</div>
+                    <!-- ALWAYS VISIBLE -->
+                    <div class="symbol">
+                        {{ item.get("symbol") }}
+                    </div>
 
-                        <!-- APPROACHABLE COPY -->
-                        <div class="summary">
+                    <!-- HOVER REVEAL -->
+                    <div class="reveal">
+
+                        <div class="reveal-label">
                             {% if pressure == "high" %}
-                                heating up
+                                strong right now
                             {% elif pressure == "medium" %}
                                 building quietly
                             {% else %}
@@ -209,38 +191,34 @@
                             {% endif %}
                         </div>
 
-                        <div class="badges">
-                            {% if item.get("lane") %}
-                                <span class="badge">{{ item.get("lane") }}</span>
-                            {% endif %}
+                        <div class="reveal-sub">
                             {% if item.get("direction") %}
-                                <span class="badge">{{ item.get("direction") }}</span>
+                                {{ item.get("direction") }}
+                            {% else %}
+                                watch this one
                             {% endif %}
                         </div>
-                    </div>
 
-                    <div class="open">open →</div>
+                    </div>
 
                 </a>
 
             {% endfor %}
         {% endfor %}
 
-        <!-- SIDE / REJECTIONS -->
+        <!-- REJECTIONS -->
         {% for panel in side %}
             {% for item in panel.get("items", []) %}
                 <a href="{{ item.get('destination') }}" class="spotlight-tile tile-side tile-low">
 
-                    <div>
-                        <div class="symbol">{{ item.get("symbol") }}</div>
-                        <div class="headline">not ready yet</div>
-
-                        <div class="summary">
-                            {{ item.get("reason", "needs a cleaner setup") }}
-                        </div>
+                    <div class="symbol">
+                        {{ item.get("symbol") }}
                     </div>
 
-                    <div class="open">watch →</div>
+                    <div class="reveal">
+                        <div class="reveal-label">not ready yet</div>
+                        <div class="reveal-sub">{{ item.get("reason", "") }}</div>
+                    </div>
 
                 </a>
             {% endfor %}
