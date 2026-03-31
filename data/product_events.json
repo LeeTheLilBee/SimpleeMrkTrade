@@ -22,5 +22,29 @@
     "timestamp": "2026-03-26T12:24:07.847411",
     "source": "/why-this-trade",
     "section": "why_this_trade_page"
+  },
+  {
+    "event_type": "symbol_exposed",
+    "timestamp": "2026-03-31T21:18:25.458104",
+    "symbol": "HAL",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_click",
+    "timestamp": "2026-03-31T21:18:25.458837",
+    "symbol": "HAL",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_exposed",
+    "timestamp": "2026-03-31T21:18:49.642256",
+    "symbol": "USO",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_click",
+    "timestamp": "2026-03-31T21:18:49.644094",
+    "symbol": "USO",
+    "source": "/signals"
   }
 ]

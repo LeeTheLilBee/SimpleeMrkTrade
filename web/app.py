@@ -10,6 +10,7 @@ from engine_v2.dashboard_contract import build_dashboard_contract
 import json
 from pathlib import Path
 from engine_v2.spotlight_page_contract import build_spotlight_page_contract
+from engine_v2.mode_router import resolve_user_modes
 from typing import Any, Dict, List, Optional
 
 from flask import (
@@ -3797,12 +3798,23 @@ def spotlight_page():
 
     username = (current_user or {}).get("username") or "guest"
     v2_spotlight = get_v2_spotlight_contract(username)
+    spotlight_modes = safe_run(
+        "resolve_user_modes",
+        lambda: resolve_user_modes(username),
+        {
+            "intelligence_mode": "hybrid",
+            "control_mode": "manual",
+            "auto_scope": "both",
+            "experience_mode": "balanced",
+        },
+    )
 
     return render_template_safe(
         "spotlight.html",
         **template_context(
             {
                 "v2_spotlight": v2_spotlight,
+                "spotlight_modes": spotlight_modes,
             }
         ),
     )

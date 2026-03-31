@@ -65,5 +65,16 @@
       "rows_added_estimate": 0,
       "source_rows": 1
     }
+  },
+  "news_sync_at": "2026-03-31T21:18:49.799678",
+  "symbol_news_sync": {
+    "HAL": {
+      "synced_at": "2026-03-31T21:18:25.798287",
+      "item_count": 8
+    },
+    "USO": {
+      "synced_at": "2026-03-31T21:18:49.799678",
+      "item_count": 8
+    }
   }
 }

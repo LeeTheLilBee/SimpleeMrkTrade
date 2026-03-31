@@ -18,7 +18,7 @@ body {
     margin: 0 !important;
 }
 
-/* ===== COSMIC SURFACE ===== */
+/* ===== COSMOS ===== */
 .cosmos-shell {
     position: relative;
     width: 100%;
@@ -52,7 +52,7 @@ body {
 .cosmos-sub {
     font-size: 0.9rem;
     opacity: 0.72;
-    max-width: 360px;
+    max-width: 400px;
     line-height: 1.35;
 }
 
@@ -74,7 +74,7 @@ body {
     backdrop-filter: blur(6px);
 }
 
-/* ===== NEBULA / MILKY WAY ===== */
+/* ===== NEBULA / FLOW ===== */
 .nebula-layer {
     position: absolute;
     inset: -22%;
@@ -108,7 +108,7 @@ body {
     height: 30%;
     transform: rotate(-11deg);
     pointer-events: none;
-    opacity: 0.22;
+    opacity: 0.24;
     filter: blur(36px);
     background:
         linear-gradient(
@@ -136,14 +136,20 @@ body {
 
 @keyframes bandFloat {
     0% { transform: rotate(-11deg) translateY(0px); }
-    100% { transform: rotate(-9deg) translateY(16px); }
+    100% { transform: rotate(-9deg) translateY(18px); }
 }
 
-/* ===== AMBIENT STARFIELD ===== */
+/* ===== AMBIENT STARS ===== */
 .starfield {
     position: absolute;
     inset: 0;
     pointer-events: none;
+    animation: fieldDrift 90s linear infinite alternate;
+}
+
+@keyframes fieldDrift {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-1.5%, 1%, 0); }
 }
 
 .bg-star {
@@ -152,36 +158,22 @@ body {
     pointer-events: none;
 }
 
-.bg-star.tiny {
-    width: 1px;
-    height: 1px;
-}
-
-.bg-star.small {
-    width: 2px;
-    height: 2px;
-}
-
-.bg-star.medium {
-    width: 3px;
-    height: 3px;
-}
+.bg-star.tiny { width: 1px; height: 1px; }
+.bg-star.small { width: 2px; height: 2px; }
+.bg-star.medium { width: 3px; height: 3px; }
 
 .bg-star.blue {
     background: #8fc8ff;
     box-shadow: 0 0 8px rgba(143, 200, 255, 0.42);
 }
-
 .bg-star.pink {
     background: #ffb3df;
     box-shadow: 0 0 8px rgba(255, 179, 223, 0.36);
 }
-
 .bg-star.gold {
     background: #ffe4ae;
     box-shadow: 0 0 8px rgba(255, 228, 174, 0.28);
 }
-
 .bg-star.purple {
     background: #d7b8ff;
     box-shadow: 0 0 8px rgba(215, 184, 255, 0.34);
@@ -191,54 +183,56 @@ body {
     0%,100% { opacity: 0.18; transform: scale(1); }
     50% { opacity: 0.72; transform: scale(1.08); }
 }
-
 @keyframes twinkleMid {
     0%,100% { opacity: 0.24; transform: scale(1); }
     50% { opacity: 0.94; transform: scale(1.14); }
 }
-
 @keyframes twinkleFast {
     0%,100% { opacity: 0.32; transform: scale(1); }
     50% { opacity: 1; transform: scale(1.22); }
 }
 
-/* ===== SPOTLIGHT FIELD ===== */
+/* ===== SPOTLIGHT OBJECTS ===== */
 .spotlight-layer {
     position: relative;
     min-height: 100vh;
     width: 100%;
     z-index: 10;
+    animation: layerDrift 55s ease-in-out infinite alternate;
 }
 
-/* wrappers do not dim the whole field anymore */
+@keyframes layerDrift {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(0.8%, -0.6%, 0); }
+}
+
 .spot-object-wrap {
     position: absolute;
     transform: translate(-50%, -50%);
     z-index: 12;
 }
 
-/* clickable object */
 .spot-object {
     position: relative;
     display: block;
-    width: 44px;
-    height: 44px;
     text-decoration: none;
     color: white;
     transition: transform 180ms ease, filter 180ms ease;
     isolation: isolate;
+    width: 0;
+    height: 0;
 }
 
 .spot-object:hover {
-    transform: scale(1.04);
+    transform: scale(1.05);
     z-index: 22;
 }
 
-/* real star core */
+/* actual visible star */
 .spot-core {
     position: absolute;
-    left: 50%;
-    top: 50%;
+    left: 0;
+    top: 0;
     transform: translate(-50%, -50%);
     border-radius: 50%;
     background: white;
@@ -255,7 +249,7 @@ body {
     z-index: -1;
 }
 
-/* star diffraction cross */
+/* horizontal flare */
 .spot-core::after {
     content: "";
     position: absolute;
@@ -270,12 +264,12 @@ body {
     z-index: -1;
 }
 
+/* vertical flare */
 .spot-flare {
     position: absolute;
-    left: 50%;
-    top: 50%;
+    left: 0;
+    top: 0;
     width: 2px;
-    height: 180%;
     transform: translate(-50%, -50%);
     opacity: 0.22;
     border-radius: 999px;
@@ -283,21 +277,32 @@ body {
     box-shadow: 0 0 12px currentColor;
 }
 
-/* size classes */
+/* sizes */
 .object-hero .spot-core {
     width: 11px;
     height: 11px;
 }
+.object-hero .spot-flare {
+    height: 22px;
+}
+
 .object-strong .spot-core {
     width: 8px;
     height: 8px;
 }
+.object-strong .spot-flare {
+    height: 18px;
+}
+
 .object-small .spot-core {
     width: 4px;
     height: 4px;
 }
+.object-small .spot-flare {
+    height: 10px;
+}
 
-/* pressure behavior */
+/* pressure */
 .object-low .spot-core {
     animation: twinkleSlow 3.7s ease-in-out infinite;
 }
@@ -333,15 +338,15 @@ body {
     background: radial-gradient(circle, rgba(255, 214, 143, 0.68), rgba(255, 147, 193, 0.28), transparent 72%);
 }
 
-/* ===== HUD REVEAL ===== */
+/* ===== HUD ===== */
 .star-hud {
     position: absolute;
-    left: 16px;
-    top: 16px;
-    min-width: 170px;
+    left: 14px;
+    top: 14px;
+    min-width: 210px;
     opacity: 0;
     transform: translateY(8px) scale(0.985);
-    transition: opacity 210ms ease, transform 210ms ease;
+    transition: opacity 220ms ease, transform 220ms ease;
     transition-delay: 0ms;
     pointer-events: none;
     text-shadow: 0 2px 10px rgba(0,0,0,0.45);
@@ -363,7 +368,7 @@ body {
     margin-top: 4px;
     font-size: 0.82rem;
     opacity: 0.88;
-    max-width: 220px;
+    max-width: 250px;
     line-height: 1.35;
 }
 
@@ -386,7 +391,33 @@ body {
     backdrop-filter: blur(6px);
 }
 
-/* subtle focus */
+.hud-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.hud-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-decoration: none;
+    color: white;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.12);
+    pointer-events: auto;
+}
+
+.hud-btn.execute {
+    background: linear-gradient(135deg, rgba(255, 126, 201, 0.28), rgba(124, 77, 255, 0.28));
+    border-color: rgba(255,255,255,0.16);
+}
+
 .spot-object:hover .spot-core::before {
     opacity: 0.72;
     filter: blur(14px);
@@ -405,7 +436,7 @@ body {
     }
 
     .star-hud {
-        min-width: 130px;
+        min-width: 150px;
     }
 }
 </style>
@@ -413,6 +444,7 @@ body {
 {% set sections = v2_spotlight.get("lane_sections", []) if v2_spotlight else [] %}
 {% set side_panels = v2_spotlight.get("side_panels", []) if v2_spotlight else [] %}
 {% set meta = v2_spotlight.get("meta", {}) if v2_spotlight else {} %}
+{% set modes = spotlight_modes if spotlight_modes else {} %}
 
 {% set ns = namespace(objects=[]) %}
 {% for section in sections %}
@@ -472,12 +504,12 @@ body {
         <div class="cosmos-chip-row">
             <span class="cosmos-chip">{{ meta.get("page_mode", "hybrid") }}</span>
             <span class="cosmos-chip">{{ meta.get("lane_section_count", 0) }} lanes</span>
-            <span class="cosmos-chip">live field</span>
+            <span class="cosmos-chip">{{ modes.get("control_mode", "manual") }}</span>
         </div>
     </div>
 
     <div class="starfield">
-        {% for i in range(300) %}
+        {% for i in range(320) %}
             {% set x = (i * 37 + 11) % 100 %}
             {% set y = (i * 53 + 19) % 100 %}
             {% set sz = "tiny" if i % 4 == 0 else "small" if i % 3 == 0 else "medium" %}
@@ -511,18 +543,18 @@ body {
 
                     <div class="star-hud">
                         <div class="hud-symbol">{{ obj.symbol }}</div>
+
                         <div class="hud-line">
                             {% if obj.pressure == "high" %}
-                                strong right now
+                                move could be close
                             {% elif obj.pressure == "medium" %}
-                                building quietly
+                                worth watching closely
                             {% else %}
-                                early / outer field
+                                still early
                             {% endif %}
                         </div>
-                        {% if obj.summary %}
-                        <div class="hud-line">{{ obj.summary }}</div>
-                        {% endif %}
+
+                        {% if obj.direction or obj.lane or obj.structure or obj.target_dte %}
                         <div class="hud-meta">
                             {% if obj.lane %}
                             <span class="hud-pill">{{ obj.lane }}</span>
@@ -535,6 +567,18 @@ body {
                             {% endif %}
                             {% if obj.target_dte %}
                             <span class="hud-pill">DTE {{ obj.target_dte }}</span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        {% if obj.summary %}
+                        <div class="hud-line">{{ obj.summary }}</div>
+                        {% endif %}
+
+                        <div class="hud-actions">
+                            <a href="{{ obj.destination }}" class="hud-btn">Open</a>
+                            {% if modes.get("control_mode") == "manual" or modes.get("intelligence_mode") == "hybrid" %}
+                            <a href="{{ obj.destination }}" class="hud-btn execute">Execute</a>
                             {% endif %}
                         </div>
                     </div>
