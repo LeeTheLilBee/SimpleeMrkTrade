@@ -1,5 +1,5 @@
 {
-  "username": "solice",
+  "username": "admin",
   "mode_bar": {
     "intelligence_mode": "hybrid",
     "control_mode": "manual",
@@ -751,7 +751,7 @@
     }
   ],
   "meta": {
-    "rebuilt_at": "2026-03-31T14:32:51.862275",
+    "rebuilt_at": "2026-03-31T17:39:59.634998",
     "section_count": 6,
     "command_card_count": 3,
     "page_mode": "hybrid"
