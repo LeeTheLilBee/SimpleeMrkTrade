@@ -9,6 +9,9 @@ from engine_v2.dashboard_contract import build_dashboard_contract
 
 import json
 from pathlib import Path
+from engine_v2.market_map_builder import build_market_map
+from engine_v2.market_map_interaction_contract import build_market_map_interaction_contract
+from engine_v2.map_layer_toggle_contract import build_map_layer_toggle_contract
 from engine_v2.spotlight_page_contract import build_spotlight_page_contract
 from engine_v2.mode_router import resolve_user_modes
 from typing import Any, Dict, List, Optional
@@ -249,6 +252,44 @@ def render_template_safe(template_name: str, **context):
 # ============================================================
 # STABILITY HELPERS
 # ============================================================
+
+def get_v2_market_map():
+    try:
+        return build_market_map()
+    except Exception as e:
+        print(f"[V2_MARKET_MAP] {e}")
+        return {
+            "tiles": [],
+            "grouped_tiles": {},
+            "legend": {},
+            "meta": {"error": str(e)},
+        }
+
+
+def get_v2_market_map_interactions():
+    try:
+        return build_market_map_interaction_contract()
+    except Exception as e:
+        print(f"[V2_MARKET_MAP_INTERACTIONS] {e}")
+        return {
+            "hover_cards": [],
+            "tile_actions": [],
+            "interaction_rules": {},
+            "meta": {"error": str(e)},
+        }
+
+
+def get_v2_map_layers():
+    try:
+        return build_map_layer_toggle_contract()
+    except Exception as e:
+        print(f"[V2_MAP_LAYERS] {e}")
+        return {
+            "default_layer": "pressure",
+            "layers": [],
+            "interaction_model": {},
+            "meta": {"error": str(e)},
+        }
 
 def get_v2_dashboard_contract(username: str):
     try:
@@ -3330,6 +3371,26 @@ def position_detail_page(trade_id):
         **template_context({
             "detail": target,
         }),
+    )
+
+
+@app.route("/market-map")
+def market_map_page():
+    maybe_track_page_view("/market-map")
+
+    v2_market_map = get_v2_market_map()
+    v2_market_interactions = get_v2_market_map_interactions()
+    v2_map_layers = get_v2_map_layers()
+
+    return render_template_safe(
+        "market_map.html",
+        **template_context(
+            {
+                "v2_market_map": v2_market_map,
+                "v2_market_interactions": v2_market_interactions,
+                "v2_map_layers": v2_map_layers,
+            }
+        ),
     )
 
 
