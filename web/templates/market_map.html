@@ -18,6 +18,7 @@ body {
     margin: 0 !important;
 }
 
+/* ===== MAP SHELL ===== */
 .map-shell {
     position: relative;
     width: 100%;
@@ -31,11 +32,12 @@ body {
         linear-gradient(180deg, #06040d 0%, #020107 100%);
 }
 
+/* ===== HEADER ===== */
 .map-header {
     position: absolute;
     top: 24px;
     left: 26px;
-    z-index: 30;
+    z-index: 40;
     display: grid;
     gap: 10px;
 }
@@ -72,12 +74,13 @@ body {
     backdrop-filter: blur(6px);
 }
 
+/* ===== LAYER TOGGLES ===== */
 .map-layers {
     position: absolute;
     right: 24px;
     top: 24px;
-    z-index: 32;
-    width: 260px;
+    z-index: 42;
+    width: 280px;
     padding: 14px;
     border-radius: 18px;
     background: rgba(7, 7, 15, 0.92);
@@ -109,13 +112,20 @@ body {
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.06);
     font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 160ms ease;
+}
+
+.layer-pill:hover {
+    background: rgba(255,255,255,0.07);
 }
 
 .layer-pill.active {
-    background: rgba(124, 77, 255, 0.14);
-    border-color: rgba(124, 77, 255, 0.24);
+    background: rgba(124, 77, 255, 0.16);
+    border-color: rgba(124, 77, 255, 0.28);
 }
 
+/* ===== BACKGROUND MOTION ===== */
 .starfield {
     position: absolute;
     inset: 0;
@@ -147,7 +157,16 @@ body {
     0%,100% { opacity: 0.16; transform: scale(1); }
     50% { opacity: 0.62; transform: scale(1.06); }
 }
+@keyframes twinkleMid {
+    0%,100% { opacity: 0.24; transform: scale(1); }
+    50% { opacity: 0.84; transform: scale(1.08); }
+}
+@keyframes twinkleFast {
+    0%,100% { opacity: 0.30; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.14); }
+}
 
+/* ===== CONSTELLATION FIELD ===== */
 .map-field {
     position: relative;
     min-height: 100vh;
@@ -156,14 +175,14 @@ body {
 
 .map-cluster {
     position: absolute;
-    width: 320px;
-    height: 240px;
+    width: 360px;
+    height: 280px;
 }
 
 .map-cluster::before {
     content: "";
     position: absolute;
-    inset: -30px;
+    inset: -34px;
     border-radius: 50%;
     filter: blur(28px);
     opacity: 0.18;
@@ -173,15 +192,12 @@ body {
 .map-cluster.energy::before {
     background: radial-gradient(circle, rgba(255, 94, 180, 0.18), transparent 70%);
 }
-
 .map-cluster.technology::before {
     background: radial-gradient(circle, rgba(90, 180, 255, 0.18), transparent 70%);
 }
-
 .map-cluster.healthcare::before {
     background: radial-gradient(circle, rgba(180, 120, 255, 0.18), transparent 70%);
 }
-
 .map-cluster.general::before,
 .map-cluster.finance::before,
 .map-cluster.consumer::before,
@@ -192,7 +208,7 @@ body {
 
 .cluster-label {
     position: absolute;
-    top: -16px;
+    top: -18px;
     left: 0;
     font-size: 0.75rem;
     font-weight: 800;
@@ -201,11 +217,33 @@ body {
     opacity: 0.62;
 }
 
+/* faint constellation lines */
+.constellation-line {
+    position: absolute;
+    height: 1px;
+    transform-origin: left center;
+    opacity: 0.18;
+    pointer-events: none;
+    filter: blur(0.2px);
+}
+
+.line-energy { background: linear-gradient(90deg, rgba(255, 94, 180, 0.00), rgba(255, 94, 180, 0.55), rgba(255, 94, 180, 0.00)); }
+.line-technology { background: linear-gradient(90deg, rgba(90, 180, 255, 0.00), rgba(90, 180, 255, 0.55), rgba(90, 180, 255, 0.00)); }
+.line-healthcare { background: linear-gradient(90deg, rgba(180, 120, 255, 0.00), rgba(180, 120, 255, 0.55), rgba(180, 120, 255, 0.00)); }
+.line-general,
+.line-finance,
+.line-consumer,
+.line-industrials,
+.line-real_assets {
+    background: linear-gradient(90deg, rgba(255, 214, 143, 0.00), rgba(255, 214, 143, 0.50), rgba(255, 214, 143, 0.00));
+}
+
+/* stars */
 .map-star-wrap {
     position: absolute;
     transform: translate(-50%, -50%);
-    width: 88px;
-    height: 88px;
+    width: 90px;
+    height: 90px;
 }
 
 .map-star-link {
@@ -284,44 +322,77 @@ body {
 .map-size-1 .map-star-core { width: 4px; height: 4px; }
 .map-size-1 .map-star-flare { height: 10px; }
 
-.map-pressure-high .map-star-core {
+/* views */
+.map-layer-pressure .map-pressure-high .map-star-core {
     animation: twinkleFast 2s ease-in-out infinite;
     filter: saturate(1.18) brightness(1.16);
 }
-.map-pressure-medium .map-star-core {
+.map-layer-pressure .map-pressure-medium .map-star-core {
     animation: twinkleMid 3s ease-in-out infinite;
     filter: saturate(1.05) brightness(1.05);
 }
-.map-pressure-low .map-star-core {
+.map-layer-pressure .map-pressure-low .map-star-core {
     animation: twinkleSlow 4s ease-in-out infinite;
     filter: saturate(0.95) brightness(0.96);
 }
 
-@keyframes twinkleMid {
-    0%,100% { opacity: 0.22; transform: scale(1); }
-    50% { opacity: 0.84; transform: scale(1.08); }
+.map-layer-confidence .map-size-3 .map-star-core {
+    width: 12px; height: 12px; filter: brightness(1.18);
 }
-@keyframes twinkleFast {
-    0%,100% { opacity: 0.30; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.14); }
+.map-layer-confidence .map-size-2 .map-star-core {
+    width: 8px; height: 8px; filter: brightness(1.06);
+}
+.map-layer-confidence .map-size-1 .map-star-core {
+    width: 4px; height: 4px; filter: brightness(0.96);
 }
 
-.map-lane-options .map-star-core {
+.map-layer-lane .map-lane-options .map-star-core {
     background: #ff5fcf;
     color: #ff2fb8;
 }
-.map-lane-options .map-star-core::before {
+.map-layer-lane .map-lane-options .map-star-core::before {
     background: radial-gradient(circle, rgba(255, 47, 184, 0.88), rgba(170, 70, 255, 0.34), transparent 74%);
 }
 
-.map-lane-equity .map-star-core {
+.map-layer-lane .map-lane-equity .map-star-core {
     background: #59c7ff;
     color: #2da8ff;
 }
-.map-lane-equity .map-star-core::before {
+.map-layer-lane .map-lane-equity .map-star-core::before {
     background: radial-gradient(circle, rgba(45, 168, 255, 0.88), rgba(124, 77, 255, 0.26), transparent 74%);
 }
 
+.map-layer-bucket .energy .map-star-core {
+    background: #ff79bf;
+    color: #ff4ea8;
+}
+.map-layer-bucket .technology .map-star-core {
+    background: #69caff;
+    color: #36b0ff;
+}
+.map-layer-bucket .healthcare .map-star-core {
+    background: #be8cff;
+    color: #9a64ff;
+}
+.map-layer-bucket .general .map-star-core,
+.map-layer-bucket .finance .map-star-core,
+.map-layer-bucket .consumer .map-star-core,
+.map-layer-bucket .industrials .map-star-core,
+.map-layer-bucket .real_assets .map-star-core {
+    background: #ffd56f;
+    color: #ffbe2e;
+}
+
+/* default fallback */
+.map-star-core {
+    background: #dff0ff;
+    color: #7fbaff;
+}
+.map-star-core::before {
+    background: radial-gradient(circle, rgba(127, 186, 255, 0.62), rgba(124, 77, 255, 0.18), transparent 74%);
+}
+
+/* HUD */
 .map-hud {
     position: absolute;
     left: 58px;
@@ -399,12 +470,23 @@ body {
 {% set layers = v2_map_layers if v2_map_layers else {} %}
 {% set default_layer = layers.get("default_layer", "pressure") %}
 
+{% set cluster_positions = {
+    "energy": {"left": "10%", "top": "18%"},
+    "technology": {"left": "56%", "top": "18%"},
+    "healthcare": {"left": "62%", "top": "56%"},
+    "general": {"left": "18%", "top": "56%"},
+    "finance": {"left": "36%", "top": "38%"},
+    "consumer": {"left": "72%", "top": "38%"},
+    "industrials": {"left": "30%", "top": "74%"},
+    "real_assets": {"left": "78%", "top": "72%"},
+} %}
+
 <div class="map-shell">
     <div class="map-header">
         <div class="map-title">market map</div>
         <div class="map-sub">zoomed out, calmer, easier to scan</div>
         <div class="map-chip-row">
-            <span class="map-chip">organic clusters</span>
+            <span class="map-chip">sector constellations</span>
             <span class="map-chip">{{ map_data.get("meta", {}).get("tile_count", 0) }} stars</span>
             <span class="map-chip">{{ map_data.get("meta", {}).get("bucket_count", 0) }} regions</span>
         </div>
@@ -414,7 +496,7 @@ body {
         <h3>map layers</h3>
         <div class="layer-list">
             {% for layer in layers.get("layers", []) %}
-            <div class="layer-pill {% if layer.get('key') == default_layer %}active{% endif %}">
+            <div class="layer-pill {% if layer.get('key') == default_layer %}active{% endif %}" data-layer="{{ layer.get('key') }}">
                 <span>{{ layer.get("label") }}</span>
                 <span style="opacity:.6;">{{ layer.get("best_for") }}</span>
             </div>
@@ -432,30 +514,40 @@ body {
         {% endfor %}
     </div>
 
-    <div class="map-field">
-        {% set cluster_positions = {
-            "energy": {"left": "10%", "top": "18%"},
-            "technology": {"left": "56%", "top": "18%"},
-            "healthcare": {"left": "62%", "top": "56%"},
-            "general": {"left": "18%", "top": "56%"},
-            "finance": {"left": "36%", "top": "38%"},
-            "consumer": {"left": "72%", "top": "38%"},
-            "industrials": {"left": "30%", "top": "74%"},
-            "real_assets": {"left": "78%", "top": "72%"},
-        } %}
-
+    <div class="map-field map-layer-{{ default_layer }}" id="marketMapField">
         {% for bucket, tiles in grouped.items() %}
             {% set pos = cluster_positions.get(bucket, {"left": "50%", "top": "50%"}) %}
             <div class="map-cluster {{ bucket }}" style="left: {{ pos.left }}; top: {{ pos.top }};">
                 <div class="cluster-label">{{ bucket.replace("_", " ") }}</div>
 
+                {# constellations: anchors pull the rest #}
+                {% set anchor_a = {"x": 18, "y": 28} %}
+                {% set anchor_b = {"x": 58, "y": 18} %}
+                {% set anchor_c = {"x": 78, "y": 58} %}
+
+                <div class="constellation-line line-{{ bucket }}" style="left: {{ anchor_a.x }}%; top: {{ anchor_a.y }}%; width: 44%; transform: rotate(-14deg);"></div>
+                <div class="constellation-line line-{{ bucket }}" style="left: {{ anchor_b.x }}%; top: {{ anchor_b.y }}%; width: 38%; transform: rotate(34deg);"></div>
+
                 {% for tile in tiles %}
                     {% set idx = loop.index0 %}
-                    {% set inner_x = (idx * 19 + 30) % 78 + 8 %}
-                    {% set inner_y = (idx * 23 + 18) % 70 + 12 %}
+                    {% if idx == 0 %}
+                        {% set inner_x = anchor_a.x %}
+                        {% set inner_y = anchor_a.y %}
+                    {% elif idx == 1 %}
+                        {% set inner_x = anchor_b.x %}
+                        {% set inner_y = anchor_b.y %}
+                    {% elif idx == 2 %}
+                        {% set inner_x = anchor_c.x %}
+                        {% set inner_y = anchor_c.y %}
+                    {% else %}
+                        {% set inner_x = (idx * 17 + 26) % 78 + 8 %}
+                        {% set inner_y = (idx * 21 + 22) % 68 + 12 %}
+                    {% endif %}
+
                     {% set lane_class = "map-lane-options" if tile.get("lane") == "options" else "map-lane-equity" %}
                     {% set pressure_class = "map-pressure-high" if tile.get("pressure_level") == "high" else "map-pressure-medium" if tile.get("pressure_level") == "medium" else "map-pressure-low" %}
                     {% set size_class = "map-size-" ~ tile.get("size_score", 1) %}
+
                     <div class="map-star-wrap {{ lane_class }} {{ pressure_class }} {{ size_class }}" style="left: {{ inner_x }}%; top: {{ inner_y }}%;">
                         <a href="{{ tile.get('destination', '/signals') }}" class="map-star-link">
                             <div class="map-hover-zone"></div>
@@ -491,4 +583,23 @@ body {
         {% endfor %}
     </div>
 </div>
+
+<script>
+(function () {
+    const field = document.getElementById("marketMapField");
+    const pills = document.querySelectorAll(".layer-pill");
+
+    pills.forEach((pill) => {
+        pill.addEventListener("click", () => {
+            const layer = pill.getAttribute("data-layer");
+            if (!layer || !field) return;
+
+            field.className = "map-field map-layer-" + layer;
+
+            pills.forEach((p) => p.classList.remove("active"));
+            pill.classList.add("active");
+        });
+    });
+})();
+</script>
 {% endblock %}
