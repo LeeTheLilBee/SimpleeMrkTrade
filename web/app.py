@@ -10,6 +10,7 @@ from engine_v2.dashboard_contract import build_dashboard_contract
 import json
 from pathlib import Path
 from engine_v2.market_map_builder import build_market_map
+from engine_v2.constellation_mapper import map_tiles_to_constellation
 from engine_v2.market_map_interaction_contract import build_market_map_interaction_contract
 from engine_v2.map_layer_toggle_contract import build_map_layer_toggle_contract
 from engine_v2.spotlight_page_contract import build_spotlight_page_contract
@@ -3382,6 +3383,24 @@ def market_map_page():
     v2_market_interactions = get_v2_market_map_interactions()
     v2_map_layers = get_v2_map_layers()
 
+    grouped = v2_market_map.get("grouped_tiles", {}) if isinstance(v2_market_map, dict) else {}
+    mapped_constellations = {}
+
+    if isinstance(grouped, dict):
+        for bucket, tiles in grouped.items():
+            try:
+                mapped_constellations[bucket] = map_tiles_to_constellation(bucket, tiles)
+            except Exception as e:
+                print(f"[MAP_CONSTELLATION_{bucket}] {e}")
+                mapped_constellations[bucket] = {
+                    "bucket": bucket,
+                    "constellation": "fallback",
+                    "label": "Fallback",
+                    "stars": [],
+                    "overflow": [],
+                    "lines": [],
+                }
+
     return render_template_safe(
         "market_map.html",
         **template_context(
@@ -3389,6 +3408,7 @@ def market_map_page():
                 "v2_market_map": v2_market_map,
                 "v2_market_interactions": v2_market_interactions,
                 "v2_map_layers": v2_map_layers,
+                "mapped_constellations": mapped_constellations,
             }
         ),
     )
