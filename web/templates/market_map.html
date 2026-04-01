@@ -464,7 +464,6 @@ body {
 </style>
 
 {% set map_data = v2_market_map if v2_market_map else {} %}
-{% set grouped = map_data.get("grouped_tiles", {}) if map_data else {} %}
 {% set layers = v2_map_layers if v2_map_layers else {} %}
 {% set default_layer = layers.get("default_layer", "pressure") %}
 
@@ -513,10 +512,99 @@ body {
     </div>
 
     <div class="map-field map-layer-{{ default_layer }}" id="marketMapField">
-        {% for bucket, tiles in grouped.items() %}
+        {% for bucket, constellation in mapped_constellations.items() %}
             {% set pos = cluster_positions.get(bucket, {"left": "50%", "top": "50%"}) %}
-            {% set constellation = namespace(data={}) %}
-            {% set _ = constellation.update({"data": map_tiles_to_constellation(bucket, tiles)}) if false else none %}
+            <div class="map-cluster {{ bucket }}" style="left: {{ pos.left }}; top: {{ pos.top }};">
+                <div class="cluster-label">{{ bucket.replace("_", " ") }}</div>
+                <div class="cluster-constellation-name">{{ constellation.get("label", "") }}</div>
+
+                {% for line in constellation.get("lines", []) %}
+                    {% set dx = line.x2 - line.x1 %}
+                    {% set dy = line.y2 - line.y1 %}
+                    {% set length = ((dx * dx + dy * dy) ** 0.5) %}
+                    {% set angle = (180 / 3.141592653589793) * (dy / (dx if dx != 0 else 0.0001)) %}
+                    <div
+                        class="constellation-line line-{{ bucket }}"
+                        style="
+                            left: {{ line.x1 }}%;
+                            top: {{ line.y1 }}%;
+                            width: {{ length }}%;
+                            transform: rotate({{ angle }}deg);
+                        "
+                    ></div>
+                {% endfor %}
+
+                {% for star in constellation.get("stars", []) %}
+                    {% set lane_class = "map-lane-options" if star.get("lane") == "options" else "map-lane-equity" %}
+                    {% set pressure_class = "map-pressure-high" if star.get("pressure_level") == "high" else "map-pressure-medium" if star.get("pressure_level") == "medium" else "map-pressure-low" %}
+                    {% set size_class = "map-size-" ~ star.get("size_score", 1) %}
+
+                    <div class="map-star-wrap {{ lane_class }} {{ pressure_class }} {{ size_class }}" style="left: {{ star.get('x', 50) }}%; top: {{ star.get('y', 50) }}%;">
+                        <a href="{{ star.get('destination', '/signals') }}" class="map-star-link">
+                            <div class="map-hover-zone"></div>
+                            <div class="map-star-core"></div>
+                            <div class="map-star-flare"></div>
+                        </a>
+
+                        <div class="map-hud">
+                            <div class="map-hud-symbol">{{ star.get("symbol") }}</div>
+                            <div class="map-hud-line">
+                                {% if star.get("pressure_level") == "high" %}
+                                    strong pressure here
+                                {% elif star.get("pressure_level") == "medium" %}
+                                    worth watching
+                                {% else %}
+                                    early read
+                                {% endif %}
+                            </div>
+                            <div class="map-hud-meta">
+                                {% if star.get("lane") %}
+                                <span class="map-hud-pill">{{ star.get("lane") }}</span>
+                                {% endif %}
+                                {% if star.get("direction") %}
+                                <span class="map-hud-pill">{{ star.get("direction") }}</span>
+                                {% endif %}
+                                {% if star.get("bucket") %}
+                                <span class="map-hud-pill">{{ star.get("bucket") }}</span>
+                                {% endif %}
+                            </div>
+                            {% if star.get("structure") %}
+                            <div class="map-hud-line">{{ star.get("structure") }}</div>
+                            {% endif %}
+                            {% if star.get("target_dte") %}
+                            <div class="map-hud-line">DTE {{ star.get("target_dte") }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% for star in constellation.get("overflow", []) %}
+                    {% set lane_class = "map-lane-options" if star.get("lane") == "options" else "map-lane-equity" %}
+                    {% set pressure_class = "map-pressure-high" if star.get("pressure_level") == "high" else "map-pressure-medium" if star.get("pressure_level") == "medium" else "map-pressure-low" %}
+                    {% set size_class = "map-size-" ~ star.get("size_score", 1) %}
+
+                    <div class="map-star-wrap {{ lane_class }} {{ pressure_class }} {{ size_class }}" style="left: {{ star.get('x', 84) }}%; top: {{ star.get('y', 60) }}%; opacity:.72;">
+                        <a href="{{ star.get('destination', '/signals') }}" class="map-star-link">
+                            <div class="map-hover-zone"></div>
+                            <div class="map-star-core"></div>
+                            <div class="map-star-flare"></div>
+                        </a>
+
+                        <div class="map-hud">
+                            <div class="map-hud-symbol">{{ star.get("symbol") }}</div>
+                            <div class="map-hud-line">outer satellite</div>
+                            <div class="map-hud-meta">
+                                {% if star.get("lane") %}
+                                <span class="map-hud-pill">{{ star.get("lane") }}</span>
+                                {% endif %}
+                                {% if star.get("direction") %}
+                                <span class="map-hud-pill">{{ star.get("direction") }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% endfor %}
     </div>
 </div>
