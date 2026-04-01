@@ -350,20 +350,23 @@ body {
 .bg-star.medium { width: 3px; height: 3px; }
 
 .bg-star.blue {
-    background: #8fc8ff;
-    box-shadow: 0 0 8px rgba(143, 200, 255, 0.42);
+    background: #5fc2ff;
+    box-shadow: 0 0 10px rgba(95, 194, 255, 0.72);
 }
+
 .bg-star.pink {
-    background: #ffb3df;
-    box-shadow: 0 0 8px rgba(255, 179, 223, 0.36);
+    background: #ff74cf;
+    box-shadow: 0 0 10px rgba(255, 116, 207, 0.68);
 }
+
 .bg-star.gold {
-    background: #ffe4ae;
-    box-shadow: 0 0 8px rgba(255, 228, 174, 0.28);
+    background: #ffd05a;
+    box-shadow: 0 0 10px rgba(255, 208, 90, 0.60);
 }
+
 .bg-star.purple {
-    background: #d7b8ff;
-    box-shadow: 0 0 8px rgba(215, 184, 255, 0.34);
+    background: #b774ff;
+    box-shadow: 0 0 10px rgba(183, 116, 255, 0.64);
 }
 
 @keyframes twinkleSlow {
@@ -446,12 +449,12 @@ body {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 180%;
+    width: 220%;
     height: 2px;
     transform: translate(-50%, -50%);
-    opacity: 0.28;
+    opacity: 0.48;
     border-radius: 999px;
-    box-shadow: 0 0 12px currentColor;
+    box-shadow: 0 0 16px currentColor, 0 0 28px currentColor;
     z-index: -1;
 }
 
@@ -461,10 +464,22 @@ body {
     top: 50%;
     width: 2px;
     transform: translate(-50%, -50%);
-    opacity: 0.22;
+    opacity: 0.42;
     border-radius: 999px;
     pointer-events: none;
-    box-shadow: 0 0 12px currentColor;
+    box-shadow: 0 0 16px currentColor, 0 0 28px currentColor;
+}
+
+.object-high .spot-core {
+    filter: saturate(1.2) brightness(1.18);
+}
+
+.object-medium .spot-core {
+    filter: saturate(1.08) brightness(1.06);
+}
+
+.object-low .spot-core {
+    filter: saturate(0.96) brightness(0.96);
 }
 
 /* sizes */
@@ -503,38 +518,29 @@ body {
     animation: twinkleFast 1.7s ease-in-out infinite;
 }
 
-/* lane colors */
+/* lane colors — stronger and more readable */
 .object-options .spot-core {
-    background: #ffd9ef;
-    color: #ff92d4;
+    background: #ff5fcf;
+    color: #ff2fb8;
 }
 .object-options .spot-core::before {
-    background: radial-gradient(circle, rgba(255, 146, 212, 0.72), rgba(135, 88, 255, 0.32), transparent 72%);
+    background: radial-gradient(circle, rgba(255, 47, 184, 0.95), rgba(170, 70, 255, 0.42), transparent 74%);
 }
 
 .object-equity .spot-core {
-    background: #e5f3ff;
-    color: #90c7ff;
+    background: #59c7ff;
+    color: #2da8ff;
 }
 .object-equity .spot-core::before {
-    background: radial-gradient(circle, rgba(144, 199, 255, 0.74), rgba(124, 77, 255, 0.24), transparent 72%);
+    background: radial-gradient(circle, rgba(45, 168, 255, 0.95), rgba(124, 77, 255, 0.30), transparent 74%);
 }
 
 .object-mixed .spot-core {
-    background: #fff3dc;
-    color: #ffd68f;
+    background: #ffd86e;
+    color: #ffbe2e;
 }
 .object-mixed .spot-core::before {
-    background: radial-gradient(circle, rgba(255, 214, 143, 0.68), rgba(255, 147, 193, 0.28), transparent 72%);
-}
-
-.spot-object-wrap:hover .spot-core {
-    transform: translate(-50%, -50%) scale(1.12);
-}
-
-.spot-object-wrap:hover .spot-core::before {
-    opacity: 0.78;
-    filter: blur(16px);
+    background: radial-gradient(circle, rgba(255, 190, 46, 0.92), rgba(255, 110, 176, 0.26), transparent 74%);
 }
 
 /* ===== POPUP ===== */
