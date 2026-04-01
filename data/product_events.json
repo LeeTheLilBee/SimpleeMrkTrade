@@ -70,5 +70,17 @@
     "timestamp": "2026-04-01T03:04:20.063581",
     "symbol": "uso",
     "source": "/signals"
+  },
+  {
+    "event_type": "symbol_exposed",
+    "timestamp": "2026-04-01T03:10:29.981825",
+    "symbol": "uso",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_click",
+    "timestamp": "2026-04-01T03:10:29.982587",
+    "symbol": "uso",
+    "source": "/signals"
   }
 ]

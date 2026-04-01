@@ -1,6 +1,6 @@
 {
   "page_views": {
-    "/": 192,
+    "/": 193,
     "/dashboard": 103,
     "/signals": 148,
     "/positions": 67,
@@ -9,7 +9,7 @@
     "/why-this-trade": 61,
     "/analytics-overview": 18,
     "/upgrade": 21,
-    "/login": 177,
+    "/login": 179,
     "/signup": 28,
     "/trade/MPC_1773917311.412609": 2,
     "/simulation": 1,
@@ -28,7 +28,7 @@
     "/signals/USO": 1,
     "/signals/DVN": 1,
     "/market-map": 5,
-    "/signals/uso": 1
+    "/signals/uso": 2
   },
   "clicks": {
     "upgrade_button": 17,
