@@ -10,6 +10,22 @@
     </div>
 </div>
 
+{% if v2_symbol_hero %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>V2 Symbol Bridge</h3>
+    <div class="passage-frame">
+        <p style="margin:0;">
+            Symbol: {{ v2_symbol_hero.get("symbol", "") }}
+            | Equity Lane: {{ v2_symbol_hero.get("meta", {}).get("has_equity_lane", False) }}
+            | Options Lane: {{ v2_symbol_hero.get("meta", {}).get("has_options_lane", False) }}
+            | Panels: {{ v2_symbol_deep_dive.get("meta", {}).get("panel_count", 0) }}
+            | Timeline: {{ v2_symbol_deep_dive.get("meta", {}).get("timeline_count", 0) }}
+            | Hero Strip Cards: {{ v2_horizontal_hero.get("meta", {}).get("card_count", 0) }}
+        </p>
+    </div>
+</div>
+{% endif %}
+
 <div class="card premium-card" style="margin-bottom:18px;">
     <div class="section-head-row">
         <div>
