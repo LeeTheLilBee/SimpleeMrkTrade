@@ -11,6 +11,9 @@ import json
 from pathlib import Path
 from engine_v2.market_map_builder import build_market_map
 from engine_v2.constellation_mapper import map_tiles_to_constellation
+from engine_v2.symbol_hero_contract import build_symbol_hero_contract
+from engine_v2.symbol_deep_dive_contract import build_symbol_deep_dive_contract
+from engine_v2.horizontal_hero_contract import build_horizontal_hero_contract
 from engine_v2.market_map_interaction_contract import build_market_map_interaction_contract
 from engine_v2.map_layer_toggle_contract import build_map_layer_toggle_contract
 from engine_v2.spotlight_page_contract import build_spotlight_page_contract
@@ -253,6 +256,47 @@ def render_template_safe(template_name: str, **context):
 # ============================================================
 # STABILITY HELPERS
 # ============================================================
+
+def get_v2_symbol_hero(symbol: str):
+    try:
+        return build_symbol_hero_contract(symbol)
+    except Exception as e:
+        print(f"[V2_SYMBOL_HERO] {e}")
+        return {
+            "symbol": symbol,
+            "company_name": symbol,
+            "hero": {},
+            "lanes": {},
+            "meta": {"error": str(e)},
+        }
+
+
+def get_v2_symbol_deep_dive(symbol: str):
+    try:
+        return build_symbol_deep_dive_contract(symbol)
+    except Exception as e:
+        print(f"[V2_SYMBOL_DEEP_DIVE] {e}")
+        return {
+            "symbol": symbol,
+            "hero": {},
+            "panels": [],
+            "timeline": [],
+            "meta": {"error": str(e)},
+        }
+
+
+def get_v2_horizontal_hero():
+    try:
+        return build_horizontal_hero_contract()
+    except Exception as e:
+        print(f"[V2_HORIZONTAL_HERO] {e}")
+        return {
+            "enabled_on": [],
+            "disabled_on": [],
+            "behavior": {},
+            "cards": [],
+            "meta": {"error": str(e)},
+        }
 
 def get_v2_market_map():
     try:
@@ -3531,30 +3575,35 @@ def admin_intelligence_page():
 @app.route("/symbol/<symbol>")
 def signal_symbol_page(symbol: str):
     maybe_track_page_view(f"/signals/{symbol}")
+
     log_event("symbol_exposed", {
         "symbol": symbol,
         "source": "/signals",
     })
     track_symbol_click(symbol, source="/signals")
 
-    detail = safe_run("get_symbol_detail", lambda: get_symbol_detail(symbol), {
-        "symbol": str(symbol or "").upper(),
-        "company": {
-            "name": str(symbol or "").upper(),
-            "blurb": "Symbol detail is temporarily unavailable.",
-        },
-        "board": {
+    detail = safe_run(
+        "get_symbol_detail",
+        lambda: get_symbol_detail(symbol),
+        {
             "symbol": str(symbol or "").upper(),
-            "company_name": str(symbol or "").upper(),
-            "latest_score": 0,
-            "latest_confidence": "LOW",
-            "latest_timestamp": "",
-            "opinion": "No active opinion available.",
+            "company": {
+                "name": str(symbol or "").upper(),
+                "blurb": "Symbol detail is temporarily unavailable.",
+            },
+            "board": {
+                "symbol": str(symbol or "").upper(),
+                "company_name": str(symbol or "").upper(),
+                "latest_score": 0,
+                "latest_confidence": "LOW",
+                "latest_timestamp": "",
+                "opinion": "No active opinion available.",
+            },
+            "primary_intelligence": {},
+            "signals": [],
+            "news_items": [],
         },
-        "primary_intelligence": {},
-        "signals": [],
-        "news_items": [],
-    })
+    )
 
     try:
         if not detail.get("news_items"):
@@ -3569,7 +3618,13 @@ def signal_symbol_page(symbol: str):
         detail["news_items"] = detail.get("news_items", [])
 
     data_health = build_data_health_summary()
-    symbol_news_meta = safe_dict(data_health.get("pipeline", {}).get("symbol_news_sync", {}).get(detail["symbol"], {}))
+    symbol_news_meta = safe_dict(
+        data_health.get("pipeline", {}).get("symbol_news_sync", {}).get(detail["symbol"], {})
+    )
+
+    v2_symbol_hero = get_v2_symbol_hero(detail["symbol"])
+    v2_symbol_deep_dive = get_v2_symbol_deep_dive(detail["symbol"])
+    v2_horizontal_hero = get_v2_horizontal_hero()
 
     return render_template_safe(
         "signal_symbol.html",
@@ -3583,13 +3638,16 @@ def signal_symbol_page(symbol: str):
                 "symbol_signals": detail.get("signals", []),
                 "visible_signal_count": len(detail.get("signals", [])),
                 "total_signal_count": len(detail.get("signals", [])),
-                "show_teaser": current_tier_title() in {"Free", "Starter", "Guest"},
+                "show_teaser": False,
                 "show_elite": current_tier_title() == "Elite",
                 "news_items": detail.get("news_items", []),
                 "opinion": detail.get("board", {}).get("opinion", "Active setup."),
                 "explanation": {},
                 "data_health": data_health,
                 "symbol_news_meta": symbol_news_meta,
+                "v2_symbol_hero": v2_symbol_hero,
+                "v2_symbol_deep_dive": v2_symbol_deep_dive,
+                "v2_horizontal_hero": v2_horizontal_hero,
             }
         ),
     )

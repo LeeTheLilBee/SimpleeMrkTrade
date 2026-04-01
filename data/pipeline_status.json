@@ -1,5 +1,5 @@
 {
-  "market_universe_run_at": "2026-03-31T15:04:34.687681",
+  "market_universe_run_at": "2026-04-01T03:08:47.399071",
   "market_universe_count": 163,
   "market_universe_source_status": {
     "diversity_seed": {
@@ -28,7 +28,7 @@
     "symbol_news": {
       "ok": true,
       "rows_added_estimate": 0,
-      "source_rows": 0
+      "source_rows": 3
     },
     "candidate_log": {
       "ok": true,
@@ -66,14 +66,14 @@
       "source_rows": 1
     }
   },
-  "news_sync_at": "2026-03-31T22:00:01.409402",
+  "news_sync_at": "2026-04-01T03:04:20.579948",
   "symbol_news_sync": {
     "HAL": {
       "synced_at": "2026-03-31T21:18:25.798287",
       "item_count": 8
     },
     "USO": {
-      "synced_at": "2026-03-31T21:18:49.799678",
+      "synced_at": "2026-04-01T03:04:20.579948",
       "item_count": 8
     },
     "DVN": {
