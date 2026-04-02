@@ -292,12 +292,19 @@ def get_fusion_trade_results():
     for item in reports[-20:]:
         if not isinstance(item, dict):
             continue
-        snapshot = item.get("snapshot", {}) if isinstance(item.get("snapshot", {}), dict) else {}
+
+        snapshot = item.get("snapshot", {})
+        if not isinstance(snapshot, dict):
+            snapshot = {}
+
         pnl = snapshot.get("daily_pnl", 0) or 0
-        results.append({
-            "outcome": "win" if pnl > 0 else "loss",
-            "edge_score": item.get("score", 75),
-        })
+        results.append(
+            {
+                "outcome": "win" if pnl > 0 else "loss",
+                "edge_score": item.get("score", 75),
+            }
+        )
+
     return results
 
 
@@ -335,7 +342,11 @@ def get_fusion_system_state():
 
 
 def get_fusion_portfolio_state():
-    positions = safe_run("get_positions_with_intelligence", get_positions_with_intelligence, [])
+    positions = safe_run(
+        "get_positions_with_intelligence",
+        get_positions_with_intelligence,
+        [],
+    )
     if not isinstance(positions, list):
         positions = []
 
@@ -343,7 +354,13 @@ def get_fusion_portfolio_state():
         "daily_loss_pct": 0,
         "open_positions": len(positions),
         "drawdown_state": "normal",
-        "stress_state": "low" if len(positions) <= 3 else "moderate" if len(positions) <= 6 else "critical",
+        "stress_state": (
+            "low"
+            if len(positions) <= 3
+            else "moderate"
+            if len(positions) <= 6
+            else "critical"
+        ),
     }
 
 
@@ -351,22 +368,25 @@ def build_symbol_fusion_payload(signal: dict):
     if not isinstance(signal, dict):
         signal = {}
 
+    tier = current_tier_title()
+
     return build_full_product_fusion(
         signal=signal,
         user_data=get_fusion_user_data(),
         market_data=get_fusion_market_data(),
-        portfolio_positions=safe_run("get_positions_with_intelligence", get_positions_with_intelligence, []),
+        portfolio_positions=safe_run(
+            "get_positions_with_intelligence",
+            get_positions_with_intelligence,
+            [],
+        ),
         trade_results=get_fusion_trade_results(),
         setup_stats=get_fusion_setup_stats(),
         context=get_fusion_context(signal.get("symbol", "")),
         system_state=get_fusion_system_state(),
         portfolio_state=get_fusion_portfolio_state(),
-        tier = current_tier_title()
-
-        is_elite = tier == "Elite"
-        is_pro = tier == "Pro"
-        is_basic = tier in {"Free", "Starter", "Guest"},
+        tier=tier,
     )
+
 
 def get_v2_symbol_hero(symbol: str):
     try:
@@ -674,7 +694,7 @@ def should_show_upgrade() -> bool:
 def can_access_all_symbols() -> bool:
     if is_master() and not session.get("preview_tier"):
         return True
-    return current_tier_title() in {"Starter", "Pro", "Elite"}
+    return current_tier_title() == "Elite"
 
 
 def get_current_user() -> Dict[str, Any]:
@@ -3455,23 +3475,28 @@ def archive_my_play(play_id):
 def signals_page():
     maybe_track_page_view("/signals")
 
+    access_debug = {
+        "current_tier_title": current_tier_title(),
+        "session_tier": session.get("tier"),
+        "preview_tier": session.get("preview_tier"),
+        "is_master": is_master(),
+        "can_access_all_symbols": can_access_all_symbols(),
+    }
+
     tier = current_tier_title()
     boards = get_signal_boards()
-
     visible_signals, hidden_signals, hidden_count = slice_signals_by_tier(
         boards=boards,
         tier=tier,
         is_master=is_master(),
         preview_tier=session.get("preview_tier"),
     )
-
     top_five, next_twenty = spotlight_sections(
         visible_signals=visible_signals,
         tier=tier,
         is_master=is_master(),
         preview_tier=session.get("preview_tier"),
     )
-
     most_viewed_symbols = top_engaged_symbols_with_counts(limit=5)
     engaged_spotlight = most_viewed_symbols[0] if most_viewed_symbols else None
 
@@ -3489,6 +3514,7 @@ def signals_page():
                 "next_twenty": next_twenty,
                 "hidden_remaining": hidden_count,
                 "can_access_all_symbols": can_access_all_symbols(),
+                "access_debug": access_debug,
             }
         ),
     )

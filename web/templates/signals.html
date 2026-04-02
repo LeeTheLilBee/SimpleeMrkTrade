@@ -14,7 +14,6 @@
 <div class="card premium-card" style="margin-bottom:18px;">
     <h3 style="margin-bottom:6px;">Engaged Spotlight</h3>
     <p class="muted-line" style="margin-top:0;">The symbol drawing the strongest user attention right now.</p>
-
     <a href="/signals/{{ engaged_spotlight.symbol }}" style="text-decoration:none; color:inherit;">
         <div class="card" style="margin:0;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
@@ -33,30 +32,6 @@
 <div class="card premium-card" style="margin-bottom:18px;">
     <h3 style="margin-bottom:6px;">Most Viewed Right Now</h3>
     <p class="muted-line" style="margin-top:0;">The symbols drawing the most user attention across the platform.</p>
-
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px;">
-        {% for item in most_viewed_symbols %}
-        <a href="/signals/{{ item.symbol }}" style="text-decoration:none; color:inherit;">
-            <div class="card" style="margin:0; height:100%;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
-                    <div>
-                        <h4 style="margin:0 0 4px 0;">{{ item.symbol }}</h4>
-                        <p class="muted-line" style="margin:0;">Views: {{ item.count }}</p>
-                    </div>
-                    <span class="signal-stat-chip">Hot</span>
-                </div>
-            </div>
-        </a>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-{% if most_viewed_symbols %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3 style="margin-bottom:6px;">Most Viewed Right Now</h3>
-    <p class="muted-line" style="margin-top:0;">The symbols drawing the most user attention across the platform.</p>
-
     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px;">
         {% for item in most_viewed_symbols %}
         <a href="/signals/{{ item.symbol }}" style="text-decoration:none; color:inherit;">
@@ -82,7 +57,7 @@
     <a href="/upgrade" class="cta-btn secondary">Unlock All Symbols</a>
     {% endif %}
 
-    {% if show_upgrade %}
+    {% if show_upgrade and not can_access_all_symbols %}
     <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
     {% endif %}
 </div>
@@ -107,7 +82,6 @@
                 {% endif %}
             </p>
         </div>
-
         <div class="signal-stat-chip">
             {{ visible_signals|length }} visible
         </div>
@@ -141,19 +115,16 @@
     <a href="/signals/{{ board.symbol }}" class="symbol-card-link">
         <div class="card premium-card symbol-card top-rank-card">
             <div class="rank-badge">#{{ loop.index }}</div>
-
             <div class="symbol-card-top">
                 <div>
                     <h3 class="symbol-card-ticker">{{ board.symbol }}</h3>
                     <p class="symbol-card-company">{{ board.company_name }}</p>
                 </div>
-
                 <div class="symbol-card-badges">
                     <span class="signal-stat-chip">Score {{ board.latest_score }}</span>
                     <span class="signal-stat-chip">{{ board.latest_confidence }}</span>
                 </div>
             </div>
-
             <div class="passage-frame">
                 <p><b>Opinion:</b> {{ board.opinion }}</p>
                 <p class="muted-line">
@@ -178,7 +149,7 @@
 {% endif %}
 
 {% if next_twenty and next_twenty|length > 0 %}
-<div class="spotlight-header-row" style="margin-top: 10px;">
+<div class="spotlight-header-row" style="margin-top:10px;">
     <div>
         <h3>Extended Watchlist</h3>
         <p class="muted-line">
@@ -202,12 +173,10 @@
                     <h3 class="symbol-card-ticker">{{ board.symbol }}</h3>
                     <p class="symbol-card-company">{{ board.company_name }}</p>
                 </div>
-
                 <div class="symbol-card-badges">
                     <span class="signal-stat-chip">{{ board.latest_score }}</span>
                 </div>
             </div>
-
             <div class="passage-frame">
                 <p><b>Opinion:</b> {{ board.opinion }}</p>
             </div>
@@ -225,7 +194,6 @@
             {{ hidden_remaining }} additional symbols are available beyond this tier’s current view.
         </p>
     </div>
-
     <div class="dashboard-subnav">
         {% if can_access_all_symbols %}
         <a href="/all-symbols" class="cta-btn">Open All Symbols</a>
