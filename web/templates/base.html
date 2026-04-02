@@ -137,18 +137,15 @@
             text-decoration: none;
         }
 
-        .nav-links a,
+        .nav-links > a,
         .nav-utility,
         .dropbtn,
         .signup-btn,
         .cta-btn {
+            display: inline-flex;
+            align-items: center;
             border-radius: 999px;
             padding: 8px 12px;
-        }
-
-        .nav-links > a,
-        .nav-utility,
-        .dropbtn {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.05);
         }
@@ -157,13 +154,14 @@
         .nav-utility:hover,
         .dropbtn:hover,
         .signup-btn:hover,
-        .dropdown-content a:hover {
+        .dropdown-content a:hover,
+        .cta-btn:hover {
             background: rgba(255,255,255,0.08);
         }
 
         .signup-btn {
-            text-decoration: none;
             color: var(--text-main);
+            text-decoration: none;
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(255,255,255,0.10);
         }
@@ -203,8 +201,16 @@
             display: block;
         }
 
+        .admin-preview-wrap {
+            position: relative;
+            z-index: 2;
+            width: min(1380px, calc(100% - 32px));
+            margin: 12px auto 8px auto;
+            pointer-events: none;
+        }
+
         .admin-preview-bar {
-            margin-top: 12px;
+            margin-top: 0;
             border-radius: 22px;
             padding: 12px 14px;
             background:
@@ -212,16 +218,15 @@
                 linear-gradient(135deg, rgba(13, 11, 25, 0.96), rgba(8, 7, 18, 0.96));
             border: 1px solid var(--border);
             box-shadow: 0 16px 34px rgba(0,0,0,0.24);
-        }
-        
-        .admin-preview-wrap {
-            max-height: fit-content;
-        }
-
-        .admin-preview-bar {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            pointer-events: auto;
+            position: relative;
+            z-index: 3;
+            width: fit-content;
+            max-width: 100%;
         }
 
         .admin-preview-left {
@@ -229,6 +234,7 @@
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
+            pointer-events: auto;
         }
 
         .admin-preview-label,
@@ -244,20 +250,7 @@
             border: 1px solid rgba(255,255,255,0.08);
             color: var(--text-main);
             text-decoration: none;
-        }
-
-        .admin-preview-wrap {
-            position: relative;
-            z-index: 2;
-
-            width: min(1380px, calc(100% - 32px));
-            margin: 12px auto 8px auto;
-
-            pointer-events: none; /* 👈 THIS is the key */
-        }
-
-        .admin-preview-bar {
-            pointer-events: auto; /* 👈 restores click only to visible UI */
+            pointer-events: auto;
         }
 
         .preview-chip.active {
@@ -370,6 +363,10 @@
                 right: 10px;
                 bottom: 10px;
                 width: 230px;
+            }
+
+            .admin-preview-bar {
+                width: 100%;
             }
         }
     </style>
