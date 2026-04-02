@@ -236,6 +236,20 @@
             text-decoration: none;
         }
 
+        .admin-preview-wrap {
+            position: relative;
+            z-index: 2;
+
+            width: min(1380px, calc(100% - 32px));
+            margin: 12px auto 8px auto;
+
+            pointer-events: none; /* 👈 THIS is the key */
+        }
+
+        .admin-preview-bar {
+            pointer-events: auto; /* 👈 restores click only to visible UI */
+        }
+
         .preview-chip.active {
             background: rgba(255,255,255,0.14);
         }
