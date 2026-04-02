@@ -82,5 +82,168 @@
     "timestamp": "2026-04-01T03:10:29.982587",
     "symbol": "uso",
     "source": "/signals"
+  },
+  {
+    "event_type": "symbol_exposed",
+    "timestamp": "2026-04-02T12:23:35.560586",
+    "symbol": "USO",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_click",
+    "timestamp": "2026-04-02T12:23:35.561851",
+    "symbol": "USO",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_exposed",
+    "timestamp": "2026-04-02T12:26:47.553519",
+    "symbol": "USO",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_click",
+    "timestamp": "2026-04-02T12:26:47.553799",
+    "symbol": "USO",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_exposed",
+    "timestamp": "2026-04-02T12:27:58.269197",
+    "symbol": "XOM",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_click",
+    "timestamp": "2026-04-02T12:27:58.270198",
+    "symbol": "XOM",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_exposed",
+    "timestamp": "2026-04-02T12:29:23.940536",
+    "symbol": "USO",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_click",
+    "timestamp": "2026-04-02T12:29:23.941863",
+    "symbol": "USO",
+    "source": "/signals"
+  },
+  {
+    "event_type": "premium_content_view",
+    "timestamp": "2026-04-02T12:29:47.468959",
+    "source": "/why-this-trade",
+    "section": "why_this_trade_page"
+  },
+  {
+    "event_type": "premium_wall_seen",
+    "timestamp": "2026-04-02T12:29:47.470251",
+    "source": "/why-this-trade",
+    "section": "why_this_trade_page"
+  },
+  {
+    "event_type": "rejection_interest",
+    "timestamp": "2026-04-02T12:29:48.925883",
+    "symbol": "TSLA",
+    "source": "/why-this-trade"
+  },
+  {
+    "event_type": "upgrade_click",
+    "timestamp": "2026-04-02T12:30:51.421810",
+    "source": "/upgrade",
+    "tier": "unknown"
+  },
+  {
+    "event_type": "symbol_exposed",
+    "timestamp": "2026-04-02T13:01:52.143368",
+    "symbol": "USO",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_click",
+    "timestamp": "2026-04-02T13:01:52.144919",
+    "symbol": "USO",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_exposed",
+    "timestamp": "2026-04-02T13:04:31.893977",
+    "symbol": "OXY",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_click",
+    "timestamp": "2026-04-02T13:04:31.895858",
+    "symbol": "OXY",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_exposed",
+    "timestamp": "2026-04-02T13:05:11.534758",
+    "symbol": "OXY",
+    "source": "/signals"
+  },
+  {
+    "event_type": "symbol_click",
+    "timestamp": "2026-04-02T13:05:11.536198",
+    "symbol": "OXY",
+    "source": "/signals"
+  },
+  {
+    "event_type": "upgrade_click",
+    "timestamp": "2026-04-02T13:05:25.664187",
+    "source": "/upgrade",
+    "tier": "unknown"
+  },
+  {
+    "event_type": "upgrade_click",
+    "timestamp": "2026-04-02T13:05:30.889826",
+    "source": "/upgrade",
+    "tier": "unknown"
+  },
+  {
+    "event_type": "upgrade_click",
+    "timestamp": "2026-04-02T13:05:35.911279",
+    "source": "/upgrade",
+    "tier": "unknown"
+  },
+  {
+    "event_type": "upgrade_click",
+    "timestamp": "2026-04-02T13:05:39.579131",
+    "source": "/upgrade",
+    "tier": "unknown"
+  },
+  {
+    "event_type": "upgrade_click",
+    "timestamp": "2026-04-02T13:05:45.110000",
+    "source": "/upgrade",
+    "tier": "unknown"
+  },
+  {
+    "event_type": "premium_content_view",
+    "timestamp": "2026-04-02T13:07:28.040703",
+    "source": "/why-this-trade",
+    "section": "why_this_trade_page"
+  },
+  {
+    "event_type": "premium_wall_seen",
+    "timestamp": "2026-04-02T13:07:28.041196",
+    "source": "/why-this-trade",
+    "section": "why_this_trade_page"
+  },
+  {
+    "event_type": "rejection_interest",
+    "timestamp": "2026-04-02T13:07:29.446288",
+    "symbol": "TSLA",
+    "source": "/why-this-trade"
+  },
+  {
+    "event_type": "trade_click",
+    "timestamp": "2026-04-02T13:08:14.871719",
+    "symbol": "AMD",
+    "trade_id": "AMD-CALL-20260402003442",
+    "source": "/why-this-trade"
   }
 ]

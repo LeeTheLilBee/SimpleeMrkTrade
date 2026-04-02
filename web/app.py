@@ -361,7 +361,11 @@ def build_symbol_fusion_payload(signal: dict):
         context=get_fusion_context(signal.get("symbol", "")),
         system_state=get_fusion_system_state(),
         portfolio_state=get_fusion_portfolio_state(),
-        tier=current_tier_title(),
+        tier = current_tier_title()
+
+        is_elite = tier == "Elite"
+        is_pro = tier == "Pro"
+        is_basic = tier in {"Free", "Starter", "Guest"},
     )
 
 def get_v2_symbol_hero(symbol: str):

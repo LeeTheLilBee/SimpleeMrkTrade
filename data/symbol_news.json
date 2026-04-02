@@ -65,6 +65,27 @@
   "USO": {
     "items": [
       {
+        "title": "Sector Update: Energy Stocks Decline Pre-Bell Wednesday",
+        "summary": "Energy stocks were declining pre-bell Wednesday, with the State Street Energy Select Sector SPDR ETF",
+        "source": "MT Newswires",
+        "published_at": "2026-04-01T13:27:57Z",
+        "url": "https://finance.yahoo.com/sectors/energy/articles/sector-energy-stocks-decline-pre-132757764.html"
+      },
+      {
+        "title": "Exchange-Traded Funds, Equity Futures Gain Pre-Bell Wednesday as Iran War De-Escalation Hopes Drive Sentiment",
+        "summary": "The broad market exchange-traded fund SPDR S&P 500 ETF Trust (SPY) was up 0.8%, and the actively tra",
+        "source": "MT Newswires",
+        "published_at": "2026-04-01T13:06:39Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/exchange-traded-funds-equity-futures-130639197.html"
+      },
+      {
+        "title": "Crude Oil Prices Fall Amid Hopes of Middle East War Ending Soon",
+        "summary": "Crude oil prices eased on Wednesday amid hopes that the U.S.-Israel war with Iran may be drawing to",
+        "source": "MT Newswires",
+        "published_at": "2026-04-01T09:41:06Z",
+        "url": "https://finance.yahoo.com/sectors/energy/articles/crude-oil-prices-fall-amid-094106260.html"
+      },
+      {
         "title": "Oil Prices See Largest Monthly Jump Since 2020 as Iran War Heads Into Its Second Month",
         "summary": "Elevated crude prices could remain a problem for the stock market even if the Iran war ends. It all comes down to the Strait of Hormuz.",
         "source": "Barrons.com",
@@ -93,36 +114,15 @@
         "url": "https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-03-31-2026/card/here-are-the-stock-market-s-biggest-winners-this-month-NalpKXvUAjMLxhLT6b5S?siteid=yhoof2&yptr=yahoo"
       },
       {
-        "title": "Sector Update: Energy Stocks Edge Higher Pre-Bell Tuesday",
-        "summary": "Energy stocks were edging higher pre-bell Tuesday, with the State Street Energy Select Sector SPDR E",
-        "source": "MT Newswires",
-        "published_at": "2026-03-31T13:27:02Z",
-        "url": "https://finance.yahoo.com/sectors/energy/articles/sector-energy-stocks-edge-higher-132702720.html"
-      },
-      {
-        "title": "Exchange-Traded Funds, Equity Futures Higher Pre-Bell Tuesday as De-Escalation Hopes Lift Risk Sentiment",
-        "summary": "The broad market exchange-traded fund SPDR S&P 500 ETF Trust (SPY) was up 1% and the actively traded",
-        "source": "MT Newswires",
-        "published_at": "2026-03-31T12:51:26Z",
-        "url": "https://finance.yahoo.com/markets/stocks/articles/exchange-traded-funds-equity-futures-125126157.html"
-      },
-      {
-        "title": "TSX Closer: Index Closes Lower On Jitters Over the Iran War and Oil Prices",
-        "summary": "The Toronto Stock Exchange closed lower Monday, even with improved commodity prices as investors rem",
-        "source": "MT Newswires",
-        "published_at": "2026-03-30T20:26:01Z",
-        "url": "https://finance.yahoo.com/markets/commodities/articles/tsx-closer-index-closes-lower-202601043.html"
-      },
-      {
-        "title": "Market Minute 3-30-26- Oil Tops $100 on War Worries",
-        "summary": "Crude oil is on the march again, with benchmark US prices back above $100. Stocks, gold, silver, and Treasuries are all higher, too. So, are Bitcoin and the US dollar.",
+        "title": "Market Minute 3-31-26- Stocks Rally Amid Worst Quarter Since '22",
+        "summary": "Stocks are rallying in early trading today. Gold and silver are higher, too, while crude oil is mixed. Treasuries are up slightly along with Bitcoin.",
         "source": "MoneyShow",
-        "published_at": "2026-03-30T14:20:00Z",
-        "url": "https://finance.yahoo.com/markets/commodities/articles/market-minute-3-30-26-142000279.html"
+        "published_at": "2026-03-31T14:15:00Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/market-minute-3-31-26-141500580.html"
       }
     ],
-    "refreshed_at": "2026-04-01T03:04:20.577373",
-    "refreshed_at_ts": 1775012660,
+    "refreshed_at": "2026-04-02T13:01:52.335148",
+    "refreshed_at_ts": 1775134912,
     "source": "yfinance_then_google"
   },
   "DVN": {
@@ -186,6 +186,132 @@
     ],
     "refreshed_at": "2026-03-31T22:00:01.405876",
     "refreshed_at_ts": 1774994400,
+    "source": "yfinance_then_google"
+  },
+  "XOM": {
+    "items": [
+      {
+        "title": "Oil prices have ripped higher, yet investors keep making this mistake with energy stocks",
+        "summary": "Oil stocks continue to make a lot of sense, says Citi.",
+        "source": "Yahoo Finance",
+        "published_at": "2026-04-02T11:50:15Z",
+        "url": "https://finance.yahoo.com/news/oil-prices-have-ripped-higher-yet-investors-keep-making-this-mistake-with-energy-stocks-115015019.html"
+      },
+      {
+        "title": "Energy stocks rally after Trump warns of intensified Iran strikes",
+        "summary": "Investing.com -- Shares in energy companies climbed on Thursday as oil and gas prices surged after President Donald Trump signaled the U.S. would press ahead with military strikes on Iran, raising fears of extended disruptions to global oil supply.",
+        "source": "Investing.com",
+        "published_at": "2026-04-02T11:52:53Z",
+        "url": "https://finance.yahoo.com/sectors/energy/articles/energy-stocks-rally-trump-warns-115253966.html"
+      },
+      {
+        "title": "VYMI vs. VIG vs. VYM: Which Vanguard Dividend ETF Pays You Most?",
+        "summary": "Income-focused investors often look to dividend ETFs as an easy way to generate steady passive income without picking individual stocks. Among Vanguard\u2019s most popular options are the Vanguard High Dividend Yield ETF (VYM), Vanguard Dividend Appreciation ETF (VIG), and Vanguard International High Dividend Yield ETF (VYMI)\u2014each offering a different mix of yield, growth, and global exposure. Using TipRanks\u2019 ETF Comparison Tool, we compared VYMI, VYM, and VIG to determine which Vanguard ETF could be",
+        "source": "TipRanks",
+        "published_at": "2026-04-02T11:24:05Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/vymi-vs-vig-vs-vym-112405108.html"
+      },
+      {
+        "title": "Stocks to Watch Thursday: Delta Air Lines, General Motors, Exxon",
+        "summary": "\u2198\ufe0f Delta Air Lines (DAL), United Airlines (UAL): Both airline stocks were down more than 3% premarket on the prospect of a longer-lasting war. The longer the conflict goes on, the longer jet fuel prices will likely stay elevated.",
+        "source": "The Wall Street Journal",
+        "published_at": "2026-04-02T10:22:12Z",
+        "url": "https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-04-02-2026/card/stocks-to-watch-thursday-apple-exxon-asml-5yEIPwytHTecXoDVQk4n?siteid=yhoof2&yptr=yahoo"
+      },
+      {
+        "title": "These Stocks Are Today\u2019s Movers: Tesla, Globalstar, Amazon, Exxon Mobil, Penguin Solutions, and More",
+        "summary": "Tesla slides ahead of delivery numbers, while Globalstar rallies after a report says Amazon is in discussions to buy the satellite operator.",
+        "source": "Barrons.com",
+        "published_at": "2026-04-02T09:57:00Z",
+        "url": "https://www.barrons.com/articles/stock-movers-cc1f9498?siteid=yhoof2&yptr=yahoo"
+      },
+      {
+        "title": "Heard on the Street Wednesday Recap: Hormuz Rally Day Two",
+        "summary": "Stocks rose Wednesday, extending a \u201cHormuz Hope\u201d rally from Tuesday.  The Nasdaq composite gained 1.2%, while the S&P 500 rose 0.7% and the Dow industrials advanced 0.5%.  Trump and Iran traded barbs over control of the Strait of Hormuz.",
+        "source": "The Wall Street Journal",
+        "published_at": "2026-04-02T07:06:14Z",
+        "url": "https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-04-02-2026/card/heard-on-the-street-wednesday-recap-hormuz-rally-day-two-tM22dUTGQIOy1SUCglLo?siteid=yhoof2&yptr=yahoo"
+      },
+      {
+        "title": "SBM Offshore\u2019s Longtail FPSO Win Extends Guyana Growth And Investor Story",
+        "summary": "SBM Offshore secured Front End Engineering and Design contracts from ExxonMobil Guyana Limited for the Longtail FPSO project in Guyana. The award extends SBM Offshore's Fast4Ward based FPSO work in the Stabroek Block and deepens its collaboration with ExxonMobil in the country. The project is expected to reinforce SBM Offshore's local content efforts and support engineering and project execution from Guyana and other hubs. For investors tracking ENXTAM:SBMO, this contract win comes with the...",
+        "source": "Simply Wall St.",
+        "published_at": "2026-04-02T04:28:02Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/sbm-offshore-longtail-fpso-win-042802422.html"
+      },
+      {
+        "title": "Exxon Mobil Golden Pass LNG Startup And What It Might Mean For XOM",
+        "summary": "Exxon Mobil's Golden Pass LNG facility, a joint venture with QatarEnergy, has reached first production. The new US based project comes online as global LNG markets face capacity shortfalls tied to damage at Qatar's LNG facilities and wider geopolitical disruptions. Golden Pass LNG is expected to supply liquefied natural gas to Europe and Asia, adding export diversity and supporting energy security concerns. For investors watching NYSE:XOM, this operational milestone comes at a time when the...",
+        "source": "Simply Wall St.",
+        "published_at": "2026-04-02T03:16:56Z",
+        "url": "https://finance.yahoo.com/sectors/energy/articles/exxon-mobil-golden-pass-lng-031656077.html"
+      }
+    ],
+    "refreshed_at": "2026-04-02T12:27:58.448242",
+    "refreshed_at_ts": 1775132878,
+    "source": "yfinance_then_google"
+  },
+  "OXY": {
+    "items": [
+      {
+        "title": "Stocks to Watch Thursday: Delta Air Lines, General Motors, Exxon",
+        "summary": "\u2198\ufe0f Delta Air Lines (DAL), United Airlines (UAL): Both airline stocks were down more than 3% premarket on the prospect of a longer-lasting war. The longer the conflict goes on, the longer jet fuel prices will likely stay elevated.",
+        "source": "The Wall Street Journal",
+        "published_at": "2026-04-02T10:22:12Z",
+        "url": "https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-04-02-2026/card/stocks-to-watch-thursday-apple-exxon-asml-5yEIPwytHTecXoDVQk4n?siteid=yhoof2&yptr=yahoo"
+      },
+      {
+        "title": "Stock Market Today, April 1: Markets Rally and Oil Prices Fall for Second Day Running",
+        "summary": "Today, April 1, 2026, hopes that the Iran war may soon end drove markets upwards as tumbling oil prices reshaped the day\u2019s winners.",
+        "source": "Motley Fool",
+        "published_at": "2026-04-01T21:41:07Z",
+        "url": "https://www.fool.com/coverage/stock-market-today/2026/04/01/stock-market-today-april-1-markets-rally-and-oil-prices-fall-for-second-day-running/"
+      },
+      {
+        "title": "Oil Prices Fall on Fresh Hopes for a Swift End to Iran War",
+        "summary": "The retreat follows a a 51% surge in crude oil prices in March for their largest monthly gain in nearly six years.",
+        "source": "Barrons.com",
+        "published_at": "2026-04-01T20:27:00Z",
+        "url": "https://www.barrons.com/articles/oil-prices-crude-brent-wti-today-c4cbb01b?siteid=yhoof2&yptr=yahoo"
+      },
+      {
+        "title": "Exxon, Chevron, and More Oil Stocks Fall. Why That Could Be the New Normal.",
+        "summary": "Investors may have to get used to selloffs in oil stocks, given that the market is betting that the Iran war could end soon.",
+        "source": "Barrons.com",
+        "published_at": "2026-04-01T14:28:00Z",
+        "url": "https://www.barrons.com/articles/exxon-chevron-stocks-oil-prices-f7d80083?siteid=yhoof2&yptr=yahoo"
+      },
+      {
+        "title": "Zacks.com featured highlights include Smithfield, Chord, Eni and Occidental Petroleum",
+        "summary": "Smithfield, Chord, Eni and Occidental Petroleum have been highlighted in this Screen of The Week article.",
+        "source": "Zacks",
+        "published_at": "2026-04-01T09:30:00Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/zacks-com-featured-highlights-smithfield-093000842.html"
+      },
+      {
+        "title": "Occidental Petroleum (OXY) Valuation Check After Recent Share Price Pullback And Strong Longer Term Returns",
+        "summary": "Occidental Petroleum stock: recent performance snapshot Occidental Petroleum (OXY) has drawn fresh attention after a mixed short term performance, with a 1.9% decline over the past day alongside gains over the past week, month, and past 3 months. See our latest analysis for Occidental Petroleum. The latest pullback comes after a strong run, with Occidental Petroleum\u2019s share price showing firm upward momentum over the past month and quarter, and a 1 year total shareholder return of 35%...",
+        "source": "Simply Wall St.",
+        "published_at": "2026-04-01T08:16:40Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/occidental-petroleum-oxy-valuation-check-081640839.html"
+      },
+      {
+        "title": "Berkshire Adds OxyChem As Valuation Gap And Earnings Outlook Diverge",
+        "summary": "Berkshire Hathaway (NYSE:BRK.A) has completed its acquisition of Occidental Petroleum's OxyChem subsidiary. The deal brings OxyChem's U.S. focused chemicals operations under Berkshire's umbrella. Occidental Petroleum plans to use proceeds to improve its balance sheet and concentrate on its core energy business. The move adds a large chemicals platform to NYSE:BRK.A, which already owns a mix of insurance, energy and industrial businesses. Chemicals often tie closely to broader manufacturing...",
+        "source": "Simply Wall St.",
+        "published_at": "2026-04-01T00:16:01Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/berkshire-adds-oxychem-valuation-gap-001601045.html"
+      },
+      {
+        "title": "Earnings Estimates Rising for Occidental (OXY): Will It Gain?",
+        "summary": "Occidental Petroleum (OXY) shares have started gaining and might continue moving higher in the near term, as indicated by solid earnings estimate revisions.",
+        "source": "Zacks",
+        "published_at": "2026-03-31T16:20:02Z",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/earnings-estimates-rising-occidental-oxy-162002837.html"
+      }
+    ],
+    "refreshed_at": "2026-04-02T13:04:32.413138",
+    "refreshed_at_ts": 1775135071,
     "source": "yfinance_then_google"
   }
 }

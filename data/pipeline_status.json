@@ -66,18 +66,26 @@
       "source_rows": 1
     }
   },
-  "news_sync_at": "2026-04-01T03:04:20.579948",
+  "news_sync_at": "2026-04-02T13:04:32.417540",
   "symbol_news_sync": {
     "HAL": {
       "synced_at": "2026-03-31T21:18:25.798287",
       "item_count": 8
     },
     "USO": {
-      "synced_at": "2026-04-01T03:04:20.579948",
+      "synced_at": "2026-04-02T13:01:52.336707",
       "item_count": 8
     },
     "DVN": {
       "synced_at": "2026-03-31T22:00:01.409402",
+      "item_count": 8
+    },
+    "XOM": {
+      "synced_at": "2026-04-02T12:27:58.452070",
+      "item_count": 8
+    },
+    "OXY": {
+      "synced_at": "2026-04-02T13:04:32.417540",
       "item_count": 8
     }
   }

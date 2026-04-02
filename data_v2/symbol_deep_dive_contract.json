@@ -1,15 +1,15 @@
 {
-  "symbol": "USO",
+  "symbol": "OXY",
   "hero": {
-    "title": "USO Intelligence",
+    "title": "OXY Intelligence",
     "summary": "Option-Ready",
     "direction": "CALL",
     "trend": "UPTREND",
     "setup_type": "steady_continuation",
     "pressure_level": "high",
     "confidence_tier": 1,
-    "price": 128.75,
-    "destination": "/signals/USO"
+    "price": 66.6,
+    "destination": "/signals/OXY"
   },
   "panels": [
     {
@@ -20,18 +20,18 @@
       "content": {
         "scanner": {
           "direction": "CALL",
-          "score": 507.71,
+          "score": 348.95,
           "confidence": "HIGH",
           "grade": "A",
           "trend": "UPTREND",
           "setup_type": "steady_continuation",
-          "momentum": 0.4077,
+          "momentum": 0.249,
           "volume_quality": "NORMAL",
           "regime_fit": "STRONG",
           "entry_quality": "GOOD",
           "time_sensitivity": "NEXT",
           "setup_maturity": "MATURE",
-          "price": 128.89
+          "price": 66.64
         },
         "state": {
           "status_label": "Building Cleanly",
@@ -40,9 +40,9 @@
         },
         "reasoning": {
           "why_symbol": [
-            "Momentum is 0.4077.",
+            "Momentum is 0.249.",
             "Trend is UPTREND.",
-            "Volume ratio is 0.07."
+            "Volume ratio is 0.08."
           ],
           "why_not": []
         }
@@ -56,12 +56,12 @@
       "content": {
         "scanner": {
           "direction": "CALL",
-          "score": 506.18,
+          "score": 348.21,
           "confidence": "HIGH",
           "grade": "A",
           "trend": "UPTREND",
           "setup_type": "steady_continuation",
-          "price": 128.75
+          "price": 66.6
         },
         "state": {
           "status_label": "Option-Ready",
@@ -99,22 +99,22 @@
   "timeline": [
     {
       "key": "setup_seen",
-      "label": "USO setup recognized",
+      "label": "OXY setup recognized",
       "summary": "The system recognized this symbol as one of the current active setups."
     },
     {
       "key": "lane_selected",
-      "label": "USO lane assignment",
+      "label": "OXY lane assignment",
       "summary": "The symbol was routed into equity and/or options intelligence."
     },
     {
       "key": "ready_state",
-      "label": "USO readiness state",
+      "label": "OXY readiness state",
       "summary": "The system attached status, pressure, and confidence framing."
     }
   ],
   "meta": {
-    "rebuilt_at": "2026-04-01T03:10:29.998448",
+    "rebuilt_at": "2026-04-02T13:05:11.545527",
     "panel_count": 2,
     "timeline_count": 3
   }
