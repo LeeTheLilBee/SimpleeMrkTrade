@@ -2148,5 +2148,52 @@
     "message": "Bot run completed",
     "symbol": null,
     "meta": {}
+  },
+  {
+    "timestamp": "2026-04-02T00:34:24.824772",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-04-02T00:34:25.881795",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.203932",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.220895",
+    "event_type": "QUEUE",
+    "message": "Approved 1 research trades; selected 1 execution trades in mode DEFENSIVE_BEAR",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.368359",
+    "event_type": "SIGNAL",
+    "message": "AMD approved as CALL with score 189",
+    "symbol": "AMD",
+    "meta": {
+      "trade_id": "AMD-CALL-20260402003442",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH"
+    }
+  },
+  {
+    "timestamp": "2026-04-02T00:34:56.623511",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed",
+    "symbol": null,
+    "meta": {}
   }
 ]

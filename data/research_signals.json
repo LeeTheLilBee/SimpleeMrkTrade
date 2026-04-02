@@ -2577,5 +2577,18 @@
     "regime": "BEAR_TREND",
     "mode": "DEFENSIVE_BEAR",
     "volatility": "NORMAL"
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.259938",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "price": 100.0,
+    "trade_id": "AMD-CALL-20260402003442",
+    "source": "research",
+    "regime": "BEAR_TREND",
+    "mode": "DEFENSIVE_BEAR",
+    "volatility": "NORMAL"
   }
 ]

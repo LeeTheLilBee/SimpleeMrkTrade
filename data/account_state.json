@@ -1,7 +1,7 @@
 {
-  "equity": 4712.29,
-  "cash": 4712.55,
-  "buying_power": 4712.55,
+  "equity": 4700.63,
+  "cash": 4700.99,
+  "buying_power": 4700.99,
   "account_type": "margin",
   "trade_history": [
     {
@@ -101,6 +101,15 @@
       "timestamp": "2026-03-31T13:21:42.351078",
       "settle_date": "2026-04-01T13:21:42.351083",
       "cost": 4630.19,
+      "status": "OPEN"
+    },
+    {
+      "symbol": "AMD",
+      "price": 210.7355,
+      "size": 22.0,
+      "timestamp": "2026-04-02T00:34:42.568840",
+      "settle_date": "2026-04-03T00:34:42.568846",
+      "cost": 4636.18,
       "status": "OPEN"
     }
   ]

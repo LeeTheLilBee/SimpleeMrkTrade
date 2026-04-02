@@ -161,5 +161,20 @@
     "closed_at": "2026-03-31T13:21:42.816587",
     "reason": "cut_weakness",
     "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.57."
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.569914",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "price": 210.74,
+    "size": 22.0,
+    "score": 189,
+    "confidence": "HIGH",
+    "status": "CLOSED",
+    "pnl": -11.66,
+    "exit_price": 210.21,
+    "closed_at": "2026-04-02T00:34:42.880595",
+    "reason": "cut_weakness",
+    "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.66."
   }
 ]

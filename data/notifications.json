@@ -1,63 +1,5 @@
 [
   {
-    "timestamp": "2026-03-24T03:14:34.614257",
-    "title": "Edge Detected",
-    "message": "AAPL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bear Trend.",
-    "level": "info",
-    "link": "/why-this-trade",
-    "read": false,
-    "members_only": true,
-    "min_tier": "Pro",
-    "category": "premium"
-  },
-  {
-    "timestamp": "2026-03-24T03:14:34.622884",
-    "type": "RESEARCH_ALPHA",
-    "message": "AAPL research alpha added to premium intelligence.",
-    "trade_id": "AAPL-CALL-20260324031434",
-    "tier_required": "elite",
-    "level": "info",
-    "score": 210,
-    "strategy": "CALL",
-    "volatility": "NORMAL",
-    "source": "research"
-  },
-  {
-    "timestamp": "2026-03-24T03:14:34.682668",
-    "type": "HIGH_CONVICTION",
-    "message": "MSFT high-conviction research setup detected (Score 207).",
-    "trade_id": "MSFT-CALL-20260324031434",
-    "tier_required": "pro",
-    "level": "success",
-    "score": 207,
-    "strategy": "CALL",
-    "volatility": "NORMAL",
-    "source": "research"
-  },
-  {
-    "timestamp": "2026-03-24T03:14:34.702296",
-    "title": "Edge Detected",
-    "message": "MSFT: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bear Trend.",
-    "level": "info",
-    "link": "/why-this-trade",
-    "read": false,
-    "members_only": true,
-    "min_tier": "Pro",
-    "category": "premium"
-  },
-  {
-    "timestamp": "2026-03-24T03:14:34.710539",
-    "type": "RESEARCH_ALPHA",
-    "message": "MSFT research alpha added to premium intelligence.",
-    "trade_id": "MSFT-CALL-20260324031434",
-    "tier_required": "elite",
-    "level": "info",
-    "score": 207,
-    "strategy": "CALL",
-    "volatility": "NORMAL",
-    "source": "research"
-  },
-  {
     "timestamp": "2026-03-24T03:14:34.783745",
     "type": "HIGH_CONVICTION",
     "message": "NVDA high-conviction research setup detected (Score 204).",
@@ -3450,6 +3392,63 @@
   },
   {
     "timestamp": "2026-03-31T13:21:42.214551",
+    "title": "Edge Detected",
+    "message": "AMD: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bear Trend.",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.322071",
+    "title": "Edge Detected",
+    "message": "AMD: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bear Trend.",
+    "level": "info",
+    "link": "/why-this-trade",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Pro",
+    "category": "premium"
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.329727",
+    "type": "RESEARCH_ALPHA",
+    "message": "AMD research alpha added to premium intelligence.",
+    "trade_id": "AMD-CALL-20260402003442",
+    "tier_required": "elite",
+    "level": "info",
+    "score": 189,
+    "strategy": "CALL",
+    "volatility": "NORMAL",
+    "source": "research"
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.412371",
+    "title": "Approved Trade",
+    "message": "AMD approved as CALL with premium score 189.",
+    "level": "info",
+    "link": "/signals",
+    "read": false,
+    "members_only": true,
+    "min_tier": "Starter",
+    "category": "signal"
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.419757",
+    "type": "EXECUTION_APPROVED",
+    "message": "AMD approved for live execution review.",
+    "trade_id": "AMD-CALL-20260402003442",
+    "tier_required": "starter",
+    "level": "info",
+    "score": 189,
+    "strategy": "CALL",
+    "volatility": "NORMAL",
+    "source": "execution"
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.430425",
     "title": "Edge Detected",
     "message": "AMD: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bear Trend.",
     "level": "info",

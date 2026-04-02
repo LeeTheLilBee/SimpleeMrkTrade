@@ -3309,5 +3309,65 @@
       "pnl": -11.57,
       "size": 13.0
     }
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.266175",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260402003442",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "research"
+    }
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.373855",
+    "symbol": "AMD",
+    "event": "EXECUTION_APPROVED",
+    "details": {
+      "trade_id": "AMD-CALL-20260402003442",
+      "strategy": "CALL",
+      "score": 189,
+      "confidence": "HIGH",
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.572132",
+    "symbol": "AMD",
+    "event": "OPENED",
+    "details": {
+      "strategy": "CALL",
+      "requested_price": 210.21,
+      "fill_price": 210.74,
+      "commission": 1.0,
+      "size": 22.0,
+      "stop": 208.74,
+      "target": 214.74
+    }
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.584357",
+    "symbol": "AMD",
+    "event": "EXECUTED",
+    "details": {
+      "trade_id": "AMD-CALL-20260402003442",
+      "strategy": "CALL",
+      "score": 189,
+      "source": "execution"
+    }
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.885337",
+    "symbol": "AMD",
+    "event": "CLOSED",
+    "details": {
+      "exit_price": 210.21,
+      "reason": "cut_weakness",
+      "pnl": -11.66,
+      "size": 22.0
+    }
   }
 ]

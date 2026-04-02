@@ -1,33 +1,33 @@
 {
-  "timestamp": "2026-03-31T13:21:42.824935",
+  "timestamp": "2026-04-02T00:34:42.893483",
   "performance": {
-    "trades": 11,
+    "trades": 12,
     "wins": 2,
-    "losses": 9,
-    "winrate": 0.18,
-    "total_pnl": 2529.83,
-    "max_drawdown": 81.47,
+    "losses": 10,
+    "winrate": 0.17,
+    "total_pnl": 2518.17,
+    "max_drawdown": 93.13,
     "entries_today": 1,
     "closes_today": 1,
     "round_trips_today": 1,
-    "realized_pnl_today": -11.57
+    "realized_pnl_today": -11.66
   },
   "portfolio": {
     "open_positions": 0,
-    "closed_positions": 17,
-    "realized_pnl": 3712.29
+    "closed_positions": 18,
+    "realized_pnl": 3700.63
   },
   "analytics": {
-    "trades": 11,
-    "winrate": 0.18,
+    "trades": 12,
+    "winrate": 0.17,
     "strategies": {
-      "CALL": 11
+      "CALL": 12
     },
-    "last_trade": "TSLA",
+    "last_trade": "AMD",
     "portfolio": {
       "open_positions": 0,
-      "closed_positions": 17,
-      "realized_pnl": 3712.29
+      "closed_positions": 18,
+      "realized_pnl": 3700.63
     }
   }
 }

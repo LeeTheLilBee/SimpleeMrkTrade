@@ -358,5 +358,15 @@
     "timestamp": "2026-03-31T13:21:42.484717",
     "level": "WARN",
     "message": "Skipped AMD due to insufficient buying power for minimum size"
+  },
+  {
+    "timestamp": "2026-04-02T00:34:24.823536",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-02T00:34:42.582123",
+    "level": "INFO",
+    "message": "Executed AMD CALL at 210.74 size 22.0"
   }
 ]
