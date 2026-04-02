@@ -5,165 +5,521 @@
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --bg-deep: #05040a;
+            --bg-mid: #090714;
+            --panel: rgba(14, 11, 29, 0.92);
+            --panel-soft: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8f7ff;
+            --text-soft: rgba(248, 247, 255, 0.74);
+            --violet-glow: rgba(124, 77, 255, 0.20);
+            --pink-glow: rgba(255, 95, 207, 0.14);
+            --blue-glow: rgba(97, 196, 255, 0.12);
+        }
+
+        html, body {
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+            color: var(--text-main);
+            background:
+                radial-gradient(circle at 18% 20%, var(--violet-glow), transparent 24%),
+                radial-gradient(circle at 78% 24%, var(--pink-glow), transparent 22%),
+                radial-gradient(circle at 62% 76%, var(--blue-glow), transparent 26%),
+                linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.42;
+            background-image:
+                radial-gradient(2px 2px at 8% 14%, rgba(255,255,255,0.82), transparent),
+                radial-gradient(1px 1px at 16% 72%, rgba(255,255,255,0.68), transparent),
+                radial-gradient(1.5px 1.5px at 28% 36%, rgba(255,255,255,0.72), transparent),
+                radial-gradient(1px 1px at 42% 18%, rgba(255,255,255,0.54), transparent),
+                radial-gradient(1.2px 1.2px at 56% 64%, rgba(255,255,255,0.70), transparent),
+                radial-gradient(1px 1px at 68% 26%, rgba(255,255,255,0.60), transparent),
+                radial-gradient(1.5px 1.5px at 76% 82%, rgba(255,255,255,0.75), transparent),
+                radial-gradient(1px 1px at 88% 10%, rgba(255,255,255,0.56), transparent),
+                radial-gradient(2px 2px at 94% 48%, rgba(255,255,255,0.78), transparent);
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: -12%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.24;
+            filter: blur(78px);
+            background:
+                radial-gradient(circle at 24% 42%, rgba(128, 82, 255, 0.20), transparent 24%),
+                radial-gradient(circle at 52% 34%, rgba(255, 104, 194, 0.13), transparent 20%),
+                radial-gradient(circle at 76% 58%, rgba(92, 160, 255, 0.11), transparent 24%);
+        }
+
+        .site-shell {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+        }
+
+        .site-nav-wrap,
+        .admin-preview-wrap,
+        .site-main-wrap,
+        .site-footer-wrap {
+            position: relative;
+            z-index: 2;
+            width: min(1380px, calc(100% - 32px));
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .site-nav {
+            margin-top: 18px;
+            border-radius: 24px;
+            padding: 14px 18px;
+            background:
+                radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
+                linear-gradient(135deg, rgba(13, 11, 25, 0.96), rgba(8, 7, 18, 0.96));
+            border: 1px solid var(--border);
+            box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+            backdrop-filter: blur(10px);
+        }
+
+        .site-nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .nav-left,
+        .nav-right,
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .brand-link {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .brand-logo,
+        .footer-logo {
+            display: block;
+            max-height: 42px;
+            width: auto;
+        }
+
+        .nav-links a,
+        .nav-utility,
+        .dropbtn,
+        .dropdown-content a {
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .nav-links a,
+        .nav-utility,
+        .dropbtn,
+        .signup-btn,
+        .cta-btn {
+            border-radius: 999px;
+            padding: 8px 12px;
+        }
+
+        .nav-links > a,
+        .nav-utility,
+        .dropbtn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-links > a:hover,
+        .nav-utility:hover,
+        .dropbtn:hover,
+        .signup-btn:hover,
+        .dropdown-content a:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .signup-btn {
+            text-decoration: none;
+            color: var(--text-main);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.10);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            min-width: 220px;
+            padding: 8px;
+            border-radius: 18px;
+            background:
+                radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
+                linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 18px 34px rgba(0,0,0,0.30);
+            z-index: 25;
+        }
+
+        .dropdown-content a {
+            display: block;
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+
+        .dropdown-right {
+            left: auto;
+            right: 0;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .admin-preview-bar {
+            margin-top: 12px;
+            border-radius: 22px;
+            padding: 12px 14px;
+            background:
+                radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
+                linear-gradient(135deg, rgba(13, 11, 25, 0.96), rgba(8, 7, 18, 0.96));
+            border: 1px solid var(--border);
+            box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+        }
+
+        .admin-preview-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .admin-preview-label,
+        .preview-chip,
+        .fd-tier {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .preview-chip.active {
+            background: rgba(255,255,255,0.14);
+        }
+
+        .site-main-wrap {
+            padding: 20px 0 40px 0;
+        }
+
+        .page-shell,
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            display: grid;
+            gap: 18px;
+        }
+
+        .card,
+        .premium-card,
+        .deep-panel,
+        .page-hero,
+        .premium-hero,
+        .gold-accent-card {
+            background:
+                radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
+                linear-gradient(135deg, rgba(13, 11, 25, 0.96), rgba(8, 7, 18, 0.96));
+            border: 1px solid var(--border);
+            box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+            color: var(--text-main);
+            border-radius: 24px;
+        }
+
+        .muted-line {
+            color: var(--text-soft);
+        }
+
+        .floating-dashboard {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            width: 260px;
+            border-radius: 22px;
+            overflow: hidden;
+            z-index: 30;
+            background:
+                radial-gradient(circle at top left, rgba(124, 77, 255, 0.12), transparent 34%),
+                linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 18px 34px rgba(0,0,0,0.30);
+        }
+
+        .fd-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .fd-body {
+            padding: 0 14px 14px 14px;
+        }
+
+        .floating-dashboard.collapsed .fd-body {
+            display: none;
+        }
+
+        .site-footer {
+            margin: 0 0 28px 0;
+            border-radius: 24px;
+            padding: 18px;
+            text-align: center;
+            background:
+                radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
+                linear-gradient(135deg, rgba(13, 11, 25, 0.96), rgba(8, 7, 18, 0.96));
+            border: 1px solid var(--border);
+            box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+        }
+
+        .footer-logo-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .footer-tagline {
+            margin: 0;
+            color: var(--text-soft);
+        }
+
+        @media (max-width: 900px) {
+            .site-nav-wrap,
+            .admin-preview-wrap,
+            .site-main-wrap,
+            .site-footer-wrap {
+                width: min(100%, calc(100% - 20px));
+            }
+
+            .site-main-wrap {
+                padding-top: 16px;
+            }
+
+            .floating-dashboard {
+                right: 10px;
+                bottom: 10px;
+                width: 230px;
+            }
+        }
+    </style>
 </head>
 
 <body class="{{ theme }}">
+<div class="site-shell">
 
-<nav class="topnav">
-    <div class="nav-left">
-        <a href="/" class="brand-link">
-            {% if theme == "light" %}
-                <img src="/static/4.png" alt="SimpleeMrkTrade logo" class="brand-logo">
-            {% else %}
-                <img src="/static/3.png" alt="SimpleeMrkTrade logo" class="brand-logo">
-            {% endif %}
-        </a>
+    <div class="site-nav-wrap">
+        <nav class="site-nav">
+            <div class="site-nav-inner">
+                <div class="nav-left">
+                    <a href="/" class="brand-link">
+                        {% if theme == "light" %}
+                            <img src="/static/4.png" alt="SimpleeMrkTrade logo" class="brand-logo">
+                        {% else %}
+                            <img src="/static/3.png" alt="SimpleeMrkTrade logo" class="brand-logo">
+                        {% endif %}
+                    </a>
 
-        <div class="nav-links">
-            <a href="/">Home</a>
+                    <div class="nav-links">
+                        <a href="/">Home</a>
 
-            <div class="dropdown">
-                <a href="/signals" class="dropbtn">Signals</a>
-                <div class="dropdown-content">
-                    <a href="/signals">Spotlight</a>
-                    {% if can_access_all_symbols is defined and can_access_all_symbols %}
-                    <a href="/all-symbols">All Symbols</a>
+                        <div class="dropdown">
+                            <a href="/signals" class="dropbtn">Signals</a>
+                            <div class="dropdown-content">
+                                <a href="/signals">Spotlight</a>
+                                {% if can_access_all_symbols %}
+                                    <a href="/all-symbols">All Symbols</a>
+                                {% else %}
+                                    <a href="/upgrade">Unlock All Symbols</a>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if user and user.username %}
+                        <div class="dropdown">
+                            <a href="/research" class="dropbtn">Trading</a>
+                            <div class="dropdown-content">
+                                <a href="/research">Research Overview</a>
+                                <a href="/why-this-trade">Why This Trade</a>
+                                <a href="/premium-analysis">Premium Analysis</a>
+                                <a href="/positions">Positions</a>
+                            </div>
+                        </div>
+
+                        <div class="dropdown">
+                            <a href="/analytics-overview" class="dropbtn">Analytics Overview</a>
+                            <div class="dropdown-content">
+                                <a href="/analytics">Analytics</a>
+                                <a href="/analytics/performance">Performance</a>
+                                <a href="/analytics/strategy">Strategy Behavior</a>
+                                <a href="/analytics/risk">Risk Metrics</a>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="dropdown">
+                            <a href="/dashboard" class="dropbtn">Simulation</a>
+                            <div class="dropdown-content">
+                                <a href="/dashboard">Dashboard</a>
+                                <a href="/proof">Proof</a>
+                                <a href="/live-activity">Live Activity</a>
+                                <a href="/equity">Equity</a>
+                                <a href="/reports">Reports</a>
+                                <a href="/bot-log">Bot Log</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-right">
+                    {% if user and user.role == "master" %}
+                    <div class="admin-controls" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <a href="/admin" class="cta-btn secondary">Admin</a>
+                        <div class="dropdown">
+                            <button class="dropbtn account-trigger" type="button">Preview Tier</button>
+                            <div class="dropdown-content dropdown-right">
+                                <a href="/admin/preview-tier/Guest">Guest</a>
+                                <a href="/admin/preview-tier/Free">Free</a>
+                                <a href="/admin/preview-tier/Starter">Starter</a>
+                                <a href="/admin/preview-tier/Pro">Pro</a>
+                                <a href="/admin/preview-tier/Elite">Elite</a>
+                                <a href="/admin/preview-tier/clear">Clear</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if user and user.username %}
+                        <a href="/notifications" class="nav-utility">
+                            Alerts{% if unread_notifications %} ({{ unread_notifications }}){% endif %}
+                        </a>
+
+                        <div class="dropdown">
+                            <a href="/account" class="dropbtn account-trigger">
+                                {{ user.username }} · {{ user.tier }}
+                                {% if user.preview_tier %}
+                                · Preview: {{ user.preview_tier }}
+                                {% endif %}
+                            </a>
+                            <div class="dropdown-content dropdown-right">
+                                <a href="/account">Account</a>
+                                <a href="/my-portfolio">My Portfolio</a>
+                                <a href="/billing">Billing</a>
+                                {% if show_upgrade %}
+                                <a href="/upgrade">Upgrade</a>
+                                {% endif %}
+                                <a href="/logout">Logout</a>
+                            </div>
+                        </div>
                     {% else %}
-                    <a href="/upgrade">Unlock All Symbols</a>
+                        <a href="/login" class="nav-utility">Login</a>
+                        <a href="/signup" class="signup-btn">Sign Up</a>
                     {% endif %}
                 </div>
             </div>
+        </nav>
+    </div>
 
-            {% if user and user.username %}
-            <div class="dropdown">
-                <a href="/research" class="dropbtn">Trading</a>
-                <div class="dropdown-content">
-                    <a href="/research">Research Overview</a>
-                    <a href="/why-this-trade">Why This Trade</a>
-                    <a href="/premium-analysis">Premium Analysis</a>
-                    <a href="/positions">Positions</a>
-                </div>
+    {% if user and user.role == "master" %}
+    <div class="admin-preview-wrap">
+        <div class="admin-preview-bar">
+            <div class="admin-preview-left">
+                <span class="admin-preview-label">Admin Mode</span>
+                <a href="/admin/preview-tier/clear" class="preview-chip {% if not user.preview_tier %}active{% endif %}">Real</a>
+                <a href="/admin/preview-tier/Guest" class="preview-chip {% if user.preview_tier == 'Guest' %}active{% endif %}">Guest</a>
+                <a href="/admin/preview-tier/Free" class="preview-chip {% if user.preview_tier == 'Free' %}active{% endif %}">Free</a>
+                <a href="/admin/preview-tier/Starter" class="preview-chip {% if user.preview_tier == 'Starter' %}active{% endif %}">Starter</a>
+                <a href="/admin/preview-tier/Pro" class="preview-chip {% if user.preview_tier == 'Pro' %}active{% endif %}">Pro</a>
+                <a href="/admin/preview-tier/Elite" class="preview-chip {% if user.preview_tier == 'Elite' %}active{% endif %}">Elite</a>
             </div>
+        </div>
+    </div>
+    {% endif %}
 
-            <div class="dropdown">
-                <a href="/analytics-overview" class="dropbtn">Analytics Overview</a>
-                <div class="dropdown-content">
-                    <a href="/analytics">Analytics</a>
-                    <a href="/analytics/performance">Performance</a>
-                    <a href="/analytics/strategy">Strategy Behavior</a>
-                    <a href="/analytics/risk">Risk Metrics</a>
-                </div>
-            </div>
-            {% endif %}
-
-            <div class="dropdown">
-                <a href="/dashboard" class="dropbtn">Simulation</a>
-                <div class="dropdown-content">
-                    <a href="/dashboard">Dashboard</a>
-                    <a href="/proof">Proof</a>
-                    <a href="/live-activity">Live Activity</a>
-                    <a href="/equity">Equity</a>
-                    <a href="/reports">Reports</a>
-                    <a href="/bot-log">Bot Log</a>
-                </div>
+    <div class="site-main-wrap">
+        <div class="page-shell">
+            <div class="container">
+                {% block content %}{% endblock %}
             </div>
         </div>
     </div>
 
-    <div class="nav-right">
-        {% if user and user.role == "master" %}
-        <div class="admin-controls">
-            <a href="/admin" class="cta-btn secondary">Admin</a>
-
-            <div class="dropdown">
-                <button class="dropbtn account-trigger">Preview Tier</button>
-                <div class="dropdown-content dropdown-right">
-                    <a href="/admin/preview-tier/Guest">Guest</a>
-                    <a href="/admin/preview-tier/Free">Free</a>
-                    <a href="/admin/preview-tier/Starter">Starter</a>
-                    <a href="/admin/preview-tier/Pro">Pro</a>
-                    <a href="/admin/preview-tier/Elite">Elite</a>
-                    <a href="/admin/preview-tier/clear">Clear</a>
-                </div>
-            </div>
+    {% if user and user.username %}
+    <div id="floatingDashboard" class="floating-dashboard collapsed">
+        <div class="fd-header" onclick="toggleFD()">
+            <span>My Account</span>
+            <span class="fd-tier">{{ user.tier }}</span>
         </div>
-        {% endif %}
+        <div class="fd-body">
+            <p><b>Open Positions:</b> {{ snapshot.open_positions if snapshot else 0 }}</p>
+            <p><b>Buying Power:</b> ${{ snapshot.buying_power if snapshot else 0 }}</p>
+            <p><b>Estimated Value:</b> ${{ snapshot.estimated_account_value if snapshot else 0 }}</p>
+        </div>
+    </div>
+    {% endif %}
 
-        {% if user and user.username %}
-            <a href="/notifications" class="nav-utility">Alerts{% if unread_notifications %} ({{ unread_notifications }}){% endif %}</a>
-
-            <div class="dropdown">
-                <a href="/account" class="dropbtn account-trigger">
-                    {{ user.username }} · {{ user.tier }}
-                    {% if user.preview_tier %}
-                    · Preview: {{ user.preview_tier }}
-                    {% endif %}
-                </a>
-                <div class="dropdown-content dropdown-right">
-                    <a href="/account">Account</a>
-                    <a href="/my-portfolio">My Portfolio</a>
-                    <a href="/billing">Billing</a>
-                    {% if show_upgrade %}
-                    <a href="/upgrade">Upgrade</a>
-                    {% endif %}
-                    <a href="/logout">Logout</a>
-                </div>
+    <div class="site-footer-wrap">
+        <footer class="site-footer">
+            <div class="footer-logo-wrap">
+                {% if theme == "light" %}
+                    <img src="/static/2.png" alt="SimpleeMrkTrade full logo" class="footer-logo">
+                {% else %}
+                    <img src="/static/1.png" alt="SimpleeMrkTrade full logo" class="footer-logo">
+                {% endif %}
             </div>
-        {% else %}
-            <a href="/login" class="nav-utility">Login</a>
-            <a href="/signup" class="signup-btn">Sign Up</a>
-        {% endif %}
+            <p class="footer-tagline">
+                Structured market intelligence, simulation, and premium trade interpretation.
+            </p>
+        </footer>
     </div>
-</nav>
 
-{% if user and user.role == "master" %}
-<div class="admin-preview-bar">
-    <div class="admin-preview-left">
-        <span class="admin-preview-label">Admin Mode</span>
-        <a href="/admin/preview-tier/clear" class="preview-chip {% if not user.preview_tier %}active{% endif %}">Real</a>
-        <a href="/admin/preview-tier/Guest" class="preview-chip {% if user.preview_tier == 'Guest' %}active{% endif %}">Guest</a>
-        <a href="/admin/preview-tier/Free" class="preview-chip {% if user.preview_tier == 'Free' %}active{% endif %}">Free</a>
-        <a href="/admin/preview-tier/Starter" class="preview-chip {% if user.preview_tier == 'Starter' %}active{% endif %}">Starter</a>
-        <a href="/admin/preview-tier/Pro" class="preview-chip {% if user.preview_tier == 'Pro' %}active{% endif %}">Pro</a>
-        <a href="/admin/preview-tier/Elite" class="preview-chip {% if user.preview_tier == 'Elite' %}active{% endif %}">Elite</a>
-    </div>
 </div>
-{% endif %}
-
-<div class="page-shell">
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
-</div>
-
-{% if user and user.username %}
-<div id="floatingDashboard" class="floating-dashboard collapsed">
-    <div class="fd-header" onclick="toggleFD()">
-        <span>My Account</span>
-        <span class="fd-tier">{{ user.tier }}</span>
-    </div>
-
-    <div class="fd-body">
-        <p><b>Open Positions:</b> {{ snapshot.open_positions if snapshot else 0 }}</p>
-        <p><b>Buying Power:</b> ${{ snapshot.buying_power if snapshot else 0 }}</p>
-        <p><b>Estimated Value:</b> ${{ snapshot.estimated_account_value if snapshot else 0 }}</p>
-    </div>
-</div>
-{% endif %}
-
-<footer class="site-footer">
-    <div class="footer-logo-wrap">
-        {% if theme == "light" %}
-            <img src="/static/2.png" alt="SimpleeMrkTrade full logo" class="footer-logo">
-        {% else %}
-            <img src="/static/1.png" alt="SimpleeMrkTrade full logo" class="footer-logo">
-        {% endif %}
-    </div>
-
-    <p class="footer-tagline">
-        Structured market intelligence, simulation, and premium trade interpretation.
-    </p>
-</footer>
 
 <script>
 function toggleFD() {
@@ -171,6 +527,5 @@ function toggleFD() {
     if (el) el.classList.toggle("collapsed");
 }
 </script>
-
 </body>
 </html>

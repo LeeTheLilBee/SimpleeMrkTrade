@@ -245,5 +245,23 @@
     "symbol": "AMD",
     "trade_id": "AMD-CALL-20260402003442",
     "source": "/why-this-trade"
+  },
+  {
+    "event_type": "upgrade_click",
+    "timestamp": "2026-04-02T19:41:28.127185",
+    "source": "/upgrade",
+    "tier": "unknown"
+  },
+  {
+    "event_type": "upgrade_click",
+    "timestamp": "2026-04-02T19:41:47.194071",
+    "source": "/upgrade",
+    "tier": "unknown"
+  },
+  {
+    "event_type": "upgrade_click",
+    "timestamp": "2026-04-02T19:41:49.070547",
+    "source": "/upgrade",
+    "tier": "unknown"
   }
 ]
