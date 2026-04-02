@@ -263,5 +263,11 @@
     "timestamp": "2026-04-02T19:41:49.070547",
     "source": "/upgrade",
     "tier": "unknown"
+  },
+  {
+    "event_type": "upgrade_click",
+    "timestamp": "2026-04-02T20:47:05.767339",
+    "source": "/upgrade",
+    "tier": "unknown"
   }
 ]
