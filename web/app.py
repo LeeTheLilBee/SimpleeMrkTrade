@@ -34,6 +34,13 @@ from jinja2 import TemplateNotFound
 
 import engine.market_universe as market_universe
 
+# ADD THESE IMPORTS TO web/app.py
+
+from engine_v2.app_fusion_helper import build_full_product_fusion
+from engine_v2.symbol_page_fusion_adapter import build_symbol_page_fusion_view
+from engine_v2.spotlight_fusion_adapter import build_spotlight_fusion_cards
+from engine_v2.dashboard_fusion_adapter import build_dashboard_fusion_view
+
 # compatibility wrappers so the rest of app.py does not need to change
 def load_market_universe():
     return market_universe.load_market_universe()
@@ -256,6 +263,105 @@ def render_template_safe(template_name: str, **context):
 # ============================================================
 # STABILITY HELPERS
 # ============================================================
+
+# ADD THESE HELPERS TO web/app.py
+
+def get_fusion_user_data():
+    return {
+        "recent_trades": 2,
+        "page_views": 5,
+    }
+
+
+def get_fusion_market_data():
+    system = safe_run("get_system_state", get_system_state, {})
+    return {
+        "trend_strength": float(system.get("trend_strength", 70) or 70),
+        "volatility_level": float(system.get("volatility_level", 40) or 40),
+        "breadth_score": float(system.get("breadth_score", 65) or 65),
+    }
+
+
+def get_fusion_trade_results():
+    reports = load_json("data/recent_reports.json", [])
+    if not isinstance(reports, list):
+        return []
+
+    results = []
+    for item in reports[-20:]:
+        if not isinstance(item, dict):
+            continue
+        snapshot = item.get("snapshot", {}) if isinstance(item.get("snapshot", {}), dict) else {}
+        pnl = snapshot.get("daily_pnl", 0) or 0
+        results.append({
+            "outcome": "win" if pnl > 0 else "loss",
+            "edge_score": item.get("score", 75),
+        })
+    return results
+
+
+def get_fusion_setup_stats():
+    return {
+        "families": {
+            "continuation": {"win_rate": 0.60, "count": 8},
+            "breakout_extension": {"win_rate": 0.35, "count": 5},
+            "reversal_attempt": {"win_rate": 0.45, "count": 4},
+        }
+    }
+
+
+def get_fusion_context(symbol: str = ""):
+    return {
+        "event_type": "",
+        "minutes_to_event": 99999,
+        "news_heat_score": 20,
+        "contradictory_news": False,
+        "hype_score": 15,
+        "hidden_risk_score": 20,
+        "follow_through_score": 70,
+    }
+
+
+def get_fusion_system_state():
+    return {
+        "max_open_positions": 6,
+        "data_integrity_ok": True,
+        "broker_connection_ok": True,
+        "execution_error_count": 0,
+        "governance_priority": True,
+        "system_ready": True,
+    }
+
+
+def get_fusion_portfolio_state():
+    positions = safe_run("get_positions_with_intelligence", get_positions_with_intelligence, [])
+    if not isinstance(positions, list):
+        positions = []
+
+    return {
+        "daily_loss_pct": 0,
+        "open_positions": len(positions),
+        "drawdown_state": "normal",
+        "stress_state": "low" if len(positions) <= 3 else "moderate" if len(positions) <= 6 else "critical",
+    }
+
+
+def build_symbol_fusion_payload(signal: dict):
+    if not isinstance(signal, dict):
+        signal = {}
+
+    return build_full_product_fusion(
+        signal=signal,
+        user_data=get_fusion_user_data(),
+        market_data=get_fusion_market_data(),
+        portfolio_positions=safe_run("get_positions_with_intelligence", get_positions_with_intelligence, []),
+        trade_results=get_fusion_trade_results(),
+        setup_stats=get_fusion_setup_stats(),
+        context=get_fusion_context(signal.get("symbol", "")),
+        system_state=get_fusion_system_state(),
+        portfolio_state=get_fusion_portfolio_state(),
+        tier=current_tier_title(),
+    )
 
 def get_v2_symbol_hero(symbol: str):
     try:
@@ -3258,48 +3364,59 @@ def landing_page():
     return render_template_safe("landing.html", **template_context({}))
 
 
+# PATCH YOUR /dashboard ROUTE TO ADD DASHBOARD FUSION
+
 @app.route("/dashboard")
 def dashboard_page():
     maybe_track_page_view("/dashboard")
-
     snapshot = get_dashboard_snapshot()
     system = get_system_state()
     proof = performance_summary()
     positions = get_positions_with_intelligence()
-
     reports = load_json("data/recent_reports.json", [])
     if not isinstance(reports, list):
         reports = []
 
     equity_values = []
     equity_labels = []
-
     for item in reports:
         if not isinstance(item, dict):
             continue
-
         snapshot_block = item.get("snapshot", {})
         if isinstance(snapshot_block, dict):
-            equity_values.append(
-                snapshot_block.get("estimated_account_value", 0)
-            )
-
+            equity_values.append(snapshot_block.get("estimated_account_value", 0))
         equity_labels.append(item.get("timestamp", ""))
 
-    current_user = safe_run(
-        "get_current_user",
-        get_current_user,
+    sample_signals = [
         {
-            "username": None,
-            "tier": "Guest",
-            "real_tier": "Guest",
-            "role": "member",
-            "preview_tier": None,
-        },
-    )
+            "symbol": "USO",
+            "company_name": "United States Oil Fund",
+            "direction": "CALL",
+            "setup_type": "continuation",
+            "trend_strength": 75,
+            "volume_confirmation": 70,
+            "extension_score": 35,
+            "pullback_quality": 72,
+            "score": 91,
+            "structure_quality": 84,
+            "liquidity_score": 92,
+            "spread_score": 74,
+            "premium_efficiency_score": 82,
+            "open_interest_score": 76,
+            "iv_context": "normal",
+            "visible_volatility": 22,
+            "last_pnl": 25,
+        }
+    ]
 
-    username = (current_user or {}).get("username") or "guest"
-    v2_dashboard = get_v2_dashboard_contract(username)
+    fusion_payloads = []
+    for signal in sample_signals:
+        try:
+            fusion_payloads.append(build_symbol_fusion_payload(signal))
+        except Exception as e:
+            print(f"[DASHBOARD_FUSION:{signal.get('symbol')}] {e}")
+
+    dashboard_fusion_view = build_dashboard_fusion_view(fusion_payloads)
 
     return render_template_safe(
         "dashboard.html",
@@ -3316,12 +3433,8 @@ def dashboard_page():
                 "snapshot": snapshot,
                 "system": system,
                 "reports": reports,
-                "execution_summary": safe_run(
-                    "execution_summary",
-                    lambda: load_json("data/execution_summary.json", {}),
-                    {},
-                ),
-                "v2_dashboard": v2_dashboard,
+                "fusion_payloads": fusion_payloads,
+                "dashboard_fusion_view": dashboard_fusion_view,
             }
         ),
     )
@@ -3571,6 +3684,8 @@ def admin_intelligence_page():
     )
 
 
+# REWRITE YOUR /signals/<symbol> ROUTE TO INCLUDE FUSION
+
 @app.route("/signals/<symbol>")
 @app.route("/symbol/<symbol>")
 def signal_symbol_page(symbol: str):
@@ -3626,6 +3741,42 @@ def signal_symbol_page(symbol: str):
     v2_symbol_deep_dive = get_v2_symbol_deep_dive(detail["symbol"])
     v2_horizontal_hero = get_v2_horizontal_hero()
 
+    fusion_signal = {
+        "symbol": detail["symbol"],
+        "company_name": detail.get("company", {}).get("name", detail["symbol"]),
+        "direction": (
+            v2_symbol_hero.get("hero", {}).get("direction")
+            or detail.get("primary_intelligence", {}).get("direction")
+            or "CALL"
+        ),
+        "setup_type": (
+            v2_symbol_hero.get("hero", {}).get("setup_type")
+            or detail.get("primary_intelligence", {}).get("setup_type")
+            or "continuation"
+        ),
+        "trend_strength": (
+            v2_symbol_deep_dive.get("panels", [{}])[0]
+            .get("content", {})
+            .get("scanner", {})
+            .get("score", 75)
+        ),
+        "volume_confirmation": 70,
+        "extension_score": 35,
+        "pullback_quality": 72,
+        "score": detail.get("board", {}).get("latest_score", 80),
+        "structure_quality": 84,
+        "liquidity_score": 92,
+        "spread_score": 74,
+        "premium_efficiency_score": 82,
+        "open_interest_score": 76,
+        "iv_context": "normal",
+        "visible_volatility": 22,
+        "last_pnl": 25,
+    }
+
+    product_fusion = build_symbol_fusion_payload(fusion_signal)
+    symbol_fusion_view = build_symbol_page_fusion_view(product_fusion)
+
     return render_template_safe(
         "signal_symbol.html",
         **template_context(
@@ -3648,6 +3799,8 @@ def signal_symbol_page(symbol: str):
                 "v2_symbol_hero": v2_symbol_hero,
                 "v2_symbol_deep_dive": v2_symbol_deep_dive,
                 "v2_horizontal_hero": v2_horizontal_hero,
+                "product_fusion": product_fusion,
+                "symbol_fusion_view": symbol_fusion_view,
             }
         ),
     )
@@ -3919,41 +4072,54 @@ def my_positions_archived_page():
     )
 
 
+# ADD / UPDATE YOUR /spotlight ROUTE LIKE THIS
+
 @app.route("/spotlight")
 def spotlight_page():
     maybe_track_page_view("/spotlight")
 
-    current_user = safe_run(
-        "get_current_user",
-        get_current_user,
-        {
-            "username": None,
-            "tier": "Guest",
-            "real_tier": "Guest",
-            "role": "member",
-            "preview_tier": None,
-        },
-    )
+    contracts = load_json("data_v2/spotlight_page_contract.json", {})
+    lane_sections = contracts.get("lane_sections", []) if isinstance(contracts, dict) else []
 
-    username = (current_user or {}).get("username") or "guest"
-    v2_spotlight = get_v2_spotlight_contract(username)
-    spotlight_modes = safe_run(
-        "resolve_user_modes",
-        lambda: resolve_user_modes(username),
+    sample_signals = [
         {
-            "intelligence_mode": "hybrid",
-            "control_mode": "manual",
-            "auto_scope": "both",
-            "experience_mode": "balanced",
-        },
-    )
+            "symbol": "USO",
+            "company_name": "United States Oil Fund",
+            "direction": "CALL",
+            "setup_type": "continuation",
+            "trend_strength": 75,
+            "volume_confirmation": 70,
+            "extension_score": 35,
+            "pullback_quality": 72,
+            "score": 91,
+            "structure_quality": 84,
+            "liquidity_score": 92,
+            "spread_score": 74,
+            "premium_efficiency_score": 82,
+            "open_interest_score": 76,
+            "iv_context": "normal",
+            "visible_volatility": 22,
+            "last_pnl": 25,
+        }
+    ]
+
+    fusion_payloads = []
+    for signal in sample_signals:
+        try:
+            fusion_payloads.append(build_symbol_fusion_payload(signal))
+        except Exception as e:
+            print(f"[SPOTLIGHT_FUSION:{signal.get('symbol')}] {e}")
+
+    spotlight_fusion = build_spotlight_fusion_cards(fusion_payloads)
 
     return render_template_safe(
         "spotlight.html",
         **template_context(
             {
-                "v2_spotlight": v2_spotlight,
-                "spotlight_modes": spotlight_modes,
+                "spotlight_contract": contracts,
+                "lane_sections": lane_sections,
+                "fusion_payloads": fusion_payloads,
+                "spotlight_fusion": spotlight_fusion,
             }
         ),
     )

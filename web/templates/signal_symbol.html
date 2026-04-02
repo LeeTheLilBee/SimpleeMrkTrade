@@ -10,42 +10,43 @@
 .symbol-hero {
     position: relative;
     overflow: hidden;
-    border-radius: 24px;
-    padding: 22px;
+    border-radius: 28px;
+    padding: 24px;
     background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.20), transparent 32%),
-        radial-gradient(circle at top right, rgba(255, 95, 207, 0.16), transparent 28%),
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.22), transparent 32%),
+        radial-gradient(circle at top right, rgba(255, 95, 207, 0.18), transparent 28%),
+        radial-gradient(circle at 72% 24%, rgba(97, 196, 255, 0.10), transparent 22%),
         linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
     border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.30);
+    box-shadow: 0 22px 48px rgba(0,0,0,0.32);
 }
 
 .symbol-hero::before {
     content: "";
     position: absolute;
-    right: 40px;
-    top: 30px;
-    width: 120px;
-    height: 120px;
+    right: 44px;
+    top: 28px;
+    width: 130px;
+    height: 130px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(143,199,255,0.65) 18%, rgba(124,77,255,0.35) 44%, transparent 72%);
+    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(143,199,255,0.62) 18%, rgba(124,77,255,0.34) 44%, transparent 74%);
     filter: blur(10px);
-    opacity: 0.9;
+    opacity: 0.95;
     pointer-events: none;
 }
 
 .symbol-topbar {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-    align-items: flex-start;
     position: relative;
     z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
 }
 
 .symbol-kicker {
-    display: inline-flex;
+    display: flex;
     gap: 8px;
     flex-wrap: wrap;
     margin-bottom: 10px;
@@ -60,20 +61,22 @@
     font-weight: 700;
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.10);
+    backdrop-filter: blur(6px);
 }
 
 .symbol-title {
     margin: 0 0 8px 0;
-    font-size: 1.8rem;
+    font-size: 1.85rem;
     font-weight: 800;
     letter-spacing: 0.02em;
 }
 
 .symbol-sub {
     margin: 0;
-    max-width: 760px;
-    opacity: 0.88;
-    line-height: 1.45;
+    max-width: 860px;
+    opacity: 0.90;
+    line-height: 1.5;
+    font-size: 0.98rem;
 }
 
 .symbol-meta-grid {
@@ -107,7 +110,7 @@
 
 .section-grid {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-columns: 1.15fr 0.85fr;
     gap: 18px;
 }
 
@@ -117,9 +120,10 @@
 }
 
 .deep-panel {
-    border-radius: 22px;
+    border-radius: 24px;
     padding: 18px;
     background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
         linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
     border: 1px solid rgba(255,255,255,0.08);
     box-shadow: 0 14px 32px rgba(0,0,0,0.24);
@@ -131,6 +135,7 @@
 
 .deep-panel p {
     margin: 0;
+    line-height: 1.46;
 }
 
 .info-row {
@@ -165,24 +170,6 @@
     line-height: 1.42;
 }
 
-.timeline {
-    display: grid;
-    gap: 12px;
-    margin-top: 12px;
-}
-
-.timeline-item {
-    padding: 12px 13px;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.06);
-}
-
-.timeline-label {
-    font-weight: 800;
-    margin-bottom: 5px;
-}
-
 .hero-strip {
     display: grid;
     grid-auto-flow: column;
@@ -213,11 +200,23 @@
     line-height: 1.4;
 }
 
-.bridge-card {
-    border-radius: 18px;
-    padding: 16px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
+.fusion-warning {
+    border-left: 3px solid rgba(255, 140, 174, 0.8);
+}
+
+.news-item {
+    display: block;
+    padding: 12px 13px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    text-decoration: none;
+    color: white;
+    line-height: 1.42;
+}
+
+.news-item:hover {
+    background: rgba(255,255,255,0.06);
 }
 
 @media (max-width: 980px) {
@@ -231,108 +230,89 @@
 }
 </style>
 
-<div class="symbol-shell">
-
-    <div class="bridge-card">
-        <strong>V2 Symbol Bridge</strong>
-        <div style="margin-top:8px;">
-            Symbol: {{ v2_symbol_hero.get("symbol", "") if v2_symbol_hero else "" }}
-            | Equity Lane: {{ v2_symbol_hero.get("meta", {}).get("has_equity_lane", False) if v2_symbol_hero else False }}
-            | Options Lane: {{ v2_symbol_hero.get("meta", {}).get("has_options_lane", False) if v2_symbol_hero else False }}
-            | Panels: {{ v2_symbol_deep_dive.get("meta", {}).get("panel_count", 0) if v2_symbol_deep_dive else 0 }}
-            | Timeline: {{ v2_symbol_deep_dive.get("meta", {}).get("timeline_count", 0) if v2_symbol_deep_dive else 0 }}
-            | Hero Strip Cards: {{ v2_horizontal_hero.get("meta", {}).get("card_count", 0) if v2_horizontal_hero else 0 }}
-        </div>
-    </div>
+{% set fusion = product_fusion if product_fusion else {} %}
+{% set master = fusion.get("master_decision", {}) if fusion else {} %}
+{% set command = fusion.get("command_object", {}) if fusion else {} %}
+{% set fusion_view = symbol_fusion_view if symbol_fusion_view else {} %}
 {% set hero = v2_symbol_hero.get("hero", {}) if v2_symbol_hero else {} %}
-{% set lanes = v2_symbol_hero.get("lanes", {}) if v2_symbol_hero else {} %}
 {% set deep = v2_symbol_deep_dive if v2_symbol_deep_dive else {} %}
 
-<div class="symbol-hero">
-    <div class="symbol-topbar">
-        <div>
-            <div class="symbol-kicker">
-                <span class="symbol-pill">{{ symbol }}</span>
+<div class="symbol-shell">
 
-                {% if hero.get("summary") %}
-                <span class="symbol-pill">{{ hero.get("summary") }}</span>
-                {% endif %}
+    <div class="symbol-hero">
+        <div class="symbol-topbar">
+            <div>
+                <div class="symbol-kicker">
+                    <span class="symbol-pill">{{ symbol }}</span>
+                    <span class="symbol-pill">{{ fusion_view.get("hero_state", "unknown") }}</span>
+                    <span class="symbol-pill">{{ fusion_view.get("hero_command", "stand_down") }}</span>
+                    <span class="symbol-pill">Threat: {{ fusion_view.get("hero_threat", "low") }}</span>
+                    <span class="symbol-pill">Phase: {{ fusion_view.get("hero_timeline", "unknown") }}</span>
+                </div>
 
-                {% if hero.get("direction") %}
-                <span class="symbol-pill">{{ hero.get("direction") }}</span>
-                {% endif %}
+                <h1 class="symbol-title">{{ company.get("name", symbol) }}</h1>
+                <p class="symbol-sub">{{ fusion_view.get("hero_summary", "") }}</p>
             </div>
-
-            <h1 class="symbol-title">{{ hero.get("title", symbol ~ " Intelligence") }}</h1>
-
-            <p class="symbol-sub">
-                {% if hero.get("summary") %}
-                    {{ hero.get("summary") }}
-                {% elif v2_symbol_hero and v2_symbol_hero.get("company_name") %}
-                    {{ v2_symbol_hero.get("company_name") }}
-                {% else %}
-                    {{ company.get("blurb", "") if company else "" }}
-                {% endif %}
-            </p>
-        </div>
-    </div>
-
-    <div class="symbol-meta-grid">
-        <div class="symbol-stat">
-            <div class="symbol-stat-label">Trend</div>
-            <div class="symbol-stat-value">{{ hero.get("trend", "—") }}</div>
         </div>
 
-        <div class="symbol-stat">
-            <div class="symbol-stat-label">Setup</div>
-            <div class="symbol-stat-value">{{ hero.get("setup_type", "—") }}</div>
-        </div>
-
-        <div class="symbol-stat">
-            <div class="symbol-stat-label">Pressure</div>
-            <div class="symbol-stat-value">{{ hero.get("pressure_level", "—") }}</div>
-        </div>
-
-        <div class="symbol-stat">
-            <div class="symbol-stat-label">Price</div>
-            <div class="symbol-stat-value">
-                {% if hero.get("price") is not none %}
-                    {{ hero.get("price") }}
-                {% else %}
-                    —
-                {% endif %}
+        <div class="symbol-meta-grid">
+            <div class="symbol-stat">
+                <div class="symbol-stat-label">Command</div>
+                <div class="symbol-stat-value">{{ fusion_view.get("hero_command", "stand_down") }}</div>
+            </div>
+            <div class="symbol-stat">
+                <div class="symbol-stat-label">Next Action</div>
+                <div class="symbol-stat-value">{{ fusion_view.get("hero_next_action", "wait") }}</div>
+            </div>
+            <div class="symbol-stat">
+                <div class="symbol-stat-label">Threat</div>
+                <div class="symbol-stat-value">{{ fusion_view.get("hero_threat", "low") }}</div>
+            </div>
+            <div class="symbol-stat">
+                <div class="symbol-stat-label">Timeline</div>
+                <div class="symbol-stat-value">{{ fusion_view.get("hero_timeline", "unknown") }}</div>
             </div>
         </div>
     </div>
-</div>
 
-{% if v2_horizontal_hero and v2_horizontal_hero.get("cards") %}
-<div class="deep-panel">
-    <h3>Nearby Stars</h3>
-
-    <div class="hero-strip">
-        {% for card in v2_horizontal_hero.get("cards", []) %}
-        <a href="{{ card.get('destination', '/signals') }}" class="hero-strip-card">
-            <h4>{{ card.get("symbol", "") }}</h4>
-            <p>{{ card.get("headline", "") }}</p>
-
-            <div class="info-row">
-                {% if card.get("lane") %}
-                <span class="info-chip">{{ card.get("lane") }}</span>
-                {% endif %}
-
-                {% if card.get("pressure_level") %}
-                <span class="info-chip">{{ card.get("pressure_level") }}</span>
-                {% endif %}
-            </div>
-        </a>
-        {% endfor %}
+    {% if v2_horizontal_hero and v2_horizontal_hero.get("cards") %}
+    <div class="deep-panel">
+        <h3>Nearby Stars</h3>
+        <div class="hero-strip">
+            {% for card in v2_horizontal_hero.get("cards", []) %}
+            <a href="{{ card.get('destination', '/signals') }}" class="hero-strip-card">
+                <h4>{{ card.get("symbol", "") }}</h4>
+                <p>{{ card.get("headline", "") }}</p>
+                <div class="info-row">
+                    {% if card.get("lane") %}
+                    <span class="info-chip">{{ card.get("lane") }}</span>
+                    {% endif %}
+                    {% if card.get("pressure_level") %}
+                    <span class="info-chip">{{ card.get("pressure_level") }}</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
     </div>
-</div>
-{% endif %}
+    {% endif %}
 
     <div class="section-grid">
         <div class="panel-stack">
+
+            <div class="deep-panel">
+                <h3>Trade Thesis</h3>
+                <p>{{ fusion_view.get("thesis_statement", "") }}</p>
+
+                {% if fusion_view.get("confirmations") %}
+                <div class="reason-list">
+                    {% for item in fusion_view.get("confirmations", []) %}
+                    <div class="reason-item">{{ item }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
             {% for panel in deep.get("panels", []) %}
             <div class="deep-panel">
                 <h3>{{ panel.get("title", "Panel") }}</h3>
@@ -399,18 +379,38 @@
                 {% endif %}
             </div>
             {% endfor %}
+
         </div>
 
         <div class="panel-stack">
+
             <div class="deep-panel">
-                <h3>Timeline</h3>
-                <div class="timeline">
-                    {% for item in deep.get("timeline", []) %}
-                    <div class="timeline-item">
-                        <div class="timeline-label">{{ item.get("label", "") }}</div>
-                        <div>{{ item.get("summary", "") }}</div>
-                    </div>
+                <h3>What Breaks It</h3>
+
+                {% if fusion_view.get("invalidation") %}
+                <div class="reason-list">
+                    {% for item in fusion_view.get("invalidation", []) %}
+                    <div class="reason-item fusion-warning">{{ item }}</div>
                     {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if fusion_view.get("fusion_issues") %}
+                <div class="reason-list" style="margin-top:14px;">
+                    {% for item in fusion_view.get("fusion_issues", []) %}
+                    <div class="reason-item fusion-warning">{{ item }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="deep-panel">
+                <h3>Fused Command State</h3>
+                <div class="info-row">
+                    <span class="info-chip">Command: {{ command.get("command", "stand_down") }}</span>
+                    <span class="info-chip">State: {{ master.get("final_state", "unknown") }}</span>
+                    <span class="info-chip">Threat: {{ command.get("threat_level", "low") }}</span>
+                    <span class="info-chip">Phase: {{ command.get("timeline_phase", "unknown") }}</span>
                 </div>
             </div>
 
@@ -432,13 +432,12 @@
                 <h3>Recent News</h3>
                 <div class="reason-list">
                     {% for item in news_items[:5] %}
-                    <div class="reason-item">
-                        {{ item.get("title", "News item") }}
-                    </div>
+                    <div class="reason-item">{{ item.get("title", "News item") }}</div>
                     {% endfor %}
                 </div>
             </div>
             {% endif %}
+
         </div>
     </div>
 

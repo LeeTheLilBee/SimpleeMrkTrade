@@ -1,822 +1,168 @@
 {% extends "base.html" %}
-
 {% block content %}
+
 <style>
-html, body {
-    min-height: 100%;
-    background: radial-gradient(ellipse at bottom, #07050f 0%, #020107 100%);
-}
-
-body {
-    overflow-x: hidden;
-}
-
-.main-container, .container, main {
-    max-width: none !important;
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-/* ===== COSMOS ===== */
-.cosmos-shell {
-    position: relative;
-    width: 100%;
-    min-height: 100vh;
-    overflow: hidden;
-    color: #fff;
-    background:
-        radial-gradient(circle at 18% 24%, rgba(120, 82, 255, 0.10), transparent 24%),
-        radial-gradient(circle at 78% 34%, rgba(255, 98, 196, 0.08), transparent 20%),
-        radial-gradient(circle at 56% 78%, rgba(96, 166, 255, 0.07), transparent 24%),
-        linear-gradient(180deg, #06040d 0%, #020107 100%);
-}
-
-/* ===== HEADER ===== */
-.cosmos-header {
-    position: absolute;
-    top: 24px;
-    left: 26px;
-    z-index: 30;
+.spotlight-shell {
     display: grid;
-    gap: 10px;
+    gap: 20px;
 }
 
-.cosmos-title {
-    font-size: 1.35rem;
-    font-weight: 800;
-    letter-spacing: 0.03em;
-    text-transform: lowercase;
+.spotlight-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 24px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.22), transparent 32%),
+        radial-gradient(circle at 78% 22%, rgba(255, 95, 207, 0.16), transparent 26%),
+        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 22px 48px rgba(0,0,0,0.32);
 }
 
-.cosmos-sub {
-    font-size: 0.9rem;
-    opacity: 0.72;
-    max-width: 420px;
-    line-height: 1.35;
+.spotlight-hero::before {
+    content: "";
+    position: absolute;
+    right: 46px;
+    top: 30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.34) 44%, transparent 74%);
+    filter: blur(10px);
+    opacity: 0.92;
+    pointer-events: none;
 }
 
-.cosmos-chip-row {
+.spotlight-kicker {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
+    margin-bottom: 10px;
 }
 
-.cosmos-chip {
+.spotlight-pill,
+.info-chip {
     display: inline-flex;
     align-items: center;
     padding: 6px 10px;
     border-radius: 999px;
     font-size: 0.72rem;
     font-weight: 700;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    backdrop-filter: blur(6px);
-}
-
-/* ===== NEBULA / FLOW ===== */
-.nebula-layer {
-    position: absolute;
-    inset: -22%;
-    pointer-events: none;
-    filter: blur(74px);
-}
-
-.nebula-a {
-    opacity: 0.42;
-    background:
-        radial-gradient(circle at 28% 42%, rgba(128, 82, 255, 0.20), transparent 26%),
-        radial-gradient(circle at 48% 50%, rgba(255, 104, 194, 0.14), transparent 22%),
-        radial-gradient(circle at 70% 58%, rgba(92, 160, 255, 0.12), transparent 26%);
-    animation: nebulaFloatA 58s ease-in-out infinite alternate;
-}
-
-.nebula-b {
-    opacity: 0.28;
-    background:
-        radial-gradient(circle at 38% 44%, rgba(177, 114, 255, 0.12), transparent 20%),
-        radial-gradient(circle at 60% 47%, rgba(255, 202, 126, 0.08), transparent 16%),
-        radial-gradient(circle at 76% 54%, rgba(255, 129, 198, 0.10), transparent 18%);
-    animation: nebulaFloatB 82s linear infinite;
-}
-
-.milky-band {
-    position: absolute;
-    left: -8%;
-    top: 16%;
-    width: 136%;
-    height: 30%;
-    transform: rotate(-11deg);
-    pointer-events: none;
-    opacity: 0.24;
-    filter: blur(36px);
-    background:
-        linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(134, 96, 255, 0.10) 18%,
-            rgba(255, 124, 196, 0.14) 36%,
-            rgba(104, 168, 255, 0.11) 56%,
-            rgba(255, 220, 150, 0.06) 72%,
-            transparent 100%
-        );
-    animation: bandFloat 72s ease-in-out infinite alternate;
-}
-
-@keyframes nebulaFloatA {
-    0% { transform: translate(-2%, -1%) scale(1); }
-    100% { transform: translate(2%, 2%) scale(1.06); }
-}
-
-@keyframes nebulaFloatB {
-    0% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(1deg) scale(1.03); }
-    100% { transform: rotate(0deg) scale(1); }
-}
-
-@keyframes bandFloat {
-    0% { transform: rotate(-11deg) translateY(0px); }
-    100% { transform: rotate(-9deg) translateY(18px); }
-}
-
-/* ===== LEGEND ===== */
-.cosmos-legend {
-    position: absolute;
-    right: 24px;
-    top: 24px;
-    z-index: 30;
-    width: 230px;
-    padding: 14px 14px 12px 14px;
-    border-radius: 18px;
-    background: rgba(8, 8, 16, 0.88);
+    background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.10);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 14px 34px rgba(0,0,0,0.34);
 }
 
-.legend-title {
-    font-size: 0.82rem;
+.spotlight-title {
+    margin: 0 0 8px 0;
+    font-size: 1.8rem;
     font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    opacity: 0.92;
 }
 
-.legend-group {
+.spotlight-sub {
+    margin: 0;
+    max-width: 860px;
+    opacity: 0.9;
+    line-height: 1.48;
+}
+
+.spotlight-fusion-grid {
     display: grid;
-    gap: 8px;
-    margin-bottom: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
 }
 
-.legend-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.76rem;
-    opacity: 0.88;
-}
-
-.legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex: 0 0 auto;
-}
-
-.legend-dot.options {
-    background: #ff92d4;
-    box-shadow: 0 0 10px rgba(255,146,212,0.5);
-}
-
-.legend-dot.equity {
-    background: #90c7ff;
-    box-shadow: 0 0 10px rgba(144,199,255,0.5);
-}
-
-.legend-dot.mixed {
-    background: #ffd68f;
-    box-shadow: 0 0 10px rgba(255,214,143,0.45);
-}
-
-.legend-star {
-    position: relative;
-    flex: 0 0 auto;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 0 0 10px rgba(255,255,255,0.45);
-}
-
-.legend-star.hero {
-    width: 10px;
-    height: 10px;
-}
-
-.legend-star.strong {
-    width: 7px;
-    height: 7px;
-}
-
-.legend-star.small {
-    width: 4px;
-    height: 4px;
-}
-
-/* ===== OPAQUE HUD ===== */
-.star-hud {
-    position: absolute;
-    left: 62px;
-    top: 6px;
-    min-width: 230px;
-    max-width: 280px;
-    opacity: 0;
-    transform: translateY(8px) scale(0.985);
-    transition: opacity 220ms ease, transform 220ms ease;
-    transition-delay: 0ms;
-    pointer-events: none;
-    z-index: 10;
-
-    padding: 12px 12px 11px 12px;
-    border-radius: 16px;
-    background: rgba(10, 10, 18, 0.96);
-    border: 1px solid rgba(255,255,255,0.10);
-    box-shadow: 0 18px 38px rgba(0,0,0,0.42);
-    text-shadow: none;
-}
-
-.spot-object-wrap:hover .star-hud {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    transition-delay: 220ms;
-}
-
-.hud-symbol {
-    font-size: 0.96rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    margin-bottom: 2px;
-}
-
-.hud-line {
-    margin-top: 5px;
-    font-size: 0.8rem;
-    opacity: 0.90;
-    line-height: 1.35;
-}
-
-.hud-meta {
-    margin-top: 9px;
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-
-.hud-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 8px;
-    border-radius: 999px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.10);
-    backdrop-filter: blur(6px);
-}
-
-.hud-actions {
-    margin-top: 10px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    pointer-events: auto;
-}
-
-.hud-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 7px 11px;
-    border-radius: 10px;
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-decoration: none;
-    color: white;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-}
-
-.hud-btn.execute {
-    background: linear-gradient(135deg, rgba(255, 126, 201, 0.22), rgba(124, 77, 255, 0.24));
-    border-color: rgba(255,255,255,0.16);
-}
-
-@media (max-width: 820px) {
-    .cosmos-legend {
-        right: 16px;
-        left: 16px;
-        top: auto;
-        bottom: 16px;
-        width: auto;
-    }
-
-    .star-hud {
-        left: 40px;
-        min-width: 180px;
-        max-width: 220px;
-    }
-}
-
-/* ===== AMBIENT STARS ===== */
-.starfield {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    animation: fieldDrift 90s linear infinite alternate;
-}
-
-@keyframes fieldDrift {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-1.5%, 1%, 0); }
-}
-
-.bg-star {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-.bg-star.tiny { width: 1px; height: 1px; }
-.bg-star.small { width: 2px; height: 2px; }
-.bg-star.medium { width: 3px; height: 3px; }
-
-.bg-star.blue {
-    background: #5fc2ff;
-    box-shadow: 0 0 10px rgba(95, 194, 255, 0.72);
-}
-
-.bg-star.pink {
-    background: #ff74cf;
-    box-shadow: 0 0 10px rgba(255, 116, 207, 0.68);
-}
-
-.bg-star.gold {
-    background: #ffd05a;
-    box-shadow: 0 0 10px rgba(255, 208, 90, 0.60);
-}
-
-.bg-star.purple {
-    background: #b774ff;
-    box-shadow: 0 0 10px rgba(183, 116, 255, 0.64);
-}
-
-@keyframes twinkleSlow {
-    0%,100% { opacity: 0.18; transform: scale(1); }
-    50% { opacity: 0.72; transform: scale(1.08); }
-}
-@keyframes twinkleMid {
-    0%,100% { opacity: 0.24; transform: scale(1); }
-    50% { opacity: 0.94; transform: scale(1.14); }
-}
-@keyframes twinkleFast {
-    0%,100% { opacity: 0.32; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.22); }
-}
-
-/* ===== SPOTLIGHT FIELD ===== */
-.spotlight-layer {
-    position: relative;
-    min-height: 100vh;
-    width: 100%;
-    z-index: 10;
-    animation: layerDrift 55s ease-in-out infinite alternate;
-}
-
-@keyframes layerDrift {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(0.8%, -0.6%, 0); }
-}
-
-.spot-object-wrap {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    z-index: 12;
-    width: 96px;
-    height: 96px;
-}
-
-.spot-object {
-    position: absolute;
-    inset: 0;
+.spotlight-card {
     display: block;
-    text-decoration: none;
+    padding: 18px;
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.14), transparent 34%),
+        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
     color: white;
-    isolation: isolate;
-    z-index: 2;
+    text-decoration: none;
+    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
 }
 
-.hover-zone {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: transparent;
-    z-index: 3;
-    cursor: pointer;
+.spotlight-card h3 {
+    margin: 0 0 8px 0;
 }
 
-/* visible star only */
-.spot-core {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: white;
-    transition: transform 180ms ease;
-}
-
-.spot-core::before {
-    content: "";
-    position: absolute;
-    inset: -10px;
-    border-radius: 50%;
-    filter: blur(12px);
-    opacity: 0.54;
-    z-index: -1;
-}
-
-.spot-core::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 220%;
-    height: 2px;
-    transform: translate(-50%, -50%);
-    opacity: 0.48;
-    border-radius: 999px;
-    box-shadow: 0 0 16px currentColor, 0 0 28px currentColor;
-    z-index: -1;
-}
-
-.spot-flare {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 2px;
-    transform: translate(-50%, -50%);
-    opacity: 0.42;
-    border-radius: 999px;
-    pointer-events: none;
-    box-shadow: 0 0 16px currentColor, 0 0 28px currentColor;
-}
-
-.object-high .spot-core {
-    filter: saturate(1.2) brightness(1.18);
-}
-
-.object-medium .spot-core {
-    filter: saturate(1.08) brightness(1.06);
-}
-
-.object-low .spot-core {
-    filter: saturate(0.96) brightness(0.96);
-}
-
-/* sizes */
-.object-hero .spot-core {
-    width: 11px;
-    height: 11px;
-}
-.object-hero .spot-flare {
-    height: 22px;
-}
-
-.object-strong .spot-core {
-    width: 8px;
-    height: 8px;
-}
-.object-strong .spot-flare {
-    height: 18px;
-}
-
-.object-small .spot-core {
-    width: 4px;
-    height: 4px;
-}
-.object-small .spot-flare {
-    height: 10px;
-}
-
-/* pressure */
-.object-low .spot-core {
-    animation: twinkleSlow 3.7s ease-in-out infinite;
-}
-.object-medium .spot-core {
-    animation: twinkleMid 2.5s ease-in-out infinite;
-}
-.object-high .spot-core {
-    animation: twinkleFast 1.7s ease-in-out infinite;
-}
-
-/* lane colors — stronger and more readable */
-.object-options .spot-core {
-    background: #ff5fcf;
-    color: #ff2fb8;
-}
-.object-options .spot-core::before {
-    background: radial-gradient(circle, rgba(255, 47, 184, 0.95), rgba(170, 70, 255, 0.42), transparent 74%);
-}
-
-.object-equity .spot-core {
-    background: #59c7ff;
-    color: #2da8ff;
-}
-.object-equity .spot-core::before {
-    background: radial-gradient(circle, rgba(45, 168, 255, 0.95), rgba(124, 77, 255, 0.30), transparent 74%);
-}
-
-.object-mixed .spot-core {
-    background: #ffd86e;
-    color: #ffbe2e;
-}
-.object-mixed .spot-core::before {
-    background: radial-gradient(circle, rgba(255, 190, 46, 0.92), rgba(255, 110, 176, 0.26), transparent 74%);
-}
-
-/* ===== POPUP ===== */
-.star-hud {
-    position: absolute;
-    left: 62px;
-    top: 6px;
-    min-width: 220px;
-    max-width: 270px;
-    opacity: 0;
-    transform: translateY(8px) scale(0.985);
-    transition: opacity 220ms ease, transform 220ms ease;
-    transition-delay: 0ms;
-    pointer-events: none;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.45);
-    z-index: 10;
-}
-
-.spot-object-wrap:hover .star-hud {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    transition-delay: 220ms;
-}
-
-.hud-symbol {
-    font-size: 1rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-}
-
-.hud-line {
-    margin-top: 4px;
-    font-size: 0.82rem;
+.spotlight-card p {
+    margin: 0;
+    line-height: 1.45;
     opacity: 0.88;
-    line-height: 1.35;
 }
 
-.hud-meta {
-    margin-top: 8px;
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-
-.hud-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 8px;
-    border-radius: 999px;
-    font-size: 0.66rem;
-    font-weight: 700;
-    background: rgba(255,255,255,0.10);
-    border: 1px solid rgba(255,255,255,0.10);
-    backdrop-filter: blur(6px);
-}
-
-.hud-actions {
-    margin-top: 10px;
+.info-row {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    pointer-events: auto;
+    margin-top: 12px;
 }
 
-.hud-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 7px 11px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-decoration: none;
-    color: white;
-    background: rgba(255,255,255,0.10);
-    border: 1px solid rgba(255,255,255,0.12);
+.deep-panel {
+    border-radius: 24px;
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
+        linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
 }
 
-.hud-btn.execute {
-    background: linear-gradient(135deg, rgba(255, 126, 201, 0.28), rgba(124, 77, 255, 0.28));
-    border-color: rgba(255,255,255,0.16);
-}
-
-@media (max-width: 820px) {
-    .cosmos-header {
-        top: 18px;
-        left: 18px;
-        right: 18px;
-    }
-
-    .cosmos-sub {
-        max-width: 260px;
-    }
-
-    .star-hud {
-        left: 42px;
-        min-width: 160px;
-        max-width: 190px;
+@media (max-width: 980px) {
+    .spotlight-fusion-grid {
+        grid-template-columns: 1fr;
     }
 }
 </style>
 
-{% set sections = v2_spotlight.get("lane_sections", []) if v2_spotlight else [] %}
-{% set side_panels = v2_spotlight.get("side_panels", []) if v2_spotlight else [] %}
-{% set meta = v2_spotlight.get("meta", {}) if v2_spotlight else {} %}
-{% set modes = spotlight_modes if spotlight_modes else {} %}
+{% set cards = spotlight_fusion.get("spotlight_cards", []) if spotlight_fusion else [] %}
+{% set lead = cards[0] if cards else {} %}
 
-{% set ns = namespace(objects=[]) %}
-{% for section in sections %}
-    {% for item in section.get("items", []) %}
-        {% set lane = item.get("lane", "equity") %}
-        {% set lane_class = "object-options" if lane == "options" else "object-equity" %}
-        {% set pressure = item.get("pressure_level", "medium") %}
-        {% set pressure_class = "object-high" if pressure == "high" else "object-medium" if pressure == "medium" else "object-low" %}
-        {% set size_class = "object-hero" if section.get("key") == "featured_now" and loop.index0 < 2 else "object-strong" if pressure != "low" else "object-small" %}
-        {% set imminent = "move could be close" if pressure == "high" else "worth watching closely" if pressure == "medium" else "still early" %}
-        {% set action_line = "structure looks close" if item.get("structure") else "watch the setup tighten" %}
+<div class="spotlight-shell">
 
-        {% set object = {
-            "symbol": item.get("symbol"),
-            "summary": item.get("summary", ""),
-            "lane": lane,
-            "direction": item.get("direction", ""),
-            "pressure": pressure,
-            "destination": item.get("destination", "/signals"),
-            "target_dte": item.get("target_dte", ""),
-            "structure": item.get("structure", ""),
-            "size_class": size_class,
-            "lane_class": lane_class,
-            "pressure_class": pressure_class,
-            "imminent": imminent,
-            "action_line": action_line
-        } %}
-        {% set ns.objects = ns.objects + [object] %}
-    {% endfor %}
-{% endfor %}
-
-{% for panel in side_panels %}
-    {% for item in panel.get("items", [])[:12] %}
-        {% set object = {
-            "symbol": item.get("symbol"),
-            "summary": item.get("reason", ""),
-            "lane": item.get("lane", "equity"),
-            "direction": "",
-            "pressure": "low",
-            "destination": item.get("destination", "/signals"),
-            "target_dte": "",
-            "structure": "",
-            "size_class": "object-small",
-            "lane_class": "object-mixed",
-            "pressure_class": "object-low",
-            "imminent": "not ready yet",
-            "action_line": "leave it on watch"
-        } %}
-        {% set ns.objects = ns.objects + [object] %}
-    {% endfor %}
-{% endfor %}
-
-<div class="cosmos-shell">
-    <div class="nebula-layer nebula-a"></div>
-    <div class="nebula-layer nebula-b"></div>
-    <div class="milky-band"></div>
-
-<div class="cosmos-legend">
-    <div class="legend-title">Sky Guide</div>
-
-    <div class="legend-group">
-        <div class="legend-row">
-            <span class="legend-dot options"></span>
-            <span>Options lane</span>
-        </div>
-        <div class="legend-row">
-            <span class="legend-dot equity"></span>
-            <span>Stock lane</span>
-        </div>
-        <div class="legend-row">
-            <span class="legend-dot mixed"></span>
-            <span>Outer watch / passed over</span>
-        </div>
-    </div>
-
-    <div class="legend-group">
-        <div class="legend-row">
-            <span class="legend-star hero"></span>
-            <span>Lead setup</span>
-        </div>
-        <div class="legend-row">
-            <span class="legend-star strong"></span>
-            <span>Strong setup</span>
-        </div>
-        <div class="legend-row">
-            <span class="legend-star small"></span>
-            <span>Early or weaker setup</span>
-        </div>
-    </div>
-</div>
-
-    <div class="cosmos-header">
-        <div class="cosmos-title">spotlight</div>
-        <div class="cosmos-sub">drifting through what matters most right now</div>
-        <div class="cosmos-chip-row">
-            <span class="cosmos-chip">{{ meta.get("page_mode", "hybrid") }}</span>
-            <span class="cosmos-chip">{{ meta.get("lane_section_count", 0) }} lanes</span>
-            <span class="cosmos-chip">{{ modes.get("control_mode", "manual") }}</span>
-        </div>
-    </div>
-
-    <div class="starfield">
-        {% for i in range(320) %}
-            {% set x = (i * 37 + 11) % 100 %}
-            {% set y = (i * 53 + 19) % 100 %}
-            {% set sz = "tiny" if i % 4 == 0 else "small" if i % 3 == 0 else "medium" %}
-            {% set col = "blue" if i % 5 == 0 else "pink" if i % 7 == 0 else "gold" if i % 11 == 0 else "purple" %}
-            {% set dur = "twinkleFast" if i % 9 == 0 else "twinkleMid" if i % 4 == 0 else "twinkleSlow" %}
-            <div
-                class="bg-star {{ sz }} {{ col }}"
-                style="left: {{ x }}%; top: {{ y }}%; animation: {{ dur }} {{ 2 + (i % 6) }}s ease-in-out infinite;"
-            ></div>
-        {% endfor %}
-    </div>
-
-    <div class="spotlight-layer">
-        {% for obj in ns.objects %}
-            {% set idx = loop.index0 %}
-            {% set x = (idx * 13 + 18) % 92 + 4 %}
-            {% set y = (idx * 17 + 24) % 78 + 12 %}
-
-            {% if obj.lane == "options" %}
-                {% set x = (x * 0.76) + 11 %}
-                {% set y = (y * 0.86) + 4 %}
-            {% elif obj.lane == "equity" %}
-                {% set x = (x * 0.82) + 16 %}
-                {% set y = (y * 0.84) + 8 %}
+    <div class="spotlight-hero">
+        <div class="spotlight-kicker">
+            <span class="spotlight-pill">fused spotlight</span>
+            {% if lead %}
+            <span class="spotlight-pill">{{ lead.get("final_state", "unknown") }}</span>
+            <span class="spotlight-pill">{{ lead.get("command", "stand_down") }}</span>
+            <span class="spotlight-pill">Threat: {{ lead.get("threat_level", "low") }}</span>
+            <span class="spotlight-pill">Phase: {{ lead.get("timeline_phase", "unknown") }}</span>
             {% endif %}
+        </div>
 
-            <div class="spot-object-wrap" style="left: {{ x }}%; top: {{ y }}%;">
-                <a href="{{ obj.destination }}" class="spot-object {{ obj.size_class }} {{ obj.lane_class }} {{ obj.pressure_class }}">
-                    <div class="hover-zone"></div>
-                    <div class="spot-core"></div>
-                    <div class="spot-flare"></div>
-                </a>
+        <h1 class="spotlight-title">Signals Spotlight</h1>
+        <p class="spotlight-sub">
+            {% if lead %}
+                {{ lead.get("summary", "") }}
+            {% else %}
+                No fused spotlight opportunities are available right now.
+            {% endif %}
+        </p>
+    </div>
 
-                <div class="star-hud">
-                    <div class="hud-symbol">{{ obj.symbol }}</div>
-                    <div class="hud-line">{{ obj.imminent }}</div>
+    {% if cards %}
+    <div class="spotlight-fusion-grid">
+        {% for card in cards %}
+        <a href="/signals/{{ card.get('symbol') }}" class="spotlight-card">
+            <h3>{{ card.get("symbol", "") }}</h3>
+            <p>{{ card.get("summary", "") }}</p>
 
-                    <div class="hud-meta">
-                        {% if obj.lane %}
-                        <span class="hud-pill">{{ obj.lane }}</span>
-                        {% endif %}
-                        {% if obj.direction %}
-                        <span class="hud-pill">{{ obj.direction }}</span>
-                        {% endif %}
-                        {% if obj.structure %}
-                        <span class="hud-pill">{{ obj.structure }}</span>
-                        {% endif %}
-                        {% if obj.target_dte %}
-                        <span class="hud-pill">DTE {{ obj.target_dte }}</span>
-                        {% endif %}
-                    </div>
-
-                    {% if obj.summary %}
-                    <div class="hud-line">{{ obj.summary }}</div>
-                    {% endif %}
-
-                    <div class="hud-line">{{ obj.action_line }}</div>
-
-                    <div class="hud-actions">
-                        <a href="{{ obj.destination }}" class="hud-btn">Open</a>
-                        {% if modes.get("control_mode") == "manual" or modes.get("intelligence_mode") == "hybrid" %}
-                        <a href="{{ obj.destination }}" class="hud-btn execute">Execute</a>
-                        {% endif %}
-                    </div>
-                </div>
+            <div class="info-row">
+                <span class="info-chip">{{ card.get("final_state", "unknown") }}</span>
+                <span class="info-chip">{{ card.get("command", "stand_down") }}</span>
+                <span class="info-chip">Threat: {{ card.get("threat_level", "low") }}</span>
+                <span class="info-chip">Phase: {{ card.get("timeline_phase", "unknown") }}</span>
             </div>
+        </a>
         {% endfor %}
     </div>
+    {% endif %}
+
 </div>
+
 {% endblock %}

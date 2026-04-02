@@ -1,217 +1,153 @@
 {% extends "base.html" %}
 {% block content %}
 
-<!-- HERO -->
-<div class="page-hero card premium-hero gold-accent-card">
-    <h2>Simulation Dashboard</h2>
+<style>
+.dashboard-shell {
+    display: grid;
+    gap: 20px;
+}
 
-    <div class="passage-frame">
-        <p>
-            Monitor the system, track performance, and move through positions,
-            activity, and proof from a single control layer.
-        </p>
+.dashboard-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 24px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.22), transparent 32%),
+        radial-gradient(circle at 78% 22%, rgba(255, 95, 207, 0.16), transparent 26%),
+        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 22px 48px rgba(0,0,0,0.32);
+}
+
+.dashboard-hero::before {
+    content: "";
+    position: absolute;
+    right: 46px;
+    top: 30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.34) 44%, transparent 74%);
+    filter: blur(10px);
+    opacity: 0.92;
+    pointer-events: none;
+}
+
+.dashboard-kicker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.dashboard-pill,
+.info-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.10);
+}
+
+.dashboard-title {
+    margin: 0 0 8px 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.dashboard-sub {
+    margin: 0;
+    max-width: 860px;
+    opacity: 0.9;
+    line-height: 1.48;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.dashboard-card {
+    border-radius: 24px;
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
+        linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
+}
+
+.dashboard-card h3 {
+    margin: 0 0 8px 0;
+}
+
+.metric-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.68;
+    margin-bottom: 6px;
+}
+
+.metric-value {
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.info-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+@media (max-width: 980px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+</style>
+
+{% set dash = dashboard_fusion_view if dashboard_fusion_view else {} %}
+
+<div class="dashboard-shell">
+
+    <div class="dashboard-hero">
+        <div class="dashboard-kicker">
+            <span class="dashboard-pill">command posture</span>
+            <span class="dashboard-pill">{{ dash.get("dashboard_posture", "stand_down") }}</span>
+            <span class="dashboard-pill">Lead: {{ dash.get("dominant_symbol", "None") }}</span>
+            <span class="dashboard-pill">{% if dash.get("blocked") %}Blocked{% else %}Active{% endif %}</span>
+        </div>
+
+        <h1 class="dashboard-title">Dashboard</h1>
+        <p class="dashboard-sub">{{ dash.get("dashboard_summary", "No fused opportunities available.") }}</p>
     </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <div class="metric-label">Estimated Account Value</div>
+            <div class="metric-value">{{ snapshot.get("estimated_account_value", 0) }}</div>
+        </div>
+        <div class="dashboard-card">
+            <div class="metric-label">Buying Power</div>
+            <div class="metric-value">{{ snapshot.get("buying_power", 0) }}</div>
+        </div>
+        <div class="dashboard-card">
+            <div class="metric-label">Open Positions</div>
+            <div class="metric-value">{{ snapshot.get("open_positions", 0) }}</div>
+        </div>
+        <div class="dashboard-card">
+            <div class="metric-label">Regime</div>
+            <div class="metric-value">{{ system.get("regime", "Unknown") }}</div>
+        </div>
+    </div>
+
 </div>
-
-<!-- SUBMENU -->
-<div class="dashboard-subnav">
-    <a href="/positions" class="cta-btn secondary">Positions</a>
-    <a href="/live-activity" class="cta-btn secondary">Live Activity</a>
-    <a href="/proof" class="cta-btn secondary">Proof</a>
-    <a href="/equity" class="cta-btn secondary">Equity</a>
-    <a href="/reports" class="cta-btn secondary">Reports</a>
-    <a href="/bot-log" class="cta-btn secondary">Bot Log</a>
-</div>
-
-{% if v2_dashboard %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>V2 Dashboard Bridge</h3>
-    <div class="passage-frame">
-        <p style="margin:0;">
-            Mode: {{ v2_dashboard.get("meta", {}).get("page_mode", "unknown") }}
-            | Sections: {{ v2_dashboard.get("meta", {}).get("section_count", 0) }}
-            | Cards: {{ v2_dashboard.get("meta", {}).get("command_card_count", 0) }}
-        </p>
-    </div>
-</div>
-{% endif %}
-
-<!-- CORE SYSTEM SNAPSHOT -->
-<div class="grid">
-    <div class="card gold-accent-card">
-        <h3>Estimated Value</h3>
-        <div class="metric">
-            ${{ snapshot.estimated_account_value if snapshot and snapshot.estimated_account_value is defined else 0 }}
-        </div>
-        <p class="muted-line">Simulated account value.</p>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Buying Power</h3>
-        <div class="metric">
-            ${{ snapshot.buying_power if snapshot and snapshot.buying_power is defined else 0 }}
-        </div>
-        <p class="muted-line">Capital available for deployment.</p>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Open Positions</h3>
-        <div class="metric">
-            {{ snapshot.open_positions if snapshot and snapshot.open_positions is defined else 0 }}
-        </div>
-        <p class="muted-line">Active simulated positions.</p>
-    </div>
-</div>
-
-<!-- SYSTEM STATE -->
-<div class="grid">
-    <div class="card gold-accent-card">
-        <h3>Market Regime</h3>
-        <div class="metric">
-            {{ system.regime if system and system.regime is defined else "Neutral" }}
-        </div>
-        <p class="muted-line">Current market condition.</p>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Volatility State</h3>
-        <div class="metric">
-            {{ system.volatility if system and system.volatility is defined else "Normal" }}
-        </div>
-        <p class="muted-line">Volatility environment.</p>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Engine State</h3>
-        <div class="metric">
-            {{ system.engine_state if system and system.engine_state is defined else "Active" }}
-        </div>
-        <p class="muted-line">Bot execution status.</p>
-    </div>
-</div>
-
-<!-- PROOF SNAPSHOT -->
-{% if proof is defined %}
-<div class="grid">
-    <div class="card gold-accent-card">
-        <h3>Trades</h3>
-        <div class="metric">{{ proof.trades if proof.trades is defined else "N/A" }}</div>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Win Rate</h3>
-        <div class="metric">{{ proof.winrate if proof.winrate is defined else "N/A" }}</div>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Max Drawdown</h3>
-        <div class="metric">{{ proof.max_drawdown if proof.max_drawdown is defined else "N/A" }}</div>
-    </div>
-</div>
-{% endif %}
-
-<div class="card gold-accent-card">
-    <div class="section-head-row">
-        <div>
-            <h3>Execution Universe</h3>
-            <p class="muted-line">
-                This is the controlled set of symbols the simulation is currently willing to trade.
-            </p>
-        </div>
-        <div class="signal-stat-chip">
-            {{ execution_summary.selected_count }} active
-        </div>
-    </div>
-
-    <div class="grid">
-        <div class="card">
-            <p><b>Eligible</b></p>
-            <div class="metric">{{ execution_summary.eligible_count }}</div>
-        </div>
-
-        <div class="card">
-            <p><b>Rejected</b></p>
-            <div class="metric">{{ execution_summary.rejected_count }}</div>
-        </div>
-
-        <div class="card">
-            <p><b>Cap</b></p>
-            <div class="metric">{{ execution_summary.cap }}</div>
-        </div>
-    </div>
-
-    <div class="passage-frame">
-        <p>
-            <b>Market posture:</b>
-            {{ execution_summary.regime|title }} regime · {{ execution_summary.volatility|title }} volatility
-        </p>
-    </div>
-
-    {% if execution_summary.selected_symbols %}
-    <div class="dashboard-subnav">
-        {% for sym in execution_summary.selected_symbols[:12] %}
-        <a href="/signals/{{ sym }}" class="cta-btn secondary">{{ sym }}</a>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="passage-frame">
-        <p>No execution symbols are currently selected.</p>
-    </div>
-    {% endif %}
-</div>
-
-<!-- POSITIONS TEASER -->
-<div class="card gold-accent-card">
-    <div class="section-head-row">
-        <h3>Position Intelligence</h3>
-        <a href="/positions" class="cta-btn premium-gold-btn">Open Positions</a>
-    </div>
-
-    <div class="passage-frame">
-        <p>
-            Move into Positions to see full trade condition, damage signals,
-            forward paths, and evolving setup intelligence.
-        </p>
-    </div>
-</div>
-
-{% if positions is defined and positions %}
-<div class="grid">
-    {% for p in positions[:3] %}
-    <div class="card gold-accent-card">
-
-        <div class="section-head-row">
-            <h3>{{ p.symbol }}</h3>
-            <div class="signal-stat-chip">
-                {{ p.health_score if p.health_score is defined else 50 }}
-            </div>
-        </div>
-
-        <p><b>PnL:</b> {{ p.pnl if p.pnl is defined else "N/A" }}</p>
-
-        <div class="health-bar">
-            <div id="health-{{ p.symbol }}" class="health-fill" style="width: {{ p.health.score }}%;"></div>
-        </div>
-
-        <div class="teaser-row">
-            <span>Warning</span>
-            <span class="blurred">Momentum pressure forming</span>
-        </div>
-
-        <div class="teaser-row">
-            <span>Risk</span>
-            <span class="blurred">Support being tested</span>
-        </div>
-
-        <div class="teaser-row">
-            <span>Target</span>
-            <span class="blurred">Upside zone developing</span>
-        </div>
-
-        <a href="/positions" class="cta-btn secondary">View Details</a>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
 
 {% endblock %}
