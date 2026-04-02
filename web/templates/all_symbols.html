@@ -1,159 +1,228 @@
 {% extends "base.html" %}
-{% from "_ui_macros.html" import summary_card, stat_grid, note_card %}
 {% block content %}
 
-<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
-    <h2>All Symbols</h2>
-    <div class="passage-frame">
-        <p>
-            A broader symbol directory for higher tiers, redesigned as a calmer intelligence surface instead of a raw table dump.
+<style>
+.all-symbols-shell {
+    display: grid;
+    gap: 20px;
+}
+
+.all-symbols-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 24px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.22), transparent 32%),
+        radial-gradient(circle at 78% 22%, rgba(255, 95, 207, 0.16), transparent 26%),
+        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 22px 48px rgba(0,0,0,0.32);
+}
+
+.all-symbols-hero::before {
+    content: "";
+    position: absolute;
+    right: 46px;
+    top: 30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.34) 44%, transparent 74%);
+    filter: blur(10px);
+    opacity: 0.92;
+    pointer-events: none;
+}
+
+.all-symbols-kicker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.all-symbols-pill,
+.info-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.10);
+}
+
+.all-symbols-title {
+    margin: 0 0 8px 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.all-symbols-sub {
+    margin: 0;
+    max-width: 900px;
+    opacity: 0.9;
+    line-height: 1.48;
+}
+
+.search-panel {
+    border-radius: 24px;
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
+        linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
+}
+
+.symbol-search-input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.05);
+    color: white;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.symbol-search-input::placeholder {
+    color: rgba(255,255,255,0.45);
+}
+
+.symbol-universe-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.symbol-universe-card {
+    display: block;
+    padding: 18px;
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.14), transparent 34%),
+        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    color: white;
+    text-decoration: none;
+    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
+}
+
+.symbol-universe-card h3 {
+    margin: 0 0 4px 0;
+}
+
+.symbol-universe-company {
+    margin: 0 0 10px 0;
+    opacity: 0.7;
+    font-size: 0.92rem;
+}
+
+.symbol-universe-summary {
+    margin: 0;
+    opacity: 0.88;
+    line-height: 1.45;
+}
+
+.info-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.empty-state {
+    border-radius: 24px;
+    padding: 22px;
+    background:
+        linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+@media (max-width: 980px) {
+    .symbol-universe-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+{% set card_count = all_symbol_cards|length if all_symbol_cards else 0 %}
+
+<div class="all-symbols-shell">
+
+    <div class="all-symbols-hero">
+        <div class="all-symbols-kicker">
+            <span class="all-symbols-pill">all symbols</span>
+            <span class="all-symbols-pill">{{ tier }}</span>
+            <span class="all-symbols-pill">{{ card_count }} visible</span>
+        </div>
+
+        <h1 class="all-symbols-title">Symbol Universe</h1>
+        <p class="all-symbols-sub">
+            Search the full fused symbol universe. Every card reflects command posture, threat awareness, timeline phase, and the current fused summary.
         </p>
     </div>
-</div>
 
-{% if user and user.tier in ["Pro", "Elite"] or (user and user.role == "master") %}
-
-{{ summary_card(page_summary.headline, page_summary.summary, page_summary.chip) }}
-
-{{ stat_grid([
-    {"title": "Total Symbols", "value": page_summary.total},
-    {"title": "Strong", "value": page_summary.strong},
-    {"title": "Middle", "value": page_summary.medium},
-    {"title": "Weak", "value": page_summary.weak},
-]) }}
-
-<div class="card gold-accent-card" style="margin-bottom:18px;">
-    <div class="section-head-row">
-        <div>
-            <h3>Broader Market Coverage</h3>
-            <p class="muted-line">
-                Use this page when you want a wider read than Spotlight gives you.
-            </p>
-        </div>
-        <div class="signal-stat-chip">{{ rows|length }} symbols</div>
-    </div>
-</div>
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Search the Directory</h3>
-            <p class="muted-line" style="margin:0;">Search by symbol or company name.</p>
-        </div>
-        <span class="signal-stat-chip">Research Surface</span>
-    </div>
-
-    <div style="margin-top:14px;">
+    <div class="search-panel">
         <input
             id="symbolSearch"
+            class="symbol-search-input"
             type="text"
-            placeholder="Search symbol or company..."
-            onkeyup="filterSymbols()"
-            class="input"
-            style="width:100%;"
+            placeholder="Search symbol or company name..."
+            oninput="filterSymbolCards()"
         />
     </div>
-</div>
 
-{% if rows %}
-<div
-    id="symbolsGrid"
-    style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px;"
->
-    {% for row in rows %}
-    <a
-        href="/signals/{{ row.symbol }}"
-        class="symbol-card-link"
-        data-symbol="{{ row.symbol }}"
-        data-company="{{ row.company_name }}"
-        style="text-decoration:none; color:inherit;"
-    >
-        <div class="card premium-card" style="height:100%;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-                <div>
-                    <h3 style="margin:0 0 6px 0;">{{ row.symbol }}</h3>
-                    <p class="muted-line" style="margin:0;">{{ row.company_name }}</p>
-                </div>
-                <span class="signal-stat-chip">
-                    {% if row.latest_score|int >= 75 %}
-                    Strong
-                    {% elif row.latest_score|int >= 55 %}
-                    Mixed
-                    {% else %}
-                    Weak
-                    {% endif %}
-                </span>
+    {% if all_symbol_cards %}
+    <div id="symbolUniverseGrid" class="symbol-universe-grid">
+        {% for card in all_symbol_cards %}
+        <a
+            href="/signals/{{ card.get('symbol') }}"
+            class="symbol-universe-card"
+            data-symbol="{{ (card.get('symbol') or '')|lower }}"
+            data-company="{{ (card.get('company_name') or '')|lower }}"
+        >
+            <h3>{{ card.get("symbol", "") }}</h3>
+            <p class="symbol-universe-company">{{ card.get("company_name", "") }}</p>
+            <p class="symbol-universe-summary">{{ card.get("summary", "") }}</p>
+
+            <div class="info-row">
+                <span class="info-chip">{{ card.get("final_state", "unknown") }}</span>
+                <span class="info-chip">{{ card.get("command", "stand_down") }}</span>
+                <span class="info-chip">Threat: {{ card.get("threat_level", "low") }}</span>
+                <span class="info-chip">Phase: {{ card.get("timeline_phase", "unknown") }}</span>
             </div>
 
-            <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
-                <div class="card" style="margin:0;">
-                    <h4>Score</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ row.latest_score }}</strong></p>
-                    </div>
-                </div>
-                <div class="card" style="margin:0;">
-                    <h4>Confidence</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ row.latest_confidence }}</strong></p>
-                    </div>
-                </div>
+            <div class="info-row">
+                <span class="info-chip">Next: {{ card.get("next_action", "wait") }}</span>
             </div>
-
-            {{ note_card("Current Opinion", row.opinion or "No current opinion loaded yet.") }}
-
-            <div class="card" style="margin-top:14px;">
-                <h4>Why Open This Symbol</h4>
-                <div class="passage-frame">
-                    <p style="margin:0;">
-                        Open the symbol page to inspect its latest signal context, intelligence posture, and related research surface.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </a>
-    {% endfor %}
-</div>
-{% else %}
-<div class="card premium-card">
-    <div class="passage-frame">
-        <p style="margin:0;">No symbol rows loaded yet.</p>
+        </a>
+        {% endfor %}
     </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>No Symbols Available</h3>
+        <p>There are no fused symbol cards available right now.</p>
+    </div>
+    {% endif %}
+
 </div>
-{% endif %}
 
 <script>
-function filterSymbols() {
+function filterSymbolCards() {
     const input = document.getElementById("symbolSearch");
-    const filter = (input.value || "").toUpperCase();
-    const cards = document.querySelectorAll(".symbol-card-link");
+    const query = (input.value || "").toLowerCase().trim();
+    const cards = document.querySelectorAll(".symbol-universe-card");
 
-    cards.forEach(card => {
-        const symbol = (card.dataset.symbol || "").toUpperCase();
-        const company = (card.dataset.company || "").toUpperCase();
-
-        if (symbol.indexOf(filter) > -1 || company.indexOf(filter) > -1) {
-            card.style.display = "";
-        } else {
-            card.style.display = "none";
-        }
+    cards.forEach((card) => {
+        const symbol = card.getAttribute("data-symbol") || "";
+        const company = card.getAttribute("data-company") || "";
+        const show = !query || symbol.includes(query) || company.includes(query);
+        card.style.display = show ? "block" : "none";
     });
 }
 </script>
-
-{% else %}
-<div class="card gold-accent-card">
-    <h3>All Symbols is a higher-tier view</h3>
-    <div class="passage-frame">
-        <p>
-            This page is unlocked for Pro and Elite, where broader market coverage becomes part of the experience.
-        </p>
-    </div>
-    <div class="dashboard-subnav">
-        <a href="/signals" class="cta-btn secondary">Back to Spotlight</a>
-        <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
-    </div>
-</div>
-{% endif %}
 
 {% endblock %}

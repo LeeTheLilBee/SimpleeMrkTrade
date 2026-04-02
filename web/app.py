@@ -10,6 +10,9 @@ from engine_v2.dashboard_contract import build_dashboard_contract
 
 import json
 from pathlib import Path
+# ADD THESE IMPORTS TO web/app.py
+
+from engine_v2.spotlight_fusion_adapter import build_spotlight_fusion_cards
 from engine_v2.market_map_builder import build_market_map
 from engine_v2.constellation_mapper import map_tiles_to_constellation
 from engine_v2.symbol_hero_contract import build_symbol_hero_contract
@@ -264,6 +267,47 @@ def render_template_safe(template_name: str, **context):
 # ============================================================
 # STABILITY HELPERS
 # ============================================================
+
+# ADD THIS HELPER TO web/app.py
+
+def build_all_symbols_fusion_payloads(limit: int = 100):
+    boards = get_signal_boards()
+    if not isinstance(boards, list):
+        boards = []
+
+    fusion_payloads = []
+
+    for board in boards[:limit]:
+        if not isinstance(board, dict):
+            continue
+
+        signal = {
+            "symbol": board.get("symbol", ""),
+            "company_name": board.get("company_name", board.get("symbol", "")),
+            "direction": board.get("direction", "CALL"),
+            "setup_type": board.get("setup_type", "continuation"),
+            "trend_strength": board.get("latest_score", 70),
+            "volume_confirmation": 70,
+            "extension_score": 35,
+            "pullback_quality": 72,
+            "score": board.get("latest_score", 75),
+            "structure_quality": 84,
+            "liquidity_score": 92,
+            "spread_score": 74,
+            "premium_efficiency_score": 82,
+            "open_interest_score": 76,
+            "iv_context": "normal",
+            "visible_volatility": 22,
+            "last_pnl": 25,
+        }
+
+        try:
+            fusion_payloads.append(build_symbol_fusion_payload(signal))
+        except Exception as e:
+            print(f"[ALL_SYMBOLS_FUSION:{signal.get('symbol')}] {e}")
+
+    return fusion_payloads
+
 
 # ADD THESE HELPERS TO web/app.py
 
@@ -3520,20 +3564,58 @@ def signals_page():
     )
 
 
+# ADD / UPDATE THIS ROUTE IN web/app.py
+
 @app.route("/all-symbols")
 def all_symbols_page():
-    if not can_access_all_symbols():
-        return redirect(url_for("upgrade_page"))
+    maybe_track_page_view("/all-symbols")
 
-    rows = get_all_symbol_rows()
-    page_summary = build_all_symbols_page_summary(rows)
+    if not can_access_all_symbols():
+        return redirect(url_for("upgrade"))
+
+    fusion_payloads = build_all_symbols_fusion_payloads(limit=150)
+    spotlight_fusion = build_spotlight_fusion_cards(fusion_payloads)
+
+    all_symbol_cards = []
+    for payload in fusion_payloads:
+        master = payload.get("master_decision", {})
+        command = payload.get("command_object", {})
+        summary = payload.get("fusion_summary", "")
+
+        all_symbol_cards.append(
+            {
+                "symbol": master.get("symbol"),
+                "company_name": master.get("company_name", master.get("symbol")),
+                "final_state": master.get("final_state", "unknown"),
+                "command": command.get("command", "stand_down"),
+                "threat_level": command.get("threat_level", "low"),
+                "timeline_phase": command.get("timeline_phase", "unknown"),
+                "next_action": command.get("next_action", "wait"),
+                "summary": summary,
+            }
+        )
+
+    all_symbol_cards = sorted(
+        all_symbol_cards,
+        key=lambda c: (
+            c.get("command") == "deploy",
+            c.get("final_state") == "actionable",
+            c.get("threat_level") == "low",
+            c.get("symbol") or "",
+        ),
+        reverse=True,
+    )
 
     return render_template_safe(
         "all_symbols.html",
-        **template_context({
-            "rows": rows,
-            "page_summary": page_summary,
-        }),
+        **template_context(
+            {
+                "all_symbol_cards": all_symbol_cards,
+                "fusion_payloads": fusion_payloads,
+                "spotlight_fusion": spotlight_fusion,
+                "tier": current_tier_title(),
+            }
+        ),
     )
 
 @app.route("/position/<trade_id>")
