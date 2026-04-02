@@ -1,5 +1,5 @@
 {
-  "market_universe_run_at": "2026-04-01T03:08:47.399071",
+  "market_universe_run_at": "2026-04-02T11:58:54.360454",
   "market_universe_count": 163,
   "market_universe_source_status": {
     "diversity_seed": {
@@ -38,7 +38,7 @@
     "trade_details": {
       "ok": true,
       "rows_added_estimate": 0,
-      "source_rows": 221
+      "source_rows": 223
     },
     "positions": {
       "ok": true,
@@ -53,7 +53,7 @@
     "closed_positions": {
       "ok": true,
       "rows_added_estimate": 0,
-      "source_rows": 17
+      "source_rows": 18
     },
     "user_positions": {
       "ok": true,
