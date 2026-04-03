@@ -368,5 +368,10 @@
     "timestamp": "2026-04-02T00:34:42.582123",
     "level": "INFO",
     "message": "Executed AMD CALL at 210.74 size 22.0"
+  },
+  {
+    "timestamp": "2026-04-03T10:54:48.819032",
+    "level": "INFO",
+    "message": "Bot run started"
   }
 ]

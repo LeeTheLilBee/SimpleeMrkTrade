@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-02T00:34:42.893483",
+  "timestamp": "2026-04-03T10:55:03.061968",
   "performance": {
     "trades": 12,
     "wins": 2,
@@ -7,10 +7,10 @@
     "winrate": 0.17,
     "total_pnl": 2518.17,
     "max_drawdown": 93.13,
-    "entries_today": 1,
-    "closes_today": 1,
-    "round_trips_today": 1,
-    "realized_pnl_today": -11.66
+    "entries_today": 0,
+    "closes_today": 0,
+    "round_trips_today": 0,
+    "realized_pnl_today": 0.0
   },
   "portfolio": {
     "open_positions": 0,
