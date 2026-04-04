@@ -1,5 +1,5 @@
 {
-  "market_universe_run_at": "2026-04-02T11:58:54.360454",
+  "market_universe_run_at": "2026-04-04T06:07:18.749264",
   "market_universe_count": 163,
   "market_universe_source_status": {
     "diversity_seed": {
@@ -28,7 +28,7 @@
     "symbol_news": {
       "ok": true,
       "rows_added_estimate": 0,
-      "source_rows": 3
+      "source_rows": 5
     },
     "candidate_log": {
       "ok": true,
