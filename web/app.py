@@ -44,6 +44,20 @@ from engine_v2.app_fusion_helper import build_full_product_fusion
 from engine_v2.symbol_page_fusion_adapter import build_symbol_page_fusion_view
 from engine_v2.spotlight_fusion_adapter import build_spotlight_fusion_cards
 from engine_v2.dashboard_fusion_adapter import build_dashboard_fusion_view
+# ADD THESE IMPORTS NEAR YOUR OTHER IMPORTS IN web/app.py
+
+from web.final_brain_routes_engine import (
+    build_symbol_final_brain,
+    build_all_final_brains,
+)
+from engine_v2.final_brain_live_helpers import (
+    build_final_symbol_context,
+    build_final_spotlight_context,
+    build_final_dashboard_context,
+)
+from web.final_brain_route_bridge import build_all_symbols_cards
+
+from web.symbol_explainability_routes_engine import build_symbol_page_explainability
 
 # compatibility wrappers so the rest of app.py does not need to change
 def load_market_universe():
@@ -267,6 +281,68 @@ def render_template_safe(template_name: str, **context):
 # ============================================================
 # STABILITY HELPERS
 # ============================================================
+
+
+def get_current_tier_for_routes() -> str:
+    try:
+        return str(current_tier_title() or "Free")
+    except Exception:
+        return "Free"
+
+
+def build_decision_bundle_from_product_fusion(product_fusion: dict) -> dict:
+    if not isinstance(product_fusion, dict):
+        product_fusion = {}
+
+    fusion = product_fusion.get("fusion", {}) if isinstance(product_fusion.get("fusion", {}), dict) else {}
+    master = product_fusion.get("master_decision", {}) if isinstance(product_fusion.get("master_decision", {}), dict) else {}
+
+    enhanced_package = master.get("enhanced_package", {}) if isinstance(master.get("enhanced_package", {}), dict) else {}
+    truth_package = master.get("truth_package", {}) if isinstance(master.get("truth_package", {}), dict) else {}
+
+    return {
+        "base_decision": {
+            "action": product_fusion.get("command", "wait"),
+            "confidence": (
+                master.get("experience", {}).get("next_action")
+                or "low"
+            ),
+        },
+        "explainability": {
+            "message": product_fusion.get("fusion_summary", "") or "",
+            "narrative": product_fusion.get("fusion_summary", "") or "",
+        },
+        "enhanced": {
+            "enhanced_voice": {
+                "enhanced_verdict": enhanced_package.get("enhanced_summary", {}).get("verdict", ""),
+                "enhanced_insight": enhanced_package.get("enhanced_summary", {}).get("insight", ""),
+                "enhanced_command_phrase": enhanced_package.get("enhanced_summary", {}).get("command", ""),
+            },
+            "enhanced_package": enhanced_package,
+        },
+        "truth": {
+            "truth_override": {
+                "truth_final_action": truth_package.get("truth_summary", {}).get("final_action", product_fusion.get("command", "wait")),
+                "truth_final_confidence": truth_package.get("truth_summary", {}).get("final_confidence", "low"),
+                "truth_verdict": truth_package.get("truth_summary", {}).get("verdict", ""),
+                "truth_insight": truth_package.get("truth_summary", {}).get("insight", ""),
+                "truth_command_phrase": truth_package.get("truth_summary", {}).get("command", ""),
+                "truth_override_reason": truth_package.get("truth_notes", {}).get("override_reason", ""),
+            },
+            "truth_package": truth_package,
+        },
+        "behavior": master.get("behavior_intelligence", {}) if isinstance(master.get("behavior_intelligence", {}), dict) else {},
+        "causality": master.get("causality_intelligence", {}) if isinstance(master.get("causality_intelligence", {}), dict) else {},
+        "counterfactual": master.get("counterfactual_intelligence", {}) if isinstance(master.get("counterfactual_intelligence", {}), dict) else {},
+    }
+
+
+def build_final_brain_from_signal(symbol: str, fusion_signal: dict) -> tuple[dict, dict]:
+    product_fusion = build_symbol_fusion_payload(fusion_signal)
+    decision_bundle = build_decision_bundle_from_product_fusion(product_fusion)
+    final_brain = build_symbol_final_brain(symbol, decision_bundle)
+    return product_fusion, final_brain
+
 
 # ADD THIS HELPER TO web/app.py
 
@@ -3438,6 +3514,7 @@ def landing_page():
 @app.route("/dashboard")
 def dashboard_page():
     maybe_track_page_view("/dashboard")
+
     snapshot = get_dashboard_snapshot()
     system = get_system_state()
     proof = performance_summary()
@@ -3479,13 +3556,27 @@ def dashboard_page():
     ]
 
     fusion_payloads = []
+    final_brain_map = {}
+
     for signal in sample_signals:
         try:
-            fusion_payloads.append(build_symbol_fusion_payload(signal))
+            product_fusion, final_brain = build_final_brain_from_signal(signal.get("symbol", ""), signal)
+            fusion_payloads.append(product_fusion)
+            final_brain_map[signal.get("symbol", "")] = final_brain
         except Exception as e:
-            print(f"[DASHBOARD_FUSION:{signal.get('symbol')}] {e}")
+            print(f"[DASHBOARD_FINAL_BRAIN:{signal.get('symbol')}] {e}")
 
-    dashboard_fusion_view = build_dashboard_fusion_view(fusion_payloads)
+    tier = get_current_tier_for_routes()
+
+    final_dashboard_context = build_final_dashboard_context(
+        final_brain_map=final_brain_map,
+        tier=tier.lower(),
+    )
+
+    final_spotlight_cards = build_final_spotlight_context(
+        final_brain_map=final_brain_map,
+        tier=tier.lower(),
+    )
 
     return render_template_safe(
         "dashboard.html",
@@ -3503,7 +3594,10 @@ def dashboard_page():
                 "system": system,
                 "reports": reports,
                 "fusion_payloads": fusion_payloads,
-                "dashboard_fusion_view": dashboard_fusion_view,
+                "final_brain_map": final_brain_map,
+                "final_dashboard_context": final_dashboard_context,
+                "final_spotlight_cards": final_spotlight_cards,
+                "tier": tier,
             }
         ),
     )
@@ -3574,46 +3668,35 @@ def all_symbols_page():
         return redirect(url_for("upgrade"))
 
     fusion_payloads = build_all_symbols_fusion_payloads(limit=150)
-    spotlight_fusion = build_spotlight_fusion_cards(fusion_payloads)
 
-    all_symbol_cards = []
+    final_brain_map = {}
     for payload in fusion_payloads:
-        master = payload.get("master_decision", {})
-        command = payload.get("command_object", {})
-        summary = payload.get("fusion_summary", "")
+        try:
+            master = payload.get("master_decision", {}) if isinstance(payload.get("master_decision", {}), dict) else {}
+            symbol = str(master.get("symbol", "") or "").upper().strip()
+            if not symbol:
+                continue
 
-        all_symbol_cards.append(
-            {
-                "symbol": master.get("symbol"),
-                "company_name": master.get("company_name", master.get("symbol")),
-                "final_state": master.get("final_state", "unknown"),
-                "command": command.get("command", "stand_down"),
-                "threat_level": command.get("threat_level", "low"),
-                "timeline_phase": command.get("timeline_phase", "unknown"),
-                "next_action": command.get("next_action", "wait"),
-                "summary": summary,
-            }
-        )
+            decision_bundle = build_decision_bundle_from_product_fusion(payload)
+            final_brain_map[symbol] = build_symbol_final_brain(symbol, decision_bundle)
+        except Exception as e:
+            print(f"[ALL_SYMBOLS_FINAL_BRAIN] {e}")
 
-    all_symbol_cards = sorted(
-        all_symbol_cards,
-        key=lambda c: (
-            c.get("command") == "deploy",
-            c.get("final_state") == "actionable",
-            c.get("threat_level") == "low",
-            c.get("symbol") or "",
-        ),
-        reverse=True,
+    tier = get_current_tier_for_routes()
+
+    final_all_symbol_cards = build_all_symbols_cards(
+        final_brain_map=final_brain_map,
+        tier=tier.lower(),
     )
 
     return render_template_safe(
         "all_symbols.html",
         **template_context(
             {
-                "all_symbol_cards": all_symbol_cards,
+                "final_all_symbol_cards": final_all_symbol_cards,
                 "fusion_payloads": fusion_payloads,
-                "spotlight_fusion": spotlight_fusion,
-                "tier": current_tier_title(),
+                "final_brain_map": final_brain_map,
+                "tier": tier,
             }
         ),
     )
@@ -3802,6 +3885,7 @@ def admin_intelligence_page():
 @app.route("/signals/<symbol>")
 @app.route("/symbol/<symbol>")
 def signal_symbol_page(symbol: str):
+    symbol = str(symbol or "").upper().strip()
     maybe_track_page_view(f"/signals/{symbol}")
 
     log_event("symbol_exposed", {
@@ -3814,14 +3898,14 @@ def signal_symbol_page(symbol: str):
         "get_symbol_detail",
         lambda: get_symbol_detail(symbol),
         {
-            "symbol": str(symbol or "").upper(),
+            "symbol": symbol,
             "company": {
-                "name": str(symbol or "").upper(),
+                "name": symbol,
                 "blurb": "Symbol detail is temporarily unavailable.",
             },
             "board": {
-                "symbol": str(symbol or "").upper(),
-                "company_name": str(symbol or "").upper(),
+                "symbol": symbol,
+                "company_name": symbol,
                 "latest_score": 0,
                 "latest_confidence": "LOW",
                 "latest_timestamp": "",
@@ -3887,8 +3971,24 @@ def signal_symbol_page(symbol: str):
         "last_pnl": 25,
     }
 
-    product_fusion = build_symbol_fusion_payload(fusion_signal)
+    # BUILD FINAL BRAIN + EXPLAINABILITY
+    try:
+        decision_bundle = build_decision_bundle_from_product_fusion(product_fusion)
+        final_brain = build_symbol_final_brain(symbol, decision_bundle)
+        symbol_explainability = build_symbol_page_explainability(final_brain)
+    except Exception as e:
+        print(f"[EXPLAINABILITY:{symbol}] {e}")
+        symbol_explainability = {}
+
+    product_fusion, final_brain = build_final_brain_from_signal(detail["symbol"], fusion_signal)
     symbol_fusion_view = build_symbol_page_fusion_view(product_fusion)
+
+    tier = get_current_tier_for_routes()
+    final_symbol_context = build_final_symbol_context(
+        symbol=detail["symbol"],
+        final_brain=final_brain,
+        tier=tier.lower(),
+    )
 
     return render_template_safe(
         "signal_symbol.html",
@@ -3903,7 +4003,7 @@ def signal_symbol_page(symbol: str):
                 "visible_signal_count": len(detail.get("signals", [])),
                 "total_signal_count": len(detail.get("signals", [])),
                 "show_teaser": False,
-                "show_elite": current_tier_title() == "Elite",
+                "show_elite": tier == "Elite",
                 "news_items": detail.get("news_items", []),
                 "opinion": detail.get("board", {}).get("opinion", "Active setup."),
                 "explanation": {},
@@ -3914,6 +4014,10 @@ def signal_symbol_page(symbol: str):
                 "v2_horizontal_hero": v2_horizontal_hero,
                 "product_fusion": product_fusion,
                 "symbol_fusion_view": symbol_fusion_view,
+                "symbol_explainability": symbol_explainability,
+                "final_brain": final_brain,
+                "final_symbol_context": final_symbol_context,
+                "tier": tier,
             }
         ),
     )
@@ -4217,13 +4321,21 @@ def spotlight_page():
     ]
 
     fusion_payloads = []
+    final_brain_map = {}
+
     for signal in sample_signals:
         try:
-            fusion_payloads.append(build_symbol_fusion_payload(signal))
+            product_fusion, final_brain = build_final_brain_from_signal(signal.get("symbol", ""), signal)
+            fusion_payloads.append(product_fusion)
+            final_brain_map[signal.get("symbol", "")] = final_brain
         except Exception as e:
-            print(f"[SPOTLIGHT_FUSION:{signal.get('symbol')}] {e}")
+            print(f"[SPOTLIGHT_FINAL_BRAIN:{signal.get('symbol')}] {e}")
 
-    spotlight_fusion = build_spotlight_fusion_cards(fusion_payloads)
+    tier = get_current_tier_for_routes()
+    final_spotlight_cards = build_final_spotlight_context(
+        final_brain_map=final_brain_map,
+        tier=tier.lower(),
+    )
 
     return render_template_safe(
         "spotlight.html",
@@ -4232,7 +4344,9 @@ def spotlight_page():
                 "spotlight_contract": contracts,
                 "lane_sections": lane_sections,
                 "fusion_payloads": fusion_payloads,
-                "spotlight_fusion": spotlight_fusion,
+                "final_brain_map": final_brain_map,
+                "final_spotlight_cards": final_spotlight_cards,
+                "tier": tier,
             }
         ),
     )

@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-
 <style>
 .symbol-shell {
     display: grid;
     gap: 20px;
 }
-
 .symbol-hero {
     position: relative;
     overflow: hidden;
@@ -20,7 +18,6 @@
     border: 1px solid rgba(255,255,255,0.08);
     box-shadow: 0 22px 48px rgba(0,0,0,0.32);
 }
-
 .symbol-hero::before {
     content: "";
     position: absolute;
@@ -34,7 +31,6 @@
     opacity: 0.95;
     pointer-events: none;
 }
-
 .symbol-topbar {
     position: relative;
     z-index: 1;
@@ -44,15 +40,14 @@
     flex-wrap: wrap;
     align-items: flex-start;
 }
-
 .symbol-kicker {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     margin-bottom: 10px;
 }
-
-.symbol-pill {
+.symbol-pill,
+.info-chip {
     display: inline-flex;
     align-items: center;
     padding: 6px 10px;
@@ -63,14 +58,12 @@
     border: 1px solid rgba(255,255,255,0.10);
     backdrop-filter: blur(6px);
 }
-
 .symbol-title {
     margin: 0 0 8px 0;
     font-size: 1.85rem;
     font-weight: 800;
     letter-spacing: 0.02em;
 }
-
 .symbol-sub {
     margin: 0;
     max-width: 860px;
@@ -78,7 +71,6 @@
     line-height: 1.5;
     font-size: 0.98rem;
 }
-
 .symbol-meta-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -87,14 +79,12 @@
     position: relative;
     z-index: 1;
 }
-
 .symbol-stat {
     padding: 14px;
     border-radius: 18px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.08);
 }
-
 .symbol-stat-label {
     font-size: 0.72rem;
     text-transform: uppercase;
@@ -102,23 +92,19 @@
     opacity: 0.68;
     margin-bottom: 6px;
 }
-
 .symbol-stat-value {
     font-size: 1rem;
     font-weight: 800;
 }
-
 .section-grid {
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
     gap: 18px;
 }
-
 .panel-stack {
     display: grid;
     gap: 18px;
 }
-
 .deep-panel {
     border-radius: 24px;
     padding: 18px;
@@ -128,40 +114,18 @@
     border: 1px solid rgba(255,255,255,0.08);
     box-shadow: 0 14px 32px rgba(0,0,0,0.24);
 }
-
 .deep-panel h3 {
     margin: 0 0 8px 0;
 }
-
 .deep-panel p {
     margin: 0;
     line-height: 1.46;
 }
-
-.info-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-}
-
-.info-chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 7px 10px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-}
-
 .reason-list {
     display: grid;
     gap: 10px;
     margin-top: 14px;
 }
-
 .reason-item {
     padding: 12px 13px;
     border-radius: 14px;
@@ -169,7 +133,6 @@
     border: 1px solid rgba(255,255,255,0.06);
     line-height: 1.42;
 }
-
 .hero-strip {
     display: grid;
     grid-auto-flow: column;
@@ -178,7 +141,6 @@
     overflow-x: auto;
     padding-bottom: 8px;
 }
-
 .hero-strip-card {
     border-radius: 20px;
     padding: 16px;
@@ -189,88 +151,71 @@
     text-decoration: none;
     color: white;
 }
-
 .hero-strip-card h4 {
     margin: 0 0 8px 0;
 }
-
 .hero-strip-card p {
     margin: 0;
     opacity: 0.86;
     line-height: 1.4;
 }
-
 .fusion-warning {
     border-left: 3px solid rgba(255, 140, 174, 0.8);
 }
-
-.news-item {
-    display: block;
-    padding: 12px 13px;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.06);
-    text-decoration: none;
-    color: white;
-    line-height: 1.42;
-}
-
-.news-item:hover {
-    background: rgba(255,255,255,0.06);
-}
-
 @media (max-width: 980px) {
     .section-grid {
         grid-template-columns: 1fr;
     }
-
     .symbol-meta-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 </style>
 
-{% set fusion = product_fusion if product_fusion else {} %}
-{% set master = fusion.get("master_decision", {}) if fusion else {} %}
-{% set command = fusion.get("command_object", {}) if fusion else {} %}
-{% set fusion_view = symbol_fusion_view if symbol_fusion_view else {} %}
+{% set ctx = final_symbol_context if final_symbol_context else {} %}
 {% set hero = v2_symbol_hero.get("hero", {}) if v2_symbol_hero else {} %}
 {% set deep = v2_symbol_deep_dive if v2_symbol_deep_dive else {} %}
+{% set reasons = ctx.get("hero_reasons", []) if ctx else [] %}
+{% set board_conf = board.get("latest_confidence") if board else "" %}
+{% set board_score = board.get("latest_score") if board else none %}
+{% set expl = symbol_explainability if symbol_explainability else {} %}
 
 <div class="symbol-shell">
-
     <div class="symbol-hero">
         <div class="symbol-topbar">
             <div>
                 <div class="symbol-kicker">
                     <span class="symbol-pill">{{ symbol }}</span>
-                    <span class="symbol-pill">{{ fusion_view.get("hero_state", "unknown") }}</span>
-                    <span class="symbol-pill">{{ fusion_view.get("hero_command", "stand_down") }}</span>
-                    <span class="symbol-pill">Threat: {{ fusion_view.get("hero_threat", "low") }}</span>
-                    <span class="symbol-pill">Phase: {{ fusion_view.get("hero_timeline", "unknown") }}</span>
+                    <span class="symbol-pill">{{ ctx.get("hero_action", "wait") }}</span>
+                    <span class="symbol-pill">{{ ctx.get("hero_confidence", "low") }}</span>
+                    {% if ctx.get("hard_reject") %}
+                    <span class="symbol-pill">hard reject</span>
+                    {% endif %}
+                    {% if tier %}
+                    <span class="symbol-pill">{{ tier }}</span>
+                    {% endif %}
                 </div>
-
                 <h1 class="symbol-title">{{ company.get("name", symbol) }}</h1>
-                <p class="symbol-sub">{{ fusion_view.get("hero_summary", "") }}</p>
+                <p class="symbol-sub">{{ ctx.get("hero_subtitle", "No final insight available.") }}</p>
             </div>
         </div>
 
         <div class="symbol-meta-grid">
             <div class="symbol-stat">
-                <div class="symbol-stat-label">Command</div>
-                <div class="symbol-stat-value">{{ fusion_view.get("hero_command", "stand_down") }}</div>
+                <div class="symbol-stat-label">Final Verdict</div>
+                <div class="symbol-stat-value">{{ ctx.get("hero_title", "No verdict") }}</div>
             </div>
             <div class="symbol-stat">
-                <div class="symbol-stat-label">Next Action</div>
-                <div class="symbol-stat-value">{{ fusion_view.get("hero_next_action", "wait") }}</div>
+                <div class="symbol-stat-label">Action</div>
+                <div class="symbol-stat-value">{{ ctx.get("hero_action", "wait") }}</div>
             </div>
             <div class="symbol-stat">
-                <div class="symbol-stat-label">Threat</div>
-                <div class="symbol-stat-value">{{ fusion_view.get("hero_threat", "low") }}</div>
+                <div class="symbol-stat-label">Confidence</div>
+                <div class="symbol-stat-value">{{ ctx.get("hero_confidence", "low") }}</div>
             </div>
             <div class="symbol-stat">
-                <div class="symbol-stat-label">Timeline</div>
-                <div class="symbol-stat-value">{{ fusion_view.get("hero_timeline", "unknown") }}</div>
+                <div class="symbol-stat-label">Coaching</div>
+                <div class="symbol-stat-value">{{ ctx.get("coaching_tone", "neutral") }}</div>
             </div>
         </div>
     </div>
@@ -299,19 +244,88 @@
 
     <div class="section-grid">
         <div class="panel-stack">
-
             <div class="deep-panel">
-                <h3>Trade Thesis</h3>
-                <p>{{ fusion_view.get("thesis_statement", "") }}</p>
-
-                {% if fusion_view.get("confirmations") %}
+                <h3>Final Brain Story</h3>
+                <p>{{ ctx.get("hero_story", ctx.get("hero_subtitle", "")) }}</p>
+                {% if reasons %}
                 <div class="reason-list">
-                    {% for item in fusion_view.get("confirmations", []) %}
+                    {% for item in reasons %}
                     <div class="reason-item">{{ item }}</div>
                     {% endfor %}
                 </div>
                 {% endif %}
             </div>
+
+            <div class="deep-panel">
+                <h3>Trade Thesis</h3>
+                <p>{{ hero.get("headline", board.get("opinion", "Active setup.")) }}</p>
+                <div class="info-row">
+                    {% if board_conf %}
+                    <span class="info-chip">{{ board_conf }}</span>
+                    {% endif %}
+                    {% if board_score is not none %}
+                    <span class="info-chip">Score {{ board_score }}</span>
+                    {% endif %}
+                    {% if hero.get("direction") %}
+                    <span class="info-chip">{{ hero.get("direction") }}</span>
+                    {% endif %}
+                    {% if hero.get("setup_type") %}
+                    <span class="info-chip">{{ hero.get("setup_type") }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if expl %}
+            <div class="deep-panel">
+                <h3>Why This Decision</h3>
+                <p><strong>{{ expl.get("explainability_headline", "") }}</strong></p>
+                <p style="opacity:0.85;">{{ expl.get("explainability_subheadline", "") }}</p>
+
+                {% if expl.get("explainability_story") %}
+                <div class="reason-list" style="margin-top:12px;">
+                    <div class="reason-item">
+                        {{ expl.get("explainability_story", "") }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="info-row" style="margin-top:12px;">
+                    <span class="info-chip">Pressure: {{ expl.get("pressure_balance", "mixed") }}</span>
+                </div>
+
+                {% if expl.get("supportive_pressures") %}
+                <div class="reason-list" style="margin-top:14px;">
+                    {% for item in expl.get("supportive_pressures", []) %}
+                    <div class="reason-item">{{ item }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if expl.get("restrictive_pressures") %}
+                <div class="reason-list" style="margin-top:14px;">
+                    {% for item in expl.get("restrictive_pressures", []) %}
+                    <div class="reason-item fusion-warning">{{ item }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if expl.get("override_line") %}
+                <div class="reason-list" style="margin-top:14px;">
+                    <div class="reason-item fusion-warning">
+                        {{ expl.get("override_line", "") }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if expl.get("memory_takeaway") %}
+                <div class="reason-list" style="margin-top:14px;">
+                    <div class="reason-item">
+                        {{ expl.get("memory_takeaway", "") }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
 
             {% for panel in deep.get("panels", []) %}
             <div class="deep-panel">
@@ -379,50 +393,39 @@
                 {% endif %}
             </div>
             {% endfor %}
-
         </div>
 
         <div class="panel-stack">
-
             <div class="deep-panel">
-                <h3>What Breaks It</h3>
-
-                {% if fusion_view.get("invalidation") %}
-                <div class="reason-list">
-                    {% for item in fusion_view.get("invalidation", []) %}
-                    <div class="reason-item fusion-warning">{{ item }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-                {% if fusion_view.get("fusion_issues") %}
-                <div class="reason-list" style="margin-top:14px;">
-                    {% for item in fusion_view.get("fusion_issues", []) %}
-                    <div class="reason-item fusion-warning">{{ item }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-
-            <div class="deep-panel">
-                <h3>Fused Command State</h3>
+                <h3>Coaching</h3>
+                <p>{{ ctx.get("coaching_message", "Stay disciplined and follow the system.") }}</p>
                 <div class="info-row">
-                    <span class="info-chip">Command: {{ command.get("command", "stand_down") }}</span>
-                    <span class="info-chip">State: {{ master.get("final_state", "unknown") }}</span>
-                    <span class="info-chip">Threat: {{ command.get("threat_level", "low") }}</span>
-                    <span class="info-chip">Phase: {{ command.get("timeline_phase", "unknown") }}</span>
+                    <span class="info-chip">{{ ctx.get("coaching_tone", "neutral") }}</span>
+                    <span class="info-chip">{{ ctx.get("hero_action", "wait") }}</span>
+                    <span class="info-chip">{{ ctx.get("hero_confidence", "low") }}</span>
                 </div>
             </div>
+
+            {% if ctx.get("hard_reject") %}
+            <div class="deep-panel">
+                <h3>Hard Rejection</h3>
+                <div class="reason-list">
+                    <div class="reason-item fusion-warning">
+                        {{ ctx.get("hard_reject_reason", "Final brain rejected this setup.") }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
 
             <div class="deep-panel">
                 <h3>Live Opinion</h3>
                 <p>{{ opinion }}</p>
                 <div class="info-row">
-                    {% if board.get("latest_confidence") %}
-                    <span class="info-chip">{{ board.get("latest_confidence") }}</span>
+                    {% if board_conf %}
+                    <span class="info-chip">{{ board_conf }}</span>
                     {% endif %}
-                    {% if board.get("latest_score") is not none %}
-                    <span class="info-chip">Score {{ board.get("latest_score") }}</span>
+                    {% if board_score is not none %}
+                    <span class="info-chip">Score {{ board_score }}</span>
                     {% endif %}
                 </div>
             </div>
@@ -437,10 +440,7 @@
                 </div>
             </div>
             {% endif %}
-
         </div>
     </div>
-
 </div>
-
 {% endblock %}
