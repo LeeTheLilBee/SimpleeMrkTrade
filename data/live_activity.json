@@ -1,33 +1,5 @@
 [
   {
-    "timestamp": "2026-03-19T04:17:57.844513",
-    "event_type": "SYSTEM",
-    "message": "Bot run started",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-03-19T04:17:58.662574",
-    "event_type": "MARKET",
-    "message": "Market regime identified as BEAR_TREND",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-03-19T04:18:07.096639",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 20 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-03-19T04:18:11.284652",
-    "event_type": "QUEUE",
-    "message": "Selected 0 trades in mode DEFENSIVE_BEAR",
-    "symbol": null,
-    "meta": {}
-  },
-  {
     "timestamp": "2026-03-19T04:18:24.534164",
     "event_type": "SYSTEM",
     "message": "Bot run completed",
@@ -2226,6 +2198,41 @@
   },
   {
     "timestamp": "2026-04-03T10:55:19.256533",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-04-04T17:21:19.811348",
+    "event_type": "SYSTEM",
+    "message": "Bot run started",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-04-04T17:21:20.582289",
+    "event_type": "MARKET",
+    "message": "Market regime identified as BEAR_TREND",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-04-04T17:21:33.551499",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 20 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-04-04T17:21:33.563784",
+    "event_type": "QUEUE",
+    "message": "Approved 0 research trades; selected 0 execution trades in mode DEFENSIVE_BEAR",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-04-04T17:21:44.660330",
     "event_type": "SYSTEM",
     "message": "Bot run completed",
     "symbol": null,

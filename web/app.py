@@ -3683,12 +3683,11 @@ def all_symbols_page():
                 continue
 
             decision_bundle = build_decision_bundle_from_product_fusion(payload)
-
             decision_map[symbol] = decision_bundle
             final_brain_map[symbol] = build_symbol_final_brain(symbol, decision_bundle)
 
         except Exception as e:
-            print(f"[ALL_SYMBOLS_FINAL_BRAIN] {e}")
+            print(f"[ALL_SYMBOLS_FINAL_BRAIN:{payload}] {e}")
 
     tier = get_current_tier_for_routes()
 
@@ -3705,6 +3704,225 @@ def all_symbols_page():
                 "fusion_payloads": fusion_payloads,
                 "final_brain_map": final_brain_map,
                 "tier": tier,
+            }
+        ),
+    )
+
+
+@app.route("/signals/<symbol>")
+@app.route("/symbol/<symbol>")
+def signal_symbol_page(symbol: str):
+    symbol = str(symbol or "").upper().strip()
+    maybe_track_page_view(f"/signals/{symbol}")
+
+    log_event("symbol_exposed", {
+        "symbol": symbol,
+        "source": "/signals",
+    })
+    track_symbol_click(symbol, source="/signals")
+
+    detail = safe_run(
+        "get_symbol_detail",
+        lambda: get_symbol_detail(symbol),
+        {
+            "symbol": symbol,
+            "company": {
+                "name": symbol,
+                "blurb": "Symbol detail is temporarily unavailable.",
+            },
+            "board": {
+                "symbol": symbol,
+                "company_name": symbol,
+                "latest_score": 0,
+                "latest_confidence": "LOW",
+                "latest_timestamp": "",
+                "opinion": "No active opinion available.",
+            },
+            "primary_intelligence": {},
+            "signals": [],
+            "news_items": [],
+        },
+    )
+
+    try:
+        if not detail.get("news_items"):
+            detail["news_items"] = refresh_symbol_news(
+                symbol=detail["symbol"],
+                company_name=detail["company"].get("name", ""),
+                limit=8,
+                max_age_minutes=30,
+            )
+    except Exception as e:
+        print(f"[SYMBOL_NEWS_REFRESH:{symbol}] {e}")
+        detail["news_items"] = detail.get("news_items", [])
+
+    data_health = build_data_health_summary()
+    symbol_news_meta = safe_dict(
+        data_health.get("pipeline", {}).get("symbol_news_sync", {}).get(detail["symbol"], {})
+    )
+
+    v2_symbol_hero = get_v2_symbol_hero(detail["symbol"])
+    v2_symbol_deep_dive = get_v2_symbol_deep_dive(detail["symbol"])
+    v2_horizontal_hero = get_v2_horizontal_hero()
+
+    fusion_signal = {
+        "symbol": detail["symbol"],
+        "company_name": detail.get("company", {}).get("name", detail["symbol"]),
+        "direction": (
+            v2_symbol_hero.get("hero", {}).get("direction")
+            or detail.get("primary_intelligence", {}).get("direction")
+            or "CALL"
+        ),
+        "setup_type": (
+            v2_symbol_hero.get("hero", {}).get("setup_type")
+            or detail.get("primary_intelligence", {}).get("setup_type")
+            or "continuation"
+        ),
+        "trend_strength": (
+            v2_symbol_deep_dive.get("panels", [{}])[0]
+            .get("content", {})
+            .get("scanner", {})
+            .get("score", 75)
+        ),
+        "volume_confirmation": 70,
+        "extension_score": 35,
+        "pullback_quality": 72,
+        "score": detail.get("board", {}).get("latest_score", 80),
+        "structure_quality": 84,
+        "liquidity_score": 92,
+        "spread_score": 74,
+        "premium_efficiency_score": 82,
+        "open_interest_score": 76,
+        "iv_context": "normal",
+        "visible_volatility": 22,
+        "last_pnl": 25,
+    }
+
+    product_fusion = {}
+    final_brain = {}
+    symbol_fusion_view = {}
+    symbol_explainability = {}
+
+    try:
+        product_fusion, final_brain = build_final_brain_from_signal(detail["symbol"], fusion_signal)
+        symbol_fusion_view = build_symbol_page_fusion_view(product_fusion)
+        symbol_explainability = build_symbol_page_explainability(final_brain)
+    except Exception as e:
+        print(f"[SYMBOL_FINAL_BRAIN:{symbol}] {e}")
+
+    tier = get_current_tier_for_routes()
+
+    try:
+        final_symbol_context = build_final_symbol_context(
+            symbol=detail["symbol"],
+            final_brain=final_brain,
+            tier=tier.lower(),
+        )
+    except Exception as e:
+        print(f"[FINAL_SYMBOL_CONTEXT:{symbol}] {e}")
+        final_symbol_context = {}
+
+    return render_template_safe(
+        "signal_symbol.html",
+        **template_context(
+            {
+                "detail": detail,
+                "symbol": detail["symbol"],
+                "company": detail["company"],
+                "board": detail["board"],
+                "primary_intelligence": detail.get("primary_intelligence", {}),
+                "symbol_signals": detail.get("signals", []),
+                "visible_signal_count": len(detail.get("signals", [])),
+                "total_signal_count": len(detail.get("signals", [])),
+                "show_teaser": False,
+                "show_elite": tier == "Elite",
+                "news_items": detail.get("news_items", []),
+                "opinion": detail.get("board", {}).get("opinion", "Active setup."),
+                "explanation": {},
+                "data_health": data_health,
+                "symbol_news_meta": symbol_news_meta,
+                "v2_symbol_hero": v2_symbol_hero,
+                "v2_symbol_deep_dive": v2_symbol_deep_dive,
+                "v2_horizontal_hero": v2_horizontal_hero,
+                "product_fusion": product_fusion,
+                "symbol_fusion_view": symbol_fusion_view,
+                "symbol_explainability": symbol_explainability,
+                "final_brain": final_brain,
+                "final_symbol_context": final_symbol_context,
+                "tier": tier,
+            }
+        ),
+    )
+
+
+@app.route("/trade-review")
+def trade_review_page():
+    maybe_track_page_view("/trade-review")
+
+    raw_trades = load_json("data/trade_replay_source.json", [])
+    if not isinstance(raw_trades, list):
+        raw_trades = []
+
+    decision_bundles = {}
+    replay_debug = {
+        "raw_trade_count": len(raw_trades),
+        "bundle_count": 0,
+        "replay_count": 0,
+    }
+
+    for trade in raw_trades:
+        try:
+            if not isinstance(trade, dict):
+                continue
+
+            symbol = str(trade.get("symbol", "") or "").upper().strip()
+            if not symbol:
+                continue
+
+            fusion_signal = {
+                "symbol": symbol,
+                "company_name": trade.get("company_name", symbol),
+                "direction": trade.get("direction", "CALL"),
+                "setup_type": trade.get("setup_family", "continuation"),
+                "trend_strength": trade.get("trend_strength", 70),
+                "volume_confirmation": trade.get("volume_confirmation", 65),
+                "extension_score": trade.get("extension_score", 35),
+                "pullback_quality": trade.get("pullback_quality", 65),
+                "score": trade.get("score", 75),
+                "structure_quality": trade.get("structure_quality", 75),
+                "liquidity_score": trade.get("liquidity_score", 80),
+                "spread_score": trade.get("spread_score", 70),
+                "premium_efficiency_score": trade.get("premium_efficiency_score", 75),
+                "open_interest_score": trade.get("open_interest_score", 70),
+                "iv_context": trade.get("iv_context", "normal"),
+                "visible_volatility": trade.get("visible_volatility", 20),
+                "last_pnl": trade.get("pnl", 0),
+            }
+
+            product_fusion = build_symbol_fusion_payload(fusion_signal)
+            decision_bundles[symbol] = build_decision_bundle_from_product_fusion(product_fusion)
+
+        except Exception as e:
+            print(f"[TRADE_REVIEW_DECISION_BUNDLE:{trade.get('symbol', '')}] {e}")
+
+    replay_debug["bundle_count"] = len(decision_bundles)
+
+    replay_packages = build_replay_batch(raw_trades, decision_bundles)
+    replay_debug["replay_count"] = len(replay_packages)
+
+    replay_page_context = build_replay_page_context(replay_packages)
+
+    print("[TRADE_REVIEW_DEBUG]", replay_debug)
+    print("[TRADE_REVIEW_FEED_SIZE]", len(replay_page_context.get("replay_feed", [])))
+
+    return render_template_safe(
+        "trade_review.html",
+        **template_context(
+            {
+                "replay_page_context": replay_page_context,
+                "replay_feed": replay_page_context.get("replay_feed", []),
+                "replay_summary": replay_page_context.get("summary", {}),
+                "replay_debug": replay_debug,
             }
         ),
     )
@@ -3890,145 +4108,6 @@ def admin_intelligence_page():
 
 # REWRITE YOUR /signals/<symbol> ROUTE TO INCLUDE FUSION
 
-@app.route("/signals/<symbol>")
-@app.route("/symbol/<symbol>")
-def signal_symbol_page(symbol: str):
-    symbol = str(symbol or "").upper().strip()
-    maybe_track_page_view(f"/signals/{symbol}")
-
-    log_event("symbol_exposed", {
-        "symbol": symbol,
-        "source": "/signals",
-    })
-    track_symbol_click(symbol, source="/signals")
-
-    detail = safe_run(
-        "get_symbol_detail",
-        lambda: get_symbol_detail(symbol),
-        {
-            "symbol": symbol,
-            "company": {
-                "name": symbol,
-                "blurb": "Symbol detail is temporarily unavailable.",
-            },
-            "board": {
-                "symbol": symbol,
-                "company_name": symbol,
-                "latest_score": 0,
-                "latest_confidence": "LOW",
-                "latest_timestamp": "",
-                "opinion": "No active opinion available.",
-            },
-            "primary_intelligence": {},
-            "signals": [],
-            "news_items": [],
-        },
-    )
-
-    try:
-        if not detail.get("news_items"):
-            detail["news_items"] = refresh_symbol_news(
-                symbol=detail["symbol"],
-                company_name=detail["company"].get("name", ""),
-                limit=8,
-                max_age_minutes=30,
-            )
-    except Exception as e:
-        print(f"[SYMBOL_NEWS_REFRESH:{symbol}] {e}")
-        detail["news_items"] = detail.get("news_items", [])
-
-    data_health = build_data_health_summary()
-    symbol_news_meta = safe_dict(
-        data_health.get("pipeline", {}).get("symbol_news_sync", {}).get(detail["symbol"], {})
-    )
-
-    v2_symbol_hero = get_v2_symbol_hero(detail["symbol"])
-    v2_symbol_deep_dive = get_v2_symbol_deep_dive(detail["symbol"])
-    v2_horizontal_hero = get_v2_horizontal_hero()
-
-    fusion_signal = {
-        "symbol": detail["symbol"],
-        "company_name": detail.get("company", {}).get("name", detail["symbol"]),
-        "direction": (
-            v2_symbol_hero.get("hero", {}).get("direction")
-            or detail.get("primary_intelligence", {}).get("direction")
-            or "CALL"
-        ),
-        "setup_type": (
-            v2_symbol_hero.get("hero", {}).get("setup_type")
-            or detail.get("primary_intelligence", {}).get("setup_type")
-            or "continuation"
-        ),
-        "trend_strength": (
-            v2_symbol_deep_dive.get("panels", [{}])[0]
-            .get("content", {})
-            .get("scanner", {})
-            .get("score", 75)
-        ),
-        "volume_confirmation": 70,
-        "extension_score": 35,
-        "pullback_quality": 72,
-        "score": detail.get("board", {}).get("latest_score", 80),
-        "structure_quality": 84,
-        "liquidity_score": 92,
-        "spread_score": 74,
-        "premium_efficiency_score": 82,
-        "open_interest_score": 76,
-        "iv_context": "normal",
-        "visible_volatility": 22,
-        "last_pnl": 25,
-    }
-
-    # BUILD FINAL BRAIN + EXPLAINABILITY
-    try:
-        decision_bundle = build_decision_bundle_from_product_fusion(product_fusion)
-        final_brain = build_symbol_final_brain(symbol, decision_bundle)
-        symbol_explainability = build_symbol_page_explainability(final_brain)
-    except Exception as e:
-        print(f"[EXPLAINABILITY:{symbol}] {e}")
-        symbol_explainability = {}
-
-    product_fusion, final_brain = build_final_brain_from_signal(detail["symbol"], fusion_signal)
-    symbol_fusion_view = build_symbol_page_fusion_view(product_fusion)
-
-    tier = get_current_tier_for_routes()
-    final_symbol_context = build_final_symbol_context(
-        symbol=detail["symbol"],
-        final_brain=final_brain,
-        tier=tier.lower(),
-    )
-
-    return render_template_safe(
-        "signal_symbol.html",
-        **template_context(
-            {
-                "detail": detail,
-                "symbol": detail["symbol"],
-                "company": detail["company"],
-                "board": detail["board"],
-                "primary_intelligence": detail.get("primary_intelligence", {}),
-                "symbol_signals": detail.get("signals", []),
-                "visible_signal_count": len(detail.get("signals", [])),
-                "total_signal_count": len(detail.get("signals", [])),
-                "show_teaser": False,
-                "show_elite": tier == "Elite",
-                "news_items": detail.get("news_items", []),
-                "opinion": detail.get("board", {}).get("opinion", "Active setup."),
-                "explanation": {},
-                "data_health": data_health,
-                "symbol_news_meta": symbol_news_meta,
-                "v2_symbol_hero": v2_symbol_hero,
-                "v2_symbol_deep_dive": v2_symbol_deep_dive,
-                "v2_horizontal_hero": v2_horizontal_hero,
-                "product_fusion": product_fusion,
-                "symbol_fusion_view": symbol_fusion_view,
-                "symbol_explainability": symbol_explainability,
-                "final_brain": final_brain,
-                "final_symbol_context": final_symbol_context,
-                "tier": tier,
-            }
-        ),
-    )
 
 @app.route("/positions")
 def positions_page():
@@ -4475,65 +4554,6 @@ def analytics_performance_page():
     )
 
 
-@app.route("/trade-review")
-def trade_review_page():
-    maybe_track_page_view("/trade-review")
-
-    raw_trades = load_json("data/trade_replay_source.json", [])
-    if not isinstance(raw_trades, list):
-        raw_trades = []
-
-    decision_bundles = {}
-
-    for trade in raw_trades:
-        try:
-            if not isinstance(trade, dict):
-                continue
-
-            symbol = str(trade.get("symbol", "") or "").upper().strip()
-            if not symbol:
-                continue
-
-            fusion_signal = {
-                "symbol": symbol,
-                "company_name": trade.get("company_name", symbol),
-                "direction": trade.get("direction", "CALL"),
-                "setup_type": trade.get("setup_family", "continuation"),
-                "trend_strength": trade.get("trend_strength", 70),
-                "volume_confirmation": trade.get("volume_confirmation", 65),
-                "extension_score": trade.get("extension_score", 35),
-                "pullback_quality": trade.get("pullback_quality", 65),
-                "score": trade.get("score", 75),
-                "structure_quality": trade.get("structure_quality", 75),
-                "liquidity_score": trade.get("liquidity_score", 80),
-                "spread_score": trade.get("spread_score", 70),
-                "premium_efficiency_score": trade.get("premium_efficiency_score", 75),
-                "open_interest_score": trade.get("open_interest_score", 70),
-                "iv_context": trade.get("iv_context", "normal"),
-                "visible_volatility": trade.get("visible_volatility", 20),
-                "last_pnl": trade.get("pnl", 0),
-            }
-
-            product_fusion = build_symbol_fusion_payload(fusion_signal)
-            decision_bundles[symbol] = build_decision_bundle_from_product_fusion(product_fusion)
-
-        except Exception as e:
-            print(f"[TRADE_REVIEW_DECISION_BUNDLE:{trade.get('symbol', '')}] {e}")
-
-    replay_packages = build_replay_batch(raw_trades, decision_bundles)
-    replay_page_context = build_replay_page_context(replay_packages)
-
-    return render_template_safe(
-        "trade_review.html",
-        **template_context(
-            {
-                "replay_page_context": replay_page_context,
-                "replay_feed": replay_page_context.get("replay_feed", []),
-                "replay_summary": replay_page_context.get("summary", {}),
-            }
-        ),
-    )
-    
 
 @app.route("/analytics/strategy")
 @app.route("/strategy-behavior")

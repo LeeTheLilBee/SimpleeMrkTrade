@@ -1,34 +1,174 @@
 {% extends "base.html" %}
 {% block content %}
+<style>
+.login-page-shell {
+    display: grid;
+    gap: 20px;
+}
+.login-layout {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 20px;
+}
+.login-blurb-card,
+.login-box {
+    padding: 26px;
+}
+.login-blurb-inner {
+    display: grid;
+    gap: 16px;
+}
+.login-blurb-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 800;
+}
+.login-blurb-copy {
+    margin: 0;
+    line-height: 1.55;
+    font-size: 1rem;
+    opacity: 0.92;
+}
+.login-blurb-copy-small {
+    margin: 0;
+    line-height: 1.5;
+}
+.login-blurb-points {
+    display: grid;
+    gap: 14px;
+}
+.login-point {
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.login-point h3 {
+    margin: 0 0 6px 0;
+}
+.login-point p {
+    margin: 0;
+    line-height: 1.45;
+    opacity: 0.86;
+}
+.login-box {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+}
+.login-logo-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+.login-logo {
+    max-width: 220px;
+    width: 100%;
+    height: auto;
+}
+.login-title {
+    margin: 0;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+.form-message {
+    border-radius: 16px;
+    padding: 12px 14px;
+    font-weight: 600;
+}
+.form-info {
+    background: rgba(97, 196, 255, 0.10);
+    border: 1px solid rgba(97, 196, 255, 0.20);
+}
+.form-error {
+    background: rgba(255, 120, 140, 0.10);
+    border: 1px solid rgba(255, 120, 140, 0.20);
+}
+.login-form {
+    display: grid;
+    gap: 12px;
+}
+.form-label {
+    font-size: 0.84rem;
+    font-weight: 700;
+    opacity: 0.88;
+}
+.login-form input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.05);
+    color: white;
+    outline: none;
+    font-size: 0.95rem;
+}
+.login-form input:focus {
+    border-color: rgba(247, 200, 107, 0.65);
+    box-shadow: 0 0 0 3px rgba(247, 200, 107, 0.12);
+}
+.login-submit {
+    margin-top: 6px;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 232, 180, 0.90);
+    background: linear-gradient(135deg, rgba(247, 200, 107, 0.98), rgba(255, 224, 156, 0.96));
+    color: #18121f;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 14px 28px rgba(247, 200, 107, 0.22);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.login-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 32px rgba(247, 200, 107, 0.28);
+    filter: brightness(1.03);
+}
+.login-secondary-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.login-secondary-actions .cta-btn {
+    width: 100%;
+    min-height: 48px;
+}
+@media (max-width: 980px) {
+    .login-layout {
+        grid-template-columns: 1fr;
+    }
+    .login-secondary-actions {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 
 <div class="login-page-shell">
     <div class="login-layout">
-
         <div class="login-blurb-card card gold-accent-card">
             <div class="login-blurb-inner">
                 <h1 class="login-blurb-title">SimpleeMrkTrade</h1>
-
                 <p class="login-blurb-copy">
                     A structured trading intelligence platform built to help you understand not just
                     what to trade, but what your trades are becoming.
                 </p>
-
                 <p class="muted-line login-blurb-copy-small">
                     From signal discovery to deeper trade interpretation, every layer is designed for
                     clarity, discipline, and better decision-making.
                 </p>
-
                 <div class="login-blurb-points">
                     <div class="login-point">
                         <h3>Signals</h3>
                         <p>Ranked opportunities with cleaner scan flow and deeper symbol pages.</p>
                     </div>
-
                     <div class="login-point">
                         <h3>Trade Intelligence</h3>
                         <p>Why This Trade, Premium Analysis, and evolving position insight.</p>
                     </div>
-
                     <div class="login-point">
                         <h3>Simulation + Proof</h3>
                         <p>Track performance, proof, and account behavior inside one system.</p>
@@ -63,7 +203,7 @@
                 <label class="form-label">Password</label>
                 <input type="password" name="password" placeholder="Enter your password" required>
 
-                <button type="submit" class="cta-btn login-submit">Login</button>
+                <button type="submit" class="login-submit">Login</button>
             </form>
 
             <div class="login-secondary-actions">
@@ -71,8 +211,6 @@
                 <a href="/upgrade" class="cta-btn secondary">See Plans</a>
             </div>
         </div>
-
     </div>
 </div>
-
 {% endblock %}
