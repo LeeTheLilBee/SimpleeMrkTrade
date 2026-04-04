@@ -275,57 +275,65 @@
                 </div>
             </div>
 
-            {% if expl %}
-            <div class="deep-panel">
-                <h3>Why This Decision</h3>
-                <p><strong>{{ expl.get("explainability_headline", "") }}</strong></p>
-                <p style="opacity:0.85;">{{ expl.get("explainability_subheadline", "") }}</p>
+{% if expl %}
+<div class="deep-panel">
+    <h3>Why This Decision</h3>
 
-                {% if expl.get("explainability_story") %}
-                <div class="reason-list" style="margin-top:12px;">
-                    <div class="reason-item">
-                        {{ expl.get("explainability_story", "") }}
-                    </div>
-                </div>
-                {% endif %}
+    <p><strong>{{ expl.get("explainability_headline", "") }}</strong></p>
+    <p style="opacity:0.85;">{{ expl.get("explainability_subheadline", "") }}</p>
 
-                <div class="info-row" style="margin-top:12px;">
-                    <span class="info-chip">Pressure: {{ expl.get("pressure_balance", "mixed") }}</span>
-                </div>
+    <div class="info-row" style="margin-top:10px;">
+        <span class="info-chip">{{ expl.get("explainability_tone", "neutral") }}</span>
+        <span class="info-chip">{{ expl.get("pressure_badge", "Mixed Pressure") }}</span>
+        <span class="info-chip">Override: {{ expl.get("override_severity", "none") }}</span>
+    </div>
 
-                {% if expl.get("supportive_pressures") %}
-                <div class="reason-list" style="margin-top:14px;">
-                    {% for item in expl.get("supportive_pressures", []) %}
-                    <div class="reason-item">{{ item }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
+    <div class="info-row">
+        <span class="info-chip">+{{ expl.get("support_count", 0) }} support</span>
+        <span class="info-chip">-{{ expl.get("restriction_count", 0) }} pressure</span>
+    </div>
 
-                {% if expl.get("restrictive_pressures") %}
-                <div class="reason-list" style="margin-top:14px;">
-                    {% for item in expl.get("restrictive_pressures", []) %}
-                    <div class="reason-item fusion-warning">{{ item }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
+    {% if expl.get("explainability_story") %}
+    <div class="reason-list" style="margin-top:12px;">
+        <div class="reason-item">
+            {{ expl.get("explainability_story", "") }}
+        </div>
+    </div>
+    {% endif %}
 
-                {% if expl.get("override_line") %}
-                <div class="reason-list" style="margin-top:14px;">
-                    <div class="reason-item fusion-warning">
-                        {{ expl.get("override_line", "") }}
-                    </div>
-                </div>
-                {% endif %}
+    {% if expl.get("supportive_pressures") %}
+    <div class="reason-list" style="margin-top:14px;">
+        {% for item in expl.get("supportive_pressures", []) %}
+        <div class="reason-item">{{ item }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-                {% if expl.get("memory_takeaway") %}
-                <div class="reason-list" style="margin-top:14px;">
-                    <div class="reason-item">
-                        {{ expl.get("memory_takeaway", "") }}
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-            {% endif %}
+    {% if expl.get("restrictive_pressures") %}
+    <div class="reason-list" style="margin-top:14px;">
+        {% for item in expl.get("restrictive_pressures", []) %}
+        <div class="reason-item fusion-warning">{{ item }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if expl.get("override_line") %}
+    <div class="reason-list" style="margin-top:14px;">
+        <div class="reason-item fusion-warning">
+            {{ expl.get("override_line", "") }}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if expl.get("memory_takeaway") %}
+    <div class="reason-list" style="margin-top:14px;">
+        <div class="reason-item">
+            {{ expl.get("memory_takeaway", "") }}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
 
             {% for panel in deep.get("panels", []) %}
             <div class="deep-panel">

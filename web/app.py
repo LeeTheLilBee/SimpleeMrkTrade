@@ -1,12 +1,16 @@
 
 import os
 import sys
+sys.path.insert(0, "/content/SimpleeMrkTrade")
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 from engine_v2.dashboard_contract import build_dashboard_contract
+
+from engine_v2.replay_batch_builder import build_replay_batch
+from engine_v2.replay_page_context_builder import build_replay_page_context
 
 import json
 from pathlib import Path
@@ -55,9 +59,8 @@ from engine_v2.final_brain_live_helpers import (
     build_final_spotlight_context,
     build_final_dashboard_context,
 )
-from web.final_brain_route_bridge import build_all_symbols_cards
+from web.final_brain_routes_engine import build_final_all_symbol_cards
 
-from web.symbol_explainability_routes_engine import build_symbol_page_explainability
 
 # compatibility wrappers so the rest of app.py does not need to change
 def load_market_universe():
@@ -3670,6 +3673,8 @@ def all_symbols_page():
     fusion_payloads = build_all_symbols_fusion_payloads(limit=150)
 
     final_brain_map = {}
+    decision_map = {}
+
     for payload in fusion_payloads:
         try:
             master = payload.get("master_decision", {}) if isinstance(payload.get("master_decision", {}), dict) else {}
@@ -3678,14 +3683,17 @@ def all_symbols_page():
                 continue
 
             decision_bundle = build_decision_bundle_from_product_fusion(payload)
+
+            decision_map[symbol] = decision_bundle
             final_brain_map[symbol] = build_symbol_final_brain(symbol, decision_bundle)
+
         except Exception as e:
             print(f"[ALL_SYMBOLS_FINAL_BRAIN] {e}")
 
     tier = get_current_tier_for_routes()
 
-    final_all_symbol_cards = build_all_symbols_cards(
-        final_brain_map=final_brain_map,
+    final_all_symbol_cards = build_final_all_symbol_cards(
+        decision_map=decision_map,
         tier=tier.lower(),
     )
 
@@ -4466,6 +4474,66 @@ def analytics_performance_page():
         ),
     )
 
+
+@app.route("/trade-review")
+def trade_review_page():
+    maybe_track_page_view("/trade-review")
+
+    raw_trades = load_json("data/trade_replay_source.json", [])
+    if not isinstance(raw_trades, list):
+        raw_trades = []
+
+    decision_bundles = {}
+
+    for trade in raw_trades:
+        try:
+            if not isinstance(trade, dict):
+                continue
+
+            symbol = str(trade.get("symbol", "") or "").upper().strip()
+            if not symbol:
+                continue
+
+            fusion_signal = {
+                "symbol": symbol,
+                "company_name": trade.get("company_name", symbol),
+                "direction": trade.get("direction", "CALL"),
+                "setup_type": trade.get("setup_family", "continuation"),
+                "trend_strength": trade.get("trend_strength", 70),
+                "volume_confirmation": trade.get("volume_confirmation", 65),
+                "extension_score": trade.get("extension_score", 35),
+                "pullback_quality": trade.get("pullback_quality", 65),
+                "score": trade.get("score", 75),
+                "structure_quality": trade.get("structure_quality", 75),
+                "liquidity_score": trade.get("liquidity_score", 80),
+                "spread_score": trade.get("spread_score", 70),
+                "premium_efficiency_score": trade.get("premium_efficiency_score", 75),
+                "open_interest_score": trade.get("open_interest_score", 70),
+                "iv_context": trade.get("iv_context", "normal"),
+                "visible_volatility": trade.get("visible_volatility", 20),
+                "last_pnl": trade.get("pnl", 0),
+            }
+
+            product_fusion = build_symbol_fusion_payload(fusion_signal)
+            decision_bundles[symbol] = build_decision_bundle_from_product_fusion(product_fusion)
+
+        except Exception as e:
+            print(f"[TRADE_REVIEW_DECISION_BUNDLE:{trade.get('symbol', '')}] {e}")
+
+    replay_packages = build_replay_batch(raw_trades, decision_bundles)
+    replay_page_context = build_replay_page_context(replay_packages)
+
+    return render_template_safe(
+        "trade_review.html",
+        **template_context(
+            {
+                "replay_page_context": replay_page_context,
+                "replay_feed": replay_page_context.get("replay_feed", []),
+                "replay_summary": replay_page_context.get("summary", {}),
+            }
+        ),
+    )
+    
 
 @app.route("/analytics/strategy")
 @app.route("/strategy-behavior")

@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+.review-shell {
+    display: grid;
+    gap: 20px;
+}
+.review-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 24px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.22), transparent 32%),
+        radial-gradient(circle at 78% 22%, rgba(255, 95, 207, 0.16), transparent 26%),
+        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 22px 48px rgba(0,0,0,0.32);
+}
+.review-hero::before {
+    content: "";
+    position: absolute;
+    right: 46px;
+    top: 30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.34) 44%, transparent 74%);
+    filter: blur(10px);
+    opacity: 0.92;
+    pointer-events: none;
+}
+.review-kicker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.review-pill,
+.info-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.10);
+}
+.review-title {
+    margin: 0 0 8px 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+.review-sub {
+    margin: 0;
+    max-width: 860px;
+    opacity: 0.9;
+    line-height: 1.48;
+}
+.review-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+.summary-card {
+    border-radius: 24px;
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
+        linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
+}
+.summary-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.68;
+    margin-bottom: 6px;
+}
+.summary-value {
+    font-size: 1rem;
+    font-weight: 800;
+}
+.review-feed {
+    display: grid;
+    gap: 16px;
+}
+.review-card {
+    display: grid;
+    gap: 14px;
+    border-radius: 24px;
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.14), transparent 34%),
+        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
+}
+.review-card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+.review-card h3 {
+    margin: 0 0 6px 0;
+}
+.review-card p {
+    margin: 0;
+    line-height: 1.45;
+    opacity: 0.88;
+}
+.info-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+.reason-list {
+    display: grid;
+    gap: 10px;
+}
+.reason-item {
+    padding: 12px 13px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    line-height: 1.42;
+}
+.empty-state {
+    border-radius: 24px;
+    padding: 22px;
+    background: linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+}
+@media (max-width: 980px) {
+    .review-summary-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+</style>
+
+{% set page = replay_page_context if replay_page_context else {} %}
+{% set feed = replay_feed if replay_feed else [] %}
+{% set summary = replay_summary if replay_summary else {} %}
+
+<div class="review-shell">
+    <div class="review-hero">
+        <div class="review-kicker">
+            <span class="review-pill">trade review</span>
+            <span class="review-pill">{{ summary.get("total_trades", 0) }} trades</span>
+            <span class="review-pill">{{ summary.get("hard_rejects", 0) }} hard rejects</span>
+        </div>
+        <h1 class="review-title">{{ page.get("headline", "Trade Review") }}</h1>
+        <p class="review-sub">{{ page.get("subheadline", "See what the system says about your past decisions.") }}</p>
+    </div>
+
+    <div class="review-summary-grid">
+        <div class="summary-card">
+            <div class="summary-label">Total Trades</div>
+            <div class="summary-value">{{ summary.get("total_trades", 0) }}</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-label">Wins</div>
+            <div class="summary-value">{{ summary.get("wins", 0) }}</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-label">Losses</div>
+            <div class="summary-value">{{ summary.get("losses", 0) }}</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-label">Hard Rejects</div>
+            <div class="summary-value">{{ summary.get("hard_rejects", 0) }}</div>
+        </div>
+    </div>
+
+    {% if feed %}
+    <div class="review-feed">
+        {% for card in feed %}
+        <div class="review-card">
+            <div class="review-card-top">
+                <div>
+                    <h3>{{ card.get("symbol", "") }} — {{ card.get("title", "") }}</h3>
+                    <p>{{ card.get("subtitle", "") }}</p>
+                    <div class="info-row">
+                        <span class="info-chip">{{ card.get("action", "wait") }}</span>
+                        <span class="info-chip">{{ card.get("confidence", "low") }}</span>
+                        <span class="info-chip">{{ card.get("tone", "neutral") }}</span>
+                        <span class="info-chip">{{ card.get("pressure", "Mixed Pressure") }}</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="info-row">
+                        <span class="info-chip">Outcome: {{ card.get("outcome", "unknown") }}</span>
+                        <span class="info-chip">PnL: {{ card.get("pnl", 0) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {% if card.get("summary_line") %}
+            <div class="reason-list">
+                <div class="reason-item">{{ card.get("summary_line", "") }}</div>
+            </div>
+            {% endif %}
+
+            {% if card.get("story") %}
+            <div class="reason-list">
+                <div class="reason-item">{{ card.get("story", "") }}</div>
+            </div>
+            {% endif %}
+
+            {% if card.get("coaching") %}
+            <div class="reason-list">
+                <div class="reason-item">{{ card.get("coaching", "") }}</div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>No Replay Data Yet</h3>
+        <p>There are no historical replay cards available right now.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
