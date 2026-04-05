@@ -285,6 +285,73 @@ def render_template_safe(template_name: str, **context):
 # STABILITY HELPERS
 # ============================================================
 
+def effective_tier_title() -> str:
+    preview = session.get("preview_tier")
+    if is_master() and preview:
+        return str(preview).title()
+
+    tier = session.get("tier")
+    if tier:
+        return str(tier).title()
+
+    return "Free"
+
+
+def effective_tier_lower() -> str:
+    return str(effective_tier_title() or "Free").strip().lower()
+
+
+def current_user_context() -> Dict[str, Any]:
+    username = str(session.get("username", "") or "").strip()
+    role = str(session.get("role", "guest") or "guest").strip().lower()
+    real_tier = str(session.get("tier", "Free") or "Free").title()
+    preview_tier = session.get("preview_tier")
+
+    return {
+        "username": username,
+        "role": role,
+        "tier": effective_tier_title(),
+        "real_tier": real_tier,
+        "preview_tier": str(preview_tier).title() if preview_tier else None,
+    }
+
+
+def current_tier_title() -> str:
+    return effective_tier_title()
+
+
+def current_tier_lower() -> str:
+    return effective_tier_lower()
+
+
+def is_logged_in() -> bool:
+    return bool(str(session.get("username", "") or "").strip())
+
+
+def is_master() -> bool:
+    return str(session.get("role", "") or "").strip().lower() == "master"
+
+
+def can_access_all_symbols() -> bool:
+    tier = effective_tier_lower()
+    return tier in {"starter", "pro", "elite"} or is_master()
+
+
+def show_upgrade_prompt() -> bool:
+    return is_logged_in() and effective_tier_lower() not in {"elite"}
+
+
+def template_context(extra: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    ctx = dict(extra or {})
+    user_ctx = current_user_context()
+
+    ctx.setdefault("theme", get_theme() if "get_theme" in globals() else session.get("theme", "dark"))
+    ctx.setdefault("user", user_ctx)
+    ctx.setdefault("show_upgrade", show_upgrade_prompt())
+    ctx.setdefault("can_access_all_symbols", can_access_all_symbols())
+    ctx.setdefault("unread_notifications", 0)
+    ctx.setdefault("snapshot", get_dashboard_snapshot() if "get_dashboard_snapshot" in globals() else {})
+    return ctx
 
 def get_current_tier_for_routes() -> str:
     try:
@@ -5224,53 +5291,6 @@ def admin_dashboard():
     )
 
 
-@app.route("/login", methods=["GET", "POST"])
-def login_page():
-    maybe_track_page_view("/login")
-
-    if request.method == "POST":
-        username = (request.form.get("username") or "").strip() or "demo_user"
-        session["username"] = username
-
-        # Keep admin/master redirect behavior locked in
-        if username.lower() in {"admin", "master", "solice"}:
-            session["tier"] = "Elite"
-            session["role"] = "master"
-        else:
-            session["tier"] = session.get("tier", "Free")
-            session["role"] = session.get("role", "member")
-
-        if session.get("role") == "master":
-            return redirect(url_for("admin_dashboard"))
-
-        return redirect(url_for("dashboard_page"))
-
-    return render_template_safe(
-        "login.html",
-        **template_context({"info": request.args.get("info"), "error": request.args.get("error")}),
-    )
-
-
-@app.route("/signup", methods=["GET", "POST"])
-def signup_page():
-    maybe_track_page_view("/signup")
-
-    if request.method == "POST":
-        username = (request.form.get("username") or "").strip() or "new_user"
-        session["username"] = username
-        session["tier"] = "Free"
-        session["role"] = "member"
-        return redirect(url_for("dashboard_page"))
-
-    return render_template_safe("signup.html", **template_context({}))
-
-
-@app.route("/logout")
-def logout_page():
-    session.clear()
-    return redirect(url_for("landing_page"))
-
-
 @app.route("/account")
 def account_page():
     return render_template_safe(
@@ -5319,20 +5339,125 @@ def set_theme(theme: str):
     session["theme"] = "light" if theme == "light" else "dark"
     return redirect(request.referrer or url_for("landing_page"))
 
+@app.route("/login", methods=["GET", "POST"])
+def login_page():
+    maybe_track_page_view("/login")
+
+    if is_logged_in():
+        if is_master():
+            return redirect(url_for("admin_dashboard"))
+        return redirect(url_for("dashboard_page"))
+
+    if request.method == "POST":
+        username = str(request.form.get("username", "") or "").strip()
+        password = str(request.form.get("password", "") or "").strip()
+
+        if not username:
+            return render_template_safe(
+                "login.html",
+                **template_context({
+                    "error": "Enter your username.",
+                    "info": None,
+                }),
+            )
+
+        if not password:
+            return render_template_safe(
+                "login.html",
+                **template_context({
+                    "error": "Enter your password.",
+                    "info": None,
+                }),
+            )
+
+        session["username"] = username
+
+        if username.lower() in {"admin", "master", "solice"}:
+            session["tier"] = "Elite"
+            session["role"] = "master"
+        else:
+            session["tier"] = session.get("tier", "Free")
+            session["role"] = "member"
+
+        session.pop("preview_tier", None)
+
+        if session.get("role") == "master":
+            return redirect(url_for("admin_dashboard"))
+
+        return redirect(url_for("dashboard_page"))
+
+    return render_template_safe(
+        "login.html",
+        **template_context({
+            "info": request.args.get("info"),
+            "error": request.args.get("error"),
+        }),
+    )
+
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup_page():
+    maybe_track_page_view("/signup")
+
+    if is_logged_in():
+        if is_master():
+            return redirect(url_for("admin_dashboard"))
+        return redirect(url_for("dashboard_page"))
+
+    if request.method == "POST":
+        username = str(request.form.get("username", "") or "").strip()
+        password = str(request.form.get("password", "") or "").strip()
+
+        if not username:
+            return render_template_safe(
+                "signup.html",
+                **template_context({"error": "Choose a username."}),
+            )
+
+        if not password:
+            return render_template_safe(
+                "signup.html",
+                **template_context({"error": "Choose a password."}),
+            )
+
+        session["username"] = username
+        session["tier"] = "Free"
+        session["role"] = "member"
+        session.pop("preview_tier", None)
+
+        return redirect(url_for("dashboard_page"))
+
+    return render_template_safe("signup.html", **template_context({}))
+
+
+@app.route("/logout")
+def logout_page():
+    session.clear()
+    return redirect(url_for("landing_page"))
+
 
 @app.route("/admin/preview-tier/<tier>")
 def admin_preview_tier(tier: str):
-    if is_master():
-        session["preview_tier"] = tier.title()
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
+
+    clean_tier = str(tier or "").strip().title()
+    allowed = {"Guest", "Free", "Starter", "Pro", "Elite"}
+
+    if clean_tier in allowed:
+        session["preview_tier"] = clean_tier
+
     return redirect(request.referrer or url_for("admin_dashboard"))
 
 
 @app.route("/admin/preview-tier/clear")
 def admin_clear_preview_tier():
-    if is_master():
-        session.pop("preview_tier", None)
-    return redirect(request.referrer or url_for("admin_dashboard"))
+    if not is_master():
+        return redirect(url_for("dashboard_page"))
 
+    session.pop("preview_tier", None)
+    return redirect(request.referrer or url_for("admin_dashboard"))
+    
 
 @app.route("/admin/diagnostics")
 def admin_diagnostics_page():

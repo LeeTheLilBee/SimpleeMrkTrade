@@ -13,6 +13,7 @@
     background:
         radial-gradient(circle at top left, rgba(124, 77, 255, 0.22), transparent 32%),
         radial-gradient(circle at 78% 22%, rgba(255, 95, 207, 0.16), transparent 26%),
+        radial-gradient(circle at 72% 18%, rgba(97, 196, 255, 0.10), transparent 22%),
         linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
     border: 1px solid rgba(255,255,255,0.08);
     box-shadow: 0 22px 48px rgba(0,0,0,0.32);
@@ -37,7 +38,9 @@
     margin-bottom: 10px;
 }
 .review-pill,
-.info-chip {
+.info-chip,
+.tone-chip,
+.outcome-chip {
     display: inline-flex;
     align-items: center;
     padding: 6px 10px;
@@ -49,12 +52,12 @@
 }
 .review-title {
     margin: 0 0 8px 0;
-    font-size: 1.8rem;
+    font-size: 1.9rem;
     font-weight: 800;
 }
 .review-sub {
     margin: 0;
-    max-width: 860px;
+    max-width: 880px;
     opacity: 0.9;
     line-height: 1.48;
 }
@@ -80,7 +83,7 @@
     margin-bottom: 6px;
 }
 .summary-value {
-    font-size: 1rem;
+    font-size: 1.08rem;
     font-weight: 800;
 }
 .review-feed {
@@ -90,7 +93,7 @@
 .review-card {
     display: grid;
     gap: 14px;
-    border-radius: 24px;
+    border-radius: 26px;
     padding: 18px;
     background:
         radial-gradient(circle at top left, rgba(124, 77, 255, 0.14), transparent 34%),
@@ -105,10 +108,12 @@
     flex-wrap: wrap;
     align-items: flex-start;
 }
-.review-card h3 {
+.review-card-title {
     margin: 0 0 6px 0;
+    font-size: 1.15rem;
+    font-weight: 800;
 }
-.review-card p {
+.review-card-sub {
     margin: 0;
     line-height: 1.45;
     opacity: 0.88;
@@ -130,11 +135,46 @@
     border: 1px solid rgba(255,255,255,0.06);
     line-height: 1.42;
 }
+.review-story {
+    font-size: 0.96rem;
+}
+.review-coaching {
+    border-left: 3px solid rgba(247, 200, 107, 0.75);
+}
+.tone-chip.danger {
+    background: rgba(255, 120, 140, 0.14);
+}
+.tone-chip.caution {
+    background: rgba(247, 200, 107, 0.14);
+}
+.tone-chip.conviction {
+    background: rgba(97, 196, 255, 0.14);
+}
+.tone-chip.recovery {
+    background: rgba(136, 216, 154, 0.14);
+}
+.outcome-chip.win {
+    background: rgba(136, 216, 154, 0.14);
+}
+.outcome-chip.loss {
+    background: rgba(255, 120, 140, 0.14);
+}
+.outcome-chip.unknown {
+    background: rgba(255,255,255,0.08);
+}
 .empty-state {
     border-radius: 24px;
     padding: 22px;
     background: linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
     border: 1px solid rgba(255,255,255,0.08);
+}
+.debug-card {
+    border-radius: 20px;
+    padding: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(255,255,255,0.12);
+    font-size: 0.85rem;
+    opacity: 0.8;
 }
 @media (max-width: 980px) {
     .review-summary-grid {
@@ -146,6 +186,7 @@
 {% set page = replay_page_context if replay_page_context else {} %}
 {% set feed = replay_feed if replay_feed else [] %}
 {% set summary = replay_summary if replay_summary else {} %}
+{% set debug = replay_debug if replay_debug else {} %}
 
 <div class="review-shell">
     <div class="review-hero">
@@ -153,6 +194,9 @@
             <span class="review-pill">trade review</span>
             <span class="review-pill">{{ summary.get("total_trades", 0) }} trades</span>
             <span class="review-pill">{{ summary.get("hard_rejects", 0) }} hard rejects</span>
+            {% if debug %}
+            <span class="review-pill">feed {{ feed|length }}</span>
+            {% endif %}
         </div>
         <h1 class="review-title">{{ page.get("headline", "Trade Review") }}</h1>
         <p class="review-sub">{{ page.get("subheadline", "See what the system says about your past decisions.") }}</p>
@@ -180,21 +224,25 @@
     {% if feed %}
     <div class="review-feed">
         {% for card in feed %}
+        {% set tone = card.get("tone", "neutral") %}
+        {% set outcome = card.get("outcome", "unknown") %}
         <div class="review-card">
             <div class="review-card-top">
                 <div>
-                    <h3>{{ card.get("symbol", "") }} — {{ card.get("title", "") }}</h3>
-                    <p>{{ card.get("subtitle", "") }}</p>
+                    <h3 class="review-card-title">{{ card.get("symbol", "") }} — {{ card.get("title", "") }}</h3>
+                    <p class="review-card-sub">{{ card.get("subtitle", "") }}</p>
+
                     <div class="info-row">
                         <span class="info-chip">{{ card.get("action", "wait") }}</span>
                         <span class="info-chip">{{ card.get("confidence", "low") }}</span>
-                        <span class="info-chip">{{ card.get("tone", "neutral") }}</span>
+                        <span class="tone-chip {{ tone }}">{{ tone }}</span>
                         <span class="info-chip">{{ card.get("pressure", "Mixed Pressure") }}</span>
                     </div>
                 </div>
+
                 <div>
                     <div class="info-row">
-                        <span class="info-chip">Outcome: {{ card.get("outcome", "unknown") }}</span>
+                        <span class="outcome-chip {{ outcome }}">{{ outcome }}</span>
                         <span class="info-chip">PnL: {{ card.get("pnl", 0) }}</span>
                     </div>
                 </div>
@@ -208,13 +256,13 @@
 
             {% if card.get("story") %}
             <div class="reason-list">
-                <div class="reason-item">{{ card.get("story", "") }}</div>
+                <div class="reason-item review-story">{{ card.get("story", "") }}</div>
             </div>
             {% endif %}
 
             {% if card.get("coaching") %}
             <div class="reason-list">
-                <div class="reason-item">{{ card.get("coaching", "") }}</div>
+                <div class="reason-item review-coaching">{{ card.get("coaching", "") }}</div>
             </div>
             {% endif %}
         </div>
@@ -224,6 +272,14 @@
     <div class="empty-state">
         <h3>No Replay Data Yet</h3>
         <p>There are no historical replay cards available right now.</p>
+    </div>
+    {% endif %}
+
+    {% if debug %}
+    <div class="debug-card">
+        raw trades: {{ debug.get("raw_trade_count", 0) }} |
+        bundles: {{ debug.get("bundle_count", 0) }} |
+        replay packages: {{ debug.get("replay_count", 0) }}
     </div>
     {% endif %}
 </div>
