@@ -244,6 +244,267 @@ def save_json(path: str, payload: Any) -> None:
         json.dump(payload, f, indent=2)
 
 
+def load_canonical_closed_trade_ledger():
+    candidates = [
+        ("data/trade_journal_export.csv", "csv"),
+        ("data/trade_replay_source.json", "json"),
+        ("data/trade_details.json", "json"),
+    ]
+
+    rows = []
+
+    for path, kind in candidates:
+        try:
+            if kind == "csv":
+                if not os.path.exists(path):
+                    continue
+
+                import csv
+                with open(path, "r", encoding="utf-8") as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        rows.append(dict(row))
+
+                if rows:
+                    break
+
+            elif kind == "json":
+                data = load_json(path, [])
+                if isinstance(data, list) and data:
+                    rows = data
+                    break
+
+        except Exception as e:
+            print(f"[CANONICAL_LEDGER_LOAD:{path}] {e}")
+
+    normalized = []
+
+    for row in rows:
+        try:
+            if not isinstance(row, dict):
+                continue
+
+            symbol = str(row.get("symbol", "") or row.get("ticker", "") or "").upper().strip()
+            if not symbol:
+                continue
+
+            pnl_raw = row.get("pnl", row.get("realized_pnl", row.get("profit_loss", 0)))
+            try:
+                pnl = float(pnl_raw or 0)
+            except Exception:
+                pnl = 0.0
+
+            direction = str(row.get("direction", row.get("strategy", row.get("side", ""))) or "").upper().strip()
+            outcome = str(row.get("outcome", "") or "").strip().lower()
+
+            if not outcome:
+                if pnl > 0:
+                    outcome = "win"
+                elif pnl < 0:
+                    outcome = "loss"
+                else:
+                    outcome = "flat"
+
+            opened_at = row.get("opened_at") or row.get("entry_time") or row.get("timestamp") or ""
+            closed_at = row.get("closed_at") or row.get("exit_time") or row.get("timestamp") or ""
+
+            normalized.append({
+                "symbol": symbol,
+                "direction": direction or "UNKNOWN",
+                "pnl": pnl,
+                "outcome": outcome,
+                "opened_at": opened_at,
+                "closed_at": closed_at,
+                "raw": row,
+            })
+
+        except Exception as e:
+            print(f"[CANONICAL_LEDGER_NORMALIZE:{row}] {e}")
+
+    return normalized
+
+
+def build_canonical_reporting_snapshot():
+    closed_trades = load_canonical_closed_trade_ledger()
+
+    total_trades = len(closed_trades)
+    wins = sum(1 for x in closed_trades if x.get("outcome") == "win")
+    losses = sum(1 for x in closed_trades if x.get("outcome") == "loss")
+    flats = sum(1 for x in closed_trades if x.get("outcome") == "flat")
+
+    total_pnl = round(sum(float(x.get("pnl", 0) or 0) for x in closed_trades), 2)
+    winrate = round((wins / total_trades), 2) if total_trades else 0.0
+
+    strategy_counts = {}
+    strategy_performance = {}
+
+    for row in closed_trades:
+        direction = str(row.get("direction", "UNKNOWN") or "UNKNOWN").upper()
+
+        strategy_counts[direction] = strategy_counts.get(direction, 0) + 1
+
+        if direction not in strategy_performance:
+            strategy_performance[direction] = {
+                "trades": 0,
+                "wins": 0,
+                "pnl": 0.0,
+                "winrate": 0.0,
+            }
+
+        strategy_performance[direction]["trades"] += 1
+        if row.get("outcome") == "win":
+            strategy_performance[direction]["wins"] += 1
+        strategy_performance[direction]["pnl"] += float(row.get("pnl", 0) or 0)
+
+    for direction, stats in strategy_performance.items():
+        trades = stats["trades"]
+        wins_for_direction = stats["wins"]
+        stats["pnl"] = round(stats["pnl"], 2)
+        stats["winrate"] = round((wins_for_direction / trades), 2) if trades else 0.0
+
+    positions = get_positions_with_intelligence()
+    open_positions = [p for p in positions if str(p.get("status", "")).lower() != "closed"]
+
+    closed_position_count = total_trades
+
+    unrealized_total = 0.0
+    unrealized_positions = []
+
+    for p in open_positions:
+        pnl = float((p.get("pnl") or p.get("unrealized_pnl") or 0) or 0)
+        unrealized_total += pnl
+        unrealized_positions.append({
+            "symbol": p.get("symbol"),
+            "unrealized_pnl": pnl,
+        })
+
+    unrealized_total = round(unrealized_total, 2)
+
+    realized_pnl = total_pnl
+    estimated_account_value = round(1000 + realized_pnl + unrealized_total, 2)
+    buying_power = round(max(0, estimated_account_value), 2)
+
+    equity_curve = []
+    running_equity = 1000.0
+    peak = 1000.0
+    max_drawdown = 0.0
+
+    for row in closed_trades:
+        running_equity += float(row.get("pnl", 0) or 0)
+        peak = max(peak, running_equity)
+        drawdown = round(peak - running_equity, 2)
+        max_drawdown = max(max_drawdown, drawdown)
+        equity_curve.append({
+            "equity": round(running_equity, 2),
+            "drawdown": drawdown,
+            "symbol": row.get("symbol"),
+            "closed_at": row.get("closed_at", ""),
+        })
+
+    latest_symbol = closed_trades[-1]["symbol"] if closed_trades else None
+
+    return {
+        "ledger": closed_trades,
+        "performance": {
+            "trades": total_trades,
+            "wins": wins,
+            "losses": losses,
+            "flats": flats,
+            "winrate": winrate,
+            "total_pnl": total_pnl,
+            "max_drawdown": round(max_drawdown, 2),
+            "entries_today": 0,
+            "closes_today": 0,
+            "round_trips_today": 0,
+            "realized_pnl_today": 0.0,
+        },
+        "analytics": {
+            "trades": total_trades,
+            "winrate": winrate,
+            "strategies": strategy_counts,
+            "last_trade": latest_symbol,
+            "portfolio": {
+                "open_positions": len(open_positions),
+                "closed_positions": closed_position_count,
+                "realized_pnl": realized_pnl,
+            },
+        },
+        "portfolio_summary": {
+            "open_positions": len(open_positions),
+            "closed_positions": closed_position_count,
+            "realized_pnl": realized_pnl,
+        },
+        "unrealized": {
+            "total_unrealized": unrealized_total,
+            "positions": unrealized_positions,
+        },
+        "strategy_performance": strategy_performance,
+        "drawdown_history": equity_curve[-50:],
+        "final_account_snapshot": {
+            "cash": buying_power,
+            "buying_power": buying_power,
+            "equity": estimated_account_value,
+            "open_positions": len(open_positions),
+            "realized_pnl": realized_pnl,
+            "unrealized_pnl": unrealized_total,
+            "estimated_account_value": estimated_account_value,
+        },
+    }
+
+
+def write_canonical_reporting_snapshot():
+    snapshot = build_canonical_reporting_snapshot()
+
+    try:
+        save_json("data/canonical_reporting_snapshot.json", snapshot)
+    except Exception as e:
+        print(f"[WRITE_CANONICAL_REPORTING_SNAPSHOT] {e}")
+
+    return snapshot
+
+
+def performance_summary():
+    snapshot = load_json("data/canonical_reporting_snapshot.json", {})
+    if not isinstance(snapshot, dict) or not snapshot:
+        snapshot = write_canonical_reporting_snapshot()
+    return snapshot.get("performance", {})
+
+
+def strategy_breakdown():
+    snapshot = load_json("data/canonical_reporting_snapshot.json", {})
+    if not isinstance(snapshot, dict) or not snapshot:
+        snapshot = write_canonical_reporting_snapshot()
+    return snapshot.get("strategy_performance", {})
+
+
+def unrealized_pnl():
+    snapshot = load_json("data/canonical_reporting_snapshot.json", {})
+    if not isinstance(snapshot, dict) or not snapshot:
+        snapshot = write_canonical_reporting_snapshot()
+    return snapshot.get("unrealized", {})
+
+
+def get_dashboard_snapshot():
+    snapshot = load_json("data/canonical_reporting_snapshot.json", {})
+    if not isinstance(snapshot, dict) or not snapshot:
+        snapshot = write_canonical_reporting_snapshot()
+    return snapshot.get("final_account_snapshot", {})
+
+
+def build_portfolio_summary_from_canonical():
+    snapshot = load_json("data/canonical_reporting_snapshot.json", {})
+    if not isinstance(snapshot, dict) or not snapshot:
+        snapshot = write_canonical_reporting_snapshot()
+    return snapshot.get("portfolio_summary", {})
+
+
+def load_backtest_summary():
+    data = load_json("data/backtest_summary.json", {})
+    if not isinstance(data, dict):
+        data = {}
+    return data
+
+
 def template_exists(template_name: str) -> bool:
     try:
         app.jinja_env.get_or_select_template(template_name)
@@ -284,6 +545,779 @@ def render_template_safe(template_name: str, **context):
 # ============================================================
 # STABILITY HELPERS
 # ============================================================
+
+def build_admin_play_command_summary(plays):
+    plays = plays or []
+
+    for play in plays:
+        if "activation_readiness" not in play:
+            play["activation_readiness"] = classify_play_readiness(play)
+        if "promotion_guidance" not in play:
+            play["promotion_guidance"] = build_promotion_guidance(play)
+        if "rebuild_profile" not in play:
+            play["rebuild_profile"] = build_weak_play_rebuild_profile(play)
+
+    plays_summary = build_my_plays_summary(plays)
+    promotion_summary = plays_summary.get("promotion_summary", {}) or {}
+    rebuild_summary = plays_summary.get("rebuild_summary", {}) or {}
+    top_failure_causes = plays_summary.get("top_failure_causes", []) or []
+
+    top_promotion_candidate = promotion_summary.get("top_candidate")
+    top_near_miss = promotion_summary.get("top_near_miss")
+    top_rebuild = rebuild_summary.get("top_rebuild")
+
+    if top_promotion_candidate:
+        command_headline = "Promotion candidate available."
+        command_summary = "At least one play is strong enough to be considered for activation."
+    elif top_near_miss:
+        command_headline = "No promotion candidate yet, but something is developing."
+        command_summary = "The queue is empty, but the system sees at least one play worth improving."
+    elif top_rebuild:
+        command_headline = "Playbook needs rebuilding."
+        command_summary = "The current focus should be repairing weak ideas before thinking about promotion."
+    else:
+        command_headline = "No actionable playbook signal."
+        command_summary = "The system does not currently see promotion or rebuild candidates."
+
+    return {
+        "headline": command_headline,
+        "summary": command_summary,
+        "top_failure_causes": top_failure_causes[:5],
+        "promotion_summary": promotion_summary,
+        "rebuild_summary": rebuild_summary,
+        "top_promotion_candidate": top_promotion_candidate,
+        "top_near_miss": top_near_miss,
+        "top_rebuild": top_rebuild,
+        "strongest_play": plays_summary.get("strongest_play"),
+        "weakest_play": plays_summary.get("weakest_play"),
+        "counts": {
+            "total": plays_summary.get("total", 0),
+            "ready": plays_summary.get("ready_to_activate", 0),
+            "close": plays_summary.get("close_to_ready", 0),
+            "weak": plays_summary.get("weak_or_pressured", 0),
+            "watching": plays_summary.get("watching", 0),
+        },
+    }
+
+def build_near_miss_promotion_candidates(plays):
+    plays = plays or []
+
+    results = []
+
+    for play in plays:
+        readiness = play.get("activation_readiness", {}) or {}
+        score = int(readiness.get("score", 0) or 0)
+        bucket = str(readiness.get("bucket", "") or "").upper()
+
+        if bucket == "CLOSE" or score >= 50:
+            results.append({
+                "symbol": play.get("symbol"),
+                "play_id": play.get("play_id"),
+                "bucket": bucket,
+                "score": score,
+                "headline": readiness.get("headline"),
+                "summary": readiness.get("summary"),
+                "blockers": readiness.get("blockers", []),
+                "guidance": readiness.get("guidance", []),
+                "promotion_message": (play.get("promotion_guidance", {}) or {}).get("message"),
+                "failure_tags": readiness.get("failure_tags", []),
+            })
+
+    return sorted(results, key=lambda x: x["score"], reverse=True)[:5]
+
+
+def build_promotion_queue_diagnosis(plays):
+    plays = plays or []
+
+    failure_clusters = build_failure_clusters(plays)
+    near_misses = build_near_miss_promotion_candidates(plays)
+
+    if not plays:
+        return {
+            "queue_empty": True,
+            "headline": "No plays in system.",
+            "summary": "You need to build your idea book before promotion can exist.",
+            "top_blocker": None,
+            "top_blocker_count": 0,
+            "near_misses": [],
+            "failure_clusters": [],
+        }
+
+    has_candidates = any(
+        (p.get("activation_readiness", {}) or {}).get("bucket") in {"READY", "CLOSE"}
+        for p in plays
+    )
+
+    if not has_candidates:
+        all_weak = all(
+            int((p.get("activation_readiness", {}) or {}).get("score", 0) or 0) < 30
+            for p in plays
+        )
+
+        if all_weak:
+            return {
+                "queue_empty": True,
+                "headline": "No viable setups right now.",
+                "summary": "Your current ideas are structurally weak. Focus on rebuilding higher-quality setups instead of trying to promote them.",
+                "top_blocker": failure_clusters[0]["cause"] if failure_clusters else None,
+                "top_blocker_count": failure_clusters[0]["count"] if failure_clusters else 0,
+                "near_misses": [],
+                "failure_clusters": failure_clusters,
+            }
+
+        return {
+            "queue_empty": True,
+            "headline": "Nothing qualifies yet, but some are developing.",
+            "summary": "Some plays are progressing, but none meet promotion standards yet.",
+            "top_blocker": failure_clusters[0]["cause"] if failure_clusters else None,
+            "top_blocker_count": failure_clusters[0]["count"] if failure_clusters else 0,
+            "near_misses": near_misses,
+            "failure_clusters": failure_clusters,
+        }
+
+    return {
+        "queue_empty": False,
+        "headline": "Promotion system active.",
+        "summary": "You have plays moving through readiness stages.",
+        "top_blocker": failure_clusters[0]["cause"] if failure_clusters else None,
+        "top_blocker_count": failure_clusters[0]["count"] if failure_clusters else 0,
+        "near_misses": near_misses,
+        "failure_clusters": failure_clusters,
+    }
+
+
+def build_play_promotion_summary(plays):
+    plays = plays or []
+
+    promotion_queue = build_play_promotion_queue(plays)
+    near_misses = build_near_miss_promotion_candidates(plays)
+    diagnosis = build_promotion_queue_diagnosis(plays)
+
+    ready_candidates = [p for p in promotion_queue if p.get("bucket") == "READY"]
+    close_candidates = [p for p in promotion_queue if p.get("bucket") == "CLOSE"]
+
+    top_candidate = promotion_queue[0] if promotion_queue else None
+    top_near_miss = near_misses[0] if near_misses else None
+
+    if promotion_queue:
+        headline = "You have promotable plays."
+        summary = "At least one play currently looks strong enough to be considered for live activation."
+    elif near_misses:
+        headline = "Your queue is close, not empty."
+        summary = "Nothing qualifies yet, but some plays are close enough to improve."
+    else:
+        headline = "No promotion candidates yet."
+        summary = "No plays currently deserve serious promotion consideration."
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "total_candidates": len(promotion_queue),
+        "ready_candidates": len(ready_candidates),
+        "close_candidates": len(close_candidates),
+        "top_candidate": top_candidate,
+        "top_near_miss": top_near_miss,
+        "promotion_queue": promotion_queue[:10],
+        "near_misses": near_misses[:5],
+        "diagnosis": diagnosis,
+    }
+
+def build_play_promotion_candidate(play):
+    play = play or {}
+
+    readiness = play.get("activation_readiness", {}) or {}
+    promotion = play.get("promotion_guidance", {}) or {}
+    agreement = play.get("system_agreement", {}) or {}
+    health = play.get("health", {}) or {}
+    conviction = str(play.get("conviction", "Medium") or "Medium").strip().title()
+
+    symbol = str(play.get("symbol", "") or "").strip().upper()
+    bucket = str(readiness.get("bucket", "") or "").upper()
+    readiness_score = int(readiness.get("score", 0) or 0)
+    agreement_score = int(agreement.get("score", 0) or 0)
+    health_score = int(health.get("score", 0) or 0)
+
+    if bucket not in {"READY", "CLOSE"}:
+        return None
+
+    promotion_score = readiness_score
+
+    if bucket == "READY":
+        promotion_score += 12
+    elif bucket == "CLOSE":
+        promotion_score += 4
+
+    if conviction == "High":
+        promotion_score += 4
+    elif conviction == "Medium":
+        promotion_score += 1
+
+    if agreement_score >= 80:
+        promotion_score += 4
+
+    if health_score >= 80:
+        promotion_score += 4
+
+    blockers = readiness.get("blockers", []) or []
+    guidance = readiness.get("guidance", []) or []
+
+    return {
+        "symbol": symbol,
+        "play_id": play.get("play_id"),
+        "bucket": bucket,
+        "promotion_score": max(0, promotion_score),
+        "readiness_score": readiness_score,
+        "agreement_score": agreement_score,
+        "health_score": health_score,
+        "headline": readiness.get("headline", ""),
+        "summary": readiness.get("summary", ""),
+        "promotion_message": promotion.get("message", ""),
+        "promotion_focus": promotion.get("focus", []),
+        "blockers": blockers[:3],
+        "guidance": guidance[:3],
+        "conviction": conviction,
+        "status": play.get("status", "Open"),
+        "direction": play.get("direction", ""),
+    }
+
+def build_play_promotion_queue(plays):
+    plays = plays or []
+
+    candidates = []
+
+    for play in plays:
+        try:
+            candidate = build_play_promotion_candidate(play)
+            if candidate:
+                candidates.append(candidate)
+        except Exception as e:
+            print(f"[PROMOTION_QUEUE:{play.get('symbol', 'UNKNOWN')}] {e}")
+
+    candidates = sorted(
+        candidates,
+        key=lambda x: (
+            x.get("bucket") == "READY",
+            x.get("promotion_score", 0),
+            x.get("readiness_score", 0),
+            x.get("agreement_score", 0),
+            x.get("health_score", 0),
+        ),
+        reverse=True,
+    )
+
+    return candidates
+
+
+def classify_play_readiness(play):
+    play = play or {}
+
+    status = str(play.get("status", "Open")).strip().lower()
+    conviction = str(play.get("conviction", "Medium")).strip().lower()
+
+    health = play.get("health", {}) or {}
+    agreement = play.get("system_agreement", {}) or {}
+    candidate = play.get("engine_candidate")
+    feedback = play.get("system_feedback", []) or []
+
+    health_score = int(health.get("score", 0) or 0)
+    agreement_score = int(agreement.get("score", 0) or 0)
+    health_label = str(health.get("label", "")).strip().upper()
+
+    readiness_score = 0
+    reasons = []
+    blockers = []
+    guidance = []
+    failure_tags = []
+
+    # -------------------------
+    # STATUS
+    # -------------------------
+    if status in {"open", "watching"}:
+        readiness_score += 10
+        reasons.append("play is active")
+    else:
+        blockers.append("play is not active")
+        failure_tags.append("inactive")
+
+    # -------------------------
+    # HEALTH
+    # -------------------------
+    if health_score >= 75:
+        readiness_score += 30
+        reasons.append("health is strong")
+    elif health_score >= 55:
+        readiness_score += 15
+        reasons.append("health is stable")
+        guidance.append("wait for cleaner structure before trusting this fully")
+        failure_tags.append("mid_health")
+    elif health_score >= 35:
+        readiness_score += 5
+        blockers.append("health is mixed")
+        guidance.append("wait for cleaner structure before trusting this")
+        failure_tags.append("weak_health")
+    else:
+        readiness_score -= 25
+        blockers.append("health is weak")
+        guidance.append("do not activate until structure improves")
+        failure_tags.append("broken_health")
+
+    # -------------------------
+    # AGREEMENT
+    # -------------------------
+    if agreement_score >= 75:
+        readiness_score += 30
+        reasons.append("system agreement is strong")
+    elif agreement_score >= 55:
+        readiness_score += 15
+        reasons.append("system agreement is usable")
+        guidance.append("look for stronger alignment before entry")
+        failure_tags.append("mid_agreement")
+    elif agreement_score >= 35:
+        readiness_score += 5
+        blockers.append("system agreement is mixed")
+        guidance.append("wait for better alignment across signals")
+        failure_tags.append("weak_agreement")
+    else:
+        readiness_score -= 25
+        blockers.append("system disagreement")
+        guidance.append("do not take trades the system disagrees with")
+        failure_tags.append("disagreement")
+
+    # -------------------------
+    # ENGINE TRACKING
+    # -------------------------
+    if candidate:
+        readiness_score += 10
+        reasons.append("engine is tracking this symbol")
+    else:
+        readiness_score -= 10
+        blockers.append("not tracked by engine")
+        guidance.append("align this setup with known engine patterns or expand engine coverage")
+        failure_tags.append("no_engine")
+
+    # -------------------------
+    # CONVICTION
+    # -------------------------
+    if conviction == "high":
+        readiness_score += 5
+        reasons.append("high conviction")
+    elif conviction == "medium":
+        readiness_score += 2
+
+    # -------------------------
+    # PRESSURE CONDITIONS
+    # -------------------------
+    if health_label in {"BROKEN", "UNDER PRESSURE"}:
+        readiness_score -= 15
+        blockers.append("play is under pressure")
+        guidance.append("let pressure resolve before entering")
+        failure_tags.append("pressure")
+
+    # -------------------------
+    # FEEDBACK ANALYSIS
+    # -------------------------
+    for line in feedback:
+        text = str(line).lower()
+
+        if "counter-trend" in text:
+            readiness_score -= 10
+            blockers.append("counter-trend setup")
+            guidance.append("align with dominant trend direction")
+            failure_tags.append("counter_trend")
+
+        if "defensive" in text:
+            readiness_score -= 10
+            blockers.append("defensive market environment")
+            guidance.append("wait for better market conditions")
+            failure_tags.append("bad_environment")
+
+    readiness_score = max(0, min(100, readiness_score))
+
+    # -------------------------
+    # BUCKET
+    # -------------------------
+    if status not in {"open", "watching"}:
+        bucket = "INACTIVE"
+        headline = "Not eligible"
+        summary = "This play is not active."
+    elif readiness_score >= 80:
+        bucket = "READY"
+        headline = "Ready to activate"
+        summary = "Strong structure and alignment."
+    elif readiness_score >= 60:
+        bucket = "CLOSE"
+        headline = "Close to ready"
+        summary = "Needs one or two improvements."
+    elif readiness_score >= 40:
+        bucket = "WATCH"
+        headline = "Watch, don’t rush"
+        summary = "Not strong enough yet."
+    else:
+        bucket = "WEAK"
+        headline = "Weak setup"
+        summary = "Too many issues right now."
+
+    return {
+        "score": readiness_score,
+        "bucket": bucket,
+        "headline": headline,
+        "summary": summary,
+        "reasons": reasons[:4],
+        "blockers": blockers[:4],
+        "guidance": guidance[:4],
+        "failure_tags": failure_tags,
+    }
+
+def build_rebuild_suggestions_from_failure_tags(failure_tags):
+    failure_tags = failure_tags or []
+
+    suggestions = []
+    promotable_conditions = []
+
+    for tag in failure_tags:
+        tag = str(tag or "").strip().lower()
+
+        if tag == "mid_health":
+            suggestions.append("Tighten the structure so the setup stops looking soft.")
+            promotable_conditions.append("Health needs to move from stable into strong territory.")
+
+        elif tag == "weak_health":
+            suggestions.append("Wait for the chart structure to repair before trusting the setup.")
+            promotable_conditions.append("Health needs to recover into at least workable territory.")
+
+        elif tag == "broken_health":
+            suggestions.append("Do not force this idea. Rebuild it only after the structure clearly recovers.")
+            promotable_conditions.append("Broken behavior must fully resolve before promotion is possible.")
+
+        elif tag == "mid_agreement":
+            suggestions.append("Wait for stronger alignment between the setup and the system read.")
+            promotable_conditions.append("Agreement needs to improve from usable to strong.")
+
+        elif tag == "weak_agreement":
+            suggestions.append("Do not trust this setup until agreement improves materially.")
+            promotable_conditions.append("Agreement must move out of mixed territory.")
+
+        elif tag == "disagreement":
+            suggestions.append("Drop or rethink the setup unless the system read flips in its favor.")
+            promotable_conditions.append("System disagreement must resolve before promotion.")
+
+        elif tag == "no_engine":
+            suggestions.append("Either align this setup more closely with engine patterns or expand engine coverage.")
+            promotable_conditions.append("Engine tracking must recognize the symbol/setup before promotion.")
+
+        elif tag == "pressure":
+            suggestions.append("Let the setup come out of pressure before considering promotion.")
+            promotable_conditions.append("Pressure conditions must clear.")
+
+        elif tag == "counter_trend":
+            suggestions.append("Avoid fighting the dominant trend unless the reversal becomes truly proven.")
+            promotable_conditions.append("Trend conflict must resolve.")
+
+        elif tag == "bad_environment":
+            suggestions.append("Wait for a less defensive environment before trusting this play.")
+            promotable_conditions.append("Market posture needs to improve.")
+
+        elif tag == "inactive":
+            suggestions.append("This play needs to return to an active state before it can be evaluated seriously.")
+            promotable_conditions.append("Play status must be active.")
+
+    def _dedupe_keep_order(items):
+        seen = set()
+        out = []
+        for item in items:
+            item = str(item or "").strip()
+            if item and item not in seen:
+                out.append(item)
+                seen.add(item)
+        return out
+
+    return {
+        "suggestions": _dedupe_keep_order(suggestions)[:5],
+        "promotable_conditions": _dedupe_keep_order(promotable_conditions)[:5],
+    }
+
+def build_failure_clusters(plays):
+    from collections import Counter
+
+    counter = Counter()
+
+    for play in plays:
+        readiness = play.get("activation_readiness", {}) or {}
+        tags = readiness.get("failure_tags", []) or []
+
+        for tag in tags:
+            counter[tag] += 1
+
+    top = counter.most_common(5)
+
+    return [{"cause": cause, "count": count} for cause, count in top]
+
+def build_weak_play_rebuild_profile(play):
+    play = play or {}
+
+    readiness = play.get("activation_readiness", {}) or {}
+    failure_tags = readiness.get("failure_tags", []) or []
+    rebuild_map = build_rebuild_suggestions_from_failure_tags(failure_tags)
+
+    bucket = str(readiness.get("bucket", "") or "").upper()
+    score = int(readiness.get("score", 0) or 0)
+
+    severity = "low"
+    if bucket == "WEAK" and score <= 15:
+        severity = "high"
+    elif bucket == "WATCH" or score <= 40:
+        severity = "medium"
+
+    rebuild_priority = 0
+    if bucket == "WEAK":
+        rebuild_priority += 20
+    if score <= 15:
+        rebuild_priority += 20
+    if "disagreement" in failure_tags:
+        rebuild_priority += 10
+    if "no_engine" in failure_tags:
+        rebuild_priority += 8
+    if "bad_environment" in failure_tags:
+        rebuild_priority += 6
+
+    return {
+        "symbol": str(play.get("symbol", "") or "").upper(),
+        "play_id": play.get("play_id"),
+        "bucket": bucket,
+        "score": score,
+        "headline": readiness.get("headline", ""),
+        "summary": readiness.get("summary", ""),
+        "severity": severity,
+        "rebuild_priority": rebuild_priority,
+        "blockers": (readiness.get("blockers", []) or [])[:4],
+        "guidance": (readiness.get("guidance", []) or [])[:4],
+        "failure_tags": failure_tags,
+        "rebuild_suggestions": rebuild_map.get("suggestions", []),
+        "promotable_conditions": rebuild_map.get("promotable_conditions", []),
+    }
+
+def build_weak_play_rebuild_queue(plays):
+    plays = plays or []
+
+    queue = []
+
+    for play in plays:
+        readiness = play.get("activation_readiness", {}) or {}
+        bucket = str(readiness.get("bucket", "") or "").upper()
+
+        if bucket not in {"WATCH", "WEAK"}:
+            continue
+
+        try:
+            queue.append(build_weak_play_rebuild_profile(play))
+        except Exception as e:
+            print(f"[REBUILD_QUEUE:{play.get('symbol', 'UNKNOWN')}] {e}")
+
+    queue = sorted(
+        queue,
+        key=lambda x: (
+            x.get("severity") == "high",
+            x.get("rebuild_priority", 0),
+            x.get("score", 0),
+        ),
+        reverse=True,
+    )
+
+    return queue[:10]
+
+def build_weak_play_rebuild_summary(plays):
+    plays = plays or []
+
+    rebuild_queue = build_weak_play_rebuild_queue(plays)
+    top_rebuild = rebuild_queue[0] if rebuild_queue else None
+
+    high_severity = [x for x in rebuild_queue if x.get("severity") == "high"]
+    medium_severity = [x for x in rebuild_queue if x.get("severity") == "medium"]
+
+    if not rebuild_queue:
+        headline = "No rebuild queue."
+        summary = "There are no weak/watch plays that currently need rebuild attention."
+    elif high_severity:
+        headline = "Some plays need rebuilding."
+        summary = "At least one active play is weak enough that it should be repaired before promotion is even considered."
+    else:
+        headline = "Some plays need refinement."
+        summary = "The weakest plays are not broken, but they still need structure work before they can move up."
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "total_rebuild_candidates": len(rebuild_queue),
+        "high_severity": len(high_severity),
+        "medium_severity": len(medium_severity),
+        "top_rebuild": top_rebuild,
+        "rebuild_queue": rebuild_queue,
+    }
+
+def build_promotion_guidance(play):
+    play = play or {}
+
+    readiness = play.get("activation_readiness", {}) or {}
+    blockers = readiness.get("blockers", []) or []
+
+    bucket = str(readiness.get("bucket", "") or "").upper()
+
+    if bucket == "READY":
+        return {
+            "next_step": "execute",
+            "message": "This play is ready. Consider moving it into a live position.",
+            "focus": [],
+        }
+
+    if bucket == "CLOSE":
+        return {
+            "next_step": "refine",
+            "message": "This is close. Clean up the weak areas to promote it.",
+            "focus": blockers[:2],
+        }
+
+    if bucket == "WATCH":
+        return {
+            "next_step": "wait",
+            "message": "Wait for structure and agreement to improve.",
+            "focus": blockers[:2],
+        }
+
+    if bucket == "WEAK":
+        return {
+            "next_step": "discard_or_rebuild",
+            "message": "This setup needs major improvement before consideration.",
+            "focus": blockers[:2],
+        }
+
+    return {
+        "next_step": "unknown",
+        "message": "No clear promotion path yet.",
+        "focus": [],
+    }
+
+
+def build_my_plays_summary(plays):
+    plays = plays or []
+
+    total = len(plays)
+    open_count = 0
+    watching_count = 0
+    archived_count = 0
+    high_agreement_count = 0
+    weak_count = 0
+    ready_count = 0
+    close_count = 0
+    watching_not_ready_count = 0
+    high_conviction_count = 0
+
+    strongest_play = None
+    weakest_play = None
+
+    for play in plays:
+        status = str(play.get("status", "Open")).strip().lower()
+        agreement_score = int((play.get("system_agreement", {}) or {}).get("score", 0) or 0)
+        conviction = str(play.get("conviction", "Medium")).strip().lower()
+
+        readiness = classify_play_readiness(play)
+        play["activation_readiness"] = readiness
+        play["promotion_guidance"] = build_promotion_guidance(play)
+
+        if status == "open":
+            open_count += 1
+        elif status == "watching":
+            watching_count += 1
+        elif status == "archived":
+            archived_count += 1
+
+        if agreement_score >= 75:
+            high_agreement_count += 1
+
+        if readiness["bucket"] == "READY":
+            ready_count += 1
+        elif readiness["bucket"] == "CLOSE":
+            close_count += 1
+        elif readiness["bucket"] in {"WATCH", "WEAK"}:
+            weak_count += 1
+
+        if status == "watching" and readiness["bucket"] != "READY":
+            watching_not_ready_count += 1
+
+        if conviction == "high":
+            high_conviction_count += 1
+
+        if strongest_play is None or readiness["score"] > strongest_play["activation_readiness"]["score"]:
+            strongest_play = play
+
+        if weakest_play is None or readiness["score"] < weakest_play["activation_readiness"]["score"]:
+            weakest_play = play
+
+    top_failure_causes = build_failure_clusters(plays)
+    promotion_summary = build_play_promotion_summary(plays)
+    rebuild_summary = build_weak_play_rebuild_summary(plays)
+
+    if total == 0:
+        headline = "No plays yet."
+        summary = "Start building your idea book so the system can pressure-test your setups."
+        action_message = "You do not have any plays in the system yet."
+    elif ready_count >= max(1, int(total * 0.2)):
+        headline = "You have real activation candidates."
+        summary = "A meaningful portion of your playbook is structurally ready."
+        action_message = "Your playbook contains enough READY setups to support selective activation."
+    elif ready_count > 0:
+        headline = "You have at least one real setup."
+        summary = "There is something actionable, but the bench still needs strengthening."
+        action_message = "You have a live candidate, but most of the playbook still needs development."
+    elif close_count > 0:
+        headline = "Your plays are close, not ready."
+        summary = "A number of ideas are warming up, but they still need cleaner confirmation."
+        action_message = "Focus on promoting CLOSE setups into READY instead of forcing weaker ideas."
+    elif weak_count >= max(2, int(total * 0.6)):
+        headline = "Too many weak setups."
+        summary = "Your playbook currently contains more weak or watch-level ideas than truly ready setups."
+        action_message = "Tighten play quality, improve structure, and focus on the top failure causes."
+    else:
+        headline = "Your playbook is developing."
+        summary = "There is some structure forming, but nothing currently deserves activation."
+        action_message = "Use blocker and guidance output to improve the best candidates."
+
+    strongest_promotion = strongest_play.get("promotion_guidance", {}) if strongest_play else {}
+    weakest_promotion = weakest_play.get("promotion_guidance", {}) if weakest_play else {}
+
+    return {
+        "total": total,
+        "open": open_count,
+        "watching": watching_count,
+        "archived": archived_count,
+        "high_agreement": high_agreement_count,
+        "weak_or_pressured": weak_count,
+        "ready_to_activate": ready_count,
+        "close_to_ready": close_count,
+        "watching_not_ready": watching_not_ready_count,
+        "high_conviction": high_conviction_count,
+        "headline": headline,
+        "summary": summary,
+        "action_message": action_message,
+        "top_failure_causes": top_failure_causes[:5],
+        "promotion_summary": promotion_summary,
+        "rebuild_summary": rebuild_summary,
+        "strongest_play": {
+            "symbol": strongest_play.get("symbol"),
+            "score": strongest_play["activation_readiness"]["score"],
+            "headline": strongest_play["activation_readiness"]["headline"],
+            "bucket": strongest_play["activation_readiness"]["bucket"],
+            "promotion_message": strongest_promotion.get("message", ""),
+            "promotion_focus": strongest_promotion.get("focus", []),
+        } if strongest_play else None,
+        "weakest_play": {
+            "symbol": weakest_play.get("symbol"),
+            "score": weakest_play["activation_readiness"]["score"],
+            "headline": weakest_play["activation_readiness"]["headline"],
+            "bucket": weakest_play["activation_readiness"]["bucket"],
+            "promotion_message": weakest_promotion.get("message", ""),
+            "promotion_focus": weakest_promotion.get("focus", []),
+        } if weakest_play else None,
+    }
 
 def effective_tier_title() -> str:
     preview = session.get("preview_tier")
@@ -474,27 +1508,20 @@ def get_fusion_market_data():
 
 
 def get_fusion_trade_results():
-    reports = load_json("data/recent_reports.json", [])
-    if not isinstance(reports, list):
-        return []
+    snapshot = get_canonical_snapshot()
+    ledger = snapshot.get("ledger", [])
+    if not isinstance(ledger, list):
+        ledger = []
 
     results = []
-    for item in reports[-20:]:
+    for item in ledger[-20:]:
         if not isinstance(item, dict):
             continue
-
-        snapshot = item.get("snapshot", {})
-        if not isinstance(snapshot, dict):
-            snapshot = {}
-
-        pnl = snapshot.get("daily_pnl", 0) or 0
-        results.append(
-            {
-                "outcome": "win" if pnl > 0 else "loss",
-                "edge_score": item.get("score", 75),
-            }
-        )
-
+        pnl = float(item.get("pnl", 0) or 0)
+        results.append({
+            "outcome": "win" if pnl > 0 else "loss" if pnl < 0 else "flat",
+            "edge_score": item.get("raw", {}).get("score", 75) if isinstance(item.get("raw"), dict) else 75,
+        })
     return results
 
 
@@ -962,6 +1989,8 @@ def inject_global_context():
 # ANALYTICS HELPERS
 # ============================================================
 
+
+
 def get_admin_metrics() -> Dict[str, Any]:
     metrics = load_json("data/admin_metrics.json", {})
     if not isinstance(metrics, dict):
@@ -1176,6 +2205,17 @@ def build_admin_shared_context():
     except Exception:
         plays = []
 
+    for play in plays:
+        try:
+            if "activation_readiness" not in play:
+                play["activation_readiness"] = classify_play_readiness(play)
+            if "promotion_guidance" not in play:
+                play["promotion_guidance"] = build_promotion_guidance(play)
+            if "rebuild_profile" not in play:
+                play["rebuild_profile"] = build_weak_play_rebuild_profile(play)
+        except Exception as e:
+            print(f"[ADMIN_SHARED_PLAY_ENRICH:{play.get('symbol', 'UNKNOWN')}] {e}")
+
     try:
         positions = get_user_positions(include_closed=True)
     except Exception:
@@ -1259,6 +2299,29 @@ def build_admin_shared_context():
             "items": [],
         }
 
+    try:
+        play_command = build_admin_play_command_summary(plays)
+    except Exception:
+        play_command = {
+            "headline": "Play command unavailable.",
+            "summary": "Could not compute play command layer.",
+            "top_failure_causes": [],
+            "promotion_summary": {},
+            "rebuild_summary": {},
+            "top_promotion_candidate": None,
+            "top_near_miss": None,
+            "top_rebuild": None,
+            "strongest_play": None,
+            "weakest_play": None,
+            "counts": {
+                "total": 0,
+                "ready": 0,
+                "close": 0,
+                "weak": 0,
+                "watching": 0,
+            },
+        }
+
     return {
         "plays": plays,
         "positions": positions,
@@ -1271,6 +2334,7 @@ def build_admin_shared_context():
         "surface_alerts": surface_alerts,
         "alert_explanations": alert_explanations,
         "quick_actions": quick_actions,
+        "play_command": play_command,
     }
 
 
@@ -2446,7 +3510,6 @@ def maybe_track_page_view(path: str) -> None:
 
 def build_admin_dashboard_context():
     shared = build_admin_shared_context()
-
     users = load_json("data/users.json", [])
     if not isinstance(users, list):
         users = []
@@ -2473,6 +3536,8 @@ def build_admin_dashboard_context():
         "behavioral_insights": shared.get("behavioral_insights", {}),
         "behavior_risk": shared.get("behavior_risk", {}),
         "data_health": data_health,
+        "play_command": shared.get("play_command", {}),
+        "canonical": shared.get("canonical", {}),
     }
 
 def build_all_symbols_page_summary(rows):
@@ -3114,11 +4179,12 @@ def build_trade_detail_payload(trade_id):
     if not isinstance(timelines, list):
         timelines = []
 
+    trade_id = str(trade_id)
     target = None
 
     # 1) Prefer rich saved trade_details
     for item in trade_details:
-        if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
+        if str(item.get("trade_id")) == trade_id or str(item.get("id")) == trade_id:
             target = dict(item)
             break
 
@@ -3126,7 +4192,7 @@ def build_trade_detail_payload(trade_id):
     if not target:
         for pool in [open_positions, closed_positions]:
             for item in pool:
-                if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
+                if str(item.get("trade_id")) == trade_id or str(item.get("id")) == trade_id:
                     target = dict(item)
                     break
             if target:
@@ -3135,7 +4201,7 @@ def build_trade_detail_payload(trade_id):
     # 3) Fall back to trade log
     if not target:
         for item in trade_log:
-            if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
+            if str(item.get("trade_id")) == trade_id or str(item.get("id")) == trade_id:
                 target = dict(item)
                 break
 
@@ -3149,24 +4215,25 @@ def build_trade_detail_payload(trade_id):
     score = target.get("score")
     confidence = target.get("confidence")
 
-    # Candidate context
+    # Candidate context — exact trade match first
     candidate = None
     for row in candidate_log:
-        same_trade = str(row.get("trade_id")) == str(trade_id)
-        same_symbol = row.get("symbol") == symbol
-        if same_trade or same_symbol:
+        if str(row.get("trade_id")) == trade_id:
             candidate = row
             break
 
-    # Timeline
+    # Narrow symbol fallback only if still missing and only one candidate exists
+    if not candidate and symbol:
+        symbol_matches = [row for row in candidate_log if row.get("symbol") == symbol]
+        if len(symbol_matches) == 1:
+            candidate = symbol_matches[0]
+
+    # Timeline — exact trade match only
     trade_timeline = []
     for row in timelines:
-        same_trade = str(row.get("trade_id")) == str(trade_id)
-        same_symbol = row.get("symbol") == symbol
-        if same_trade or same_symbol:
+        if str(row.get("trade_id")) == trade_id:
             trade_timeline.append(row)
 
-    # Enrich fallback blocks if missing
     target.setdefault("entry", entry)
     target.setdefault("atr", atr)
     target.setdefault("score", score)
@@ -3235,7 +4302,6 @@ def build_trade_detail_payload(trade_id):
 
     target["timeline"] = trade_timeline
 
-    # Pull explainability from candidate log if missing
     if candidate:
         if not target.get("why") and candidate.get("why"):
             target["why"] = candidate.get("why", [])
@@ -3275,86 +4341,10 @@ def get_system_state() -> Dict[str, Any]:
     }
 
 
-def performance_summary() -> Dict[str, Any]:
-    summary = load_json("data/portfolio_summary.json", {})
-    if not isinstance(summary, dict):
-        summary = {}
-
-    perf_file = load_json("data/performance_summary.json", {})
-    if not isinstance(perf_file, dict):
-        perf_file = {}
-
-    reports = load_json("data/recent_reports.json", [])
-    if not isinstance(reports, list):
-        reports = []
-
-    latest_report = reports[-1] if reports and isinstance(reports[-1], dict) else {}
-    latest_proof = latest_report.get("proof", {}) if isinstance(latest_report, dict) else {}
-    if not isinstance(latest_proof, dict):
-        latest_proof = {}
-
-    return {
-        "trades": (
-            latest_proof.get("trades")
-            or perf_file.get("trades")
-            or summary.get("trades")
-            or 0
-        ),
-        "winrate": (
-            latest_proof.get("winrate")
-            or perf_file.get("winrate")
-            or summary.get("winrate")
-            or "N/A"
-        ),
-        "max_drawdown": (
-            latest_proof.get("max_drawdown")
-            or perf_file.get("max_drawdown")
-            or summary.get("max_drawdown")
-            or "N/A"
-        ),
-    }
-
-
-def unrealized_pnl() -> Any:
-    summary = load_json("data/unrealized_pnl.json", {})
-    if isinstance(summary, dict):
-        return summary.get("value", 0)
-    return 0
-
-
-def strategy_breakdown() -> Dict[str, Any]:
-    data = load_json("data/strategy_breakdown.json", {})
-    if not isinstance(data, dict):
-        return {}
-    return data
-
-
-def get_dashboard_state() -> Dict[str, Any]:
-    return {
-        "snapshot": get_dashboard_snapshot(),
-        "system": get_system_state(),
-    }
-
-
 def get_positions() -> List[Dict[str, Any]]:
     positions = load_json("data/positions.json", [])
-    if isinstance(positions, list) and positions:
+    if isinstance(positions, list):
         return positions
-
-    summary = load_json("data/portfolio_summary.json", {})
-    if isinstance(summary, dict):
-        summary_positions = summary.get("positions", [])
-        if isinstance(summary_positions, list):
-            return summary_positions
-
-    reports = load_json("data/recent_reports.json", [])
-    if isinstance(reports, list) and reports:
-        latest_report = reports[-1]
-        if isinstance(latest_report, dict):
-            report_positions = latest_report.get("positions", [])
-            if isinstance(report_positions, list):
-                return report_positions
-
     return []
 
 
@@ -3585,23 +4575,24 @@ def landing_page():
 def dashboard_page():
     maybe_track_page_view("/dashboard")
 
-    snapshot = get_dashboard_snapshot()
+    snapshot = get_canonical_snapshot()
+
+    performance = snapshot.get("performance", {})
+    analytics = snapshot.get("analytics", {})
+    portfolio_summary = snapshot.get("portfolio_summary", {})
+    unreal = snapshot.get("unrealized", {})
+    strategies = snapshot.get("strategy_performance", {})
+    drawdown = snapshot.get("drawdown_history", [])
+    final_account = snapshot.get("final_account_snapshot", {})
+
     system = get_system_state()
-    proof = performance_summary()
     positions = get_positions_with_intelligence()
     reports = load_json("data/recent_reports.json", [])
     if not isinstance(reports, list):
         reports = []
 
-    equity_values = []
-    equity_labels = []
-    for item in reports:
-        if not isinstance(item, dict):
-            continue
-        snapshot_block = item.get("snapshot", {})
-        if isinstance(snapshot_block, dict):
-            equity_values.append(snapshot_block.get("estimated_account_value", 0))
-        equity_labels.append(item.get("timestamp", ""))
+    equity_values = [row.get("equity", 0) for row in drawdown]
+    equity_labels = [row.get("closed_at", "") for row in drawdown]
 
     sample_signals = [
         {
@@ -3652,15 +4643,17 @@ def dashboard_page():
         "dashboard.html",
         **template_context(
             {
-                "state": get_dashboard_state(),
-                "proof": proof,
-                "unreal": unrealized_pnl(),
-                "strategies": strategy_breakdown(),
-                "drawdown": load_json("data/drawdown_history.json", []),
+                "state": final_account,
+                "proof": performance,
+                "analytics": analytics,
+                "portfolio_summary": portfolio_summary,
+                "unreal": unreal,
+                "strategies": strategies,
+                "drawdown": drawdown,
                 "equity_values": equity_values,
                 "equity_labels": equity_labels,
                 "positions": positions,
-                "snapshot": snapshot,
+                "snapshot": final_account,
                 "system": system,
                 "reports": reports,
                 "fusion_payloads": fusion_payloads,
@@ -4554,7 +5547,13 @@ def api_live_state():
 
 @app.route("/proof")
 def proof_page():
-    return render_template_safe("proof.html", **template_context({"proof": performance_summary()}))
+    proof = performance_summary()
+    return render_template_safe(
+        "proof.html",
+        **template_context({
+            "proof": proof,
+        }),
+    )
 
 
 @app.route("/research")
@@ -4574,33 +5573,45 @@ def research_overview():
 def analytics_overview():
     maybe_track_page_view("/analytics-overview")
 
-    stats = load_json("data/analytics_overview.json", {})
-    if not isinstance(stats, dict):
-        stats = {}
+    snapshot = get_canonical_snapshot()
+    analytics = snapshot.get("analytics", {})
+    proof = snapshot.get("performance", {})
+    portfolio_summary = snapshot.get("portfolio_summary", {})
 
     return render_template_safe(
         "analytics_overview.html",
-        **template_context({"stats": stats, "proof": performance_summary()}),
+        **template_context({
+            "stats": analytics,
+            "proof": proof,
+            "portfolio_summary": portfolio_summary,
+        }),
     )
 
 
 @app.route("/analytics")
 def analytics_page():
-    stats = load_json("data/analytics_overview.json", {})
-    if not isinstance(stats, dict):
-        stats = {}
+    snapshot = get_canonical_snapshot()
+
+    analytics = snapshot.get("analytics", {})
+    portfolio_summary = snapshot.get("portfolio_summary", {})
+    proof = snapshot.get("performance", {})
+    unreal = snapshot.get("unrealized", {})
+    strategies = snapshot.get("strategy_performance", {})
+    drawdown = snapshot.get("drawdown_history", [])
+    final_account = snapshot.get("final_account_snapshot", {})
 
     return render_template_safe(
         "analytics.html",
         **template_context(
             {
-                "stats": stats,
-                "summary": load_json("data/portfolio_summary.json", {}),
-                "proof": performance_summary(),
-                "unreal": unrealized_pnl(),
-                "strategies": strategy_breakdown(),
-                "drawdown": load_json("data/drawdown_history.json", []),
-                "reports": load_json("data/recent_reports.json", []),
+                "stats": analytics,
+                "summary": portfolio_summary,
+                "proof": proof,
+                "unreal": unreal,
+                "strategies": strategies,
+                "drawdown": drawdown,
+                "reports": [],
+                "snapshot": final_account,
             }
         ),
     )
@@ -4609,13 +5620,19 @@ def analytics_page():
 @app.route("/analytics/performance")
 def analytics_performance_page():
     maybe_track_page_view("/analytics/performance")
+
+    snapshot = get_canonical_snapshot()
+
+    proof = snapshot.get("performance", {})
+    portfolio_summary = snapshot.get("portfolio_summary", {})
+
     return render_template_safe(
         "analytics_performance.html",
         **template_context(
             {
-                "proof": performance_summary(),
-                "reports": load_json("data/recent_reports.json", []),
-                "summary": load_json("data/portfolio_summary.json", {}),
+                "proof": proof,
+                "reports": [],
+                "summary": portfolio_summary,
             }
         ),
     )
@@ -4637,211 +5654,17 @@ def strategy_behavior_page():
     )
 
 
-def classify_play_readiness(play):
-    play = play or {}
-
-    status = str(play.get("status", "Open")).strip().lower()
-    conviction = str(play.get("conviction", "Medium")).strip().lower()
-    health = play.get("health", {}) or {}
-    agreement = play.get("system_agreement", {}) or {}
-    candidate = play.get("engine_candidate")
-    feedback = play.get("system_feedback", []) or []
-
-    health_score = int(health.get("score", 0) or 0)
-    agreement_score = int(agreement.get("score", 0) or 0)
-    health_label = str(health.get("label", "")).strip().upper()
-
-    readiness_score = 0
-    reasons = []
-
-    if status in {"open", "watching"}:
-        readiness_score += 10
-        reasons.append("play is still active")
-    else:
-        reasons.append("play is not in an active state")
-
-    if health_score >= 75:
-        readiness_score += 30
-        reasons.append("health is strong")
-    elif health_score >= 55:
-        readiness_score += 15
-        reasons.append("health is stable")
-    elif health_score >= 35:
-        readiness_score += 5
-        reasons.append("health is mixed")
-    else:
-        readiness_score -= 25
-        reasons.append("health is weak")
-
-    if agreement_score >= 75:
-        readiness_score += 30
-        reasons.append("system agreement is strong")
-    elif agreement_score >= 55:
-        readiness_score += 15
-        reasons.append("system agreement is usable")
-    elif agreement_score >= 35:
-        readiness_score += 5
-        reasons.append("system agreement is mixed")
-    else:
-        readiness_score -= 25
-        reasons.append("system agreement is weak")
-
-    if candidate:
-        readiness_score += 10
-        reasons.append("engine is actively tracking the symbol")
-    else:
-        readiness_score -= 10
-        reasons.append("engine is not actively tracking the symbol")
-
-    if conviction == "high":
-        readiness_score += 5
-        reasons.append("you have high conviction")
-    elif conviction == "medium":
-        readiness_score += 2
-        reasons.append("you have moderate conviction")
-
-    if health_label in {"BROKEN", "UNDER PRESSURE"}:
-        readiness_score -= 15
-        reasons.append("behavior is under pressure")
-
-    if any("counter-trend" in str(line).lower() for line in feedback):
-        readiness_score -= 10
-        reasons.append("system feedback flags counter-trend behavior")
-
-    if any("defensive market posture" in str(line).lower() for line in feedback):
-        readiness_score -= 10
-        reasons.append("system feedback flags a defensive environment conflict")
-
-    readiness_score = max(0, min(100, readiness_score))
-
-    if status not in {"open", "watching"}:
-        bucket = "INACTIVE"
-        headline = "Not eligible for activation"
-        summary = "This play is not in an active working state right now."
-    elif readiness_score >= 80:
-        bucket = "READY"
-        headline = "Ready to activate"
-        summary = "This idea has enough structural support to be treated like a serious candidate for live management."
-    elif readiness_score >= 60:
-        bucket = "CLOSE"
-        headline = "Close, but not fully proven"
-        summary = "This idea has some real support, but it still needs cleaner evidence before it deserves full activation."
-    elif readiness_score >= 40:
-        bucket = "WATCH"
-        headline = "Watch, don’t rush"
-        summary = "This play is not dead, but it is not strong enough to promote with confidence."
-    else:
-        bucket = "WEAK"
-        headline = "Weak setup"
-        summary = "This idea does not currently deserve activation. The evidence is too soft or too conflicted."
-
-    return {
-        "score": readiness_score,
-        "bucket": bucket,
-        "headline": headline,
-        "summary": summary,
-        "reasons": reasons[:4],
-    }
-
-
-def build_my_plays_summary(plays):
-    plays = plays or []
-
-    total = len(plays)
-    open_count = 0
-    watching_count = 0
-    archived_count = 0
-    high_agreement_count = 0
-    weak_count = 0
-    ready_count = 0
-    close_count = 0
-    watching_not_ready_count = 0
-    high_conviction_count = 0
-
-    strongest_play = None
-    weakest_play = None
-
-    for play in plays:
-        status = str(play.get("status", "Open")).strip().lower()
-        agreement_score = int((play.get("system_agreement", {}) or {}).get("score", 0) or 0)
-        conviction = str(play.get("conviction", "Medium")).strip().lower()
-
-        readiness = classify_play_readiness(play)
-        play["activation_readiness"] = readiness
-
-        if status == "open":
-            open_count += 1
-        elif status == "watching":
-            watching_count += 1
-        elif status == "archived":
-            archived_count += 1
-
-        if agreement_score >= 75:
-            high_agreement_count += 1
-
-        if readiness["bucket"] == "READY":
-            ready_count += 1
-        elif readiness["bucket"] == "CLOSE":
-            close_count += 1
-        elif readiness["bucket"] in {"WATCH", "WEAK"}:
-            weak_count += 1
-
-        if status == "watching" and readiness["bucket"] != "READY":
-            watching_not_ready_count += 1
-
-        if conviction == "high":
-            high_conviction_count += 1
-
-        if strongest_play is None or readiness["score"] > strongest_play["activation_readiness"]["score"]:
-            strongest_play = play
-
-        if weakest_play is None or readiness["score"] < weakest_play["activation_readiness"]["score"]:
-            weakest_play = play
-
-    if ready_count > 0:
-        headline = "You have plays that may deserve activation."
-        summary = "Some ideas are showing strong enough behavior and agreement to be considered real candidates."
-    elif close_count > 0:
-        headline = "Some ideas are getting warmer."
-        summary = "A few plays are close, but still need cleaner confirmation before they deserve live management."
-    elif total == 0:
-        headline = "No plays yet."
-        summary = "Start building your idea book so the system can pressure-test your setups."
-    else:
-        headline = "Your idea book needs more filtering."
-        summary = "Most current plays still look more watchable than actionable."
-
-    return {
-        "total": total,
-        "open": open_count,
-        "watching": watching_count,
-        "archived": archived_count,
-        "high_agreement": high_agreement_count,
-        "weak_or_pressured": weak_count,
-        "ready_to_activate": ready_count,
-        "close_to_ready": close_count,
-        "watching_not_ready": watching_not_ready_count,
-        "high_conviction": high_conviction_count,
-        "headline": headline,
-        "summary": summary,
-        "strongest_play": {
-            "symbol": strongest_play.get("symbol"),
-            "score": strongest_play["activation_readiness"]["score"],
-            "headline": strongest_play["activation_readiness"]["headline"],
-        } if strongest_play else None,
-        "weakest_play": {
-            "symbol": weakest_play.get("symbol"),
-            "score": weakest_play["activation_readiness"]["score"],
-            "headline": weakest_play["activation_readiness"]["headline"],
-        } if weakest_play else None,
-    }
-
-
 @app.route("/my-plays")
 def my_plays_page():
     maybe_track_page_view("/my-plays")
 
     plays = get_my_plays()
+
+    for play in plays:
+        play["activation_readiness"] = classify_play_readiness(play)
+        play["promotion_guidance"] = build_promotion_guidance(play)
+        play["rebuild_profile"] = build_weak_play_rebuild_profile(play)
+
     plays_summary = build_my_plays_summary(plays)
     page_summary = build_my_plays_page_summary(plays)
 
@@ -4858,6 +5681,7 @@ def my_plays_page():
         ]
         filter_title = "Ready Plays"
         filter_note = "Showing only ideas that currently look ready for activation."
+
     elif filter_key == "close":
         filtered_plays = [
             p for p in plays
@@ -4865,6 +5689,7 @@ def my_plays_page():
         ]
         filter_title = "Close to Ready"
         filter_note = "Showing ideas that are warming up but still need cleaner confirmation."
+
     elif filter_key == "weak":
         filtered_plays = [
             p for p in plays
@@ -4872,28 +5697,35 @@ def my_plays_page():
         ]
         filter_title = "Weak / Watch Plays"
         filter_note = "Showing ideas that currently look too soft, conflicted, or underdeveloped."
+
     elif filter_key == "high_agreement":
-        filtered_plays = [p for p in plays if _agreement_score(p) >= 75]
+        filtered_plays = [
+            p for p in plays
+            if int((p.get("system_agreement", {}) or {}).get("score", 0) or 0) >= 75
+        ]
         filter_title = "High Agreement Plays"
         filter_note = "Showing plays with stronger system agreement."
+
     elif filter_key == "high_conviction":
         filtered_plays = [
             p for p in plays
-            if _norm_text(p.get("conviction", "Medium")).lower() == "high"
+            if str(p.get("conviction", "Medium")).strip().lower() == "high"
         ]
         filter_title = "High Conviction Plays"
         filter_note = "Showing only high-conviction ideas."
+
     elif filter_key == "watching":
         filtered_plays = [
             p for p in plays
-            if _norm_text(p.get("status", "Open")).lower() == "watching"
+            if str(p.get("status", "Open")).strip().lower() == "watching"
         ]
         filter_title = "Watching Plays"
         filter_note = "Showing only plays currently marked as watching."
+
     elif filter_key == "archived":
         filtered_plays = [
             p for p in plays
-            if _norm_text(p.get("status", "Open")).lower() == "archived"
+            if str(p.get("status", "Open")).strip().lower() == "archived"
         ]
         filter_title = "Archived Plays"
         filter_note = "Showing archived ideas."
@@ -4969,9 +5801,13 @@ def add_my_play():
 @app.route("/my-plays/<play_id>")
 def my_play_detail_page(play_id):
     maybe_track_page_view(f"/my-plays/{play_id}")
+
     play = get_play(play_id)
+
     if play:
         play["activation_readiness"] = classify_play_readiness(play)
+        play["promotion_guidance"] = build_promotion_guidance(play)
+        play["rebuild_profile"] = build_weak_play_rebuild_profile(play)
 
     return render_template_safe(
         "my_play_detail.html",
@@ -5081,14 +5917,21 @@ def activate_my_play(play_id):
 
 @app.route("/analytics/risk")
 def analytics_risk_page():
+    snapshot = get_canonical_snapshot()
+
+    proof = snapshot.get("performance", {})
+    portfolio_summary = snapshot.get("portfolio_summary", {})
+    drawdown = snapshot.get("drawdown_history", [])
+    system = get_system_state()
+
     return render_template_safe(
         "analytics_risk.html",
         **template_context(
             {
-                "proof": performance_summary(),
-                "summary": load_json("data/portfolio_summary.json", {}),
-                "system": get_system_state(),
-                "drawdown": load_json("data/drawdown_history.json", []),
+                "proof": proof,
+                "summary": portfolio_summary,
+                "system": system,
+                "drawdown": drawdown,
             }
         ),
     )
@@ -5287,6 +6130,7 @@ def admin_dashboard():
             "behavioral_insights": shared.get("behavioral_insights", {}),
             "behavior_risk": shared.get("behavior_risk", {}),
             "data_health": data_health,
+            "play_command": shared.get("play_command", {}),
         }),
     )
 
@@ -5457,7 +6301,7 @@ def admin_clear_preview_tier():
 
     session.pop("preview_tier", None)
     return redirect(request.referrer or url_for("admin_dashboard"))
-    
+
 
 @app.route("/admin/diagnostics")
 def admin_diagnostics_page():
