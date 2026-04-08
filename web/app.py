@@ -324,6 +324,107 @@ def load_canonical_closed_trade_ledger():
     return normalized
 
 
+def enrich_trade_record(base: Dict[str, Any]) -> Dict[str, Any]:
+    if not isinstance(base, dict):
+        return {}
+
+    enriched = dict(base)
+    raw = base.get("raw", {}) if isinstance(base.get("raw"), dict) else {}
+
+    symbol = enriched.get("symbol") or raw.get("symbol")
+    direction = enriched.get("direction") or raw.get("direction") or raw.get("strategy")
+    pnl = float(enriched.get("pnl", 0) or 0)
+
+    score_raw = raw.get("score", 0)
+    confidence_raw = raw.get("confidence", "")
+    reason_raw = str(raw.get("reason", "") or "").strip().upper()
+    exit_explanation = str(raw.get("exit_explanation", "") or "").strip()
+
+    try:
+        score = float(score_raw or 0)
+    except Exception:
+        score = 0.0
+
+    confidence = str(confidence_raw or "").strip().upper()
+
+    enriched["symbol"] = symbol
+    enriched["direction"] = direction
+    enriched["pnl"] = pnl
+    enriched["score"] = score
+    enriched["confidence"] = confidence
+
+    reason_hint = reason_raw
+
+    if reason_hint == "TAKE_PROFIT" and score >= 180 and confidence == "HIGH":
+        setup_family = "high_score_momentum"
+    elif reason_hint == "TAKE_PROFIT" and score >= 120:
+        setup_family = "strong_structured"
+    elif reason_hint == "STOP_LOSS" and score >= 180:
+        setup_family = "failed_high_score_momentum"
+    elif reason_hint == "STOP_LOSS" and score >= 120:
+        setup_family = "failed_structured"
+    elif score >= 180 and confidence == "HIGH":
+        setup_family = "high_score_momentum"
+    elif score >= 120:
+        setup_family = "structured"
+    else:
+        setup_family = "speculative"
+
+    enriched["setup_family"] = setup_family
+
+    if reason_hint == "TAKE_PROFIT" and score >= 180 and confidence == "HIGH":
+        entry_quality = "high_conviction"
+    elif reason_hint == "TAKE_PROFIT":
+        entry_quality = "acceptable"
+    elif reason_hint == "STOP_LOSS" and score >= 180:
+        entry_quality = "overconfident"
+    elif reason_hint == "STOP_LOSS" and score >= 120:
+        entry_quality = "failed_clean"
+    elif score >= 180 and confidence == "HIGH":
+        entry_quality = "high_conviction"
+    elif score >= 100 and confidence in {"HIGH", "MEDIUM"}:
+        entry_quality = "acceptable"
+    else:
+        entry_quality = "weak"
+
+    enriched["entry_quality"] = entry_quality
+
+    enriched["exit_reason"] = reason_raw
+    enriched["exit_explanation"] = exit_explanation
+
+    failure_reason = ""
+    success_reason = ""
+
+    if enriched.get("outcome") == "loss":
+        if reason_raw == "STOP_LOSS":
+            failure_reason = "stopped_out"
+        elif reason_raw == "TIME_EXIT":
+            failure_reason = "time_exit_loss"
+        elif score < 100:
+            failure_reason = "weak_entry_structure"
+        else:
+            failure_reason = "loss_after_entry"
+    elif enriched.get("outcome") == "win":
+        if reason_raw == "TAKE_PROFIT":
+            success_reason = "target_hit"
+        elif score >= 180 and confidence == "HIGH":
+            success_reason = "high_conviction_win"
+        else:
+            success_reason = "profitable_exit"
+
+    enriched["failure_reason"] = failure_reason
+    enriched["success_reason"] = success_reason
+
+    enriched["market_regime"] = "unknown"
+    enriched["volatility_state"] = "unknown"
+    enriched["breadth"] = "unknown"
+    enriched["engine_agreement"] = None
+    enriched["thesis"] = []
+    enriched["notes"] = ""
+
+    return enriched
+
+
 # ============================================================
 # SECTION 73ZH — CALIBRATED SETUP FAMILY CLASSIFIER
 # ============================================================
@@ -445,7 +546,12 @@ def classify_entry_quality(trade: Dict[str, Any]) -> str:
 
 
 def build_canonical_reporting_snapshot():
-    closed_trades = load_canonical_closed_trade_ledger()
+    raw_trades = load_canonical_closed_trade_ledger()
+
+    closed_trades = []
+    for t in raw_trades:
+        enriched = enrich_trade_record(t)
+        closed_trades.append(enriched)
 
     total_trades = len(closed_trades)
     wins = sum(1 for x in closed_trades if x.get("outcome") == "win")
@@ -527,12 +633,7 @@ def build_canonical_reporting_snapshot():
         if not isinstance(row, dict):
             continue
 
-        setup_family = classify_setup_family(row)
-        entry_quality = classify_entry_quality(row)
-
-        enriched_row = dict(row)
-        enriched_row["setup_family"] = setup_family
-        enriched_row["entry_quality"] = entry_quality
+        enriched_row = enrich_trade_record(row)
         enriched_ledger.append(enriched_row)
 
     return {
@@ -702,8 +803,8 @@ def classify_trade_learning_outcome(trade: Dict[str, Any]) -> Dict[str, Any]:
     symbol = str(trade.get("symbol", "") or "").upper().strip()
     direction = str(trade.get("direction", trade.get("strategy", "")) or "").upper().strip()
 
-    entry_quality = str(trade.get("entry_quality", "") or "").strip().lower()
-    setup_family = str(trade.get("setup_family", trade.get("setup_type", "")) or "").strip().lower()
+    setup_family = str(trade.get("setup_family", "unknown") or "unknown").strip().lower()
+    entry_quality = str(trade.get("entry_quality", "unknown") or "unknown").strip().lower()
     outcome = str(trade.get("outcome", "") or "").strip().lower()
 
     if not outcome:
@@ -717,45 +818,65 @@ def classify_trade_learning_outcome(trade: Dict[str, Any]) -> Dict[str, Any]:
     failure_tags = []
     success_tags = []
 
-    if entry_quality in {"late", "chased", "poor"}:
-        failure_tags.append("late_entry")
-    elif entry_quality in {"early", "clean", "good"}:
-        success_tags.append("clean_entry")
-
-    if pnl < 0:
+    if outcome == "loss":
         failure_tags.append("loss")
-    elif pnl > 0:
+
+        if entry_quality == "weak":
+            failure_tags.append("weak_entry_quality")
+        elif entry_quality == "acceptable":
+            failure_tags.append("acceptable_entry_loss")
+        elif entry_quality == "high_conviction":
+            failure_tags.append("high_conviction_loss")
+
+        if setup_family == "speculative":
+            failure_tags.append("setup_speculative")
+        elif setup_family == "structured":
+            failure_tags.append("setup_structured")
+        elif setup_family == "strong_structured":
+            failure_tags.append("setup_strong_structured")
+        elif setup_family == "high_score_momentum":
+            failure_tags.append("setup_high_score_momentum")
+
+    elif outcome == "win":
         success_tags.append("profit")
+
+        if entry_quality == "weak":
+            success_tags.append("weak_entry_win")
+        elif entry_quality == "acceptable":
+            success_tags.append("acceptable_entry_win")
+        elif entry_quality == "high_conviction":
+            success_tags.append("high_conviction_win")
+
+        if setup_family == "speculative":
+            success_tags.append("setup_speculative")
+        elif setup_family == "structured":
+            success_tags.append("setup_structured")
+        elif setup_family == "strong_structured":
+            success_tags.append("setup_strong_structured")
+        elif setup_family == "high_score_momentum":
+            success_tags.append("setup_high_score_momentum")
+
     else:
         failure_tags.append("flat_result")
-
-    if setup_family:
-        setup_tag = f"setup_{setup_family}"
-        if pnl > 0:
-            success_tags.append(setup_tag)
-        elif pnl < 0:
-            failure_tags.append(setup_tag)
 
     headline = "Trade result classified."
     summary = "The learning engine reviewed this trade outcome."
 
-    if pnl < 0 and "late_entry" in failure_tags:
-        headline = "Timing likely hurt this trade."
-        summary = "The trade appears to have failed with late or degraded timing."
-    elif pnl < 0:
+    if outcome == "loss":
         headline = "Trade failed."
         summary = "The trade closed as a loss and should contribute to failure memory."
-    elif pnl > 0 and "clean_entry" in success_tags:
-        headline = "Clean win behavior detected."
-        summary = "The trade won with signs of cleaner execution."
-    elif pnl > 0:
+    elif outcome == "win":
         headline = "Trade succeeded."
         summary = "The trade closed profitably and should contribute to success memory."
+    else:
+        headline = "Trade finished flat."
+        summary = "The trade closed flat and contributes weak learning pressure."
 
     return {
         "symbol": symbol,
         "direction": direction or "UNKNOWN",
-        "setup_family": setup_family or "unknown",
+        "setup_family": setup_family,
+        "entry_quality": entry_quality,
         "outcome": outcome,
         "pnl": pnl,
         "headline": headline,
@@ -876,7 +997,7 @@ def build_learning_memory_from_ledger() -> Dict[str, Any]:
         "by_symbol": by_symbol,
         "by_setup": by_setup,
         "by_entry_quality": by_entry_quality,
-    }  
+    }
 
 # ============================================================
 # SECTION 73E — LEARNING PRESSURE SUMMARY
@@ -966,7 +1087,7 @@ def build_learning_recommendations() -> Dict[str, Any]:
         ),
         "items": recommendations,
         "top_item": recommendations[0] if recommendations else None,
-    } 
+    }
 
 # ============================================================
 # SECTION 73G — LEARNING DASHBOARD PAYLOAD
@@ -981,7 +1102,7 @@ def build_learning_dashboard_payload() -> Dict[str, Any]:
         "memory": memory,
         "pressure": pressure,
         "recommendations": recommendations,
-    }       
+    }
 
 
 # ============================================================

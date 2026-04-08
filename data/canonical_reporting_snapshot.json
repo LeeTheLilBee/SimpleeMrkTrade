@@ -22,8 +22,20 @@
         "reason": "TAKE_PROFIT",
         "exit_explanation": ""
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 210.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "TAKE_PROFIT",
+      "exit_explanation": "",
+      "failure_reason": "",
+      "success_reason": "target_hit",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     },
     {
       "symbol": "AMZN",
@@ -47,8 +59,20 @@
         "reason": "TAKE_PROFIT",
         "exit_explanation": ""
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 201.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "TAKE_PROFIT",
+      "exit_explanation": "",
+      "failure_reason": "",
+      "success_reason": "target_hit",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     },
     {
       "symbol": "AAPL",
@@ -72,8 +96,20 @@
         "reason": "manual",
         "exit_explanation": "Position was closed manually."
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 210.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "MANUAL",
+      "exit_explanation": "Position was closed manually.",
+      "failure_reason": "loss_after_entry",
+      "success_reason": "",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     },
     {
       "symbol": "AAPL",
@@ -97,8 +133,20 @@
         "reason": "cut_weakness",
         "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.34."
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 210.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "CUT_WEAKNESS",
+      "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.34.",
+      "failure_reason": "loss_after_entry",
+      "success_reason": "",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     },
     {
       "symbol": "AMZN",
@@ -122,8 +170,20 @@
         "reason": "cut_weakness",
         "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -0.52."
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 201.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "CUT_WEAKNESS",
+      "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -0.52.",
+      "failure_reason": "loss_after_entry",
+      "success_reason": "",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     },
     {
       "symbol": "AAPL",
@@ -147,8 +207,20 @@
         "reason": "cut_weakness",
         "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.34."
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 210.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "CUT_WEAKNESS",
+      "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.34.",
+      "failure_reason": "loss_after_entry",
+      "success_reason": "",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     },
     {
       "symbol": "MSFT",
@@ -172,8 +244,20 @@
         "reason": "cut_weakness",
         "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.16."
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 207.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "CUT_WEAKNESS",
+      "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.16.",
+      "failure_reason": "loss_after_entry",
+      "success_reason": "",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     },
     {
       "symbol": "NVDA",
@@ -197,8 +281,20 @@
         "reason": "cut_weakness",
         "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -10.35."
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 204.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "CUT_WEAKNESS",
+      "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -10.35.",
+      "failure_reason": "loss_after_entry",
+      "success_reason": "",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     },
     {
       "symbol": "META",
@@ -222,8 +318,20 @@
         "reason": "cut_weakness",
         "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -1.49."
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 198.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "CUT_WEAKNESS",
+      "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -1.49.",
+      "failure_reason": "loss_after_entry",
+      "success_reason": "",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     },
     {
       "symbol": "GOOGL",
@@ -247,8 +355,20 @@
         "reason": "cut_weakness",
         "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.73."
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 195.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "CUT_WEAKNESS",
+      "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.73.",
+      "failure_reason": "loss_after_entry",
+      "success_reason": "",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     },
     {
       "symbol": "TSLA",
@@ -272,8 +392,20 @@
         "reason": "cut_weakness",
         "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.57."
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 192.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "CUT_WEAKNESS",
+      "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.57.",
+      "failure_reason": "loss_after_entry",
+      "success_reason": "",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     },
     {
       "symbol": "AMD",
@@ -297,8 +429,20 @@
         "reason": "cut_weakness",
         "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.66."
       },
-      "setup_family": "structured",
-      "entry_quality": "clean"
+      "score": 189.0,
+      "confidence": "HIGH",
+      "setup_family": "high_score_momentum",
+      "entry_quality": "high_conviction",
+      "exit_reason": "CUT_WEAKNESS",
+      "exit_explanation": "Position closed due to cut_weakness, resulting in a loss of -11.66.",
+      "failure_reason": "loss_after_entry",
+      "success_reason": "",
+      "market_regime": "unknown",
+      "volatility_state": "unknown",
+      "breadth": "unknown",
+      "engine_agreement": null,
+      "thesis": [],
+      "notes": ""
     }
   ],
   "performance": {
