@@ -324,6 +324,126 @@ def load_canonical_closed_trade_ledger():
     return normalized
 
 
+# ============================================================
+# SECTION 73ZH — CALIBRATED SETUP FAMILY CLASSIFIER
+# ============================================================
+
+def classify_setup_family(trade: Dict[str, Any]) -> str:
+    trade = trade or {}
+
+    raw = trade.get("raw", {}) if isinstance(trade.get("raw", {}), dict) else {}
+
+    candidates = [
+        trade.get("setup_family"),
+        trade.get("setup_type"),
+        trade.get("pattern"),
+        trade.get("thesis"),
+        raw.get("setup_family"),
+        raw.get("setup_type"),
+        raw.get("pattern"),
+        raw.get("thesis"),
+        raw.get("notes"),
+    ]
+
+    text = " ".join(str(x or "") for x in candidates).strip().lower()
+
+    if not text:
+        return "structured"
+
+    if "continuation" in text:
+        return "continuation"
+    if "breakout" in text:
+        return "breakout"
+    if "pullback" in text:
+        return "pullback"
+    if "reversal" in text:
+        return "reversal"
+    if "mean reversion" in text or "mean_reversion" in text:
+        return "mean_reversion"
+    if "trend" in text:
+        return "trend"
+    if "momentum" in text:
+        return "momentum"
+    if "bounce" in text:
+        return "bounce"
+    if "support" in text or "resistance" in text:
+        return "levels"
+    if "range" in text:
+        return "range"
+    if "scalp" in text:
+        return "scalp"
+
+    score = float(trade.get("score", raw.get("score", 0)) or 0)
+
+    if score >= 85:
+        return "momentum"
+    if score >= 65:
+        return "structured"
+    return "unclear"
+
+
+# ============================================================
+# ENTRY QUALITY CLASSIFIER
+# ============================================================
+
+# ============================================================
+# SECTION 73ZI — CALIBRATED ENTRY QUALITY CLASSIFIER
+# ============================================================
+
+def classify_entry_quality(trade: Dict[str, Any]) -> str:
+    trade = trade or {}
+
+    raw = trade.get("raw", {}) if isinstance(trade.get("raw", {}), dict) else {}
+
+    explicit = str(
+        trade.get("entry_quality")
+        or raw.get("entry_quality")
+        or ""
+    ).strip().lower()
+
+    if explicit in {"clean", "great", "ideal", "excellent"}:
+        return "clean"
+    if explicit in {"acceptable", "fine", "okay", "ok", "decent"}:
+        return "acceptable"
+    if explicit in {"late", "poor", "bad"}:
+        return "late"
+    if explicit in {"chased", "chase"}:
+        return "chased"
+
+    score = float(trade.get("score", raw.get("score", 0)) or 0)
+    pnl = float(trade.get("pnl", 0) or 0)
+    confidence = str(trade.get("confidence", raw.get("confidence", "")) or "").strip().upper()
+
+    notes_blob = " ".join(
+        str(x or "") for x in [
+            trade.get("notes"),
+            raw.get("notes"),
+            raw.get("thesis"),
+        ]
+    ).lower()
+
+    if "late" in notes_blob:
+        return "late"
+    if "chase" in notes_blob or "chased" in notes_blob:
+        return "chased"
+    if "clean" in notes_blob:
+        return "clean"
+
+    if score >= 85 and confidence in {"HIGH", "STRONG"}:
+        return "clean"
+
+    if score >= 70:
+        return "acceptable"
+
+    if score >= 50:
+        return "late"
+
+    if pnl > 0:
+        return "acceptable"
+
+    return "late"
+
+
 def build_canonical_reporting_snapshot():
     closed_trades = load_canonical_closed_trade_ledger()
 
@@ -340,7 +460,6 @@ def build_canonical_reporting_snapshot():
 
     for row in closed_trades:
         direction = str(row.get("direction", "UNKNOWN") or "UNKNOWN").upper()
-
         strategy_counts[direction] = strategy_counts.get(direction, 0) + 1
 
         if direction not in strategy_performance:
@@ -364,7 +483,6 @@ def build_canonical_reporting_snapshot():
 
     positions = get_positions_with_intelligence()
     open_positions = [p for p in positions if str(p.get("status", "")).lower() != "closed"]
-
     closed_position_count = total_trades
 
     unrealized_total = 0.0
@@ -394,6 +512,7 @@ def build_canonical_reporting_snapshot():
         peak = max(peak, running_equity)
         drawdown = round(peak - running_equity, 2)
         max_drawdown = max(max_drawdown, drawdown)
+
         equity_curve.append({
             "equity": round(running_equity, 2),
             "drawdown": drawdown,
@@ -403,8 +522,21 @@ def build_canonical_reporting_snapshot():
 
     latest_symbol = closed_trades[-1]["symbol"] if closed_trades else None
 
+    enriched_ledger = []
+    for row in closed_trades:
+        if not isinstance(row, dict):
+            continue
+
+        setup_family = classify_setup_family(row)
+        entry_quality = classify_entry_quality(row)
+
+        enriched_row = dict(row)
+        enriched_row["setup_family"] = setup_family
+        enriched_row["entry_quality"] = entry_quality
+        enriched_ledger.append(enriched_row)
+
     return {
-        "ledger": closed_trades,
+        "ledger": enriched_ledger,
         "performance": {
             "trades": total_trades,
             "wins": wins,
@@ -461,6 +593,21 @@ def write_canonical_reporting_snapshot():
         print(f"[WRITE_CANONICAL_REPORTING_SNAPSHOT] {e}")
 
     return snapshot
+
+
+# ============================================================
+# SECTION 73N — CANONICAL SNAPSHOT ACCESSOR
+# ============================================================
+
+def get_canonical_snapshot() -> Dict[str, Any]:
+    try:
+        snapshot = write_canonical_reporting_snapshot()
+        if not isinstance(snapshot, dict):
+            return {}
+        return snapshot
+    except Exception as e:
+        print(f"[CANONICAL SNAPSHOT ERROR] {e}")
+        return {}
 
 
 def performance_summary():
@@ -540,6 +687,301 @@ def render_template_safe(template_name: str, **context):
         title=context.get("title", template_name),
         message=context.get("message", f"Template '{template_name}' was not found."),
     )
+# ============================================================
+# LEARNING HELPERS
+# ============================================================
+
+# ============================================================
+# SECTION 73C — TRADE OUTCOME CLASSIFIER
+# ============================================================
+
+def classify_trade_learning_outcome(trade: Dict[str, Any]) -> Dict[str, Any]:
+    trade = trade or {}
+
+    pnl = float(trade.get("pnl", 0) or 0)
+    symbol = str(trade.get("symbol", "") or "").upper().strip()
+    direction = str(trade.get("direction", trade.get("strategy", "")) or "").upper().strip()
+
+    entry_quality = str(trade.get("entry_quality", "") or "").strip().lower()
+    setup_family = str(trade.get("setup_family", trade.get("setup_type", "")) or "").strip().lower()
+    outcome = str(trade.get("outcome", "") or "").strip().lower()
+
+    if not outcome:
+        if pnl > 0:
+            outcome = "win"
+        elif pnl < 0:
+            outcome = "loss"
+        else:
+            outcome = "flat"
+
+    failure_tags = []
+    success_tags = []
+
+    if entry_quality in {"late", "chased", "poor"}:
+        failure_tags.append("late_entry")
+    elif entry_quality in {"early", "clean", "good"}:
+        success_tags.append("clean_entry")
+
+    if pnl < 0:
+        failure_tags.append("loss")
+    elif pnl > 0:
+        success_tags.append("profit")
+    else:
+        failure_tags.append("flat_result")
+
+    if setup_family:
+        setup_tag = f"setup_{setup_family}"
+        if pnl > 0:
+            success_tags.append(setup_tag)
+        elif pnl < 0:
+            failure_tags.append(setup_tag)
+
+    headline = "Trade result classified."
+    summary = "The learning engine reviewed this trade outcome."
+
+    if pnl < 0 and "late_entry" in failure_tags:
+        headline = "Timing likely hurt this trade."
+        summary = "The trade appears to have failed with late or degraded timing."
+    elif pnl < 0:
+        headline = "Trade failed."
+        summary = "The trade closed as a loss and should contribute to failure memory."
+    elif pnl > 0 and "clean_entry" in success_tags:
+        headline = "Clean win behavior detected."
+        summary = "The trade won with signs of cleaner execution."
+    elif pnl > 0:
+        headline = "Trade succeeded."
+        summary = "The trade closed profitably and should contribute to success memory."
+
+    return {
+        "symbol": symbol,
+        "direction": direction or "UNKNOWN",
+        "setup_family": setup_family or "unknown",
+        "outcome": outcome,
+        "pnl": pnl,
+        "headline": headline,
+        "summary": summary,
+        "failure_tags": failure_tags,
+        "success_tags": success_tags,
+    }
+
+
+# ============================================================
+# SECTION 73D — LEARNING MEMORY FROM CANONICAL LEDGER
+# ============================================================
+
+def build_learning_memory_from_ledger() -> Dict[str, Any]:
+    snapshot = get_canonical_snapshot()
+    ledger = snapshot.get("ledger", [])
+    if not isinstance(ledger, list):
+        ledger = []
+
+    rows = []
+    failure_counts = {}
+    success_counts = {}
+    by_symbol = {}
+    by_setup = {}
+    by_entry_quality = {}
+
+    for item in ledger:
+        if not isinstance(item, dict):
+            continue
+
+        raw = item.get("raw", {}) if isinstance(item.get("raw"), dict) else {}
+        merged = dict(raw)
+        merged.setdefault("symbol", item.get("symbol"))
+        merged.setdefault("direction", item.get("direction"))
+        merged.setdefault("pnl", item.get("pnl"))
+        merged.setdefault("outcome", item.get("outcome"))
+        merged.setdefault("setup_family", item.get("setup_family", "unknown"))
+        merged.setdefault("entry_quality", item.get("entry_quality", "unknown"))
+
+        classified = classify_trade_learning_outcome(merged)
+        classified["setup_family"] = item.get("setup_family", "unknown")
+        classified["entry_quality"] = item.get("entry_quality", "unknown")
+
+        rows.append(classified)
+
+        symbol = classified.get("symbol", "UNKNOWN")
+        setup_family = classified.get("setup_family", "unknown")
+        entry_quality = classified.get("entry_quality", "unknown")
+
+        if symbol not in by_symbol:
+            by_symbol[symbol] = {"wins": 0, "losses": 0, "flats": 0, "pnl": 0.0}
+
+        if setup_family not in by_setup:
+            by_setup[setup_family] = {"wins": 0, "losses": 0, "flats": 0, "pnl": 0.0}
+
+        if entry_quality not in by_entry_quality:
+            by_entry_quality[entry_quality] = {"wins": 0, "losses": 0, "flats": 0, "pnl": 0.0}
+
+        if classified.get("outcome") == "win":
+            by_symbol[symbol]["wins"] += 1
+            by_setup[setup_family]["wins"] += 1
+            by_entry_quality[entry_quality]["wins"] += 1
+        elif classified.get("outcome") == "loss":
+            by_symbol[symbol]["losses"] += 1
+            by_setup[setup_family]["losses"] += 1
+            by_entry_quality[entry_quality]["losses"] += 1
+        else:
+            by_symbol[symbol]["flats"] += 1
+            by_setup[setup_family]["flats"] += 1
+            by_entry_quality[entry_quality]["flats"] += 1
+
+        pnl = float(classified.get("pnl", 0) or 0)
+        by_symbol[symbol]["pnl"] += pnl
+        by_setup[setup_family]["pnl"] += pnl
+        by_entry_quality[entry_quality]["pnl"] += pnl
+
+        for tag in classified.get("failure_tags", []):
+            failure_counts[tag] = failure_counts.get(tag, 0) + 1
+
+        for tag in classified.get("success_tags", []):
+            success_counts[tag] = success_counts.get(tag, 0) + 1
+
+    top_failures = sorted(
+        [{"tag": k, "count": v} for k, v in failure_counts.items()],
+        key=lambda x: x["count"],
+        reverse=True,
+    )
+
+    top_successes = sorted(
+        [{"tag": k, "count": v} for k, v in success_counts.items()],
+        key=lambda x: x["count"],
+        reverse=True,
+    )
+
+    for symbol in by_symbol:
+        by_symbol[symbol]["pnl"] = round(by_symbol[symbol]["pnl"], 2)
+
+    for setup_family in by_setup:
+        by_setup[setup_family]["pnl"] = round(by_setup[setup_family]["pnl"], 2)
+
+    for entry_quality in by_entry_quality:
+        by_entry_quality[entry_quality]["pnl"] = round(by_entry_quality[entry_quality]["pnl"], 2)
+
+    headline = "Learning memory is active." if rows else "No trade memory yet."
+    summary = (
+        "The engine is building outcome memory from canonical trade history."
+        if rows else
+        "The learning engine does not have enough closed trade history yet."
+    )
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "total_classified": len(rows),
+        "rows": rows,
+        "top_failures": top_failures[:10],
+        "top_successes": top_successes[:10],
+        "by_symbol": by_symbol,
+        "by_setup": by_setup,
+        "by_entry_quality": by_entry_quality,
+    }  
+
+# ============================================================
+# SECTION 73E — LEARNING PRESSURE SUMMARY
+# ============================================================
+
+def build_learning_pressure_summary() -> Dict[str, Any]:
+    memory = build_learning_memory_from_ledger()
+
+    top_failures = memory.get("top_failures", []) or []
+    top_successes = memory.get("top_successes", []) or []
+
+    top_failure = top_failures[0] if top_failures else None
+    top_success = top_successes[0] if top_successes else None
+
+    if top_failure:
+        headline = "The engine is seeing repeat failure pressure."
+        summary = f"The strongest recurring failure pattern right now is {top_failure.get('tag', '').replace('_', ' ')}."
+    elif top_success:
+        headline = "The engine is seeing repeat success behavior."
+        summary = f"The strongest recurring success pattern right now is {top_success.get('tag', '').replace('_', ' ')}."
+    else:
+        headline = "Learning pressure is quiet."
+        summary = "The engine does not yet have enough classified history to detect strong recurring patterns."
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "top_failure": top_failure,
+        "top_success": top_success,
+        "memory": memory,
+    }
+
+# ============================================================
+# SECTION 73F — LEARNING RECOMMENDATIONS
+# ============================================================
+
+def build_learning_recommendations() -> Dict[str, Any]:
+    pressure = build_learning_pressure_summary()
+    memory = pressure.get("memory", {}) or {}
+
+    top_failures = memory.get("top_failures", []) or []
+    recommendations = []
+
+    for item in top_failures[:5]:
+        tag = str(item.get("tag", "") or "")
+        count = int(item.get("count", 0) or 0)
+
+        if tag == "late_entry":
+            recommendations.append({
+                "tag": tag,
+                "count": count,
+                "headline": "Penalize late timing harder.",
+                "body": "Late entries are recurring in failure memory. The engine should become less forgiving when timing quality is degraded.",
+                "future_adjustment": "increase timing penalty",
+            })
+        elif tag == "loss":
+            recommendations.append({
+                "tag": tag,
+                "count": count,
+                "headline": "Loss memory is building.",
+                "body": "The engine should route repeated losses into setup and environment review instead of treating them as isolated.",
+                "future_adjustment": "increase failure review weight",
+            })
+        elif tag == "setup_continuation":
+            recommendations.append({
+                "tag": tag,
+                "count": count,
+                "headline": "Continuation setups need review.",
+                "body": "Continuation trades are appearing repeatedly in failure memory and may need stricter gates.",
+                "future_adjustment": "tighten continuation readiness",
+            })
+        else:
+            recommendations.append({
+                "tag": tag,
+                "count": count,
+                "headline": f"Review {tag.replace('_', ' ')} behavior.",
+                "body": "This recurring pattern is showing up enough to deserve future scoring pressure.",
+                "future_adjustment": "review and calibrate",
+            })
+
+    return {
+        "headline": "Learning recommendations are active." if recommendations else "No learning recommendations yet.",
+        "summary": (
+            "The engine translated repeated outcome memory into future adjustments."
+            if recommendations else
+            "There is not enough repeated memory yet to recommend scoring changes."
+        ),
+        "items": recommendations,
+        "top_item": recommendations[0] if recommendations else None,
+    } 
+
+# ============================================================
+# SECTION 73G — LEARNING DASHBOARD PAYLOAD
+# ============================================================
+
+def build_learning_dashboard_payload() -> Dict[str, Any]:
+    memory = build_learning_memory_from_ledger()
+    pressure = build_learning_pressure_summary()
+    recommendations = build_learning_recommendations()
+
+    return {
+        "memory": memory,
+        "pressure": pressure,
+        "recommendations": recommendations,
+    }       
 
 
 # ============================================================
@@ -2222,6 +2664,15 @@ def build_admin_shared_context():
         positions = []
 
     try:
+        learning = build_learning_dashboard_payload()
+    except Exception:
+        learning = {
+            "memory": {},
+            "pressure": {},
+            "recommendations": {},
+        }
+
+    try:
         analysis = analyze_user_trades()
     except Exception:
         analysis = {
@@ -2328,6 +2779,7 @@ def build_admin_shared_context():
         "analysis": analysis,
         "admin_summary": admin_summary,
         "monitoring": monitoring,
+        "learning": learning,
         "behavioral_insights": behavioral_insights,
         "behavior_risk": behavior_risk,
         "behavior_priority": behavior_priority,
@@ -4108,53 +4560,24 @@ def build_repair_recommendations(diagnostics: Optional[Dict[str, Any]] = None) -
 # DATA BUILDERS
 # ============================================================
 
+# ============================================================
+# SECTION 72AP — CANONICAL DASHBOARD SNAPSHOT
+# ============================================================
+
 def get_dashboard_snapshot() -> Dict[str, Any]:
-    summary = load_json("data/portfolio_summary.json", {})
-    if not isinstance(summary, dict):
-        summary = {}
-
-    reports = load_json("data/recent_reports.json", [])
-    if not isinstance(reports, list):
-        reports = []
-
-    snapshot_file = load_json("data/account_snapshot.json", {})
-    if not isinstance(snapshot_file, dict):
-        snapshot_file = {}
-
-    latest_report = reports[-1] if reports and isinstance(reports[-1], dict) else {}
-    latest_snapshot = latest_report.get("snapshot", {}) if isinstance(latest_report, dict) else {}
-    if not isinstance(latest_snapshot, dict):
-        latest_snapshot = {}
-
-    positions = summary.get("positions", [])
-    if not isinstance(positions, list):
-        positions = []
-
-    estimated_account_value = (
-        latest_snapshot.get("estimated_account_value")
-        or summary.get("estimated_account_value")
-        or snapshot_file.get("estimated_account_value")
-        or 10000
-    )
-
-    buying_power = (
-        latest_snapshot.get("buying_power")
-        or summary.get("buying_power")
-        or snapshot_file.get("buying_power")
-        or 5000
-    )
-
-    open_positions = (
-        latest_snapshot.get("open_positions")
-        or summary.get("open_positions")
-        or snapshot_file.get("open_positions")
-        or len(positions)
-    )
+    snapshot = get_canonical_snapshot()
+    final_account = snapshot.get("final_account_snapshot", {})
+    if not isinstance(final_account, dict):
+        final_account = {}
 
     return {
-        "estimated_account_value": estimated_account_value,
-        "buying_power": buying_power,
-        "open_positions": open_positions,
+        "estimated_account_value": final_account.get("estimated_account_value", 1000),
+        "buying_power": final_account.get("buying_power", 1000),
+        "open_positions": final_account.get("open_positions", 0),
+        "realized_pnl": final_account.get("realized_pnl", 0.0),
+        "unrealized_pnl": final_account.get("unrealized_pnl", 0.0),
+        "cash": final_account.get("cash", 1000),
+        "equity": final_account.get("equity", 1000),
     }
 
 
