@@ -3,23 +3,10 @@
 
 <!-- ADMIN ACTION BUTTONS -->
 <div style="display:flex; gap:10px; flex-wrap:wrap; margin: 14px 0 18px 0;">
-
-    <a href="/admin/intelligence" class="cta-btn secondary">
-        Intelligence
-    </a>
-
-    <a href="/admin/product-monitoring" class="cta-btn secondary">
-        Product Monitoring
-    </a>
-
-    <a href="/admin/product-analytics" class="cta-btn secondary">
-        Product Analytics
-    </a>
-
-    <a href="/admin/diagnostics" class="cta-btn secondary">
-        Diagnostics
-    </a>
-
+    <a href="/admin/intelligence" class="cta-btn secondary">Intelligence</a>
+    <a href="/admin/product-monitoring" class="cta-btn secondary">Product Monitoring</a>
+    <a href="/admin/product-analytics" class="cta-btn secondary">Product Analytics</a>
+    <a href="/admin/diagnostics" class="cta-btn secondary">Diagnostics</a>
 </div>
 
 <div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
@@ -30,6 +17,145 @@
         </p>
     </div>
 </div>
+
+{% if play_command %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">{{ play_command.headline }}</h3>
+            <p class="muted-line" style="margin:0;">{{ play_command.summary }}</p>
+        </div>
+        <span class="signal-stat-chip">Play Command</span>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Total Plays</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ play_command.counts.total }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>READY</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ play_command.counts.ready }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>CLOSE</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ play_command.counts.close }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Weak / Watch</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ play_command.counts.weak }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    {% if play_command.top_failure_causes %}
+    <div class="card" style="margin-top:14px;">
+        <h4>Top Failure Causes</h4>
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for item in play_command.top_failure_causes %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item.cause|replace('_', ' ')|title }} — {{ item.count }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if play_command.top_promotion_candidate %}
+    <div class="card" style="margin-top:14px;">
+        <h4>Top Promotion Candidate</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                <strong>{{ play_command.top_promotion_candidate.symbol }}</strong>
+                — {{ play_command.top_promotion_candidate.headline }}
+            </p>
+        </div>
+        {% if play_command.top_promotion_candidate.promotion_message %}
+        <div class="passage-frame" style="margin-top:10px;">
+            <p style="margin:0;">{{ play_command.top_promotion_candidate.promotion_message }}</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if play_command.top_near_miss %}
+    <div class="card" style="margin-top:14px;">
+        <h4>Closest Developing Play</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                <strong>{{ play_command.top_near_miss.symbol }}</strong>
+                — {{ play_command.top_near_miss.headline }}
+            </p>
+        </div>
+        {% if play_command.top_near_miss.blockers %}
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for item in play_command.top_near_miss.blockers %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if play_command.top_rebuild %}
+    <div class="card" style="margin-top:14px;">
+        <h4>Top Rebuild Target</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                <strong>{{ play_command.top_rebuild.symbol }}</strong>
+                — {{ play_command.top_rebuild.headline }}
+            </p>
+        </div>
+        {% if play_command.top_rebuild.rebuild_suggestions %}
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for item in play_command.top_rebuild.rebuild_suggestions %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if play_command %}
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-bottom:18px;">
+    {% if play_command.strongest_play %}
+    <div class="card" style="margin:0;">
+        <h4>Strongest Play</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                <strong>{{ play_command.strongest_play.symbol }}</strong>
+                — {{ play_command.strongest_play.headline }}
+            </p>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if play_command.weakest_play %}
+    <div class="card" style="margin:0;">
+        <h4>Weakest Play</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                <strong>{{ play_command.weakest_play.symbol }}</strong>
+                — {{ play_command.weakest_play.headline }}
+            </p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
 
 {% if admin_alerts and admin_alerts.top_alert %}
 <div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
@@ -55,7 +181,30 @@
         </div>
     </a>
 
-{% if alert_explanations and alert_explanations.items() %}
+    {% if admin_alerts.alerts %}
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
+        {% for alert in admin_alerts.alerts %}
+        <a href="{{ alert.target }}" style="text-decoration:none; color:inherit;">
+            <div class="card" style="margin:0; height:100%;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+                    <h4 style="margin:0;">{{ alert.headline }}</h4>
+                    <span class="signal-stat-chip">{{ alert.level|upper }}</span>
+                </div>
+                <div class="passage-frame" style="margin-top:10px;">
+                    <p style="margin:0;">{{ alert.body }}</p>
+                </div>
+                <div style="margin-top:10px;">
+                    <span class="signal-stat-chip">{{ alert.target_label }}</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if alert_explanations and alert_explanations.get("items") %}
 <div class="card premium-card" style="margin-bottom:18px;">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
         <div>
@@ -74,14 +223,12 @@
                 <h4 style="margin:0;">{{ item.headline }}</h4>
                 <span class="signal-stat-chip">{{ item.level|upper }}</span>
             </div>
-
             <div class="passage-frame" style="margin-top:10px;">
                 <p style="margin:0;"><strong>Trigger:</strong> {{ item.trigger }}</p>
                 <p style="margin:8px 0 0 0;"><strong>Why it matters:</strong> {{ item.why_it_matters }}</p>
                 <p style="margin:8px 0 0 0;"><strong>First action:</strong> {{ item.first_action }}</p>
                 <p style="margin:8px 0 0 0;"><strong>If ignored:</strong> {{ item.if_ignored }}</p>
             </div>
-
             <div style="margin-top:10px;">
                 <a href="{{ item.target }}" class="cta-btn secondary">{{ item.target_label }}</a>
             </div>
@@ -152,29 +299,6 @@
                 <p style="margin:0;">{{ card.body }}</p>
             </div>
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-
-    {% if admin_alerts.alerts %}
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
-        {% for alert in admin_alerts.alerts %}
-        <a href="{{ alert.target }}" style="text-decoration:none; color:inherit;">
-            <div class="card" style="margin:0; height:100%;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
-                    <h4 style="margin:0;">{{ alert.headline }}</h4>
-                    <span class="signal-stat-chip">{{ alert.level|upper }}</span>
-                </div>
-                <div class="passage-frame" style="margin-top:10px;">
-                    <p style="margin:0;">{{ alert.body }}</p>
-                </div>
-                <div style="margin-top:10px;">
-                    <span class="signal-stat-chip">{{ alert.target_label }}</span>
-                </div>
-            </div>
-        </a>
         {% endfor %}
     </div>
     {% endif %}
@@ -261,54 +385,55 @@
     </div>
 
     {% if behavior_priority.top_fix %}
-<div class="card" style="margin-top:14px;">
-    <h4>{{ behavior_priority.top_fix.headline }}</h4>
-    <div class="passage-frame">
-        <p style="margin:0;">{{ behavior_priority.top_fix.body }}</p>
-        <p style="margin:8px 0 0 0;"><strong>Damage Type:</strong> {{ behavior_priority.top_fix.damage_type }}</p>
-        <p style="margin:8px 0 0 0;"><strong>Impact Score:</strong> {{ behavior_priority.top_fix.impact_score }}</p>
-        <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ behavior_priority.top_fix.fix }}</p>
-        {% if behavior_priority.totals %}
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:14px;">
-    <div class="card" style="margin:0;">
-        <h4>Archived</h4>
+    <div class="card" style="margin-top:14px;">
+        <h4>{{ behavior_priority.top_fix.headline }}</h4>
         <div class="passage-frame">
-            <p style="margin:0;"><strong>{{ behavior_priority.totals.archived }}</strong></p>
+            <p style="margin:0;">{{ behavior_priority.top_fix.body }}</p>
+            <p style="margin:8px 0 0 0;"><strong>Damage Type:</strong> {{ behavior_priority.top_fix.damage_type }}</p>
+            <p style="margin:8px 0 0 0;"><strong>Impact Score:</strong> {{ behavior_priority.top_fix.impact_score }}</p>
+            <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ behavior_priority.top_fix.fix }}</p>
         </div>
     </div>
-    <div class="card" style="margin:0;">
-        <h4>Wins</h4>
-        <div class="passage-frame">
-            <p style="margin:0;"><strong>{{ behavior_priority.totals.wins }}</strong></p>
-        </div>
-    </div>
-    <div class="card" style="margin:0;">
-        <h4>Losses</h4>
-        <div class="passage-frame">
-            <p style="margin:0;"><strong>{{ behavior_priority.totals.losses }}</strong></p>
-        </div>
-    </div>
-</div>
-{% endif %}
-    </div>
-</div>
-{% endif %}
+    {% endif %}
 
-    {% if behavior_priority.items() %}
-<div style="display:grid; gap:12px; margin-top:14px;">
-    {% for item in behavior_priority.items() %}
-    <div class="card" style="margin:0;">
-        <h4>{{ item.headline }}</h4>
-        <div class="passage-frame">
-            <p style="margin:0;">{{ item.body }}</p>
-            <p style="margin:8px 0 0 0;"><strong>Damage Type:</strong> {{ item.damage_type }}</p>
-            <p style="margin:8px 0 0 0;"><strong>Impact Score:</strong> {{ item.impact_score }}</p>
-            <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ item.fix }}</p>
+    {% if behavior_priority.totals %}
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Archived</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ behavior_priority.totals.archived }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Wins</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ behavior_priority.totals.wins }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Losses</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ behavior_priority.totals.losses }}</strong></p>
+            </div>
         </div>
     </div>
-    {% endfor %}
-</div>
-{% endif %}
+    {% endif %}
+
+    {% if behavior_priority.items %}
+    <div style="display:grid; gap:12px; margin-top:14px;">
+        {% for item in behavior_priority.items %}
+        <div class="card" style="margin:0;">
+            <h4>{{ item.headline }}</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item.body }}</p>
+                <p style="margin:8px 0 0 0;"><strong>Damage Type:</strong> {{ item.damage_type }}</p>
+                <p style="margin:8px 0 0 0;"><strong>Impact Score:</strong> {{ item.impact_score }}</p>
+                <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ item.fix }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
 {% endif %}
 
@@ -324,16 +449,16 @@
         </div>
     </a>
 
-<a href="/admin/diagnostics" style="text-decoration:none; color:inherit;">
-    <div class="card premium-card" style="height:100%;">
-        <h3>Diagnostics</h3>
-        <div class="passage-frame">
-            <p style="margin:0;">
-                Check pipeline freshness, missing files, symbol coverage gaps, and template health.
-            </p>
+    <a href="/admin/diagnostics" style="text-decoration:none; color:inherit;">
+        <div class="card premium-card" style="height:100%;">
+            <h3>Diagnostics</h3>
+            <div class="passage-frame">
+                <p style="margin:0;">
+                    Check pipeline freshness, missing files, symbol coverage gaps, and template health.
+                </p>
+            </div>
         </div>
-    </div>
-</a>
+    </a>
 
     <a href="/admin/product-monitoring" style="text-decoration:none; color:inherit;">
         <div class="card premium-card" style="height:100%;">
@@ -392,19 +517,16 @@
         <div class="metric">${{ snapshot.estimated_account_value }}</div>
         <p class="muted-line">Simulation snapshot</p>
     </div>
-
     <div class="card gold-accent-card">
         <h4>Open Positions</h4>
         <div class="metric">{{ snapshot.open_positions }}</div>
         <p class="muted-line">Current active positions</p>
     </div>
-
     <div class="card gold-accent-card">
         <h4>Engine State</h4>
         <div class="metric">{{ system.engine_state }}</div>
         <p class="muted-line">Bot status</p>
     </div>
-
     <div class="card gold-accent-card">
         <h4>Tracked Users</h4>
         <div class="metric">{{ users|length }}</div>
@@ -497,20 +619,20 @@
 <div class="card premium-card" style="margin-bottom:18px;">
     <h3>Recent Behavior Events</h3>
     {% if event_analytics.recent_events %}
-        <div style="display:grid; gap:10px; margin-top:12px;">
-            {% for row in event_analytics.recent_events|reverse %}
-            <div class="card" style="margin:0;">
-                <div class="admin-stat-row">
-                    <span>{{ row.event_type }}</span>
-                    <strong>{{ row.created_at }}</strong>
-                </div>
+    <div style="display:grid; gap:10px; margin-top:12px;">
+        {% for row in event_analytics.recent_events|reverse %}
+        <div class="card" style="margin:0;">
+            <div class="admin-stat-row">
+                <span>{{ row.event_type }}</span>
+                <strong>{{ row.created_at }}</strong>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">No events tracked yet.</p>
-        </div>
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;">No events tracked yet.</p>
+    </div>
     {% endif %}
 </div>
 
@@ -518,36 +640,36 @@
     <div class="card premium-card">
         <h3>Traffic Signals</h3>
         {% if metrics.page_views %}
-            <div style="display:grid; gap:8px; margin-top:12px;">
-                {% for path, count in metrics.page_views.items() %}
-                <div class="admin-stat-row">
-                    <span>{{ path }}</span>
-                    <strong>{{ count }}</strong>
-                </div>
-                {% endfor %}
+        <div style="display:grid; gap:8px; margin-top:12px;">
+            {% for path, count in metrics.page_views.items() %}
+            <div class="admin-stat-row">
+                <span>{{ path }}</span>
+                <strong>{{ count }}</strong>
             </div>
+            {% endfor %}
+        </div>
         {% else %}
-            <div class="passage-frame" style="margin-top:12px;">
-                <p style="margin:0;">No page view data yet.</p>
-            </div>
+        <div class="passage-frame" style="margin-top:12px;">
+            <p style="margin:0;">No page view data yet.</p>
+        </div>
         {% endif %}
     </div>
 
     <div class="card premium-card">
         <h3>Key Clicks</h3>
         {% if metrics.clicks %}
-            <div style="display:grid; gap:8px; margin-top:12px;">
-                {% for key, count in metrics.clicks.items() %}
-                <div class="admin-stat-row">
-                    <span>{{ key.replace("_", " ").title() }}</span>
-                    <strong>{{ count }}</strong>
-                </div>
-                {% endfor %}
+        <div style="display:grid; gap:8px; margin-top:12px;">
+            {% for key, count in metrics.clicks.items() %}
+            <div class="admin-stat-row">
+                <span>{{ key.replace("_", " ").title() }}</span>
+                <strong>{{ count }}</strong>
             </div>
+            {% endfor %}
+        </div>
         {% else %}
-            <div class="passage-frame" style="margin-top:12px;">
-                <p style="margin:0;">No click data yet.</p>
-            </div>
+        <div class="passage-frame" style="margin-top:12px;">
+            <p style="margin:0;">No click data yet.</p>
+        </div>
         {% endif %}
     </div>
 </div>
@@ -556,39 +678,302 @@
     <div class="card premium-card">
         <h3>Friction Signals</h3>
         {% if metrics.friction_signals %}
-            <div style="display:grid; gap:8px; margin-top:12px;">
-                {% for key, count in metrics.friction_signals.items() %}
-                <div class="admin-stat-row">
-                    <span>{{ key.replace("_", " ").title() }}</span>
-                    <strong>{{ count }}</strong>
-                </div>
-                {% endfor %}
+        <div style="display:grid; gap:8px; margin-top:12px;">
+            {% for key, count in metrics.friction_signals.items() %}
+            <div class="admin-stat-row">
+                <span>{{ key.replace("_", " ").title() }}</span>
+                <strong>{{ count }}</strong>
             </div>
+            {% endfor %}
+        </div>
         {% else %}
-            <div class="passage-frame" style="margin-top:12px;">
-                <p style="margin:0;">No friction signals yet.</p>
-            </div>
+        <div class="passage-frame" style="margin-top:12px;">
+            <p style="margin:0;">No friction signals yet.</p>
+        </div>
         {% endif %}
     </div>
 
     <div class="card premium-card">
         <h3>Engagement</h3>
         {% if metrics.engagement %}
-            <div style="display:grid; gap:8px; margin-top:12px;">
-                {% for key, value in metrics.engagement.items() %}
-                <div class="admin-stat-row">
-                    <span>{{ key.replace("_", " ").title() }}</span>
-                    <strong>{{ value }}</strong>
-                </div>
-                {% endfor %}
+        <div style="display:grid; gap:8px; margin-top:12px;">
+            {% for key, value in metrics.engagement.items() %}
+            <div class="admin-stat-row">
+                <span>{{ key.replace("_", " ").title() }}</span>
+                <strong>{{ value }}</strong>
             </div>
+            {% endfor %}
+        </div>
         {% else %}
-            <div class="passage-frame" style="margin-top:12px;">
-                <p style="margin:0;">No engagement data yet.</p>
-            </div>
+        <div class="passage-frame" style="margin-top:12px;">
+            <p style="margin:0;">No engagement data yet.</p>
+        </div>
         {% endif %}
     </div>
 </div>
+
+{% if auto_learning_policy %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Auto Learning Policy</h3>
+            <p class="muted-line" style="margin:0;">
+                Live self-adjusting policy generated from failure clusters and behavior pressure.
+            </p>
+        </div>
+        <span class="signal-stat-chip">Self-Tuning Layer</span>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Readiness Multiplier</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ auto_learning_policy.readiness_penalty_multiplier }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Promotion Multiplier</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ auto_learning_policy.promotion_penalty_multiplier }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Rebuild Multiplier</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ auto_learning_policy.rebuild_penalty_multiplier }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Execution Multiplier</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ auto_learning_policy.execution_penalty_multiplier }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:12px;">
+        <div class="card" style="margin:0;">
+            <h4>Delay Exit Bias</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ auto_learning_policy.delay_exit_bias_active }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Manual Override Caution</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ auto_learning_policy.manual_override_caution }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Failed Momentum Pressure</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ auto_learning_policy.failed_high_score_momentum_pressure }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    {% if auto_learning_policy.notes %}
+    <div class="card" style="margin-top:12px;">
+        <h4>Policy Notes</h4>
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for item in auto_learning_policy.notes %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if execution_universe %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Execution Intelligence</h3>
+            <p class="muted-line" style="margin:0;">
+                Readiness, promotion, rebuild, learning pressure, and gate visibility across the selected execution set.
+            </p>
+        </div>
+        <span class="signal-stat-chip">Adaptive Layer</span>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Selected</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ execution_selected|length }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Eligible</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ execution_universe.eligible_count }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Rejected</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ execution_universe.rejected_count }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Cap</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ execution_universe.cap }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    {% if execution_selected %}
+    <div style="display:grid; gap:12px; margin-top:14px;">
+        {% for row in execution_selected[:6] %}
+        <div class="card" style="margin:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                <div>
+                    <h4 style="margin:0;">{{ row.symbol }}</h4>
+                    <p class="muted-line" style="margin:6px 0 0 0;">
+                        {{ row.setup_family }} | {{ row.entry_quality }}
+                    </p>
+                </div>
+                <span class="signal-stat-chip">Exec {{ row.execution_quality }}</span>
+            </div>
+
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-top:12px;">
+                <div class="passage-frame">
+                    <p style="margin:0;"><strong>Readiness:</strong> {{ row.readiness_score }}</p>
+                </div>
+                <div class="passage-frame">
+                    <p style="margin:0;"><strong>Promotion:</strong> {{ row.promotion_score }}</p>
+                </div>
+                <div class="passage-frame">
+                    <p style="margin:0;"><strong>Rebuild:</strong> {{ row.rebuild_pressure }}</p>
+                </div>
+                <div class="passage-frame">
+                    <p style="margin:0;"><strong>Eligible:</strong> {{ row.eligible }}</p>
+                </div>
+            </div>
+
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:10px; margin-top:12px;">
+                <div class="card" style="margin:0;">
+                    <h4>Readiness Gate</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ row.readiness_gate_passed }}</strong></p>
+                    </div>
+                </div>
+                <div class="card" style="margin:0;">
+                    <h4>Promotion Gate</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ row.promotion_gate_passed }}</strong></p>
+                    </div>
+                </div>
+                <div class="card" style="margin:0;">
+                    <h4>Rebuild Gate</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ row.rebuild_gate_passed }}</strong></p>
+                    </div>
+                </div>
+                <div class="card" style="margin:0;">
+                    <h4>Learning Adjusted</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ row.learning_adjusted }}</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            {% if row.learning_penalties %}
+            <div class="card" style="margin-top:12px;">
+                <h4>Learning Penalties</h4>
+                <div style="display:grid; gap:8px; margin-top:10px;">
+                    {% for item in row.learning_penalties %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">
+                            {{ item.type }} | {{ item.setup or item.entry_quality or item.target }}
+                            {% if item.penalty is defined %} | -{{ item.penalty }}{% endif %}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if row.learning_flags %}
+            <div class="card" style="margin-top:12px;">
+                <h4>Learning Flags</h4>
+                <div style="display:grid; gap:8px; margin-top:10px;">
+                    {% for item in row.learning_flags %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">
+                            {{ item.type }} | {{ item.entry_quality or item.behavior }} | {{ item.action }}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if row.learning_notes %}
+            <div class="card" style="margin-top:12px;">
+                <h4>Learning Notes</h4>
+                <div style="display:grid; gap:8px; margin-top:10px;">
+                    {% for item in row.learning_notes %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ item }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if row.readiness_notes %}
+            <div class="card" style="margin-top:12px;">
+                <h4>Readiness Notes</h4>
+                <div style="display:grid; gap:8px; margin-top:10px;">
+                    {% for item in row.readiness_notes %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ item }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if row.promotion_notes %}
+            <div class="card" style="margin-top:12px;">
+                <h4>Promotion Notes</h4>
+                <div style="display:grid; gap:8px; margin-top:10px;">
+                    {% for item in row.promotion_notes %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ item }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if row.rebuild_notes %}
+            <div class="card" style="margin-top:12px;">
+                <h4>Rebuild Notes</h4>
+                <div style="display:grid; gap:8px; margin-top:10px;">
+                    {% for item in row.rebuild_notes %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ item }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="passage-frame" style="margin-top:14px;">
+        <p style="margin:0;">No execution candidates available right now.</p>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
 
 <div class="card gold-accent-card" style="margin-bottom:18px;">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
@@ -625,20 +1010,20 @@
     </div>
 
     {% if positions %}
-        <div style="display:grid; gap:10px; margin-top:14px;">
-            {% for p in positions[:8] %}
-            <div class="card" style="margin:0;">
-                <div class="admin-stat-row">
-                    <span>{{ p.symbol }}</span>
-                    <strong>{{ p.health.label if p.health is defined else "Loaded" }}</strong>
-                </div>
+    <div style="display:grid; gap:10px; margin-top:14px;">
+        {% for p in positions[:8] %}
+        <div class="card" style="margin:0;">
+            <div class="admin-stat-row">
+                <span>{{ p.symbol }}</span>
+                <strong>{{ p.health.label if p.health is defined else "Loaded" }}</strong>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">No positions loaded.</p>
-        </div>
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;">No positions loaded.</p>
+    </div>
     {% endif %}
 </div>
 

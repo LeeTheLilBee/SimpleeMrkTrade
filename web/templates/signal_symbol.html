@@ -438,6 +438,146 @@
                 </div>
             </div>
 
+{% if detail.engine_intelligence %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Engine Intelligence</h3>
+            <p class="muted-line" style="margin:0;">
+                Live readiness, promotion, rebuild, and learning pressure for {{ detail.symbol }}.
+            </p>
+        </div>
+        <span class="signal-stat-chip">Live Brain</span>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Readiness</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.engine_intelligence.readiness_score }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Promotion</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.engine_intelligence.promotion_score }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Rebuild</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.engine_intelligence.rebuild_pressure }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Execution</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.engine_intelligence.execution_quality }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:12px;">
+        <div class="card" style="margin:0;">
+            <h4>Setup Family</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.engine_intelligence.setup_family }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Entry Quality</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.engine_intelligence.entry_quality }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Eligible</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.engine_intelligence.eligible }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:12px;">
+        <div class="card" style="margin:0;">
+            <h4>Readiness Gate</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.engine_intelligence.gates.readiness }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Promotion Gate</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.engine_intelligence.gates.promotion }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Rebuild Gate</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.engine_intelligence.gates.rebuild }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    {% if detail.engine_verdict %}
+    <div class="card" style="margin-top:12px;">
+        <h4>{{ detail.engine_verdict.headline }}</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ detail.engine_verdict.summary }}</p>
+        </div>
+        {% if detail.engine_verdict.notes %}
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for item in detail.engine_verdict.notes %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if detail.engine_intelligence.learning_notes %}
+    <div class="card" style="margin-top:12px;">
+        <h4>Learning Notes</h4>
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for item in detail.engine_intelligence.learning_notes %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if detail.engine_intelligence.promotion_notes %}
+    <div class="card" style="margin-top:12px;">
+        <h4>Promotion Notes</h4>
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for item in detail.engine_intelligence.promotion_notes %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if detail.engine_intelligence.rebuild_notes %}
+    <div class="card" style="margin-top:12px;">
+        <h4>Rebuild Notes</h4>
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for item in detail.engine_intelligence.rebuild_notes %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
             {% if news_items %}
             <div class="deep-panel">
                 <h3>Recent News</h3>

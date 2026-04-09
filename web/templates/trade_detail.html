@@ -11,125 +11,276 @@
 <div class="card premium-card">
     <h3>Trade Detail Not Found</h3>
     <div class="passage-frame">
-        <p>{{ error or "No trade detail is available for this record yet." }}</p>
+        <p style="margin:0;">{{ error or "No trade detail is available for this record yet." }}</p>
     </div>
 </div>
+
 {% else %}
 
-<h2>{{ detail.symbol }} | {{ detail.strategy }}</h2>
-
-<div class="card premium-hero">
-    <h3>Trade Intelligence Narrative</h3>
-    <p class="muted-line">
-        This page explains the setup, pressure, decay, and failure risk around the trade.
-    </p>
+<div style="margin-bottom:14px;">
+    <a href="javascript:history.back()" class="signal-stat-chip" style="text-decoration:none;">
+        ← Back
+    </a>
 </div>
 
-<div class="grid">
-    <div class="card">
-        <h3>Setup Snapshot</h3>
-        <p><b>Score:</b> {{ detail.score }}</p>
-        <p><b>Confidence:</b> {{ detail.confidence }}</p>
-        <p><b>Entry:</b> {{ detail.entry }}</p>
-        <p><b>ATR:</b> {{ detail.atr }}</p>
+<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h2 style="margin-bottom:8px;">{{ detail.symbol }} | {{ detail.strategy }}</h2>
+            <div class="passage-frame">
+                <p style="margin:0;">
+                    This page explains the setup, engine read, learning context, risk posture, and timeline around the trade.
+                </p>
+            </div>
+        </div>
+        <span class="signal-stat-chip">
+            {{ detail.learning_intelligence.entry_quality if detail.learning_intelligence is defined else detail.confidence }}
+        </span>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:18px;">
+    <div class="card premium-card gold-accent-card" style="margin:0;">
+        <h4>Score</h4>
+        <div class="passage-frame">
+            <p style="margin:0;"><strong>{{ detail.score }}</strong></p>
+        </div>
+    </div>
+    <div class="card premium-card gold-accent-card" style="margin:0;">
+        <h4>Confidence</h4>
+        <div class="passage-frame">
+            <p style="margin:0;"><strong>{{ detail.confidence }}</strong></p>
+        </div>
+    </div>
+    <div class="card premium-card gold-accent-card" style="margin:0;">
+        <h4>Entry</h4>
+        <div class="passage-frame">
+            <p style="margin:0;"><strong>{{ detail.entry }}</strong></p>
+        </div>
+    </div>
+    <div class="card premium-card gold-accent-card" style="margin:0;">
+        <h4>ATR</h4>
+        <div class="passage-frame">
+            <p style="margin:0;"><strong>{{ detail.atr if detail.atr is defined else "N/A" }}</strong></p>
+        </div>
+    </div>
+</div>
+
+{% if detail.engine_verdict %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <h3>{{ detail.engine_verdict.headline }}</h3>
+    <div class="passage-frame">
+        <p style="margin:0;">{{ detail.engine_verdict.summary }}</p>
+    </div>
+    {% if detail.engine_verdict.notes %}
+    <div style="display:grid; gap:8px; margin-top:12px;">
+        {% for row in detail.engine_verdict.notes %}
+        <div class="passage-frame">
+            <p style="margin:0;">{{ row }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if detail.learning_intelligence %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Learning Intelligence</h3>
+            <p class="muted-line" style="margin:0;">
+                Canonical engine context attached to this trade.
+            </p>
+        </div>
+        <span class="signal-stat-chip">Trade Brain</span>
     </div>
 
-    <div class="card">
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Setup Family</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.learning_intelligence.setup_family }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Entry Quality</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.learning_intelligence.entry_quality }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Exit Reason</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.learning_intelligence.exit_reason }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Score / Confidence</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ detail.learning_intelligence.score }} / {{ detail.learning_intelligence.confidence }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:12px;">
+        <div class="card" style="margin:0;">
+            <h4>Failure Reason</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ detail.learning_intelligence.failure_reason or "No failure reason attached." }}</p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Success Reason</h4>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ detail.learning_intelligence.success_reason or "No success reason attached." }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-bottom:18px;">
+    <div class="card premium-card">
         <h3>Risk View</h3>
-        <p><b>Stop Logic:</b> {{ detail.risk.stop_logic }}</p>
-        <p><b>Risk Note:</b> {{ detail.risk.note }}</p>
-        <p>{{ detail.risk.story }}</p>
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>Stop Logic:</strong> {{ detail.risk.stop_logic }}</p>
+            </div>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>Risk Note:</strong> {{ detail.risk.note }}</p>
+            </div>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ detail.risk.story }}</p>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="grid">
     <div class="card premium-card">
         <h3>Signal Decay</h3>
-        <p><b>Signal Age:</b> {{ detail.signal_decay.minutes_old if detail.signal_decay is defined else "N/A" }} min</p>
-        <p><b>Decay:</b> {{ detail.signal_decay.decay_pct if detail.signal_decay is defined else "N/A" }}%</p>
-        <p><b>Adjusted Score:</b> {{ detail.signal_decay.adjusted_score if detail.signal_decay is defined else "N/A" }}</p>
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>Signal Age:</strong> {{ detail.signal_decay.minutes_old if detail.signal_decay is defined else "N/A" }} min</p>
+            </div>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>Decay:</strong> {{ detail.signal_decay.decay_pct if detail.signal_decay is defined else "N/A" }}%</p>
+            </div>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>Adjusted Score:</strong> {{ detail.signal_decay.adjusted_score if detail.signal_decay is defined else "N/A" }}</p>
+            </div>
+        </div>
     </div>
 
     <div class="card premium-card">
         <h3>Crowd Pressure</h3>
-        <p><b>Pressure Score:</b> {{ detail.crowd_pressure.score if detail.crowd_pressure is defined else "N/A" }}</p>
-        <p><b>Label:</b> {{ detail.crowd_pressure.label if detail.crowd_pressure is defined else "N/A" }}</p>
-        <p>{{ detail.crowd_pressure.note if detail.crowd_pressure is defined else "No crowd pressure data." }}</p>
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>Pressure Score:</strong> {{ detail.crowd_pressure.score if detail.crowd_pressure is defined else "N/A" }}</p>
+            </div>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>Label:</strong> {{ detail.crowd_pressure.label if detail.crowd_pressure is defined else "N/A" }}</p>
+            </div>
+            <div class="passage-frame">
+                <p style="margin:0;">{{ detail.crowd_pressure.note if detail.crowd_pressure is defined else "No crowd pressure data." }}</p>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="card premium-card">
+<div class="card premium-card" style="margin-bottom:18px;">
     <h3>Trade Thesis</h3>
-    <ul>
+    {% if detail.thesis %}
+    <div style="display:grid; gap:8px; margin-top:12px;">
         {% for row in detail.thesis %}
-        <li>{{ row }}</li>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ row }}</p>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
+    {% else %}
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;">No thesis lines saved yet.</p>
+    </div>
+    {% endif %}
 </div>
 
-<div class="grid">
-    <div class="card">
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:18px; margin-bottom:18px;">
+    <div class="card premium-card">
         <h3>Entry Story</h3>
-        <p>{{ detail.narrative.entry_story }}</p>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ detail.narrative.entry_story }}</p>
+        </div>
     </div>
-
-    <div class="card">
+    <div class="card premium-card">
         <h3>Management Story</h3>
-        <p>{{ detail.narrative.management_story }}</p>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ detail.narrative.management_story }}</p>
+        </div>
     </div>
-
-    <div class="card">
+    <div class="card premium-card">
         <h3>Exit Story</h3>
-        <p>{{ detail.narrative.exit_story }}</p>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ detail.narrative.exit_story }}</p>
+        </div>
     </div>
 </div>
 
-<div class="card">
+<div class="card premium-card" style="margin-bottom:18px;">
     <h3>Market Context</h3>
     {% if detail.context %}
-        <ul>
+    <div style="display:grid; gap:8px; margin-top:12px;">
         {% for row in detail.context %}
-            <li>{{ row }}</li>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ row }}</p>
+        </div>
         {% endfor %}
-        </ul>
+    </div>
     {% else %}
-        <p>No additional market context saved.</p>
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;">No additional market context saved.</p>
+    </div>
     {% endif %}
 </div>
 
-<div class="card premium-card">
+<div class="card premium-card" style="margin-bottom:18px;">
     <h3>Why Not This Trade</h3>
     {% if detail.why_not_this_trade %}
-        <ul>
+    <div style="display:grid; gap:8px; margin-top:12px;">
         {% for row in detail.why_not_this_trade %}
-            <li>{{ row }}</li>
+        <div class="passage-frame">
+            <p style="margin:0;">{{ row }}</p>
+        </div>
         {% endfor %}
-        </ul>
+    </div>
     {% else %}
-        <p>No failure-risk notes saved.</p>
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;">No failure-risk notes saved.</p>
+    </div>
     {% endif %}
 </div>
 
-<div class="card premium-card">
+<div class="card premium-card" style="margin-bottom:18px;">
     <h3>Timeline</h3>
     {% if detail.timeline %}
-        <table class="table">
-            <tr>
-                <th>Time</th>
-                <th>Event</th>
-                <th>Note</th>
-            </tr>
-            {% for row in detail.timeline[::-1] %}
-            <tr>
-                <td>{{ row.timestamp }}</td>
-                <td>{{ row.event }}</td>
-                <td>{{ row.note }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+    <div style="display:grid; gap:10px; margin-top:12px;">
+        {% for row in detail.timeline[::-1] %}
+        <div class="card" style="margin:0;">
+            <div class="admin-stat-row">
+                <span>{{ row.timestamp }}</span>
+                <strong>{{ row.event }}</strong>
+            </div>
+            <div class="passage-frame" style="margin-top:10px;">
+                <p style="margin:0;">{{ row.note }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <p>No timeline events yet.</p>
+    <div class="passage-frame" style="margin-top:12px;">
+        <p style="margin:0;">No timeline events yet.</p>
+    </div>
     {% endif %}
 </div>
+
 {% endif %}
 {% endblock %}

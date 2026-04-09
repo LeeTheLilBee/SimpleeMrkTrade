@@ -226,6 +226,109 @@ def auto_refresh_news_cache():
 # FILE HELPERS
 # ============================================================
 
+def get_symbol_detail(symbol: str) -> dict:
+    symbol = str(symbol or "").upper().strip()
+
+    # --- BASE STRUCTURE ---
+    detail = {
+        "symbol": symbol,
+        "company": {
+            "name": symbol,
+            "blurb": "Engine-generated symbol intelligence.",
+        },
+        "board": {
+            "symbol": symbol,
+            "company_name": symbol,
+            "latest_score": 0,
+            "latest_confidence": "LOW",
+            "latest_timestamp": "",
+            "opinion": "No active opinion available.",
+        },
+        "primary_intelligence": {},
+        "signals": [],
+        "news_items": [],
+    }
+
+    # --- LOAD LIVE EXECUTION UNIVERSE ---
+    try:
+        from engine.engine_selection import build_execution_universe
+
+        signals = load_json("data/signals.json", [])
+        system_state = load_json(
+            "data/system_state.json",
+            {"regime": "Neutral", "volatility": "Normal"},
+        )
+
+        universe = build_execution_universe(signals, system_state)
+        selected = universe.get("selected", []) if isinstance(universe, dict) else []
+    except Exception:
+        universe = {}
+        selected = []
+
+    # --- FIND MATCHING SIGNAL ---
+    match = None
+    for row in selected:
+        if str(row.get("symbol", "")).upper() == symbol:
+            match = row
+            break
+
+    if not match:
+        return detail
+
+    # --- BASIC BOARD ---
+    detail["board"] = {
+        "symbol": symbol,
+        "company_name": symbol,
+        "latest_score": match.get("score", 0),
+        "latest_confidence": match.get("confidence", "LOW"),
+        "latest_timestamp": match.get("timestamp", ""),
+        "opinion": "Engine-selected candidate.",
+    }
+
+    # --- PRIMARY INTELLIGENCE ---
+    detail["primary_intelligence"] = {
+        "direction": match.get("strategy", "CALL"),
+        "setup_type": match.get("setup_type", "continuation"),
+        "score": match.get("score"),
+        "confidence": match.get("confidence"),
+    }
+
+    # --- 🔥 ENGINE INTELLIGENCE BLOCK (THIS IS THE UPGRADE) ---
+    detail["engine_intelligence"] = {
+        "readiness_score": match.get("readiness_score"),
+        "promotion_score": match.get("promotion_score"),
+        "rebuild_pressure": match.get("rebuild_pressure"),
+        "execution_quality": match.get("execution_quality"),
+        "eligible": match.get("eligible"),
+
+        "learning_notes": match.get("learning_notes", []),
+        "promotion_notes": match.get("promotion_notes", []),
+        "rebuild_notes": match.get("rebuild_notes", []),
+
+        "setup_family": match.get("setup_family"),
+        "entry_quality": match.get("entry_quality"),
+
+        "gates": {
+            "readiness": match.get("readiness_gate_passed"),
+            "promotion": match.get("promotion_gate_passed"),
+            "rebuild": match.get("rebuild_gate_passed"),
+        }
+    }
+
+    # --- HUMAN-READABLE VERDICT ---
+    detail["engine_verdict"] = {
+        "headline": "Engine-evaluated opportunity.",
+        "summary": "This symbol is being actively scored across readiness, promotion, and rebuild pressure.",
+        "notes": [
+            f"Readiness: {match.get('readiness_score')}",
+            f"Promotion: {match.get('promotion_score')}",
+            f"Rebuild Pressure: {match.get('rebuild_pressure')}",
+            f"Eligible: {match.get('eligible')}",
+        ],
+    }
+
+    return detail
+
 def load_json(path: str, default: Any) -> Any:
     try:
         file_path = Path(path)
@@ -353,15 +456,13 @@ def enrich_trade_record(base: Dict[str, Any]) -> Dict[str, Any]:
     enriched["score"] = score
     enriched["confidence"] = confidence
 
-    reason_hint = reason_raw
-
-    if reason_hint == "TAKE_PROFIT" and score >= 180 and confidence == "HIGH":
+    if reason_raw == "TAKE_PROFIT" and score >= 180 and confidence == "HIGH":
         setup_family = "high_score_momentum"
-    elif reason_hint == "TAKE_PROFIT" and score >= 120:
+    elif reason_raw == "TAKE_PROFIT" and score >= 120:
         setup_family = "strong_structured"
-    elif reason_hint == "STOP_LOSS" and score >= 180:
+    elif reason_raw in {"CUT_WEAKNESS", "MANUAL", "STOP_LOSS"} and score >= 180:
         setup_family = "failed_high_score_momentum"
-    elif reason_hint == "STOP_LOSS" and score >= 120:
+    elif reason_raw in {"CUT_WEAKNESS", "MANUAL", "STOP_LOSS"} and score >= 120:
         setup_family = "failed_structured"
     elif score >= 180 and confidence == "HIGH":
         setup_family = "high_score_momentum"
@@ -372,18 +473,24 @@ def enrich_trade_record(base: Dict[str, Any]) -> Dict[str, Any]:
 
     enriched["setup_family"] = setup_family
 
-    if reason_hint == "TAKE_PROFIT" and score >= 180 and confidence == "HIGH":
-        entry_quality = "high_conviction"
-    elif reason_hint == "TAKE_PROFIT":
-        entry_quality = "acceptable"
-    elif reason_hint == "STOP_LOSS" and score >= 180:
-        entry_quality = "overconfident"
-    elif reason_hint == "STOP_LOSS" and score >= 120:
+    if reason_raw == "TAKE_PROFIT":
+        entry_quality = "high_conviction_win" if score >= 180 and confidence == "HIGH" else "acceptable_win"
+    elif reason_raw == "CUT_WEAKNESS":
+        entry_quality = "cut_on_weakness"
+    elif reason_raw == "MANUAL":
+        entry_quality = "manual_exit_loss"
+    elif reason_raw == "STOP_LOSS":
+        entry_quality = "stopped_out" if score < 180 else "high_conviction_loss"
+    elif pnl > 0 and score >= 180 and confidence == "HIGH":
+        entry_quality = "high_conviction_win"
+    elif pnl > 0:
+        entry_quality = "acceptable_win"
+    elif pnl <= 0 and score >= 180 and confidence == "HIGH":
+        entry_quality = "high_conviction_loss"
+    elif pnl <= 0 and score >= 120:
         entry_quality = "failed_clean"
-    elif score >= 180 and confidence == "HIGH":
-        entry_quality = "high_conviction"
-    elif score >= 100 and confidence in {"HIGH", "MEDIUM"}:
-        entry_quality = "acceptable"
+    elif pnl <= 0 and score >= 70:
+        entry_quality = "weak_followthrough"
     else:
         entry_quality = "weak"
 
@@ -398,8 +505,10 @@ def enrich_trade_record(base: Dict[str, Any]) -> Dict[str, Any]:
     if enriched.get("outcome") == "loss":
         if reason_raw == "STOP_LOSS":
             failure_reason = "stopped_out"
-        elif reason_raw == "TIME_EXIT":
-            failure_reason = "time_exit_loss"
+        elif reason_raw == "CUT_WEAKNESS":
+            failure_reason = "cut_on_weakness"
+        elif reason_raw == "MANUAL":
+            failure_reason = "manual_exit_loss"
         elif score < 100:
             failure_reason = "weak_entry_structure"
         else:
@@ -802,7 +911,6 @@ def classify_trade_learning_outcome(trade: Dict[str, Any]) -> Dict[str, Any]:
     pnl = float(trade.get("pnl", 0) or 0)
     symbol = str(trade.get("symbol", "") or "").upper().strip()
     direction = str(trade.get("direction", trade.get("strategy", "")) or "").upper().strip()
-
     setup_family = str(trade.get("setup_family", "unknown") or "unknown").strip().lower()
     entry_quality = str(trade.get("entry_quality", "unknown") or "unknown").strip().lower()
     outcome = str(trade.get("outcome", "") or "").strip().lower()
@@ -821,12 +929,20 @@ def classify_trade_learning_outcome(trade: Dict[str, Any]) -> Dict[str, Any]:
     if outcome == "loss":
         failure_tags.append("loss")
 
-        if entry_quality == "weak":
-            failure_tags.append("weak_entry_quality")
-        elif entry_quality == "acceptable":
-            failure_tags.append("acceptable_entry_loss")
-        elif entry_quality == "high_conviction":
+        if entry_quality == "cut_on_weakness":
+            failure_tags.append("cut_on_weakness")
+        elif entry_quality == "manual_exit_loss":
+            failure_tags.append("manual_exit_loss")
+        elif entry_quality == "stopped_out":
+            failure_tags.append("stopped_out")
+        elif entry_quality == "high_conviction_loss":
             failure_tags.append("high_conviction_loss")
+        elif entry_quality == "failed_clean":
+            failure_tags.append("failed_clean")
+        elif entry_quality == "weak_followthrough":
+            failure_tags.append("weak_followthrough")
+        elif entry_quality == "weak":
+            failure_tags.append("weak_entry_quality")
 
         if setup_family == "speculative":
             failure_tags.append("setup_speculative")
@@ -836,16 +952,18 @@ def classify_trade_learning_outcome(trade: Dict[str, Any]) -> Dict[str, Any]:
             failure_tags.append("setup_strong_structured")
         elif setup_family == "high_score_momentum":
             failure_tags.append("setup_high_score_momentum")
+        elif setup_family == "failed_high_score_momentum":
+            failure_tags.append("setup_failed_high_score_momentum")
+        elif setup_family == "failed_structured":
+            failure_tags.append("setup_failed_structured")
 
     elif outcome == "win":
         success_tags.append("profit")
 
-        if entry_quality == "weak":
-            success_tags.append("weak_entry_win")
-        elif entry_quality == "acceptable":
-            success_tags.append("acceptable_entry_win")
-        elif entry_quality == "high_conviction":
+        if entry_quality == "high_conviction_win":
             success_tags.append("high_conviction_win")
+        elif entry_quality == "acceptable_win":
+            success_tags.append("acceptable_win")
 
         if setup_family == "speculative":
             success_tags.append("setup_speculative")
@@ -884,7 +1002,6 @@ def classify_trade_learning_outcome(trade: Dict[str, Any]) -> Dict[str, Any]:
         "failure_tags": failure_tags,
         "success_tags": success_tags,
     }
-
 
 # ============================================================
 # SECTION 73D — LEARNING MEMORY FROM CANONICAL LEDGER
@@ -1095,6 +1212,7 @@ def build_learning_recommendations() -> Dict[str, Any]:
 
 def build_learning_dashboard_payload() -> Dict[str, Any]:
     memory = build_learning_memory_from_ledger()
+    adjustments = build_learning_adjustments(memory)
     pressure = build_learning_pressure_summary()
     recommendations = build_learning_recommendations()
 
@@ -1102,6 +1220,56 @@ def build_learning_dashboard_payload() -> Dict[str, Any]:
         "memory": memory,
         "pressure": pressure,
         "recommendations": recommendations,
+        "adjustments": adjustments,
+    }
+
+
+def build_learning_adjustments(memory: Dict[str, Any]) -> Dict[str, Any]:
+    by_setup = memory.get("by_setup", {})
+    by_entry = memory.get("by_entry_quality", {})
+
+    adjustments = []
+
+    # setup-level adjustments
+    for setup, stats in by_setup.items():
+        losses = stats.get("losses", 0)
+        wins = stats.get("wins", 0)
+
+        if losses >= 5 and wins == 0:
+            adjustments.append({
+                "type": "setup_penalty",
+                "setup": setup,
+                "action": "reduce_priority",
+                "strength": "high",
+                "reason": "consistent failure cluster",
+            })
+
+    # behavior-level adjustments
+    for entry, stats in by_entry.items():
+        losses = stats.get("losses", 0)
+
+        if entry == "cut_on_weakness" and losses >= 5:
+            adjustments.append({
+                "type": "behavior_flag",
+                "entry_quality": entry,
+                "action": "delay_exit_bias",
+                "strength": "high",
+                "reason": "exiting too early repeatedly",
+            })
+
+        if entry == "manual_exit_loss" and losses >= 3:
+            adjustments.append({
+                "type": "behavior_flag",
+                "entry_quality": entry,
+                "action": "reduce_manual_override",
+                "strength": "medium",
+                "reason": "manual exits degrading performance",
+            })
+
+    return {
+        "headline": "Learning adjustments generated.",
+        "summary": "The engine translated memory into behavior and setup pressure.",
+        "adjustments": adjustments,
     }
 
 
@@ -1164,107 +1332,109 @@ def build_admin_play_command_summary(plays):
 
 def build_near_miss_promotion_candidates(plays):
     plays = plays or []
-
-    results = []
+    near_misses = []
 
     for play in plays:
+        if not isinstance(play, dict):
+            continue
+
         readiness = play.get("activation_readiness", {}) or {}
-        score = int(readiness.get("score", 0) or 0)
+        promotion = play.get("promotion_guidance", {}) or {}
+
         bucket = str(readiness.get("bucket", "") or "").upper()
+        score = float(readiness.get("score", 0) or 0)
 
-        if bucket == "CLOSE" or score >= 50:
-            results.append({
-                "symbol": play.get("symbol"),
-                "play_id": play.get("play_id"),
-                "bucket": bucket,
-                "score": score,
-                "headline": readiness.get("headline"),
-                "summary": readiness.get("summary"),
-                "blockers": readiness.get("blockers", []),
-                "guidance": readiness.get("guidance", []),
-                "promotion_message": (play.get("promotion_guidance", {}) or {}).get("message"),
-                "failure_tags": readiness.get("failure_tags", []),
-            })
+        if bucket not in {"WATCH", "WEAK"}:
+            continue
 
-    return sorted(results, key=lambda x: x["score"], reverse=True)[:5]
+        near_misses.append({
+            "symbol": play.get("symbol"),
+            "play_id": play.get("play_id"),
+            "bucket": bucket,
+            "score": score,
+            "headline": readiness.get("headline", ""),
+            "summary": readiness.get("summary", ""),
+            "blockers": readiness.get("blockers", []),
+            "guidance": readiness.get("guidance", []),
+            "promotion_message": promotion.get("message", ""),
+            "failure_tags": [x.get("cause") for x in build_failure_clusters([play])],
+        })
+
+    near_misses.sort(key=lambda x: x.get("score", 0), reverse=True)
+    return near_misses
 
 
 def build_promotion_queue_diagnosis(plays):
     plays = plays or []
-
-    failure_clusters = build_failure_clusters(plays)
     near_misses = build_near_miss_promotion_candidates(plays)
+    failure_clusters = build_failure_clusters(plays)
 
-    if not plays:
-        return {
-            "queue_empty": True,
-            "headline": "No plays in system.",
-            "summary": "You need to build your idea book before promotion can exist.",
-            "top_blocker": None,
-            "top_blocker_count": 0,
-            "near_misses": [],
-            "failure_clusters": [],
-        }
+    if near_misses:
+        headline = "Promotion queue is empty, but not dead."
+        summary = "Some plays are close enough to diagnose and improve."
+    else:
+        headline = "No viable setups right now."
+        summary = "Your current ideas are structurally weak. Focus on rebuilding higher-quality setups instead of trying to promote them."
 
-    has_candidates = any(
-        (p.get("activation_readiness", {}) or {}).get("bucket") in {"READY", "CLOSE"}
-        for p in plays
-    )
-
-    if not has_candidates:
-        all_weak = all(
-            int((p.get("activation_readiness", {}) or {}).get("score", 0) or 0) < 30
-            for p in plays
-        )
-
-        if all_weak:
-            return {
-                "queue_empty": True,
-                "headline": "No viable setups right now.",
-                "summary": "Your current ideas are structurally weak. Focus on rebuilding higher-quality setups instead of trying to promote them.",
-                "top_blocker": failure_clusters[0]["cause"] if failure_clusters else None,
-                "top_blocker_count": failure_clusters[0]["count"] if failure_clusters else 0,
-                "near_misses": [],
-                "failure_clusters": failure_clusters,
-            }
-
-        return {
-            "queue_empty": True,
-            "headline": "Nothing qualifies yet, but some are developing.",
-            "summary": "Some plays are progressing, but none meet promotion standards yet.",
-            "top_blocker": failure_clusters[0]["cause"] if failure_clusters else None,
-            "top_blocker_count": failure_clusters[0]["count"] if failure_clusters else 0,
-            "near_misses": near_misses,
-            "failure_clusters": failure_clusters,
-        }
+    top_blocker = failure_clusters[0]["cause"] if failure_clusters else None
+    top_blocker_count = failure_clusters[0]["count"] if failure_clusters else 0
 
     return {
-        "queue_empty": False,
-        "headline": "Promotion system active.",
-        "summary": "You have plays moving through readiness stages.",
-        "top_blocker": failure_clusters[0]["cause"] if failure_clusters else None,
-        "top_blocker_count": failure_clusters[0]["count"] if failure_clusters else 0,
-        "near_misses": near_misses,
-        "failure_clusters": failure_clusters,
+        "queue_empty": len(near_misses) == 0,
+        "headline": headline,
+        "summary": summary,
+        "top_blocker": top_blocker,
+        "top_blocker_count": top_blocker_count,
+        "near_misses": near_misses[:5],
+        "failure_clusters": failure_clusters[:5],
+        "source": "legacy_my_plays_overlay",
     }
 
 
 def build_play_promotion_summary(plays):
     plays = plays or []
 
-    promotion_queue = build_play_promotion_queue(plays)
-    near_misses = build_near_miss_promotion_candidates(plays)
+    promotion_queue = []
+    near_misses = []
     diagnosis = build_promotion_queue_diagnosis(plays)
 
-    ready_candidates = [p for p in promotion_queue if p.get("bucket") == "READY"]
-    close_candidates = [p for p in promotion_queue if p.get("bucket") == "CLOSE"]
+    for play in plays:
+        if not isinstance(play, dict):
+            continue
+
+        readiness = play.get("activation_readiness", {}) or {}
+        promotion = play.get("promotion_guidance", {}) or {}
+
+        bucket = str(readiness.get("bucket", "") or "").upper()
+        score = float(readiness.get("score", 0) or 0)
+
+        row = {
+            "symbol": play.get("symbol"),
+            "play_id": play.get("play_id"),
+            "bucket": bucket,
+            "score": score,
+            "headline": readiness.get("headline", ""),
+            "summary": readiness.get("summary", ""),
+            "blockers": readiness.get("blockers", []),
+            "guidance": readiness.get("guidance", []),
+            "promotion_message": promotion.get("message", ""),
+            "promotion_focus": promotion.get("focus", []),
+        }
+
+        if bucket in {"READY", "CLOSE"}:
+            promotion_queue.append(row)
+        elif bucket in {"WATCH", "WEAK"}:
+            near_misses.append(row)
+
+    promotion_queue.sort(key=lambda x: x.get("score", 0), reverse=True)
+    near_misses.sort(key=lambda x: x.get("score", 0), reverse=True)
 
     top_candidate = promotion_queue[0] if promotion_queue else None
     top_near_miss = near_misses[0] if near_misses else None
 
     if promotion_queue:
-        headline = "You have promotable plays."
-        summary = "At least one play currently looks strong enough to be considered for live activation."
+        headline = "Promotion queue has active candidates."
+        summary = "Some plays are promotable, but they should still be weighed against the newer readiness / promotion / rebuild engine."
     elif near_misses:
         headline = "Your queue is close, not empty."
         summary = "Nothing qualifies yet, but some plays are close enough to improve."
@@ -1276,13 +1446,14 @@ def build_play_promotion_summary(plays):
         "headline": headline,
         "summary": summary,
         "total_candidates": len(promotion_queue),
-        "ready_candidates": len(ready_candidates),
-        "close_candidates": len(close_candidates),
+        "ready_candidates": len([x for x in promotion_queue if x.get("bucket") == "READY"]),
+        "close_candidates": len([x for x in promotion_queue if x.get("bucket") == "CLOSE"]),
         "top_candidate": top_candidate,
         "top_near_miss": top_near_miss,
-        "promotion_queue": promotion_queue[:10],
+        "promotion_queue": promotion_queue,
         "near_misses": near_misses[:5],
         "diagnosis": diagnosis,
+        "source": "legacy_my_plays_overlay",
     }
 
 def build_play_promotion_candidate(play):
@@ -2805,6 +2976,24 @@ def build_admin_shared_context():
             "behavior_summary": {"counts": {}, "cards": ["Behavior summary is temporarily unavailable."]},
             "trades": [],
         }
+    
+    try:
+        from engine.engine_selection import build_execution_universe
+        from web.app import load_json  # if load_json is already in this file, do not add this import
+        signals = load_json("data/signals.json", [])
+        system_state = load_json("data/system_state.json", {"regime": "Neutral", "volatility": "Normal"})
+        execution_universe = build_execution_universe(signals, system_state)
+        execution_selected = execution_universe.get("selected", []) if isinstance(execution_universe, dict) else []
+    except Exception:
+        execution_universe = {
+            "selected": [],
+            "eligible_count": 0,
+            "rejected_count": 0,
+            "cap": 0,
+            "regime": "neutral",
+            "volatility": "normal",
+        }
+        execution_selected = []
 
     try:
         admin_summary = build_admin_intelligence_summary(plays, positions, analysis)
@@ -2894,12 +3083,23 @@ def build_admin_shared_context():
             },
         }
 
+    try:
+        from engine.engine_selection import get_learning_adjustment_map
+        learning_adjustment_map = get_learning_adjustment_map()
+        auto_learning_policy = learning_adjustment_map.get("auto_policy", {}) if isinstance(learning_adjustment_map, dict) else {}
+    except Exception:
+        auto_learning_policy = {}
+      
+
     return {
         "plays": plays,
         "positions": positions,
         "analysis": analysis,
         "admin_summary": admin_summary,
         "monitoring": monitoring,
+        "execution_universe": execution_universe,
+        "execution_selected": execution_selected,
+        "auto_learning_policy": auto_learning_policy,
         "learning": learning,
         "behavioral_insights": behavioral_insights,
         "behavior_risk": behavior_risk,
@@ -4094,6 +4294,9 @@ def build_admin_dashboard_context():
         "signals": get_signals(),
         "users": users,
         "metrics": get_admin_metrics(),
+        "auto_learning_policy": shared.get("auto_learning_policy", {}),
+        "execution_universe": shared.get("execution_universe", {}),
+        "execution_selected": shared.get("execution_selected", []),
         "proof": performance_summary(),
         "snapshot": get_dashboard_snapshot(),
         "system": get_system_state(),
@@ -4709,6 +4912,7 @@ def build_trade_detail_payload(trade_id):
     candidate_log = load_json("data/candidate_log.json", [])
     trade_log = load_json("data/trade_log.json", [])
     timelines = load_json("data/trade_timeline.json", [])
+    canonical = get_canonical_snapshot()
 
     if not isinstance(trade_details, list):
         trade_details = []
@@ -4723,29 +4927,35 @@ def build_trade_detail_payload(trade_id):
     if not isinstance(timelines, list):
         timelines = []
 
-    trade_id = str(trade_id)
+    canonical_ledger = canonical.get("ledger", []) if isinstance(canonical, dict) else []
+    if not isinstance(canonical_ledger, list):
+        canonical_ledger = []
+
     target = None
 
-    # 1) Prefer rich saved trade_details
     for item in trade_details:
-        if str(item.get("trade_id")) == trade_id or str(item.get("id")) == trade_id:
+        if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
             target = dict(item)
             break
 
-    # 2) Fall back to open / closed positions
     if not target:
         for pool in [open_positions, closed_positions]:
             for item in pool:
-                if str(item.get("trade_id")) == trade_id or str(item.get("id")) == trade_id:
+                if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
                     target = dict(item)
                     break
             if target:
                 break
 
-    # 3) Fall back to trade log
     if not target:
         for item in trade_log:
-            if str(item.get("trade_id")) == trade_id or str(item.get("id")) == trade_id:
+            if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
+                target = dict(item)
+                break
+
+    if not target:
+        for item in canonical_ledger:
+            if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
                 target = dict(item)
                 break
 
@@ -4753,35 +4963,47 @@ def build_trade_detail_payload(trade_id):
         return None
 
     symbol = target.get("symbol")
-    strategy = target.get("strategy", "CALL")
+    strategy = target.get("strategy", target.get("direction", "CALL"))
     entry = target.get("entry", target.get("price"))
-    atr = target.get("atr")
     score = target.get("score")
     confidence = target.get("confidence")
 
-    # Candidate context — exact trade match first
     candidate = None
     for row in candidate_log:
-        if str(row.get("trade_id")) == trade_id:
+        same_trade = str(row.get("trade_id")) == str(trade_id)
+        same_symbol = row.get("symbol") == symbol
+        if same_trade or same_symbol:
             candidate = row
             break
 
-    # Narrow symbol fallback only if still missing and only one candidate exists
-    if not candidate and symbol:
-        symbol_matches = [row for row in candidate_log if row.get("symbol") == symbol]
-        if len(symbol_matches) == 1:
-            candidate = symbol_matches[0]
-
-    # Timeline — exact trade match only
     trade_timeline = []
     for row in timelines:
-        if str(row.get("trade_id")) == trade_id:
+        same_trade = str(row.get("trade_id")) == str(trade_id)
+        same_symbol = row.get("symbol") == symbol
+        if same_trade or same_symbol:
             trade_timeline.append(row)
 
+    canonical_row = None
+    for row in canonical_ledger:
+        same_trade = str(row.get("trade_id")) == str(trade_id)
+        same_symbol = row.get("symbol") == symbol
+        if same_trade or same_symbol:
+            canonical_row = row
+            break
+
     target.setdefault("entry", entry)
-    target.setdefault("atr", atr)
     target.setdefault("score", score)
     target.setdefault("confidence", confidence)
+
+    if canonical_row and isinstance(canonical_row, dict):
+        target["setup_family"] = canonical_row.get("setup_family", target.get("setup_family", ""))
+        target["entry_quality"] = canonical_row.get("entry_quality", target.get("entry_quality", ""))
+        target["exit_reason"] = canonical_row.get("exit_reason", target.get("exit_reason", ""))
+        target["failure_reason"] = canonical_row.get("failure_reason", target.get("failure_reason", ""))
+        target["success_reason"] = canonical_row.get("success_reason", target.get("success_reason", ""))
+        target["market_regime"] = canonical_row.get("market_regime", target.get("market_regime", "unknown"))
+        target["volatility_state"] = canonical_row.get("volatility_state", target.get("volatility_state", "unknown"))
+        target["breadth"] = canonical_row.get("breadth", target.get("breadth", "unknown"))
 
     target.setdefault("risk", {
         "stop_logic": (
@@ -4813,9 +5035,7 @@ def build_trade_detail_payload(trade_id):
         "note": "No crowd pressure data saved.",
     })
 
-    target.setdefault("thesis", target.get("why", [
-        "No thesis lines saved yet."
-    ]))
+    target.setdefault("thesis", target.get("why", ["No thesis lines saved yet."]))
 
     target.setdefault("narrative", {
         "entry_story": (
@@ -4823,18 +5043,13 @@ def build_trade_detail_payload(trade_id):
             if entry is not None else
             "No entry story saved yet."
         ),
-        "management_story": (
-            "Management will depend on follow-through, stop integrity, and progress toward target."
-        ),
-        "exit_story": (
-            target.get("exit_explanation")
-            or "No exit story saved yet."
-        ),
+        "management_story": "Management depended on follow-through, stop integrity, and progress toward target.",
+        "exit_story": target.get("exit_explanation") or "No exit story saved yet.",
     })
 
     target.setdefault("context", [
         f"Mode: {target.get('mode', 'UNKNOWN')}",
-        f"Regime: {target.get('regime', 'UNKNOWN')}",
+        f"Regime: {target.get('market_regime', target.get('regime', 'UNKNOWN'))}",
         f"Breadth: {target.get('breadth', 'UNKNOWN')}",
         f"Volatility: {target.get('volatility_state', 'UNKNOWN')}",
     ])
@@ -4844,15 +5059,35 @@ def build_trade_detail_payload(trade_id):
         [target.get("rejection_reason")] if target.get("rejection_reason") else []
     )
 
-    target["timeline"] = trade_timeline
-
-    if candidate:
+    if candidate and isinstance(candidate, dict):
         if not target.get("why") and candidate.get("why"):
             target["why"] = candidate.get("why", [])
         if not target.get("option_explanation") and candidate.get("option_explanation"):
             target["option_explanation"] = candidate.get("option_explanation", [])
         if not target.get("rejection_reason") and candidate.get("rejection_reason"):
             target["rejection_reason"] = candidate.get("rejection_reason")
+
+    target["timeline"] = trade_timeline
+
+    target["learning_intelligence"] = {
+        "setup_family": target.get("setup_family", "unknown"),
+        "entry_quality": target.get("entry_quality", "unknown"),
+        "exit_reason": target.get("exit_reason", "unknown"),
+        "failure_reason": target.get("failure_reason", ""),
+        "success_reason": target.get("success_reason", ""),
+        "score": target.get("score"),
+        "confidence": target.get("confidence"),
+    }
+
+    target["engine_verdict"] = {
+        "headline": "Trade intelligence attached.",
+        "summary": "This trade now carries setup, entry, exit, and learning context from the canonical engine.",
+        "notes": [
+            f"Setup family: {target.get('setup_family', 'unknown')}",
+            f"Entry quality: {target.get('entry_quality', 'unknown')}",
+            f"Exit reason: {target.get('exit_reason', 'unknown')}",
+        ],
+    }
 
     return target
 

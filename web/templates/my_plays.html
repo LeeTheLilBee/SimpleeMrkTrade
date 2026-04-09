@@ -52,6 +52,14 @@
         <span class="signal-stat-chip">{{ plays_summary.total }} total plays</span>
     </div>
 
+    {% if plays_summary.action_message %}
+    <div class="card" style="margin-top:14px;">
+        <div class="passage-frame">
+            <p style="margin:0;">{{ plays_summary.action_message }}</p>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
         <div class="card" style="margin:0;">
             <h4>Open</h4>
@@ -86,6 +94,221 @@
             <div class="passage-frame"><p style="margin:0;"><strong>{{ plays_summary.high_conviction }}</strong></p></div>
         </div>
     </div>
+
+    {% if plays_summary.top_failure_causes %}
+    <div class="card" style="margin-top:14px;">
+        <h4>Top Failure Causes</h4>
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for item in plays_summary.top_failure_causes %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item.cause|replace('_', ' ')|title }} — {{ item.count }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if plays_summary.promotion_summary %}
+<div class="card premium-card gold-accent-card" style="margin-top:14px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">{{ plays_summary.promotion_summary.headline }}</h3>
+            <p class="muted-line" style="margin:0;">{{ plays_summary.promotion_summary.summary }}</p>
+        </div>
+        <span class="signal-stat-chip">{{ plays_summary.promotion_summary.total_candidates }} candidates</span>
+    </div>
+
+<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+    <div>
+        <h3 style="margin-bottom:8px;">{{ plays_summary.promotion_summary.headline }}</h3>
+        <p class="muted-line" style="margin:0;">{{ plays_summary.promotion_summary.summary }}</p>
+    </div>
+    <span class="signal-stat-chip">{{ plays_summary.promotion_summary.total_candidates }} candidates</span>
+</div>
+{% if plays_summary.promotion_summary.source %}
+<div class="passage-frame" style="margin-top:12px;">
+    <p style="margin:0;">
+        <strong>Source:</strong> {{ plays_summary.promotion_summary.source|replace('_', ' ')|title }}
+    </p>
+</div>
+{% endif %}
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>READY Candidates</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ plays_summary.promotion_summary.ready_candidates }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>CLOSE Candidates</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ plays_summary.promotion_summary.close_candidates }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    {% if plays_summary.promotion_summary.top_candidate %}
+    <div class="card" style="margin-top:14px;">
+        <h4>Top Promotion Candidate</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                <strong>{{ plays_summary.promotion_summary.top_candidate.symbol }}</strong>
+                — {{ plays_summary.promotion_summary.top_candidate.headline }}
+            </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+            <span class="signal-stat-chip">{{ plays_summary.promotion_summary.top_candidate.bucket }}</span>
+            <span class="signal-stat-chip">Promotion {{ plays_summary.promotion_summary.top_candidate.promotion_score }}</span>
+            <span class="signal-stat-chip">Readiness {{ plays_summary.promotion_summary.top_candidate.readiness_score }}</span>
+        </div>
+
+        {% if plays_summary.promotion_summary.top_candidate.promotion_message %}
+        <div class="passage-frame" style="margin-top:10px;">
+            <p style="margin:0;">{{ plays_summary.promotion_summary.top_candidate.promotion_message }}</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if plays_summary.promotion_summary and plays_summary.promotion_summary.diagnosis %}
+<div class="card premium-card" style="margin-top:14px;">
+    <h4>{{ plays_summary.promotion_summary.diagnosis.headline }}</h4>
+    <div class="passage-frame">
+        <p style="margin:0;">{{ plays_summary.promotion_summary.diagnosis.summary }}</p>
+    </div>
+
+{% if plays_summary.promotion_summary.diagnosis.source %}
+<div class="passage-frame" style="margin-top:10px;">
+    <p style="margin:0;">
+        <strong>Diagnosis Source:</strong>
+        {{ plays_summary.promotion_summary.diagnosis.source|replace('_', ' ')|title }}
+    </p>
+</div>
+{% endif %}
+
+    {% if plays_summary.promotion_summary.diagnosis.top_blocker %}
+    <div class="passage-frame" style="margin-top:10px;">
+        <p style="margin:0;">
+            <strong>Top bottleneck:</strong>
+            {{ plays_summary.promotion_summary.diagnosis.top_blocker|replace('_', ' ')|title }}
+            — {{ plays_summary.promotion_summary.diagnosis.top_blocker_count }}
+        </p>
+    </div>
+    {% endif %}
+
+    {% if plays_summary.promotion_summary.top_near_miss %}
+    <div class="card" style="margin-top:12px;">
+        <h4>Closest To Promotion</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                <strong>{{ plays_summary.promotion_summary.top_near_miss.symbol }}</strong>
+                — {{ plays_summary.promotion_summary.top_near_miss.headline }}
+            </p>
+        </div>
+
+        {% if plays_summary.promotion_summary.top_near_miss.blockers %}
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for item in plays_summary.promotion_summary.top_near_miss.blockers %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if plays_summary.rebuild_summary %}
+<div class="card premium-card gold-accent-card" style="margin-top:14px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">{{ plays_summary.rebuild_summary.headline }}</h3>
+            <p class="muted-line" style="margin:0;">{{ plays_summary.rebuild_summary.summary }}</p>
+        </div>
+        <span class="signal-stat-chip">{{ plays_summary.rebuild_summary.total_rebuild_candidates }} rebuild candidates</span>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>High Severity</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ plays_summary.rebuild_summary.high_severity }}</strong></p>
+            </div>
+        </div>
+        <div class="card" style="margin:0;">
+            <h4>Medium Severity</h4>
+            <div class="passage-frame">
+                <p style="margin:0;"><strong>{{ plays_summary.rebuild_summary.medium_severity }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    {% if plays_summary.rebuild_summary.top_rebuild %}
+    <div class="card" style="margin-top:14px;">
+        <h4>Top Rebuild Target</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                <strong>{{ plays_summary.rebuild_summary.top_rebuild.symbol }}</strong>
+                — {{ plays_summary.rebuild_summary.top_rebuild.headline }}
+            </p>
+        </div>
+
+        {% if plays_summary.rebuild_summary.top_rebuild.rebuild_suggestions %}
+        <div style="display:grid; gap:8px; margin-top:10px;">
+            {% for item in plays_summary.rebuild_summary.top_rebuild.rebuild_suggestions %}
+            <div class="passage-frame">
+                <p style="margin:0;">{{ item }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if plays_summary.strongest_play or plays_summary.weakest_play %}
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
+    {% if plays_summary.strongest_play %}
+    <div class="card" style="margin:0;">
+        <h4>Strongest Play</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                <strong>{{ plays_summary.strongest_play.symbol }}</strong>
+                — {{ plays_summary.strongest_play.headline }}
+            </p>
+        </div>
+        {% if plays_summary.strongest_play.promotion_message %}
+        <div class="passage-frame" style="margin-top:8px;">
+            <p style="margin:0;">{{ plays_summary.strongest_play.promotion_message }}</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if plays_summary.weakest_play %}
+    <div class="card" style="margin:0;">
+        <h4>Weakest Play</h4>
+        <div class="passage-frame">
+            <p style="margin:0;">
+                <strong>{{ plays_summary.weakest_play.symbol }}</strong>
+                — {{ plays_summary.weakest_play.headline }}
+            </p>
+        </div>
+        {% if plays_summary.weakest_play.promotion_message %}
+        <div class="passage-frame" style="margin-top:8px;">
+            <p style="margin:0;">{{ plays_summary.weakest_play.promotion_message }}</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
 {% endif %}
 
@@ -222,6 +445,110 @@
             </div>
             {% endif %}
 
+            {% if play.activation_readiness and play.activation_readiness.reasons %}
+            <div class="card" style="margin-top:14px;">
+                <h4>Why This Readiness Score</h4>
+                <div style="display:grid; gap:8px;">
+                    {% for line in play.activation_readiness.reasons %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ line }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if play.activation_readiness and play.activation_readiness.blockers %}
+            <div class="card" style="margin-top:14px;">
+                <h4>Blockers</h4>
+                <div style="display:grid; gap:8px;">
+                    {% for line in play.activation_readiness.blockers %}
+                    <div class="passage-frame" style="border-left:3px solid rgba(255, 140, 174, 0.8);">
+                        <p style="margin:0;">{{ line }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if play.activation_readiness and play.activation_readiness.guidance %}
+            <div class="card" style="margin-top:14px;">
+                <h4>How to Improve It</h4>
+                <div style="display:grid; gap:8px;">
+                    {% for line in play.activation_readiness.guidance %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ line }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if play.promotion_guidance and play.activation_readiness and play.activation_readiness.bucket in ["READY", "CLOSE"] %}
+            <div class="card gold-accent-card" style="margin-top:14px;">
+                <h4>Promotion Path</h4>
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ play.promotion_guidance.message }}</p>
+                </div>
+                {% if play.promotion_guidance.focus %}
+                <div style="display:grid; gap:8px; margin-top:10px;">
+                    {% for item in play.promotion_guidance.focus %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ item }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if play.promotion_guidance %}
+            <div class="card" style="margin-top:14px;">
+                <h4>Next Step</h4>
+                <div class="passage-frame">
+                    <p style="margin:0;">{{ play.promotion_guidance.message }}</p>
+                </div>
+                {% if play.promotion_guidance.focus %}
+                <div style="display:grid; gap:8px; margin-top:10px;">
+                    {% for item in play.promotion_guidance.focus %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ item }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if play.rebuild_profile %}
+            <div class="card" style="margin-top:14px;">
+                <h4>Rebuild Path</h4>
+
+                {% if play.rebuild_profile.rebuild_suggestions %}
+                <div style="display:grid; gap:8px;">
+                    {% for item in play.rebuild_profile.rebuild_suggestions %}
+                    <div class="passage-frame">
+                        <p style="margin:0;">{{ item }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if play.rebuild_profile.promotable_conditions %}
+                <div class="card" style="margin-top:10px;">
+                    <h4>What Would Make This Promotable</h4>
+                    <div style="display:grid; gap:8px;">
+                        {% for item in play.rebuild_profile.promotable_conditions %}
+                        <div class="passage-frame">
+                            <p style="margin:0;">{{ item }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
             <div class="card" style="margin-top:14px;">
                 <h4>System Feedback</h4>
                 <div style="display:grid; gap:8px;">
@@ -238,19 +565,6 @@
                 <h4>Why the System Sees It This Way</h4>
                 <div style="display:grid; gap:8px;">
                     {% for line in play.system_agreement.reasons[:2] %}
-                    <div class="passage-frame">
-                        <p style="margin:0;">{{ line }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            {% if play.activation_readiness and play.activation_readiness.reasons %}
-            <div class="card" style="margin-top:14px;">
-                <h4>Why This Readiness Score</h4>
-                <div style="display:grid; gap:8px;">
-                    {% for line in play.activation_readiness.reasons %}
                     <div class="passage-frame">
                         <p style="margin:0;">{{ line }}</p>
                     </div>
@@ -285,5 +599,4 @@
     </div>
 </div>
 {% endif %}
-
 {% endblock %}
