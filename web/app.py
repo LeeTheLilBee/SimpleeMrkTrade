@@ -1,33 +1,16 @@
 
 import os
 import sys
-sys.path.insert(0, "/content/SimpleeMrkTrade")
+from pathlib import Path
+import json
+from typing import Any, Dict, List, Optional
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# --- PROJECT PATH SETUP ---
+PROJECT_ROOT = "/content/SimpleeMrkTrade"
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from engine_v2.dashboard_contract import build_dashboard_contract
-
-from engine_v2.replay_batch_builder import build_replay_batch
-from engine_v2.replay_page_context_builder import build_replay_page_context
-
-import json
-from pathlib import Path
-# ADD THESE IMPORTS TO web/app.py
-
-from engine_v2.spotlight_fusion_adapter import build_spotlight_fusion_cards
-from engine_v2.market_map_builder import build_market_map
-from engine_v2.constellation_mapper import map_tiles_to_constellation
-from engine_v2.symbol_hero_contract import build_symbol_hero_contract
-from engine_v2.symbol_deep_dive_contract import build_symbol_deep_dive_contract
-from engine_v2.horizontal_hero_contract import build_horizontal_hero_contract
-from engine_v2.market_map_interaction_contract import build_market_map_interaction_contract
-from engine_v2.map_layer_toggle_contract import build_map_layer_toggle_contract
-from engine_v2.spotlight_page_contract import build_spotlight_page_contract
-from engine_v2.mode_router import resolve_user_modes
-from typing import Any, Dict, List, Optional
-
+# --- FLASK ---
 from flask import (
     Flask,
     jsonify,
@@ -37,44 +20,22 @@ from flask import (
     request,
     session,
     url_for,
+    flash,
 )
 from jinja2 import TemplateNotFound
 
+# --- SOULAANA CORE (NEW SYSTEM) ---
+import engine.soulaana_core as soulaana_core
+
+# --- CORE ENGINE (V1 BRIDGE LAYER) ---
+from engine.engine_selection import build_execution_universe, get_learning_adjustment_map
+from engine.canonical_decision_object import build_canonical_decision_object
+
+# --- MARKET / SYMBOLS ---
 import engine.market_universe as market_universe
+from engine.symbols import load_symbol_news, refresh_symbol_news
 
-# ADD THESE IMPORTS TO web/app.py
-
-from engine_v2.app_fusion_helper import build_full_product_fusion
-from engine_v2.symbol_page_fusion_adapter import build_symbol_page_fusion_view
-from engine_v2.spotlight_fusion_adapter import build_spotlight_fusion_cards
-from engine_v2.dashboard_fusion_adapter import build_dashboard_fusion_view
-# ADD THESE IMPORTS NEAR YOUR OTHER IMPORTS IN web/app.py
-
-from web.final_brain_routes_engine import (
-    build_symbol_final_brain,
-    build_all_final_brains,
-)
-from engine_v2.final_brain_live_helpers import (
-    build_final_symbol_context,
-    build_final_spotlight_context,
-    build_final_dashboard_context,
-)
-from web.final_brain_routes_engine import build_final_all_symbol_cards
-
-
-# compatibility wrappers so the rest of app.py does not need to change
-def load_market_universe():
-    return market_universe.load_market_universe()
-
-def refresh_market_universe():
-    return market_universe.refresh_market_universe()
-
-def refresh_market_universe_if_stale(max_age_hours: int = 12):
-    return market_universe.refresh_market_universe_if_stale(max_age_hours=max_age_hours)
-
-def get_market_universe_summary():
-    return market_universe.get_market_universe_summary()
-
+# --- USER / PLAYS ---
 from engine.my_plays import (
     get_my_plays,
     add_play,
@@ -89,8 +50,15 @@ from engine.my_plays import (
     analyze_user_trades,
 )
 
-from engine.symbols import load_symbol_news, refresh_symbol_news
+# --- INTELLIGENCE LAYERS ---
+from engine.trade_intelligence import attach_trade_intelligence
+from engine.signal_tiering import slice_signals_by_tier, spotlight_sections
+from engine.position_health import attach_position_health
+from engine.portfolio_intelligence import evaluate_portfolio
+from engine.alert_engine import generate_alerts
+from engine.system_brain import build_system_brain
 
+# --- ANALYTICS ---
 from engine.admin_product_analytics import (
     log_event,
     maybe_track_page_view,
@@ -107,12 +75,49 @@ from engine.admin_product_analytics import (
     most_underrated_symbols,
 )
 
-from engine.trade_intelligence import attach_trade_intelligence
-from engine.signal_tiering import slice_signals_by_tier, spotlight_sections
-from engine.position_health import attach_position_health
-from engine.portfolio_intelligence import evaluate_portfolio
-from engine.alert_engine import generate_alerts
-from engine.system_brain import build_system_brain
+# --- V2 DASHBOARD + REPLAY ---
+from engine_v2.dashboard_contract import build_dashboard_contract
+from engine_v2.replay_batch_builder import build_replay_batch
+from engine_v2.replay_page_context_builder import build_replay_page_context
+
+# --- V2 FUSION + UI SYSTEM ---
+from engine_v2.app_fusion_helper import build_full_product_fusion
+from engine_v2.dashboard_fusion_adapter import build_dashboard_fusion_view
+from engine_v2.symbol_page_fusion_adapter import build_symbol_page_fusion_view
+from engine_v2.spotlight_fusion_adapter import build_spotlight_fusion_cards
+
+# --- V2 MARKET VISUAL SYSTEM ---
+from engine_v2.market_map_builder import build_market_map
+from engine_v2.constellation_mapper import map_tiles_to_constellation
+from engine_v2.market_map_interaction_contract import build_market_map_interaction_contract
+from engine_v2.map_layer_toggle_contract import build_map_layer_toggle_contract
+
+# --- V2 SYMBOL CONTRACTS ---
+from engine_v2.symbol_hero_contract import build_symbol_hero_contract
+from engine_v2.symbol_deep_dive_contract import build_symbol_deep_dive_contract
+from engine_v2.horizontal_hero_contract import build_horizontal_hero_contract
+
+# --- V2 SPOTLIGHT ---
+from engine_v2.spotlight_page_contract import build_spotlight_page_contract
+
+# --- V2 MODE ROUTING ---
+from engine_v2.mode_router import resolve_user_modes
+
+# --- FINAL BRAIN SYSTEM ---
+from web.final_brain_routes_engine import (
+    build_symbol_final_brain,
+    build_all_final_brains,
+    build_final_all_symbol_cards,
+)
+
+from engine_v2.final_brain_live_helpers import (
+    build_final_symbol_context,
+    build_final_spotlight_context,
+    build_final_dashboard_context,
+)
+
+# --- APP INIT ---
+app = Flask(__name__)
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "simpleemrktrade-dev-key-change-later"
@@ -226,6 +231,18 @@ def auto_refresh_news_cache():
 # FILE HELPERS
 # ============================================================
 
+def load_market_universe():
+    return market_universe.load_market_universe()
+
+def refresh_market_universe():
+    return market_universe.refresh_market_universe()
+
+def refresh_market_universe_if_stale(max_age_hours: int = 12):
+    return market_universe.refresh_market_universe_if_stale(max_age_hours=max_age_hours)
+
+def get_market_universe_summary():
+    return market_universe.get_market_universe_summary()
+
 def get_symbol_detail(symbol: str) -> dict:
     symbol = str(symbol or "").upper().strip()
 
@@ -300,6 +317,10 @@ def get_symbol_detail(symbol: str) -> dict:
         "rebuild_pressure": match.get("rebuild_pressure"),
         "execution_quality": match.get("execution_quality"),
         "eligible": match.get("eligible"),
+        "final_verdict": match.get("final_verdict"),
+        "decision_reason": match.get("decision_reason"),
+        "final_decision": match.get("final_decision", {}),
+        "canonical_decision": match.get("canonical_decision", {}),
 
         "learning_notes": match.get("learning_notes", []),
         "promotion_notes": match.get("promotion_notes", []),
@@ -318,14 +339,37 @@ def get_symbol_detail(symbol: str) -> dict:
     # --- HUMAN-READABLE VERDICT ---
     detail["engine_verdict"] = {
         "headline": "Engine-evaluated opportunity.",
-        "summary": "This symbol is being actively scored across readiness, promotion, and rebuild pressure.",
+        "summary": "This symbol is being actively scored across readiness, promotion, rebuild pressure, and final decision logic.",
         "notes": [
+            f"Final Verdict: {match.get('final_verdict')}",
+            f"Decision Reason: {match.get('decision_reason')}",
             f"Readiness: {match.get('readiness_score')}",
             f"Promotion: {match.get('promotion_score')}",
             f"Rebuild Pressure: {match.get('rebuild_pressure')}",
             f"Eligible: {match.get('eligible')}",
         ],
     }
+
+    try:
+        detail["soulanna"] = soulanna_explain_signal({
+            "symbol": detail.get("symbol"),
+            "score": match.get("score", 0),
+            "confidence": match.get("confidence", "LOW"),
+            "setup_family": match.get("setup_family"),
+            "entry_quality": match.get("entry_quality"),
+            "readiness_score": match.get("readiness_score"),
+            "promotion_score": match.get("promotion_score"),
+            "rebuild_pressure": match.get("rebuild_pressure"),
+            "eligible": match.get("eligible"),
+            "final_verdict": match.get("final_verdict"),
+            "decision_reason": match.get("decision_reason"),
+            "canonical_decision": match.get("canonical_decision", {}),
+            "learning_notes": match.get("learning_notes", []),
+        })
+    except Exception:
+        detail["soulanna"] = {}
+
+    return detail
 
     return detail
 
@@ -809,15 +853,260 @@ def write_canonical_reporting_snapshot():
 # SECTION 73N — CANONICAL SNAPSHOT ACCESSOR
 # ============================================================
 
-def get_canonical_snapshot() -> Dict[str, Any]:
+def get_canonical_snapshot():
+    """
+    Build a canonical snapshot from durable data files so downstream engine layers
+    (learning, playbook memory, canonical decision support) always have a stable source.
+
+    This function intentionally avoids relying on transient in-memory globals like
+    app_state, because notebook / reload workflows can make those inconsistent.
+    """
     try:
-        snapshot = write_canonical_reporting_snapshot()
-        if not isinstance(snapshot, dict):
-            return {}
+        ledger = []
+        sources = {}
+
+        # --- load durable sources ---
+        try:
+            closed_positions = load_json("data/closed_positions.json", [])
+        except Exception as e:
+            print(f"[SNAPSHOT_LOAD:closed_positions] {e}")
+            closed_positions = []
+
+        try:
+            trade_log = load_json("data/trade_log.json", [])
+        except Exception as e:
+            print(f"[SNAPSHOT_LOAD:trade_log] {e}")
+            trade_log = []
+
+        try:
+            trade_details = load_json("data/trade_details.json", [])
+        except Exception as e:
+            print(f"[SNAPSHOT_LOAD:trade_details] {e}")
+            trade_details = []
+
+        try:
+            canonical_ledger = load_json("data/canonical_ledger.json", [])
+        except Exception as e:
+            print(f"[SNAPSHOT_LOAD:canonical_ledger] {e}")
+            canonical_ledger = []
+
+        try:
+            open_positions = load_json("data/open_positions.json", [])
+        except Exception as e:
+            print(f"[SNAPSHOT_LOAD:open_positions] {e}")
+            open_positions = []
+
+        try:
+            candidate_log = load_json("data/candidate_log.json", [])
+        except Exception as e:
+            print(f"[SNAPSHOT_LOAD:candidate_log] {e}")
+            candidate_log = []
+
+        if not isinstance(closed_positions, list):
+            closed_positions = []
+        if not isinstance(trade_log, list):
+            trade_log = []
+        if not isinstance(trade_details, list):
+            trade_details = []
+        if not isinstance(canonical_ledger, list):
+            canonical_ledger = []
+        if not isinstance(open_positions, list):
+            open_positions = []
+        if not isinstance(candidate_log, list):
+            candidate_log = []
+
+        sources["closed_positions"] = closed_positions
+        sources["trade_log"] = trade_log
+        sources["trade_details"] = trade_details
+        sources["canonical_ledger"] = canonical_ledger
+        sources["open_positions"] = open_positions
+        sources["candidate_log"] = candidate_log
+
+        # --- merge into a canonical ledger ---
+        merged = []
+        seen = set()
+
+        def _safe_str(x, default=""):
+            try:
+                return str(x)
+            except Exception:
+                return default
+
+        def _safe_float(x, default=0.0):
+            try:
+                return float(x)
+            except Exception:
+                return default
+
+        def _normalize_outcome(row):
+            outcome = _safe_str(row.get("outcome", "")).strip().lower()
+            if outcome in {"win", "loss", "flat"}:
+                return outcome
+
+            pnl = _safe_float(
+                row.get("pnl", row.get("realized_pnl", row.get("profit", 0.0))),
+                0.0,
+            )
+            if pnl > 0:
+                return "win"
+            if pnl < 0:
+                return "loss"
+            return "flat"
+
+        def _normalize_setup_family(row):
+            setup_family = _safe_str(row.get("setup_family", "")).strip().lower()
+            if setup_family:
+                return setup_family
+
+            setup_type = _safe_str(
+                row.get("setup_type", row.get("signal_type", row.get("strategy", "")))
+            ).strip().lower()
+
+            mapping = {
+                "continuation": "continuation",
+                "breakout": "breakout",
+                "pullback": "pullback",
+                "momentum": "high_score_momentum",
+                "high_score_momentum": "high_score_momentum",
+                "structured": "structured",
+                "strong_structured": "strong_structured",
+                "speculative": "speculative",
+            }
+
+            if setup_type in mapping:
+                return mapping[setup_type]
+
+            if "breakout" in setup_type:
+                return "breakout"
+            if "pullback" in setup_type:
+                return "pullback"
+            if "continuation" in setup_type:
+                return "continuation"
+            if "momentum" in setup_type:
+                return "high_score_momentum"
+
+            return "unknown"
+
+        def _infer_entry_quality(row):
+            entry_quality = _safe_str(row.get("entry_quality", "")).strip().lower()
+            if entry_quality:
+                return entry_quality
+
+            learning_notes = row.get("learning_notes", [])
+            if not isinstance(learning_notes, list):
+                learning_notes = []
+
+            joined_notes = " ".join([_safe_str(x).lower() for x in learning_notes])
+
+            if "cut_on_weakness" in joined_notes:
+                return "cut_on_weakness"
+
+            confidence = _safe_str(
+                row.get("confidence", row.get("latest_confidence", "LOW"))
+            ).strip().upper()
+            score = _safe_float(row.get("score", row.get("latest_score", 0.0)), 0.0)
+
+            if confidence == "HIGH" and score >= 160:
+                return "high_conviction"
+            if confidence in {"HIGH", "MEDIUM"} and score >= 100:
+                return "acceptable"
+            return "weak"
+
+        def _identity(row):
+            trade_id = _safe_str(row.get("trade_id", row.get("id", ""))).strip()
+            if trade_id:
+                return f"trade:{trade_id}"
+
+            symbol = _safe_str(row.get("symbol", "")).upper().strip()
+            timestamp = _safe_str(
+                row.get("timestamp", row.get("opened_at", row.get("closed_at", row.get("date", ""))))
+            ).strip()
+            outcome = _normalize_outcome(row)
+            return f"{symbol}|{timestamp}|{outcome}"
+
+        def _build_memory_row(row):
+            row = dict(row or {})
+
+            return {
+                "trade_id": _safe_str(row.get("trade_id", row.get("id", ""))).strip(),
+                "symbol": _safe_str(row.get("symbol", "")).upper().strip(),
+                "timestamp": _safe_str(
+                    row.get("timestamp", row.get("opened_at", row.get("closed_at", row.get("date", ""))))
+                ).strip(),
+                "pnl": round(
+                    _safe_float(row.get("pnl", row.get("realized_pnl", row.get("profit", 0.0))), 0.0),
+                    2,
+                ),
+                "score": round(
+                    _safe_float(row.get("score", row.get("latest_score", 0.0)), 0.0),
+                    2,
+                ),
+                "confidence": _safe_str(
+                    row.get("confidence", row.get("latest_confidence", "LOW"))
+                ).upper().strip() or "LOW",
+                "setup_family": _normalize_setup_family(row),
+                "entry_quality": _infer_entry_quality(row),
+                "outcome": _normalize_outcome(row),
+                "exit_reason": _safe_str(row.get("exit_reason", row.get("close_reason", ""))).strip(),
+                "success_reason": _safe_str(row.get("success_reason", "")).strip(),
+                "failure_reason": _safe_str(row.get("failure_reason", "")).strip(),
+            }
+
+        # Canonical ledger first, then closed positions, then trade log, then trade details
+        for source_name in ["canonical_ledger", "closed_positions", "trade_log", "trade_details"]:
+            for row in sources.get(source_name, []):
+                if not isinstance(row, dict):
+                    continue
+
+                normalized = _build_memory_row(row)
+                ident = _identity(normalized)
+
+                if ident in seen:
+                    continue
+                seen.add(ident)
+
+                if not normalized.get("symbol") and not normalized.get("trade_id"):
+                    continue
+
+                merged.append(normalized)
+
+        wins = sum(1 for row in merged if row.get("outcome") == "win")
+        losses = sum(1 for row in merged if row.get("outcome") == "loss")
+        flat = sum(1 for row in merged if row.get("outcome") == "flat")
+
+        snapshot = {
+            "ledger": merged,
+            "closed_positions": closed_positions,
+            "trade_log": trade_log,
+            "trade_details": trade_details,
+            "canonical_ledger": canonical_ledger,
+            "open_positions": open_positions,
+            "candidate_log": candidate_log,
+            "memory_fuel_summary": {
+                "ledger_count": len(merged),
+                "wins": wins,
+                "losses": losses,
+                "flat": flat,
+            },
+        }
+
+        print("[SNAPSHOT] keys:", list(snapshot.keys()))
+        print("[SNAPSHOT] ledger count:", len(snapshot.get("ledger", [])))
+        print("[SNAPSHOT] wins/losses/flat:", wins, losses, flat)
+
         return snapshot
+
     except Exception as e:
-        print(f"[CANONICAL SNAPSHOT ERROR] {e}")
-        return {}
+        print(f"[SNAPSHOT_ERROR] {e}")
+        return {
+            "ledger": [],
+            "memory_fuel_summary": {
+                "ledger_count": 0,
+                "wins": 0,
+                "losses": 0,
+                "flat": 0,
+            },
+        }
 
 
 def performance_summary():
@@ -2724,6 +3013,95 @@ def inject_global_context():
 # ============================================================
 
 
+SOULAANA_SESSION_KEY = "soulaana_emotional_state"
+
+
+def get_soulaana_emotional_state() -> str:
+    value = session.get(SOULAANA_SESSION_KEY, "")
+    return str(value).strip().lower()
+
+
+def set_soulaana_emotional_state(value: str) -> None:
+    session[SOULAANA_SESSION_KEY] = str(value).strip().lower()
+
+
+def clear_soulaana_emotional_state() -> None:
+    session.pop(SOULAANA_SESSION_KEY, None)
+
+
+def build_soulaana_login_bundle_for_user() -> dict:
+    user_id = None
+
+    try:
+        if session.get("user_email"):
+            user_id = session.get("user_email")
+        elif session.get("username"):
+            user_id = session.get("username")
+        elif session.get("user_id"):
+            user_id = str(session.get("user_id"))
+    except Exception:
+        user_id = None
+
+    mood_hint = get_soulaana_emotional_state() or None
+
+    try:
+        return soulaana_core.build_login_and_checkin_bundle(
+            user_id=user_id,
+            mood_hint=mood_hint,
+        )
+    except Exception as e:
+        print("[SOULAANA_LOGIN_BUNDLE_ERROR]", e)
+        return {
+            "identity": "Soulaana",
+            "type": "login_bundle",
+            "greeting": {
+                "headline": "Hey love, how you feeling coming in today?",
+                "subtext": "Your check-in helps me tailor guidance and catch emotional pressure early.",
+                "checkin_options": [
+                    "calm",
+                    "focused",
+                    "confident",
+                    "cautious",
+                    "anxious",
+                    "frustrated",
+                    "impulsive",
+                    "tired",
+                ],
+                "allow_skip": True,
+            },
+        }
+
+
+def build_soulaana_checkin_response_for_user(emotional_state: str) -> dict:
+    user_id = None
+
+    try:
+        if session.get("user_email"):
+            user_id = session.get("user_email")
+        elif session.get("username"):
+            user_id = session.get("username")
+        elif session.get("user_id"):
+            user_id = str(session.get("user_id"))
+    except Exception:
+        user_id = None
+
+    try:
+        return soulaana_core.build_checkin_experience(
+            emotional_state=emotional_state,
+            user_id=user_id,
+        )
+    except Exception as e:
+        print("[SOULAANA_CHECKIN_RESPONSE_ERROR]", e)
+        return {
+            "identity": "Soulaana",
+            "type": "emotional_checkin",
+            "emotional_state": emotional_state,
+            "response_tone": "steady",
+            "headline": "Alright. Let’s keep it honest today.",
+            "system_note": "Soulaana should stay balanced and attentive to behavior.",
+            "store_for_session": True,
+        }
+
 
 def get_admin_metrics() -> Dict[str, Any]:
     metrics = load_json("data/admin_metrics.json", {})
@@ -2973,18 +3351,47 @@ def build_admin_shared_context():
             "conviction_counts": {},
             "average_health": 0,
             "insights": ["Trade analysis is temporarily unavailable."],
-            "behavior_summary": {"counts": {}, "cards": ["Behavior summary is temporarily unavailable."]},
+            "behavior_summary": {
+                "counts": {},
+                "cards": ["Behavior summary is temporarily unavailable."],
+            },
             "trades": [],
         }
-    
+
     try:
-        from engine.engine_selection import build_execution_universe
-        from web.app import load_json  # if load_json is already in this file, do not add this import
+        from engine.engine_selection import build_execution_universe as live_build_execution_universe
+
         signals = load_json("data/signals.json", [])
-        system_state = load_json("data/system_state.json", {"regime": "Neutral", "volatility": "Normal"})
-        execution_universe = build_execution_universe(signals, system_state)
-        execution_selected = execution_universe.get("selected", []) if isinstance(execution_universe, dict) else []
-    except Exception:
+        system_state = load_json(
+            "data/system_state.json",
+            {"regime": "Neutral", "volatility": "Normal"},
+        )
+
+        print("[ADMIN_EXECUTION_UNIVERSE] signals:", len(signals))
+        print("[ADMIN_EXECUTION_UNIVERSE] system_state:", system_state)
+
+        execution_universe = live_build_execution_universe(signals, system_state)
+
+        print(
+            "[ADMIN_EXECUTION_UNIVERSE] raw universe type:",
+            type(execution_universe),
+        )
+        print(
+            "[ADMIN_EXECUTION_UNIVERSE] raw universe keys:",
+            list(execution_universe.keys()) if isinstance(execution_universe, dict) else "not_dict",
+        )
+
+        if not isinstance(execution_universe, dict):
+            execution_universe = {}
+
+        execution_selected = execution_universe.get("selected", [])
+        if not isinstance(execution_selected, list):
+            execution_selected = []
+
+        print("[ADMIN_EXECUTION_UNIVERSE] selected count:", len(execution_selected))
+
+    except Exception as e:
+        print(f"[ADMIN_EXECUTION_UNIVERSE_FAIL] {type(e).__name__}: {e}")
         execution_universe = {
             "selected": [],
             "eligible_count": 0,
@@ -3084,12 +3491,123 @@ def build_admin_shared_context():
         }
 
     try:
-        from engine.engine_selection import get_learning_adjustment_map
         learning_adjustment_map = get_learning_adjustment_map()
-        auto_learning_policy = learning_adjustment_map.get("auto_policy", {}) if isinstance(learning_adjustment_map, dict) else {}
+        auto_learning_policy = (
+            learning_adjustment_map.get("auto_policy", {})
+            if isinstance(learning_adjustment_map, dict)
+            else {}
+        )
     except Exception:
         auto_learning_policy = {}
-      
+
+    try:
+        soulaana_admin_cards = []
+
+        if not isinstance(execution_selected, list):
+            execution_selected = []
+
+        for row in execution_selected[:6]:
+            if not isinstance(row, dict):
+                continue
+
+            canonical = row.get("canonical_decision", {})
+            if not isinstance(canonical, dict):
+                canonical = {}
+
+            if not canonical:
+                try:
+                    canonical = build_canonical_decision_object(
+                        {
+                            "symbol": row.get("symbol"),
+                            "setup_family": row.get("setup_family"),
+                            "entry_quality": row.get("entry_quality"),
+                            "readiness_score": row.get("readiness_score", 0),
+                            "promotion_score": row.get("promotion_score", 0),
+                            "rebuild_pressure": row.get("rebuild_pressure", 0),
+                            "execution_quality": row.get("execution_quality", 0),
+                            "eligible": row.get("eligible", False),
+                            "readiness_gate_passed": row.get("readiness_gate_passed", True),
+                            "promotion_gate_passed": row.get("promotion_gate_passed", True),
+                            "rebuild_gate_passed": row.get("rebuild_gate_passed", True),
+                            "final_decision": row.get("final_decision", {}),
+                            "final_verdict": row.get("final_verdict", ""),
+                            "decision_reason": row.get("decision_reason", ""),
+                        }
+                    )
+                except Exception as e:
+                    print(f"[SOULAANA_ADMIN_CANONICAL:{row.get('symbol', 'UNKNOWN')}] {e}")
+                    canonical = {}
+
+            try:
+                soulaana_card = soulaana_core.build_soulaana_output(
+                    {
+                        "symbol": row.get("symbol"),
+                        "score": row.get("score", 0),
+                        "confidence": row.get("confidence", "LOW"),
+                        "setup_family": row.get("setup_family"),
+                        "entry_quality": row.get("entry_quality"),
+                        "readiness_score": row.get("readiness_score"),
+                        "promotion_score": row.get("promotion_score"),
+                        "rebuild_pressure": row.get("rebuild_pressure"),
+                        "eligible": row.get("eligible"),
+                        "canonical_decision": canonical,
+                        "learning_notes": row.get("learning_notes", []),
+                    }
+                )
+            except Exception as e:
+                print(f"[SOULAANA_ADMIN_CARD:{row.get('symbol', 'UNKNOWN')}] {e}")
+                soulaana_card = {
+                    "headline": f"{row.get('symbol', 'UNKNOWN')} signal evaluated",
+                    "verdict": canonical.get("final_verdict", "WATCH"),
+                    "assessment": (
+                        f"{row.get('symbol', 'UNKNOWN')} has readiness {row.get('readiness_score', 0)}, "
+                        f"promotion {row.get('promotion_score', 0)}, and rebuild {row.get('rebuild_pressure', 0)}."
+                    ),
+                    "why": canonical.get("decision_reason", "Admin signal explanation unavailable."),
+                    "risk": "",
+                    "next_action": "Continue monitoring.",
+                }
+
+            final_verdict = canonical.get("final_verdict") or soulaana_card.get("verdict")
+            decision_reason = canonical.get("decision_reason") or soulaana_card.get("why")
+
+            if final_verdict == "TAKE":
+                next_action = "Enter with discipline and defined risk."
+            elif final_verdict == "WATCH":
+                next_action = "Wait for confirmation before acting."
+            elif final_verdict in {"BLOCK", "EXIT"}:
+                next_action = "Do not act on this setup."
+            elif final_verdict == "READY":
+                next_action = "Stay ready, but wait for cleaner execution before entering."
+            elif final_verdict == "HOLD":
+                next_action = "Hold and let structure resolve."
+            elif final_verdict == "PROTECT":
+                next_action = "Protect gains without suffocating the trade."
+            else:
+                next_action = soulaana_card.get("next_action", "Continue monitoring.")
+
+            soulaana_admin_cards.append(
+                {
+                    "symbol": row.get("symbol"),
+                    "verdict": final_verdict,
+                    "headline": soulaana_card.get("headline"),
+                    "assessment": soulaana_card.get("assessment"),
+                    "why": decision_reason,
+                    "risk": soulaana_card.get("risk", ""),
+                    "next_action": next_action,
+                    "readiness_score": row.get("readiness_score"),
+                    "promotion_score": row.get("promotion_score"),
+                    "rebuild_pressure": row.get("rebuild_pressure"),
+                    "execution_quality": row.get("execution_quality"),
+                    "final_verdict": final_verdict,
+                    "decision_reason": decision_reason,
+                    "canonical_decision": canonical,
+                }
+            )
+
+    except Exception as e:
+        print(f"[SOULAANA_ADMIN_BLOCK] {e}")
+        soulaana_admin_cards = []
 
     return {
         "plays": plays,
@@ -3102,6 +3620,7 @@ def build_admin_shared_context():
         "auto_learning_policy": auto_learning_policy,
         "learning": learning,
         "behavioral_insights": behavioral_insights,
+        "soulaana_admin_cards": soulaana_admin_cards,
         "behavior_risk": behavior_risk,
         "behavior_priority": behavior_priority,
         "surface_alerts": surface_alerts,
@@ -4294,6 +4813,7 @@ def build_admin_dashboard_context():
         "signals": get_signals(),
         "users": users,
         "metrics": get_admin_metrics(),
+        "soulaana_admin_cards": shared.get("soulaana_admin_cards", []),
         "auto_learning_policy": shared.get("auto_learning_policy", {}),
         "execution_universe": shared.get("execution_universe", {}),
         "execution_selected": shared.get("execution_selected", []),
@@ -4926,38 +5446,24 @@ def build_trade_detail_payload(trade_id):
         trade_log = []
     if not isinstance(timelines, list):
         timelines = []
+    if not isinstance(canonical, dict):
+        canonical = {}
 
-    canonical_ledger = canonical.get("ledger", []) if isinstance(canonical, dict) else []
+    canonical_ledger = canonical.get("ledger", [])
     if not isinstance(canonical_ledger, list):
         canonical_ledger = []
 
     target = None
 
-    for item in trade_details:
-        if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
-            target = dict(item)
+    for source in [trade_details, open_positions, closed_positions, trade_log, canonical_ledger]:
+        for item in source:
+            if not isinstance(item, dict):
+                continue
+            if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
+                target = dict(item)
+                break
+        if target:
             break
-
-    if not target:
-        for pool in [open_positions, closed_positions]:
-            for item in pool:
-                if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
-                    target = dict(item)
-                    break
-            if target:
-                break
-
-    if not target:
-        for item in trade_log:
-            if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
-                target = dict(item)
-                break
-
-    if not target:
-        for item in canonical_ledger:
-            if str(item.get("trade_id")) == str(trade_id) or str(item.get("id")) == str(trade_id):
-                target = dict(item)
-                break
 
     if not target:
         return None
@@ -4970,6 +5476,8 @@ def build_trade_detail_payload(trade_id):
 
     candidate = None
     for row in candidate_log:
+        if not isinstance(row, dict):
+            continue
         same_trade = str(row.get("trade_id")) == str(trade_id)
         same_symbol = row.get("symbol") == symbol
         if same_trade or same_symbol:
@@ -4978,6 +5486,8 @@ def build_trade_detail_payload(trade_id):
 
     trade_timeline = []
     for row in timelines:
+        if not isinstance(row, dict):
+            continue
         same_trade = str(row.get("trade_id")) == str(trade_id)
         same_symbol = row.get("symbol") == symbol
         if same_trade or same_symbol:
@@ -4985,6 +5495,8 @@ def build_trade_detail_payload(trade_id):
 
     canonical_row = None
     for row in canonical_ledger:
+        if not isinstance(row, dict):
+            continue
         same_trade = str(row.get("trade_id")) == str(trade_id)
         same_symbol = row.get("symbol") == symbol
         if same_trade or same_symbol:
@@ -4994,6 +5506,7 @@ def build_trade_detail_payload(trade_id):
     target.setdefault("entry", entry)
     target.setdefault("score", score)
     target.setdefault("confidence", confidence)
+    target.setdefault("strategy", strategy)
 
     if canonical_row and isinstance(canonical_row, dict):
         target["setup_family"] = canonical_row.get("setup_family", target.get("setup_family", ""))
@@ -5004,59 +5517,81 @@ def build_trade_detail_payload(trade_id):
         target["market_regime"] = canonical_row.get("market_regime", target.get("market_regime", "unknown"))
         target["volatility_state"] = canonical_row.get("volatility_state", target.get("volatility_state", "unknown"))
         target["breadth"] = canonical_row.get("breadth", target.get("breadth", "unknown"))
+        target["pnl"] = canonical_row.get("pnl", target.get("pnl", 0))
+        target["outcome"] = canonical_row.get("outcome", target.get("outcome", ""))
+        target["readiness_score"] = canonical_row.get("readiness_score", target.get("readiness_score", 0))
+        target["promotion_score"] = canonical_row.get("promotion_score", target.get("promotion_score", 0))
+        target["rebuild_pressure"] = canonical_row.get("rebuild_pressure", target.get("rebuild_pressure", 0))
+        target["eligible"] = canonical_row.get("eligible", target.get("eligible", True))
+        target["canonical_decision"] = canonical_row.get("canonical_decision", target.get("canonical_decision", {}))
 
-    target.setdefault("risk", {
-        "stop_logic": (
-            f"Stop anchored near {target.get('stop')}"
-            if target.get("stop") is not None else
-            "Stop logic not fully defined yet."
-        ),
-        "note": (
-            "Risk is framed around stop/target distance."
-            if target.get("stop") is not None and target.get("target") is not None else
-            "Risk note unavailable."
-        ),
-        "story": (
-            "This trade should stay healthy above the stop and improve as it moves toward target."
-            if target.get("stop") is not None else
-            "No deeper risk story saved yet."
-        ),
-    })
+    target.setdefault(
+        "risk",
+        {
+            "stop_logic": (
+                f"Stop anchored near {target.get('stop')}"
+                if target.get("stop") is not None
+                else "Stop logic not fully defined yet."
+            ),
+            "note": (
+                "Risk is framed around stop/target distance."
+                if target.get("stop") is not None and target.get("target") is not None
+                else "Risk note unavailable."
+            ),
+            "story": (
+                "This trade should stay healthy above the stop and improve as it moves toward target."
+                if target.get("stop") is not None
+                else "No deeper risk story saved yet."
+            ),
+        },
+    )
 
-    target.setdefault("signal_decay", {
-        "minutes_old": "N/A",
-        "decay_pct": "N/A",
-        "adjusted_score": score if score is not None else "N/A",
-    })
+    target.setdefault(
+        "signal_decay",
+        {
+            "minutes_old": "N/A",
+            "decay_pct": "N/A",
+            "adjusted_score": score if score is not None else "N/A",
+        },
+    )
 
-    target.setdefault("crowd_pressure", {
-        "score": "N/A",
-        "label": "UNKNOWN",
-        "note": "No crowd pressure data saved.",
-    })
+    target.setdefault(
+        "crowd_pressure",
+        {
+            "score": "N/A",
+            "label": "UNKNOWN",
+            "note": "No crowd pressure data saved.",
+        },
+    )
 
     target.setdefault("thesis", target.get("why", ["No thesis lines saved yet."]))
 
-    target.setdefault("narrative", {
-        "entry_story": (
-            f"Trade entered in {strategy} direction around {entry}."
-            if entry is not None else
-            "No entry story saved yet."
-        ),
-        "management_story": "Management depended on follow-through, stop integrity, and progress toward target.",
-        "exit_story": target.get("exit_explanation") or "No exit story saved yet.",
-    })
+    target.setdefault(
+        "narrative",
+        {
+            "entry_story": (
+                f"Trade entered in {strategy} direction around {entry}."
+                if entry is not None
+                else "No entry story saved yet."
+            ),
+            "management_story": "Management depended on follow-through, stop integrity, and progress toward target.",
+            "exit_story": target.get("exit_explanation") or "No exit story saved yet.",
+        },
+    )
 
-    target.setdefault("context", [
-        f"Mode: {target.get('mode', 'UNKNOWN')}",
-        f"Regime: {target.get('market_regime', target.get('regime', 'UNKNOWN'))}",
-        f"Breadth: {target.get('breadth', 'UNKNOWN')}",
-        f"Volatility: {target.get('volatility_state', 'UNKNOWN')}",
-    ])
+    target.setdefault(
+        "context",
+        [
+            f"Mode: {target.get('mode', 'UNKNOWN')}",
+            f"Regime: {target.get('market_regime', target.get('regime', 'UNKNOWN'))}",
+            f"Breadth: {target.get('breadth', 'UNKNOWN')}",
+            f"Volatility: {target.get('volatility_state', 'UNKNOWN')}",
+        ],
+    )
 
     target.setdefault(
         "why_not_this_trade",
-        [target.get("rejection_reason")] if target.get("rejection_reason") else []
+        [target.get("rejection_reason")] if target.get("rejection_reason") else [],
     )
 
     if candidate and isinstance(candidate, dict):
@@ -5088,6 +5623,47 @@ def build_trade_detail_payload(trade_id):
             f"Exit reason: {target.get('exit_reason', 'unknown')}",
         ],
     }
+
+    raw_trade_pnl = target.get("pnl", 0)
+    try:
+        trade_pnl = float(raw_trade_pnl or 0)
+    except Exception:
+        trade_pnl = 0.0
+
+    trade_outcome = str(target.get("outcome", "") or "").strip().lower()
+    if not trade_outcome:
+        if trade_pnl > 0:
+            trade_outcome = "win"
+        elif trade_pnl < 0:
+            trade_outcome = "loss"
+        else:
+            trade_outcome = "flat"
+
+    try:
+        decision_source = dict(target)
+        decision_source.setdefault("readiness_gate_passed", True)
+        decision_source.setdefault("promotion_gate_passed", True)
+        decision_source.setdefault("rebuild_gate_passed", True)
+        decision_source.setdefault("final_verdict", target.get("final_verdict", "WATCH"))
+        decision_source.setdefault("decision_reason", target.get("decision_reason", "Trade detail decision unavailable."))
+        canonical_decision = build_canonical_decision_object(decision_source)
+    except Exception:
+        canonical_decision = {}
+
+    target["canonical_decision"] = canonical_decision
+
+    try:
+        target["soulaana"] = soulaana_explain_trade(
+            {
+                **target,
+                "symbol": target.get("symbol"),
+                "pnl": trade_pnl,
+                "outcome": trade_outcome,
+                "canonical_decision": canonical_decision,
+            }
+        )
+    except Exception:
+        target["soulaana"] = {}
 
     return target
 
@@ -5337,6 +5913,44 @@ def template_context(extra: Dict[str, Any]) -> Dict[str, Any]:
 # ROUTES
 # ============================================================
 
+@app.route("/soulaana/checkin", methods=["POST"])
+def soulaana_checkin():
+    emotional_state = str(request.form.get("emotional_state", "")).strip().lower()
+
+    allowed = {
+        "calm",
+        "focused",
+        "confident",
+        "cautious",
+        "anxious",
+        "frustrated",
+        "impulsive",
+        "tired",
+    }
+
+    if emotional_state not in allowed:
+        flash("Soulaana couldn’t read that check-in.", "warning")
+        return redirect(request.referrer or url_for("dashboard"))
+
+    set_soulaana_emotional_state(emotional_state)
+    response_payload = build_soulaana_checkin_response_for_user(emotional_state)
+    session["soulaana_checkin_headline"] = response_payload.get("headline", "")
+    session["soulaana_checkin_tone"] = response_payload.get("response_tone", "steady")
+    session["soulaana_checkin_note"] = response_payload.get("system_note", "")
+
+    return redirect(request.referrer or url_for("dashboard"))
+
+
+@app.route("/soulaana/checkin/clear", methods=["POST"])
+def soulaana_checkin_clear():
+    clear_soulaana_emotional_state()
+    session.pop("soulaana_checkin_headline", None)
+    session.pop("soulaana_checkin_tone", None)
+    session.pop("soulaana_checkin_note", None)
+    flash("Soulaana reset your mood check-in for this session.", "info")
+    return redirect(request.referrer or url_for("dashboard"))
+
+
 @app.route("/")
 def landing_page():
     maybe_track_page_view("/")
@@ -5355,7 +5969,6 @@ def dashboard_page():
     maybe_track_page_view("/dashboard")
 
     snapshot = get_canonical_snapshot()
-
     performance = snapshot.get("performance", {})
     analytics = snapshot.get("analytics", {})
     portfolio_summary = snapshot.get("portfolio_summary", {})
@@ -5366,6 +5979,7 @@ def dashboard_page():
 
     system = get_system_state()
     positions = get_positions_with_intelligence()
+
     reports = load_json("data/recent_reports.json", [])
     if not isinstance(reports, list):
         reports = []
@@ -5400,7 +6014,10 @@ def dashboard_page():
 
     for signal in sample_signals:
         try:
-            product_fusion, final_brain = build_final_brain_from_signal(signal.get("symbol", ""), signal)
+            product_fusion, final_brain = build_final_brain_from_signal(
+                signal.get("symbol", ""),
+                signal,
+            )
             fusion_payloads.append(product_fusion)
             final_brain_map[signal.get("symbol", "")] = final_brain
         except Exception as e:
@@ -5417,6 +6034,13 @@ def dashboard_page():
         final_brain_map=final_brain_map,
         tier=tier.lower(),
     )
+
+    # Soulaana dashboard addons
+    soulaana_bundle = build_soulaana_login_bundle_for_user()
+    soulaana_state = get_soulaana_emotional_state()
+    soulaana_checkin_headline = session.get("soulaana_checkin_headline", "")
+    soulaana_checkin_tone = session.get("soulaana_checkin_tone", "steady")
+    soulaana_checkin_note = session.get("soulaana_checkin_note", "")
 
     return render_template_safe(
         "dashboard.html",
@@ -5440,6 +6064,11 @@ def dashboard_page():
                 "final_dashboard_context": final_dashboard_context,
                 "final_spotlight_cards": final_spotlight_cards,
                 "tier": tier,
+                "soulaana_bundle": soulaana_bundle,
+                "soulaana_state": soulaana_state,
+                "soulaana_checkin_headline": soulaana_checkin_headline,
+                "soulaana_checkin_tone": soulaana_checkin_tone,
+                "soulaana_checkin_note": soulaana_checkin_note,
             }
         ),
     )

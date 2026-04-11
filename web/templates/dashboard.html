@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-
 <style>
 .dashboard-shell {
     display: grid;
     gap: 20px;
 }
-
 .dashboard-hero {
     position: relative;
     overflow: hidden;
@@ -19,7 +17,6 @@
     border: 1px solid rgba(255,255,255,0.08);
     box-shadow: 0 22px 48px rgba(0,0,0,0.32);
 }
-
 .dashboard-hero::before {
     content: "";
     position: absolute;
@@ -33,14 +30,12 @@
     opacity: 0.92;
     pointer-events: none;
 }
-
 .dashboard-kicker {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     margin-bottom: 10px;
 }
-
 .dashboard-pill,
 .info-chip {
     display: inline-flex;
@@ -52,27 +47,24 @@
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.10);
 }
-
 .dashboard-title {
     margin: 0 0 8px 0;
     font-size: 1.8rem;
     font-weight: 800;
 }
-
 .dashboard-sub {
     margin: 0;
     max-width: 860px;
     opacity: 0.9;
     line-height: 1.48;
 }
-
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 14px;
 }
-
-.dashboard-card {
+.dashboard-card,
+.deep-panel {
     border-radius: 24px;
     padding: 18px;
     background:
@@ -81,11 +73,10 @@
     border: 1px solid rgba(255,255,255,0.08);
     box-shadow: 0 14px 32px rgba(0,0,0,0.24);
 }
-
-.dashboard-card h3 {
+.dashboard-card h3,
+.deep-panel h3 {
     margin: 0 0 8px 0;
 }
-
 .metric-label {
     font-size: 0.72rem;
     text-transform: uppercase;
@@ -93,40 +84,233 @@
     opacity: 0.68;
     margin-bottom: 6px;
 }
-
 .metric-value {
     font-size: 1rem;
     font-weight: 800;
 }
-
+.spotlight-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+.spotlight-card {
+    border-radius: 22px;
+    padding: 16px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.12), transparent 34%),
+        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.spotlight-card h4 {
+    margin: 0 0 6px 0;
+}
+.spotlight-card p {
+    margin: 0;
+    line-height: 1.42;
+    opacity: 0.88;
+}
 .info-row {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     margin-top: 12px;
 }
-
 @media (max-width: 980px) {
     .dashboard-grid {
         grid-template-columns: 1fr 1fr;
     }
+    .spotlight-grid {
+        grid-template-columns: 1fr;
+    }
+}
+<style>
+.soulaana-welcome-card {
+  margin: 0 0 20px 0;
+  border-radius: 24px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(168,175,255,0.35), rgba(255,175,214,0.28), rgba(175,254,255,0.28));
+  box-shadow: 0 18px 50px rgba(0,0,0,0.14);
+}
+
+.soulaana-welcome-inner {
+  border-radius: 23px;
+  padding: 22px;
+  background: rgba(10, 14, 24, 0.88);
+  backdrop-filter: blur(10px);
+}
+
+.soulaana-kicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.72;
+  margin-bottom: 8px;
+}
+
+.soulaana-headline {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.soulaana-subtext {
+  margin: 0;
+  opacity: 0.82;
+  max-width: 760px;
+}
+
+.soulaana-response {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.soulaana-response-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.soulaana-response-note {
+  font-size: 0.92rem;
+  opacity: 0.8;
+}
+
+.soulaana-response-encouraging {
+  box-shadow: inset 0 0 0 1px rgba(175,254,255,0.24);
+}
+
+.soulaana-response-protective {
+  box-shadow: inset 0 0 0 1px rgba(255,175,214,0.24);
+}
+
+.soulaana-response-steady {
+  box-shadow: inset 0 0 0 1px rgba(168,175,255,0.24);
+}
+
+.soulaana-mood-form {
+  margin-top: 18px;
+}
+
+.soulaana-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.soulaana-chip {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  cursor: pointer;
+  background: rgba(255,255,255,0.07);
+  color: inherit;
+  transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.soulaana-chip:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.12);
+}
+
+.soulaana-chip.is-active {
+  background: rgba(168,175,255,0.24);
+  box-shadow: inset 0 0 0 1px rgba(168,175,255,0.46);
+}
+
+.soulaana-reset-form {
+  margin-top: 14px;
+}
+
+.soulaana-reset-btn {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.78;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
 }
 </style>
 
-{% set dash = dashboard_fusion_view if dashboard_fusion_view else {} %}
+{% set soulaana_greeting = soulaana_bundle.get("greeting", {}) if soulaana_bundle else {} %}
+
+<div class="soulaana-welcome-card">
+  <div class="soulaana-welcome-inner">
+    <div class="soulaana-welcome-top">
+      <div>
+        <div class="soulaana-kicker">Soulaana</div>
+        <h2 class="soulaana-headline">
+          {{ soulaana_greeting.get("headline", "Hey love, how you feeling coming in today?") }}
+        </h2>
+        <p class="soulaana-subtext">
+          {{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance and catch emotional pressure early.") }}
+        </p>
+      </div>
+    </div>
+
+    {% if soulaana_checkin_headline %}
+      <div class="soulaana-response soulaana-response-{{ soulaana_checkin_tone }}">
+        <div class="soulaana-response-title">{{ soulaana_checkin_headline }}</div>
+        {% if soulaana_checkin_note %}
+          <div class="soulaana-response-note">{{ soulaana_checkin_note }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('soulaana_checkin') }}" class="soulaana-mood-form">
+      <div class="soulaana-chip-grid">
+        {% for mood in soulaana_greeting.get("checkin_options", []) %}
+          <button
+            type="submit"
+            name="emotional_state"
+            value="{{ mood }}"
+            class="soulaana-chip {% if soulaana_state == mood %}is-active{% endif %}"
+          >
+            {{ mood.replace("_", " ").title() }}
+          </button>
+        {% endfor %}
+      </div>
+    </form>
+
+    {% if soulaana_state %}
+      <form method="POST" action="{{ url_for('soulaana_checkin_clear') }}" class="soulaana-reset-form">
+        <button type="submit" class="soulaana-reset-btn">Reset check-in</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+{% set dash = final_dashboard_context if final_dashboard_context else {} %}
+{% set cards = final_spotlight_cards if final_spotlight_cards else [] %}
 
 <div class="dashboard-shell">
-
     <div class="dashboard-hero">
         <div class="dashboard-kicker">
-            <span class="dashboard-pill">command posture</span>
-            <span class="dashboard-pill">{{ dash.get("dashboard_posture", "stand_down") }}</span>
+            <span class="dashboard-pill">final command posture</span>
+            <span class="dashboard-pill">{{ dash.get("dashboard_action", "wait") }}</span>
             <span class="dashboard-pill">Lead: {{ dash.get("dominant_symbol", "None") }}</span>
-            <span class="dashboard-pill">{% if dash.get("blocked") %}Blocked{% else %}Active{% endif %}</span>
+            {% if tier %}
+            <span class="dashboard-pill">{{ tier }}</span>
+            {% endif %}
         </div>
-
         <h1 class="dashboard-title">Dashboard</h1>
-        <p class="dashboard-sub">{{ dash.get("dashboard_summary", "No fused opportunities available.") }}</p>
+        <p class="dashboard-sub">{{ dash.get("dashboard_insight", "No final-brain dashboard insight available.") }}</p>
+
+        {% if dash.get("dashboard_story") %}
+        <div class="info-row">
+            <span class="info-chip">{{ dash.get("dashboard_story") }}</span>
+        </div>
+        {% endif %}
+
+        {% if dash.get("dashboard_coaching") %}
+        <div class="info-row">
+            <span class="info-chip">{{ dash.get("dashboard_coaching") }}</span>
+        </div>
+        {% endif %}
     </div>
 
     <div class="dashboard-grid">
@@ -148,6 +332,29 @@
         </div>
     </div>
 
-</div>
+    {% if cards %}
+    <div class="deep-panel">
+        <h3>Final Brain Spotlight</h3>
+        <div class="spotlight-grid">
+            {% for card in cards[:4] %}
+            <div class="spotlight-card">
+                <h4>{{ card.get("symbol", "") }} — {{ card.get("title", "") }}</h4>
+                <p>{{ card.get("subtitle", "") }}</p>
 
+                <div class="info-row">
+                    <span class="info-chip">{{ card.get("action", "wait") }}</span>
+                    <span class="info-chip">{{ card.get("confidence", "low") }}</span>
+                </div>
+
+                {% if card.get("coaching") %}
+                <div class="info-row">
+                    <span class="info-chip">{{ card.get("coaching") }}</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
