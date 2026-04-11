@@ -421,7 +421,7 @@
 
     {% if behavior_priority.items %}
     <div style="display:grid; gap:12px; margin-top:14px;">
-        {% for item in behavior_priority.items %}
+        {% for item in behavior_priority.items() %}
         <div class="card" style="margin:0;">
             <h4>{{ item.headline }}</h4>
             <div class="passage-frame">
@@ -784,6 +784,78 @@
         </div>
     </div>
     {% endif %}
+</div>
+{% endif %}
+
+{% if soulanna_admin_cards %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Soulanna</h3>
+            <p class="muted-line" style="margin:0;">
+                Soulanna’s live operator read on the top execution candidates.
+            </p>
+        </div>
+        <span class="signal-stat-chip">Operator Voice</span>
+    </div>
+
+    <div style="display:grid; gap:12px; margin-top:14px;">
+        {% for row in soulanna_admin_cards %}
+        <div class="card" style="margin:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                <div>
+                    <h4 style="margin:0;">{{ row.symbol }}</h4>
+                    <p class="muted-line" style="margin:6px 0 0 0;">{{ row.headline }}</p>
+                </div>
+                <span class="signal-stat-chip">{{ row.verdict }}</span>
+            </div>
+
+            <div style="display:grid; gap:8px; margin-top:12px;">
+                <div class="passage-frame">
+                    <p style="margin:0;"><strong>Assessment:</strong> {{ row.assessment }}</p>
+                </div>
+                <div class="passage-frame">
+                    <p style="margin:0;"><strong>Why:</strong> {{ row.why }}</p>
+                </div>
+                {% if row.risk %}
+                <div class="passage-frame">
+                    <p style="margin:0;"><strong>Risk:</strong> {{ row.risk }}</p>
+                </div>
+                {% endif %}
+                <div class="passage-frame">
+                    <p style="margin:0;"><strong>Next Action:</strong> {{ row.next_action }}</p>
+                </div>
+            </div>
+
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:10px; margin-top:12px;">
+                <div class="card" style="margin:0;">
+                    <h4>Readiness</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ row.readiness_score }}</strong></p>
+                    </div>
+                </div>
+                <div class="card" style="margin:0;">
+                    <h4>Promotion</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ row.promotion_score }}</strong></p>
+                    </div>
+                </div>
+                <div class="card" style="margin:0;">
+                    <h4>Rebuild</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ row.rebuild_pressure }}</strong></p>
+                    </div>
+                </div>
+                <div class="card" style="margin:0;">
+                    <h4>Execution</h4>
+                    <div class="passage-frame">
+                        <p style="margin:0;"><strong>{{ row.execution_quality }}</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endif %}
 
