@@ -16,7 +16,7 @@
         "my_plays"
       ],
       "priority_rank": 125,
-      "last_seen_at": "2026-04-11T19:03:19.692357"
+      "last_seen_at": "2026-04-12T20:47:17.069005"
     },
     {
       "symbol": "AMD",
@@ -32,7 +32,7 @@
         "closed_positions"
       ],
       "priority_rank": 111,
-      "last_seen_at": "2026-04-11T19:03:19.691829"
+      "last_seen_at": "2026-04-12T20:47:17.068661"
     },
     {
       "symbol": "TSLA",
@@ -48,7 +48,7 @@
         "closed_positions"
       ],
       "priority_rank": 109,
-      "last_seen_at": "2026-04-11T19:03:19.691823"
+      "last_seen_at": "2026-04-12T20:47:17.068653"
     },
     {
       "symbol": "AMZN",
@@ -64,7 +64,7 @@
         "closed_positions"
       ],
       "priority_rank": 106,
-      "last_seen_at": "2026-04-11T19:03:19.691783"
+      "last_seen_at": "2026-04-12T20:47:17.068607"
     },
     {
       "symbol": "GOOGL",
@@ -80,7 +80,7 @@
         "closed_positions"
       ],
       "priority_rank": 104,
-      "last_seen_at": "2026-04-11T19:03:19.691817"
+      "last_seen_at": "2026-04-12T20:47:17.068646"
     },
     {
       "symbol": "META",
@@ -96,7 +96,7 @@
         "closed_positions"
       ],
       "priority_rank": 104,
-      "last_seen_at": "2026-04-11T19:03:19.691810"
+      "last_seen_at": "2026-04-12T20:47:17.068637"
     },
     {
       "symbol": "NVDA",
@@ -112,7 +112,7 @@
         "closed_positions"
       ],
       "priority_rank": 101,
-      "last_seen_at": "2026-04-11T19:03:19.691803"
+      "last_seen_at": "2026-04-12T20:47:17.068629"
     },
     {
       "symbol": "MSFT",
@@ -128,7 +128,7 @@
         "closed_positions"
       ],
       "priority_rank": 98,
-      "last_seen_at": "2026-04-11T19:03:19.691797"
+      "last_seen_at": "2026-04-12T20:47:17.068621"
     },
     {
       "symbol": "MU",
@@ -143,7 +143,7 @@
         "closed_positions"
       ],
       "priority_rank": 42,
-      "last_seen_at": "2026-04-11T19:03:19.691728"
+      "last_seen_at": "2026-04-12T20:47:17.068543"
     },
     {
       "symbol": "MPC",
@@ -157,7 +157,7 @@
         "trade_details"
       ],
       "priority_rank": 30,
-      "last_seen_at": "2026-04-11T19:03:19.688625"
+      "last_seen_at": "2026-04-12T20:47:17.065274"
     },
     {
       "symbol": "XLE",
@@ -172,7 +172,7 @@
         "closed_positions"
       ],
       "priority_rank": 28,
-      "last_seen_at": "2026-04-11T19:03:19.691721"
+      "last_seen_at": "2026-04-12T20:47:17.068535"
     },
     {
       "symbol": "OXY",
@@ -187,7 +187,7 @@
         "trade_details"
       ],
       "priority_rank": 27,
-      "last_seen_at": "2026-04-11T19:03:19.688687"
+      "last_seen_at": "2026-04-12T20:47:17.065360"
     },
     {
       "symbol": "CVX",
@@ -201,7 +201,7 @@
         "trade_details"
       ],
       "priority_rank": 26,
-      "last_seen_at": "2026-04-11T19:03:19.688700"
+      "last_seen_at": "2026-04-12T20:47:17.065373"
     },
     {
       "symbol": "NFLX",
@@ -215,7 +215,7 @@
         "trade_details"
       ],
       "priority_rank": 26,
-      "last_seen_at": "2026-04-11T19:03:19.688681"
+      "last_seen_at": "2026-04-12T20:47:17.065353"
     },
     {
       "symbol": "COP",
@@ -229,7 +229,7 @@
         "trade_details"
       ],
       "priority_rank": 25,
-      "last_seen_at": "2026-04-11T19:03:19.688694"
+      "last_seen_at": "2026-04-12T20:47:17.065366"
     },
     {
       "symbol": "XOM",
@@ -243,7 +243,7 @@
         "symbol_news"
       ],
       "priority_rank": 24,
-      "last_seen_at": "2026-04-11T19:03:19.679466"
+      "last_seen_at": "2026-04-12T20:47:17.056188"
     },
     {
       "symbol": "QQQ",
@@ -256,7 +256,7 @@
         "symbol_meta"
       ],
       "priority_rank": 23,
-      "last_seen_at": "2026-04-11T19:03:19.678733"
+      "last_seen_at": "2026-04-12T20:47:17.055701"
     },
     {
       "symbol": "SPY",
@@ -269,7 +269,7 @@
         "symbol_meta"
       ],
       "priority_rank": 23,
-      "last_seen_at": "2026-04-11T19:03:19.678725"
+      "last_seen_at": "2026-04-12T20:47:17.055694"
     },
     {
       "symbol": "AVGO",
@@ -282,7 +282,7 @@
         "symbol_meta"
       ],
       "priority_rank": 22,
-      "last_seen_at": "2026-04-11T19:03:19.678184"
+      "last_seen_at": "2026-04-12T20:47:17.055149"
     },
     {
       "symbol": "DIA",
@@ -295,7 +295,7 @@
         "symbol_meta"
       ],
       "priority_rank": 22,
-      "last_seen_at": "2026-04-11T19:03:19.678748"
+      "last_seen_at": "2026-04-12T20:47:17.055715"
     },
     {
       "symbol": "IWM",
@@ -308,7 +308,7 @@
         "symbol_meta"
       ],
       "priority_rank": 22,
-      "last_seen_at": "2026-04-11T19:03:19.678740"
+      "last_seen_at": "2026-04-12T20:47:17.055708"
     },
     {
       "symbol": "JPM",
@@ -321,7 +321,7 @@
         "symbol_meta"
       ],
       "priority_rank": 22,
-      "last_seen_at": "2026-04-11T19:03:19.678428"
+      "last_seen_at": "2026-04-12T20:47:17.055394"
     },
     {
       "symbol": "LLY",
@@ -334,7 +334,7 @@
         "symbol_meta"
       ],
       "priority_rank": 22,
-      "last_seen_at": "2026-04-11T19:03:19.678652"
+      "last_seen_at": "2026-04-12T20:47:17.055618"
     },
     {
       "symbol": "UNH",
@@ -347,7 +347,7 @@
         "symbol_meta"
       ],
       "priority_rank": 22,
-      "last_seen_at": "2026-04-11T19:03:19.678659"
+      "last_seen_at": "2026-04-12T20:47:17.055625"
     },
     {
       "symbol": "COST",
@@ -360,7 +360,7 @@
         "symbol_meta"
       ],
       "priority_rank": 21,
-      "last_seen_at": "2026-04-11T19:03:19.678586"
+      "last_seen_at": "2026-04-12T20:47:17.055557"
     },
     {
       "symbol": "HD",
@@ -373,7 +373,7 @@
         "symbol_meta"
       ],
       "priority_rank": 21,
-      "last_seen_at": "2026-04-11T19:03:19.678593"
+      "last_seen_at": "2026-04-12T20:47:17.055564"
     },
     {
       "symbol": "JNJ",
@@ -386,7 +386,7 @@
         "symbol_meta"
       ],
       "priority_rank": 21,
-      "last_seen_at": "2026-04-11T19:03:19.678666"
+      "last_seen_at": "2026-04-12T20:47:17.055633"
     },
     {
       "symbol": "SMH",
@@ -399,7 +399,7 @@
         "symbol_meta"
       ],
       "priority_rank": 21,
-      "last_seen_at": "2026-04-11T19:03:19.678784"
+      "last_seen_at": "2026-04-12T20:47:17.055754"
     },
     {
       "symbol": "WMT",
@@ -412,7 +412,7 @@
         "symbol_meta"
       ],
       "priority_rank": 21,
-      "last_seen_at": "2026-04-11T19:03:19.678578"
+      "last_seen_at": "2026-04-12T20:47:17.055551"
     },
     {
       "symbol": "ABBV",
@@ -425,7 +425,7 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-04-11T19:03:19.678681"
+      "last_seen_at": "2026-04-12T20:47:17.055648"
     },
     {
       "symbol": "ADBE",
@@ -438,7 +438,7 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-04-11T19:03:19.678207"
+      "last_seen_at": "2026-04-12T20:47:17.055171"
     },
     {
       "symbol": "BAC",
@@ -451,7 +451,7 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-04-11T19:03:19.678436"
+      "last_seen_at": "2026-04-12T20:47:17.055401"
     },
     {
       "symbol": "CRM",
@@ -464,7 +464,7 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-04-11T19:03:19.678192"
+      "last_seen_at": "2026-04-12T20:47:17.055156"
     },
     {
       "symbol": "MRK",
@@ -477,7 +477,7 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-04-11T19:03:19.678674"
+      "last_seen_at": "2026-04-12T20:47:17.055640"
     },
     {
       "symbol": "ORCL",
@@ -490,7 +490,7 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-04-11T19:03:19.678199"
+      "last_seen_at": "2026-04-12T20:47:17.055164"
     },
     {
       "symbol": "QCOM",
@@ -503,7 +503,7 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-04-11T19:03:19.678301"
+      "last_seen_at": "2026-04-12T20:47:17.055225"
     },
     {
       "symbol": "XLF",
@@ -516,7 +516,7 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-04-11T19:03:19.678770"
+      "last_seen_at": "2026-04-12T20:47:17.055739"
     },
     {
       "symbol": "XLK",
@@ -529,7 +529,7 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-04-11T19:03:19.678762"
+      "last_seen_at": "2026-04-12T20:47:17.055731"
     },
     {
       "symbol": "XLV",
@@ -542,7 +542,7 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-04-11T19:03:19.678777"
+      "last_seen_at": "2026-04-12T20:47:17.055746"
     },
     {
       "symbol": "ARM",
@@ -555,7 +555,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678323"
+      "last_seen_at": "2026-04-12T20:47:17.055246"
     },
     {
       "symbol": "AXP",
@@ -568,7 +568,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678473"
+      "last_seen_at": "2026-04-12T20:47:17.055458"
     },
     {
       "symbol": "BLK",
@@ -581,7 +581,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678466"
+      "last_seen_at": "2026-04-12T20:47:17.055451"
     },
     {
       "symbol": "C",
@@ -594,7 +594,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678488"
+      "last_seen_at": "2026-04-12T20:47:17.055472"
     },
     {
       "symbol": "CAT",
@@ -607,7 +607,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678503"
+      "last_seen_at": "2026-04-12T20:47:17.055485"
     },
     {
       "symbol": "DE",
@@ -620,7 +620,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678511"
+      "last_seen_at": "2026-04-12T20:47:17.055492"
     },
     {
       "symbol": "DHR",
@@ -633,7 +633,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678718"
+      "last_seen_at": "2026-04-12T20:47:17.055686"
     },
     {
       "symbol": "DIS",
@@ -646,7 +646,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678637"
+      "last_seen_at": "2026-04-12T20:47:17.055604"
     },
     {
       "symbol": "EOG",
@@ -659,7 +659,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678383"
+      "last_seen_at": "2026-04-12T20:47:17.055308"
     },
     {
       "symbol": "GE",
@@ -672,7 +672,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678519"
+      "last_seen_at": "2026-04-12T20:47:17.055498"
     },
     {
       "symbol": "GS",
@@ -685,7 +685,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678443"
+      "last_seen_at": "2026-04-12T20:47:17.055408"
     },
     {
       "symbol": "INTC",
@@ -698,7 +698,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678293"
+      "last_seen_at": "2026-04-12T20:47:17.055217"
     },
     {
       "symbol": "ISRG",
@@ -711,7 +711,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678703"
+      "last_seen_at": "2026-04-12T20:47:17.055670"
     },
     {
       "symbol": "LMT",
@@ -724,7 +724,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678541"
+      "last_seen_at": "2026-04-12T20:47:17.055518"
     },
     {
       "symbol": "MCD",
@@ -737,7 +737,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678600"
+      "last_seen_at": "2026-04-12T20:47:17.055571"
     },
     {
       "symbol": "MRVL",
@@ -750,7 +750,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678316"
+      "last_seen_at": "2026-04-12T20:47:17.055239"
     },
     {
       "symbol": "MS",
@@ -763,7 +763,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678451"
+      "last_seen_at": "2026-04-12T20:47:17.055415"
     },
     {
       "symbol": "PFE",
@@ -776,7 +776,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678688"
+      "last_seen_at": "2026-04-12T20:47:17.055655"
     },
     {
       "symbol": "PLTR",
@@ -789,7 +789,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678214"
+      "last_seen_at": "2026-04-12T20:47:17.055178"
     },
     {
       "symbol": "RTX",
@@ -802,7 +802,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678549"
+      "last_seen_at": "2026-04-12T20:47:17.055524"
     },
     {
       "symbol": "TMO",
@@ -815,7 +815,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678696"
+      "last_seen_at": "2026-04-12T20:47:17.055663"
     },
     {
       "symbol": "UBER",
@@ -828,7 +828,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678278"
+      "last_seen_at": "2026-04-12T20:47:17.055201"
     },
     {
       "symbol": "VRTX",
@@ -841,7 +841,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678711"
+      "last_seen_at": "2026-04-12T20:47:17.055679"
     },
     {
       "symbol": "WFC",
@@ -854,7 +854,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-04-11T19:03:19.678458"
+      "last_seen_at": "2026-04-12T20:47:17.055421"
     },
     {
       "symbol": "ARKK",
@@ -867,7 +867,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678792"
+      "last_seen_at": "2026-04-12T20:47:17.055761"
     },
     {
       "symbol": "BA",
@@ -880,7 +880,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678534"
+      "last_seen_at": "2026-04-12T20:47:17.055511"
     },
     {
       "symbol": "COIN",
@@ -893,7 +893,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678286"
+      "last_seen_at": "2026-04-12T20:47:17.055209"
     },
     {
       "symbol": "LOW",
@@ -906,7 +906,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678630"
+      "last_seen_at": "2026-04-12T20:47:17.055597"
     },
     {
       "symbol": "MDB",
@@ -919,7 +919,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678346"
+      "last_seen_at": "2026-04-12T20:47:17.055270"
     },
     {
       "symbol": "NKE",
@@ -932,7 +932,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678616"
+      "last_seen_at": "2026-04-12T20:47:17.055584"
     },
     {
       "symbol": "PSX",
@@ -945,7 +945,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678421"
+      "last_seen_at": "2026-04-12T20:47:17.055387"
     },
     {
       "symbol": "PYPL",
@@ -958,7 +958,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678496"
+      "last_seen_at": "2026-04-12T20:47:17.055478"
     },
     {
       "symbol": "SBUX",
@@ -971,7 +971,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678608"
+      "last_seen_at": "2026-04-12T20:47:17.055577"
     },
     {
       "symbol": "SCHW",
@@ -984,7 +984,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678480"
+      "last_seen_at": "2026-04-12T20:47:17.055465"
     },
     {
       "symbol": "SHOP",
@@ -997,7 +997,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678271"
+      "last_seen_at": "2026-04-12T20:47:17.055194"
     },
     {
       "symbol": "SLB",
@@ -1010,7 +1010,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678376"
+      "last_seen_at": "2026-04-12T20:47:17.055301"
     },
     {
       "symbol": "SNOW",
@@ -1023,7 +1023,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678222"
+      "last_seen_at": "2026-04-12T20:47:17.055186"
     },
     {
       "symbol": "TGT",
@@ -1036,7 +1036,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-04-11T19:03:19.678623"
+      "last_seen_at": "2026-04-12T20:47:17.055590"
     },
     {
       "symbol": "DVN",
@@ -1049,7 +1049,7 @@
         "symbol_news"
       ],
       "priority_rank": 16,
-      "last_seen_at": "2026-04-11T19:03:19.679457"
+      "last_seen_at": "2026-04-12T20:47:17.056180"
     },
     {
       "symbol": "HAL",
@@ -1062,7 +1062,7 @@
         "symbol_news"
       ],
       "priority_rank": 16,
-      "last_seen_at": "2026-04-11T19:03:19.679431"
+      "last_seen_at": "2026-04-12T20:47:17.056154"
     },
     {
       "symbol": "CMG",
@@ -1074,7 +1074,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-04-11T19:03:19.678645"
+      "last_seen_at": "2026-04-12T20:47:17.055611"
     },
     {
       "symbol": "ETN",
@@ -1086,7 +1086,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-04-11T19:03:19.678556"
+      "last_seen_at": "2026-04-12T20:47:17.055531"
     },
     {
       "symbol": "HON",
@@ -1098,7 +1098,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-04-11T19:03:19.678526"
+      "last_seen_at": "2026-04-12T20:47:17.055505"
     },
     {
       "symbol": "PH",
@@ -1110,7 +1110,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-04-11T19:03:19.678563"
+      "last_seen_at": "2026-04-12T20:47:17.055538"
     },
     {
       "symbol": "SMCI",
@@ -1122,7 +1122,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-04-11T19:03:19.678331"
+      "last_seen_at": "2026-04-12T20:47:17.055254"
     },
     {
       "symbol": "TSM",
@@ -1134,7 +1134,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-04-11T19:03:19.678338"
+      "last_seen_at": "2026-04-12T20:47:17.055262"
     },
     {
       "symbol": "UNP",
@@ -1146,7 +1146,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-04-11T19:03:19.678570"
+      "last_seen_at": "2026-04-12T20:47:17.055544"
     },
     {
       "symbol": "BRK-B",
@@ -1156,7 +1156,7 @@
         "equity_seed"
       ],
       "priority_rank": 9,
-      "last_seen_at": "2026-04-11T19:03:19.670052"
+      "last_seen_at": "2026-04-12T20:47:17.047877"
     },
     {
       "symbol": "IVV",
@@ -1166,7 +1166,7 @@
         "diversity_seed"
       ],
       "priority_rank": 9,
-      "last_seen_at": "2026-04-11T19:03:19.669667"
+      "last_seen_at": "2026-04-12T20:47:17.047477"
     },
     {
       "symbol": "VOO",
@@ -1176,7 +1176,7 @@
         "diversity_seed"
       ],
       "priority_rank": 9,
-      "last_seen_at": "2026-04-11T19:03:19.669655"
+      "last_seen_at": "2026-04-12T20:47:17.047465"
     },
     {
       "symbol": "VTI",
@@ -1186,7 +1186,7 @@
         "diversity_seed"
       ],
       "priority_rank": 9,
-      "last_seen_at": "2026-04-11T19:03:19.669641"
+      "last_seen_at": "2026-04-12T20:47:17.047451"
     },
     {
       "symbol": "ASML",
@@ -1196,7 +1196,7 @@
         "equity_seed"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-04-11T19:03:19.670356"
+      "last_seen_at": "2026-04-12T20:47:17.048199"
     },
     {
       "symbol": "MA",
@@ -1206,7 +1206,7 @@
         "equity_seed"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-04-11T19:03:19.670124"
+      "last_seen_at": "2026-04-12T20:47:17.047957"
     },
     {
       "symbol": "PG",
@@ -1216,7 +1216,7 @@
         "equity_seed"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-04-11T19:03:19.670190"
+      "last_seen_at": "2026-04-12T20:47:17.048008"
     },
     {
       "symbol": "RSP",
@@ -1226,7 +1226,7 @@
         "diversity_seed"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-04-11T19:03:19.669677"
+      "last_seen_at": "2026-04-12T20:47:17.047491"
     },
     {
       "symbol": "SOXX",
@@ -1236,7 +1236,7 @@
         "diversity_seed"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-04-11T19:03:19.669700"
+      "last_seen_at": "2026-04-12T20:47:17.047516"
     },
     {
       "symbol": "USO",
@@ -1247,7 +1247,7 @@
         "symbol_news"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-04-11T19:03:19.679448"
+      "last_seen_at": "2026-04-12T20:47:17.056171"
     },
     {
       "symbol": "V",
@@ -1257,7 +1257,7 @@
         "equity_seed"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-04-11T19:03:19.670111"
+      "last_seen_at": "2026-04-12T20:47:17.047942"
     },
     {
       "symbol": "AMAT",
@@ -1267,7 +1267,7 @@
         "equity_seed"
       ],
       "priority_rank": 7,
-      "last_seen_at": "2026-04-11T19:03:19.670296"
+      "last_seen_at": "2026-04-12T20:47:17.048134"
     },
     {
       "symbol": "CRWD",
@@ -1277,7 +1277,7 @@
         "equity_seed"
       ],
       "priority_rank": 7,
-      "last_seen_at": "2026-04-11T19:03:19.670426"
+      "last_seen_at": "2026-04-12T20:47:17.048277"
     },
     {
       "symbol": "LRCX",
@@ -1287,7 +1287,7 @@
         "equity_seed"
       ],
       "priority_rank": 7,
-      "last_seen_at": "2026-04-11T19:03:19.670308"
+      "last_seen_at": "2026-04-12T20:47:17.048146"
     },
     {
       "symbol": "NOW",
@@ -1297,7 +1297,7 @@
         "equity_seed"
       ],
       "priority_rank": 7,
-      "last_seen_at": "2026-04-11T19:03:19.670402"
+      "last_seen_at": "2026-04-12T20:47:17.048250"
     },
     {
       "symbol": "PANW",
@@ -1307,7 +1307,7 @@
         "equity_seed"
       ],
       "priority_rank": 7,
-      "last_seen_at": "2026-04-11T19:03:19.670414"
+      "last_seen_at": "2026-04-12T20:47:17.048264"
     },
     {
       "symbol": "TXN",
@@ -1317,7 +1317,7 @@
         "equity_seed"
       ],
       "priority_rank": 7,
-      "last_seen_at": "2026-04-11T19:03:19.670272"
+      "last_seen_at": "2026-04-12T20:47:17.048108"
     },
     {
       "symbol": "ADI",
@@ -1327,7 +1327,7 @@
         "equity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.670285"
+      "last_seen_at": "2026-04-12T20:47:17.048120"
     },
     {
       "symbol": "GLD",
@@ -1337,7 +1337,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.669890"
+      "last_seen_at": "2026-04-12T20:47:17.047701"
     },
     {
       "symbol": "KLAC",
@@ -1347,7 +1347,7 @@
         "equity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.670320"
+      "last_seen_at": "2026-04-12T20:47:17.048160"
     },
     {
       "symbol": "LIN",
@@ -1357,7 +1357,7 @@
         "equity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.671431"
+      "last_seen_at": "2026-04-12T20:47:17.049289"
     },
     {
       "symbol": "REGN",
@@ -1367,7 +1367,7 @@
         "equity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.670914"
+      "last_seen_at": "2026-04-12T20:47:17.048771"
     },
     {
       "symbol": "TLT",
@@ -1377,7 +1377,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.669928"
+      "last_seen_at": "2026-04-12T20:47:17.047739"
     },
     {
       "symbol": "TMUS",
@@ -1387,7 +1387,7 @@
         "equity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.671262"
+      "last_seen_at": "2026-04-12T20:47:17.049121"
     },
     {
       "symbol": "XBI",
@@ -1397,7 +1397,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.669852"
+      "last_seen_at": "2026-04-12T20:47:17.047660"
     },
     {
       "symbol": "XLB",
@@ -1407,7 +1407,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.669824"
+      "last_seen_at": "2026-04-12T20:47:17.047634"
     },
     {
       "symbol": "XLI",
@@ -1417,7 +1417,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.669771"
+      "last_seen_at": "2026-04-12T20:47:17.047582"
     },
     {
       "symbol": "XLP",
@@ -1427,7 +1427,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.669783"
+      "last_seen_at": "2026-04-12T20:47:17.047594"
     },
     {
       "symbol": "XLRE",
@@ -1437,7 +1437,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.669839"
+      "last_seen_at": "2026-04-12T20:47:17.047648"
     },
     {
       "symbol": "XLU",
@@ -1447,7 +1447,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.669811"
+      "last_seen_at": "2026-04-12T20:47:17.047621"
     },
     {
       "symbol": "XLY",
@@ -1457,7 +1457,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-04-11T19:03:19.669797"
+      "last_seen_at": "2026-04-12T20:47:17.047608"
     },
     {
       "symbol": "ABNB",
@@ -1467,7 +1467,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.670539"
+      "last_seen_at": "2026-04-12T20:47:17.048406"
     },
     {
       "symbol": "AMT",
@@ -1477,7 +1477,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671392"
+      "last_seen_at": "2026-04-12T20:47:17.049250"
     },
     {
       "symbol": "BKNG",
@@ -1487,7 +1487,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671223"
+      "last_seen_at": "2026-04-12T20:47:17.049081"
     },
     {
       "symbol": "CMCSA",
@@ -1497,7 +1497,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671300"
+      "last_seen_at": "2026-04-12T20:47:17.049159"
     },
     {
       "symbol": "COF",
@@ -1507,7 +1507,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.670658"
+      "last_seen_at": "2026-04-12T20:47:17.048524"
     },
     {
       "symbol": "DDOG",
@@ -1517,7 +1517,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.670475"
+      "last_seen_at": "2026-04-12T20:47:17.048344"
     },
     {
       "symbol": "EQIX",
@@ -1527,7 +1527,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671419"
+      "last_seen_at": "2026-04-12T20:47:17.049277"
     },
     {
       "symbol": "FCX",
@@ -1537,7 +1537,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671444"
+      "last_seen_at": "2026-04-12T20:47:17.049301"
     },
     {
       "symbol": "FDX",
@@ -1547,7 +1547,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671059"
+      "last_seen_at": "2026-04-12T20:47:17.048930"
     },
     {
       "symbol": "GD",
@@ -1557,7 +1557,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671034"
+      "last_seen_at": "2026-04-12T20:47:17.048903"
     },
     {
       "symbol": "GILD",
@@ -1567,7 +1567,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.670939"
+      "last_seen_at": "2026-04-12T20:47:17.048801"
     },
     {
       "symbol": "HLT",
@@ -1577,7 +1577,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671249"
+      "last_seen_at": "2026-04-12T20:47:17.049108"
     },
     {
       "symbol": "HYG",
@@ -1587,7 +1587,7 @@
         "diversity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.669939"
+      "last_seen_at": "2026-04-12T20:47:17.047752"
     },
     {
       "symbol": "KRE",
@@ -1597,7 +1597,7 @@
         "diversity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.669864"
+      "last_seen_at": "2026-04-12T20:47:17.047674"
     },
     {
       "symbol": "LQD",
@@ -1607,7 +1607,7 @@
         "diversity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.669950"
+      "last_seen_at": "2026-04-12T20:47:17.047765"
     },
     {
       "symbol": "MAR",
@@ -1617,7 +1617,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671236"
+      "last_seen_at": "2026-04-12T20:47:17.049094"
     },
     {
       "symbol": "NEE",
@@ -1627,7 +1627,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671352"
+      "last_seen_at": "2026-04-12T20:47:17.049211"
     },
     {
       "symbol": "NET",
@@ -1637,7 +1637,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.670450"
+      "last_seen_at": "2026-04-12T20:47:17.048302"
     },
     {
       "symbol": "NOC",
@@ -1647,7 +1647,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671022"
+      "last_seen_at": "2026-04-12T20:47:17.048891"
     },
     {
       "symbol": "PLD",
@@ -1657,7 +1657,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671405"
+      "last_seen_at": "2026-04-12T20:47:17.049264"
     },
     {
       "symbol": "SLV",
@@ -1667,7 +1667,7 @@
         "diversity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.669903"
+      "last_seen_at": "2026-04-12T20:47:17.047713"
     },
     {
       "symbol": "SQ",
@@ -1677,7 +1677,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.670688"
+      "last_seen_at": "2026-04-12T20:47:17.048553"
     },
     {
       "symbol": "T",
@@ -1687,7 +1687,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671287"
+      "last_seen_at": "2026-04-12T20:47:17.049146"
     },
     {
       "symbol": "UPS",
@@ -1697,7 +1697,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671047"
+      "last_seen_at": "2026-04-12T20:47:17.048917"
     },
     {
       "symbol": "VLO",
@@ -1707,7 +1707,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.670814"
+      "last_seen_at": "2026-04-12T20:47:17.048670"
     },
     {
       "symbol": "VZ",
@@ -1717,7 +1717,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.671274"
+      "last_seen_at": "2026-04-12T20:47:17.049134"
     },
     {
       "symbol": "ZS",
@@ -1727,7 +1727,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-04-11T19:03:19.670439"
+      "last_seen_at": "2026-04-12T20:47:17.048290"
     },
     {
       "symbol": "AAL",
@@ -1737,7 +1737,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671097"
+      "last_seen_at": "2026-04-12T20:47:17.048968"
     },
     {
       "symbol": "AFRM",
@@ -1747,7 +1747,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671503"
+      "last_seen_at": "2026-04-12T20:47:17.049376"
     },
     {
       "symbol": "BIIB",
@@ -1757,7 +1757,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.670926"
+      "last_seen_at": "2026-04-12T20:47:17.048788"
     },
     {
       "symbol": "CHTR",
@@ -1767,7 +1767,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671313"
+      "last_seen_at": "2026-04-12T20:47:17.049172"
     },
     {
       "symbol": "DAL",
@@ -1777,7 +1777,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671071"
+      "last_seen_at": "2026-04-12T20:47:17.048943"
     },
     {
       "symbol": "DKNG",
@@ -1787,7 +1787,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671605"
+      "last_seen_at": "2026-04-12T20:47:17.049455"
     },
     {
       "symbol": "DUK",
@@ -1797,7 +1797,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671365"
+      "last_seen_at": "2026-04-12T20:47:17.049223"
     },
     {
       "symbol": "HOOD",
@@ -1807,7 +1807,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671592"
+      "last_seen_at": "2026-04-12T20:47:17.049441"
     },
     {
       "symbol": "LCID",
@@ -1817,7 +1817,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671490"
+      "last_seen_at": "2026-04-12T20:47:17.049363"
     },
     {
       "symbol": "NEM",
@@ -1827,7 +1827,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671464"
+      "last_seen_at": "2026-04-12T20:47:17.049315"
     },
     {
       "symbol": "PATH",
@@ -1837,7 +1837,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671579"
+      "last_seen_at": "2026-04-12T20:47:17.049429"
     },
     {
       "symbol": "RIVN",
@@ -1847,7 +1847,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671477"
+      "last_seen_at": "2026-04-12T20:47:17.049349"
     },
     {
       "symbol": "ROKU",
@@ -1857,7 +1857,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671339"
+      "last_seen_at": "2026-04-12T20:47:17.049198"
     },
     {
       "symbol": "SO",
@@ -1867,7 +1867,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671379"
+      "last_seen_at": "2026-04-12T20:47:17.049237"
     },
     {
       "symbol": "SOFI",
@@ -1877,7 +1877,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.670702"
+      "last_seen_at": "2026-04-12T20:47:17.048566"
     },
     {
       "symbol": "SPOT",
@@ -1887,7 +1887,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671326"
+      "last_seen_at": "2026-04-12T20:47:17.049186"
     },
     {
       "symbol": "U",
@@ -1897,7 +1897,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671566"
+      "last_seen_at": "2026-04-12T20:47:17.049416"
     },
     {
       "symbol": "UAL",
@@ -1907,7 +1907,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671084"
+      "last_seen_at": "2026-04-12T20:47:17.048955"
     },
     {
       "symbol": "UPST",
@@ -1917,11 +1917,11 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-04-11T19:03:19.671517"
+      "last_seen_at": "2026-04-12T20:47:17.049389"
     }
   ],
   "meta": {
-    "saved_at": "2026-04-11T19:03:19.692557",
+    "saved_at": "2026-04-12T20:47:17.069232",
     "count": 163,
     "source_status": {
       "diversity_seed": {

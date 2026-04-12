@@ -89,6 +89,15 @@ def _touch_news_sync(symbol: str, item_count: int) -> None:
     _save_pipeline_status(status)
 
 
+def _touch_bulk_news_sync(symbol_count: int) -> None:
+    status = _load_pipeline_status()
+    now_iso = datetime.now().isoformat()
+    status["news_sync_at"] = now_iso
+    status["bulk_news_sync_at"] = now_iso
+    status["bulk_news_symbol_count"] = symbol_count
+    _save_pipeline_status(status)
+
+
 def _parse_google_news_rss(xml_text: str) -> List[Dict[str, Any]]:
     items: List[Dict[str, Any]] = []
 
@@ -140,14 +149,8 @@ def _fetch_yfinance_news(symbol: str, limit: int = 8) -> List[Dict[str, Any]]:
     for item in raw[: max(limit * 2, 10)]:
         content = item.get("content", {}) if isinstance(item, dict) else {}
 
-        title = _norm_text(
-            content.get("title")
-            or item.get("title")
-        )
-        summary = _norm_text(
-            content.get("summary")
-            or item.get("summary")
-        )
+        title = _norm_text(content.get("title") or item.get("title"))
+        summary = _norm_text(content.get("summary") or item.get("summary"))
         source = _norm_text(
             content.get("provider", {}).get("displayName")
             if isinstance(content.get("provider"), dict) else item.get("publisher"),
@@ -158,11 +161,7 @@ def _fetch_yfinance_news(symbol: str, limit: int = 8) -> List[Dict[str, Any]]:
             if isinstance(content.get("canonicalUrl"), dict) else item.get("link")
         )
 
-        pub_raw = (
-            content.get("pubDate")
-            or item.get("providerPublishTime")
-            or item.get("published_at")
-        )
+        pub_raw = content.get("pubDate") or item.get("providerPublishTime") or item.get("published_at")
 
         if isinstance(pub_raw, (int, float)):
             published_at = datetime.fromtimestamp(pub_raw).isoformat()
@@ -181,6 +180,29 @@ def _fetch_yfinance_news(symbol: str, limit: int = 8) -> List[Dict[str, Any]]:
         }))
 
     return items[:limit]
+
+
+def get_symbol_detail(symbol: str) -> dict:
+    symbol = str(symbol or "").upper().strip()
+
+    news = []
+    try:
+        news = load_symbol_news(symbol) or []
+        if not isinstance(news, list):
+            news = []
+    except Exception:
+        news = []
+
+    return {
+        "symbol": symbol,
+        "company_name": symbol,
+        "price": None,
+        "change_pct": None,
+        "trend_label": "",
+        "headline": "",
+        "summary": "",
+        "news": news[:3],
+    }
 
 
 def _fetch_google_news(symbol: str, company_name: str = "", limit: int = 8, timeout: int = 15) -> List[Dict[str, Any]]:
@@ -215,35 +237,6 @@ def load_symbol_news(symbol: str) -> List[Dict[str, Any]]:
         return []
 
     return [_normalize_news_item(x) for x in rows if isinstance(x, dict)]
-
-
-def get_symbol_news_meta(symbol: str) -> Dict[str, Any]:
-    symbol = _norm_upper(symbol)
-    store = _load_news_store()
-    row = store.get(symbol, {})
-
-    if isinstance(row, dict):
-        refreshed_at = row.get("refreshed_at")
-        source = row.get("source", "cache")
-        item_count = len(row.get("items", [])) if isinstance(row.get("items"), list) else 0
-        return {
-            "refreshed_at": refreshed_at,
-            "source": source,
-            "item_count": item_count,
-        }
-
-    if isinstance(row, list):
-        return {
-            "refreshed_at": None,
-            "source": "legacy_cache",
-            "item_count": len(row),
-        }
-
-    return {
-        "refreshed_at": None,
-        "source": "missing",
-        "item_count": 0,
-    }
 
 
 def refresh_symbol_news(
@@ -292,20 +285,43 @@ def refresh_symbol_news(
     return items
 
 
-def refresh_news_for_symbols(symbol_rows: List[Dict[str, Any]], limit_per_symbol: int = 8) -> Dict[str, Any]:
-    results = {}
+def refresh_news_for_symbols(
+    symbol_rows: List[Dict[str, Any]],
+    limit_per_symbol: int = 8,
+    max_symbols: int = 250,
+    force: bool = False,
+) -> Dict[str, Any]:
+    store = _load_news_store()
+    refreshed = 0
 
-    for row in symbol_rows or []:
+    for row in symbol_rows[:max_symbols]:
+        if not isinstance(row, dict):
+            continue
+
         symbol = _norm_upper(row.get("symbol"))
-        company_name = _norm_text(row.get("company_name"))
+        company_name = _norm_text(row.get("company_name"), "")
         if not symbol:
             continue
 
-        results[symbol] = refresh_symbol_news(
+        items = refresh_symbol_news(
             symbol=symbol,
             company_name=company_name,
             limit=limit_per_symbol,
-            force=True,
+            max_age_minutes=30,
+            force=force,
         )
+        refreshed += 1
+        store[symbol] = {
+            "items": items,
+            "refreshed_at": datetime.now().isoformat(),
+            "refreshed_at_ts": int(time.time()),
+            "source": "bulk_refresh",
+        }
 
-    return results
+    _save_news_store(store)
+    _touch_bulk_news_sync(refreshed)
+
+    return {
+        "refreshed_symbols": refreshed,
+        "cached_symbols": len(store),
+    }

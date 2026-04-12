@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-
 {% set soulaana_greeting = soulaana_bundle.get("greeting", {}) if soulaana_bundle else {} %}
 
 <style>
@@ -380,12 +379,6 @@
         linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
         radial-gradient(circle at center, rgba(168,175,255,0.10), transparent 62%);
     border: 1px solid rgba(255,255,255,0.07);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-size: 0.92rem;
-    opacity: 0.78;
 }
 .chart-badges {
     display: flex;
@@ -442,6 +435,74 @@
     border: 1px solid rgba(255,255,255,0.08);
     font-size: 0.84rem;
     font-weight: 700;
+    cursor: pointer;
+}
+
+/* ===== MODAL CHART ===== */
+.chart-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 2600;
+}
+.chart-modal.is-open {
+    display: block;
+}
+.chart-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(3, 5, 12, 0.84);
+    backdrop-filter: blur(8px);
+}
+.chart-modal-dialog {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.chart-modal-card {
+    width: min(1220px, 96vw);
+    height: min(84vh, 900px);
+    border-radius: 28px;
+    padding: 20px;
+    background:
+        radial-gradient(circle at top left, rgba(124,77,255,0.18), transparent 34%),
+        linear-gradient(135deg, rgba(14,11,29,0.98), rgba(8,7,18,0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 28px 90px rgba(0,0,0,0.42);
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 14px;
+}
+.chart-modal-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+}
+.chart-modal-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+.chart-modal-close {
+    border: 0;
+    background: rgba(255,255,255,0.08);
+    color: inherit;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.chart-modal-body {
+    min-height: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
 }
 
 /* ===== RESPONSIVE ===== */
@@ -456,6 +517,9 @@
     }
     .section-top {
         flex-direction: column;
+    }
+    .chart-modal-card {
+        height: min(88vh, 900px);
     }
 }
 </style>
@@ -490,6 +554,22 @@
             <form method="POST" action="{{ url_for('soulaana_checkin_skip') }}">
                 <button type="submit" class="soulaana-modal-skip">I’ll answer later</button>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Expanded chart modal -->
+<div id="expandedChartModal" class="chart-modal" aria-hidden="true">
+    <div class="chart-modal-backdrop" onclick="closeExpandedChart()"></div>
+    <div class="chart-modal-dialog">
+        <div class="chart-modal-card">
+            <div class="chart-modal-top">
+                <h3 id="expandedChartTitle" class="chart-modal-title">Expanded chart</h3>
+                <button type="button" class="chart-modal-close" onclick="closeExpandedChart()">Close</button>
+            </div>
+            <div class="chart-modal-body">
+                <div id="expanded_tv_chart" style="width:100%; height:100%;"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -612,8 +692,7 @@
                 </div>
 
                 <div class="chart-chartbox">
-                    Chart view lives on the symbol page right now.<br>
-                    Use the button below to open the deeper symbol lane.
+                    <div id="tv_chart_{{ item.symbol }}" style="width:100%; height:150px;"></div>
                 </div>
 
                 {% if item.get("notes") %}
@@ -632,7 +711,12 @@
 
                 <div class="chart-actions">
                     <a href="{{ item.get('chart_url', '#') }}" class="chart-action">Open symbol</a>
-                    <a href="{{ item.get('chart_url', '#') }}" class="chart-action">View chart lane</a>
+                    <button type="button" class="chart-action" onclick="openExpandedChart('{{ item.get('symbol', '') }}')">
+                        Expand chart
+                    </button>
+                    <button type="button" class="chart-action" onclick="addToPlay('{{ item.get('symbol', '') }}')">
+                        Add to My Plays
+                    </button>
                 </div>
             </div>
             {% endfor %}
@@ -641,7 +725,129 @@
         <p class="section-copy">No watch symbols are loaded yet.</p>
         {% endif %}
     </div>
-
 </div>
+
+<script src="https://s3.tradingview.com/tv.js"></script>
+<script>
+(function () {
+    const cards = {{ chart_cards|tojson|safe }};
+    let expandedWidget = null;
+
+    function buildTvSymbol(symbol) {
+        const upper = String(symbol || "").toUpperCase().trim();
+        if (!upper) return "NASDAQ:AAPL";
+        return "NASDAQ:" + upper;
+    }
+
+    function mountMiniCharts() {
+        if (typeof TradingView === "undefined") return;
+
+        cards.forEach((item) => {
+            const symbol = item.symbol;
+            const containerId = "tv_chart_" + symbol;
+            const node = document.getElementById(containerId);
+            if (!node) return;
+
+            node.innerHTML = "";
+
+            new TradingView.widget({
+                autosize: true,
+                symbol: buildTvSymbol(symbol),
+                interval: "15",
+                timezone: "America/New_York",
+                theme: "dark",
+                style: "1",
+                locale: "en",
+                enable_publishing: false,
+                allow_symbol_change: false,
+                hide_top_toolbar: true,
+                hide_legend: true,
+                withdateranges: false,
+                save_image: false,
+                container_id: containerId,
+                backgroundColor: "rgba(0,0,0,0)",
+                gridColor: "rgba(255,255,255,0.04)"
+            });
+        });
+    }
+
+    window.openExpandedChart = function (symbol) {
+        const modal = document.getElementById("expandedChartModal");
+        const title = document.getElementById("expandedChartTitle");
+        const container = document.getElementById("expanded_tv_chart");
+
+        if (!modal || !title || !container || typeof TradingView === "undefined") return;
+
+        title.textContent = (symbol || "Symbol") + " — Expanded Chart";
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        container.innerHTML = "";
+
+        expandedWidget = new TradingView.widget({
+            autosize: true,
+            symbol: buildTvSymbol(symbol),
+            interval: "5",
+            timezone: "America/New_York",
+            theme: "dark",
+            style: "1",
+            locale: "en",
+            enable_publishing: false,
+            allow_symbol_change: true,
+            hide_top_toolbar: false,
+            hide_legend: false,
+            withdateranges: true,
+            save_image: false,
+            container_id: "expanded_tv_chart",
+            backgroundColor: "rgba(0,0,0,0)",
+            gridColor: "rgba(255,255,255,0.05)"
+        });
+    };
+
+    window.closeExpandedChart = function () {
+        const modal = document.getElementById("expandedChartModal");
+        const container = document.getElementById("expanded_tv_chart");
+        if (!modal || !container) return;
+
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        container.innerHTML = "";
+        expandedWidget = null;
+    };
+
+    window.addToPlay = function (symbol) {
+        fetch("/add-to-play", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ symbol: symbol })
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error("Request failed");
+            }
+            return res.json().catch(() => ({}));
+        })
+        .then(() => {
+            alert(symbol + " was added to My Plays.");
+        })
+        .catch(() => {
+            alert("Could not add " + symbol + " to My Plays.");
+        });
+    };
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+            window.closeExpandedChart();
+        }
+    });
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", mountMiniCharts);
+    } else {
+        mountMiniCharts();
+    }
+})();
+</script>
 
 {% endblock %}
