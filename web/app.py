@@ -5932,15 +5932,26 @@ def soulaana_checkin():
 
     if emotional_state not in allowed:
         flash("Soulaana couldn’t read that check-in.", "warning")
-        return redirect(request.referrer or url_for("dashboard"))
+        return redirect(request.referrer or url_for("dashboard_page"))
 
-    set_soulaana_emotional_state(emotional_state)
-    response_payload = build_soulaana_checkin_response_for_user(emotional_state)
-    session["soulaana_checkin_headline"] = response_payload.get("headline", "")
-    session["soulaana_checkin_tone"] = response_payload.get("response_tone", "steady")
-    session["soulaana_checkin_note"] = response_payload.get("system_note", "")
+    session["soulaana_state"] = emotional_state
+    session.pop("soulaana_checkin_skipped", None)
 
-    return redirect(request.referrer or url_for("dashboard"))
+    try:
+        response_payload = build_soulaana_checkin_response_for_user(emotional_state)
+        session["soulaana_checkin_headline"] = response_payload.get("headline", "")
+        session["soulaana_checkin_tone"] = response_payload.get("response_tone", "steady")
+        session["soulaana_checkin_note"] = response_payload.get("system_note", "")
+    except Exception as e:
+        print("[SOULAANA_CHECKIN_RESPONSE_ERROR]", e)
+
+    return redirect(request.referrer or url_for("dashboard_page"))
+
+
+@app.route("/soulaana/checkin/skip", methods=["POST"])
+def soulaana_checkin_skip():
+    session["soulaana_checkin_skipped"] = True
+    return redirect(request.referrer or url_for("dashboard_page"))
 
 
 @app.route("/soulaana/checkin/clear", methods=["POST"])

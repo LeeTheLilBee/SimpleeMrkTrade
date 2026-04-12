@@ -1,6 +1,6 @@
 {
   "page_views": {
-    "/": 216,
+    "/": 217,
     "/dashboard": 107,
     "/signals": 154,
     "/positions": 67,
@@ -9,7 +9,7 @@
     "/why-this-trade": 63,
     "/analytics-overview": 18,
     "/upgrade": 31,
-    "/login": 213,
+    "/login": 215,
     "/signup": 29,
     "/trade/MPC_1773917311.412609": 2,
     "/simulation": 1,
@@ -36,7 +36,7 @@
     "/admin/diagnostics": 1,
     "/signals/OXY": 2,
     "/trade-review": 1,
-    "/charts": 3
+    "/charts": 4
   },
   "clicks": {
     "upgrade_button": 17,
