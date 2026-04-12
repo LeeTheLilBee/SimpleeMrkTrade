@@ -6274,6 +6274,7 @@ def charts_page():
     chart_cards = []
     for item in symbols_payload[:24]:
         symbol = item.get("symbol", "")
+
         try:
             symbol_detail = get_symbol_detail(symbol)
         except Exception as e:
@@ -6294,7 +6295,7 @@ def charts_page():
                 "trend_label": symbol_detail.get("trend_label", ""),
                 "headline": symbol_detail.get("headline", ""),
                 "news": news[:3],
-                "chart_url": url_for("symbol_page", symbol=symbol) if symbol else "#",
+                "chart_url": f"/signals/{symbol}" if symbol else "#",
             }
         )
 
