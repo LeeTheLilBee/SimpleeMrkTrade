@@ -1,0 +1,647 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% set soulaana_greeting = soulaana_bundle.get("greeting", {}) if soulaana_bundle else {} %}
+
+<style>
+.charts-shell {
+    display: grid;
+    gap: 22px;
+}
+
+/* ===== SOULAANA MODAL ===== */
+.soulaana-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 2400;
+}
+.soulaana-modal.is-open {
+    display: block;
+}
+.soulaana-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at top, rgba(124,77,255,0.16), transparent 30%),
+        rgba(3, 5, 12, 0.78);
+    backdrop-filter: blur(10px);
+}
+.soulaana-modal-dialog {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+}
+.soulaana-modal-card {
+    width: min(760px, 94vw);
+    border-radius: 30px;
+    padding: 28px;
+    background:
+        radial-gradient(circle at top left, rgba(124,77,255,0.18), transparent 34%),
+        radial-gradient(circle at 82% 18%, rgba(255,95,207,0.12), transparent 28%),
+        linear-gradient(135deg, rgba(14,11,29,0.98), rgba(8,7,18,0.98));
+    border: 1px solid rgba(255,255,255,0.10);
+    box-shadow: 0 28px 90px rgba(0,0,0,0.42);
+    position: relative;
+    overflow: hidden;
+}
+.soulaana-modal-card::before {
+    content: "";
+    position: absolute;
+    right: 34px;
+    top: 26px;
+    width: 118px;
+    height: 118px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.30) 46%, transparent 76%);
+    filter: blur(10px);
+    opacity: 0.9;
+    pointer-events: none;
+}
+.soulaana-modal-kicker {
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    opacity: 0.72;
+    margin-bottom: 12px;
+}
+.soulaana-modal-title {
+    margin: 0 0 10px 0;
+    font-size: 1.9rem;
+    line-height: 1.12;
+    font-weight: 800;
+    max-width: 600px;
+}
+.soulaana-modal-subtext {
+    margin: 0;
+    max-width: 640px;
+    opacity: 0.88;
+    line-height: 1.5;
+}
+.soulaana-modal-form {
+    margin-top: 22px;
+}
+.soulaana-modal-chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.soulaana-modal-chip {
+    border: 0;
+    border-radius: 999px;
+    padding: 11px 15px;
+    font-size: 0.94rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: rgba(255,255,255,0.08);
+    color: inherit;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+.soulaana-modal-chip:hover {
+    transform: translateY(-1px);
+    background: rgba(255,255,255,0.12);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+}
+.soulaana-modal-skip {
+    margin-top: 18px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    opacity: 0.72;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    font-size: 0.92rem;
+}
+
+/* ===== HERO ===== */
+.charts-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    padding: 26px;
+    background:
+        radial-gradient(circle at top left, rgba(124,77,255,0.24), transparent 34%),
+        radial-gradient(circle at 78% 22%, rgba(255,95,207,0.16), transparent 28%),
+        linear-gradient(135deg, rgba(14,11,29,0.98), rgba(8,7,18,0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 24px 54px rgba(0,0,0,0.34);
+}
+.charts-hero::before {
+    content: "";
+    position: absolute;
+    right: 42px;
+    top: 28px;
+    width: 124px;
+    height: 124px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.34) 44%, transparent 74%);
+    filter: blur(10px);
+    opacity: 0.9;
+    pointer-events: none;
+}
+.charts-kicker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+.charts-pill,
+.info-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.10);
+}
+.charts-title {
+    margin: 0 0 10px 0;
+    font-size: 1.95rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+.charts-sub {
+    margin: 0;
+    max-width: 880px;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+.info-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+/* ===== SOULAANA INLINE PANEL ===== */
+.soulaana-welcome-card {
+    border-radius: 28px;
+    padding: 1px;
+    background: linear-gradient(
+        135deg,
+        rgba(168,175,255,0.34),
+        rgba(255,175,214,0.24),
+        rgba(175,254,255,0.24)
+    );
+    box-shadow: 0 18px 48px rgba(0,0,0,0.16);
+}
+.soulaana-welcome-inner {
+    border-radius: 27px;
+    padding: 24px;
+    background:
+        radial-gradient(circle at top left, rgba(124,77,255,0.12), transparent 34%),
+        linear-gradient(135deg, rgba(10,14,24,0.94), rgba(8,10,20,0.94));
+    backdrop-filter: blur(10px);
+}
+.soulaana-kicker {
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.72;
+    margin-bottom: 8px;
+}
+.soulaana-headline {
+    margin: 0 0 8px 0;
+    font-size: 1.55rem;
+    line-height: 1.18;
+}
+.soulaana-subtext {
+    margin: 0;
+    opacity: 0.84;
+    max-width: 760px;
+    line-height: 1.5;
+}
+.soulaana-response {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.soulaana-response-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.soulaana-response-note {
+    font-size: 0.92rem;
+    opacity: 0.8;
+}
+.soulaana-response-encouraging {
+    box-shadow: inset 0 0 0 1px rgba(175,254,255,0.24);
+}
+.soulaana-response-protective {
+    box-shadow: inset 0 0 0 1px rgba(255,175,214,0.24);
+}
+.soulaana-response-steady {
+    box-shadow: inset 0 0 0 1px rgba(168,175,255,0.24);
+}
+.soulaana-mood-form {
+    margin-top: 18px;
+}
+.soulaana-chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.soulaana-chip {
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: rgba(255,255,255,0.07);
+    color: inherit;
+    transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+.soulaana-chip:hover {
+    transform: translateY(-1px);
+    background: rgba(255,255,255,0.12);
+}
+.soulaana-chip.is-active {
+    background: rgba(168,175,255,0.24);
+    box-shadow: inset 0 0 0 1px rgba(168,175,255,0.46);
+}
+.soulaana-reset-form {
+    margin-top: 14px;
+}
+.soulaana-reset-btn {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    opacity: 0.78;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+
+/* ===== PANELS ===== */
+.section-panel {
+    border-radius: 24px;
+    padding: 20px;
+    background:
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
+        linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
+}
+.section-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+.section-title {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+.section-copy {
+    margin: 0;
+    opacity: 0.82;
+    line-height: 1.45;
+}
+.action-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(168,175,255,0.18);
+    border: 1px solid rgba(168,175,255,0.24);
+    white-space: nowrap;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+.chart-card {
+    display: grid;
+    gap: 12px;
+    border-radius: 24px;
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(124,77,255,0.12), transparent 34%),
+        linear-gradient(135deg, rgba(14,11,29,0.98), rgba(8,7,18,0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.22);
+}
+.chart-card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+}
+.chart-symbol {
+    font-size: 1.08rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+.chart-company {
+    font-size: 0.92rem;
+    opacity: 0.8;
+    line-height: 1.4;
+}
+.chart-price-block {
+    text-align: right;
+}
+.chart-price {
+    font-size: 1rem;
+    font-weight: 800;
+}
+.chart-change {
+    font-size: 0.84rem;
+    opacity: 0.82;
+}
+.chart-notes {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    opacity: 0.84;
+}
+.chart-chartbox {
+    min-height: 150px;
+    border-radius: 18px;
+    padding: 14px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
+        radial-gradient(circle at center, rgba(168,175,255,0.10), transparent 62%);
+    border: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.92rem;
+    opacity: 0.78;
+}
+.chart-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.chart-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.chart-news-list {
+    display: grid;
+    gap: 8px;
+}
+.chart-news-item {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.12s ease, background 0.12s ease;
+}
+.chart-news-item:hover {
+    transform: translateY(-1px);
+    background: rgba(255,255,255,0.07);
+}
+.chart-news-title {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    font-weight: 700;
+}
+.chart-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.chart-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 12px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1180px) {
+    .chart-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 900px) {
+    .chart-grid {
+        grid-template-columns: 1fr;
+    }
+    .section-top {
+        flex-direction: column;
+    }
+}
+</style>
+
+<!-- Soulaana popup -->
+<div
+    id="soulaanaCheckinModal"
+    class="soulaana-modal {% if show_soulaana_popup %}is-open{% endif %}"
+    aria-hidden="{% if show_soulaana_popup %}false{% else %}true{% endif %}"
+>
+    <div class="soulaana-modal-backdrop"></div>
+    <div class="soulaana-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="soulaanaModalTitle">
+        <div class="soulaana-modal-card">
+            <div class="soulaana-modal-kicker">Soulaana</div>
+            <h2 id="soulaanaModalTitle" class="soulaana-modal-title">
+                {{ soulaana_greeting.get("headline", "Hey love, how you feeling coming in today?") }}
+            </h2>
+            <p class="soulaana-modal-subtext">
+                {{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance and catch emotional pressure early.") }}
+            </p>
+
+            <form method="POST" action="{{ url_for('soulaana_checkin') }}" class="soulaana-modal-form">
+                <div class="soulaana-modal-chip-grid">
+                    {% for mood in soulaana_greeting.get("checkin_options", []) %}
+                    <button type="submit" name="emotional_state" value="{{ mood }}" class="soulaana-modal-chip">
+                        {{ mood.replace("_", " ").title() }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </form>
+
+            <form method="POST" action="{{ url_for('soulaana_checkin_skip') }}">
+                <button type="submit" class="soulaana-modal-skip">I’ll answer later</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="charts-shell">
+
+    <!-- Hero -->
+    <div class="charts-hero">
+        <div class="charts-kicker">
+            <span class="charts-pill">chart board</span>
+            <span class="charts-pill">{{ user_mode|title }} mode</span>
+            {% if tier %}
+            <span class="charts-pill">{{ tier }}</span>
+            {% endif %}
+            <span class="charts-pill">{{ chart_cards|length }} symbols</span>
+        </div>
+
+        <h1 class="charts-title">Symbol Watch Command Center</h1>
+        <p class="charts-sub">
+            This is where manual and hybrid users stalk structure, watch pressure build, and decide what deserves more attention before they commit capital.
+        </p>
+
+        <div class="info-row">
+            <span class="info-chip">manual judgment lane</span>
+            <span class="info-chip">watchlist-first workflow</span>
+            <span class="info-chip">news + posture + context</span>
+        </div>
+    </div>
+
+    <!-- Soulaana -->
+    <div class="soulaana-welcome-card">
+        <div class="soulaana-welcome-inner">
+            <div class="soulaana-kicker">Soulaana</div>
+            <h2 class="soulaana-headline">
+                {{ soulaana_greeting.get("headline", "Hey love, how you feeling coming in today?") }}
+            </h2>
+            <p class="soulaana-subtext">
+                {{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance and catch emotional pressure early.") }}
+            </p>
+
+            {% if soulaana_checkin_headline %}
+            <div class="soulaana-response soulaana-response-{{ soulaana_checkin_tone }}">
+                <div class="soulaana-response-title">{{ soulaana_checkin_headline }}</div>
+                {% if soulaana_checkin_note %}
+                <div class="soulaana-response-note">{{ soulaana_checkin_note }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('soulaana_checkin') }}" class="soulaana-mood-form">
+                <div class="soulaana-chip-grid">
+                    {% for mood in soulaana_greeting.get("checkin_options", []) %}
+                    <button
+                        type="submit"
+                        name="emotional_state"
+                        value="{{ mood }}"
+                        class="soulaana-chip {% if soulaana_state == mood %}is-active{% endif %}"
+                    >
+                        {{ mood.replace("_", " ").title() }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </form>
+
+            {% if soulaana_state %}
+            <form method="POST" action="{{ url_for('soulaana_checkin_clear') }}" class="soulaana-reset-form">
+                <button type="submit" class="soulaana-reset-btn">Reset check-in</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Chart board -->
+    <div class="section-panel">
+        <div class="section-top">
+            <div>
+                <h2 class="section-title">Watched symbols</h2>
+                <p class="section-copy">
+                    These names are being watched for structure, trend, and timing. Use this page to study before you decide whether to sit still, stalk, or step in.
+                </p>
+            </div>
+            <a href="{{ url_for('dashboard_page') }}" class="action-link">Back to dashboard</a>
+        </div>
+
+        {% if chart_cards %}
+        <div class="chart-grid">
+            {% for item in chart_cards %}
+            <div class="chart-card">
+                <div class="chart-card-top">
+                    <div>
+                        <div class="chart-symbol">{{ item.get("symbol", "") }}</div>
+                        <div class="chart-company">{{ item.get("company_name", "") }}</div>
+                    </div>
+                    <div class="chart-price-block">
+                        <div class="chart-price">
+                            {% if item.get("price") is not none %}
+                                {{ item.get("price") }}
+                            {% else %}
+                                --
+                            {% endif %}
+                        </div>
+                        <div class="chart-change">
+                            {% if item.get("change_pct") is not none %}
+                                {{ item.get("change_pct") }}%
+                            {% else %}
+                                no move data
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-badges">
+                    {% if item.get("trend_label") %}
+                    <span class="chart-badge">{{ item.get("trend_label") }}</span>
+                    {% endif %}
+                    {% if item.get("headline") %}
+                    <span class="chart-badge">{{ item.get("headline") }}</span>
+                    {% endif %}
+                    <span class="chart-badge">watch mode</span>
+                </div>
+
+                <div class="chart-chartbox">
+                    Chart view lives on the symbol page right now.<br>
+                    Use the button below to open the deeper symbol lane.
+                </div>
+
+                {% if item.get("notes") %}
+                <div class="chart-notes">{{ item.get("notes") }}</div>
+                {% endif %}
+
+                {% if item.get("news") %}
+                <div class="chart-news-list">
+                    {% for news_item in item.get("news", []) %}
+                    <a href="{{ news_item.get('url', '#') }}" class="chart-news-item" target="_blank" rel="noopener noreferrer">
+                        <div class="chart-news-title">{{ news_item.get("title", "Untitled update") }}</div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="chart-actions">
+                    <a href="{{ item.get('chart_url', '#') }}" class="chart-action">Open symbol</a>
+                    <a href="{{ item.get('chart_url', '#') }}" class="chart-action">View chart lane</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="section-copy">No watch symbols are loaded yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

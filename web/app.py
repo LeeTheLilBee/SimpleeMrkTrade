@@ -26,6 +26,7 @@ from jinja2 import TemplateNotFound
 
 # --- SOULAANA CORE (NEW SYSTEM) ---
 import engine.soulaana_core as soulaana_core
+import engine.soulaana_voice as soulaana_voice
 
 # --- CORE ENGINE (V1 BRIDGE LAYER) ---
 from engine.engine_selection import build_execution_universe, get_learning_adjustment_map
@@ -34,6 +35,7 @@ from engine.canonical_decision_object import build_canonical_decision_object
 # --- MARKET / SYMBOLS ---
 import engine.market_universe as market_universe
 from engine.symbols import load_symbol_news, refresh_symbol_news
+from engine.symbols import get_symbol_detail
 
 # --- USER / PLAYS ---
 from engine.my_plays import (
@@ -5984,8 +5986,8 @@ def dashboard_page():
     if not isinstance(reports, list):
         reports = []
 
-    equity_values = [row.get("equity", 0) for row in drawdown]
-    equity_labels = [row.get("closed_at", "") for row in drawdown]
+    equity_values = [row.get("equity", 0) for row in drawdown if isinstance(row, dict)]
+    equity_labels = [row.get("closed_at", "") for row in drawdown if isinstance(row, dict)]
 
     sample_signals = [
         {
@@ -6035,12 +6037,46 @@ def dashboard_page():
         tier=tier.lower(),
     )
 
-    # Soulaana dashboard addons
+    user_mode = "manual"
+    try:
+        mode_bundle = resolve_user_modes(session=session)
+        if isinstance(mode_bundle, dict):
+            user_mode = str(mode_bundle.get("execution_mode", "manual")).strip().lower() or "manual"
+    except Exception as e:
+        print("[DASHBOARD_MODE_RESOLVE]", e)
+
+    watchlist = load_json("data/watchlist.json", [])
+    if not isinstance(watchlist, list):
+        watchlist = []
+
+    watchlist_preview = []
+    for item in watchlist[:6]:
+        if isinstance(item, str):
+            symbol = item.upper()
+            watchlist_preview.append(
+                {
+                    "symbol": symbol,
+                    "company_name": symbol,
+                    "chart_url": url_for("symbol_page", symbol=symbol),
+                }
+            )
+        elif isinstance(item, dict):
+            symbol = str(item.get("symbol", "")).strip().upper()
+            if symbol:
+                watchlist_preview.append(
+                    {
+                        "symbol": symbol,
+                        "company_name": item.get("company_name", symbol),
+                        "chart_url": url_for("symbol_page", symbol=symbol),
+                    }
+                )
+
     soulaana_bundle = build_soulaana_login_bundle_for_user()
     soulaana_state = get_soulaana_emotional_state()
     soulaana_checkin_headline = session.get("soulaana_checkin_headline", "")
     soulaana_checkin_tone = session.get("soulaana_checkin_tone", "steady")
     soulaana_checkin_note = session.get("soulaana_checkin_note", "")
+    show_soulaana_popup = not bool(soulaana_state) and not bool(session.get("soulaana_checkin_skipped"))
 
     return render_template_safe(
         "dashboard.html",
@@ -6064,11 +6100,14 @@ def dashboard_page():
                 "final_dashboard_context": final_dashboard_context,
                 "final_spotlight_cards": final_spotlight_cards,
                 "tier": tier,
+                "user_mode": user_mode,
+                "watchlist_preview": watchlist_preview,
                 "soulaana_bundle": soulaana_bundle,
                 "soulaana_state": soulaana_state,
                 "soulaana_checkin_headline": soulaana_checkin_headline,
                 "soulaana_checkin_tone": soulaana_checkin_tone,
                 "soulaana_checkin_note": soulaana_checkin_note,
+                "show_soulaana_popup": show_soulaana_popup,
             }
         ),
     )
@@ -6172,6 +6211,109 @@ def all_symbols_page():
                 "fusion_payloads": fusion_payloads,
                 "final_brain_map": final_brain_map,
                 "tier": tier,
+            }
+        ),
+    )
+
+
+@app.route("/charts")
+def charts_page():
+    maybe_track_page_view("/charts")
+
+    tier = get_current_tier_for_routes()
+    system = get_system_state()
+
+    user_mode = "manual"
+    try:
+        mode_bundle = resolve_user_modes(session=session)
+        if isinstance(mode_bundle, dict):
+            user_mode = str(mode_bundle.get("execution_mode", "manual")).strip().lower() or "manual"
+    except Exception as e:
+        print("[CHARTS_MODE_RESOLVE]", e)
+
+    allowed_modes = {"manual", "hybrid"}
+    if user_mode not in allowed_modes:
+        flash("Charts watch mode is available in manual or hybrid workflows.", "warning")
+        return redirect(url_for("dashboard_page"))
+
+    watchlist = load_json("data/watchlist.json", [])
+    if not isinstance(watchlist, list):
+        watchlist = []
+
+    symbols_payload = []
+    for item in watchlist:
+        if isinstance(item, str):
+            symbols_payload.append(
+                {
+                    "symbol": item.upper(),
+                    "company_name": item.upper(),
+                    "notes": "",
+                }
+            )
+        elif isinstance(item, dict):
+            symbol = str(item.get("symbol", "")).strip().upper()
+            if symbol:
+                symbols_payload.append(
+                    {
+                        "symbol": symbol,
+                        "company_name": item.get("company_name", symbol),
+                        "notes": item.get("notes", ""),
+                    }
+                )
+
+    # fallback if watchlist empty
+    if not symbols_payload:
+        symbols_payload = [
+            {"symbol": "AAPL", "company_name": "Apple", "notes": ""},
+            {"symbol": "MSFT", "company_name": "Microsoft", "notes": ""},
+            {"symbol": "NVDA", "company_name": "NVIDIA", "notes": ""},
+            {"symbol": "AMZN", "company_name": "Amazon", "notes": ""},
+        ]
+
+    chart_cards = []
+    for item in symbols_payload:
+        symbol = item.get("symbol", "")
+        try:
+            symbol_detail = get_symbol_detail(symbol)
+        except Exception as e:
+            print(f"[CHARTS_SYMBOL_DETAIL:{symbol}] {e}")
+            symbol_detail = {}
+
+        chart_cards.append(
+            {
+                "symbol": symbol,
+                "company_name": item.get("company_name", symbol),
+                "notes": item.get("notes", ""),
+                "price": symbol_detail.get("price"),
+                "change_pct": symbol_detail.get("change_pct"),
+                "trend_label": symbol_detail.get("trend_label", ""),
+                "headline": symbol_detail.get("headline", ""),
+                "news": symbol_detail.get("news", [])[:3] if isinstance(symbol_detail.get("news", []), list) else [],
+                "chart_url": url_for("symbol_page", symbol=symbol) if symbol else "#",
+            }
+        )
+
+    soulaana_bundle = build_soulaana_login_bundle_for_user()
+    soulaana_state = get_soulaana_emotional_state()
+    soulaana_checkin_headline = session.get("soulaana_checkin_headline", "")
+    soulaana_checkin_tone = session.get("soulaana_checkin_tone", "steady")
+    soulaana_checkin_note = session.get("soulaana_checkin_note", "")
+    show_soulaana_popup = not bool(soulaana_state) and not bool(session.get("soulaana_checkin_skipped"))
+
+    return render_template_safe(
+        "charts.html",
+        **template_context(
+            {
+                "tier": tier,
+                "system": system,
+                "user_mode": user_mode,
+                "chart_cards": chart_cards,
+                "soulaana_bundle": soulaana_bundle,
+                "soulaana_state": soulaana_state,
+                "soulaana_checkin_headline": soulaana_checkin_headline,
+                "soulaana_checkin_tone": soulaana_checkin_tone,
+                "soulaana_checkin_note": soulaana_checkin_note,
+                "show_soulaana_popup": show_soulaana_popup,
             }
         ),
     )
@@ -6321,6 +6463,118 @@ def signal_symbol_page(symbol: str):
             }
         ),
     )
+
+
+@app.route("/charts")
+def charts_page():
+    maybe_track_page_view("/charts")
+
+    # ================================
+    # USER + MODE
+    # ================================
+    tier = get_current_tier_for_routes()
+    user_mode = session.get("user_mode", "manual")  # manual | hybrid | auto
+
+    # ================================
+    # SOULAANA CHECK-IN STATE
+    # ================================
+    soulaana_state = session.get("soulaana_state")
+    show_soulaana_popup = not bool(soulaana_state)
+
+    try:
+        soulaana_bundle = {
+            "greeting": soulaana_voice.build_login_greeting(
+                user_id=session.get("user_id"),
+                mood_hint=soulaana_state
+            )
+        }
+    except Exception as e:
+        print(f"[SOULAANA_GREETING_ERROR] {e}")
+        soulaana_bundle = {
+            "greeting": {
+                "headline": "Hey love, how you feeling coming in today?",
+                "subtext": "Your check-in helps tailor guidance and protect your decisions.",
+                "checkin_options": ["calm","focused","confident","cautious","anxious","frustrated","impulsive","tired"]
+            }
+        }
+
+    soulaana_checkin_headline = None
+    soulaana_checkin_note = None
+    soulaana_checkin_tone = "steady"
+
+    if soulaana_state:
+        try:
+            response = soulaana_voice.build_checkin_response(
+                soulaana_state,
+                user_id=session.get("user_id")
+            )
+            soulaana_checkin_headline = response
+            soulaana_checkin_tone = "encouraging" if soulaana_state in ["calm","focused","confident"] else "protective"
+        except Exception as e:
+            print(f"[SOULAANA_CHECKIN_RESPONSE_ERROR] {e}")
+
+    # ================================
+    # LOAD SYMBOL DATA
+    # ================================
+    try:
+        universe = load_json("data/execution_universe.json", {})
+        selected = universe.get("selected", [])
+    except Exception as e:
+        print(f"[CHARTS_UNIVERSE_ERROR] {e}")
+        selected = []
+
+    # ================================
+    # BUILD CHART CARDS
+    # ================================
+    chart_cards = []
+
+    for row in selected[:24]:  # cap for performance
+        try:
+            symbol = row.get("symbol")
+
+            # Pull symbol intelligence if available
+            try:
+                symbol_data = get_symbol_detail(symbol)
+            except Exception:
+                symbol_data = {}
+
+            card = {
+                "symbol": symbol,
+                "company_name": symbol_data.get("company_name", ""),
+                "price": symbol_data.get("price"),
+                "change_pct": symbol_data.get("change_pct"),
+                "trend_label": symbol_data.get("trend_label"),
+                "headline": symbol_data.get("headline"),
+                "notes": symbol_data.get("summary"),
+                "news": symbol_data.get("news", [])[:3],
+                "chart_url": f"/signals/{symbol}"
+            }
+
+            chart_cards.append(card)
+
+        except Exception as e:
+            print(f"[CHART_CARD_BUILD_ERROR:{row.get('symbol')}] {e}")
+
+    # ================================
+    # RENDER
+    # ================================
+    return render_template_safe(
+        "charts.html",
+        **template_context(
+            {
+                "chart_cards": chart_cards,
+                "tier": tier,
+                "user_mode": user_mode,
+                "soulaana_bundle": soulaana_bundle,
+                "soulaana_state": soulaana_state,
+                "soulaana_checkin_headline": soulaana_checkin_headline,
+                "soulaana_checkin_note": soulaana_checkin_note,
+                "soulaana_checkin_tone": soulaana_checkin_tone,
+                "show_soulaana_popup": show_soulaana_popup,
+            }
+        ),
+    )
+
 
 
 @app.route("/trade-review")
