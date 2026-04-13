@@ -1,4 +1,3 @@
-
 {% set soulaana_bundle = soulaana_bundle if soulaana_bundle is defined else {} %}
 {% set soulaana_greeting = soulaana_bundle.get("greeting", {}) %}
 {% set soulaana_options = soulaana_greeting.get("checkin_options", ["calm","focused","confident","cautious","anxious","frustrated","impulsive","tired"]) %}
@@ -6,12 +5,14 @@
 {% set soulaana_checkin_headline = soulaana_checkin_headline if soulaana_checkin_headline is defined else "" %}
 {% set soulaana_checkin_note = soulaana_checkin_note if soulaana_checkin_note is defined else "" %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SimpleeMrkTrade</title>
+    <meta charset="UTF-8">
+    <title>The Observatory</title>
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         :root {
             --bg-deep: #04030a;
@@ -28,27 +29,28 @@
             --gold-solid: #f7c86b;
             --danger-soft: rgba(255, 120, 140, 0.18);
         }
+
+        * {
+            box-sizing: border-box;
+        }
+
         html, body {
             min-height: 100%;
-        }
-        body {
-            background: #070914;
-            color: white;
+            margin: 0;
+            padding: 0;
         }
 
-        /* subtle atmosphere */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
+        body {
             background:
                 radial-gradient(circle at 20% 10%, rgba(124,77,255,0.12), transparent 40%),
-                radial-gradient(circle at 80% 20%, rgba(255,95,207,0.08), transparent 40%);
-            pointer-events: none;
+                radial-gradient(circle at 80% 20%, rgba(255,95,207,0.08), transparent 40%),
+                linear-gradient(180deg, #070914 0%, #060811 100%);
+            color: var(--text-main);
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            overflow-x: hidden;
         }
 
-        /* very subtle star noise */
-        body::after {
+        body::before {
             content: "";
             position: fixed;
             inset: 0;
@@ -56,12 +58,15 @@
             background-size: 120px 120px;
             opacity: 0.04;
             pointer-events: none;
+            z-index: 0;
         }
+
         .site-shell {
             position: relative;
             z-index: 1;
             min-height: 100vh;
         }
+
         .site-nav-wrap,
         .admin-preview-wrap,
         .site-main-wrap,
@@ -72,6 +77,7 @@
             margin-left: auto;
             margin-right: auto;
         }
+
         .site-nav {
             margin-top: 18px;
             border-radius: 24px;
@@ -83,6 +89,7 @@
             box-shadow: 0 16px 34px rgba(0,0,0,0.24);
             backdrop-filter: blur(10px);
         }
+
         .site-nav-inner {
             display: flex;
             justify-content: space-between;
@@ -90,6 +97,7 @@
             gap: 18px;
             flex-wrap: wrap;
         }
+
         .nav-left,
         .nav-right,
         .nav-links {
@@ -98,17 +106,20 @@
             gap: 12px;
             flex-wrap: wrap;
         }
+
         .brand-link {
             display: inline-flex;
             align-items: center;
             text-decoration: none;
         }
+
         .brand-logo,
         .footer-logo {
             display: block;
             max-height: 42px;
             width: auto;
         }
+
         .nav-links a,
         .nav-utility,
         .dropbtn,
@@ -118,6 +129,7 @@
             color: var(--text-main);
             text-decoration: none;
         }
+
         .nav-links > a,
         .nav-utility,
         .dropbtn,
@@ -133,7 +145,9 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.18s ease;
+            appearance: none;
         }
+
         .nav-links > a:hover,
         .nav-utility:hover,
         .dropbtn:hover,
@@ -144,13 +158,16 @@
             border-color: rgba(255,255,255,0.14);
             transform: translateY(-1px);
         }
+
         .cta-btn {
             box-shadow: 0 8px 22px rgba(0,0,0,0.18);
         }
+
         .cta-btn.secondary,
         .nav-utility {
             background: rgba(255,255,255,0.06);
         }
+
         .cta-btn.premium-gold-btn,
         .signup-btn {
             background: linear-gradient(135deg, rgba(247, 200, 107, 0.95), rgba(255, 220, 146, 0.92));
@@ -158,15 +175,18 @@
             border-color: rgba(255, 224, 156, 0.75);
             box-shadow: 0 10px 26px rgba(247, 200, 107, 0.24);
         }
+
         .cta-btn.premium-gold-btn:hover,
         .signup-btn:hover {
             background: linear-gradient(135deg, rgba(255, 214, 126, 1), rgba(255, 230, 170, 0.98));
             border-color: rgba(255, 232, 180, 0.92);
         }
+
         .dropdown {
             position: relative;
             z-index: 40;
         }
+
         .dropdown-content {
             display: none;
             position: absolute;
@@ -182,19 +202,23 @@
             box-shadow: 0 18px 34px rgba(0,0,0,0.30);
             z-index: 45;
         }
+
         .dropdown-content a {
             display: block;
             border-radius: 12px;
             padding: 10px 12px;
         }
+
         .dropdown-right {
             left: auto;
             right: 0;
         }
+
         .dropdown:hover .dropdown-content,
         .dropdown:focus-within .dropdown-content {
             display: block;
         }
+
         .admin-controls {
             display: flex;
             align-items: center;
@@ -203,15 +227,18 @@
             position: relative;
             z-index: 46;
         }
+
         .admin-controls .cta-btn.secondary {
             background: linear-gradient(135deg, rgba(255, 120, 140, 0.16), rgba(124, 77, 255, 0.18));
             border-color: rgba(255,255,255,0.12);
         }
+
         .admin-preview-wrap {
             margin: 12px auto 8px auto;
             display: flex;
             justify-content: flex-start;
         }
+
         .admin-preview-bar {
             border-radius: 22px;
             padding: 12px 14px;
@@ -230,12 +257,14 @@
             width: auto;
             max-width: 100%;
         }
+
         .admin-preview-left {
             display: flex;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
         }
+
         .admin-preview-label,
         .preview-chip,
         .fd-tier {
@@ -251,28 +280,34 @@
             text-decoration: none;
             transition: all 0.18s ease;
         }
+
         .preview-chip:hover {
             background: rgba(255,255,255,0.11);
             border-color: rgba(255,255,255,0.14);
         }
+
         .preview-chip.active {
             background: linear-gradient(135deg, rgba(247, 200, 107, 0.90), rgba(255, 220, 146, 0.88));
             color: #18121f;
             border-color: rgba(255, 232, 180, 0.90);
             box-shadow: 0 8px 20px rgba(247, 200, 107, 0.22);
         }
+
         .site-main-wrap {
             padding: 20px 0 40px 0;
         }
+
         .page-shell,
         .container {
             position: relative;
             z-index: 1;
         }
+
         .container {
             display: grid;
             gap: 18px;
         }
+
         .card,
         .premium-card,
         .deep-panel,
@@ -287,9 +322,11 @@
             color: var(--text-main);
             border-radius: 24px;
         }
+
         .muted-line {
             color: var(--text-soft);
         }
+
         .floating-dashboard {
             position: fixed;
             right: 18px;
@@ -297,13 +334,14 @@
             width: 260px;
             border-radius: 22px;
             overflow: hidden;
-            z-index: 30;
+            z-index: 3000;
             background:
                 radial-gradient(circle at top left, rgba(124, 77, 255, 0.12), transparent 34%),
                 linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
             border: 1px solid rgba(255,255,255,0.08);
             box-shadow: 0 18px 34px rgba(0,0,0,0.30);
         }
+
         .fd-header {
             display: flex;
             justify-content: space-between;
@@ -313,12 +351,15 @@
             cursor: pointer;
             font-weight: 800;
         }
+
         .fd-body {
             padding: 0 14px 14px 14px;
         }
+
         .floating-dashboard.collapsed .fd-body {
             display: none;
         }
+
         .site-footer {
             margin: 0 0 28px 0;
             border-radius: 24px;
@@ -330,15 +371,185 @@
             border: 1px solid var(--border);
             box-shadow: 0 16px 34px rgba(0,0,0,0.24);
         }
+
         .footer-logo-wrap {
             display: flex;
             justify-content: center;
             margin-bottom: 10px;
         }
+
         .footer-tagline {
             margin: 0;
             color: var(--text-soft);
         }
+
+        /* Observatory / Soulaana left drawer */
+        .soulaana-tab {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3200;
+            background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
+            border: 1px solid rgba(255,255,255,0.12);
+            border-left: none;
+            padding: 14px 10px;
+            border-radius: 0 16px 16px 0;
+            cursor: pointer;
+            color: var(--text-main);
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            box-shadow: 10px 12px 28px rgba(0,0,0,0.22);
+            backdrop-filter: blur(10px);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        .soulaana-tab:hover {
+            transform: translateY(-50%) translateX(2px);
+            box-shadow: 14px 16px 30px rgba(0,0,0,0.28);
+        }
+
+        .soulaana-tab.needs-checkin {
+            animation: soulaanaPulse 2.2s infinite;
+        }
+
+        @keyframes soulaanaPulse {
+            0% {
+                box-shadow: 0 0 0 rgba(168,175,255,0.00);
+                background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
+            }
+            50% {
+                box-shadow: 10px 0 28px rgba(168,175,255,0.24);
+                background: linear-gradient(135deg, rgba(168,175,255,0.40), rgba(255,175,214,0.26));
+            }
+            100% {
+                box-shadow: 0 0 0 rgba(168,175,255,0.00);
+                background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
+            }
+        }
+
+        .soulaana-panel {
+            position: fixed;
+            left: -420px;
+            top: 0;
+            width: 400px;
+            max-width: calc(100vw - 36px);
+            height: 100vh;
+            z-index: 3300;
+            background:
+                radial-gradient(circle at top left, rgba(124,77,255,0.18), transparent 30%),
+                linear-gradient(135deg, rgba(8,10,20,0.99), rgba(5,7,15,0.99));
+            border-right: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 20px 0 60px rgba(0,0,0,0.40);
+            transition: left 0.25s ease;
+            padding: 22px;
+            overflow-y: auto;
+        }
+
+        .soulaana-panel.open {
+            left: 0;
+        }
+
+        .soulaana-panel-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .soulaana-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            padding: 7px 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-soft);
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .soulaana-close {
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.06);
+            color: var(--text-main);
+            border-radius: 999px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .soulaana-close:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        .soulaana-panel h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.35rem;
+            line-height: 1.2;
+        }
+
+        .soulaana-panel p {
+            margin: 0;
+            opacity: 0.88;
+            line-height: 1.5;
+            color: var(--text-soft);
+        }
+
+        .soulaana-chip-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .soulaana-chip {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.08);
+            color: inherit;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .soulaana-chip:hover {
+            background: rgba(255,255,255,0.14);
+            transform: translateY(-1px);
+        }
+
+        .soulaana-response {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .soulaana-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.32);
+            backdrop-filter: blur(2px);
+            z-index: 3250;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .soulaana-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         @media (max-width: 900px) {
             .site-nav-wrap,
             .admin-preview-wrap,
@@ -346,209 +557,104 @@
             .site-footer-wrap {
                 width: min(100%, calc(100% - 20px));
             }
+
             .site-main-wrap {
                 padding-top: 16px;
             }
+
             .floating-dashboard {
                 right: 10px;
                 bottom: 10px;
                 width: 230px;
             }
+
             .admin-preview-bar {
                 width: 100%;
             }
         }
+
+        @media (max-width: 640px) {
+            .soulaana-panel {
+                width: calc(100vw - 18px);
+                left: calc(-100vw - 18px);
+            }
+
+            .soulaana-panel.open {
+                left: 0;
+            }
+
+            .soulaana-tab {
+                padding: 12px 8px;
+                font-size: 0.86rem;
+            }
+        }
     </style>
-
-<style>
-<style>
-.soulaana-tab {
-    position: fixed;
-    left: 0; /* ← changed */
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 3000;
-
-    background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
-    border: 1px solid rgba(255,255,255,0.12);
-    border-left: none; /* ← flipped */
-
-    padding: 12px 10px;
-    border-radius: 0 14px 14px 0; /* ← flipped */
-
-    cursor: pointer;
-}
-
-.soulaana-tab:hover {
-    transform: translateY(-50%) translateX(-2px);
-    box-shadow: -8px 10px 24px rgba(0,0,0,0.18);
-}
-
-.soulaana-tab.needs-checkin {
-    animation: soulaanaPulse 2.2s infinite;
-}
-
-@keyframes soulaanaPulse {
-    0% {
-        box-shadow: 0 0 0 rgba(168,175,255,0.00);
-        background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
-    }
-    50% {
-        box-shadow: -8px 0 24px rgba(168,175,255,0.25);
-        background: linear-gradient(135deg, rgba(168,175,255,0.38), rgba(255,175,214,0.24));
-    }
-    100% {
-        box-shadow: 0 0 0 rgba(168,175,255,0.00);
-        background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
-    }
-}
-
-.soulaana-panel {
-    position: fixed;
-    left: -420px; /* ← changed */
-    top: 0;
-    width: 400px;
-    height: 100vh;
-
-    z-index: 3100;
-
-    background:
-        radial-gradient(circle at top left, rgba(124,77,255,0.16), transparent 30%),
-        linear-gradient(135deg, rgba(8,10,20,0.98), rgba(5,7,15,0.98));
-
-    border-right: 1px solid rgba(255,255,255,0.08); /* ← flipped */
-    box-shadow: 20px 0 60px rgba(0,0,0,0.4); /* ← flipped */
-
-    transition: left 0.25s ease;
-    padding: 22px;
-}
-
-.soulaana-panel.open {
-    left: 0;
-}
-
-.soulaana-panel h3 {
-    margin: 0 0 8px 0;
-}
-
-.soulaana-panel p {
-    opacity: 0.85;
-    line-height: 1.5;
-}
-
-.soulaana-chip {
-    border: none;
-    border-radius: 999px;
-    padding: 10px 14px;
-    margin: 6px 6px 0 0;
-    background: rgba(255,255,255,0.08);
-    color: inherit;
-    cursor: pointer;
-    font-weight: 600;
-    transition: transform 0.12s ease, background 0.12s ease;
-}
-
-.soulaana-chip:hover {
-    background: rgba(255,255,255,0.14);
-    transform: translateY(-1px);
-}
-</style>
-
-{% if session.get("user_id") %}
-
-<!-- TAB -->
-<div
-    id="soulaanaTab"
-    class="soulaana-tab {% if not soulaana_state %}needs-checkin{% endif %}"
-    onclick="toggleSoulaana()"
->
-    Soulaana
-</div>
-
-<!-- PANEL -->
-<div id="soulaanaPanel" class="soulaana-panel">
-    <h3>
-        {{ soulaana_greeting.get("headline", "Hey love, how you feeling coming in today?") }}
-    </h3>
-
-    <p>
-        {{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance and protect your decisions.") }}
-    </p>
-
-    <form method="POST" action="{{ url_for('soulaana_checkin') }}">
-        {% for mood in soulaana_options %}
-        <button
-            class="soulaana-chip"
-            name="emotional_state"
-            value="{{ mood }}"
-            onclick="handleSoulaanaMoodClick()"
-        >
-            {{ mood.replace("_", " ").title() }}
-        </button>
-        {% endfor %}
-    </form>
-
-    {% if soulaana_checkin_headline %}
-    <div style="margin-top:18px;">
-        <strong>{{ soulaana_checkin_headline }}</strong>
-        <p>{{ soulaana_checkin_note }}</p>
-    </div>
-    {% endif %}
-</div>
-
-<script>
-function toggleSoulaana(forceOpen = null) {
-    const panel = document.getElementById("soulaanaPanel");
-    if (!panel) return;
-
-    if (forceOpen === true) {
-        panel.classList.add("open");
-        return;
-    }
-
-    if (forceOpen === false) {
-        panel.classList.remove("open");
-        return;
-    }
-
-    panel.classList.toggle("open");
-}
-
-function handleSoulaanaMoodClick() {
-    toggleSoulaana(false);
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const hasCheckin = {{ "true" if soulaana_state else "false" }};
-    const isLoggedIn = {{ "true" if session.get("user_id") else "false" }};
-    const autoOpenedKey = "soulaana_auto_opened_once";
-
-    if (isLoggedIn && !hasCheckin && !sessionStorage.getItem(autoOpenedKey)) {
-        setTimeout(() => {
-            toggleSoulaana(true);
-            sessionStorage.setItem(autoOpenedKey, "1");
-        }, 500);
-    }
-});
-</script>
-{% endif %}
-
 </head>
 <body class="{{ theme }}">
 <div class="site-shell">
+
+    {% if session.get("user_id") %}
+    <div
+        id="soulaanaTab"
+        class="soulaana-tab {% if not soulaana_state %}needs-checkin{% endif %}"
+        onclick="toggleSoulaana()"
+        aria-label="Open Observatory check-in"
+        title="Open Observatory check-in"
+    >
+        Observatory
+    </div>
+
+    <div id="soulaanaOverlay" class="soulaana-overlay" onclick="toggleSoulaana(false)"></div>
+
+    <aside id="soulaanaPanel" class="soulaana-panel" aria-hidden="true">
+        <div class="soulaana-panel-top">
+            <div class="soulaana-kicker">Soulanna • Observatory Check-In</div>
+            <button type="button" class="soulaana-close" onclick="toggleSoulaana(false)">Close</button>
+        </div>
+
+        <h3>{{ soulaana_greeting.get("headline", "Hey love, how are you feeling coming into the Observatory today?") }}</h3>
+        <p>{{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance, protect your decisions, and keep your posture intentional.") }}</p>
+
+        <form method="POST" action="{{ url_for('soulaana_checkin') }}">
+            <div class="soulaana-chip-wrap">
+                {% for mood in soulaana_options %}
+                <button
+                    type="submit"
+                    class="soulaana-chip"
+                    name="emotional_state"
+                    value="{{ mood }}"
+                    onclick="handleSoulaanaMoodClick()"
+                >
+                    {{ mood.replace("_", " ").title() }}
+                </button>
+                {% endfor %}
+            </div>
+        </form>
+
+        {% if soulaana_checkin_headline %}
+        <div class="soulaana-response">
+            <strong>{{ soulaana_checkin_headline }}</strong>
+            <p style="margin-top: 8px;">{{ soulaana_checkin_note }}</p>
+        </div>
+        {% endif %}
+    </aside>
+    {% endif %}
+
     <div class="site-nav-wrap">
         <nav class="site-nav">
             <div class="site-nav-inner">
                 <div class="nav-left">
                     <a href="/" class="brand-link">
                         {% if theme == "light" %}
-                            <img src="/static/4.png" alt="SimpleeMrkTrade logo" class="brand-logo">
+                            <img src="/static/4.png" alt="The Observatory logo" class="brand-logo">
                         {% else %}
-                            <img src="/static/3.png" alt="SimpleeMrkTrade logo" class="brand-logo">
+                            <img src="/static/3.png" alt="The Observatory logo" class="brand-logo">
                         {% endif %}
                     </a>
+
                     <div class="nav-links">
                         <a href="/">Home</a>
+
                         <div class="dropdown">
                             <a href="/signals" class="dropbtn">Signals</a>
                             <div class="dropdown-content">
@@ -560,6 +666,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 {% endif %}
                             </div>
                         </div>
+
                         {% if user and user.username %}
                         <div class="dropdown">
                             <a href="/research" class="dropbtn">Trading</a>
@@ -571,6 +678,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <a href="/trade-review">Trade Review</a>
                             </div>
                         </div>
+
                         <div class="dropdown">
                             <a href="/analytics-overview" class="dropbtn">Analytics Overview</a>
                             <div class="dropdown-content">
@@ -581,6 +689,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                         </div>
                         {% endif %}
+
                         <div class="dropdown">
                             <a href="/dashboard" class="dropbtn">Simulation</a>
                             <div class="dropdown-content">
@@ -617,6 +726,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <a href="/notifications" class="nav-utility">
                             Alerts{% if unread_notifications %} ({{ unread_notifications }}){% endif %}
                         </a>
+
                         <div class="dropdown">
                             <a href="/account" class="dropbtn account-trigger">
                                 {{ user.username }} · {{ user.tier }}
@@ -685,13 +795,13 @@ document.addEventListener("DOMContentLoaded", function () {
         <footer class="site-footer">
             <div class="footer-logo-wrap">
                 {% if theme == "light" %}
-                    <img src="/static/2.png" alt="SimpleeMrkTrade full logo" class="footer-logo">
+                    <img src="/static/2.png" alt="The Observatory full logo" class="footer-logo">
                 {% else %}
-                    <img src="/static/1.png" alt="SimpleeMrkTrade full logo" class="footer-logo">
+                    <img src="/static/1.png" alt="The Observatory full logo" class="footer-logo">
                 {% endif %}
             </div>
             <p class="footer-tagline">
-                Structured market intelligence, simulation, and premium trade interpretation.
+                Structured market intelligence, simulation, and premium trade interpretation inside the Observatory.
             </p>
         </footer>
     </div>
@@ -700,8 +810,68 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
 function toggleFD() {
     const el = document.getElementById("floatingDashboard");
-    if (el) el.classList.toggle("collapsed");
+    if (!el) return;
+    el.classList.toggle("collapsed");
 }
+
+function toggleSoulaana(forceOpen = null) {
+    const panel = document.getElementById("soulaanaPanel");
+    const overlay = document.getElementById("soulaanaOverlay");
+
+    if (!panel) return;
+
+    let shouldOpen;
+    if (forceOpen === true) {
+        shouldOpen = true;
+    } else if (forceOpen === false) {
+        shouldOpen = false;
+    } else {
+        shouldOpen = !panel.classList.contains("open");
+    }
+
+    panel.classList.toggle("open", shouldOpen);
+
+    if (overlay) {
+        overlay.classList.toggle("open", shouldOpen);
+    }
+
+    panel.setAttribute("aria-hidden", shouldOpen ? "false" : "true");
+}
+
+function handleSoulaanaMoodClick() {
+    toggleSoulaana(false);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const panel = document.getElementById("soulaanaPanel");
+    const tab = document.getElementById("soulaanaTab");
+
+    if (!panel || !tab) return;
+
+    const hasCheckin = {{ "true" if soulaana_state else "false" }};
+    const isLoggedIn = {{ "true" if session.get("user_id") else "false" }};
+    const userId = "{{ session.get('user_id', '') }}";
+    const autoOpenedKey = "soulaana_auto_opened_once_" + userId;
+
+    if (isLoggedIn && !hasCheckin) {
+        tab.classList.add("needs-checkin");
+    } else {
+        tab.classList.remove("needs-checkin");
+    }
+
+    if (isLoggedIn && !hasCheckin && !sessionStorage.getItem(autoOpenedKey)) {
+        setTimeout(function () {
+            toggleSoulaana(true);
+            sessionStorage.setItem(autoOpenedKey, "1");
+        }, 500);
+    }
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            toggleSoulaana(false);
+        }
+    });
+});
 </script>
 </body>
 </html>
