@@ -1,3 +1,10 @@
+
+{% set soulaana_bundle = soulaana_bundle if soulaana_bundle is defined else {} %}
+{% set soulaana_greeting = soulaana_bundle.get("greeting", {}) %}
+{% set soulaana_options = soulaana_greeting.get("checkin_options", ["calm","focused","confident","cautious","anxious","frustrated","impulsive","tired"]) %}
+{% set soulaana_state = soulaana_state if soulaana_state is defined else "" %}
+{% set soulaana_checkin_headline = soulaana_checkin_headline if soulaana_checkin_headline is defined else "" %}
+{% set soulaana_checkin_note = soulaana_checkin_note if soulaana_checkin_note is defined else "" %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -354,49 +361,66 @@
     </style>
 
 <style>
-/* ===== SOULAANA TAB ===== */
+<style>
 .soulaana-tab {
     position: fixed;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
     z-index: 2000;
-
     background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
     border: 1px solid rgba(255,255,255,0.12);
     border-right: none;
-
     padding: 12px 10px;
     border-radius: 14px 0 0 14px;
-
     cursor: pointer;
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-
     backdrop-filter: blur(8px);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 
-/* ===== PANEL ===== */
+.soulaana-tab:hover {
+    transform: translateY(-50%) translateX(-2px);
+    box-shadow: -8px 10px 24px rgba(0,0,0,0.18);
+}
+
+.soulaana-tab.needs-checkin {
+    animation: soulaanaPulse 2.2s infinite;
+}
+
+@keyframes soulaanaPulse {
+    0% {
+        box-shadow: 0 0 0 rgba(168,175,255,0.00);
+        background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
+    }
+    50% {
+        box-shadow: -8px 0 24px rgba(168,175,255,0.25);
+        background: linear-gradient(135deg, rgba(168,175,255,0.38), rgba(255,175,214,0.24));
+    }
+    100% {
+        box-shadow: 0 0 0 rgba(168,175,255,0.00);
+        background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
+    }
+}
+
 .soulaana-panel {
     position: fixed;
     right: -420px;
     top: 0;
     width: 400px;
     height: 100vh;
-
     z-index: 2100;
-
     background:
         radial-gradient(circle at top left, rgba(124,77,255,0.16), transparent 30%),
         linear-gradient(135deg, rgba(8,10,20,0.98), rgba(5,7,15,0.98));
-
     border-left: 1px solid rgba(255,255,255,0.08);
     box-shadow: -20px 0 60px rgba(0,0,0,0.4);
-
     transition: right 0.25s ease;
     padding: 22px;
+    overflow-y: auto;
 }
 
 .soulaana-panel.open {
@@ -412,53 +436,98 @@
     line-height: 1.5;
 }
 
-/* chips */
 .soulaana-chip {
     border: none;
     border-radius: 999px;
     padding: 10px 14px;
     margin: 6px 6px 0 0;
     background: rgba(255,255,255,0.08);
+    color: inherit;
     cursor: pointer;
     font-weight: 600;
+    transition: transform 0.12s ease, background 0.12s ease;
 }
 
 .soulaana-chip:hover {
     background: rgba(255,255,255,0.14);
+    transform: translateY(-1px);
 }
 </style>
 
+
 <!-- TAB -->
-<div class="soulaana-tab" onclick="toggleSoulaana()">
+<div
+    id="soulaanaTab"
+    class="soulaana-tab {% if not soulaana_state %}needs-checkin{% endif %}"
+    onclick="toggleSoulaana()"
+>
     Soulaana
 </div>
 
 <!-- PANEL -->
 <div id="soulaanaPanel" class="soulaana-panel">
-    <h3>{{ soulaana_bundle.greeting.headline if soulaana_bundle else "Hey love." }}</h3>
-    <p>{{ soulaana_bundle.greeting.subtext if soulaana_bundle else "" }}</p>
+    <h3>
+        {{ soulaana_greeting.get("headline", "Hey love, how you feeling coming in today?") }}
+    </h3>
+
+    <p>
+        {{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance and protect your decisions.") }}
+    </p>
 
     <form method="POST" action="{{ url_for('soulaana_checkin') }}">
-        {% for mood in soulaana_bundle.greeting.checkin_options %}
-            <button class="soulaana-chip" name="emotional_state" value="{{ mood }}">
-                {{ mood.title() }}
-            </button>
+        {% for mood in soulaana_options %}
+        <button
+            class="soulaana-chip"
+            name="emotional_state"
+            value="{{ mood }}"
+            onclick="handleSoulaanaMoodClick()"
+        >
+            {{ mood.replace("_", " ").title() }}
+        </button>
         {% endfor %}
     </form>
 
     {% if soulaana_checkin_headline %}
-        <div style="margin-top:18px;">
-            <strong>{{ soulaana_checkin_headline }}</strong>
-            <p>{{ soulaana_checkin_note }}</p>
-        </div>
+    <div style="margin-top:18px;">
+        <strong>{{ soulaana_checkin_headline }}</strong>
+        <p>{{ soulaana_checkin_note }}</p>
+    </div>
     {% endif %}
 </div>
 
 <script>
-function toggleSoulaana() {
+function toggleSoulaana(forceOpen = null) {
     const panel = document.getElementById("soulaanaPanel");
+    if (!panel) return;
+
+    if (forceOpen === true) {
+        panel.classList.add("open");
+        return;
+    }
+
+    if (forceOpen === false) {
+        panel.classList.remove("open");
+        return;
+    }
+
     panel.classList.toggle("open");
 }
+
+function handleSoulaanaMoodClick() {
+    toggleSoulaana(false);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const hasCheckin = {{ "true" if soulaana_state else "false" }};
+    const autoOpenedKey = "soulaana_auto_opened_once";
+
+    if (!hasCheckin && !sessionStorage.getItem(autoOpenedKey)) {
+        setTimeout(() => {
+            toggleSoulaana(true);
+            sessionStorage.setItem(autoOpenedKey, "1");
+        }, 500);
+    }
+});
 </script>
 
 </head>
