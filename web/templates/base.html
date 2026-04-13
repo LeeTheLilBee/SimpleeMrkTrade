@@ -4,6 +4,8 @@
 {% set soulaana_state = soulaana_state if soulaana_state is defined else "" %}
 {% set soulaana_checkin_headline = soulaana_checkin_headline if soulaana_checkin_headline is defined else "" %}
 {% set soulaana_checkin_note = soulaana_checkin_note if soulaana_checkin_note is defined else "" %}
+{% set on_dashboard = request.endpoint == "dashboard" %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,19 +17,31 @@
 
     <style>
         :root {
-            --bg-deep: #04030a;
-            --bg-mid: #090714;
-            --bg-soft: #0d0b19;
-            --panel: rgba(14, 11, 29, 0.92);
-            --border: rgba(255, 255, 255, 0.08);
-            --text-main: #f8f7ff;
-            --text-soft: rgba(248, 247, 255, 0.74);
-            --violet-glow: rgba(124, 77, 255, 0.20);
-            --pink-glow: rgba(255, 95, 207, 0.15);
-            --blue-glow: rgba(97, 196, 255, 0.14);
-            --gold-glow: rgba(255, 208, 118, 0.14);
-            --gold-solid: #f7c86b;
-            --danger-soft: rgba(255, 120, 140, 0.18);
+            --bg-void: #01030a;
+            --bg-night: #030713;
+            --bg-deep: #050a18;
+            --bg-panel: rgba(9, 14, 28, 0.92);
+            --bg-panel-strong: rgba(8, 12, 24, 0.97);
+            --border: rgba(255,255,255,0.08);
+            --border-strong: rgba(255,255,255,0.14);
+            --text-main: #f7f8ff;
+            --text-soft: rgba(247,248,255,0.70);
+            --violet: rgba(122, 92, 255, 0.18);
+            --blue: rgba(92, 177, 255, 0.12);
+            --pink: rgba(255, 132, 214, 0.08);
+            --gold: #f4cc78;
+            --shadow: 0 18px 36px rgba(0,0,0,0.34);
+            --radius-xl: 24px;
+            --radius-lg: 20px;
+            --radius-md: 16px;
+
+            --z-content: 1;
+            --z-nav: 100;
+            --z-dropdown: 140;
+            --z-soulaana-tab: 180;
+            --z-right-dock: 190;
+            --z-soulaana-overlay: 220;
+            --z-soulaana-panel: 230;
         }
 
         * {
@@ -41,29 +55,52 @@
         }
 
         body {
-            background:
-                radial-gradient(circle at 20% 10%, rgba(124,77,255,0.12), transparent 40%),
-                radial-gradient(circle at 80% 20%, rgba(255,95,207,0.08), transparent 40%),
-                linear-gradient(180deg, #070914 0%, #060811 100%);
             color: var(--text-main);
             font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             overflow-x: hidden;
+            background:
+                radial-gradient(circle at 18% 12%, rgba(94, 79, 255, 0.10), transparent 24%),
+                radial-gradient(circle at 78% 16%, rgba(65, 146, 255, 0.08), transparent 22%),
+                radial-gradient(circle at 50% 120%, rgba(122, 92, 255, 0.08), transparent 34%),
+                linear-gradient(180deg, #01030a 0%, #02050d 28%, #030713 62%, #040917 100%);
         }
 
         body::before {
             content: "";
             position: fixed;
             inset: 0;
-            background-image: radial-gradient(white 0.5px, transparent 0.5px);
-            background-size: 120px 120px;
-            opacity: 0.04;
             pointer-events: none;
             z-index: 0;
+            opacity: 0.28;
+            background-image:
+                radial-gradient(circle at 8% 18%, rgba(255,255,255,0.95) 0 0.9px, transparent 1.2px),
+                radial-gradient(circle at 24% 72%, rgba(255,255,255,0.8) 0 0.8px, transparent 1.1px),
+                radial-gradient(circle at 46% 20%, rgba(255,255,255,0.9) 0 0.9px, transparent 1.2px),
+                radial-gradient(circle at 63% 48%, rgba(255,255,255,0.75) 0 0.8px, transparent 1.1px),
+                radial-gradient(circle at 82% 26%, rgba(255,255,255,0.95) 0 1px, transparent 1.3px),
+                radial-gradient(circle at 74% 80%, rgba(255,255,255,0.7) 0 0.7px, transparent 1px),
+                radial-gradient(circle at 14% 88%, rgba(255,255,255,0.85) 0 0.8px, transparent 1.1px);
+            background-size: 420px 420px, 520px 520px, 610px 610px, 480px 480px, 700px 700px, 560px 560px, 640px 640px;
+            background-repeat: repeat;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.08;
+            background:
+                radial-gradient(circle at 20% 15%, rgba(145, 119, 255, 0.50), transparent 18%),
+                radial-gradient(circle at 78% 24%, rgba(85, 168, 255, 0.35), transparent 16%),
+                radial-gradient(circle at 58% 70%, rgba(125, 104, 255, 0.28), transparent 18%);
+            filter: blur(28px);
         }
 
         .site-shell {
             position: relative;
-            z-index: 1;
+            z-index: var(--z-content);
             min-height: 100vh;
         }
 
@@ -71,22 +108,30 @@
         .site-main-wrap,
         .site-footer-wrap {
             position: relative;
-            z-index: 2;
             width: min(1380px, calc(100% - 32px));
             margin-left: auto;
             margin-right: auto;
         }
 
+        .site-nav-wrap {
+            z-index: var(--z-nav);
+        }
+
+        .site-main-wrap,
+        .site-footer-wrap {
+            z-index: var(--z-content);
+        }
+
         .site-nav {
             margin-top: 18px;
-            border-radius: 24px;
+            border-radius: var(--radius-xl);
             padding: 14px 18px;
             background:
-                radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
-                linear-gradient(135deg, rgba(13, 11, 25, 0.96), rgba(8, 7, 18, 0.96));
+                radial-gradient(circle at top left, rgba(122, 92, 255, 0.10), transparent 34%),
+                linear-gradient(135deg, rgba(7, 11, 22, 0.96), rgba(4, 8, 18, 0.96));
             border: 1px solid var(--border);
-            box-shadow: 0 16px 34px rgba(0,0,0,0.24);
-            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
         }
 
         .site-nav-inner {
@@ -123,10 +168,11 @@
         .nav-utility,
         .dropbtn,
         .dropdown-content a,
-        .cta-btn,
         .signup-btn,
         .admin-dock a,
-        .admin-dock button {
+        .admin-dock button,
+        .account-card button,
+        .account-card a {
             color: var(--text-main);
             text-decoration: none;
         }
@@ -134,14 +180,14 @@
         .nav-links > a,
         .nav-utility,
         .dropbtn,
-        .signup-btn,
-        .cta-btn {
+        .signup-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            min-height: 40px;
             border-radius: 999px;
             padding: 9px 14px;
-            background: rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.045);
             border: 1px solid rgba(255,255,255,0.07);
             font-weight: 700;
             cursor: pointer;
@@ -153,37 +199,22 @@
         .nav-utility:hover,
         .dropbtn:hover,
         .signup-btn:hover,
-        .dropdown-content a:hover,
-        .cta-btn:hover {
-            background: rgba(255,255,255,0.10);
-            border-color: rgba(255,255,255,0.14);
+        .dropdown-content a:hover {
+            background: rgba(255,255,255,0.11);
+            border-color: rgba(255,255,255,0.16);
             transform: translateY(-1px);
         }
 
-        .cta-btn {
-            box-shadow: 0 8px 22px rgba(0,0,0,0.18);
-        }
-
-        .cta-btn.secondary,
-        .nav-utility {
-            background: rgba(255,255,255,0.06);
-        }
-
         .signup-btn {
-            background: linear-gradient(135deg, rgba(247, 200, 107, 0.95), rgba(255, 220, 146, 0.92));
-            color: #18121f;
-            border-color: rgba(255, 224, 156, 0.75);
-            box-shadow: 0 10px 26px rgba(247, 200, 107, 0.24);
-        }
-
-        .signup-btn:hover {
-            background: linear-gradient(135deg, rgba(255, 214, 126, 1), rgba(255, 230, 170, 0.98));
-            border-color: rgba(255, 232, 180, 0.92);
+            background: linear-gradient(135deg, rgba(244, 204, 120, 0.96), rgba(255, 224, 161, 0.92));
+            color: #16131d;
+            border-color: rgba(255, 229, 180, 0.72);
+            box-shadow: 0 10px 22px rgba(244, 204, 120, 0.16);
         }
 
         .dropdown {
             position: relative;
-            z-index: 40;
+            z-index: var(--z-dropdown);
         }
 
         .dropdown-content {
@@ -195,11 +226,11 @@
             padding: 8px;
             border-radius: 18px;
             background:
-                radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
-                linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
+                radial-gradient(circle at top left, rgba(122, 92, 255, 0.10), transparent 34%),
+                linear-gradient(135deg, rgba(8, 12, 23, 0.98), rgba(5, 8, 18, 0.98));
             border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 18px 34px rgba(0,0,0,0.30);
-            z-index: 45;
+            box-shadow: 0 18px 34px rgba(0,0,0,0.34);
+            z-index: calc(var(--z-dropdown) + 1);
         }
 
         .dropdown-content a {
@@ -240,12 +271,12 @@
         .premium-hero,
         .gold-accent-card {
             background:
-                radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
-                linear-gradient(135deg, rgba(13, 11, 25, 0.96), rgba(8, 7, 18, 0.96));
+                radial-gradient(circle at top left, rgba(122, 92, 255, 0.09), transparent 34%),
+                linear-gradient(135deg, rgba(8, 12, 23, 0.96), rgba(5, 8, 18, 0.96));
             border: 1px solid var(--border);
-            box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+            box-shadow: var(--shadow);
             color: var(--text-main);
-            border-radius: 24px;
+            border-radius: var(--radius-xl);
         }
 
         .muted-line {
@@ -254,14 +285,14 @@
 
         .site-footer {
             margin: 0 0 28px 0;
-            border-radius: 24px;
+            border-radius: var(--radius-xl);
             padding: 18px;
             text-align: center;
             background:
-                radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
-                linear-gradient(135deg, rgba(13, 11, 25, 0.96), rgba(8, 7, 18, 0.96));
+                radial-gradient(circle at top left, rgba(122, 92, 255, 0.08), transparent 34%),
+                linear-gradient(135deg, rgba(8, 12, 23, 0.96), rgba(5, 8, 18, 0.96));
             border: 1px solid var(--border);
-            box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+            box-shadow: var(--shadow);
         }
 
         .footer-logo-wrap {
@@ -275,37 +306,240 @@
             color: var(--text-soft);
         }
 
-        .floating-dashboard {
+        .soulaana-tab {
             position: fixed;
-            right: 18px;
-            bottom: 18px;
-            width: 280px;
-            border-radius: 22px;
-            overflow: hidden;
-            z-index: 3000;
-            background:
-                radial-gradient(circle at top left, rgba(124, 77, 255, 0.12), transparent 34%),
-                linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 18px 34px rgba(0,0,0,0.30);
+            left: 14px;
+            top: 62%;
+            transform: translateY(-50%);
+            z-index: var(--z-soulaana-tab);
+            background: linear-gradient(135deg, rgba(119,133,255,0.22), rgba(194,126,255,0.14));
+            border: 1px solid rgba(255,255,255,0.11);
+            padding: 14px 10px;
+            border-radius: 16px;
+            cursor: pointer;
+            color: var(--text-main);
+            font-weight: 800;
+            box-shadow: 0 14px 28px rgba(0,0,0,0.24);
+            backdrop-filter: blur(10px);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
         }
 
-        .fd-header {
+        .soulaana-tab:hover {
+            transform: translateY(-50%) translateX(2px);
+            box-shadow: 0 18px 30px rgba(0,0,0,0.30);
+        }
+
+        .soulaana-tab.needs-checkin {
+            animation: soulaanaPulse 2.3s infinite;
+        }
+
+        @keyframes soulaanaPulse {
+            0% {
+                box-shadow: 0 0 0 rgba(125, 146, 255, 0.00);
+            }
+            50% {
+                box-shadow: 0 0 28px rgba(125, 146, 255, 0.20);
+            }
+            100% {
+                box-shadow: 0 0 0 rgba(125, 146, 255, 0.00);
+            }
+        }
+
+        .soulaana-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.42);
+            backdrop-filter: blur(3px);
+            z-index: var(--z-soulaana-overlay);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .soulaana-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .soulaana-panel {
+            position: fixed;
+            left: -430px;
+            top: 0;
+            width: 400px;
+            max-width: calc(100vw - 36px);
+            height: 100vh;
+            z-index: var(--z-soulaana-panel);
+            background:
+                radial-gradient(circle at top left, rgba(118, 95, 255, 0.14), transparent 28%),
+                linear-gradient(135deg, rgba(5, 9, 19, 0.99), rgba(3, 6, 14, 0.99));
+            border-right: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 18px 0 50px rgba(0,0,0,0.40);
+            transition: left 0.25s ease;
+            padding: 22px;
+            overflow-y: auto;
+        }
+
+        .soulaana-panel.open {
+            left: 0;
+        }
+
+        .soulaana-panel-top {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .soulaana-kicker {
+            display: inline-flex;
             align-items: center;
+            border-radius: 999px;
+            padding: 7px 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-soft);
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .soulaana-close,
+        .tray-close {
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.06);
+            color: var(--text-main);
+            border-radius: 999px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .soulaana-close:hover,
+        .tray-close:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        .soulaana-panel h3,
+        .soulaana-response-tray h4 {
+            margin: 0 0 8px 0;
+            line-height: 1.2;
+        }
+
+        .soulaana-panel h3 {
+            font-size: 1.35rem;
+        }
+
+        .soulaana-panel p,
+        .soulaana-response-tray p {
+            margin: 0;
+            line-height: 1.5;
+            color: var(--text-soft);
+        }
+
+        .soulaana-chip-wrap {
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
+            margin-top: 18px;
+        }
+
+        .soulaana-chip {
+            border-radius: 999px;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.08);
+            color: inherit;
+            cursor: pointer;
+            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: transform 0.12s ease, background 0.12s ease;
+        }
+
+        .soulaana-chip:hover {
+            background: rgba(255,255,255,0.14);
+            transform: translateY(-1px);
+        }
+
+        .soulaana-response {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .soulaana-response-tray {
+            position: fixed;
+            left: 14px;
+            top: 136px;
+            width: 270px;
+            z-index: var(--z-soulaana-tab);
+            border-radius: 20px;
+            padding: 14px;
+            background:
+                radial-gradient(circle at top left, rgba(118, 95, 255, 0.12), transparent 34%),
+                linear-gradient(135deg, rgba(8, 12, 23, 0.96), rgba(5, 8, 18, 0.96));
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: var(--shadow);
+        }
+
+        .soulaana-response-tray .tray-close {
+            margin-top: 12px;
+        }
+
+        .admin-dock,
+        .account-card {
+            position: fixed;
+            right: 18px;
+            width: 270px;
+            border-radius: 22px;
+            overflow: hidden;
+            z-index: var(--z-right-dock);
+            background:
+                radial-gradient(circle at top left, rgba(118, 95, 255, 0.12), transparent 34%),
+                linear-gradient(135deg, rgba(8, 12, 23, 0.98), rgba(5, 8, 18, 0.98));
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: var(--shadow);
+        }
+
+        .admin-dock {
+            top: 92px;
+        }
+
+        .account-card {
+            bottom: 18px;
+        }
+
+        .admin-dock-header,
+        .account-card-header {
             padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
             cursor: pointer;
             font-weight: 800;
         }
 
-        .fd-body {
+        .admin-dock-body,
+        .account-card-body {
             padding: 0 14px 14px 14px;
         }
 
-        .floating-dashboard.collapsed .fd-body {
+        .admin-dock.collapsed .admin-dock-body,
+        .account-card.collapsed .account-card-body {
             display: none;
+        }
+
+        .admin-dock-kicker,
+        .account-card-kicker {
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-soft);
         }
 
         .fd-tier {
@@ -320,49 +554,6 @@
             color: var(--text-main);
         }
 
-        /* Right-side admin dock */
-        .admin-dock {
-            position: fixed;
-            right: 18px;
-            top: 92px;
-            width: 260px;
-            z-index: 3050;
-            border-radius: 22px;
-            background:
-                radial-gradient(circle at top left, rgba(255, 120, 140, 0.10), transparent 34%),
-                linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 18px 34px rgba(0,0,0,0.30);
-            overflow: hidden;
-        }
-
-        .admin-dock-header {
-            padding: 12px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            cursor: pointer;
-            font-weight: 800;
-        }
-
-        .admin-dock-body {
-            padding: 0 14px 14px 14px;
-            display: grid;
-            gap: 12px;
-        }
-
-        .admin-dock.collapsed .admin-dock-body {
-            display: none;
-        }
-
-        .admin-dock-kicker {
-            font-size: 0.72rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-soft);
-        }
-
         .admin-dock-link {
             display: inline-flex;
             align-items: center;
@@ -370,6 +561,7 @@
             width: 100%;
             border-radius: 14px;
             padding: 10px 12px;
+            margin-bottom: 10px;
             background: rgba(255,255,255,0.06);
             border: 1px solid rgba(255,255,255,0.08);
             font-weight: 700;
@@ -406,188 +598,33 @@
         }
 
         .admin-tier-chip.active {
-            background: linear-gradient(135deg, rgba(247, 200, 107, 0.90), rgba(255, 220, 146, 0.88));
-            color: #18121f;
+            background: linear-gradient(135deg, rgba(244, 204, 120, 0.90), rgba(255, 224, 161, 0.88));
+            color: #17131c;
             border-color: rgba(255, 232, 180, 0.90);
-            box-shadow: 0 8px 20px rgba(247, 200, 107, 0.22);
+            box-shadow: 0 8px 20px rgba(244, 204, 120, 0.16);
         }
 
-        /* Observatory / Soulanna */
-        .soulaana-tab {
-            position: fixed;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 3200;
-            background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
-            border: 1px solid rgba(255,255,255,0.12);
-            border-left: none;
-            padding: 14px 10px;
-            border-radius: 0 16px 16px 0;
-            cursor: pointer;
-            color: var(--text-main);
-            font-weight: 800;
-            box-shadow: 10px 12px 28px rgba(0,0,0,0.22);
-            backdrop-filter: blur(10px);
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-        }
-
-        .soulaana-tab:hover {
-            transform: translateY(-50%) translateX(2px);
-            box-shadow: 14px 16px 30px rgba(0,0,0,0.28);
-        }
-
-        .soulaana-tab.needs-checkin {
-            animation: soulaanaPulse 2.2s infinite;
-        }
-
-        @keyframes soulaanaPulse {
-            0% {
-                box-shadow: 0 0 0 rgba(168,175,255,0.00);
-                background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
-            }
-            50% {
-                box-shadow: 10px 0 28px rgba(168,175,255,0.24);
-                background: linear-gradient(135deg, rgba(168,175,255,0.40), rgba(255,175,214,0.26));
-            }
-            100% {
-                box-shadow: 0 0 0 rgba(168,175,255,0.00);
-                background: linear-gradient(135deg, rgba(168,175,255,0.28), rgba(255,175,214,0.18));
-            }
-        }
-
-        .soulaana-panel {
-            position: fixed;
-            left: -420px;
-            top: 0;
-            width: 400px;
-            max-width: calc(100vw - 36px);
-            height: 100vh;
-            z-index: 3300;
-            background:
-                radial-gradient(circle at top left, rgba(124,77,255,0.18), transparent 30%),
-                linear-gradient(135deg, rgba(8,10,20,0.99), rgba(5,7,15,0.99));
-            border-right: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 20px 0 60px rgba(0,0,0,0.40);
-            transition: left 0.25s ease;
-            padding: 22px;
-            overflow-y: auto;
-        }
-
-        .soulaana-panel.open {
-            left: 0;
-        }
-
-        .soulaana-panel-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 14px;
-        }
-
-        .soulaana-kicker {
-            display: inline-flex;
-            align-items: center;
-            border-radius: 999px;
-            padding: 7px 12px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: var(--text-soft);
-            font-size: 0.78rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .soulaana-close {
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.06);
-            color: var(--text-main);
-            border-radius: 999px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-weight: 700;
-        }
-
-        .soulaana-close:hover {
-            background: rgba(255,255,255,0.12);
-        }
-
-        .soulaana-panel h3 {
-            margin: 0 0 8px 0;
-            font-size: 1.35rem;
-            line-height: 1.2;
-        }
-
-        .soulaana-panel p {
-            margin: 0;
-            opacity: 0.88;
-            line-height: 1.5;
+        .account-stat {
+            margin: 0 0 10px 0;
             color: var(--text-soft);
         }
 
-        .soulaana-chip-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 18px;
-        }
-
-        .soulaana-chip {
-            border-radius: 999px;
-            padding: 10px 14px;
-            background: rgba(255,255,255,0.08);
-            color: inherit;
-            cursor: pointer;
-            font-weight: 700;
-            border: 1px solid rgba(255,255,255,0.08);
-            transition: transform 0.12s ease, background 0.12s ease;
-        }
-
-        .soulaana-chip:hover {
-            background: rgba(255,255,255,0.14);
-            transform: translateY(-1px);
-        }
-
-        .soulaana-response {
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: 18px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .soulaana-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.32);
-            backdrop-filter: blur(2px);
-            z-index: 3250;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-        }
-
-        .soulaana-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
+        .account-stat strong {
+            color: var(--text-main);
         }
 
         @media (max-width: 1100px) {
             .admin-dock {
                 top: auto;
-                bottom: 90px;
+                bottom: 94px;
                 right: 10px;
-                width: 235px;
+                width: 240px;
             }
 
-            .floating-dashboard {
+            .account-card {
                 right: 10px;
                 bottom: 10px;
-                width: 235px;
+                width: 240px;
             }
         }
 
@@ -600,6 +637,17 @@
 
             .site-main-wrap {
                 padding-top: 16px;
+            }
+
+            .soulaana-tab {
+                left: 10px;
+                top: 68%;
+            }
+
+            .soulaana-response-tray {
+                left: 10px;
+                top: 120px;
+                width: 220px;
             }
         }
 
@@ -624,54 +672,63 @@
         }
     </style>
 </head>
-<body class="{{ theme }}">
+
+<body class="{{ theme }} {% if on_dashboard %}dashboard-mode{% endif %}">
 <div class="site-shell">
 
     {% if session.get("user_id") %}
-    <div
-        id="soulaanaTab"
-        class="soulaana-tab {% if not soulaana_state %}needs-checkin{% endif %}"
-        onclick="toggleSoulaana()"
-        aria-label="Open Observatory check-in"
-        title="Open Observatory check-in"
-    >
-        Observatory
-    </div>
-
-    <div id="soulaanaOverlay" class="soulaana-overlay" onclick="toggleSoulaana(false)"></div>
-
-    <aside id="soulaanaPanel" class="soulaana-panel" aria-hidden="true">
-        <div class="soulaana-panel-top">
-            <div class="soulaana-kicker">Soulanna • Observatory Check-In</div>
-            <button type="button" class="soulaana-close" onclick="toggleSoulaana(false)">Close</button>
+        {% if on_dashboard and soulaana_checkin_headline %}
+        <div id="soulaanaResponseTray" class="soulaana-response-tray">
+            <h4>{{ soulaana_checkin_headline }}</h4>
+            <p>{{ soulaana_checkin_note }}</p>
+            <button type="button" class="tray-close" onclick="dismissSoulaanaTray()">Close</button>
+        </div>
+        {% else %}
+        <div
+            id="soulaanaTab"
+            class="soulaana-tab {% if not soulaana_state %}needs-checkin{% endif %}"
+            onclick="toggleSoulaana()"
+            aria-label="Open Observatory check-in"
+            title="Open Observatory check-in"
+        >
+            Observatory
         </div>
 
-        <h3>{{ soulaana_greeting.get("headline", "Hey love, how are you feeling coming into the Observatory today?") }}</h3>
-        <p>{{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance, protect your decisions, and keep your posture intentional.") }}</p>
+        <div id="soulaanaOverlay" class="soulaana-overlay" onclick="toggleSoulaana(false)"></div>
 
-        <form method="POST" action="{{ url_for('soulaana_checkin') }}">
-            <div class="soulaana-chip-wrap">
-                {% for mood in soulaana_options %}
-                <button
-                    type="submit"
-                    class="soulaana-chip"
-                    name="emotional_state"
-                    value="{{ mood }}"
-                    onclick="handleSoulaanaMoodClick()"
-                >
-                    {{ mood.replace("_", " ").title() }}
-                </button>
-                {% endfor %}
+        <aside id="soulaanaPanel" class="soulaana-panel" aria-hidden="true">
+            <div class="soulaana-panel-top">
+                <div class="soulaana-kicker">Soulanna • Observatory Check-In</div>
+                <button type="button" class="soulaana-close" onclick="toggleSoulaana(false)">Close</button>
             </div>
-        </form>
 
-        {% if soulaana_checkin_headline %}
-        <div class="soulaana-response">
-            <strong>{{ soulaana_checkin_headline }}</strong>
-            <p style="margin-top: 8px;">{{ soulaana_checkin_note }}</p>
-        </div>
+            <h3>{{ soulaana_greeting.get("headline", "Hey love, how are you feeling coming into the Observatory today?") }}</h3>
+            <p>{{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance, protect your decisions, and keep your posture intentional.") }}</p>
+
+            <form method="POST" action="{{ url_for('soulaana_checkin') }}">
+                <div class="soulaana-chip-wrap">
+                    {% for mood in soulaana_options %}
+                    <button
+                        type="submit"
+                        class="soulaana-chip"
+                        name="emotional_state"
+                        value="{{ mood }}"
+                        onclick="handleSoulaanaMoodClick()"
+                    >
+                        {{ mood.replace("_", " ").title() }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </form>
+
+            {% if soulaana_checkin_headline %}
+            <div class="soulaana-response">
+                <strong>{{ soulaana_checkin_headline }}</strong>
+                <p style="margin-top: 8px;">{{ soulaana_checkin_note }}</p>
+            </div>
+            {% endif %}
+        </aside>
         {% endif %}
-    </aside>
     {% endif %}
 
     {% if user and user.role == "master" %}
@@ -803,16 +860,19 @@
         </div>
     </div>
 
-    {% if user and user.username %}
-    <div id="floatingDashboard" class="floating-dashboard collapsed">
-        <div class="fd-header" onclick="toggleFD()">
-            <span>My Account</span>
+    {% if user and user.username and user.role != "master" %}
+    <div id="accountCard" class="account-card collapsed">
+        <div class="account-card-header" onclick="toggleAccountCard()">
+            <div>
+                <div class="account-card-kicker">My Account</div>
+                <div>{{ user.username }}</div>
+            </div>
             <span class="fd-tier">{{ user.tier }}</span>
         </div>
-        <div class="fd-body">
-            <p><b>Open Positions:</b> {{ snapshot.open_positions if snapshot else 0 }}</p>
-            <p><b>Buying Power:</b> ${{ snapshot.buying_power if snapshot else 0 }}</p>
-            <p><b>Estimated Value:</b> ${{ snapshot.estimated_account_value if snapshot else 0 }}</p>
+        <div class="account-card-body">
+            <p class="account-stat"><strong>Open Positions:</strong> {{ snapshot.open_positions if snapshot else 0 }}</p>
+            <p class="account-stat"><strong>Buying Power:</strong> ${{ snapshot.buying_power if snapshot else 0 }}</p>
+            <p class="account-stat"><strong>Estimated Value:</strong> ${{ snapshot.estimated_account_value if snapshot else 0 }}</p>
         </div>
     </div>
     {% endif %}
@@ -834,14 +894,14 @@
 </div>
 
 <script>
-function toggleFD() {
-    const el = document.getElementById("floatingDashboard");
+function toggleAdminDock() {
+    const el = document.getElementById("adminDock");
     if (!el) return;
     el.classList.toggle("collapsed");
 }
 
-function toggleAdminDock() {
-    const el = document.getElementById("adminDock");
+function toggleAccountCard() {
+    const el = document.getElementById("accountCard");
     if (!el) return;
     el.classList.toggle("collapsed");
 }
@@ -869,6 +929,12 @@ function handleSoulaanaMoodClick() {
     toggleSoulaana(false);
 }
 
+function dismissSoulaanaTray() {
+    const tray = document.getElementById("soulaanaResponseTray");
+    if (!tray) return;
+    tray.style.display = "none";
+}
+
 function maybeAutoOpenSoulaana() {
     const panel = document.getElementById("soulaanaPanel");
     const tab = document.getElementById("soulaanaTab");
@@ -891,7 +957,7 @@ function maybeAutoOpenSoulaana() {
     setTimeout(function () {
         toggleSoulaana(true);
         sessionStorage.setItem(autoOpenedKey, "1");
-    }, 700);
+    }, 650);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -899,7 +965,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     setTimeout(function () {
         maybeAutoOpenSoulaana();
-    }, 1400);
+    }, 1300);
 
     document.addEventListener("keydown", function (event) {
         if (event.key === "Escape") {
