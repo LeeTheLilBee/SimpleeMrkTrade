@@ -1,40 +1,162 @@
 {% extends "base.html" %}
 {% block content %}
+{% set soulaana_greeting = soulaana_bundle.get("greeting", {}) if soulaana_bundle else {} %}
+{% set dash = final_dashboard_context if final_dashboard_context else {} %}
+{% set cards = final_spotlight_cards if final_spotlight_cards else [] %}
+{% set mode = soulaana_ui_state.shell_mode if soulaana_ui_state else "stable" %}
 <style>
 .dashboard-shell {
     display: grid;
-    gap: 20px;
+    gap: 22px;
 }
+
+.soulaana-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 2400;
+}
+.soulaana-modal.is-open {
+    display: block;
+}
+.soulaana-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at top, rgba(124,77,255,0.16), transparent 30%),
+        rgba(3, 5, 12, 0.78);
+    backdrop-filter: blur(10px);
+}
+.soulaana-modal-dialog {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+}
+.soulaana-modal-card {
+    width: min(760px, 94vw);
+    border-radius: 30px;
+    padding: 28px;
+    background:
+        radial-gradient(circle at top left, rgba(124,77,255,0.18), transparent 34%),
+        radial-gradient(circle at 82% 18%, rgba(255,95,207,0.12), transparent 28%),
+        linear-gradient(135deg, rgba(14,11,29,0.98), rgba(8,7,18,0.98));
+    border: 1px solid rgba(255,255,255,0.10);
+    box-shadow: 0 28px 90px rgba(0,0,0,0.42);
+    position: relative;
+    overflow: hidden;
+}
+.soulaana-modal-card::before {
+    content: "";
+    position: absolute;
+    right: 34px;
+    top: 26px;
+    width: 118px;
+    height: 118px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.30) 46%, transparent 76%);
+    filter: blur(10px);
+    opacity: 0.9;
+    pointer-events: none;
+}
+.soulaana-modal-kicker {
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    opacity: 0.72;
+    margin-bottom: 12px;
+}
+.soulaana-modal-title {
+    margin: 0 0 10px 0;
+    font-size: 1.9rem;
+    line-height: 1.12;
+    font-weight: 800;
+    max-width: 600px;
+}
+.soulaana-modal-subtext {
+    margin: 0;
+    max-width: 640px;
+    opacity: 0.88;
+    line-height: 1.5;
+}
+.soulaana-modal-form {
+    margin-top: 22px;
+}
+.soulaana-modal-chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.soulaana-modal-chip {
+    border: 0;
+    border-radius: 999px;
+    padding: 11px 15px;
+    font-size: 0.94rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: rgba(255,255,255,0.08);
+    color: inherit;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+.soulaana-modal-chip:hover {
+    transform: translateY(-1px);
+    background: rgba(255,255,255,0.12);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+}
+.soulaana-modal-skip {
+    margin-top: 18px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    opacity: 0.72;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    font-size: 0.92rem;
+}
+
 .dashboard-hero {
     position: relative;
     overflow: hidden;
-    border-radius: 28px;
-    padding: 24px;
+    border-radius: 30px;
+    padding: 26px;
     background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.22), transparent 32%),
-        radial-gradient(circle at 78% 22%, rgba(255, 95, 207, 0.16), transparent 26%),
+        radial-gradient(circle at top left, rgba(124, 77, 255, 0.24), transparent 34%),
+        radial-gradient(circle at 78% 22%, rgba(255, 95, 207, 0.16), transparent 28%),
         linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
     border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 22px 48px rgba(0,0,0,0.32);
+    box-shadow: 0 24px 54px rgba(0,0,0,0.34);
 }
 .dashboard-hero::before {
     content: "";
     position: absolute;
-    right: 46px;
-    top: 30px;
-    width: 120px;
-    height: 120px;
+    right: 42px;
+    top: 28px;
+    width: 124px;
+    height: 124px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.34) 44%, transparent 74%);
     filter: blur(10px);
-    opacity: 0.92;
+    opacity: 0.9;
     pointer-events: none;
 }
+
+.dashboard-hero-stable { box-shadow: 0 24px 54px rgba(0,0,0,0.34), 0 0 0 1px rgba(160,170,255,0.08) inset; }
+.dashboard-hero-precision { box-shadow: 0 24px 54px rgba(0,0,0,0.34), 0 0 0 1px rgba(117,204,255,0.14) inset; }
+.dashboard-hero-protective,
+.dashboard-hero-fatigue { box-shadow: 0 24px 54px rgba(0,0,0,0.34), 0 0 0 1px rgba(132,140,255,0.12) inset; }
+.dashboard-hero-warning { box-shadow: 0 24px 54px rgba(0,0,0,0.34), 0 0 0 1px rgba(255,120,170,0.14) inset; }
+.dashboard-hero-restricted { box-shadow: 0 24px 54px rgba(0,0,0,0.38), 0 0 0 1px rgba(255,96,128,0.20) inset; }
+
 .dashboard-kicker {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 .dashboard-pill,
 .info-chip {
@@ -48,23 +170,32 @@
     border: 1px solid rgba(255,255,255,0.10);
 }
 .dashboard-title {
-    margin: 0 0 8px 0;
-    font-size: 1.8rem;
+    margin: 0 0 10px 0;
+    font-size: 1.95rem;
     font-weight: 800;
+    line-height: 1.1;
 }
 .dashboard-sub {
     margin: 0;
-    max-width: 860px;
+    max-width: 880px;
     opacity: 0.9;
-    line-height: 1.48;
+    line-height: 1.5;
 }
+.info-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 14px;
 }
 .dashboard-card,
-.deep-panel {
+.deep-panel,
+.watch-panel {
     border-radius: 24px;
     padding: 18px;
     background:
@@ -74,8 +205,9 @@
     box-shadow: 0 14px 32px rgba(0,0,0,0.24);
 }
 .dashboard-card h3,
-.deep-panel h3 {
-    margin: 0 0 8px 0;
+.deep-panel h3,
+.watch-panel h3 {
+    margin: 0 0 10px 0;
 }
 .metric-label {
     font-size: 0.72rem;
@@ -85,9 +217,10 @@
     margin-bottom: 6px;
 }
 .metric-value {
-    font-size: 1rem;
+    font-size: 1.02rem;
     font-weight: 800;
 }
+
 .spotlight-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -106,189 +239,165 @@
 }
 .spotlight-card p {
     margin: 0;
-    line-height: 1.42;
+    line-height: 1.44;
     opacity: 0.88;
 }
-.info-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+
+.watch-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
     margin-top: 12px;
 }
-@media (max-width: 980px) {
+.watch-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 20px;
+    padding: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.12s ease, background 0.12s ease;
+}
+.watch-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.08);
+}
+.watch-symbol {
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+.watch-company {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.section-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+.section-copy {
+    margin: 0;
+    opacity: 0.82;
+    line-height: 1.45;
+}
+.action-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(168,175,255,0.18);
+    border: 1px solid rgba(168,175,255,0.24);
+    white-space: nowrap;
+}
+
+.observatory-behavior-panel {
+    border-radius: 24px;
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(124,77,255,0.12), transparent 34%),
+        linear-gradient(135deg, rgba(13,11,25,0.98), rgba(8,7,18,0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
+}
+.behavior-title {
+    margin: 0 0 8px 0;
+    font-size: 1.12rem;
+    font-weight: 800;
+}
+.behavior-copy {
+    margin: 0;
+    opacity: 0.84;
+    line-height: 1.48;
+}
+.behavior-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+.behavior-item {
+    border-radius: 18px;
+    padding: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.behavior-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.68;
+    margin-bottom: 6px;
+}
+.behavior-value {
+    font-size: 0.96rem;
+    font-weight: 800;
+}
+
+@media (max-width: 1180px) {
     .dashboard-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .watch-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .behavior-grid {
         grid-template-columns: 1fr 1fr;
     }
-    .spotlight-grid {
+}
+@media (max-width: 980px) {
+    .spotlight-grid,
+    .watch-grid,
+    .dashboard-grid,
+    .behavior-grid {
         grid-template-columns: 1fr;
     }
-}
-<style>
-.soulaana-welcome-card {
-  margin: 0 0 20px 0;
-  border-radius: 24px;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(168,175,255,0.35), rgba(255,175,214,0.28), rgba(175,254,255,0.28));
-  box-shadow: 0 18px 50px rgba(0,0,0,0.14);
-}
-
-.soulaana-welcome-inner {
-  border-radius: 23px;
-  padding: 22px;
-  background: rgba(10, 14, 24, 0.88);
-  backdrop-filter: blur(10px);
-}
-
-.soulaana-kicker {
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  opacity: 0.72;
-  margin-bottom: 8px;
-}
-
-.soulaana-headline {
-  margin: 0 0 8px 0;
-  font-size: 1.5rem;
-  line-height: 1.2;
-}
-
-.soulaana-subtext {
-  margin: 0;
-  opacity: 0.82;
-  max-width: 760px;
-}
-
-.soulaana-response {
-  margin-top: 18px;
-  padding: 16px 18px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.soulaana-response-title {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.soulaana-response-note {
-  font-size: 0.92rem;
-  opacity: 0.8;
-}
-
-.soulaana-response-encouraging {
-  box-shadow: inset 0 0 0 1px rgba(175,254,255,0.24);
-}
-
-.soulaana-response-protective {
-  box-shadow: inset 0 0 0 1px rgba(255,175,214,0.24);
-}
-
-.soulaana-response-steady {
-  box-shadow: inset 0 0 0 1px rgba(168,175,255,0.24);
-}
-
-.soulaana-mood-form {
-  margin-top: 18px;
-}
-
-.soulaana-chip-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.soulaana-chip {
-  border: 0;
-  border-radius: 999px;
-  padding: 10px 14px;
-  font-size: 0.92rem;
-  cursor: pointer;
-  background: rgba(255,255,255,0.07);
-  color: inherit;
-  transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
-}
-
-.soulaana-chip:hover {
-  transform: translateY(-1px);
-  background: rgba(255,255,255,0.12);
-}
-
-.soulaana-chip.is-active {
-  background: rgba(168,175,255,0.24);
-  box-shadow: inset 0 0 0 1px rgba(168,175,255,0.46);
-}
-
-.soulaana-reset-form {
-  margin-top: 14px;
-}
-
-.soulaana-reset-btn {
-  border: 0;
-  background: transparent;
-  color: inherit;
-  opacity: 0.78;
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
+    .section-top {
+        flex-direction: column;
+    }
 }
 </style>
 
-{% set soulaana_greeting = soulaana_bundle.get("greeting", {}) if soulaana_bundle else {} %}
-
-<div class="soulaana-welcome-card">
-  <div class="soulaana-welcome-inner">
-    <div class="soulaana-welcome-top">
-      <div>
-        <div class="soulaana-kicker">Soulaana</div>
-        <h2 class="soulaana-headline">
-          {{ soulaana_greeting.get("headline", "Hey love, how you feeling coming in today?") }}
-        </h2>
-        <p class="soulaana-subtext">
-          {{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance and catch emotional pressure early.") }}
-        </p>
-      </div>
+<div
+    id="soulaanaCheckinModal"
+    class="soulaana-modal {% if show_soulaana_popup %}is-open{% endif %}"
+    aria-hidden="{% if show_soulaana_popup %}false{% else %}true{% endif %}"
+>
+    <div class="soulaana-modal-backdrop"></div>
+    <div class="soulaana-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="soulaanaModalTitle">
+        <div class="soulaana-modal-card">
+            <div class="soulaana-modal-kicker">Soulanna</div>
+            <h2 id="soulaanaModalTitle" class="soulaana-modal-title">
+                {{ soulaana_greeting.get("headline", "Hey love, how you feeling coming in today?") }}
+            </h2>
+            <p class="soulaana-modal-subtext">
+                {{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance and catch emotional pressure early.") }}
+            </p>
+            <form method="POST" action="{{ url_for('soulaana_checkin') }}" class="soulaana-modal-form">
+                <div class="soulaana-modal-chip-grid">
+                    {% for mood in soulaana_greeting.get("checkin_options", []) %}
+                    <button type="submit" name="emotional_state" value="{{ mood }}" class="soulaana-modal-chip">
+                        {{ mood.replace("_", " ").title() }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </form>
+            <form method="POST" action="{{ url_for('soulaana_checkin_skip') }}">
+                <button type="submit" class="soulaana-modal-skip">I’ll answer later</button>
+            </form>
+        </div>
     </div>
-
-    {% if soulaana_checkin_headline %}
-      <div class="soulaana-response soulaana-response-{{ soulaana_checkin_tone }}">
-        <div class="soulaana-response-title">{{ soulaana_checkin_headline }}</div>
-        {% if soulaana_checkin_note %}
-          <div class="soulaana-response-note">{{ soulaana_checkin_note }}</div>
-        {% endif %}
-      </div>
-    {% endif %}
-
-    <form method="POST" action="{{ url_for('soulaana_checkin') }}" class="soulaana-mood-form">
-      <div class="soulaana-chip-grid">
-        {% for mood in soulaana_greeting.get("checkin_options", []) %}
-          <button
-            type="submit"
-            name="emotional_state"
-            value="{{ mood }}"
-            class="soulaana-chip {% if soulaana_state == mood %}is-active{% endif %}"
-          >
-            {{ mood.replace("_", " ").title() }}
-          </button>
-        {% endfor %}
-      </div>
-    </form>
-
-    {% if soulaana_state %}
-      <form method="POST" action="{{ url_for('soulaana_checkin_clear') }}" class="soulaana-reset-form">
-        <button type="submit" class="soulaana-reset-btn">Reset check-in</button>
-      </form>
-    {% endif %}
-  </div>
 </div>
 
-{% set dash = final_dashboard_context if final_dashboard_context else {} %}
-{% set cards = final_spotlight_cards if final_spotlight_cards else [] %}
-
 <div class="dashboard-shell">
-    <div class="dashboard-hero">
+    <div class="dashboard-hero dashboard-hero-{{ mode }}">
         <div class="dashboard-kicker">
             <span class="dashboard-pill">final command posture</span>
             <span class="dashboard-pill">{{ dash.get("dashboard_action", "wait") }}</span>
@@ -296,9 +405,19 @@
             {% if tier %}
             <span class="dashboard-pill">{{ tier }}</span>
             {% endif %}
+            {% if user_mode %}
+            <span class="dashboard-pill">{{ user_mode|title }} mode</span>
+            {% endif %}
+            {% if soulaana_ui_state %}
+            <span class="dashboard-pill">{{ soulaana_ui_state.hero_badge }}</span>
+            <span class="dashboard-pill">{{ soulaana_ui_state.emotional_state }}</span>
+            {% endif %}
         </div>
-        <h1 class="dashboard-title">Dashboard</h1>
-        <p class="dashboard-sub">{{ dash.get("dashboard_insight", "No final-brain dashboard insight available.") }}</p>
+
+        <h1 class="dashboard-title">Observatory Command Deck</h1>
+        <p class="dashboard-sub">
+            {{ dash.get("dashboard_insight", "No final-brain dashboard insight available.") }}
+        </p>
 
         {% if dash.get("dashboard_story") %}
         <div class="info-row">
@@ -312,6 +431,35 @@
         </div>
         {% endif %}
     </div>
+
+    {% if soulaana_ui_state %}
+    <div class="observatory-behavior-panel">
+        <h2 class="behavior-title">Soulanna Behavior Posture</h2>
+        <p class="behavior-copy">{{ soulaana_ui_state.drawer_note }}</p>
+
+        <div class="info-row">
+            <span class="info-chip">{{ soulaana_ui_state.drawer_title }}</span>
+            <span class="info-chip">{{ soulaana_ui_state.state_family }}</span>
+            <span class="info-chip">{{ soulaana_ui_state.risk_level }}</span>
+            <span class="info-chip">{{ soulaana_ui_state.shell_mode }}</span>
+        </div>
+
+        <div class="behavior-grid">
+            <div class="behavior-item">
+                <div class="behavior-label">Mood</div>
+                <div class="behavior-value">{{ soulaana_ui_state.emotional_state|replace("_", " ")|title }}</div>
+            </div>
+            <div class="behavior-item">
+                <div class="behavior-label">Risk Layer</div>
+                <div class="behavior-value">{{ soulaana_ui_state.risk_level|title }}</div>
+            </div>
+            <div class="behavior-item">
+                <div class="behavior-label">Shell Mode</div>
+                <div class="behavior-value">{{ soulaana_ui_state.shell_mode|replace("_", " ")|title }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
     <div class="dashboard-grid">
         <div class="dashboard-card">
@@ -332,9 +480,44 @@
         </div>
     </div>
 
+    {% if user_mode in ["manual", "hybrid"] %}
+    <div class="watch-panel">
+        <div class="section-top">
+            <div>
+                <h3>Chart Board</h3>
+                <p class="section-copy">
+                    Keep your eyes on the symbols you want to stalk, study, or manage manually before you commit.
+                </p>
+            </div>
+            <a href="{{ url_for('charts_page') }}" class="action-link">Open charts</a>
+        </div>
+
+        {% if watchlist_preview %}
+        <div class="watch-grid">
+            {% for item in watchlist_preview %}
+            <a href="{{ item.chart_url }}" class="watch-card">
+                <div class="watch-symbol">{{ item.symbol }}</div>
+                <div class="watch-company">{{ item.company_name }}</div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="section-copy">No watchlist symbols loaded yet.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
     {% if cards %}
     <div class="deep-panel">
-        <h3>Final Brain Spotlight</h3>
+        <div class="section-top">
+            <div>
+                <h3>Final Brain Spotlight</h3>
+                <p class="section-copy">
+                    The strongest active ideas, posture shifts, and symbols demanding the most attention right now.
+                </p>
+            </div>
+        </div>
+
         <div class="spotlight-grid">
             {% for card in cards[:4] %}
             <div class="spotlight-card">

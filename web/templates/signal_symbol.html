@@ -1,23 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
+{% set ctx = final_symbol_context if final_symbol_context else {} %}
+{% set hero = v2_symbol_hero.get("hero", {}) if v2_symbol_hero else {} %}
+{% set deep = v2_symbol_deep_dive if v2_symbol_deep_dive else {} %}
+{% set reasons = ctx.get("hero_reasons", []) if ctx else [] %}
+{% set board_conf = board.get("latest_confidence") if board else "" %}
+{% set board_score = board.get("latest_score") if board else none %}
+{% set expl = symbol_explainability if symbol_explainability else {} %}
+{% set news_impact = symbol_news_impact if symbol_news_impact is defined and symbol_news_impact else (detail.news_impact if detail and detail.news_impact is defined else {}) %}
+
 <style>
 .symbol-shell {
     display: grid;
     gap: 20px;
 }
+
 .symbol-hero {
     position: relative;
     overflow: hidden;
     border-radius: 28px;
     padding: 24px;
     background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.22), transparent 32%),
-        radial-gradient(circle at top right, rgba(255, 95, 207, 0.18), transparent 28%),
-        radial-gradient(circle at 72% 24%, rgba(97, 196, 255, 0.10), transparent 22%),
-        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
+        radial-gradient(circle at top left, rgba(92, 98, 255, 0.18), transparent 30%),
+        radial-gradient(circle at 78% 20%, rgba(130, 180, 255, 0.10), transparent 24%),
+        linear-gradient(135deg, rgba(7, 11, 22, 0.98), rgba(3, 7, 16, 0.98));
     border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 22px 48px rgba(0,0,0,0.32);
+    box-shadow: 0 22px 48px rgba(0,0,0,0.36);
 }
+
 .symbol-hero::before {
     content: "";
     position: absolute;
@@ -26,11 +36,12 @@
     width: 130px;
     height: 130px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(143,199,255,0.62) 18%, rgba(124,77,255,0.34) 44%, transparent 74%);
+    background: radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(170,205,255,0.52) 18%, rgba(92,98,255,0.18) 44%, transparent 74%);
     filter: blur(10px);
-    opacity: 0.95;
+    opacity: 0.92;
     pointer-events: none;
 }
+
 .symbol-topbar {
     position: relative;
     z-index: 1;
@@ -40,14 +51,17 @@
     flex-wrap: wrap;
     align-items: flex-start;
 }
+
 .symbol-kicker {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     margin-bottom: 10px;
 }
+
 .symbol-pill,
-.info-chip {
+.info-chip,
+.intel-chip {
     display: inline-flex;
     align-items: center;
     padding: 6px 10px;
@@ -58,12 +72,14 @@
     border: 1px solid rgba(255,255,255,0.10);
     backdrop-filter: blur(6px);
 }
+
 .symbol-title {
     margin: 0 0 8px 0;
     font-size: 1.85rem;
     font-weight: 800;
     letter-spacing: 0.02em;
 }
+
 .symbol-sub {
     margin: 0;
     max-width: 860px;
@@ -71,6 +87,7 @@
     line-height: 1.5;
     font-size: 0.98rem;
 }
+
 .symbol-meta-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -79,12 +96,14 @@
     position: relative;
     z-index: 1;
 }
+
 .symbol-stat {
     padding: 14px;
     border-radius: 18px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.08);
 }
+
 .symbol-stat-label {
     font-size: 0.72rem;
     text-transform: uppercase;
@@ -92,40 +111,63 @@
     opacity: 0.68;
     margin-bottom: 6px;
 }
+
 .symbol-stat-value {
     font-size: 1rem;
     font-weight: 800;
 }
+
 .section-grid {
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
     gap: 18px;
 }
+
 .panel-stack {
     display: grid;
     gap: 18px;
 }
-.deep-panel {
+
+.deep-panel,
+.observatory-panel {
     border-radius: 24px;
     padding: 18px;
     background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
-        linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
+        radial-gradient(circle at top left, rgba(92, 98, 255, 0.10), transparent 34%),
+        linear-gradient(135deg, rgba(8, 12, 23, 0.98), rgba(4, 8, 18, 0.98));
     border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.28);
 }
-.deep-panel h3 {
-    margin: 0 0 8px 0;
+
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
 }
+
+.panel-kicker {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(247,248,255,0.64);
+    margin-bottom: 6px;
+}
+
+.panel-copy,
 .deep-panel p {
     margin: 0;
     line-height: 1.46;
 }
+
 .reason-list {
     display: grid;
     gap: 10px;
     margin-top: 14px;
 }
+
 .reason-item {
     padding: 12px 13px;
     border-radius: 14px;
@@ -133,6 +175,7 @@
     border: 1px solid rgba(255,255,255,0.06);
     line-height: 1.42;
 }
+
 .hero-strip {
     display: grid;
     grid-auto-flow: column;
@@ -141,44 +184,129 @@
     overflow-x: auto;
     padding-bottom: 8px;
 }
+
 .hero-strip-card {
     border-radius: 20px;
     padding: 16px;
     background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.16), transparent 34%),
-        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
+        radial-gradient(circle at top left, rgba(92, 98, 255, 0.16), transparent 34%),
+        linear-gradient(135deg, rgba(8, 12, 23, 0.98), rgba(4, 8, 18, 0.98));
     border: 1px solid rgba(255,255,255,0.08);
     text-decoration: none;
     color: white;
 }
+
 .hero-strip-card h4 {
     margin: 0 0 8px 0;
 }
+
 .hero-strip-card p {
     margin: 0;
     opacity: 0.86;
     line-height: 1.4;
 }
+
 .fusion-warning {
     border-left: 3px solid rgba(255, 140, 174, 0.8);
 }
+
+.intel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.intel-card {
+    border-radius: 18px;
+    padding: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.intel-card h4 {
+    margin: 0 0 8px 0;
+    font-size: 0.92rem;
+}
+
+.intel-card p {
+    margin: 0;
+}
+
+.news-impact-panel {
+    background:
+        radial-gradient(circle at top left, rgba(108, 118, 255, 0.14), transparent 34%),
+        linear-gradient(135deg, rgba(9, 13, 24, 0.98), rgba(4, 8, 18, 0.98));
+}
+
+.news-impact-summary {
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-top: 12px;
+}
+
+.news-impact-summary strong {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.news-impact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.news-impact-card {
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.news-impact-card h4 {
+    margin: 0 0 8px 0;
+    font-size: 0.92rem;
+}
+
+.news-impact-card ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.news-impact-card li {
+    margin-bottom: 8px;
+    line-height: 1.42;
+}
+
+.news-title-list {
+    display: grid;
+    gap: 10px;
+}
+
+.news-title-item {
+    padding: 12px 13px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    line-height: 1.42;
+}
+
 @media (max-width: 980px) {
     .section-grid {
         grid-template-columns: 1fr;
     }
+
     .symbol-meta-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .news-impact-grid {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
-
-{% set ctx = final_symbol_context if final_symbol_context else {} %}
-{% set hero = v2_symbol_hero.get("hero", {}) if v2_symbol_hero else {} %}
-{% set deep = v2_symbol_deep_dive if v2_symbol_deep_dive else {} %}
-{% set reasons = ctx.get("hero_reasons", []) if ctx else [] %}
-{% set board_conf = board.get("latest_confidence") if board else "" %}
-{% set board_score = board.get("latest_score") if board else none %}
-{% set expl = symbol_explainability if symbol_explainability else {} %}
 
 <div class="symbol-shell">
     <div class="symbol-hero">
@@ -221,8 +349,13 @@
     </div>
 
     {% if v2_horizontal_hero and v2_horizontal_hero.get("cards") %}
-    <div class="deep-panel">
-        <h3>Nearby Stars</h3>
+    <div class="observatory-panel">
+        <div class="panel-head">
+            <div>
+                <div class="panel-kicker">Nearby Field</div>
+                <h3 style="margin:0;">Nearby Stars</h3>
+            </div>
+        </div>
         <div class="hero-strip">
             {% for card in v2_horizontal_hero.get("cards", []) %}
             <a href="{{ card.get('destination', '/signals') }}" class="hero-strip-card">
@@ -244,9 +377,15 @@
 
     <div class="section-grid">
         <div class="panel-stack">
-            <div class="deep-panel">
-                <h3>Final Brain Story</h3>
-                <p>{{ ctx.get("hero_story", ctx.get("hero_subtitle", "")) }}</p>
+            <div class="observatory-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-kicker">Symbol Story</div>
+                        <h3 style="margin:0 0 8px 0;">Final Brain Story</h3>
+                    </div>
+                </div>
+                <p class="panel-copy">{{ ctx.get("hero_story", ctx.get("hero_subtitle", "")) }}</p>
+
                 {% if reasons %}
                 <div class="reason-list">
                     {% for item in reasons %}
@@ -256,10 +395,15 @@
                 {% endif %}
             </div>
 
-            <div class="deep-panel">
-                <h3>Trade Thesis</h3>
-                <p>{{ hero.get("headline", board.get("opinion", "Active setup.")) }}</p>
-                <div class="info-row">
+            <div class="observatory-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-kicker">Trade Logic</div>
+                        <h3 style="margin:0 0 8px 0;">Trade Thesis</h3>
+                    </div>
+                </div>
+                <p class="panel-copy">{{ hero.get("headline", board.get("opinion", "Active setup.")) }}</p>
+                <div class="info-row" style="margin-top:12px;">
                     {% if board_conf %}
                     <span class="info-chip">{{ board_conf }}</span>
                     {% endif %}
@@ -275,70 +419,74 @@
                 </div>
             </div>
 
-{% if expl %}
-<div class="deep-panel">
-    <h3>Why This Decision</h3>
+            {% if expl %}
+            <div class="observatory-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-kicker">Decision Clarity</div>
+                        <h3 style="margin:0 0 8px 0;">Why This Decision</h3>
+                    </div>
+                </div>
 
-    <p><strong>{{ expl.get("explainability_headline", "") }}</strong></p>
-    <p style="opacity:0.85;">{{ expl.get("explainability_subheadline", "") }}</p>
+                <p><strong>{{ expl.get("explainability_headline", "") }}</strong></p>
+                <p style="opacity:0.85; margin-top:8px;">{{ expl.get("explainability_subheadline", "") }}</p>
 
-    <div class="info-row" style="margin-top:10px;">
-        <span class="info-chip">{{ expl.get("explainability_tone", "neutral") }}</span>
-        <span class="info-chip">{{ expl.get("pressure_badge", "Mixed Pressure") }}</span>
-        <span class="info-chip">Override: {{ expl.get("override_severity", "none") }}</span>
-    </div>
+                <div class="info-row" style="margin-top:12px;">
+                    <span class="info-chip">{{ expl.get("explainability_tone", "neutral") }}</span>
+                    <span class="info-chip">{{ expl.get("pressure_badge", "Mixed Pressure") }}</span>
+                    <span class="info-chip">Override: {{ expl.get("override_severity", "none") }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-chip">+{{ expl.get("support_count", 0) }} support</span>
+                    <span class="info-chip">-{{ expl.get("restriction_count", 0) }} pressure</span>
+                </div>
 
-    <div class="info-row">
-        <span class="info-chip">+{{ expl.get("support_count", 0) }} support</span>
-        <span class="info-chip">-{{ expl.get("restriction_count", 0) }} pressure</span>
-    </div>
+                {% if expl.get("explainability_story") %}
+                <div class="reason-list" style="margin-top:12px;">
+                    <div class="reason-item">{{ expl.get("explainability_story", "") }}</div>
+                </div>
+                {% endif %}
 
-    {% if expl.get("explainability_story") %}
-    <div class="reason-list" style="margin-top:12px;">
-        <div class="reason-item">
-            {{ expl.get("explainability_story", "") }}
-        </div>
-    </div>
-    {% endif %}
+                {% if expl.get("supportive_pressures") %}
+                <div class="reason-list" style="margin-top:14px;">
+                    {% for item in expl.get("supportive_pressures", []) %}
+                    <div class="reason-item">{{ item }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
 
-    {% if expl.get("supportive_pressures") %}
-    <div class="reason-list" style="margin-top:14px;">
-        {% for item in expl.get("supportive_pressures", []) %}
-        <div class="reason-item">{{ item }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
+                {% if expl.get("restrictive_pressures") %}
+                <div class="reason-list" style="margin-top:14px;">
+                    {% for item in expl.get("restrictive_pressures", []) %}
+                    <div class="reason-item fusion-warning">{{ item }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
 
-    {% if expl.get("restrictive_pressures") %}
-    <div class="reason-list" style="margin-top:14px;">
-        {% for item in expl.get("restrictive_pressures", []) %}
-        <div class="reason-item fusion-warning">{{ item }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
+                {% if expl.get("override_line") %}
+                <div class="reason-list" style="margin-top:14px;">
+                    <div class="reason-item fusion-warning">{{ expl.get("override_line", "") }}</div>
+                </div>
+                {% endif %}
 
-    {% if expl.get("override_line") %}
-    <div class="reason-list" style="margin-top:14px;">
-        <div class="reason-item fusion-warning">
-            {{ expl.get("override_line", "") }}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if expl.get("memory_takeaway") %}
-    <div class="reason-list" style="margin-top:14px;">
-        <div class="reason-item">
-            {{ expl.get("memory_takeaway", "") }}
-        </div>
-    </div>
-    {% endif %}
-</div>
-{% endif %}
+                {% if expl.get("memory_takeaway") %}
+                <div class="reason-list" style="margin-top:14px;">
+                    <div class="reason-item">{{ expl.get("memory_takeaway", "") }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
 
             {% for panel in deep.get("panels", []) %}
-            <div class="deep-panel">
-                <h3>{{ panel.get("title", "Panel") }}</h3>
-                <p>{{ panel.get("summary", "") }}</p>
+            <div class="observatory-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-kicker">Deep Dive</div>
+                        <h3 style="margin:0 0 8px 0;">{{ panel.get("title", "Panel") }}</h3>
+                    </div>
+                </div>
+
+                <p class="panel-copy">{{ panel.get("summary", "") }}</p>
 
                 {% set content = panel.get("content", {}) %}
                 {% set scanner = content.get("scanner", {}) %}
@@ -346,7 +494,7 @@
                 {% set reasoning = content.get("reasoning", {}) %}
                 {% set options_plan = content.get("options_plan", {}) %}
 
-                <div class="info-row">
+                <div class="info-row" style="margin-top:12px;">
                     {% if scanner.get("confidence") %}
                     <span class="info-chip">{{ scanner.get("confidence") }}</span>
                     {% endif %}
@@ -404,19 +552,74 @@
         </div>
 
         <div class="panel-stack">
-            <div class="deep-panel">
-                <h3>Coaching</h3>
-                <p>{{ ctx.get("coaching_message", "Stay disciplined and follow the system.") }}</p>
-                <div class="info-row">
+            <div class="observatory-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-kicker">Soulanna Voice</div>
+                        <h3 style="margin:0 0 8px 0;">Coaching</h3>
+                    </div>
+                </div>
+                <p class="panel-copy">{{ ctx.get("coaching_message", "Stay disciplined and follow the system.") }}</p>
+                <div class="info-row" style="margin-top:12px;">
                     <span class="info-chip">{{ ctx.get("coaching_tone", "neutral") }}</span>
                     <span class="info-chip">{{ ctx.get("hero_action", "wait") }}</span>
                     <span class="info-chip">{{ ctx.get("hero_confidence", "low") }}</span>
                 </div>
             </div>
 
+
+{% set behavior_layer = final_symbol_context.get("behavior_layer", {}) if final_symbol_context else {} %}
+{% if behavior_layer %}
+<div class="observatory-panel">
+    <div class="panel-head">
+        <div>
+            <div class="panel-kicker">Behavior Layer</div>
+            <h3 style="margin:0 0 8px 0;">Soulanna Risk Posture</h3>
+        </div>
+        <span class="intel-chip">{{ behavior_layer.get("risk_level", "low") }}</span>
+    </div>
+
+    <div class="info-row">
+        <span class="info-chip">{{ behavior_layer.get("emotional_state", "unknown") }}</span>
+        <span class="info-chip">{{ behavior_layer.get("state_family", "stable") }}</span>
+        <span class="info-chip">{{ behavior_layer.get("tone_mode", "steady") }}</span>
+        <span class="info-chip">{{ behavior_layer.get("warning_level", "normal") }}</span>
+    </div>
+
+    <div class="reason-list" style="margin-top:14px;">
+        <div class="reason-item">
+            <strong>Raw Action:</strong> {{ behavior_layer.get("raw_action", "wait")|upper }}
+        </div>
+        <div class="reason-item">
+            <strong>Adjusted Action:</strong> {{ behavior_layer.get("adjusted_action", "wait")|upper }}
+        </div>
+        <div class="reason-item">
+            <strong>Adjusted Confidence:</strong> {{ behavior_layer.get("adjusted_confidence", "low")|upper }}
+        </div>
+    </div>
+
+    {% if behavior_layer.get("intervention_active") %}
+    <div class="reason-list" style="margin-top:14px;">
+        {% for item in behavior_layer.get("intervention_reasons", []) %}
+        <div class="reason-item fusion-warning">{{ item }}</div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="reason-list" style="margin-top:14px;">
+        <div class="reason-item">Soulanna did not need to intervene on this setup.</div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
             {% if ctx.get("hard_reject") %}
-            <div class="deep-panel">
-                <h3>Hard Rejection</h3>
+            <div class="observatory-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-kicker">Risk Protection</div>
+                        <h3 style="margin:0 0 8px 0;">Hard Rejection</h3>
+                    </div>
+                </div>
                 <div class="reason-list">
                     <div class="reason-item fusion-warning">
                         {{ ctx.get("hard_reject_reason", "Final brain rejected this setup.") }}
@@ -425,10 +628,15 @@
             </div>
             {% endif %}
 
-            <div class="deep-panel">
-                <h3>Live Opinion</h3>
-                <p>{{ opinion }}</p>
-                <div class="info-row">
+            <div class="observatory-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-kicker">Live Lens</div>
+                        <h3 style="margin:0 0 8px 0;">Live Opinion</h3>
+                    </div>
+                </div>
+                <p class="panel-copy">{{ opinion }}</p>
+                <div class="info-row" style="margin-top:12px;">
                     {% if board_conf %}
                     <span class="info-chip">{{ board_conf }}</span>
                     {% endif %}
@@ -438,152 +646,214 @@
                 </div>
             </div>
 
-{% if detail.engine_intelligence %}
-<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Engine Intelligence</h3>
-            <p class="muted-line" style="margin:0;">
-                Live readiness, promotion, rebuild, and learning pressure for {{ detail.symbol }}.
-            </p>
-        </div>
-        <span class="signal-stat-chip">Live Brain</span>
-    </div>
+            {% if detail.soulanna %}
+            <div class="observatory-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-kicker">Soulanna Read</div>
+                        <h3 style="margin:0 0 8px 0;">Soulanna</h3>
+                    </div>
+                    <span class="intel-chip">{{ detail.soulanna.verdict }}</span>
+                </div>
 
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Readiness</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ detail.engine_intelligence.readiness_score }}</strong></p>
+                <div class="reason-list">
+                    <div class="reason-item"><strong>Assessment:</strong> {{ detail.soulanna.assessment }}</div>
+                    <div class="reason-item"><strong>Why:</strong> {{ detail.soulanna.why }}</div>
+                    {% if detail.soulanna.risk %}
+                    <div class="reason-item fusion-warning"><strong>Risk:</strong> {{ detail.soulanna.risk }}</div>
+                    {% endif %}
+                    <div class="reason-item"><strong>Next Action:</strong> {{ detail.soulanna.next_action }}</div>
+                </div>
             </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Promotion</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ detail.engine_intelligence.promotion_score }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Rebuild</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ detail.engine_intelligence.rebuild_pressure }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Execution</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ detail.engine_intelligence.execution_quality }}</strong></p>
-            </div>
-        </div>
-    </div>
+            {% endif %}
 
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:12px;">
-        <div class="card" style="margin:0;">
-            <h4>Setup Family</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ detail.engine_intelligence.setup_family }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Entry Quality</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ detail.engine_intelligence.entry_quality }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Eligible</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ detail.engine_intelligence.eligible }}</strong></p>
-            </div>
-        </div>
-    </div>
+            <div class="observatory-panel news-impact-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-kicker">News Interpretation</div>
+                        <h3 style="margin:0 0 8px 0;">Soulanna News Impact</h3>
+                    </div>
+                    {% if news_impact.get("stance") %}
+                    <span class="intel-chip">{{ news_impact.get("stance") }}</span>
+                    {% endif %}
+                </div>
 
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:12px;">
-        <div class="card" style="margin:0;">
-            <h4>Readiness Gate</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ detail.engine_intelligence.gates.readiness }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Promotion Gate</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ detail.engine_intelligence.gates.promotion }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Rebuild Gate</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ detail.engine_intelligence.gates.rebuild }}</strong></p>
-            </div>
-        </div>
-    </div>
+                {% if news_impact %}
+                <div class="info-row">
+                    {% if news_impact.get("symbol_impact") %}
+                    <span class="info-chip">{{ news_impact.get("symbol_impact") }}</span>
+                    {% endif %}
+                    {% if news_impact.get("market_scope") %}
+                    <span class="info-chip">{{ news_impact.get("market_scope") }}</span>
+                    {% endif %}
+                    {% if news_impact.get("confidence") %}
+                    <span class="info-chip">{{ news_impact.get("confidence") }}</span>
+                    {% endif %}
+                </div>
 
-    {% if detail.engine_verdict %}
-    <div class="card" style="margin-top:12px;">
-        <h4>{{ detail.engine_verdict.headline }}</h4>
-        <div class="passage-frame">
-            <p style="margin:0;">{{ detail.engine_verdict.summary }}</p>
-        </div>
-        {% if detail.engine_verdict.notes %}
-        <div style="display:grid; gap:8px; margin-top:10px;">
-            {% for item in detail.engine_verdict.notes %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ item }}</p>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </div>
-    {% endif %}
+                <div class="news-impact-summary">
+                    <strong>{{ news_impact.get("headline", "Soulanna is reading the current news field for this symbol.") }}</strong>
+                    <p>{{ news_impact.get("summary", "No detailed symbol-level news interpretation has been wired yet.") }}</p>
+                    {% if news_impact.get("takeaway") %}
+                    <p style="margin-top:10px;"><strong>Takeaway:</strong> {{ news_impact.get("takeaway") }}</p>
+                    {% endif %}
+                </div>
 
-    {% if detail.engine_intelligence.learning_notes %}
-    <div class="card" style="margin-top:12px;">
-        <h4>Learning Notes</h4>
-        <div style="display:grid; gap:8px; margin-top:10px;">
-            {% for item in detail.engine_intelligence.learning_notes %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ item }}</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
+                <div class="news-impact-grid">
+                    {% if news_impact.get("symbol_drivers") %}
+                    <div class="news-impact-card">
+                        <h4>What it means for {{ symbol }}</h4>
+                        <ul>
+                            {% for item in news_impact.get("symbol_drivers", []) %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
 
-    {% if detail.engine_intelligence.promotion_notes %}
-    <div class="card" style="margin-top:12px;">
-        <h4>Promotion Notes</h4>
-        <div style="display:grid; gap:8px; margin-top:10px;">
-            {% for item in detail.engine_intelligence.promotion_notes %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ item }}</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
+                    {% if news_impact.get("market_drivers") %}
+                    <div class="news-impact-card">
+                        <h4>How it hits the market</h4>
+                        <ul>
+                            {% for item in news_impact.get("market_drivers", []) %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
 
-    {% if detail.engine_intelligence.rebuild_notes %}
-    <div class="card" style="margin-top:12px;">
-        <h4>Rebuild Notes</h4>
-        <div style="display:grid; gap:8px; margin-top:10px;">
-            {% for item in detail.engine_intelligence.rebuild_notes %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ item }}</p>
+                    {% if news_impact.get("watch_items") %}
+                    <div class="news-impact-card">
+                        <h4>What to watch next</h4>
+                        <ul>
+                            {% for item in news_impact.get("watch_items", []) %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {% if news_impact.get("thesis_shift") %}
+                    <div class="news-impact-card">
+                        <h4>Thesis shift</h4>
+                        <p>{{ news_impact.get("thesis_shift") }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <p class="panel-copy">
+                    This is where Soulanna’s symbol-by-symbol news breakdown should live. Once wired, she should explain whether current news is bullish, bearish, mixed, or mostly noise for {{ symbol }}, and whether the impact is company-specific, sector-wide, or broader market pressure.
+                </p>
+                {% endif %}
             </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-</div>
-{% endif %}
+
+            {% if detail.engine_intelligence %}
+            <div class="observatory-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-kicker">System Pressure</div>
+                        <h3 style="margin:0 0 8px 0;">Engine Intelligence</h3>
+                    </div>
+                    <span class="intel-chip">Live Brain</span>
+                </div>
+
+                <div class="intel-grid">
+                    <div class="intel-card">
+                        <h4>Readiness</h4>
+                        <p><strong>{{ detail.engine_intelligence.readiness_score }}</strong></p>
+                    </div>
+                    <div class="intel-card">
+                        <h4>Promotion</h4>
+                        <p><strong>{{ detail.engine_intelligence.promotion_score }}</strong></p>
+                    </div>
+                    <div class="intel-card">
+                        <h4>Rebuild</h4>
+                        <p><strong>{{ detail.engine_intelligence.rebuild_pressure }}</strong></p>
+                    </div>
+                    <div class="intel-card">
+                        <h4>Execution</h4>
+                        <p><strong>{{ detail.engine_intelligence.execution_quality }}</strong></p>
+                    </div>
+                    <div class="intel-card">
+                        <h4>Setup Family</h4>
+                        <p><strong>{{ detail.engine_intelligence.setup_family }}</strong></p>
+                    </div>
+                    <div class="intel-card">
+                        <h4>Entry Quality</h4>
+                        <p><strong>{{ detail.engine_intelligence.entry_quality }}</strong></p>
+                    </div>
+                    <div class="intel-card">
+                        <h4>Eligible</h4>
+                        <p><strong>{{ detail.engine_intelligence.eligible }}</strong></p>
+                    </div>
+                </div>
+
+                <div class="intel-grid" style="margin-top:12px;">
+                    <div class="intel-card">
+                        <h4>Readiness Gate</h4>
+                        <p><strong>{{ detail.engine_intelligence.gates.readiness }}</strong></p>
+                    </div>
+                    <div class="intel-card">
+                        <h4>Promotion Gate</h4>
+                        <p><strong>{{ detail.engine_intelligence.gates.promotion }}</strong></p>
+                    </div>
+                    <div class="intel-card">
+                        <h4>Rebuild Gate</h4>
+                        <p><strong>{{ detail.engine_intelligence.gates.rebuild }}</strong></p>
+                    </div>
+                </div>
+
+                {% if detail.engine_verdict %}
+                <div class="reason-list" style="margin-top:14px;">
+                    <div class="reason-item">
+                        <strong>{{ detail.engine_verdict.headline }}</strong><br>
+                        {{ detail.engine_verdict.summary }}
+                    </div>
+                    {% if detail.engine_verdict.notes %}
+                        {% for item in detail.engine_verdict.notes %}
+                        <div class="reason-item">{{ item }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                {% if detail.engine_intelligence.learning_notes %}
+                <div class="reason-list" style="margin-top:14px;">
+                    {% for item in detail.engine_intelligence.learning_notes %}
+                    <div class="reason-item">{{ item }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if detail.engine_intelligence.promotion_notes %}
+                <div class="reason-list" style="margin-top:14px;">
+                    {% for item in detail.engine_intelligence.promotion_notes %}
+                    <div class="reason-item">{{ item }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if detail.engine_intelligence.rebuild_notes %}
+                <div class="reason-list" style="margin-top:14px;">
+                    {% for item in detail.engine_intelligence.rebuild_notes %}
+                    <div class="reason-item">{{ item }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
 
             {% if news_items %}
-            <div class="deep-panel">
-                <h3>Recent News</h3>
-                <div class="reason-list">
+            <div class="observatory-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-kicker">Raw Feed</div>
+                        <h3 style="margin:0 0 8px 0;">Recent News</h3>
+                    </div>
+                </div>
+                <div class="news-title-list">
                     {% for item in news_items[:5] %}
-                    <div class="reason-item">{{ item.get("title", "News item") }}</div>
+                    <div class="news-title-item">{{ item.get("title", "News item") }}</div>
                     {% endfor %}
                 </div>
             </div>

@@ -248,7 +248,6 @@ def get_market_universe_summary():
 def get_symbol_detail(symbol: str) -> dict:
     symbol = str(symbol or "").upper().strip()
 
-    # --- BASE STRUCTURE ---
     detail = {
         "symbol": symbol,
         "company": {
@@ -266,9 +265,11 @@ def get_symbol_detail(symbol: str) -> dict:
         "primary_intelligence": {},
         "signals": [],
         "news_items": [],
+        "engine_intelligence": {},
+        "engine_verdict": {},
+        "soulanna": {},
     }
 
-    # --- LOAD LIVE EXECUTION UNIVERSE ---
     try:
         from engine.engine_selection import build_execution_universe
 
@@ -281,10 +282,8 @@ def get_symbol_detail(symbol: str) -> dict:
         universe = build_execution_universe(signals, system_state)
         selected = universe.get("selected", []) if isinstance(universe, dict) else []
     except Exception:
-        universe = {}
         selected = []
 
-    # --- FIND MATCHING SIGNAL ---
     match = None
     for row in selected:
         if str(row.get("symbol", "")).upper() == symbol:
@@ -294,17 +293,20 @@ def get_symbol_detail(symbol: str) -> dict:
     if not match:
         return detail
 
-    # --- BASIC BOARD ---
     detail["board"] = {
         "symbol": symbol,
-        "company_name": symbol,
+        "company_name": match.get("company_name", symbol),
         "latest_score": match.get("score", 0),
         "latest_confidence": match.get("confidence", "LOW"),
         "latest_timestamp": match.get("timestamp", ""),
-        "opinion": "Engine-selected candidate.",
+        "opinion": match.get("opinion", "Engine-selected candidate."),
     }
 
-    # --- PRIMARY INTELLIGENCE ---
+    detail["company"] = {
+        "name": match.get("company_name", symbol),
+        "blurb": match.get("company_blurb", "Engine-generated symbol intelligence."),
+    }
+
     detail["primary_intelligence"] = {
         "direction": match.get("strategy", "CALL"),
         "setup_type": match.get("setup_type", "continuation"),
@@ -312,7 +314,6 @@ def get_symbol_detail(symbol: str) -> dict:
         "confidence": match.get("confidence"),
     }
 
-    # --- 🔥 ENGINE INTELLIGENCE BLOCK (THIS IS THE UPGRADE) ---
     detail["engine_intelligence"] = {
         "readiness_score": match.get("readiness_score"),
         "promotion_score": match.get("promotion_score"),
@@ -323,22 +324,18 @@ def get_symbol_detail(symbol: str) -> dict:
         "decision_reason": match.get("decision_reason"),
         "final_decision": match.get("final_decision", {}),
         "canonical_decision": match.get("canonical_decision", {}),
-
         "learning_notes": match.get("learning_notes", []),
         "promotion_notes": match.get("promotion_notes", []),
         "rebuild_notes": match.get("rebuild_notes", []),
-
         "setup_family": match.get("setup_family"),
         "entry_quality": match.get("entry_quality"),
-
         "gates": {
             "readiness": match.get("readiness_gate_passed"),
             "promotion": match.get("promotion_gate_passed"),
             "rebuild": match.get("rebuild_gate_passed"),
-        }
+        },
     }
 
-    # --- HUMAN-READABLE VERDICT ---
     detail["engine_verdict"] = {
         "headline": "Engine-evaluated opportunity.",
         "summary": "This symbol is being actively scored across readiness, promotion, rebuild pressure, and final decision logic.",
@@ -353,27 +350,187 @@ def get_symbol_detail(symbol: str) -> dict:
     }
 
     try:
-        detail["soulanna"] = soulanna_explain_signal({
-            "symbol": detail.get("symbol"),
-            "score": match.get("score", 0),
-            "confidence": match.get("confidence", "LOW"),
-            "setup_family": match.get("setup_family"),
-            "entry_quality": match.get("entry_quality"),
-            "readiness_score": match.get("readiness_score"),
-            "promotion_score": match.get("promotion_score"),
-            "rebuild_pressure": match.get("rebuild_pressure"),
-            "eligible": match.get("eligible"),
-            "final_verdict": match.get("final_verdict"),
-            "decision_reason": match.get("decision_reason"),
-            "canonical_decision": match.get("canonical_decision", {}),
-            "learning_notes": match.get("learning_notes", []),
-        })
+        detail["soulanna"] = soulanna_explain_signal(
+            {
+                "symbol": symbol,
+                "score": match.get("score", 0),
+                "confidence": match.get("confidence", "LOW"),
+                "setup_family": match.get("setup_family"),
+                "entry_quality": match.get("entry_quality"),
+                "readiness_score": match.get("readiness_score"),
+                "promotion_score": match.get("promotion_score"),
+                "rebuild_pressure": match.get("rebuild_pressure"),
+                "eligible": match.get("eligible"),
+                "final_verdict": match.get("final_verdict"),
+                "decision_reason": match.get("decision_reason"),
+                "canonical_decision": match.get("canonical_decision", {}),
+                "learning_notes": match.get("learning_notes", []),
+            }
+        ) or {}
     except Exception:
         detail["soulanna"] = {}
 
     return detail
 
-    return detail
+
+def build_symbol_news_impact(
+    symbol: str,
+    company: dict | None = None,
+    news_items: list | None = None,
+    board: dict | None = None,
+    final_brain: dict | None = None,
+    final_symbol_context: dict | None = None,
+) -> dict:
+    symbol = str(symbol or "").upper().strip()
+    company = safe_dict(company)
+    board = safe_dict(board)
+    final_brain = safe_dict(final_brain)
+    final_symbol_context = safe_dict(final_symbol_context)
+    news_items = safe_list(news_items)
+
+    company_name = company.get("name", symbol)
+    action = str(final_symbol_context.get("hero_action", "wait") or "wait").strip().lower()
+    confidence = str(final_symbol_context.get("hero_confidence", "low") or "low").strip().lower()
+    coaching_tone = str(final_symbol_context.get("coaching_tone", "neutral") or "neutral").strip().lower()
+
+    if not news_items:
+        return {
+            "headline": f"News field for {symbol}",
+            "summary": f"Soulanna does not have fresh news context loaded for {company_name} yet.",
+            "symbol_impact": "Unknown",
+            "market_scope": "Unknown",
+            "stance": action.title(),
+            "confidence": confidence.title(),
+            "takeaway": "Wait for fresh headlines before letting news change the thesis.",
+            "symbol_drivers": [],
+            "market_drivers": [],
+            "watch_items": [],
+            "thesis_shift": "",
+        }
+
+    titles = []
+    blob_parts = []
+
+    for item in news_items[:6]:
+        if not isinstance(item, dict):
+            continue
+        title = str(item.get("title", "") or "").strip()
+        if title:
+            titles.append(title)
+            blob_parts.append(title.lower())
+
+    blob = " | ".join(blob_parts)
+
+    bullish_terms = ["beats", "beat", "upgrade", "upgraded", "surge", "rally", "approval", "growth", "record", "raises guidance", "buyback"]
+    bearish_terms = ["misses", "miss", "downgrade", "downgraded", "warning", "lawsuit", "probe", "cuts guidance", "decline", "delay", "layoffs"]
+    macro_terms = ["fed", "rates", "inflation", "cpi", "jobs report", "treasury", "bond yields", "recession", "oil", "tariff", "regulation"]
+    sector_terms = ["semiconductor", "software", "cloud", "ai", "retail", "banking", "energy", "biotech", "consumer", "ev"]
+
+    bullish_hits = sum(1 for term in bullish_terms if term in blob)
+    bearish_hits = sum(1 for term in bearish_terms if term in blob)
+    macro_hits = sum(1 for term in macro_terms if term in blob)
+    sector_hits = sum(1 for term in sector_terms if term in blob)
+
+    if bullish_hits > bearish_hits + 1:
+        symbol_impact = "Bullish"
+    elif bearish_hits > bullish_hits + 1:
+        symbol_impact = "Bearish"
+    elif bullish_hits > 0 or bearish_hits > 0:
+        symbol_impact = "Mixed"
+    else:
+        symbol_impact = "Neutral"
+
+    if macro_hits >= 2:
+        market_scope = "Macro spillover"
+    elif sector_hits >= 1:
+        market_scope = "Sector influence"
+    else:
+        market_scope = "Company-specific"
+
+    if symbol_impact == "Bullish":
+        headline = f"News tone is leaning constructive for {symbol}"
+        summary = f"Soulanna reads the recent headline field around {company_name} as supportive, but still wants price and structure confirmation."
+    elif symbol_impact == "Bearish":
+        headline = f"News tone is pressuring {symbol}"
+        summary = f"Soulanna reads the recent headline field around {company_name} as adding friction, so the market may demand cleaner confirmation."
+    elif symbol_impact == "Mixed":
+        headline = f"News tone is mixed for {symbol}"
+        summary = f"Soulanna sees conflicting headline pressure around {company_name}, so the story is not clean enough to trust on headlines alone."
+    else:
+        headline = f"News is not clearly shifting the {symbol} thesis"
+        summary = f"Soulanna does not see strong headline evidence that the recent news field is materially changing the setup for {company_name} yet."
+
+    if action in {"take", "buy", "enter"} and symbol_impact == "Bearish":
+        thesis_shift = "News is working against the current action bias, so conviction should stay tighter."
+    elif action in {"wait", "watch"} and symbol_impact == "Bullish":
+        thesis_shift = "News may be improving the setup, but Soulanna still wants structure to confirm the story."
+    elif action in {"exit", "block", "protect"} and symbol_impact == "Bearish":
+        thesis_shift = "The news field supports a more defensive posture."
+    else:
+        thesis_shift = "The news field should be treated as context, not a standalone trigger."
+
+    symbol_drivers = []
+    market_drivers = []
+    watch_items = []
+
+    if symbol_impact == "Bullish":
+        symbol_drivers.extend([
+            "Headline tone is helping sentiment around the symbol.",
+            "The news field may support stronger narrative follow-through if price confirms.",
+        ])
+    elif symbol_impact == "Bearish":
+        symbol_drivers.extend([
+            "Headline tone is introducing friction into the symbol story.",
+            "The market may punish weak structure faster while this pressure is active.",
+        ])
+    elif symbol_impact == "Mixed":
+        symbol_drivers.extend([
+            "Headline flow is conflicted, so conviction should not come from news alone.",
+            "The setup needs cleaner confirmation from behavior, structure, and follow-through.",
+        ])
+    else:
+        symbol_drivers.append("Recent headlines are not clearly changing the symbol thesis yet.")
+
+    if market_scope == "Macro spillover":
+        market_drivers.extend([
+            "This headline set appears broad enough to affect more than one ticker.",
+            "Sector and market posture may matter as much as the company-specific story.",
+        ])
+    elif market_scope == "Sector influence":
+        market_drivers.extend([
+            "The news field may spill into peers and sector sentiment.",
+            "Relative strength versus the sector should matter here.",
+        ])
+    else:
+        market_drivers.append("The impact looks more local to this company than market-wide.")
+
+    if confidence == "high":
+        watch_items.append("Watch whether price action confirms the current high-conviction posture.")
+    else:
+        watch_items.append("Wait for price confirmation before letting headlines change conviction.")
+
+    if coaching_tone in {"protective", "cautious"}:
+        watch_items.append("Stay alert for overreaction risk and avoid emotional chasing.")
+    else:
+        watch_items.append("Use the news field as a clue, not a command.")
+
+    if titles:
+        watch_items.append(f"Most recent driver: {titles[0]}")
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "symbol_impact": symbol_impact,
+        "market_scope": market_scope,
+        "stance": action.title(),
+        "confidence": confidence.title(),
+        "takeaway": thesis_shift,
+        "symbol_drivers": symbol_drivers[:4],
+        "market_drivers": market_drivers[:4],
+        "watch_items": watch_items[:4],
+        "thesis_shift": thesis_shift,
+    }
+
 
 def load_json(path: str, default: Any) -> Any:
     try:
@@ -1191,6 +1348,116 @@ def render_template_safe(template_name: str, **context):
 # ============================================================
 # LEARNING HELPERS
 # ============================================================
+
+def build_soulaana_ui_state() -> Dict[str, Any]:
+    emotional_state = _norm_text(get_soulaana_emotional_state(), "unknown").lower()
+
+    if emotional_state == "calm":
+        return {
+            "emotional_state": "calm",
+            "state_family": "stable",
+            "risk_level": "low",
+            "shell_mode": "stable",
+            "accent_mode": "soft",
+            "drawer_title": "Soulanna · Stable",
+            "drawer_note": "The Observatory is in a calm, steady posture.",
+            "hero_badge": "Stable Mode",
+        }
+
+    if emotional_state == "focused":
+        return {
+            "emotional_state": "focused",
+            "state_family": "precision",
+            "risk_level": "low",
+            "shell_mode": "precision",
+            "accent_mode": "cool",
+            "drawer_title": "Soulanna · Precision",
+            "drawer_note": "The Observatory is prioritizing structure, clarity, and disciplined reads.",
+            "hero_badge": "Precision Mode",
+        }
+
+    if emotional_state == "confident":
+        return {
+            "emotional_state": "confident",
+            "state_family": "confidence_audit",
+            "risk_level": "moderate",
+            "shell_mode": "audit",
+            "accent_mode": "gold",
+            "drawer_title": "Soulanna · Confidence Audit",
+            "drawer_note": "Confidence is welcome, but the system is checking whether it is earned.",
+            "hero_badge": "Confidence Audit",
+        }
+
+    if emotional_state == "cautious":
+        return {
+            "emotional_state": "cautious",
+            "state_family": "defensive",
+            "risk_level": "moderate",
+            "shell_mode": "protective",
+            "accent_mode": "violet",
+            "drawer_title": "Soulanna · Protective",
+            "drawer_note": "The Observatory is leaning defensive and asking for cleaner confirmation.",
+            "hero_badge": "Protective Mode",
+        }
+
+    if emotional_state == "anxious":
+        return {
+            "emotional_state": "anxious",
+            "state_family": "protective",
+            "risk_level": "high",
+            "shell_mode": "protective",
+            "accent_mode": "blue",
+            "drawer_title": "Soulanna · Grounding",
+            "drawer_note": "The system is protecting against panic, overreaction, and emotional pressure.",
+            "hero_badge": "Grounding Mode",
+        }
+
+    if emotional_state == "frustrated":
+        return {
+            "emotional_state": "frustrated",
+            "state_family": "high_risk_behavior",
+            "risk_level": "high",
+            "shell_mode": "warning",
+            "accent_mode": "rose",
+            "drawer_title": "Soulanna · Warning",
+            "drawer_note": "The Observatory is raising friction and guarding against force-it behavior.",
+            "hero_badge": "Warning Mode",
+        }
+
+    if emotional_state == "impulsive":
+        return {
+            "emotional_state": "impulsive",
+            "state_family": "restricted",
+            "risk_level": "severe",
+            "shell_mode": "restricted",
+            "accent_mode": "red",
+            "drawer_title": "Soulanna · Restricted",
+            "drawer_note": "The system is actively restricting weak or premature action posture.",
+            "hero_badge": "Restricted Mode",
+        }
+
+    if emotional_state == "tired":
+        return {
+            "emotional_state": "tired",
+            "state_family": "fatigue",
+            "risk_level": "high",
+            "shell_mode": "fatigue",
+            "accent_mode": "muted",
+            "drawer_title": "Soulanna · Fatigue Guard",
+            "drawer_note": "The Observatory is simplifying choices and leaning toward patience.",
+            "hero_badge": "Fatigue Guard",
+        }
+
+    return {
+        "emotional_state": "unknown",
+        "state_family": "stable",
+        "risk_level": "low",
+        "shell_mode": "stable",
+        "accent_mode": "soft",
+        "drawer_title": "Soulanna",
+        "drawer_note": "The Observatory is ready.",
+        "hero_badge": "Observatory",
+    }
 
 # ============================================================
 # SECTION 73C — TRADE OUTCOME CLASSIFIER
@@ -2375,42 +2642,9 @@ def current_user_context() -> Dict[str, Any]:
     }
 
 
-def current_tier_title() -> str:
-    return effective_tier_title()
-
-
-def current_tier_lower() -> str:
-    return effective_tier_lower()
-
-
-def is_logged_in() -> bool:
-    return bool(str(session.get("username", "") or "").strip())
-
-
-def is_master() -> bool:
-    return str(session.get("role", "") or "").strip().lower() == "master"
-
-
-def can_access_all_symbols() -> bool:
-    tier = effective_tier_lower()
-    return tier in {"starter", "pro", "elite"} or is_master()
-
-
 def show_upgrade_prompt() -> bool:
     return is_logged_in() and effective_tier_lower() not in {"elite"}
 
-
-def template_context(extra: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    ctx = dict(extra or {})
-    user_ctx = current_user_context()
-
-    ctx.setdefault("theme", get_theme() if "get_theme" in globals() else session.get("theme", "dark"))
-    ctx.setdefault("user", user_ctx)
-    ctx.setdefault("show_upgrade", show_upgrade_prompt())
-    ctx.setdefault("can_access_all_symbols", can_access_all_symbols())
-    ctx.setdefault("unread_notifications", 0)
-    ctx.setdefault("snapshot", get_dashboard_snapshot() if "get_dashboard_snapshot" in globals() else {})
-    return ctx
 
 def get_current_tier_for_routes() -> str:
     try:
@@ -2900,78 +3134,140 @@ def build_data_health_summary() -> Dict[str, Any]:
 
 
 # ============================================================
-# BASIC STATE HELPERS
+# CORE SAFETY / NORMALIZATION HELPERS
 # ============================================================
 
-def effective_tier() -> str:
-    preview = session.get("preview_tier")
-    if preview:
-        return preview
-    return session.get("tier", "Guest")
+def safe_list(value):
+    return value if isinstance(value, list) else []
 
 
-def current_tier_title() -> str:
-    tier = (effective_tier() or "Guest").title()
-    if tier not in {"Guest", "Free", "Starter", "Pro", "Elite"}:
-        return "Guest"
-    return tier
+def safe_dict(value):
+    return value if isinstance(value, dict) else {}
 
 
-def current_tier_lower() -> str:
-    return current_tier_title().lower()
+def safe_run(label: str, fn, default):
+    try:
+        return fn()
+    except Exception as e:
+        print(f"[SAFE_RUN:{label}] {e}")
+        return default
+
+
+def _safe_int(value, default=0):
+    try:
+        return int(value)
+    except Exception:
+        return default
+
+
+def _norm_text(value, default=""):
+    text = str(value or "").strip()
+    return text if text else default
+
+
+def _norm_upper(value, default="UNKNOWN"):
+    text = _norm_text(value, "").upper()
+    return text if text else default
+
+
+def _top_count_item(counts, fallback="Not enough data yet."):
+    if not counts:
+        return {"label": fallback, "count": 0}
+    label, count = max(counts.items(), key=lambda item: item[1])
+    return {"label": label, "count": count}
+
+
+# ============================================================
+# CANONICAL USER / TIER / THEME HELPERS
+# ============================================================
+
+VALID_TIERS = {"Guest", "Free", "Starter", "Pro", "Elite"}
 
 
 def is_logged_in() -> bool:
-    return bool(session.get("username"))
+    return bool(_norm_text(session.get("username", "")))
 
 
 def is_master() -> bool:
-    return session.get("role") == "master"
+    return _norm_text(session.get("role", "")).lower() == "master"
 
 
-def should_show_upgrade() -> bool:
-    return current_tier_title() != "Elite"
+def effective_tier_title() -> str:
+    preview = session.get("preview_tier")
+    stored_tier = session.get("tier", "Free")
+
+    if is_master() and preview:
+        tier = str(preview).title()
+    else:
+        tier = str(stored_tier or "Free").title()
+
+    if tier not in VALID_TIERS:
+        return "Free"
+    return tier
+
+
+def effective_tier_lower() -> str:
+    return effective_tier_title().lower()
+
+
+def current_tier_title() -> str:
+    return effective_tier_title()
+
+
+def current_tier_lower() -> str:
+    return effective_tier_lower()
+
+
+def get_current_tier_for_routes() -> str:
+    try:
+        return current_tier_title()
+    except Exception:
+        return "Free"
 
 
 def can_access_all_symbols() -> bool:
     if is_master() and not session.get("preview_tier"):
         return True
-    return current_tier_title() == "Elite"
+    return effective_tier_lower() in {"starter", "pro", "elite"}
 
 
-def get_current_user() -> Dict[str, Any]:
+def show_upgrade_prompt() -> bool:
+    return is_logged_in() and effective_tier_lower() != "elite"
+
+
+def current_user_context() -> Dict[str, Any]:
+    username = _norm_text(session.get("username", ""))
+    role = _norm_text(session.get("role", "member")).lower()
+    real_tier = str(session.get("tier", "Free") or "Free").title()
+    preview_tier = session.get("preview_tier")
+
+    if real_tier not in VALID_TIERS:
+        real_tier = "Free"
+
+    preview_tier_title = str(preview_tier).title() if preview_tier else None
+    if preview_tier_title and preview_tier_title not in VALID_TIERS:
+        preview_tier_title = None
+
     return {
-        "username": session.get("username"),
-        "tier": current_tier_title(),
-        "real_tier": session.get("tier", "Guest"),
-        "role": session.get("role", "member"),
-        "preview_tier": session.get("preview_tier"),
+        "username": username or None,
+        "role": role or "member",
+        "tier": effective_tier_title(),
+        "real_tier": real_tier,
+        "preview_tier": preview_tier_title,
     }
 
 
-def get_theme() -> str:
-    theme = session.get("theme", "dark")
-    return "light" if theme == "light" else "dark"
+def template_context(extra: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    ctx = dict(extra or {})
+    user_ctx = current_user_context()
 
-
-def get_unread_notifications() -> int:
-    items = load_json("data/notifications.json", [])
-    if not isinstance(items, list):
-        return 0
-
-    username = session.get("username")
-    if not username:
-        return 0
-
-    unread = 0
-    for item in items:
-        if not isinstance(item, dict):
-            continue
-        if item.get("username") not in [None, "", username]:
-            continue
-        if not item.get("read", False):
-            unread += 1
-    return unread
+    ctx.setdefault("theme", get_theme())
+    ctx.setdefault("user", user_ctx)
+    ctx.setdefault("show_upgrade", show_upgrade_prompt())
+    ctx.setdefault("can_access_all_symbols", can_access_all_symbols())
+    ctx.setdefault("unread_notifications", get_unread_notifications())
+    ctx.setdefault("snapshot", safe_run("get_dashboard_snapshot", get_dashboard_snapshot, {}))
+    return ctx
 
 
 @app.context_processor
@@ -2982,26 +3278,53 @@ def inject_global_context():
         print(f"[MARKET_UNIVERSE_AUTO_CHECK] {e}")
 
     return {
-        "user": safe_run("get_current_user", get_current_user, {
-            "username": None,
-            "tier": "Guest",
-            "real_tier": "Guest",
-            "role": "member",
-            "preview_tier": None,
-        }),
+        "user": safe_run(
+            "get_current_user",
+            get_current_user,
+            {
+                "username": None,
+                "tier": "Free",
+                "real_tier": "Free",
+                "role": "member",
+                "preview_tier": None,
+            },
+        ),
+        "soulaana_ui_state": safe_run(
+            "build_soulaana_ui_state",
+            build_soulaana_ui_state,
+            {
+                "emotional_state": "unknown",
+                "state_family": "stable",
+                "risk_level": "low",
+                "shell_mode": "stable",
+                "accent_mode": "soft",
+                "drawer_title": "Soulanna",
+                "drawer_note": "The Observatory is ready.",
+                "hero_badge": "Observatory",
+            },
+        ),
         "theme": safe_run("get_theme", get_theme, "dark"),
-        "show_upgrade": safe_run("should_show_upgrade", should_show_upgrade, True),
+        "show_upgrade": safe_run("show_upgrade_prompt", show_upgrade_prompt, True),
+        "can_access_all_symbols": safe_run("can_access_all_symbols", can_access_all_symbols, False),
         "unread_notifications": safe_run("get_unread_notifications", get_unread_notifications, 0),
-        "snapshot": safe_run("get_dashboard_snapshot", get_dashboard_snapshot, {
-            "estimated_account_value": 10000,
-            "buying_power": 5000,
-            "open_positions": 0,
-        }),
-        "system": safe_run("get_system_state", get_system_state, {
-            "regime": "Neutral",
-            "volatility": "Normal",
-            "engine_state": "Unknown",
-        }),
+        "snapshot": safe_run(
+            "get_dashboard_snapshot",
+            get_dashboard_snapshot,
+            {
+                "estimated_account_value": 10000,
+                "buying_power": 5000,
+                "open_positions": 0,
+            },
+        ),
+        "system": safe_run(
+            "get_system_state",
+            get_system_state,
+            {
+                "regime": "Neutral",
+                "volatility": "Normal",
+                "engine_state": "Unknown",
+            },
+        ),
         "execution_summary": safe_run(
             "execution_summary",
             lambda: load_json("data/execution_summary.json", {}),
@@ -5899,17 +6222,6 @@ def get_all_symbol_rows() -> List[Dict[str, Any]]:
 
     return rows
 
-def template_context(extra: Dict[str, Any]) -> Dict[str, Any]:
-    base = {
-        "user": get_current_user(),
-        "theme": get_theme(),
-        "snapshot": get_dashboard_snapshot(),
-        "system": get_system_state(),
-        "show_upgrade": should_show_upgrade(),
-        "unread_notifications": get_unread_notifications(),
-    }
-    base.update(extra)
-    return base
 
 # ============================================================
 # ROUTES
@@ -6340,12 +6652,15 @@ def charts_page():
 @app.route("/symbol/<symbol>")
 def signal_symbol_page(symbol: str):
     symbol = str(symbol or "").upper().strip()
-    maybe_track_page_view(f"/signals/{symbol}")
 
-    log_event("symbol_exposed", {
-        "symbol": symbol,
-        "source": "/signals",
-    })
+    maybe_track_page_view(f"/signals/{symbol}")
+    log_event(
+        "symbol_exposed",
+        {
+            "symbol": symbol,
+            "source": "/signals",
+        },
+    )
     track_symbol_click(symbol, source="/signals")
 
     detail = safe_run(
@@ -6371,50 +6686,80 @@ def signal_symbol_page(symbol: str):
         },
     )
 
+    detail = safe_dict(detail)
+    detail_symbol = str(detail.get("symbol") or symbol).upper().strip()
+
+    company = safe_dict(detail.get("company", {}))
+    board = safe_dict(detail.get("board", {}))
+    primary_intelligence = safe_dict(detail.get("primary_intelligence", {}))
+    symbol_signals = detail.get("signals", []) or []
+    news_items = detail.get("news_items", []) or []
+
+    if not company:
+        company = {
+            "name": detail_symbol,
+            "blurb": "Symbol detail is temporarily unavailable.",
+        }
+
+    if not board:
+        board = {
+            "symbol": detail_symbol,
+            "company_name": company.get("name", detail_symbol),
+            "latest_score": 0,
+            "latest_confidence": "LOW",
+            "latest_timestamp": "",
+            "opinion": "No active opinion available.",
+        }
+
     try:
-        if not detail.get("news_items"):
-            detail["news_items"] = refresh_symbol_news(
-                symbol=detail["symbol"],
-                company_name=detail["company"].get("name", ""),
+        if not news_items:
+            news_items = refresh_symbol_news(
+                symbol=detail_symbol,
+                company_name=company.get("name", ""),
                 limit=8,
                 max_age_minutes=30,
-            )
+            ) or []
     except Exception as e:
-        print(f"[SYMBOL_NEWS_REFRESH:{symbol}] {e}")
-        detail["news_items"] = detail.get("news_items", [])
+        print(f"[SYMBOL_NEWS_REFRESH:{detail_symbol}] {e}")
+        news_items = news_items or []
 
-    data_health = build_data_health_summary()
+    detail["symbol"] = detail_symbol
+    detail["company"] = company
+    detail["board"] = board
+    detail["primary_intelligence"] = primary_intelligence
+    detail["signals"] = symbol_signals
+    detail["news_items"] = news_items
+
+    data_health = build_data_health_summary() or {}
     symbol_news_meta = safe_dict(
-        data_health.get("pipeline", {}).get("symbol_news_sync", {}).get(detail["symbol"], {})
+        safe_dict(data_health.get("pipeline", {}))
+        .get("symbol_news_sync", {})
+        .get(detail_symbol, {})
     )
 
-    v2_symbol_hero = get_v2_symbol_hero(detail["symbol"])
-    v2_symbol_deep_dive = get_v2_symbol_deep_dive(detail["symbol"])
-    v2_horizontal_hero = get_v2_horizontal_hero()
+    v2_symbol_hero = get_v2_symbol_hero(detail_symbol) or {}
+    v2_symbol_deep_dive = get_v2_symbol_deep_dive(detail_symbol) or {}
+    v2_horizontal_hero = get_v2_horizontal_hero() or {}
+
+    hero_block = safe_dict(v2_symbol_hero.get("hero", {}))
+    primary_direction = primary_intelligence.get("direction") or "CALL"
+    primary_setup_type = primary_intelligence.get("setup_type") or "continuation"
+
+    deep_panels = v2_symbol_deep_dive.get("panels", []) or []
+    first_panel = deep_panels[0] if deep_panels else {}
+    first_panel_content = safe_dict(first_panel.get("content", {}))
+    first_scanner = safe_dict(first_panel_content.get("scanner", {}))
 
     fusion_signal = {
-        "symbol": detail["symbol"],
-        "company_name": detail.get("company", {}).get("name", detail["symbol"]),
-        "direction": (
-            v2_symbol_hero.get("hero", {}).get("direction")
-            or detail.get("primary_intelligence", {}).get("direction")
-            or "CALL"
-        ),
-        "setup_type": (
-            v2_symbol_hero.get("hero", {}).get("setup_type")
-            or detail.get("primary_intelligence", {}).get("setup_type")
-            or "continuation"
-        ),
-        "trend_strength": (
-            v2_symbol_deep_dive.get("panels", [{}])[0]
-            .get("content", {})
-            .get("scanner", {})
-            .get("score", 75)
-        ),
+        "symbol": detail_symbol,
+        "company_name": company.get("name", detail_symbol),
+        "direction": hero_block.get("direction") or primary_direction,
+        "setup_type": hero_block.get("setup_type") or primary_setup_type,
+        "trend_strength": first_scanner.get("score", 75),
         "volume_confirmation": 70,
         "extension_score": 35,
         "pullback_quality": 72,
-        "score": detail.get("board", {}).get("latest_score", 80),
+        "score": board.get("latest_score", 80),
         "structure_quality": 84,
         "liquidity_score": 92,
         "spread_score": 74,
@@ -6431,40 +6776,85 @@ def signal_symbol_page(symbol: str):
     symbol_explainability = {}
 
     try:
-        product_fusion, final_brain = build_final_brain_from_signal(detail["symbol"], fusion_signal)
-        symbol_fusion_view = build_symbol_page_fusion_view(product_fusion)
-        symbol_explainability = build_symbol_page_explainability(final_brain)
+        product_fusion, final_brain = build_final_brain_from_signal(detail_symbol, fusion_signal)
+        product_fusion = product_fusion or {}
+        final_brain = final_brain or {}
+        symbol_fusion_view = build_symbol_page_fusion_view(product_fusion) or {}
+        symbol_explainability = build_symbol_page_explainability(final_brain) or {}
     except Exception as e:
-        print(f"[SYMBOL_FINAL_BRAIN:{symbol}] {e}")
+        print(f"[SYMBOL_FINAL_BRAIN:{detail_symbol}] {e}")
 
-    tier = get_current_tier_for_routes()
+    tier = get_current_tier_for_routes() or "Free"
+    tier_lower = str(tier).lower()
 
     try:
         final_symbol_context = build_final_symbol_context(
-            symbol=detail["symbol"],
+            symbol=detail_symbol,
             final_brain=final_brain,
-            tier=tier.lower(),
-        )
+            tier=tier_lower,
+        ) or {}
     except Exception as e:
-        print(f"[FINAL_SYMBOL_CONTEXT:{symbol}] {e}")
+        print(f"[FINAL_SYMBOL_CONTEXT:{detail_symbol}] {e}")
         final_symbol_context = {}
+
+    symbol_news_impact = {}
+    try:
+        if "build_symbol_news_impact" in globals():
+            symbol_news_impact = build_symbol_news_impact(
+                symbol=detail_symbol,
+                company=company,
+                news_items=news_items,
+                board=board,
+                final_brain=final_brain,
+                final_symbol_context=final_symbol_context,
+            ) or {}
+        elif "build_symbol_page_news_impact" in globals():
+            symbol_news_impact = build_symbol_page_news_impact(
+                symbol=detail_symbol,
+                company=company,
+                news_items=news_items,
+                board=board,
+                final_brain=final_brain,
+                final_symbol_context=final_symbol_context,
+            ) or {}
+        else:
+            symbol_news_impact = {
+                "headline": f"News field for {detail_symbol}",
+                "summary": (
+                    f"Soulanna is tracking recent headlines for {detail_symbol}, "
+                    "but the symbol-level news impact builder is not wired yet."
+                ),
+                "symbol_impact": "Mixed",
+                "market_scope": "Company-specific",
+                "stance": final_symbol_context.get("hero_action", "wait"),
+                "confidence": final_symbol_context.get("hero_confidence", "low"),
+                "takeaway": "Wire a dedicated news-impact builder to turn raw headlines into symbol-level interpretation.",
+                "symbol_drivers": [],
+                "market_drivers": [],
+                "watch_items": [],
+                "thesis_shift": "",
+            }
+    except Exception as e:
+        print(f"[SYMBOL_NEWS_IMPACT:{detail_symbol}] {e}")
+        symbol_news_impact = {}
 
     return render_template_safe(
         "signal_symbol.html",
         **template_context(
             {
                 "detail": detail,
-                "symbol": detail["symbol"],
-                "company": detail["company"],
-                "board": detail["board"],
-                "primary_intelligence": detail.get("primary_intelligence", {}),
-                "symbol_signals": detail.get("signals", []),
-                "visible_signal_count": len(detail.get("signals", [])),
-                "total_signal_count": len(detail.get("signals", [])),
+                "symbol": detail_symbol,
+                "company": company,
+                "board": board,
+                "primary_intelligence": primary_intelligence,
+                "symbol_signals": symbol_signals,
+                "visible_signal_count": len(symbol_signals),
+                "total_signal_count": len(symbol_signals),
                 "show_teaser": False,
                 "show_elite": tier == "Elite",
-                "news_items": detail.get("news_items", []),
-                "opinion": detail.get("board", {}).get("opinion", "Active setup."),
+                "news_items": news_items,
+                "symbol_news_impact": symbol_news_impact,
+                "opinion": board.get("opinion", "Active setup."),
                 "explanation": {},
                 "data_health": data_health,
                 "symbol_news_meta": symbol_news_meta,
@@ -6480,7 +6870,7 @@ def signal_symbol_page(symbol: str):
             }
         ),
     )
-  
+
 
 
 @app.route("/trade-review")
