@@ -3257,6 +3257,41 @@ def current_user_context() -> Dict[str, Any]:
     }
 
 
+def get_theme() -> str:
+    theme = session.get("theme", "dark")
+    return "light" if str(theme).lower() == "light" else "dark"
+
+
+def get_current_user() -> Dict[str, Any]:
+    return {
+        "username": session.get("username"),
+        "tier": current_tier_title(),
+        "real_tier": session.get("tier", "Guest"),
+        "role": session.get("role", "member"),
+        "preview_tier": session.get("preview_tier"),
+    }
+
+
+def get_unread_notifications() -> int:
+    items = load_json("data/notifications.json", [])
+    if not isinstance(items, list):
+        return 0
+
+    username = session.get("username")
+    if not username:
+        return 0
+
+    unread = 0
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        if item.get("username") not in [None, "", username]:
+            continue
+        if not item.get("read", False):
+            unread += 1
+    return unread
+
+
 def template_context(extra: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     ctx = dict(extra or {})
     user_ctx = current_user_context()
