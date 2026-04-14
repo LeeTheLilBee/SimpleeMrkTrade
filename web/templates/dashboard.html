@@ -1,32 +1,431 @@
 {% extends "base.html" %}
 {% block content %}
-{% set soulaana_greeting = soulaana_bundle.get("greeting", {}) if soulaana_bundle else {} %}
 {% set dash = final_dashboard_context if final_dashboard_context else {} %}
 {% set cards = final_spotlight_cards if final_spotlight_cards else [] %}
-{% set mode = soulaana_ui_state.shell_mode if soulaana_ui_state else "stable" %}
+{% set soulaana_greeting = soulaana_bundle.get("greeting", {}) if soulaana_bundle else {} %}
 <style>
 .dashboard-shell {
     display: grid;
-    gap: 22px;
+    gap: 20px;
+}
+
+.command-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    padding: 28px;
+    background:
+        radial-gradient(circle at top left, rgba(140,106,255,0.22), transparent 30%),
+        radial-gradient(circle at 84% 18%, rgba(255,118,204,0.14), transparent 22%),
+        radial-gradient(circle at 74% 80%, rgba(112,195,255,0.10), transparent 20%),
+        linear-gradient(135deg, rgba(13,17,34,0.98), rgba(8,11,24,0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 28px 70px rgba(0,0,0,0.36);
+}
+
+.command-hero::before {
+    content: "";
+    position: absolute;
+    right: 34px;
+    top: 24px;
+    width: 132px;
+    height: 132px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(182,210,255,0.56) 20%, rgba(140,106,255,0.28) 46%, transparent 76%);
+    filter: blur(10px);
+    opacity: 0.95;
+    pointer-events: none;
+}
+
+.command-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    opacity: 0.6;
+}
+
+.command-top {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.command-kickers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.command-pill,
+.info-chip,
+.system-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: rgba(247,248,255,0.88);
+    backdrop-filter: blur(8px);
+}
+
+.command-title {
+    margin: 0 0 10px 0;
+    font-size: 2.2rem;
+    line-height: 1.04;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    max-width: 720px;
+}
+
+.command-copy {
+    margin: 0;
+    max-width: 920px;
+    color: rgba(247,248,255,0.82);
+    line-height: 1.55;
+    font-size: 1rem;
+}
+
+.command-orbit {
+    position: relative;
+    z-index: 1;
+    width: 170px;
+    height: 170px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background:
+        radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 58%),
+        radial-gradient(circle at center, rgba(140,106,255,0.18), transparent 72%);
+}
+
+.command-orbit::before,
+.command-orbit::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.command-orbit::before {
+    inset: 16px;
+}
+
+.command-orbit::after {
+    inset: 34px;
+}
+
+.orbit-core {
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.98) 0%, rgba(180,196,255,0.64) 20%, rgba(140,106,255,0.42) 52%, rgba(255,118,204,0.16) 74%, transparent 100%);
+    box-shadow: 0 0 34px rgba(140,106,255,0.38);
+}
+
+.command-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.command-stat {
+    border-radius: 20px;
+    padding: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    min-height: 96px;
+}
+
+.command-stat-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(247,248,255,0.56);
+    margin-bottom: 8px;
+}
+
+.command-stat-value {
+    font-size: 1.06rem;
+    font-weight: 900;
+    line-height: 1.18;
+}
+
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+    gap: 18px;
+}
+
+.dashboard-stack {
+    display: grid;
+    gap: 18px;
+}
+
+.observatory-panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 26px;
+    padding: 20px;
+    background:
+        radial-gradient(circle at top left, rgba(140,106,255,0.12), transparent 34%),
+        linear-gradient(135deg, rgba(13,17,34,0.96), rgba(8,11,23,0.96));
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.24);
+}
+
+.observatory-panel h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.08rem;
+}
+
+.panel-copy {
+    margin: 0;
+    color: rgba(247,248,255,0.76);
+    line-height: 1.48;
+}
+
+.panel-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.section-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: rgba(247,248,255,0.88);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.82rem;
+    font-weight: 800;
+    white-space: nowrap;
+    transition: all 0.16s ease;
+}
+
+.section-action:hover {
+    transform: translateY(-1px);
+    background: rgba(255,255,255,0.08);
+}
+
+.soulaana-command-panel {
+    background:
+        radial-gradient(circle at top left, rgba(140,106,255,0.18), transparent 30%),
+        radial-gradient(circle at 88% 14%, rgba(255,118,204,0.12), transparent 22%),
+        linear-gradient(135deg, rgba(15,18,38,0.98), rgba(8,11,24,0.98));
+    border-color: rgba(162,172,255,0.18);
+}
+
+.soulaana-kicker {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(247,248,255,0.54);
+    margin-bottom: 8px;
+}
+
+.soulaana-title {
+    margin: 0 0 10px 0;
+    font-size: 1.42rem;
+    line-height: 1.12;
+    font-weight: 900;
+    max-width: 680px;
+}
+
+.soulaana-body {
+    margin: 0;
+    color: rgba(247,248,255,0.82);
+    line-height: 1.55;
+    font-size: 0.98rem;
+}
+
+.soulaana-grid {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.soulaana-brief {
+    border-radius: 18px;
+    padding: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.soulaana-brief-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(247,248,255,0.52);
+    margin-bottom: 6px;
+}
+
+.soulaana-brief-value {
+    font-size: 0.96rem;
+    line-height: 1.45;
+    color: rgba(247,248,255,0.84);
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.metric-card {
+    border-radius: 22px;
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(140,106,255,0.10), transparent 34%),
+        linear-gradient(135deg, rgba(12,16,31,0.96), rgba(8,11,24,0.96));
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
+}
+
+.metric-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(247,248,255,0.54);
+    margin-bottom: 8px;
+}
+
+.metric-value {
+    font-size: 1.16rem;
+    font-weight: 900;
+}
+
+.metric-sub {
+    margin-top: 8px;
+    color: rgba(247,248,255,0.62);
+    font-size: 0.86rem;
+    line-height: 1.35;
+}
+
+.spotlight-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.spotlight-card {
+    border-radius: 20px;
+    padding: 16px;
+    background:
+        radial-gradient(circle at top left, rgba(140,106,255,0.14), transparent 34%),
+        linear-gradient(135deg, rgba(14,18,36,0.96), rgba(8,11,23,0.96));
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.spotlight-card h4 {
+    margin: 0 0 7px 0;
+    font-size: 1rem;
+}
+
+.spotlight-card p {
+    margin: 0;
+    color: rgba(247,248,255,0.76);
+    line-height: 1.45;
+}
+
+.watch-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.watch-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 20px;
+    padding: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    transition: transform 0.16s ease, background 0.16s ease;
+}
+
+.watch-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.06);
+}
+
+.watch-symbol {
+    font-size: 1.02rem;
+    font-weight: 900;
+    margin-bottom: 4px;
+}
+
+.watch-company {
+    color: rgba(247,248,255,0.68);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.command-lane {
+    display: grid;
+    gap: 12px;
+}
+
+.command-lane-card {
+    border-radius: 20px;
+    padding: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.command-lane-card h4 {
+    margin: 0 0 7px 0;
+}
+
+.command-lane-card p {
+    margin: 0;
+    color: rgba(247,248,255,0.72);
+    line-height: 1.44;
 }
 
 .soulaana-modal {
     position: fixed;
     inset: 0;
     display: none;
-    z-index: 2400;
+    z-index: 3600;
 }
+
 .soulaana-modal.is-open {
     display: block;
 }
+
 .soulaana-modal-backdrop {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at top, rgba(124,77,255,0.16), transparent 30%),
-        rgba(3, 5, 12, 0.78);
-    backdrop-filter: blur(10px);
+        radial-gradient(circle at top, rgba(140,106,255,0.22), transparent 26%),
+        rgba(2,4,10,0.80);
+    backdrop-filter: blur(12px);
 }
+
 .soulaana-modal-dialog {
     position: relative;
     z-index: 2;
@@ -36,331 +435,139 @@
     justify-content: center;
     padding: 22px;
 }
+
 .soulaana-modal-card {
-    width: min(760px, 94vw);
+    width: min(780px, 94vw);
     border-radius: 30px;
-    padding: 28px;
-    background:
-        radial-gradient(circle at top left, rgba(124,77,255,0.18), transparent 34%),
-        radial-gradient(circle at 82% 18%, rgba(255,95,207,0.12), transparent 28%),
-        linear-gradient(135deg, rgba(14,11,29,0.98), rgba(8,7,18,0.98));
-    border: 1px solid rgba(255,255,255,0.10);
-    box-shadow: 0 28px 90px rgba(0,0,0,0.42);
+    padding: 30px;
     position: relative;
     overflow: hidden;
+    background:
+        radial-gradient(circle at top left, rgba(140,106,255,0.20), transparent 32%),
+        radial-gradient(circle at 84% 18%, rgba(255,118,204,0.12), transparent 24%),
+        linear-gradient(135deg, rgba(13,17,34,0.98), rgba(8,11,24,0.98));
+    border: 1px solid rgba(255,255,255,0.10);
+    box-shadow: 0 32px 90px rgba(0,0,0,0.44);
 }
+
 .soulaana-modal-card::before {
     content: "";
     position: absolute;
-    right: 34px;
-    top: 26px;
-    width: 118px;
-    height: 118px;
+    right: 32px;
+    top: 24px;
+    width: 124px;
+    height: 124px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.30) 46%, transparent 76%);
+    background: radial-gradient(circle, rgba(255,255,255,0.96) 0%, rgba(184,210,255,0.56) 20%, rgba(140,106,255,0.30) 44%, transparent 76%);
     filter: blur(10px);
-    opacity: 0.9;
+    opacity: 0.94;
     pointer-events: none;
 }
+
 .soulaana-modal-kicker {
-    font-size: 0.76rem;
+    position: relative;
+    z-index: 1;
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
-    opacity: 0.72;
+    color: rgba(247,248,255,0.56);
     margin-bottom: 12px;
 }
+
 .soulaana-modal-title {
+    position: relative;
+    z-index: 1;
     margin: 0 0 10px 0;
-    font-size: 1.9rem;
-    line-height: 1.12;
-    font-weight: 800;
-    max-width: 600px;
+    font-size: 2rem;
+    line-height: 1.08;
+    font-weight: 900;
+    max-width: 620px;
 }
+
 .soulaana-modal-subtext {
+    position: relative;
+    z-index: 1;
     margin: 0;
-    max-width: 640px;
-    opacity: 0.88;
-    line-height: 1.5;
+    max-width: 680px;
+    color: rgba(247,248,255,0.80);
+    line-height: 1.56;
 }
+
 .soulaana-modal-form {
+    position: relative;
+    z-index: 1;
     margin-top: 22px;
 }
+
 .soulaana-modal-chip-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
+
 .soulaana-modal-chip {
     border: 0;
     border-radius: 999px;
     padding: 11px 15px;
-    font-size: 0.94rem;
-    font-weight: 700;
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: white;
     cursor: pointer;
     background: rgba(255,255,255,0.08);
-    color: inherit;
     border: 1px solid rgba(255,255,255,0.08);
-    transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+    transition: transform 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
 }
+
 .soulaana-modal-chip:hover {
     transform: translateY(-1px);
     background: rgba(255,255,255,0.12);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.20);
 }
+
 .soulaana-modal-skip {
     margin-top: 18px;
     border: 0;
     background: transparent;
-    color: inherit;
-    opacity: 0.72;
+    color: rgba(247,248,255,0.74);
     cursor: pointer;
     text-decoration: underline;
     padding: 0;
     font-size: 0.92rem;
 }
 
-.dashboard-hero {
-    position: relative;
-    overflow: hidden;
-    border-radius: 30px;
-    padding: 26px;
-    background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.24), transparent 34%),
-        radial-gradient(circle at 78% 22%, rgba(255, 95, 207, 0.16), transparent 28%),
-        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 24px 54px rgba(0,0,0,0.34);
-}
-.dashboard-hero::before {
-    content: "";
-    position: absolute;
-    right: 42px;
-    top: 28px;
-    width: 124px;
-    height: 124px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.34) 44%, transparent 74%);
-    filter: blur(10px);
-    opacity: 0.9;
-    pointer-events: none;
-}
-
-.dashboard-hero-stable { box-shadow: 0 24px 54px rgba(0,0,0,0.34), 0 0 0 1px rgba(160,170,255,0.08) inset; }
-.dashboard-hero-precision { box-shadow: 0 24px 54px rgba(0,0,0,0.34), 0 0 0 1px rgba(117,204,255,0.14) inset; }
-.dashboard-hero-protective,
-.dashboard-hero-fatigue { box-shadow: 0 24px 54px rgba(0,0,0,0.34), 0 0 0 1px rgba(132,140,255,0.12) inset; }
-.dashboard-hero-warning { box-shadow: 0 24px 54px rgba(0,0,0,0.34), 0 0 0 1px rgba(255,120,170,0.14) inset; }
-.dashboard-hero-restricted { box-shadow: 0 24px 54px rgba(0,0,0,0.38), 0 0 0 1px rgba(255,96,128,0.20) inset; }
-
-.dashboard-kicker {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-}
-.dashboard-pill,
-.info-chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.10);
-}
-.dashboard-title {
-    margin: 0 0 10px 0;
-    font-size: 1.95rem;
-    font-weight: 800;
-    line-height: 1.1;
-}
-.dashboard-sub {
-    margin: 0;
-    max-width: 880px;
-    opacity: 0.9;
-    line-height: 1.5;
-}
-.info-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 14px;
-}
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px;
-}
-.dashboard-card,
-.deep-panel,
-.watch-panel {
-    border-radius: 24px;
-    padding: 18px;
-    background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
-        linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
-}
-.dashboard-card h3,
-.deep-panel h3,
-.watch-panel h3 {
-    margin: 0 0 10px 0;
-}
-.metric-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    opacity: 0.68;
-    margin-bottom: 6px;
-}
-.metric-value {
-    font-size: 1.02rem;
-    font-weight: 800;
-}
-
-.spotlight-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-}
-.spotlight-card {
-    border-radius: 22px;
-    padding: 16px;
-    background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.12), transparent 34%),
-        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-}
-.spotlight-card h4 {
-    margin: 0 0 6px 0;
-}
-.spotlight-card p {
-    margin: 0;
-    line-height: 1.44;
-    opacity: 0.88;
-}
-
-.watch-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin-top: 12px;
-}
-.watch-card {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    border-radius: 20px;
-    padding: 16px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    transition: transform 0.12s ease, background 0.12s ease;
-}
-.watch-card:hover {
-    transform: translateY(-2px);
-    background: rgba(255,255,255,0.08);
-}
-.watch-symbol {
-    font-size: 1rem;
-    font-weight: 800;
-    margin-bottom: 4px;
-}
-.watch-company {
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-.section-top {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    align-items: flex-start;
-    margin-bottom: 12px;
-}
-.section-copy {
-    margin: 0;
-    opacity: 0.82;
-    line-height: 1.45;
-}
-.action-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 14px;
-    border-radius: 999px;
-    text-decoration: none;
-    color: inherit;
-    background: rgba(168,175,255,0.18);
-    border: 1px solid rgba(168,175,255,0.24);
-    white-space: nowrap;
-}
-
-.observatory-behavior-panel {
-    border-radius: 24px;
-    padding: 18px;
-    background:
-        radial-gradient(circle at top left, rgba(124,77,255,0.12), transparent 34%),
-        linear-gradient(135deg, rgba(13,11,25,0.98), rgba(8,7,18,0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
-}
-.behavior-title {
-    margin: 0 0 8px 0;
-    font-size: 1.12rem;
-    font-weight: 800;
-}
-.behavior-copy {
-    margin: 0;
-    opacity: 0.84;
-    line-height: 1.48;
-}
-.behavior-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin-top: 14px;
-}
-.behavior-item {
-    border-radius: 18px;
-    padding: 14px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-}
-.behavior-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    opacity: 0.68;
-    margin-bottom: 6px;
-}
-.behavior-value {
-    font-size: 0.96rem;
-    font-weight: 800;
-}
-
 @media (max-width: 1180px) {
-    .dashboard-grid {
+    .command-grid,
+    .metrics-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .watch-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .behavior-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-@media (max-width: 980px) {
-    .spotlight-grid,
-    .watch-grid,
-    .dashboard-grid,
-    .behavior-grid {
+
+    .dashboard-layout {
         grid-template-columns: 1fr;
     }
-    .section-top {
-        flex-direction: column;
+
+    .command-orbit {
+        display: none;
+    }
+}
+
+@media (max-width: 860px) {
+    .spotlight-grid,
+    .watch-grid,
+    .command-grid,
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .command-hero {
+        padding: 22px;
+    }
+
+    .command-title {
+        font-size: 1.72rem;
+    }
+
+    .soulaana-modal-title {
+        font-size: 1.6rem;
     }
 }
 </style>
@@ -373,12 +580,12 @@
     <div class="soulaana-modal-backdrop"></div>
     <div class="soulaana-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="soulaanaModalTitle">
         <div class="soulaana-modal-card">
-            <div class="soulaana-modal-kicker">Soulanna</div>
+            <div class="soulaana-modal-kicker">Soulaana Check-In</div>
             <h2 id="soulaanaModalTitle" class="soulaana-modal-title">
-                {{ soulaana_greeting.get("headline", "Hey love, how you feeling coming in today?") }}
+                {{ soulaana_greeting.get("headline", "Hey love, how are you coming into the Observatory today?") }}
             </h2>
             <p class="soulaana-modal-subtext">
-                {{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance and catch emotional pressure early.") }}
+                {{ soulaana_greeting.get("subtext", "Your check-in helps Soulaana tune warnings, posture, and guidance across the system.") }}
             </p>
             <form method="POST" action="{{ url_for('soulaana_checkin') }}" class="soulaana-modal-form">
                 <div class="soulaana-modal-chip-grid">
@@ -397,147 +604,239 @@
 </div>
 
 <div class="dashboard-shell">
-    <div class="dashboard-hero dashboard-hero-{{ mode }}">
-        <div class="dashboard-kicker">
-            <span class="dashboard-pill">final command posture</span>
-            <span class="dashboard-pill">{{ dash.get("dashboard_action", "wait") }}</span>
-            <span class="dashboard-pill">Lead: {{ dash.get("dominant_symbol", "None") }}</span>
-            {% if tier %}
-            <span class="dashboard-pill">{{ tier }}</span>
-            {% endif %}
-            {% if user_mode %}
-            <span class="dashboard-pill">{{ user_mode|title }} mode</span>
-            {% endif %}
-            {% if soulaana_ui_state %}
-            <span class="dashboard-pill">{{ soulaana_ui_state.hero_badge }}</span>
-            <span class="dashboard-pill">{{ soulaana_ui_state.emotional_state }}</span>
-            {% endif %}
+    <section class="command-hero">
+        <div class="command-top">
+            <div>
+                <div class="command-kickers">
+                    <span class="command-pill">Simulation Command</span>
+                    <span class="command-pill">{{ dash.get("dashboard_action", "wait") }}</span>
+                    <span class="command-pill">Lead {{ dash.get("dominant_symbol", "None") }}</span>
+                    {% if tier %}
+                    <span class="command-pill">{{ tier }}</span>
+                    {% endif %}
+                    {% if user_mode %}
+                    <span class="command-pill">{{ user_mode|title }} Mode</span>
+                    {% endif %}
+                </div>
+                <h1 class="command-title">The Observatory Command Deck</h1>
+                <p class="command-copy">
+                    {{ dash.get("dashboard_insight", "The simulated account is live, the field is active, and Soulaana is watching for the strongest pressure shifts across the sky.") }}
+                </p>
+                <div class="command-kickers" style="margin-top:14px;">
+                    {% if dash.get("dashboard_story") %}
+                    <span class="info-chip">{{ dash.get("dashboard_story") }}</span>
+                    {% endif %}
+                    {% if dash.get("dashboard_coaching") %}
+                    <span class="info-chip">{{ dash.get("dashboard_coaching") }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="command-orbit">
+                <div class="orbit-core"></div>
+            </div>
         </div>
 
-        <h1 class="dashboard-title">Observatory Command Deck</h1>
-        <p class="dashboard-sub">
-            {{ dash.get("dashboard_insight", "No final-brain dashboard insight available.") }}
+        <div class="command-grid">
+            <div class="command-stat">
+                <div class="command-stat-label">Current Posture</div>
+                <div class="command-stat-value">{{ dash.get("dashboard_action", "wait") }}</div>
+            </div>
+            <div class="command-stat">
+                <div class="command-stat-label">Lead Symbol</div>
+                <div class="command-stat-value">{{ dash.get("dominant_symbol", "None") }}</div>
+            </div>
+            <div class="command-stat">
+                <div class="command-stat-label">Soulaana State</div>
+                <div class="command-stat-value">
+                    {{ soulaana_state.replace("_", " ").title() if soulaana_state else "Not Checked In" }}
+                </div>
+            </div>
+            <div class="command-stat">
+                <div class="command-stat-label">Simulation Lane</div>
+                <div class="command-stat-value">{{ user_mode|title if user_mode else "Manual" }}</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="observatory-panel soulaana-command-panel">
+        <div class="soulaana-kicker">Soulaana · Guidance Officer</div>
+        <h2 class="soulaana-title">
+            {% if soulaana_checkin_headline %}
+                {{ soulaana_checkin_headline }}
+            {% else %}
+                Soulaana is running command posture for your simulated account.
+            {% endif %}
+        </h2>
+        <p class="soulaana-body">
+            {% if soulaana_checkin_note %}
+                {{ soulaana_checkin_note }}
+            {% else %}
+                She reads the field, the simulated account, and your current behavioral tone to shape how the Observatory warns, interprets, and prioritizes. Simulation stays public, but Soulaana stays central.
+            {% endif %}
         </p>
 
-        {% if dash.get("dashboard_story") %}
-        <div class="info-row">
-            <span class="info-chip">{{ dash.get("dashboard_story") }}</span>
-        </div>
-        {% endif %}
-
-        {% if dash.get("dashboard_coaching") %}
-        <div class="info-row">
-            <span class="info-chip">{{ dash.get("dashboard_coaching") }}</span>
-        </div>
-        {% endif %}
-    </div>
-
-    {% if soulaana_ui_state %}
-    <div class="observatory-behavior-panel">
-        <h2 class="behavior-title">Soulanna Behavior Posture</h2>
-        <p class="behavior-copy">{{ soulaana_ui_state.drawer_note }}</p>
-
-        <div class="info-row">
-            <span class="info-chip">{{ soulaana_ui_state.drawer_title }}</span>
-            <span class="info-chip">{{ soulaana_ui_state.state_family }}</span>
-            <span class="info-chip">{{ soulaana_ui_state.risk_level }}</span>
-            <span class="info-chip">{{ soulaana_ui_state.shell_mode }}</span>
-        </div>
-
-        <div class="behavior-grid">
-            <div class="behavior-item">
-                <div class="behavior-label">Mood</div>
-                <div class="behavior-value">{{ soulaana_ui_state.emotional_state|replace("_", " ")|title }}</div>
+        <div class="soulaana-grid">
+            <div class="soulaana-brief">
+                <div class="soulaana-brief-label">Simulation Posture</div>
+                <div class="soulaana-brief-value">
+                    {{ dash.get("dashboard_insight", "No active command posture has been published yet.") }}
+                </div>
             </div>
-            <div class="behavior-item">
-                <div class="behavior-label">Risk Layer</div>
-                <div class="behavior-value">{{ soulaana_ui_state.risk_level|title }}</div>
+            <div class="soulaana-brief">
+                <div class="soulaana-brief-label">What Matters Now</div>
+                <div class="soulaana-brief-value">
+                    {{ dash.get("dashboard_story", "Soulaana is watching for pressure concentration, leadership shifts, and trade-quality changes across the simulated account.") }}
+                </div>
             </div>
-            <div class="behavior-item">
-                <div class="behavior-label">Shell Mode</div>
-                <div class="behavior-value">{{ soulaana_ui_state.shell_mode|replace("_", " ")|title }}</div>
+            <div class="soulaana-brief">
+                <div class="soulaana-brief-label">Behavior Alignment</div>
+                <div class="soulaana-brief-value">
+                    {{ dash.get("dashboard_coaching", "Stay selective, let the field speak clearly, and do not force movement where the sky is still unresolved.") }}
+                </div>
             </div>
         </div>
-    </div>
-    {% endif %}
+    </section>
 
-    <div class="dashboard-grid">
-        <div class="dashboard-card">
+    <section class="metrics-grid">
+        <div class="metric-card">
             <div class="metric-label">Estimated Account Value</div>
-            <div class="metric-value">{{ snapshot.get("estimated_account_value", 0) }}</div>
+            <div class="metric-value">${{ snapshot.get("estimated_account_value", 0) }}</div>
+            <div class="metric-sub">Live simulated account valuation.</div>
         </div>
-        <div class="dashboard-card">
+        <div class="metric-card">
             <div class="metric-label">Buying Power</div>
-            <div class="metric-value">{{ snapshot.get("buying_power", 0) }}</div>
+            <div class="metric-value">${{ snapshot.get("buying_power", 0) }}</div>
+            <div class="metric-sub">Capital currently free for deployment.</div>
         </div>
-        <div class="dashboard-card">
+        <div class="metric-card">
             <div class="metric-label">Open Positions</div>
             <div class="metric-value">{{ snapshot.get("open_positions", 0) }}</div>
+            <div class="metric-sub">Positions currently active inside Soulaana’s Book.</div>
         </div>
-        <div class="dashboard-card">
+        <div class="metric-card">
             <div class="metric-label">Regime</div>
             <div class="metric-value">{{ system.get("regime", "Unknown") }}</div>
+            <div class="metric-sub">Current system backdrop and environment state.</div>
         </div>
-    </div>
+    </section>
 
-    {% if user_mode in ["manual", "hybrid"] %}
-    <div class="watch-panel">
-        <div class="section-top">
-            <div>
-                <h3>Chart Board</h3>
-                <p class="section-copy">
-                    Keep your eyes on the symbols you want to stalk, study, or manage manually before you commit.
-                </p>
-            </div>
-            <a href="{{ url_for('charts_page') }}" class="action-link">Open charts</a>
-        </div>
+    <div class="dashboard-layout">
+        <div class="dashboard-stack">
+            {% if cards %}
+            <section class="observatory-panel">
+                <div class="panel-top">
+                    <div>
+                        <h3>Signals Spotlight</h3>
+                        <p class="panel-copy">
+                            The strongest active ideas, pressure shifts, and symbol lanes asking for attention right now.
+                        </p>
+                    </div>
+                    <a href="{{ url_for('signals_page') }}" class="section-action">Open Signals</a>
+                </div>
+                <div class="spotlight-grid">
+                    {% for card in cards[:4] %}
+                    <div class="spotlight-card">
+                        <h4>{{ card.get("symbol", "") }} — {{ card.get("title", "") }}</h4>
+                        <p>{{ card.get("subtitle", "") }}</p>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;">
+                            <span class="info-chip">{{ card.get("action", "wait") }}</span>
+                            <span class="info-chip">{{ card.get("confidence", "low") }}</span>
+                            {% if card.get("coaching") %}
+                            <span class="info-chip">{{ card.get("coaching") }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
 
-        {% if watchlist_preview %}
-        <div class="watch-grid">
-            {% for item in watchlist_preview %}
-            <a href="{{ item.chart_url }}" class="watch-card">
-                <div class="watch-symbol">{{ item.symbol }}</div>
-                <div class="watch-company">{{ item.company_name }}</div>
-            </a>
-            {% endfor %}
-        </div>
-        {% else %}
-        <p class="section-copy">No watchlist symbols loaded yet.</p>
-        {% endif %}
-    </div>
-    {% endif %}
-
-    {% if cards %}
-    <div class="deep-panel">
-        <div class="section-top">
-            <div>
-                <h3>Final Brain Spotlight</h3>
-                <p class="section-copy">
-                    The strongest active ideas, posture shifts, and symbols demanding the most attention right now.
-                </p>
-            </div>
-        </div>
-
-        <div class="spotlight-grid">
-            {% for card in cards[:4] %}
-            <div class="spotlight-card">
-                <h4>{{ card.get("symbol", "") }} — {{ card.get("title", "") }}</h4>
-                <p>{{ card.get("subtitle", "") }}</p>
-
-                <div class="info-row">
-                    <span class="info-chip">{{ card.get("action", "wait") }}</span>
-                    <span class="info-chip">{{ card.get("confidence", "low") }}</span>
+            {% if user_mode in ["manual", "hybrid"] %}
+            <section class="observatory-panel">
+                <div class="panel-top">
+                    <div>
+                        <h3>Chart Board</h3>
+                        <p class="panel-copy">
+                            Keep your symbol watch lane tight and visual. Charts live under Symbols, but the command deck keeps them within reach.
+                        </p>
+                    </div>
+                    <a href="{{ url_for('charts_page') }}" class="section-action">Open Charts</a>
                 </div>
 
-                {% if card.get("coaching") %}
-                <div class="info-row">
-                    <span class="info-chip">{{ card.get("coaching") }}</span>
+                {% if watchlist_preview %}
+                <div class="watch-grid">
+                    {% for item in watchlist_preview %}
+                    <a href="{{ item.chart_url }}" class="watch-card">
+                        <div class="watch-symbol">{{ item.symbol }}</div>
+                        <div class="watch-company">{{ item.company_name }}</div>
+                        <span class="system-pill">Inspect Symbol</span>
+                    </a>
+                    {% endfor %}
                 </div>
+                {% else %}
+                <p class="panel-copy">No watchlist symbols are loaded yet.</p>
                 {% endif %}
-            </div>
-            {% endfor %}
+            </section>
+            {% endif %}
+        </div>
+
+        <div class="dashboard-stack">
+            <section class="observatory-panel">
+                <div class="panel-top">
+                    <div>
+                        <h3>Simulation Access</h3>
+                        <p class="panel-copy">
+                            This command deck is the home of the simulated account. Everything tied to simulated performance and system posture nests under Simulation.
+                        </p>
+                    </div>
+                </div>
+                <div class="command-lane">
+                    <div class="command-lane-card">
+                        <h4>Soulaana’s Book</h4>
+                        <p>System-held positions and the live simulated book.</p>
+                        <div style="margin-top:12px;">
+                            <a href="/positions" class="section-action">Open Book</a>
+                        </div>
+                    </div>
+                    <div class="command-lane-card">
+                        <h4>Proof</h4>
+                        <p>Performance proof layer for the simulated account.</p>
+                        <div style="margin-top:12px;">
+                            <a href="/proof" class="section-action">Open Proof</a>
+                        </div>
+                    </div>
+                    <div class="command-lane-card">
+                        <h4>Live Activity</h4>
+                        <p>Watch system motion, reports, logs, and simulated movement unfold.</p>
+                        <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
+                            <a href="/live-activity" class="section-action">Activity</a>
+                            <a href="/reports" class="section-action">Reports</a>
+                            <a href="/bot-log" class="section-action">Bot Log</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="observatory-panel">
+                <div class="panel-top">
+                    <div>
+                        <h3>Symbols & Navigation</h3>
+                        <p class="panel-copy">
+                            Visual symbol work stays nested cleanly under Symbols so the deck never forgets charts or the market map.
+                        </p>
+                    </div>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    <a href="/charts" class="section-action">Charts</a>
+                    <a href="/market-map" class="section-action">Market Map</a>
+                    <a href="/signals" class="section-action">Signals Spotlight</a>
+                    {% if can_access_all_symbols %}
+                    <a href="/all-symbols" class="section-action">All Symbols</a>
+                    {% endif %}
+                </div>
+            </section>
         </div>
     </div>
-    {% endif %}
 </div>
 {% endblock %}
+:::
