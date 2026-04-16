@@ -13155,5 +13155,2497 @@
     ],
     "why_not_this_trade": [],
     "timeline": []
+  },
+  {
+    "trade_id": "AAPL-CALL-20260324T031435371023",
+    "timestamp": "2026-04-16T02:24:17.075088",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 100.25,
+    "exit_price": 266.43,
+    "size": 10.0,
+    "pnl": 1661.8,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "AAPL",
+      "headline": "AAPL exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 1661.8",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "AMZN-CALL-20260324T031435379476",
+    "timestamp": "2026-04-16T02:24:17.239903",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 100.25,
+    "exit_price": 248.5,
+    "size": 10.0,
+    "pnl": 1482.5,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "AMZN",
+      "headline": "AMZN exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 1482.5",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "AAPL-CALL-20260324T035250597658",
+    "timestamp": "2026-04-16T02:24:17.405933",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 252.1187,
+    "exit_price": 266.43,
+    "size": 19.0,
+    "pnl": 271.91,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "AAPL",
+      "headline": "AAPL exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 271.91",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "AAPL-CALL-20260325T012209737257",
+    "timestamp": "2026-04-16T02:24:17.580196",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 252.2691,
+    "exit_price": 266.43,
+    "size": 18.0,
+    "pnl": 254.9,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "AAPL",
+      "headline": "AAPL exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 254.9",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "AMZN-CALL-20260325T012209856646",
+    "timestamp": "2026-04-16T02:24:17.705739",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 207.7581,
+    "exit_price": 248.5,
+    "size": 1.0,
+    "pnl": 40.74,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "AMZN",
+      "headline": "AMZN exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 40.74",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "AAPL-CALL-20260325T014241112701",
+    "timestamp": "2026-04-16T02:24:17.886972",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 252.2691,
+    "exit_price": 266.43,
+    "size": 18.0,
+    "pnl": 254.9,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "AAPL",
+      "headline": "AAPL exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 254.9",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "MSFT-CALL-20260326T013510170421",
+    "timestamp": "2026-04-16T02:24:18.171549",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 371.9676,
+    "exit_price": 411.22,
+    "size": 12.0,
+    "pnl": 471.03,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "MSFT",
+      "headline": "MSFT exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 471.03",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "NVDA-CALL-20260326T025339196510",
+    "timestamp": "2026-04-16T02:24:18.443081",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 179.1267,
+    "exit_price": 198.87,
+    "size": 23.0,
+    "pnl": 454.1,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "NVDA",
+      "headline": "NVDA exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 454.1",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "META-CALL-20260326T025339443833",
+    "timestamp": "2026-04-16T02:24:18.680330",
+    "symbol": "META",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 596.3772,
+    "exit_price": 671.58,
+    "size": 1.0,
+    "pnl": 75.2,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "META",
+      "headline": "META exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 75.2",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "GOOGL-CALL-20260328T112210645172",
+    "timestamp": "2026-04-16T02:24:18.916659",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 275.0258,
+    "exit_price": 337.12,
+    "size": 17.0,
+    "pnl": 1055.6,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "GOOGL",
+      "headline": "GOOGL exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 1055.6",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "TSLA-CALL-20260331T132142351078",
+    "timestamp": "2026-04-16T02:24:19.163469",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 356.1682,
+    "exit_price": 391.95,
+    "size": 13.0,
+    "pnl": 465.16,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "TSLA",
+      "headline": "TSLA exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 465.16",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "AMD-CALL-20260402T003442568840",
+    "timestamp": "2026-04-16T02:24:19.396550",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 210.7355,
+    "exit_price": 258.12,
+    "size": 22.0,
+    "pnl": 1042.46,
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "AMD",
+      "headline": "AMD exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 1042.46",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "AAPL-CALL-20260416030649",
+    "timestamp": "2026-04-16T03:06:49.778196",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 210
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:06:49.813960",
+        "event": "RESEARCH_APPROVED",
+        "note": "AAPL approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 210,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "MSFT-CALL-20260416030649",
+    "timestamp": "2026-04-16T03:06:49.855465",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 207
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:06:49.892729",
+        "event": "RESEARCH_APPROVED",
+        "note": "MSFT approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 207,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "NVDA-CALL-20260416030649",
+    "timestamp": "2026-04-16T03:06:49.934677",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 204
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:06:49.971825",
+        "event": "RESEARCH_APPROVED",
+        "note": "NVDA approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 204,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AMZN-CALL-20260416030650",
+    "timestamp": "2026-04-16T03:06:50.015794",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 201,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 201
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:06:50.048816",
+        "event": "RESEARCH_APPROVED",
+        "note": "AMZN approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 201,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "META-CALL-20260416030650",
+    "timestamp": "2026-04-16T03:06:50.088435",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 198
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:06:50.121980",
+        "event": "RESEARCH_APPROVED",
+        "note": "META approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 198,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "GOOGL-CALL-20260416030650",
+    "timestamp": "2026-04-16T03:06:50.155822",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 195,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 195
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:06:50.188585",
+        "event": "RESEARCH_APPROVED",
+        "note": "GOOGL approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 195,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "TSLA-CALL-20260416030650",
+    "timestamp": "2026-04-16T03:06:50.223266",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 192
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:06:50.257364",
+        "event": "RESEARCH_APPROVED",
+        "note": "TSLA approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 192,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AMD-CALL-20260416030650",
+    "timestamp": "2026-04-16T03:06:50.290541",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 189
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:06:50.325505",
+        "event": "RESEARCH_APPROVED",
+        "note": "AMD approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 189,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AAPL-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:32.064874",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 210
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:09:32.098815",
+        "event": "RESEARCH_APPROVED",
+        "note": "AAPL approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 210,
+          "confidence": "HIGH"
+        }
+      },
+      {
+        "timestamp": "2026-04-16T03:09:32.752062",
+        "event": "EXECUTION_APPROVED",
+        "note": "AAPL approved in the execution layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 210,
+          "confidence": "HIGH"
+        }
+      },
+      {
+        "timestamp": "2026-04-16T03:09:33.060758",
+        "event": "EXECUTED",
+        "note": "AAPL entered execution flow.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 210
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "MSFT-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:32.140368",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 207
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:09:32.187176",
+        "event": "RESEARCH_APPROVED",
+        "note": "MSFT approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 207,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "NVDA-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:32.233648",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 204
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:09:32.270423",
+        "event": "RESEARCH_APPROVED",
+        "note": "NVDA approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 204,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AMZN-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:32.325249",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 201,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 201
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:09:32.358795",
+        "event": "RESEARCH_APPROVED",
+        "note": "AMZN approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 201,
+          "confidence": "HIGH"
+        }
+      },
+      {
+        "timestamp": "2026-04-16T03:09:32.820548",
+        "event": "EXECUTION_APPROVED",
+        "note": "AMZN approved in the execution layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 201,
+          "confidence": "HIGH"
+        }
+      },
+      {
+        "timestamp": "2026-04-16T03:09:33.088229",
+        "event": "EXECUTED",
+        "note": "AMZN entered execution flow.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 201
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "META-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:32.399684",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 198
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:09:32.436195",
+        "event": "RESEARCH_APPROVED",
+        "note": "META approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 198,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "GOOGL-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:32.472825",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 195,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 195
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:09:32.508398",
+        "event": "RESEARCH_APPROVED",
+        "note": "GOOGL approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 195,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "TSLA-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:32.545291",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 192
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:09:32.584114",
+        "event": "RESEARCH_APPROVED",
+        "note": "TSLA approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 192,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AMD-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:32.621476",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 189
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:09:32.673342",
+        "event": "RESEARCH_APPROVED",
+        "note": "AMD approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 189,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AAPL-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:32.716493",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "score": 210,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 210
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": []
+  },
+  {
+    "trade_id": "AMZN-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:32.784778",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 201,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 201
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": []
+  },
+  {
+    "trade_id": "AAPL-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:33.380927",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "source": "close_trade",
+    "event": "CLOSED",
+    "entry": 267.1,
+    "exit_price": 266.43,
+    "size": 3.0,
+    "pnl": -2.01,
+    "reason": "cut_weakness",
+    "exit_explanation": {
+      "symbol": "AAPL",
+      "headline": "AAPL exit detail",
+      "summary": "The system is treating this as protective damage control.",
+      "verdict": "EXIT",
+      "reason": "cut_weakness",
+      "why": "cut_weakness",
+      "notes": [
+        "PnL: -2.01",
+        "cut_weakness",
+        "The system is treating this as protective damage control."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "trade_id": "MSFT-CALL-20260416032316",
+    "timestamp": "2026-04-16T03:23:16.449923",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 207
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:23:16.486154",
+        "event": "RESEARCH_APPROVED",
+        "note": "MSFT approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 207,
+          "confidence": "HIGH"
+        }
+      },
+      {
+        "timestamp": "2026-04-16T03:23:17.021471",
+        "event": "EXECUTION_APPROVED",
+        "note": "MSFT approved in the execution layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 207,
+          "confidence": "HIGH"
+        }
+      },
+      {
+        "timestamp": "2026-04-16T03:23:17.335097",
+        "event": "EXECUTED",
+        "note": "MSFT entered execution flow.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 207
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "NVDA-CALL-20260416032316",
+    "timestamp": "2026-04-16T03:23:16.529444",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 204
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:23:16.567259",
+        "event": "RESEARCH_APPROVED",
+        "note": "NVDA approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 204,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AMZN-CALL-20260416032316",
+    "timestamp": "2026-04-16T03:23:16.607101",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 201,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 201
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:23:16.647191",
+        "event": "RESEARCH_APPROVED",
+        "note": "AMZN approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 201,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "META-CALL-20260416032316",
+    "timestamp": "2026-04-16T03:23:16.691749",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 198
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:23:16.729724",
+        "event": "RESEARCH_APPROVED",
+        "note": "META approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 198,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "GOOGL-CALL-20260416032316",
+    "timestamp": "2026-04-16T03:23:16.767451",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 195,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 195
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:23:16.805475",
+        "event": "RESEARCH_APPROVED",
+        "note": "GOOGL approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 195,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "TSLA-CALL-20260416032316",
+    "timestamp": "2026-04-16T03:23:16.840673",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 192
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:23:16.876154",
+        "event": "RESEARCH_APPROVED",
+        "note": "TSLA approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 192,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AMD-CALL-20260416032316",
+    "timestamp": "2026-04-16T03:23:16.914468",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 189
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:23:16.951924",
+        "event": "RESEARCH_APPROVED",
+        "note": "AMD approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 189,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "MSFT-CALL-20260416032316",
+    "timestamp": "2026-04-16T03:23:16.987230",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 207
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": []
+  },
+  {
+    "trade_id": "AMZN-CALL-20260416032317",
+    "timestamp": "2026-04-16T03:23:17.056274",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 201,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 201
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:23:17.090049",
+        "event": "EXECUTION_APPROVED",
+        "note": "AMZN approved in the execution layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 201,
+          "confidence": "HIGH"
+        }
+      },
+      {
+        "timestamp": "2026-04-16T03:23:17.363157",
+        "event": "EXECUTED",
+        "note": "AMZN entered execution flow.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 201
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "MSFT-CALL-20260416033158",
+    "timestamp": "2026-04-16T03:31:58.156050",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 207
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:31:58.194068",
+        "event": "RESEARCH_APPROVED",
+        "note": "MSFT approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 207,
+          "confidence": "HIGH"
+        }
+      },
+      {
+        "timestamp": "2026-04-16T03:31:58.750533",
+        "event": "EXECUTION_APPROVED",
+        "note": "MSFT approved in the execution layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 207,
+          "confidence": "HIGH"
+        }
+      },
+      {
+        "timestamp": "2026-04-16T03:31:58.884489",
+        "event": "EXECUTED",
+        "note": "MSFT entered execution flow.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 207
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "NVDA-CALL-20260416033158",
+    "timestamp": "2026-04-16T03:31:58.234443",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 204,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 204
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:31:58.272525",
+        "event": "RESEARCH_APPROVED",
+        "note": "NVDA approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 204,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AMZN-CALL-20260416033158",
+    "timestamp": "2026-04-16T03:31:58.314037",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 201,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 201
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:31:58.351039",
+        "event": "RESEARCH_APPROVED",
+        "note": "AMZN approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 201,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "META-CALL-20260416033158",
+    "timestamp": "2026-04-16T03:31:58.395194",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 198,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 198
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:31:58.433678",
+        "event": "RESEARCH_APPROVED",
+        "note": "META approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 198,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "GOOGL-CALL-20260416033158",
+    "timestamp": "2026-04-16T03:31:58.473668",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 195,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 195
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:31:58.513271",
+        "event": "RESEARCH_APPROVED",
+        "note": "GOOGL approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 195,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "TSLA-CALL-20260416033158",
+    "timestamp": "2026-04-16T03:31:58.551268",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 192,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 192
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:31:58.590266",
+        "event": "RESEARCH_APPROVED",
+        "note": "TSLA approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 192,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AMD-CALL-20260416033158",
+    "timestamp": "2026-04-16T03:31:58.625969",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 189,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 189
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-04-16T03:31:58.668533",
+        "event": "RESEARCH_APPROVED",
+        "note": "AMD approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 189,
+          "confidence": "HIGH"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "MSFT-CALL-20260416033158",
+    "timestamp": "2026-04-16T03:31:58.711110",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 97.0,
+      "target_logic": 104.0,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 207
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_not_this_trade": [],
+    "timeline": []
   }
 ]

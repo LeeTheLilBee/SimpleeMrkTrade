@@ -8,9 +8,12 @@ TRADE_FILE = "data/trade_log.json"
 def load_trades():
     if not Path(TRADE_FILE).exists():
         return []
-    with open(TRADE_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return data if isinstance(data, list) else []
+    try:
+        with open(TRADE_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except Exception:
+        return []
 
 
 def _parse_ts(value):
@@ -22,71 +25,74 @@ def _parse_ts(value):
         return None
 
 
+def _status(trade):
+    return str(trade.get("status", "")).upper().strip()
+
+
+def _is_open_trade(trade):
+    return _status(trade) == "OPEN"
+
+
+def _is_closed_trade(trade):
+    return _status(trade) == "CLOSED"
+
+
 def entries_today():
     today = datetime.now().date()
     count = 0
-
     for trade in load_trades():
         ts = _parse_ts(trade.get("timestamp"))
-        if ts and ts.date() == today:
+        if ts and ts.date() == today and _is_open_trade(trade):
             count += 1
-
     return count
 
 
 def closes_today():
     today = datetime.now().date()
     count = 0
-
     for trade in load_trades():
         ts = _parse_ts(trade.get("closed_at"))
-        if ts and ts.date() == today and str(trade.get("status", "")).upper() == "CLOSED":
+        if ts and ts.date() == today and _is_closed_trade(trade):
             count += 1
-
     return count
 
 
 def round_trips_today():
     today = datetime.now().date()
     count = 0
-
     for trade in load_trades():
         open_ts = _parse_ts(trade.get("timestamp"))
         close_ts = _parse_ts(trade.get("closed_at"))
-
         if not open_ts or not close_ts:
             continue
-
-        if open_ts.date() == today and close_ts.date() == today:
+        if open_ts.date() == today and close_ts.date() == today and _is_closed_trade(trade):
             count += 1
-
     return count
 
 
 def realized_pnl_today():
     today = datetime.now().date()
     total = 0.0
-
     for trade in load_trades():
         ts = _parse_ts(trade.get("closed_at"))
-        if ts and ts.date() == today:
+        if ts and ts.date() == today and _is_closed_trade(trade):
             total += float(trade.get("pnl", 0) or 0)
-
     return round(total, 2)
 
 
 def performance_summary():
     trades = load_trades()
 
+    closed_trades = [trade for trade in trades if _is_closed_trade(trade)]
+
     wins = 0
     losses = 0
     pnl_total = 0.0
-
     equity = 1000.0
     peak = equity
     drawdown = 0.0
 
-    for trade in trades:
+    for trade in closed_trades:
         pnl = float(trade.get("pnl", 0) or 0)
         pnl_total += pnl
 
@@ -103,11 +109,11 @@ def performance_summary():
         if dd > drawdown:
             drawdown = dd
 
-    total = len(trades)
-    winrate = round(wins / total, 2) if total > 0 else 0
+    total_closed = len(closed_trades)
+    winrate = round(wins / total_closed, 2) if total_closed > 0 else 0
 
     return {
-        "trades": total,
+        "trades": total_closed,
         "wins": wins,
         "losses": losses,
         "winrate": winrate,

@@ -378,5 +378,75 @@
     "timestamp": "2026-04-04T17:21:19.809983",
     "level": "INFO",
     "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-16T02:24:15.604350",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-16T02:53:17.534260",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-16T03:01:16.998501",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-16T03:06:42.538930",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-16T03:09:25.336861",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-16T03:09:32.987994",
+    "level": "INFO",
+    "message": "Executed AAPL CALL at 267.1 size 3.0"
+  },
+  {
+    "timestamp": "2026-04-16T03:09:33.045178",
+    "level": "WARN",
+    "message": "Skipped AMZN due to insufficient buying power for minimum size"
+  },
+  {
+    "timestamp": "2026-04-16T03:23:09.008170",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-16T03:23:17.233498",
+    "level": "INFO",
+    "message": "Executed MSFT CALL at 412.25 size 2.0"
+  },
+  {
+    "timestamp": "2026-04-16T03:23:17.310435",
+    "level": "WARN",
+    "message": "Skipped AMZN due to insufficient buying power for minimum size"
+  },
+  {
+    "timestamp": "2026-04-16T03:31:50.433780",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-16T03:31:58.867889",
+    "level": "WARN",
+    "message": "Skipped MSFT due to existing open position"
+  },
+  {
+    "timestamp": "2026-04-16T03:38:43.508210",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-16T03:46:28.386180",
+    "level": "INFO",
+    "message": "Bot run started"
   }
 ]

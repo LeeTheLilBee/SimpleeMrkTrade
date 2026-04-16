@@ -22,6 +22,9 @@ from engine.rsi_engine import calculate_rsi
 from engine.volume_engine import volume_surge
 from engine.breakout_engine import breakout
 from engine.signal_engine import build_signal
+from engine.canonical_candidate import build_canonical_candidate
+from engine.candidate_display import print_candidate_cards
+from engine.candidate_log import remember_candidate, show_candidates, clear_candidates
 from engine.execution_guard import can_execute_trade
 from engine.confidence_engine import confidence
 from engine.dashboard import dashboard
@@ -92,28 +95,41 @@ from engine.trade_detail_builder import (
 )
 from engine.notification_engine import push_notification
 
+import json
+from pathlib import Path
+
+
+def load_json(path, default):
+    try:
+        p = Path(path)
+        if not p.exists():
+            return default
+        with open(p, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return default
 try:
     from engine.drawdown_brake import drawdown_brake
 except Exception:
-  def drawdown_brake():
+    def drawdown_brake():
         return {"blocked": False, "mode": "NORMAL", "reason": "drawdown brake unavailable"}
 
 try:
     from engine.correlation_risk import correlation_risk_status
 except Exception:
-  def correlation_risk_status():
+    def correlation_risk_status():
         return {"blocked": False, "crowded_sectors": {}, "reason": "correlation risk unavailable"}
 
 try:
     from engine.sector_concentration_cap import sector_concentration_status
 except Exception:
-  def sector_concentration_status():
+    def sector_concentration_status():
         return {"blocked": False, "sector_counts": {}, "reason": "sector cap unavailable"}
 
 try:
     from engine.exposure_buckets import exposure_bucket_status
 except Exception:
-  def exposure_bucket_status():
+    def exposure_bucket_status():
         return {"blocked": False, "bucket": "NORMAL", "reason": "exposure buckets unavailable"}
 
 def _reduced_risk_mode(brake_payload, exposure_payload):
@@ -157,6 +173,90 @@ def log_candidate_decision(
     if extra:
         payload.update(extra)
     remember_candidate(payload)
+
+
+def clamp_stock_trade_size_to_cash_reserve(price, cash, min_cash_reserve=100.0, commission=1.0):
+    try:
+        price = float(price or 0)
+        cash = float(cash or 0)
+        min_cash_reserve = float(min_cash_reserve or 100.0)
+        commission = float(commission or 1.0)
+    except Exception:
+        return 0
+
+    if price <= 0:
+        return 0
+
+    spendable_cash = cash - min_cash_reserve - commission
+    if spendable_cash <= 0:
+        return 0
+
+    max_size = int(spendable_cash // price)
+    return max(0, max_size)
+
+
+def _safe_float(value, default=0.0):
+    try:
+        return float(value)
+    except Exception:
+        return default
+
+
+def _safe_str(value, default=""):
+    try:
+        text = str(value or "").strip()
+        return text if text else default
+    except Exception:
+        return default
+
+
+def _candidate_is_display_worthy(trade):
+    if not isinstance(trade, dict):
+        return False
+
+    strategy = _safe_str(trade.get("strategy"), "CALL").upper()
+    score = _safe_float(trade.get("score", 0), 0.0)
+    confidence = _safe_str(trade.get("confidence"), "LOW").upper()
+
+    if strategy == "NO_TRADE":
+        return False
+
+    if score < 90:
+        return False
+
+    if confidence not in {"MEDIUM", "HIGH"}:
+        return False
+
+    return True
+
+
+def _filter_display_candidates(candidates):
+    if not isinstance(candidates, list):
+        return []
+    return [trade for trade in candidates if _candidate_is_display_worthy(trade)]
+
+
+def _approved_or_nearly_approved_debug_rows(debug_rows):
+    clean = []
+    for row in debug_rows:
+        if not isinstance(row, dict):
+            continue
+
+        if row.get("approved") is True:
+            clean.append(row)
+            continue
+
+        blocked_at = _safe_str(row.get("blocked_at"))
+        final_reason = _safe_str(row.get("final_reason"))
+
+        if blocked_at == "execution_guard" and final_reason in {
+            "cash_reserve_would_be_broken",
+            "max_open_positions_reached",
+            "cash_reserve_already_too_low",
+        }:
+            clean.append(row)
+
+    return clean
 
 
 def stronger_competing_setups(trade, selected_trades):
@@ -266,26 +366,198 @@ def log_rejection(trade, symbol, reason_key, machine_reason, mode, breadth, vola
 
 
 def log_approval(trade, mode, regime, breadth, volatility_state):
-    trade["why"] = explain_trade_decision(
-        trade,
-        mode=mode,
-        regime=regime,
-        breadth=breadth,
-        volatility=volatility_state,
+    symbol = str(trade.get("symbol", "UNKNOWN") or "UNKNOWN").upper().strip()
+
+    why_value = trade.get("why", [])
+    why_lines = []
+
+    if isinstance(why_value, list):
+        why_lines = [str(x).strip() for x in why_value if str(x).strip()]
+    elif isinstance(why_value, dict):
+        for v in why_value.values():
+            text = str(v).strip()
+            if text:
+                why_lines.append(text)
+    elif isinstance(why_value, str):
+        text = why_value.strip()
+        if text:
+            why_lines = [text]
+
+    option_value = trade.get("option_explanation", [])
+    option_lines = []
+    if isinstance(option_value, list):
+        option_lines = [str(x).strip() for x in option_value if str(x).strip()]
+    elif isinstance(option_value, dict):
+        for v in option_value.values():
+            text = str(v).strip()
+            if text:
+                option_lines.append(text)
+    elif isinstance(option_value, str):
+        text = option_value.strip()
+        if text:
+            option_lines = [text]
+
+    summary_line = (
+        why_lines[0]
+        if why_lines
+        else "High-conviction setup aligned with system conditions."
     )
 
+    trade["why"] = why_lines
+    trade["option_explanation"] = option_lines
+
     write_premium_feed_item({
-        "title": f"{trade.get('symbol')} Setup",
-        "summary": trade["why"][0] if trade.get("why") else "High-conviction setup aligned with system conditions.",
-        "pro_lines": trade.get("why", []),
-        "elite_lines": trade.get("option_explanation", []),
+        "title": f"{symbol} Approved",
+        "summary": summary_line,
+        "pro_lines": why_lines,
+        "elite_lines": option_lines,
         "timestamp": trade.get("timestamp"),
-        "mode": trade.get("mode"),
+        "mode": mode,
+        "regime": regime,
+        "breadth": breadth,
+        "volatility_state": volatility_state,
+        "symbol": symbol,
+        "strategy": trade.get("strategy", "CALL"),
+        "score": trade.get("score", 0),
+        "confidence": trade.get("confidence", "LOW"),
     })
 
-
 def process_signals(results, regime, volatility_payload):
+    """
+    Airtight but versatile signal processor.
+
+    Improvements kept and tightened:
+    1. safer field normalization
+    2. duplicate-position guard
+    3. strategy-router NO_TRADE handling
+    4. richer capital visibility
+    5. graceful option handling
+    6. canonical candidate logging for every outcome
+    7. clearer rejection reasons
+    8. cleaner selected vs approved-not-selected split
+    9. stronger debug output
+    10. stricter execution readiness before queueing
+    """
+
+    def _safe_float(value, default=0.0):
+        try:
+            return float(value)
+        except Exception:
+            return float(default)
+
+    def _safe_int(value, default=0):
+        try:
+            return int(value)
+        except Exception:
+            return int(default)
+
+    def _safe_str(value, default=""):
+        try:
+            text = str(value).strip()
+            return text if text else default
+        except Exception:
+            return default
+
+    def _safe_list(value):
+        return value if isinstance(value, list) else []
+
+    def _norm_symbol(value):
+        return _safe_str(value, "UNKNOWN").upper()
+
+    def _extract_capital_numbers(trade):
+        price_guess = _safe_float(
+            trade.get("price", trade.get("current_price", trade.get("entry", 0))),
+            0.0,
+        )
+
+        option_obj = trade.get("option")
+        if isinstance(option_obj, dict):
+            contract_price = _safe_float(
+                option_obj.get("ask", option_obj.get("last", option_obj.get("price", 0))),
+                0.0,
+            )
+            contracts = max(1, int(_safe_float(trade.get("contracts", 1), 1)))
+            option_capital = round(contract_price * 100 * contracts, 2)
+            if option_capital > 0:
+                return option_capital
+
+        shares = max(1, int(_safe_float(trade.get("size", trade.get("shares", 1)), 1)))
+        return round(price_guess * shares, 2)
+
+    def _open_symbol_set():
+        try:
+            open_positions = show_positions()
+        except Exception:
+            open_positions = []
+
+        symbols = set()
+        if isinstance(open_positions, list):
+            for pos in open_positions:
+                if isinstance(pos, dict):
+                    sym = _norm_symbol(pos.get("symbol", ""))
+                    if sym:
+                        symbols.add(sym)
+        return symbols
+
+    def _remember_candidate_row(
+        trade,
+        *,
+        status,
+        reason,
+        mode,
+        breadth,
+        volatility_state,
+        capital_required,
+        capital_available,
+        selected_for_execution=False,
+        extra=None,
+    ):
+        payload = {}
+        try:
+            payload = build_canonical_candidate(
+                trade,
+                status=status,
+                reason=reason,
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                decision_reason=reason,
+                selected_for_execution=selected_for_execution,
+                capital_required=capital_required,
+                capital_available=capital_available,
+            )
+        except Exception:
+            payload = {
+                "symbol": trade.get("symbol", "UNKNOWN"),
+                "strategy": trade.get("strategy", "CALL"),
+                "score": _safe_float(trade.get("score", 0), 0.0),
+                "confidence": _safe_str(trade.get("confidence", "LOW"), "LOW"),
+                "status": status,
+                "reason": reason,
+                "decision_reason": reason,
+                "mode": mode,
+                "breadth": breadth,
+                "volatility_state": volatility_state,
+                "capital_required": capital_required,
+                "capital_available": capital_available,
+                "selected_for_execution": selected_for_execution,
+                "timestamp": trade.get("timestamp"),
+            }
+
+        if isinstance(extra, dict):
+            payload.update(extra)
+
+        try:
+            remember_candidate(payload)
+        except Exception:
+            pass
+
+        trade["candidate_display"] = payload
+        return payload
+
     approved_trades = []
+    debug_rows = []
+    results = _safe_list(results)
 
     breadth = market_breadth(results)
     print("Market Breadth:", breadth)
@@ -293,24 +565,33 @@ def process_signals(results, regime, volatility_payload):
     mode = resolve_market_mode(regime, breadth, volatility_payload)
     print("Market Mode:", mode)
 
-    volatility_state = volatility_payload.get("state", "NORMAL")
-    print(
-        "Volatility State:",
-        volatility_state,
-        "| VIX:",
-        volatility_payload.get("vix", "N/A"),
+    volatility_state = _safe_str(
+        (volatility_payload or {}).get("state", "NORMAL"),
+        "NORMAL",
     )
+    vix_value = (volatility_payload or {}).get("vix", "N/A")
+    print("Volatility State:", volatility_state, "| VIX:", vix_value)
 
-    for trade in results:
-        symbol = trade.get("symbol", "UNKNOWN")
-        strategy = trade.get("strategy", "CALL")
-        score = float(trade.get("score", 0) or 0)
-        confidence = trade.get("confidence", "LOW")
-        price = float(trade.get("price", 0) or 0)
-        atr = float(trade.get("atr", 0) or 0)
-        trend = trade.get("trend", "UPTREND")
-        rsi = float(trade.get("rsi", 55) or 55)
+    open_symbols = _open_symbol_set()
+    capital_available_now = round(_safe_float(buying_power(), 0.0), 2)
 
+    for raw_trade in results:
+        trade = dict(raw_trade) if isinstance(raw_trade, dict) else {}
+
+        symbol = _norm_symbol(trade.get("symbol", "UNKNOWN"))
+        strategy = _safe_str(trade.get("strategy", "CALL"), "CALL").upper()
+        score = _safe_float(trade.get("score", 0), 0.0)
+        confidence = _safe_str(trade.get("confidence", "LOW"), "LOW").upper()
+        price = _safe_float(
+            trade.get("price", trade.get("current_price", trade.get("entry", 0))),
+            0.0,
+        )
+        atr = _safe_float(trade.get("atr", 0), 0.0)
+        trend = _safe_str(trade.get("trend", "UPTREND"), "UPTREND").upper()
+        rsi = _safe_float(trade.get("rsi", 55), 55.0)
+        option_chain = _safe_list(trade.get("option_chain", []))
+
+        trade["symbol"] = symbol
         trade["strategy"] = strategy
         trade["price"] = price
         trade["atr"] = atr
@@ -321,27 +602,88 @@ def process_signals(results, regime, volatility_payload):
         trade["volatility_state"] = volatility_state
         trade["breadth"] = breadth
 
-        option_chain = trade.get("option_chain", [])
-        best_option, option_score, option_notes = choose_best_option(
-            option_chain,
-            price,
-            strategy,
-        )
+        debug_row = {
+            "symbol": symbol,
+            "starting_strategy": strategy,
+            "final_strategy": strategy,
+            "score": score,
+            "confidence": confidence,
+            "breadth": breadth,
+            "mode": mode,
+            "volatility_state": volatility_state,
+            "breadth_allowed": None,
+            "chosen_strategy": None,
+            "reentry_allowed": None,
+            "reentry_reason": "",
+            "execution_guard_blocked": None,
+            "execution_guard_reason": "",
+            "score_allowed": None,
+            "volatility_allowed": None,
+            "option_found": False,
+            "option_allowed": None,
+            "option_reason": "",
+            "capital_affordable": None,
+            "approved": False,
+            "blocked_at": "",
+            "final_reason": "",
+            "capital_required": 0.0,
+            "capital_available": capital_available_now,
+        }
+
+        best_option = None
+        option_score = 0
+        option_notes = []
+
+        try:
+            best_option, option_score, option_notes = choose_best_option(
+                option_chain,
+                price,
+                strategy,
+            )
+        except Exception:
+            best_option, option_score, option_notes = None, 0, []
+
+        debug_row["option_found"] = bool(best_option)
 
         if best_option:
             trade["option"] = best_option
             trade["option_contract_score"] = option_score
             trade["option_explanation"] = option_notes
 
-        if not breadth_allows_trade(strategy, breadth):
+        capital_required = _extract_capital_numbers(trade)
+        capital_available = round(_safe_float(buying_power(), 0.0), 2)
+
+        debug_row["capital_required"] = capital_required
+        debug_row["capital_available"] = capital_available
+
+        breadth_ok = breadth_allows_trade(strategy, breadth)
+        debug_row["breadth_allowed"] = breadth_ok
+
+        if not breadth_ok:
+            rejection_reason = "failed_breadth_filter"
+            debug_row["blocked_at"] = "breadth_filter"
+            debug_row["final_reason"] = rejection_reason
+            debug_rows.append(debug_row)
+
             log_rejection(
                 trade,
                 symbol,
                 "breadth_blocked",
-                "failed_breadth_filter",
+                rejection_reason,
                 mode,
                 breadth,
                 volatility_state,
+            )
+
+            _remember_candidate_row(
+                trade,
+                status="rejected",
+                reason=rejection_reason,
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                capital_required=capital_required,
+                capital_available=capital_available,
             )
             continue
 
@@ -352,44 +694,148 @@ def process_signals(results, regime, volatility_payload):
             score,
             rsi,
         )
-        if chosen_strategy and strategy != chosen_strategy:
-            strategy = chosen_strategy
+        debug_row["chosen_strategy"] = chosen_strategy
+
+        if chosen_strategy:
+            strategy = _safe_str(chosen_strategy, strategy).upper()
             trade["strategy"] = strategy
+            debug_row["final_strategy"] = strategy
+
+        if strategy == "NO_TRADE":
+            rejection_reason = "strategy_router_returned_no_trade"
+            debug_row["blocked_at"] = "strategy_router"
+            debug_row["final_reason"] = rejection_reason
+            debug_rows.append(debug_row)
+
+            log_rejection(
+                trade,
+                symbol,
+                "strategy_router_blocked",
+                rejection_reason,
+                mode,
+                breadth,
+                volatility_state,
+            )
+
+            _remember_candidate_row(
+                trade,
+                status="rejected",
+                reason=rejection_reason,
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                capital_required=capital_required,
+                capital_available=capital_available,
+            )
+            continue
+
+        if symbol in open_symbols:
+            rejection_reason = "already_open_position"
+            debug_row["blocked_at"] = "position_duplication_guard"
+            debug_row["final_reason"] = rejection_reason
+            debug_rows.append(debug_row)
+
+            log_rejection(
+                trade,
+                symbol,
+                "position_duplication_blocked",
+                rejection_reason,
+                mode,
+                breadth,
+                volatility_state,
+            )
+
+            _remember_candidate_row(
+                trade,
+                status="rejected",
+                reason=rejection_reason,
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                capital_required=capital_required,
+                capital_available=capital_available,
+            )
+            continue
 
         allowed_reentry, reentry_reason = reentry_allowed(trade)
+        debug_row["reentry_allowed"] = allowed_reentry
+        debug_row["reentry_reason"] = reentry_reason
+
         if not allowed_reentry:
+            rejection_reason = f"reentry_blocked:{reentry_reason}"
+            debug_row["blocked_at"] = "reentry_guard"
+            debug_row["final_reason"] = rejection_reason
+            debug_rows.append(debug_row)
+
             log_rejection(
                 trade,
                 symbol,
                 "reentry_blocked",
-                f"reentry_blocked:{reentry_reason}",
+                rejection_reason,
                 mode,
                 breadth,
                 volatility_state,
+            )
+
+            _remember_candidate_row(
+                trade,
+                status="rejected",
+                reason=rejection_reason,
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                capital_required=capital_required,
+                capital_available=capital_available,
             )
             continue
 
         if mode == "DEFENSIVE_BEAR" and strategy != "CALL":
+            rejection_reason = "failed_mode_filter"
+            debug_row["blocked_at"] = "mode_filter"
+            debug_row["final_reason"] = rejection_reason
+            debug_rows.append(debug_row)
+
             log_rejection(
                 trade,
                 symbol,
                 "mode_blocked",
-                "failed_mode_filter",
+                rejection_reason,
                 mode,
                 breadth,
                 volatility_state,
             )
+
+            _remember_candidate_row(
+                trade,
+                status="rejected",
+                reason=rejection_reason,
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                capital_required=capital_required,
+                capital_available=capital_available,
+            )
             continue
 
         exec_guard = can_execute_trade(trade, buying_power())
+
         if isinstance(exec_guard, dict):
-            blocked = exec_guard.get("blocked", False)
-            exec_reason = exec_guard.get("reason", "failed_execution_guard")
+            blocked = bool(exec_guard.get("blocked", False))
+            exec_reason = _safe_str(exec_guard.get("reason", ""), "")
         else:
-            blocked = not bool(exec_guard)
-            exec_reason = "failed_execution_guard"
+            blocked = True
+            exec_reason = "invalid_execution_guard_response"
+
+        exec_reason = exec_reason or ("blocked" if blocked else "allowed")
+
+        debug_row["execution_guard_blocked"] = blocked
+        debug_row["execution_guard_reason"] = exec_reason
 
         if blocked:
+            debug_row["blocked_at"] = "execution_guard"
+            debug_row["final_reason"] = exec_reason
+            debug_rows.append(debug_row)
+
             log_rejection(
                 trade,
                 symbol,
@@ -399,68 +845,223 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
+
+            _remember_candidate_row(
+                trade,
+                status="rejected",
+                reason=exec_reason,
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                capital_required=capital_required,
+                capital_available=capital_available,
+            )
             continue
 
-        if score < 90:
+        capital_affordable = capital_required <= capital_available
+        debug_row["capital_affordable"] = capital_affordable
+
+        if not capital_affordable:
+            rejection_reason = "insufficient_buying_power"
+            debug_row["blocked_at"] = "capital_affordability"
+            debug_row["final_reason"] = rejection_reason
+            debug_rows.append(debug_row)
+
+            log_rejection(
+                trade,
+                symbol,
+                "capital_blocked",
+                rejection_reason,
+                mode,
+                breadth,
+                volatility_state,
+            )
+
+            _remember_candidate_row(
+                trade,
+                status="rejected",
+                reason=rejection_reason,
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                capital_required=capital_required,
+                capital_available=capital_available,
+            )
+            continue
+
+        score_ok = score >= 90
+        debug_row["score_allowed"] = score_ok
+
+        if not score_ok:
+            rejection_reason = "failed_score_threshold"
+            debug_row["blocked_at"] = "score_threshold"
+            debug_row["final_reason"] = rejection_reason
+            debug_rows.append(debug_row)
+
             log_rejection(
                 trade,
                 symbol,
                 "score_too_low",
-                "failed_score_threshold",
+                rejection_reason,
                 mode,
                 breadth,
                 volatility_state,
             )
+
+            _remember_candidate_row(
+                trade,
+                status="rejected",
+                reason=rejection_reason,
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                capital_required=capital_required,
+                capital_available=capital_available,
+            )
             continue
 
-        if volatility_state == "ELEVATED" and confidence == "LOW":
+        volatility_ok = not (volatility_state == "ELEVATED" and confidence == "LOW")
+        debug_row["volatility_allowed"] = volatility_ok
+
+        if not volatility_ok:
+            rejection_reason = "failed_volatility_filter"
+            debug_row["blocked_at"] = "volatility_filter"
+            debug_row["final_reason"] = rejection_reason
+            debug_rows.append(debug_row)
+
             log_rejection(
                 trade,
                 symbol,
                 "volatility_blocked",
-                "failed_volatility_filter",
+                rejection_reason,
                 mode,
                 breadth,
                 volatility_state,
             )
+
+            _remember_candidate_row(
+                trade,
+                status="rejected",
+                reason=rejection_reason,
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                capital_required=capital_required,
+                capital_available=capital_available,
+            )
             continue
 
         if trade.get("option"):
-            allowed, option_reason = option_is_executable(trade["option"], min_score=50)
+            try:
+                allowed, option_reason = option_is_executable(trade["option"], min_score=50)
+            except Exception:
+                allowed, option_reason = False, "option_validation_failed"
+
+            debug_row["option_allowed"] = allowed
+            debug_row["option_reason"] = option_reason
+
             if not allowed:
+                rejection_reason = _safe_str(option_reason, "weak_option_contract")
+                debug_row["blocked_at"] = "option_executable"
+                debug_row["final_reason"] = rejection_reason
+                debug_rows.append(debug_row)
+
                 log_rejection(
                     trade,
                     symbol,
                     "weak_option_contract",
-                    option_reason,
+                    rejection_reason,
                     mode,
                     breadth,
                     volatility_state,
                 )
+
+                _remember_candidate_row(
+                    trade,
+                    status="rejected",
+                    reason=rejection_reason,
+                    mode=mode,
+                    breadth=breadth,
+                    volatility_state=volatility_state,
+                    capital_required=capital_required,
+                    capital_available=capital_available,
+                )
                 continue
 
-            trade["option_explanation"] = explain_option_choice(trade["option"])
+            try:
+                trade["option_explanation"] = explain_option_choice(trade["option"])
+            except Exception:
+                pass
+
+        debug_row["approved"] = True
+        debug_row["blocked_at"] = ""
+        debug_row["final_reason"] = "approved"
+        debug_rows.append(debug_row)
 
         log_approval(trade, mode, regime, breadth, volatility_state)
         approved_trades.append(trade)
 
-    print_leaderboard(approved_trades)
-    print_top_candidates(approved_trades, limit=5)
-    save_top_candidates(approved_trades, limit=10)
+        _remember_candidate_row(
+            trade,
+            status="approved",
+            reason="approved",
+            mode=mode,
+            breadth=breadth,
+            volatility_state=volatility_state,
+            capital_required=capital_required,
+            capital_available=capital_available,
+        )
+
+    print("\nAPPROVAL DEBUG")
+    for row in debug_rows:
+        print(row)
+
+    if approved_trades:
+        print_leaderboard(approved_trades)
+        print_top_candidates(approved_trades, limit=5)
+        save_top_candidates(approved_trades, limit=10)
+    else:
+        print("No approved trades.")
+        print("TOP CANDIDATES None")
 
     affordable = affordable_trade_count(approved_trades)
-    limit = min(affordable, 3) if affordable > 0 else 0
-    if approved_trades and limit <= 0:
-        limit = 1
+    selection_limit = min(affordable, 3) if affordable > 0 else 0
 
-    selected_trades = queue_top_trades_plus(approved_trades, limit=limit)
+    selected_trades = []
+    if approved_trades and selection_limit > 0:
+        selected_trades = queue_top_trades_plus(approved_trades, limit=selection_limit)
+    else:
+        selected_trades = []
+
     selected_keys = {
-        (t.get("symbol"), t.get("strategy"))
+        (
+            _norm_symbol(t.get("symbol", "")),
+            _safe_str(t.get("strategy", "CALL"), "CALL").upper(),
+        )
         for t in selected_trades
+        if isinstance(t, dict)
     }
 
+    print("APPROVED CANDIDATE INTELLIGENCE")
+    if not approved_trades:
+        print("None")
+    else:
+        for trade in approved_trades:
+            print(
+                f"{trade.get('symbol', 'UNKNOWN')} | "
+                f"{trade.get('strategy', 'CALL')} | "
+                f"{trade.get('score', 0)} | "
+                f"{trade.get('confidence', 'LOW')}"
+            )
+
     for trade in approved_trades:
-        key = (trade.get("symbol"), trade.get("strategy"))
+        key = (
+            _norm_symbol(trade.get("symbol", "")),
+            _safe_str(trade.get("strategy", "CALL"), "CALL").upper(),
+        )
+
+        capital_required = _extract_capital_numbers(trade)
+        capital_available = round(_safe_float(buying_power(), 0.0), 2)
 
         if key in selected_keys:
             log_candidate_decision(
@@ -471,10 +1072,21 @@ def process_signals(results, regime, volatility_payload):
                 breadth=breadth,
                 volatility_state=volatility_state,
             )
+
+            _remember_candidate_row(
+                trade,
+                status="selected",
+                reason="selected_for_execution",
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                capital_required=capital_required,
+                capital_available=capital_available,
+                selected_for_execution=True,
+            )
         else:
             stronger = stronger_competing_setups(trade, selected_trades)
             trade["stronger_competing_setups"] = stronger
-
             trade["rejection_reason"] = explain_rejection(trade, "not_selected")
             trade["rejection_analysis"] = build_rejection_analysis(
                 trade,
@@ -513,9 +1125,23 @@ def process_signals(results, regime, volatility_payload):
                 },
             )
 
+            _remember_candidate_row(
+                trade,
+                status="approved_not_selected",
+                reason="approved_but_ranked_below_execution_cut",
+                mode=mode,
+                breadth=breadth,
+                volatility_state=volatility_state,
+                capital_required=capital_required,
+                capital_available=capital_available,
+                extra={
+                    "stronger_competing_setups": trade.get("stronger_competing_setups", []),
+                    "rejection_analysis": trade.get("rejection_analysis", []),
+                },
+            )
+
     return approved_trades, selected_trades, mode, breadth, volatility_state
-
-
+    
 def run():
     write_bot_status(True, "starting")
     log_bot("Bot run started", "INFO")
@@ -557,15 +1183,22 @@ def run():
         push_activity("MARKET", f"Market regime identified as {regime}")
 
         print("Building rotating watchlist...")
-        watchlist = get_watchlist()
+        watchlist = get_watchlist(limit=50, universe_limit=220)
         print("Watchlist:", watchlist)
         push_activity("WATCHLIST", f"Watchlist built with {len(watchlist)} symbols")
 
-        print("Scanning watchlist...")
-        results = get_execution_candidates()
-
-        print("Execution candidates:", [r.get("symbol") for r in results[:15]])
+        print("Scanning watchlist aggressively...")
+        results = get_execution_candidates(force_rebuild=True, watchlist=watchlist)
+        display_candidates = _filter_display_candidates(results)
+        print("Execution candidates:", [r.get("symbol") for r in results[:20]])
         print("Execution candidate count:", len(results))
+
+        execution_universe = load_json("data/execution_universe.json", {})
+        spotlight = execution_universe.get("spotlight", []) if isinstance(execution_universe, dict) else []
+        print("Execution spotlight:", [r.get("symbol") for r in spotlight[:5]])
+
+        push_activity("EXECUTION", f"Aggressive execution universe rebuilt with {len(results)} candidates")
+        push_activity("SPOTLIGHT", f"Top spotlight contains {len(spotlight)} names")
 
         approved_trades, selected_trades, mode, breadth, volatility_state = process_signals(results, regime, volatility_payload)
         push_activity(

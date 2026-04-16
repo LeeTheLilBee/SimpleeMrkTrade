@@ -1,115 +1,25 @@
 {
-  "equity": 4700.63,
-  "cash": 4700.99,
-  "buying_power": 4700.99,
+  "equity": 997.99,
+  "cash": 173.5,
+  "buying_power": 173.5,
   "account_type": "margin",
   "trade_history": [
     {
       "symbol": "AAPL",
-      "price": 100.25,
-      "size": 10.0,
-      "timestamp": "2026-03-24T03:14:35.371023",
-      "settle_date": "2026-03-25T03:14:35.371030",
-      "cost": 1002.5,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "AMZN",
-      "price": 100.25,
-      "size": 10.0,
-      "timestamp": "2026-03-24T03:14:35.379476",
-      "settle_date": "2026-03-25T03:14:35.379483",
-      "cost": 1002.5,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "AAPL",
-      "price": 252.1187,
-      "size": 19.0,
-      "timestamp": "2026-03-24T03:52:50.597658",
-      "settle_date": "2026-03-25T03:52:50.597665",
-      "cost": 4790.26,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "AAPL",
-      "price": 252.2691,
-      "size": 18.0,
-      "timestamp": "2026-03-25T01:22:09.737257",
-      "settle_date": "2026-03-26T01:22:09.737265",
-      "cost": 4540.84,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "AMZN",
-      "price": 207.7581,
-      "size": 1.0,
-      "timestamp": "2026-03-25T01:22:09.856646",
-      "settle_date": "2026-03-26T01:22:09.856653",
-      "cost": 207.76,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "AAPL",
-      "price": 252.2691,
-      "size": 18.0,
-      "timestamp": "2026-03-25T01:42:41.112701",
-      "settle_date": "2026-03-26T01:42:41.112708",
-      "cost": 4540.84,
+      "price": 267.0961,
+      "size": 3.0,
+      "timestamp": "2026-04-16T03:09:32.977165",
+      "settle_date": "2026-04-17T03:09:32.977169",
+      "cost": 801.29,
       "status": "OPEN"
     },
     {
       "symbol": "MSFT",
-      "price": 371.9676,
-      "size": 12.0,
-      "timestamp": "2026-03-26T01:35:10.170421",
-      "settle_date": "2026-03-27T01:35:10.170424",
-      "cost": 4463.61,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "NVDA",
-      "price": 179.1267,
-      "size": 23.0,
-      "timestamp": "2026-03-26T02:53:39.196510",
-      "settle_date": "2026-03-27T02:53:39.196513",
-      "cost": 4119.91,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "META",
-      "price": 596.3772,
-      "size": 1.0,
-      "timestamp": "2026-03-26T02:53:39.443833",
-      "settle_date": "2026-03-27T02:53:39.443838",
-      "cost": 596.38,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "GOOGL",
-      "price": 275.0258,
-      "size": 17.0,
-      "timestamp": "2026-03-28T11:22:10.645172",
-      "settle_date": "2026-03-29T11:22:10.645177",
-      "cost": 4675.44,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "TSLA",
-      "price": 356.1682,
-      "size": 13.0,
-      "timestamp": "2026-03-31T13:21:42.351078",
-      "settle_date": "2026-04-01T13:21:42.351083",
-      "cost": 4630.19,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "AMD",
-      "price": 210.7355,
-      "size": 22.0,
-      "timestamp": "2026-04-02T00:34:42.568840",
-      "settle_date": "2026-04-03T00:34:42.568846",
-      "cost": 4636.18,
+      "price": 412.2481,
+      "size": 2.0,
+      "timestamp": "2026-04-16T03:23:17.221292",
+      "settle_date": "2026-04-17T03:23:17.221296",
+      "cost": 824.5,
       "status": "OPEN"
     }
   ]

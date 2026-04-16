@@ -1,407 +1,396 @@
-"""
-EXPLAINABILITY ENGINE
-Modern explainability layer for the live engine stack.
+from __future__ import annotations
 
-This module builds:
-- structured reasoning
-- rejection explanations
-- normalized explainability objects
-for signals, trades, and positions.
-"""
-
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 
-def _safe_float(x: Any, default: float = 0.0) -> float:
+def _safe_dict(value: Any) -> Dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _safe_list(value: Any) -> List[Any]:
+    return value if isinstance(value, list) else []
+
+
+def _safe_str(value: Any, default: str = "") -> str:
     try:
-        return float(x)
+        text = str(value).strip()
+        return text if text else default
     except Exception:
         return default
 
 
-def _safe_str(x: Any, default: str = "") -> str:
+def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
-        return str(x)
+        return float(value)
     except Exception:
         return default
 
 
-def _safe_list(x: Any) -> List[Any]:
-    return x if isinstance(x, list) else []
+def _safe_int(value: Any, default: int = 0) -> int:
+    try:
+        return int(value)
+    except Exception:
+        return default
 
 
-def _safe_dict(x: Any) -> Dict[str, Any]:
-    return x if isinstance(x, dict) else {}
+def _norm_symbol(value: Any) -> str:
+    return _safe_str(value, "").upper()
 
 
-def _normalize_verdict(payload: Dict[str, Any]) -> str:
-    final_decision = _safe_dict(payload.get("final_decision", {}))
-    canonical = _safe_dict(payload.get("canonical_decision", {}))
-
-    verdict = _safe_str(payload.get("final_verdict", "")).strip().upper()
-    if verdict:
-        return verdict
-
-    verdict = _safe_str(final_decision.get("final_verdict", "")).strip().upper()
-    if verdict:
-        return verdict
-
-    verdict = _safe_str(canonical.get("final_verdict", "")).strip().upper()
-    if verdict:
-        return verdict
-
-    return "WATCH"
+def _norm_upper(value: Any, default: str = "UNKNOWN") -> str:
+    text = _safe_str(value, "").upper()
+    return text if text else default
 
 
-def _normalize_confidence(payload: Dict[str, Any]) -> str:
-    final_decision = _safe_dict(payload.get("final_decision", {}))
-    canonical = _safe_dict(payload.get("canonical_decision", {}))
-
-    confidence = _safe_str(final_decision.get("decision_confidence", "")).strip().upper()
-    if confidence in {"HIGH", "MEDIUM", "LOW"}:
-        return confidence
-
-    confidence = _safe_str(canonical.get("decision_confidence", "")).strip().upper()
-    if confidence in {"HIGH", "MEDIUM", "LOW"}:
-        return confidence
-
-    confidence = _safe_str(payload.get("confidence", "")).strip().upper()
-    if confidence in {"HIGH", "MEDIUM", "LOW"}:
-        return confidence
-
-    return "LOW"
-
-def _resolve_gates(payload: Dict[str, Any]) -> Dict[str, bool]:
-    payload = payload if isinstance(payload, dict) else {}
-    nested_gates = _safe_dict(payload.get("gates", {}))
-
-    return {
-        "readiness": bool(payload.get("readiness_gate_passed", nested_gates.get("readiness", False))),
-        "promotion": bool(payload.get("promotion_gate_passed", nested_gates.get("promotion", False))),
-        "rebuild": bool(payload.get("rebuild_gate_passed", nested_gates.get("rebuild", False))),
-    }
+def _dedupe_keep_order(items: List[str]) -> List[str]:
+    seen = set()
+    out = []
+    for item in items:
+        text = _safe_str(item, "")
+        if text and text not in seen:
+            out.append(text)
+            seen.add(text)
+    return out
 
 
-def explain_trade_decision(
-    trade: Dict[str, Any],
-    mode: Any = None,
-    regime: Any = None,
-    breadth: Any = None,
-    volatility: Any = None,
-) -> List[str]:
-    trade = trade if isinstance(trade, dict) else {}
-
-    reasons: List[str] = []
-
-    symbol = _safe_str(trade.get("symbol", "This setup")).strip() or "This setup"
-    verdict = _normalize_verdict(trade)
-    confidence = _normalize_confidence(trade)
-
-    readiness = _safe_float(trade.get("readiness_score", 0))
-    promotion = _safe_float(trade.get("promotion_score", 0))
-    rebuild = _safe_float(trade.get("rebuild_pressure", 0))
-    execution = _safe_float(trade.get("execution_quality", 0))
-
-    setup_family = _safe_str(trade.get("setup_family", "unknown")).strip().lower()
-    entry_quality = _safe_str(trade.get("entry_quality", "unknown")).strip().lower()
-
-    gates = _resolve_gates(trade)
-
-    reasons.append(f"{symbol} is currently a {verdict} with {confidence.lower()} confidence.")
-
-    if readiness >= 205:
-        reasons.append("Readiness is elite and the structure is strong.")
-    elif readiness >= 180:
-        reasons.append("Readiness is strong enough to respect.")
-    elif readiness >= 140:
-        reasons.append("Readiness is developing but not elite.")
-    else:
-        reasons.append("Readiness is still too weak to trust aggressively.")
-
-    if promotion >= 185:
-        reasons.append("Promotion quality is strong enough to support action.")
-    elif promotion >= 120:
-        reasons.append("Promotion is valid, but it is not fully mature yet.")
-    else:
-        reasons.append("Promotion quality is still too soft for immediate trust.")
-
-    if rebuild >= 25:
-        reasons.append("Rebuild pressure is high and materially reduces trust.")
-    elif rebuild >= 18:
-        reasons.append("Rebuild pressure is meaningful and still needs respect.")
-    elif rebuild >= 10:
-        reasons.append("Rebuild pressure is present but manageable.")
-    else:
-        reasons.append("Rebuild pressure is low enough not to dominate the setup.")
-
-    if execution >= 225:
-        reasons.append("Execution quality is elite.")
-    elif execution >= 205:
-        reasons.append("Execution quality is strong.")
-    elif execution >= 190:
-        reasons.append("Execution quality is decent but not exceptional.")
-    else:
-        reasons.append("Execution quality is not strong enough to rescue a weak setup.")
-
-    if setup_family and setup_family != "unknown":
-        reasons.append(f"Setup family is {setup_family}.")
-    if entry_quality and entry_quality != "unknown":
-        reasons.append(f"Entry quality is {entry_quality}.")
-
-    if gates["readiness"] and gates["promotion"] and gates["rebuild"]:
-        reasons.append("All three core gates are currently passing.")
-    else:
-        failed = []
-        if not gates["readiness"]:
-            failed.append("readiness")
-        if not gates["promotion"]:
-            failed.append("promotion")
-        if not gates["rebuild"]:
-            failed.append("rebuild")
-        if failed:
-            reasons.append(f"Failed gates: {', '.join(failed)}.")
-
-    if mode:
-        reasons.append(f"Market mode at decision time: {mode}.")
-    if regime:
-        reasons.append(f"Broader regime context: {regime}.")
-    if breadth:
-        reasons.append(f"Market breadth context: {breadth}.")
-    if volatility:
-        reasons.append(f"Volatility state: {volatility}.")
-
-    return reasons
+def _confidence_bucket(score: float) -> str:
+    if score >= 90:
+        return "HIGH"
+    if score >= 70:
+        return "MEDIUM"
+    if score >= 50:
+        return "LOW"
+    return "VERY LOW"
 
 
-def explain_rejection(trade: Dict[str, Any], reason_key: str) -> str:
-    symbol = _safe_str(trade.get("symbol", "This setup")).strip() or "This setup"
-
-    base = f"{symbol} was not taken."
-
-    mapping = {
-        "breadth_blocked": "Market participation did not support the direction of this setup.",
-        "mode_blocked": "Current market mode did not support this structure.",
-        "execution_blocked": "Execution controls prevented entry despite the setup conditions.",
-        "score_too_low": "The setup did not meet the internal quality threshold required for deployment.",
-        "volatility_blocked": "Volatility conditions reduced trust below acceptable levels.",
-        "weak_option_contract": "No suitable contract provided efficient exposure for this idea.",
-        "reentry_blocked": "The system requires stronger confirmation before re-entering this symbol.",
-        "not_selected": "The setup passed filters but ranked below stronger opportunities.",
-        "failed_readiness_gate": "Readiness was not strong enough.",
-        "failed_promotion_gate": "Promotion quality was not strong enough.",
-        "failed_rebuild_gate": "Rebuild pressure was too high.",
-        "high_rebuild_pressure": "Repair burden was too heavy to justify action.",
-    }
-
-    detail = mapping.get(reason_key, "The setup was filtered out by system controls.")
-    return f"{base} {detail}"
+def _readiness_label(readiness_score: float) -> str:
+    if readiness_score >= 85:
+        return "ready"
+    if readiness_score >= 65:
+        return "close"
+    if readiness_score >= 40:
+        return "watch"
+    return "weak"
 
 
-def build_rejection_analysis(
-    trade: Dict[str, Any],
-    reason_key: str,
-    machine_reason: Any = None,
-) -> List[str]:
-    trade = trade if isinstance(trade, dict) else {}
-
-    symbol = _safe_str(trade.get("symbol", "This setup")).strip() or "This setup"
-    readiness = _safe_float(trade.get("readiness_score", 0))
-    promotion = _safe_float(trade.get("promotion_score", 0))
-    rebuild = _safe_float(trade.get("rebuild_pressure", 0))
-    execution = _safe_float(trade.get("execution_quality", 0))
-    confidence = _normalize_confidence(trade)
-
-    lines = [
-        f"{symbol} came through the engine with {confidence.lower()} confidence.",
-        f"Readiness was {readiness}, promotion was {promotion}, rebuild pressure was {rebuild}, and execution quality was {execution}.",
-        explain_rejection(trade, reason_key),
-    ]
-
-    if machine_reason:
-        lines.append(f"System reason: {machine_reason}")
-
-    return lines
+def _pressure_label(rebuild_pressure: float) -> str:
+    if rebuild_pressure >= 80:
+        return "severe pressure"
+    if rebuild_pressure >= 60:
+        return "elevated pressure"
+    if rebuild_pressure >= 35:
+        return "moderate pressure"
+    return "contained pressure"
 
 
-def build_explainability_object(payload: Dict[str, Any]) -> Dict[str, Any]:
-    payload = payload if isinstance(payload, dict) else {}
+def _execution_label(execution_quality: float) -> str:
+    if execution_quality >= 85:
+        return "strong execution quality"
+    if execution_quality >= 65:
+        return "workable execution quality"
+    if execution_quality >= 45:
+        return "fragile execution quality"
+    return "poor execution quality"
 
-    symbol = _safe_str(payload.get("symbol", "")).strip().upper()
-    verdict = _normalize_verdict(payload)
-    confidence = _normalize_confidence(payload)
 
-    readiness = _safe_float(payload.get("readiness_score", 0))
-    promotion = _safe_float(payload.get("promotion_score", 0))
-    rebuild = _safe_float(payload.get("rebuild_pressure", 0))
-    execution = _safe_float(payload.get("execution_quality", 0))
-    setup_family = _safe_str(payload.get("setup_family", "unknown")).strip().lower()
-    entry_quality = _safe_str(payload.get("entry_quality", "unknown")).strip().lower()
+def _build_verdict_from_signal(signal: Dict[str, Any]) -> str:
+    explicit = _norm_upper(signal.get("final_verdict", signal.get("verdict", "")), "")
+    if explicit:
+        return explicit
 
-    gates = _resolve_gates(payload)
+    eligible = bool(signal.get("eligible", False))
+    score = _safe_float(signal.get("score", 0))
+    readiness_score = _safe_float(signal.get("readiness_score", 0))
+    rebuild_pressure = _safe_float(signal.get("rebuild_pressure", 0))
 
-    supports: List[str] = []
-    blockers: List[str] = []
-    pressures: List[str] = []
-    improvements: List[str] = []
+    if not eligible:
+        return "BLOCK"
+    if readiness_score >= 85 and rebuild_pressure < 45 and score >= 80:
+        return "TAKE"
+    if readiness_score >= 65 and rebuild_pressure < 65:
+        return "WATCH"
+    if rebuild_pressure >= 75:
+        return "BLOCK"
+    return "WAIT"
 
-    if gates["readiness"]:
-        supports.append("readiness gate passed")
-    else:
-        blockers.append("readiness gate failed")
 
-    if gates["promotion"]:
-        supports.append("promotion gate passed")
-    else:
-        blockers.append("promotion gate failed")
+def _build_reason_from_signal(signal: Dict[str, Any]) -> str:
+    explicit = _safe_str(signal.get("decision_reason", signal.get("reason", "")), "")
+    if explicit:
+        return explicit
 
-    if gates["rebuild"]:
-        supports.append("rebuild gate passed")
-    else:
-        blockers.append("rebuild gate failed")
+    eligible = bool(signal.get("eligible", False))
+    readiness_score = _safe_float(signal.get("readiness_score", 0))
+    rebuild_pressure = _safe_float(signal.get("rebuild_pressure", 0))
+    execution_quality = _safe_float(signal.get("execution_quality", 0))
 
-    if readiness >= 205:
-        supports.append("elite readiness")
-    elif readiness >= 180:
-        supports.append("strong readiness")
-    elif readiness < 115:
-        blockers.append("weak readiness")
+    if not eligible:
+        return "The setup is blocked because it is not currently eligible."
+    if rebuild_pressure >= 75:
+        return "The setup is under too much rebuild pressure to trust cleanly."
+    if readiness_score >= 85 and execution_quality >= 65:
+        return "The setup is sufficiently aligned across readiness and execution to justify action."
+    if readiness_score >= 60:
+        return "The setup has some structure, but still needs cleaner confirmation."
+    return "The setup does not yet have enough structural quality to deserve action."
 
-    if promotion >= 185:
-        supports.append("elite promotion")
-    elif promotion >= 120:
-        supports.append("valid promotion")
-    elif promotion < 95:
-        blockers.append("weak promotion")
 
-    if execution >= 225:
-        supports.append("elite execution quality")
-    elif execution >= 205:
-        supports.append("strong execution quality")
-    elif execution < 180:
-        blockers.append("weak execution quality")
+def explain_trade_decision(signal: Optional[Dict[str, Any]] = None, *args, **kwargs) -> Dict[str, Any]:
+    signal = _safe_dict(signal)
 
-    if rebuild >= 25:
-        pressures.append("rebuild pressure is high")
-        blockers.append("repair burden is too heavy")
-    elif rebuild >= 18:
-        pressures.append("rebuild pressure is meaningful")
-    elif rebuild >= 10:
-        pressures.append("rebuild pressure is present")
-    else:
-        supports.append("clean rebuild profile")
+    symbol = _norm_symbol(signal.get("symbol", "UNKNOWN"))
+    score = _safe_float(signal.get("score", 0))
+    confidence = _norm_upper(signal.get("confidence", _confidence_bucket(score)), "LOW")
+    verdict = _build_verdict_from_signal(signal)
+    reason = _build_reason_from_signal(signal)
 
-    if setup_family == "continuation":
-        supports.append("continuation setups are structurally favored")
-    elif setup_family == "breakout":
-        supports.append("breakout structure can be strong when clean")
-    elif setup_family == "pullback":
-        pressures.append("pullbacks need cleaner confirmation")
-    elif setup_family == "unknown":
-        pressures.append("setup family is not fully classified")
+    readiness_score = _safe_float(signal.get("readiness_score", 0))
+    promotion_score = _safe_float(signal.get("promotion_score", 0))
+    rebuild_pressure = _safe_float(signal.get("rebuild_pressure", 0))
+    execution_quality = _safe_float(signal.get("execution_quality", 0))
+    eligible = bool(signal.get("eligible", False))
 
-    if entry_quality == "high_conviction":
-        supports.append("entry quality is strong")
-    elif entry_quality == "acceptable":
-        pressures.append("entry quality is only acceptable")
-    elif entry_quality == "weak":
-        blockers.append("entry quality is weak")
+    summary = (
+        f"{symbol} is scoring {round(score, 1)} with {confidence} confidence. "
+        f"Readiness is {_readiness_label(readiness_score)}. "
+        f"Rebuild pressure is {_pressure_label(rebuild_pressure)}. "
+        f"The setup is {'eligible' if eligible else 'not eligible'}."
+    )
 
-    if confidence == "LOW":
-        blockers.append("confidence is too low for aggressive trust")
-        improvements.append("confidence needs to recover before aggressive action makes sense")
-    elif confidence == "MEDIUM":
-        improvements.append("the setup needs more proof before immediate entry")
-    elif confidence == "HIGH":
-        supports.append("confidence is high enough to consider action")
+    notes = _dedupe_keep_order([
+        f"Score: {round(score, 1)}",
+        f"Confidence: {confidence}",
+        f"Readiness: {round(readiness_score, 1)}",
+        f"Promotion: {round(promotion_score, 1)}",
+        f"Rebuild Pressure: {round(rebuild_pressure, 1)}",
+        f"Execution Quality: {round(execution_quality, 1)}",
+        f"Execution Read: {_execution_label(execution_quality)}",
+    ])
 
-    if rebuild >= 10:
-        improvements.append("rebuild pressure needs to come down before trust can expand")
-
-    if promotion < 145 and verdict != "BLOCK":
-        improvements.append("promotion quality needs to strengthen before immediate entry makes sense")
-
-    if not improvements:
-        improvements.append("keep execution clean and do not get sloppy managing the trade")
-
+    next_action = "Wait for better structure."
     if verdict == "TAKE":
-        headline = f"{symbol} is approved." if symbol else "This setup is approved."
-        summary = "The setup is aligned strongly enough for action."
-    elif verdict == "BLOCK":
-        headline = f"{symbol} is blocked." if symbol else "This setup is blocked."
-        summary = "The engine does not believe this setup is safe enough to act on."
-    else:
-        headline = f"{symbol} needs more proof." if symbol else "This setup needs more proof."
-        if setup_family == "continuation" and confidence == "MEDIUM" and rebuild >= 18:
-            summary = "This is a strong continuation setup, but the pressure underneath still needs respect."
-        elif confidence == "LOW":
-            summary = "The setup has some pieces, but trust is too weak right now."
-        else:
-            summary = "The setup is credible, but it still needs more proof before immediate entry."
+        next_action = "Enter with discipline and defined risk."
+    elif verdict == "WATCH":
+        next_action = "Watch for confirmation before entry."
+    elif verdict in {"BLOCK", "REJECT"}:
+        next_action = "Do not force the setup."
 
     return {
         "symbol": symbol,
-        "headline": headline,
+        "headline": f"{symbol} decision: {verdict}",
         "summary": summary,
         "verdict": verdict,
         "confidence": confidence,
-        "supports": list(dict.fromkeys(supports)),
-        "blockers": list(dict.fromkeys(blockers)),
-        "pressures": list(dict.fromkeys(pressures)),
-        "improvements": list(dict.fromkeys(improvements)),
-        "readiness_score": readiness,
-        "promotion_score": promotion,
-        "rebuild_pressure": rebuild,
-        "execution_quality": execution,
-        "setup_family": setup_family,
-        "entry_quality": entry_quality,
-        "gates": gates,
-        "reasons": explain_trade_decision(payload),
+        "reason": reason,
+        "why": reason,
+        "notes": notes,
+        "next_action": next_action,
     }
 
 
-def build_signal_explainability(signal: Dict[str, Any]) -> Dict[str, Any]:
-    return build_explainability_object(signal)
+def build_rejection_analysis(trade: Optional[Dict[str, Any]] = None, reason_key: Optional[str] = None, *args, **kwargs) -> List[str]:
+    trade = _safe_dict(trade)
+    symbol = _norm_symbol(trade.get("symbol", "UNKNOWN"))
+    score = _safe_float(trade.get("score", 0))
+    readiness_score = _safe_float(trade.get("readiness_score", 0))
+    rebuild_pressure = _safe_float(trade.get("rebuild_pressure", 0))
+    eligible = trade.get("eligible")
+
+    analysis: List[str] = []
+
+    reason_key = _safe_str(reason_key, "").lower()
+    if reason_key:
+        analysis.append(f"Primary rejection key: {reason_key.replace('_', ' ')}.")
+
+    if eligible is False:
+        analysis.append("The setup failed eligibility requirements.")
+
+    if score and score < 50:
+        analysis.append(f"Score is too weak at {round(score, 1)}.")
+
+    if readiness_score and readiness_score < 60:
+        analysis.append(f"Readiness is too soft at {round(readiness_score, 1)}.")
+
+    if rebuild_pressure >= 75:
+        analysis.append(f"Rebuild pressure is too high at {round(rebuild_pressure, 1)}.")
+
+    explicit_reason = _safe_str(trade.get("rejection_reason", ""), "")
+    if explicit_reason:
+        analysis.append(explicit_reason)
+
+    if not analysis:
+        analysis.append(f"{symbol} did not clear execution standards.")
+
+    return _dedupe_keep_order(analysis)
 
 
-def build_trade_explainability(trade: Dict[str, Any]) -> Dict[str, Any]:
-    explainability = build_explainability_object(trade)
+def explain_rejection(trade: Optional[Dict[str, Any]] = None, reason_key: Optional[str] = None, *args, **kwargs) -> str:
+    trade = _safe_dict(trade)
+    symbol = _norm_symbol(trade.get("symbol", "UNKNOWN"))
+    analysis = build_rejection_analysis(trade, reason_key)
 
-    pnl = _safe_float(trade.get("pnl", 0.0))
-    outcome = _safe_str(trade.get("outcome", "")).strip().lower()
+    if analysis:
+        return f"{symbol} rejected: " + " ".join(analysis[:3])
 
-    if not outcome:
-        if pnl > 0:
-            outcome = "win"
-        elif pnl < 0:
-            outcome = "loss"
-        else:
-            outcome = "flat"
-
-    explainability["trade_outcome"] = outcome
-    explainability["pnl"] = pnl
-
-    if outcome == "win":
-        explainability["summary"] = "The trade followed through well enough to validate the decision."
-    elif outcome == "loss":
-        explainability["summary"] = "The trade failed to hold together well enough, so the engine should treat it as learning."
-    elif outcome == "flat":
-        explainability["summary"] = "The trade did not create enough edge to matter, which still teaches the engine something."
-
-    return explainability
+    return f"{symbol} rejected because the setup did not meet execution standards."
 
 
-def build_position_explainability(position: Dict[str, Any]) -> Dict[str, Any]:
-    explainability = build_explainability_object(position)
+def explain_reentry_detail(payload: Optional[Dict[str, Any]] = None, *args, **kwargs) -> Dict[str, Any]:
+    payload = _safe_dict(payload)
 
-    timing_phase = _safe_str(position.get("timing_phase", "")).strip().lower()
-    if timing_phase:
-        explainability["timing_phase"] = timing_phase
+    symbol = _norm_symbol(payload.get("symbol", "UNKNOWN"))
+    reentry_allowed = bool(payload.get("reentry_allowed", payload.get("allowed", False)))
+    cooldown = _safe_int(payload.get("cooldown_minutes", payload.get("minutes_to_reentry", 0)), 0)
+    reason = _safe_str(payload.get("reason", payload.get("decision_reason", "")), "")
 
-    if timing_phase == "too_early_to_cut":
-        explainability["summary"] = "The position is under pressure, but the engine still believes it is too early to abandon it."
-    elif timing_phase == "late":
-        explainability["summary"] = "The position is late enough that discipline around exits matters more now."
-    elif timing_phase == "hold_zone":
-        explainability["summary"] = "The position is still inside a normal hold-and-monitor zone."
+    if not reason:
+        reason = (
+            "Re-entry is allowed because the guardrails are not currently blocking a new attempt."
+            if reentry_allowed else
+            "Re-entry is blocked because the system still sees unresolved risk or behavior pressure."
+        )
 
-    return explainability
+    notes = []
+    if cooldown > 0:
+        notes.append(f"Cooldown remaining: {cooldown} minute(s).")
+
+    for item in _safe_list(payload.get("learning_notes", [])):
+        text = _safe_str(item, "")
+        if text:
+            notes.append(text)
+
+    return {
+        "symbol": symbol,
+        "headline": f"{symbol} re-entry detail",
+        "summary": f"{symbol} re-entry is {'allowed' if reentry_allowed else 'blocked'}.",
+        "verdict": "ALLOW" if reentry_allowed else "WAIT",
+        "reason": reason,
+        "why": reason,
+        "notes": _dedupe_keep_order(notes),
+        "next_action": (
+            "Re-enter only if the setup requalifies cleanly."
+            if reentry_allowed else
+            "Do not re-enter yet."
+        ),
+    }
+
+
+def explain_exit(payload: Optional[Dict[str, Any]] = None, *args, **kwargs) -> Dict[str, Any]:
+    payload = _safe_dict(payload)
+
+    symbol = _norm_symbol(payload.get("symbol", "UNKNOWN"))
+    pnl = _safe_float(payload.get("pnl", payload.get("realized_pnl", 0)), 0.0)
+    exit_reason = _safe_str(payload.get("exit_reason", payload.get("reason", payload.get("decision_reason", ""))), "")
+    exit_explanation = _safe_str(payload.get("exit_explanation", ""), "")
+
+    if not exit_reason:
+        exit_reason = (
+            "The trade was closed profitably."
+            if pnl > 0 else
+            "The trade was closed to stop further damage."
+            if pnl < 0 else
+            "The trade was closed without a strong profit or loss outcome."
+        )
+
+    if not exit_explanation:
+        exit_explanation = (
+            "The system is preserving realized gains."
+            if pnl > 0 else
+            "The system is treating this as protective damage control."
+            if pnl < 0 else
+            "The system is treating this as a neutral close."
+        )
+
+    return {
+        "symbol": symbol,
+        "headline": f"{symbol} exit detail",
+        "summary": exit_explanation,
+        "verdict": "PROTECT" if pnl > 0 else "EXIT",
+        "reason": exit_reason,
+        "why": exit_reason,
+        "notes": [
+            f"PnL: {round(pnl, 2)}",
+            exit_reason,
+            exit_explanation,
+        ],
+        "next_action": "Review whether the exit matched the thesis and pressure profile.",
+    }
+
+
+def explain_position_state(payload: Optional[Dict[str, Any]] = None, *args, **kwargs) -> Dict[str, Any]:
+    payload = _safe_dict(payload)
+
+    symbol = _norm_symbol(payload.get("symbol", "UNKNOWN"))
+    status = _safe_str(payload.get("status", "open"), "open").lower()
+    pnl = _safe_float(payload.get("pnl", payload.get("unrealized_pnl", 0)), 0.0)
+
+    agreement = _safe_dict(payload.get("system_agreement", {}))
+    health = _safe_dict(payload.get("health", {}))
+
+    agreement_score = _safe_int(agreement.get("score", 0), 0)
+    health_score = _safe_int(health.get("score", 0), 0)
+    direction = _norm_upper(payload.get("direction", payload.get("strategy", "")), "UNKNOWN")
+
+    if status == "closed":
+        verdict = "CLOSED"
+        reason = "This position is already closed."
+        next_action = "Review the finished trade."
+    elif health_score >= 75 and agreement_score >= 75:
+        verdict = "HOLD"
+        reason = "The position still looks structurally healthy and aligned."
+        next_action = "Let it work, but keep monitoring."
+    elif health_score < 35 or agreement_score < 55:
+        verdict = "PROTECT"
+        reason = "The position is showing weakness in health, agreement, or both."
+        next_action = "Reduce risk or prepare to close."
+    else:
+        verdict = "WATCH"
+        reason = "The position is alive, but the structure is mixed."
+        next_action = "Watch closely for either recovery or deterioration."
+
+    summary = (
+        f"{symbol} is a {direction} position with status {status}. "
+        f"Agreement is {agreement_score}, health is {health_score}, "
+        f"and current PnL is {round(pnl, 2)}."
+    )
+
+    return {
+        "symbol": symbol,
+        "headline": f"{symbol} position state",
+        "summary": summary,
+        "verdict": verdict,
+        "reason": reason,
+        "why": reason,
+        "notes": [
+            f"Status: {status}",
+            f"Direction: {direction}",
+            f"Agreement: {agreement_score}",
+            f"Health: {health_score}",
+            f"PnL: {round(pnl, 2)}",
+        ],
+        "next_action": next_action,
+    }
+
+
+def build_trade_explainability(signal: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    return explain_trade_decision(signal)
+
+
+def build_exit_explainability(payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    return explain_exit(payload)
+
+
+def build_reentry_explainability(payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    return explain_reentry_detail(payload)
+
+
+def build_rejection_explainability(payload: Optional[Dict[str, Any]] = None, reason_key: Optional[str] = None) -> Dict[str, Any]:
+    return {
+        "headline": f"{_norm_symbol(_safe_dict(payload).get('symbol', 'UNKNOWN'))} rejected",
+        "summary": explain_rejection(payload, reason_key),
+        "verdict": "REJECT",
+        "reason": explain_rejection(payload, reason_key),
+        "why": explain_rejection(payload, reason_key),
+        "notes": build_rejection_analysis(payload, reason_key),
+        "next_action": "Do not force the setup.",
+    }
