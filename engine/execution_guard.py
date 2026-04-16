@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from engine.account_state import buying_power
+from engine.account_state import buying_power, load_state
 from engine.paper_portfolio import open_count
 from engine.trade_history import executed_trade_count_today
 from engine.risk_governor import governor_status
@@ -43,6 +43,23 @@ def _estimate_trade_cost(trade: Dict[str, Any]) -> Dict[str, float]:
     }
 
 
+def _scaled_min_cash_reserve(cash: float, buying_power_now: float) -> float:
+    """
+    Reserve should scale off currently deployable funds,
+    not total equity including already-committed capital.
+    """
+    base = max(min(cash, buying_power_now), 0.0)
+
+    if base <= 500:
+        reserve = base * 0.20
+    elif base <= 2000:
+        reserve = base * 0.15
+    else:
+        reserve = base * 0.10
+
+    return round(max(25.0, reserve), 2)
+
+
 def can_execute_trade(trade: Dict[str, Any], available_buying_power: float | None = None) -> Dict[str, Any]:
     current_open_positions = _safe_int(open_count(), 0)
     executed_entries_today = _safe_int(executed_trade_count_today(), 0)
@@ -52,17 +69,20 @@ def can_execute_trade(trade: Dict[str, Any], available_buying_power: float | Non
         executed_entries_today=executed_entries_today,
     )
 
+    state = load_state()
+
     limits = gov.get("limits", {}) if isinstance(gov, dict) else {}
     controls = gov.get("controls", {}) if isinstance(gov, dict) else {}
 
-    cash = _safe_float(gov.get("cash", 0.0), 0.0)
+    cash = _safe_float(gov.get("cash", state.get("cash", 0.0)), 0.0)
+    equity = _safe_float(gov.get("equity", state.get("equity", 0.0)), 0.0)
     buying_power_now = _safe_float(
         available_buying_power if available_buying_power is not None else buying_power(),
         cash,
     )
 
     max_open_positions = _safe_int(limits.get("max_open_positions", 3), 3)
-    min_cash_reserve = _safe_float(limits.get("min_cash_reserve", 100.0), 100.0)
+    min_cash_reserve = _scaled_min_cash_reserve(cash, buying_power_now)
 
     estimate = _estimate_trade_cost(trade)
     total_cost = estimate["total_cost"]
@@ -74,30 +94,7 @@ def can_execute_trade(trade: Dict[str, Any], available_buying_power: float | Non
             "blocked": True,
             "reason": "kill_switch_active",
             "cash": cash,
-            "buying_power": buying_power_now,
-            "trade_cost": total_cost,
-            "projected_cash_after": projected_cash_after,
-            "projected_buying_power_after": projected_buying_power_after,
-            "min_cash_reserve": min_cash_reserve,
-        }
-
-    if controls.get("cash_reserve_too_low", False) and cash <= min_cash_reserve:
-        return {
-            "blocked": True,
-            "reason": "cash_reserve_already_too_low",
-            "cash": cash,
-            "buying_power": buying_power_now,
-            "trade_cost": total_cost,
-            "projected_cash_after": projected_cash_after,
-            "projected_buying_power_after": projected_buying_power_after,
-            "min_cash_reserve": min_cash_reserve,
-        }
-
-    if projected_cash_after < min_cash_reserve:
-        return {
-            "blocked": True,
-            "reason": "cash_reserve_would_be_broken",
-            "cash": cash,
+            "equity": equity,
             "buying_power": buying_power_now,
             "trade_cost": total_cost,
             "projected_cash_after": projected_cash_after,
@@ -110,6 +107,7 @@ def can_execute_trade(trade: Dict[str, Any], available_buying_power: float | Non
             "blocked": True,
             "reason": "max_open_positions_reached",
             "cash": cash,
+            "equity": equity,
             "buying_power": buying_power_now,
             "trade_cost": total_cost,
             "projected_cash_after": projected_cash_after,
@@ -124,6 +122,20 @@ def can_execute_trade(trade: Dict[str, Any], available_buying_power: float | Non
             "blocked": True,
             "reason": "insufficient_buying_power",
             "cash": cash,
+            "equity": equity,
+            "buying_power": buying_power_now,
+            "trade_cost": total_cost,
+            "projected_cash_after": projected_cash_after,
+            "projected_buying_power_after": projected_buying_power_after,
+            "min_cash_reserve": min_cash_reserve,
+        }
+
+    if projected_cash_after < min_cash_reserve:
+        return {
+            "blocked": True,
+            "reason": "cash_reserve_would_be_broken",
+            "cash": cash,
+            "equity": equity,
             "buying_power": buying_power_now,
             "trade_cost": total_cost,
             "projected_cash_after": projected_cash_after,
@@ -135,6 +147,7 @@ def can_execute_trade(trade: Dict[str, Any], available_buying_power: float | Non
         "blocked": False,
         "reason": "allowed",
         "cash": cash,
+        "equity": equity,
         "buying_power": buying_power_now,
         "trade_cost": total_cost,
         "projected_cash_after": projected_cash_after,

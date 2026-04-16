@@ -426,9 +426,9 @@ def process_signals(results, regime, volatility_payload):
     """
     Airtight but versatile signal processor.
 
-    Improvements kept and tightened:
+    Improvements:
     1. safer field normalization
-    2. duplicate-position guard
+    2. direct duplicate-position guard via get_position()
     3. strategy-router NO_TRADE handling
     4. richer capital visibility
     5. graceful option handling
@@ -483,21 +483,6 @@ def process_signals(results, regime, volatility_payload):
 
         shares = max(1, int(_safe_float(trade.get("size", trade.get("shares", 1)), 1)))
         return round(price_guess * shares, 2)
-
-    def _open_symbol_set():
-        try:
-            open_positions = show_positions()
-        except Exception:
-            open_positions = []
-
-        symbols = set()
-        if isinstance(open_positions, list):
-            for pos in open_positions:
-                if isinstance(pos, dict):
-                    sym = _norm_symbol(pos.get("symbol", ""))
-                    if sym:
-                        symbols.add(sym)
-        return symbols
 
     def _remember_candidate_row(
         trade,
@@ -572,7 +557,6 @@ def process_signals(results, regime, volatility_payload):
     vix_value = (volatility_payload or {}).get("vix", "N/A")
     print("Volatility State:", volatility_state, "| VIX:", vix_value)
 
-    open_symbols = _open_symbol_set()
     capital_available_now = round(_safe_float(buying_power(), 0.0), 2)
 
     for raw_trade in results:
@@ -674,7 +658,6 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 trade,
                 status="rejected",
@@ -716,7 +699,6 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 trade,
                 status="rejected",
@@ -729,7 +711,13 @@ def process_signals(results, regime, volatility_payload):
             )
             continue
 
-        if symbol in open_symbols:
+        existing_position = None
+        try:
+            existing_position = get_position(symbol)
+        except Exception:
+            existing_position = None
+
+        if existing_position:
             rejection_reason = "already_open_position"
             debug_row["blocked_at"] = "position_duplication_guard"
             debug_row["final_reason"] = rejection_reason
@@ -744,7 +732,6 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 trade,
                 status="rejected",
@@ -776,7 +763,6 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 trade,
                 status="rejected",
@@ -804,7 +790,6 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 trade,
                 status="rejected",
@@ -845,7 +830,6 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 trade,
                 status="rejected",
@@ -876,7 +860,6 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 trade,
                 status="rejected",
@@ -907,7 +890,6 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 trade,
                 status="rejected",
@@ -938,7 +920,6 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 trade,
                 status="rejected",
@@ -975,7 +956,6 @@ def process_signals(results, regime, volatility_payload):
                     breadth,
                     volatility_state,
                 )
-
                 _remember_candidate_row(
                     trade,
                     status="rejected",
@@ -1072,7 +1052,6 @@ def process_signals(results, regime, volatility_payload):
                 breadth=breadth,
                 volatility_state=volatility_state,
             )
-
             _remember_candidate_row(
                 trade,
                 status="selected",
@@ -1141,7 +1120,7 @@ def process_signals(results, regime, volatility_payload):
             )
 
     return approved_trades, selected_trades, mode, breadth, volatility_state
-    
+       
 def run():
     write_bot_status(True, "starting")
     log_bot("Bot run started", "INFO")

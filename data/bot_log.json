@@ -448,5 +448,15 @@
     "timestamp": "2026-04-16T03:46:28.386180",
     "level": "INFO",
     "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-16T04:24:58.313105",
+    "level": "INFO",
+    "message": "Bot run started"
+  },
+  {
+    "timestamp": "2026-04-16T04:25:07.625734",
+    "level": "WARN",
+    "message": "Skipped MSFT due to existing open position"
   }
 ]
