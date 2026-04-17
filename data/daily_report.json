@@ -1,33 +1,33 @@
 {
-  "timestamp": "2026-04-16T04:25:07.943324",
+  "timestamp": "2026-04-16T22:49:24.856873",
   "performance": {
-    "trades": 1,
-    "wins": 0,
+    "trades": 2,
+    "wins": 1,
     "losses": 1,
-    "winrate": 0.0,
-    "total_pnl": -2.01,
+    "winrate": 0.5,
+    "total_pnl": 14.01,
     "max_drawdown": 2.01,
-    "entries_today": 2,
-    "closes_today": 1,
-    "round_trips_today": 1,
-    "realized_pnl_today": -2.01
+    "entries_today": 3,
+    "closes_today": 2,
+    "round_trips_today": 2,
+    "realized_pnl_today": 14.01
   },
   "portfolio": {
     "open_positions": 1,
-    "closed_positions": 1,
-    "realized_pnl": -2.01
+    "closed_positions": 2,
+    "realized_pnl": 14.01
   },
   "analytics": {
-    "trades": 3,
-    "winrate": 0.0,
+    "trades": 5,
+    "winrate": 0.2,
     "strategies": {
-      "CALL": 3
+      "CALL": 5
     },
     "last_trade": "MSFT",
     "portfolio": {
       "open_positions": 1,
-      "closed_positions": 1,
-      "realized_pnl": -2.01
+      "closed_positions": 2,
+      "realized_pnl": 14.01
     }
   }
 }

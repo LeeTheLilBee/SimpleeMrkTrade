@@ -1,32 +1,5 @@
 [
   {
-    "timestamp": "2026-03-24T01:30:24.859942",
-    "performance": {
-      "trades": 3,
-      "wins": 0,
-      "losses": 3,
-      "winrate": 0.0,
-      "total_pnl": -29.46,
-      "max_drawdown": 29.46,
-      "trades_today": 0,
-      "realized_pnl_today": -29.46
-    },
-    "portfolio": {
-      "open_positions": 0,
-      "closed_positions": 3,
-      "realized_pnl": -29.46
-    },
-    "snapshot": {
-      "cash": 1000.0,
-      "buying_power": 1000.0,
-      "equity": 1000.0,
-      "open_positions": 0,
-      "realized_pnl": -29.46,
-      "unrealized_pnl": 0,
-      "estimated_account_value": 1000.0
-    }
-  },
-  {
     "timestamp": "2026-03-24T02:11:42.111392",
     "performance": {
       "trades": 5,
@@ -571,6 +544,35 @@
       "realized_pnl": -2.01,
       "unrealized_pnl": -1.03,
       "estimated_account_value": 996.96
+    }
+  },
+  {
+    "timestamp": "2026-04-16T22:49:24.862631",
+    "performance": {
+      "trades": 2,
+      "wins": 1,
+      "losses": 1,
+      "winrate": 0.5,
+      "total_pnl": 14.01,
+      "max_drawdown": 2.01,
+      "entries_today": 3,
+      "closes_today": 2,
+      "round_trips_today": 2,
+      "realized_pnl_today": 14.01
+    },
+    "portfolio": {
+      "open_positions": 1,
+      "closed_positions": 2,
+      "realized_pnl": 14.01
+    },
+    "snapshot": {
+      "cash": 171.4,
+      "buying_power": 171.4,
+      "equity": 1014.01,
+      "open_positions": 1,
+      "realized_pnl": 14.01,
+      "unrealized_pnl": -1.05,
+      "estimated_account_value": 1012.96
     }
   }
 ]

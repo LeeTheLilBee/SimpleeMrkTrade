@@ -777,5 +777,51 @@
       "Market regime: Bull Trend.",
       "Trend context: Uptrend."
     ]
+  },
+  {
+    "timestamp": "2026-04-16T22:49:23.709093",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 207,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "source": "execution",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-16T22:49:23.900383",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 201,
+    "confidence": "HIGH",
+    "entry": 100.0,
+    "stop": 97.0,
+    "target": 104.0,
+    "source": "execution",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
   }
 ]

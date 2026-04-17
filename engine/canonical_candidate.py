@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 from copy import deepcopy
 from datetime import datetime
 from typing import Any, Dict, List
@@ -58,6 +57,24 @@ def _first_list(*values: Any) -> List[Any]:
     return []
 
 
+def _best_price(trade: Dict[str, Any]) -> float:
+    candidates = [
+        trade.get("current_price"),
+        trade.get("price"),
+        trade.get("entry"),
+        trade.get("fill_price"),
+        trade.get("requested_price"),
+        trade.get("underlying_price"),
+        trade.get("market_price"),
+        trade.get("latest_price"),
+    ]
+    for value in candidates:
+        price = _safe_float(value, 0.0)
+        if price > 0:
+            return price
+    return 0.0
+
+
 def build_canonical_candidate(
     trade: Dict[str, Any],
     *,
@@ -73,17 +90,24 @@ def build_canonical_candidate(
     stronger_competing_setups: List[Dict[str, Any]] | None = None,
 ) -> Dict[str, Any]:
     trade = _safe_dict(deepcopy(trade))
-    stronger_competing_setups = stronger_competing_setups if isinstance(stronger_competing_setups, list) else []
+    stronger_competing_setups = (
+        stronger_competing_setups if isinstance(stronger_competing_setups, list) else []
+    )
 
     symbol = _normalize_symbol(trade.get("symbol"))
     strategy = _safe_str(trade.get("strategy"), "CALL").upper()
     score = round(_safe_float(trade.get("score"), 0.0), 2)
     confidence = _safe_str(trade.get("confidence"), "LOW").upper()
 
-    entry = round(_safe_float(trade.get("entry", trade.get("price", trade.get("current_price", 0.0))), 0.0), 2)
-    current_price = round(_safe_float(trade.get("current_price", trade.get("price", entry)), entry), 2)
-    stop = round(_safe_float(trade.get("stop", 0.0), 0.0), 2)
-    target = round(_safe_float(trade.get("target", 0.0), 0.0), 2)
+    base_price = _best_price(trade)
+    entry = round(_safe_float(trade.get("entry", base_price), base_price), 2)
+    current_price = round(_safe_float(trade.get("current_price", base_price), base_price), 2)
+
+    stop_default = round(entry * (1.03 if strategy == "PUT" else 0.97), 2) if entry > 0 else 0.0
+    target_default = round(entry * (0.90 if strategy == "PUT" else 1.10), 2) if entry > 0 else 0.0
+
+    stop = round(_safe_float(trade.get("stop", stop_default), stop_default), 2)
+    target = round(_safe_float(trade.get("target", target_default), target_default), 2)
     atr = round(_safe_float(trade.get("atr", 0.0), 0.0), 2)
     rsi = round(_safe_float(trade.get("rsi", 0.0), 0.0), 2)
 
@@ -117,9 +141,13 @@ def build_canonical_candidate(
         "target": target,
         "atr": atr,
         "rsi": rsi,
-        "price": round(_safe_float(trade.get("price", current_price), current_price), 2),
-        "capital_required": round(_safe_float(capital_required, 0.0), 2) if capital_required is not None else None,
-        "capital_available": round(_safe_float(capital_available, 0.0), 2) if capital_available is not None else None,
+        "price": round(_safe_float(trade.get("price", base_price), base_price), 2),
+        "fill_price": round(_safe_float(trade.get("fill_price", 0.0), 0.0), 2),
+        "requested_price": round(_safe_float(trade.get("requested_price", 0.0), 0.0), 2),
+        "capital_required": round(_safe_float(capital_required, 0.0), 2)
+        if capital_required is not None else None,
+        "capital_available": round(_safe_float(capital_available, 0.0), 2)
+        if capital_available is not None else None,
         "capital_buffer_after": (
             round(_safe_float(capital_available, 0.0) - _safe_float(capital_required, 0.0), 2)
             if capital_required is not None and capital_available is not None

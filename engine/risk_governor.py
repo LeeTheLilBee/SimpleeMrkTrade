@@ -1,12 +1,11 @@
 from datetime import datetime
-
-from engine.account_state import load_state
+from engine.account_state import load_state, resolve_min_cash_reserve
 from engine.performance_tracker import performance_summary
 from engine.pdt_guard import pdt_status_preview
 
 MAX_DAILY_ENTRIES = 3
 MAX_DRAWDOWN_DOLLARS = 150
-MIN_CASH_RESERVE = 100
+DEFAULT_MIN_CASH_RESERVE = 100
 MAX_OPEN_POSITIONS = 3
 MAX_DAILY_LOSS = 250
 
@@ -47,7 +46,7 @@ def _detect_trading_mode(kwargs):
 
 def governor_status(
     current_open_positions=0,
-    executed_entries_today=None,
+    executed_entries_today=0,
     executed_trades_today=None,
     max_daily_entries=None,
     max_drawdown_dollars=None,
@@ -61,25 +60,17 @@ def governor_status(
     perf = performance_summary()
     pdt = pdt_status_preview()
 
-    cash = _safe_float(state.get("cash", 0))
-    equity = _safe_float(state.get("equity", 0))
-    buying_power = _safe_float(state.get("buying_power", 0))
+    cash = _safe_float(state.get("cash", 0), 0)
+    equity = _safe_float(state.get("equity", 0), 0)
+    buying_power = _safe_float(state.get("buying_power", 0), 0)
+    max_drawdown = _safe_float(perf.get("max_drawdown", 0), 0)
+    realized_pnl_today = _safe_float(perf.get("realized_pnl_today", 0), 0)
 
-    max_drawdown = _safe_float(perf.get("max_drawdown", 0))
-    realized_pnl_today = _safe_float(perf.get("realized_pnl_today", 0))
     current_open_positions = _safe_int(current_open_positions, 0)
-
-    perf_entries_today = _safe_int(perf.get("entries_today", 0), 0)
-    perf_closes_today = _safe_int(perf.get("closes_today", 0), 0)
-    perf_round_trips_today = _safe_int(perf.get("round_trips_today", 0), 0)
 
     if executed_trades_today is not None:
         executed_entries_today = executed_trades_today
-
-    if executed_entries_today is None:
-        executed_entries_today = perf_entries_today
-    else:
-        executed_entries_today = _safe_int(executed_entries_today, perf_entries_today)
+    executed_entries_today = _safe_int(executed_entries_today, 0)
 
     max_daily_entries = _safe_int(
         MAX_DAILY_ENTRIES if max_daily_entries is None else max_daily_entries,
@@ -89,10 +80,6 @@ def governor_status(
         MAX_DRAWDOWN_DOLLARS if max_drawdown_dollars is None else max_drawdown_dollars,
         MAX_DRAWDOWN_DOLLARS,
     )
-    min_cash_reserve = _safe_float(
-        MIN_CASH_RESERVE if min_cash_reserve is None else min_cash_reserve,
-        MIN_CASH_RESERVE,
-    )
     max_open_positions = _safe_int(
         MAX_OPEN_POSITIONS if max_open_positions is None else max_open_positions,
         MAX_OPEN_POSITIONS,
@@ -100,6 +87,12 @@ def governor_status(
     max_daily_loss = _safe_float(
         MAX_DAILY_LOSS if max_daily_loss is None else max_daily_loss,
         MAX_DAILY_LOSS,
+    )
+
+    effective_min_cash_reserve = (
+        _safe_float(min_cash_reserve, DEFAULT_MIN_CASH_RESERVE)
+        if min_cash_reserve is not None
+        else resolve_min_cash_reserve(state, fallback_amount=DEFAULT_MIN_CASH_RESERVE)
     )
 
     trading_mode = _detect_trading_mode(kwargs)
@@ -130,7 +123,7 @@ def governor_status(
         controls["max_drawdown_hit"] = True
         reasons.append("max_drawdown_hit")
 
-    if cash <= min_cash_reserve:
+    if cash <= effective_min_cash_reserve:
         blocked = True
         controls["cash_reserve_too_low"] = True
         reasons.append("cash_reserve_too_low")
@@ -189,21 +182,23 @@ def governor_status(
         "max_drawdown": max_drawdown,
         "realized_pnl_today": realized_pnl_today,
         "current_open_positions": current_open_positions,
-        "entries_today": perf_entries_today,
+        "entries_today": _safe_int(perf.get("entries_today", executed_entries_today), executed_entries_today),
         "executed_entries_today": executed_entries_today,
         "executed_trades_today": executed_entries_today,
-        "closes_today": perf_closes_today,
-        "round_trips_today": perf_round_trips_today,
+        "closes_today": _safe_int(perf.get("closes_today", 0), 0),
+        "round_trips_today": _safe_int(perf.get("round_trips_today", 0), 0),
         "limits": {
             "max_daily_entries": max_daily_entries,
             "max_drawdown_dollars": max_drawdown_dollars,
-            "min_cash_reserve": min_cash_reserve,
+            "min_cash_reserve": effective_min_cash_reserve,
             "max_open_positions": max_open_positions,
             "max_daily_loss": max_daily_loss,
         },
         "controls": controls,
         "pdt": pdt,
         "trading_mode": trading_mode,
+        "reserve_mode": state.get("reserve_mode", "percent"),
+        "reserve_value": state.get("reserve_value", 20.0),
         "timestamp": datetime.now().isoformat(),
         "extra_kwargs_seen": list(kwargs.keys()),
     }

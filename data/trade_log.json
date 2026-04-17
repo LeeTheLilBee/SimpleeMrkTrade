@@ -49,5 +49,45 @@
     "confidence": "HIGH",
     "status": "OPEN",
     "pnl": 0
+  },
+  {
+    "timestamp": "2026-04-16T22:49:01.559226",
+    "trade_id": "MSFT-CALL-20260416032316",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "price": 412.25,
+    "size": 2.0,
+    "score": 207,
+    "confidence": "HIGH",
+    "status": "CLOSED",
+    "pnl": 16.02,
+    "exit_price": 420.26,
+    "closed_at": "2026-04-16T22:49:01.559226",
+    "reason": "take_profit",
+    "exit_explanation": {
+      "symbol": "MSFT",
+      "headline": "MSFT exit detail",
+      "summary": "The system is preserving realized gains.",
+      "verdict": "PROTECT",
+      "reason": "take_profit",
+      "why": "take_profit",
+      "notes": [
+        "PnL: 16.02",
+        "take_profit",
+        "The system is preserving realized gains."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
+  },
+  {
+    "timestamp": "2026-04-16T22:49:24.091066",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "price": 421.31,
+    "size": 2.0,
+    "score": 207,
+    "confidence": "HIGH",
+    "status": "OPEN",
+    "pnl": 0
   }
 ]

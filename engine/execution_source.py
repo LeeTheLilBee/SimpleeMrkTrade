@@ -10,10 +10,8 @@ from typing import Any, Dict, List, Optional, Set
 def _safe_list(value: Any) -> List[Any]:
     return value if isinstance(value, list) else []
 
-
 def _safe_dict(value: Any) -> Dict[str, Any]:
     return value if isinstance(value, dict) else {}
-
 
 def _safe_str(value: Any, default: str = "") -> str:
     try:
@@ -22,13 +20,11 @@ def _safe_str(value: Any, default: str = "") -> str:
     except Exception:
         return default
 
-
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
         return float(value)
     except Exception:
         return default
-
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
@@ -36,10 +32,8 @@ def _safe_int(value: Any, default: int = 0) -> int:
     except Exception:
         return default
 
-
 def _norm_symbol(value: Any) -> str:
     return _safe_str(value, "").upper()
-
 
 def load_json(path: str, default: Any) -> Any:
     try:
@@ -51,7 +45,6 @@ def load_json(path: str, default: Any) -> Any:
     except Exception:
         return default
 
-
 def _watchlist_to_symbol_set(watchlist: Any) -> Optional[Set[str]]:
     if not isinstance(watchlist, list) or not watchlist:
         return None
@@ -62,22 +55,41 @@ def _watchlist_to_symbol_set(watchlist: Any) -> Optional[Set[str]]:
             symbol = _norm_symbol(item.get("symbol", ""))
         else:
             symbol = _norm_symbol(item)
+
         if symbol:
             out.add(symbol)
 
     return out if out else None
 
+def _best_price_from_candidate(row: Dict[str, Any]) -> float:
+    # Prefer true current/live-ish fields first, then fall back.
+    candidates = [
+        row.get("current_price"),
+        row.get("price"),
+        row.get("entry"),
+        row.get("last_price"),
+        row.get("close"),
+        row.get("underlying_price"),
+        row.get("market_price"),
+        row.get("latest_price"),
+    ]
+    for value in candidates:
+        price = _safe_float(value, 0.0)
+        if price > 0:
+            return price
+    return 0.0
 
 def _normalize_candidate(candidate: Dict[str, Any]) -> Dict[str, Any]:
     row = dict(candidate or {})
     symbol = _norm_symbol(row.get("symbol", ""))
+
     if not symbol:
         return {}
 
-    price = _safe_float(
-        row.get("price", row.get("current_price", row.get("entry", 100.0))),
-        100.0,
-    )
+    price = _best_price_from_candidate(row)
+    if price <= 0:
+        return {}
+
     score = _safe_float(row.get("score", row.get("latest_score", 0)), 0.0)
     confidence = _safe_str(
         row.get("confidence", row.get("latest_confidence", "LOW")),
@@ -90,9 +102,11 @@ def _normalize_candidate(candidate: Dict[str, Any]) -> Dict[str, Any]:
     row.setdefault("trend", "UPTREND")
     row.setdefault("rsi", 55)
     row.setdefault("atr", 2.0)
-    row.setdefault("price", price)
-    row.setdefault("current_price", price)
-    row.setdefault("entry", price)
+
+    # Force candidate economics to use the real candidate price.
+    row["price"] = round(price, 2)
+    row["current_price"] = round(price, 2)
+    row["entry"] = round(_safe_float(row.get("entry", price), price), 2)
 
     if strategy == "PUT":
         row.setdefault("stop", round(price * 1.03, 2))
@@ -112,7 +126,6 @@ def _normalize_candidate(candidate: Dict[str, Any]) -> Dict[str, Any]:
 
     return row
 
-
 def _dedupe_by_symbol(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     seen = set()
     out = []
@@ -123,81 +136,6 @@ def _dedupe_by_symbol(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         out.append(row)
         seen.add(symbol)
     return out
-
-
-# ============================================================
-# UNIVERSE REBUILD COMPATIBILITY
-# ============================================================
-
-def _get_execution_universe_builder():
-    try:
-        import engine.execution_universe_builder as builder_module
-    except Exception:
-        return None
-
-    candidate_names = [
-        "build_execution_universe",
-        "get_execution_universe",
-        "build_universe",
-        "build_execution_candidates",
-    ]
-
-    for name in candidate_names:
-        fn = getattr(builder_module, name, None)
-        if callable(fn):
-            return fn
-
-    return None
-
-
-def _try_rebuild_execution_universe(
-    limit: int,
-    spotlight_limit: int,
-    watchlist_limit: int,
-    universe_limit: int,
-    debug: bool = True,
-) -> None:
-    builder = _get_execution_universe_builder()
-    if not callable(builder):
-        if debug:
-            print("[EXECUTION_UNIVERSE_REBUILD_SKIPPED] no compatible builder found")
-        return
-
-    attempts = [
-        {
-            "limit": limit,
-            "spotlight_limit": spotlight_limit,
-            "watchlist_limit": watchlist_limit,
-            "universe_limit": universe_limit,
-        },
-        {
-            "limit": limit,
-            "spotlight_limit": spotlight_limit,
-            "universe_limit": universe_limit,
-        },
-        {
-            "limit": limit,
-            "spotlight_limit": spotlight_limit,
-        },
-        {
-            "limit": limit,
-        },
-        {},
-    ]
-
-    for kwargs in attempts:
-        try:
-            builder(**kwargs)
-            return
-        except TypeError:
-            continue
-        except Exception as e:
-            if debug:
-                print(f"[EXECUTION_UNIVERSE_REBUILD_ERROR] {e}")
-            return
-
-    if debug:
-        print("[EXECUTION_UNIVERSE_REBUILD_SKIPPED] builder signature mismatch")
 
 
 # ============================================================
@@ -215,18 +153,6 @@ def get_execution_candidates(
     *args,
     **kwargs,
 ) -> List[Dict[str, Any]]:
-    """
-    Compatibility-safe execution candidate accessor.
-
-    Supports calls like:
-        get_execution_candidates()
-        get_execution_candidates(force_rebuild=True)
-        get_execution_candidates(force_rebuild=True, watchlist=watchlist)
-        get_execution_candidates(limit=20, watchlist=watchlist)
-
-    Rebuilds the execution universe first when requested, then normalizes the
-    selected candidates from data/execution_universe.json.
-    """
     del args, kwargs
 
     limit = max(1, _safe_int(limit, 50))
@@ -235,23 +161,30 @@ def get_execution_candidates(
     universe_limit = max(watchlist_limit, _safe_int(universe_limit, 220))
 
     if force_rebuild:
-        _try_rebuild_execution_universe(
-            limit=limit,
-            spotlight_limit=spotlight_limit,
-            watchlist_limit=watchlist_limit,
-            universe_limit=universe_limit,
-            debug=debug,
-        )
+        rebuilt = False
+
+        try:
+            from engine.execution_universe_builder import build_execution_universe
+            build_execution_universe(
+                limit=limit,
+                spotlight_limit=spotlight_limit,
+                watchlist_limit=watchlist_limit,
+                universe_limit=universe_limit,
+            )
+            rebuilt = True
+        except Exception:
+            pass
+
+        if not rebuilt:
+            print("[EXECUTION_UNIVERSE_REBUILD_SKIPPED] no compatible builder found")
 
     universe = load_json("data/execution_universe.json", {})
     universe = _safe_dict(universe)
 
     selected = _safe_list(universe.get("selected", []))
-    spotlight = _safe_list(universe.get("spotlight", []))
     watchlist_set = _watchlist_to_symbol_set(watchlist)
 
     normalized: List[Dict[str, Any]] = []
-
     for item in selected:
         if not isinstance(item, dict):
             continue
@@ -285,11 +218,12 @@ def get_execution_candidates(
     final_rows = normalized[:limit]
 
     if debug:
+        spotlight = _safe_list(universe.get("spotlight", []))
         print("Execution candidates:", [row.get("symbol") for row in final_rows[:8]])
         print("Execution candidate count:", len(final_rows))
         print(
             "Execution spotlight:",
-            [row.get("symbol") for row in spotlight[:5] if isinstance(row, dict)]
+            [row.get("symbol") for row in spotlight[:5] if isinstance(row, dict)],
         )
 
     return final_rows
@@ -321,6 +255,8 @@ def print_execution_candidates(
             row.get("score", 0),
             "|",
             row.get("confidence", "LOW"),
+            "| price:",
+            row.get("price", 0),
         )
 
     return rows

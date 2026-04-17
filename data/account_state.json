@@ -1,7 +1,7 @@
 {
-  "equity": 997.99,
-  "cash": 173.5,
-  "buying_power": 173.5,
+  "equity": 1014.01,
+  "cash": 171.4,
+  "buying_power": 171.4,
   "account_type": "margin",
   "trade_history": [
     {
@@ -21,6 +21,17 @@
       "settle_date": "2026-04-17T03:23:17.221296",
       "cost": 824.5,
       "status": "OPEN"
+    },
+    {
+      "symbol": "MSFT",
+      "price": 421.3107,
+      "size": 2.0,
+      "timestamp": "2026-04-16T22:49:24.074550",
+      "settle_date": "2026-04-17T22:49:24.074557",
+      "cost": 842.62,
+      "status": "OPEN"
     }
-  ]
+  ],
+  "reserve_mode": "percent",
+  "reserve_value": 20.0
 }
