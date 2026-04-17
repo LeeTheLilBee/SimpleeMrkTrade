@@ -472,14 +472,16 @@ def log_approval(trade, mode, regime, breadth, volatility_state):
 def process_signals(results, regime, volatility_payload):
     """
     Fused signal processor.
+
     Core behavior:
     - research approval is separate from execution readiness
     - V2 overlay can influence conviction and vehicle choice
     - options and stock fallback are decided inside one candidate path
     - Soulaana can still surface strong research even if execution is blocked
     - execution queue only sees execution-ready candidates
+    - every candidate is normalized before it is logged, remembered, or displayed
     """
-    from engine.candidate_fusion import build_fused_candidate
+    from engine.candidate_fusion import build_fused_candidate, finalize_candidate_state
 
     def _safe_float(value, default=0.0):
         try:
@@ -496,6 +498,9 @@ def process_signals(results, regime, volatility_payload):
 
     def _safe_list(value):
         return value if isinstance(value, list) else []
+
+    def _safe_dict(value):
+        return value if isinstance(value, dict) else {}
 
     def _norm_symbol(value):
         return _safe_str(value, "UNKNOWN").upper()
@@ -531,7 +536,7 @@ def process_signals(results, regime, volatility_payload):
             payload = {
                 "symbol": trade.get("symbol", "UNKNOWN"),
                 "strategy": trade.get("strategy", "CALL"),
-                "score": _safe_float(trade.get("score", 0), 0.0),
+                "score": _safe_float(trade.get("fused_score", trade.get("score", 0)), 0.0),
                 "confidence": _safe_str(trade.get("confidence", "LOW"), "LOW"),
                 "status": status,
                 "reason": reason,
@@ -543,13 +548,23 @@ def process_signals(results, regime, volatility_payload):
                 "capital_available": capital_available,
                 "selected_for_execution": selected_for_execution,
                 "timestamp": trade.get("timestamp"),
+                "vehicle_selected": trade.get("vehicle_selected", "RESEARCH_ONLY"),
+                "minimum_trade_cost": trade.get("minimum_trade_cost", 0.0),
+                "research_approved": bool(trade.get("research_approved", False)),
+                "execution_ready": bool(trade.get("execution_ready", False)),
+                "blocked_at": trade.get("blocked_at", ""),
+                "final_reason": trade.get("final_reason", reason),
+                "vehicle_reason": trade.get("vehicle_reason", ""),
             }
+
         if isinstance(extra, dict):
             payload.update(extra)
+
         try:
             remember_candidate(payload)
         except Exception:
             pass
+
         trade["candidate_display"] = payload
         return payload
 
@@ -560,19 +575,35 @@ def process_signals(results, regime, volatility_payload):
                 return row if isinstance(row, dict) else {}
         except Exception:
             pass
+
         try:
             if "get_v2_signal_overlay" in globals():
                 row = get_v2_signal_overlay(symbol, trade)
                 return row if isinstance(row, dict) else {}
         except Exception:
             pass
+
         return {}
 
     def _governor_snapshot():
         try:
+            entries_today = 0
+
+            try:
+                perf = performance_summary()
+                if isinstance(perf, dict):
+                    entries_today = int(_safe_float(perf.get("entries_today", 0), 0))
+            except Exception:
+                entries_today = 0
+
+            print("GOVERNOR ENTRY FEED:", {
+                "entries_today_from_perf": entries_today,
+                "open_positions": open_count(),
+            })
+
             gov = governor_status(
                 current_open_positions=open_count(),
-                executed_trades_today=executed_trade_count(),
+                executed_entries_today=entries_today,
             )
             return gov if isinstance(gov, dict) else {}
         except Exception:
@@ -588,6 +619,26 @@ def process_signals(results, regime, volatility_payload):
             return f"governor_blocked:{reasons[0]}"
         return "governor_blocked"
 
+    def _sync_debug_from_fused(debug_row, fused):
+        debug_row["vehicle_selected"] = fused.get("vehicle_selected", "RESEARCH_ONLY")
+        debug_row["capital_required"] = fused.get("capital_required", 0.0)
+        debug_row["minimum_trade_cost"] = fused.get("minimum_trade_cost", 0.0)
+        debug_row["research_approved"] = bool(fused.get("research_approved", False))
+        debug_row["execution_ready"] = bool(fused.get("execution_ready", False))
+        debug_row["selected_for_execution"] = bool(fused.get("selected_for_execution", False))
+        debug_row["blocked_at"] = fused.get("blocked_at", debug_row.get("blocked_at", ""))
+        debug_row["final_reason"] = fused.get("final_reason", debug_row.get("final_reason", ""))
+        return debug_row
+
+    def _finalize_for_exit(fused, debug_row, blocked_at="", reason=""):
+        if blocked_at:
+            fused["blocked_at"] = blocked_at
+        if reason:
+            fused["final_reason"] = reason
+        fused = finalize_candidate_state(fused)
+        debug_row = _sync_debug_from_fused(debug_row, fused)
+        return fused, debug_row
+
     results = _safe_list(results)
     research_approved = []
     execution_ready = []
@@ -599,10 +650,7 @@ def process_signals(results, regime, volatility_payload):
     mode = resolve_market_mode(regime, breadth, volatility_payload)
     print("Market Mode:", mode)
 
-    volatility_state = _safe_str(
-        (volatility_payload or {}).get("state", "NORMAL"),
-        "NORMAL",
-    )
+    volatility_state = _safe_str((volatility_payload or {}).get("state", "NORMAL"), "NORMAL")
     vix_value = (volatility_payload or {}).get("vix", "N/A")
     print("Volatility State:", volatility_state, "| VIX:", vix_value)
 
@@ -612,6 +660,7 @@ def process_signals(results, regime, volatility_payload):
 
     for raw_trade in results:
         trade = dict(raw_trade) if isinstance(raw_trade, dict) else {}
+
         symbol = _norm_symbol(trade.get("symbol", "UNKNOWN"))
         strategy = _safe_str(trade.get("strategy", "CALL"), "CALL").upper()
         score = _safe_float(trade.get("score", 0), 0.0)
@@ -648,11 +697,13 @@ def process_signals(results, regime, volatility_payload):
         best_option = None
         option_score = -1
         option_notes = []
+
         try:
             best_option, option_score, option_notes = choose_best_option(
                 option_chain,
                 price,
                 strategy,
+                trade=trade,
             )
         except Exception:
             best_option, option_score, option_notes = None, -1, []
@@ -665,14 +716,31 @@ def process_signals(results, regime, volatility_payload):
             "best_option_preview": best_option if isinstance(best_option, dict) else None,
         })
 
+        if isinstance(best_option, dict) and best_option:
+            try:
+                option_allowed, option_reason = option_is_executable(
+                    best_option,
+                    min_score=60,
+                )
+            except Exception:
+                option_allowed, option_reason = False, "option_validation_failed"
+
+            best_option["is_executable"] = bool(option_allowed)
+            best_option["execution_reason"] = _safe_str(option_reason, "")
+        else:
+            option_allowed, option_reason = False, "no_option_contract"
+
         v2_row = _get_v2_overlay(symbol, trade)
+
         fused = build_fused_candidate(
             trade,
             best_option=best_option,
             option_score=option_score,
             option_notes=option_notes,
             v2_row=v2_row,
+            governor=governor,
             buying_power=capital_available_now,
+            commission=1.0,
         )
 
         print("OPTION VS STOCK CAPITAL:", {
@@ -695,6 +763,8 @@ def process_signals(results, regime, volatility_payload):
             "breadth": breadth,
             "mode": mode,
             "volatility_state": volatility_state,
+            "governor_blocked": bool(governor.get("blocked", False)),
+            "governor_reason": governor_reason,
             "breadth_allowed": None,
             "chosen_strategy": None,
             "duplicate_open_found": None,
@@ -708,10 +778,10 @@ def process_signals(results, regime, volatility_payload):
             "option_chain_count": len(option_chain),
             "best_option_found": bool(best_option),
             "option_contract_score": option_score,
-            "option_allowed": None,
-            "option_reason": "",
+            "option_allowed": option_allowed if best_option else None,
+            "option_reason": option_reason if best_option else "",
             "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
-            "capital_affordable": None,
+            "capital_affordable": bool(fused.get("stock_affordable") or fused.get("option_affordable")),
             "research_approved": False,
             "execution_ready": False,
             "selected_for_execution": False,
@@ -744,9 +814,9 @@ def process_signals(results, regime, volatility_payload):
         debug_row["breadth_allowed"] = breadth_ok
         if not breadth_ok:
             reason = "failed_breadth_filter"
-            debug_row["blocked_at"] = "breadth_filter"
-            debug_row["final_reason"] = reason
+            fused, debug_row = _finalize_for_exit(fused, debug_row, "breadth_guard", reason)
             debug_rows.append(debug_row)
+
             log_rejection(
                 fused,
                 symbol,
@@ -756,6 +826,7 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
+
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -768,15 +839,17 @@ def process_signals(results, regime, volatility_payload):
                 extra={
                     "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
                     "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
+                    "blocked_at": fused.get("blocked_at", ""),
+                    "final_reason": fused.get("final_reason", reason),
                 },
             )
             continue
 
         if fused["strategy"] == "NO_TRADE":
             reason = "strategy_router_returned_no_trade"
-            debug_row["blocked_at"] = "strategy_router"
-            debug_row["final_reason"] = reason
+            fused, debug_row = _finalize_for_exit(fused, debug_row, "strategy_router", reason)
             debug_rows.append(debug_row)
+
             log_rejection(
                 fused,
                 symbol,
@@ -786,6 +859,7 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
+
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -798,6 +872,8 @@ def process_signals(results, regime, volatility_payload):
                 extra={
                     "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
                     "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
+                    "blocked_at": fused.get("blocked_at", ""),
+                    "final_reason": fused.get("final_reason", reason),
                 },
             )
             continue
@@ -817,9 +893,9 @@ def process_signals(results, regime, volatility_payload):
 
         if existing_position:
             reason = "already_open_position"
-            debug_row["blocked_at"] = "position_duplication_guard"
-            debug_row["final_reason"] = reason
+            fused, debug_row = _finalize_for_exit(fused, debug_row, "duplicate_guard", reason)
             debug_rows.append(debug_row)
+
             log_rejection(
                 fused,
                 symbol,
@@ -829,6 +905,7 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
+
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -842,6 +919,8 @@ def process_signals(results, regime, volatility_payload):
                     "existing_trade_id": debug_row["duplicate_trade_id"],
                     "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
                     "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
+                    "blocked_at": fused.get("blocked_at", ""),
+                    "final_reason": fused.get("final_reason", reason),
                 },
             )
             continue
@@ -849,11 +928,12 @@ def process_signals(results, regime, volatility_payload):
         allowed_reentry, reentry_reason = reentry_allowed(fused)
         debug_row["reentry_allowed"] = allowed_reentry
         debug_row["reentry_reason"] = reentry_reason
+
         if not allowed_reentry:
             reason = f"reentry_blocked:{reentry_reason}"
-            debug_row["blocked_at"] = "reentry_guard"
-            debug_row["final_reason"] = reason
+            fused, debug_row = _finalize_for_exit(fused, debug_row, "reentry_guard", reason)
             debug_rows.append(debug_row)
+
             log_rejection(
                 fused,
                 symbol,
@@ -863,6 +943,7 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
+
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -875,6 +956,8 @@ def process_signals(results, regime, volatility_payload):
                 extra={
                     "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
                     "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
+                    "blocked_at": fused.get("blocked_at", ""),
+                    "final_reason": fused.get("final_reason", reason),
                 },
             )
             continue
@@ -884,11 +967,12 @@ def process_signals(results, regime, volatility_payload):
             0.0,
         ) >= 90
         debug_row["score_allowed"] = score_ok
+
         if not score_ok:
             reason = "failed_score_threshold"
-            debug_row["blocked_at"] = "score_threshold"
-            debug_row["final_reason"] = reason
+            fused, debug_row = _finalize_for_exit(fused, debug_row, "score_threshold", reason)
             debug_rows.append(debug_row)
+
             log_rejection(
                 fused,
                 symbol,
@@ -898,6 +982,7 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
+
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -910,6 +995,8 @@ def process_signals(results, regime, volatility_payload):
                 extra={
                     "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
                     "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
+                    "blocked_at": fused.get("blocked_at", ""),
+                    "final_reason": fused.get("final_reason", reason),
                 },
             )
             continue
@@ -919,11 +1006,12 @@ def process_signals(results, regime, volatility_payload):
             and fused.get("confidence", "LOW") == "LOW"
         )
         debug_row["volatility_allowed"] = volatility_ok
+
         if not volatility_ok:
             reason = "failed_volatility_filter"
-            debug_row["blocked_at"] = "volatility_filter"
-            debug_row["final_reason"] = reason
+            fused, debug_row = _finalize_for_exit(fused, debug_row, "volatility_guard", reason)
             debug_rows.append(debug_row)
+
             log_rejection(
                 fused,
                 symbol,
@@ -933,6 +1021,7 @@ def process_signals(results, regime, volatility_payload):
                 breadth,
                 volatility_state,
             )
+
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -945,27 +1034,21 @@ def process_signals(results, regime, volatility_payload):
                 extra={
                     "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
                     "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
+                    "blocked_at": fused.get("blocked_at", ""),
+                    "final_reason": fused.get("final_reason", reason),
                 },
             )
             continue
 
         if fused.get("option"):
-            try:
-                option_allowed, option_reason = option_is_executable(
-                    fused["option"],
-                    min_score=50,
-                )
-            except Exception:
-                option_allowed, option_reason = False, "option_validation_failed"
-
             debug_row["option_allowed"] = option_allowed
             debug_row["option_reason"] = option_reason
 
             if not option_allowed and fused.get("vehicle_selected") == "OPTION":
                 reason = _safe_str(option_reason, "weak_option_contract")
-                debug_row["blocked_at"] = "option_executable"
-                debug_row["final_reason"] = reason
+                fused, debug_row = _finalize_for_exit(fused, debug_row, "option_executable", reason)
                 debug_rows.append(debug_row)
+
                 log_rejection(
                     fused,
                     symbol,
@@ -975,6 +1058,7 @@ def process_signals(results, regime, volatility_payload):
                     breadth,
                     volatility_state,
                 )
+
                 _remember_candidate_row(
                     fused,
                     status="rejected",
@@ -987,18 +1071,22 @@ def process_signals(results, regime, volatility_payload):
                     extra={
                         "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
                         "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
+                        "blocked_at": fused.get("blocked_at", ""),
+                        "final_reason": fused.get("final_reason", reason),
                     },
                 )
                 continue
 
         fused["research_approved"] = True
+        fused["execution_ready"] = False
+        fused["selected_for_execution"] = False
         debug_row["research_approved"] = True
-        research_approved.append(fused)
 
         if governor_reason:
-            debug_row["blocked_at"] = "governor"
-            debug_row["final_reason"] = governor_reason
+            fused, debug_row = _finalize_for_exit(fused, debug_row, "governor", governor_reason)
+            research_approved.append(fused)
             debug_rows.append(debug_row)
+
             _remember_candidate_row(
                 fused,
                 status="research_approved_not_execution_ready",
@@ -1011,14 +1099,18 @@ def process_signals(results, regime, volatility_payload):
                 extra={
                     "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
                     "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
-                    "research_approved": True,
-                    "execution_ready": False,
+                    "research_approved": bool(fused.get("research_approved", False)),
+                    "execution_ready": bool(fused.get("execution_ready", False)),
                     "governor": governor,
+                    "governor_blocked": bool(governor.get("blocked", False)),
+                    "governor_reason": governor_reason,
+                    "blocked_at": fused.get("blocked_at", ""),
+                    "final_reason": fused.get("final_reason", governor_reason),
                 },
             )
             continue
 
-        exec_guard = can_execute_trade(fused, buying_power())
+        exec_guard = can_execute_trade(fused, capital_available_now)
         if isinstance(exec_guard, dict):
             blocked = bool(exec_guard.get("blocked", False))
             exec_reason = _safe_str(exec_guard.get("reason", ""), "")
@@ -1030,13 +1122,15 @@ def process_signals(results, regime, volatility_payload):
         debug_row["execution_guard_reason"] = exec_reason
 
         if blocked:
-            debug_row["blocked_at"] = "execution_guard"
-            debug_row["final_reason"] = exec_reason or "execution_guard_blocked"
+            reason = exec_reason or "execution_guard_blocked"
+            fused, debug_row = _finalize_for_exit(fused, debug_row, "execution_guard", reason)
+            research_approved.append(fused)
             debug_rows.append(debug_row)
+
             _remember_candidate_row(
                 fused,
                 status="research_approved_not_execution_ready",
-                reason=debug_row["final_reason"],
+                reason=reason,
                 mode=mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
@@ -1045,16 +1139,26 @@ def process_signals(results, regime, volatility_payload):
                 extra={
                     "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
                     "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
-                    "research_approved": True,
-                    "execution_ready": False,
+                    "research_approved": bool(fused.get("research_approved", False)),
+                    "execution_ready": bool(fused.get("execution_ready", False)),
+                    "blocked_at": fused.get("blocked_at", ""),
+                    "final_reason": fused.get("final_reason", reason),
                 },
             )
             continue
 
+        fused["blocked_at"] = ""
+        fused["final_reason"] = "execution_ready"
+        fused["research_approved"] = True
         fused["execution_ready"] = True
-        debug_row["execution_ready"] = True
+        fused["selected_for_execution"] = False
+        fused = finalize_candidate_state(fused)
+
+        debug_row = _sync_debug_from_fused(debug_row, fused)
         debug_row["final_reason"] = "execution_ready"
         debug_rows.append(debug_row)
+
+        research_approved.append(fused)
         execution_ready.append(fused)
 
         log_approval(fused, mode, regime, breadth, volatility_state)
@@ -1073,6 +1177,8 @@ def process_signals(results, regime, volatility_payload):
                 "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
                 "research_approved": True,
                 "execution_ready": True,
+                "blocked_at": fused.get("blocked_at", ""),
+                "final_reason": fused.get("final_reason", "execution_ready"),
             },
         )
 
@@ -1090,8 +1196,8 @@ def process_signals(results, regime, volatility_payload):
 
     affordable = affordable_trade_count(execution_ready)
     selection_limit = min(affordable, 3) if affordable > 0 else 0
-    selected_trades = []
 
+    selected_trades = []
     if execution_ready and selection_limit > 0:
         selected_trades = queue_top_trades_plus(execution_ready, limit=selection_limit)
 
@@ -1135,8 +1241,13 @@ def process_signals(results, regime, volatility_payload):
             _norm_symbol(trade.get("symbol", "")),
             _safe_str(trade.get("strategy", "CALL"), "CALL").upper(),
         )
+
         if key in selected_keys:
             trade["selected_for_execution"] = True
+            trade["final_reason"] = "selected_for_execution"
+            trade["blocked_at"] = ""
+            trade = finalize_candidate_state(trade)
+
             log_candidate_decision(
                 trade,
                 status="selected",
@@ -1145,6 +1256,7 @@ def process_signals(results, regime, volatility_payload):
                 breadth=breadth,
                 volatility_state=volatility_state,
             )
+
             _remember_candidate_row(
                 trade,
                 status="selected",
@@ -1153,15 +1265,19 @@ def process_signals(results, regime, volatility_payload):
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=trade.get("capital_required", 0.0),
-                capital_available=round(_safe_float(buying_power(), 0.0), 2),
+                capital_available=capital_available_now,
                 selected_for_execution=True,
                 extra={
                     "minimum_trade_cost": trade.get("minimum_trade_cost", 0.0),
                     "vehicle_selected": trade.get("vehicle_selected", "RESEARCH_ONLY"),
-                    "research_approved": True,
+                    "research_approved": bool(trade.get("research_approved", False)),
                     "execution_ready": bool(trade.get("execution_ready", False)),
+                    "selected_for_execution": True,
+                    "blocked_at": trade.get("blocked_at", ""),
+                    "final_reason": trade.get("final_reason", "selected_for_execution"),
                 },
             )
+
         elif trade.get("execution_ready"):
             stronger = stronger_competing_setups(trade, selected_trades)
             trade["stronger_competing_setups"] = stronger
@@ -1171,6 +1287,10 @@ def process_signals(results, regime, volatility_payload):
                 "not_selected",
                 "approved_but_ranked_below_execution_cut",
             )
+            trade["final_reason"] = "approved_but_ranked_below_execution_cut"
+            trade["blocked_at"] = ""
+            trade = finalize_candidate_state(trade)
+
             log_candidate_decision(
                 trade,
                 status="execution_ready_not_selected",
@@ -1183,6 +1303,7 @@ def process_signals(results, regime, volatility_payload):
                     "rejection_analysis": trade.get("rejection_analysis", []),
                 },
             )
+
             _remember_candidate_row(
                 trade,
                 status="execution_ready_not_selected",
@@ -1191,7 +1312,7 @@ def process_signals(results, regime, volatility_payload):
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=trade.get("capital_required", 0.0),
-                capital_available=round(_safe_float(buying_power(), 0.0), 2),
+                capital_available=capital_available_now,
                 extra={
                     "stronger_competing_setups": trade.get("stronger_competing_setups", []),
                     "rejection_analysis": trade.get("rejection_analysis", []),
@@ -1199,6 +1320,9 @@ def process_signals(results, regime, volatility_payload):
                     "vehicle_selected": trade.get("vehicle_selected", "RESEARCH_ONLY"),
                     "research_approved": True,
                     "execution_ready": True,
+                    "selected_for_execution": False,
+                    "blocked_at": trade.get("blocked_at", ""),
+                    "final_reason": trade.get("final_reason", "approved_but_ranked_below_execution_cut"),
                 },
             )
 

@@ -1,2351 +1,5 @@
 [
   {
-    "timestamp": "2026-04-17T00:00:29.989855",
-    "symbol": "DAL",
-    "strategy": "CALL",
-    "score": 175.07,
-    "confidence": "HIGH",
-    "entry": 69.89,
-    "stop": 66.89,
-    "target": 73.89,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.065969",
-    "symbol": "ZM",
-    "strategy": "CALL",
-    "score": 170.27,
-    "confidence": "HIGH",
-    "entry": 86.68,
-    "stop": 83.68,
-    "target": 90.68,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.142120",
-    "symbol": "XLF",
-    "strategy": "CALL",
-    "score": 167.51,
-    "confidence": "HIGH",
-    "entry": 52.03,
-    "stop": 49.03,
-    "target": 56.03,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.218053",
-    "symbol": "SPY",
-    "strategy": "CALL",
-    "score": 166.35,
-    "confidence": "HIGH",
-    "entry": 701.66,
-    "stop": 698.66,
-    "target": 705.66,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.294140",
-    "symbol": "WFC",
-    "strategy": "CALL",
-    "score": 163.62,
-    "confidence": "HIGH",
-    "entry": 81.25,
-    "stop": 78.25,
-    "target": 85.25,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.377251",
-    "symbol": "DIS",
-    "strategy": "CALL",
-    "score": 147.38,
-    "confidence": "HIGH",
-    "entry": 103.9,
-    "stop": 100.9,
-    "target": 107.9,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.454353",
-    "symbol": "AXP",
-    "strategy": "CALL",
-    "score": 138.51,
-    "confidence": "HIGH",
-    "entry": 325.76,
-    "stop": 322.76,
-    "target": 329.76,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.547144",
-    "symbol": "GS",
-    "strategy": "CALL",
-    "score": 133.39,
-    "confidence": "HIGH",
-    "entry": 900.0,
-    "stop": 897.0,
-    "target": 904.0,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.623542",
-    "symbol": "WMT",
-    "strategy": "CALL",
-    "score": 132.92,
-    "confidence": "HIGH",
-    "entry": 124.82,
-    "stop": 121.82,
-    "target": 128.82,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.706005",
-    "symbol": "MU",
-    "strategy": "CALL",
-    "score": 129.6,
-    "confidence": "HIGH",
-    "entry": 457.23,
-    "stop": 454.23,
-    "target": 461.23,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.788734",
-    "symbol": "CMCSA",
-    "strategy": "CALL",
-    "score": 124.54,
-    "confidence": "HIGH",
-    "entry": 29.35,
-    "stop": 26.35,
-    "target": 33.35,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.876607",
-    "symbol": "QCOM",
-    "strategy": "CALL",
-    "score": 124.3,
-    "confidence": "HIGH",
-    "entry": 134.47,
-    "stop": 131.47,
-    "target": 138.47,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:30.957952",
-    "symbol": "TSLA",
-    "strategy": "CALL",
-    "score": 122.61,
-    "confidence": "HIGH",
-    "entry": 388.9,
-    "stop": 385.9,
-    "target": 392.9,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:00:31.034748",
-    "symbol": "SHOP",
-    "strategy": "CALL",
-    "score": 121.91,
-    "confidence": "HIGH",
-    "entry": 126.94,
-    "stop": 123.94,
-    "target": 130.94,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:31.764809",
-    "symbol": "INTC",
-    "strategy": "CALL",
-    "score": 583.33,
-    "confidence": "HIGH",
-    "entry": 68.5,
-    "stop": 65.5,
-    "target": 72.5,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:31.925195",
-    "symbol": "AMD",
-    "strategy": "CALL",
-    "score": 455.58,
-    "confidence": "HIGH",
-    "entry": 278.26,
-    "stop": 275.26,
-    "target": 282.26,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:32.100082",
-    "symbol": "AVGO",
-    "strategy": "CALL",
-    "score": 348.46,
-    "confidence": "HIGH",
-    "entry": 398.47,
-    "stop": 395.47,
-    "target": 402.47,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:32.364433",
-    "symbol": "AMZN",
-    "strategy": "CALL",
-    "score": 296.11,
-    "confidence": "HIGH",
-    "entry": 249.7,
-    "stop": 246.7,
-    "target": 253.7,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:32.584808",
-    "symbol": "C",
-    "strategy": "CALL",
-    "score": 277.42,
-    "confidence": "HIGH",
-    "entry": 129.34,
-    "stop": 126.34,
-    "target": 133.34,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:32.751730",
-    "symbol": "NFLX",
-    "strategy": "CALL",
-    "score": 274.95,
-    "confidence": "HIGH",
-    "entry": 107.79,
-    "stop": 104.79,
-    "target": 111.79,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:32.916892",
-    "symbol": "SOXX",
-    "strategy": "CALL",
-    "score": 266.03,
-    "confidence": "HIGH",
-    "entry": 405.95,
-    "stop": 402.95,
-    "target": 409.95,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:33.091732",
-    "symbol": "MS",
-    "strategy": "CALL",
-    "score": 252.43,
-    "confidence": "HIGH",
-    "entry": 187.32,
-    "stop": 184.32,
-    "target": 191.32,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:33.258012",
-    "symbol": "ORCL",
-    "strategy": "CALL",
-    "score": 250.74,
-    "confidence": "HIGH",
-    "entry": 178.34,
-    "stop": 175.34,
-    "target": 182.34,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:33.411828",
-    "symbol": "BAC",
-    "strategy": "CALL",
-    "score": 238.27,
-    "confidence": "HIGH",
-    "entry": 53.51,
-    "stop": 50.51,
-    "target": 57.51,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:33.569532",
-    "symbol": "PYPL",
-    "strategy": "CALL",
-    "score": 227.18,
-    "confidence": "HIGH",
-    "entry": 49.81,
-    "stop": 46.81,
-    "target": 53.81,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:33.724900",
-    "symbol": "META",
-    "strategy": "CALL",
-    "score": 215.66,
-    "confidence": "HIGH",
-    "entry": 676.87,
-    "stop": 673.87,
-    "target": 680.87,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:33.858044",
-    "symbol": "NVDA",
-    "strategy": "CALL",
-    "score": 210.83,
-    "confidence": "HIGH",
-    "entry": 198.35,
-    "stop": 195.35,
-    "target": 202.35,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:33.944791",
-    "symbol": "XLK",
-    "strategy": "CALL",
-    "score": 199.54,
-    "confidence": "HIGH",
-    "entry": 152.02,
-    "stop": 149.02,
-    "target": 156.02,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.031314",
-    "symbol": "GOOGL",
-    "strategy": "CALL",
-    "score": 194.06,
-    "confidence": "HIGH",
-    "entry": 336.02,
-    "stop": 333.02,
-    "target": 340.02,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.120372",
-    "symbol": "ROKU",
-    "strategy": "CALL",
-    "score": 191.3,
-    "confidence": "HIGH",
-    "entry": 111.87,
-    "stop": 108.87,
-    "target": 115.87,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.201330",
-    "symbol": "IWM",
-    "strategy": "CALL",
-    "score": 190.13,
-    "confidence": "HIGH",
-    "entry": 269.95,
-    "stop": 266.95,
-    "target": 273.95,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.283929",
-    "symbol": "ARKK",
-    "strategy": "CALL",
-    "score": 188.22,
-    "confidence": "HIGH",
-    "entry": 77.34,
-    "stop": 74.34,
-    "target": 81.34,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.367822",
-    "symbol": "JPM",
-    "strategy": "CALL",
-    "score": 181.84,
-    "confidence": "HIGH",
-    "entry": 309.95,
-    "stop": 306.95,
-    "target": 313.95,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.450632",
-    "symbol": "QQQ",
-    "strategy": "CALL",
-    "score": 181.38,
-    "confidence": "HIGH",
-    "entry": 640.47,
-    "stop": 637.47,
-    "target": 644.47,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.533362",
-    "symbol": "DAL",
-    "strategy": "CALL",
-    "score": 175.07,
-    "confidence": "HIGH",
-    "entry": 69.89,
-    "stop": 66.89,
-    "target": 73.89,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.628928",
-    "symbol": "ZM",
-    "strategy": "CALL",
-    "score": 170.27,
-    "confidence": "HIGH",
-    "entry": 86.68,
-    "stop": 83.68,
-    "target": 90.68,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.722077",
-    "symbol": "XLF",
-    "strategy": "CALL",
-    "score": 167.51,
-    "confidence": "HIGH",
-    "entry": 52.03,
-    "stop": 49.03,
-    "target": 56.03,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.808387",
-    "symbol": "SPY",
-    "strategy": "CALL",
-    "score": 166.35,
-    "confidence": "HIGH",
-    "entry": 701.66,
-    "stop": 698.66,
-    "target": 705.66,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.891672",
-    "symbol": "WFC",
-    "strategy": "CALL",
-    "score": 163.62,
-    "confidence": "HIGH",
-    "entry": 81.25,
-    "stop": 78.25,
-    "target": 85.25,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:34.972901",
-    "symbol": "DIS",
-    "strategy": "CALL",
-    "score": 147.38,
-    "confidence": "HIGH",
-    "entry": 103.9,
-    "stop": 100.9,
-    "target": 107.9,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:35.055541",
-    "symbol": "AXP",
-    "strategy": "CALL",
-    "score": 138.51,
-    "confidence": "HIGH",
-    "entry": 325.76,
-    "stop": 322.76,
-    "target": 329.76,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:35.140474",
-    "symbol": "GS",
-    "strategy": "CALL",
-    "score": 133.39,
-    "confidence": "HIGH",
-    "entry": 900.0,
-    "stop": 897.0,
-    "target": 904.0,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:35.220670",
-    "symbol": "WMT",
-    "strategy": "CALL",
-    "score": 132.92,
-    "confidence": "HIGH",
-    "entry": 124.82,
-    "stop": 121.82,
-    "target": 128.82,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:35.302666",
-    "symbol": "MU",
-    "strategy": "CALL",
-    "score": 129.6,
-    "confidence": "HIGH",
-    "entry": 457.23,
-    "stop": 454.23,
-    "target": 461.23,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:35.392650",
-    "symbol": "CMCSA",
-    "strategy": "CALL",
-    "score": 124.54,
-    "confidence": "HIGH",
-    "entry": 29.35,
-    "stop": 26.35,
-    "target": 33.35,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:35.485604",
-    "symbol": "QCOM",
-    "strategy": "CALL",
-    "score": 124.3,
-    "confidence": "HIGH",
-    "entry": 134.47,
-    "stop": 131.47,
-    "target": 138.47,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:35.572798",
-    "symbol": "TSLA",
-    "strategy": "CALL",
-    "score": 122.61,
-    "confidence": "HIGH",
-    "entry": 388.9,
-    "stop": 385.9,
-    "target": 392.9,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T00:09:35.671091",
-    "symbol": "SHOP",
-    "strategy": "CALL",
-    "score": 121.91,
-    "confidence": "HIGH",
-    "entry": 126.94,
-    "stop": 123.94,
-    "target": 130.94,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:53.981133",
-    "symbol": "INTC",
-    "strategy": "CALL",
-    "score": 583.33,
-    "confidence": "HIGH",
-    "entry": 68.5,
-    "stop": 65.5,
-    "target": 72.5,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:54.064996",
-    "symbol": "AMD",
-    "strategy": "CALL",
-    "score": 455.58,
-    "confidence": "HIGH",
-    "entry": 278.26,
-    "stop": 275.26,
-    "target": 282.26,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:54.158714",
-    "symbol": "AVGO",
-    "strategy": "CALL",
-    "score": 348.46,
-    "confidence": "HIGH",
-    "entry": 398.47,
-    "stop": 395.47,
-    "target": 402.47,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:54.242606",
-    "symbol": "AMZN",
-    "strategy": "CALL",
-    "score": 296.11,
-    "confidence": "HIGH",
-    "entry": 249.7,
-    "stop": 246.7,
-    "target": 253.7,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:54.341068",
-    "symbol": "C",
-    "strategy": "CALL",
-    "score": 277.42,
-    "confidence": "HIGH",
-    "entry": 129.34,
-    "stop": 126.34,
-    "target": 133.34,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:54.488690",
-    "symbol": "NFLX",
-    "strategy": "CALL",
-    "score": 274.95,
-    "confidence": "HIGH",
-    "entry": 107.79,
-    "stop": 104.79,
-    "target": 111.79,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:54.573813",
-    "symbol": "SOXX",
-    "strategy": "CALL",
-    "score": 266.03,
-    "confidence": "HIGH",
-    "entry": 405.95,
-    "stop": 402.95,
-    "target": 409.95,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:54.658926",
-    "symbol": "MS",
-    "strategy": "CALL",
-    "score": 252.43,
-    "confidence": "HIGH",
-    "entry": 187.32,
-    "stop": 184.32,
-    "target": 191.32,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:54.743255",
-    "symbol": "ORCL",
-    "strategy": "CALL",
-    "score": 250.74,
-    "confidence": "HIGH",
-    "entry": 178.34,
-    "stop": 175.34,
-    "target": 182.34,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:54.827569",
-    "symbol": "BAC",
-    "strategy": "CALL",
-    "score": 238.27,
-    "confidence": "HIGH",
-    "entry": 53.51,
-    "stop": 50.51,
-    "target": 57.51,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:54.912980",
-    "symbol": "PYPL",
-    "strategy": "CALL",
-    "score": 227.18,
-    "confidence": "HIGH",
-    "entry": 49.81,
-    "stop": 46.81,
-    "target": 53.81,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:54.996810",
-    "symbol": "META",
-    "strategy": "CALL",
-    "score": 215.66,
-    "confidence": "HIGH",
-    "entry": 676.87,
-    "stop": 673.87,
-    "target": 680.87,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.082576",
-    "symbol": "NVDA",
-    "strategy": "CALL",
-    "score": 210.83,
-    "confidence": "HIGH",
-    "entry": 198.35,
-    "stop": 195.35,
-    "target": 202.35,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.163015",
-    "symbol": "XLK",
-    "strategy": "CALL",
-    "score": 199.54,
-    "confidence": "HIGH",
-    "entry": 152.02,
-    "stop": 149.02,
-    "target": 156.02,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.242722",
-    "symbol": "GOOGL",
-    "strategy": "CALL",
-    "score": 194.06,
-    "confidence": "HIGH",
-    "entry": 336.02,
-    "stop": 333.02,
-    "target": 340.02,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.338620",
-    "symbol": "ROKU",
-    "strategy": "CALL",
-    "score": 191.3,
-    "confidence": "HIGH",
-    "entry": 111.87,
-    "stop": 108.87,
-    "target": 115.87,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.428459",
-    "symbol": "IWM",
-    "strategy": "CALL",
-    "score": 190.13,
-    "confidence": "HIGH",
-    "entry": 269.95,
-    "stop": 266.95,
-    "target": 273.95,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.516500",
-    "symbol": "ARKK",
-    "strategy": "CALL",
-    "score": 188.22,
-    "confidence": "HIGH",
-    "entry": 77.34,
-    "stop": 74.34,
-    "target": 81.34,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.599017",
-    "symbol": "JPM",
-    "strategy": "CALL",
-    "score": 181.84,
-    "confidence": "HIGH",
-    "entry": 309.95,
-    "stop": 306.95,
-    "target": 313.95,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.677342",
-    "symbol": "QQQ",
-    "strategy": "CALL",
-    "score": 181.38,
-    "confidence": "HIGH",
-    "entry": 640.47,
-    "stop": 637.47,
-    "target": 644.47,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.754537",
-    "symbol": "DAL",
-    "strategy": "CALL",
-    "score": 175.07,
-    "confidence": "HIGH",
-    "entry": 69.89,
-    "stop": 66.89,
-    "target": 73.89,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.831871",
-    "symbol": "ZM",
-    "strategy": "CALL",
-    "score": 170.27,
-    "confidence": "HIGH",
-    "entry": 86.68,
-    "stop": 83.68,
-    "target": 90.68,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.909567",
-    "symbol": "XLF",
-    "strategy": "CALL",
-    "score": 167.51,
-    "confidence": "HIGH",
-    "entry": 52.03,
-    "stop": 49.03,
-    "target": 56.03,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:55.986988",
-    "symbol": "SPY",
-    "strategy": "CALL",
-    "score": 166.35,
-    "confidence": "HIGH",
-    "entry": 701.66,
-    "stop": 698.66,
-    "target": 705.66,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:56.067629",
-    "symbol": "WFC",
-    "strategy": "CALL",
-    "score": 163.62,
-    "confidence": "HIGH",
-    "entry": 81.25,
-    "stop": 78.25,
-    "target": 85.25,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:56.146454",
-    "symbol": "DIS",
-    "strategy": "CALL",
-    "score": 147.38,
-    "confidence": "HIGH",
-    "entry": 103.9,
-    "stop": 100.9,
-    "target": 107.9,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:56.224103",
-    "symbol": "AXP",
-    "strategy": "CALL",
-    "score": 138.51,
-    "confidence": "HIGH",
-    "entry": 325.76,
-    "stop": 322.76,
-    "target": 329.76,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:56.301615",
-    "symbol": "GS",
-    "strategy": "CALL",
-    "score": 133.39,
-    "confidence": "HIGH",
-    "entry": 900.0,
-    "stop": 897.0,
-    "target": 904.0,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:56.399496",
-    "symbol": "WMT",
-    "strategy": "CALL",
-    "score": 132.92,
-    "confidence": "HIGH",
-    "entry": 124.82,
-    "stop": 121.82,
-    "target": 128.82,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:56.479430",
-    "symbol": "MU",
-    "strategy": "CALL",
-    "score": 129.6,
-    "confidence": "HIGH",
-    "entry": 457.23,
-    "stop": 454.23,
-    "target": 461.23,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:56.560089",
-    "symbol": "CMCSA",
-    "strategy": "CALL",
-    "score": 124.54,
-    "confidence": "HIGH",
-    "entry": 29.35,
-    "stop": 26.35,
-    "target": 33.35,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:56.640097",
-    "symbol": "QCOM",
-    "strategy": "CALL",
-    "score": 124.3,
-    "confidence": "HIGH",
-    "entry": 134.47,
-    "stop": 131.47,
-    "target": 138.47,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:56.720088",
-    "symbol": "TSLA",
-    "strategy": "CALL",
-    "score": 122.61,
-    "confidence": "HIGH",
-    "entry": 388.9,
-    "stop": 385.9,
-    "target": 392.9,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:07:56.798919",
-    "symbol": "SHOP",
-    "strategy": "CALL",
-    "score": 121.91,
-    "confidence": "HIGH",
-    "entry": 126.94,
-    "stop": 123.94,
-    "target": 130.94,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:26.049746",
-    "symbol": "INTC",
-    "strategy": "CALL",
-    "score": 583.33,
-    "confidence": "HIGH",
-    "entry": 68.5,
-    "stop": 65.5,
-    "target": 72.5,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:26.145564",
-    "symbol": "AMD",
-    "strategy": "CALL",
-    "score": 455.58,
-    "confidence": "HIGH",
-    "entry": 278.26,
-    "stop": 275.26,
-    "target": 282.26,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:26.233533",
-    "symbol": "AVGO",
-    "strategy": "CALL",
-    "score": 348.46,
-    "confidence": "HIGH",
-    "entry": 398.47,
-    "stop": 395.47,
-    "target": 402.47,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:26.321562",
-    "symbol": "AMZN",
-    "strategy": "CALL",
-    "score": 296.11,
-    "confidence": "HIGH",
-    "entry": 249.7,
-    "stop": 246.7,
-    "target": 253.7,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:26.481862",
-    "symbol": "C",
-    "strategy": "CALL",
-    "score": 277.42,
-    "confidence": "HIGH",
-    "entry": 129.34,
-    "stop": 126.34,
-    "target": 133.34,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:26.568769",
-    "symbol": "NFLX",
-    "strategy": "CALL",
-    "score": 274.95,
-    "confidence": "HIGH",
-    "entry": 107.79,
-    "stop": 104.79,
-    "target": 111.79,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:26.671021",
-    "symbol": "SOXX",
-    "strategy": "CALL",
-    "score": 266.03,
-    "confidence": "HIGH",
-    "entry": 405.95,
-    "stop": 402.95,
-    "target": 409.95,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:26.755124",
-    "symbol": "MS",
-    "strategy": "CALL",
-    "score": 252.43,
-    "confidence": "HIGH",
-    "entry": 187.32,
-    "stop": 184.32,
-    "target": 191.32,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:26.845581",
-    "symbol": "ORCL",
-    "strategy": "CALL",
-    "score": 250.74,
-    "confidence": "HIGH",
-    "entry": 178.34,
-    "stop": 175.34,
-    "target": 182.34,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:26.929456",
-    "symbol": "BAC",
-    "strategy": "CALL",
-    "score": 238.27,
-    "confidence": "HIGH",
-    "entry": 53.51,
-    "stop": 50.51,
-    "target": 57.51,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:27.014855",
-    "symbol": "PYPL",
-    "strategy": "CALL",
-    "score": 227.18,
-    "confidence": "HIGH",
-    "entry": 49.81,
-    "stop": 46.81,
-    "target": 53.81,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:27.104004",
-    "symbol": "META",
-    "strategy": "CALL",
-    "score": 215.66,
-    "confidence": "HIGH",
-    "entry": 676.87,
-    "stop": 673.87,
-    "target": 680.87,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:27.193401",
-    "symbol": "NVDA",
-    "strategy": "CALL",
-    "score": 210.83,
-    "confidence": "HIGH",
-    "entry": 198.35,
-    "stop": 195.35,
-    "target": 202.35,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:27.277007",
-    "symbol": "XLK",
-    "strategy": "CALL",
-    "score": 199.54,
-    "confidence": "HIGH",
-    "entry": 152.02,
-    "stop": 149.02,
-    "target": 156.02,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:27.362452",
-    "symbol": "GOOGL",
-    "strategy": "CALL",
-    "score": 194.06,
-    "confidence": "HIGH",
-    "entry": 336.02,
-    "stop": 333.02,
-    "target": 340.02,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:27.446627",
-    "symbol": "ROKU",
-    "strategy": "CALL",
-    "score": 191.3,
-    "confidence": "HIGH",
-    "entry": 111.87,
-    "stop": 108.87,
-    "target": 115.87,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:27.530473",
-    "symbol": "IWM",
-    "strategy": "CALL",
-    "score": 190.13,
-    "confidence": "HIGH",
-    "entry": 269.95,
-    "stop": 266.95,
-    "target": 273.95,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:27.613532",
-    "symbol": "ARKK",
-    "strategy": "CALL",
-    "score": 188.22,
-    "confidence": "HIGH",
-    "entry": 77.34,
-    "stop": 74.34,
-    "target": 81.34,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:27.710875",
-    "symbol": "JPM",
-    "strategy": "CALL",
-    "score": 181.84,
-    "confidence": "HIGH",
-    "entry": 309.95,
-    "stop": 306.95,
-    "target": 313.95,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-04-17T01:22:27.791994",
-    "symbol": "QQQ",
-    "strategy": "CALL",
-    "score": 181.38,
-    "confidence": "HIGH",
-    "entry": 640.47,
-    "stop": 637.47,
-    "target": 644.47,
-    "source": "research",
-    "market_context": [
-      "Market regime: BULL_TREND",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: AGGRESSIVE_BULL"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Bull Trend.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
     "timestamp": "2026-04-17T01:22:27.875280",
     "symbol": "DAL",
     "strategy": "CALL",
@@ -3428,6 +1082,2352 @@
   },
   {
     "timestamp": "2026-04-17T01:25:41.091913",
+    "symbol": "SHOP",
+    "strategy": "CALL",
+    "score": 121.91,
+    "confidence": "HIGH",
+    "entry": 126.94,
+    "stop": 123.94,
+    "target": 130.94,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:23.624756",
+    "symbol": "INTC",
+    "strategy": "CALL",
+    "score": 583.33,
+    "confidence": "HIGH",
+    "entry": 68.5,
+    "stop": 65.5,
+    "target": 72.5,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:23.712553",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 455.58,
+    "confidence": "HIGH",
+    "entry": 278.26,
+    "stop": 275.26,
+    "target": 282.26,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:23.811743",
+    "symbol": "AVGO",
+    "strategy": "CALL",
+    "score": 348.46,
+    "confidence": "HIGH",
+    "entry": 398.47,
+    "stop": 395.47,
+    "target": 402.47,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:23.904916",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 296.11,
+    "confidence": "HIGH",
+    "entry": 249.7,
+    "stop": 246.7,
+    "target": 253.7,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:24.049053",
+    "symbol": "C",
+    "strategy": "CALL",
+    "score": 277.42,
+    "confidence": "HIGH",
+    "entry": 129.34,
+    "stop": 126.34,
+    "target": 133.34,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:24.146233",
+    "symbol": "NFLX",
+    "strategy": "CALL",
+    "score": 274.95,
+    "confidence": "HIGH",
+    "entry": 107.79,
+    "stop": 104.79,
+    "target": 111.79,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:24.235405",
+    "symbol": "SOXX",
+    "strategy": "CALL",
+    "score": 266.03,
+    "confidence": "HIGH",
+    "entry": 405.95,
+    "stop": 402.95,
+    "target": 409.95,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:24.336532",
+    "symbol": "MS",
+    "strategy": "CALL",
+    "score": 252.43,
+    "confidence": "HIGH",
+    "entry": 187.32,
+    "stop": 184.32,
+    "target": 191.32,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:24.423576",
+    "symbol": "ORCL",
+    "strategy": "CALL",
+    "score": 250.74,
+    "confidence": "HIGH",
+    "entry": 178.34,
+    "stop": 175.34,
+    "target": 182.34,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:24.511942",
+    "symbol": "BAC",
+    "strategy": "CALL",
+    "score": 238.27,
+    "confidence": "HIGH",
+    "entry": 53.51,
+    "stop": 50.51,
+    "target": 57.51,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:24.602046",
+    "symbol": "PYPL",
+    "strategy": "CALL",
+    "score": 227.18,
+    "confidence": "HIGH",
+    "entry": 49.81,
+    "stop": 46.81,
+    "target": 53.81,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:24.689003",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 215.66,
+    "confidence": "HIGH",
+    "entry": 676.87,
+    "stop": 673.87,
+    "target": 680.87,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:24.774628",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 210.83,
+    "confidence": "HIGH",
+    "entry": 198.35,
+    "stop": 195.35,
+    "target": 202.35,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:24.854857",
+    "symbol": "XLK",
+    "strategy": "CALL",
+    "score": 199.54,
+    "confidence": "HIGH",
+    "entry": 152.02,
+    "stop": 149.02,
+    "target": 156.02,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:24.938323",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 194.06,
+    "confidence": "HIGH",
+    "entry": 336.02,
+    "stop": 333.02,
+    "target": 340.02,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.022614",
+    "symbol": "ROKU",
+    "strategy": "CALL",
+    "score": 191.3,
+    "confidence": "HIGH",
+    "entry": 111.87,
+    "stop": 108.87,
+    "target": 115.87,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.106423",
+    "symbol": "IWM",
+    "strategy": "CALL",
+    "score": 190.13,
+    "confidence": "HIGH",
+    "entry": 269.95,
+    "stop": 266.95,
+    "target": 273.95,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.186894",
+    "symbol": "ARKK",
+    "strategy": "CALL",
+    "score": 188.22,
+    "confidence": "HIGH",
+    "entry": 77.34,
+    "stop": 74.34,
+    "target": 81.34,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.266329",
+    "symbol": "JPM",
+    "strategy": "CALL",
+    "score": 181.84,
+    "confidence": "HIGH",
+    "entry": 309.95,
+    "stop": 306.95,
+    "target": 313.95,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.363218",
+    "symbol": "QQQ",
+    "strategy": "CALL",
+    "score": 181.38,
+    "confidence": "HIGH",
+    "entry": 640.47,
+    "stop": 637.47,
+    "target": 644.47,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.450763",
+    "symbol": "DAL",
+    "strategy": "CALL",
+    "score": 175.07,
+    "confidence": "HIGH",
+    "entry": 69.89,
+    "stop": 66.89,
+    "target": 73.89,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.536464",
+    "symbol": "ZM",
+    "strategy": "CALL",
+    "score": 170.27,
+    "confidence": "HIGH",
+    "entry": 86.68,
+    "stop": 83.68,
+    "target": 90.68,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.621631",
+    "symbol": "XLF",
+    "strategy": "CALL",
+    "score": 167.51,
+    "confidence": "HIGH",
+    "entry": 52.03,
+    "stop": 49.03,
+    "target": 56.03,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.705647",
+    "symbol": "SPY",
+    "strategy": "CALL",
+    "score": 166.35,
+    "confidence": "HIGH",
+    "entry": 701.66,
+    "stop": 698.66,
+    "target": 705.66,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.788461",
+    "symbol": "WFC",
+    "strategy": "CALL",
+    "score": 163.62,
+    "confidence": "HIGH",
+    "entry": 81.25,
+    "stop": 78.25,
+    "target": 85.25,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.872316",
+    "symbol": "DIS",
+    "strategy": "CALL",
+    "score": 147.38,
+    "confidence": "HIGH",
+    "entry": 103.9,
+    "stop": 100.9,
+    "target": 107.9,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:25.962938",
+    "symbol": "AXP",
+    "strategy": "CALL",
+    "score": 138.51,
+    "confidence": "HIGH",
+    "entry": 325.76,
+    "stop": 322.76,
+    "target": 329.76,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:26.045832",
+    "symbol": "GS",
+    "strategy": "CALL",
+    "score": 133.39,
+    "confidence": "HIGH",
+    "entry": 900.0,
+    "stop": 897.0,
+    "target": 904.0,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:26.132556",
+    "symbol": "WMT",
+    "strategy": "CALL",
+    "score": 132.92,
+    "confidence": "HIGH",
+    "entry": 124.82,
+    "stop": 121.82,
+    "target": 128.82,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:26.217364",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 129.6,
+    "confidence": "HIGH",
+    "entry": 457.23,
+    "stop": 454.23,
+    "target": 461.23,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:26.303260",
+    "symbol": "CMCSA",
+    "strategy": "CALL",
+    "score": 124.54,
+    "confidence": "HIGH",
+    "entry": 29.35,
+    "stop": 26.35,
+    "target": 33.35,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:26.409973",
+    "symbol": "QCOM",
+    "strategy": "CALL",
+    "score": 124.3,
+    "confidence": "HIGH",
+    "entry": 134.47,
+    "stop": 131.47,
+    "target": 138.47,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:26.496753",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 122.61,
+    "confidence": "HIGH",
+    "entry": 388.9,
+    "stop": 385.9,
+    "target": 392.9,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:07:26.583054",
+    "symbol": "SHOP",
+    "strategy": "CALL",
+    "score": 121.91,
+    "confidence": "HIGH",
+    "entry": 126.94,
+    "stop": 123.94,
+    "target": 130.94,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:57.019510",
+    "symbol": "INTC",
+    "strategy": "CALL",
+    "score": 583.33,
+    "confidence": "HIGH",
+    "entry": 68.5,
+    "stop": 65.5,
+    "target": 72.5,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:57.115881",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 455.58,
+    "confidence": "HIGH",
+    "entry": 278.26,
+    "stop": 275.26,
+    "target": 282.26,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:57.206922",
+    "symbol": "AVGO",
+    "strategy": "CALL",
+    "score": 348.46,
+    "confidence": "HIGH",
+    "entry": 398.47,
+    "stop": 395.47,
+    "target": 402.47,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:57.300757",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 296.11,
+    "confidence": "HIGH",
+    "entry": 249.7,
+    "stop": 246.7,
+    "target": 253.7,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:57.446740",
+    "symbol": "C",
+    "strategy": "CALL",
+    "score": 277.42,
+    "confidence": "HIGH",
+    "entry": 129.34,
+    "stop": 126.34,
+    "target": 133.34,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:57.549194",
+    "symbol": "NFLX",
+    "strategy": "CALL",
+    "score": 274.95,
+    "confidence": "HIGH",
+    "entry": 107.79,
+    "stop": 104.79,
+    "target": 111.79,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:57.635949",
+    "symbol": "SOXX",
+    "strategy": "CALL",
+    "score": 266.03,
+    "confidence": "HIGH",
+    "entry": 405.95,
+    "stop": 402.95,
+    "target": 409.95,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:57.722624",
+    "symbol": "MS",
+    "strategy": "CALL",
+    "score": 252.43,
+    "confidence": "HIGH",
+    "entry": 187.32,
+    "stop": 184.32,
+    "target": 191.32,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:57.808647",
+    "symbol": "ORCL",
+    "strategy": "CALL",
+    "score": 250.74,
+    "confidence": "HIGH",
+    "entry": 178.34,
+    "stop": 175.34,
+    "target": 182.34,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:57.895044",
+    "symbol": "BAC",
+    "strategy": "CALL",
+    "score": 238.27,
+    "confidence": "HIGH",
+    "entry": 53.51,
+    "stop": 50.51,
+    "target": 57.51,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:57.980782",
+    "symbol": "PYPL",
+    "strategy": "CALL",
+    "score": 227.18,
+    "confidence": "HIGH",
+    "entry": 49.81,
+    "stop": 46.81,
+    "target": 53.81,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:58.073015",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 215.66,
+    "confidence": "HIGH",
+    "entry": 676.87,
+    "stop": 673.87,
+    "target": 680.87,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:58.158982",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 210.83,
+    "confidence": "HIGH",
+    "entry": 198.35,
+    "stop": 195.35,
+    "target": 202.35,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:58.241616",
+    "symbol": "XLK",
+    "strategy": "CALL",
+    "score": 199.54,
+    "confidence": "HIGH",
+    "entry": 152.02,
+    "stop": 149.02,
+    "target": 156.02,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:58.325215",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 194.06,
+    "confidence": "HIGH",
+    "entry": 336.02,
+    "stop": 333.02,
+    "target": 340.02,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:58.410911",
+    "symbol": "ROKU",
+    "strategy": "CALL",
+    "score": 191.3,
+    "confidence": "HIGH",
+    "entry": 111.87,
+    "stop": 108.87,
+    "target": 115.87,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:58.496313",
+    "symbol": "IWM",
+    "strategy": "CALL",
+    "score": 190.13,
+    "confidence": "HIGH",
+    "entry": 269.95,
+    "stop": 266.95,
+    "target": 273.95,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:58.588904",
+    "symbol": "ARKK",
+    "strategy": "CALL",
+    "score": 188.22,
+    "confidence": "HIGH",
+    "entry": 77.34,
+    "stop": 74.34,
+    "target": 81.34,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:58.672060",
+    "symbol": "JPM",
+    "strategy": "CALL",
+    "score": 181.84,
+    "confidence": "HIGH",
+    "entry": 309.95,
+    "stop": 306.95,
+    "target": 313.95,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:58.752578",
+    "symbol": "QQQ",
+    "strategy": "CALL",
+    "score": 181.38,
+    "confidence": "HIGH",
+    "entry": 640.47,
+    "stop": 637.47,
+    "target": 644.47,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:58.833501",
+    "symbol": "DAL",
+    "strategy": "CALL",
+    "score": 175.07,
+    "confidence": "HIGH",
+    "entry": 69.89,
+    "stop": 66.89,
+    "target": 73.89,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:58.918412",
+    "symbol": "ZM",
+    "strategy": "CALL",
+    "score": 170.27,
+    "confidence": "HIGH",
+    "entry": 86.68,
+    "stop": 83.68,
+    "target": 90.68,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.002369",
+    "symbol": "XLF",
+    "strategy": "CALL",
+    "score": 167.51,
+    "confidence": "HIGH",
+    "entry": 52.03,
+    "stop": 49.03,
+    "target": 56.03,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.092915",
+    "symbol": "SPY",
+    "strategy": "CALL",
+    "score": 166.35,
+    "confidence": "HIGH",
+    "entry": 701.66,
+    "stop": 698.66,
+    "target": 705.66,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.179520",
+    "symbol": "WFC",
+    "strategy": "CALL",
+    "score": 163.62,
+    "confidence": "HIGH",
+    "entry": 81.25,
+    "stop": 78.25,
+    "target": 85.25,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.264490",
+    "symbol": "DIS",
+    "strategy": "CALL",
+    "score": 147.38,
+    "confidence": "HIGH",
+    "entry": 103.9,
+    "stop": 100.9,
+    "target": 107.9,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.348739",
+    "symbol": "AXP",
+    "strategy": "CALL",
+    "score": 138.51,
+    "confidence": "HIGH",
+    "entry": 325.76,
+    "stop": 322.76,
+    "target": 329.76,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.438198",
+    "symbol": "GS",
+    "strategy": "CALL",
+    "score": 133.39,
+    "confidence": "HIGH",
+    "entry": 900.0,
+    "stop": 897.0,
+    "target": 904.0,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.523276",
+    "symbol": "WMT",
+    "strategy": "CALL",
+    "score": 132.92,
+    "confidence": "HIGH",
+    "entry": 124.82,
+    "stop": 121.82,
+    "target": 128.82,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.621343",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 129.6,
+    "confidence": "HIGH",
+    "entry": 457.23,
+    "stop": 454.23,
+    "target": 461.23,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.706730",
+    "symbol": "CMCSA",
+    "strategy": "CALL",
+    "score": 124.54,
+    "confidence": "HIGH",
+    "entry": 29.35,
+    "stop": 26.35,
+    "target": 33.35,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.791486",
+    "symbol": "QCOM",
+    "strategy": "CALL",
+    "score": 124.3,
+    "confidence": "HIGH",
+    "entry": 134.47,
+    "stop": 131.47,
+    "target": 138.47,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.874591",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 122.61,
+    "confidence": "HIGH",
+    "entry": 388.9,
+    "stop": 385.9,
+    "target": 392.9,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:26:59.957099",
+    "symbol": "SHOP",
+    "strategy": "CALL",
+    "score": 121.91,
+    "confidence": "HIGH",
+    "entry": 126.94,
+    "stop": 123.94,
+    "target": 130.94,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:19.732465",
+    "symbol": "INTC",
+    "strategy": "CALL",
+    "score": 583.33,
+    "confidence": "HIGH",
+    "entry": 68.5,
+    "stop": 65.5,
+    "target": 72.5,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:19.821810",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 455.58,
+    "confidence": "HIGH",
+    "entry": 278.26,
+    "stop": 275.26,
+    "target": 282.26,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:19.915642",
+    "symbol": "AVGO",
+    "strategy": "CALL",
+    "score": 348.46,
+    "confidence": "HIGH",
+    "entry": 398.47,
+    "stop": 395.47,
+    "target": 402.47,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:20.004210",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 296.11,
+    "confidence": "HIGH",
+    "entry": 249.7,
+    "stop": 246.7,
+    "target": 253.7,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:20.149795",
+    "symbol": "C",
+    "strategy": "CALL",
+    "score": 277.42,
+    "confidence": "HIGH",
+    "entry": 129.34,
+    "stop": 126.34,
+    "target": 133.34,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:20.246338",
+    "symbol": "NFLX",
+    "strategy": "CALL",
+    "score": 274.95,
+    "confidence": "HIGH",
+    "entry": 107.79,
+    "stop": 104.79,
+    "target": 111.79,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:20.336001",
+    "symbol": "SOXX",
+    "strategy": "CALL",
+    "score": 266.03,
+    "confidence": "HIGH",
+    "entry": 405.95,
+    "stop": 402.95,
+    "target": 409.95,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:20.426298",
+    "symbol": "MS",
+    "strategy": "CALL",
+    "score": 252.43,
+    "confidence": "HIGH",
+    "entry": 187.32,
+    "stop": 184.32,
+    "target": 191.32,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:20.513086",
+    "symbol": "ORCL",
+    "strategy": "CALL",
+    "score": 250.74,
+    "confidence": "HIGH",
+    "entry": 178.34,
+    "stop": 175.34,
+    "target": 182.34,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:20.613818",
+    "symbol": "BAC",
+    "strategy": "CALL",
+    "score": 238.27,
+    "confidence": "HIGH",
+    "entry": 53.51,
+    "stop": 50.51,
+    "target": 57.51,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:20.702620",
+    "symbol": "PYPL",
+    "strategy": "CALL",
+    "score": 227.18,
+    "confidence": "HIGH",
+    "entry": 49.81,
+    "stop": 46.81,
+    "target": 53.81,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:20.804306",
+    "symbol": "META",
+    "strategy": "CALL",
+    "score": 215.66,
+    "confidence": "HIGH",
+    "entry": 676.87,
+    "stop": 673.87,
+    "target": 680.87,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:20.891826",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 210.83,
+    "confidence": "HIGH",
+    "entry": 198.35,
+    "stop": 195.35,
+    "target": 202.35,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:20.974327",
+    "symbol": "XLK",
+    "strategy": "CALL",
+    "score": 199.54,
+    "confidence": "HIGH",
+    "entry": 152.02,
+    "stop": 149.02,
+    "target": 156.02,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:21.057368",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 194.06,
+    "confidence": "HIGH",
+    "entry": 336.02,
+    "stop": 333.02,
+    "target": 340.02,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:21.141266",
+    "symbol": "ROKU",
+    "strategy": "CALL",
+    "score": 191.3,
+    "confidence": "HIGH",
+    "entry": 111.87,
+    "stop": 108.87,
+    "target": 115.87,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:21.226437",
+    "symbol": "IWM",
+    "strategy": "CALL",
+    "score": 190.13,
+    "confidence": "HIGH",
+    "entry": 269.95,
+    "stop": 266.95,
+    "target": 273.95,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:21.310443",
+    "symbol": "ARKK",
+    "strategy": "CALL",
+    "score": 188.22,
+    "confidence": "HIGH",
+    "entry": 77.34,
+    "stop": 74.34,
+    "target": 81.34,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:21.399323",
+    "symbol": "JPM",
+    "strategy": "CALL",
+    "score": 181.84,
+    "confidence": "HIGH",
+    "entry": 309.95,
+    "stop": 306.95,
+    "target": 313.95,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:21.481790",
+    "symbol": "QQQ",
+    "strategy": "CALL",
+    "score": 181.38,
+    "confidence": "HIGH",
+    "entry": 640.47,
+    "stop": 637.47,
+    "target": 644.47,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:21.564209",
+    "symbol": "DAL",
+    "strategy": "CALL",
+    "score": 175.07,
+    "confidence": "HIGH",
+    "entry": 69.89,
+    "stop": 66.89,
+    "target": 73.89,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:21.648320",
+    "symbol": "ZM",
+    "strategy": "CALL",
+    "score": 170.27,
+    "confidence": "HIGH",
+    "entry": 86.68,
+    "stop": 83.68,
+    "target": 90.68,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:21.732859",
+    "symbol": "XLF",
+    "strategy": "CALL",
+    "score": 167.51,
+    "confidence": "HIGH",
+    "entry": 52.03,
+    "stop": 49.03,
+    "target": 56.03,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:21.831931",
+    "symbol": "SPY",
+    "strategy": "CALL",
+    "score": 166.35,
+    "confidence": "HIGH",
+    "entry": 701.66,
+    "stop": 698.66,
+    "target": 705.66,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:21.915213",
+    "symbol": "WFC",
+    "strategy": "CALL",
+    "score": 163.62,
+    "confidence": "HIGH",
+    "entry": 81.25,
+    "stop": 78.25,
+    "target": 85.25,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:22.003724",
+    "symbol": "DIS",
+    "strategy": "CALL",
+    "score": 147.38,
+    "confidence": "HIGH",
+    "entry": 103.9,
+    "stop": 100.9,
+    "target": 107.9,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:22.087833",
+    "symbol": "AXP",
+    "strategy": "CALL",
+    "score": 138.51,
+    "confidence": "HIGH",
+    "entry": 325.76,
+    "stop": 322.76,
+    "target": 329.76,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:22.175470",
+    "symbol": "GS",
+    "strategy": "CALL",
+    "score": 133.39,
+    "confidence": "HIGH",
+    "entry": 900.0,
+    "stop": 897.0,
+    "target": 904.0,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:22.269339",
+    "symbol": "WMT",
+    "strategy": "CALL",
+    "score": 132.92,
+    "confidence": "HIGH",
+    "entry": 124.82,
+    "stop": 121.82,
+    "target": 128.82,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:22.353803",
+    "symbol": "MU",
+    "strategy": "CALL",
+    "score": 129.6,
+    "confidence": "HIGH",
+    "entry": 457.23,
+    "stop": 454.23,
+    "target": 461.23,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:22.444116",
+    "symbol": "CMCSA",
+    "strategy": "CALL",
+    "score": 124.54,
+    "confidence": "HIGH",
+    "entry": 29.35,
+    "stop": 26.35,
+    "target": 33.35,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:22.526430",
+    "symbol": "QCOM",
+    "strategy": "CALL",
+    "score": 124.3,
+    "confidence": "HIGH",
+    "entry": 134.47,
+    "stop": 131.47,
+    "target": 138.47,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:22.610539",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 122.61,
+    "confidence": "HIGH",
+    "entry": 388.9,
+    "stop": 385.9,
+    "target": 392.9,
+    "source": "research",
+    "market_context": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-17T02:34:22.696935",
     "symbol": "SHOP",
     "strategy": "CALL",
     "score": 121.91,

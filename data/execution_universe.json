@@ -19,7 +19,7 @@
       "avg_volume": 106629045.8,
       "momentum": 0.4833,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:06.559792",
+      "timestamp": "2026-04-17T02:33:47.455506",
       "option_chain": [
         {
           "symbol": "INTC",
@@ -291,7 +291,7 @@
       "avg_volume": 35529881.9,
       "momentum": 0.3556,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:07.164924",
+      "timestamp": "2026-04-17T02:33:48.027335",
       "option_chain": [
         {
           "symbol": "AMD",
@@ -563,7 +563,7 @@
       "avg_volume": 24577051.0,
       "momentum": 0.2485,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:07.662877",
+      "timestamp": "2026-04-17T02:33:48.455149",
       "option_chain": [
         {
           "symbol": "AVGO",
@@ -835,7 +835,7 @@
       "avg_volume": 46412752.1,
       "momentum": 0.1961,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:10.511677",
+      "timestamp": "2026-04-17T02:33:51.271029",
       "option_chain": [
         {
           "symbol": "AMZN",
@@ -1107,7 +1107,7 @@
       "avg_volume": 14872945.05,
       "momentum": 0.1774,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:08.172649",
+      "timestamp": "2026-04-17T02:33:49.114652",
       "option_chain": [
         {
           "symbol": "C",
@@ -1379,7 +1379,7 @@
       "avg_volume": 37803250.3,
       "momentum": 0.175,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:11.760845",
+      "timestamp": "2026-04-17T02:33:52.978993",
       "option_chain": [
         {
           "symbol": "NFLX",
@@ -1651,7 +1651,7 @@
       "avg_volume": 7275858.95,
       "momentum": 0.1933,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:08.852842",
+      "timestamp": "2026-04-17T02:33:49.668500",
       "option_chain": [
         {
           "symbol": "SOXX",
@@ -1923,7 +1923,7 @@
       "avg_volume": 7097001.85,
       "momentum": 0.1815,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:09.373960",
+      "timestamp": "2026-04-17T02:33:50.295108",
       "option_chain": [
         {
           "symbol": "MS",
@@ -2195,7 +2195,7 @@
       "avg_volume": 27359978.45,
       "momentum": 0.1507,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:11.048238",
+      "timestamp": "2026-04-17T02:33:52.039063",
       "option_chain": [
         {
           "symbol": "ORCL",
@@ -2467,7 +2467,7 @@
       "avg_volume": 38432033.55,
       "momentum": 0.1383,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:12.813322",
+      "timestamp": "2026-04-17T02:33:54.189650",
       "option_chain": [
         {
           "symbol": "BAC",
@@ -2739,7 +2739,7 @@
       "avg_volume": 15797499.55,
       "momentum": 0.1272,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:17.786488",
+      "timestamp": "2026-04-17T02:33:58.978680",
       "option_chain": [
         {
           "symbol": "PYPL",
@@ -3011,7 +3011,7 @@
       "avg_volume": 18239261.85,
       "momentum": 0.1157,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:16.076995",
+      "timestamp": "2026-04-17T02:33:57.308353",
       "option_chain": [
         {
           "symbol": "META",
@@ -3283,7 +3283,7 @@
       "avg_volume": 164452379.1,
       "momentum": 0.1108,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:14.827204",
+      "timestamp": "2026-04-17T02:33:56.064834",
       "option_chain": [
         {
           "symbol": "NVDA",
@@ -3555,7 +3555,7 @@
       "avg_volume": 14467476.15,
       "momentum": 0.0995,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:14.258337",
+      "timestamp": "2026-04-17T02:33:55.402380",
       "option_chain": [
         {
           "symbol": "XLK",
@@ -3827,7 +3827,7 @@
       "avg_volume": 29317956.95,
       "momentum": 0.0941,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:17.109913",
+      "timestamp": "2026-04-17T02:33:58.393425",
       "option_chain": [
         {
           "symbol": "GOOGL",
@@ -4099,7 +4099,7 @@
       "avg_volume": 2428473.05,
       "momentum": 0.167,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:09.995851",
+      "timestamp": "2026-04-17T02:33:50.745542",
       "option_chain": [
         {
           "symbol": "ROKU",
@@ -4371,7 +4371,7 @@
       "avg_volume": 42269471.6,
       "momentum": 0.0901,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:18.318378",
+      "timestamp": "2026-04-17T02:33:59.504031",
       "option_chain": [
         {
           "symbol": "IWM",
@@ -4643,7 +4643,7 @@
       "avg_volume": 11389041.85,
       "momentum": 0.0882,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:20.783295",
+      "timestamp": "2026-04-17T02:34:01.558645",
       "option_chain": [
         {
           "symbol": "ARKK",
@@ -4915,7 +4915,7 @@
       "avg_volume": 10109999.1,
       "momentum": 0.0818,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:16.630128",
+      "timestamp": "2026-04-17T02:33:57.845026",
       "option_chain": [
         {
           "symbol": "JPM",
@@ -5187,7 +5187,7 @@
       "avg_volume": 61582756.9,
       "momentum": 0.0814,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:20.256036",
+      "timestamp": "2026-04-17T02:34:01.190736",
       "option_chain": [
         {
           "symbol": "QQQ",
@@ -5459,7 +5459,7 @@
       "avg_volume": 34321999.45,
       "momentum": 0.0803,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:21.969530",
+      "timestamp": "2026-04-17T02:34:02.991048",
       "option_chain": [
         {
           "symbol": "MSFT",
@@ -5731,7 +5731,7 @@
       "avg_volume": 13313774.6,
       "momentum": 0.0751,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:18.952833",
+      "timestamp": "2026-04-17T02:34:00.042012",
       "option_chain": [
         {
           "symbol": "DAL",
@@ -6003,7 +6003,7 @@
       "avg_volume": 4074007.9,
       "momentum": 0.1295,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:12.299266",
+      "timestamp": "2026-04-17T02:33:53.549617",
       "option_chain": [
         {
           "symbol": "ZM",
@@ -6275,7 +6275,7 @@
       "avg_volume": 48132672.95,
       "momentum": 0.0675,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:21.347700",
+      "timestamp": "2026-04-17T02:34:02.261482",
       "option_chain": [
         {
           "symbol": "XLF",
@@ -6547,7 +6547,7 @@
       "avg_volume": 86819232.55,
       "momentum": 0.0663,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:22.646695",
+      "timestamp": "2026-04-17T02:34:03.851520",
       "option_chain": [
         {
           "symbol": "SPY",
@@ -6819,7 +6819,7 @@
       "avg_volume": 17360475.4,
       "momentum": 0.0636,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:19.606835",
+      "timestamp": "2026-04-17T02:34:00.559081",
       "option_chain": [
         {
           "symbol": "WFC",
@@ -7091,7 +7091,7 @@
       "avg_volume": 42850424.4,
       "momentum": 0.058,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:23.977753",
+      "timestamp": "2026-04-17T02:34:04.885113",
       "option_chain": [
         {
           "symbol": "AAPL",
@@ -7363,7 +7363,7 @@
       "avg_volume": 10043189.05,
       "momentum": 0.0474,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:24.540037",
+      "timestamp": "2026-04-17T02:34:05.504470",
       "option_chain": [
         {
           "symbol": "DIS",
@@ -7635,7 +7635,7 @@
       "avg_volume": 3048078.75,
       "momentum": 0.108,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:15.559608",
+      "timestamp": "2026-04-17T02:33:56.661674",
       "option_chain": [
         {
           "symbol": "AXP",
@@ -7907,7 +7907,7 @@
       "avg_volume": 2158815.05,
       "momentum": 0.1118,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:13.561998",
+      "timestamp": "2026-04-17T02:33:54.813678",
       "option_chain": [
         {
           "symbol": "GS",
@@ -8179,7 +8179,7 @@
       "avg_volume": 18758445.1,
       "momentum": 0.0329,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:28.256893",
+      "timestamp": "2026-04-17T02:34:09.011914",
       "option_chain": [
         {
           "symbol": "WMT",
@@ -8451,7 +8451,7 @@
       "avg_volume": 52062481.75,
       "momentum": 0.0296,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:30.201808",
+      "timestamp": "2026-04-17T02:34:10.728142",
       "option_chain": [
         {
           "symbol": "MU",
@@ -8723,7 +8723,7 @@
       "avg_volume": 36195495.25,
       "momentum": 0.0245,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:32.023938",
+      "timestamp": "2026-04-17T02:34:12.188405",
       "option_chain": [
         {
           "symbol": "CMCSA",
@@ -8995,7 +8995,7 @@
       "avg_volume": 12965873.35,
       "momentum": 0.0243,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:26.281655",
+      "timestamp": "2026-04-17T02:34:07.375422",
       "option_chain": [
         {
           "symbol": "QCOM",
@@ -9267,7 +9267,7 @@
       "avg_volume": 68669019.3,
       "momentum": 0.0226,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:35.857438",
+      "timestamp": "2026-04-17T02:34:15.528032",
       "option_chain": [
         {
           "symbol": "TSLA",
@@ -9539,7 +9539,7 @@
       "avg_volume": 8456549.05,
       "momentum": 0.0373,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:28.811930",
+      "timestamp": "2026-04-17T02:34:09.543595",
       "option_chain": [
         {
           "symbol": "SHOP",
@@ -9811,7 +9811,7 @@
       "avg_volume": 6269738.6,
       "momentum": 0.0556,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:25.076471",
+      "timestamp": "2026-04-17T02:34:06.141681",
       "option_chain": [
         {
           "symbol": "DIA",
@@ -10083,7 +10083,7 @@
       "avg_volume": 14305528.2,
       "momentum": 0.0151,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:34.494902",
+      "timestamp": "2026-04-17T02:34:14.420965",
       "option_chain": [
         {
           "symbol": "UBER",
@@ -10355,7 +10355,7 @@
       "avg_volume": 12587564.05,
       "momentum": 0.0041,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:33.987051",
+      "timestamp": "2026-04-17T02:34:13.935451",
       "option_chain": [
         {
           "symbol": "XLV",
@@ -10627,7 +10627,7 @@
       "avg_volume": 7479191.25,
       "momentum": 0.0264,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:27.561463",
+      "timestamp": "2026-04-17T02:34:08.512886",
       "option_chain": [
         {
           "symbol": "SBUX",
@@ -10899,7 +10899,7 @@
       "avg_volume": 8218168.85,
       "momentum": 0.0093,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:26.882512",
+      "timestamp": "2026-04-17T02:34:07.779498",
       "option_chain": [
         {
           "symbol": "UAL",
@@ -11171,7 +11171,7 @@
       "avg_volume": 3455204.25,
       "momentum": 0.0537,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:23.407913",
+      "timestamp": "2026-04-17T02:34:04.338926",
       "option_chain": [
         {
           "symbol": "ABNB",
@@ -11443,7 +11443,7 @@
       "avg_volume": 8784822.3,
       "momentum": -0.0163,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:32.674253",
+      "timestamp": "2026-04-17T02:34:12.617096",
       "option_chain": [
         {
           "symbol": "PANW",
@@ -11715,7 +11715,7 @@
       "avg_volume": 10349800.85,
       "momentum": -0.0353,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:30.927968",
+      "timestamp": "2026-04-17T02:34:11.222150",
       "option_chain": [
         {
           "symbol": "COP",
@@ -11987,7 +11987,7 @@
       "avg_volume": 5068957.15,
       "momentum": 0.0088,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:35.144443",
+      "timestamp": "2026-04-17T02:34:15.022244",
       "option_chain": [
         {
           "symbol": "ADBE",
@@ -12259,7 +12259,7 @@
       "avg_volume": 57285856.55,
       "momentum": -0.0406,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:36.415954",
+      "timestamp": "2026-04-17T02:34:16.205671",
       "option_chain": [
         {
           "symbol": "XLE",
@@ -12531,7 +12531,7 @@
       "avg_volume": 19108220.15,
       "momentum": -0.0455,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:33.352556",
+      "timestamp": "2026-04-17T02:34:13.085227",
       "option_chain": [
         {
           "symbol": "OXY",
@@ -12803,7 +12803,7 @@
       "avg_volume": 4349058.7,
       "momentum": -0.0014,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:25.561641",
+      "timestamp": "2026-04-17T02:34:06.823262",
       "option_chain": [
         {
           "symbol": "VLO",
@@ -13075,7 +13075,7 @@
       "avg_volume": 1820396.3,
       "momentum": 0.0128,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:29.476199",
+      "timestamp": "2026-04-17T02:34:10.069976",
       "option_chain": [
         {
           "symbol": "COST",
@@ -13347,7 +13347,7 @@
       "avg_volume": 4940674.7,
       "momentum": -0.0342,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:31.517763",
+      "timestamp": "2026-04-17T02:34:11.781944",
       "option_chain": [
         {
           "symbol": "EOG",
@@ -13621,7 +13621,7 @@
       "avg_volume": 106629045.8,
       "momentum": 0.4833,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:06.559792",
+      "timestamp": "2026-04-17T02:33:47.455506",
       "option_chain": [
         {
           "symbol": "INTC",
@@ -13893,7 +13893,7 @@
       "avg_volume": 35529881.9,
       "momentum": 0.3556,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:07.164924",
+      "timestamp": "2026-04-17T02:33:48.027335",
       "option_chain": [
         {
           "symbol": "AMD",
@@ -14165,7 +14165,7 @@
       "avg_volume": 24577051.0,
       "momentum": 0.2485,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:07.662877",
+      "timestamp": "2026-04-17T02:33:48.455149",
       "option_chain": [
         {
           "symbol": "AVGO",
@@ -14437,7 +14437,7 @@
       "avg_volume": 46412752.1,
       "momentum": 0.1961,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:10.511677",
+      "timestamp": "2026-04-17T02:33:51.271029",
       "option_chain": [
         {
           "symbol": "AMZN",
@@ -14709,7 +14709,7 @@
       "avg_volume": 14872945.05,
       "momentum": 0.1774,
       "eligible": true,
-      "timestamp": "2026-04-17T01:25:08.172649",
+      "timestamp": "2026-04-17T02:33:49.114652",
       "option_chain": [
         {
           "symbol": "C",
@@ -14964,7 +14964,7 @@
     }
   ],
   "meta": {
-    "rebuilt_at": "2026-04-17T01:25:36.416042",
+    "rebuilt_at": "2026-04-17T02:34:16.205753",
     "watchlist_limit": 50,
     "universe_limit": 220,
     "selected_count": 50,

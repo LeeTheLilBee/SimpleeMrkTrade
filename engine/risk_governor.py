@@ -68,9 +68,23 @@ def governor_status(
 
     current_open_positions = _safe_int(current_open_positions, 0)
 
-    if executed_trades_today is not None:
-        executed_entries_today = executed_trades_today
-    executed_entries_today = _safe_int(executed_entries_today, 0)
+    # Keep daily entry counting tied to actual "today" performance data first.
+    perf_entries_today = _safe_int(perf.get("entries_today", 0), 0)
+    perf_closes_today = _safe_int(perf.get("closes_today", 0), 0)
+    perf_round_trips_today = _safe_int(perf.get("round_trips_today", 0), 0)
+
+    # executed_entries_today should only represent entry attempts today.
+    # Do NOT blindly overwrite it with executed_trades_today.
+    executed_entries_today = _safe_int(
+        perf_entries_today if perf_entries_today > 0 else executed_entries_today,
+        0,
+    )
+
+    # executed_trades_today is informational unless caller truly passes a same-day count.
+    executed_trades_today_value = _safe_int(
+        perf.get("executed_trades_today", executed_trades_today if executed_trades_today is not None else executed_entries_today),
+        executed_entries_today,
+    )
 
     max_daily_entries = _safe_int(
         MAX_DAILY_ENTRIES if max_daily_entries is None else max_daily_entries,
@@ -182,11 +196,11 @@ def governor_status(
         "max_drawdown": max_drawdown,
         "realized_pnl_today": realized_pnl_today,
         "current_open_positions": current_open_positions,
-        "entries_today": _safe_int(perf.get("entries_today", executed_entries_today), executed_entries_today),
+        "entries_today": executed_entries_today,
         "executed_entries_today": executed_entries_today,
-        "executed_trades_today": executed_entries_today,
-        "closes_today": _safe_int(perf.get("closes_today", 0), 0),
-        "round_trips_today": _safe_int(perf.get("round_trips_today", 0), 0),
+        "executed_trades_today": executed_trades_today_value,
+        "closes_today": perf_closes_today,
+        "round_trips_today": perf_round_trips_today,
         "limits": {
             "max_daily_entries": max_daily_entries,
             "max_drawdown_dollars": max_drawdown_dollars,

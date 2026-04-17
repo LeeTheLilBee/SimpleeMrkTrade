@@ -145,7 +145,7 @@
       "setup_family": "breakout",
       "entry_quality": "high_conviction"
     },
-    "_monitor_days_open": 0.10790615178240741,
+    "_monitor_days_open": 0.1555979271875,
     "_monitor_progress": -0.26249755859375057,
     "_monitor_pct_change": -0.2492203447283478,
     "_capital_pressure_score": 16.28,
@@ -173,10 +173,16 @@
       "very new trade protected from premature exit",
       "capital protection active, but fresh trade shield delayed forced exit",
       "very new trade protected from premature exit",
+      "capital protection active, but fresh trade shield delayed forced exit",
+      "very new trade protected from premature exit",
+      "capital protection active, but fresh trade shield delayed forced exit",
+      "very new trade protected from premature exit",
+      "capital protection active, but fresh trade shield delayed forced exit",
+      "very new trade protected from premature exit",
       "capital protection active, but fresh trade shield delayed forced exit"
     ],
     "monitor_debug": {
-      "days_open": 0.108,
+      "days_open": 0.156,
       "progress": -0.262,
       "pct_change": -0.249,
       "readiness_score": 217.0,

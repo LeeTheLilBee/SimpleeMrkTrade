@@ -18,7 +18,7 @@
     "avg_volume": 106629045.8,
     "momentum": 0.4833,
     "eligible": true,
-    "timestamp": "2026-04-17T01:25:06.559792",
+    "timestamp": "2026-04-17T02:33:47.455506",
     "option_chain": [
       {
         "symbol": "INTC",
@@ -276,11 +276,11 @@
     "breadth": "BULLISH",
     "option_explanation": [
       "Contract type matches call thesis.",
-      "Expiry is not ideal for grind setup.",
+      "Same-day expiry is too fragile for standard explosive execution.",
       "Exceptional contract volume.",
       "Exceptional open interest.",
       "Very tight spread.",
-      "Strike supports slower grind setup.",
+      "Reasonable strike for explosive move.",
       "Premium in preferred range."
     ],
     "base_score": 583.33,
@@ -318,21 +318,23 @@
       "spread": 0.01,
       "spread_pct": 0.0233,
       "distance_pct": 0.0219,
-      "contract_score": 137,
-      "trade_intent": "GRIND",
+      "contract_score": 111,
+      "trade_intent": "EXPLOSIVE",
       "dte": 0,
       "bidAskSpread": 0.01,
       "contract_notes": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Exceptional contract volume.",
         "Exceptional open interest.",
         "Very tight spread.",
-        "Strike supports slower grind setup.",
+        "Reasonable strike for explosive move.",
         "Premium in preferred range."
-      ]
+      ],
+      "is_executable": false,
+      "execution_reason": "expiry_too_close_for_explosive"
     },
-    "option_contract_score": 137.0,
+    "option_contract_score": 111.0,
     "option_path": {
       "vehicle": "OPTION",
       "capital_required": 42.5,
@@ -340,7 +342,7 @@
       "affordable": true,
       "contracts": 1,
       "shares": 0,
-      "score": 137.0,
+      "score": 111.0,
       "dte": 0,
       "spread_pct": 0.0233
     },
@@ -355,22 +357,81 @@
     "option_good": true,
     "option_dte_ok": false,
     "option_spread_ok": true,
-    "option_score_value": 137.0,
+    "option_score_value": 111.0,
     "option_dte": 0,
     "option_spread_pct": 0.0233,
+    "option_execution_reason": "expiry_too_close_for_explosive",
+    "option_flagged_executable": false,
+    "trade_intent": "EXPLOSIVE",
     "stock_score_ok": true,
     "stock_conf_ok": true,
     "shares": 1,
     "contracts": 0,
     "vehicle_reason": "stock_selected",
-    "governor": {},
-    "governor_blocked": false,
-    "governor_status": "",
-    "governor_reasons": [],
-    "governor_warnings": [],
+    "governor": {
+      "blocked": true,
+      "ok_to_trade": false,
+      "status_label": "BLOCKED",
+      "reasons": [
+        "cash_reserve_too_low"
+      ],
+      "warnings": [
+        "pdt_restricted_paper_mode"
+      ],
+      "cash": 171.4,
+      "equity": 1014.01,
+      "buying_power": 171.4,
+      "max_drawdown": 2.01,
+      "realized_pnl_today": 0.0,
+      "current_open_positions": 1,
+      "entries_today": 0,
+      "executed_entries_today": 0,
+      "executed_trades_today": 0,
+      "closes_today": 0,
+      "round_trips_today": 0,
+      "limits": {
+        "max_daily_entries": 3,
+        "max_drawdown_dollars": 150.0,
+        "min_cash_reserve": 202.8,
+        "max_open_positions": 3,
+        "max_daily_loss": 250.0
+      },
+      "controls": {
+        "daily_entry_cap": false,
+        "max_drawdown_hit": false,
+        "cash_reserve_too_low": true,
+        "max_open_positions": false,
+        "max_daily_loss_hit": false,
+        "pdt_restricted": true,
+        "pdt_warning_only": true,
+        "kill_switch": false
+      },
+      "pdt": {
+        "account_type": "margin",
+        "equity": 1014.01,
+        "pdt_restricted": true,
+        "recent_day_trades": 0,
+        "remaining_day_trades": 3
+      },
+      "trading_mode": "paper",
+      "reserve_mode": "percent",
+      "reserve_value": 20.0,
+      "timestamp": "2026-04-17T02:34:16.248402",
+      "extra_kwargs_seen": []
+    },
+    "governor_blocked": true,
+    "governor_status": "BLOCKED",
+    "governor_reasons": [
+      "cash_reserve_too_low"
+    ],
+    "governor_warnings": [
+      "pdt_restricted_paper_mode"
+    ],
     "research_approved": true,
     "execution_ready": false,
     "selected_for_execution": false,
+    "blocked_at": "governor",
+    "final_reason": "governor_blocked:cash_reserve_too_low",
     "candidate_display": {
       "symbol": "INTC",
       "company_name": "INTC",
@@ -400,11 +461,11 @@
       "capital_required": 68.5,
       "capital_available": 171.4,
       "capital_buffer_after": 102.9,
-      "decision_reason": "governor_blocked:daily_entry_cap",
-      "decision_label": "governor_blocked:daily_entry_cap",
+      "decision_reason": "governor_blocked:cash_reserve_too_low",
+      "decision_label": "governor_blocked:cash_reserve_too_low",
       "selected_for_execution": false,
       "has_option": true,
-      "option_contract_score": 137.0,
+      "option_contract_score": 111.0,
       "option": {
         "symbol": "INTC",
         "contractSymbol": "INTC260417C00070000",
@@ -422,37 +483,39 @@
         "spread": 0.01,
         "spread_pct": 0.0233,
         "distance_pct": 0.0219,
-        "contract_score": 137,
-        "trade_intent": "GRIND",
+        "contract_score": 111,
+        "trade_intent": "EXPLOSIVE",
         "dte": 0,
         "bidAskSpread": 0.01,
         "contract_notes": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Exceptional contract volume.",
           "Exceptional open interest.",
           "Very tight spread.",
-          "Strike supports slower grind setup.",
+          "Reasonable strike for explosive move.",
           "Premium in preferred range."
-        ]
+        ],
+        "is_executable": false,
+        "execution_reason": "expiry_too_close_for_explosive"
       },
       "option_explanation": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Exceptional contract volume.",
         "Exceptional open interest.",
         "Very tight spread.",
-        "Strike supports slower grind setup.",
+        "Reasonable strike for explosive move.",
         "Premium in preferred range."
       ],
       "why": [
-        "governor_blocked:daily_entry_cap"
+        "governor_blocked:cash_reserve_too_low"
       ],
       "supports": [],
       "blockers": [],
       "rejection_analysis": [],
       "stronger_competing_setups": [],
-      "timestamp": "2026-04-17T01:25:06.559792",
+      "timestamp": "2026-04-17T02:33:47.455506",
       "source": "execution_universe",
       "raw": {
         "symbol": "INTC",
@@ -473,7 +536,7 @@
         "avg_volume": 106629045.8,
         "momentum": 0.4833,
         "eligible": true,
-        "timestamp": "2026-04-17T01:25:06.559792",
+        "timestamp": "2026-04-17T02:33:47.455506",
         "option_chain": [
           {
             "symbol": "INTC",
@@ -731,11 +794,11 @@
         "breadth": "BULLISH",
         "option_explanation": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Exceptional contract volume.",
           "Exceptional open interest.",
           "Very tight spread.",
-          "Strike supports slower grind setup.",
+          "Reasonable strike for explosive move.",
           "Premium in preferred range."
         ],
         "base_score": 583.33,
@@ -773,21 +836,23 @@
           "spread": 0.01,
           "spread_pct": 0.0233,
           "distance_pct": 0.0219,
-          "contract_score": 137,
-          "trade_intent": "GRIND",
+          "contract_score": 111,
+          "trade_intent": "EXPLOSIVE",
           "dte": 0,
           "bidAskSpread": 0.01,
           "contract_notes": [
             "Contract type matches call thesis.",
-            "Expiry is not ideal for grind setup.",
+            "Same-day expiry is too fragile for standard explosive execution.",
             "Exceptional contract volume.",
             "Exceptional open interest.",
             "Very tight spread.",
-            "Strike supports slower grind setup.",
+            "Reasonable strike for explosive move.",
             "Premium in preferred range."
-          ]
+          ],
+          "is_executable": false,
+          "execution_reason": "expiry_too_close_for_explosive"
         },
-        "option_contract_score": 137.0,
+        "option_contract_score": 111.0,
         "option_path": {
           "vehicle": "OPTION",
           "capital_required": 42.5,
@@ -795,7 +860,7 @@
           "affordable": true,
           "contracts": 1,
           "shares": 0,
-          "score": 137.0,
+          "score": 111.0,
           "dte": 0,
           "spread_pct": 0.0233
         },
@@ -810,22 +875,81 @@
         "option_good": true,
         "option_dte_ok": false,
         "option_spread_ok": true,
-        "option_score_value": 137.0,
+        "option_score_value": 111.0,
         "option_dte": 0,
         "option_spread_pct": 0.0233,
+        "option_execution_reason": "expiry_too_close_for_explosive",
+        "option_flagged_executable": false,
+        "trade_intent": "EXPLOSIVE",
         "stock_score_ok": true,
         "stock_conf_ok": true,
         "shares": 1,
         "contracts": 0,
         "vehicle_reason": "stock_selected",
-        "governor": {},
-        "governor_blocked": false,
-        "governor_status": "",
-        "governor_reasons": [],
-        "governor_warnings": [],
+        "governor": {
+          "blocked": true,
+          "ok_to_trade": false,
+          "status_label": "BLOCKED",
+          "reasons": [
+            "cash_reserve_too_low"
+          ],
+          "warnings": [
+            "pdt_restricted_paper_mode"
+          ],
+          "cash": 171.4,
+          "equity": 1014.01,
+          "buying_power": 171.4,
+          "max_drawdown": 2.01,
+          "realized_pnl_today": 0.0,
+          "current_open_positions": 1,
+          "entries_today": 0,
+          "executed_entries_today": 0,
+          "executed_trades_today": 0,
+          "closes_today": 0,
+          "round_trips_today": 0,
+          "limits": {
+            "max_daily_entries": 3,
+            "max_drawdown_dollars": 150.0,
+            "min_cash_reserve": 202.8,
+            "max_open_positions": 3,
+            "max_daily_loss": 250.0
+          },
+          "controls": {
+            "daily_entry_cap": false,
+            "max_drawdown_hit": false,
+            "cash_reserve_too_low": true,
+            "max_open_positions": false,
+            "max_daily_loss_hit": false,
+            "pdt_restricted": true,
+            "pdt_warning_only": true,
+            "kill_switch": false
+          },
+          "pdt": {
+            "account_type": "margin",
+            "equity": 1014.01,
+            "pdt_restricted": true,
+            "recent_day_trades": 0,
+            "remaining_day_trades": 3
+          },
+          "trading_mode": "paper",
+          "reserve_mode": "percent",
+          "reserve_value": 20.0,
+          "timestamp": "2026-04-17T02:34:16.248402",
+          "extra_kwargs_seen": []
+        },
+        "governor_blocked": true,
+        "governor_status": "BLOCKED",
+        "governor_reasons": [
+          "cash_reserve_too_low"
+        ],
+        "governor_warnings": [
+          "pdt_restricted_paper_mode"
+        ],
         "research_approved": true,
         "execution_ready": false,
-        "selected_for_execution": false
+        "selected_for_execution": false,
+        "blocked_at": "governor",
+        "final_reason": "governor_blocked:cash_reserve_too_low"
       },
       "minimum_trade_cost": 69.5,
       "vehicle_selected": "STOCK",
@@ -836,7 +960,6 @@
         "ok_to_trade": false,
         "status_label": "BLOCKED",
         "reasons": [
-          "daily_entry_cap",
           "cash_reserve_too_low"
         ],
         "warnings": [
@@ -849,8 +972,8 @@
         "realized_pnl_today": 0.0,
         "current_open_positions": 1,
         "entries_today": 0,
-        "executed_entries_today": 3,
-        "executed_trades_today": 3,
+        "executed_entries_today": 0,
+        "executed_trades_today": 0,
         "closes_today": 0,
         "round_trips_today": 0,
         "limits": {
@@ -861,7 +984,7 @@
           "max_daily_loss": 250.0
         },
         "controls": {
-          "daily_entry_cap": true,
+          "daily_entry_cap": false,
           "max_drawdown_hit": false,
           "cash_reserve_too_low": true,
           "max_open_positions": false,
@@ -880,9 +1003,13 @@
         "trading_mode": "paper",
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-04-17T01:25:36.483052",
+        "timestamp": "2026-04-17T02:34:16.248402",
         "extra_kwargs_seen": []
-      }
+      },
+      "governor_blocked": true,
+      "governor_reason": "governor_blocked:cash_reserve_too_low",
+      "blocked_at": "governor",
+      "final_reason": "governor_blocked:cash_reserve_too_low"
     }
   },
   {
@@ -904,7 +1031,7 @@
     "avg_volume": 35529881.9,
     "momentum": 0.3556,
     "eligible": true,
-    "timestamp": "2026-04-17T01:25:07.164924",
+    "timestamp": "2026-04-17T02:33:48.027335",
     "option_chain": [
       {
         "symbol": "AMD",
@@ -1162,11 +1289,11 @@
     "breadth": "BULLISH",
     "option_explanation": [
       "Contract type matches call thesis.",
-      "Expiry is not ideal for grind setup.",
+      "Same-day expiry is too fragile for standard explosive execution.",
       "Exceptional contract volume.",
       "Strong open interest.",
       "Very tight spread.",
-      "Strike supports slower grind setup.",
+      "Tight strike for explosive move.",
       "Premium in preferred range."
     ],
     "base_score": 455.58,
@@ -1204,21 +1331,23 @@
       "spread": 0.05,
       "spread_pct": 0.0185,
       "distance_pct": 0.0063,
-      "contract_score": 131,
-      "trade_intent": "GRIND",
+      "contract_score": 113,
+      "trade_intent": "EXPLOSIVE",
       "dte": 0,
       "bidAskSpread": 0.05,
       "contract_notes": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Exceptional contract volume.",
         "Strong open interest.",
         "Very tight spread.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
-      ]
+      ],
+      "is_executable": false,
+      "execution_reason": "expiry_too_close_for_explosive"
     },
-    "option_contract_score": 131.0,
+    "option_contract_score": 113.0,
     "option_path": {
       "vehicle": "OPTION",
       "capital_required": 267.5,
@@ -1226,7 +1355,7 @@
       "affordable": false,
       "contracts": 1,
       "shares": 0,
-      "score": 131.0,
+      "score": 113.0,
       "dte": 0,
       "spread_pct": 0.0185
     },
@@ -1241,22 +1370,81 @@
     "option_good": true,
     "option_dte_ok": false,
     "option_spread_ok": true,
-    "option_score_value": 131.0,
+    "option_score_value": 113.0,
     "option_dte": 0,
     "option_spread_pct": 0.0185,
+    "option_execution_reason": "expiry_too_close_for_explosive",
+    "option_flagged_executable": false,
+    "trade_intent": "EXPLOSIVE",
     "stock_score_ok": true,
     "stock_conf_ok": true,
     "shares": 0,
     "contracts": 0,
     "vehicle_reason": "research_only",
-    "governor": {},
-    "governor_blocked": false,
-    "governor_status": "",
-    "governor_reasons": [],
-    "governor_warnings": [],
+    "governor": {
+      "blocked": true,
+      "ok_to_trade": false,
+      "status_label": "BLOCKED",
+      "reasons": [
+        "cash_reserve_too_low"
+      ],
+      "warnings": [
+        "pdt_restricted_paper_mode"
+      ],
+      "cash": 171.4,
+      "equity": 1014.01,
+      "buying_power": 171.4,
+      "max_drawdown": 2.01,
+      "realized_pnl_today": 0.0,
+      "current_open_positions": 1,
+      "entries_today": 0,
+      "executed_entries_today": 0,
+      "executed_trades_today": 0,
+      "closes_today": 0,
+      "round_trips_today": 0,
+      "limits": {
+        "max_daily_entries": 3,
+        "max_drawdown_dollars": 150.0,
+        "min_cash_reserve": 202.8,
+        "max_open_positions": 3,
+        "max_daily_loss": 250.0
+      },
+      "controls": {
+        "daily_entry_cap": false,
+        "max_drawdown_hit": false,
+        "cash_reserve_too_low": true,
+        "max_open_positions": false,
+        "max_daily_loss_hit": false,
+        "pdt_restricted": true,
+        "pdt_warning_only": true,
+        "kill_switch": false
+      },
+      "pdt": {
+        "account_type": "margin",
+        "equity": 1014.01,
+        "pdt_restricted": true,
+        "recent_day_trades": 0,
+        "remaining_day_trades": 3
+      },
+      "trading_mode": "paper",
+      "reserve_mode": "percent",
+      "reserve_value": 20.0,
+      "timestamp": "2026-04-17T02:34:16.248402",
+      "extra_kwargs_seen": []
+    },
+    "governor_blocked": true,
+    "governor_status": "BLOCKED",
+    "governor_reasons": [
+      "cash_reserve_too_low"
+    ],
+    "governor_warnings": [
+      "pdt_restricted_paper_mode"
+    ],
     "research_approved": true,
     "execution_ready": false,
     "selected_for_execution": false,
+    "blocked_at": "governor",
+    "final_reason": "governor_blocked:cash_reserve_too_low",
     "candidate_display": {
       "symbol": "AMD",
       "company_name": "AMD",
@@ -1286,11 +1474,11 @@
       "capital_required": 0.0,
       "capital_available": 171.4,
       "capital_buffer_after": 171.4,
-      "decision_reason": "governor_blocked:daily_entry_cap",
-      "decision_label": "governor_blocked:daily_entry_cap",
+      "decision_reason": "governor_blocked:cash_reserve_too_low",
+      "decision_label": "governor_blocked:cash_reserve_too_low",
       "selected_for_execution": false,
       "has_option": true,
-      "option_contract_score": 131.0,
+      "option_contract_score": 113.0,
       "option": {
         "symbol": "AMD",
         "contractSymbol": "AMD260417C00280000",
@@ -1308,37 +1496,39 @@
         "spread": 0.05,
         "spread_pct": 0.0185,
         "distance_pct": 0.0063,
-        "contract_score": 131,
-        "trade_intent": "GRIND",
+        "contract_score": 113,
+        "trade_intent": "EXPLOSIVE",
         "dte": 0,
         "bidAskSpread": 0.05,
         "contract_notes": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Exceptional contract volume.",
           "Strong open interest.",
           "Very tight spread.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
-        ]
+        ],
+        "is_executable": false,
+        "execution_reason": "expiry_too_close_for_explosive"
       },
       "option_explanation": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Exceptional contract volume.",
         "Strong open interest.",
         "Very tight spread.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
       ],
       "why": [
-        "governor_blocked:daily_entry_cap"
+        "governor_blocked:cash_reserve_too_low"
       ],
       "supports": [],
       "blockers": [],
       "rejection_analysis": [],
       "stronger_competing_setups": [],
-      "timestamp": "2026-04-17T01:25:07.164924",
+      "timestamp": "2026-04-17T02:33:48.027335",
       "source": "execution_universe",
       "raw": {
         "symbol": "AMD",
@@ -1359,7 +1549,7 @@
         "avg_volume": 35529881.9,
         "momentum": 0.3556,
         "eligible": true,
-        "timestamp": "2026-04-17T01:25:07.164924",
+        "timestamp": "2026-04-17T02:33:48.027335",
         "option_chain": [
           {
             "symbol": "AMD",
@@ -1617,11 +1807,11 @@
         "breadth": "BULLISH",
         "option_explanation": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Exceptional contract volume.",
           "Strong open interest.",
           "Very tight spread.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
         ],
         "base_score": 455.58,
@@ -1659,21 +1849,23 @@
           "spread": 0.05,
           "spread_pct": 0.0185,
           "distance_pct": 0.0063,
-          "contract_score": 131,
-          "trade_intent": "GRIND",
+          "contract_score": 113,
+          "trade_intent": "EXPLOSIVE",
           "dte": 0,
           "bidAskSpread": 0.05,
           "contract_notes": [
             "Contract type matches call thesis.",
-            "Expiry is not ideal for grind setup.",
+            "Same-day expiry is too fragile for standard explosive execution.",
             "Exceptional contract volume.",
             "Strong open interest.",
             "Very tight spread.",
-            "Strike supports slower grind setup.",
+            "Tight strike for explosive move.",
             "Premium in preferred range."
-          ]
+          ],
+          "is_executable": false,
+          "execution_reason": "expiry_too_close_for_explosive"
         },
-        "option_contract_score": 131.0,
+        "option_contract_score": 113.0,
         "option_path": {
           "vehicle": "OPTION",
           "capital_required": 267.5,
@@ -1681,7 +1873,7 @@
           "affordable": false,
           "contracts": 1,
           "shares": 0,
-          "score": 131.0,
+          "score": 113.0,
           "dte": 0,
           "spread_pct": 0.0185
         },
@@ -1696,22 +1888,81 @@
         "option_good": true,
         "option_dte_ok": false,
         "option_spread_ok": true,
-        "option_score_value": 131.0,
+        "option_score_value": 113.0,
         "option_dte": 0,
         "option_spread_pct": 0.0185,
+        "option_execution_reason": "expiry_too_close_for_explosive",
+        "option_flagged_executable": false,
+        "trade_intent": "EXPLOSIVE",
         "stock_score_ok": true,
         "stock_conf_ok": true,
         "shares": 0,
         "contracts": 0,
         "vehicle_reason": "research_only",
-        "governor": {},
-        "governor_blocked": false,
-        "governor_status": "",
-        "governor_reasons": [],
-        "governor_warnings": [],
+        "governor": {
+          "blocked": true,
+          "ok_to_trade": false,
+          "status_label": "BLOCKED",
+          "reasons": [
+            "cash_reserve_too_low"
+          ],
+          "warnings": [
+            "pdt_restricted_paper_mode"
+          ],
+          "cash": 171.4,
+          "equity": 1014.01,
+          "buying_power": 171.4,
+          "max_drawdown": 2.01,
+          "realized_pnl_today": 0.0,
+          "current_open_positions": 1,
+          "entries_today": 0,
+          "executed_entries_today": 0,
+          "executed_trades_today": 0,
+          "closes_today": 0,
+          "round_trips_today": 0,
+          "limits": {
+            "max_daily_entries": 3,
+            "max_drawdown_dollars": 150.0,
+            "min_cash_reserve": 202.8,
+            "max_open_positions": 3,
+            "max_daily_loss": 250.0
+          },
+          "controls": {
+            "daily_entry_cap": false,
+            "max_drawdown_hit": false,
+            "cash_reserve_too_low": true,
+            "max_open_positions": false,
+            "max_daily_loss_hit": false,
+            "pdt_restricted": true,
+            "pdt_warning_only": true,
+            "kill_switch": false
+          },
+          "pdt": {
+            "account_type": "margin",
+            "equity": 1014.01,
+            "pdt_restricted": true,
+            "recent_day_trades": 0,
+            "remaining_day_trades": 3
+          },
+          "trading_mode": "paper",
+          "reserve_mode": "percent",
+          "reserve_value": 20.0,
+          "timestamp": "2026-04-17T02:34:16.248402",
+          "extra_kwargs_seen": []
+        },
+        "governor_blocked": true,
+        "governor_status": "BLOCKED",
+        "governor_reasons": [
+          "cash_reserve_too_low"
+        ],
+        "governor_warnings": [
+          "pdt_restricted_paper_mode"
+        ],
         "research_approved": true,
         "execution_ready": false,
-        "selected_for_execution": false
+        "selected_for_execution": false,
+        "blocked_at": "governor",
+        "final_reason": "governor_blocked:cash_reserve_too_low"
       },
       "minimum_trade_cost": 0.0,
       "vehicle_selected": "RESEARCH_ONLY",
@@ -1722,7 +1973,6 @@
         "ok_to_trade": false,
         "status_label": "BLOCKED",
         "reasons": [
-          "daily_entry_cap",
           "cash_reserve_too_low"
         ],
         "warnings": [
@@ -1735,8 +1985,8 @@
         "realized_pnl_today": 0.0,
         "current_open_positions": 1,
         "entries_today": 0,
-        "executed_entries_today": 3,
-        "executed_trades_today": 3,
+        "executed_entries_today": 0,
+        "executed_trades_today": 0,
         "closes_today": 0,
         "round_trips_today": 0,
         "limits": {
@@ -1747,7 +1997,7 @@
           "max_daily_loss": 250.0
         },
         "controls": {
-          "daily_entry_cap": true,
+          "daily_entry_cap": false,
           "max_drawdown_hit": false,
           "cash_reserve_too_low": true,
           "max_open_positions": false,
@@ -1766,9 +2016,13 @@
         "trading_mode": "paper",
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-04-17T01:25:36.483052",
+        "timestamp": "2026-04-17T02:34:16.248402",
         "extra_kwargs_seen": []
-      }
+      },
+      "governor_blocked": true,
+      "governor_reason": "governor_blocked:cash_reserve_too_low",
+      "blocked_at": "governor",
+      "final_reason": "governor_blocked:cash_reserve_too_low"
     }
   },
   {
@@ -1790,7 +2044,7 @@
     "avg_volume": 24577051.0,
     "momentum": 0.2485,
     "eligible": true,
-    "timestamp": "2026-04-17T01:25:07.662877",
+    "timestamp": "2026-04-17T02:33:48.455149",
     "option_chain": [
       {
         "symbol": "AVGO",
@@ -2048,11 +2302,11 @@
     "breadth": "BULLISH",
     "option_explanation": [
       "Contract type matches call thesis.",
-      "Expiry is not ideal for grind setup.",
+      "Same-day expiry is too fragile for standard explosive execution.",
       "Strong contract volume.",
       "Strong open interest.",
       "Acceptable spread.",
-      "Strike supports slower grind setup.",
+      "Tight strike for explosive move.",
       "Premium in preferred range."
     ],
     "base_score": 348.46,
@@ -2090,21 +2344,23 @@
       "spread": 0.19,
       "spread_pct": 0.0696,
       "distance_pct": 0.0038,
-      "contract_score": 110,
-      "trade_intent": "GRIND",
+      "contract_score": 91,
+      "trade_intent": "EXPLOSIVE",
       "dte": 0,
       "bidAskSpread": 0.19,
       "contract_notes": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Strong contract volume.",
         "Strong open interest.",
         "Acceptable spread.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
-      ]
+      ],
+      "is_executable": false,
+      "execution_reason": "expiry_too_close_for_explosive"
     },
-    "option_contract_score": 110.0,
+    "option_contract_score": 91.0,
     "option_path": {
       "vehicle": "OPTION",
       "capital_required": 263.5,
@@ -2112,7 +2368,7 @@
       "affordable": false,
       "contracts": 1,
       "shares": 0,
-      "score": 110.0,
+      "score": 91.0,
       "dte": 0,
       "spread_pct": 0.0696
     },
@@ -2127,22 +2383,81 @@
     "option_good": true,
     "option_dte_ok": false,
     "option_spread_ok": true,
-    "option_score_value": 110.0,
+    "option_score_value": 91.0,
     "option_dte": 0,
     "option_spread_pct": 0.0696,
+    "option_execution_reason": "expiry_too_close_for_explosive",
+    "option_flagged_executable": false,
+    "trade_intent": "EXPLOSIVE",
     "stock_score_ok": true,
     "stock_conf_ok": true,
     "shares": 0,
     "contracts": 0,
     "vehicle_reason": "research_only",
-    "governor": {},
-    "governor_blocked": false,
-    "governor_status": "",
-    "governor_reasons": [],
-    "governor_warnings": [],
+    "governor": {
+      "blocked": true,
+      "ok_to_trade": false,
+      "status_label": "BLOCKED",
+      "reasons": [
+        "cash_reserve_too_low"
+      ],
+      "warnings": [
+        "pdt_restricted_paper_mode"
+      ],
+      "cash": 171.4,
+      "equity": 1014.01,
+      "buying_power": 171.4,
+      "max_drawdown": 2.01,
+      "realized_pnl_today": 0.0,
+      "current_open_positions": 1,
+      "entries_today": 0,
+      "executed_entries_today": 0,
+      "executed_trades_today": 0,
+      "closes_today": 0,
+      "round_trips_today": 0,
+      "limits": {
+        "max_daily_entries": 3,
+        "max_drawdown_dollars": 150.0,
+        "min_cash_reserve": 202.8,
+        "max_open_positions": 3,
+        "max_daily_loss": 250.0
+      },
+      "controls": {
+        "daily_entry_cap": false,
+        "max_drawdown_hit": false,
+        "cash_reserve_too_low": true,
+        "max_open_positions": false,
+        "max_daily_loss_hit": false,
+        "pdt_restricted": true,
+        "pdt_warning_only": true,
+        "kill_switch": false
+      },
+      "pdt": {
+        "account_type": "margin",
+        "equity": 1014.01,
+        "pdt_restricted": true,
+        "recent_day_trades": 0,
+        "remaining_day_trades": 3
+      },
+      "trading_mode": "paper",
+      "reserve_mode": "percent",
+      "reserve_value": 20.0,
+      "timestamp": "2026-04-17T02:34:16.248402",
+      "extra_kwargs_seen": []
+    },
+    "governor_blocked": true,
+    "governor_status": "BLOCKED",
+    "governor_reasons": [
+      "cash_reserve_too_low"
+    ],
+    "governor_warnings": [
+      "pdt_restricted_paper_mode"
+    ],
     "research_approved": true,
     "execution_ready": false,
     "selected_for_execution": false,
+    "blocked_at": "governor",
+    "final_reason": "governor_blocked:cash_reserve_too_low",
     "candidate_display": {
       "symbol": "AVGO",
       "company_name": "AVGO",
@@ -2172,11 +2487,11 @@
       "capital_required": 0.0,
       "capital_available": 171.4,
       "capital_buffer_after": 171.4,
-      "decision_reason": "governor_blocked:daily_entry_cap",
-      "decision_label": "governor_blocked:daily_entry_cap",
+      "decision_reason": "governor_blocked:cash_reserve_too_low",
+      "decision_label": "governor_blocked:cash_reserve_too_low",
       "selected_for_execution": false,
       "has_option": true,
-      "option_contract_score": 110.0,
+      "option_contract_score": 91.0,
       "option": {
         "symbol": "AVGO",
         "contractSymbol": "AVGO260417C00400000",
@@ -2194,37 +2509,39 @@
         "spread": 0.19,
         "spread_pct": 0.0696,
         "distance_pct": 0.0038,
-        "contract_score": 110,
-        "trade_intent": "GRIND",
+        "contract_score": 91,
+        "trade_intent": "EXPLOSIVE",
         "dte": 0,
         "bidAskSpread": 0.19,
         "contract_notes": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Strong contract volume.",
           "Strong open interest.",
           "Acceptable spread.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
-        ]
+        ],
+        "is_executable": false,
+        "execution_reason": "expiry_too_close_for_explosive"
       },
       "option_explanation": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Strong contract volume.",
         "Strong open interest.",
         "Acceptable spread.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
       ],
       "why": [
-        "governor_blocked:daily_entry_cap"
+        "governor_blocked:cash_reserve_too_low"
       ],
       "supports": [],
       "blockers": [],
       "rejection_analysis": [],
       "stronger_competing_setups": [],
-      "timestamp": "2026-04-17T01:25:07.662877",
+      "timestamp": "2026-04-17T02:33:48.455149",
       "source": "execution_universe",
       "raw": {
         "symbol": "AVGO",
@@ -2245,7 +2562,7 @@
         "avg_volume": 24577051.0,
         "momentum": 0.2485,
         "eligible": true,
-        "timestamp": "2026-04-17T01:25:07.662877",
+        "timestamp": "2026-04-17T02:33:48.455149",
         "option_chain": [
           {
             "symbol": "AVGO",
@@ -2503,11 +2820,11 @@
         "breadth": "BULLISH",
         "option_explanation": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Strong contract volume.",
           "Strong open interest.",
           "Acceptable spread.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
         ],
         "base_score": 348.46,
@@ -2545,21 +2862,23 @@
           "spread": 0.19,
           "spread_pct": 0.0696,
           "distance_pct": 0.0038,
-          "contract_score": 110,
-          "trade_intent": "GRIND",
+          "contract_score": 91,
+          "trade_intent": "EXPLOSIVE",
           "dte": 0,
           "bidAskSpread": 0.19,
           "contract_notes": [
             "Contract type matches call thesis.",
-            "Expiry is not ideal for grind setup.",
+            "Same-day expiry is too fragile for standard explosive execution.",
             "Strong contract volume.",
             "Strong open interest.",
             "Acceptable spread.",
-            "Strike supports slower grind setup.",
+            "Tight strike for explosive move.",
             "Premium in preferred range."
-          ]
+          ],
+          "is_executable": false,
+          "execution_reason": "expiry_too_close_for_explosive"
         },
-        "option_contract_score": 110.0,
+        "option_contract_score": 91.0,
         "option_path": {
           "vehicle": "OPTION",
           "capital_required": 263.5,
@@ -2567,7 +2886,7 @@
           "affordable": false,
           "contracts": 1,
           "shares": 0,
-          "score": 110.0,
+          "score": 91.0,
           "dte": 0,
           "spread_pct": 0.0696
         },
@@ -2582,22 +2901,81 @@
         "option_good": true,
         "option_dte_ok": false,
         "option_spread_ok": true,
-        "option_score_value": 110.0,
+        "option_score_value": 91.0,
         "option_dte": 0,
         "option_spread_pct": 0.0696,
+        "option_execution_reason": "expiry_too_close_for_explosive",
+        "option_flagged_executable": false,
+        "trade_intent": "EXPLOSIVE",
         "stock_score_ok": true,
         "stock_conf_ok": true,
         "shares": 0,
         "contracts": 0,
         "vehicle_reason": "research_only",
-        "governor": {},
-        "governor_blocked": false,
-        "governor_status": "",
-        "governor_reasons": [],
-        "governor_warnings": [],
+        "governor": {
+          "blocked": true,
+          "ok_to_trade": false,
+          "status_label": "BLOCKED",
+          "reasons": [
+            "cash_reserve_too_low"
+          ],
+          "warnings": [
+            "pdt_restricted_paper_mode"
+          ],
+          "cash": 171.4,
+          "equity": 1014.01,
+          "buying_power": 171.4,
+          "max_drawdown": 2.01,
+          "realized_pnl_today": 0.0,
+          "current_open_positions": 1,
+          "entries_today": 0,
+          "executed_entries_today": 0,
+          "executed_trades_today": 0,
+          "closes_today": 0,
+          "round_trips_today": 0,
+          "limits": {
+            "max_daily_entries": 3,
+            "max_drawdown_dollars": 150.0,
+            "min_cash_reserve": 202.8,
+            "max_open_positions": 3,
+            "max_daily_loss": 250.0
+          },
+          "controls": {
+            "daily_entry_cap": false,
+            "max_drawdown_hit": false,
+            "cash_reserve_too_low": true,
+            "max_open_positions": false,
+            "max_daily_loss_hit": false,
+            "pdt_restricted": true,
+            "pdt_warning_only": true,
+            "kill_switch": false
+          },
+          "pdt": {
+            "account_type": "margin",
+            "equity": 1014.01,
+            "pdt_restricted": true,
+            "recent_day_trades": 0,
+            "remaining_day_trades": 3
+          },
+          "trading_mode": "paper",
+          "reserve_mode": "percent",
+          "reserve_value": 20.0,
+          "timestamp": "2026-04-17T02:34:16.248402",
+          "extra_kwargs_seen": []
+        },
+        "governor_blocked": true,
+        "governor_status": "BLOCKED",
+        "governor_reasons": [
+          "cash_reserve_too_low"
+        ],
+        "governor_warnings": [
+          "pdt_restricted_paper_mode"
+        ],
         "research_approved": true,
         "execution_ready": false,
-        "selected_for_execution": false
+        "selected_for_execution": false,
+        "blocked_at": "governor",
+        "final_reason": "governor_blocked:cash_reserve_too_low"
       },
       "minimum_trade_cost": 0.0,
       "vehicle_selected": "RESEARCH_ONLY",
@@ -2608,7 +2986,6 @@
         "ok_to_trade": false,
         "status_label": "BLOCKED",
         "reasons": [
-          "daily_entry_cap",
           "cash_reserve_too_low"
         ],
         "warnings": [
@@ -2621,8 +2998,8 @@
         "realized_pnl_today": 0.0,
         "current_open_positions": 1,
         "entries_today": 0,
-        "executed_entries_today": 3,
-        "executed_trades_today": 3,
+        "executed_entries_today": 0,
+        "executed_trades_today": 0,
         "closes_today": 0,
         "round_trips_today": 0,
         "limits": {
@@ -2633,7 +3010,7 @@
           "max_daily_loss": 250.0
         },
         "controls": {
-          "daily_entry_cap": true,
+          "daily_entry_cap": false,
           "max_drawdown_hit": false,
           "cash_reserve_too_low": true,
           "max_open_positions": false,
@@ -2652,9 +3029,13 @@
         "trading_mode": "paper",
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-04-17T01:25:36.483052",
+        "timestamp": "2026-04-17T02:34:16.248402",
         "extra_kwargs_seen": []
-      }
+      },
+      "governor_blocked": true,
+      "governor_reason": "governor_blocked:cash_reserve_too_low",
+      "blocked_at": "governor",
+      "final_reason": "governor_blocked:cash_reserve_too_low"
     }
   },
   {
@@ -2676,7 +3057,7 @@
     "avg_volume": 46412752.1,
     "momentum": 0.1961,
     "eligible": true,
-    "timestamp": "2026-04-17T01:25:10.511677",
+    "timestamp": "2026-04-17T02:33:51.271029",
     "option_chain": [
       {
         "symbol": "AMZN",
@@ -2934,11 +3315,11 @@
     "breadth": "BULLISH",
     "option_explanation": [
       "Contract type matches call thesis.",
-      "Expiry is not ideal for grind setup.",
+      "Same-day expiry is too fragile for standard explosive execution.",
       "Exceptional contract volume.",
       "Exceptional open interest.",
       "Tight spread.",
-      "Strike supports slower grind setup.",
+      "Tight strike for explosive move.",
       "Premium in preferred range."
     ],
     "base_score": 296.11,
@@ -2976,21 +3357,23 @@
       "spread": 0.07,
       "spread_pct": 0.0493,
       "distance_pct": 0.0012,
-      "contract_score": 129,
-      "trade_intent": "GRIND",
+      "contract_score": 111,
+      "trade_intent": "EXPLOSIVE",
       "dte": 0,
       "bidAskSpread": 0.07,
       "contract_notes": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Exceptional contract volume.",
         "Exceptional open interest.",
         "Tight spread.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
-      ]
+      ],
+      "is_executable": false,
+      "execution_reason": "expiry_too_close_for_explosive"
     },
-    "option_contract_score": 129.0,
+    "option_contract_score": 111.0,
     "option_path": {
       "vehicle": "OPTION",
       "capital_required": 138.5,
@@ -2998,7 +3381,7 @@
       "affordable": true,
       "contracts": 1,
       "shares": 0,
-      "score": 129.0,
+      "score": 111.0,
       "dte": 0,
       "spread_pct": 0.0493
     },
@@ -3013,22 +3396,81 @@
     "option_good": true,
     "option_dte_ok": false,
     "option_spread_ok": true,
-    "option_score_value": 129.0,
+    "option_score_value": 111.0,
     "option_dte": 0,
     "option_spread_pct": 0.0493,
+    "option_execution_reason": "expiry_too_close_for_explosive",
+    "option_flagged_executable": false,
+    "trade_intent": "EXPLOSIVE",
     "stock_score_ok": true,
     "stock_conf_ok": true,
     "shares": 0,
     "contracts": 0,
     "vehicle_reason": "research_only",
-    "governor": {},
-    "governor_blocked": false,
-    "governor_status": "",
-    "governor_reasons": [],
-    "governor_warnings": [],
+    "governor": {
+      "blocked": true,
+      "ok_to_trade": false,
+      "status_label": "BLOCKED",
+      "reasons": [
+        "cash_reserve_too_low"
+      ],
+      "warnings": [
+        "pdt_restricted_paper_mode"
+      ],
+      "cash": 171.4,
+      "equity": 1014.01,
+      "buying_power": 171.4,
+      "max_drawdown": 2.01,
+      "realized_pnl_today": 0.0,
+      "current_open_positions": 1,
+      "entries_today": 0,
+      "executed_entries_today": 0,
+      "executed_trades_today": 0,
+      "closes_today": 0,
+      "round_trips_today": 0,
+      "limits": {
+        "max_daily_entries": 3,
+        "max_drawdown_dollars": 150.0,
+        "min_cash_reserve": 202.8,
+        "max_open_positions": 3,
+        "max_daily_loss": 250.0
+      },
+      "controls": {
+        "daily_entry_cap": false,
+        "max_drawdown_hit": false,
+        "cash_reserve_too_low": true,
+        "max_open_positions": false,
+        "max_daily_loss_hit": false,
+        "pdt_restricted": true,
+        "pdt_warning_only": true,
+        "kill_switch": false
+      },
+      "pdt": {
+        "account_type": "margin",
+        "equity": 1014.01,
+        "pdt_restricted": true,
+        "recent_day_trades": 0,
+        "remaining_day_trades": 3
+      },
+      "trading_mode": "paper",
+      "reserve_mode": "percent",
+      "reserve_value": 20.0,
+      "timestamp": "2026-04-17T02:34:16.248402",
+      "extra_kwargs_seen": []
+    },
+    "governor_blocked": true,
+    "governor_status": "BLOCKED",
+    "governor_reasons": [
+      "cash_reserve_too_low"
+    ],
+    "governor_warnings": [
+      "pdt_restricted_paper_mode"
+    ],
     "research_approved": true,
     "execution_ready": false,
     "selected_for_execution": false,
+    "blocked_at": "governor",
+    "final_reason": "governor_blocked:cash_reserve_too_low",
     "candidate_display": {
       "symbol": "AMZN",
       "company_name": "AMZN",
@@ -3058,11 +3500,11 @@
       "capital_required": 0.0,
       "capital_available": 171.4,
       "capital_buffer_after": 171.4,
-      "decision_reason": "governor_blocked:daily_entry_cap",
-      "decision_label": "governor_blocked:daily_entry_cap",
+      "decision_reason": "governor_blocked:cash_reserve_too_low",
+      "decision_label": "governor_blocked:cash_reserve_too_low",
       "selected_for_execution": false,
       "has_option": true,
-      "option_contract_score": 129.0,
+      "option_contract_score": 111.0,
       "option": {
         "symbol": "AMZN",
         "contractSymbol": "AMZN260417C00250000",
@@ -3080,37 +3522,39 @@
         "spread": 0.07,
         "spread_pct": 0.0493,
         "distance_pct": 0.0012,
-        "contract_score": 129,
-        "trade_intent": "GRIND",
+        "contract_score": 111,
+        "trade_intent": "EXPLOSIVE",
         "dte": 0,
         "bidAskSpread": 0.07,
         "contract_notes": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Exceptional contract volume.",
           "Exceptional open interest.",
           "Tight spread.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
-        ]
+        ],
+        "is_executable": false,
+        "execution_reason": "expiry_too_close_for_explosive"
       },
       "option_explanation": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Exceptional contract volume.",
         "Exceptional open interest.",
         "Tight spread.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
       ],
       "why": [
-        "governor_blocked:daily_entry_cap"
+        "governor_blocked:cash_reserve_too_low"
       ],
       "supports": [],
       "blockers": [],
       "rejection_analysis": [],
       "stronger_competing_setups": [],
-      "timestamp": "2026-04-17T01:25:10.511677",
+      "timestamp": "2026-04-17T02:33:51.271029",
       "source": "execution_universe",
       "raw": {
         "symbol": "AMZN",
@@ -3131,7 +3575,7 @@
         "avg_volume": 46412752.1,
         "momentum": 0.1961,
         "eligible": true,
-        "timestamp": "2026-04-17T01:25:10.511677",
+        "timestamp": "2026-04-17T02:33:51.271029",
         "option_chain": [
           {
             "symbol": "AMZN",
@@ -3389,11 +3833,11 @@
         "breadth": "BULLISH",
         "option_explanation": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Exceptional contract volume.",
           "Exceptional open interest.",
           "Tight spread.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
         ],
         "base_score": 296.11,
@@ -3431,21 +3875,23 @@
           "spread": 0.07,
           "spread_pct": 0.0493,
           "distance_pct": 0.0012,
-          "contract_score": 129,
-          "trade_intent": "GRIND",
+          "contract_score": 111,
+          "trade_intent": "EXPLOSIVE",
           "dte": 0,
           "bidAskSpread": 0.07,
           "contract_notes": [
             "Contract type matches call thesis.",
-            "Expiry is not ideal for grind setup.",
+            "Same-day expiry is too fragile for standard explosive execution.",
             "Exceptional contract volume.",
             "Exceptional open interest.",
             "Tight spread.",
-            "Strike supports slower grind setup.",
+            "Tight strike for explosive move.",
             "Premium in preferred range."
-          ]
+          ],
+          "is_executable": false,
+          "execution_reason": "expiry_too_close_for_explosive"
         },
-        "option_contract_score": 129.0,
+        "option_contract_score": 111.0,
         "option_path": {
           "vehicle": "OPTION",
           "capital_required": 138.5,
@@ -3453,7 +3899,7 @@
           "affordable": true,
           "contracts": 1,
           "shares": 0,
-          "score": 129.0,
+          "score": 111.0,
           "dte": 0,
           "spread_pct": 0.0493
         },
@@ -3468,22 +3914,81 @@
         "option_good": true,
         "option_dte_ok": false,
         "option_spread_ok": true,
-        "option_score_value": 129.0,
+        "option_score_value": 111.0,
         "option_dte": 0,
         "option_spread_pct": 0.0493,
+        "option_execution_reason": "expiry_too_close_for_explosive",
+        "option_flagged_executable": false,
+        "trade_intent": "EXPLOSIVE",
         "stock_score_ok": true,
         "stock_conf_ok": true,
         "shares": 0,
         "contracts": 0,
         "vehicle_reason": "research_only",
-        "governor": {},
-        "governor_blocked": false,
-        "governor_status": "",
-        "governor_reasons": [],
-        "governor_warnings": [],
+        "governor": {
+          "blocked": true,
+          "ok_to_trade": false,
+          "status_label": "BLOCKED",
+          "reasons": [
+            "cash_reserve_too_low"
+          ],
+          "warnings": [
+            "pdt_restricted_paper_mode"
+          ],
+          "cash": 171.4,
+          "equity": 1014.01,
+          "buying_power": 171.4,
+          "max_drawdown": 2.01,
+          "realized_pnl_today": 0.0,
+          "current_open_positions": 1,
+          "entries_today": 0,
+          "executed_entries_today": 0,
+          "executed_trades_today": 0,
+          "closes_today": 0,
+          "round_trips_today": 0,
+          "limits": {
+            "max_daily_entries": 3,
+            "max_drawdown_dollars": 150.0,
+            "min_cash_reserve": 202.8,
+            "max_open_positions": 3,
+            "max_daily_loss": 250.0
+          },
+          "controls": {
+            "daily_entry_cap": false,
+            "max_drawdown_hit": false,
+            "cash_reserve_too_low": true,
+            "max_open_positions": false,
+            "max_daily_loss_hit": false,
+            "pdt_restricted": true,
+            "pdt_warning_only": true,
+            "kill_switch": false
+          },
+          "pdt": {
+            "account_type": "margin",
+            "equity": 1014.01,
+            "pdt_restricted": true,
+            "recent_day_trades": 0,
+            "remaining_day_trades": 3
+          },
+          "trading_mode": "paper",
+          "reserve_mode": "percent",
+          "reserve_value": 20.0,
+          "timestamp": "2026-04-17T02:34:16.248402",
+          "extra_kwargs_seen": []
+        },
+        "governor_blocked": true,
+        "governor_status": "BLOCKED",
+        "governor_reasons": [
+          "cash_reserve_too_low"
+        ],
+        "governor_warnings": [
+          "pdt_restricted_paper_mode"
+        ],
         "research_approved": true,
         "execution_ready": false,
-        "selected_for_execution": false
+        "selected_for_execution": false,
+        "blocked_at": "governor",
+        "final_reason": "governor_blocked:cash_reserve_too_low"
       },
       "minimum_trade_cost": 0.0,
       "vehicle_selected": "RESEARCH_ONLY",
@@ -3494,7 +3999,6 @@
         "ok_to_trade": false,
         "status_label": "BLOCKED",
         "reasons": [
-          "daily_entry_cap",
           "cash_reserve_too_low"
         ],
         "warnings": [
@@ -3507,8 +4011,8 @@
         "realized_pnl_today": 0.0,
         "current_open_positions": 1,
         "entries_today": 0,
-        "executed_entries_today": 3,
-        "executed_trades_today": 3,
+        "executed_entries_today": 0,
+        "executed_trades_today": 0,
         "closes_today": 0,
         "round_trips_today": 0,
         "limits": {
@@ -3519,7 +4023,7 @@
           "max_daily_loss": 250.0
         },
         "controls": {
-          "daily_entry_cap": true,
+          "daily_entry_cap": false,
           "max_drawdown_hit": false,
           "cash_reserve_too_low": true,
           "max_open_positions": false,
@@ -3538,9 +4042,13 @@
         "trading_mode": "paper",
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-04-17T01:25:36.483052",
+        "timestamp": "2026-04-17T02:34:16.248402",
         "extra_kwargs_seen": []
-      }
+      },
+      "governor_blocked": true,
+      "governor_reason": "governor_blocked:cash_reserve_too_low",
+      "blocked_at": "governor",
+      "final_reason": "governor_blocked:cash_reserve_too_low"
     }
   },
   {
@@ -3562,7 +4070,7 @@
     "avg_volume": 14872945.05,
     "momentum": 0.1774,
     "eligible": true,
-    "timestamp": "2026-04-17T01:25:08.172649",
+    "timestamp": "2026-04-17T02:33:49.114652",
     "option_chain": [
       {
         "symbol": "C",
@@ -3820,11 +4328,11 @@
     "breadth": "BULLISH",
     "option_explanation": [
       "Contract type matches call thesis.",
-      "Expiry is not ideal for grind setup.",
+      "Same-day expiry is too fragile for standard explosive execution.",
       "Good contract volume.",
       "Strong open interest.",
       "Acceptable spread.",
-      "Strike supports slower grind setup.",
+      "Tight strike for explosive move.",
       "Premium in preferred range."
     ],
     "base_score": 277.42,
@@ -3862,21 +4370,23 @@
       "spread": 0.04,
       "spread_pct": 0.0755,
       "distance_pct": 0.0051,
-      "contract_score": 104,
-      "trade_intent": "GRIND",
+      "contract_score": 85,
+      "trade_intent": "EXPLOSIVE",
       "dte": 0,
       "bidAskSpread": 0.04,
       "contract_notes": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Good contract volume.",
         "Strong open interest.",
         "Acceptable spread.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
-      ]
+      ],
+      "is_executable": false,
+      "execution_reason": "expiry_too_close_for_explosive"
     },
-    "option_contract_score": 104.0,
+    "option_contract_score": 85.0,
     "option_path": {
       "vehicle": "OPTION",
       "capital_required": 51.0,
@@ -3884,7 +4394,7 @@
       "affordable": true,
       "contracts": 1,
       "shares": 0,
-      "score": 104.0,
+      "score": 85.0,
       "dte": 0,
       "spread_pct": 0.0755
     },
@@ -3899,22 +4409,81 @@
     "option_good": true,
     "option_dte_ok": false,
     "option_spread_ok": true,
-    "option_score_value": 104.0,
+    "option_score_value": 85.0,
     "option_dte": 0,
     "option_spread_pct": 0.0755,
+    "option_execution_reason": "expiry_too_close_for_explosive",
+    "option_flagged_executable": false,
+    "trade_intent": "EXPLOSIVE",
     "stock_score_ok": true,
     "stock_conf_ok": true,
     "shares": 1,
     "contracts": 0,
     "vehicle_reason": "stock_selected",
-    "governor": {},
-    "governor_blocked": false,
-    "governor_status": "",
-    "governor_reasons": [],
-    "governor_warnings": [],
+    "governor": {
+      "blocked": true,
+      "ok_to_trade": false,
+      "status_label": "BLOCKED",
+      "reasons": [
+        "cash_reserve_too_low"
+      ],
+      "warnings": [
+        "pdt_restricted_paper_mode"
+      ],
+      "cash": 171.4,
+      "equity": 1014.01,
+      "buying_power": 171.4,
+      "max_drawdown": 2.01,
+      "realized_pnl_today": 0.0,
+      "current_open_positions": 1,
+      "entries_today": 0,
+      "executed_entries_today": 0,
+      "executed_trades_today": 0,
+      "closes_today": 0,
+      "round_trips_today": 0,
+      "limits": {
+        "max_daily_entries": 3,
+        "max_drawdown_dollars": 150.0,
+        "min_cash_reserve": 202.8,
+        "max_open_positions": 3,
+        "max_daily_loss": 250.0
+      },
+      "controls": {
+        "daily_entry_cap": false,
+        "max_drawdown_hit": false,
+        "cash_reserve_too_low": true,
+        "max_open_positions": false,
+        "max_daily_loss_hit": false,
+        "pdt_restricted": true,
+        "pdt_warning_only": true,
+        "kill_switch": false
+      },
+      "pdt": {
+        "account_type": "margin",
+        "equity": 1014.01,
+        "pdt_restricted": true,
+        "recent_day_trades": 0,
+        "remaining_day_trades": 3
+      },
+      "trading_mode": "paper",
+      "reserve_mode": "percent",
+      "reserve_value": 20.0,
+      "timestamp": "2026-04-17T02:34:16.248402",
+      "extra_kwargs_seen": []
+    },
+    "governor_blocked": true,
+    "governor_status": "BLOCKED",
+    "governor_reasons": [
+      "cash_reserve_too_low"
+    ],
+    "governor_warnings": [
+      "pdt_restricted_paper_mode"
+    ],
     "research_approved": true,
     "execution_ready": false,
     "selected_for_execution": false,
+    "blocked_at": "governor",
+    "final_reason": "governor_blocked:cash_reserve_too_low",
     "candidate_display": {
       "symbol": "C",
       "company_name": "C",
@@ -3944,11 +4513,11 @@
       "capital_required": 129.34,
       "capital_available": 171.4,
       "capital_buffer_after": 42.06,
-      "decision_reason": "governor_blocked:daily_entry_cap",
-      "decision_label": "governor_blocked:daily_entry_cap",
+      "decision_reason": "governor_blocked:cash_reserve_too_low",
+      "decision_label": "governor_blocked:cash_reserve_too_low",
       "selected_for_execution": false,
       "has_option": true,
-      "option_contract_score": 104.0,
+      "option_contract_score": 85.0,
       "option": {
         "symbol": "C",
         "contractSymbol": "C260417C00130000",
@@ -3966,37 +4535,39 @@
         "spread": 0.04,
         "spread_pct": 0.0755,
         "distance_pct": 0.0051,
-        "contract_score": 104,
-        "trade_intent": "GRIND",
+        "contract_score": 85,
+        "trade_intent": "EXPLOSIVE",
         "dte": 0,
         "bidAskSpread": 0.04,
         "contract_notes": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Good contract volume.",
           "Strong open interest.",
           "Acceptable spread.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
-        ]
+        ],
+        "is_executable": false,
+        "execution_reason": "expiry_too_close_for_explosive"
       },
       "option_explanation": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Good contract volume.",
         "Strong open interest.",
         "Acceptable spread.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
       ],
       "why": [
-        "governor_blocked:daily_entry_cap"
+        "governor_blocked:cash_reserve_too_low"
       ],
       "supports": [],
       "blockers": [],
       "rejection_analysis": [],
       "stronger_competing_setups": [],
-      "timestamp": "2026-04-17T01:25:08.172649",
+      "timestamp": "2026-04-17T02:33:49.114652",
       "source": "execution_universe",
       "raw": {
         "symbol": "C",
@@ -4017,7 +4588,7 @@
         "avg_volume": 14872945.05,
         "momentum": 0.1774,
         "eligible": true,
-        "timestamp": "2026-04-17T01:25:08.172649",
+        "timestamp": "2026-04-17T02:33:49.114652",
         "option_chain": [
           {
             "symbol": "C",
@@ -4275,11 +4846,11 @@
         "breadth": "BULLISH",
         "option_explanation": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Good contract volume.",
           "Strong open interest.",
           "Acceptable spread.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
         ],
         "base_score": 277.42,
@@ -4317,21 +4888,23 @@
           "spread": 0.04,
           "spread_pct": 0.0755,
           "distance_pct": 0.0051,
-          "contract_score": 104,
-          "trade_intent": "GRIND",
+          "contract_score": 85,
+          "trade_intent": "EXPLOSIVE",
           "dte": 0,
           "bidAskSpread": 0.04,
           "contract_notes": [
             "Contract type matches call thesis.",
-            "Expiry is not ideal for grind setup.",
+            "Same-day expiry is too fragile for standard explosive execution.",
             "Good contract volume.",
             "Strong open interest.",
             "Acceptable spread.",
-            "Strike supports slower grind setup.",
+            "Tight strike for explosive move.",
             "Premium in preferred range."
-          ]
+          ],
+          "is_executable": false,
+          "execution_reason": "expiry_too_close_for_explosive"
         },
-        "option_contract_score": 104.0,
+        "option_contract_score": 85.0,
         "option_path": {
           "vehicle": "OPTION",
           "capital_required": 51.0,
@@ -4339,7 +4912,7 @@
           "affordable": true,
           "contracts": 1,
           "shares": 0,
-          "score": 104.0,
+          "score": 85.0,
           "dte": 0,
           "spread_pct": 0.0755
         },
@@ -4354,22 +4927,81 @@
         "option_good": true,
         "option_dte_ok": false,
         "option_spread_ok": true,
-        "option_score_value": 104.0,
+        "option_score_value": 85.0,
         "option_dte": 0,
         "option_spread_pct": 0.0755,
+        "option_execution_reason": "expiry_too_close_for_explosive",
+        "option_flagged_executable": false,
+        "trade_intent": "EXPLOSIVE",
         "stock_score_ok": true,
         "stock_conf_ok": true,
         "shares": 1,
         "contracts": 0,
         "vehicle_reason": "stock_selected",
-        "governor": {},
-        "governor_blocked": false,
-        "governor_status": "",
-        "governor_reasons": [],
-        "governor_warnings": [],
+        "governor": {
+          "blocked": true,
+          "ok_to_trade": false,
+          "status_label": "BLOCKED",
+          "reasons": [
+            "cash_reserve_too_low"
+          ],
+          "warnings": [
+            "pdt_restricted_paper_mode"
+          ],
+          "cash": 171.4,
+          "equity": 1014.01,
+          "buying_power": 171.4,
+          "max_drawdown": 2.01,
+          "realized_pnl_today": 0.0,
+          "current_open_positions": 1,
+          "entries_today": 0,
+          "executed_entries_today": 0,
+          "executed_trades_today": 0,
+          "closes_today": 0,
+          "round_trips_today": 0,
+          "limits": {
+            "max_daily_entries": 3,
+            "max_drawdown_dollars": 150.0,
+            "min_cash_reserve": 202.8,
+            "max_open_positions": 3,
+            "max_daily_loss": 250.0
+          },
+          "controls": {
+            "daily_entry_cap": false,
+            "max_drawdown_hit": false,
+            "cash_reserve_too_low": true,
+            "max_open_positions": false,
+            "max_daily_loss_hit": false,
+            "pdt_restricted": true,
+            "pdt_warning_only": true,
+            "kill_switch": false
+          },
+          "pdt": {
+            "account_type": "margin",
+            "equity": 1014.01,
+            "pdt_restricted": true,
+            "recent_day_trades": 0,
+            "remaining_day_trades": 3
+          },
+          "trading_mode": "paper",
+          "reserve_mode": "percent",
+          "reserve_value": 20.0,
+          "timestamp": "2026-04-17T02:34:16.248402",
+          "extra_kwargs_seen": []
+        },
+        "governor_blocked": true,
+        "governor_status": "BLOCKED",
+        "governor_reasons": [
+          "cash_reserve_too_low"
+        ],
+        "governor_warnings": [
+          "pdt_restricted_paper_mode"
+        ],
         "research_approved": true,
         "execution_ready": false,
-        "selected_for_execution": false
+        "selected_for_execution": false,
+        "blocked_at": "governor",
+        "final_reason": "governor_blocked:cash_reserve_too_low"
       },
       "minimum_trade_cost": 130.34,
       "vehicle_selected": "STOCK",
@@ -4380,7 +5012,6 @@
         "ok_to_trade": false,
         "status_label": "BLOCKED",
         "reasons": [
-          "daily_entry_cap",
           "cash_reserve_too_low"
         ],
         "warnings": [
@@ -4393,8 +5024,8 @@
         "realized_pnl_today": 0.0,
         "current_open_positions": 1,
         "entries_today": 0,
-        "executed_entries_today": 3,
-        "executed_trades_today": 3,
+        "executed_entries_today": 0,
+        "executed_trades_today": 0,
         "closes_today": 0,
         "round_trips_today": 0,
         "limits": {
@@ -4405,7 +5036,7 @@
           "max_daily_loss": 250.0
         },
         "controls": {
-          "daily_entry_cap": true,
+          "daily_entry_cap": false,
           "max_drawdown_hit": false,
           "cash_reserve_too_low": true,
           "max_open_positions": false,
@@ -4424,9 +5055,13 @@
         "trading_mode": "paper",
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-04-17T01:25:36.483052",
+        "timestamp": "2026-04-17T02:34:16.248402",
         "extra_kwargs_seen": []
-      }
+      },
+      "governor_blocked": true,
+      "governor_reason": "governor_blocked:cash_reserve_too_low",
+      "blocked_at": "governor",
+      "final_reason": "governor_blocked:cash_reserve_too_low"
     }
   },
   {
@@ -4448,7 +5083,7 @@
     "avg_volume": 37803250.3,
     "momentum": 0.175,
     "eligible": true,
-    "timestamp": "2026-04-17T01:25:11.760845",
+    "timestamp": "2026-04-17T02:33:52.978993",
     "option_chain": [
       {
         "symbol": "NFLX",
@@ -4706,11 +5341,11 @@
     "breadth": "BULLISH",
     "option_explanation": [
       "Contract type matches call thesis.",
-      "Expiry is not ideal for grind setup.",
+      "Same-day expiry is too fragile for standard explosive execution.",
       "Exceptional contract volume.",
       "Exceptional open interest.",
       "Very tight spread.",
-      "Strike supports slower grind setup.",
+      "Reasonable strike for explosive move.",
       "Premium in preferred range."
     ],
     "base_score": 274.95,
@@ -4748,21 +5383,23 @@
       "spread": 0.05,
       "spread_pct": 0.0167,
       "distance_pct": 0.0205,
-      "contract_score": 137,
-      "trade_intent": "GRIND",
+      "contract_score": 111,
+      "trade_intent": "EXPLOSIVE",
       "dte": 0,
       "bidAskSpread": 0.05,
       "contract_notes": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Exceptional contract volume.",
         "Exceptional open interest.",
         "Very tight spread.",
-        "Strike supports slower grind setup.",
+        "Reasonable strike for explosive move.",
         "Premium in preferred range."
-      ]
+      ],
+      "is_executable": false,
+      "execution_reason": "expiry_too_close_for_explosive"
     },
-    "option_contract_score": 137.0,
+    "option_contract_score": 111.0,
     "option_path": {
       "vehicle": "OPTION",
       "capital_required": 296.5,
@@ -4770,7 +5407,7 @@
       "affordable": false,
       "contracts": 1,
       "shares": 0,
-      "score": 137.0,
+      "score": 111.0,
       "dte": 0,
       "spread_pct": 0.0167
     },
@@ -4785,22 +5422,81 @@
     "option_good": true,
     "option_dte_ok": false,
     "option_spread_ok": true,
-    "option_score_value": 137.0,
+    "option_score_value": 111.0,
     "option_dte": 0,
     "option_spread_pct": 0.0167,
+    "option_execution_reason": "expiry_too_close_for_explosive",
+    "option_flagged_executable": false,
+    "trade_intent": "EXPLOSIVE",
     "stock_score_ok": true,
     "stock_conf_ok": true,
     "shares": 1,
     "contracts": 0,
     "vehicle_reason": "stock_selected",
-    "governor": {},
-    "governor_blocked": false,
-    "governor_status": "",
-    "governor_reasons": [],
-    "governor_warnings": [],
+    "governor": {
+      "blocked": true,
+      "ok_to_trade": false,
+      "status_label": "BLOCKED",
+      "reasons": [
+        "cash_reserve_too_low"
+      ],
+      "warnings": [
+        "pdt_restricted_paper_mode"
+      ],
+      "cash": 171.4,
+      "equity": 1014.01,
+      "buying_power": 171.4,
+      "max_drawdown": 2.01,
+      "realized_pnl_today": 0.0,
+      "current_open_positions": 1,
+      "entries_today": 0,
+      "executed_entries_today": 0,
+      "executed_trades_today": 0,
+      "closes_today": 0,
+      "round_trips_today": 0,
+      "limits": {
+        "max_daily_entries": 3,
+        "max_drawdown_dollars": 150.0,
+        "min_cash_reserve": 202.8,
+        "max_open_positions": 3,
+        "max_daily_loss": 250.0
+      },
+      "controls": {
+        "daily_entry_cap": false,
+        "max_drawdown_hit": false,
+        "cash_reserve_too_low": true,
+        "max_open_positions": false,
+        "max_daily_loss_hit": false,
+        "pdt_restricted": true,
+        "pdt_warning_only": true,
+        "kill_switch": false
+      },
+      "pdt": {
+        "account_type": "margin",
+        "equity": 1014.01,
+        "pdt_restricted": true,
+        "recent_day_trades": 0,
+        "remaining_day_trades": 3
+      },
+      "trading_mode": "paper",
+      "reserve_mode": "percent",
+      "reserve_value": 20.0,
+      "timestamp": "2026-04-17T02:34:16.248402",
+      "extra_kwargs_seen": []
+    },
+    "governor_blocked": true,
+    "governor_status": "BLOCKED",
+    "governor_reasons": [
+      "cash_reserve_too_low"
+    ],
+    "governor_warnings": [
+      "pdt_restricted_paper_mode"
+    ],
     "research_approved": true,
     "execution_ready": false,
     "selected_for_execution": false,
+    "blocked_at": "governor",
+    "final_reason": "governor_blocked:cash_reserve_too_low",
     "candidate_display": {
       "symbol": "NFLX",
       "company_name": "NFLX",
@@ -4830,11 +5526,11 @@
       "capital_required": 107.79,
       "capital_available": 171.4,
       "capital_buffer_after": 63.61,
-      "decision_reason": "governor_blocked:daily_entry_cap",
-      "decision_label": "governor_blocked:daily_entry_cap",
+      "decision_reason": "governor_blocked:cash_reserve_too_low",
+      "decision_label": "governor_blocked:cash_reserve_too_low",
       "selected_for_execution": false,
       "has_option": true,
-      "option_contract_score": 137.0,
+      "option_contract_score": 111.0,
       "option": {
         "symbol": "NFLX",
         "contractSymbol": "NFLX260417C00110000",
@@ -4852,37 +5548,39 @@
         "spread": 0.05,
         "spread_pct": 0.0167,
         "distance_pct": 0.0205,
-        "contract_score": 137,
-        "trade_intent": "GRIND",
+        "contract_score": 111,
+        "trade_intent": "EXPLOSIVE",
         "dte": 0,
         "bidAskSpread": 0.05,
         "contract_notes": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Exceptional contract volume.",
           "Exceptional open interest.",
           "Very tight spread.",
-          "Strike supports slower grind setup.",
+          "Reasonable strike for explosive move.",
           "Premium in preferred range."
-        ]
+        ],
+        "is_executable": false,
+        "execution_reason": "expiry_too_close_for_explosive"
       },
       "option_explanation": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Exceptional contract volume.",
         "Exceptional open interest.",
         "Very tight spread.",
-        "Strike supports slower grind setup.",
+        "Reasonable strike for explosive move.",
         "Premium in preferred range."
       ],
       "why": [
-        "governor_blocked:daily_entry_cap"
+        "governor_blocked:cash_reserve_too_low"
       ],
       "supports": [],
       "blockers": [],
       "rejection_analysis": [],
       "stronger_competing_setups": [],
-      "timestamp": "2026-04-17T01:25:11.760845",
+      "timestamp": "2026-04-17T02:33:52.978993",
       "source": "execution_universe",
       "raw": {
         "symbol": "NFLX",
@@ -4903,7 +5601,7 @@
         "avg_volume": 37803250.3,
         "momentum": 0.175,
         "eligible": true,
-        "timestamp": "2026-04-17T01:25:11.760845",
+        "timestamp": "2026-04-17T02:33:52.978993",
         "option_chain": [
           {
             "symbol": "NFLX",
@@ -5161,11 +5859,11 @@
         "breadth": "BULLISH",
         "option_explanation": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Exceptional contract volume.",
           "Exceptional open interest.",
           "Very tight spread.",
-          "Strike supports slower grind setup.",
+          "Reasonable strike for explosive move.",
           "Premium in preferred range."
         ],
         "base_score": 274.95,
@@ -5203,21 +5901,23 @@
           "spread": 0.05,
           "spread_pct": 0.0167,
           "distance_pct": 0.0205,
-          "contract_score": 137,
-          "trade_intent": "GRIND",
+          "contract_score": 111,
+          "trade_intent": "EXPLOSIVE",
           "dte": 0,
           "bidAskSpread": 0.05,
           "contract_notes": [
             "Contract type matches call thesis.",
-            "Expiry is not ideal for grind setup.",
+            "Same-day expiry is too fragile for standard explosive execution.",
             "Exceptional contract volume.",
             "Exceptional open interest.",
             "Very tight spread.",
-            "Strike supports slower grind setup.",
+            "Reasonable strike for explosive move.",
             "Premium in preferred range."
-          ]
+          ],
+          "is_executable": false,
+          "execution_reason": "expiry_too_close_for_explosive"
         },
-        "option_contract_score": 137.0,
+        "option_contract_score": 111.0,
         "option_path": {
           "vehicle": "OPTION",
           "capital_required": 296.5,
@@ -5225,7 +5925,7 @@
           "affordable": false,
           "contracts": 1,
           "shares": 0,
-          "score": 137.0,
+          "score": 111.0,
           "dte": 0,
           "spread_pct": 0.0167
         },
@@ -5240,22 +5940,81 @@
         "option_good": true,
         "option_dte_ok": false,
         "option_spread_ok": true,
-        "option_score_value": 137.0,
+        "option_score_value": 111.0,
         "option_dte": 0,
         "option_spread_pct": 0.0167,
+        "option_execution_reason": "expiry_too_close_for_explosive",
+        "option_flagged_executable": false,
+        "trade_intent": "EXPLOSIVE",
         "stock_score_ok": true,
         "stock_conf_ok": true,
         "shares": 1,
         "contracts": 0,
         "vehicle_reason": "stock_selected",
-        "governor": {},
-        "governor_blocked": false,
-        "governor_status": "",
-        "governor_reasons": [],
-        "governor_warnings": [],
+        "governor": {
+          "blocked": true,
+          "ok_to_trade": false,
+          "status_label": "BLOCKED",
+          "reasons": [
+            "cash_reserve_too_low"
+          ],
+          "warnings": [
+            "pdt_restricted_paper_mode"
+          ],
+          "cash": 171.4,
+          "equity": 1014.01,
+          "buying_power": 171.4,
+          "max_drawdown": 2.01,
+          "realized_pnl_today": 0.0,
+          "current_open_positions": 1,
+          "entries_today": 0,
+          "executed_entries_today": 0,
+          "executed_trades_today": 0,
+          "closes_today": 0,
+          "round_trips_today": 0,
+          "limits": {
+            "max_daily_entries": 3,
+            "max_drawdown_dollars": 150.0,
+            "min_cash_reserve": 202.8,
+            "max_open_positions": 3,
+            "max_daily_loss": 250.0
+          },
+          "controls": {
+            "daily_entry_cap": false,
+            "max_drawdown_hit": false,
+            "cash_reserve_too_low": true,
+            "max_open_positions": false,
+            "max_daily_loss_hit": false,
+            "pdt_restricted": true,
+            "pdt_warning_only": true,
+            "kill_switch": false
+          },
+          "pdt": {
+            "account_type": "margin",
+            "equity": 1014.01,
+            "pdt_restricted": true,
+            "recent_day_trades": 0,
+            "remaining_day_trades": 3
+          },
+          "trading_mode": "paper",
+          "reserve_mode": "percent",
+          "reserve_value": 20.0,
+          "timestamp": "2026-04-17T02:34:16.248402",
+          "extra_kwargs_seen": []
+        },
+        "governor_blocked": true,
+        "governor_status": "BLOCKED",
+        "governor_reasons": [
+          "cash_reserve_too_low"
+        ],
+        "governor_warnings": [
+          "pdt_restricted_paper_mode"
+        ],
         "research_approved": true,
         "execution_ready": false,
-        "selected_for_execution": false
+        "selected_for_execution": false,
+        "blocked_at": "governor",
+        "final_reason": "governor_blocked:cash_reserve_too_low"
       },
       "minimum_trade_cost": 108.79,
       "vehicle_selected": "STOCK",
@@ -5266,7 +6025,6 @@
         "ok_to_trade": false,
         "status_label": "BLOCKED",
         "reasons": [
-          "daily_entry_cap",
           "cash_reserve_too_low"
         ],
         "warnings": [
@@ -5279,8 +6037,8 @@
         "realized_pnl_today": 0.0,
         "current_open_positions": 1,
         "entries_today": 0,
-        "executed_entries_today": 3,
-        "executed_trades_today": 3,
+        "executed_entries_today": 0,
+        "executed_trades_today": 0,
         "closes_today": 0,
         "round_trips_today": 0,
         "limits": {
@@ -5291,7 +6049,7 @@
           "max_daily_loss": 250.0
         },
         "controls": {
-          "daily_entry_cap": true,
+          "daily_entry_cap": false,
           "max_drawdown_hit": false,
           "cash_reserve_too_low": true,
           "max_open_positions": false,
@@ -5310,9 +6068,13 @@
         "trading_mode": "paper",
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-04-17T01:25:36.483052",
+        "timestamp": "2026-04-17T02:34:16.248402",
         "extra_kwargs_seen": []
-      }
+      },
+      "governor_blocked": true,
+      "governor_reason": "governor_blocked:cash_reserve_too_low",
+      "blocked_at": "governor",
+      "final_reason": "governor_blocked:cash_reserve_too_low"
     }
   },
   {
@@ -5334,7 +6096,7 @@
     "avg_volume": 7275858.95,
     "momentum": 0.1933,
     "eligible": true,
-    "timestamp": "2026-04-17T01:25:08.852842",
+    "timestamp": "2026-04-17T02:33:49.668500",
     "option_chain": [
       {
         "symbol": "SOXX",
@@ -5592,11 +6354,11 @@
     "breadth": "BULLISH",
     "option_explanation": [
       "Contract type matches call thesis.",
-      "Expiry is not ideal for grind setup.",
+      "Same-day expiry is too fragile for standard explosive execution.",
       "Very weak contract volume.",
       "Good open interest.",
       "Very wide spread reduces execution quality.",
-      "Strike supports slower grind setup.",
+      "Reasonable strike for explosive move.",
       "Premium is heavier but still usable."
     ],
     "base_score": 266.03,
@@ -5634,21 +6396,23 @@
       "spread": 4.8,
       "spread_pct": 0.3556,
       "distance_pct": 0.027,
-      "contract_score": 42,
-      "trade_intent": "GRIND",
+      "contract_score": 10,
+      "trade_intent": "EXPLOSIVE",
       "dte": 0,
       "bidAskSpread": 4.8,
       "contract_notes": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Very weak contract volume.",
         "Good open interest.",
         "Very wide spread reduces execution quality.",
-        "Strike supports slower grind setup.",
+        "Reasonable strike for explosive move.",
         "Premium is heavier but still usable."
-      ]
+      ],
+      "is_executable": false,
+      "execution_reason": "contract_score_too_low"
     },
-    "option_contract_score": 42.0,
+    "option_contract_score": 10.0,
     "option_path": {
       "vehicle": "OPTION",
       "capital_required": 1110.0,
@@ -5656,7 +6420,7 @@
       "affordable": false,
       "contracts": 1,
       "shares": 0,
-      "score": 42.0,
+      "score": 10.0,
       "dte": 0,
       "spread_pct": 0.3556
     },
@@ -5671,22 +6435,81 @@
     "option_good": false,
     "option_dte_ok": false,
     "option_spread_ok": false,
-    "option_score_value": 42.0,
+    "option_score_value": 10.0,
     "option_dte": 0,
     "option_spread_pct": 0.3556,
+    "option_execution_reason": "contract_score_too_low",
+    "option_flagged_executable": false,
+    "trade_intent": "EXPLOSIVE",
     "stock_score_ok": true,
     "stock_conf_ok": true,
     "shares": 0,
     "contracts": 0,
     "vehicle_reason": "research_only",
-    "governor": {},
-    "governor_blocked": false,
-    "governor_status": "",
-    "governor_reasons": [],
-    "governor_warnings": [],
+    "governor": {
+      "blocked": true,
+      "ok_to_trade": false,
+      "status_label": "BLOCKED",
+      "reasons": [
+        "cash_reserve_too_low"
+      ],
+      "warnings": [
+        "pdt_restricted_paper_mode"
+      ],
+      "cash": 171.4,
+      "equity": 1014.01,
+      "buying_power": 171.4,
+      "max_drawdown": 2.01,
+      "realized_pnl_today": 0.0,
+      "current_open_positions": 1,
+      "entries_today": 0,
+      "executed_entries_today": 0,
+      "executed_trades_today": 0,
+      "closes_today": 0,
+      "round_trips_today": 0,
+      "limits": {
+        "max_daily_entries": 3,
+        "max_drawdown_dollars": 150.0,
+        "min_cash_reserve": 202.8,
+        "max_open_positions": 3,
+        "max_daily_loss": 250.0
+      },
+      "controls": {
+        "daily_entry_cap": false,
+        "max_drawdown_hit": false,
+        "cash_reserve_too_low": true,
+        "max_open_positions": false,
+        "max_daily_loss_hit": false,
+        "pdt_restricted": true,
+        "pdt_warning_only": true,
+        "kill_switch": false
+      },
+      "pdt": {
+        "account_type": "margin",
+        "equity": 1014.01,
+        "pdt_restricted": true,
+        "recent_day_trades": 0,
+        "remaining_day_trades": 3
+      },
+      "trading_mode": "paper",
+      "reserve_mode": "percent",
+      "reserve_value": 20.0,
+      "timestamp": "2026-04-17T02:34:16.248402",
+      "extra_kwargs_seen": []
+    },
+    "governor_blocked": true,
+    "governor_status": "BLOCKED",
+    "governor_reasons": [
+      "cash_reserve_too_low"
+    ],
+    "governor_warnings": [
+      "pdt_restricted_paper_mode"
+    ],
     "research_approved": true,
     "execution_ready": false,
     "selected_for_execution": false,
+    "blocked_at": "governor",
+    "final_reason": "governor_blocked:cash_reserve_too_low",
     "candidate_display": {
       "symbol": "SOXX",
       "company_name": "SOXX",
@@ -5716,11 +6539,11 @@
       "capital_required": 0.0,
       "capital_available": 171.4,
       "capital_buffer_after": 171.4,
-      "decision_reason": "governor_blocked:daily_entry_cap",
-      "decision_label": "governor_blocked:daily_entry_cap",
+      "decision_reason": "governor_blocked:cash_reserve_too_low",
+      "decision_label": "governor_blocked:cash_reserve_too_low",
       "selected_for_execution": false,
       "has_option": true,
-      "option_contract_score": 42.0,
+      "option_contract_score": 10.0,
       "option": {
         "symbol": "SOXX",
         "contractSymbol": "SOXX260417C00395000",
@@ -5738,37 +6561,39 @@
         "spread": 4.8,
         "spread_pct": 0.3556,
         "distance_pct": 0.027,
-        "contract_score": 42,
-        "trade_intent": "GRIND",
+        "contract_score": 10,
+        "trade_intent": "EXPLOSIVE",
         "dte": 0,
         "bidAskSpread": 4.8,
         "contract_notes": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Very weak contract volume.",
           "Good open interest.",
           "Very wide spread reduces execution quality.",
-          "Strike supports slower grind setup.",
+          "Reasonable strike for explosive move.",
           "Premium is heavier but still usable."
-        ]
+        ],
+        "is_executable": false,
+        "execution_reason": "contract_score_too_low"
       },
       "option_explanation": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Very weak contract volume.",
         "Good open interest.",
         "Very wide spread reduces execution quality.",
-        "Strike supports slower grind setup.",
+        "Reasonable strike for explosive move.",
         "Premium is heavier but still usable."
       ],
       "why": [
-        "governor_blocked:daily_entry_cap"
+        "governor_blocked:cash_reserve_too_low"
       ],
       "supports": [],
       "blockers": [],
       "rejection_analysis": [],
       "stronger_competing_setups": [],
-      "timestamp": "2026-04-17T01:25:08.852842",
+      "timestamp": "2026-04-17T02:33:49.668500",
       "source": "execution_universe",
       "raw": {
         "symbol": "SOXX",
@@ -5789,7 +6614,7 @@
         "avg_volume": 7275858.95,
         "momentum": 0.1933,
         "eligible": true,
-        "timestamp": "2026-04-17T01:25:08.852842",
+        "timestamp": "2026-04-17T02:33:49.668500",
         "option_chain": [
           {
             "symbol": "SOXX",
@@ -6047,11 +6872,11 @@
         "breadth": "BULLISH",
         "option_explanation": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Very weak contract volume.",
           "Good open interest.",
           "Very wide spread reduces execution quality.",
-          "Strike supports slower grind setup.",
+          "Reasonable strike for explosive move.",
           "Premium is heavier but still usable."
         ],
         "base_score": 266.03,
@@ -6089,21 +6914,23 @@
           "spread": 4.8,
           "spread_pct": 0.3556,
           "distance_pct": 0.027,
-          "contract_score": 42,
-          "trade_intent": "GRIND",
+          "contract_score": 10,
+          "trade_intent": "EXPLOSIVE",
           "dte": 0,
           "bidAskSpread": 4.8,
           "contract_notes": [
             "Contract type matches call thesis.",
-            "Expiry is not ideal for grind setup.",
+            "Same-day expiry is too fragile for standard explosive execution.",
             "Very weak contract volume.",
             "Good open interest.",
             "Very wide spread reduces execution quality.",
-            "Strike supports slower grind setup.",
+            "Reasonable strike for explosive move.",
             "Premium is heavier but still usable."
-          ]
+          ],
+          "is_executable": false,
+          "execution_reason": "contract_score_too_low"
         },
-        "option_contract_score": 42.0,
+        "option_contract_score": 10.0,
         "option_path": {
           "vehicle": "OPTION",
           "capital_required": 1110.0,
@@ -6111,7 +6938,7 @@
           "affordable": false,
           "contracts": 1,
           "shares": 0,
-          "score": 42.0,
+          "score": 10.0,
           "dte": 0,
           "spread_pct": 0.3556
         },
@@ -6126,22 +6953,81 @@
         "option_good": false,
         "option_dte_ok": false,
         "option_spread_ok": false,
-        "option_score_value": 42.0,
+        "option_score_value": 10.0,
         "option_dte": 0,
         "option_spread_pct": 0.3556,
+        "option_execution_reason": "contract_score_too_low",
+        "option_flagged_executable": false,
+        "trade_intent": "EXPLOSIVE",
         "stock_score_ok": true,
         "stock_conf_ok": true,
         "shares": 0,
         "contracts": 0,
         "vehicle_reason": "research_only",
-        "governor": {},
-        "governor_blocked": false,
-        "governor_status": "",
-        "governor_reasons": [],
-        "governor_warnings": [],
+        "governor": {
+          "blocked": true,
+          "ok_to_trade": false,
+          "status_label": "BLOCKED",
+          "reasons": [
+            "cash_reserve_too_low"
+          ],
+          "warnings": [
+            "pdt_restricted_paper_mode"
+          ],
+          "cash": 171.4,
+          "equity": 1014.01,
+          "buying_power": 171.4,
+          "max_drawdown": 2.01,
+          "realized_pnl_today": 0.0,
+          "current_open_positions": 1,
+          "entries_today": 0,
+          "executed_entries_today": 0,
+          "executed_trades_today": 0,
+          "closes_today": 0,
+          "round_trips_today": 0,
+          "limits": {
+            "max_daily_entries": 3,
+            "max_drawdown_dollars": 150.0,
+            "min_cash_reserve": 202.8,
+            "max_open_positions": 3,
+            "max_daily_loss": 250.0
+          },
+          "controls": {
+            "daily_entry_cap": false,
+            "max_drawdown_hit": false,
+            "cash_reserve_too_low": true,
+            "max_open_positions": false,
+            "max_daily_loss_hit": false,
+            "pdt_restricted": true,
+            "pdt_warning_only": true,
+            "kill_switch": false
+          },
+          "pdt": {
+            "account_type": "margin",
+            "equity": 1014.01,
+            "pdt_restricted": true,
+            "recent_day_trades": 0,
+            "remaining_day_trades": 3
+          },
+          "trading_mode": "paper",
+          "reserve_mode": "percent",
+          "reserve_value": 20.0,
+          "timestamp": "2026-04-17T02:34:16.248402",
+          "extra_kwargs_seen": []
+        },
+        "governor_blocked": true,
+        "governor_status": "BLOCKED",
+        "governor_reasons": [
+          "cash_reserve_too_low"
+        ],
+        "governor_warnings": [
+          "pdt_restricted_paper_mode"
+        ],
         "research_approved": true,
         "execution_ready": false,
-        "selected_for_execution": false
+        "selected_for_execution": false,
+        "blocked_at": "governor",
+        "final_reason": "governor_blocked:cash_reserve_too_low"
       },
       "minimum_trade_cost": 0.0,
       "vehicle_selected": "RESEARCH_ONLY",
@@ -6152,7 +7038,6 @@
         "ok_to_trade": false,
         "status_label": "BLOCKED",
         "reasons": [
-          "daily_entry_cap",
           "cash_reserve_too_low"
         ],
         "warnings": [
@@ -6165,8 +7050,8 @@
         "realized_pnl_today": 0.0,
         "current_open_positions": 1,
         "entries_today": 0,
-        "executed_entries_today": 3,
-        "executed_trades_today": 3,
+        "executed_entries_today": 0,
+        "executed_trades_today": 0,
         "closes_today": 0,
         "round_trips_today": 0,
         "limits": {
@@ -6177,7 +7062,7 @@
           "max_daily_loss": 250.0
         },
         "controls": {
-          "daily_entry_cap": true,
+          "daily_entry_cap": false,
           "max_drawdown_hit": false,
           "cash_reserve_too_low": true,
           "max_open_positions": false,
@@ -6196,9 +7081,13 @@
         "trading_mode": "paper",
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-04-17T01:25:36.483052",
+        "timestamp": "2026-04-17T02:34:16.248402",
         "extra_kwargs_seen": []
-      }
+      },
+      "governor_blocked": true,
+      "governor_reason": "governor_blocked:cash_reserve_too_low",
+      "blocked_at": "governor",
+      "final_reason": "governor_blocked:cash_reserve_too_low"
     }
   },
   {
@@ -6220,7 +7109,7 @@
     "avg_volume": 7097001.85,
     "momentum": 0.1815,
     "eligible": true,
-    "timestamp": "2026-04-17T01:25:09.373960",
+    "timestamp": "2026-04-17T02:33:50.295108",
     "option_chain": [
       {
         "symbol": "MS",
@@ -6478,11 +7367,11 @@
     "breadth": "BULLISH",
     "option_explanation": [
       "Contract type matches call thesis.",
-      "Expiry is not ideal for grind setup.",
-      "Good contract volume.",
+      "Same-day expiry is too fragile for standard explosive execution.",
+      "Usable contract volume.",
       "Good open interest.",
       "Very wide spread reduces execution quality.",
-      "Strike supports slower grind setup.",
+      "Tight strike for explosive move.",
       "Premium in preferred range."
     ],
     "base_score": 252.43,
@@ -6505,74 +7394,135 @@
     },
     "option": {
       "symbol": "MS",
-      "contractSymbol": "MS260417C00190000",
+      "contractSymbol": "MS260417C00187500",
       "expiration": "2026-04-17",
       "right": "CALL",
-      "strike": 190.0,
-      "bid": 0.23,
-      "ask": 0.52,
-      "last": 0.38,
-      "mark": 0.375,
-      "volume": 1518,
-      "open_interest": 2470,
-      "implied_volatility": 0.3789,
+      "strike": 187.5,
+      "bid": 1.06,
+      "ask": 1.28,
+      "last": 1.1,
+      "mark": 1.17,
+      "volume": 587,
+      "open_interest": 1448,
+      "implied_volatility": 0.3496,
       "in_the_money": false,
-      "spread": 0.29,
-      "spread_pct": 0.5577,
-      "distance_pct": 0.0143,
-      "contract_score": 81,
-      "trade_intent": "GRIND",
+      "spread": 0.22,
+      "spread_pct": 0.1719,
+      "distance_pct": 0.001,
+      "contract_score": 51,
+      "trade_intent": "EXPLOSIVE",
       "dte": 0,
-      "bidAskSpread": 0.29,
+      "bidAskSpread": 0.22,
       "contract_notes": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
-        "Good contract volume.",
+        "Same-day expiry is too fragile for standard explosive execution.",
+        "Usable contract volume.",
         "Good open interest.",
         "Very wide spread reduces execution quality.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
-      ]
+      ],
+      "is_executable": false,
+      "execution_reason": "contract_score_too_low"
     },
-    "option_contract_score": 81.0,
+    "option_contract_score": 51.0,
     "option_path": {
       "vehicle": "OPTION",
-      "capital_required": 37.5,
-      "minimum_trade_cost": 38.5,
+      "capital_required": 117.0,
+      "minimum_trade_cost": 118.0,
       "affordable": true,
       "contracts": 1,
       "shares": 0,
-      "score": 81.0,
+      "score": 51.0,
       "dte": 0,
-      "spread_pct": 0.5577
+      "spread_pct": 0.1719
     },
     "vehicle_selected": "RESEARCH_ONLY",
     "capital_required": 0.0,
     "minimum_trade_cost": 0.0,
     "stock_minimum_cost": 188.32,
-    "option_minimum_cost": 38.5,
+    "option_minimum_cost": 118.0,
     "stock_affordable": false,
     "option_affordable": true,
     "best_vehicle_reason": "stock_not_affordable",
     "option_good": false,
     "option_dte_ok": false,
     "option_spread_ok": false,
-    "option_score_value": 81.0,
+    "option_score_value": 51.0,
     "option_dte": 0,
-    "option_spread_pct": 0.5577,
+    "option_spread_pct": 0.1719,
+    "option_execution_reason": "contract_score_too_low",
+    "option_flagged_executable": false,
+    "trade_intent": "EXPLOSIVE",
     "stock_score_ok": true,
     "stock_conf_ok": true,
     "shares": 0,
     "contracts": 0,
     "vehicle_reason": "research_only",
-    "governor": {},
-    "governor_blocked": false,
-    "governor_status": "",
-    "governor_reasons": [],
-    "governor_warnings": [],
+    "governor": {
+      "blocked": true,
+      "ok_to_trade": false,
+      "status_label": "BLOCKED",
+      "reasons": [
+        "cash_reserve_too_low"
+      ],
+      "warnings": [
+        "pdt_restricted_paper_mode"
+      ],
+      "cash": 171.4,
+      "equity": 1014.01,
+      "buying_power": 171.4,
+      "max_drawdown": 2.01,
+      "realized_pnl_today": 0.0,
+      "current_open_positions": 1,
+      "entries_today": 0,
+      "executed_entries_today": 0,
+      "executed_trades_today": 0,
+      "closes_today": 0,
+      "round_trips_today": 0,
+      "limits": {
+        "max_daily_entries": 3,
+        "max_drawdown_dollars": 150.0,
+        "min_cash_reserve": 202.8,
+        "max_open_positions": 3,
+        "max_daily_loss": 250.0
+      },
+      "controls": {
+        "daily_entry_cap": false,
+        "max_drawdown_hit": false,
+        "cash_reserve_too_low": true,
+        "max_open_positions": false,
+        "max_daily_loss_hit": false,
+        "pdt_restricted": true,
+        "pdt_warning_only": true,
+        "kill_switch": false
+      },
+      "pdt": {
+        "account_type": "margin",
+        "equity": 1014.01,
+        "pdt_restricted": true,
+        "recent_day_trades": 0,
+        "remaining_day_trades": 3
+      },
+      "trading_mode": "paper",
+      "reserve_mode": "percent",
+      "reserve_value": 20.0,
+      "timestamp": "2026-04-17T02:34:16.248402",
+      "extra_kwargs_seen": []
+    },
+    "governor_blocked": true,
+    "governor_status": "BLOCKED",
+    "governor_reasons": [
+      "cash_reserve_too_low"
+    ],
+    "governor_warnings": [
+      "pdt_restricted_paper_mode"
+    ],
     "research_approved": true,
     "execution_ready": false,
     "selected_for_execution": false,
+    "blocked_at": "governor",
+    "final_reason": "governor_blocked:cash_reserve_too_low",
     "candidate_display": {
       "symbol": "MS",
       "company_name": "MS",
@@ -6602,59 +7552,61 @@
       "capital_required": 0.0,
       "capital_available": 171.4,
       "capital_buffer_after": 171.4,
-      "decision_reason": "governor_blocked:daily_entry_cap",
-      "decision_label": "governor_blocked:daily_entry_cap",
+      "decision_reason": "governor_blocked:cash_reserve_too_low",
+      "decision_label": "governor_blocked:cash_reserve_too_low",
       "selected_for_execution": false,
       "has_option": true,
-      "option_contract_score": 81.0,
+      "option_contract_score": 51.0,
       "option": {
         "symbol": "MS",
-        "contractSymbol": "MS260417C00190000",
+        "contractSymbol": "MS260417C00187500",
         "expiration": "2026-04-17",
         "right": "CALL",
-        "strike": 190.0,
-        "bid": 0.23,
-        "ask": 0.52,
-        "last": 0.38,
-        "mark": 0.375,
-        "volume": 1518,
-        "open_interest": 2470,
-        "implied_volatility": 0.3789,
+        "strike": 187.5,
+        "bid": 1.06,
+        "ask": 1.28,
+        "last": 1.1,
+        "mark": 1.17,
+        "volume": 587,
+        "open_interest": 1448,
+        "implied_volatility": 0.3496,
         "in_the_money": false,
-        "spread": 0.29,
-        "spread_pct": 0.5577,
-        "distance_pct": 0.0143,
-        "contract_score": 81,
-        "trade_intent": "GRIND",
+        "spread": 0.22,
+        "spread_pct": 0.1719,
+        "distance_pct": 0.001,
+        "contract_score": 51,
+        "trade_intent": "EXPLOSIVE",
         "dte": 0,
-        "bidAskSpread": 0.29,
+        "bidAskSpread": 0.22,
         "contract_notes": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
-          "Good contract volume.",
+          "Same-day expiry is too fragile for standard explosive execution.",
+          "Usable contract volume.",
           "Good open interest.",
           "Very wide spread reduces execution quality.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
-        ]
+        ],
+        "is_executable": false,
+        "execution_reason": "contract_score_too_low"
       },
       "option_explanation": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
-        "Good contract volume.",
+        "Same-day expiry is too fragile for standard explosive execution.",
+        "Usable contract volume.",
         "Good open interest.",
         "Very wide spread reduces execution quality.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
       ],
       "why": [
-        "governor_blocked:daily_entry_cap"
+        "governor_blocked:cash_reserve_too_low"
       ],
       "supports": [],
       "blockers": [],
       "rejection_analysis": [],
       "stronger_competing_setups": [],
-      "timestamp": "2026-04-17T01:25:09.373960",
+      "timestamp": "2026-04-17T02:33:50.295108",
       "source": "execution_universe",
       "raw": {
         "symbol": "MS",
@@ -6675,7 +7627,7 @@
         "avg_volume": 7097001.85,
         "momentum": 0.1815,
         "eligible": true,
-        "timestamp": "2026-04-17T01:25:09.373960",
+        "timestamp": "2026-04-17T02:33:50.295108",
         "option_chain": [
           {
             "symbol": "MS",
@@ -6933,11 +7885,11 @@
         "breadth": "BULLISH",
         "option_explanation": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
-          "Good contract volume.",
+          "Same-day expiry is too fragile for standard explosive execution.",
+          "Usable contract volume.",
           "Good open interest.",
           "Very wide spread reduces execution quality.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
         ],
         "base_score": 252.43,
@@ -6960,74 +7912,135 @@
         },
         "option": {
           "symbol": "MS",
-          "contractSymbol": "MS260417C00190000",
+          "contractSymbol": "MS260417C00187500",
           "expiration": "2026-04-17",
           "right": "CALL",
-          "strike": 190.0,
-          "bid": 0.23,
-          "ask": 0.52,
-          "last": 0.38,
-          "mark": 0.375,
-          "volume": 1518,
-          "open_interest": 2470,
-          "implied_volatility": 0.3789,
+          "strike": 187.5,
+          "bid": 1.06,
+          "ask": 1.28,
+          "last": 1.1,
+          "mark": 1.17,
+          "volume": 587,
+          "open_interest": 1448,
+          "implied_volatility": 0.3496,
           "in_the_money": false,
-          "spread": 0.29,
-          "spread_pct": 0.5577,
-          "distance_pct": 0.0143,
-          "contract_score": 81,
-          "trade_intent": "GRIND",
+          "spread": 0.22,
+          "spread_pct": 0.1719,
+          "distance_pct": 0.001,
+          "contract_score": 51,
+          "trade_intent": "EXPLOSIVE",
           "dte": 0,
-          "bidAskSpread": 0.29,
+          "bidAskSpread": 0.22,
           "contract_notes": [
             "Contract type matches call thesis.",
-            "Expiry is not ideal for grind setup.",
-            "Good contract volume.",
+            "Same-day expiry is too fragile for standard explosive execution.",
+            "Usable contract volume.",
             "Good open interest.",
             "Very wide spread reduces execution quality.",
-            "Strike supports slower grind setup.",
+            "Tight strike for explosive move.",
             "Premium in preferred range."
-          ]
+          ],
+          "is_executable": false,
+          "execution_reason": "contract_score_too_low"
         },
-        "option_contract_score": 81.0,
+        "option_contract_score": 51.0,
         "option_path": {
           "vehicle": "OPTION",
-          "capital_required": 37.5,
-          "minimum_trade_cost": 38.5,
+          "capital_required": 117.0,
+          "minimum_trade_cost": 118.0,
           "affordable": true,
           "contracts": 1,
           "shares": 0,
-          "score": 81.0,
+          "score": 51.0,
           "dte": 0,
-          "spread_pct": 0.5577
+          "spread_pct": 0.1719
         },
         "vehicle_selected": "RESEARCH_ONLY",
         "capital_required": 0.0,
         "minimum_trade_cost": 0.0,
         "stock_minimum_cost": 188.32,
-        "option_minimum_cost": 38.5,
+        "option_minimum_cost": 118.0,
         "stock_affordable": false,
         "option_affordable": true,
         "best_vehicle_reason": "stock_not_affordable",
         "option_good": false,
         "option_dte_ok": false,
         "option_spread_ok": false,
-        "option_score_value": 81.0,
+        "option_score_value": 51.0,
         "option_dte": 0,
-        "option_spread_pct": 0.5577,
+        "option_spread_pct": 0.1719,
+        "option_execution_reason": "contract_score_too_low",
+        "option_flagged_executable": false,
+        "trade_intent": "EXPLOSIVE",
         "stock_score_ok": true,
         "stock_conf_ok": true,
         "shares": 0,
         "contracts": 0,
         "vehicle_reason": "research_only",
-        "governor": {},
-        "governor_blocked": false,
-        "governor_status": "",
-        "governor_reasons": [],
-        "governor_warnings": [],
+        "governor": {
+          "blocked": true,
+          "ok_to_trade": false,
+          "status_label": "BLOCKED",
+          "reasons": [
+            "cash_reserve_too_low"
+          ],
+          "warnings": [
+            "pdt_restricted_paper_mode"
+          ],
+          "cash": 171.4,
+          "equity": 1014.01,
+          "buying_power": 171.4,
+          "max_drawdown": 2.01,
+          "realized_pnl_today": 0.0,
+          "current_open_positions": 1,
+          "entries_today": 0,
+          "executed_entries_today": 0,
+          "executed_trades_today": 0,
+          "closes_today": 0,
+          "round_trips_today": 0,
+          "limits": {
+            "max_daily_entries": 3,
+            "max_drawdown_dollars": 150.0,
+            "min_cash_reserve": 202.8,
+            "max_open_positions": 3,
+            "max_daily_loss": 250.0
+          },
+          "controls": {
+            "daily_entry_cap": false,
+            "max_drawdown_hit": false,
+            "cash_reserve_too_low": true,
+            "max_open_positions": false,
+            "max_daily_loss_hit": false,
+            "pdt_restricted": true,
+            "pdt_warning_only": true,
+            "kill_switch": false
+          },
+          "pdt": {
+            "account_type": "margin",
+            "equity": 1014.01,
+            "pdt_restricted": true,
+            "recent_day_trades": 0,
+            "remaining_day_trades": 3
+          },
+          "trading_mode": "paper",
+          "reserve_mode": "percent",
+          "reserve_value": 20.0,
+          "timestamp": "2026-04-17T02:34:16.248402",
+          "extra_kwargs_seen": []
+        },
+        "governor_blocked": true,
+        "governor_status": "BLOCKED",
+        "governor_reasons": [
+          "cash_reserve_too_low"
+        ],
+        "governor_warnings": [
+          "pdt_restricted_paper_mode"
+        ],
         "research_approved": true,
         "execution_ready": false,
-        "selected_for_execution": false
+        "selected_for_execution": false,
+        "blocked_at": "governor",
+        "final_reason": "governor_blocked:cash_reserve_too_low"
       },
       "minimum_trade_cost": 0.0,
       "vehicle_selected": "RESEARCH_ONLY",
@@ -7038,7 +8051,6 @@
         "ok_to_trade": false,
         "status_label": "BLOCKED",
         "reasons": [
-          "daily_entry_cap",
           "cash_reserve_too_low"
         ],
         "warnings": [
@@ -7051,8 +8063,8 @@
         "realized_pnl_today": 0.0,
         "current_open_positions": 1,
         "entries_today": 0,
-        "executed_entries_today": 3,
-        "executed_trades_today": 3,
+        "executed_entries_today": 0,
+        "executed_trades_today": 0,
         "closes_today": 0,
         "round_trips_today": 0,
         "limits": {
@@ -7063,7 +8075,7 @@
           "max_daily_loss": 250.0
         },
         "controls": {
-          "daily_entry_cap": true,
+          "daily_entry_cap": false,
           "max_drawdown_hit": false,
           "cash_reserve_too_low": true,
           "max_open_positions": false,
@@ -7082,9 +8094,13 @@
         "trading_mode": "paper",
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-04-17T01:25:36.483052",
+        "timestamp": "2026-04-17T02:34:16.248402",
         "extra_kwargs_seen": []
-      }
+      },
+      "governor_blocked": true,
+      "governor_reason": "governor_blocked:cash_reserve_too_low",
+      "blocked_at": "governor",
+      "final_reason": "governor_blocked:cash_reserve_too_low"
     }
   },
   {
@@ -7106,7 +8122,7 @@
     "avg_volume": 27359978.45,
     "momentum": 0.1507,
     "eligible": true,
-    "timestamp": "2026-04-17T01:25:11.048238",
+    "timestamp": "2026-04-17T02:33:52.039063",
     "option_chain": [
       {
         "symbol": "ORCL",
@@ -7364,12 +8380,12 @@
     "breadth": "BULLISH",
     "option_explanation": [
       "Contract type matches call thesis.",
-      "Expiry is not ideal for grind setup.",
-      "Strong contract volume.",
-      "Exceptional open interest.",
+      "Same-day expiry is too fragile for standard explosive execution.",
+      "Exceptional contract volume.",
+      "Good open interest.",
       "Tight spread.",
-      "Strike supports slower grind setup.",
-      "Premium is usable."
+      "Tight strike for explosive move.",
+      "Premium in preferred range."
     ],
     "base_score": 250.74,
     "v2_score": 0.0,
@@ -7391,74 +8407,135 @@
     },
     "option": {
       "symbol": "ORCL",
-      "contractSymbol": "ORCL260417C00175000",
+      "contractSymbol": "ORCL260417C00177500",
       "expiration": "2026-04-17",
       "right": "CALL",
-      "strike": 175.0,
-      "bid": 4.25,
-      "ask": 4.45,
-      "last": 4.37,
-      "mark": 4.35,
-      "volume": 18391,
-      "open_interest": 21351,
-      "implied_volatility": 0.625,
+      "strike": 177.5,
+      "bid": 2.61,
+      "ask": 2.73,
+      "last": 2.7,
+      "mark": 2.67,
+      "volume": 21897,
+      "open_interest": 3159,
+      "implied_volatility": 0.5986,
       "in_the_money": true,
-      "spread": 0.2,
-      "spread_pct": 0.0449,
-      "distance_pct": 0.0187,
-      "contract_score": 118,
-      "trade_intent": "GRIND",
+      "spread": 0.12,
+      "spread_pct": 0.044,
+      "distance_pct": 0.0047,
+      "contract_score": 99,
+      "trade_intent": "EXPLOSIVE",
       "dte": 0,
-      "bidAskSpread": 0.2,
+      "bidAskSpread": 0.12,
       "contract_notes": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
-        "Strong contract volume.",
-        "Exceptional open interest.",
+        "Same-day expiry is too fragile for standard explosive execution.",
+        "Exceptional contract volume.",
+        "Good open interest.",
         "Tight spread.",
-        "Strike supports slower grind setup.",
-        "Premium is usable."
-      ]
+        "Tight strike for explosive move.",
+        "Premium in preferred range."
+      ],
+      "is_executable": false,
+      "execution_reason": "expiry_too_close_for_explosive"
     },
-    "option_contract_score": 118.0,
+    "option_contract_score": 99.0,
     "option_path": {
       "vehicle": "OPTION",
-      "capital_required": 435.0,
-      "minimum_trade_cost": 436.0,
+      "capital_required": 267.0,
+      "minimum_trade_cost": 268.0,
       "affordable": false,
       "contracts": 1,
       "shares": 0,
-      "score": 118.0,
+      "score": 99.0,
       "dte": 0,
-      "spread_pct": 0.0449
+      "spread_pct": 0.044
     },
     "vehicle_selected": "RESEARCH_ONLY",
     "capital_required": 0.0,
     "minimum_trade_cost": 0.0,
     "stock_minimum_cost": 179.34,
-    "option_minimum_cost": 436.0,
+    "option_minimum_cost": 268.0,
     "stock_affordable": false,
     "option_affordable": false,
     "best_vehicle_reason": "option_not_affordable",
     "option_good": true,
     "option_dte_ok": false,
     "option_spread_ok": true,
-    "option_score_value": 118.0,
+    "option_score_value": 99.0,
     "option_dte": 0,
-    "option_spread_pct": 0.0449,
+    "option_spread_pct": 0.044,
+    "option_execution_reason": "expiry_too_close_for_explosive",
+    "option_flagged_executable": false,
+    "trade_intent": "EXPLOSIVE",
     "stock_score_ok": true,
     "stock_conf_ok": true,
     "shares": 0,
     "contracts": 0,
     "vehicle_reason": "research_only",
-    "governor": {},
-    "governor_blocked": false,
-    "governor_status": "",
-    "governor_reasons": [],
-    "governor_warnings": [],
+    "governor": {
+      "blocked": true,
+      "ok_to_trade": false,
+      "status_label": "BLOCKED",
+      "reasons": [
+        "cash_reserve_too_low"
+      ],
+      "warnings": [
+        "pdt_restricted_paper_mode"
+      ],
+      "cash": 171.4,
+      "equity": 1014.01,
+      "buying_power": 171.4,
+      "max_drawdown": 2.01,
+      "realized_pnl_today": 0.0,
+      "current_open_positions": 1,
+      "entries_today": 0,
+      "executed_entries_today": 0,
+      "executed_trades_today": 0,
+      "closes_today": 0,
+      "round_trips_today": 0,
+      "limits": {
+        "max_daily_entries": 3,
+        "max_drawdown_dollars": 150.0,
+        "min_cash_reserve": 202.8,
+        "max_open_positions": 3,
+        "max_daily_loss": 250.0
+      },
+      "controls": {
+        "daily_entry_cap": false,
+        "max_drawdown_hit": false,
+        "cash_reserve_too_low": true,
+        "max_open_positions": false,
+        "max_daily_loss_hit": false,
+        "pdt_restricted": true,
+        "pdt_warning_only": true,
+        "kill_switch": false
+      },
+      "pdt": {
+        "account_type": "margin",
+        "equity": 1014.01,
+        "pdt_restricted": true,
+        "recent_day_trades": 0,
+        "remaining_day_trades": 3
+      },
+      "trading_mode": "paper",
+      "reserve_mode": "percent",
+      "reserve_value": 20.0,
+      "timestamp": "2026-04-17T02:34:16.248402",
+      "extra_kwargs_seen": []
+    },
+    "governor_blocked": true,
+    "governor_status": "BLOCKED",
+    "governor_reasons": [
+      "cash_reserve_too_low"
+    ],
+    "governor_warnings": [
+      "pdt_restricted_paper_mode"
+    ],
     "research_approved": true,
     "execution_ready": false,
     "selected_for_execution": false,
+    "blocked_at": "governor",
+    "final_reason": "governor_blocked:cash_reserve_too_low",
     "candidate_display": {
       "symbol": "ORCL",
       "company_name": "ORCL",
@@ -7488,59 +8565,61 @@
       "capital_required": 0.0,
       "capital_available": 171.4,
       "capital_buffer_after": 171.4,
-      "decision_reason": "governor_blocked:daily_entry_cap",
-      "decision_label": "governor_blocked:daily_entry_cap",
+      "decision_reason": "governor_blocked:cash_reserve_too_low",
+      "decision_label": "governor_blocked:cash_reserve_too_low",
       "selected_for_execution": false,
       "has_option": true,
-      "option_contract_score": 118.0,
+      "option_contract_score": 99.0,
       "option": {
         "symbol": "ORCL",
-        "contractSymbol": "ORCL260417C00175000",
+        "contractSymbol": "ORCL260417C00177500",
         "expiration": "2026-04-17",
         "right": "CALL",
-        "strike": 175.0,
-        "bid": 4.25,
-        "ask": 4.45,
-        "last": 4.37,
-        "mark": 4.35,
-        "volume": 18391,
-        "open_interest": 21351,
-        "implied_volatility": 0.625,
+        "strike": 177.5,
+        "bid": 2.61,
+        "ask": 2.73,
+        "last": 2.7,
+        "mark": 2.67,
+        "volume": 21897,
+        "open_interest": 3159,
+        "implied_volatility": 0.5986,
         "in_the_money": true,
-        "spread": 0.2,
-        "spread_pct": 0.0449,
-        "distance_pct": 0.0187,
-        "contract_score": 118,
-        "trade_intent": "GRIND",
+        "spread": 0.12,
+        "spread_pct": 0.044,
+        "distance_pct": 0.0047,
+        "contract_score": 99,
+        "trade_intent": "EXPLOSIVE",
         "dte": 0,
-        "bidAskSpread": 0.2,
+        "bidAskSpread": 0.12,
         "contract_notes": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
-          "Strong contract volume.",
-          "Exceptional open interest.",
+          "Same-day expiry is too fragile for standard explosive execution.",
+          "Exceptional contract volume.",
+          "Good open interest.",
           "Tight spread.",
-          "Strike supports slower grind setup.",
-          "Premium is usable."
-        ]
+          "Tight strike for explosive move.",
+          "Premium in preferred range."
+        ],
+        "is_executable": false,
+        "execution_reason": "expiry_too_close_for_explosive"
       },
       "option_explanation": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
-        "Strong contract volume.",
-        "Exceptional open interest.",
+        "Same-day expiry is too fragile for standard explosive execution.",
+        "Exceptional contract volume.",
+        "Good open interest.",
         "Tight spread.",
-        "Strike supports slower grind setup.",
-        "Premium is usable."
+        "Tight strike for explosive move.",
+        "Premium in preferred range."
       ],
       "why": [
-        "governor_blocked:daily_entry_cap"
+        "governor_blocked:cash_reserve_too_low"
       ],
       "supports": [],
       "blockers": [],
       "rejection_analysis": [],
       "stronger_competing_setups": [],
-      "timestamp": "2026-04-17T01:25:11.048238",
+      "timestamp": "2026-04-17T02:33:52.039063",
       "source": "execution_universe",
       "raw": {
         "symbol": "ORCL",
@@ -7561,7 +8640,7 @@
         "avg_volume": 27359978.45,
         "momentum": 0.1507,
         "eligible": true,
-        "timestamp": "2026-04-17T01:25:11.048238",
+        "timestamp": "2026-04-17T02:33:52.039063",
         "option_chain": [
           {
             "symbol": "ORCL",
@@ -7819,12 +8898,12 @@
         "breadth": "BULLISH",
         "option_explanation": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
-          "Strong contract volume.",
-          "Exceptional open interest.",
+          "Same-day expiry is too fragile for standard explosive execution.",
+          "Exceptional contract volume.",
+          "Good open interest.",
           "Tight spread.",
-          "Strike supports slower grind setup.",
-          "Premium is usable."
+          "Tight strike for explosive move.",
+          "Premium in preferred range."
         ],
         "base_score": 250.74,
         "v2_score": 0.0,
@@ -7846,74 +8925,135 @@
         },
         "option": {
           "symbol": "ORCL",
-          "contractSymbol": "ORCL260417C00175000",
+          "contractSymbol": "ORCL260417C00177500",
           "expiration": "2026-04-17",
           "right": "CALL",
-          "strike": 175.0,
-          "bid": 4.25,
-          "ask": 4.45,
-          "last": 4.37,
-          "mark": 4.35,
-          "volume": 18391,
-          "open_interest": 21351,
-          "implied_volatility": 0.625,
+          "strike": 177.5,
+          "bid": 2.61,
+          "ask": 2.73,
+          "last": 2.7,
+          "mark": 2.67,
+          "volume": 21897,
+          "open_interest": 3159,
+          "implied_volatility": 0.5986,
           "in_the_money": true,
-          "spread": 0.2,
-          "spread_pct": 0.0449,
-          "distance_pct": 0.0187,
-          "contract_score": 118,
-          "trade_intent": "GRIND",
+          "spread": 0.12,
+          "spread_pct": 0.044,
+          "distance_pct": 0.0047,
+          "contract_score": 99,
+          "trade_intent": "EXPLOSIVE",
           "dte": 0,
-          "bidAskSpread": 0.2,
+          "bidAskSpread": 0.12,
           "contract_notes": [
             "Contract type matches call thesis.",
-            "Expiry is not ideal for grind setup.",
-            "Strong contract volume.",
-            "Exceptional open interest.",
+            "Same-day expiry is too fragile for standard explosive execution.",
+            "Exceptional contract volume.",
+            "Good open interest.",
             "Tight spread.",
-            "Strike supports slower grind setup.",
-            "Premium is usable."
-          ]
+            "Tight strike for explosive move.",
+            "Premium in preferred range."
+          ],
+          "is_executable": false,
+          "execution_reason": "expiry_too_close_for_explosive"
         },
-        "option_contract_score": 118.0,
+        "option_contract_score": 99.0,
         "option_path": {
           "vehicle": "OPTION",
-          "capital_required": 435.0,
-          "minimum_trade_cost": 436.0,
+          "capital_required": 267.0,
+          "minimum_trade_cost": 268.0,
           "affordable": false,
           "contracts": 1,
           "shares": 0,
-          "score": 118.0,
+          "score": 99.0,
           "dte": 0,
-          "spread_pct": 0.0449
+          "spread_pct": 0.044
         },
         "vehicle_selected": "RESEARCH_ONLY",
         "capital_required": 0.0,
         "minimum_trade_cost": 0.0,
         "stock_minimum_cost": 179.34,
-        "option_minimum_cost": 436.0,
+        "option_minimum_cost": 268.0,
         "stock_affordable": false,
         "option_affordable": false,
         "best_vehicle_reason": "option_not_affordable",
         "option_good": true,
         "option_dte_ok": false,
         "option_spread_ok": true,
-        "option_score_value": 118.0,
+        "option_score_value": 99.0,
         "option_dte": 0,
-        "option_spread_pct": 0.0449,
+        "option_spread_pct": 0.044,
+        "option_execution_reason": "expiry_too_close_for_explosive",
+        "option_flagged_executable": false,
+        "trade_intent": "EXPLOSIVE",
         "stock_score_ok": true,
         "stock_conf_ok": true,
         "shares": 0,
         "contracts": 0,
         "vehicle_reason": "research_only",
-        "governor": {},
-        "governor_blocked": false,
-        "governor_status": "",
-        "governor_reasons": [],
-        "governor_warnings": [],
+        "governor": {
+          "blocked": true,
+          "ok_to_trade": false,
+          "status_label": "BLOCKED",
+          "reasons": [
+            "cash_reserve_too_low"
+          ],
+          "warnings": [
+            "pdt_restricted_paper_mode"
+          ],
+          "cash": 171.4,
+          "equity": 1014.01,
+          "buying_power": 171.4,
+          "max_drawdown": 2.01,
+          "realized_pnl_today": 0.0,
+          "current_open_positions": 1,
+          "entries_today": 0,
+          "executed_entries_today": 0,
+          "executed_trades_today": 0,
+          "closes_today": 0,
+          "round_trips_today": 0,
+          "limits": {
+            "max_daily_entries": 3,
+            "max_drawdown_dollars": 150.0,
+            "min_cash_reserve": 202.8,
+            "max_open_positions": 3,
+            "max_daily_loss": 250.0
+          },
+          "controls": {
+            "daily_entry_cap": false,
+            "max_drawdown_hit": false,
+            "cash_reserve_too_low": true,
+            "max_open_positions": false,
+            "max_daily_loss_hit": false,
+            "pdt_restricted": true,
+            "pdt_warning_only": true,
+            "kill_switch": false
+          },
+          "pdt": {
+            "account_type": "margin",
+            "equity": 1014.01,
+            "pdt_restricted": true,
+            "recent_day_trades": 0,
+            "remaining_day_trades": 3
+          },
+          "trading_mode": "paper",
+          "reserve_mode": "percent",
+          "reserve_value": 20.0,
+          "timestamp": "2026-04-17T02:34:16.248402",
+          "extra_kwargs_seen": []
+        },
+        "governor_blocked": true,
+        "governor_status": "BLOCKED",
+        "governor_reasons": [
+          "cash_reserve_too_low"
+        ],
+        "governor_warnings": [
+          "pdt_restricted_paper_mode"
+        ],
         "research_approved": true,
         "execution_ready": false,
-        "selected_for_execution": false
+        "selected_for_execution": false,
+        "blocked_at": "governor",
+        "final_reason": "governor_blocked:cash_reserve_too_low"
       },
       "minimum_trade_cost": 0.0,
       "vehicle_selected": "RESEARCH_ONLY",
@@ -7924,7 +9064,6 @@
         "ok_to_trade": false,
         "status_label": "BLOCKED",
         "reasons": [
-          "daily_entry_cap",
           "cash_reserve_too_low"
         ],
         "warnings": [
@@ -7937,8 +9076,8 @@
         "realized_pnl_today": 0.0,
         "current_open_positions": 1,
         "entries_today": 0,
-        "executed_entries_today": 3,
-        "executed_trades_today": 3,
+        "executed_entries_today": 0,
+        "executed_trades_today": 0,
         "closes_today": 0,
         "round_trips_today": 0,
         "limits": {
@@ -7949,7 +9088,7 @@
           "max_daily_loss": 250.0
         },
         "controls": {
-          "daily_entry_cap": true,
+          "daily_entry_cap": false,
           "max_drawdown_hit": false,
           "cash_reserve_too_low": true,
           "max_open_positions": false,
@@ -7968,9 +9107,13 @@
         "trading_mode": "paper",
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-04-17T01:25:36.483052",
+        "timestamp": "2026-04-17T02:34:16.248402",
         "extra_kwargs_seen": []
-      }
+      },
+      "governor_blocked": true,
+      "governor_reason": "governor_blocked:cash_reserve_too_low",
+      "blocked_at": "governor",
+      "final_reason": "governor_blocked:cash_reserve_too_low"
     }
   },
   {
@@ -7992,7 +9135,7 @@
     "avg_volume": 38432033.55,
     "momentum": 0.1383,
     "eligible": true,
-    "timestamp": "2026-04-17T01:25:12.813322",
+    "timestamp": "2026-04-17T02:33:54.189650",
     "option_chain": [
       {
         "symbol": "BAC",
@@ -8250,11 +9393,11 @@
     "breadth": "BULLISH",
     "option_explanation": [
       "Contract type matches call thesis.",
-      "Expiry is not ideal for grind setup.",
+      "Same-day expiry is too fragile for standard explosive execution.",
       "Good contract volume.",
-      "Exceptional open interest.",
+      "Strong open interest.",
       "Acceptable spread.",
-      "Strike supports slower grind setup.",
+      "Tight strike for explosive move.",
       "Premium in preferred range."
     ],
     "base_score": 238.27,
@@ -8277,74 +9420,135 @@
     },
     "option": {
       "symbol": "BAC",
-      "contractSymbol": "BAC260417C00052500",
+      "contractSymbol": "BAC260417C00053000",
       "expiration": "2026-04-17",
       "right": "CALL",
-      "strike": 52.5,
-      "bid": 1.03,
-      "ask": 1.1,
-      "last": 1.09,
-      "mark": 1.065,
-      "volume": 1903,
-      "open_interest": 26818,
-      "implied_volatility": 0.3731,
+      "strike": 53.0,
+      "bid": 0.6,
+      "ask": 0.64,
+      "last": 0.64,
+      "mark": 0.62,
+      "volume": 1058,
+      "open_interest": 8542,
+      "implied_volatility": 0.291,
       "in_the_money": true,
-      "spread": 0.07,
-      "spread_pct": 0.0636,
-      "distance_pct": 0.0189,
-      "contract_score": 110,
-      "trade_intent": "GRIND",
+      "spread": 0.04,
+      "spread_pct": 0.0625,
+      "distance_pct": 0.0095,
+      "contract_score": 85,
+      "trade_intent": "EXPLOSIVE",
       "dte": 0,
-      "bidAskSpread": 0.07,
+      "bidAskSpread": 0.04,
       "contract_notes": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Good contract volume.",
-        "Exceptional open interest.",
+        "Strong open interest.",
         "Acceptable spread.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
-      ]
+      ],
+      "is_executable": false,
+      "execution_reason": "expiry_too_close_for_explosive"
     },
-    "option_contract_score": 110.0,
+    "option_contract_score": 85.0,
     "option_path": {
       "vehicle": "OPTION",
-      "capital_required": 106.5,
-      "minimum_trade_cost": 107.5,
+      "capital_required": 62.0,
+      "minimum_trade_cost": 63.0,
       "affordable": true,
       "contracts": 1,
       "shares": 0,
-      "score": 110.0,
+      "score": 85.0,
       "dte": 0,
-      "spread_pct": 0.0636
+      "spread_pct": 0.0625
     },
     "vehicle_selected": "STOCK",
     "capital_required": 53.51,
     "minimum_trade_cost": 54.51,
     "stock_minimum_cost": 54.51,
-    "option_minimum_cost": 107.5,
+    "option_minimum_cost": 63.0,
     "stock_affordable": true,
     "option_affordable": true,
     "best_vehicle_reason": "expired_or_same_day_option_stock_fallback",
     "option_good": true,
     "option_dte_ok": false,
     "option_spread_ok": true,
-    "option_score_value": 110.0,
+    "option_score_value": 85.0,
     "option_dte": 0,
-    "option_spread_pct": 0.0636,
+    "option_spread_pct": 0.0625,
+    "option_execution_reason": "expiry_too_close_for_explosive",
+    "option_flagged_executable": false,
+    "trade_intent": "EXPLOSIVE",
     "stock_score_ok": true,
     "stock_conf_ok": true,
     "shares": 1,
     "contracts": 0,
     "vehicle_reason": "stock_selected",
-    "governor": {},
-    "governor_blocked": false,
-    "governor_status": "",
-    "governor_reasons": [],
-    "governor_warnings": [],
+    "governor": {
+      "blocked": true,
+      "ok_to_trade": false,
+      "status_label": "BLOCKED",
+      "reasons": [
+        "cash_reserve_too_low"
+      ],
+      "warnings": [
+        "pdt_restricted_paper_mode"
+      ],
+      "cash": 171.4,
+      "equity": 1014.01,
+      "buying_power": 171.4,
+      "max_drawdown": 2.01,
+      "realized_pnl_today": 0.0,
+      "current_open_positions": 1,
+      "entries_today": 0,
+      "executed_entries_today": 0,
+      "executed_trades_today": 0,
+      "closes_today": 0,
+      "round_trips_today": 0,
+      "limits": {
+        "max_daily_entries": 3,
+        "max_drawdown_dollars": 150.0,
+        "min_cash_reserve": 202.8,
+        "max_open_positions": 3,
+        "max_daily_loss": 250.0
+      },
+      "controls": {
+        "daily_entry_cap": false,
+        "max_drawdown_hit": false,
+        "cash_reserve_too_low": true,
+        "max_open_positions": false,
+        "max_daily_loss_hit": false,
+        "pdt_restricted": true,
+        "pdt_warning_only": true,
+        "kill_switch": false
+      },
+      "pdt": {
+        "account_type": "margin",
+        "equity": 1014.01,
+        "pdt_restricted": true,
+        "recent_day_trades": 0,
+        "remaining_day_trades": 3
+      },
+      "trading_mode": "paper",
+      "reserve_mode": "percent",
+      "reserve_value": 20.0,
+      "timestamp": "2026-04-17T02:34:16.248402",
+      "extra_kwargs_seen": []
+    },
+    "governor_blocked": true,
+    "governor_status": "BLOCKED",
+    "governor_reasons": [
+      "cash_reserve_too_low"
+    ],
+    "governor_warnings": [
+      "pdt_restricted_paper_mode"
+    ],
     "research_approved": true,
     "execution_ready": false,
     "selected_for_execution": false,
+    "blocked_at": "governor",
+    "final_reason": "governor_blocked:cash_reserve_too_low",
     "candidate_display": {
       "symbol": "BAC",
       "company_name": "BAC",
@@ -8374,59 +9578,61 @@
       "capital_required": 53.51,
       "capital_available": 171.4,
       "capital_buffer_after": 117.89,
-      "decision_reason": "governor_blocked:daily_entry_cap",
-      "decision_label": "governor_blocked:daily_entry_cap",
+      "decision_reason": "governor_blocked:cash_reserve_too_low",
+      "decision_label": "governor_blocked:cash_reserve_too_low",
       "selected_for_execution": false,
       "has_option": true,
-      "option_contract_score": 110.0,
+      "option_contract_score": 85.0,
       "option": {
         "symbol": "BAC",
-        "contractSymbol": "BAC260417C00052500",
+        "contractSymbol": "BAC260417C00053000",
         "expiration": "2026-04-17",
         "right": "CALL",
-        "strike": 52.5,
-        "bid": 1.03,
-        "ask": 1.1,
-        "last": 1.09,
-        "mark": 1.065,
-        "volume": 1903,
-        "open_interest": 26818,
-        "implied_volatility": 0.3731,
+        "strike": 53.0,
+        "bid": 0.6,
+        "ask": 0.64,
+        "last": 0.64,
+        "mark": 0.62,
+        "volume": 1058,
+        "open_interest": 8542,
+        "implied_volatility": 0.291,
         "in_the_money": true,
-        "spread": 0.07,
-        "spread_pct": 0.0636,
-        "distance_pct": 0.0189,
-        "contract_score": 110,
-        "trade_intent": "GRIND",
+        "spread": 0.04,
+        "spread_pct": 0.0625,
+        "distance_pct": 0.0095,
+        "contract_score": 85,
+        "trade_intent": "EXPLOSIVE",
         "dte": 0,
-        "bidAskSpread": 0.07,
+        "bidAskSpread": 0.04,
         "contract_notes": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Good contract volume.",
-          "Exceptional open interest.",
+          "Strong open interest.",
           "Acceptable spread.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
-        ]
+        ],
+        "is_executable": false,
+        "execution_reason": "expiry_too_close_for_explosive"
       },
       "option_explanation": [
         "Contract type matches call thesis.",
-        "Expiry is not ideal for grind setup.",
+        "Same-day expiry is too fragile for standard explosive execution.",
         "Good contract volume.",
-        "Exceptional open interest.",
+        "Strong open interest.",
         "Acceptable spread.",
-        "Strike supports slower grind setup.",
+        "Tight strike for explosive move.",
         "Premium in preferred range."
       ],
       "why": [
-        "governor_blocked:daily_entry_cap"
+        "governor_blocked:cash_reserve_too_low"
       ],
       "supports": [],
       "blockers": [],
       "rejection_analysis": [],
       "stronger_competing_setups": [],
-      "timestamp": "2026-04-17T01:25:12.813322",
+      "timestamp": "2026-04-17T02:33:54.189650",
       "source": "execution_universe",
       "raw": {
         "symbol": "BAC",
@@ -8447,7 +9653,7 @@
         "avg_volume": 38432033.55,
         "momentum": 0.1383,
         "eligible": true,
-        "timestamp": "2026-04-17T01:25:12.813322",
+        "timestamp": "2026-04-17T02:33:54.189650",
         "option_chain": [
           {
             "symbol": "BAC",
@@ -8705,11 +9911,11 @@
         "breadth": "BULLISH",
         "option_explanation": [
           "Contract type matches call thesis.",
-          "Expiry is not ideal for grind setup.",
+          "Same-day expiry is too fragile for standard explosive execution.",
           "Good contract volume.",
-          "Exceptional open interest.",
+          "Strong open interest.",
           "Acceptable spread.",
-          "Strike supports slower grind setup.",
+          "Tight strike for explosive move.",
           "Premium in preferred range."
         ],
         "base_score": 238.27,
@@ -8732,74 +9938,135 @@
         },
         "option": {
           "symbol": "BAC",
-          "contractSymbol": "BAC260417C00052500",
+          "contractSymbol": "BAC260417C00053000",
           "expiration": "2026-04-17",
           "right": "CALL",
-          "strike": 52.5,
-          "bid": 1.03,
-          "ask": 1.1,
-          "last": 1.09,
-          "mark": 1.065,
-          "volume": 1903,
-          "open_interest": 26818,
-          "implied_volatility": 0.3731,
+          "strike": 53.0,
+          "bid": 0.6,
+          "ask": 0.64,
+          "last": 0.64,
+          "mark": 0.62,
+          "volume": 1058,
+          "open_interest": 8542,
+          "implied_volatility": 0.291,
           "in_the_money": true,
-          "spread": 0.07,
-          "spread_pct": 0.0636,
-          "distance_pct": 0.0189,
-          "contract_score": 110,
-          "trade_intent": "GRIND",
+          "spread": 0.04,
+          "spread_pct": 0.0625,
+          "distance_pct": 0.0095,
+          "contract_score": 85,
+          "trade_intent": "EXPLOSIVE",
           "dte": 0,
-          "bidAskSpread": 0.07,
+          "bidAskSpread": 0.04,
           "contract_notes": [
             "Contract type matches call thesis.",
-            "Expiry is not ideal for grind setup.",
+            "Same-day expiry is too fragile for standard explosive execution.",
             "Good contract volume.",
-            "Exceptional open interest.",
+            "Strong open interest.",
             "Acceptable spread.",
-            "Strike supports slower grind setup.",
+            "Tight strike for explosive move.",
             "Premium in preferred range."
-          ]
+          ],
+          "is_executable": false,
+          "execution_reason": "expiry_too_close_for_explosive"
         },
-        "option_contract_score": 110.0,
+        "option_contract_score": 85.0,
         "option_path": {
           "vehicle": "OPTION",
-          "capital_required": 106.5,
-          "minimum_trade_cost": 107.5,
+          "capital_required": 62.0,
+          "minimum_trade_cost": 63.0,
           "affordable": true,
           "contracts": 1,
           "shares": 0,
-          "score": 110.0,
+          "score": 85.0,
           "dte": 0,
-          "spread_pct": 0.0636
+          "spread_pct": 0.0625
         },
         "vehicle_selected": "STOCK",
         "capital_required": 53.51,
         "minimum_trade_cost": 54.51,
         "stock_minimum_cost": 54.51,
-        "option_minimum_cost": 107.5,
+        "option_minimum_cost": 63.0,
         "stock_affordable": true,
         "option_affordable": true,
         "best_vehicle_reason": "expired_or_same_day_option_stock_fallback",
         "option_good": true,
         "option_dte_ok": false,
         "option_spread_ok": true,
-        "option_score_value": 110.0,
+        "option_score_value": 85.0,
         "option_dte": 0,
-        "option_spread_pct": 0.0636,
+        "option_spread_pct": 0.0625,
+        "option_execution_reason": "expiry_too_close_for_explosive",
+        "option_flagged_executable": false,
+        "trade_intent": "EXPLOSIVE",
         "stock_score_ok": true,
         "stock_conf_ok": true,
         "shares": 1,
         "contracts": 0,
         "vehicle_reason": "stock_selected",
-        "governor": {},
-        "governor_blocked": false,
-        "governor_status": "",
-        "governor_reasons": [],
-        "governor_warnings": [],
+        "governor": {
+          "blocked": true,
+          "ok_to_trade": false,
+          "status_label": "BLOCKED",
+          "reasons": [
+            "cash_reserve_too_low"
+          ],
+          "warnings": [
+            "pdt_restricted_paper_mode"
+          ],
+          "cash": 171.4,
+          "equity": 1014.01,
+          "buying_power": 171.4,
+          "max_drawdown": 2.01,
+          "realized_pnl_today": 0.0,
+          "current_open_positions": 1,
+          "entries_today": 0,
+          "executed_entries_today": 0,
+          "executed_trades_today": 0,
+          "closes_today": 0,
+          "round_trips_today": 0,
+          "limits": {
+            "max_daily_entries": 3,
+            "max_drawdown_dollars": 150.0,
+            "min_cash_reserve": 202.8,
+            "max_open_positions": 3,
+            "max_daily_loss": 250.0
+          },
+          "controls": {
+            "daily_entry_cap": false,
+            "max_drawdown_hit": false,
+            "cash_reserve_too_low": true,
+            "max_open_positions": false,
+            "max_daily_loss_hit": false,
+            "pdt_restricted": true,
+            "pdt_warning_only": true,
+            "kill_switch": false
+          },
+          "pdt": {
+            "account_type": "margin",
+            "equity": 1014.01,
+            "pdt_restricted": true,
+            "recent_day_trades": 0,
+            "remaining_day_trades": 3
+          },
+          "trading_mode": "paper",
+          "reserve_mode": "percent",
+          "reserve_value": 20.0,
+          "timestamp": "2026-04-17T02:34:16.248402",
+          "extra_kwargs_seen": []
+        },
+        "governor_blocked": true,
+        "governor_status": "BLOCKED",
+        "governor_reasons": [
+          "cash_reserve_too_low"
+        ],
+        "governor_warnings": [
+          "pdt_restricted_paper_mode"
+        ],
         "research_approved": true,
         "execution_ready": false,
-        "selected_for_execution": false
+        "selected_for_execution": false,
+        "blocked_at": "governor",
+        "final_reason": "governor_blocked:cash_reserve_too_low"
       },
       "minimum_trade_cost": 54.51,
       "vehicle_selected": "STOCK",
@@ -8810,7 +10077,6 @@
         "ok_to_trade": false,
         "status_label": "BLOCKED",
         "reasons": [
-          "daily_entry_cap",
           "cash_reserve_too_low"
         ],
         "warnings": [
@@ -8823,8 +10089,8 @@
         "realized_pnl_today": 0.0,
         "current_open_positions": 1,
         "entries_today": 0,
-        "executed_entries_today": 3,
-        "executed_trades_today": 3,
+        "executed_entries_today": 0,
+        "executed_trades_today": 0,
         "closes_today": 0,
         "round_trips_today": 0,
         "limits": {
@@ -8835,7 +10101,7 @@
           "max_daily_loss": 250.0
         },
         "controls": {
-          "daily_entry_cap": true,
+          "daily_entry_cap": false,
           "max_drawdown_hit": false,
           "cash_reserve_too_low": true,
           "max_open_positions": false,
@@ -8854,9 +10120,13 @@
         "trading_mode": "paper",
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-04-17T01:25:36.483052",
+        "timestamp": "2026-04-17T02:34:16.248402",
         "extra_kwargs_seen": []
-      }
+      },
+      "governor_blocked": true,
+      "governor_reason": "governor_blocked:cash_reserve_too_low",
+      "blocked_at": "governor",
+      "final_reason": "governor_blocked:cash_reserve_too_low"
     }
   }
 ]
