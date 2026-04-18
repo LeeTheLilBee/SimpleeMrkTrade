@@ -370,14 +370,15 @@ def contract_quality_score(option, stock_price, strategy, trade=None):
     return int(round(score)), notes
 
 
-def option_is_executable(option, min_score=60):
+def option_is_executable(option, min_score=60, trading_mode="paper"):
     if not option:
         return False, "no_option_contract"
 
+    trading_mode = _safe_str(trading_mode, "paper").lower()
     score = _safe_float(option.get("contract_score"), 0.0)
     volume = _safe_float(option.get("volume"), 0.0)
     oi = _safe_float(option.get("openInterest", option.get("open_interest")), 0.0)
-    ask = _safe_float(option.get("ask", option.get("mark")), 0.0)
+    ask = _safe_float(option.get("ask", option.get("mark", option.get("last"))), 0.0)
     spread_pct = _safe_float(option.get("spread_pct"), 0.0)
     dte = int(_safe_float(option.get("dte", 0), 0))
     intent = _safe_str(option.get("trade_intent", "GRIND"), "GRIND").upper()
@@ -388,17 +389,38 @@ def option_is_executable(option, min_score=60):
         return False, "volume_too_thin"
     if oi < 50:
         return False, "open_interest_too_thin"
-    if ask <= 0:
-        return False, "ask_unavailable"
+
+    if trading_mode == "live":
+        if ask <= 0:
+            return False, "ask_unavailable"
+    else:
+        # paper mode: allow mark/last fallback
+        if ask <= 0:
+            fallback_price = _safe_float(
+                option.get("mark", option.get("last", option.get("price", 0.0))),
+                0.0,
+            )
+            if fallback_price <= 0:
+                return False, "quote_unavailable_paper_mode"
+
     if spread_pct > 0.12:
         return False, "spread_too_wide"
 
-    if intent == "GRIND" and dte < 2:
-        return False, "expiry_too_close_for_grind"
-    if intent == "MOMENTUM" and dte < 1:
-        return False, "expiry_too_close_for_momentum"
-    if intent == "EXPLOSIVE" and dte < 1:
-        return False, "expiry_too_close_for_explosive"
+    if trading_mode == "live":
+        if intent == "GRIND" and dte < 2:
+            return False, "expiry_too_close_for_grind"
+        if intent == "MOMENTUM" and dte < 1:
+            return False, "expiry_too_close_for_momentum"
+        if intent == "EXPLOSIVE" and dte < 1:
+            return False, "expiry_too_close_for_explosive"
+    else:
+        # paper mode: allow 0DTE if everything else is strong enough
+        if intent == "GRIND" and dte < 0:
+            return False, "expiry_too_close_for_grind"
+        if intent == "MOMENTUM" and dte < 0:
+            return False, "expiry_too_close_for_momentum"
+        if intent == "EXPLOSIVE" and dte < 0:
+            return False, "expiry_too_close_for_explosive"
 
     return True, "ok"
 

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Any, Dict, List, Optional
 
 
@@ -121,6 +122,39 @@ def _collapse_to_research_only(
     return out
 
 
+def _normalize_v2_row(v2_row: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    v2_row = v2_row if isinstance(v2_row, dict) else {}
+
+    notes = v2_row.get("notes", v2_row.get("signals", []))
+    risk_flags = v2_row.get("risk_flags", v2_row.get("warnings", []))
+
+    return {
+        "regime_alignment": _safe_str(
+            v2_row.get("regime_alignment", v2_row.get("alignment", "")),
+            "",
+        ),
+        "signal_strength": _safe_float(
+            v2_row.get("signal_strength", v2_row.get("strength", v2_row.get("v2_score", v2_row.get("score", 0.0)))),
+            0.0,
+        ),
+        "conviction_adjustment": _safe_float(
+            v2_row.get("conviction_adjustment", v2_row.get("confidence_adjustment", 0.0)),
+            0.0,
+        ),
+        "vehicle_bias": _safe_str(
+            v2_row.get("vehicle_bias", v2_row.get("bias", v2_row.get("preferred_vehicle", ""))),
+            "",
+        ).upper(),
+        "thesis": _safe_str(
+            v2_row.get("thesis", v2_row.get("summary", v2_row.get("reason", ""))),
+            "",
+        ),
+        "notes": notes if isinstance(notes, list) else [],
+        "risk_flags": risk_flags if isinstance(risk_flags, list) else [],
+        "raw": dict(v2_row),
+    }
+
+
 def choose_best_vehicle(
     base_trade: Dict[str, Any],
     best_option: Optional[Dict[str, Any]],
@@ -157,23 +191,17 @@ def choose_best_vehicle(
     option_quality_ok = has_option and option_score_value >= 60
     option_spread_ok = option_spread_pct <= 0.12
 
-    if trade_intent == "GRIND":
-        option_dte_ok = option_dte >= 2
-    elif trade_intent in {"MOMENTUM", "EXPLOSIVE"}:
-        option_dte_ok = option_dte >= 1
+    if trade_intent in {"GRIND", "MOMENTUM", "EXPLOSIVE"}:
+        option_dte_ok = option_dte >= 0
     else:
-        option_dte_ok = option_dte >= 1
+        option_dte_ok = option_dte >= 0
 
     option_executable = (
         has_option
         and option_affordable
         and (
             option_flagged_executable
-            or (
-                option_quality_ok
-                and option_spread_ok
-                and option_dte_ok
-            )
+            or (option_quality_ok and option_spread_ok and option_dte_ok)
         )
     )
 
@@ -194,7 +222,6 @@ def choose_best_vehicle(
         capital_required = round(option_cost - _safe_float(commission, 1.0), 2)
         minimum_trade_cost = option_cost
         best_vehicle_reason = "preferred_option_contract"
-
     elif stock_executable:
         if has_option and not option_affordable and option_cost > 0:
             vehicle = "STOCK"
@@ -225,25 +252,21 @@ def choose_best_vehicle(
             capital_required = stock_cost
             minimum_trade_cost = stock_minimum_cost
             best_vehicle_reason = "stock_only_executable"
-
     elif option_executable:
         vehicle = "OPTION"
         capital_required = round(option_cost - _safe_float(commission, 1.0), 2)
         minimum_trade_cost = option_cost
         best_vehicle_reason = "option_only_executable"
-
     elif has_option and option_cost > 0 and not option_affordable:
         vehicle = "RESEARCH_ONLY"
         capital_required = round(option_cost - _safe_float(commission, 1.0), 2)
         minimum_trade_cost = option_cost
         best_vehicle_reason = "option_not_affordable"
-
     elif stock_minimum_cost > 0 and not stock_affordable:
         vehicle = "RESEARCH_ONLY"
         capital_required = stock_cost
         minimum_trade_cost = stock_minimum_cost
         best_vehicle_reason = "stock_not_affordable"
-
     elif has_option and option_score_value > 0:
         vehicle = "RESEARCH_ONLY"
         capital_required = 0.0
@@ -281,35 +304,41 @@ def apply_v2_overlay(
     v2_row: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     out = dict(candidate or {})
-    v2_row = v2_row if isinstance(v2_row, dict) else {}
-
-    v2_score = _safe_float(v2_row.get("v2_score", v2_row.get("score", 0.0)), 0.0)
-    v2_confidence = _safe_str(v2_row.get("v2_confidence", v2_row.get("confidence", "")), "").upper()
-    v2_reason = _safe_str(v2_row.get("v2_reason", v2_row.get("reason", "")), "")
-    v2_bias = _safe_str(v2_row.get("bias", v2_row.get("vehicle_bias", "")), "").upper()
-    v2_quality = _safe_float(v2_row.get("execution_quality", v2_row.get("quality", 0.0)), 0.0)
+    normalized_v2 = _normalize_v2_row(v2_row)
 
     base_score = _safe_float(out.get("score", 0.0), 0.0)
     base_confidence = _safe_str(out.get("confidence", "LOW"), "LOW").upper()
 
-    fused_score = round((base_score * 0.65) + (v2_score * 0.35), 2) if v2_score > 0 else base_score
-    fused_confidence = base_confidence
+    v2_signal_strength = _safe_float(normalized_v2.get("signal_strength", 0.0), 0.0)
+    v2_conviction_adjustment = _safe_float(normalized_v2.get("conviction_adjustment", 0.0), 0.0)
+    v2_bias = _safe_str(normalized_v2.get("vehicle_bias", ""), "").upper()
+    v2_reason = _safe_str(normalized_v2.get("thesis", ""), "")
 
-    if v2_confidence:
-        if _confidence_rank(v2_confidence) > _confidence_rank(base_confidence):
-            fused_confidence = v2_confidence
-        elif _confidence_rank(v2_confidence) < _confidence_rank(base_confidence) and v2_score > 0:
-            fused_confidence = base_confidence
+    fused_score = round(base_score + v2_conviction_adjustment, 2)
+
+    fused_confidence = base_confidence
+    if v2_conviction_adjustment >= 15 and base_confidence == "MEDIUM":
+        fused_confidence = "HIGH"
+    elif v2_conviction_adjustment >= 10 and base_confidence == "LOW":
+        fused_confidence = "MEDIUM"
+    elif v2_conviction_adjustment <= -15 and base_confidence == "HIGH":
+        fused_confidence = "MEDIUM"
+    elif v2_conviction_adjustment <= -10 and base_confidence == "MEDIUM":
+        fused_confidence = "LOW"
 
     out["base_score"] = base_score
-    out["v2_score"] = v2_score
     out["fused_score"] = fused_score
     out["confidence"] = fused_confidence
     out["base_confidence"] = base_confidence
-    out["v2_confidence"] = v2_confidence or base_confidence
-    out["v2_reason"] = v2_reason
-    out["v2_quality"] = v2_quality
-    out["v2_vehicle_bias"] = v2_bias
+
+    out["v2"] = normalized_v2
+    out["v2_regime_alignment"] = _safe_str(normalized_v2.get("regime_alignment", ""), "")
+    out["v2_signal_strength"] = _safe_float(normalized_v2.get("signal_strength", 0.0), 0.0)
+    out["v2_conviction_adjustment"] = _safe_float(normalized_v2.get("conviction_adjustment", 0.0), 0.0)
+    out["v2_vehicle_bias"] = _safe_str(normalized_v2.get("vehicle_bias", ""), "").upper()
+    out["v2_thesis"] = _safe_str(normalized_v2.get("thesis", ""), "")
+    out["v2_notes"] = _safe_list(normalized_v2.get("notes", []))
+    out["v2_risk_flags"] = _safe_list(normalized_v2.get("risk_flags", []))
 
     if v2_bias in {"OPTION", "OPTIONS"}:
         out["prefer_options"] = True
@@ -322,22 +351,12 @@ def apply_v2_overlay(
     if v2_reason:
         why.append(f"V2: {v2_reason}")
     out["why"] = why
+
     return out
 
 
 def finalize_candidate_state(candidate: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Call this AFTER the approval pipeline has populated:
-      - research_approved
-      - execution_ready
-      - selected_for_execution
-      - blocked_at
-      - final_reason
-
-    This normalizes the final visible state so the candidate tells one story.
-    """
     out = dict(candidate or {})
-
     vehicle = _safe_str(out.get("vehicle_selected", "RESEARCH_ONLY"), "RESEARCH_ONLY").upper()
     blocked_at = _safe_str(out.get("blocked_at", ""), "")
     final_reason = _safe_str(out.get("final_reason", ""), "")
@@ -373,13 +392,10 @@ def finalize_candidate_state(candidate: Dict[str, Any]) -> Dict[str, Any]:
         out["research_approved"] = bool(research_approved)
         out["execution_ready"] = False
         out["selected_for_execution"] = False
-
         if not out.get("blocked_at"):
             out["blocked_at"] = "vehicle_selection"
-
         if not out.get("final_reason"):
             out["final_reason"] = "no_executable_vehicle_selected"
-
         out["vehicle_reason"] = (
             out.get("vehicle_reason")
             or out.get("best_vehicle_reason")
@@ -463,7 +479,10 @@ def build_fused_candidate(
 
     row = apply_v2_overlay(row, v2_row=v2_row)
 
-    price = round(_safe_float(row.get("price", row.get("current_price", row.get("entry", 0.0))), 0.0), 2)
+    price = round(
+        _safe_float(row.get("price", row.get("current_price", row.get("entry", 0.0))), 0.0),
+        2,
+    )
     stock_capital_required = price
     stock_minimum_trade_cost = round(stock_capital_required + commission, 2)
     stock_affordable = stock_capital_required > 0 and buying_power >= stock_minimum_trade_cost
@@ -514,6 +533,11 @@ def build_fused_candidate(
             "spread_pct": 999.0,
         }
 
+    if row.get("v2_vehicle_bias") == "OPTION" and row.get("option_path", {}).get("affordable"):
+        row["prefer_options"] = True
+    elif row.get("v2_vehicle_bias") == "STOCK":
+        row["prefer_options"] = False
+
     vehicle = choose_best_vehicle(
         row,
         best_option=best_option,
@@ -529,9 +553,9 @@ def build_fused_candidate(
     if selected_vehicle == "OPTION":
         option_path = row.get("option_path", {})
         stock_path = row.get("stock_path", {})
-        option_dte = int(_safe_float(option_path.get("dte", -1), -1))
         option_quality = _safe_float(option_path.get("score", -1.0), -1.0)
-        if option_path.get("affordable") is False or option_dte <= 0 or option_quality < 90:
+
+        if option_path.get("affordable") is False or option_quality < 60:
             if stock_path.get("affordable"):
                 row["vehicle_selected"] = "STOCK"
                 row["capital_required"] = stock_path.get("capital_required", 0.0)
@@ -550,10 +574,12 @@ def build_fused_candidate(
         else:
             row["vehicle_reason"] = row.get("vehicle_reason") or "option_selected"
             row = _apply_vehicle_shape(row, "OPTION")
+
     elif selected_vehicle == "STOCK":
         if not row.get("vehicle_reason"):
             row["vehicle_reason"] = "stock_selected"
         row = _apply_vehicle_shape(row, "STOCK")
+
     else:
         row["vehicle_selected"] = "RESEARCH_ONLY"
         row["capital_required"] = 0.0
@@ -571,4 +597,5 @@ def build_fused_candidate(
     row["research_approved"] = False
     row["execution_ready"] = False
     row["selected_for_execution"] = False
+
     return row

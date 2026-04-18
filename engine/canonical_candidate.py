@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from copy import deepcopy
 from datetime import datetime
 from typing import Any, Dict, List
@@ -90,13 +91,11 @@ def build_canonical_candidate(
     stronger_competing_setups: List[Dict[str, Any]] | None = None,
 ) -> Dict[str, Any]:
     trade = _safe_dict(deepcopy(trade))
-    stronger_competing_setups = (
-        stronger_competing_setups if isinstance(stronger_competing_setups, list) else []
-    )
+    stronger_competing_setups = stronger_competing_setups if isinstance(stronger_competing_setups, list) else []
 
     symbol = _normalize_symbol(trade.get("symbol"))
     strategy = _safe_str(trade.get("strategy"), "CALL").upper()
-    score = round(_safe_float(trade.get("score"), 0.0), 2)
+    score = round(_safe_float(trade.get("score", trade.get("fused_score", 0.0)), 0.0), 2)
     confidence = _safe_str(trade.get("confidence"), "LOW").upper()
 
     base_price = _best_price(trade)
@@ -113,6 +112,8 @@ def build_canonical_candidate(
 
     option = _safe_dict(trade.get("option"))
     has_option = bool(option)
+
+    v2 = _safe_dict(trade.get("v2"))
 
     canonical = {
         "symbol": symbol,
@@ -145,9 +146,9 @@ def build_canonical_candidate(
         "fill_price": round(_safe_float(trade.get("fill_price", 0.0), 0.0), 2),
         "requested_price": round(_safe_float(trade.get("requested_price", 0.0), 0.0), 2),
         "capital_required": round(_safe_float(capital_required, 0.0), 2)
-        if capital_required is not None else None,
+        if capital_required is not None else round(_safe_float(trade.get("capital_required"), 0.0), 2),
         "capital_available": round(_safe_float(capital_available, 0.0), 2)
-        if capital_available is not None else None,
+        if capital_available is not None else round(_safe_float(trade.get("capital_available"), 0.0), 2),
         "capital_buffer_after": (
             round(_safe_float(capital_available, 0.0) - _safe_float(capital_required, 0.0), 2)
             if capital_required is not None and capital_available is not None
@@ -156,16 +157,20 @@ def build_canonical_candidate(
         "decision_reason": _first_nonempty(
             decision_reason,
             trade.get("decision_reason"),
+            trade.get("final_reason"),
             trade.get("rejection_reason"),
             reason,
         ),
         "decision_label": _first_nonempty(
             reason,
             trade.get("decision_label"),
+            trade.get("final_reason"),
             trade.get("rejection_reason"),
             status,
         ),
         "selected_for_execution": _safe_bool(selected_for_execution, False),
+        "research_approved": _safe_bool(trade.get("research_approved"), False),
+        "execution_ready": _safe_bool(trade.get("execution_ready"), False),
         "has_option": has_option,
         "option_contract_score": round(_safe_float(trade.get("option_contract_score"), 0.0), 2),
         "option": option if has_option else {},
@@ -184,6 +189,39 @@ def build_canonical_candidate(
         "stronger_competing_setups": stronger_competing_setups,
         "timestamp": _first_nonempty(trade.get("timestamp"), _now_iso()),
         "source": _safe_str(trade.get("source"), "engine"),
+        "vehicle_selected": _safe_str(trade.get("vehicle_selected"), "RESEARCH_ONLY").upper(),
+        "vehicle_reason": _safe_str(trade.get("vehicle_reason"), ""),
+        "governor_blocked": _safe_bool(trade.get("governor_blocked"), False),
+        "governor_status": _safe_str(trade.get("governor_status"), ""),
+        "governor_reasons": _safe_list(trade.get("governor_reasons")),
+        "governor_warnings": _safe_list(trade.get("governor_warnings")),
+        "v2": v2,
+        "v2_regime_alignment": _safe_str(
+            trade.get("v2_regime_alignment", v2.get("regime_alignment", "")),
+            "",
+        ),
+        "v2_signal_strength": round(
+            _safe_float(trade.get("v2_signal_strength", v2.get("signal_strength", 0.0)), 0.0),
+            2,
+        ),
+        "v2_conviction_adjustment": round(
+            _safe_float(trade.get("v2_conviction_adjustment", v2.get("conviction_adjustment", 0.0)), 0.0),
+            2,
+        ),
+        "v2_vehicle_bias": _safe_str(
+            trade.get("v2_vehicle_bias", v2.get("vehicle_bias", "")),
+            "",
+        ).upper(),
+        "v2_thesis": _safe_str(
+            trade.get("v2_thesis", v2.get("thesis", "")),
+            "",
+        ),
+        "v2_notes": _safe_list(
+            trade.get("v2_notes", v2.get("notes", []))
+        ),
+        "v2_risk_flags": _safe_list(
+            trade.get("v2_risk_flags", v2.get("risk_flags", []))
+        ),
         "raw": trade,
     }
 
@@ -195,6 +233,8 @@ def build_canonical_candidate(
             fallback_lines.append(f"Setup family: {canonical['setup_family']}")
         if canonical["entry_quality"]:
             fallback_lines.append(f"Entry quality: {canonical['entry_quality']}")
+        if canonical["v2_thesis"]:
+            fallback_lines.append(f"V2: {canonical['v2_thesis']}")
         canonical["why"] = fallback_lines
 
     return canonical

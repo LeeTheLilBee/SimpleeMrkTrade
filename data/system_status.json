@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-17T02:33:28.041842",
+  "timestamp": "2026-04-18T16:18:28.272162",
   "cash": 171.4,
   "buying_power": 171.4,
   "equity": 1014.01,
@@ -7,7 +7,7 @@
   "executed_trades": 3,
   "regime": "STARTING",
   "volatility": "UNKNOWN",
-  "mode": "BOOT",
+  "mode": "BOOT_PAPER",
   "total_trades": 2,
   "winrate": 0.5,
   "max_drawdown": 2.01

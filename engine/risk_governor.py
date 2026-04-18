@@ -1,7 +1,9 @@
 from datetime import datetime
+
 from engine.account_state import load_state, resolve_min_cash_reserve
 from engine.performance_tracker import performance_summary
 from engine.pdt_guard import pdt_status_preview
+from engine.observatory_mode import normalize_mode, build_mode_context
 
 MAX_DAILY_ENTRIES = 3
 MAX_DRAWDOWN_DOLLARS = 150
@@ -32,16 +34,13 @@ def _safe_bool(value, default=False):
 
 
 def _detect_trading_mode(kwargs):
-    raw_mode = str(
+    raw_mode = (
         kwargs.get("trading_mode")
         or kwargs.get("mode")
         or kwargs.get("execution_mode")
         or "paper"
-    ).strip().lower()
-
-    if raw_mode in {"live", "real", "production"}:
-        return "live"
-    return "paper"
+    )
+    return normalize_mode(raw_mode)
 
 
 def governor_status(
@@ -67,22 +66,20 @@ def governor_status(
     realized_pnl_today = _safe_float(perf.get("realized_pnl_today", 0), 0)
 
     current_open_positions = _safe_int(current_open_positions, 0)
-
-    # Keep daily entry counting tied to actual "today" performance data first.
     perf_entries_today = _safe_int(perf.get("entries_today", 0), 0)
     perf_closes_today = _safe_int(perf.get("closes_today", 0), 0)
     perf_round_trips_today = _safe_int(perf.get("round_trips_today", 0), 0)
 
-    # executed_entries_today should only represent entry attempts today.
-    # Do NOT blindly overwrite it with executed_trades_today.
     executed_entries_today = _safe_int(
         perf_entries_today if perf_entries_today > 0 else executed_entries_today,
         0,
     )
 
-    # executed_trades_today is informational unless caller truly passes a same-day count.
     executed_trades_today_value = _safe_int(
-        perf.get("executed_trades_today", executed_trades_today if executed_trades_today is not None else executed_entries_today),
+        perf.get(
+            "executed_trades_today",
+            executed_trades_today if executed_trades_today is not None else executed_entries_today,
+        ),
         executed_entries_today,
     )
 
@@ -110,6 +107,11 @@ def governor_status(
     )
 
     trading_mode = _detect_trading_mode(kwargs)
+    mode_context = build_mode_context(trading_mode)
+
+    strict_reserve = _safe_bool(mode_context.get("strict_reserve", True), True)
+    strict_pdt = _safe_bool(mode_context.get("strict_pdt", True), True)
+
     pdt_restricted = _safe_bool(pdt.get("pdt_restricted", False), False)
 
     blocked = False
@@ -120,6 +122,7 @@ def governor_status(
         "daily_entry_cap": False,
         "max_drawdown_hit": False,
         "cash_reserve_too_low": False,
+        "cash_reserve_warning_only": False,
         "max_open_positions": False,
         "max_daily_loss_hit": False,
         "pdt_restricted": False,
@@ -138,9 +141,13 @@ def governor_status(
         reasons.append("max_drawdown_hit")
 
     if cash <= effective_min_cash_reserve:
-        blocked = True
         controls["cash_reserve_too_low"] = True
-        reasons.append("cash_reserve_too_low")
+        if strict_reserve:
+            blocked = True
+            reasons.append("cash_reserve_too_low")
+        else:
+            controls["cash_reserve_warning_only"] = True
+            warnings.append("cash_reserve_too_low")
 
     if current_open_positions >= max_open_positions:
         blocked = True
@@ -154,16 +161,16 @@ def governor_status(
 
     if pdt_restricted:
         controls["pdt_restricted"] = True
-        if trading_mode == "live":
+        if strict_pdt:
             blocked = True
             reasons.append("pdt_restricted")
         else:
             controls["pdt_warning_only"] = True
-            warnings.append("pdt_restricted_paper_mode")
+            warnings.append("pdt_restricted")
 
     if kill_switch or (controls["max_drawdown_hit"] and controls["max_daily_loss_hit"]):
-        controls["kill_switch"] = True
         blocked = True
+        controls["kill_switch"] = True
         reasons.append("kill_switch")
 
     deduped_reasons = []
@@ -211,6 +218,7 @@ def governor_status(
         "controls": controls,
         "pdt": pdt,
         "trading_mode": trading_mode,
+        "mode_context": mode_context,
         "reserve_mode": state.get("reserve_mode", "percent"),
         "reserve_value": state.get("reserve_value", 20.0),
         "timestamp": datetime.now().isoformat(),

@@ -8,14 +8,15 @@ from engine.position_monitor import monitor_open_positions
 from engine.execution_source import get_execution_candidates
 from engine.regime import get_market_regime
 from engine.market_volatility import get_volatility_environment
-
 from engine.options_intelligence import (
     choose_best_option,
     option_is_executable,
     explain_option_choice,
 )
-from engine.premium_feed import write_premium_feed_item
 
+from engine.premium_feed import write_premium_feed_item
+from engine.options_lifecycle import build_options_lifecycle
+from engine.execution_handoff import build_queued_trade_payload
 from engine.reentry_guard import reentry_allowed
 from engine.signal_feed import push_signal
 from engine.rsi_engine import calculate_rsi
@@ -25,7 +26,6 @@ from engine.signal_engine import build_signal
 from engine.canonical_candidate import build_canonical_candidate
 from engine.candidate_display import print_candidate_cards
 from engine.candidate_log import remember_candidate, show_candidates, clear_candidates
-from engine.execution_guard import can_execute_trade
 from engine.confidence_engine import confidence
 from engine.dashboard import dashboard
 from engine.watchlist import get_watchlist
@@ -36,7 +36,6 @@ from engine.market_breadth import market_breadth
 from engine.market_mode import market_mode
 from engine.queue_manager_plus import queue_top_trades_plus
 from engine.trade_ranker import final_trade_score
-
 from engine.paper_portfolio import open_count, print_positions, show_positions, get_position
 from engine.position_cap import trade_slots_left
 from engine.trade_history import executed_trade_count
@@ -44,7 +43,6 @@ from engine.daily_risk import trades_left_today
 from engine.signal_history import remember_signal
 from engine.atr_engine import calculate_atr
 from engine.leaderboard import print_leaderboard
-from engine.candidate_log import remember_candidate, show_candidates, clear_candidates
 from engine.position_review import review_positions
 from engine.data_utils import safe_download
 from engine.execution_loop import execute_trades
@@ -62,6 +60,15 @@ from engine.top_candidates_store import save_top_candidates
 from engine.top_candidates_view import print_top_candidates
 from engine.daily_report import write_daily_report
 from engine.risk_governor import governor_status
+from engine.observatory_mode import (
+    MODE_SURVEY,
+    MODE_PAPER,
+    MODE_LIVE,
+    normalize_mode,
+    get_mode_config,
+    build_mode_payload,
+    build_mode_context,
+)
 from engine.unrealized_pnl import unrealized_pnl
 from engine.strategy_performance import strategy_breakdown
 from engine.breadth_filter import breadth_allows_trade
@@ -97,7 +104,6 @@ from engine.notification_engine import push_notification
 
 import json
 from pathlib import Path
-
 
 def load_json(path, default):
     try:
@@ -138,6 +144,35 @@ def _reduced_risk_mode(brake_payload, exposure_payload):
 
 def _trim_for_reduced_risk(selected_trades):
     return selected_trades[:1] if selected_trades else selected_trades
+
+
+def _resolve_bot_mode(explicit_mode=None):
+    return normalize_mode(explicit_mode or MODE_PAPER)
+
+
+def _mode_context(explicit_mode=None):
+    mode = _resolve_bot_mode(explicit_mode)
+    cfg = get_mode_config(mode)
+    payload = build_mode_payload(mode)
+    return mode, cfg, payload
+
+
+def _governor_allows_execution(governor, mode):
+    if not isinstance(governor, dict):
+        return False
+
+    if mode == MODE_SURVEY:
+        hard_reasons = {
+            "daily_entry_cap",
+            "max_drawdown_hit",
+            "max_open_positions",
+            "max_daily_loss_hit",
+            "kill_switch",
+        }
+        reasons = set(governor.get("reasons", []) or [])
+        return len(reasons.intersection(hard_reasons)) == 0
+
+    return bool(governor.get("ok_to_trade", False))
 
 
 def validate_contract_executable(contract: dict) -> tuple[bool, str]:
@@ -184,7 +219,7 @@ def validate_contract_executable(contract: dict) -> tuple[bool, str]:
     if last <= 0.0 and mark <= 0.0:
         return False, "no_usable_price"
 
-    return True, "ok"    
+    return True, "ok"
 
 
 def log_candidate_decision(
@@ -469,10 +504,9 @@ def log_approval(trade, mode, regime, breadth, volatility_state):
         "confidence": trade.get("confidence", "LOW"),
     })
 
-def process_signals(results, regime, volatility_payload):
+def process_signals(results, regime, volatility_payload, trading_mode="paper"):
     """
     Fused signal processor.
-
     Core behavior:
     - research approval is separate from execution readiness
     - V2 overlay can influence conviction and vehicle choice
@@ -482,6 +516,8 @@ def process_signals(results, regime, volatility_payload):
     - every candidate is normalized before it is logged, remembered, or displayed
     """
     from engine.candidate_fusion import build_fused_candidate, finalize_candidate_state
+
+    trading_mode = normalize_mode(trading_mode)
 
     def _safe_float(value, default=0.0):
         try:
@@ -555,6 +591,7 @@ def process_signals(results, regime, volatility_payload):
                 "blocked_at": trade.get("blocked_at", ""),
                 "final_reason": trade.get("final_reason", reason),
                 "vehicle_reason": trade.get("vehicle_reason", ""),
+                "trading_mode": trading_mode,
             }
 
         if isinstance(extra, dict):
@@ -575,20 +612,17 @@ def process_signals(results, regime, volatility_payload):
                 return row if isinstance(row, dict) else {}
         except Exception:
             pass
-
         try:
             if "get_v2_signal_overlay" in globals():
                 row = get_v2_signal_overlay(symbol, trade)
                 return row if isinstance(row, dict) else {}
         except Exception:
             pass
-
         return {}
 
-    def _governor_snapshot():
+    def _governor_snapshot(trading_mode=None):
         try:
             entries_today = 0
-
             try:
                 perf = performance_summary()
                 if isinstance(perf, dict):
@@ -599,12 +633,20 @@ def process_signals(results, regime, volatility_payload):
             print("GOVERNOR ENTRY FEED:", {
                 "entries_today_from_perf": entries_today,
                 "open_positions": open_count(),
+                "requested_trading_mode": trading_mode,
             })
 
             gov = governor_status(
                 current_open_positions=open_count(),
                 executed_entries_today=entries_today,
+                trading_mode=trading_mode,
             )
+
+            print("PROCESS SIGNALS GOVERNOR MODE CHECK:", {
+                "requested_trading_mode": trading_mode,
+                "governor_returned_mode": gov.get("trading_mode") if isinstance(gov, dict) else None,
+            })
+
             return gov if isinstance(gov, dict) else {}
         except Exception:
             return {}
@@ -657,6 +699,8 @@ def process_signals(results, regime, volatility_payload):
     capital_available_now = round(_safe_float(buying_power(), 0.0), 2)
     governor = _governor_snapshot()
     governor_reason = _governor_execution_block_reason(governor)
+
+    # keep the rest of your function exactly the same below this line
 
     for raw_trade in results:
         trade = dict(raw_trade) if isinstance(raw_trade, dict) else {}
@@ -1110,7 +1154,10 @@ def process_signals(results, regime, volatility_payload):
             )
             continue
 
+        from engine.observatory_mode import apply_mode_to_execution_guard
+
         exec_guard = can_execute_trade(fused, capital_available_now)
+        exec_guard = apply_mode_to_execution_guard(exec_guard, trading_mode)
         if isinstance(exec_guard, dict):
             blocked = bool(exec_guard.get("blocked", False))
             exec_reason = _safe_str(exec_guard.get("reason", ""), "")
@@ -1327,11 +1374,20 @@ def process_signals(results, regime, volatility_payload):
             )
 
     return research_approved, selected_trades, mode, breadth, volatility_state
-    
-def run():
-    write_bot_status(True, "starting")
-    log_bot("Bot run started", "INFO")
-    push_activity("SYSTEM", "Bot run started")
+
+def run(trading_mode="paper"):
+    trading_mode = normalize_mode(trading_mode)
+    mode_context = build_mode_context(trading_mode)
+
+    write_bot_status(True, f"starting:{trading_mode}")
+    log_bot(
+        f"Bot run started in {mode_context['mode_label']} ({trading_mode})",
+        "INFO",
+    )
+    push_activity(
+        "SYSTEM",
+        f"Bot run started in {mode_context['mode_label']} ({trading_mode})",
+    )
 
     monitor_open_positions()
 
@@ -1342,18 +1398,29 @@ def run():
         snapshot = account_snapshot()
         print_account_snapshot(snapshot)
 
-        write_system_status(regime="STARTING", volatility="UNKNOWN", mode="BOOT")
+        write_system_status(
+            regime="STARTING",
+            volatility="UNKNOWN",
+            mode=f"BOOT_{trading_mode.upper()}",
+        )
 
         governor = governor_status(
             current_open_positions=open_count(),
             executed_trades_today=entries_today(),
+            trading_mode=trading_mode,
         )
+
+        print("RUN GOVERNOR MODE CHECK:", {
+            "requested_trading_mode": trading_mode,
+            "governor_returned_mode": governor.get("trading_mode") if isinstance(governor, dict) else None,
+        })
 
         brake = drawdown_brake()
         corr = correlation_risk_status()
         sector_cap = sector_concentration_status()
         exposure = exposure_bucket_status()
 
+        print("Mode Context:", mode_context)
         print("Governor:", governor)
         print("Drawdown Brake:", brake)
         print("Correlation Risk:", corr)
@@ -1376,20 +1443,31 @@ def run():
         print("Scanning watchlist aggressively...")
         results = get_execution_candidates(force_rebuild=True, watchlist=watchlist)
         display_candidates = _filter_display_candidates(results)
+
         print("Execution candidates:", [r.get("symbol") for r in results[:20]])
         print("Execution candidate count:", len(results))
 
         execution_universe = load_json("data/execution_universe.json", {})
         spotlight = execution_universe.get("spotlight", []) if isinstance(execution_universe, dict) else []
-        print("Execution spotlight:", [r.get("symbol") for r in spotlight[:5]])
 
+        print("Execution spotlight:", [r.get("symbol") for r in spotlight[:5]])
         push_activity("EXECUTION", f"Aggressive execution universe rebuilt with {len(results)} candidates")
         push_activity("SPOTLIGHT", f"Top spotlight contains {len(spotlight)} names")
 
-        approved_trades, selected_trades, mode, breadth, volatility_state = process_signals(results, regime, volatility_payload)
+        approved_trades, selected_trades, mode, breadth, volatility_state = process_signals(
+            results,
+            regime,
+            volatility_payload,
+            trading_mode=trading_mode,
+        )
+
         push_activity(
             "QUEUE",
-            f"Approved {len(approved_trades)} research trades; selected {len(selected_trades)} execution trades in mode {mode}"
+            (
+                f"Approved {len(approved_trades)} research trades; "
+                f"selected {len(selected_trades)} execution trades in market mode "
+                f"{mode} / trading mode {mode_context['mode_label']}"
+            ),
         )
 
         market_context = [
@@ -1397,6 +1475,10 @@ def run():
             f"Volatility state: {volatility_state}",
             f"Market breadth: {breadth}",
             f"Mode: {mode}",
+            f"Trading mode: {trading_mode}",
+            f"Trading mode label: {mode_context['mode_label']}",
+            f"Mode shell: {mode_context['mode_shell']}",
+            f"Theme family: {mode_context['theme_family']}",
         ]
 
         for trade in approved_trades:
@@ -1414,7 +1496,7 @@ def run():
                 trade["strategy"],
                 trade["score"],
                 trade["confidence"],
-                trade_id=trade_id
+                trade_id=trade_id,
             )
 
             save_research_signal(
@@ -1434,7 +1516,8 @@ def run():
                     "score": trade["score"],
                     "confidence": trade["confidence"],
                     "source": "research",
-                }
+                    "trading_mode": trading_mode,
+                },
             )
 
             append_trade_detail_timeline(
@@ -1445,7 +1528,8 @@ def run():
                     "strategy": trade["strategy"],
                     "score": trade["score"],
                     "confidence": trade["confidence"],
-                }
+                    "trading_mode": trading_mode,
+                },
             )
 
             if trade.get("score", 0) >= 200:
@@ -1484,12 +1568,12 @@ def run():
                 )
 
         if brake.get("blocked"):
-            write_bot_status(False, "blocked by drawdown brake")
-            push_activity("RISK", "Blocked by drawdown brake")
+            write_bot_status(False, f"blocked_by_drawdown:{trading_mode}")
+            push_activity("RISK", f"Blocked by drawdown brake in {trading_mode} mode")
             notify_trade_risk("PORTFOLIO", "Drawdown brake blocked new execution trades")
             push_notification(
                 notif_type="RISK_WARNING",
-                message="Execution blocked by drawdown brake.",
+                message=f"Execution blocked by drawdown brake in {trading_mode} mode.",
                 min_tier="starter",
                 level="warning",
                 volatility=volatility_state,
@@ -1498,8 +1582,8 @@ def run():
             return
 
         if corr.get("blocked"):
-            write_bot_status(False, "blocked by correlation risk")
-            push_activity("RISK", "Blocked by correlation risk")
+            write_bot_status(False, f"blocked_by_correlation:{trading_mode}")
+            push_activity("RISK", f"Blocked by correlation risk in {trading_mode} mode")
             notify_trade_risk("PORTFOLIO", corr.get("reason", "Correlation block"))
             push_notification(
                 notif_type="RISK_WARNING",
@@ -1512,8 +1596,8 @@ def run():
             return
 
         if sector_cap.get("blocked"):
-            write_bot_status(False, "blocked by sector concentration cap")
-            push_activity("RISK", "Blocked by sector concentration cap")
+            write_bot_status(False, f"blocked_by_sector_cap:{trading_mode}")
+            push_activity("RISK", f"Blocked by sector concentration cap in {trading_mode} mode")
             notify_trade_risk("PORTFOLIO", sector_cap.get("reason", "Sector cap block"))
             push_notification(
                 notif_type="RISK_WARNING",
@@ -1526,13 +1610,13 @@ def run():
             return
 
         if governor.get("blocked"):
-            write_bot_status(False, "blocked by governor")
             joined = ", ".join(governor.get("reasons", []))
-            push_activity("RISK", f"Blocked by governor: {joined}")
+            write_bot_status(False, f"blocked_by_governor:{trading_mode}")
+            push_activity("RISK", f"Blocked by governor in {trading_mode} mode: {joined}")
             notify_trade_risk("PORTFOLIO", f"Governor blocked execution: {joined}")
             push_notification(
                 notif_type="RISK_WARNING",
-                message=f"Execution blocked by governor: {joined}",
+                message=f"Execution blocked by governor in {trading_mode} mode: {joined}",
                 min_tier="starter",
                 level="warning",
                 volatility=volatility_state,
@@ -1542,7 +1626,7 @@ def run():
 
         if _reduced_risk_mode(brake, exposure):
             selected_trades = _trim_for_reduced_risk(selected_trades)
-            push_activity("RISK", "Reduced-risk mode active: trimmed trade queue")
+            push_activity("RISK", f"Reduced-risk mode active in {trading_mode}: trimmed trade queue")
 
         for trade in selected_trades:
             if not trade.get("trade_id"):
@@ -1557,7 +1641,14 @@ def run():
 
             alert_trade(trade)
 
-            print("APPROVED:", trade["symbol"], "| Strategy:", trade["strategy"], "| Confidence:", trade["confidence"])
+            print(
+                "APPROVED:",
+                trade["symbol"],
+                "| Strategy:",
+                trade["strategy"],
+                "| Confidence:",
+                trade["confidence"],
+            )
             if trade.get("option"):
                 print("Best Option:", trade["option"])
 
@@ -1569,8 +1660,9 @@ def run():
                     "trade_id": trade["trade_id"],
                     "strategy": trade["strategy"],
                     "score": trade["score"],
-                    "confidence": trade["confidence"]
-                }
+                    "confidence": trade["confidence"],
+                    "trading_mode": trading_mode,
+                },
             )
 
             add_trade_timeline_event(
@@ -1582,7 +1674,8 @@ def run():
                     "score": trade["score"],
                     "confidence": trade["confidence"],
                     "source": "execution",
-                }
+                    "trading_mode": trading_mode,
+                },
             )
 
             append_trade_detail_timeline(
@@ -1593,14 +1686,15 @@ def run():
                     "strategy": trade["strategy"],
                     "score": trade["score"],
                     "confidence": trade["confidence"],
-                }
+                    "trading_mode": trading_mode,
+                },
             )
 
             notify_trade_approved(trade)
 
             push_notification(
                 notif_type="EXECUTION_APPROVED",
-                message=f"{trade['symbol']} approved for live execution review.",
+                message=f"{trade['symbol']} approved for execution review in {trading_mode} mode.",
                 trade_id=trade["trade_id"],
                 min_tier="starter",
                 level="info",
@@ -1622,38 +1716,75 @@ def run():
                 notify_trade_edge(trade["symbol"], premium_entry.get("reasons", []))
 
         print("Processing trade queue...")
-
         today_count = entries_today()
         trades_remaining = max(0, 3 - today_count)
 
         print("Trades today:", today_count)
         print("Trades remaining today:", trades_remaining)
         print("Selected trades for execution:", [t.get("symbol") for t in selected_trades])
+        print("Trading mode:", trading_mode)
+        print("Mode context:", mode_context)
+
+        execution_queue = []
 
         if trades_remaining > 0 and selected_trades:
-            execute_trades(selected_trades, limit=trades_remaining)
+            cash_available = round(_safe_float(buying_power(), 0.0), 2)
 
-            for trade in selected_trades[:trades_remaining]:
-              add_trade_timeline_event(
-                  trade["symbol"],
-                  "EXECUTED",
-                  {
-                      "trade_id": trade.get("trade_id"),
-                      "strategy": trade["strategy"],
-                      "score": trade["score"],
-                      "source": "execution",
-                  }
-              )
+            for candidate in selected_trades:
+                option_chain = (
+                    candidate.get("option_chain", [])
+                    if isinstance(candidate.get("option_chain"), list)
+                    else []
+                )
 
-              append_trade_detail_timeline(
-                  trade.get("trade_id"),
-                  "EXECUTED",
-                  f"{trade['symbol']} entered execution flow.",
-                  {
-                      "strategy": trade["strategy"],
-                      "score": trade["score"],
-                  }
-              )
+                lifecycle = build_options_lifecycle(
+                    candidate=candidate,
+                    option_chain=option_chain,
+                    account_context={"cash_available": cash_available},
+                    mode=trading_mode,
+                    allow_stock_fallback=True,
+                )
+
+                if lifecycle.get("final_decision") in {"APPROVE", "WARN"}:
+                    queued_trade = build_queued_trade_payload(
+                        lifecycle,
+                        mode=trading_mode,
+                    )
+                    execution_queue.append(queued_trade)
+
+            packet = execute_trades(execution_queue, limit=trades_remaining)
+            executed_results = packet.get("results", []) if isinstance(packet, dict) else []
+
+            for result in executed_results:
+                if not isinstance(result, dict) or not result.get("success"):
+                    continue
+
+                lifecycle_after = result.get("lifecycle_after", {}) or {}
+                symbol = lifecycle_after.get("symbol", "UNKNOWN")
+                trade_id = lifecycle_after.get("raw", {}).get("trade_id")
+
+                add_trade_timeline_event(
+                    symbol,
+                    "EXECUTED",
+                    {
+                        "trade_id": trade_id,
+                        "strategy": lifecycle_after.get("strategy"),
+                        "score": lifecycle_after.get("score"),
+                        "source": "execution",
+                        "trading_mode": trading_mode,
+                    },
+                )
+
+                append_trade_detail_timeline(
+                    trade_id,
+                    "EXECUTED",
+                    f"{symbol} entered execution flow.",
+                    {
+                        "strategy": lifecycle_after.get("strategy"),
+                        "score": lifecycle_after.get("score"),
+                        "trading_mode": trading_mode,
+                    },
+                )
         else:
             print("No trades executed. Either no selected trades or no daily capacity left.")
 
@@ -1668,14 +1799,26 @@ def run():
                 reason = closed.get("reason", "AUTO_CLOSE")
                 trade_id = closed.get("trade_id")
 
-                add_trade_timeline_event(symbol, "CLOSED", {"reason": reason, "trade_id": trade_id})
+                add_trade_timeline_event(
+                    symbol,
+                    "CLOSED",
+                    {
+                        "reason": reason,
+                        "trade_id": trade_id,
+                        "trading_mode": trading_mode,
+                    },
+                )
+
                 notify_trade_closed(symbol, reason)
 
                 append_trade_detail_timeline(
                     trade_id,
                     "CLOSED",
                     f"{symbol} closed with reason: {reason}.",
-                    {"reason": reason}
+                    {
+                        "reason": reason,
+                        "trading_mode": trading_mode,
+                    },
                 )
 
                 push_notification(
@@ -1689,16 +1832,16 @@ def run():
                 )
 
         show_candidates()
-
         build_equity_curve()
         export_journal()
+
         report = write_daily_report()
         archive_report()
 
         write_system_status(
             regime=regime,
             volatility=volatility_payload.get("volatility", "UNKNOWN"),
-            mode=mode,
+            mode=f"{mode}|{trading_mode}",
         )
 
         print("Performance:", performance_summary())
@@ -1706,18 +1849,23 @@ def run():
         print("Portfolio Summary:", portfolio_summary())
         print("Unrealized PnL:", unrealized_pnl())
         print("Strategy Performance:", strategy_breakdown())
+
         dd = build_drawdown_history()
         print("Drawdown History Built:", dd[-5:] if dd else [])
         print("Daily Report Written:", report["timestamp"])
         print("Final Account Snapshot:", account_snapshot())
+
         print_backtest_summary()
 
-        write_bot_status(False, "completed")
-        push_activity("SYSTEM", "Bot run completed")
+        write_bot_status(False, f"completed:{trading_mode}")
+        push_activity(
+            "SYSTEM",
+            f"Bot run completed in {mode_context['mode_label']} ({trading_mode})",
+        )
 
     except Exception as e:
-        write_bot_status(False, f"error: {e}")
-        push_activity("ERROR", f"Bot error: {e}")
+        write_bot_status(False, f"error:{trading_mode}:{e}")
+        push_activity("ERROR", f"Bot error in {trading_mode} mode: {e}")
         raise
 
 
