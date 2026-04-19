@@ -1,9 +1,9 @@
 [
   {
-    "timestamp": "2026-04-18T16:19:01.554791",
+    "timestamp": "2026-04-19T17:22:26.748070",
     "type": "RESEARCH_ALPHA",
     "message": "ORCL research alpha added to premium intelligence.",
-    "trade_id": "ORCL-CALL-20260418161901",
+    "trade_id": "ORCL-CALL-20260419172226",
     "tier_required": "elite",
     "level": "info",
     "score": 273.65,
@@ -12,10 +12,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:01.632253",
+    "timestamp": "2026-04-19T17:22:27.128542",
     "type": "HIGH_CONVICTION",
     "message": "ROKU high-conviction research setup detected (Score 270.44).",
-    "trade_id": "ROKU-CALL-20260418161901",
+    "trade_id": "ROKU-CALL-20260419172226",
     "tier_required": "pro",
     "level": "success",
     "score": 270.44,
@@ -24,7 +24,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:01.646801",
+    "timestamp": "2026-04-19T17:22:27.141782",
     "title": "Edge Detected",
     "message": "ROKU: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -35,10 +35,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:01.651757",
+    "timestamp": "2026-04-19T17:22:27.145972",
     "type": "RESEARCH_ALPHA",
     "message": "ROKU research alpha added to premium intelligence.",
-    "trade_id": "ROKU-CALL-20260418161901",
+    "trade_id": "ROKU-CALL-20260419172226",
     "tier_required": "elite",
     "level": "info",
     "score": 270.44,
@@ -47,10 +47,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:01.784029",
+    "timestamp": "2026-04-19T17:22:27.592583",
     "type": "HIGH_CONVICTION",
     "message": "NVDA high-conviction research setup detected (Score 267.81).",
-    "trade_id": "NVDA-CALL-20260418161901",
+    "trade_id": "NVDA-CALL-20260419172227",
     "tier_required": "pro",
     "level": "success",
     "score": 267.81,
@@ -59,7 +59,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:01.809095",
+    "timestamp": "2026-04-19T17:22:27.606289",
     "title": "Edge Detected",
     "message": "NVDA: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -70,10 +70,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:01.816834",
+    "timestamp": "2026-04-19T17:22:27.610590",
     "type": "RESEARCH_ALPHA",
     "message": "NVDA research alpha added to premium intelligence.",
-    "trade_id": "NVDA-CALL-20260418161901",
+    "trade_id": "NVDA-CALL-20260419172227",
     "tier_required": "elite",
     "level": "info",
     "score": 267.81,
@@ -82,10 +82,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:01.944036",
+    "timestamp": "2026-04-19T17:22:27.990127",
     "type": "HIGH_CONVICTION",
     "message": "META high-conviction research setup detected (Score 259.84).",
-    "trade_id": "META-CALL-20260418161901",
+    "trade_id": "META-CALL-20260419172227",
     "tier_required": "pro",
     "level": "success",
     "score": 259.84,
@@ -94,7 +94,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:01.968622",
+    "timestamp": "2026-04-19T17:22:28.012752",
     "title": "Edge Detected",
     "message": "META: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -105,10 +105,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:01.976237",
+    "timestamp": "2026-04-19T17:22:28.017072",
     "type": "RESEARCH_ALPHA",
     "message": "META research alpha added to premium intelligence.",
-    "trade_id": "META-CALL-20260418161901",
+    "trade_id": "META-CALL-20260419172227",
     "tier_required": "elite",
     "level": "info",
     "score": 259.84,
@@ -117,10 +117,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.099190",
+    "timestamp": "2026-04-19T17:22:28.396417",
     "type": "HIGH_CONVICTION",
     "message": "PYPL high-conviction research setup detected (Score 254.51).",
-    "trade_id": "PYPL-CALL-20260418161901",
+    "trade_id": "PYPL-CALL-20260419172228",
     "tier_required": "pro",
     "level": "success",
     "score": 254.51,
@@ -129,7 +129,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.124919",
+    "timestamp": "2026-04-19T17:22:28.410232",
     "title": "Edge Detected",
     "message": "PYPL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -140,10 +140,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.132928",
+    "timestamp": "2026-04-19T17:22:28.414452",
     "type": "RESEARCH_ALPHA",
     "message": "PYPL research alpha added to premium intelligence.",
-    "trade_id": "PYPL-CALL-20260418161901",
+    "trade_id": "PYPL-CALL-20260419172228",
     "tier_required": "elite",
     "level": "info",
     "score": 254.51,
@@ -152,10 +152,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.262568",
+    "timestamp": "2026-04-19T17:22:28.796862",
     "type": "HIGH_CONVICTION",
     "message": "ARKK high-conviction research setup detected (Score 245.77).",
-    "trade_id": "ARKK-CALL-20260418161902",
+    "trade_id": "ARKK-CALL-20260419172228",
     "tier_required": "pro",
     "level": "success",
     "score": 245.77,
@@ -164,7 +164,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.286772",
+    "timestamp": "2026-04-19T17:22:28.810121",
     "title": "Edge Detected",
     "message": "ARKK: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -175,10 +175,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.294350",
+    "timestamp": "2026-04-19T17:22:28.814157",
     "type": "RESEARCH_ALPHA",
     "message": "ARKK research alpha added to premium intelligence.",
-    "trade_id": "ARKK-CALL-20260418161902",
+    "trade_id": "ARKK-CALL-20260419172228",
     "tier_required": "elite",
     "level": "info",
     "score": 245.77,
@@ -187,10 +187,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.419109",
+    "timestamp": "2026-04-19T17:22:29.396439",
     "type": "HIGH_CONVICTION",
     "message": "BAC high-conviction research setup detected (Score 243.13).",
-    "trade_id": "BAC-CALL-20260418161902",
+    "trade_id": "BAC-CALL-20260419172228",
     "tier_required": "pro",
     "level": "success",
     "score": 243.13,
@@ -199,7 +199,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.443670",
+    "timestamp": "2026-04-19T17:22:29.422571",
     "title": "Edge Detected",
     "message": "BAC: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -210,10 +210,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.451287",
+    "timestamp": "2026-04-19T17:22:29.430761",
     "type": "RESEARCH_ALPHA",
     "message": "BAC research alpha added to premium intelligence.",
-    "trade_id": "BAC-CALL-20260418161902",
+    "trade_id": "BAC-CALL-20260419172228",
     "tier_required": "elite",
     "level": "info",
     "score": 243.13,
@@ -222,10 +222,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.581477",
+    "timestamp": "2026-04-19T17:22:30.125369",
     "type": "HIGH_CONVICTION",
     "message": "XLK high-conviction research setup detected (Score 242.3).",
-    "trade_id": "XLK-CALL-20260418161902",
+    "trade_id": "XLK-CALL-20260419172229",
     "tier_required": "pro",
     "level": "success",
     "score": 242.3,
@@ -234,7 +234,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.606043",
+    "timestamp": "2026-04-19T17:22:30.158465",
     "title": "Edge Detected",
     "message": "XLK: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -245,10 +245,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.613861",
+    "timestamp": "2026-04-19T17:22:30.166891",
     "type": "RESEARCH_ALPHA",
     "message": "XLK research alpha added to premium intelligence.",
-    "trade_id": "XLK-CALL-20260418161902",
+    "trade_id": "XLK-CALL-20260419172229",
     "tier_required": "elite",
     "level": "info",
     "score": 242.3,
@@ -257,10 +257,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.737808",
+    "timestamp": "2026-04-19T17:22:30.885984",
     "type": "HIGH_CONVICTION",
     "message": "MS high-conviction research setup detected (Score 241.46).",
-    "trade_id": "MS-CALL-20260418161902",
+    "trade_id": "MS-CALL-20260419172230",
     "tier_required": "pro",
     "level": "success",
     "score": 241.46,
@@ -269,7 +269,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.763769",
+    "timestamp": "2026-04-19T17:22:30.909356",
     "title": "Edge Detected",
     "message": "MS: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -280,10 +280,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.771606",
+    "timestamp": "2026-04-19T17:22:30.916455",
     "type": "RESEARCH_ALPHA",
     "message": "MS research alpha added to premium intelligence.",
-    "trade_id": "MS-CALL-20260418161902",
+    "trade_id": "MS-CALL-20260419172230",
     "tier_required": "elite",
     "level": "info",
     "score": 241.46,
@@ -292,10 +292,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.898783",
+    "timestamp": "2026-04-19T17:22:31.619765",
     "type": "HIGH_CONVICTION",
     "message": "IWM high-conviction research setup detected (Score 238.55).",
-    "trade_id": "IWM-CALL-20260418161902",
+    "trade_id": "IWM-CALL-20260419172230",
     "tier_required": "pro",
     "level": "success",
     "score": 238.55,
@@ -304,7 +304,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.924706",
+    "timestamp": "2026-04-19T17:22:31.644272",
     "title": "Edge Detected",
     "message": "IWM: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -315,10 +315,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:02.932916",
+    "timestamp": "2026-04-19T17:22:31.651770",
     "type": "RESEARCH_ALPHA",
     "message": "IWM research alpha added to premium intelligence.",
-    "trade_id": "IWM-CALL-20260418161902",
+    "trade_id": "IWM-CALL-20260419172230",
     "tier_required": "elite",
     "level": "info",
     "score": 238.55,
@@ -327,10 +327,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.063633",
+    "timestamp": "2026-04-19T17:22:32.158878",
     "type": "HIGH_CONVICTION",
     "message": "GOOGL high-conviction research setup detected (Score 235.15).",
-    "trade_id": "GOOGL-CALL-20260418161902",
+    "trade_id": "GOOGL-CALL-20260419172231",
     "tier_required": "pro",
     "level": "success",
     "score": 235.15,
@@ -339,7 +339,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.089504",
+    "timestamp": "2026-04-19T17:22:32.172571",
     "title": "Edge Detected",
     "message": "GOOGL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -350,10 +350,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.097672",
+    "timestamp": "2026-04-19T17:22:32.176818",
     "type": "RESEARCH_ALPHA",
     "message": "GOOGL research alpha added to premium intelligence.",
-    "trade_id": "GOOGL-CALL-20260418161902",
+    "trade_id": "GOOGL-CALL-20260419172231",
     "tier_required": "elite",
     "level": "info",
     "score": 235.15,
@@ -362,10 +362,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.228672",
+    "timestamp": "2026-04-19T17:22:32.589062",
     "type": "HIGH_CONVICTION",
     "message": "DAL high-conviction research setup detected (Score 230.52).",
-    "trade_id": "DAL-CALL-20260418161903",
+    "trade_id": "DAL-CALL-20260419172232",
     "tier_required": "pro",
     "level": "success",
     "score": 230.52,
@@ -374,7 +374,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.254369",
+    "timestamp": "2026-04-19T17:22:32.602328",
     "title": "Edge Detected",
     "message": "DAL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -385,10 +385,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.262795",
+    "timestamp": "2026-04-19T17:22:32.606438",
     "type": "RESEARCH_ALPHA",
     "message": "DAL research alpha added to premium intelligence.",
-    "trade_id": "DAL-CALL-20260418161903",
+    "trade_id": "DAL-CALL-20260419172232",
     "tier_required": "elite",
     "level": "info",
     "score": 230.52,
@@ -397,10 +397,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.394407",
+    "timestamp": "2026-04-19T17:22:32.997996",
     "type": "HIGH_CONVICTION",
     "message": "UAL high-conviction research setup detected (Score 216.99).",
-    "trade_id": "UAL-CALL-20260418161903",
+    "trade_id": "UAL-CALL-20260419172232",
     "tier_required": "pro",
     "level": "success",
     "score": 216.99,
@@ -409,7 +409,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.420808",
+    "timestamp": "2026-04-19T17:22:33.011442",
     "title": "Edge Detected",
     "message": "UAL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -420,10 +420,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.429075",
+    "timestamp": "2026-04-19T17:22:33.015577",
     "type": "RESEARCH_ALPHA",
     "message": "UAL research alpha added to premium intelligence.",
-    "trade_id": "UAL-CALL-20260418161903",
+    "trade_id": "UAL-CALL-20260419172232",
     "tier_required": "elite",
     "level": "info",
     "score": 216.99,
@@ -432,10 +432,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.562201",
+    "timestamp": "2026-04-19T17:22:33.436485",
     "type": "HIGH_CONVICTION",
     "message": "QQQ high-conviction research setup detected (Score 216.15).",
-    "trade_id": "QQQ-CALL-20260418161903",
+    "trade_id": "QQQ-CALL-20260419172233",
     "tier_required": "pro",
     "level": "success",
     "score": 216.15,
@@ -444,7 +444,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.588186",
+    "timestamp": "2026-04-19T17:22:33.450648",
     "title": "Edge Detected",
     "message": "QQQ: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -455,10 +455,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.595980",
+    "timestamp": "2026-04-19T17:22:33.456203",
     "type": "RESEARCH_ALPHA",
     "message": "QQQ research alpha added to premium intelligence.",
-    "trade_id": "QQQ-CALL-20260418161903",
+    "trade_id": "QQQ-CALL-20260419172233",
     "tier_required": "elite",
     "level": "info",
     "score": 216.15,
@@ -467,10 +467,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.718941",
+    "timestamp": "2026-04-19T17:22:33.864321",
     "type": "HIGH_CONVICTION",
     "message": "SHOP high-conviction research setup detected (Score 208.67).",
-    "trade_id": "SHOP-CALL-20260418161903",
+    "trade_id": "SHOP-CALL-20260419172233",
     "tier_required": "pro",
     "level": "success",
     "score": 208.67,
@@ -479,7 +479,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.743582",
+    "timestamp": "2026-04-19T17:22:33.877287",
     "title": "Edge Detected",
     "message": "SHOP: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -490,10 +490,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.751096",
+    "timestamp": "2026-04-19T17:22:33.881410",
     "type": "RESEARCH_ALPHA",
     "message": "SHOP research alpha added to premium intelligence.",
-    "trade_id": "SHOP-CALL-20260418161903",
+    "trade_id": "SHOP-CALL-20260419172233",
     "tier_required": "elite",
     "level": "info",
     "score": 208.67,
@@ -502,7 +502,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.894289",
+    "timestamp": "2026-04-19T17:22:34.308760",
     "title": "Edge Detected",
     "message": "SPY: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -513,10 +513,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:03.902024",
+    "timestamp": "2026-04-19T17:22:34.313072",
     "type": "RESEARCH_ALPHA",
     "message": "SPY research alpha added to premium intelligence.",
-    "trade_id": "SPY-CALL-20260418161903",
+    "trade_id": "SPY-CALL-20260419172233",
     "tier_required": "elite",
     "level": "info",
     "score": 194.93,
@@ -525,7 +525,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.045056",
+    "timestamp": "2026-04-19T17:22:34.744401",
     "title": "Edge Detected",
     "message": "ZM: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -536,10 +536,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.052780",
+    "timestamp": "2026-04-19T17:22:34.748572",
     "type": "RESEARCH_ALPHA",
     "message": "ZM research alpha added to premium intelligence.",
-    "trade_id": "ZM-CALL-20260418161903",
+    "trade_id": "ZM-CALL-20260419172234",
     "tier_required": "elite",
     "level": "info",
     "score": 190.09,
@@ -548,7 +548,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.193739",
+    "timestamp": "2026-04-19T17:22:35.190617",
     "title": "Edge Detected",
     "message": "AAPL: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -559,10 +559,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.201447",
+    "timestamp": "2026-04-19T17:22:35.194985",
     "type": "RESEARCH_ALPHA",
     "message": "AAPL research alpha added to premium intelligence.",
-    "trade_id": "AAPL-CALL-20260418161904",
+    "trade_id": "AAPL-CALL-20260419172234",
     "tier_required": "elite",
     "level": "info",
     "score": 189.68,
@@ -571,7 +571,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.345771",
+    "timestamp": "2026-04-19T17:22:35.636131",
     "title": "Edge Detected",
     "message": "TSLA: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -582,10 +582,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.354878",
+    "timestamp": "2026-04-19T17:22:35.640491",
     "type": "RESEARCH_ALPHA",
     "message": "TSLA research alpha added to premium intelligence.",
-    "trade_id": "TSLA-CALL-20260418161904",
+    "trade_id": "TSLA-CALL-20260419172235",
     "tier_required": "elite",
     "level": "info",
     "score": 188.76,
@@ -594,7 +594,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.499344",
+    "timestamp": "2026-04-19T17:22:36.060732",
     "title": "Edge Detected",
     "message": "JPM: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -605,10 +605,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.506985",
+    "timestamp": "2026-04-19T17:22:36.065095",
     "type": "RESEARCH_ALPHA",
     "message": "JPM research alpha added to premium intelligence.",
-    "trade_id": "JPM-CALL-20260418161904",
+    "trade_id": "JPM-CALL-20260419172235",
     "tier_required": "elite",
     "level": "info",
     "score": 188.35,
@@ -617,7 +617,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.656576",
+    "timestamp": "2026-04-19T17:22:36.512988",
     "title": "Edge Detected",
     "message": "MU: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -628,10 +628,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.666296",
+    "timestamp": "2026-04-19T17:22:36.517102",
     "type": "RESEARCH_ALPHA",
     "message": "MU research alpha added to premium intelligence.",
-    "trade_id": "MU-CALL-20260418161904",
+    "trade_id": "MU-CALL-20260419172236",
     "tier_required": "elite",
     "level": "info",
     "score": 176.52,
@@ -640,7 +640,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.821336",
+    "timestamp": "2026-04-19T17:22:36.943345",
     "title": "Edge Detected",
     "message": "XLF: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -651,10 +651,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.829277",
+    "timestamp": "2026-04-19T17:22:36.947520",
     "type": "RESEARCH_ALPHA",
     "message": "XLF research alpha added to premium intelligence.",
-    "trade_id": "XLF-CALL-20260418161904",
+    "trade_id": "XLF-CALL-20260419172236",
     "tier_required": "elite",
     "level": "info",
     "score": 173.75,
@@ -663,7 +663,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.935903",
+    "timestamp": "2026-04-19T17:22:37.374229",
     "title": "Edge Detected",
     "message": "WMT: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -674,10 +674,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:04.940132",
+    "timestamp": "2026-04-19T17:22:37.381652",
     "type": "RESEARCH_ALPHA",
     "message": "WMT research alpha added to premium intelligence.",
-    "trade_id": "WMT-CALL-20260418161904",
+    "trade_id": "WMT-CALL-20260419172236",
     "tier_required": "elite",
     "level": "info",
     "score": 171.25,
@@ -686,7 +686,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.018962",
+    "timestamp": "2026-04-19T17:22:37.825740",
     "title": "Edge Detected",
     "message": "DIS: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -697,10 +697,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.023231",
+    "timestamp": "2026-04-19T17:22:37.829962",
     "type": "RESEARCH_ALPHA",
     "message": "DIS research alpha added to premium intelligence.",
-    "trade_id": "DIS-CALL-20260418161904",
+    "trade_id": "DIS-CALL-20260419172237",
     "tier_required": "elite",
     "level": "info",
     "score": 166.43,
@@ -709,7 +709,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.102833",
+    "timestamp": "2026-04-19T17:22:38.261489",
     "title": "Edge Detected",
     "message": "GS: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -720,10 +720,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.107078",
+    "timestamp": "2026-04-19T17:22:38.265670",
     "type": "RESEARCH_ALPHA",
     "message": "GS research alpha added to premium intelligence.",
-    "trade_id": "GS-CALL-20260418161905",
+    "trade_id": "GS-CALL-20260419172237",
     "tier_required": "elite",
     "level": "info",
     "score": 160.3,
@@ -732,7 +732,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.186098",
+    "timestamp": "2026-04-19T17:22:38.716948",
     "title": "Edge Detected",
     "message": "NFLX: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -743,10 +743,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.190352",
+    "timestamp": "2026-04-19T17:22:38.721175",
     "type": "RESEARCH_ALPHA",
     "message": "NFLX research alpha added to premium intelligence.",
-    "trade_id": "NFLX-CALL-20260418161905",
+    "trade_id": "NFLX-CALL-20260419172238",
     "tier_required": "elite",
     "level": "info",
     "score": 159.79,
@@ -755,7 +755,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.271683",
+    "timestamp": "2026-04-19T17:22:39.158938",
     "title": "Edge Detected",
     "message": "AXP: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -766,10 +766,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.275849",
+    "timestamp": "2026-04-19T17:22:39.162975",
     "type": "RESEARCH_ALPHA",
     "message": "AXP research alpha added to premium intelligence.",
-    "trade_id": "AXP-CALL-20260418161905",
+    "trade_id": "AXP-CALL-20260419172238",
     "tier_required": "elite",
     "level": "info",
     "score": 157.37,
@@ -778,7 +778,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.355843",
+    "timestamp": "2026-04-19T17:22:39.622343",
     "title": "Edge Detected",
     "message": "SBUX: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -789,10 +789,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.360051",
+    "timestamp": "2026-04-19T17:22:39.626521",
     "type": "RESEARCH_ALPHA",
     "message": "SBUX research alpha added to premium intelligence.",
-    "trade_id": "SBUX-CALL-20260418161905",
+    "trade_id": "SBUX-CALL-20260419172239",
     "tier_required": "elite",
     "level": "info",
     "score": 154.09,
@@ -801,7 +801,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.439390",
+    "timestamp": "2026-04-19T17:22:40.128318",
     "title": "Edge Detected",
     "message": "WFC: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -812,10 +812,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.443597",
+    "timestamp": "2026-04-19T17:22:40.134903",
     "type": "RESEARCH_ALPHA",
     "message": "WFC research alpha added to premium intelligence.",
-    "trade_id": "WFC-CALL-20260418161905",
+    "trade_id": "WFC-CALL-20260419172239",
     "tier_required": "elite",
     "level": "info",
     "score": 149.1,
@@ -824,7 +824,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.521799",
+    "timestamp": "2026-04-19T17:22:40.617666",
     "title": "Edge Detected",
     "message": "QCOM: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -835,10 +835,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.525956",
+    "timestamp": "2026-04-19T17:22:40.621829",
     "type": "RESEARCH_ALPHA",
     "message": "QCOM research alpha added to premium intelligence.",
-    "trade_id": "QCOM-CALL-20260418161905",
+    "trade_id": "QCOM-CALL-20260419172240",
     "tier_required": "elite",
     "level": "info",
     "score": 148.5,
@@ -847,7 +847,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.603378",
+    "timestamp": "2026-04-19T17:22:41.064994",
     "title": "Edge Detected",
     "message": "DIA: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -858,10 +858,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.607631",
+    "timestamp": "2026-04-19T17:22:41.069377",
     "type": "RESEARCH_ALPHA",
     "message": "DIA research alpha added to premium intelligence.",
-    "trade_id": "DIA-CALL-20260418161905",
+    "trade_id": "DIA-CALL-20260419172240",
     "tier_required": "elite",
     "level": "info",
     "score": 148.42,
@@ -870,7 +870,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.686790",
+    "timestamp": "2026-04-19T17:22:41.524354",
     "title": "Edge Detected",
     "message": "COIN: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -881,10 +881,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.691129",
+    "timestamp": "2026-04-19T17:22:41.531739",
     "type": "RESEARCH_ALPHA",
     "message": "COIN research alpha added to premium intelligence.",
-    "trade_id": "COIN-CALL-20260418161905",
+    "trade_id": "COIN-CALL-20260419172241",
     "tier_required": "elite",
     "level": "info",
     "score": 144.71,
@@ -893,7 +893,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.786347",
+    "timestamp": "2026-04-19T17:22:42.036210",
     "title": "Edge Detected",
     "message": "UBER: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -904,10 +904,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.791345",
+    "timestamp": "2026-04-19T17:22:42.043668",
     "type": "RESEARCH_ALPHA",
     "message": "UBER research alpha added to premium intelligence.",
-    "trade_id": "UBER-CALL-20260418161905",
+    "trade_id": "UBER-CALL-20260419172241",
     "tier_required": "elite",
     "level": "info",
     "score": 143.71,
@@ -916,7 +916,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.871816",
+    "timestamp": "2026-04-19T17:22:42.862834",
     "title": "Edge Detected",
     "message": "ABNB: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -927,10 +927,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.876008",
+    "timestamp": "2026-04-19T17:22:42.870547",
     "type": "RESEARCH_ALPHA",
     "message": "ABNB research alpha added to premium intelligence.",
-    "trade_id": "ABNB-CALL-20260418161905",
+    "trade_id": "ABNB-CALL-20260419172242",
     "tier_required": "elite",
     "level": "info",
     "score": 136.25,
@@ -939,7 +939,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.955067",
+    "timestamp": "2026-04-19T17:22:43.721458",
     "title": "Edge Detected",
     "message": "CMCSA: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -950,10 +950,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:05.959343",
+    "timestamp": "2026-04-19T17:22:43.729494",
     "type": "RESEARCH_ALPHA",
     "message": "CMCSA research alpha added to premium intelligence.",
-    "trade_id": "CMCSA-CALL-20260418161905",
+    "trade_id": "CMCSA-CALL-20260419172242",
     "tier_required": "elite",
     "level": "info",
     "score": 132.89,
@@ -962,7 +962,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:06.039400",
+    "timestamp": "2026-04-19T17:22:44.553393",
     "title": "Edge Detected",
     "message": "XLV: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -973,10 +973,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-18T16:19:06.043629",
+    "timestamp": "2026-04-19T17:22:44.561209",
     "type": "RESEARCH_ALPHA",
     "message": "XLV research alpha added to premium intelligence.",
-    "trade_id": "XLV-CALL-20260418161905",
+    "trade_id": "XLV-CALL-20260419172243",
     "tier_required": "elite",
     "level": "info",
     "score": 128.09,
@@ -985,7 +985,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-18T16:19:06.115781",
+    "timestamp": "2026-04-19T17:22:45.152452",
     "title": "Risk Alert",
     "message": "PORTFOLIO risk condition triggered: Governor blocked execution: cash_reserve_too_low, pdt_restricted.",
     "level": "warning",
@@ -996,7 +996,7 @@
     "category": "risk"
   },
   {
-    "timestamp": "2026-04-18T16:19:06.119949",
+    "timestamp": "2026-04-19T17:22:45.157269",
     "type": "RISK_WARNING",
     "message": "Execution blocked by governor in paper mode: cash_reserve_too_low, pdt_restricted",
     "trade_id": null,
@@ -1008,10 +1008,10 @@
     "source": "execution"
   },
   {
-    "timestamp": "2026-04-19T03:46:41.740244",
+    "timestamp": "2026-04-19T17:57:21.057100",
     "type": "HIGH_CONVICTION",
     "message": "INTC high-conviction research setup detected (Score 661.43).",
-    "trade_id": "INTC-CALL-20260419034641",
+    "trade_id": "INTC-CALL-20260419175720",
     "tier_required": "pro",
     "level": "success",
     "score": 661.43,
@@ -1020,7 +1020,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:41.754371",
+    "timestamp": "2026-04-19T17:57:21.084081",
     "title": "Edge Detected",
     "message": "INTC: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1031,10 +1031,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:41.758613",
+    "timestamp": "2026-04-19T17:57:21.092131",
     "type": "RESEARCH_ALPHA",
     "message": "INTC research alpha added to premium intelligence.",
-    "trade_id": "INTC-CALL-20260419034641",
+    "trade_id": "INTC-CALL-20260419175720",
     "tier_required": "elite",
     "level": "info",
     "score": 661.43,
@@ -1043,10 +1043,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:41.834167",
+    "timestamp": "2026-04-19T17:57:21.931587",
     "type": "HIGH_CONVICTION",
     "message": "AMD high-conviction research setup detected (Score 482.75).",
-    "trade_id": "AMD-CALL-20260419034641",
+    "trade_id": "AMD-CALL-20260419175721",
     "tier_required": "pro",
     "level": "success",
     "score": 482.75,
@@ -1055,7 +1055,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:41.847573",
+    "timestamp": "2026-04-19T17:57:21.954983",
     "title": "Edge Detected",
     "message": "AMD: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1066,10 +1066,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:41.854077",
+    "timestamp": "2026-04-19T17:57:21.962451",
     "type": "RESEARCH_ALPHA",
     "message": "AMD research alpha added to premium intelligence.",
-    "trade_id": "AMD-CALL-20260419034641",
+    "trade_id": "AMD-CALL-20260419175721",
     "tier_required": "elite",
     "level": "info",
     "score": 482.75,
@@ -1078,10 +1078,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:41.937667",
+    "timestamp": "2026-04-19T17:57:22.805832",
     "type": "HIGH_CONVICTION",
     "message": "AVGO high-conviction research setup detected (Score 412.01).",
-    "trade_id": "AVGO-CALL-20260419034641",
+    "trade_id": "AVGO-CALL-20260419175721",
     "tier_required": "pro",
     "level": "success",
     "score": 412.01,
@@ -1090,7 +1090,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:41.951053",
+    "timestamp": "2026-04-19T17:57:22.830287",
     "title": "Edge Detected",
     "message": "AVGO: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1101,10 +1101,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:41.955209",
+    "timestamp": "2026-04-19T17:57:22.838059",
     "type": "RESEARCH_ALPHA",
     "message": "AVGO research alpha added to premium intelligence.",
-    "trade_id": "AVGO-CALL-20260419034641",
+    "trade_id": "AVGO-CALL-20260419175721",
     "tier_required": "elite",
     "level": "info",
     "score": 412.01,
@@ -1113,10 +1113,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.034604",
+    "timestamp": "2026-04-19T17:57:23.688845",
     "type": "HIGH_CONVICTION",
     "message": "SOXX high-conviction research setup detected (Score 321.72).",
-    "trade_id": "SOXX-CALL-20260419034641",
+    "trade_id": "SOXX-CALL-20260419175722",
     "tier_required": "pro",
     "level": "success",
     "score": 321.72,
@@ -1125,7 +1125,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.047959",
+    "timestamp": "2026-04-19T17:57:23.713121",
     "title": "Edge Detected",
     "message": "SOXX: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1136,10 +1136,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.052301",
+    "timestamp": "2026-04-19T17:57:23.720480",
     "type": "RESEARCH_ALPHA",
     "message": "SOXX research alpha added to premium intelligence.",
-    "trade_id": "SOXX-CALL-20260419034641",
+    "trade_id": "SOXX-CALL-20260419175722",
     "tier_required": "elite",
     "level": "info",
     "score": 321.72,
@@ -1148,10 +1148,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.146595",
+    "timestamp": "2026-04-19T17:57:24.309276",
     "type": "HIGH_CONVICTION",
     "message": "AMZN high-conviction research setup detected (Score 320.04).",
-    "trade_id": "AMZN-CALL-20260419034642",
+    "trade_id": "AMZN-CALL-20260419175723",
     "tier_required": "pro",
     "level": "success",
     "score": 320.04,
@@ -1160,7 +1160,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.160999",
+    "timestamp": "2026-04-19T17:57:24.322625",
     "title": "Edge Detected",
     "message": "AMZN: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1171,10 +1171,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.165031",
+    "timestamp": "2026-04-19T17:57:24.326841",
     "type": "RESEARCH_ALPHA",
     "message": "AMZN research alpha added to premium intelligence.",
-    "trade_id": "AMZN-CALL-20260419034642",
+    "trade_id": "AMZN-CALL-20260419175723",
     "tier_required": "elite",
     "level": "info",
     "score": 320.04,
@@ -1183,10 +1183,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.246211",
+    "timestamp": "2026-04-19T17:57:24.803442",
     "type": "HIGH_CONVICTION",
     "message": "C high-conviction research setup detected (Score 306.9).",
-    "trade_id": "C-CALL-20260419034642",
+    "trade_id": "C-CALL-20260419175724",
     "tier_required": "pro",
     "level": "success",
     "score": 306.9,
@@ -1195,7 +1195,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.259852",
+    "timestamp": "2026-04-19T17:57:24.816994",
     "title": "Edge Detected",
     "message": "C: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1206,10 +1206,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.263972",
+    "timestamp": "2026-04-19T17:57:24.821227",
     "type": "RESEARCH_ALPHA",
     "message": "C research alpha added to premium intelligence.",
-    "trade_id": "C-CALL-20260419034642",
+    "trade_id": "C-CALL-20260419175724",
     "tier_required": "elite",
     "level": "info",
     "score": 306.9,
@@ -1218,10 +1218,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.347809",
+    "timestamp": "2026-04-19T17:57:25.329166",
     "type": "HIGH_CONVICTION",
     "message": "ORCL high-conviction research setup detected (Score 273.65).",
-    "trade_id": "ORCL-CALL-20260419034642",
+    "trade_id": "ORCL-CALL-20260419175724",
     "tier_required": "pro",
     "level": "success",
     "score": 273.65,
@@ -1230,7 +1230,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.361520",
+    "timestamp": "2026-04-19T17:57:25.344272",
     "title": "Edge Detected",
     "message": "ORCL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1241,10 +1241,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.365768",
+    "timestamp": "2026-04-19T17:57:25.348848",
     "type": "RESEARCH_ALPHA",
     "message": "ORCL research alpha added to premium intelligence.",
-    "trade_id": "ORCL-CALL-20260419034642",
+    "trade_id": "ORCL-CALL-20260419175724",
     "tier_required": "elite",
     "level": "info",
     "score": 273.65,
@@ -1253,10 +1253,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.452408",
+    "timestamp": "2026-04-19T17:57:25.836274",
     "type": "HIGH_CONVICTION",
     "message": "ROKU high-conviction research setup detected (Score 270.44).",
-    "trade_id": "ROKU-CALL-20260419034642",
+    "trade_id": "ROKU-CALL-20260419175725",
     "tier_required": "pro",
     "level": "success",
     "score": 270.44,
@@ -1265,7 +1265,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.465751",
+    "timestamp": "2026-04-19T17:57:25.850127",
     "title": "Edge Detected",
     "message": "ROKU: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1276,10 +1276,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.470019",
+    "timestamp": "2026-04-19T17:57:25.854530",
     "type": "RESEARCH_ALPHA",
     "message": "ROKU research alpha added to premium intelligence.",
-    "trade_id": "ROKU-CALL-20260419034642",
+    "trade_id": "ROKU-CALL-20260419175725",
     "tier_required": "elite",
     "level": "info",
     "score": 270.44,
@@ -1288,10 +1288,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.558906",
+    "timestamp": "2026-04-19T17:57:26.352692",
     "type": "HIGH_CONVICTION",
     "message": "NVDA high-conviction research setup detected (Score 267.81).",
-    "trade_id": "NVDA-CALL-20260419034642",
+    "trade_id": "NVDA-CALL-20260419175725",
     "tier_required": "pro",
     "level": "success",
     "score": 267.81,
@@ -1300,7 +1300,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.572738",
+    "timestamp": "2026-04-19T17:57:26.366517",
     "title": "Edge Detected",
     "message": "NVDA: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1311,10 +1311,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.577020",
+    "timestamp": "2026-04-19T17:57:26.370654",
     "type": "RESEARCH_ALPHA",
     "message": "NVDA research alpha added to premium intelligence.",
-    "trade_id": "NVDA-CALL-20260419034642",
+    "trade_id": "NVDA-CALL-20260419175725",
     "tier_required": "elite",
     "level": "info",
     "score": 267.81,
@@ -1323,10 +1323,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.673126",
+    "timestamp": "2026-04-19T17:57:26.855469",
     "type": "HIGH_CONVICTION",
     "message": "META high-conviction research setup detected (Score 259.84).",
-    "trade_id": "META-CALL-20260419034642",
+    "trade_id": "META-CALL-20260419175726",
     "tier_required": "pro",
     "level": "success",
     "score": 259.84,
@@ -1335,7 +1335,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.687123",
+    "timestamp": "2026-04-19T17:57:26.868619",
     "title": "Edge Detected",
     "message": "META: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1346,10 +1346,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.691390",
+    "timestamp": "2026-04-19T17:57:26.872671",
     "type": "RESEARCH_ALPHA",
     "message": "META research alpha added to premium intelligence.",
-    "trade_id": "META-CALL-20260419034642",
+    "trade_id": "META-CALL-20260419175726",
     "tier_required": "elite",
     "level": "info",
     "score": 259.84,
@@ -1358,10 +1358,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.783805",
+    "timestamp": "2026-04-19T17:57:27.425110",
     "type": "HIGH_CONVICTION",
     "message": "PYPL high-conviction research setup detected (Score 254.51).",
-    "trade_id": "PYPL-CALL-20260419034642",
+    "trade_id": "PYPL-CALL-20260419175726",
     "tier_required": "pro",
     "level": "success",
     "score": 254.51,
@@ -1370,7 +1370,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.797684",
+    "timestamp": "2026-04-19T17:57:27.438598",
     "title": "Edge Detected",
     "message": "PYPL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1381,10 +1381,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.802087",
+    "timestamp": "2026-04-19T17:57:27.442744",
     "type": "RESEARCH_ALPHA",
     "message": "PYPL research alpha added to premium intelligence.",
-    "trade_id": "PYPL-CALL-20260419034642",
+    "trade_id": "PYPL-CALL-20260419175726",
     "tier_required": "elite",
     "level": "info",
     "score": 254.51,
@@ -1393,10 +1393,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.896885",
+    "timestamp": "2026-04-19T17:57:27.936585",
     "type": "HIGH_CONVICTION",
     "message": "ARKK high-conviction research setup detected (Score 245.77).",
-    "trade_id": "ARKK-CALL-20260419034642",
+    "trade_id": "ARKK-CALL-20260419175727",
     "tier_required": "pro",
     "level": "success",
     "score": 245.77,
@@ -1405,7 +1405,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.910376",
+    "timestamp": "2026-04-19T17:57:27.950698",
     "title": "Edge Detected",
     "message": "ARKK: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1416,10 +1416,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:42.914695",
+    "timestamp": "2026-04-19T17:57:27.955325",
     "type": "RESEARCH_ALPHA",
     "message": "ARKK research alpha added to premium intelligence.",
-    "trade_id": "ARKK-CALL-20260419034642",
+    "trade_id": "ARKK-CALL-20260419175727",
     "tier_required": "elite",
     "level": "info",
     "score": 245.77,
@@ -1428,10 +1428,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.010280",
+    "timestamp": "2026-04-19T17:57:28.470536",
     "type": "HIGH_CONVICTION",
     "message": "BAC high-conviction research setup detected (Score 243.13).",
-    "trade_id": "BAC-CALL-20260419034642",
+    "trade_id": "BAC-CALL-20260419175727",
     "tier_required": "pro",
     "level": "success",
     "score": 243.13,
@@ -1440,7 +1440,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.024020",
+    "timestamp": "2026-04-19T17:57:28.485233",
     "title": "Edge Detected",
     "message": "BAC: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1451,10 +1451,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.028342",
+    "timestamp": "2026-04-19T17:57:28.489480",
     "type": "RESEARCH_ALPHA",
     "message": "BAC research alpha added to premium intelligence.",
-    "trade_id": "BAC-CALL-20260419034642",
+    "trade_id": "BAC-CALL-20260419175727",
     "tier_required": "elite",
     "level": "info",
     "score": 243.13,
@@ -1463,10 +1463,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.127514",
+    "timestamp": "2026-04-19T17:57:28.998671",
     "type": "HIGH_CONVICTION",
     "message": "XLK high-conviction research setup detected (Score 242.3).",
-    "trade_id": "XLK-CALL-20260419034643",
+    "trade_id": "XLK-CALL-20260419175728",
     "tier_required": "pro",
     "level": "success",
     "score": 242.3,
@@ -1475,7 +1475,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.151663",
+    "timestamp": "2026-04-19T17:57:29.012255",
     "title": "Edge Detected",
     "message": "XLK: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1486,10 +1486,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.158748",
+    "timestamp": "2026-04-19T17:57:29.016513",
     "type": "RESEARCH_ALPHA",
     "message": "XLK research alpha added to premium intelligence.",
-    "trade_id": "XLK-CALL-20260419034643",
+    "trade_id": "XLK-CALL-20260419175728",
     "tier_required": "elite",
     "level": "info",
     "score": 242.3,
@@ -1498,10 +1498,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.257683",
+    "timestamp": "2026-04-19T17:57:29.539488",
     "type": "HIGH_CONVICTION",
     "message": "MS high-conviction research setup detected (Score 241.46).",
-    "trade_id": "MS-CALL-20260419034643",
+    "trade_id": "MS-CALL-20260419175729",
     "tier_required": "pro",
     "level": "success",
     "score": 241.46,
@@ -1510,7 +1510,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.270978",
+    "timestamp": "2026-04-19T17:57:29.553458",
     "title": "Edge Detected",
     "message": "MS: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1521,10 +1521,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.275052",
+    "timestamp": "2026-04-19T17:57:29.557812",
     "type": "RESEARCH_ALPHA",
     "message": "MS research alpha added to premium intelligence.",
-    "trade_id": "MS-CALL-20260419034643",
+    "trade_id": "MS-CALL-20260419175729",
     "tier_required": "elite",
     "level": "info",
     "score": 241.46,
@@ -1533,10 +1533,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.377251",
+    "timestamp": "2026-04-19T17:57:30.054767",
     "type": "HIGH_CONVICTION",
     "message": "IWM high-conviction research setup detected (Score 238.55).",
-    "trade_id": "IWM-CALL-20260419034643",
+    "trade_id": "IWM-CALL-20260419175729",
     "tier_required": "pro",
     "level": "success",
     "score": 238.55,
@@ -1545,7 +1545,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.391008",
+    "timestamp": "2026-04-19T17:57:30.068228",
     "title": "Edge Detected",
     "message": "IWM: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1556,10 +1556,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.395253",
+    "timestamp": "2026-04-19T17:57:30.072410",
     "type": "RESEARCH_ALPHA",
     "message": "IWM research alpha added to premium intelligence.",
-    "trade_id": "IWM-CALL-20260419034643",
+    "trade_id": "IWM-CALL-20260419175729",
     "tier_required": "elite",
     "level": "info",
     "score": 238.55,
@@ -1568,10 +1568,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.498223",
+    "timestamp": "2026-04-19T17:57:30.611812",
     "type": "HIGH_CONVICTION",
     "message": "GOOGL high-conviction research setup detected (Score 235.15).",
-    "trade_id": "GOOGL-CALL-20260419034643",
+    "trade_id": "GOOGL-CALL-20260419175730",
     "tier_required": "pro",
     "level": "success",
     "score": 235.15,
@@ -1580,7 +1580,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.511940",
+    "timestamp": "2026-04-19T17:57:30.626215",
     "title": "Edge Detected",
     "message": "GOOGL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1591,10 +1591,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.516287",
+    "timestamp": "2026-04-19T17:57:30.630716",
     "type": "RESEARCH_ALPHA",
     "message": "GOOGL research alpha added to premium intelligence.",
-    "trade_id": "GOOGL-CALL-20260419034643",
+    "trade_id": "GOOGL-CALL-20260419175730",
     "tier_required": "elite",
     "level": "info",
     "score": 235.15,
@@ -1603,10 +1603,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.621538",
+    "timestamp": "2026-04-19T17:57:31.134820",
     "type": "HIGH_CONVICTION",
     "message": "DAL high-conviction research setup detected (Score 230.52).",
-    "trade_id": "DAL-CALL-20260419034643",
+    "trade_id": "DAL-CALL-20260419175730",
     "tier_required": "pro",
     "level": "success",
     "score": 230.52,
@@ -1615,7 +1615,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.635019",
+    "timestamp": "2026-04-19T17:57:31.148596",
     "title": "Edge Detected",
     "message": "DAL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1626,10 +1626,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.639219",
+    "timestamp": "2026-04-19T17:57:31.152670",
     "type": "RESEARCH_ALPHA",
     "message": "DAL research alpha added to premium intelligence.",
-    "trade_id": "DAL-CALL-20260419034643",
+    "trade_id": "DAL-CALL-20260419175730",
     "tier_required": "elite",
     "level": "info",
     "score": 230.52,
@@ -1638,10 +1638,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.749652",
+    "timestamp": "2026-04-19T17:57:31.679535",
     "type": "HIGH_CONVICTION",
     "message": "UAL high-conviction research setup detected (Score 216.99).",
-    "trade_id": "UAL-CALL-20260419034643",
+    "trade_id": "UAL-CALL-20260419175731",
     "tier_required": "pro",
     "level": "success",
     "score": 216.99,
@@ -1650,7 +1650,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.763584",
+    "timestamp": "2026-04-19T17:57:31.693010",
     "title": "Edge Detected",
     "message": "UAL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1661,10 +1661,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.767910",
+    "timestamp": "2026-04-19T17:57:31.697098",
     "type": "RESEARCH_ALPHA",
     "message": "UAL research alpha added to premium intelligence.",
-    "trade_id": "UAL-CALL-20260419034643",
+    "trade_id": "UAL-CALL-20260419175731",
     "tier_required": "elite",
     "level": "info",
     "score": 216.99,
@@ -1673,10 +1673,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.891838",
+    "timestamp": "2026-04-19T17:57:32.213634",
     "type": "HIGH_CONVICTION",
     "message": "QQQ high-conviction research setup detected (Score 216.15).",
-    "trade_id": "QQQ-CALL-20260419034643",
+    "trade_id": "QQQ-CALL-20260419175731",
     "tier_required": "pro",
     "level": "success",
     "score": 216.15,
@@ -1685,7 +1685,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.907474",
+    "timestamp": "2026-04-19T17:57:32.237064",
     "title": "Edge Detected",
     "message": "QQQ: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1696,10 +1696,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:43.912117",
+    "timestamp": "2026-04-19T17:57:32.244648",
     "type": "RESEARCH_ALPHA",
     "message": "QQQ research alpha added to premium intelligence.",
-    "trade_id": "QQQ-CALL-20260419034643",
+    "trade_id": "QQQ-CALL-20260419175731",
     "tier_required": "elite",
     "level": "info",
     "score": 216.15,
@@ -1708,10 +1708,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.033904",
+    "timestamp": "2026-04-19T17:57:32.767023",
     "type": "HIGH_CONVICTION",
     "message": "SHOP high-conviction research setup detected (Score 208.67).",
-    "trade_id": "SHOP-CALL-20260419034643",
+    "trade_id": "SHOP-CALL-20260419175732",
     "tier_required": "pro",
     "level": "success",
     "score": 208.67,
@@ -1720,7 +1720,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.048587",
+    "timestamp": "2026-04-19T17:57:32.780851",
     "title": "Edge Detected",
     "message": "SHOP: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1731,10 +1731,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.052939",
+    "timestamp": "2026-04-19T17:57:32.785077",
     "type": "RESEARCH_ALPHA",
     "message": "SHOP research alpha added to premium intelligence.",
-    "trade_id": "SHOP-CALL-20260419034643",
+    "trade_id": "SHOP-CALL-20260419175732",
     "tier_required": "elite",
     "level": "info",
     "score": 208.67,
@@ -1743,7 +1743,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.249399",
+    "timestamp": "2026-04-19T17:57:33.320359",
     "title": "Edge Detected",
     "message": "SPY: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1754,10 +1754,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.253711",
+    "timestamp": "2026-04-19T17:57:33.324681",
     "type": "RESEARCH_ALPHA",
     "message": "SPY research alpha added to premium intelligence.",
-    "trade_id": "SPY-CALL-20260419034644",
+    "trade_id": "SPY-CALL-20260419175732",
     "tier_required": "elite",
     "level": "info",
     "score": 194.93,
@@ -1766,7 +1766,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.381060",
+    "timestamp": "2026-04-19T17:57:33.860089",
     "title": "Edge Detected",
     "message": "ZM: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1777,10 +1777,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.385395",
+    "timestamp": "2026-04-19T17:57:33.864453",
     "type": "RESEARCH_ALPHA",
     "message": "ZM research alpha added to premium intelligence.",
-    "trade_id": "ZM-CALL-20260419034644",
+    "trade_id": "ZM-CALL-20260419175733",
     "tier_required": "elite",
     "level": "info",
     "score": 190.09,
@@ -1789,7 +1789,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.512968",
+    "timestamp": "2026-04-19T17:57:34.780050",
     "title": "Edge Detected",
     "message": "AAPL: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1800,10 +1800,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.517396",
+    "timestamp": "2026-04-19T17:57:34.787813",
     "type": "RESEARCH_ALPHA",
     "message": "AAPL research alpha added to premium intelligence.",
-    "trade_id": "AAPL-CALL-20260419034644",
+    "trade_id": "AAPL-CALL-20260419175733",
     "tier_required": "elite",
     "level": "info",
     "score": 189.68,
@@ -1812,7 +1812,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.652121",
+    "timestamp": "2026-04-19T17:57:35.768533",
     "title": "Edge Detected",
     "message": "TSLA: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1823,10 +1823,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.657217",
+    "timestamp": "2026-04-19T17:57:35.776548",
     "type": "RESEARCH_ALPHA",
     "message": "TSLA research alpha added to premium intelligence.",
-    "trade_id": "TSLA-CALL-20260419034644",
+    "trade_id": "TSLA-CALL-20260419175734",
     "tier_required": "elite",
     "level": "info",
     "score": 188.76,
@@ -1835,7 +1835,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.793759",
+    "timestamp": "2026-04-19T17:57:36.757847",
     "title": "Edge Detected",
     "message": "JPM: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1846,10 +1846,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.798161",
+    "timestamp": "2026-04-19T17:57:36.765775",
     "type": "RESEARCH_ALPHA",
     "message": "JPM research alpha added to premium intelligence.",
-    "trade_id": "JPM-CALL-20260419034644",
+    "trade_id": "JPM-CALL-20260419175735",
     "tier_required": "elite",
     "level": "info",
     "score": 188.35,
@@ -1858,7 +1858,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.935498",
+    "timestamp": "2026-04-19T17:57:37.400894",
     "title": "Edge Detected",
     "message": "MU: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1869,10 +1869,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:44.939904",
+    "timestamp": "2026-04-19T17:57:37.405389",
     "type": "RESEARCH_ALPHA",
     "message": "MU research alpha added to premium intelligence.",
-    "trade_id": "MU-CALL-20260419034644",
+    "trade_id": "MU-CALL-20260419175736",
     "tier_required": "elite",
     "level": "info",
     "score": 176.52,
@@ -1881,7 +1881,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.077298",
+    "timestamp": "2026-04-19T17:57:37.973971",
     "title": "Edge Detected",
     "message": "XLF: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1892,10 +1892,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.081526",
+    "timestamp": "2026-04-19T17:57:37.978289",
     "type": "RESEARCH_ALPHA",
     "message": "XLF research alpha added to premium intelligence.",
-    "trade_id": "XLF-CALL-20260419034644",
+    "trade_id": "XLF-CALL-20260419175737",
     "tier_required": "elite",
     "level": "info",
     "score": 173.75,
@@ -1904,7 +1904,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.237372",
+    "timestamp": "2026-04-19T17:57:38.522911",
     "title": "Edge Detected",
     "message": "WMT: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1915,10 +1915,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.241702",
+    "timestamp": "2026-04-19T17:57:38.527088",
     "type": "RESEARCH_ALPHA",
     "message": "WMT research alpha added to premium intelligence.",
-    "trade_id": "WMT-CALL-20260419034645",
+    "trade_id": "WMT-CALL-20260419175737",
     "tier_required": "elite",
     "level": "info",
     "score": 171.25,
@@ -1927,7 +1927,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.381661",
+    "timestamp": "2026-04-19T17:57:39.080269",
     "title": "Edge Detected",
     "message": "DIS: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1938,10 +1938,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.386121",
+    "timestamp": "2026-04-19T17:57:39.084500",
     "type": "RESEARCH_ALPHA",
     "message": "DIS research alpha added to premium intelligence.",
-    "trade_id": "DIS-CALL-20260419034645",
+    "trade_id": "DIS-CALL-20260419175738",
     "tier_required": "elite",
     "level": "info",
     "score": 166.43,
@@ -1950,7 +1950,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.525256",
+    "timestamp": "2026-04-19T17:57:39.666542",
     "title": "Edge Detected",
     "message": "GS: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1961,10 +1961,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.530393",
+    "timestamp": "2026-04-19T17:57:39.670797",
     "type": "RESEARCH_ALPHA",
     "message": "GS research alpha added to premium intelligence.",
-    "trade_id": "GS-CALL-20260419034645",
+    "trade_id": "GS-CALL-20260419175739",
     "tier_required": "elite",
     "level": "info",
     "score": 160.3,
@@ -1973,7 +1973,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.677511",
+    "timestamp": "2026-04-19T17:57:40.225372",
     "title": "Edge Detected",
     "message": "NFLX: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -1984,10 +1984,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.681881",
+    "timestamp": "2026-04-19T17:57:40.231492",
     "type": "RESEARCH_ALPHA",
     "message": "NFLX research alpha added to premium intelligence.",
-    "trade_id": "NFLX-CALL-20260419034645",
+    "trade_id": "NFLX-CALL-20260419175739",
     "tier_required": "elite",
     "level": "info",
     "score": 159.79,
@@ -1996,7 +1996,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.827239",
+    "timestamp": "2026-04-19T17:57:40.828034",
     "title": "Edge Detected",
     "message": "AXP: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2007,10 +2007,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.831549",
+    "timestamp": "2026-04-19T17:57:40.832201",
     "type": "RESEARCH_ALPHA",
     "message": "AXP research alpha added to premium intelligence.",
-    "trade_id": "AXP-CALL-20260419034645",
+    "trade_id": "AXP-CALL-20260419175740",
     "tier_required": "elite",
     "level": "info",
     "score": 157.37,
@@ -2019,7 +2019,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.979177",
+    "timestamp": "2026-04-19T17:57:41.387267",
     "title": "Edge Detected",
     "message": "SBUX: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2030,10 +2030,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:45.983385",
+    "timestamp": "2026-04-19T17:57:41.391276",
     "type": "RESEARCH_ALPHA",
     "message": "SBUX research alpha added to premium intelligence.",
-    "trade_id": "SBUX-CALL-20260419034645",
+    "trade_id": "SBUX-CALL-20260419175740",
     "tier_required": "elite",
     "level": "info",
     "score": 154.09,
@@ -2042,7 +2042,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.132980",
+    "timestamp": "2026-04-19T17:57:41.971881",
     "title": "Edge Detected",
     "message": "WFC: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2053,10 +2053,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.137441",
+    "timestamp": "2026-04-19T17:57:41.976196",
     "type": "RESEARCH_ALPHA",
     "message": "WFC research alpha added to premium intelligence.",
-    "trade_id": "WFC-CALL-20260419034645",
+    "trade_id": "WFC-CALL-20260419175741",
     "tier_required": "elite",
     "level": "info",
     "score": 149.1,
@@ -2065,7 +2065,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.303219",
+    "timestamp": "2026-04-19T17:57:42.543102",
     "title": "Edge Detected",
     "message": "QCOM: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2076,10 +2076,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.307500",
+    "timestamp": "2026-04-19T17:57:42.547738",
     "type": "RESEARCH_ALPHA",
     "message": "QCOM research alpha added to premium intelligence.",
-    "trade_id": "QCOM-CALL-20260419034646",
+    "trade_id": "QCOM-CALL-20260419175741",
     "tier_required": "elite",
     "level": "info",
     "score": 148.5,
@@ -2088,7 +2088,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.460361",
+    "timestamp": "2026-04-19T17:57:43.136766",
     "title": "Edge Detected",
     "message": "DIA: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2099,10 +2099,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.464819",
+    "timestamp": "2026-04-19T17:57:43.140982",
     "type": "RESEARCH_ALPHA",
     "message": "DIA research alpha added to premium intelligence.",
-    "trade_id": "DIA-CALL-20260419034646",
+    "trade_id": "DIA-CALL-20260419175742",
     "tier_required": "elite",
     "level": "info",
     "score": 148.42,
@@ -2111,7 +2111,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.619716",
+    "timestamp": "2026-04-19T17:57:43.772821",
     "title": "Edge Detected",
     "message": "COIN: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2122,10 +2122,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.623919",
+    "timestamp": "2026-04-19T17:57:43.780451",
     "type": "RESEARCH_ALPHA",
     "message": "COIN research alpha added to premium intelligence.",
-    "trade_id": "COIN-CALL-20260419034646",
+    "trade_id": "COIN-CALL-20260419175743",
     "tier_required": "elite",
     "level": "info",
     "score": 144.71,
@@ -2134,7 +2134,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.786020",
+    "timestamp": "2026-04-19T17:57:44.356841",
     "title": "Edge Detected",
     "message": "UBER: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2145,10 +2145,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.790293",
+    "timestamp": "2026-04-19T17:57:44.361038",
     "type": "RESEARCH_ALPHA",
     "message": "UBER research alpha added to premium intelligence.",
-    "trade_id": "UBER-CALL-20260419034646",
+    "trade_id": "UBER-CALL-20260419175743",
     "tier_required": "elite",
     "level": "info",
     "score": 143.71,
@@ -2157,7 +2157,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.949716",
+    "timestamp": "2026-04-19T17:57:44.956752",
     "title": "Edge Detected",
     "message": "ABNB: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2168,10 +2168,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:46.954043",
+    "timestamp": "2026-04-19T17:57:44.962729",
     "type": "RESEARCH_ALPHA",
     "message": "ABNB research alpha added to premium intelligence.",
-    "trade_id": "ABNB-CALL-20260419034646",
+    "trade_id": "ABNB-CALL-20260419175744",
     "tier_required": "elite",
     "level": "info",
     "score": 136.25,
@@ -2180,7 +2180,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:47.114844",
+    "timestamp": "2026-04-19T17:57:45.572288",
     "title": "Edge Detected",
     "message": "CMCSA: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2191,10 +2191,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:47.119090",
+    "timestamp": "2026-04-19T17:57:45.578007",
     "type": "RESEARCH_ALPHA",
     "message": "CMCSA research alpha added to premium intelligence.",
-    "trade_id": "CMCSA-CALL-20260419034646",
+    "trade_id": "CMCSA-CALL-20260419175744",
     "tier_required": "elite",
     "level": "info",
     "score": 132.89,
@@ -2203,7 +2203,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:47.297874",
+    "timestamp": "2026-04-19T17:57:46.171668",
     "title": "Edge Detected",
     "message": "XLV: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2214,10 +2214,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T03:46:47.302652",
+    "timestamp": "2026-04-19T17:57:46.175820",
     "type": "RESEARCH_ALPHA",
     "message": "XLV research alpha added to premium intelligence.",
-    "trade_id": "XLV-CALL-20260419034647",
+    "trade_id": "XLV-CALL-20260419175745",
     "tier_required": "elite",
     "level": "info",
     "score": 128.09,
@@ -2226,9 +2226,9 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T03:46:47.462978",
+    "timestamp": "2026-04-19T17:57:46.756966",
     "title": "Risk Alert",
-    "message": "PORTFOLIO risk condition triggered: Governor blocked execution: cash_reserve_too_low.",
+    "message": "PORTFOLIO risk condition triggered: Governor blocked execution: cash_reserve_too_low, pdt_restricted.",
     "level": "warning",
     "link": "/positions",
     "read": false,
@@ -2237,9 +2237,9 @@
     "category": "risk"
   },
   {
-    "timestamp": "2026-04-19T03:46:47.467290",
+    "timestamp": "2026-04-19T17:57:46.761399",
     "type": "RISK_WARNING",
-    "message": "Execution blocked by governor in paper mode: cash_reserve_too_low",
+    "message": "Execution blocked by governor in paper mode: cash_reserve_too_low, pdt_restricted",
     "trade_id": null,
     "tier_required": "starter",
     "level": "warning",
@@ -2249,10 +2249,10 @@
     "source": "execution"
   },
   {
-    "timestamp": "2026-04-19T04:38:29.412319",
+    "timestamp": "2026-04-19T19:03:58.580303",
     "type": "HIGH_CONVICTION",
     "message": "INTC high-conviction research setup detected (Score 661.43).",
-    "trade_id": "INTC-CALL-20260419043829",
+    "trade_id": "INTC-CALL-20260419190357",
     "tier_required": "pro",
     "level": "success",
     "score": 661.43,
@@ -2261,7 +2261,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:29.440232",
+    "timestamp": "2026-04-19T19:03:58.595331",
     "title": "Edge Detected",
     "message": "INTC: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2272,10 +2272,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:29.448099",
+    "timestamp": "2026-04-19T19:03:58.599838",
     "type": "RESEARCH_ALPHA",
     "message": "INTC research alpha added to premium intelligence.",
-    "trade_id": "INTC-CALL-20260419043829",
+    "trade_id": "INTC-CALL-20260419190357",
     "tier_required": "elite",
     "level": "info",
     "score": 661.43,
@@ -2284,10 +2284,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:29.752908",
+    "timestamp": "2026-04-19T19:03:59.240015",
     "type": "HIGH_CONVICTION",
     "message": "AMD high-conviction research setup detected (Score 482.75).",
-    "trade_id": "AMD-CALL-20260419043829",
+    "trade_id": "AMD-CALL-20260419190358",
     "tier_required": "pro",
     "level": "success",
     "score": 482.75,
@@ -2296,7 +2296,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:29.778827",
+    "timestamp": "2026-04-19T19:03:59.260221",
     "title": "Edge Detected",
     "message": "AMD: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2307,10 +2307,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:29.786903",
+    "timestamp": "2026-04-19T19:03:59.265682",
     "type": "RESEARCH_ALPHA",
     "message": "AMD research alpha added to premium intelligence.",
-    "trade_id": "AMD-CALL-20260419043829",
+    "trade_id": "AMD-CALL-20260419190358",
     "tier_required": "elite",
     "level": "info",
     "score": 482.75,
@@ -2319,10 +2319,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:30.078000",
+    "timestamp": "2026-04-19T19:03:59.884307",
     "type": "HIGH_CONVICTION",
     "message": "AVGO high-conviction research setup detected (Score 412.01).",
-    "trade_id": "AVGO-CALL-20260419043829",
+    "trade_id": "AVGO-CALL-20260419190359",
     "tier_required": "pro",
     "level": "success",
     "score": 412.01,
@@ -2331,7 +2331,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:30.103790",
+    "timestamp": "2026-04-19T19:03:59.900411",
     "title": "Edge Detected",
     "message": "AVGO: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2342,10 +2342,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:30.111604",
+    "timestamp": "2026-04-19T19:03:59.904906",
     "type": "RESEARCH_ALPHA",
     "message": "AVGO research alpha added to premium intelligence.",
-    "trade_id": "AVGO-CALL-20260419043829",
+    "trade_id": "AVGO-CALL-20260419190359",
     "tier_required": "elite",
     "level": "info",
     "score": 412.01,
@@ -2354,10 +2354,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:30.416342",
+    "timestamp": "2026-04-19T19:04:00.536853",
     "type": "HIGH_CONVICTION",
     "message": "SOXX high-conviction research setup detected (Score 321.72).",
-    "trade_id": "SOXX-CALL-20260419043830",
+    "trade_id": "SOXX-CALL-20260419190359",
     "tier_required": "pro",
     "level": "success",
     "score": 321.72,
@@ -2366,7 +2366,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:30.441321",
+    "timestamp": "2026-04-19T19:04:00.552546",
     "title": "Edge Detected",
     "message": "SOXX: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2377,10 +2377,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:30.449015",
+    "timestamp": "2026-04-19T19:04:00.557239",
     "type": "RESEARCH_ALPHA",
     "message": "SOXX research alpha added to premium intelligence.",
-    "trade_id": "SOXX-CALL-20260419043830",
+    "trade_id": "SOXX-CALL-20260419190359",
     "tier_required": "elite",
     "level": "info",
     "score": 321.72,
@@ -2389,10 +2389,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:30.766223",
+    "timestamp": "2026-04-19T19:04:01.187242",
     "type": "HIGH_CONVICTION",
     "message": "AMZN high-conviction research setup detected (Score 320.04).",
-    "trade_id": "AMZN-CALL-20260419043830",
+    "trade_id": "AMZN-CALL-20260419190400",
     "tier_required": "pro",
     "level": "success",
     "score": 320.04,
@@ -2401,7 +2401,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:30.792520",
+    "timestamp": "2026-04-19T19:04:01.202520",
     "title": "Edge Detected",
     "message": "AMZN: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2412,10 +2412,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:30.800875",
+    "timestamp": "2026-04-19T19:04:01.207572",
     "type": "RESEARCH_ALPHA",
     "message": "AMZN research alpha added to premium intelligence.",
-    "trade_id": "AMZN-CALL-20260419043830",
+    "trade_id": "AMZN-CALL-20260419190400",
     "tier_required": "elite",
     "level": "info",
     "score": 320.04,
@@ -2424,10 +2424,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:31.131926",
+    "timestamp": "2026-04-19T19:04:01.826487",
     "type": "HIGH_CONVICTION",
     "message": "C high-conviction research setup detected (Score 306.9).",
-    "trade_id": "C-CALL-20260419043830",
+    "trade_id": "C-CALL-20260419190401",
     "tier_required": "pro",
     "level": "success",
     "score": 306.9,
@@ -2436,7 +2436,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:31.157631",
+    "timestamp": "2026-04-19T19:04:01.840976",
     "title": "Edge Detected",
     "message": "C: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2447,10 +2447,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:31.166034",
+    "timestamp": "2026-04-19T19:04:01.845384",
     "type": "RESEARCH_ALPHA",
     "message": "C research alpha added to premium intelligence.",
-    "trade_id": "C-CALL-20260419043830",
+    "trade_id": "C-CALL-20260419190401",
     "tier_required": "elite",
     "level": "info",
     "score": 306.9,
@@ -2459,10 +2459,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:31.494700",
+    "timestamp": "2026-04-19T19:04:02.490621",
     "type": "HIGH_CONVICTION",
     "message": "ORCL high-conviction research setup detected (Score 273.65).",
-    "trade_id": "ORCL-CALL-20260419043831",
+    "trade_id": "ORCL-CALL-20260419190401",
     "tier_required": "pro",
     "level": "success",
     "score": 273.65,
@@ -2471,7 +2471,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:31.519884",
+    "timestamp": "2026-04-19T19:04:02.505159",
     "title": "Edge Detected",
     "message": "ORCL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2482,10 +2482,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:31.529278",
+    "timestamp": "2026-04-19T19:04:02.509628",
     "type": "RESEARCH_ALPHA",
     "message": "ORCL research alpha added to premium intelligence.",
-    "trade_id": "ORCL-CALL-20260419043831",
+    "trade_id": "ORCL-CALL-20260419190401",
     "tier_required": "elite",
     "level": "info",
     "score": 273.65,
@@ -2494,10 +2494,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:31.846192",
+    "timestamp": "2026-04-19T19:04:03.142129",
     "type": "HIGH_CONVICTION",
     "message": "ROKU high-conviction research setup detected (Score 270.44).",
-    "trade_id": "ROKU-CALL-20260419043831",
+    "trade_id": "ROKU-CALL-20260419190402",
     "tier_required": "pro",
     "level": "success",
     "score": 270.44,
@@ -2506,7 +2506,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:31.872741",
+    "timestamp": "2026-04-19T19:04:03.222378",
     "title": "Edge Detected",
     "message": "ROKU: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2517,10 +2517,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:31.880597",
+    "timestamp": "2026-04-19T19:04:03.228485",
     "type": "RESEARCH_ALPHA",
     "message": "ROKU research alpha added to premium intelligence.",
-    "trade_id": "ROKU-CALL-20260419043831",
+    "trade_id": "ROKU-CALL-20260419190402",
     "tier_required": "elite",
     "level": "info",
     "score": 270.44,
@@ -2529,10 +2529,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:32.205781",
+    "timestamp": "2026-04-19T19:04:03.865578",
     "type": "HIGH_CONVICTION",
     "message": "NVDA high-conviction research setup detected (Score 267.81).",
-    "trade_id": "NVDA-CALL-20260419043831",
+    "trade_id": "NVDA-CALL-20260419190403",
     "tier_required": "pro",
     "level": "success",
     "score": 267.81,
@@ -2541,7 +2541,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:32.235488",
+    "timestamp": "2026-04-19T19:04:03.880269",
     "title": "Edge Detected",
     "message": "NVDA: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2552,10 +2552,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:32.244834",
+    "timestamp": "2026-04-19T19:04:03.884862",
     "type": "RESEARCH_ALPHA",
     "message": "NVDA research alpha added to premium intelligence.",
-    "trade_id": "NVDA-CALL-20260419043831",
+    "trade_id": "NVDA-CALL-20260419190403",
     "tier_required": "elite",
     "level": "info",
     "score": 267.81,
@@ -2564,10 +2564,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:32.523659",
+    "timestamp": "2026-04-19T19:04:04.553950",
     "type": "HIGH_CONVICTION",
     "message": "META high-conviction research setup detected (Score 259.84).",
-    "trade_id": "META-CALL-20260419043832",
+    "trade_id": "META-CALL-20260419190403",
     "tier_required": "pro",
     "level": "success",
     "score": 259.84,
@@ -2576,7 +2576,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:32.538872",
+    "timestamp": "2026-04-19T19:04:04.569954",
     "title": "Edge Detected",
     "message": "META: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2587,10 +2587,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:32.543604",
+    "timestamp": "2026-04-19T19:04:04.574887",
     "type": "RESEARCH_ALPHA",
     "message": "META research alpha added to premium intelligence.",
-    "trade_id": "META-CALL-20260419043832",
+    "trade_id": "META-CALL-20260419190403",
     "tier_required": "elite",
     "level": "info",
     "score": 259.84,
@@ -2599,10 +2599,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:32.729827",
+    "timestamp": "2026-04-19T19:04:05.693554",
     "type": "HIGH_CONVICTION",
     "message": "PYPL high-conviction research setup detected (Score 254.51).",
-    "trade_id": "PYPL-CALL-20260419043832",
+    "trade_id": "PYPL-CALL-20260419190404",
     "tier_required": "pro",
     "level": "success",
     "score": 254.51,
@@ -2611,7 +2611,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:32.803288",
+    "timestamp": "2026-04-19T19:04:05.719231",
     "title": "Edge Detected",
     "message": "PYPL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2622,10 +2622,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:32.807826",
+    "timestamp": "2026-04-19T19:04:05.727326",
     "type": "RESEARCH_ALPHA",
     "message": "PYPL research alpha added to premium intelligence.",
-    "trade_id": "PYPL-CALL-20260419043832",
+    "trade_id": "PYPL-CALL-20260419190404",
     "tier_required": "elite",
     "level": "info",
     "score": 254.51,
@@ -2634,10 +2634,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:32.997198",
+    "timestamp": "2026-04-19T19:04:06.892559",
     "type": "HIGH_CONVICTION",
     "message": "ARKK high-conviction research setup detected (Score 245.77).",
-    "trade_id": "ARKK-CALL-20260419043832",
+    "trade_id": "ARKK-CALL-20260419190405",
     "tier_required": "pro",
     "level": "success",
     "score": 245.77,
@@ -2646,7 +2646,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.011357",
+    "timestamp": "2026-04-19T19:04:06.920503",
     "title": "Edge Detected",
     "message": "ARKK: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2657,10 +2657,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.015752",
+    "timestamp": "2026-04-19T19:04:06.930585",
     "type": "RESEARCH_ALPHA",
     "message": "ARKK research alpha added to premium intelligence.",
-    "trade_id": "ARKK-CALL-20260419043832",
+    "trade_id": "ARKK-CALL-20260419190405",
     "tier_required": "elite",
     "level": "info",
     "score": 245.77,
@@ -2669,10 +2669,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.206541",
+    "timestamp": "2026-04-19T19:04:07.981617",
     "type": "HIGH_CONVICTION",
     "message": "BAC high-conviction research setup detected (Score 243.13).",
-    "trade_id": "BAC-CALL-20260419043833",
+    "trade_id": "BAC-CALL-20260419190406",
     "tier_required": "pro",
     "level": "success",
     "score": 243.13,
@@ -2681,7 +2681,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.220755",
+    "timestamp": "2026-04-19T19:04:07.997947",
     "title": "Edge Detected",
     "message": "BAC: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2692,10 +2692,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.225110",
+    "timestamp": "2026-04-19T19:04:08.002628",
     "type": "RESEARCH_ALPHA",
     "message": "BAC research alpha added to premium intelligence.",
-    "trade_id": "BAC-CALL-20260419043833",
+    "trade_id": "BAC-CALL-20260419190406",
     "tier_required": "elite",
     "level": "info",
     "score": 243.13,
@@ -2704,10 +2704,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.419539",
+    "timestamp": "2026-04-19T19:04:08.660430",
     "type": "HIGH_CONVICTION",
     "message": "XLK high-conviction research setup detected (Score 242.3).",
-    "trade_id": "XLK-CALL-20260419043833",
+    "trade_id": "XLK-CALL-20260419190408",
     "tier_required": "pro",
     "level": "success",
     "score": 242.3,
@@ -2716,7 +2716,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.434257",
+    "timestamp": "2026-04-19T19:04:08.675506",
     "title": "Edge Detected",
     "message": "XLK: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2727,10 +2727,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.441861",
+    "timestamp": "2026-04-19T19:04:08.680142",
     "type": "RESEARCH_ALPHA",
     "message": "XLK research alpha added to premium intelligence.",
-    "trade_id": "XLK-CALL-20260419043833",
+    "trade_id": "XLK-CALL-20260419190408",
     "tier_required": "elite",
     "level": "info",
     "score": 242.3,
@@ -2739,10 +2739,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.653949",
+    "timestamp": "2026-04-19T19:04:09.328608",
     "type": "HIGH_CONVICTION",
     "message": "MS high-conviction research setup detected (Score 241.46).",
-    "trade_id": "MS-CALL-20260419043833",
+    "trade_id": "MS-CALL-20260419190408",
     "tier_required": "pro",
     "level": "success",
     "score": 241.46,
@@ -2751,7 +2751,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.671948",
+    "timestamp": "2026-04-19T19:04:09.346473",
     "title": "Edge Detected",
     "message": "MS: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2762,10 +2762,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.677055",
+    "timestamp": "2026-04-19T19:04:09.351317",
     "type": "RESEARCH_ALPHA",
     "message": "MS research alpha added to premium intelligence.",
-    "trade_id": "MS-CALL-20260419043833",
+    "trade_id": "MS-CALL-20260419190408",
     "tier_required": "elite",
     "level": "info",
     "score": 241.46,
@@ -2774,10 +2774,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.878604",
+    "timestamp": "2026-04-19T19:04:10.005568",
     "type": "HIGH_CONVICTION",
     "message": "IWM high-conviction research setup detected (Score 238.55).",
-    "trade_id": "IWM-CALL-20260419043833",
+    "trade_id": "IWM-CALL-20260419190409",
     "tier_required": "pro",
     "level": "success",
     "score": 238.55,
@@ -2786,7 +2786,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.892980",
+    "timestamp": "2026-04-19T19:04:10.020519",
     "title": "Edge Detected",
     "message": "IWM: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2797,10 +2797,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:33.897459",
+    "timestamp": "2026-04-19T19:04:10.025072",
     "type": "RESEARCH_ALPHA",
     "message": "IWM research alpha added to premium intelligence.",
-    "trade_id": "IWM-CALL-20260419043833",
+    "trade_id": "IWM-CALL-20260419190409",
     "tier_required": "elite",
     "level": "info",
     "score": 238.55,
@@ -2809,10 +2809,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.098743",
+    "timestamp": "2026-04-19T19:04:10.677766",
     "type": "HIGH_CONVICTION",
     "message": "GOOGL high-conviction research setup detected (Score 235.15).",
-    "trade_id": "GOOGL-CALL-20260419043833",
+    "trade_id": "GOOGL-CALL-20260419190410",
     "tier_required": "pro",
     "level": "success",
     "score": 235.15,
@@ -2821,7 +2821,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.113093",
+    "timestamp": "2026-04-19T19:04:10.693098",
     "title": "Edge Detected",
     "message": "GOOGL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2832,10 +2832,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.117456",
+    "timestamp": "2026-04-19T19:04:10.697911",
     "type": "RESEARCH_ALPHA",
     "message": "GOOGL research alpha added to premium intelligence.",
-    "trade_id": "GOOGL-CALL-20260419043833",
+    "trade_id": "GOOGL-CALL-20260419190410",
     "tier_required": "elite",
     "level": "info",
     "score": 235.15,
@@ -2844,10 +2844,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.323710",
+    "timestamp": "2026-04-19T19:04:11.339328",
     "type": "HIGH_CONVICTION",
     "message": "DAL high-conviction research setup detected (Score 230.52).",
-    "trade_id": "DAL-CALL-20260419043834",
+    "trade_id": "DAL-CALL-20260419190410",
     "tier_required": "pro",
     "level": "success",
     "score": 230.52,
@@ -2856,7 +2856,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.338292",
+    "timestamp": "2026-04-19T19:04:11.356215",
     "title": "Edge Detected",
     "message": "DAL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2867,10 +2867,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.342690",
+    "timestamp": "2026-04-19T19:04:11.361606",
     "type": "RESEARCH_ALPHA",
     "message": "DAL research alpha added to premium intelligence.",
-    "trade_id": "DAL-CALL-20260419043834",
+    "trade_id": "DAL-CALL-20260419190410",
     "tier_required": "elite",
     "level": "info",
     "score": 230.52,
@@ -2879,10 +2879,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.565686",
+    "timestamp": "2026-04-19T19:04:12.048935",
     "type": "HIGH_CONVICTION",
     "message": "UAL high-conviction research setup detected (Score 216.99).",
-    "trade_id": "UAL-CALL-20260419043834",
+    "trade_id": "UAL-CALL-20260419190411",
     "tier_required": "pro",
     "level": "success",
     "score": 216.99,
@@ -2891,7 +2891,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.579982",
+    "timestamp": "2026-04-19T19:04:12.064618",
     "title": "Edge Detected",
     "message": "UAL: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2902,10 +2902,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.584313",
+    "timestamp": "2026-04-19T19:04:12.069330",
     "type": "RESEARCH_ALPHA",
     "message": "UAL research alpha added to premium intelligence.",
-    "trade_id": "UAL-CALL-20260419043834",
+    "trade_id": "UAL-CALL-20260419190411",
     "tier_required": "elite",
     "level": "info",
     "score": 216.99,
@@ -2914,10 +2914,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.795875",
+    "timestamp": "2026-04-19T19:04:12.755112",
     "type": "HIGH_CONVICTION",
     "message": "QQQ high-conviction research setup detected (Score 216.15).",
-    "trade_id": "QQQ-CALL-20260419043834",
+    "trade_id": "QQQ-CALL-20260419190412",
     "tier_required": "pro",
     "level": "success",
     "score": 216.15,
@@ -2926,7 +2926,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.810129",
+    "timestamp": "2026-04-19T19:04:12.770861",
     "title": "Edge Detected",
     "message": "QQQ: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2937,10 +2937,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:34.814538",
+    "timestamp": "2026-04-19T19:04:12.775520",
     "type": "RESEARCH_ALPHA",
     "message": "QQQ research alpha added to premium intelligence.",
-    "trade_id": "QQQ-CALL-20260419043834",
+    "trade_id": "QQQ-CALL-20260419190412",
     "tier_required": "elite",
     "level": "info",
     "score": 216.15,
@@ -2949,10 +2949,10 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:35.026179",
+    "timestamp": "2026-04-19T19:04:13.431761",
     "type": "HIGH_CONVICTION",
     "message": "SHOP high-conviction research setup detected (Score 208.67).",
-    "trade_id": "SHOP-CALL-20260419043834",
+    "trade_id": "SHOP-CALL-20260419190412",
     "tier_required": "pro",
     "level": "success",
     "score": 208.67,
@@ -2961,7 +2961,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:35.040494",
+    "timestamp": "2026-04-19T19:04:13.446627",
     "title": "Edge Detected",
     "message": "SHOP: Extremely strong setup with multiple aligned factors. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2972,10 +2972,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:35.045101",
+    "timestamp": "2026-04-19T19:04:13.451237",
     "type": "RESEARCH_ALPHA",
     "message": "SHOP research alpha added to premium intelligence.",
-    "trade_id": "SHOP-CALL-20260419043834",
+    "trade_id": "SHOP-CALL-20260419190412",
     "tier_required": "elite",
     "level": "info",
     "score": 208.67,
@@ -2984,7 +2984,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:35.286803",
+    "timestamp": "2026-04-19T19:04:14.146845",
     "title": "Edge Detected",
     "message": "SPY: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -2995,10 +2995,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:35.291676",
+    "timestamp": "2026-04-19T19:04:14.151561",
     "type": "RESEARCH_ALPHA",
     "message": "SPY research alpha added to premium intelligence.",
-    "trade_id": "SPY-CALL-20260419043835",
+    "trade_id": "SPY-CALL-20260419190413",
     "tier_required": "elite",
     "level": "info",
     "score": 194.93,
@@ -3007,7 +3007,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:35.533848",
+    "timestamp": "2026-04-19T19:04:14.850735",
     "title": "Edge Detected",
     "message": "ZM: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3018,10 +3018,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:35.541726",
+    "timestamp": "2026-04-19T19:04:14.855238",
     "type": "RESEARCH_ALPHA",
     "message": "ZM research alpha added to premium intelligence.",
-    "trade_id": "ZM-CALL-20260419043835",
+    "trade_id": "ZM-CALL-20260419190414",
     "tier_required": "elite",
     "level": "info",
     "score": 190.09,
@@ -3030,7 +3030,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:35.776352",
+    "timestamp": "2026-04-19T19:04:15.525696",
     "title": "Edge Detected",
     "message": "AAPL: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3041,10 +3041,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:35.780981",
+    "timestamp": "2026-04-19T19:04:15.530422",
     "type": "RESEARCH_ALPHA",
     "message": "AAPL research alpha added to premium intelligence.",
-    "trade_id": "AAPL-CALL-20260419043835",
+    "trade_id": "AAPL-CALL-20260419190414",
     "tier_required": "elite",
     "level": "info",
     "score": 189.68,
@@ -3053,7 +3053,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:36.017564",
+    "timestamp": "2026-04-19T19:04:16.211362",
     "title": "Edge Detected",
     "message": "TSLA: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3064,10 +3064,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:36.022788",
+    "timestamp": "2026-04-19T19:04:16.215943",
     "type": "RESEARCH_ALPHA",
     "message": "TSLA research alpha added to premium intelligence.",
-    "trade_id": "TSLA-CALL-20260419043835",
+    "trade_id": "TSLA-CALL-20260419190415",
     "tier_required": "elite",
     "level": "info",
     "score": 188.76,
@@ -3076,7 +3076,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:36.259552",
+    "timestamp": "2026-04-19T19:04:16.953564",
     "title": "Edge Detected",
     "message": "JPM: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3087,10 +3087,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:36.264186",
+    "timestamp": "2026-04-19T19:04:16.958691",
     "type": "RESEARCH_ALPHA",
     "message": "JPM research alpha added to premium intelligence.",
-    "trade_id": "JPM-CALL-20260419043836",
+    "trade_id": "JPM-CALL-20260419190416",
     "tier_required": "elite",
     "level": "info",
     "score": 188.35,
@@ -3099,7 +3099,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:36.504985",
+    "timestamp": "2026-04-19T19:04:17.653492",
     "title": "Edge Detected",
     "message": "MU: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3110,10 +3110,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:36.509453",
+    "timestamp": "2026-04-19T19:04:17.658089",
     "type": "RESEARCH_ALPHA",
     "message": "MU research alpha added to premium intelligence.",
-    "trade_id": "MU-CALL-20260419043836",
+    "trade_id": "MU-CALL-20260419190416",
     "tier_required": "elite",
     "level": "info",
     "score": 176.52,
@@ -3122,7 +3122,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:36.765038",
+    "timestamp": "2026-04-19T19:04:18.753218",
     "title": "Edge Detected",
     "message": "XLF: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3133,10 +3133,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:36.769501",
+    "timestamp": "2026-04-19T19:04:18.761306",
     "type": "RESEARCH_ALPHA",
     "message": "XLF research alpha added to premium intelligence.",
-    "trade_id": "XLF-CALL-20260419043836",
+    "trade_id": "XLF-CALL-20260419190417",
     "tier_required": "elite",
     "level": "info",
     "score": 173.75,
@@ -3145,7 +3145,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:37.009958",
+    "timestamp": "2026-04-19T19:04:20.027317",
     "title": "Edge Detected",
     "message": "WMT: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3156,10 +3156,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:37.014474",
+    "timestamp": "2026-04-19T19:04:20.035394",
     "type": "RESEARCH_ALPHA",
     "message": "WMT research alpha added to premium intelligence.",
-    "trade_id": "WMT-CALL-20260419043836",
+    "trade_id": "WMT-CALL-20260419190418",
     "tier_required": "elite",
     "level": "info",
     "score": 171.25,
@@ -3168,7 +3168,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:37.255789",
+    "timestamp": "2026-04-19T19:04:21.166813",
     "title": "Edge Detected",
     "message": "DIS: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3179,10 +3179,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:37.260410",
+    "timestamp": "2026-04-19T19:04:21.171846",
     "type": "RESEARCH_ALPHA",
     "message": "DIS research alpha added to premium intelligence.",
-    "trade_id": "DIS-CALL-20260419043837",
+    "trade_id": "DIS-CALL-20260419190420",
     "tier_required": "elite",
     "level": "info",
     "score": 166.43,
@@ -3191,7 +3191,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:37.519172",
+    "timestamp": "2026-04-19T19:04:21.860441",
     "title": "Edge Detected",
     "message": "GS: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3202,10 +3202,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:37.523617",
+    "timestamp": "2026-04-19T19:04:21.865003",
     "type": "RESEARCH_ALPHA",
     "message": "GS research alpha added to premium intelligence.",
-    "trade_id": "GS-CALL-20260419043837",
+    "trade_id": "GS-CALL-20260419190421",
     "tier_required": "elite",
     "level": "info",
     "score": 160.3,
@@ -3214,7 +3214,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:37.794303",
+    "timestamp": "2026-04-19T19:04:22.574780",
     "title": "Edge Detected",
     "message": "NFLX: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3225,10 +3225,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:37.798764",
+    "timestamp": "2026-04-19T19:04:22.579423",
     "type": "RESEARCH_ALPHA",
     "message": "NFLX research alpha added to premium intelligence.",
-    "trade_id": "NFLX-CALL-20260419043837",
+    "trade_id": "NFLX-CALL-20260419190421",
     "tier_required": "elite",
     "level": "info",
     "score": 159.79,
@@ -3237,7 +3237,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:38.050862",
+    "timestamp": "2026-04-19T19:04:23.286996",
     "title": "Edge Detected",
     "message": "AXP: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3248,10 +3248,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:38.055139",
+    "timestamp": "2026-04-19T19:04:23.291612",
     "type": "RESEARCH_ALPHA",
     "message": "AXP research alpha added to premium intelligence.",
-    "trade_id": "AXP-CALL-20260419043837",
+    "trade_id": "AXP-CALL-20260419190422",
     "tier_required": "elite",
     "level": "info",
     "score": 157.37,
@@ -3260,7 +3260,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:38.306393",
+    "timestamp": "2026-04-19T19:04:23.988352",
     "title": "Edge Detected",
     "message": "SBUX: Strong setup with multiple confirmations. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3271,10 +3271,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:38.310873",
+    "timestamp": "2026-04-19T19:04:23.992903",
     "type": "RESEARCH_ALPHA",
     "message": "SBUX research alpha added to premium intelligence.",
-    "trade_id": "SBUX-CALL-20260419043838",
+    "trade_id": "SBUX-CALL-20260419190423",
     "tier_required": "elite",
     "level": "info",
     "score": 154.09,
@@ -3283,7 +3283,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:38.566916",
+    "timestamp": "2026-04-19T19:04:24.794372",
     "title": "Edge Detected",
     "message": "WFC: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3294,10 +3294,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:38.571454",
+    "timestamp": "2026-04-19T19:04:24.798799",
     "type": "RESEARCH_ALPHA",
     "message": "WFC research alpha added to premium intelligence.",
-    "trade_id": "WFC-CALL-20260419043838",
+    "trade_id": "WFC-CALL-20260419190423",
     "tier_required": "elite",
     "level": "info",
     "score": 149.1,
@@ -3306,7 +3306,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:38.846098",
+    "timestamp": "2026-04-19T19:04:25.524366",
     "title": "Edge Detected",
     "message": "QCOM: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3317,10 +3317,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:38.850632",
+    "timestamp": "2026-04-19T19:04:25.528984",
     "type": "RESEARCH_ALPHA",
     "message": "QCOM research alpha added to premium intelligence.",
-    "trade_id": "QCOM-CALL-20260419043838",
+    "trade_id": "QCOM-CALL-20260419190424",
     "tier_required": "elite",
     "level": "info",
     "score": 148.5,
@@ -3329,7 +3329,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:39.108466",
+    "timestamp": "2026-04-19T19:04:26.258443",
     "title": "Edge Detected",
     "message": "DIA: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3340,10 +3340,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:39.113066",
+    "timestamp": "2026-04-19T19:04:26.263282",
     "type": "RESEARCH_ALPHA",
     "message": "DIA research alpha added to premium intelligence.",
-    "trade_id": "DIA-CALL-20260419043838",
+    "trade_id": "DIA-CALL-20260419190425",
     "tier_required": "elite",
     "level": "info",
     "score": 148.42,
@@ -3352,7 +3352,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:39.376941",
+    "timestamp": "2026-04-19T19:04:26.983598",
     "title": "Edge Detected",
     "message": "COIN: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3363,10 +3363,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:39.381371",
+    "timestamp": "2026-04-19T19:04:26.988208",
     "type": "RESEARCH_ALPHA",
     "message": "COIN research alpha added to premium intelligence.",
-    "trade_id": "COIN-CALL-20260419043839",
+    "trade_id": "COIN-CALL-20260419190426",
     "tier_required": "elite",
     "level": "info",
     "score": 144.71,
@@ -3375,7 +3375,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:39.647787",
+    "timestamp": "2026-04-19T19:04:27.740642",
     "title": "Edge Detected",
     "message": "UBER: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3386,10 +3386,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:39.653497",
+    "timestamp": "2026-04-19T19:04:27.745095",
     "type": "RESEARCH_ALPHA",
     "message": "UBER research alpha added to premium intelligence.",
-    "trade_id": "UBER-CALL-20260419043839",
+    "trade_id": "UBER-CALL-20260419190426",
     "tier_required": "elite",
     "level": "info",
     "score": 143.71,
@@ -3398,7 +3398,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:39.941236",
+    "timestamp": "2026-04-19T19:04:28.494079",
     "title": "Edge Detected",
     "message": "ABNB: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3409,10 +3409,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:39.945718",
+    "timestamp": "2026-04-19T19:04:28.498523",
     "type": "RESEARCH_ALPHA",
     "message": "ABNB research alpha added to premium intelligence.",
-    "trade_id": "ABNB-CALL-20260419043839",
+    "trade_id": "ABNB-CALL-20260419190427",
     "tier_required": "elite",
     "level": "info",
     "score": 136.25,
@@ -3421,7 +3421,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:40.214838",
+    "timestamp": "2026-04-19T19:04:29.253843",
     "title": "Edge Detected",
     "message": "CMCSA: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3432,10 +3432,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:40.219387",
+    "timestamp": "2026-04-19T19:04:29.258343",
     "type": "RESEARCH_ALPHA",
     "message": "CMCSA research alpha added to premium intelligence.",
-    "trade_id": "CMCSA-CALL-20260419043839",
+    "trade_id": "CMCSA-CALL-20260419190428",
     "tier_required": "elite",
     "level": "info",
     "score": 132.89,
@@ -3444,7 +3444,7 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:40.496094",
+    "timestamp": "2026-04-19T19:04:30.005897",
     "title": "Edge Detected",
     "message": "XLV: Developing setup with partial alignment. | High conviction based on strong confirmation signals. | Market regime: Bull Trend.",
     "level": "info",
@@ -3455,10 +3455,10 @@
     "category": "premium"
   },
   {
-    "timestamp": "2026-04-19T04:38:40.500712",
+    "timestamp": "2026-04-19T19:04:30.010722",
     "type": "RESEARCH_ALPHA",
     "message": "XLV research alpha added to premium intelligence.",
-    "trade_id": "XLV-CALL-20260419043840",
+    "trade_id": "XLV-CALL-20260419190429",
     "tier_required": "elite",
     "level": "info",
     "score": 128.09,
@@ -3467,9 +3467,9 @@
     "source": "research"
   },
   {
-    "timestamp": "2026-04-19T04:38:40.794939",
+    "timestamp": "2026-04-19T19:04:30.754704",
     "title": "Risk Alert",
-    "message": "PORTFOLIO risk condition triggered: Governor blocked execution: cash_reserve_too_low.",
+    "message": "PORTFOLIO risk condition triggered: Governor blocked execution: cash_reserve_too_low, pdt_restricted.",
     "level": "warning",
     "link": "/positions",
     "read": false,
@@ -3478,9 +3478,9 @@
     "category": "risk"
   },
   {
-    "timestamp": "2026-04-19T04:38:40.799711",
+    "timestamp": "2026-04-19T19:04:30.759639",
     "type": "RISK_WARNING",
-    "message": "Execution blocked by governor in paper mode: cash_reserve_too_low",
+    "message": "Execution blocked by governor in paper mode: cash_reserve_too_low, pdt_restricted",
     "trade_id": null,
     "tier_required": "starter",
     "level": "warning",

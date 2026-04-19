@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Dict, List
 
+
 MODE_SURVEY = "survey"
 MODE_PAPER = "paper"
 MODE_LIVE = "live"
@@ -82,7 +83,7 @@ MODE_PROFILES: Dict[str, Dict[str, Any]] = {
         "allow_same_day_high_risk_contracts": True,
         "minimum_option_dte": 0,
 
-        # cash / reserve behavior
+        # reserve / buffer behavior
         "minimum_stock_cash_buffer_pct": 0.05,
         "minimum_live_like_cash_buffer_pct": 0.05,
         "reserve_floor_pct": 0.05,
@@ -92,17 +93,19 @@ MODE_PROFILES: Dict[str, Dict[str, Any]] = {
         "max_open_positions": 6,
         "queue_limit": 6,
 
-        # reason groupings
+        # classification
         "soft_block_reasons": [
             "cash_reserve_too_low",
             "governor_blocked:cash_reserve_too_low",
             "reserve_blocked",
             "insufficient_cash_after_reserve",
             "pdt_restricted",
+            "governor_blocked:pdt_restricted",
             "max_open_positions",
             "max_open_positions_reached",
             "max_daily_loss_hit",
             "daily_entry_cap",
+            "max_drawdown_hit",
         ],
         "hard_block_reasons": [
             "kill_switch",
@@ -117,13 +120,14 @@ MODE_PROFILES: Dict[str, Dict[str, Any]] = {
         "shell": SHELL_SOLAR_SYSTEM,
         "description": (
             "Structured simulation mode. This is the realistic practice layer, where "
-            "capital discipline matters and execution protection is mostly enforced."
+            "capital discipline, PDT discipline, and execution protection are enforced "
+            "like a live-trading rehearsal."
         ),
         "theme_family": "solar_system",
 
         # strictness
         "strict_reserve": True,
-        "strict_pdt": False,
+        "strict_pdt": True,
         "strict_execution_gate": True,
         "strict_position_cap": True,
         "strict_daily_loss": True,
@@ -132,7 +136,7 @@ MODE_PROFILES: Dict[str, Dict[str, Any]] = {
 
         # warning behavior
         "reserve_warning_only": False,
-        "pdt_warning_only": True,
+        "pdt_warning_only": False,
         "execution_warning_only": False,
         "position_cap_warning_only": False,
         "daily_loss_warning_only": False,
@@ -143,7 +147,7 @@ MODE_PROFILES: Dict[str, Dict[str, Any]] = {
         "allow_same_day_high_risk_contracts": False,
         "minimum_option_dte": 1,
 
-        # cash / reserve behavior
+        # reserve / buffer behavior
         "minimum_stock_cash_buffer_pct": 0.20,
         "minimum_live_like_cash_buffer_pct": 0.20,
         "reserve_floor_pct": 0.20,
@@ -153,15 +157,15 @@ MODE_PROFILES: Dict[str, Dict[str, Any]] = {
         "max_open_positions": 3,
         "queue_limit": 3,
 
-        # reason groupings
-        "soft_block_reasons": [
-            "pdt_restricted",
-        ],
+        # classification
+        "soft_block_reasons": [],
         "hard_block_reasons": [
             "cash_reserve_too_low",
             "governor_blocked:cash_reserve_too_low",
             "reserve_blocked",
             "insufficient_cash_after_reserve",
+            "pdt_restricted",
+            "governor_blocked:pdt_restricted",
             "max_open_positions",
             "max_open_positions_reached",
             "max_daily_loss_hit",
@@ -177,9 +181,7 @@ MODE_PROFILES: Dict[str, Dict[str, Any]] = {
         "mode": MODE_LIVE,
         "label": "Live Mode",
         "shell": SHELL_OBSERVATORY,
-        "description": (
-            "Real-money mode. Full discipline and protection rules are enforced."
-        ),
+        "description": "Real-money mode. Full discipline and protection rules are enforced.",
         "theme_family": "observatory",
 
         # strictness
@@ -204,7 +206,7 @@ MODE_PROFILES: Dict[str, Dict[str, Any]] = {
         "allow_same_day_high_risk_contracts": False,
         "minimum_option_dte": 1,
 
-        # cash / reserve behavior
+        # reserve / buffer behavior
         "minimum_stock_cash_buffer_pct": 0.20,
         "minimum_live_like_cash_buffer_pct": 0.20,
         "reserve_floor_pct": 0.20,
@@ -214,7 +216,7 @@ MODE_PROFILES: Dict[str, Dict[str, Any]] = {
         "max_open_positions": 3,
         "queue_limit": 3,
 
-        # reason groupings
+        # classification
         "soft_block_reasons": [],
         "hard_block_reasons": [
             "cash_reserve_too_low",
@@ -222,6 +224,7 @@ MODE_PROFILES: Dict[str, Dict[str, Any]] = {
             "reserve_blocked",
             "insufficient_cash_after_reserve",
             "pdt_restricted",
+            "governor_blocked:pdt_restricted",
             "max_open_positions",
             "max_open_positions_reached",
             "max_daily_loss_hit",
@@ -292,15 +295,12 @@ def build_mode_context(mode: Any = None) -> Dict[str, Any]:
 
         "allow_stock_fallback": _safe_bool(profile.get("allow_stock_fallback", True), True),
         "options_first": _safe_bool(profile.get("options_first", True), True),
-        "max_daily_entries": _safe_int(profile.get("max_daily_entries", 3), 3),
-        "max_open_positions": _safe_int(profile.get("max_open_positions", 3), 3),
-        "queue_limit": _safe_int(profile.get("queue_limit", 3), 3),
-
         "allow_same_day_high_risk_contracts": _safe_bool(
             profile.get("allow_same_day_high_risk_contracts", False),
             False,
         ),
         "minimum_option_dte": _safe_int(profile.get("minimum_option_dte", 1), 1),
+
         "minimum_stock_cash_buffer_pct": _safe_float(
             profile.get("minimum_stock_cash_buffer_pct", 0.20),
             0.20,
@@ -310,6 +310,10 @@ def build_mode_context(mode: Any = None) -> Dict[str, Any]:
             0.20,
         ),
         "reserve_floor_pct": _safe_float(profile.get("reserve_floor_pct", 0.20), 0.20),
+
+        "max_daily_entries": _safe_int(profile.get("max_daily_entries", 3), 3),
+        "max_open_positions": _safe_int(profile.get("max_open_positions", 3), 3),
+        "queue_limit": _safe_int(profile.get("queue_limit", 3), 3),
 
         "soft_block_reasons": _safe_list(profile.get("soft_block_reasons")),
         "hard_block_reasons": _safe_list(profile.get("hard_block_reasons")),
@@ -337,6 +341,7 @@ def classify_reason_for_mode(reason: Any, mode: Any = None) -> str:
     context = build_mode_context(mode)
     soft = set(_safe_list(context.get("soft_block_reasons")))
     hard = set(_safe_list(context.get("hard_block_reasons")))
+
     if reason_text in hard:
         return "hard"
     if reason_text in soft:
@@ -362,6 +367,7 @@ def soften_reasons_for_mode(
         text = _safe_str(item, "")
         if not text:
             continue
+
         classification = classify_reason_for_mode(text, context.get("mode"))
         if classification == "soft" and not strict_execution_gate:
             if text not in seen_warnings:
@@ -398,32 +404,33 @@ def apply_mode_to_governor(governor: Any, mode: Any = None) -> Dict[str, Any]:
         warnings=original_warnings,
         mode=context.get("mode"),
     )
-
     reasons = softened["reasons"]
     warnings = softened["warnings"]
 
+    strict_execution_gate = _safe_bool(context.get("strict_execution_gate", True), True)
+
     controls["cash_reserve_warning_only"] = (
-        controls.get("cash_reserve_too_low", False)
+        _safe_bool(controls.get("cash_reserve_too_low"), False)
         and classify_reason_for_mode("cash_reserve_too_low", context.get("mode")) == "soft"
-        and not _safe_bool(context.get("strict_execution_gate", True), True)
+        and not strict_execution_gate
     )
     controls["pdt_warning_only"] = (
-        controls.get("pdt_restricted", False)
+        _safe_bool(controls.get("pdt_restricted"), False)
         and classify_reason_for_mode("pdt_restricted", context.get("mode")) == "soft"
+        and not strict_execution_gate
     )
     controls["position_cap_warning_only"] = (
-        controls.get("max_open_positions", False)
+        _safe_bool(controls.get("max_open_positions"), False)
         and classify_reason_for_mode("max_open_positions", context.get("mode")) == "soft"
-        and not _safe_bool(context.get("strict_execution_gate", True), True)
+        and not strict_execution_gate
     )
     controls["daily_loss_warning_only"] = (
-        controls.get("max_daily_loss_hit", False)
+        _safe_bool(controls.get("max_daily_loss_hit"), False)
         and classify_reason_for_mode("max_daily_loss_hit", context.get("mode")) == "soft"
-        and not _safe_bool(context.get("strict_execution_gate", True), True)
+        and not strict_execution_gate
     )
 
     blocked = len(reasons) > 0
-
     if blocked:
         status_label = "BLOCKED"
     elif warnings:
@@ -440,7 +447,6 @@ def apply_mode_to_governor(governor: Any, mode: Any = None) -> Dict[str, Any]:
     governor["blocked"] = blocked
     governor["ok_to_trade"] = not blocked
     governor["status_label"] = status_label
-
     return governor
 
 

@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional
 
 from engine.vehicle_selector import choose_vehicle
 
+
 LIFECYCLE_NEW = "NEW"
 LIFECYCLE_RESEARCH_APPROVED = "RESEARCH_APPROVED"
 LIFECYCLE_RESEARCH_REJECTED = "RESEARCH_REJECTED"
@@ -125,7 +126,6 @@ class LifecycleState:
     symbol: str = ""
     strategy: str = ""
     direction: str = DIRECTION_UNKNOWN
-
     lifecycle_stage: str = LIFECYCLE_NEW
     selected_vehicle: str = VEHICLE_NONE
     fallback_vehicle: str = VEHICLE_NONE
@@ -155,7 +155,6 @@ class LifecycleState:
     fused_score: float = 0.0
     v2_score: float = 0.0
     v2_quality: float = 0.0
-
     v2_reason: str = ""
     v2_vehicle_bias: str = ""
     v2_payload: Dict[str, Any] = field(default_factory=dict)
@@ -194,17 +193,15 @@ class LifecycleState:
 
     contracts: int = 0
     shares: int = 0
-
     contract: Optional[Dict[str, Any]] = None
     option: Dict[str, Any] = field(default_factory=dict)
     stock_path: Dict[str, Any] = field(default_factory=dict)
     option_path: Dict[str, Any] = field(default_factory=dict)
-
     reserve_check: Dict[str, Any] = field(default_factory=dict)
     governor: Dict[str, Any] = field(default_factory=dict)
     mode_context: Dict[str, Any] = field(default_factory=dict)
-
     top_ranked_contracts: List[Dict[str, Any]] = field(default_factory=list)
+
     warnings: List[str] = field(default_factory=list)
     rejection_reasons: List[str] = field(default_factory=list)
 
@@ -212,7 +209,6 @@ class LifecycleState:
     exited_at: Optional[str] = None
     created_at: str = field(default_factory=_now_iso)
     updated_at: str = field(default_factory=_now_iso)
-
     raw: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -229,7 +225,14 @@ def build_options_lifecycle(
     account_context = _safe_dict(account_context)
     option_chain = _safe_list(option_chain)
 
-    requested_mode = normalize_mode(mode or candidate.get("trading_mode") or candidate.get("mode") or "paper")
+    requested_mode = normalize_mode(
+        mode
+        or candidate.get("trading_mode")
+        or candidate.get("mode")
+        or _safe_dict(candidate.get("mode_context")).get("mode")
+        or "paper"
+    )
+
     incoming_mode_context = _safe_dict(candidate.get("mode_context"))
     resolved_mode_context = build_mode_context(requested_mode)
     mode_context = dict(resolved_mode_context)
@@ -242,7 +245,6 @@ def build_options_lifecycle(
         candidate.get("direction"),
         _default_direction_from_strategy(strategy),
     )
-
     confidence = _normalize_upper(candidate.get("confidence"), "UNKNOWN")
     base_confidence = _normalize_upper(candidate.get("base_confidence"), confidence)
     v2_confidence = _normalize_upper(candidate.get("v2_confidence"), confidence)
@@ -280,8 +282,10 @@ def build_options_lifecycle(
     reserve_warning_only = _safe_bool(mode_context.get("reserve_warning_only"), False)
     execution_warning_only = _safe_bool(mode_context.get("execution_warning_only"), False)
     strict_execution_gate = _safe_bool(mode_context.get("strict_execution_gate"), True)
+
     options_first = _safe_bool(mode_context.get("options_first"), True)
     allow_stock_fallback_by_mode = _safe_bool(mode_context.get("allow_stock_fallback"), True)
+
     minimum_option_dte = _safe_int(mode_context.get("minimum_option_dte"), 0)
     allow_same_day_high_risk_contracts = _safe_bool(
         mode_context.get("allow_same_day_high_risk_contracts"),
@@ -294,9 +298,11 @@ def build_options_lifecycle(
         symbol=symbol,
         strategy=strategy,
         direction=direction,
+
         confidence=confidence,
         base_confidence=base_confidence,
         v2_confidence=v2_confidence,
+
         score=score,
         base_score=base_score,
         fused_score=fused_score,
@@ -305,10 +311,12 @@ def build_options_lifecycle(
         v2_reason=_normalize_text(candidate.get("v2_reason")),
         v2_vehicle_bias=_normalize_upper(candidate.get("v2_vehicle_bias")),
         v2_payload=_safe_dict(candidate.get("v2_payload")),
+
         readiness_score=_safe_float(candidate.get("readiness_score")),
         promotion_score=_safe_float(candidate.get("promotion_score")),
         rebuild_pressure=_safe_float(candidate.get("rebuild_pressure")),
         execution_quality=_safe_float(candidate.get("execution_quality")),
+
         setup_type=_normalize_text(candidate.get("setup_type")),
         setup_family=_normalize_text(candidate.get("setup_family")),
         entry_quality=_normalize_text(candidate.get("entry_quality")),
@@ -317,9 +325,11 @@ def build_options_lifecycle(
         breadth=_normalize_text(candidate.get("breadth")),
         volatility_state=_normalize_text(candidate.get("volatility_state")),
         mode=requested_mode,
+
         decision_reason=_normalize_text(candidate.get("decision_reason")),
         vehicle_reason=_normalize_text(candidate.get("vehicle_reason")),
         blocked_at=_normalize_text(candidate.get("blocked_at")),
+
         why=_safe_list(candidate.get("why")),
         supports=_safe_list(candidate.get("supports")),
         blockers=_safe_list(candidate.get("blockers")),
@@ -327,21 +337,26 @@ def build_options_lifecycle(
         option_explanation=_safe_list(candidate.get("option_explanation")),
         learning_notes=_safe_list(candidate.get("learning_notes")),
         stronger_competing_setups=_safe_list(candidate.get("stronger_competing_setups")),
+
         candidate_size_dollars=round(allocation_dollars, 2),
         capital_required=round(capital_required_existing, 2),
         minimum_trade_cost=round(minimum_trade_cost_existing, 2),
         capital_available=round(cash_available, 2),
+
         contract=_safe_dict(candidate.get("contract")) or None,
         option=_safe_dict(candidate.get("option")),
         stock_path=_safe_dict(candidate.get("stock_path")),
         option_path=_safe_dict(candidate.get("option_path")),
         governor=_safe_dict(candidate.get("governor")),
         mode_context=mode_context,
+
         warnings=[_normalize_text(x) for x in _safe_list(candidate.get("warnings")) if _normalize_text(x)],
         rejection_reasons=[_normalize_text(x) for x in _safe_list(candidate.get("rejection_reasons")) if _normalize_text(x)],
+
         research_approved=_safe_bool(candidate.get("research_approved"), False),
         execution_ready=_safe_bool(candidate.get("execution_ready"), False),
         selected_for_execution=_safe_bool(candidate.get("selected_for_execution"), False),
+
         raw=dict(candidate),
     )
 
@@ -372,7 +387,6 @@ def build_options_lifecycle(
     life.research_reason_code = research_reason_code or "research_approved"
 
     trade_intent = _normalize_text(candidate.get("trade_intent"), "GRIND")
-
     vehicle = choose_vehicle(
         symbol=symbol,
         strategy=strategy,
@@ -392,10 +406,7 @@ def build_options_lifecycle(
     option_score = _safe_float(option_result.get("option_score"))
     option_dte = _safe_int(best_option_preview.get("dte"))
 
-    life.selected_vehicle = _normalize_upper(
-        vehicle.get("vehicle_selected"),
-        VEHICLE_NONE,
-    )
+    life.selected_vehicle = _normalize_upper(vehicle.get("vehicle_selected"), VEHICLE_NONE)
     if life.selected_vehicle not in {VEHICLE_OPTION, VEHICLE_STOCK, VEHICLE_NONE, VEHICLE_RESEARCH_ONLY}:
         life.selected_vehicle = VEHICLE_NONE
 
@@ -403,16 +414,16 @@ def build_options_lifecycle(
     life.contract = best_option_preview or life.contract
     if best_option_preview and not life.option:
         life.option = dict(best_option_preview)
-
     life.top_ranked_contracts = [best_option_preview] if best_option_preview else []
+
     life.capital_required = round(_safe_float(vehicle.get("capital_required")), 2)
     life.minimum_trade_cost = round(_safe_float(vehicle.get("minimum_trade_cost")), 2)
     life.estimated_cost = round(_safe_float(vehicle.get("minimum_trade_cost")), 2)
     life.contracts = _safe_int(vehicle.get("contracts"))
     life.shares = _safe_int(vehicle.get("shares"))
     life.vehicle_reason = _normalize_text(vehicle.get("vehicle_reason"))
-    life.option_explanation = _dedupe_keep_order(_safe_list(life.option_explanation) + option_notes)
 
+    life.option_explanation = _dedupe_keep_order(_safe_list(life.option_explanation) + option_notes)
     if option_reason:
         life.rejection_reasons = _dedupe_keep_order(life.rejection_reasons + [option_reason])
 
@@ -422,6 +433,7 @@ def build_options_lifecycle(
         option_minimum_trade_cost = round(option_capital_required + 1.0, 2) if option_capital_required > 0 else 0.0
         option_affordable = cash_available >= option_minimum_trade_cost if option_minimum_trade_cost > 0 else False
         option_after_trade_cash = round(cash_available - option_minimum_trade_cost, 2) if option_minimum_trade_cost > 0 else cash_available
+        option_reserve_ok_after_trade = option_after_trade_cash >= reserve_floor_dollars
 
         life.option_path = {
             "vehicle": "OPTION",
@@ -435,13 +447,15 @@ def build_options_lifecycle(
             "spread_pct": _safe_float(best_option_preview.get("spread_pct"), 999.0),
             "cash_after_trade": option_after_trade_cash,
             "reserve_floor_dollars": reserve_floor_dollars,
-            "reserve_ok_after_trade": option_after_trade_cash >= reserve_floor_dollars,
+            "reserve_ok_after_trade": option_reserve_ok_after_trade,
         }
 
     if not life.stock_path and underlying_price > 0:
         stock_capital_required = round(underlying_price, 2)
         stock_minimum_trade_cost = round(underlying_price + 1.0, 2)
         stock_after_trade_cash = round(cash_available - stock_minimum_trade_cost, 2)
+        stock_reserve_ok_after_trade = stock_after_trade_cash >= reserve_floor_dollars
+
         life.stock_path = {
             "vehicle": "STOCK",
             "capital_required": stock_capital_required,
@@ -451,7 +465,7 @@ def build_options_lifecycle(
             "affordable": cash_available >= stock_minimum_trade_cost,
             "cash_after_trade": stock_after_trade_cash,
             "reserve_floor_dollars": reserve_floor_dollars,
-            "reserve_ok_after_trade": stock_after_trade_cash >= reserve_floor_dollars,
+            "reserve_ok_after_trade": stock_reserve_ok_after_trade,
         }
 
     stock_path = _safe_dict(life.stock_path)
@@ -462,21 +476,36 @@ def build_options_lifecycle(
     option_reserve_ok = _safe_bool(option_path.get("reserve_ok_after_trade"), False)
     stock_reserve_ok = _safe_bool(stock_path.get("reserve_ok_after_trade"), False)
 
+    reserve_check = {
+        "mode": requested_mode,
+        "reserve_floor_pct": reserve_floor_pct,
+        "reserve_floor_dollars": reserve_floor_dollars,
+        "cash_available": round(cash_available, 2),
+        "selected_vehicle": life.selected_vehicle,
+        "warning_only": reserve_warning_only or execution_warning_only or not strict_execution_gate,
+        "hard_block": False,
+        "is_pressure": False,
+        "reason": "",
+        "reason_code": "",
+    }
+
+    # Step 1: enforce option validity
     if life.selected_vehicle == VEHICLE_OPTION and option_path:
         if minimum_option_dte > 0 and option_dte > 0 and option_dte < minimum_option_dte:
-            option_warning_or_block = "option_dte_below_mode_minimum"
-            if allow_same_day_high_risk_contracts:
-                life.warnings = _dedupe_keep_order(life.warnings + [option_warning_or_block])
+            reason_code = "option_dte_below_mode_minimum"
+            if allow_same_day_high_risk_contracts and requested_mode == "survey":
+                life.warnings = _dedupe_keep_order(life.warnings + [reason_code])
             else:
-                life.rejection_reasons = _dedupe_keep_order(life.rejection_reasons + [option_warning_or_block])
                 if allow_stock_fallback and allow_stock_fallback_by_mode and stock_path:
                     life.fallback_vehicle = VEHICLE_STOCK
                     life.selected_vehicle = VEHICLE_STOCK
                     life.vehicle_reason = "stock_fallback_after_option_dte_block"
-                    life.warnings = _dedupe_keep_order(life.warnings + [option_warning_or_block])
+                    life.warnings = _dedupe_keep_order(life.warnings + [reason_code])
                 else:
+                    life.rejection_reasons = _dedupe_keep_order(life.rejection_reasons + [reason_code])
                     life.selected_vehicle = VEHICLE_RESEARCH_ONLY
 
+    # Step 2: option affordability
     if life.selected_vehicle == VEHICLE_OPTION and option_path:
         if not option_affordable:
             if allow_stock_fallback and allow_stock_fallback_by_mode and stock_affordable:
@@ -488,35 +517,50 @@ def build_options_lifecycle(
                 life.rejection_reasons = _dedupe_keep_order(life.rejection_reasons + ["option_not_affordable"])
                 life.selected_vehicle = VEHICLE_RESEARCH_ONLY
 
+    # Step 3: option reserve enforcement
     if life.selected_vehicle == VEHICLE_OPTION and option_path:
         if reserve_floor_dollars > 0 and not option_reserve_ok:
             reserve_reason = "insufficient_cash_after_reserve"
+            reserve_check["is_pressure"] = True
+            reserve_check["reason"] = "Option path would violate reserve floor."
+            reserve_check["reason_code"] = reserve_reason
+
             if reserve_warning_only or execution_warning_only or not strict_execution_gate:
                 life.warnings = _dedupe_keep_order(life.warnings + [reserve_reason])
             else:
+                reserve_check["hard_block"] = True
                 if allow_stock_fallback and allow_stock_fallback_by_mode and stock_affordable and stock_reserve_ok:
                     life.fallback_vehicle = VEHICLE_STOCK
                     life.selected_vehicle = VEHICLE_STOCK
                     life.vehicle_reason = "stock_fallback_after_option_reserve_failure"
+                    reserve_check["hard_block"] = False
                     life.warnings = _dedupe_keep_order(life.warnings + [reserve_reason])
                 else:
                     life.rejection_reasons = _dedupe_keep_order(life.rejection_reasons + [reserve_reason])
                     life.selected_vehicle = VEHICLE_RESEARCH_ONLY
 
+    # Step 4: stock affordability
     if life.selected_vehicle == VEHICLE_STOCK and stock_path:
         if not stock_affordable:
             life.rejection_reasons = _dedupe_keep_order(life.rejection_reasons + ["stock_not_affordable"])
             life.selected_vehicle = VEHICLE_RESEARCH_ONLY
 
+    # Step 5: stock reserve enforcement
     if life.selected_vehicle == VEHICLE_STOCK and stock_path:
         if reserve_floor_dollars > 0 and not stock_reserve_ok:
             reserve_reason = "insufficient_cash_after_reserve"
+            reserve_check["is_pressure"] = True
+            reserve_check["reason"] = "Stock path would violate reserve floor."
+            reserve_check["reason_code"] = reserve_reason
+
             if reserve_warning_only or execution_warning_only or not strict_execution_gate:
                 life.warnings = _dedupe_keep_order(life.warnings + [reserve_reason])
             else:
+                reserve_check["hard_block"] = True
                 life.rejection_reasons = _dedupe_keep_order(life.rejection_reasons + [reserve_reason])
                 life.selected_vehicle = VEHICLE_RESEARCH_ONLY
 
+    # Step 6: options-first override
     if options_first and allow_stock_fallback and allow_stock_fallback_by_mode:
         if life.selected_vehicle == VEHICLE_STOCK and best_option_preview:
             if option_affordable and (option_reserve_ok or reserve_warning_only or execution_warning_only or not strict_execution_gate):
@@ -524,6 +568,8 @@ def build_options_lifecycle(
                     life.selected_vehicle = VEHICLE_OPTION
                     life.vehicle_reason = "options_first_preferred_executable_contract"
                     life.fallback_vehicle = VEHICLE_STOCK
+
+    life.reserve_check = reserve_check
 
     blocked_vehicle = life.selected_vehicle in {VEHICLE_NONE, VEHICLE_RESEARCH_ONLY, ""}
 
@@ -600,7 +646,6 @@ def build_options_lifecycle(
     life.raw["execution_warning_only"] = execution_warning_only
     life.raw["strict_execution_gate"] = strict_execution_gate
     life.raw["reserve_warning_only"] = reserve_warning_only
-
     life.updated_at = _now_iso()
     return asdict(life)
 

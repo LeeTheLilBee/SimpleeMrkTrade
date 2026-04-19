@@ -1,6 +1,6 @@
 [
   {
-    "timestamp": "2026-04-18T15:20:49.981133",
+    "timestamp": "2026-04-19T14:56:30.228347",
     "symbol": "UAL",
     "strategy": "CALL",
     "score": 216.99,
@@ -27,7 +27,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:50.071105",
+    "timestamp": "2026-04-19T14:56:30.580850",
     "symbol": "QQQ",
     "strategy": "CALL",
     "score": 216.15,
@@ -54,7 +54,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:50.159965",
+    "timestamp": "2026-04-19T14:56:30.911540",
     "symbol": "SHOP",
     "strategy": "CALL",
     "score": 208.67,
@@ -81,7 +81,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:50.243414",
+    "timestamp": "2026-04-19T14:56:31.238683",
     "symbol": "SPY",
     "strategy": "CALL",
     "score": 194.93,
@@ -108,7 +108,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:50.340899",
+    "timestamp": "2026-04-19T14:56:31.592779",
     "symbol": "ZM",
     "strategy": "CALL",
     "score": 190.09,
@@ -135,7 +135,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:50.423029",
+    "timestamp": "2026-04-19T14:56:31.922965",
     "symbol": "AAPL",
     "strategy": "CALL",
     "score": 189.68,
@@ -162,7 +162,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:50.506033",
+    "timestamp": "2026-04-19T14:56:32.254685",
     "symbol": "TSLA",
     "strategy": "CALL",
     "score": 188.76,
@@ -189,7 +189,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:50.587783",
+    "timestamp": "2026-04-19T14:56:32.623565",
     "symbol": "JPM",
     "strategy": "CALL",
     "score": 188.35,
@@ -216,7 +216,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:50.671044",
+    "timestamp": "2026-04-19T14:56:32.986891",
     "symbol": "MU",
     "strategy": "CALL",
     "score": 176.52,
@@ -243,7 +243,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:50.754904",
+    "timestamp": "2026-04-19T14:56:33.325571",
     "symbol": "XLF",
     "strategy": "CALL",
     "score": 173.75,
@@ -270,7 +270,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:50.841899",
+    "timestamp": "2026-04-19T14:56:33.691101",
     "symbol": "WMT",
     "strategy": "CALL",
     "score": 171.25,
@@ -297,7 +297,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:50.935025",
+    "timestamp": "2026-04-19T14:56:34.038885",
     "symbol": "DIS",
     "strategy": "CALL",
     "score": 166.43,
@@ -324,7 +324,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.026212",
+    "timestamp": "2026-04-19T14:56:34.384319",
     "symbol": "GS",
     "strategy": "CALL",
     "score": 160.3,
@@ -351,7 +351,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.109102",
+    "timestamp": "2026-04-19T14:56:34.751805",
     "symbol": "NFLX",
     "strategy": "CALL",
     "score": 159.79,
@@ -378,7 +378,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.192310",
+    "timestamp": "2026-04-19T14:56:35.107405",
     "symbol": "AXP",
     "strategy": "CALL",
     "score": 157.37,
@@ -405,7 +405,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.274237",
+    "timestamp": "2026-04-19T14:56:35.461237",
     "symbol": "SBUX",
     "strategy": "CALL",
     "score": 154.09,
@@ -432,7 +432,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.371136",
+    "timestamp": "2026-04-19T14:56:35.830993",
     "symbol": "WFC",
     "strategy": "CALL",
     "score": 149.1,
@@ -459,7 +459,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.452707",
+    "timestamp": "2026-04-19T14:56:36.185636",
     "symbol": "QCOM",
     "strategy": "CALL",
     "score": 148.5,
@@ -486,7 +486,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.534922",
+    "timestamp": "2026-04-19T14:56:36.566421",
     "symbol": "DIA",
     "strategy": "CALL",
     "score": 148.42,
@@ -513,7 +513,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.616688",
+    "timestamp": "2026-04-19T14:56:36.932249",
     "symbol": "COIN",
     "strategy": "CALL",
     "score": 144.71,
@@ -540,7 +540,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.698979",
+    "timestamp": "2026-04-19T14:56:37.316248",
     "symbol": "UBER",
     "strategy": "CALL",
     "score": 143.71,
@@ -567,7 +567,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.784522",
+    "timestamp": "2026-04-19T14:56:37.870555",
     "symbol": "ABNB",
     "strategy": "CALL",
     "score": 136.25,
@@ -594,7 +594,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.870056",
+    "timestamp": "2026-04-19T14:56:38.519405",
     "symbol": "CMCSA",
     "strategy": "CALL",
     "score": 132.89,
@@ -621,7 +621,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T15:20:51.954090",
+    "timestamp": "2026-04-19T14:56:39.190801",
     "symbol": "XLV",
     "strategy": "CALL",
     "score": 128.09,
@@ -648,7 +648,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:00.940453",
+    "timestamp": "2026-04-19T17:22:24.417709",
     "symbol": "INTC",
     "strategy": "CALL",
     "score": 661.43,
@@ -675,7 +675,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:01.027063",
+    "timestamp": "2026-04-19T17:22:24.791209",
     "symbol": "AMD",
     "strategy": "CALL",
     "score": 482.75,
@@ -702,7 +702,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:01.113593",
+    "timestamp": "2026-04-19T17:22:25.188867",
     "symbol": "AVGO",
     "strategy": "CALL",
     "score": 412.01,
@@ -729,7 +729,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:01.210737",
+    "timestamp": "2026-04-19T17:22:25.565417",
     "symbol": "SOXX",
     "strategy": "CALL",
     "score": 321.72,
@@ -756,7 +756,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:01.351995",
+    "timestamp": "2026-04-19T17:22:25.959261",
     "symbol": "AMZN",
     "strategy": "CALL",
     "score": 320.04,
@@ -783,7 +783,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:01.451949",
+    "timestamp": "2026-04-19T17:22:26.330881",
     "symbol": "C",
     "strategy": "CALL",
     "score": 306.9,
@@ -810,7 +810,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:01.541383",
+    "timestamp": "2026-04-19T17:22:26.734980",
     "symbol": "ORCL",
     "strategy": "CALL",
     "score": 273.65,
@@ -837,7 +837,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:01.637098",
+    "timestamp": "2026-04-19T17:22:27.132816",
     "symbol": "ROKU",
     "strategy": "CALL",
     "score": 270.44,
@@ -864,7 +864,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:01.792084",
+    "timestamp": "2026-04-19T17:22:27.597121",
     "symbol": "NVDA",
     "strategy": "CALL",
     "score": 267.81,
@@ -891,7 +891,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:01.952155",
+    "timestamp": "2026-04-19T17:22:27.997765",
     "symbol": "META",
     "strategy": "CALL",
     "score": 259.84,
@@ -918,7 +918,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:02.107616",
+    "timestamp": "2026-04-19T17:22:28.400979",
     "symbol": "PYPL",
     "strategy": "CALL",
     "score": 254.51,
@@ -945,7 +945,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:02.270381",
+    "timestamp": "2026-04-19T17:22:28.801290",
     "symbol": "ARKK",
     "strategy": "CALL",
     "score": 245.77,
@@ -972,7 +972,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:02.427112",
+    "timestamp": "2026-04-19T17:22:29.404888",
     "symbol": "BAC",
     "strategy": "CALL",
     "score": 243.13,
@@ -999,7 +999,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:02.589379",
+    "timestamp": "2026-04-19T17:22:30.141041",
     "symbol": "XLK",
     "strategy": "CALL",
     "score": 242.3,
@@ -1026,7 +1026,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:02.746338",
+    "timestamp": "2026-04-19T17:22:30.893322",
     "symbol": "MS",
     "strategy": "CALL",
     "score": 241.46,
@@ -1053,7 +1053,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:02.907339",
+    "timestamp": "2026-04-19T17:22:31.627761",
     "symbol": "IWM",
     "strategy": "CALL",
     "score": 238.55,
@@ -1080,7 +1080,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:03.071948",
+    "timestamp": "2026-04-19T17:22:32.163321",
     "symbol": "GOOGL",
     "strategy": "CALL",
     "score": 235.15,
@@ -1107,7 +1107,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:03.237019",
+    "timestamp": "2026-04-19T17:22:32.593404",
     "symbol": "DAL",
     "strategy": "CALL",
     "score": 230.52,
@@ -1134,7 +1134,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:03.402800",
+    "timestamp": "2026-04-19T17:22:33.002379",
     "symbol": "UAL",
     "strategy": "CALL",
     "score": 216.99,
@@ -1161,7 +1161,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:03.570558",
+    "timestamp": "2026-04-19T17:22:33.441323",
     "symbol": "QQQ",
     "strategy": "CALL",
     "score": 216.15,
@@ -1188,7 +1188,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:03.726750",
+    "timestamp": "2026-04-19T17:22:33.868646",
     "symbol": "SHOP",
     "strategy": "CALL",
     "score": 208.67,
@@ -1215,7 +1215,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:03.877876",
+    "timestamp": "2026-04-19T17:22:34.295307",
     "symbol": "SPY",
     "strategy": "CALL",
     "score": 194.93,
@@ -1242,7 +1242,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:04.027817",
+    "timestamp": "2026-04-19T17:22:34.735420",
     "symbol": "ZM",
     "strategy": "CALL",
     "score": 190.09,
@@ -1269,7 +1269,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:04.177285",
+    "timestamp": "2026-04-19T17:22:35.181418",
     "symbol": "AAPL",
     "strategy": "CALL",
     "score": 189.68,
@@ -1296,7 +1296,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:04.328431",
+    "timestamp": "2026-04-19T17:22:35.627198",
     "symbol": "TSLA",
     "strategy": "CALL",
     "score": 188.76,
@@ -1323,7 +1323,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:04.482495",
+    "timestamp": "2026-04-19T17:22:36.051223",
     "symbol": "JPM",
     "strategy": "CALL",
     "score": 188.35,
@@ -1350,7 +1350,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:04.632860",
+    "timestamp": "2026-04-19T17:22:36.503864",
     "symbol": "MU",
     "strategy": "CALL",
     "score": 176.52,
@@ -1377,7 +1377,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:04.802483",
+    "timestamp": "2026-04-19T17:22:36.934299",
     "symbol": "XLF",
     "strategy": "CALL",
     "score": 173.75,
@@ -1404,7 +1404,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:04.926639",
+    "timestamp": "2026-04-19T17:22:37.363483",
     "symbol": "WMT",
     "strategy": "CALL",
     "score": 171.25,
@@ -1431,7 +1431,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.009434",
+    "timestamp": "2026-04-19T17:22:37.816653",
     "symbol": "DIS",
     "strategy": "CALL",
     "score": 166.43,
@@ -1458,7 +1458,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.093450",
+    "timestamp": "2026-04-19T17:22:38.252578",
     "symbol": "GS",
     "strategy": "CALL",
     "score": 160.3,
@@ -1485,7 +1485,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.176767",
+    "timestamp": "2026-04-19T17:22:38.708355",
     "symbol": "NFLX",
     "strategy": "CALL",
     "score": 159.79,
@@ -1512,7 +1512,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.262323",
+    "timestamp": "2026-04-19T17:22:39.149927",
     "symbol": "AXP",
     "strategy": "CALL",
     "score": 157.37,
@@ -1539,7 +1539,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.346700",
+    "timestamp": "2026-04-19T17:22:39.612635",
     "symbol": "SBUX",
     "strategy": "CALL",
     "score": 154.09,
@@ -1566,7 +1566,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.430055",
+    "timestamp": "2026-04-19T17:22:40.064797",
     "symbol": "WFC",
     "strategy": "CALL",
     "score": 149.1,
@@ -1593,7 +1593,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.512614",
+    "timestamp": "2026-04-19T17:22:40.609222",
     "symbol": "QCOM",
     "strategy": "CALL",
     "score": 148.5,
@@ -1620,7 +1620,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.594102",
+    "timestamp": "2026-04-19T17:22:41.055519",
     "symbol": "DIA",
     "strategy": "CALL",
     "score": 148.42,
@@ -1647,7 +1647,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.677328",
+    "timestamp": "2026-04-19T17:22:41.508084",
     "symbol": "COIN",
     "strategy": "CALL",
     "score": 144.71,
@@ -1674,7 +1674,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.776452",
+    "timestamp": "2026-04-19T17:22:42.019202",
     "symbol": "UBER",
     "strategy": "CALL",
     "score": 143.71,
@@ -1701,7 +1701,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.862408",
+    "timestamp": "2026-04-19T17:22:42.846699",
     "symbol": "ABNB",
     "strategy": "CALL",
     "score": 136.25,
@@ -1728,7 +1728,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:05.945796",
+    "timestamp": "2026-04-19T17:22:43.703045",
     "symbol": "CMCSA",
     "strategy": "CALL",
     "score": 132.89,
@@ -1755,7 +1755,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-18T16:19:06.030119",
+    "timestamp": "2026-04-19T17:22:44.536956",
     "symbol": "XLV",
     "strategy": "CALL",
     "score": 128.09,
@@ -1782,7 +1782,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:41.744652",
+    "timestamp": "2026-04-19T17:57:21.066042",
     "symbol": "INTC",
     "strategy": "CALL",
     "score": 661.43,
@@ -1809,7 +1809,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:41.838540",
+    "timestamp": "2026-04-19T17:57:21.939274",
     "symbol": "AMD",
     "strategy": "CALL",
     "score": 482.75,
@@ -1836,7 +1836,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:41.941923",
+    "timestamp": "2026-04-19T17:57:22.813898",
     "symbol": "AVGO",
     "strategy": "CALL",
     "score": 412.01,
@@ -1863,7 +1863,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:42.038928",
+    "timestamp": "2026-04-19T17:57:23.696708",
     "symbol": "SOXX",
     "strategy": "CALL",
     "score": 321.72,
@@ -1890,7 +1890,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:42.151271",
+    "timestamp": "2026-04-19T17:57:24.313724",
     "symbol": "AMZN",
     "strategy": "CALL",
     "score": 320.04,
@@ -1917,7 +1917,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:42.250601",
+    "timestamp": "2026-04-19T17:57:24.807771",
     "symbol": "C",
     "strategy": "CALL",
     "score": 306.9,
@@ -1944,7 +1944,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:42.352291",
+    "timestamp": "2026-04-19T17:57:25.334297",
     "symbol": "ORCL",
     "strategy": "CALL",
     "score": 273.65,
@@ -1971,7 +1971,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:42.457067",
+    "timestamp": "2026-04-19T17:57:25.840686",
     "symbol": "ROKU",
     "strategy": "CALL",
     "score": 270.44,
@@ -1998,7 +1998,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:42.563286",
+    "timestamp": "2026-04-19T17:57:26.357058",
     "symbol": "NVDA",
     "strategy": "CALL",
     "score": 267.81,
@@ -2025,7 +2025,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:42.677728",
+    "timestamp": "2026-04-19T17:57:26.859806",
     "symbol": "META",
     "strategy": "CALL",
     "score": 259.84,
@@ -2052,7 +2052,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:42.788340",
+    "timestamp": "2026-04-19T17:57:27.429336",
     "symbol": "PYPL",
     "strategy": "CALL",
     "score": 254.51,
@@ -2079,7 +2079,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:42.901284",
+    "timestamp": "2026-04-19T17:57:27.941424",
     "symbol": "ARKK",
     "strategy": "CALL",
     "score": 245.77,
@@ -2106,7 +2106,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:43.014678",
+    "timestamp": "2026-04-19T17:57:28.475987",
     "symbol": "BAC",
     "strategy": "CALL",
     "score": 243.13,
@@ -2133,7 +2133,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:43.135265",
+    "timestamp": "2026-04-19T17:57:29.003109",
     "symbol": "XLK",
     "strategy": "CALL",
     "score": 242.3,
@@ -2160,7 +2160,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:43.261886",
+    "timestamp": "2026-04-19T17:57:29.544119",
     "symbol": "MS",
     "strategy": "CALL",
     "score": 241.46,
@@ -2187,7 +2187,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:43.381660",
+    "timestamp": "2026-04-19T17:57:30.059389",
     "symbol": "IWM",
     "strategy": "CALL",
     "score": 238.55,
@@ -2214,7 +2214,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:43.502639",
+    "timestamp": "2026-04-19T17:57:30.616439",
     "symbol": "GOOGL",
     "strategy": "CALL",
     "score": 235.15,
@@ -2241,7 +2241,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:43.625885",
+    "timestamp": "2026-04-19T17:57:31.139180",
     "symbol": "DAL",
     "strategy": "CALL",
     "score": 230.52,
@@ -2268,7 +2268,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:43.754084",
+    "timestamp": "2026-04-19T17:57:31.684018",
     "symbol": "UAL",
     "strategy": "CALL",
     "score": 216.99,
@@ -2295,7 +2295,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:43.897618",
+    "timestamp": "2026-04-19T17:57:32.220703",
     "symbol": "QQQ",
     "strategy": "CALL",
     "score": 216.15,
@@ -2322,7 +2322,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:44.038957",
+    "timestamp": "2026-04-19T17:57:32.771543",
     "symbol": "SHOP",
     "strategy": "CALL",
     "score": 208.67,
@@ -2349,7 +2349,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:44.239779",
+    "timestamp": "2026-04-19T17:57:33.311361",
     "symbol": "SPY",
     "strategy": "CALL",
     "score": 194.93,
@@ -2376,7 +2376,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:44.371655",
+    "timestamp": "2026-04-19T17:57:33.850618",
     "symbol": "ZM",
     "strategy": "CALL",
     "score": 190.09,
@@ -2403,7 +2403,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:44.503589",
+    "timestamp": "2026-04-19T17:57:34.763514",
     "symbol": "AAPL",
     "strategy": "CALL",
     "score": 189.68,
@@ -2430,7 +2430,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:44.641737",
+    "timestamp": "2026-04-19T17:57:35.751400",
     "symbol": "TSLA",
     "strategy": "CALL",
     "score": 188.76,
@@ -2457,7 +2457,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:44.784260",
+    "timestamp": "2026-04-19T17:57:36.740721",
     "symbol": "JPM",
     "strategy": "CALL",
     "score": 188.35,
@@ -2484,7 +2484,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:44.926467",
+    "timestamp": "2026-04-19T17:57:37.391080",
     "symbol": "MU",
     "strategy": "CALL",
     "score": 176.52,
@@ -2511,7 +2511,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:45.067827",
+    "timestamp": "2026-04-19T17:57:37.964446",
     "symbol": "XLF",
     "strategy": "CALL",
     "score": 173.75,
@@ -2538,7 +2538,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:45.227779",
+    "timestamp": "2026-04-19T17:57:38.513422",
     "symbol": "WMT",
     "strategy": "CALL",
     "score": 171.25,
@@ -2565,7 +2565,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:45.372342",
+    "timestamp": "2026-04-19T17:57:39.070882",
     "symbol": "DIS",
     "strategy": "CALL",
     "score": 166.43,
@@ -2592,7 +2592,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:45.515635",
+    "timestamp": "2026-04-19T17:57:39.657240",
     "symbol": "GS",
     "strategy": "CALL",
     "score": 160.3,
@@ -2619,7 +2619,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:45.667489",
+    "timestamp": "2026-04-19T17:57:40.212993",
     "symbol": "NFLX",
     "strategy": "CALL",
     "score": 159.79,
@@ -2646,7 +2646,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:45.816256",
+    "timestamp": "2026-04-19T17:57:40.819092",
     "symbol": "AXP",
     "strategy": "CALL",
     "score": 157.37,
@@ -2673,7 +2673,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:45.969554",
+    "timestamp": "2026-04-19T17:57:41.377920",
     "symbol": "SBUX",
     "strategy": "CALL",
     "score": 154.09,
@@ -2700,7 +2700,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:46.123475",
+    "timestamp": "2026-04-19T17:57:41.962766",
     "symbol": "WFC",
     "strategy": "CALL",
     "score": 149.1,
@@ -2727,7 +2727,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:46.293854",
+    "timestamp": "2026-04-19T17:57:42.533699",
     "symbol": "QCOM",
     "strategy": "CALL",
     "score": 148.5,
@@ -2754,7 +2754,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:46.451084",
+    "timestamp": "2026-04-19T17:57:43.127789",
     "symbol": "DIA",
     "strategy": "CALL",
     "score": 148.42,
@@ -2781,7 +2781,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:46.610451",
+    "timestamp": "2026-04-19T17:57:43.756612",
     "symbol": "COIN",
     "strategy": "CALL",
     "score": 144.71,
@@ -2808,7 +2808,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:46.776585",
+    "timestamp": "2026-04-19T17:57:44.347531",
     "symbol": "UBER",
     "strategy": "CALL",
     "score": 143.71,
@@ -2835,7 +2835,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:46.940394",
+    "timestamp": "2026-04-19T17:57:44.945905",
     "symbol": "ABNB",
     "strategy": "CALL",
     "score": 136.25,
@@ -2862,7 +2862,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:47.105555",
+    "timestamp": "2026-04-19T17:57:45.562695",
     "symbol": "CMCSA",
     "strategy": "CALL",
     "score": 132.89,
@@ -2889,7 +2889,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T03:46:47.287415",
+    "timestamp": "2026-04-19T17:57:46.162272",
     "symbol": "XLV",
     "strategy": "CALL",
     "score": 128.09,
@@ -2916,7 +2916,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:29.422241",
+    "timestamp": "2026-04-19T19:03:58.585301",
     "symbol": "INTC",
     "strategy": "CALL",
     "score": 661.43,
@@ -2943,7 +2943,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:29.761354",
+    "timestamp": "2026-04-19T19:03:59.247599",
     "symbol": "AMD",
     "strategy": "CALL",
     "score": 482.75,
@@ -2970,7 +2970,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:30.086011",
+    "timestamp": "2026-04-19T19:03:59.889168",
     "symbol": "AVGO",
     "strategy": "CALL",
     "score": 412.01,
@@ -2997,7 +2997,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:30.424724",
+    "timestamp": "2026-04-19T19:04:00.541457",
     "symbol": "SOXX",
     "strategy": "CALL",
     "score": 321.72,
@@ -3024,7 +3024,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:30.774901",
+    "timestamp": "2026-04-19T19:04:01.191850",
     "symbol": "AMZN",
     "strategy": "CALL",
     "score": 320.04,
@@ -3051,7 +3051,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:31.140248",
+    "timestamp": "2026-04-19T19:04:01.831280",
     "symbol": "C",
     "strategy": "CALL",
     "score": 306.9,
@@ -3078,7 +3078,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:31.503031",
+    "timestamp": "2026-04-19T19:04:02.495352",
     "symbol": "ORCL",
     "strategy": "CALL",
     "score": 273.65,
@@ -3105,7 +3105,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:31.854219",
+    "timestamp": "2026-04-19T19:04:03.146735",
     "symbol": "ROKU",
     "strategy": "CALL",
     "score": 270.44,
@@ -3132,7 +3132,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:32.215529",
+    "timestamp": "2026-04-19T19:04:03.870399",
     "symbol": "NVDA",
     "strategy": "CALL",
     "score": 267.81,
@@ -3159,7 +3159,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:32.528683",
+    "timestamp": "2026-04-19T19:04:04.559516",
     "symbol": "META",
     "strategy": "CALL",
     "score": 259.84,
@@ -3186,7 +3186,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:32.734485",
+    "timestamp": "2026-04-19T19:04:05.701904",
     "symbol": "PYPL",
     "strategy": "CALL",
     "score": 254.51,
@@ -3213,7 +3213,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:33.001772",
+    "timestamp": "2026-04-19T19:04:06.901955",
     "symbol": "ARKK",
     "strategy": "CALL",
     "score": 245.77,
@@ -3240,7 +3240,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:33.211240",
+    "timestamp": "2026-04-19T19:04:07.987597",
     "symbol": "BAC",
     "strategy": "CALL",
     "score": 243.13,
@@ -3267,7 +3267,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:33.424309",
+    "timestamp": "2026-04-19T19:04:08.665368",
     "symbol": "XLK",
     "strategy": "CALL",
     "score": 242.3,
@@ -3294,7 +3294,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:33.659877",
+    "timestamp": "2026-04-19T19:04:09.334477",
     "symbol": "MS",
     "strategy": "CALL",
     "score": 241.46,
@@ -3321,7 +3321,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:33.883328",
+    "timestamp": "2026-04-19T19:04:10.010457",
     "symbol": "IWM",
     "strategy": "CALL",
     "score": 238.55,
@@ -3348,7 +3348,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:34.103348",
+    "timestamp": "2026-04-19T19:04:10.682777",
     "symbol": "GOOGL",
     "strategy": "CALL",
     "score": 235.15,
@@ -3375,7 +3375,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:34.328461",
+    "timestamp": "2026-04-19T19:04:11.344246",
     "symbol": "DAL",
     "strategy": "CALL",
     "score": 230.52,
@@ -3402,7 +3402,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:34.570280",
+    "timestamp": "2026-04-19T19:04:12.054024",
     "symbol": "UAL",
     "strategy": "CALL",
     "score": 216.99,
@@ -3429,7 +3429,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:34.800617",
+    "timestamp": "2026-04-19T19:04:12.760108",
     "symbol": "QQQ",
     "strategy": "CALL",
     "score": 216.15,
@@ -3456,7 +3456,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:35.030877",
+    "timestamp": "2026-04-19T19:04:13.436621",
     "symbol": "SHOP",
     "strategy": "CALL",
     "score": 208.67,
@@ -3483,7 +3483,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:35.276060",
+    "timestamp": "2026-04-19T19:04:14.136346",
     "symbol": "SPY",
     "strategy": "CALL",
     "score": 194.93,
@@ -3510,7 +3510,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:35.516962",
+    "timestamp": "2026-04-19T19:04:14.841027",
     "symbol": "ZM",
     "strategy": "CALL",
     "score": 190.09,
@@ -3537,7 +3537,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:35.766384",
+    "timestamp": "2026-04-19T19:04:15.515737",
     "symbol": "AAPL",
     "strategy": "CALL",
     "score": 189.68,
@@ -3564,7 +3564,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:36.004662",
+    "timestamp": "2026-04-19T19:04:16.200932",
     "symbol": "TSLA",
     "strategy": "CALL",
     "score": 188.76,
@@ -3591,7 +3591,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:36.249223",
+    "timestamp": "2026-04-19T19:04:16.942957",
     "symbol": "JPM",
     "strategy": "CALL",
     "score": 188.35,
@@ -3618,7 +3618,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:36.495344",
+    "timestamp": "2026-04-19T19:04:17.643371",
     "symbol": "MU",
     "strategy": "CALL",
     "score": 176.52,
@@ -3645,7 +3645,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:36.755183",
+    "timestamp": "2026-04-19T19:04:18.736022",
     "symbol": "XLF",
     "strategy": "CALL",
     "score": 173.75,
@@ -3672,7 +3672,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:37.000157",
+    "timestamp": "2026-04-19T19:04:20.007461",
     "symbol": "WMT",
     "strategy": "CALL",
     "score": 171.25,
@@ -3699,7 +3699,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:37.245881",
+    "timestamp": "2026-04-19T19:04:21.156591",
     "symbol": "DIS",
     "strategy": "CALL",
     "score": 166.43,
@@ -3726,7 +3726,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:37.507704",
+    "timestamp": "2026-04-19T19:04:21.850185",
     "symbol": "GS",
     "strategy": "CALL",
     "score": 160.3,
@@ -3753,7 +3753,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:37.783676",
+    "timestamp": "2026-04-19T19:04:22.564508",
     "symbol": "NFLX",
     "strategy": "CALL",
     "score": 159.79,
@@ -3780,7 +3780,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:38.041178",
+    "timestamp": "2026-04-19T19:04:23.277014",
     "symbol": "AXP",
     "strategy": "CALL",
     "score": 157.37,
@@ -3807,7 +3807,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:38.296581",
+    "timestamp": "2026-04-19T19:04:23.976974",
     "symbol": "SBUX",
     "strategy": "CALL",
     "score": 154.09,
@@ -3834,7 +3834,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:38.556743",
+    "timestamp": "2026-04-19T19:04:24.784344",
     "symbol": "WFC",
     "strategy": "CALL",
     "score": 149.1,
@@ -3861,7 +3861,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:38.836458",
+    "timestamp": "2026-04-19T19:04:25.514077",
     "symbol": "QCOM",
     "strategy": "CALL",
     "score": 148.5,
@@ -3888,7 +3888,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:39.098658",
+    "timestamp": "2026-04-19T19:04:26.248051",
     "symbol": "DIA",
     "strategy": "CALL",
     "score": 148.42,
@@ -3915,7 +3915,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:39.366836",
+    "timestamp": "2026-04-19T19:04:26.973416",
     "symbol": "COIN",
     "strategy": "CALL",
     "score": 144.71,
@@ -3942,7 +3942,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:39.637800",
+    "timestamp": "2026-04-19T19:04:27.730558",
     "symbol": "UBER",
     "strategy": "CALL",
     "score": 143.71,
@@ -3969,7 +3969,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:39.931334",
+    "timestamp": "2026-04-19T19:04:28.483916",
     "symbol": "ABNB",
     "strategy": "CALL",
     "score": 136.25,
@@ -3996,7 +3996,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:40.204811",
+    "timestamp": "2026-04-19T19:04:29.243921",
     "symbol": "CMCSA",
     "strategy": "CALL",
     "score": 132.89,
@@ -4023,7 +4023,7 @@
     ]
   },
   {
-    "timestamp": "2026-04-19T04:38:40.485787",
+    "timestamp": "2026-04-19T19:04:29.993903",
     "symbol": "XLV",
     "strategy": "CALL",
     "score": 128.09,
