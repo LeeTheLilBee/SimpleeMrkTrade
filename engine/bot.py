@@ -507,6 +507,7 @@ def log_approval(trade, mode, regime, breadth, volatility_state):
 def process_signals(results, regime, volatility_payload, trading_mode="paper"):
     """
     Fused signal processor.
+
     Core behavior:
     - research approval is separate from execution readiness
     - V2 overlay can influence conviction and vehicle choice
@@ -516,8 +517,14 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
     - every candidate is normalized before it is logged, remembered, or displayed
     """
     from engine.candidate_fusion import build_fused_candidate, finalize_candidate_state
+    from engine.observatory_mode import (
+        normalize_mode,
+        build_mode_context,
+        apply_mode_to_execution_guard,
+    )
 
     trading_mode = normalize_mode(trading_mode)
+    trading_mode_context = build_mode_context(trading_mode)
 
     def _safe_float(value, default=0.0):
         try:
@@ -547,6 +554,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
         status,
         reason,
         mode,
+        trading_mode_value,
         breadth,
         volatility_state,
         capital_required,
@@ -578,6 +586,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 "reason": reason,
                 "decision_reason": reason,
                 "mode": mode,
+                "trading_mode": trading_mode_value,
                 "breadth": breadth,
                 "volatility_state": volatility_state,
                 "capital_required": capital_required,
@@ -591,17 +600,14 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 "blocked_at": trade.get("blocked_at", ""),
                 "final_reason": trade.get("final_reason", reason),
                 "vehicle_reason": trade.get("vehicle_reason", ""),
-                "trading_mode": trading_mode,
             }
-
         if isinstance(extra, dict):
             payload.update(extra)
-
+        payload["trading_mode"] = trading_mode_value
         try:
             remember_candidate(payload)
         except Exception:
             pass
-
         trade["candidate_display"] = payload
         return payload
 
@@ -622,6 +628,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
 
     def _governor_snapshot(trading_mode=None):
         try:
+            requested_mode = normalize_mode(trading_mode or "paper")
             entries_today = 0
             try:
                 perf = performance_summary()
@@ -633,20 +640,19 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             print("GOVERNOR ENTRY FEED:", {
                 "entries_today_from_perf": entries_today,
                 "open_positions": open_count(),
-                "requested_trading_mode": trading_mode,
+                "requested_trading_mode": requested_mode,
             })
 
             gov = governor_status(
                 current_open_positions=open_count(),
                 executed_entries_today=entries_today,
-                trading_mode=trading_mode,
+                trading_mode=requested_mode,
             )
 
             print("PROCESS SIGNALS GOVERNOR MODE CHECK:", {
-                "requested_trading_mode": trading_mode,
+                "requested_trading_mode": requested_mode,
                 "governor_returned_mode": gov.get("trading_mode") if isinstance(gov, dict) else None,
             })
-
             return gov if isinstance(gov, dict) else {}
         except Exception:
             return {}
@@ -670,6 +676,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
         debug_row["selected_for_execution"] = bool(fused.get("selected_for_execution", False))
         debug_row["blocked_at"] = fused.get("blocked_at", debug_row.get("blocked_at", ""))
         debug_row["final_reason"] = fused.get("final_reason", debug_row.get("final_reason", ""))
+        debug_row["trading_mode"] = fused.get("trading_mode", debug_row.get("trading_mode", trading_mode))
         return debug_row
 
     def _finalize_for_exit(fused, debug_row, blocked_at="", reason=""):
@@ -697,10 +704,13 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
     print("Volatility State:", volatility_state, "| VIX:", vix_value)
 
     capital_available_now = round(_safe_float(buying_power(), 0.0), 2)
-    governor = _governor_snapshot()
-    governor_reason = _governor_execution_block_reason(governor)
 
-    # keep the rest of your function exactly the same below this line
+    governor = _governor_snapshot(trading_mode=trading_mode)
+    resolved_trading_mode = normalize_mode(
+        governor.get("trading_mode") if isinstance(governor, dict) else trading_mode
+    )
+    resolved_trading_mode_context = build_mode_context(resolved_trading_mode)
+    governor_reason = _governor_execution_block_reason(governor)
 
     for raw_trade in results:
         trade = dict(raw_trade) if isinstance(raw_trade, dict) else {}
@@ -726,6 +736,8 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
         trade["rsi"] = rsi
         trade["regime"] = regime
         trade["mode"] = mode
+        trade["trading_mode"] = resolved_trading_mode
+        trade["trading_mode_label"] = resolved_trading_mode_context.get("mode_label", resolved_trading_mode)
         trade["volatility_state"] = volatility_state
         trade["breadth"] = breadth
         trade["option_chain"] = option_chain
@@ -768,7 +780,6 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 )
             except Exception:
                 option_allowed, option_reason = False, "option_validation_failed"
-
             best_option["is_executable"] = bool(option_allowed)
             best_option["execution_reason"] = _safe_str(option_reason, "")
         else:
@@ -786,6 +797,9 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             buying_power=capital_available_now,
             commission=1.0,
         )
+
+        fused["trading_mode"] = resolved_trading_mode
+        fused["trading_mode_label"] = resolved_trading_mode_context.get("mode_label", resolved_trading_mode)
 
         print("OPTION VS STOCK CAPITAL:", {
             "symbol": symbol,
@@ -806,6 +820,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             "confidence": fused.get("confidence", confidence),
             "breadth": breadth,
             "mode": mode,
+            "trading_mode": resolved_trading_mode,
             "volatility_state": volatility_state,
             "governor_blocked": bool(governor.get("blocked", False)),
             "governor_reason": governor_reason,
@@ -843,6 +858,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             market_regime=regime,
             market_breadth=breadth,
             volatility_state=volatility_state,
+            mode=resolved_trading_mode,
             starting_strategy=strategy,
         )
         debug_row["chosen_strategy"] = chosen_strategy
@@ -856,11 +872,11 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
 
         breadth_ok = breadth_allows_trade(fused["strategy"], breadth)
         debug_row["breadth_allowed"] = breadth_ok
+
         if not breadth_ok:
             reason = "failed_breadth_filter"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "breadth_guard", reason)
             debug_rows.append(debug_row)
-
             log_rejection(
                 fused,
                 symbol,
@@ -870,12 +886,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 fused,
                 status="rejected",
                 reason=reason,
                 mode=mode,
+                trading_mode_value=resolved_trading_mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=fused.get("capital_required", 0.0),
@@ -893,7 +909,6 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             reason = "strategy_router_returned_no_trade"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "strategy_router", reason)
             debug_rows.append(debug_row)
-
             log_rejection(
                 fused,
                 symbol,
@@ -903,12 +918,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 fused,
                 status="rejected",
                 reason=reason,
                 mode=mode,
+                trading_mode_value=resolved_trading_mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=fused.get("capital_required", 0.0),
@@ -933,13 +948,13 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             _safe_str(existing_position.get("trade_id", ""), "")
             if isinstance(existing_position, dict) else ""
         )
+
         print("DUP CHECK:", symbol, bool(existing_position))
 
         if existing_position:
             reason = "already_open_position"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "duplicate_guard", reason)
             debug_rows.append(debug_row)
-
             log_rejection(
                 fused,
                 symbol,
@@ -949,12 +964,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 fused,
                 status="rejected",
                 reason=reason,
                 mode=mode,
+                trading_mode_value=resolved_trading_mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=fused.get("capital_required", 0.0),
@@ -977,7 +992,6 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             reason = f"reentry_blocked:{reentry_reason}"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "reentry_guard", reason)
             debug_rows.append(debug_row)
-
             log_rejection(
                 fused,
                 symbol,
@@ -987,12 +1001,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 fused,
                 status="rejected",
                 reason=reason,
                 mode=mode,
+                trading_mode_value=resolved_trading_mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=fused.get("capital_required", 0.0),
@@ -1016,7 +1030,6 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             reason = "failed_score_threshold"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "score_threshold", reason)
             debug_rows.append(debug_row)
-
             log_rejection(
                 fused,
                 symbol,
@@ -1026,12 +1039,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 fused,
                 status="rejected",
                 reason=reason,
                 mode=mode,
+                trading_mode_value=resolved_trading_mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=fused.get("capital_required", 0.0),
@@ -1055,7 +1068,6 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             reason = "failed_volatility_filter"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "volatility_guard", reason)
             debug_rows.append(debug_row)
-
             log_rejection(
                 fused,
                 symbol,
@@ -1065,12 +1077,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 breadth,
                 volatility_state,
             )
-
             _remember_candidate_row(
                 fused,
                 status="rejected",
                 reason=reason,
                 mode=mode,
+                trading_mode_value=resolved_trading_mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=fused.get("capital_required", 0.0),
@@ -1087,12 +1099,10 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
         if fused.get("option"):
             debug_row["option_allowed"] = option_allowed
             debug_row["option_reason"] = option_reason
-
             if not option_allowed and fused.get("vehicle_selected") == "OPTION":
                 reason = _safe_str(option_reason, "weak_option_contract")
                 fused, debug_row = _finalize_for_exit(fused, debug_row, "option_executable", reason)
                 debug_rows.append(debug_row)
-
                 log_rejection(
                     fused,
                     symbol,
@@ -1102,12 +1112,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                     breadth,
                     volatility_state,
                 )
-
                 _remember_candidate_row(
                     fused,
                     status="rejected",
                     reason=reason,
                     mode=mode,
+                    trading_mode_value=resolved_trading_mode,
                     breadth=breadth,
                     volatility_state=volatility_state,
                     capital_required=fused.get("capital_required", 0.0),
@@ -1130,12 +1140,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             fused, debug_row = _finalize_for_exit(fused, debug_row, "governor", governor_reason)
             research_approved.append(fused)
             debug_rows.append(debug_row)
-
             _remember_candidate_row(
                 fused,
                 status="research_approved_not_execution_ready",
                 reason=governor_reason,
                 mode=mode,
+                trading_mode_value=resolved_trading_mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=fused.get("capital_required", 0.0),
@@ -1154,10 +1164,9 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             )
             continue
 
-        from engine.observatory_mode import apply_mode_to_execution_guard
-
         exec_guard = can_execute_trade(fused, capital_available_now)
-        exec_guard = apply_mode_to_execution_guard(exec_guard, trading_mode)
+        exec_guard = apply_mode_to_execution_guard(exec_guard, resolved_trading_mode)
+
         if isinstance(exec_guard, dict):
             blocked = bool(exec_guard.get("blocked", False))
             exec_reason = _safe_str(exec_guard.get("reason", ""), "")
@@ -1173,12 +1182,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             fused, debug_row = _finalize_for_exit(fused, debug_row, "execution_guard", reason)
             research_approved.append(fused)
             debug_rows.append(debug_row)
-
             _remember_candidate_row(
                 fused,
                 status="research_approved_not_execution_ready",
                 reason=reason,
                 mode=mode,
+                trading_mode_value=resolved_trading_mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=fused.get("capital_required", 0.0),
@@ -1203,8 +1212,8 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
 
         debug_row = _sync_debug_from_fused(debug_row, fused)
         debug_row["final_reason"] = "execution_ready"
-        debug_rows.append(debug_row)
 
+        debug_rows.append(debug_row)
         research_approved.append(fused)
         execution_ready.append(fused)
 
@@ -1215,6 +1224,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             status="execution_ready",
             reason="execution_ready",
             mode=mode,
+            trading_mode_value=resolved_trading_mode,
             breadth=breadth,
             volatility_state=volatility_state,
             capital_required=fused.get("capital_required", 0.0),
@@ -1243,8 +1253,8 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
 
     affordable = affordable_trade_count(execution_ready)
     selection_limit = min(affordable, 3) if affordable > 0 else 0
-
     selected_trades = []
+
     if execution_ready and selection_limit > 0:
         selected_trades = queue_top_trades_plus(execution_ready, limit=selection_limit)
 
@@ -1288,13 +1298,11 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             _norm_symbol(trade.get("symbol", "")),
             _safe_str(trade.get("strategy", "CALL"), "CALL").upper(),
         )
-
         if key in selected_keys:
             trade["selected_for_execution"] = True
             trade["final_reason"] = "selected_for_execution"
             trade["blocked_at"] = ""
             trade = finalize_candidate_state(trade)
-
             log_candidate_decision(
                 trade,
                 status="selected",
@@ -1303,12 +1311,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 breadth=breadth,
                 volatility_state=volatility_state,
             )
-
             _remember_candidate_row(
                 trade,
                 status="selected",
                 reason="selected_for_execution",
                 mode=mode,
+                trading_mode_value=resolved_trading_mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=trade.get("capital_required", 0.0),
@@ -1324,7 +1332,6 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                     "final_reason": trade.get("final_reason", "selected_for_execution"),
                 },
             )
-
         elif trade.get("execution_ready"):
             stronger = stronger_competing_setups(trade, selected_trades)
             trade["stronger_competing_setups"] = stronger
@@ -1337,7 +1344,6 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             trade["final_reason"] = "approved_but_ranked_below_execution_cut"
             trade["blocked_at"] = ""
             trade = finalize_candidate_state(trade)
-
             log_candidate_decision(
                 trade,
                 status="execution_ready_not_selected",
@@ -1350,12 +1356,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                     "rejection_analysis": trade.get("rejection_analysis", []),
                 },
             )
-
             _remember_candidate_row(
                 trade,
                 status="execution_ready_not_selected",
                 reason="approved_but_ranked_below_execution_cut",
                 mode=mode,
+                trading_mode_value=resolved_trading_mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
                 capital_required=trade.get("capital_required", 0.0),
@@ -1375,7 +1381,10 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
 
     return research_approved, selected_trades, mode, breadth, volatility_state
 
+
 def run(trading_mode="paper"):
+    from engine.observatory_mode import normalize_mode, build_mode_context
+
     trading_mode = normalize_mode(trading_mode)
     mode_context = build_mode_context(trading_mode)
 
@@ -1410,6 +1419,11 @@ def run(trading_mode="paper"):
             trading_mode=trading_mode,
         )
 
+        resolved_trading_mode = normalize_mode(
+            governor.get("trading_mode") if isinstance(governor, dict) else trading_mode
+        )
+        resolved_mode_context = build_mode_context(resolved_trading_mode)
+
         print("RUN GOVERNOR MODE CHECK:", {
             "requested_trading_mode": trading_mode,
             "governor_returned_mode": governor.get("trading_mode") if isinstance(governor, dict) else None,
@@ -1420,7 +1434,7 @@ def run(trading_mode="paper"):
         sector_cap = sector_concentration_status()
         exposure = exposure_bucket_status()
 
-        print("Mode Context:", mode_context)
+        print("Mode Context:", resolved_mode_context)
         print("Governor:", governor)
         print("Drawdown Brake:", brake)
         print("Correlation Risk:", corr)
@@ -1443,14 +1457,13 @@ def run(trading_mode="paper"):
         print("Scanning watchlist aggressively...")
         results = get_execution_candidates(force_rebuild=True, watchlist=watchlist)
         display_candidates = _filter_display_candidates(results)
-
         print("Execution candidates:", [r.get("symbol") for r in results[:20]])
         print("Execution candidate count:", len(results))
 
         execution_universe = load_json("data/execution_universe.json", {})
         spotlight = execution_universe.get("spotlight", []) if isinstance(execution_universe, dict) else []
-
         print("Execution spotlight:", [r.get("symbol") for r in spotlight[:5]])
+
         push_activity("EXECUTION", f"Aggressive execution universe rebuilt with {len(results)} candidates")
         push_activity("SPOTLIGHT", f"Top spotlight contains {len(spotlight)} names")
 
@@ -1458,7 +1471,7 @@ def run(trading_mode="paper"):
             results,
             regime,
             volatility_payload,
-            trading_mode=trading_mode,
+            trading_mode=resolved_trading_mode,
         )
 
         push_activity(
@@ -1466,7 +1479,7 @@ def run(trading_mode="paper"):
             (
                 f"Approved {len(approved_trades)} research trades; "
                 f"selected {len(selected_trades)} execution trades in market mode "
-                f"{mode} / trading mode {mode_context['mode_label']}"
+                f"{mode} / trading mode {resolved_mode_context['mode_label']}"
             ),
         )
 
@@ -1475,10 +1488,10 @@ def run(trading_mode="paper"):
             f"Volatility state: {volatility_state}",
             f"Market breadth: {breadth}",
             f"Mode: {mode}",
-            f"Trading mode: {trading_mode}",
-            f"Trading mode label: {mode_context['mode_label']}",
-            f"Mode shell: {mode_context['mode_shell']}",
-            f"Theme family: {mode_context['theme_family']}",
+            f"Trading mode: {resolved_trading_mode}",
+            f"Trading mode label: {resolved_mode_context['mode_label']}",
+            f"Mode shell: {resolved_mode_context['mode_shell']}",
+            f"Theme family: {resolved_mode_context['theme_family']}",
         ]
 
         for trade in approved_trades:
@@ -1516,7 +1529,7 @@ def run(trading_mode="paper"):
                     "score": trade["score"],
                     "confidence": trade["confidence"],
                     "source": "research",
-                    "trading_mode": trading_mode,
+                    "trading_mode": resolved_trading_mode,
                 },
             )
 
@@ -1528,7 +1541,7 @@ def run(trading_mode="paper"):
                     "strategy": trade["strategy"],
                     "score": trade["score"],
                     "confidence": trade["confidence"],
-                    "trading_mode": trading_mode,
+                    "trading_mode": resolved_trading_mode,
                 },
             )
 
@@ -1554,7 +1567,6 @@ def run(trading_mode="paper"):
                     volatility=volatility_state,
                 )
                 notify_trade_edge(trade["symbol"], research_entry.get("reasons", []))
-
                 push_notification(
                     notif_type="RESEARCH_ALPHA",
                     message=f"{trade['symbol']} research alpha added to premium intelligence.",
@@ -1568,12 +1580,12 @@ def run(trading_mode="paper"):
                 )
 
         if brake.get("blocked"):
-            write_bot_status(False, f"blocked_by_drawdown:{trading_mode}")
-            push_activity("RISK", f"Blocked by drawdown brake in {trading_mode} mode")
+            write_bot_status(False, f"blocked_by_drawdown:{resolved_trading_mode}")
+            push_activity("RISK", f"Blocked by drawdown brake in {resolved_trading_mode} mode")
             notify_trade_risk("PORTFOLIO", "Drawdown brake blocked new execution trades")
             push_notification(
                 notif_type="RISK_WARNING",
-                message=f"Execution blocked by drawdown brake in {trading_mode} mode.",
+                message=f"Execution blocked by drawdown brake in {resolved_trading_mode} mode.",
                 min_tier="starter",
                 level="warning",
                 volatility=volatility_state,
@@ -1582,8 +1594,8 @@ def run(trading_mode="paper"):
             return
 
         if corr.get("blocked"):
-            write_bot_status(False, f"blocked_by_correlation:{trading_mode}")
-            push_activity("RISK", f"Blocked by correlation risk in {trading_mode} mode")
+            write_bot_status(False, f"blocked_by_correlation:{resolved_trading_mode}")
+            push_activity("RISK", f"Blocked by correlation risk in {resolved_trading_mode} mode")
             notify_trade_risk("PORTFOLIO", corr.get("reason", "Correlation block"))
             push_notification(
                 notif_type="RISK_WARNING",
@@ -1596,8 +1608,8 @@ def run(trading_mode="paper"):
             return
 
         if sector_cap.get("blocked"):
-            write_bot_status(False, f"blocked_by_sector_cap:{trading_mode}")
-            push_activity("RISK", f"Blocked by sector concentration cap in {trading_mode} mode")
+            write_bot_status(False, f"blocked_by_sector_cap:{resolved_trading_mode}")
+            push_activity("RISK", f"Blocked by sector concentration cap in {resolved_trading_mode} mode")
             notify_trade_risk("PORTFOLIO", sector_cap.get("reason", "Sector cap block"))
             push_notification(
                 notif_type="RISK_WARNING",
@@ -1611,12 +1623,12 @@ def run(trading_mode="paper"):
 
         if governor.get("blocked"):
             joined = ", ".join(governor.get("reasons", []))
-            write_bot_status(False, f"blocked_by_governor:{trading_mode}")
-            push_activity("RISK", f"Blocked by governor in {trading_mode} mode: {joined}")
+            write_bot_status(False, f"blocked_by_governor:{resolved_trading_mode}")
+            push_activity("RISK", f"Blocked by governor in {resolved_trading_mode} mode: {joined}")
             notify_trade_risk("PORTFOLIO", f"Governor blocked execution: {joined}")
             push_notification(
                 notif_type="RISK_WARNING",
-                message=f"Execution blocked by governor in {trading_mode} mode: {joined}",
+                message=f"Execution blocked by governor in {resolved_trading_mode} mode: {joined}",
                 min_tier="starter",
                 level="warning",
                 volatility=volatility_state,
@@ -1626,7 +1638,7 @@ def run(trading_mode="paper"):
 
         if _reduced_risk_mode(brake, exposure):
             selected_trades = _trim_for_reduced_risk(selected_trades)
-            push_activity("RISK", f"Reduced-risk mode active in {trading_mode}: trimmed trade queue")
+            push_activity("RISK", f"Reduced-risk mode active in {resolved_trading_mode}: trimmed trade queue")
 
         for trade in selected_trades:
             if not trade.get("trade_id"):
@@ -1649,6 +1661,7 @@ def run(trading_mode="paper"):
                 "| Confidence:",
                 trade["confidence"],
             )
+
             if trade.get("option"):
                 print("Best Option:", trade["option"])
 
@@ -1661,7 +1674,7 @@ def run(trading_mode="paper"):
                     "strategy": trade["strategy"],
                     "score": trade["score"],
                     "confidence": trade["confidence"],
-                    "trading_mode": trading_mode,
+                    "trading_mode": resolved_trading_mode,
                 },
             )
 
@@ -1674,7 +1687,7 @@ def run(trading_mode="paper"):
                     "score": trade["score"],
                     "confidence": trade["confidence"],
                     "source": "execution",
-                    "trading_mode": trading_mode,
+                    "trading_mode": resolved_trading_mode,
                 },
             )
 
@@ -1686,7 +1699,7 @@ def run(trading_mode="paper"):
                     "strategy": trade["strategy"],
                     "score": trade["score"],
                     "confidence": trade["confidence"],
-                    "trading_mode": trading_mode,
+                    "trading_mode": resolved_trading_mode,
                 },
             )
 
@@ -1694,7 +1707,7 @@ def run(trading_mode="paper"):
 
             push_notification(
                 notif_type="EXECUTION_APPROVED",
-                message=f"{trade['symbol']} approved for execution review in {trading_mode} mode.",
+                message=f"{trade['symbol']} approved for execution review in {resolved_trading_mode} mode.",
                 trade_id=trade["trade_id"],
                 min_tier="starter",
                 level="info",
@@ -1722,8 +1735,8 @@ def run(trading_mode="paper"):
         print("Trades today:", today_count)
         print("Trades remaining today:", trades_remaining)
         print("Selected trades for execution:", [t.get("symbol") for t in selected_trades])
-        print("Trading mode:", trading_mode)
-        print("Mode context:", mode_context)
+        print("Trading mode:", resolved_trading_mode)
+        print("Mode context:", resolved_mode_context)
 
         execution_queue = []
 
@@ -1754,6 +1767,7 @@ def run(trading_mode="paper"):
                         "vehicle_selected": row.get("vehicle_selected"),
                         "capital_required": row.get("capital_required"),
                         "minimum_trade_cost": row.get("minimum_trade_cost"),
+                        "trading_mode": row.get("trading_mode"),
                     },
                 )
 
@@ -1781,13 +1795,14 @@ def run(trading_mode="paper"):
                     "vehicle_selected": candidate.get("vehicle_selected"),
                     "capital_required": candidate.get("capital_required"),
                     "minimum_trade_cost": candidate.get("minimum_trade_cost"),
+                    "trading_mode": candidate.get("trading_mode", resolved_trading_mode),
                 })
 
                 lifecycle = build_options_lifecycle(
                     candidate=candidate,
                     option_chain=option_chain,
                     account_context={"cash_available": cash_available},
-                    mode=trading_mode,
+                    mode=resolved_trading_mode,
                     allow_stock_fallback=True,
                 )
 
@@ -1805,12 +1820,13 @@ def run(trading_mode="paper"):
                     "promotion_score": lifecycle.get("promotion_score"),
                     "rebuild_pressure": lifecycle.get("rebuild_pressure"),
                     "final_reason": lifecycle.get("final_reason"),
+                    "trading_mode": resolved_trading_mode,
                 })
 
                 if lifecycle.get("final_decision") in {"APPROVE", "WARN"}:
                     queued_trade = build_queued_trade_payload(
                         lifecycle,
-                        mode=trading_mode,
+                        mode=resolved_trading_mode,
                     )
 
                     print("POST-QUEUE-PAYLOAD:", {
@@ -1830,6 +1846,7 @@ def run(trading_mode="paper"):
                         "vehicle_selected": queued_trade.get("vehicle_selected"),
                         "capital_required": queued_trade.get("capital_required"),
                         "minimum_trade_cost": queued_trade.get("minimum_trade_cost"),
+                        "trading_mode": resolved_trading_mode,
                     })
 
                     execution_queue.append(queued_trade)
@@ -1853,7 +1870,7 @@ def run(trading_mode="paper"):
                         "strategy": lifecycle_after.get("strategy"),
                         "score": lifecycle_after.get("score"),
                         "source": "execution",
-                        "trading_mode": trading_mode,
+                        "trading_mode": resolved_trading_mode,
                     },
                 )
 
@@ -1864,7 +1881,7 @@ def run(trading_mode="paper"):
                     {
                         "strategy": lifecycle_after.get("strategy"),
                         "score": lifecycle_after.get("score"),
-                        "trading_mode": trading_mode,
+                        "trading_mode": resolved_trading_mode,
                     },
                 )
         else:
@@ -1887,7 +1904,7 @@ def run(trading_mode="paper"):
                     {
                         "reason": reason,
                         "trade_id": trade_id,
-                        "trading_mode": trading_mode,
+                        "trading_mode": resolved_trading_mode,
                     },
                 )
 
@@ -1899,7 +1916,7 @@ def run(trading_mode="paper"):
                     f"{symbol} closed with reason: {reason}.",
                     {
                         "reason": reason,
-                        "trading_mode": trading_mode,
+                        "trading_mode": resolved_trading_mode,
                     },
                 )
 
@@ -1923,7 +1940,7 @@ def run(trading_mode="paper"):
         write_system_status(
             regime=regime,
             volatility=volatility_payload.get("volatility", "UNKNOWN"),
-            mode=f"{mode}|{trading_mode}",
+            mode=f"{mode}|{resolved_trading_mode}",
         )
 
         print("Performance:", performance_summary())
@@ -1936,13 +1953,12 @@ def run(trading_mode="paper"):
         print("Drawdown History Built:", dd[-5:] if dd else [])
         print("Daily Report Written:", report["timestamp"])
         print("Final Account Snapshot:", account_snapshot())
-
         print_backtest_summary()
 
-        write_bot_status(False, f"completed:{trading_mode}")
+        write_bot_status(False, f"completed:{resolved_trading_mode}")
         push_activity(
             "SYSTEM",
-            f"Bot run completed in {mode_context['mode_label']} ({trading_mode})",
+            f"Bot run completed in {resolved_mode_context['mode_label']} ({resolved_trading_mode})",
         )
 
     except Exception as e:

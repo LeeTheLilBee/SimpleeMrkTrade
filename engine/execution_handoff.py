@@ -180,63 +180,98 @@ def build_queued_trade_payload(
     lifecycle_obj: Dict[str, Any],
     mode: str = "paper",
 ) -> Dict[str, Any]:
-    intent = build_execution_intent(lifecycle_obj, mode=mode)
+    from engine.observatory_mode import normalize_mode, build_mode_context
+
+    lifecycle_obj = _safe_dict(lifecycle_obj)
+    requested_mode = normalize_mode(
+        mode
+        or lifecycle_obj.get("trading_mode")
+        or lifecycle_obj.get("mode")
+        or _safe_dict(lifecycle_obj.get("mode_context")).get("mode")
+        or "paper"
+    )
+
+    incoming_mode_context = _safe_dict(lifecycle_obj.get("mode_context"))
+    resolved_mode_context = build_mode_context(requested_mode)
+    mode_context = dict(resolved_mode_context)
+    if incoming_mode_context:
+        mode_context.update({k: v for k, v in incoming_mode_context.items() if v is not None})
+
+    intent = build_execution_intent(lifecycle_obj, mode=requested_mode)
     source = dict(intent.source_lifecycle or {})
 
-    return {
+    reserve_check = dict(intent.reserve_check or {})
+    selected_vehicle = _safe_str(intent.selected_vehicle, source.get("selected_vehicle", "RESEARCH_ONLY")).upper()
+    final_decision = _safe_str(intent.final_decision, source.get("final_decision", "REJECT")).upper()
+    final_reason = _safe_str(intent.final_reason, source.get("final_reason", ""))
+    final_reason_code = _safe_str(intent.final_reason_code, source.get("final_reason_code", ""))
+    estimated_cost = round(_safe_float(intent.estimated_cost, source.get("estimated_cost", 0.0)), 2)
+    stock_price = round(_safe_float(intent.stock_price, source.get("stock_price", 0.0)), 4)
+
+    source["mode"] = requested_mode
+    source["trading_mode"] = requested_mode
+    source["mode_context"] = mode_context
+    source["selected_vehicle"] = selected_vehicle
+    source["vehicle_selected"] = selected_vehicle
+    source["final_decision"] = final_decision
+    source["final_reason"] = final_reason
+    source["final_reason_code"] = final_reason_code
+    source["execution_mode"] = requested_mode
+    source["estimated_cost"] = estimated_cost
+    source["stock_price"] = stock_price
+    source["reserve_check"] = reserve_check
+
+    queued_payload = {
         "symbol": intent.symbol,
         "strategy": intent.strategy,
         "direction": intent.direction,
-        "selected_vehicle": intent.selected_vehicle,
-        "vehicle": intent.selected_vehicle,
-        "final_decision": intent.final_decision,
-        "final_reason": intent.final_reason,
-        "final_reason_code": intent.final_reason_code,
+        "selected_vehicle": selected_vehicle,
+        "vehicle_selected": selected_vehicle,
+        "vehicle": selected_vehicle,
+        "final_decision": final_decision,
+        "final_reason": final_reason,
+        "final_reason_code": final_reason_code,
         "quantity": intent.quantity,
-        "estimated_cost": round(intent.estimated_cost, 2),
-        "stock_price": round(intent.stock_price, 4),
+        "estimated_cost": estimated_cost,
+        "stock_price": stock_price,
         "contract": intent.contract,
-        "execution_mode": intent.execution_mode,
+        "execution_mode": requested_mode,
+        "trading_mode": requested_mode,
+        "mode": requested_mode,
+        "mode_context": mode_context,
         "confidence": intent.confidence,
-        "score": round(intent.score, 4),
-        "reserve_check": dict(intent.reserve_check or {}),
-        "warnings": list(intent.warnings or []),
-        "rejection_reasons": list(intent.rejection_reasons or []),
+        "score": round(_safe_float(intent.score), 4),
+        "reserve_check": reserve_check,
+        "warnings": _safe_list(intent.warnings or source.get("warnings")),
+        "rejection_reasons": _safe_list(intent.rejection_reasons or source.get("rejection_reasons")),
         "lifecycle": source,
         "queued_at": _now_iso(),
-
-        "research_approved": source.get("research_approved"),
-        "execution_ready": source.get("execution_ready"),
-        "selected_for_execution": source.get("selected_for_execution"),
-
+        "research_approved": _safe_bool(source.get("research_approved"), False),
+        "execution_ready": _safe_bool(source.get("execution_ready"), False),
+        "selected_for_execution": _safe_bool(source.get("selected_for_execution"), False),
         "base_score": source.get("base_score"),
         "fused_score": source.get("fused_score"),
         "v2_score": source.get("v2_score"),
         "v2_quality": source.get("v2_quality"),
         "v2_reason": source.get("v2_reason"),
         "v2_vehicle_bias": source.get("v2_vehicle_bias"),
-        "v2_payload": source.get("v2_payload", {}),
-
+        "v2_payload": _safe_dict(source.get("v2_payload", {})),
         "readiness_score": source.get("readiness_score"),
         "promotion_score": source.get("promotion_score"),
         "rebuild_pressure": source.get("rebuild_pressure"),
         "execution_quality": source.get("execution_quality"),
-
         "minimum_trade_cost": source.get("minimum_trade_cost"),
         "capital_required": source.get("capital_required"),
         "capital_available": source.get("capital_available"),
-
         "vehicle_reason": source.get("vehicle_reason"),
         "decision_reason": source.get("decision_reason"),
         "blocked_at": source.get("blocked_at"),
-
-        "why": source.get("why", []),
-        "supports": source.get("supports", []),
-        "blockers": source.get("blockers", []),
-        "rejection_analysis": source.get("rejection_analysis", []),
-        "option_explanation": source.get("option_explanation", []),
-        "learning_notes": source.get("learning_notes", []),
-
+        "why": _safe_list(source.get("why", [])),
+        "supports": _safe_list(source.get("supports", [])),
+        "blockers": _safe_list(source.get("blockers", [])),
+        "rejection_analysis": _safe_list(source.get("rejection_analysis", [])),
+        "option_explanation": _safe_list(source.get("option_explanation", [])),
+        "learning_notes": _safe_list(source.get("learning_notes", [])),
         "setup_type": source.get("setup_type"),
         "setup_family": source.get("setup_family"),
         "entry_quality": source.get("entry_quality"),
@@ -244,17 +279,39 @@ def build_queued_trade_payload(
         "regime": source.get("regime"),
         "breadth": source.get("breadth"),
         "volatility_state": source.get("volatility_state"),
-        "mode": source.get("mode"),
-
-        "option": source.get("option", {}),
-        "stock_path": source.get("stock_path", {}),
-        "option_path": source.get("option_path", {}),
-        "governor": source.get("governor", {}),
-        "mode_context": source.get("mode_context", {}),
-        "top_ranked_contracts": source.get("top_ranked_contracts", []),
+        "option": _safe_dict(source.get("option", {})),
+        "stock_path": _safe_dict(source.get("stock_path", {})),
+        "option_path": _safe_dict(source.get("option_path", {})),
+        "governor": _safe_dict(source.get("governor", {})),
+        "top_ranked_contracts": _safe_list(source.get("top_ranked_contracts", [])),
         "trade_id": source.get("trade_id"),
         "timestamp": source.get("timestamp"),
+        "canonical_source": "options_lifecycle",
     }
+
+    if selected_vehicle == "OPTION":
+        queued_payload["contracts"] = max(1, _safe_int(source.get("contracts", intent.quantity or 1), 1))
+        queued_payload["shares"] = 0
+    elif selected_vehicle == "STOCK":
+        queued_payload["shares"] = max(1, _safe_int(source.get("shares", intent.quantity or 1), 1))
+        queued_payload["contracts"] = 0
+    else:
+        queued_payload["shares"] = _safe_int(source.get("shares", 0), 0)
+        queued_payload["contracts"] = _safe_int(source.get("contracts", 0), 0)
+
+    queued_payload["queue_diagnostics"] = {
+        "mode_label": mode_context.get("mode_label"),
+        "mode_shell": mode_context.get("mode_shell"),
+        "theme_family": mode_context.get("theme_family"),
+        "strict_execution_gate": _safe_bool(mode_context.get("strict_execution_gate"), True),
+        "execution_warning_only": _safe_bool(mode_context.get("execution_warning_only"), False),
+        "reserve_warning_only": _safe_bool(mode_context.get("reserve_warning_only"), False),
+        "options_first": _safe_bool(mode_context.get("options_first"), True),
+        "allow_stock_fallback": _safe_bool(mode_context.get("allow_stock_fallback"), True),
+        "reserve_check": reserve_check,
+    }
+
+    return queued_payload
 
 
 # =========================================================

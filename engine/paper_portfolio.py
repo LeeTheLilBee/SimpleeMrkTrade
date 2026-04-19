@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional
 
 OPEN_FILE = "data/open_positions.json"
 POSITIONS_FILE = "data/positions.json"
+CLOSED_FILE = "data/closed_positions.json"
 CANONICAL_LEDGER_FILE = "data/canonical_ledger.json"
 
 
@@ -82,6 +83,11 @@ def _load_open_positions() -> List[Dict[str, Any]]:
     return rows if isinstance(rows, list) else []
 
 
+def _load_closed_positions() -> List[Dict[str, Any]]:
+    rows = _read_json(CLOSED_FILE, [])
+    return rows if isinstance(rows, list) else []
+
+
 def _load_canonical_ledger() -> List[Dict[str, Any]]:
     rows = _read_json(CANONICAL_LEDGER_FILE, [])
     return rows if isinstance(rows, list) else []
@@ -119,7 +125,6 @@ def _normalize_trade(trade: Dict[str, Any]) -> Dict[str, Any]:
 
     symbol = _norm_symbol(trade.get("symbol"))
     strategy = _safe_str(trade.get("strategy"), "CALL").upper()
-
     timestamp = _safe_str(trade.get("timestamp"), _now_iso())
     opened_at = _safe_str(trade.get("opened_at"), timestamp)
 
@@ -129,6 +134,7 @@ def _normalize_trade(trade: Dict[str, Any]) -> Dict[str, Any]:
 
     stop_default = round(entry * (1.03 if strategy == "PUT" else 0.97), 4) if entry > 0 else 0.0
     target_default = round(entry * (0.90 if strategy == "PUT" else 1.10), 4) if entry > 0 else 0.0
+
     stop = round(_safe_float(trade.get("stop", stop_default), stop_default), 4)
     target = round(_safe_float(trade.get("target", target_default), target_default), 4)
 
@@ -136,7 +142,6 @@ def _normalize_trade(trade: Dict[str, Any]) -> Dict[str, Any]:
         trade.get("vehicle_selected", trade.get("vehicle", "STOCK")),
         "STOCK",
     ).upper()
-
     if vehicle_selected not in {"OPTION", "STOCK", "RESEARCH_ONLY"}:
         vehicle_selected = "STOCK"
 
@@ -159,7 +164,6 @@ def _normalize_trade(trade: Dict[str, Any]) -> Dict[str, Any]:
         contracts = 0
 
     status = _safe_str(trade.get("status"), "OPEN").upper()
-
     trade_id = _safe_str(trade.get("trade_id"), "")
     if not trade_id:
         trade_id = f"{symbol}-{strategy}-{opened_at.replace(':', '').replace('-', '').replace('.', '')}"
@@ -175,7 +179,6 @@ def _normalize_trade(trade: Dict[str, Any]) -> Dict[str, Any]:
     v2_payload = _safe_dict(trade.get("v2_payload"))
 
     normalized = dict(trade)
-
     normalized["symbol"] = symbol
     normalized["strategy"] = strategy
     normalized["trade_id"] = trade_id
@@ -271,8 +274,8 @@ def _normalize_trade(trade: Dict[str, Any]) -> Dict[str, Any]:
     normalized["governor_status"] = _safe_str(trade.get("governor_status"), "")
     normalized["governor_reasons"] = _safe_list(trade.get("governor_reasons"))
     normalized["governor_warnings"] = _safe_list(trade.get("governor_warnings"))
-    normalized["mode_context"] = mode_context
 
+    normalized["mode_context"] = mode_context
     normalized["canonical_decision"] = canonical_decision
     normalized["final_decision"] = final_decision
     normalized["execution_result"] = execution_result
@@ -290,6 +293,19 @@ def _normalize_trade(trade: Dict[str, Any]) -> Dict[str, Any]:
     normalized["capital_protection_snapshot"] = _safe_dict(trade.get("capital_protection_snapshot"))
 
     return normalized
+
+
+def _normalize_closed_position(position: Dict[str, Any]) -> Dict[str, Any]:
+    position = _normalize_trade(position)
+    position["status"] = "CLOSED"
+    position["closed_at"] = _safe_str(position.get("closed_at"), _now_iso())
+    position["exit_price"] = round(_safe_float(position.get("exit_price"), 0.0), 4)
+    position["pnl"] = round(_safe_float(position.get("pnl"), 0.0), 4)
+    position["close_reason"] = _safe_str(
+        position.get("close_reason", position.get("reason", "")),
+        "",
+    )
+    return position
 
 
 def _append_ledger_event(event_type: str, payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -355,9 +371,14 @@ def show_positions() -> List[Dict[str, Any]]:
     return _load_open_positions()
 
 
+def show_closed_positions() -> List[Dict[str, Any]]:
+    return _load_closed_positions()
+
+
 def get_position(symbol: str, trade_id: str = "") -> Optional[Dict[str, Any]]:
     symbol = _norm_symbol(symbol)
     trade_id = _safe_str(trade_id, "")
+
     for pos in _load_open_positions():
         if trade_id and _safe_str(pos.get("trade_id"), "") == trade_id:
             return pos
@@ -443,6 +464,35 @@ def remove_position(symbol: str, trade_id: str = "", reason: str = "removed") ->
     return removed
 
 
+def archive_closed_position(position: Dict[str, Any]) -> Dict[str, Any]:
+    closed_positions = _load_closed_positions()
+    normalized = _normalize_closed_position(position)
+
+    trade_id = _safe_str(normalized.get("trade_id"), "")
+    existing_idx = -1
+
+    if trade_id:
+        for idx, row in enumerate(closed_positions):
+            if _safe_str(_safe_dict(row).get("trade_id"), "") == trade_id:
+                existing_idx = idx
+                break
+
+    if existing_idx >= 0:
+        prior = _safe_dict(closed_positions[existing_idx])
+        merged = dict(prior)
+        merged.update(normalized)
+        normalized = _normalize_closed_position(merged)
+        closed_positions[existing_idx] = normalized
+        event_type = "POSITION_CLOSED_UPDATED"
+    else:
+        closed_positions.append(normalized)
+        event_type = "POSITION_CLOSED"
+
+    _write_json(CLOSED_FILE, closed_positions)
+    _append_ledger_event(event_type, normalized)
+    return normalized
+
+
 def print_positions() -> None:
     positions = _load_open_positions()
     print("OPEN POSITIONS:")
@@ -467,4 +517,26 @@ def print_positions() -> None:
             pos.get("trade_id"),
             "| opened_at:",
             pos.get("opened_at"),
+        )
+
+
+def print_closed_positions() -> None:
+    positions = _load_closed_positions()
+    print("CLOSED POSITIONS:")
+    if not positions:
+        print("No closed positions.")
+        return
+
+    for pos in positions:
+        print(
+            pos.get("symbol"),
+            pos.get("strategy"),
+            "| pnl:",
+            pos.get("pnl"),
+            "| exit_price:",
+            pos.get("exit_price"),
+            "| trade_id:",
+            pos.get("trade_id"),
+            "| closed_at:",
+            pos.get("closed_at"),
         )
