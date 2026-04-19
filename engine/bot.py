@@ -1730,12 +1730,58 @@ def run(trading_mode="paper"):
         if trades_remaining > 0 and selected_trades:
             cash_available = round(_safe_float(buying_power(), 0.0), 2)
 
+            print("SELECTED TRADES DEBUG SNAPSHOT:")
+            for idx, row in enumerate(selected_trades):
+                if not isinstance(row, dict):
+                    print(f"[{idx}] NON-DICT:", type(row))
+                    continue
+                print(
+                    f"[{idx}]",
+                    {
+                        "symbol": row.get("symbol"),
+                        "trade_id": row.get("trade_id"),
+                        "research_approved": row.get("research_approved"),
+                        "execution_ready": row.get("execution_ready"),
+                        "selected_for_execution": row.get("selected_for_execution"),
+                        "score": row.get("score"),
+                        "fused_score": row.get("fused_score"),
+                        "v2_score": row.get("v2_score"),
+                        "v2_reason": row.get("v2_reason"),
+                        "v2_vehicle_bias": row.get("v2_vehicle_bias"),
+                        "readiness_score": row.get("readiness_score"),
+                        "promotion_score": row.get("promotion_score"),
+                        "rebuild_pressure": row.get("rebuild_pressure"),
+                        "vehicle_selected": row.get("vehicle_selected"),
+                        "capital_required": row.get("capital_required"),
+                        "minimum_trade_cost": row.get("minimum_trade_cost"),
+                    },
+                )
+
             for candidate in selected_trades:
                 option_chain = (
                     candidate.get("option_chain", [])
                     if isinstance(candidate.get("option_chain"), list)
                     else []
                 )
+
+                print("PRE-LIFECYCLE CANDIDATE:", {
+                    "symbol": candidate.get("symbol"),
+                    "trade_id": candidate.get("trade_id"),
+                    "research_approved": candidate.get("research_approved"),
+                    "execution_ready": candidate.get("execution_ready"),
+                    "selected_for_execution": candidate.get("selected_for_execution"),
+                    "score": candidate.get("score"),
+                    "fused_score": candidate.get("fused_score"),
+                    "v2_score": candidate.get("v2_score"),
+                    "v2_reason": candidate.get("v2_reason"),
+                    "v2_vehicle_bias": candidate.get("v2_vehicle_bias"),
+                    "readiness_score": candidate.get("readiness_score"),
+                    "promotion_score": candidate.get("promotion_score"),
+                    "rebuild_pressure": candidate.get("rebuild_pressure"),
+                    "vehicle_selected": candidate.get("vehicle_selected"),
+                    "capital_required": candidate.get("capital_required"),
+                    "minimum_trade_cost": candidate.get("minimum_trade_cost"),
+                })
 
                 lifecycle = build_options_lifecycle(
                     candidate=candidate,
@@ -1745,11 +1791,47 @@ def run(trading_mode="paper"):
                     allow_stock_fallback=True,
                 )
 
+                print("POST-LIFECYCLE:", {
+                    "symbol": lifecycle.get("symbol"),
+                    "research_approved": lifecycle.get("research_approved"),
+                    "lifecycle_stage": lifecycle.get("lifecycle_stage"),
+                    "selected_vehicle": lifecycle.get("selected_vehicle"),
+                    "score": lifecycle.get("score"),
+                    "fused_score": lifecycle.get("fused_score"),
+                    "v2_score": lifecycle.get("v2_score"),
+                    "v2_reason": lifecycle.get("v2_reason"),
+                    "v2_vehicle_bias": lifecycle.get("v2_vehicle_bias"),
+                    "readiness_score": lifecycle.get("readiness_score"),
+                    "promotion_score": lifecycle.get("promotion_score"),
+                    "rebuild_pressure": lifecycle.get("rebuild_pressure"),
+                    "final_reason": lifecycle.get("final_reason"),
+                })
+
                 if lifecycle.get("final_decision") in {"APPROVE", "WARN"}:
                     queued_trade = build_queued_trade_payload(
                         lifecycle,
                         mode=trading_mode,
                     )
+
+                    print("POST-QUEUE-PAYLOAD:", {
+                        "symbol": queued_trade.get("symbol"),
+                        "trade_id": queued_trade.get("trade_id"),
+                        "research_approved": queued_trade.get("research_approved"),
+                        "execution_ready": queued_trade.get("execution_ready"),
+                        "selected_for_execution": queued_trade.get("selected_for_execution"),
+                        "score": queued_trade.get("score"),
+                        "fused_score": queued_trade.get("fused_score"),
+                        "v2_score": queued_trade.get("v2_score"),
+                        "v2_reason": queued_trade.get("v2_reason"),
+                        "v2_vehicle_bias": queued_trade.get("v2_vehicle_bias"),
+                        "readiness_score": queued_trade.get("readiness_score"),
+                        "promotion_score": queued_trade.get("promotion_score"),
+                        "rebuild_pressure": queued_trade.get("rebuild_pressure"),
+                        "vehicle_selected": queued_trade.get("vehicle_selected"),
+                        "capital_required": queued_trade.get("capital_required"),
+                        "minimum_trade_cost": queued_trade.get("minimum_trade_cost"),
+                    })
+
                     execution_queue.append(queued_trade)
 
             packet = execute_trades(execution_queue, limit=trades_remaining)

@@ -145,7 +145,7 @@
       "setup_family": "breakout",
       "entry_quality": "high_conviction"
     },
-    "_monitor_days_open": 1.7285179941319446,
+    "_monitor_days_open": 1.831079692048611,
     "_monitor_progress": 0.3700021362304682,
     "_monitor_pct_change": 0.3512873050537307,
     "_capital_pressure_score": 0.0,
@@ -194,10 +194,16 @@
       "flagged as weakest position, but not weak enough to force exit yet",
       "rebuild pressure not extreme",
       "readiness still supportive",
+      "flagged as weakest position, but not weak enough to force exit yet",
+      "rebuild pressure not extreme",
+      "readiness still supportive",
+      "capital protection active, but this is not the weakest position",
+      "rebuild pressure not extreme",
+      "readiness still supportive",
       "flagged as weakest position, but not weak enough to force exit yet"
     ],
     "monitor_debug": {
-      "days_open": 1.729,
+      "days_open": 1.831,
       "progress": 0.37,
       "pct_change": 0.351,
       "readiness_score": 217.0,

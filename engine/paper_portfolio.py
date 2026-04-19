@@ -7,17 +7,16 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 OPEN_FILE = "data/open_positions.json"
-CLOSED_FILE = "data/closed_positions.json"
 POSITIONS_FILE = "data/positions.json"
 CANONICAL_LEDGER_FILE = "data/canonical_ledger.json"
 
 
-def _safe_list(value: Any) -> List[Any]:
-    return value if isinstance(value, list) else []
-
-
 def _safe_dict(value: Any) -> Dict[str, Any]:
     return value if isinstance(value, dict) else {}
+
+
+def _safe_list(value: Any) -> List[Any]:
+    return value if isinstance(value, list) else []
 
 
 def _safe_str(value: Any, default: str = "") -> str:
@@ -35,106 +34,260 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
         return float(default)
 
 
+def _safe_int(value: Any, default: int = 0) -> int:
+    try:
+        return int(value)
+    except Exception:
+        return int(default)
+
+
+def _safe_bool(value: Any, default: bool = False) -> bool:
+    try:
+        return bool(value)
+    except Exception:
+        return bool(default)
+
+
 def _norm_symbol(value: Any) -> str:
-    return _safe_str(value, "").upper()
+    return _safe_str(value, "UNKNOWN").upper()
 
 
 def _now_iso() -> str:
     return datetime.now().isoformat()
 
 
-def _read_json(path: str, default: Any) -> Any:
-    file_path = Path(path)
-    if not file_path.exists():
-        return default
+def _ensure_parent(path_str: str) -> None:
+    Path(path_str).parent.mkdir(parents=True, exist_ok=True)
+
+
+def _read_json(path_str: str, default: Any) -> Any:
+    path = Path(path_str)
+    if not path.exists():
+        return deepcopy(default)
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception:
-        return default
+        return deepcopy(default)
 
 
-def _write_json(path: str, data: Any) -> None:
-    file_path = Path(path)
-    file_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
+def _write_json(path_str: str, payload: Any) -> None:
+    _ensure_parent(path_str)
+    with open(path_str, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2)
 
 
 def _load_open_positions() -> List[Dict[str, Any]]:
     rows = _read_json(OPEN_FILE, [])
-    return [row for row in _safe_list(rows) if isinstance(row, dict)]
-
-
-def _load_closed_positions() -> List[Dict[str, Any]]:
-    rows = _read_json(CLOSED_FILE, [])
-    return [row for row in _safe_list(rows) if isinstance(row, dict)]
+    return rows if isinstance(rows, list) else []
 
 
 def _load_canonical_ledger() -> List[Dict[str, Any]]:
     rows = _read_json(CANONICAL_LEDGER_FILE, [])
-    return [row for row in _safe_list(rows) if isinstance(row, dict)]
+    return rows if isinstance(rows, list) else []
 
 
-def _trade_identity(trade: Dict[str, Any]) -> str:
-    trade = _safe_dict(trade)
-    trade_id = _safe_str(trade.get("trade_id"), "")
-    if trade_id:
-        return trade_id
+def _best_price(trade: Dict[str, Any]) -> float:
+    candidates = [
+        trade.get("current_price"),
+        trade.get("price"),
+        trade.get("entry"),
+        trade.get("fill_price"),
+        trade.get("requested_price"),
+        trade.get("underlying_price"),
+        trade.get("market_price"),
+        trade.get("latest_price"),
+    ]
+    for value in candidates:
+        price = _safe_float(value, 0.0)
+        if price > 0:
+            return price
+    return 0.0
+
+
+def _vehicle_shape(vehicle: str) -> Dict[str, int]:
+    vehicle = _safe_str(vehicle, "RESEARCH_ONLY").upper()
+    if vehicle == "OPTION":
+        return {"shares": 0, "contracts": 1}
+    if vehicle == "STOCK":
+        return {"shares": 1, "contracts": 0}
+    return {"shares": 0, "contracts": 0}
+
+
+def _normalize_trade(trade: Dict[str, Any]) -> Dict[str, Any]:
+    trade = _safe_dict(deepcopy(trade))
+
     symbol = _norm_symbol(trade.get("symbol"))
-    strategy = _safe_str(trade.get("strategy"), "UNKNOWN").upper()
-    opened_at = _safe_str(trade.get("opened_at"), trade.get("timestamp"))
-    return f"{symbol}|{strategy}|{opened_at}"
-
-
-def _position_identity(symbol: str, trade_id: str = "", opened_at: str = "") -> str:
-    symbol = _norm_symbol(symbol)
-    trade_id = _safe_str(trade_id, "")
-    opened_at = _safe_str(opened_at, "")
-    if trade_id:
-        return f"{symbol}|{trade_id}"
-    return f"{symbol}|{opened_at}" if opened_at else symbol
-
-
-def _normalize_trade(raw_trade: Dict[str, Any]) -> Dict[str, Any]:
-    trade = deepcopy(_safe_dict(raw_trade))
-
-    symbol = _norm_symbol(trade.get("symbol"))
-    if not symbol:
-        raise ValueError("Trade is missing symbol.")
-
     strategy = _safe_str(trade.get("strategy"), "CALL").upper()
-    price = _safe_float(
-        trade.get("entry", trade.get("fill_price", trade.get("price", 0.0))),
-        0.0,
-    )
-    current_price = _safe_float(trade.get("current_price", price), price)
-    stop = _safe_float(trade.get("stop", round(price * 0.97, 2)), round(price * 0.97, 2))
-    target = _safe_float(trade.get("target", round(price * 1.04, 2)), round(price * 1.04, 2))
-    size = _safe_float(trade.get("size", 1.0), 1.0)
 
-    opened_at = _safe_str(trade.get("opened_at"), "")
-    timestamp = _safe_str(trade.get("timestamp"), opened_at or _now_iso())
-    if not opened_at:
-        opened_at = timestamp
+    timestamp = _safe_str(trade.get("timestamp"), _now_iso())
+    opened_at = _safe_str(trade.get("opened_at"), timestamp)
+
+    price = round(_best_price(trade), 4)
+    entry = round(_safe_float(trade.get("entry", price), price), 4)
+    current_price = round(_safe_float(trade.get("current_price", price), price), 4)
+
+    stop_default = round(entry * (1.03 if strategy == "PUT" else 0.97), 4) if entry > 0 else 0.0
+    target_default = round(entry * (0.90 if strategy == "PUT" else 1.10), 4) if entry > 0 else 0.0
+    stop = round(_safe_float(trade.get("stop", stop_default), stop_default), 4)
+    target = round(_safe_float(trade.get("target", target_default), target_default), 4)
+
+    vehicle_selected = _safe_str(
+        trade.get("vehicle_selected", trade.get("vehicle", "STOCK")),
+        "STOCK",
+    ).upper()
+
+    if vehicle_selected not in {"OPTION", "STOCK", "RESEARCH_ONLY"}:
+        vehicle_selected = "STOCK"
+
+    shape = _vehicle_shape(vehicle_selected)
+
+    shares = _safe_int(
+        trade.get("shares", trade.get("size", shape["shares"])),
+        shape["shares"],
+    )
+    contracts = _safe_int(trade.get("contracts", shape["contracts"]), shape["contracts"])
+
+    if vehicle_selected == "OPTION":
+        shares = 0
+        contracts = max(1, contracts or 1)
+    elif vehicle_selected == "STOCK":
+        shares = max(1, shares or 1)
+        contracts = 0
+    else:
+        shares = 0
+        contracts = 0
+
+    status = _safe_str(trade.get("status"), "OPEN").upper()
+
+    trade_id = _safe_str(trade.get("trade_id"), "")
+    if not trade_id:
+        trade_id = f"{symbol}-{strategy}-{opened_at.replace(':', '').replace('-', '').replace('.', '')}"
+
+    option_obj = _safe_dict(trade.get("option"))
+    option_path = _safe_dict(trade.get("option_path"))
+    stock_path = _safe_dict(trade.get("stock_path"))
+    governor = _safe_dict(trade.get("governor"))
+    canonical_decision = _safe_dict(trade.get("canonical_decision"))
+    final_decision = _safe_dict(trade.get("final_decision"))
+    execution_result = _safe_dict(trade.get("execution_result"))
+    mode_context = _safe_dict(trade.get("mode_context"))
+    v2_payload = _safe_dict(trade.get("v2_payload"))
 
     normalized = dict(trade)
+
     normalized["symbol"] = symbol
     normalized["strategy"] = strategy
-    normalized["price"] = round(price, 4)
-    normalized["entry"] = round(price, 4)
-    normalized["current_price"] = round(current_price, 4)
-    normalized["stop"] = round(stop, 4)
-    normalized["target"] = round(target, 4)
-    normalized["size"] = size
-    normalized["opened_at"] = opened_at
+    normalized["trade_id"] = trade_id
     normalized["timestamp"] = timestamp
-    normalized["status"] = _safe_str(trade.get("status"), "OPEN").upper()
+    normalized["opened_at"] = opened_at
+    normalized["status"] = status
 
-    if not _safe_str(normalized.get("trade_id"), ""):
-        normalized["trade_id"] = (
-            f"{symbol}-{strategy}-{opened_at.replace(':', '').replace('-', '').replace('.', '')}"
-        )
+    normalized["price"] = price
+    normalized["entry"] = entry
+    normalized["current_price"] = current_price
+    normalized["stop"] = stop
+    normalized["target"] = target
+
+    normalized["vehicle_selected"] = vehicle_selected
+    normalized["vehicle"] = vehicle_selected
+    normalized["shares"] = shares
+    normalized["contracts"] = contracts
+    normalized["size"] = shares if vehicle_selected == "STOCK" else contracts
+
+    normalized["company_name"] = _safe_str(
+        trade.get("company_name", trade.get("company", symbol)),
+        symbol,
+    )
+    normalized["sector"] = _safe_str(trade.get("sector"), "UNKNOWN")
+
+    normalized["score"] = round(_safe_float(trade.get("score"), 0.0), 4)
+    normalized["base_score"] = round(_safe_float(trade.get("base_score"), normalized["score"]), 4)
+    normalized["v2_score"] = round(_safe_float(trade.get("v2_score"), 0.0), 4)
+    normalized["fused_score"] = round(
+        _safe_float(trade.get("fused_score", normalized["score"]), normalized["score"]),
+        4,
+    )
+
+    normalized["confidence"] = _safe_str(trade.get("confidence"), "LOW").upper()
+    normalized["base_confidence"] = _safe_str(
+        trade.get("base_confidence", normalized["confidence"]),
+        normalized["confidence"],
+    ).upper()
+    normalized["v2_confidence"] = _safe_str(
+        trade.get("v2_confidence", normalized["confidence"]),
+        normalized["confidence"],
+    ).upper()
+
+    normalized["v2_reason"] = _safe_str(trade.get("v2_reason"), "")
+    normalized["v2_vehicle_bias"] = _safe_str(trade.get("v2_vehicle_bias"), "").upper()
+    normalized["v2_quality"] = round(_safe_float(trade.get("v2_quality"), 0.0), 4)
+    normalized["v2_payload"] = v2_payload
+
+    normalized["decision_reason"] = _safe_str(trade.get("decision_reason"), "")
+    normalized["final_reason"] = _safe_str(trade.get("final_reason"), "")
+    normalized["vehicle_reason"] = _safe_str(trade.get("vehicle_reason"), "")
+    normalized["blocked_at"] = _safe_str(trade.get("blocked_at"), "")
+
+    normalized["research_approved"] = _safe_bool(trade.get("research_approved"), False)
+    normalized["execution_ready"] = _safe_bool(trade.get("execution_ready"), False)
+    normalized["selected_for_execution"] = _safe_bool(trade.get("selected_for_execution"), False)
+
+    normalized["capital_required"] = round(_safe_float(trade.get("capital_required"), 0.0), 4)
+    normalized["minimum_trade_cost"] = round(_safe_float(trade.get("minimum_trade_cost"), 0.0), 4)
+    normalized["capital_available"] = round(_safe_float(trade.get("capital_available"), 0.0), 4)
+
+    normalized["atr"] = round(_safe_float(trade.get("atr"), 0.0), 4)
+    normalized["rsi"] = round(_safe_float(trade.get("rsi"), 0.0), 4)
+
+    normalized["setup_type"] = _safe_str(trade.get("setup_type"), "")
+    normalized["setup_family"] = _safe_str(trade.get("setup_family"), "")
+    normalized["entry_quality"] = _safe_str(trade.get("entry_quality"), "")
+    normalized["trend"] = _safe_str(trade.get("trend"), "")
+    normalized["mode"] = _safe_str(trade.get("mode"), "")
+    normalized["regime"] = _safe_str(trade.get("regime"), "")
+    normalized["breadth"] = _safe_str(trade.get("breadth"), "")
+    normalized["volatility_state"] = _safe_str(trade.get("volatility_state"), "")
+
+    normalized["readiness_score"] = round(_safe_float(trade.get("readiness_score"), 0.0), 4)
+    normalized["promotion_score"] = round(_safe_float(trade.get("promotion_score"), 0.0), 4)
+    normalized["rebuild_pressure"] = round(_safe_float(trade.get("rebuild_pressure"), 0.0), 4)
+    normalized["execution_quality"] = round(_safe_float(trade.get("execution_quality"), 0.0), 4)
+
+    normalized["readiness_notes"] = _safe_list(trade.get("readiness_notes"))
+    normalized["promotion_notes"] = _safe_list(trade.get("promotion_notes"))
+    normalized["rebuild_notes"] = _safe_list(trade.get("rebuild_notes"))
+    normalized["learning_notes"] = _safe_list(trade.get("learning_notes"))
+    normalized["learning_exit_notes"] = _safe_list(trade.get("learning_exit_notes"))
+
+    normalized["option"] = option_obj
+    normalized["option_contract_score"] = round(_safe_float(trade.get("option_contract_score"), 0.0), 4)
+    normalized["option_explanation"] = _safe_list(trade.get("option_explanation"))
+    normalized["option_path"] = option_path
+    normalized["stock_path"] = stock_path
+
+    normalized["governor"] = governor
+    normalized["governor_blocked"] = _safe_bool(trade.get("governor_blocked"), False)
+    normalized["governor_status"] = _safe_str(trade.get("governor_status"), "")
+    normalized["governor_reasons"] = _safe_list(trade.get("governor_reasons"))
+    normalized["governor_warnings"] = _safe_list(trade.get("governor_warnings"))
+    normalized["mode_context"] = mode_context
+
+    normalized["canonical_decision"] = canonical_decision
+    normalized["final_decision"] = final_decision
+    normalized["execution_result"] = execution_result
+
+    normalized["why"] = _safe_list(trade.get("why"))
+    normalized["supports"] = _safe_list(trade.get("supports"))
+    normalized["blockers"] = _safe_list(trade.get("blockers"))
+    normalized["rejection_analysis"] = _safe_list(trade.get("rejection_analysis"))
+    normalized["stronger_competing_setups"] = _safe_list(trade.get("stronger_competing_setups"))
+
+    normalized["position_explanation"] = _safe_dict(trade.get("position_explanation"))
+    normalized["soulaana"] = _safe_dict(trade.get("soulaana"))
+    normalized["monitor_debug"] = _safe_dict(trade.get("monitor_debug"))
+    normalized["capital_protection_mode"] = _safe_bool(trade.get("capital_protection_mode"), False)
+    normalized["capital_protection_snapshot"] = _safe_dict(trade.get("capital_protection_snapshot"))
 
     return normalized
 
@@ -188,7 +341,10 @@ def _find_open_index(
 def clear_open_positions() -> None:
     _write_json(OPEN_FILE, [])
     _sync_positions_mirror([])
-    _append_ledger_event("OPEN_CLEAR", {"symbol": "", "trade_id": "", "note": "All open positions cleared."})
+    _append_ledger_event(
+        "OPEN_CLEAR",
+        {"symbol": "", "trade_id": "", "note": "All open positions cleared."},
+    )
 
 
 def open_count() -> int:
@@ -257,6 +413,7 @@ def replace_position(symbol: str, updated_position: Dict[str, Any]) -> Optional[
     prior = _safe_dict(open_positions[idx])
     merged = dict(prior)
     merged.update(updated)
+    merged = _normalize_trade(merged)
     merged["symbol"] = _norm_symbol(merged.get("symbol", symbol))
     merged["status"] = "OPEN"
 
@@ -280,32 +437,10 @@ def remove_position(symbol: str, trade_id: str = "", reason: str = "removed") ->
     _write_json(OPEN_FILE, open_positions)
     _sync_positions_mirror(open_positions)
 
-    event_payload = dict(removed)
-    event_payload["remove_reason"] = _safe_str(reason, "removed")
-    _append_ledger_event("POSITION_REMOVED", event_payload)
+    payload = dict(removed)
+    payload["remove_reason"] = _safe_str(reason, "removed")
+    _append_ledger_event("POSITION_REMOVED", payload)
     return removed
-
-
-def archive_closed_position(closed_trade: Dict[str, Any]) -> Dict[str, Any]:
-    closed_positions = _load_closed_positions()
-    normalized = deepcopy(_safe_dict(closed_trade))
-    normalized["symbol"] = _norm_symbol(normalized.get("symbol"))
-    normalized["status"] = "CLOSED"
-    normalized["closed_at"] = _safe_str(normalized.get("closed_at"), _now_iso())
-
-    trade_id = _safe_str(normalized.get("trade_id"), "")
-    exists = False
-    for item in closed_positions:
-        if trade_id and _safe_str(item.get("trade_id"), "") == trade_id:
-            exists = True
-            break
-
-    if not exists:
-        closed_positions.append(normalized)
-        _write_json(CLOSED_FILE, closed_positions)
-        _append_ledger_event("POSITION_CLOSED", normalized)
-
-    return normalized
 
 
 def print_positions() -> None:
@@ -319,17 +454,17 @@ def print_positions() -> None:
         print(
             pos.get("symbol"),
             pos.get("strategy"),
-            pos.get("score"),
+            pos.get("fused_score", pos.get("score")),
+            "| vehicle:",
+            pos.get("vehicle_selected"),
             "| entry:",
             pos.get("entry", pos.get("price")),
             "| stop:",
             pos.get("stop"),
             "| target:",
             pos.get("target"),
-            "| size:",
-            pos.get("size"),
-            "| opened_at:",
-            pos.get("opened_at"),
             "| trade_id:",
             pos.get("trade_id"),
+            "| opened_at:",
+            pos.get("opened_at"),
         )

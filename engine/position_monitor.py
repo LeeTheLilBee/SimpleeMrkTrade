@@ -48,7 +48,7 @@ def _safe_dict(value: Any) -> Dict[str, Any]:
 def _days_open(opened_at: Any) -> float:
     try:
         dt = datetime.fromisoformat(str(opened_at))
-        return (datetime.now() - dt).total_seconds() / 86400
+        return max((datetime.now() - dt).total_seconds() / 86400, 0.0)
     except Exception:
         return 0.0
 
@@ -60,10 +60,8 @@ def _progress(entry: Any, current: Any, target: Any) -> float:
         target = float(target or 0)
     except Exception:
         return 0.0
-
     if not entry or not target or target == entry:
         return 0.0
-
     try:
         return (current - entry) / (target - entry)
     except Exception:
@@ -86,7 +84,6 @@ def _latest_price(symbol: str, fallback_price: Any) -> float:
         df = safe_download(symbol, period="5d", auto_adjust=True, progress=False)
         if df is None or getattr(df, "empty", True):
             return float(fallback_price or 0)
-
         close = df["Close"]
         if hasattr(close, "iloc"):
             val = close.iloc[-1]
@@ -96,7 +93,6 @@ def _latest_price(symbol: str, fallback_price: Any) -> float:
                 return float(val)
     except Exception:
         pass
-
     return float(fallback_price or 0)
 
 
@@ -105,16 +101,13 @@ def _build_learning_exit_map() -> Dict[str, Any]:
         adjustment_map = get_learning_adjustment_map()
     except Exception:
         adjustment_map = {}
-
     items = adjustment_map.get("items", []) if isinstance(adjustment_map, dict) else []
     behavior_flags = []
-
     for item in items:
         if not isinstance(item, dict):
             continue
         if str(item.get("type", "") or "").strip().lower() == "behavior_flag":
             behavior_flags.append(item)
-
     return {"behavior_flags": behavior_flags}
 
 
@@ -134,50 +127,112 @@ def _extract_v2_context(pos: Dict[str, Any]) -> Dict[str, Any]:
     v2_signal = _safe_dict(pos.get("v2_signal", {}))
     v2_overlay = _safe_dict(pos.get("v2_overlay", {}))
     v2_intelligence = _safe_dict(pos.get("v2_intelligence", {}))
+    v2_payload = _safe_dict(pos.get("v2_payload", {}))
 
-    merged = {}
+    merged: Dict[str, Any] = {}
     merged.update(v2_signal)
     merged.update(v2_overlay)
     merged.update(v2_intelligence)
+    merged.update(v2_payload)
     merged.update(v2)
+
+    # also fold in top-level persisted V2 fields
+    if "v2_score" in pos and "score" not in merged:
+        merged["score"] = pos.get("v2_score")
+    if "v2_reason" in pos and "reason" not in merged:
+        merged["reason"] = pos.get("v2_reason")
+    if "v2_vehicle_bias" in pos and "vehicle_bias" not in merged:
+        merged["vehicle_bias"] = pos.get("v2_vehicle_bias")
+    if "v2_confidence" in pos and "confidence" not in merged:
+        merged["confidence"] = pos.get("v2_confidence")
+    if "v2_quality" in pos and "quality" not in merged:
+        merged["quality"] = pos.get("v2_quality")
 
     return {
         "v2": merged,
+        "v2_score": _safe_float(merged.get("score", pos.get("v2_score", 0.0)), 0.0),
+        "v2_confidence": _safe_str(merged.get("confidence", pos.get("v2_confidence", "")), "").upper(),
+        "v2_reason": _safe_str(merged.get("reason", pos.get("v2_reason", "")), ""),
         "v2_regime_alignment": _safe_str(
-            merged.get("regime_alignment", merged.get("alignment", "")),
-            ""
+            merged.get("regime_alignment", merged.get("alignment", pos.get("v2_regime_alignment", ""))),
+            "",
         ),
         "v2_signal_strength": _safe_float(
-            merged.get("signal_strength", merged.get("strength", 0.0)),
+            merged.get("signal_strength", merged.get("strength", pos.get("v2_signal_strength", 0.0))),
             0.0,
         ),
         "v2_conviction_adjustment": _safe_float(
-            merged.get("conviction_adjustment", merged.get("confidence_adjustment", 0.0)),
+            merged.get(
+                "conviction_adjustment",
+                merged.get("confidence_adjustment", pos.get("v2_conviction_adjustment", 0.0)),
+            ),
             0.0,
         ),
         "v2_vehicle_bias": _safe_str(
-            merged.get("vehicle_bias", merged.get("preferred_vehicle", "")),
-            ""
-        ),
+            merged.get("vehicle_bias", merged.get("preferred_vehicle", pos.get("v2_vehicle_bias", ""))),
+            "",
+        ).upper(),
         "v2_thesis": _safe_str(
-            merged.get("thesis", merged.get("summary", "")),
-            ""
+            merged.get("thesis", merged.get("summary", pos.get("v2_thesis", ""))),
+            "",
         ),
         "v2_notes": _safe_list(
-            merged.get("notes", merged.get("signals", []))
+            merged.get("notes", pos.get("v2_notes", merged.get("signals", [])))
         ),
         "v2_risk_flags": _safe_list(
-            merged.get("risk_flags", merged.get("warnings", []))
+            merged.get("risk_flags", pos.get("v2_risk_flags", merged.get("warnings", [])))
         ),
+        "v2_quality": _safe_float(merged.get("quality", pos.get("v2_quality", 0.0)), 0.0),
     }
+
+
+def _has_meaningful_existing_intelligence(pos: Dict[str, Any]) -> bool:
+    return any(
+        [
+            _safe_float(pos.get("readiness_score", 0.0), 0.0) > 0,
+            _safe_float(pos.get("promotion_score", 0.0), 0.0) > 0,
+            _safe_float(pos.get("rebuild_pressure", 0.0), 0.0) > 0,
+            bool(_safe_str(pos.get("setup_family", ""), "")),
+            bool(_safe_str(pos.get("entry_quality", ""), "")),
+        ]
+    )
 
 
 def _build_position_intelligence(pos: Dict[str, Any]) -> Dict[str, Any]:
     v2_context = _extract_v2_context(pos)
 
+    existing = {
+        "readiness_score": _safe_float(pos.get("readiness_score", 0.0), 0.0),
+        "promotion_score": _safe_float(pos.get("promotion_score", 0.0), 0.0),
+        "rebuild_pressure": _safe_float(pos.get("rebuild_pressure", 0.0), 0.0),
+        "readiness_notes": _safe_list(pos.get("readiness_notes", [])),
+        "promotion_notes": _safe_list(pos.get("promotion_notes", [])),
+        "rebuild_notes": _safe_list(pos.get("rebuild_notes", [])),
+        "setup_family": _safe_str(pos.get("setup_family", ""), ""),
+        "entry_quality": _safe_str(pos.get("entry_quality", ""), ""),
+    }
+
+    # Prefer existing canonical/fused values if already present.
+    if _has_meaningful_existing_intelligence(pos):
+        return {
+            **existing,
+            "v2": v2_context.get("v2", {}),
+            "v2_score": v2_context.get("v2_score", 0.0),
+            "v2_confidence": v2_context.get("v2_confidence", ""),
+            "v2_reason": v2_context.get("v2_reason", ""),
+            "v2_regime_alignment": v2_context.get("v2_regime_alignment", ""),
+            "v2_signal_strength": v2_context.get("v2_signal_strength", 0.0),
+            "v2_conviction_adjustment": v2_context.get("v2_conviction_adjustment", 0.0),
+            "v2_vehicle_bias": v2_context.get("v2_vehicle_bias", ""),
+            "v2_thesis": v2_context.get("v2_thesis", ""),
+            "v2_notes": v2_context.get("v2_notes", []),
+            "v2_risk_flags": v2_context.get("v2_risk_flags", []),
+            "v2_quality": v2_context.get("v2_quality", 0.0),
+        }
+
     signal_like = {
         "symbol": pos.get("symbol"),
-        "score": pos.get("score", 0),
+        "score": pos.get("fused_score", pos.get("score", 0)),
         "confidence": pos.get("confidence", "LOW"),
         "setup_type": pos.get("setup_type", "Continuation"),
         "setup_family": pos.get("setup_family", ""),
@@ -185,6 +240,9 @@ def _build_position_intelligence(pos: Dict[str, Any]) -> Dict[str, Any]:
         "vehicle_selected": pos.get("vehicle_selected", pos.get("vehicle", "STOCK")),
         "decision_reason": pos.get("decision_reason", pos.get("final_reason", "")),
         "v2": v2_context.get("v2", {}),
+        "v2_score": v2_context.get("v2_score", 0.0),
+        "v2_confidence": v2_context.get("v2_confidence", ""),
+        "v2_reason": v2_context.get("v2_reason", ""),
         "v2_regime_alignment": v2_context.get("v2_regime_alignment", ""),
         "v2_signal_strength": v2_context.get("v2_signal_strength", 0.0),
         "v2_conviction_adjustment": v2_context.get("v2_conviction_adjustment", 0.0),
@@ -192,6 +250,7 @@ def _build_position_intelligence(pos: Dict[str, Any]) -> Dict[str, Any]:
         "v2_thesis": v2_context.get("v2_thesis", ""),
         "v2_notes": v2_context.get("v2_notes", []),
         "v2_risk_flags": v2_context.get("v2_risk_flags", []),
+        "v2_quality": v2_context.get("v2_quality", 0.0),
     }
 
     try:
@@ -227,6 +286,9 @@ def _build_position_intelligence(pos: Dict[str, Any]) -> Dict[str, Any]:
         "setup_family": rebuild_row.get("setup_family", pos.get("setup_family", "")),
         "entry_quality": rebuild_row.get("entry_quality", pos.get("entry_quality", "")),
         "v2": v2_context.get("v2", {}),
+        "v2_score": v2_context.get("v2_score", 0.0),
+        "v2_confidence": v2_context.get("v2_confidence", ""),
+        "v2_reason": v2_context.get("v2_reason", ""),
         "v2_regime_alignment": v2_context.get("v2_regime_alignment", ""),
         "v2_signal_strength": v2_context.get("v2_signal_strength", 0.0),
         "v2_conviction_adjustment": v2_context.get("v2_conviction_adjustment", 0.0),
@@ -234,6 +296,7 @@ def _build_position_intelligence(pos: Dict[str, Any]) -> Dict[str, Any]:
         "v2_thesis": v2_context.get("v2_thesis", ""),
         "v2_notes": v2_context.get("v2_notes", []),
         "v2_risk_flags": v2_context.get("v2_risk_flags", []),
+        "v2_quality": v2_context.get("v2_quality", 0.0),
     }
 
 
@@ -250,12 +313,9 @@ def _get_governor_snapshot() -> Dict[str, Any]:
 def _capital_protection_mode(governor: Dict[str, Any]) -> Dict[str, Any]:
     controls = governor.get("controls", {}) if isinstance(governor, dict) else {}
     reasons = governor.get("reasons", []) if isinstance(governor, dict) else []
-
     reserve_broken = bool(controls.get("cash_reserve_too_low", False)) or ("cash_reserve_too_low" in reasons)
     max_positions_hit = bool(controls.get("max_open_positions", False)) or ("max_open_positions" in reasons)
-
     enabled = reserve_broken or max_positions_hit
-
     return {
         "enabled": enabled,
         "reserve_broken": reserve_broken,
@@ -273,7 +333,6 @@ def _capital_pressure_score(pos: Dict[str, Any]) -> float:
     rebuild_pressure = _safe_float(pos.get("rebuild_pressure", 0.0), 0.0)
     promotion_score = _safe_float(pos.get("promotion_score", 0.0), 0.0)
     confidence_text = str(pos.get("confidence", "LOW") or "LOW").upper().strip()
-
     v2_signal_strength = _safe_float(pos.get("v2_signal_strength", 0.0), 0.0)
     v2_conviction_adjustment = _safe_float(pos.get("v2_conviction_adjustment", 0.0), 0.0)
     v2_regime_alignment = _safe_str(pos.get("v2_regime_alignment", ""), "").lower()
@@ -345,13 +404,10 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
         positions = []
 
     actions: List[Dict[str, Any]] = []
-
     learning_exit_map = _build_learning_exit_map()
     delay_exit_bias_active = _has_delay_exit_bias(learning_exit_map)
-
     governor = _get_governor_snapshot()
     protection = _capital_protection_mode(governor)
-
     enriched_positions: List[Dict[str, Any]] = []
 
     for pos in positions:
@@ -372,23 +428,41 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
 
         position_intel = _build_position_intelligence(pos)
 
-        pos["readiness_score"] = position_intel.get("readiness_score", 0)
-        pos["promotion_score"] = position_intel.get("promotion_score", 0)
-        pos["rebuild_pressure"] = position_intel.get("rebuild_pressure", 0)
-        pos["setup_family"] = position_intel.get("setup_family", pos.get("setup_family", ""))
-        pos["entry_quality"] = position_intel.get("entry_quality", pos.get("entry_quality", ""))
-        pos["readiness_notes"] = position_intel.get("readiness_notes", [])
-        pos["promotion_notes"] = position_intel.get("promotion_notes", [])
-        pos["rebuild_notes"] = position_intel.get("rebuild_notes", [])
+        # preserve existing upstream values unless missing/zeroish
+        if _safe_float(pos.get("readiness_score", 0.0), 0.0) <= 0:
+            pos["readiness_score"] = position_intel.get("readiness_score", 0)
+        if _safe_float(pos.get("promotion_score", 0.0), 0.0) <= 0:
+            pos["promotion_score"] = position_intel.get("promotion_score", 0)
+        if _safe_float(pos.get("rebuild_pressure", 0.0), 0.0) <= 0:
+            pos["rebuild_pressure"] = position_intel.get("rebuild_pressure", 0)
 
-        pos["v2"] = position_intel.get("v2", {})
-        pos["v2_regime_alignment"] = position_intel.get("v2_regime_alignment", "")
-        pos["v2_signal_strength"] = position_intel.get("v2_signal_strength", 0.0)
-        pos["v2_conviction_adjustment"] = position_intel.get("v2_conviction_adjustment", 0.0)
-        pos["v2_vehicle_bias"] = position_intel.get("v2_vehicle_bias", "")
-        pos["v2_thesis"] = position_intel.get("v2_thesis", "")
-        pos["v2_notes"] = position_intel.get("v2_notes", [])
-        pos["v2_risk_flags"] = position_intel.get("v2_risk_flags", [])
+        if not _safe_str(pos.get("setup_family", ""), ""):
+            pos["setup_family"] = position_intel.get("setup_family", "")
+        if not _safe_str(pos.get("entry_quality", ""), ""):
+            pos["entry_quality"] = position_intel.get("entry_quality", "")
+
+        if not _safe_list(pos.get("readiness_notes", [])):
+            pos["readiness_notes"] = position_intel.get("readiness_notes", [])
+        if not _safe_list(pos.get("promotion_notes", [])):
+            pos["promotion_notes"] = position_intel.get("promotion_notes", [])
+        if not _safe_list(pos.get("rebuild_notes", [])):
+            pos["rebuild_notes"] = position_intel.get("rebuild_notes", [])
+
+        pos["v2"] = position_intel.get("v2", pos.get("v2", {}))
+        pos["v2_score"] = position_intel.get("v2_score", pos.get("v2_score", 0.0))
+        pos["v2_confidence"] = position_intel.get("v2_confidence", pos.get("v2_confidence", ""))
+        pos["v2_reason"] = position_intel.get("v2_reason", pos.get("v2_reason", ""))
+        pos["v2_regime_alignment"] = position_intel.get("v2_regime_alignment", pos.get("v2_regime_alignment", ""))
+        pos["v2_signal_strength"] = position_intel.get("v2_signal_strength", pos.get("v2_signal_strength", 0.0))
+        pos["v2_conviction_adjustment"] = position_intel.get(
+            "v2_conviction_adjustment",
+            pos.get("v2_conviction_adjustment", 0.0),
+        )
+        pos["v2_vehicle_bias"] = position_intel.get("v2_vehicle_bias", pos.get("v2_vehicle_bias", ""))
+        pos["v2_thesis"] = position_intel.get("v2_thesis", pos.get("v2_thesis", ""))
+        pos["v2_notes"] = position_intel.get("v2_notes", pos.get("v2_notes", []))
+        pos["v2_risk_flags"] = position_intel.get("v2_risk_flags", pos.get("v2_risk_flags", []))
+        pos["v2_quality"] = position_intel.get("v2_quality", pos.get("v2_quality", 0.0))
 
         rebuild_pressure = float(pos.get("rebuild_pressure", 0) or 0)
         readiness_score = float(pos.get("readiness_score", 0) or 0)
@@ -426,14 +500,17 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
                     "progress": prog,
                     "pct_change": pct_change,
                     "days_open": days,
-                    "readiness_score": readiness_score,
+                    "readiness_score": pos.get("readiness_score"),
                     "promotion_score": pos.get("promotion_score"),
-                    "rebuild_pressure": rebuild_pressure,
+                    "rebuild_pressure": pos.get("rebuild_pressure"),
                     "setup_family": pos.get("setup_family"),
                     "entry_quality": pos.get("entry_quality"),
                     "decision_reason": pos.get("decision_reason", pos.get("final_reason", "")),
                     "vehicle_selected": pos.get("vehicle_selected", pos.get("vehicle", "STOCK")),
                     "v2": pos.get("v2", {}),
+                    "v2_score": pos.get("v2_score", 0.0),
+                    "v2_confidence": pos.get("v2_confidence", ""),
+                    "v2_reason": pos.get("v2_reason", ""),
                     "v2_regime_alignment": pos.get("v2_regime_alignment", ""),
                     "v2_signal_strength": pos.get("v2_signal_strength", 0.0),
                     "v2_conviction_adjustment": pos.get("v2_conviction_adjustment", 0.0),
@@ -441,6 +518,7 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
                     "v2_thesis": pos.get("v2_thesis", ""),
                     "v2_notes": pos.get("v2_notes", []),
                     "v2_risk_flags": pos.get("v2_risk_flags", []),
+                    "v2_quality": pos.get("v2_quality", 0.0),
                 }
             )
         except Exception:
@@ -450,7 +528,6 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
         pos["_monitor_progress"] = prog
         pos["_monitor_pct_change"] = pct_change
         pos["_capital_pressure_score"] = _capital_pressure_score(pos)
-
         enriched_positions.append(pos)
 
     weakest_symbol = None
@@ -475,13 +552,11 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
         target = float(pos.get("target", entry) or entry)
         score = float(pos.get("score", 0) or 0)
         prev_score = float(pos.get("previous_score", score) or score)
-
         days = _safe_float(pos.get("_monitor_days_open", 0.0), 0.0)
         prog = _safe_float(pos.get("_monitor_progress", 0.0), 0.0)
         pct_change = _safe_float(pos.get("_monitor_pct_change", 0.0), 0.0)
         rebuild_pressure = float(pos.get("rebuild_pressure", 0) or 0)
         readiness_score = float(pos.get("readiness_score", 0) or 0)
-
         v2_signal_strength = _safe_float(pos.get("v2_signal_strength", 0.0), 0.0)
         v2_conviction_adjustment = _safe_float(pos.get("v2_conviction_adjustment", 0.0), 0.0)
         v2_regime_alignment = _safe_str(pos.get("v2_regime_alignment", ""), "").lower()
@@ -565,7 +640,6 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
         if protection["enabled"]:
             pos["capital_protection_mode"] = True
             pos["capital_protection_snapshot"] = protection
-
             if symbol == weakest_symbol:
                 if action == "HOLD":
                     if days >= 0.20:
@@ -611,6 +685,7 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
             "capital_protection_mode": protection["enabled"],
             "weakest_symbol": weakest_symbol,
             "capital_pressure_score": round(_safe_float(pos.get("_capital_pressure_score", 0.0), 0.0), 2),
+            "v2_score": round(_safe_float(pos.get("v2_score", 0.0), 0.0), 2),
             "v2_signal_strength": round(v2_signal_strength, 2),
             "v2_conviction_adjustment": round(v2_conviction_adjustment, 2),
             "v2_regime_alignment": v2_regime_alignment,
@@ -624,6 +699,7 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
             f"{symbol} | Current: {round(current, 2)} | Entry: {round(entry, 2)} | "
             f"Stop: {round(stop, 2)} | Progress: {round(prog, 2)} | "
             f"Readiness: {round(readiness_score, 2)} | Rebuild: {round(rebuild_pressure, 2)} | "
+            f"V2Score: {round(_safe_float(pos.get('v2_score', 0.0), 0.0), 2)} | "
             f"V2Strength: {round(v2_signal_strength, 2)} | "
             f"CapitalPressure: {round(_safe_float(pos.get('_capital_pressure_score', 0.0), 0.0), 2)} | "
             f"Action: {action}"
@@ -632,7 +708,6 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
         if action != "HOLD":
             close_reason = action.lower()
             result = close_position(symbol, current, reason=close_reason)
-
             actions.append(
                 {
                     "symbol": symbol,
@@ -640,7 +715,6 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
                     "result": result,
                 }
             )
-
             if result.get("closed"):
                 print(
                     f"CLOSED: {symbol} | Reason: {action} | "

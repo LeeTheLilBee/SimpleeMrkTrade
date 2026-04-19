@@ -268,50 +268,121 @@ def get_symbol_detail(symbol: str) -> dict:
         "engine_intelligence": {},
         "engine_verdict": {},
         "soulanna": {},
+        "v2_intelligence": {
+            "regime_alignment": "",
+            "signal_strength": 0.0,
+            "conviction_adjustment": 0.0,
+            "vehicle_bias": "",
+            "thesis": "",
+            "notes": [],
+            "risk_flags": [],
+        },
     }
 
     try:
         from engine.engine_selection import build_execution_universe
+    except Exception:
+        build_execution_universe = None
 
+    try:
         signals = load_json("data/signals.json", [])
+    except Exception:
+        signals = []
+
+    try:
         system_state = load_json(
             "data/system_state.json",
             {"regime": "Neutral", "volatility": "Normal"},
         )
-
-        universe = build_execution_universe(signals, system_state)
-        selected = universe.get("selected", []) if isinstance(universe, dict) else []
     except Exception:
-        selected = []
+        system_state = {"regime": "Neutral", "volatility": "Normal"}
+
+    selected = []
+    if build_execution_universe:
+        try:
+            universe = build_execution_universe(signals, system_state)
+            selected = universe.get("selected", []) if isinstance(universe, dict) else []
+        except Exception:
+            selected = []
 
     match = None
     for row in selected:
-        if str(row.get("symbol", "")).upper() == symbol:
+        if str(row.get("symbol", "")).upper().strip() == symbol:
             match = row
             break
 
-    if not match:
+    if not isinstance(match, dict):
         return detail
+
+    v2 = match.get("v2", {}) if isinstance(match.get("v2"), dict) else {}
+
+    v2_regime_alignment = str(
+        match.get("v2_regime_alignment", v2.get("regime_alignment", "")) or ""
+    ).strip()
+    v2_signal_strength = float(
+        match.get("v2_signal_strength", v2.get("signal_strength", 0.0)) or 0.0
+    )
+    v2_conviction_adjustment = float(
+        match.get("v2_conviction_adjustment", v2.get("conviction_adjustment", 0.0)) or 0.0
+    )
+    v2_vehicle_bias = str(
+        match.get("v2_vehicle_bias", v2.get("vehicle_bias", "")) or ""
+    ).strip().upper()
+    v2_thesis = str(
+        match.get("v2_thesis", v2.get("thesis", "")) or ""
+    ).strip()
+    v2_notes = match.get("v2_notes", v2.get("notes", []))
+    v2_risk_flags = match.get("v2_risk_flags", v2.get("risk_flags", []))
+
+    if not isinstance(v2_notes, list):
+        v2_notes = []
+    if not isinstance(v2_risk_flags, list):
+        v2_risk_flags = []
+
+    company_name = match.get("company_name", symbol)
 
     detail["board"] = {
         "symbol": symbol,
-        "company_name": match.get("company_name", symbol),
-        "latest_score": match.get("score", 0),
+        "company_name": company_name,
+        "latest_score": match.get("fused_score", match.get("score", 0)),
         "latest_confidence": match.get("confidence", "LOW"),
         "latest_timestamp": match.get("timestamp", ""),
-        "opinion": match.get("opinion", "Engine-selected candidate."),
+        "opinion": match.get(
+            "opinion",
+            match.get(
+                "decision_reason",
+                "Engine-selected candidate.",
+            ),
+        ),
     }
 
     detail["company"] = {
-        "name": match.get("company_name", symbol),
-        "blurb": match.get("company_blurb", "Engine-generated symbol intelligence."),
+        "name": company_name,
+        "blurb": match.get(
+            "company_blurb",
+            "Engine-generated symbol intelligence.",
+        ),
     }
 
     detail["primary_intelligence"] = {
         "direction": match.get("strategy", "CALL"),
         "setup_type": match.get("setup_type", "continuation"),
-        "score": match.get("score"),
+        "setup_family": match.get("setup_family", ""),
+        "entry_quality": match.get("entry_quality", ""),
+        "score": match.get("fused_score", match.get("score")),
         "confidence": match.get("confidence"),
+        "vehicle_selected": match.get("vehicle_selected", "RESEARCH_ONLY"),
+        "vehicle_reason": match.get("vehicle_reason", ""),
+    }
+
+    detail["v2_intelligence"] = {
+        "regime_alignment": v2_regime_alignment,
+        "signal_strength": v2_signal_strength,
+        "conviction_adjustment": v2_conviction_adjustment,
+        "vehicle_bias": v2_vehicle_bias,
+        "thesis": v2_thesis,
+        "notes": v2_notes,
+        "risk_flags": v2_risk_flags,
     }
 
     detail["engine_intelligence"] = {
@@ -321,7 +392,7 @@ def get_symbol_detail(symbol: str) -> dict:
         "execution_quality": match.get("execution_quality"),
         "eligible": match.get("eligible"),
         "final_verdict": match.get("final_verdict"),
-        "decision_reason": match.get("decision_reason"),
+        "decision_reason": match.get("decision_reason", match.get("final_reason", "")),
         "final_decision": match.get("final_decision", {}),
         "canonical_decision": match.get("canonical_decision", {}),
         "learning_notes": match.get("learning_notes", []),
@@ -329,6 +400,10 @@ def get_symbol_detail(symbol: str) -> dict:
         "rebuild_notes": match.get("rebuild_notes", []),
         "setup_family": match.get("setup_family"),
         "entry_quality": match.get("entry_quality"),
+        "vehicle_selected": match.get("vehicle_selected", "RESEARCH_ONLY"),
+        "vehicle_reason": match.get("vehicle_reason", ""),
+        "capital_required": match.get("capital_required"),
+        "minimum_trade_cost": match.get("minimum_trade_cost"),
         "gates": {
             "readiness": match.get("readiness_gate_passed"),
             "promotion": match.get("promotion_gate_passed"),
@@ -336,24 +411,43 @@ def get_symbol_detail(symbol: str) -> dict:
         },
     }
 
+    verdict_notes = [
+        f"Final Verdict: {match.get('final_verdict')}",
+        f"Decision Reason: {match.get('decision_reason', match.get('final_reason', ''))}",
+        f"Readiness: {match.get('readiness_score')}",
+        f"Promotion: {match.get('promotion_score')}",
+        f"Rebuild Pressure: {match.get('rebuild_pressure')}",
+        f"Eligible: {match.get('eligible')}",
+        f"Vehicle: {match.get('vehicle_selected', 'RESEARCH_ONLY')}",
+    ]
+
+    if v2_regime_alignment:
+        verdict_notes.append(f"V2 Regime Alignment: {v2_regime_alignment}")
+    if v2_signal_strength:
+        verdict_notes.append(f"V2 Signal Strength: {v2_signal_strength}")
+    if v2_conviction_adjustment:
+        verdict_notes.append(f"V2 Conviction Adjustment: {v2_conviction_adjustment}")
+    if v2_vehicle_bias:
+        verdict_notes.append(f"V2 Vehicle Bias: {v2_vehicle_bias}")
+    if v2_thesis:
+        verdict_notes.append(f"V2 Thesis: {v2_thesis}")
+    if v2_risk_flags:
+        verdict_notes.append(f"V2 Risk Flags: {', '.join(str(x) for x in v2_risk_flags)}")
+
     detail["engine_verdict"] = {
         "headline": "Engine-evaluated opportunity.",
-        "summary": "This symbol is being actively scored across readiness, promotion, rebuild pressure, and final decision logic.",
-        "notes": [
-            f"Final Verdict: {match.get('final_verdict')}",
-            f"Decision Reason: {match.get('decision_reason')}",
-            f"Readiness: {match.get('readiness_score')}",
-            f"Promotion: {match.get('promotion_score')}",
-            f"Rebuild Pressure: {match.get('rebuild_pressure')}",
-            f"Eligible: {match.get('eligible')}",
-        ],
+        "summary": (
+            "This symbol is being actively scored across readiness, promotion, "
+            "rebuild pressure, V2 context, and final decision logic."
+        ),
+        "notes": verdict_notes,
     }
 
     try:
         detail["soulanna"] = soulanna_explain_signal(
             {
                 "symbol": symbol,
-                "score": match.get("score", 0),
+                "score": match.get("fused_score", match.get("score", 0)),
                 "confidence": match.get("confidence", "LOW"),
                 "setup_family": match.get("setup_family"),
                 "entry_quality": match.get("entry_quality"),
@@ -362,9 +456,20 @@ def get_symbol_detail(symbol: str) -> dict:
                 "rebuild_pressure": match.get("rebuild_pressure"),
                 "eligible": match.get("eligible"),
                 "final_verdict": match.get("final_verdict"),
-                "decision_reason": match.get("decision_reason"),
+                "decision_reason": match.get("decision_reason", match.get("final_reason", "")),
                 "canonical_decision": match.get("canonical_decision", {}),
                 "learning_notes": match.get("learning_notes", []),
+                "vehicle_selected": match.get("vehicle_selected", "RESEARCH_ONLY"),
+                "vehicle_reason": match.get("vehicle_reason", ""),
+                "v2": {
+                    "regime_alignment": v2_regime_alignment,
+                    "signal_strength": v2_signal_strength,
+                    "conviction_adjustment": v2_conviction_adjustment,
+                    "vehicle_bias": v2_vehicle_bias,
+                    "thesis": v2_thesis,
+                    "notes": v2_notes,
+                    "risk_flags": v2_risk_flags,
+                },
             }
         ) or {}
     except Exception:
@@ -7292,54 +7397,9 @@ def admin_product_monitoring_page():
     )
 
 
-@app.route("/my-positions")
-def my_positions_page():
-    maybe_track_page_view("/my-positions")
-
-    positions = get_user_positions(include_closed=False)
-    page_summary = build_my_positions_page_summary(positions)
-    filter_key = str(request.args.get("filter", "all") or "all").strip().lower()
-
-    filtered_positions = positions
-    filter_title = "All Open Positions"
-    filter_note = "Showing your full live position layer."
-
-    if filter_key == "weak":
-        filtered_positions = [
-            p for p in positions
-            if _agreement_score(p) < 55 or _health_score(p) < 35
-        ]
-        filter_title = "Weak Positions"
-        filter_note = "Showing open positions that look weak by health or agreement."
-    elif filter_key == "strong":
-        filtered_positions = [
-            p for p in positions
-            if _agreement_score(p) >= 75 and _health_score(p) >= 75
-        ]
-        filter_title = "Strong Positions"
-        filter_note = "Showing open positions with stronger health and alignment."
-    elif filter_key == "high_agreement":
-        filtered_positions = [p for p in positions if _agreement_score(p) >= 75]
-        filter_title = "High Agreement Positions"
-        filter_note = "Showing positions with stronger system agreement."
-    elif filter_key == "under_pressure":
-        filtered_positions = [
-            p for p in positions
-            if _norm_upper((p.get("health", {}) or {}).get("label", "")) in {"UNDER PRESSURE", "BROKEN"}
-        ]
-        filter_title = "Under Pressure Positions"
-        filter_note = "Showing positions whose behavior is signaling pressure or damage."
-
-    return render_template_safe(
-        "my_positions.html",
-        **template_context({
-            "positions": filtered_positions,
-            "page_summary": page_summary,
-            "filter_key": filter_key,
-            "filter_title": filter_title,
-            "filter_note": filter_note,
-        }),
-    )
+@app.route("/my-portfolio")
+def my_portfolio_page():
+    return redirect(url_for("my_positions_page"))
 
 
 @app.route("/my-positions/<position_id>")
@@ -7508,20 +7568,7 @@ def analyze_my_trades_page():
 
 @app.route("/simulation")
 def simulation_dashboard():
-    maybe_track_page_view("/simulation")
-    positions = get_positions_with_intelligence()
-    portfolio = evaluate_portfolio(positions)
-    alerts = generate_alerts(positions)
-    brain = build_system_brain(positions, portfolio, alerts)
-    return render_template_safe(
-        "simulation.html",
-        **template_context({
-            "positions": positions,
-            "portfolio": portfolio,
-            "alerts": alerts,
-            "brain": brain,
-        }),
-    )
+    return redirect(url_for("dashboard_page"))
 
 
 @app.route("/api/live-state")
