@@ -180,88 +180,80 @@ def build_queued_trade_payload(
     lifecycle_obj: Dict[str, Any],
     mode: str = "paper",
 ) -> Dict[str, Any]:
-    lifecycle_obj = lifecycle_obj if isinstance(lifecycle_obj, dict) else {}
     intent = build_execution_intent(lifecycle_obj, mode=mode)
+    source = dict(intent.source_lifecycle or {})
 
     return {
         "symbol": intent.symbol,
         "strategy": intent.strategy,
         "direction": intent.direction,
         "selected_vehicle": intent.selected_vehicle,
-        "vehicle_selected": intent.selected_vehicle,
         "vehicle": intent.selected_vehicle,
-
         "final_decision": intent.final_decision,
         "final_reason": intent.final_reason,
         "final_reason_code": intent.final_reason_code,
-
         "quantity": intent.quantity,
         "estimated_cost": round(intent.estimated_cost, 2),
-        "capital_required": round(_safe_float(lifecycle_obj.get("capital_required", intent.estimated_cost)), 2),
-        "minimum_trade_cost": round(_safe_float(lifecycle_obj.get("minimum_trade_cost", intent.estimated_cost)), 2),
         "stock_price": round(intent.stock_price, 4),
-
         "contract": intent.contract,
-        "option": dict(lifecycle_obj.get("option") or intent.contract or {}),
-        "stock_path": dict(lifecycle_obj.get("stock_path") or {}),
-        "option_path": dict(lifecycle_obj.get("option_path") or {}),
-
         "execution_mode": intent.execution_mode,
-        "mode": lifecycle_obj.get("mode", intent.execution_mode),
-        "mode_context": dict(lifecycle_obj.get("mode_context") or {}),
-
         "confidence": intent.confidence,
-        "base_confidence": lifecycle_obj.get("base_confidence"),
-        "v2_confidence": lifecycle_obj.get("v2_confidence"),
-
         "score": round(intent.score, 4),
-        "base_score": _safe_float(lifecycle_obj.get("base_score"), 0.0),
-        "fused_score": _safe_float(lifecycle_obj.get("fused_score"), 0.0),
-        "v2_score": _safe_float(lifecycle_obj.get("v2_score"), 0.0),
-        "v2_quality": _safe_float(lifecycle_obj.get("v2_quality"), 0.0),
-        "v2_reason": lifecycle_obj.get("v2_reason", ""),
-        "v2_vehicle_bias": lifecycle_obj.get("v2_vehicle_bias", ""),
-        "v2_payload": dict(lifecycle_obj.get("v2_payload") or {}),
-
-        "readiness_score": _safe_float(lifecycle_obj.get("readiness_score"), 0.0),
-        "promotion_score": _safe_float(lifecycle_obj.get("promotion_score"), 0.0),
-        "rebuild_pressure": _safe_float(lifecycle_obj.get("rebuild_pressure"), 0.0),
-        "execution_quality": _safe_float(lifecycle_obj.get("execution_quality"), 0.0),
-
-        "setup_type": lifecycle_obj.get("setup_type", ""),
-        "setup_family": lifecycle_obj.get("setup_family", ""),
-        "entry_quality": lifecycle_obj.get("entry_quality", ""),
-        "trend": lifecycle_obj.get("trend", ""),
-        "regime": lifecycle_obj.get("regime", ""),
-        "breadth": lifecycle_obj.get("breadth", ""),
-        "volatility_state": lifecycle_obj.get("volatility_state", ""),
-
-        "decision_reason": lifecycle_obj.get("decision_reason", ""),
-        "vehicle_reason": lifecycle_obj.get("vehicle_reason", ""),
-        "blocked_at": lifecycle_obj.get("blocked_at", ""),
-
-        "research_approved": bool(lifecycle_obj.get("research_approved", False)),
-        "execution_ready": bool(lifecycle_obj.get("execution_ready", False)),
-        "selected_for_execution": bool(lifecycle_obj.get("selected_for_execution", False)),
-
         "reserve_check": dict(intent.reserve_check or {}),
-        "governor": dict(lifecycle_obj.get("governor") or {}),
-
         "warnings": list(intent.warnings or []),
         "rejection_reasons": list(intent.rejection_reasons or []),
-        "why": list(lifecycle_obj.get("why") or []),
-        "supports": list(lifecycle_obj.get("supports") or []),
-        "blockers": list(lifecycle_obj.get("blockers") or []),
-        "rejection_analysis": list(lifecycle_obj.get("rejection_analysis") or []),
-        "option_explanation": list(lifecycle_obj.get("option_explanation") or []),
-        "learning_notes": list(lifecycle_obj.get("learning_notes") or []),
-        "stronger_competing_setups": list(lifecycle_obj.get("stronger_competing_setups") or []),
-
-        "trade_id": lifecycle_obj.get("raw", {}).get("trade_id", lifecycle_obj.get("trade_id", "")),
-        "timestamp": lifecycle_obj.get("raw", {}).get("timestamp", lifecycle_obj.get("created_at")),
+        "lifecycle": source,
         "queued_at": _now_iso(),
 
-        "lifecycle": dict(intent.source_lifecycle or {}),
+        "research_approved": source.get("research_approved"),
+        "execution_ready": source.get("execution_ready"),
+        "selected_for_execution": source.get("selected_for_execution"),
+
+        "base_score": source.get("base_score"),
+        "fused_score": source.get("fused_score"),
+        "v2_score": source.get("v2_score"),
+        "v2_quality": source.get("v2_quality"),
+        "v2_reason": source.get("v2_reason"),
+        "v2_vehicle_bias": source.get("v2_vehicle_bias"),
+        "v2_payload": source.get("v2_payload", {}),
+
+        "readiness_score": source.get("readiness_score"),
+        "promotion_score": source.get("promotion_score"),
+        "rebuild_pressure": source.get("rebuild_pressure"),
+        "execution_quality": source.get("execution_quality"),
+
+        "minimum_trade_cost": source.get("minimum_trade_cost"),
+        "capital_required": source.get("capital_required"),
+        "capital_available": source.get("capital_available"),
+
+        "vehicle_reason": source.get("vehicle_reason"),
+        "decision_reason": source.get("decision_reason"),
+        "blocked_at": source.get("blocked_at"),
+
+        "why": source.get("why", []),
+        "supports": source.get("supports", []),
+        "blockers": source.get("blockers", []),
+        "rejection_analysis": source.get("rejection_analysis", []),
+        "option_explanation": source.get("option_explanation", []),
+        "learning_notes": source.get("learning_notes", []),
+
+        "setup_type": source.get("setup_type"),
+        "setup_family": source.get("setup_family"),
+        "entry_quality": source.get("entry_quality"),
+        "trend": source.get("trend"),
+        "regime": source.get("regime"),
+        "breadth": source.get("breadth"),
+        "volatility_state": source.get("volatility_state"),
+        "mode": source.get("mode"),
+
+        "option": source.get("option", {}),
+        "stock_path": source.get("stock_path", {}),
+        "option_path": source.get("option_path", {}),
+        "governor": source.get("governor", {}),
+        "mode_context": source.get("mode_context", {}),
+        "top_ranked_contracts": source.get("top_ranked_contracts", []),
+        "trade_id": source.get("trade_id"),
+        "timestamp": source.get("timestamp"),
     }
 
 

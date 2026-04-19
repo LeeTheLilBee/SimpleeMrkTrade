@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, asdict, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
-import math
+from typing import Any, Dict, List, Optional
+
+from engine.vehicle_selector import choose_vehicle
 
 LIFECYCLE_NEW = "NEW"
 LIFECYCLE_RESEARCH_APPROVED = "RESEARCH_APPROVED"
@@ -19,6 +20,7 @@ LIFECYCLE_CLOSED = "CLOSED"
 VEHICLE_OPTION = "OPTION"
 VEHICLE_STOCK = "STOCK"
 VEHICLE_NONE = "NONE"
+VEHICLE_RESEARCH_ONLY = "RESEARCH_ONLY"
 
 DIRECTION_CALL = "CALL"
 DIRECTION_PUT = "PUT"
@@ -29,18 +31,6 @@ DECISION_REJECT = "REJECT"
 DECISION_WATCH = "WATCH"
 DECISION_WARN = "WARN"
 
-DEFAULT_MAX_SPREAD_PCT = 0.18
-DEFAULT_MIN_OI = 100
-DEFAULT_MIN_VOLUME = 10
-DEFAULT_MIN_DTE = 7
-DEFAULT_MAX_DTE = 45
-DEFAULT_MIN_DELTA = 0.20
-DEFAULT_MAX_DELTA = 0.65
-DEFAULT_PAPER_RESERVE_FLOOR = 0.10
-DEFAULT_LIVE_RESERVE_FLOOR = 0.20
-DEFAULT_MIN_TOTAL_SCORE = 0.40
-DEFAULT_TOP_CONTRACTS_TO_KEEP = 5
-
 
 def _now_iso() -> str:
     return datetime.now().isoformat()
@@ -49,26 +39,26 @@ def _now_iso() -> str:
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
         if value is None or value == "":
-            return default
+            return float(default)
         return float(value)
     except Exception:
-        return default
+        return float(default)
 
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
         if value is None or value == "":
-            return default
+            return int(default)
         return int(float(value))
     except Exception:
-        return default
+        return int(default)
 
 
 def _safe_bool(value: Any, default: bool = False) -> bool:
     try:
         return bool(value)
     except Exception:
-        return default
+        return bool(default)
 
 
 def _safe_list(value: Any) -> List[Any]:
@@ -79,13 +69,9 @@ def _safe_dict(value: Any) -> Dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
-def _clamp(value: float, low: float, high: float) -> float:
-    return max(low, min(high, value))
-
-
 def _normalize_text(value: Any, default: str = "") -> str:
     try:
-        text = str(value or default).strip()
+        text = str(value or "").strip()
         return text if text else default
     except Exception:
         return default
@@ -95,131 +81,43 @@ def _normalize_upper(value: Any, default: str = "") -> str:
     return _normalize_text(value, default).upper()
 
 
-def _days_to_expiry(expiration: str) -> Optional[int]:
-    try:
-        exp_dt = datetime.fromisoformat(expiration[:10])
-        return (exp_dt.date() - datetime.now().date()).days
-    except Exception:
-        return None
-
-
-def _mid_price(bid: float, ask: float, last: float) -> float:
-    if bid > 0 and ask > 0 and ask >= bid:
-        return (bid + ask) / 2.0
-    if last > 0:
-        return last
-    if ask > 0:
-        return ask
-    return bid
-
-
-def _spread_pct(bid: float, ask: float, ref_price: float) -> float:
-    if ref_price <= 0:
-        return 1.0
-    if bid <= 0 and ask <= 0:
-        return 1.0
-    if ask < bid:
-        return 1.0
-    return (ask - bid) / ref_price
-
-
-def _score_range(value: float, low: float, high: float, ideal: Optional[float] = None) -> float:
-    if value < low or value > high:
-        return 0.0
-    if ideal is None:
-        return 1.0
-    width = max((high - low) / 2.0, 1e-9)
-    return max(0.0, 1.0 - abs(value - ideal) / width)
-
-
 def _dedupe_keep_order(items: List[str]) -> List[str]:
     seen = set()
     out: List[str] = []
     for item in items:
-        if item not in seen:
+        item = _normalize_text(item)
+        if item and item not in seen:
             seen.add(item)
             out.append(item)
     return out
 
 
-def _candidate_best_price(candidate: Dict[str, Any]) -> float:
-    candidate = _safe_dict(candidate)
-    for key in [
-        "current_price",
-        "price",
-        "entry",
-        "fill_price",
-        "requested_price",
-        "underlying_price",
-        "market_price",
-        "latest_price",
-    ]:
-        val = _safe_float(candidate.get(key), 0.0)
-        if val > 0:
-            return val
-    return 0.0
-
-
 def _default_direction_from_strategy(strategy: str) -> str:
-    s = _normalize_upper(strategy, DIRECTION_UNKNOWN)
-    if s in {DIRECTION_CALL, DIRECTION_PUT}:
-        return s
+    strategy = _normalize_upper(strategy, DIRECTION_UNKNOWN)
+    if strategy in {"CALL", "LONG_CALL"}:
+        return DIRECTION_CALL
+    if strategy in {"PUT", "LONG_PUT"}:
+        return DIRECTION_PUT
     return DIRECTION_UNKNOWN
 
 
-@dataclass
-class OptionContract:
-    symbol: str = ""
-    underlying: str = ""
-    option_symbol: str = ""
-    option_type: str = DIRECTION_UNKNOWN
-    strike: float = 0.0
-    expiration: str = ""
-    dte: int = 0
-    bid: float = 0.0
-    ask: float = 0.0
-    last: float = 0.0
-    mark: float = 0.0
-    delta: float = 0.0
-    gamma: float = 0.0
-    theta: float = 0.0
-    vega: float = 0.0
-    iv: float = 0.0
-    volume: int = 0
-    open_interest: int = 0
-    spread_pct: float = 1.0
-    liquidity_score: float = 0.0
-    greek_score: float = 0.0
-    structure_score: float = 0.0
-    affordability_score: float = 0.0
-    total_score: float = 0.0
-    rejection_reasons: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    raw: Dict[str, Any] = field(default_factory=dict)
-
-
-@dataclass
-class VehicleDecision:
-    symbol: str = ""
-    selected_vehicle: str = VEHICLE_NONE
-    fallback_vehicle: str = VEHICLE_NONE
-    approved: bool = False
-    action: str = DECISION_REJECT
-    reason: str = ""
-    reason_code: str = ""
-    contract: Optional[Dict[str, Any]] = None
-    contract_score: float = 0.0
-    estimated_cost: float = 0.0
-    minimum_trade_cost: float = 0.0
-    capital_required: float = 0.0
-    contracts: int = 0
-    shares: int = 0
-    reserve_check: Dict[str, Any] = field(default_factory=dict)
-    stock_path: Dict[str, Any] = field(default_factory=dict)
-    option_path: Dict[str, Any] = field(default_factory=dict)
-    top_ranked_contracts: List[Dict[str, Any]] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    rejection_reasons: List[str] = field(default_factory=list)
+def _candidate_best_price(candidate: Dict[str, Any]) -> float:
+    candidate = _safe_dict(candidate)
+    candidates = [
+        candidate.get("current_price"),
+        candidate.get("price"),
+        candidate.get("entry"),
+        candidate.get("fill_price"),
+        candidate.get("requested_price"),
+        candidate.get("underlying_price"),
+        candidate.get("market_price"),
+        candidate.get("latest_price"),
+    ]
+    for value in candidates:
+        price = _safe_float(value, 0.0)
+        if price > 0:
+            return price
+    return 0.0
 
 
 @dataclass
@@ -257,6 +155,7 @@ class LifecycleState:
     fused_score: float = 0.0
     v2_score: float = 0.0
     v2_quality: float = 0.0
+
     v2_reason: str = ""
     v2_vehicle_bias: str = ""
     v2_payload: Dict[str, Any] = field(default_factory=dict)
@@ -304,8 +203,8 @@ class LifecycleState:
     reserve_check: Dict[str, Any] = field(default_factory=dict)
     governor: Dict[str, Any] = field(default_factory=dict)
     mode_context: Dict[str, Any] = field(default_factory=dict)
-    top_ranked_contracts: List[Dict[str, Any]] = field(default_factory=list)
 
+    top_ranked_contracts: List[Dict[str, Any]] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
     rejection_reasons: List[str] = field(default_factory=list)
 
@@ -313,422 +212,8 @@ class LifecycleState:
     exited_at: Optional[str] = None
     created_at: str = field(default_factory=_now_iso)
     updated_at: str = field(default_factory=_now_iso)
+
     raw: Dict[str, Any] = field(default_factory=dict)
-
-
-def normalize_option_contract(
-    contract: Dict[str, Any],
-    underlying_symbol: str,
-) -> OptionContract:
-    bid = _safe_float(contract.get("bid"))
-    ask = _safe_float(contract.get("ask"))
-    last = _safe_float(contract.get("last"))
-    mark = _safe_float(contract.get("mark")) or _mid_price(bid, ask, last)
-    expiration = _normalize_text(contract.get("expiration"))
-    dte = _safe_int(contract.get("dte"))
-    if dte <= 0 and expiration:
-        parsed_dte = _days_to_expiry(expiration)
-        if parsed_dte is not None:
-            dte = parsed_dte
-
-    oc = OptionContract(
-        symbol=_normalize_upper(underlying_symbol),
-        underlying=_normalize_upper(underlying_symbol),
-        option_symbol=_normalize_text(contract.get("option_symbol") or contract.get("contractSymbol")),
-        option_type=_normalize_upper(contract.get("option_type") or contract.get("type"), DIRECTION_UNKNOWN),
-        strike=_safe_float(contract.get("strike")),
-        expiration=expiration,
-        dte=dte,
-        bid=bid,
-        ask=ask,
-        last=last,
-        mark=mark,
-        delta=_safe_float(contract.get("delta")),
-        gamma=_safe_float(contract.get("gamma")),
-        theta=_safe_float(contract.get("theta")),
-        vega=_safe_float(contract.get("vega")),
-        iv=_safe_float(contract.get("iv")),
-        volume=_safe_int(contract.get("volume")),
-        open_interest=_safe_int(contract.get("open_interest") or contract.get("openInterest")),
-        raw=dict(contract),
-    )
-    oc.spread_pct = _spread_pct(oc.bid, oc.ask, oc.mark)
-    return oc
-
-
-def score_option_contract(
-    contract: OptionContract,
-    target_direction: str,
-    underlying_price: float,
-    max_spread_pct: float = DEFAULT_MAX_SPREAD_PCT,
-    min_oi: int = DEFAULT_MIN_OI,
-    min_volume: int = DEFAULT_MIN_VOLUME,
-    min_dte: int = DEFAULT_MIN_DTE,
-    max_dte: int = DEFAULT_MAX_DTE,
-    min_delta: float = DEFAULT_MIN_DELTA,
-    max_delta: float = DEFAULT_MAX_DELTA,
-) -> OptionContract:
-    reasons: List[str] = []
-    warnings: List[str] = []
-
-    if contract.option_type not in {DIRECTION_CALL, DIRECTION_PUT}:
-        reasons.append("invalid_option_type")
-    if target_direction in {DIRECTION_CALL, DIRECTION_PUT} and contract.option_type != target_direction:
-        reasons.append("direction_mismatch")
-    if contract.mark <= 0:
-        reasons.append("invalid_price")
-    if contract.spread_pct > max_spread_pct:
-        reasons.append("spread_too_wide")
-    if contract.open_interest < min_oi:
-        warnings.append("low_open_interest")
-    if contract.volume < min_volume:
-        warnings.append("low_volume")
-    if contract.dte < min_dte:
-        reasons.append("dte_too_short")
-    if contract.dte > max_dte:
-        warnings.append("dte_longer_than_preferred")
-
-    abs_delta = abs(contract.delta)
-    if abs_delta <= 0:
-        warnings.append("missing_delta")
-    elif abs_delta < min_delta:
-        reasons.append("delta_too_low")
-    elif abs_delta > max_delta:
-        warnings.append("delta_aggressive")
-
-    spread_score = 1.0 - _clamp(contract.spread_pct / max_spread_pct, 0.0, 1.0)
-    oi_score = _clamp(contract.open_interest / max(min_oi * 4, 1), 0.0, 1.0)
-    volume_score = _clamp(contract.volume / max(min_volume * 5, 1), 0.0, 1.0)
-    liquidity_score = (spread_score * 0.5) + (oi_score * 0.3) + (volume_score * 0.2)
-
-    delta_score = _score_range(abs_delta, min_delta, max(0.80, max_delta), ideal=0.35)
-    dte_score = _score_range(float(contract.dte), float(min_dte), float(max_dte), ideal=21.0)
-
-    moneyness = 0.0
-    if underlying_price > 0 and contract.strike > 0:
-        moneyness = abs(contract.strike - underlying_price) / underlying_price
-    structure_score = max(0.0, 1.0 - min(moneyness / 0.10, 1.0))
-
-    greek_score = (delta_score * 0.65) + (dte_score * 0.35)
-
-    premium_cost = contract.mark * 100.0
-    if premium_cost <= 0:
-        affordability_score = 0.0
-    else:
-        affordability_score = 1.0 / (1.0 + math.log1p(max(premium_cost - 1.0, 0.0)))
-
-    total_score = (
-        liquidity_score * 0.40
-        + greek_score * 0.30
-        + structure_score * 0.20
-        + affordability_score * 0.10
-    )
-
-    contract.liquidity_score = round(liquidity_score, 4)
-    contract.greek_score = round(greek_score, 4)
-    contract.structure_score = round(structure_score, 4)
-    contract.affordability_score = round(affordability_score, 4)
-    contract.total_score = round(total_score, 4)
-    contract.rejection_reasons = _dedupe_keep_order(reasons)
-    contract.warnings = _dedupe_keep_order(warnings)
-    return contract
-
-
-def rank_option_contracts(
-    option_chain: List[Dict[str, Any]],
-    underlying_symbol: str,
-    target_direction: str,
-    underlying_price: float,
-    **score_kwargs: Any,
-) -> List[OptionContract]:
-    ranked: List[OptionContract] = []
-    for raw_contract in option_chain or []:
-        normalized = normalize_option_contract(raw_contract, underlying_symbol)
-        scored = score_option_contract(
-            normalized,
-            target_direction=target_direction,
-            underlying_price=underlying_price,
-            **score_kwargs,
-        )
-        ranked.append(scored)
-
-    ranked.sort(
-        key=lambda c: (
-            len(c.rejection_reasons) == 0,
-            c.total_score,
-            c.open_interest,
-            c.volume,
-        ),
-        reverse=True,
-    )
-    return ranked
-
-
-def choose_best_option_contract(
-    option_chain: List[Dict[str, Any]],
-    underlying_symbol: str,
-    target_direction: str,
-    underlying_price: float,
-    min_total_score: float = DEFAULT_MIN_TOTAL_SCORE,
-    **score_kwargs: Any,
-) -> Tuple[Optional[OptionContract], List[OptionContract]]:
-    ranked = rank_option_contracts(
-        option_chain=option_chain,
-        underlying_symbol=underlying_symbol,
-        target_direction=target_direction,
-        underlying_price=underlying_price,
-        **score_kwargs,
-    )
-    for contract in ranked:
-        if contract.rejection_reasons:
-            continue
-        if contract.total_score < min_total_score:
-            continue
-        return contract, ranked
-    return None, ranked
-
-
-def estimate_option_trade_cost(mark_price: float, contracts: int = 1) -> float:
-    return round(max(mark_price, 0.0) * 100.0 * max(contracts, 0), 2)
-
-
-def estimate_stock_trade_cost(stock_price: float, shares: int) -> float:
-    return round(max(stock_price, 0.0) * max(shares, 0), 2)
-
-
-def determine_option_contract_count(
-    option_mark: float,
-    allocation_dollars: float,
-    minimum_contracts: int = 1,
-    allow_slight_underfill: bool = True,
-) -> int:
-    per_contract_cost = max(option_mark, 0.0) * 100.0
-    if per_contract_cost <= 0 or allocation_dollars <= 0:
-        return 0
-    contracts = int(allocation_dollars // per_contract_cost)
-    if contracts <= 0 and allow_slight_underfill and allocation_dollars >= per_contract_cost * 0.85:
-        contracts = minimum_contracts
-    return max(contracts, 0)
-
-
-def determine_stock_share_count(
-    stock_price: float,
-    allocation_dollars: float,
-) -> int:
-    if stock_price <= 0 or allocation_dollars <= 0:
-        return 0
-    return max(int(allocation_dollars // stock_price), 0)
-
-
-def evaluate_reserve_pressure(
-    cash_available: float,
-    estimated_trade_cost: float,
-    mode: str = "paper",
-    paper_reserve_floor: float = DEFAULT_PAPER_RESERVE_FLOOR,
-    live_reserve_floor: float = DEFAULT_LIVE_RESERVE_FLOOR,
-) -> Dict[str, Any]:
-    cash_available = max(cash_available, 0.0)
-    estimated_trade_cost = max(estimated_trade_cost, 0.0)
-    remaining_cash = cash_available - estimated_trade_cost
-    reserve_floor_pct = live_reserve_floor if str(mode).lower() == "live" else paper_reserve_floor
-    reserve_floor_dollars = cash_available * reserve_floor_pct
-    is_pressure = remaining_cash < reserve_floor_dollars
-    hard_block = str(mode).lower() == "live" and is_pressure
-    warning_only = str(mode).lower() != "live" and is_pressure
-
-    return {
-        "mode": str(mode).lower(),
-        "cash_available": round(cash_available, 2),
-        "estimated_trade_cost": round(estimated_trade_cost, 2),
-        "remaining_cash": round(remaining_cash, 2),
-        "reserve_floor_pct": round(reserve_floor_pct, 4),
-        "reserve_floor_dollars": round(reserve_floor_dollars, 2),
-        "is_pressure": bool(is_pressure),
-        "hard_block": bool(hard_block),
-        "warning_only": bool(warning_only),
-    }
-
-
-def _serialize_top_contracts(
-    ranked: List[OptionContract],
-    keep: int = DEFAULT_TOP_CONTRACTS_TO_KEEP,
-) -> List[Dict[str, Any]]:
-    return [asdict(contract) for contract in (ranked or [])[:keep]]
-
-
-def choose_vehicle(
-    symbol: str,
-    direction: str,
-    underlying_price: float,
-    option_chain: List[Dict[str, Any]],
-    allocation_dollars: float,
-    cash_available: float,
-    mode: str = "paper",
-    allow_stock_fallback: bool = True,
-) -> VehicleDecision:
-    decision = VehicleDecision(symbol=_normalize_upper(symbol))
-
-    best_contract, ranked = choose_best_option_contract(
-        option_chain=option_chain,
-        underlying_symbol=symbol,
-        target_direction=direction,
-        underlying_price=underlying_price,
-    )
-    decision.top_ranked_contracts = _serialize_top_contracts(ranked)
-
-    stock_shares = determine_stock_share_count(underlying_price, allocation_dollars)
-    stock_est_cost = estimate_stock_trade_cost(underlying_price, stock_shares) if stock_shares > 0 else 0.0
-    decision.stock_path = {
-        "vehicle": VEHICLE_STOCK,
-        "shares": stock_shares,
-        "contracts": 0,
-        "capital_required": round(stock_est_cost, 2),
-        "minimum_trade_cost": round(stock_est_cost, 2),
-        "affordable": stock_shares > 0,
-    }
-
-    if best_contract:
-        contracts = determine_option_contract_count(best_contract.mark, allocation_dollars)
-        est_cost = estimate_option_trade_cost(best_contract.mark, contracts)
-        decision.option_path = {
-            "vehicle": VEHICLE_OPTION,
-            "shares": 0,
-            "contracts": contracts,
-            "capital_required": round(est_cost, 2),
-            "minimum_trade_cost": round(est_cost, 2),
-            "affordable": contracts > 0,
-            "score": round(best_contract.total_score, 4),
-            "dte": best_contract.dte,
-            "spread_pct": round(best_contract.spread_pct, 4),
-        }
-
-        decision.selected_vehicle = VEHICLE_OPTION
-        decision.fallback_vehicle = VEHICLE_STOCK if allow_stock_fallback else VEHICLE_NONE
-        decision.contract = asdict(best_contract)
-        decision.contract_score = best_contract.total_score
-        decision.contracts = contracts
-        decision.estimated_cost = est_cost
-        decision.minimum_trade_cost = round(est_cost, 2)
-        decision.capital_required = round(est_cost, 2)
-
-        if contracts <= 0:
-            decision.warnings.append("allocation_too_small_for_option_contract")
-            decision.rejection_reasons.append("option_affordability_failed")
-        else:
-            reserve_check = evaluate_reserve_pressure(
-                cash_available=cash_available,
-                estimated_trade_cost=est_cost,
-                mode=mode,
-            )
-            decision.reserve_check = reserve_check
-            if reserve_check["hard_block"]:
-                decision.approved = False
-                decision.action = DECISION_REJECT
-                decision.reason = "Option contract passed research but failed live reserve protection."
-                decision.reason_code = "live_reserve_block"
-                decision.rejection_reasons.append("live_reserve_block")
-                decision.rejection_reasons = _dedupe_keep_order(decision.rejection_reasons)
-                decision.warnings = _dedupe_keep_order(decision.warnings)
-                return decision
-
-            decision.approved = True
-            decision.action = DECISION_WARN if reserve_check["warning_only"] else DECISION_APPROVE
-            decision.reason = (
-                "Option selected with reserve-pressure warning in paper mode."
-                if reserve_check["warning_only"]
-                else "Option selected as primary vehicle."
-            )
-            decision.reason_code = (
-                "paper_reserve_warning"
-                if reserve_check["warning_only"]
-                else "option_selected"
-            )
-            if reserve_check["warning_only"]:
-                decision.warnings.append("paper_reserve_warning")
-            decision.rejection_reasons = _dedupe_keep_order(decision.rejection_reasons)
-            decision.warnings = _dedupe_keep_order(decision.warnings)
-            return decision
-    else:
-        decision.option_path = {
-            "vehicle": VEHICLE_OPTION,
-            "shares": 0,
-            "contracts": 0,
-            "capital_required": 0.0,
-            "minimum_trade_cost": 0.0,
-            "affordable": False,
-            "score": 0.0,
-            "dte": 0,
-            "spread_pct": 1.0,
-        }
-
-    if ranked:
-        top_fail = ranked[0]
-        decision.rejection_reasons.extend(top_fail.rejection_reasons or [])
-        decision.warnings.extend(top_fail.warnings or [])
-
-    decision.rejection_reasons = _dedupe_keep_order(decision.rejection_reasons)
-    decision.warnings = _dedupe_keep_order(decision.warnings)
-
-    if allow_stock_fallback and underlying_price > 0:
-        shares = determine_stock_share_count(underlying_price, allocation_dollars)
-        if shares > 0:
-            est_cost = estimate_stock_trade_cost(underlying_price, shares)
-            reserve_check = evaluate_reserve_pressure(
-                cash_available=cash_available,
-                estimated_trade_cost=est_cost,
-                mode=mode,
-            )
-
-            decision.selected_vehicle = VEHICLE_STOCK
-            decision.fallback_vehicle = VEHICLE_NONE
-            decision.shares = shares
-            decision.contracts = 0
-            decision.estimated_cost = est_cost
-            decision.minimum_trade_cost = round(est_cost, 2)
-            decision.capital_required = round(est_cost, 2)
-            decision.reserve_check = reserve_check
-
-            if reserve_check["hard_block"]:
-                decision.approved = False
-                decision.action = DECISION_REJECT
-                decision.reason = "Options were unsuitable and stock fallback failed live reserve protection."
-                decision.reason_code = "stock_fallback_live_reserve_block"
-                decision.rejection_reasons.append("stock_fallback_live_reserve_block")
-                decision.rejection_reasons = _dedupe_keep_order(decision.rejection_reasons)
-                decision.warnings = _dedupe_keep_order(decision.warnings)
-                return decision
-
-            decision.approved = True
-            decision.action = DECISION_WARN if reserve_check["warning_only"] else DECISION_APPROVE
-            decision.reason = (
-                "Options were unsuitable; stock fallback selected with reserve warning in paper mode."
-                if reserve_check["warning_only"]
-                else "Options were unsuitable; stock fallback selected."
-            )
-            decision.reason_code = (
-                "stock_fallback_paper_warning"
-                if reserve_check["warning_only"]
-                else "stock_fallback_selected"
-            )
-            if reserve_check["warning_only"]:
-                decision.warnings.append("paper_reserve_warning")
-            decision.rejection_reasons = _dedupe_keep_order(decision.rejection_reasons)
-            decision.warnings = _dedupe_keep_order(decision.warnings)
-            return decision
-
-        decision.rejection_reasons.append("stock_fallback_affordability_failed")
-
-    decision.selected_vehicle = VEHICLE_NONE
-    decision.fallback_vehicle = VEHICLE_NONE
-    decision.approved = False
-    decision.action = DECISION_REJECT
-    decision.reason = "No executable vehicle passed the lifecycle rules."
-    decision.reason_code = "no_vehicle_selected"
-    decision.rejection_reasons = _dedupe_keep_order(
-        decision.rejection_reasons or ["no_option_and_no_stock_fallback"]
-    )
-    decision.warnings = _dedupe_keep_order(decision.warnings)
-    return decision
 
 
 def build_options_lifecycle(
@@ -740,10 +225,14 @@ def build_options_lifecycle(
 ) -> Dict[str, Any]:
     candidate = _safe_dict(candidate)
     account_context = _safe_dict(account_context)
+    option_chain = _safe_list(option_chain)
 
     symbol = _normalize_upper(candidate.get("symbol"))
     strategy = _normalize_upper(candidate.get("strategy"), "UNKNOWN")
-    direction = _normalize_upper(candidate.get("direction"), _default_direction_from_strategy(strategy))
+    direction = _normalize_upper(
+        candidate.get("direction"),
+        _default_direction_from_strategy(strategy),
+    )
 
     confidence = _normalize_upper(candidate.get("confidence"), "UNKNOWN")
     base_confidence = _normalize_upper(candidate.get("base_confidence"), confidence)
@@ -755,9 +244,13 @@ def build_options_lifecycle(
     v2_score = _safe_float(candidate.get("v2_score"))
     v2_quality = _safe_float(candidate.get("v2_quality"))
 
-    underlying_price = _safe_float(candidate.get("underlying_price", _candidate_best_price(candidate)))
+    underlying_price = _safe_float(
+        candidate.get("underlying_price", _candidate_best_price(candidate))
+    )
+
     capital_required_existing = _safe_float(candidate.get("capital_required"))
     minimum_trade_cost_existing = _safe_float(candidate.get("minimum_trade_cost"))
+
     allocation_dollars = _safe_float(
         candidate.get(
             "capital_allocation_dollars",
@@ -768,12 +261,11 @@ def build_options_lifecycle(
         )
     )
     if allocation_dollars <= 0:
-        if underlying_price > 0:
-            allocation_dollars = underlying_price
-        else:
-            allocation_dollars = 0.0
+        allocation_dollars = underlying_price if underlying_price > 0 else 0.0
 
-    cash_available = _safe_float(account_context.get("cash_available", account_context.get("cash")))
+    cash_available = _safe_float(
+        account_context.get("cash_available", account_context.get("cash"))
+    )
 
     life = LifecycleState(
         symbol=symbol,
@@ -822,8 +314,8 @@ def build_options_lifecycle(
         option_path=_safe_dict(candidate.get("option_path")),
         governor=_safe_dict(candidate.get("governor")),
         mode_context=_safe_dict(candidate.get("mode_context")),
-        warnings=_safe_list(candidate.get("warnings")),
-        rejection_reasons=_safe_list(candidate.get("rejection_reasons")),
+        warnings=[_normalize_text(x) for x in _safe_list(candidate.get("warnings")) if _normalize_text(x)],
+        rejection_reasons=[_normalize_text(x) for x in _safe_list(candidate.get("rejection_reasons")) if _normalize_text(x)],
         research_approved=_safe_bool(candidate.get("research_approved"), False),
         execution_ready=_safe_bool(candidate.get("execution_ready"), False),
         selected_for_execution=_safe_bool(candidate.get("selected_for_execution"), False),
@@ -849,60 +341,93 @@ def build_options_lifecycle(
     life.research_reason = research_reason or "Research gate approved the setup."
     life.research_reason_code = research_reason_code or "research_approved"
 
+    trade_intent = _normalize_text(candidate.get("trade_intent"), "GRIND")
+
     vehicle = choose_vehicle(
         symbol=symbol,
-        direction=direction,
-        underlying_price=underlying_price,
+        strategy=strategy,
+        trade_intent=trade_intent,
         option_chain=option_chain,
-        allocation_dollars=allocation_dollars,
-        cash_available=cash_available,
-        mode=mode,
-        allow_stock_fallback=allow_stock_fallback,
+        stock_price=underlying_price,
+        available_capital=cash_available,
+        stock_allowed=allow_stock_fallback,
+        trading_mode=mode,
     )
+    vehicle = _safe_dict(vehicle)
+    option_result = _safe_dict(vehicle.get("option_result"))
+    best_option_preview = _safe_dict(option_result.get("best_option_preview"))
 
-    life.selected_vehicle = vehicle.selected_vehicle
-    life.fallback_vehicle = vehicle.fallback_vehicle
-    life.contract = vehicle.contract
-    if vehicle.contract and not life.option:
-        life.option = _safe_dict(vehicle.contract)
-    life.reserve_check = dict(vehicle.reserve_check or {})
-    life.top_ranked_contracts = list(vehicle.top_ranked_contracts or [])
-    life.warnings = _dedupe_keep_order(list(life.warnings) + list(vehicle.warnings))
-    life.rejection_reasons = _dedupe_keep_order(list(life.rejection_reasons) + list(vehicle.rejection_reasons))
-    life.estimated_cost = round(vehicle.estimated_cost, 2)
-    life.minimum_trade_cost = round(vehicle.minimum_trade_cost, 2)
-    life.capital_required = round(vehicle.capital_required, 2)
-    life.contracts = vehicle.contracts
-    life.shares = vehicle.shares
-    life.stock_path = _safe_dict(vehicle.stock_path) or life.stock_path
-    life.option_path = _safe_dict(vehicle.option_path) or life.option_path
-    life.vehicle_reason = vehicle.reason_code or life.vehicle_reason
+    life.selected_vehicle = _normalize_upper(
+        vehicle.get("vehicle_selected"),
+        VEHICLE_NONE,
+    )
+    if life.selected_vehicle not in {VEHICLE_OPTION, VEHICLE_STOCK, VEHICLE_NONE, VEHICLE_RESEARCH_ONLY}:
+        life.selected_vehicle = VEHICLE_NONE
 
-    if not vehicle.approved:
+    life.fallback_vehicle = VEHICLE_NONE
+    life.contract = best_option_preview or life.contract
+    if best_option_preview and not life.option:
+        life.option = dict(best_option_preview)
+
+    life.top_ranked_contracts = [best_option_preview] if best_option_preview else []
+    life.capital_required = round(_safe_float(vehicle.get("capital_required")), 2)
+    life.minimum_trade_cost = round(_safe_float(vehicle.get("minimum_trade_cost")), 2)
+    life.estimated_cost = round(_safe_float(vehicle.get("minimum_trade_cost")), 2)
+    life.contracts = _safe_int(vehicle.get("contracts"))
+    life.shares = _safe_int(vehicle.get("shares"))
+
+    life.vehicle_reason = _normalize_text(vehicle.get("vehicle_reason"))
+    life.option_explanation = _safe_list(life.option_explanation) + _safe_list(option_result.get("option_notes"))
+
+    option_reason = _normalize_text(option_result.get("option_reason"))
+    if option_reason:
+        life.rejection_reasons = _dedupe_keep_order(life.rejection_reasons + [option_reason])
+
+    if best_option_preview and not life.option_path:
+        option_mark = _safe_float(best_option_preview.get("mark"))
+        life.option_path = {
+            "vehicle": "OPTION",
+            "capital_required": round(option_mark * 100, 2) if option_mark > 0 else 0.0,
+            "minimum_trade_cost": round((option_mark * 100) + 1.0, 2) if option_mark > 0 else 0.0,
+            "contracts": 1,
+            "shares": 0,
+            "affordable": _safe_bool(option_result.get("option_allowed"), False),
+            "score": _safe_float(option_result.get("option_score")),
+            "dte": _safe_int(best_option_preview.get("dte")),
+            "spread_pct": _safe_float(best_option_preview.get("spread_pct"), 999.0),
+        }
+
+    if not life.stock_path and underlying_price > 0:
+        life.stock_path = {
+            "vehicle": "STOCK",
+            "capital_required": round(underlying_price, 2),
+            "minimum_trade_cost": round(underlying_price + 1.0, 2),
+            "contracts": 0,
+            "shares": 1,
+            "affordable": cash_available >= (underlying_price + 1.0),
+        }
+
+    blocked_vehicle = life.selected_vehicle in {VEHICLE_NONE, VEHICLE_RESEARCH_ONLY, ""}
+    if blocked_vehicle:
         life.lifecycle_stage = LIFECYCLE_EXECUTION_BLOCKED
         life.execution_ready = False
         life.execution_decision = DECISION_REJECT
-        life.execution_reason = vehicle.reason
-        life.execution_reason_code = vehicle.reason_code
+        life.execution_reason = "No executable vehicle passed the lifecycle rules."
+        life.execution_reason_code = option_reason or "no_vehicle_selected"
         life.final_decision = DECISION_REJECT
-        life.final_reason = vehicle.reason
-        life.final_reason_code = vehicle.reason_code
+        life.final_reason = life.execution_reason
+        life.final_reason_code = life.execution_reason_code
         life.updated_at = _now_iso()
         return asdict(life)
 
-    life.execution_ready = vehicle.action in {DECISION_APPROVE, DECISION_WARN}
-    life.execution_decision = vehicle.action
-    life.execution_reason = vehicle.reason
-    life.execution_reason_code = vehicle.reason_code
-    life.final_decision = vehicle.action
-    life.final_reason = vehicle.reason
-    life.final_reason_code = vehicle.reason_code
-
-    if vehicle.action in {DECISION_APPROVE, DECISION_WARN}:
-        life.lifecycle_stage = LIFECYCLE_EXECUTION_READY
-    else:
-        life.lifecycle_stage = LIFECYCLE_EXECUTION_BLOCKED
-
+    life.execution_ready = True
+    life.execution_decision = DECISION_APPROVE
+    life.execution_reason = "Vehicle selected for execution."
+    life.execution_reason_code = life.vehicle_reason or "vehicle_selected"
+    life.final_decision = DECISION_APPROVE
+    life.final_reason = life.execution_reason
+    life.final_reason_code = life.execution_reason_code
+    life.lifecycle_stage = LIFECYCLE_EXECUTION_READY
     life.updated_at = _now_iso()
     return asdict(life)
 
