@@ -22,9 +22,6 @@ from engine.observatory_mode import (
 )
 
 
-# =========================================================
-# Helpers
-# =========================================================
 def _now_iso() -> str:
     return datetime.now().isoformat()
 
@@ -32,23 +29,25 @@ def _now_iso() -> str:
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
         if value is None or value == "":
-            return default
+            return float(default)
         return float(value)
     except Exception:
-        return default
+        return float(default)
 
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
         if value is None or value == "":
-            return default
+            return int(default)
         return int(float(value))
     except Exception:
-        return default
+        return int(default)
 
 
 def _safe_bool(value: Any, default: bool = False) -> bool:
     try:
+        if value is None:
+            return bool(default)
         return bool(value)
     except Exception:
         return bool(default)
@@ -107,10 +106,9 @@ def _merge_mode_context(lifecycle_obj: Dict[str, Any], mode: str = "paper") -> D
     base = build_mode_context(resolved_mode)
     incoming = _safe_dict(lifecycle_obj.get("mode_context"))
     merged = dict(base)
-    if incoming:
-        for key, value in incoming.items():
-            if value is not None:
-                merged[key] = value
+    for key, value in incoming.items():
+        if value is not None:
+            merged[key] = value
     merged["mode"] = normalize_mode(merged.get("mode", resolved_mode))
     return merged
 
@@ -150,9 +148,124 @@ def _decision_for_reason(reason_code: str, mode_context: Dict[str, Any]) -> str:
     return DECISION_REJECT if _safe_bool(mode_context.get("strict_execution_gate"), True) else DECISION_WARN
 
 
-# =========================================================
-# Canonical Handoff Objects
-# =========================================================
+def _derive_reason_text(code: str, fallback: str) -> str:
+    return _safe_str(fallback, code or "execution_guard_blocked")
+
+
+def _preferred_final_reason_code(source: Dict[str, Any]) -> str:
+    return _safe_str(
+        source.get("final_reason_code")
+        or source.get("decision_reason_code")
+        or source.get("final_reason")
+        or source.get("decision_reason")
+        or "",
+        "",
+    )
+
+
+def _preferred_final_reason(source: Dict[str, Any]) -> str:
+    return _safe_str(
+        source.get("final_reason")
+        or source.get("decision_reason")
+        or source.get("decision_label")
+        or "",
+        "",
+    )
+
+
+def _preserve_preferred(primary: Dict[str, Any], fallback: Dict[str, Any], key: str, default: Any = None) -> Any:
+    if key in primary and primary.get(key) is not None:
+        return primary.get(key)
+    if key in fallback and fallback.get(key) is not None:
+        return fallback.get(key)
+    return default
+
+
+def _merge_lifecycle_with_trade_fields(lifecycle_obj: Dict[str, Any], trade_obj: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    lifecycle_obj = _safe_dict(lifecycle_obj)
+    trade_obj = _safe_dict(trade_obj)
+
+    merged = dict(lifecycle_obj)
+
+    preserve_keys = [
+        "trade_id",
+        "timestamp",
+        "queued_at",
+        "research_approved",
+        "execution_ready",
+        "selected_for_execution",
+        "selected_vehicle",
+        "vehicle_selected",
+        "vehicle",
+        "final_decision",
+        "final_reason",
+        "final_reason_code",
+        "decision_reason",
+        "decision_reason_code",
+        "score",
+        "fused_score",
+        "base_score",
+        "v2_score",
+        "v2_quality",
+        "v2_reason",
+        "v2_vehicle_bias",
+        "readiness_score",
+        "promotion_score",
+        "rebuild_pressure",
+        "execution_quality",
+        "minimum_trade_cost",
+        "capital_required",
+        "capital_available",
+        "capital_buffer_after",
+        "confidence",
+        "strategy",
+        "direction",
+        "symbol",
+        "contracts",
+        "shares",
+        "estimated_cost",
+        "stock_price",
+        "reserve_check",
+        "warnings",
+        "rejection_reasons",
+        "governor",
+        "option",
+        "stock_path",
+        "option_path",
+        "top_ranked_contracts",
+        "why",
+        "supports",
+        "blockers",
+        "rejection_analysis",
+        "option_explanation",
+        "learning_notes",
+        "setup_type",
+        "setup_family",
+        "entry_quality",
+        "trend",
+        "regime",
+        "breadth",
+        "volatility_state",
+        "trading_mode",
+        "execution_mode",
+        "mode",
+        "mode_context",
+        "contract",
+    ]
+
+    for key in preserve_keys:
+        preferred = _preserve_preferred(trade_obj, lifecycle_obj, key, None)
+        if preferred is not None:
+            merged[key] = preferred
+
+    if "raw" not in merged:
+        merged["raw"] = _safe_dict(lifecycle_obj.get("raw"))
+    if not merged.get("raw") and isinstance(trade_obj.get("raw"), dict):
+        merged["raw"] = _safe_dict(trade_obj.get("raw"))
+
+    return merged
+
+
 @dataclass
 class ExecutionGuardResult:
     allowed: bool = False
@@ -207,9 +320,6 @@ class ExecutionResult:
     execution_record: Dict[str, Any] = field(default_factory=dict)
 
 
-# =========================================================
-# Intent Builder
-# =========================================================
 def build_execution_intent(
     lifecycle_obj: Dict[str, Any],
     mode: str = "paper",
@@ -218,13 +328,23 @@ def build_execution_intent(
     resolved_mode = _resolve_mode_from_lifecycle(lifecycle_obj, mode=mode)
     mode_context = _merge_mode_context(lifecycle_obj, mode=resolved_mode)
 
-    selected_vehicle = _normalize_upper(lifecycle_obj.get("selected_vehicle"), VEHICLE_NONE)
+    selected_vehicle = _normalize_upper(
+        lifecycle_obj.get("selected_vehicle")
+        or lifecycle_obj.get("vehicle_selected")
+        or lifecycle_obj.get("vehicle"),
+        VEHICLE_NONE,
+    )
+
     contracts = _safe_int(lifecycle_obj.get("contracts"))
     shares = _safe_int(lifecycle_obj.get("shares"))
     quantity = contracts if selected_vehicle == VEHICLE_OPTION else shares
 
-    raw = lifecycle_obj.get("raw") if isinstance(lifecycle_obj.get("raw"), dict) else {}
+    raw = _safe_dict(lifecycle_obj.get("raw"))
     contract = lifecycle_obj.get("contract") if isinstance(lifecycle_obj.get("contract"), dict) else None
+    if not contract:
+        option_obj = lifecycle_obj.get("option")
+        if isinstance(option_obj, dict):
+            contract = dict(option_obj)
 
     return ExecutionIntent(
         symbol=_normalize_upper(lifecycle_obj.get("symbol")),
@@ -232,20 +352,27 @@ def build_execution_intent(
         direction=_normalize_upper(lifecycle_obj.get("direction"), "UNKNOWN"),
         selected_vehicle=selected_vehicle,
         final_decision=_normalize_upper(lifecycle_obj.get("final_decision"), DECISION_REJECT),
-        final_reason=_normalize_text(lifecycle_obj.get("final_reason")),
-        final_reason_code=_normalize_text(lifecycle_obj.get("final_reason_code")),
-        quantity=quantity,
+        final_reason=_normalize_text(
+            lifecycle_obj.get("final_reason"),
+            _preferred_final_reason(lifecycle_obj),
+        ),
+        final_reason_code=_normalize_text(
+            lifecycle_obj.get("final_reason_code"),
+            _preferred_final_reason_code(lifecycle_obj),
+        ),
+        quantity=max(0, quantity),
         estimated_cost=_safe_float(lifecycle_obj.get("estimated_cost")),
         stock_price=_safe_float(
             raw.get("underlying_price")
             or raw.get("price")
+            or lifecycle_obj.get("stock_price")
             or lifecycle_obj.get("price")
         ),
         contract=contract,
         execution_mode=resolved_mode,
         confidence=_normalize_upper(lifecycle_obj.get("confidence"), "UNKNOWN"),
-        score=_safe_float(lifecycle_obj.get("score")),
-        reserve_check=dict(lifecycle_obj.get("reserve_check") or {}),
+        score=_safe_float(lifecycle_obj.get("score", lifecycle_obj.get("fused_score", 0.0))),
+        reserve_check=_safe_dict(lifecycle_obj.get("reserve_check")),
         warnings=_dedupe_keep_order(lifecycle_obj.get("warnings") or []),
         rejection_reasons=_dedupe_keep_order(lifecycle_obj.get("rejection_reasons") or []),
         source_lifecycle=dict(lifecycle_obj),
@@ -260,24 +387,50 @@ def build_queued_trade_payload(
     lifecycle_obj = _safe_dict(lifecycle_obj)
 
     requested_mode = _resolve_mode_from_lifecycle(lifecycle_obj, mode=mode)
-    mode_context = _merge_mode_context(lifecycle_obj, mode=requested_mode)
+    merged_source = _merge_lifecycle_with_trade_fields(lifecycle_obj, lifecycle_obj)
+    merged_source["trading_mode"] = requested_mode
+    merged_source["execution_mode"] = requested_mode
+    merged_source["mode"] = requested_mode
+    merged_source["mode_context"] = _merge_mode_context(merged_source, mode=requested_mode)
 
-    intent = build_execution_intent(lifecycle_obj, mode=requested_mode)
+    intent = build_execution_intent(merged_source, mode=requested_mode)
     source = dict(intent.source_lifecycle or {})
-    reserve_check = dict(intent.reserve_check or {})
+    mode_context = _safe_dict(intent.mode_context)
 
+    reserve_check = _safe_dict(intent.reserve_check)
     selected_vehicle = _safe_str(
         intent.selected_vehicle,
-        source.get("selected_vehicle", "RESEARCH_ONLY"),
+        source.get("selected_vehicle", source.get("vehicle_selected", "RESEARCH_ONLY")),
     ).upper()
     final_decision = _safe_str(
         intent.final_decision,
         source.get("final_decision", "REJECT"),
     ).upper()
-    final_reason = _safe_str(intent.final_reason, source.get("final_reason", ""))
-    final_reason_code = _safe_str(intent.final_reason_code, source.get("final_reason_code", ""))
+    final_reason = _safe_str(intent.final_reason, _preferred_final_reason(source))
+    final_reason_code = _safe_str(intent.final_reason_code, _preferred_final_reason_code(source))
     estimated_cost = round(_safe_float(intent.estimated_cost, source.get("estimated_cost", 0.0)), 2)
     stock_price = round(_safe_float(intent.stock_price, source.get("stock_price", 0.0)), 4)
+
+    research_approved = _safe_bool(
+        _preserve_preferred(lifecycle_obj, source, "research_approved", False),
+        False,
+    )
+    execution_ready = _safe_bool(
+        _preserve_preferred(lifecycle_obj, source, "execution_ready", False),
+        False,
+    )
+    selected_for_execution = _safe_bool(
+        _preserve_preferred(lifecycle_obj, source, "selected_for_execution", False),
+        False,
+    )
+    preserved_trade_id = _safe_str(
+        _preserve_preferred(lifecycle_obj, source, "trade_id", ""),
+        "",
+    )
+    preserved_timestamp = _safe_str(
+        _preserve_preferred(lifecycle_obj, source, "timestamp", ""),
+        "",
+    )
 
     source["mode"] = requested_mode
     source["trading_mode"] = requested_mode
@@ -285,12 +438,20 @@ def build_queued_trade_payload(
     source["mode_context"] = mode_context
     source["selected_vehicle"] = selected_vehicle
     source["vehicle_selected"] = selected_vehicle
+    source["vehicle"] = selected_vehicle
     source["final_decision"] = final_decision
     source["final_reason"] = final_reason
     source["final_reason_code"] = final_reason_code
+    source["decision_reason"] = _safe_str(source.get("decision_reason"), final_reason)
+    source["decision_reason_code"] = _safe_str(source.get("decision_reason_code"), final_reason_code)
     source["estimated_cost"] = estimated_cost
     source["stock_price"] = stock_price
     source["reserve_check"] = reserve_check
+    source["research_approved"] = research_approved
+    source["execution_ready"] = execution_ready
+    source["selected_for_execution"] = selected_for_execution
+    source["trade_id"] = preserved_trade_id
+    source["timestamp"] = preserved_timestamp or source.get("timestamp") or _now_iso()
 
     queued_payload = {
         "symbol": intent.symbol,
@@ -302,6 +463,8 @@ def build_queued_trade_payload(
         "final_decision": final_decision,
         "final_reason": final_reason,
         "final_reason_code": final_reason_code,
+        "decision_reason": _safe_str(source.get("decision_reason"), final_reason),
+        "decision_reason_code": _safe_str(source.get("decision_reason_code"), final_reason_code),
         "quantity": intent.quantity,
         "estimated_cost": estimated_cost,
         "stock_price": stock_price,
@@ -317,9 +480,9 @@ def build_queued_trade_payload(
         "rejection_reasons": _dedupe_keep_order(intent.rejection_reasons or source.get("rejection_reasons")),
         "lifecycle": source,
         "queued_at": _now_iso(),
-        "research_approved": _safe_bool(source.get("research_approved"), False),
-        "execution_ready": _safe_bool(source.get("execution_ready"), False),
-        "selected_for_execution": _safe_bool(source.get("selected_for_execution"), False),
+        "research_approved": research_approved,
+        "execution_ready": execution_ready,
+        "selected_for_execution": selected_for_execution,
         "base_score": source.get("base_score"),
         "fused_score": source.get("fused_score"),
         "v2_score": source.get("v2_score"),
@@ -334,8 +497,8 @@ def build_queued_trade_payload(
         "minimum_trade_cost": source.get("minimum_trade_cost"),
         "capital_required": source.get("capital_required"),
         "capital_available": source.get("capital_available"),
+        "capital_buffer_after": source.get("capital_buffer_after"),
         "vehicle_reason": source.get("vehicle_reason"),
-        "decision_reason": source.get("decision_reason"),
         "blocked_at": source.get("blocked_at"),
         "why": _safe_list(source.get("why", [])),
         "supports": _safe_list(source.get("supports", [])),
@@ -355,7 +518,7 @@ def build_queued_trade_payload(
         "option_path": _safe_dict(source.get("option_path", {})),
         "governor": _safe_dict(source.get("governor", {})),
         "top_ranked_contracts": _safe_list(source.get("top_ranked_contracts", [])),
-        "trade_id": source.get("trade_id"),
+        "trade_id": preserved_trade_id,
         "timestamp": source.get("timestamp"),
         "canonical_source": "options_lifecycle",
     }
@@ -380,14 +543,14 @@ def build_queued_trade_payload(
         "options_first": _safe_bool(mode_context.get("options_first"), True),
         "allow_stock_fallback": _safe_bool(mode_context.get("allow_stock_fallback"), True),
         "reserve_check": reserve_check,
+        "preserved_trade_id": preserved_trade_id,
+        "preserved_selected_for_execution": selected_for_execution,
+        "preserved_execution_ready": execution_ready,
     }
 
     return queued_payload
 
 
-# =========================================================
-# Guard Layer
-# =========================================================
 def execution_guard(
     intent: ExecutionIntent,
     portfolio_context: Optional[Dict[str, Any]] = None,
@@ -398,7 +561,6 @@ def execution_guard(
 ) -> ExecutionGuardResult:
     portfolio_context = _safe_dict(portfolio_context)
     mode_context = _safe_dict(intent.mode_context) or build_mode_context(intent.execution_mode)
-
     warnings: List[str] = _dedupe_keep_order(intent.warnings or [])
     rejections: List[str] = []
 
@@ -443,11 +605,17 @@ def execution_guard(
         )
 
     if intent.final_decision not in {DECISION_APPROVE, DECISION_WARN}:
+        reason_code = intent.final_reason_code or "lifecycle_not_execution_ready"
+        reason_text = _derive_reason_text(
+            reason_code,
+            intent.final_reason or "Execution blocked because lifecycle did not approve this trade.",
+        )
         return _warn_or_reject(
-            "Execution blocked because lifecycle did not approve this trade.",
-            "lifecycle_not_execution_ready",
+            reason_text,
+            reason_code,
             {
                 "final_decision": intent.final_decision,
+                "final_reason": intent.final_reason,
                 "final_reason_code": intent.final_reason_code,
             },
         )
@@ -498,30 +666,32 @@ def execution_guard(
     reserve_warning_only = _safe_bool(reserve_check.get("warning_only"), False)
 
     if reserve_hard_block:
-        return _reject(
-            "Execution blocked because reserve protection is in hard-block mode.",
-            "reserve_hard_block",
-            reserve_check,
+        reserve_code = _safe_str(reserve_check.get("reason_code"), "reserve_hard_block")
+        reserve_text = _derive_reason_text(
+            reserve_code,
+            _safe_str(reserve_check.get("reason"), "Execution blocked because reserve protection is in hard-block mode."),
         )
+        return _reject(reserve_text, reserve_code, reserve_check)
 
     if reserve_warning_only:
-        decision = _decision_for_reason("reserve_warning_only", mode_context)
+        reserve_code = _safe_str(reserve_check.get("reason_code"), "reserve_warning_only")
+        reserve_text = _derive_reason_text(
+            reserve_code,
+            _safe_str(reserve_check.get("reason"), "Execution allowed with reserve warning."),
+        )
+        decision = _decision_for_reason(reserve_code, mode_context)
         if decision == DECISION_WARN:
-            warnings = _dedupe_keep_order(warnings + ["reserve_warning_only"])
+            warnings = _dedupe_keep_order(warnings + [reserve_code])
             return ExecutionGuardResult(
                 allowed=True,
                 decision=DECISION_WARN,
-                guard_reason="Execution allowed with reserve warning.",
-                guard_reason_code="reserve_warning_only",
+                guard_reason=reserve_text,
+                guard_reason_code=reserve_code,
                 warnings=warnings,
                 rejection_reasons=[],
                 guard_details={"reserve_check": reserve_check},
             )
-        return _reject(
-            "Execution blocked because reserve protection requires a hard stop in this mode.",
-            "reserve_warning_only",
-            {"reserve_check": reserve_check},
-        )
+        return _reject(reserve_text, reserve_code, {"reserve_check": reserve_check})
 
     return ExecutionGuardResult(
         allowed=True,
@@ -538,24 +708,24 @@ def execution_guard(
     )
 
 
-# =========================================================
-# Queue State Transition
-# =========================================================
 def mark_lifecycle_selected_for_queue(
     lifecycle_obj: Dict[str, Any],
     queue_reason: str = "Candidate selected and handed to execution queue.",
     queue_reason_code: str = "queued_for_execution",
 ) -> Dict[str, Any]:
-    return mark_selected(
+    updated = mark_selected(
         lifecycle_obj,
         reason=queue_reason,
         reason_code=queue_reason_code,
     )
+    updated = _safe_dict(updated)
+    updated["selected_for_execution"] = True
+    updated["execution_ready"] = True
+    if not updated.get("trade_id"):
+        updated["trade_id"] = _safe_str(_safe_dict(lifecycle_obj).get("trade_id"), "")
+    return updated
 
 
-# =========================================================
-# Execution Adapters
-# =========================================================
 def simulate_execution(intent: ExecutionIntent) -> ExecutionResult:
     if intent.selected_vehicle == VEHICLE_OPTION:
         fill_price = _safe_float((intent.contract or {}).get("mark"))
@@ -583,14 +753,24 @@ def simulate_execution(intent: ExecutionIntent) -> ExecutionResult:
         quantity=intent.quantity,
         extra_updates={
             "selected_vehicle": intent.selected_vehicle,
+            "vehicle_selected": intent.selected_vehicle,
             "estimated_cost": round(intent.estimated_cost, 2),
             "actual_cost": actual_cost,
             "entry_mode": intent.execution_mode,
             "entry_reason": intent.final_reason,
             "entry_reason_code": intent.final_reason_code,
+            "final_reason": "entered_execution",
+            "final_reason_code": "entered_execution",
+            "decision_reason": intent.final_reason,
+            "decision_reason_code": intent.final_reason_code,
+            "blocked_at": "",
             "trading_mode": intent.execution_mode,
+            "execution_mode": intent.execution_mode,
             "mode": intent.execution_mode,
             "mode_context": intent.mode_context,
+            "selected_for_execution": True,
+            "execution_ready": True,
+            "trade_id": _safe_str(intent.source_lifecycle.get("trade_id"), ""),
         },
     )
 
@@ -607,6 +787,7 @@ def simulate_execution(intent: ExecutionIntent) -> ExecutionResult:
         "reason": intent.final_reason,
         "reason_code": intent.final_reason_code,
         "mode_context": intent.mode_context,
+        "trade_id": _safe_str(lifecycle_after.get("trade_id"), ""),
     }
 
     return ExecutionResult(
@@ -639,20 +820,43 @@ def execute_via_adapter(
     broker_adapter: Optional[Any] = None,
 ) -> Dict[str, Any]:
     queued_trade = _safe_dict(queued_trade)
-    lifecycle_obj = _safe_dict(queued_trade.get("lifecycle"))
+
+    raw_lifecycle = _safe_dict(queued_trade.get("lifecycle"))
+    merged_lifecycle = _merge_lifecycle_with_trade_fields(raw_lifecycle, queued_trade)
 
     requested_mode = _resolve_mode_from_lifecycle(
-        lifecycle_obj,
-        mode=_safe_str(queued_trade.get("execution_mode"), "paper"),
+        merged_lifecycle,
+        mode=_safe_str(
+            queued_trade.get("execution_mode")
+            or queued_trade.get("trading_mode")
+            or queued_trade.get("mode"),
+            "paper",
+        ),
     )
-    mode_context = _merge_mode_context(lifecycle_obj, mode=requested_mode)
+    mode_context = _merge_mode_context(merged_lifecycle, mode=requested_mode)
 
-    lifecycle_obj["trading_mode"] = requested_mode
-    lifecycle_obj["execution_mode"] = requested_mode
-    lifecycle_obj["mode"] = requested_mode
-    lifecycle_obj["mode_context"] = mode_context
+    merged_lifecycle["trading_mode"] = requested_mode
+    merged_lifecycle["execution_mode"] = requested_mode
+    merged_lifecycle["mode"] = requested_mode
+    merged_lifecycle["mode_context"] = mode_context
+    merged_lifecycle["trade_id"] = _safe_str(
+        _preserve_preferred(queued_trade, merged_lifecycle, "trade_id", ""),
+        "",
+    )
+    merged_lifecycle["research_approved"] = _safe_bool(
+        _preserve_preferred(queued_trade, merged_lifecycle, "research_approved", False),
+        False,
+    )
+    merged_lifecycle["execution_ready"] = _safe_bool(
+        _preserve_preferred(queued_trade, merged_lifecycle, "execution_ready", False),
+        False,
+    )
+    merged_lifecycle["selected_for_execution"] = _safe_bool(
+        _preserve_preferred(queued_trade, merged_lifecycle, "selected_for_execution", False),
+        False,
+    )
 
-    intent = build_execution_intent(lifecycle_obj, mode=requested_mode)
+    intent = build_execution_intent(merged_lifecycle, mode=requested_mode)
 
     guard = execution_guard(
         intent=intent,
@@ -664,6 +868,15 @@ def execute_via_adapter(
     )
 
     if not guard.allowed:
+        merged_lifecycle["final_reason"] = guard.guard_reason or intent.final_reason
+        merged_lifecycle["final_reason_code"] = guard.guard_reason_code or intent.final_reason_code
+        merged_lifecycle["decision_reason"] = guard.guard_reason or intent.final_reason
+        merged_lifecycle["decision_reason_code"] = guard.guard_reason_code or intent.final_reason_code
+        merged_lifecycle["blocked_at"] = "execution_guard"
+        merged_lifecycle["selected_for_execution"] = _safe_bool(
+            merged_lifecycle.get("selected_for_execution"),
+            False,
+        )
         return {
             "success": False,
             "status": "REJECTED",
@@ -671,13 +884,13 @@ def execute_via_adapter(
             "selected_vehicle": intent.selected_vehicle,
             "guard": asdict(guard),
             "execution_result": None,
-            "lifecycle_after": lifecycle_obj,
+            "lifecycle_after": merged_lifecycle,
             "trading_mode": requested_mode,
             "mode_context": mode_context,
         }
 
     lifecycle_for_entry = mark_lifecycle_selected_for_queue(
-        lifecycle_obj,
+        merged_lifecycle,
         queue_reason=guard.guard_reason,
         queue_reason_code=guard.guard_reason_code,
     )
@@ -685,6 +898,10 @@ def execute_via_adapter(
     lifecycle_for_entry["execution_mode"] = requested_mode
     lifecycle_for_entry["mode"] = requested_mode
     lifecycle_for_entry["mode_context"] = mode_context
+    lifecycle_for_entry["trade_id"] = _safe_str(
+        _preserve_preferred(queued_trade, lifecycle_for_entry, "trade_id", ""),
+        "",
+    )
 
     intent.source_lifecycle = lifecycle_for_entry
     intent.warnings = _dedupe_keep_order(list(intent.warnings or []) + list(guard.warnings or []))
@@ -713,6 +930,8 @@ def execute_via_adapter(
         reason_text = _normalize_text(adapter_response.get("reason"), "Broker adapter rejected the trade.")
         lifecycle_for_entry["final_reason"] = reason_text
         lifecycle_for_entry["final_reason_code"] = reason_code
+        lifecycle_for_entry["decision_reason"] = reason_text
+        lifecycle_for_entry["decision_reason_code"] = reason_code
         lifecycle_for_entry["blocked_at"] = "broker_adapter"
         return {
             "success": False,
@@ -736,16 +955,25 @@ def execute_via_adapter(
         quantity=filled_quantity,
         extra_updates={
             "selected_vehicle": intent.selected_vehicle,
+            "vehicle_selected": intent.selected_vehicle,
             "estimated_cost": round(intent.estimated_cost, 2),
             "actual_cost": round(actual_cost, 2),
             "entry_mode": requested_mode,
             "entry_reason": intent.final_reason,
             "entry_reason_code": intent.final_reason_code,
+            "final_reason": "entered_execution",
+            "final_reason_code": "entered_execution",
+            "decision_reason": intent.final_reason,
+            "decision_reason_code": intent.final_reason_code,
             "broker_order_id": _normalize_text(adapter_response.get("broker_order_id")),
+            "blocked_at": "",
             "trading_mode": requested_mode,
             "execution_mode": requested_mode,
             "mode": requested_mode,
             "mode_context": mode_context,
+            "selected_for_execution": True,
+            "execution_ready": True,
+            "trade_id": _safe_str(lifecycle_for_entry.get("trade_id"), ""),
         },
     )
 
@@ -779,6 +1007,7 @@ def execute_via_adapter(
             "reason": _normalize_text(adapter_response.get("reason")),
             "reason_code": _normalize_text(adapter_response.get("reason_code")),
             "mode_context": mode_context,
+            "trade_id": _safe_str(lifecycle_after.get("trade_id"), ""),
         },
     )
 
@@ -795,9 +1024,6 @@ def execute_via_adapter(
     }
 
 
-# =========================================================
-# Public Summary Helpers
-# =========================================================
 def summarize_execution_packet(packet: Dict[str, Any]) -> Dict[str, Any]:
     packet = _safe_dict(packet)
     guard = _safe_dict(packet.get("guard"))
@@ -819,6 +1045,11 @@ def summarize_execution_packet(packet: Dict[str, Any]) -> Dict[str, Any]:
         "lifecycle_stage_after": lifecycle_after.get("lifecycle_stage"),
         "final_reason_after": lifecycle_after.get("final_reason"),
         "final_reason_code_after": lifecycle_after.get("final_reason_code"),
+        "decision_reason_after": lifecycle_after.get("decision_reason"),
+        "decision_reason_code_after": lifecycle_after.get("decision_reason_code"),
+        "trade_id_after": lifecycle_after.get("trade_id"),
+        "selected_for_execution_after": lifecycle_after.get("selected_for_execution"),
+        "execution_ready_after": lifecycle_after.get("execution_ready"),
         "trading_mode": packet.get("trading_mode"),
         "mode_context": packet.get("mode_context"),
     }

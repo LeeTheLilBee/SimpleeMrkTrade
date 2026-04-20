@@ -89,5 +89,34 @@
     "confidence": "HIGH",
     "status": "OPEN",
     "pnl": 0
+  },
+  {
+    "timestamp": "2026-04-20T16:07:42.152302",
+    "trade_id": "MSFT-CALL-20260416224923",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "price": 421.31,
+    "size": 2.0,
+    "score": 207.0,
+    "confidence": "HIGH",
+    "status": "CLOSED",
+    "pnl": -6.96,
+    "exit_price": 417.83,
+    "closed_at": "2026-04-20T16:07:42.152302",
+    "reason": "stop_loss",
+    "exit_explanation": {
+      "symbol": "MSFT",
+      "headline": "MSFT exit detail",
+      "summary": "The system is treating this as protective damage control.",
+      "verdict": "EXIT",
+      "reason": "stop_loss",
+      "why": "stop_loss",
+      "notes": [
+        "PnL: -6.96",
+        "stop_loss",
+        "The system is treating this as protective damage control."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    }
   }
 ]

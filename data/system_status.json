@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-04-20T05:05:14.397998",
-  "cash": 171.4,
-  "buying_power": 171.4,
-  "equity": 1014.01,
-  "open_positions": 1,
+  "timestamp": "2026-04-20T17:03:43.690969",
+  "cash": 1007.06,
+  "buying_power": 1007.06,
+  "equity": 1007.05,
+  "open_positions": 0,
   "executed_trades": 3,
-  "regime": "STARTING",
-  "volatility": "UNKNOWN",
-  "mode": "BOOT_PAPER",
-  "total_trades": 2,
-  "winrate": 0.5,
-  "max_drawdown": 2.01
+  "regime": "BULL_TREND",
+  "volatility": "NORMAL",
+  "mode": "AGGRESSIVE_BULL|paper",
+  "total_trades": 3,
+  "winrate": 0.33,
+  "max_drawdown": 6.96
 }

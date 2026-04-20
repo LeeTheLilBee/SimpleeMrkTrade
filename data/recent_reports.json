@@ -1,88 +1,5 @@
 [
   {
-    "timestamp": "2026-03-24T02:11:42.111392",
-    "performance": {
-      "trades": 5,
-      "wins": 2,
-      "losses": 3,
-      "winrate": 0.4,
-      "total_pnl": 273.52,
-      "max_drawdown": 29.46,
-      "trades_today": 2,
-      "realized_pnl_today": 273.52
-    },
-    "portfolio": {
-      "open_positions": 0,
-      "closed_positions": 5,
-      "realized_pnl": 273.52
-    },
-    "snapshot": {
-      "cash": 0.0,
-      "buying_power": 0.0,
-      "equity": 1000.0,
-      "open_positions": 0,
-      "realized_pnl": 273.52,
-      "unrealized_pnl": 0,
-      "estimated_account_value": 1000.0
-    }
-  },
-  {
-    "timestamp": "2026-03-24T02:38:17.763584",
-    "performance": {
-      "trades": 6,
-      "wins": 3,
-      "losses": 3,
-      "winrate": 0.5,
-      "total_pnl": 1182.46,
-      "max_drawdown": 29.46,
-      "trades_today": 3,
-      "realized_pnl_today": 1182.46
-    },
-    "portfolio": {
-      "open_positions": 0,
-      "closed_positions": 6,
-      "realized_pnl": 1182.46
-    },
-    "snapshot": {
-      "cash": 2182.46,
-      "buying_power": 2182.46,
-      "equity": 2182.46,
-      "open_positions": 0,
-      "realized_pnl": 1182.46,
-      "unrealized_pnl": 0,
-      "estimated_account_value": 2182.46
-    }
-  },
-  {
-    "timestamp": "2026-03-24T03:14:35.637372",
-    "performance": {
-      "trades": 2,
-      "wins": 2,
-      "losses": 0,
-      "winrate": 1.0,
-      "total_pnl": 2611.3,
-      "max_drawdown": 0.0,
-      "entries_today": 2,
-      "closes_today": 2,
-      "round_trips_today": 2,
-      "realized_pnl_today": 2611.3
-    },
-    "portfolio": {
-      "open_positions": 0,
-      "closed_positions": 8,
-      "realized_pnl": 3793.76
-    },
-    "snapshot": {
-      "cash": 4793.76,
-      "buying_power": 4793.76,
-      "equity": 4793.76,
-      "open_positions": 0,
-      "realized_pnl": 3793.76,
-      "unrealized_pnl": 0,
-      "estimated_account_value": 4793.76
-    }
-  },
-  {
     "timestamp": "2026-03-24T03:41:17.649698",
     "performance": {
       "trades": 2,
@@ -573,6 +490,120 @@
       "realized_pnl": 14.01,
       "unrealized_pnl": -1.05,
       "estimated_account_value": 1012.96
+    }
+  },
+  {
+    "timestamp": "2026-04-20T16:10:07.412225",
+    "performance": {
+      "trades": 3,
+      "wins": 1,
+      "losses": 2,
+      "winrate": 0.33,
+      "total_pnl": 7.05,
+      "max_drawdown": 6.96,
+      "entries_today": 0,
+      "closes_today": 1,
+      "round_trips_today": 1,
+      "realized_pnl_today": -6.96
+    },
+    "portfolio": {
+      "open_positions": 0,
+      "closed_positions": 3,
+      "realized_pnl": 7.05,
+      "unrealized_pnl": 0.0,
+      "gross_capital_open": 0.0,
+      "vehicle_mix": {
+        "OPTION": 0,
+        "STOCK": 0,
+        "RESEARCH_ONLY": 0,
+        "UNKNOWN": 0
+      },
+      "net_pnl": 7.05
+    },
+    "snapshot": {
+      "cash": 1007.06,
+      "buying_power": 1007.06,
+      "equity": 1007.05,
+      "open_positions": 0,
+      "realized_pnl": 7.05,
+      "unrealized_pnl": 0,
+      "estimated_account_value": 1007.05
+    }
+  },
+  {
+    "timestamp": "2026-04-20T16:43:31.476020",
+    "performance": {
+      "trades": 3,
+      "wins": 1,
+      "losses": 2,
+      "winrate": 0.33,
+      "total_pnl": 7.05,
+      "max_drawdown": 6.96,
+      "entries_today": 0,
+      "closes_today": 1,
+      "round_trips_today": 1,
+      "realized_pnl_today": -6.96
+    },
+    "portfolio": {
+      "open_positions": 0,
+      "closed_positions": 3,
+      "realized_pnl": 7.05,
+      "unrealized_pnl": 0.0,
+      "gross_capital_open": 0.0,
+      "vehicle_mix": {
+        "OPTION": 0,
+        "STOCK": 0,
+        "RESEARCH_ONLY": 0,
+        "UNKNOWN": 0
+      },
+      "net_pnl": 7.05
+    },
+    "snapshot": {
+      "cash": 1007.06,
+      "buying_power": 1007.06,
+      "equity": 1007.05,
+      "open_positions": 0,
+      "realized_pnl": 7.05,
+      "unrealized_pnl": 0,
+      "estimated_account_value": 1007.05
+    }
+  },
+  {
+    "timestamp": "2026-04-20T17:03:43.687634",
+    "performance": {
+      "trades": 3,
+      "wins": 1,
+      "losses": 2,
+      "winrate": 0.33,
+      "total_pnl": 7.05,
+      "max_drawdown": 6.96,
+      "entries_today": 0,
+      "closes_today": 1,
+      "round_trips_today": 1,
+      "realized_pnl_today": -6.96
+    },
+    "portfolio": {
+      "open_positions": 0,
+      "closed_positions": 3,
+      "realized_pnl": 7.05,
+      "unrealized_pnl": 0.0,
+      "gross_capital_open": 0.0,
+      "vehicle_mix": {
+        "OPTION": 0,
+        "STOCK": 0,
+        "RESEARCH_ONLY": 0,
+        "UNKNOWN": 0
+      },
+      "net_pnl": 7.05
+    },
+    "snapshot": {
+      "cash": 1007.06,
+      "buying_power": 1007.06,
+      "equity": 1007.05,
+      "open_positions": 0,
+      "realized_pnl": 7.05,
+      "unrealized_pnl": 0,
+      "estimated_account_value": 1007.05
     }
   }
 ]

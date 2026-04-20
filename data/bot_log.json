@@ -613,5 +613,65 @@
     "timestamp": "2026-04-20T05:05:13.478378",
     "level": "INFO",
     "message": "Bot run started in Paper Mode (paper)"
+  },
+  {
+    "timestamp": "2026-04-20T16:07:40.861118",
+    "level": "INFO",
+    "message": "Bot run started in Paper Mode (paper)"
+  },
+  {
+    "timestamp": "2026-04-20T16:10:07.227122",
+    "level": "WARN",
+    "message": "INTC rejected | Execution blocked because reserve protection requires a hard stop in this mode."
+  },
+  {
+    "timestamp": "2026-04-20T16:10:07.250458",
+    "level": "WARN",
+    "message": "AMD rejected | Execution blocked because reserve protection requires a hard stop in this mode."
+  },
+  {
+    "timestamp": "2026-04-20T16:10:07.273159",
+    "level": "WARN",
+    "message": "BAC rejected | Execution blocked because reserve protection requires a hard stop in this mode."
+  },
+  {
+    "timestamp": "2026-04-20T16:41:19.052774",
+    "level": "INFO",
+    "message": "Bot run started in Paper Mode (paper)"
+  },
+  {
+    "timestamp": "2026-04-20T16:43:31.360266",
+    "level": "WARN",
+    "message": "INTC rejected | Option path would violate reserve floor."
+  },
+  {
+    "timestamp": "2026-04-20T16:43:31.373311",
+    "level": "WARN",
+    "message": "AMD rejected | Option path would violate reserve floor."
+  },
+  {
+    "timestamp": "2026-04-20T16:43:31.386006",
+    "level": "WARN",
+    "message": "BAC rejected | Option path would violate reserve floor."
+  },
+  {
+    "timestamp": "2026-04-20T17:01:23.583211",
+    "level": "INFO",
+    "message": "Bot run started in Paper Mode (paper)"
+  },
+  {
+    "timestamp": "2026-04-20T17:03:43.569838",
+    "level": "WARN",
+    "message": "INTC rejected | Option path would violate reserve floor."
+  },
+  {
+    "timestamp": "2026-04-20T17:03:43.584251",
+    "level": "WARN",
+    "message": "AMD rejected | Option path would violate reserve floor."
+  },
+  {
+    "timestamp": "2026-04-20T17:03:43.596995",
+    "level": "WARN",
+    "message": "BAC rejected | Option path would violate reserve floor."
   }
 ]

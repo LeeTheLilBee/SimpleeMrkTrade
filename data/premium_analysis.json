@@ -931,5 +931,275 @@
       "Market regime: Bull Trend.",
       "Trend context: Uptrend."
     ]
+  },
+  {
+    "timestamp": "2026-04-20T16:10:06.983196",
+    "symbol": "INTC",
+    "strategy": "CALL",
+    "score": 595.23,
+    "confidence": "HIGH",
+    "entry": 65.81,
+    "stop": 62.81,
+    "target": 69.81,
+    "mode": "AGGRESSIVE_BULL",
+    "regime": "BULL_TREND",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-20T16:10:07.091329",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 457.68,
+    "confidence": "HIGH",
+    "entry": 275.17,
+    "stop": 272.17,
+    "target": 279.17,
+    "mode": "AGGRESSIVE_BULL",
+    "regime": "BULL_TREND",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-20T16:10:07.203346",
+    "symbol": "BAC",
+    "strategy": "CALL",
+    "score": 227.15,
+    "confidence": "HIGH",
+    "entry": 53.56,
+    "stop": 50.56,
+    "target": 57.56,
+    "mode": "AGGRESSIVE_BULL",
+    "regime": "BULL_TREND",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-20T16:43:31.228958",
+    "symbol": "INTC",
+    "strategy": "CALL",
+    "score": 595.68,
+    "confidence": "HIGH",
+    "entry": 65.82,
+    "stop": 62.82,
+    "target": 69.82,
+    "mode": "AGGRESSIVE_BULL",
+    "regime": "BULL_TREND",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-20T16:43:31.286518",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 453.12,
+    "confidence": "HIGH",
+    "entry": 274.25,
+    "stop": 271.25,
+    "target": 278.25,
+    "mode": "AGGRESSIVE_BULL",
+    "regime": "BULL_TREND",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-20T16:43:31.345945",
+    "symbol": "BAC",
+    "strategy": "CALL",
+    "score": 231.52,
+    "confidence": "HIGH",
+    "entry": 53.77,
+    "stop": 50.77,
+    "target": 57.77,
+    "mode": "AGGRESSIVE_BULL",
+    "regime": "BULL_TREND",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-20T17:03:43.379608",
+    "symbol": "INTC",
+    "strategy": "CALL",
+    "score": 593.55,
+    "confidence": "HIGH",
+    "entry": 65.73,
+    "stop": 62.73,
+    "target": 69.73,
+    "mode": "AGGRESSIVE_BULL",
+    "regime": "BULL_TREND",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-20T17:03:43.496506",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 451.88,
+    "confidence": "HIGH",
+    "entry": 274.0,
+    "stop": 271.0,
+    "target": 278.0,
+    "mode": "AGGRESSIVE_BULL",
+    "regime": "BULL_TREND",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-04-20T17:03:43.557945",
+    "symbol": "BAC",
+    "strategy": "CALL",
+    "score": 231.94,
+    "confidence": "HIGH",
+    "entry": 53.79,
+    "stop": 50.79,
+    "target": 57.79,
+    "mode": "AGGRESSIVE_BULL",
+    "regime": "BULL_TREND",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: BULL_TREND",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: AGGRESSIVE_BULL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Bull Trend.",
+      "Trend context: Uptrend."
+    ]
   }
 ]

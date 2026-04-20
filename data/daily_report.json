@@ -1,33 +1,74 @@
 {
-  "timestamp": "2026-04-16T22:49:24.856873",
+  "timestamp": "2026-04-20T17:03:43.686770",
   "performance": {
-    "trades": 2,
+    "trades": 3,
     "wins": 1,
-    "losses": 1,
-    "winrate": 0.5,
-    "total_pnl": 14.01,
-    "max_drawdown": 2.01,
-    "entries_today": 3,
-    "closes_today": 2,
-    "round_trips_today": 2,
-    "realized_pnl_today": 14.01
+    "losses": 2,
+    "winrate": 0.33,
+    "total_pnl": 7.05,
+    "max_drawdown": 6.96,
+    "entries_today": 0,
+    "closes_today": 1,
+    "round_trips_today": 1,
+    "realized_pnl_today": -6.96
   },
   "portfolio": {
-    "open_positions": 1,
-    "closed_positions": 2,
-    "realized_pnl": 14.01
+    "open_positions": 0,
+    "closed_positions": 3,
+    "realized_pnl": 7.05,
+    "unrealized_pnl": 0.0,
+    "gross_capital_open": 0.0,
+    "vehicle_mix": {
+      "OPTION": 0,
+      "STOCK": 0,
+      "RESEARCH_ONLY": 0,
+      "UNKNOWN": 0
+    },
+    "net_pnl": 7.05
   },
   "analytics": {
-    "trades": 5,
-    "winrate": 0.2,
+    "trades": 6,
+    "wins": 1,
+    "losses": 2,
+    "flats": 3,
+    "winrate": 0.1667,
+    "lossrate": 0.3333,
+    "total_pnl": 7.05,
+    "average_pnl": 1.18,
     "strategies": {
-      "CALL": 5
+      "CALL": 6
     },
-    "last_trade": "MSFT",
+    "symbols": {
+      "AAPL": 2,
+      "MSFT": 4
+    },
+    "last_trade": {
+      "symbol": "MSFT",
+      "trade_id": "MSFT-CALL-20260416224923",
+      "strategy": "CALL",
+      "pnl": -6.96,
+      "timestamp": "2026-04-20T16:07:42.152302"
+    },
     "portfolio": {
-      "open_positions": 1,
-      "closed_positions": 2,
-      "realized_pnl": 14.01
+      "open_positions": 0,
+      "closed_positions": 3,
+      "realized_pnl": 7.05,
+      "unrealized_pnl": 0.0,
+      "gross_capital_open": 0.0,
+      "vehicle_mix": {
+        "OPTION": 0,
+        "STOCK": 0,
+        "RESEARCH_ONLY": 0,
+        "UNKNOWN": 0
+      },
+      "net_pnl": 7.05
     }
+  },
+  "headline": {
+    "trades": 6,
+    "winrate": 0.1667,
+    "realized_pnl": 7.05,
+    "unrealized_pnl": 0.0,
+    "open_positions": 0
   }
 }

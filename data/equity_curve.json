@@ -1,8 +1,72 @@
 [
-  1000,
-  1000,
-  997.99,
-  997.99,
-  1014.01,
-  1014.01
+  {
+    "index": 0,
+    "equity": 1000.0,
+    "pnl": 0.0,
+    "symbol": "",
+    "trade_id": "",
+    "timestamp": "",
+    "strategy": "",
+    "status": "START"
+  },
+  {
+    "index": 1,
+    "equity": 1000.0,
+    "pnl": 0.0,
+    "symbol": "AAPL",
+    "trade_id": "",
+    "timestamp": "2026-04-16T03:09:32.982167",
+    "strategy": "CALL",
+    "status": "OPEN"
+  },
+  {
+    "index": 2,
+    "equity": 997.99,
+    "pnl": -2.01,
+    "symbol": "AAPL",
+    "trade_id": "AAPL-CALL-20260416030932",
+    "timestamp": "2026-04-16T03:09:33.380927",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 3,
+    "equity": 997.99,
+    "pnl": 0.0,
+    "symbol": "MSFT",
+    "trade_id": "",
+    "timestamp": "2026-04-16T03:23:17.227325",
+    "strategy": "CALL",
+    "status": "OPEN"
+  },
+  {
+    "index": 4,
+    "equity": 1014.01,
+    "pnl": 16.02,
+    "symbol": "MSFT",
+    "trade_id": "MSFT-CALL-20260416032316",
+    "timestamp": "2026-04-16T22:49:01.559226",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 5,
+    "equity": 1014.01,
+    "pnl": 0.0,
+    "symbol": "MSFT",
+    "trade_id": "",
+    "timestamp": "2026-04-16T22:49:24.091066",
+    "strategy": "CALL",
+    "status": "OPEN"
+  },
+  {
+    "index": 6,
+    "equity": 1007.05,
+    "pnl": -6.96,
+    "symbol": "MSFT",
+    "trade_id": "MSFT-CALL-20260416224923",
+    "timestamp": "2026-04-20T16:07:42.152302",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  }
 ]
