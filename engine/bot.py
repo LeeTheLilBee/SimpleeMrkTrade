@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any, Dict, List, Tuple
 
 from engine.explainability_engine import (
     explain_trade_decision,
@@ -147,148 +148,16 @@ except Exception:
         return {"blocked": False, "bucket": "NORMAL", "reason": "exposure buckets unavailable"}
 
 
-def _reduced_risk_mode(brake_payload, exposure_payload):
-    return (
-        brake_payload.get("mode") == "REDUCED_RISK"
-        or exposure_payload.get("bucket") in ["ELEVATED", "HIGH"]
-    )
-
-
-def _trim_for_reduced_risk(selected_trades):
-    return selected_trades[:1] if selected_trades else selected_trades
-
-
-def _resolve_bot_mode(explicit_mode=None):
-    return normalize_mode(explicit_mode or MODE_PAPER)
-
-
-def _mode_context(explicit_mode=None):
-    mode = _resolve_bot_mode(explicit_mode)
-    cfg = get_mode_config(mode)
-    payload = build_mode_payload(mode)
-    return mode, cfg, payload
-
-
-def _governor_allows_execution(governor, mode):
-    if not isinstance(governor, dict):
-        return False
-
-    # Paper is intentionally strict now.
-    # Survey is the only place softening is allowed.
-    if mode == MODE_SURVEY:
-        hard_reasons = {
-            "kill_switch",
-            "kill_switch_enabled",
-            "session_unhealthy",
-            "broker_unhealthy",
-        }
-        reasons = set(governor.get("reasons", []) or [])
-        return len(reasons.intersection(hard_reasons)) == 0
-
-    return bool(governor.get("ok_to_trade", False))
-
-
-def validate_contract_executable(contract: dict) -> tuple[bool, str]:
-    if not contract:
-        return False, "no_contract"
-
-    bid = float(contract.get("bid") or 0.0)
-    ask = float(contract.get("ask") or 0.0)
-    mark = float(contract.get("mark") or 0.0)
-    last = float(contract.get("last") or 0.0)
-    spread = float(contract.get("spread") or contract.get("bidAskSpread") or 0.0)
-    spread_pct = float(contract.get("spread_pct") or 0.0)
-    volume = int(contract.get("volume") or 0)
-    open_interest = int(contract.get("open_interest") or 0)
-    dte = int(contract.get("dte") or 0)
-
-    if dte <= 0:
-        return False, "dte_too_low"
-
-    if ask <= 0.05 or mark <= 0.05:
-        return False, "premium_too_small"
-
-    if bid <= 0.0 and ask <= 0.01:
-        return False, "stale_or_dust_contract"
-
-    if volume < 100:
-        return False, "volume_too_low"
-
-    if open_interest < 500:
-        return False, "open_interest_too_low"
-
-    if spread >= 0.50:
-        return False, "spread_too_wide"
-
-    if spread_pct >= 0.20:
-        return False, "spread_pct_too_wide"
-
-    if last <= 0.0 and mark <= 0.0:
-        return False, "no_usable_price"
-
-    return True, "ok"
-
-
-def log_candidate_decision(
-    trade,
-    status,
-    reason,
-    mode=None,
-    breadth=None,
-    volatility_state=None,
-    extra=None,
-):
-    payload = {
-        "symbol": trade.get("symbol"),
-        "strategy": trade.get("strategy"),
-        "score": trade.get("score"),
-        "confidence": trade.get("confidence"),
-        "price": trade.get("price"),
-        "status": status,
-        "reason": reason,
-        "mode": mode,
-        "breadth": breadth,
-        "volatility_state": volatility_state,
-        "timestamp": trade.get("timestamp"),
-        "why": trade.get("why", []),
-        "rejection_reason": trade.get("rejection_reason"),
-        "rejection_analysis": trade.get("rejection_analysis", []),
-        "option": trade.get("option"),
-        "option_contract_score": trade.get("option_contract_score"),
-        "option_explanation": trade.get("option_explanation", []),
-        "trade_id": trade.get("trade_id"),
-        "stronger_competing_setups": trade.get("stronger_competing_setups", []),
-        "trading_mode": trade.get("trading_mode"),
-        "mode_context": trade.get("mode_context", {}),
-    }
-    if extra:
-        payload.update(extra)
-    remember_candidate(payload)
-
-
-def clamp_stock_trade_size_to_cash_reserve(price, cash, min_cash_reserve=100.0, commission=1.0):
-    try:
-        price = float(price or 0)
-        cash = float(cash or 0)
-        min_cash_reserve = float(min_cash_reserve or 100.0)
-        commission = float(commission or 1.0)
-    except Exception:
-        return 0
-
-    if price <= 0:
-        return 0
-
-    spendable_cash = cash - min_cash_reserve - commission
-    if spendable_cash <= 0:
-        return 0
-
-    max_size = int(spendable_cash // price)
-    return max(0, max_size)
-
-
 def _safe_float(value, default=0.0):
     try:
         return float(value)
+    except Exception:
+        return default
+
+
+def _safe_int(value, default=0):
+    try:
+        return int(float(value))
     except Exception:
         return default
 
@@ -316,20 +185,106 @@ def _safe_dict(value):
     return value if isinstance(value, dict) else {}
 
 
+def _norm_symbol(value):
+    return _safe_str(value, "UNKNOWN").upper()
+
+
+def _reduced_risk_mode(brake_payload, exposure_payload):
+    return (
+        _safe_dict(brake_payload).get("mode") == "REDUCED_RISK"
+        or _safe_dict(exposure_payload).get("bucket") in ["ELEVATED", "HIGH"]
+    )
+
+
+def _trim_for_reduced_risk(selected_trades):
+    return selected_trades[:1] if selected_trades else selected_trades
+
+
+def _resolve_bot_mode(explicit_mode=None):
+    return normalize_mode(explicit_mode or MODE_PAPER)
+
+
+def _mode_context(explicit_mode=None):
+    mode = _resolve_bot_mode(explicit_mode)
+    cfg = get_mode_config(mode)
+    payload = build_mode_payload(mode)
+    return mode, cfg, payload
+
+
+def _governor_allows_execution(governor, mode):
+    if not isinstance(governor, dict):
+        return False
+
+    # Paper stays real.
+    # Survey is the only place where soft pressure can loosen a little.
+    if mode == MODE_SURVEY:
+        hard_reasons = {
+            "kill_switch",
+            "kill_switch_enabled",
+            "session_unhealthy",
+            "broker_unhealthy",
+        }
+        reasons = set(governor.get("reasons", []) or [])
+        return len(reasons.intersection(hard_reasons)) == 0
+
+    return bool(governor.get("ok_to_trade", False))
+
+
+def validate_contract_executable(contract: dict) -> tuple[bool, str]:
+    if not contract:
+        return False, "no_contract"
+
+    bid = float(contract.get("bid") or 0.0)
+    ask = float(contract.get("ask") or 0.0)
+    mark = float(contract.get("mark") or 0.0)
+    last = float(contract.get("last") or 0.0)
+    spread = float(contract.get("spread") or contract.get("bidAskSpread") or 0.0)
+    spread_pct = float(contract.get("spread_pct") or 0.0)
+    volume = int(contract.get("volume") or 0)
+    open_interest = int(contract.get("open_interest") or contract.get("openInterest") or 0)
+    dte = int(contract.get("dte") or 0)
+
+    if dte <= 0:
+        return False, "dte_too_low"
+    if ask <= 0.05 or mark <= 0.05:
+        return False, "premium_too_small"
+    if bid <= 0.0 and ask <= 0.01:
+        return False, "stale_or_dust_contract"
+    if volume < 100:
+        return False, "volume_too_low"
+    if open_interest < 500:
+        return False, "open_interest_too_low"
+    if spread >= 0.50:
+        return False, "spread_too_wide"
+    if spread_pct >= 0.20:
+        return False, "spread_pct_too_wide"
+    if last <= 0.0 and mark <= 0.0:
+        return False, "no_usable_price"
+
+    return True, "ok"
+
+
+def _log_observatory_banner(mode_context, trading_mode):
+    print("\n" + "=" * 80)
+    print(
+        f"THE OBSERVATORY ONLINE | {mode_context.get('mode_label', trading_mode)} | "
+        f"{trading_mode.upper()}"
+    )
+    print("=" * 80 + "\n")
+
+
 def _candidate_is_display_worthy(trade):
     if not isinstance(trade, dict):
         return False
 
     strategy = _safe_str(trade.get("strategy"), "CALL").upper()
-    score = _safe_float(trade.get("score", 0), 0.0)
+    score = _safe_float(trade.get("fused_score", trade.get("score", 0)), 0.0)
     confidence_value = _safe_str(trade.get("confidence"), "LOW").upper()
 
     if strategy == "NO_TRADE":
         return False
-
     if score < 90:
         return False
-
     if confidence_value not in {"MEDIUM", "HIGH"}:
         return False
 
@@ -359,6 +314,7 @@ def _approved_or_nearly_approved_debug_rows(debug_rows):
             "cash_reserve_would_be_broken",
             "max_open_positions_reached",
             "cash_reserve_already_too_low",
+            "governor_blocked:cash_reserve_too_low",
         }:
             clean.append(row)
 
@@ -366,13 +322,13 @@ def _approved_or_nearly_approved_debug_rows(debug_rows):
 
 
 def stronger_competing_setups(trade, selected_trades):
-    current_score = float(trade.get("score", 0) or 0)
+    current_score = _safe_float(trade.get("fused_score", trade.get("score", 0)), 0.0)
 
     stronger = []
     for other in selected_trades:
         other_symbol = other.get("symbol")
         other_strategy = other.get("strategy")
-        other_score = float(other.get("score", 0) or 0)
+        other_score = _safe_float(other.get("fused_score", other.get("score", 0)), 0.0)
 
         if other_symbol == trade.get("symbol") and other_strategy == trade.get("strategy"):
             continue
@@ -430,6 +386,64 @@ def resolve_market_mode(regime, breadth, volatility_payload=None):
     return market_mode(regime, breadth)
 
 
+def log_candidate_decision(
+    trade,
+    status,
+    reason,
+    mode=None,
+    breadth=None,
+    volatility_state=None,
+    extra=None,
+):
+    payload = {
+        "symbol": trade.get("symbol"),
+        "strategy": trade.get("strategy"),
+        "score": trade.get("fused_score", trade.get("score")),
+        "confidence": trade.get("confidence"),
+        "price": trade.get("price"),
+        "status": status,
+        "reason": reason,
+        "mode": mode,
+        "breadth": breadth,
+        "volatility_state": volatility_state,
+        "timestamp": trade.get("timestamp"),
+        "why": trade.get("why", []),
+        "rejection_reason": trade.get("rejection_reason"),
+        "rejection_analysis": trade.get("rejection_analysis", []),
+        "option": trade.get("option"),
+        "option_contract_score": trade.get("option_contract_score"),
+        "option_explanation": trade.get("option_explanation", []),
+        "trade_id": trade.get("trade_id"),
+        "stronger_competing_setups": trade.get("stronger_competing_setups", []),
+        "trading_mode": trade.get("trading_mode"),
+        "mode_context": trade.get("mode_context", {}),
+        "vehicle_selected": trade.get("vehicle_selected", "RESEARCH_ONLY"),
+        "capital_required": trade.get("capital_required", 0.0),
+        "minimum_trade_cost": trade.get("minimum_trade_cost", 0.0),
+        "research_approved": bool(trade.get("research_approved", False)),
+        "execution_ready": bool(trade.get("execution_ready", False)),
+        "selected_for_execution": bool(trade.get("selected_for_execution", False)),
+        "blocked_at": trade.get("blocked_at", ""),
+        "final_reason": trade.get("final_reason", ""),
+        "vehicle_reason": trade.get("vehicle_reason", ""),
+        "v2": trade.get("v2", {}),
+        "v2_regime_alignment": trade.get("v2_regime_alignment", ""),
+        "v2_signal_strength": trade.get("v2_signal_strength", 0.0),
+        "v2_conviction_adjustment": trade.get("v2_conviction_adjustment", 0.0),
+        "v2_vehicle_bias": trade.get("v2_vehicle_bias", ""),
+        "v2_thesis": trade.get("v2_thesis", ""),
+        "v2_notes": trade.get("v2_notes", []),
+        "v2_risk_flags": trade.get("v2_risk_flags", []),
+        "readiness_score": trade.get("readiness_score"),
+        "promotion_score": trade.get("promotion_score"),
+        "rebuild_pressure": trade.get("rebuild_pressure"),
+        "execution_quality": trade.get("execution_quality"),
+    }
+    if extra:
+        payload.update(extra)
+    remember_candidate(payload)
+
+
 def log_rejection(trade, symbol, reason_key, machine_reason, mode, breadth, volatility_state):
     trade["rejection_reason"] = explain_rejection(trade, reason_key)
     trade["rejection_analysis"] = build_rejection_analysis(
@@ -473,7 +487,7 @@ def log_rejection(trade, symbol, reason_key, machine_reason, mode, breadth, vola
 
 
 def log_approval(trade, mode, regime, breadth, volatility_state):
-    symbol = str(trade.get("symbol", "UNKNOWN") or "UNKNOWN").upper().strip()
+    symbol = _norm_symbol(trade.get("symbol", "UNKNOWN"))
 
     why_value = trade.get("why", [])
     why_lines = []
@@ -525,30 +539,216 @@ def log_approval(trade, mode, regime, breadth, volatility_state):
         "volatility_state": volatility_state,
         "symbol": symbol,
         "strategy": trade.get("strategy", "CALL"),
-        "score": trade.get("score", 0),
+        "score": trade.get("fused_score", trade.get("score", 0)),
         "confidence": trade.get("confidence", "LOW"),
         "trading_mode": trade.get("trading_mode"),
     })
 
 
+def can_execute_trade(trade, capital_available_now=0.0):
+    trade = trade if isinstance(trade, dict) else {}
+
+    symbol = _norm_symbol(trade.get("symbol", ""))
+    strategy = _safe_str(trade.get("strategy", "CALL"), "CALL").upper()
+    trading_mode_value = normalize_mode(
+        trade.get("trading_mode") or trade.get("mode") or "paper"
+    )
+
+    governor_blocked = bool(trade.get("governor_blocked", False))
+    governor_reason = _safe_str(trade.get("governor_reason", ""), "")
+    if governor_blocked:
+        return {
+            "blocked": True,
+            "reason": governor_reason or "governor_blocked",
+            "symbol": symbol,
+            "strategy": strategy,
+            "trading_mode": trading_mode_value,
+        }
+
+    minimum_trade_cost = _safe_float(
+        trade.get("minimum_trade_cost", trade.get("capital_required", 0.0)),
+        0.0,
+    )
+    capital_required = _safe_float(trade.get("capital_required", 0.0), 0.0)
+    capital_available = _safe_float(capital_available_now, 0.0)
+
+    vehicle_selected = _safe_str(
+        trade.get("vehicle_selected", "RESEARCH_ONLY"),
+        "RESEARCH_ONLY",
+    ).upper()
+
+    if vehicle_selected == "RESEARCH_ONLY":
+        return {
+            "blocked": True,
+            "reason": "research_only",
+            "symbol": symbol,
+            "strategy": strategy,
+            "trading_mode": trading_mode_value,
+        }
+
+    option_reason = _safe_str(trade.get("option_reason", ""), "")
+    option_allowed = bool(trade.get("option_allowed", True))
+    best_option_found = bool(trade.get("best_option_found", False))
+
+    if vehicle_selected == "OPTION":
+        if not best_option_found:
+            return {
+                "blocked": True,
+                "reason": "no_option_contract_found",
+                "symbol": symbol,
+                "strategy": strategy,
+                "trading_mode": trading_mode_value,
+            }
+        if not option_allowed:
+            return {
+                "blocked": True,
+                "reason": option_reason or "option_not_allowed",
+                "symbol": symbol,
+                "strategy": strategy,
+                "trading_mode": trading_mode_value,
+            }
+
+    capital_check = minimum_trade_cost if minimum_trade_cost > 0 else capital_required
+    if capital_check > 0 and capital_available < capital_check:
+        return {
+            "blocked": True,
+            "reason": "insufficient_capital",
+            "symbol": symbol,
+            "strategy": strategy,
+            "trading_mode": trading_mode_value,
+            "capital_required": capital_check,
+            "capital_available": capital_available,
+        }
+
+    return {
+        "blocked": False,
+        "reason": "ok",
+        "symbol": symbol,
+        "strategy": strategy,
+        "trading_mode": trading_mode_value,
+        "capital_required": capital_check,
+        "capital_available": capital_available,
+    }
+
+
+def resolve_execution_guard(trade, capital_available, trading_mode="paper"):
+    trade = trade if isinstance(trade, dict) else {}
+    vehicle_selected = _safe_str(
+        trade.get("vehicle_selected", "RESEARCH_ONLY"),
+        "RESEARCH_ONLY",
+    ).upper()
+    capital_required = _safe_float(trade.get("capital_required", 0.0), 0.0)
+    minimum_trade_cost = _safe_float(
+        trade.get("minimum_trade_cost", capital_required),
+        capital_required,
+    )
+    capital_available = _safe_float(capital_available, 0.0)
+    option_obj = trade.get("option") if isinstance(trade.get("option"), dict) else None
+    trading_mode = normalize_mode(trading_mode)
+
+    result = {
+        "blocked": False,
+        "reason": "ok",
+        "warnings": [],
+        "warning_only": False,
+        "status_label": "OK",
+        "trading_mode": trading_mode,
+        "vehicle_selected": vehicle_selected,
+        "capital_required": round(capital_required, 2),
+        "minimum_trade_cost": round(minimum_trade_cost, 2),
+        "capital_available": round(capital_available, 2),
+    }
+
+    if vehicle_selected == "RESEARCH_ONLY":
+        result.update({
+            "blocked": True,
+            "reason": "research_only_candidate",
+            "status_label": "BLOCKED",
+        })
+        return result
+
+    if minimum_trade_cost <= 0:
+        result.update({
+            "blocked": True,
+            "reason": "invalid_trade_cost",
+            "status_label": "BLOCKED",
+        })
+        return result
+
+    if capital_available <= 0:
+        result.update({
+            "blocked": True,
+            "reason": "no_buying_power",
+            "status_label": "BLOCKED",
+        })
+        return result
+
+    if capital_available < minimum_trade_cost:
+        result.update({
+            "blocked": True,
+            "reason": "insufficient_capital",
+            "status_label": "BLOCKED",
+        })
+        return result
+
+    if vehicle_selected == "OPTION":
+        if not option_obj:
+            result.update({
+                "blocked": True,
+                "reason": "missing_option_contract",
+                "status_label": "BLOCKED",
+            })
+            return result
+
+        option_exec_ok = bool(option_obj.get("is_executable", False))
+        option_exec_reason = _safe_str(
+            option_obj.get("execution_reason", "option_not_executable"),
+            "option_not_executable",
+        )
+
+        if not option_exec_ok:
+            result.update({
+                "blocked": True,
+                "reason": option_exec_reason,
+                "status_label": "BLOCKED",
+            })
+            return result
+
+    if vehicle_selected == "STOCK":
+        shares = int(_safe_float(trade.get("shares", trade.get("size", 1)), 1))
+        price = _safe_float(trade.get("price", 0.0), 0.0)
+
+        if shares <= 0 or price <= 0:
+            result.update({
+                "blocked": True,
+                "reason": "invalid_stock_payload",
+                "status_label": "BLOCKED",
+            })
+            return result
+
+    return result
+
+
 def process_signals(results, regime, volatility_payload, trading_mode="paper"):
     """
-    Fused signal processor.
-    Core behavior:
+    Canonical fused signal processor.
+
+    State flow:
+    - rejected
+    - research_approved_not_execution_ready
+    - execution_ready
+    - selected
+    - execution_ready_not_selected
+
+    Hard-mode behavior:
     - research approval is separate from execution readiness
-    - V2 overlay can influence conviction and vehicle choice
-    - options and stock fallback are decided inside one candidate path
-    - Soulaana can still surface strong research even if execution is blocked
-    - execution queue only sees execution-ready candidates
-    - every candidate is normalized before it is logged, remembered, or displayed
+    - governor + execution guard both matter
+    - Paper Mode remains hard
+    - selected-for-execution is resolved only after execution-ready set is finalized
     """
     from engine.candidate_fusion import build_fused_candidate, finalize_candidate_state
 
     trading_mode = normalize_mode(trading_mode)
-    requested_mode_context = build_mode_context(trading_mode)
-
-    def _norm_symbol(value):
-        return _safe_str(value, "UNKNOWN").upper()
 
     def _remember_candidate_row(
         trade,
@@ -603,14 +803,18 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 "final_reason": trade.get("final_reason", reason),
                 "vehicle_reason": trade.get("vehicle_reason", ""),
             }
+
         if isinstance(extra, dict):
             payload.update(extra)
+
         payload["trading_mode"] = trading_mode_value
         payload["mode_context"] = trade.get("mode_context", {})
+
         try:
             remember_candidate(payload)
         except Exception:
             pass
+
         trade["candidate_display"] = payload
         return payload
 
@@ -621,18 +825,21 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 return row if isinstance(row, dict) else {}
         except Exception:
             pass
+
         try:
             if "get_v2_signal_overlay" in globals():
                 row = get_v2_signal_overlay(symbol, trade)
                 return row if isinstance(row, dict) else {}
         except Exception:
             pass
+
         return {}
 
     def _governor_snapshot(trading_mode=None):
         try:
             requested_mode = normalize_mode(trading_mode or "paper")
             entries_today_value = 0
+
             try:
                 perf = performance_summary()
                 if isinstance(perf, dict):
@@ -656,6 +863,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 "requested_trading_mode": requested_mode,
                 "governor_returned_mode": gov.get("trading_mode") if isinstance(gov, dict) else None,
             })
+
             return gov if isinstance(gov, dict) else {}
         except Exception:
             return {}
@@ -702,7 +910,10 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
     mode = resolve_market_mode(regime, breadth, volatility_payload)
     print("Market Mode:", mode)
 
-    volatility_state = _safe_str((volatility_payload or {}).get("state", "NORMAL"), "NORMAL")
+    volatility_state = _safe_str(
+        (volatility_payload or {}).get("state", (volatility_payload or {}).get("volatility", "NORMAL")),
+        "NORMAL",
+    )
     vix_value = (volatility_payload or {}).get("vix", "N/A")
     print("Volatility State:", volatility_state, "| VIX:", vix_value)
 
@@ -757,6 +968,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
         best_option = None
         option_score = -1
         option_notes = []
+
         try:
             best_option, option_score, option_notes = choose_best_option(
                 option_chain,
@@ -777,12 +989,10 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
 
         if isinstance(best_option, dict) and best_option:
             try:
-                option_allowed, option_reason = option_is_executable(
-                    best_option,
-                    min_score=60,
-                )
+                option_allowed, option_reason = option_is_executable(best_option, min_score=60)
             except Exception:
                 option_allowed, option_reason = False, "option_validation_failed"
+
             best_option["is_executable"] = bool(option_allowed)
             best_option["execution_reason"] = _safe_str(option_reason, "")
         else:
@@ -800,6 +1010,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             buying_power=capital_available_now,
             commission=1.0,
         )
+
         fused["trading_mode"] = resolved_trading_mode
         fused["trading_mode_label"] = resolved_trading_mode_context.get("mode_label", resolved_trading_mode)
         fused["mode_context"] = resolved_trading_mode_context
@@ -843,7 +1054,10 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             "option_allowed": option_allowed if best_option else None,
             "option_reason": option_reason if best_option else "",
             "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
-            "capital_affordable": bool(fused.get("stock_affordable") or fused.get("option_affordable")),
+            "capital_affordable": bool(
+                fused.get("stock_path", {}).get("affordable")
+                or fused.get("option_path", {}).get("affordable")
+            ),
             "research_approved": False,
             "execution_ready": False,
             "selected_for_execution": False,
@@ -867,10 +1081,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
         debug_row["chosen_strategy"] = chosen_strategy
 
         if chosen_strategy:
-            fused["strategy"] = _safe_str(
-                chosen_strategy,
-                fused.get("strategy", strategy),
-            ).upper()
+            fused["strategy"] = _safe_str(chosen_strategy, fused.get("strategy", strategy)).upper()
             debug_row["final_strategy"] = fused["strategy"]
 
         breadth_ok = breadth_allows_trade(fused["strategy"], breadth)
@@ -879,15 +1090,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             reason = "failed_breadth_filter"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "breadth_guard", reason)
             debug_rows.append(debug_row)
-            log_rejection(
-                fused,
-                symbol,
-                "breadth_blocked",
-                reason,
-                mode,
-                breadth,
-                volatility_state,
-            )
+            log_rejection(fused, symbol, "breadth_blocked", reason, mode, breadth, volatility_state)
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -911,15 +1114,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             reason = "strategy_router_returned_no_trade"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "strategy_router", reason)
             debug_rows.append(debug_row)
-            log_rejection(
-                fused,
-                symbol,
-                "strategy_router_blocked",
-                reason,
-                mode,
-                breadth,
-                volatility_state,
-            )
+            log_rejection(fused, symbol, "strategy_router_blocked", reason, mode, breadth, volatility_state)
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -950,21 +1145,14 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             _safe_str(existing_position.get("trade_id", ""), "")
             if isinstance(existing_position, dict) else ""
         )
+
         print("DUP CHECK:", symbol, bool(existing_position))
 
         if existing_position:
             reason = "already_open_position"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "duplicate_guard", reason)
             debug_rows.append(debug_row)
-            log_rejection(
-                fused,
-                symbol,
-                "position_duplication_blocked",
-                reason,
-                mode,
-                breadth,
-                volatility_state,
-            )
+            log_rejection(fused, symbol, "position_duplication_blocked", reason, mode, breadth, volatility_state)
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -993,15 +1181,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             reason = f"reentry_blocked:{reentry_reason}"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "reentry_guard", reason)
             debug_rows.append(debug_row)
-            log_rejection(
-                fused,
-                symbol,
-                "reentry_blocked",
-                reason,
-                mode,
-                breadth,
-                volatility_state,
-            )
+            log_rejection(fused, symbol, "reentry_blocked", reason, mode, breadth, volatility_state)
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -1021,25 +1201,13 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             )
             continue
 
-        score_ok = _safe_float(
-            fused.get("fused_score", fused.get("score", 0.0)),
-            0.0,
-        ) >= 90
+        score_ok = _safe_float(fused.get("fused_score", fused.get("score", 0.0)), 0.0) >= 90
         debug_row["score_allowed"] = score_ok
-
         if not score_ok:
             reason = "failed_score_threshold"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "score_threshold", reason)
             debug_rows.append(debug_row)
-            log_rejection(
-                fused,
-                symbol,
-                "score_too_low",
-                reason,
-                mode,
-                breadth,
-                volatility_state,
-            )
+            log_rejection(fused, symbol, "score_too_low", reason, mode, breadth, volatility_state)
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -1064,20 +1232,11 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             and fused.get("confidence", "LOW") == "LOW"
         )
         debug_row["volatility_allowed"] = volatility_ok
-
         if not volatility_ok:
             reason = "failed_volatility_filter"
             fused, debug_row = _finalize_for_exit(fused, debug_row, "volatility_guard", reason)
             debug_rows.append(debug_row)
-            log_rejection(
-                fused,
-                symbol,
-                "volatility_blocked",
-                reason,
-                mode,
-                breadth,
-                volatility_state,
-            )
+            log_rejection(fused, symbol, "volatility_blocked", reason, mode, breadth, volatility_state)
             _remember_candidate_row(
                 fused,
                 status="rejected",
@@ -1104,15 +1263,7 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 reason = _safe_str(option_reason, "weak_option_contract")
                 fused, debug_row = _finalize_for_exit(fused, debug_row, "option_executable", reason)
                 debug_rows.append(debug_row)
-                log_rejection(
-                    fused,
-                    symbol,
-                    "weak_option_contract",
-                    reason,
-                    mode,
-                    breadth,
-                    volatility_state,
-                )
+                log_rejection(fused, symbol, "weak_option_contract", reason, mode, breadth, volatility_state)
                 _remember_candidate_row(
                     fused,
                     status="rejected",
@@ -1137,7 +1288,18 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
         fused["selected_for_execution"] = False
         debug_row["research_approved"] = True
 
-        exec_guard = can_execute_trade(fused, capital_available_now)
+        try:
+            exec_guard = resolve_execution_guard(
+                fused,
+                capital_available_now,
+                trading_mode=resolved_trading_mode,
+            )
+        except Exception as e:
+            exec_guard = {
+                "blocked": True,
+                "reason": f"execution_guard_error:{e}",
+            }
+
         exec_guard = apply_mode_to_execution_guard(exec_guard, resolved_trading_mode)
 
         if isinstance(exec_guard, dict):
@@ -1147,14 +1309,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             blocked = True
             exec_reason = "invalid_execution_guard_response"
 
-        debug_row["execution_guard_blocked"] = blocked
-        debug_row["execution_guard_reason"] = exec_reason
-
         if governor_reason:
             blocked = True
             exec_reason = governor_reason or "governor_blocked"
-            debug_row["execution_guard_blocked"] = True
-            debug_row["execution_guard_reason"] = exec_reason
+
+        debug_row["execution_guard_blocked"] = blocked
+        debug_row["execution_guard_reason"] = exec_reason
 
         if blocked:
             reason = exec_reason or "execution_guard_blocked"
@@ -1194,8 +1354,8 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
 
         debug_row = _sync_debug_from_fused(debug_row, fused)
         debug_row["final_reason"] = "execution_ready"
-
         debug_rows.append(debug_row)
+
         research_approved.append(fused)
         execution_ready.append(fused)
 
@@ -1221,18 +1381,6 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
             },
         )
 
-    print("\nAPPROVAL DEBUG")
-    for row in debug_rows:
-        print(row)
-
-    if research_approved:
-        print_leaderboard(research_approved)
-        print_top_candidates(research_approved, limit=5)
-        save_top_candidates(research_approved, limit=10)
-    else:
-        print("No approved trades.")
-        print("TOP CANDIDATES None")
-
     affordable = affordable_trade_count(execution_ready)
     selection_limit = min(affordable, 3) if affordable > 0 else 0
 
@@ -1249,31 +1397,8 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
         if isinstance(t, dict)
     }
 
-    print("RESEARCH APPROVED CANDIDATE INTELLIGENCE")
-    if not research_approved:
-        print("None")
-    else:
-        for trade in research_approved:
-            print(
-                f"{trade.get('symbol', 'UNKNOWN')} | "
-                f"{trade.get('strategy', 'CALL')} | "
-                f"{trade.get('fused_score', trade.get('score', 0))} | "
-                f"{trade.get('confidence', 'LOW')} | "
-                f"{trade.get('vehicle_selected', 'RESEARCH_ONLY')}"
-            )
-
-    print("EXECUTION READY CANDIDATE INTELLIGENCE")
-    if not execution_ready:
-        print("None")
-    else:
-        for trade in execution_ready:
-            print(
-                f"{trade.get('symbol', 'UNKNOWN')} | "
-                f"{trade.get('strategy', 'CALL')} | "
-                f"{trade.get('fused_score', trade.get('score', 0))} | "
-                f"{trade.get('confidence', 'LOW')} | "
-                f"{trade.get('vehicle_selected', 'RESEARCH_ONLY')}"
-            )
+    finalized_research_approved = []
+    finalized_selected_trades = []
 
     for trade in research_approved:
         key = (
@@ -1283,9 +1408,14 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
 
         if key in selected_keys:
             trade["selected_for_execution"] = True
+            trade["execution_ready"] = True
+            trade["research_approved"] = True
             trade["final_reason"] = "selected_for_execution"
             trade["blocked_at"] = ""
             trade = finalize_candidate_state(trade)
+
+            finalized_research_approved.append(trade)
+            finalized_selected_trades.append(trade)
 
             log_candidate_decision(
                 trade,
@@ -1310,8 +1440,8 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 extra={
                     "minimum_trade_cost": trade.get("minimum_trade_cost", 0.0),
                     "vehicle_selected": trade.get("vehicle_selected", "RESEARCH_ONLY"),
-                    "research_approved": bool(trade.get("research_approved", False)),
-                    "execution_ready": bool(trade.get("execution_ready", False)),
+                    "research_approved": True,
+                    "execution_ready": True,
                     "selected_for_execution": True,
                     "blocked_at": trade.get("blocked_at", ""),
                     "final_reason": trade.get("final_reason", "selected_for_execution"),
@@ -1327,9 +1457,12 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 "not_selected",
                 "approved_but_ranked_below_execution_cut",
             )
+            trade["selected_for_execution"] = False
             trade["final_reason"] = "approved_but_ranked_below_execution_cut"
             trade["blocked_at"] = ""
             trade = finalize_candidate_state(trade)
+
+            finalized_research_approved.append(trade)
 
             log_candidate_decision(
                 trade,
@@ -1367,12 +1500,72 @@ def process_signals(results, regime, volatility_payload, trading_mode="paper"):
                 },
             )
 
+        else:
+            finalized_research_approved.append(trade)
+
+    research_approved = finalized_research_approved
+    selected_trades = finalized_selected_trades
+
+    print("\nAPPROVAL DEBUG")
+    for row in debug_rows:
+        print(row)
+
+    if research_approved:
+        print_leaderboard(research_approved)
+        print_top_candidates(research_approved, limit=5)
+        save_top_candidates(research_approved, limit=10)
+    else:
+        print("No approved trades.")
+        print("TOP CANDIDATES None")
+
+    print("RESEARCH APPROVED CANDIDATE INTELLIGENCE")
+    if not research_approved:
+        print("None")
+    else:
+        for trade in research_approved:
+            print(
+                f"{trade.get('symbol', 'UNKNOWN')} | "
+                f"{trade.get('strategy', 'CALL')} | "
+                f"{trade.get('fused_score', trade.get('score', 0))} | "
+                f"{trade.get('confidence', 'LOW')} | "
+                f"{trade.get('vehicle_selected', 'RESEARCH_ONLY')}"
+            )
+
+    print("EXECUTION READY CANDIDATE INTELLIGENCE")
+    execution_ready_now = [t for t in research_approved if bool(t.get("execution_ready", False))]
+    if not execution_ready_now:
+        print("None")
+    else:
+        for trade in execution_ready_now:
+            print(
+                f"{trade.get('symbol', 'UNKNOWN')} | "
+                f"{trade.get('strategy', 'CALL')} | "
+                f"{trade.get('fused_score', trade.get('score', 0))} | "
+                f"{trade.get('confidence', 'LOW')} | "
+                f"{trade.get('vehicle_selected', 'RESEARCH_ONLY')}"
+            )
+
+    print("SELECTED FOR EXECUTION CANDIDATE INTELLIGENCE")
+    if not selected_trades:
+        print("None")
+    else:
+        for trade in selected_trades:
+            print(
+                f"{trade.get('symbol', 'UNKNOWN')} | "
+                f"{trade.get('strategy', 'CALL')} | "
+                f"{trade.get('fused_score', trade.get('score', 0))} | "
+                f"{trade.get('confidence', 'LOW')} | "
+                f"{trade.get('vehicle_selected', 'RESEARCH_ONLY')}"
+            )
+
     return research_approved, selected_trades, mode, breadth, volatility_state
 
 
 def run(trading_mode="paper"):
     trading_mode = normalize_mode(trading_mode)
     mode_context = build_mode_context(trading_mode)
+
+    _log_observatory_banner(mode_context, trading_mode)
 
     write_bot_status(True, f"starting:{trading_mode}")
     log_bot(
@@ -1429,7 +1622,7 @@ def run(trading_mode="paper"):
 
         regime = get_market_regime()
         volatility_payload = get_volatility_environment()
-        volatility_state = volatility_payload.get("volatility", "UNKNOWN")
+        volatility_state = volatility_payload.get("volatility", volatility_payload.get("state", "UNKNOWN"))
         sector_counts = sector_cap.get("sector_counts", {}) if isinstance(sector_cap, dict) else {}
 
         print("Market Regime:", regime)
@@ -1445,6 +1638,12 @@ def run(trading_mode="paper"):
         display_candidates = _filter_display_candidates(results)
         print("Execution candidates:", [r.get("symbol") for r in results[:20]])
         print("Execution candidate count:", len(results))
+
+        if display_candidates:
+            try:
+                print_candidate_cards(display_candidates[:12])
+            except Exception:
+                pass
 
         execution_universe = load_json("data/execution_universe.json", {})
         spotlight = execution_universe.get("spotlight", []) if isinstance(execution_universe, dict) else []
@@ -1846,7 +2045,7 @@ def run(trading_mode="paper"):
 
                 lifecycle_after = result.get("lifecycle_after", {}) or {}
                 symbol = lifecycle_after.get("symbol", "UNKNOWN")
-                trade_id = lifecycle_after.get("raw", {}).get("trade_id")
+                trade_id = lifecycle_after.get("raw", {}).get("trade_id") or lifecycle_after.get("trade_id")
 
                 add_trade_timeline_event(
                     symbol,

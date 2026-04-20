@@ -57,9 +57,11 @@ def _norm_symbol(value: Any) -> str:
     return _safe_str(value, "UNKNOWN").upper()
 
 
-def _confidence_rank(confidence: str) -> int:
-    mapping = {"LOW": 1, "MEDIUM": 2, "HIGH": 3}
-    return mapping.get(_safe_str(confidence, "LOW").upper(), 1)
+def _bool(value: Any, default: bool = False) -> bool:
+    try:
+        return bool(value)
+    except Exception:
+        return bool(default)
 
 
 def _estimate_stock_cost(row: Dict[str, Any]) -> float:
@@ -76,6 +78,7 @@ def _estimate_option_cost(
     contracts: int = 1,
     commission: float = 1.0,
 ) -> float:
+    option_obj = _safe_dict(option_obj)
     mark = _safe_float(
         option_obj.get(
             "mark",
@@ -101,16 +104,11 @@ def _vehicle_shape(vehicle: str) -> Dict[str, int]:
 def _apply_vehicle_shape(candidate: Dict[str, Any], vehicle: str) -> Dict[str, Any]:
     out = dict(candidate or {})
     shape = _vehicle_shape(vehicle)
-
     out["vehicle_selected"] = _safe_str(vehicle, "RESEARCH_ONLY").upper()
     out["shares"] = shape["shares"]
     out["contracts"] = shape["contracts"]
-
-    if out["vehicle_selected"] != "OPTION":
-        out["option_position_size"] = 0
-    if out["vehicle_selected"] != "STOCK":
-        out["stock_position_size"] = 0
-
+    out["stock_position_size"] = shape["shares"] if out["vehicle_selected"] == "STOCK" else 0
+    out["option_position_size"] = shape["contracts"] if out["vehicle_selected"] == "OPTION" else 0
     return out
 
 
@@ -122,28 +120,27 @@ def _set_vehicle_state(
     minimum_trade_cost: Optional[float] = None,
     vehicle_reason: Optional[str] = None,
 ) -> Dict[str, Any]:
-    out = dict(candidate or {})
+    out = _apply_vehicle_shape(candidate, vehicle)
     vehicle = _safe_str(vehicle, "RESEARCH_ONLY").upper()
 
-    out = _apply_vehicle_shape(out, vehicle)
-
-    if capital_required is not None:
-        out["capital_required"] = round(_safe_float(capital_required, 0.0), 2)
-    else:
-        out["capital_required"] = round(_safe_float(out.get("capital_required", 0.0), 0.0), 2)
-
-    if minimum_trade_cost is not None:
-        out["minimum_trade_cost"] = round(_safe_float(minimum_trade_cost, 0.0), 2)
-    else:
-        out["minimum_trade_cost"] = round(_safe_float(out.get("minimum_trade_cost", 0.0), 0.0), 2)
-
-    if vehicle_reason:
-        out["vehicle_reason"] = vehicle_reason
-    else:
-        out["vehicle_reason"] = _safe_str(
-            out.get("vehicle_reason", out.get("best_vehicle_reason", "")),
-            "",
-        )
+    out["capital_required"] = round(
+        _safe_float(
+            capital_required if capital_required is not None else out.get("capital_required", 0.0),
+            0.0,
+        ),
+        2,
+    )
+    out["minimum_trade_cost"] = round(
+        _safe_float(
+            minimum_trade_cost if minimum_trade_cost is not None else out.get("minimum_trade_cost", 0.0),
+            0.0,
+        ),
+        2,
+    )
+    out["vehicle_reason"] = _safe_str(
+        vehicle_reason if vehicle_reason is not None else out.get("vehicle_reason", out.get("best_vehicle_reason", "")),
+        "",
+    )
 
     if vehicle == "RESEARCH_ONLY":
         out["capital_required"] = 0.0
@@ -156,6 +153,7 @@ def _collapse_to_research_only(
     candidate: Dict[str, Any],
     reason: str,
     blocked_at: str,
+    reason_code: Optional[str] = None,
 ) -> Dict[str, Any]:
     out = dict(candidate or {})
     out = _set_vehicle_state(
@@ -168,17 +166,22 @@ def _collapse_to_research_only(
     out["research_approved"] = False
     out["execution_ready"] = False
     out["selected_for_execution"] = False
-    out["blocked_at"] = blocked_at
-    out["final_reason"] = reason
+    out["blocked_at"] = _safe_str(blocked_at, "research_gate")
+    out["final_reason"] = _safe_str(reason, "not_research_approved")
+    out["final_reason_code"] = _safe_str(reason_code or reason, "not_research_approved")
+    out["decision_reason"] = out["final_reason"]
+    out["decision_reason_code"] = out["final_reason_code"]
     return out
 
 
 def _normalize_v2_row(v2_row: Optional[Dict[str, Any]]) -> Dict[str, Any]:
-    v2_row = v2_row if isinstance(v2_row, dict) else {}
+    v2_row = _safe_dict(v2_row)
     notes = v2_row.get("notes", v2_row.get("signals", []))
     risk_flags = v2_row.get("risk_flags", v2_row.get("warnings", []))
-
     return {
+        "score": _safe_float(v2_row.get("score", v2_row.get("v2_score", 0.0)), 0.0),
+        "quality": _safe_str(v2_row.get("quality", ""), ""),
+        "reason": _safe_str(v2_row.get("reason", ""), ""),
         "regime_alignment": _safe_str(
             v2_row.get("regime_alignment", v2_row.get("alignment", "")),
             "",
@@ -206,153 +209,6 @@ def _normalize_v2_row(v2_row: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         "risk_flags": risk_flags if isinstance(risk_flags, list) else [],
         "raw": dict(v2_row),
     }
-
-
-def choose_best_vehicle(
-    base_trade: Dict[str, Any],
-    best_option: Optional[Dict[str, Any]],
-    option_score: float,
-    buying_power: float,
-    prefer_options: bool = True,
-    commission: float = 1.0,
-) -> Dict[str, Any]:
-    stock_cost = _estimate_stock_cost(base_trade)
-    stock_minimum_cost = round(stock_cost + _safe_float(commission, 1.0), 2) if stock_cost > 0 else 0.0
-
-    has_option = isinstance(best_option, dict) and bool(best_option)
-    best_option = _safe_dict(best_option)
-
-    option_cost = 0.0
-    option_dte = -1
-    option_spread_pct = 999.0
-    option_exec_reason = ""
-    option_flagged_executable = False
-    trade_intent = "GRIND"
-
-    if has_option:
-        option_cost = _estimate_option_cost(best_option, contracts=1, commission=commission)
-        option_dte = int(_safe_float(best_option.get("dte", -1), -1))
-        option_spread_pct = _safe_float(best_option.get("spread_pct", 999.0), 999.0)
-        option_exec_reason = _safe_str(best_option.get("execution_reason", ""), "")
-        option_flagged_executable = bool(best_option.get("is_executable", False))
-        trade_intent = _safe_str(best_option.get("trade_intent", "GRIND"), "GRIND").upper()
-
-    buying_power = _safe_float(buying_power, 0.0)
-
-    stock_affordable = stock_minimum_cost > 0 and stock_minimum_cost <= buying_power
-    option_affordable = option_cost > 0 and option_cost <= buying_power
-
-    option_score_value = _safe_float(option_score, -1.0)
-    option_quality_ok = has_option and option_score_value >= 60
-    option_spread_ok = option_spread_pct <= 0.12
-
-    if trade_intent in {"GRIND", "MOMENTUM", "EXPLOSIVE"}:
-        option_dte_ok = option_dte >= 0
-    else:
-        option_dte_ok = option_dte >= 0
-
-    option_executable = (
-        has_option
-        and option_affordable
-        and (
-            option_flagged_executable
-            or (option_quality_ok and option_spread_ok and option_dte_ok)
-        )
-    )
-
-    stock_score_ok = _safe_float(
-        base_trade.get("fused_score", base_trade.get("score", 0.0)),
-        0.0,
-    ) >= 100
-    stock_conf_ok = _safe_str(base_trade.get("confidence", "LOW"), "LOW").upper() in {"MEDIUM", "HIGH"}
-    stock_executable = stock_affordable and stock_score_ok and stock_conf_ok
-
-    vehicle = "RESEARCH_ONLY"
-    capital_required = 0.0
-    minimum_trade_cost = 0.0
-    best_vehicle_reason = "no_executable_vehicle"
-
-    if prefer_options and option_executable:
-        vehicle = "OPTION"
-        capital_required = round(option_cost - _safe_float(commission, 1.0), 2)
-        minimum_trade_cost = option_cost
-        best_vehicle_reason = "preferred_option_contract"
-
-    elif stock_executable:
-        vehicle = "STOCK"
-        capital_required = stock_cost
-        minimum_trade_cost = stock_minimum_cost
-
-        if has_option and not option_affordable and option_cost > 0:
-            best_vehicle_reason = "option_too_expensive_stock_fallback"
-        elif has_option and option_exec_reason == "spread_too_wide":
-            best_vehicle_reason = "wide_option_spread_stock_fallback"
-        elif has_option and option_exec_reason in {
-            "expiry_too_close_for_grind",
-            "expiry_too_close_for_momentum",
-            "expiry_too_close_for_explosive",
-        }:
-            best_vehicle_reason = "expired_or_same_day_option_stock_fallback"
-        elif has_option and not option_flagged_executable and option_score_value > 0:
-            best_vehicle_reason = "weak_option_contract_stock_fallback"
-        else:
-            best_vehicle_reason = "stock_only_executable"
-
-    elif option_executable:
-        vehicle = "OPTION"
-        capital_required = round(option_cost - _safe_float(commission, 1.0), 2)
-        minimum_trade_cost = option_cost
-        best_vehicle_reason = "option_only_executable"
-
-    elif has_option and option_cost > 0 and not option_affordable:
-        vehicle = "RESEARCH_ONLY"
-        capital_required = round(option_cost - _safe_float(commission, 1.0), 2)
-        minimum_trade_cost = option_cost
-        best_vehicle_reason = "option_not_affordable"
-
-    elif stock_minimum_cost > 0 and not stock_affordable:
-        vehicle = "RESEARCH_ONLY"
-        capital_required = stock_cost
-        minimum_trade_cost = stock_minimum_cost
-        best_vehicle_reason = "stock_not_affordable"
-
-    elif has_option and option_score_value > 0:
-        vehicle = "RESEARCH_ONLY"
-        capital_required = 0.0
-        minimum_trade_cost = 0.0
-        best_vehicle_reason = option_exec_reason or "option_not_executable"
-
-    result = {
-        "vehicle_selected": vehicle,
-        "capital_required": round(capital_required, 2),
-        "minimum_trade_cost": round(minimum_trade_cost, 2),
-        "stock_minimum_cost": round(stock_minimum_cost, 2),
-        "option_minimum_cost": round(option_cost, 2),
-        "stock_affordable": stock_affordable,
-        "option_affordable": option_affordable,
-        "best_vehicle_reason": best_vehicle_reason,
-        "prefer_options": prefer_options,
-        "option_good": option_quality_ok,
-        "option_dte_ok": option_dte_ok,
-        "option_spread_ok": option_spread_ok,
-        "option_score_value": round(option_score_value, 2),
-        "option_dte": option_dte,
-        "option_spread_pct": round(option_spread_pct, 4) if option_spread_pct < 999 else option_spread_pct,
-        "option_execution_reason": option_exec_reason,
-        "option_flagged_executable": option_flagged_executable,
-        "trade_intent": trade_intent,
-        "stock_score_ok": stock_score_ok,
-        "stock_conf_ok": stock_conf_ok,
-    }
-
-    result = _set_vehicle_state(
-        result,
-        vehicle,
-        capital_required=capital_required,
-        minimum_trade_cost=minimum_trade_cost,
-        vehicle_reason=best_vehicle_reason,
-    )
-    return result
 
 
 def apply_v2_overlay(
@@ -384,7 +240,11 @@ def apply_v2_overlay(
     out["fused_score"] = fused_score
     out["confidence"] = fused_confidence
     out["base_confidence"] = base_confidence
+
     out["v2"] = normalized_v2
+    out["v2_score"] = _safe_float(normalized_v2.get("score", 0.0), 0.0)
+    out["v2_quality"] = _safe_str(normalized_v2.get("quality", ""), "")
+    out["v2_reason"] = _safe_str(normalized_v2.get("reason", ""), "")
     out["v2_regime_alignment"] = _safe_str(normalized_v2.get("regime_alignment", ""), "")
     out["v2_signal_strength"] = _safe_float(normalized_v2.get("signal_strength", 0.0), 0.0)
     out["v2_conviction_adjustment"] = _safe_float(normalized_v2.get("conviction_adjustment", 0.0), 0.0)
@@ -408,24 +268,241 @@ def apply_v2_overlay(
     return out
 
 
+def _score_stock_path(
+    trade: Dict[str, Any],
+    buying_power: float,
+    commission: float,
+) -> Dict[str, Any]:
+    price = round(
+        _safe_float(trade.get("price", trade.get("current_price", trade.get("entry", 0.0))), 0.0),
+        2,
+    )
+    shares = max(1, _safe_int(trade.get("size", trade.get("shares", 1)), 1))
+    capital_required = round(price * shares, 2)
+    minimum_trade_cost = round(capital_required + commission, 2)
+
+    score = _safe_float(trade.get("fused_score", trade.get("score", 0.0)), 0.0)
+    confidence = _safe_str(trade.get("confidence", "LOW"), "LOW").upper()
+
+    affordable = capital_required > 0 and minimum_trade_cost <= buying_power
+    score_ok = score >= 100
+    confidence_ok = confidence in {"MEDIUM", "HIGH"}
+
+    executable = affordable and score_ok and confidence_ok
+
+    if not affordable:
+        reason = "stock_not_affordable"
+    elif not score_ok:
+        reason = "stock_score_too_low"
+    elif not confidence_ok:
+        reason = "stock_confidence_too_low"
+    else:
+        reason = "stock_executable"
+
+    return {
+        "vehicle": "STOCK",
+        "capital_required": capital_required,
+        "minimum_trade_cost": minimum_trade_cost,
+        "affordable": affordable,
+        "score_ok": score_ok,
+        "confidence_ok": confidence_ok,
+        "executable": executable,
+        "shares": shares,
+        "contracts": 0,
+        "reason": reason,
+    }
+
+
+def _score_option_path(
+    best_option: Optional[Dict[str, Any]],
+    option_score: float,
+    buying_power: float,
+    commission: float,
+) -> Dict[str, Any]:
+    option_obj = _safe_dict(best_option)
+    has_option = bool(option_obj)
+
+    if not has_option:
+        return {
+            "vehicle": "OPTION",
+            "capital_required": 0.0,
+            "minimum_trade_cost": 0.0,
+            "affordable": False,
+            "score_ok": False,
+            "spread_ok": False,
+            "dte_ok": False,
+            "flagged_executable": False,
+            "executable": False,
+            "shares": 0,
+            "contracts": 0,
+            "score": -1.0,
+            "dte": -1,
+            "spread_pct": 999.0,
+            "execution_reason": "no_option_contract",
+            "reason": "no_option_contract",
+        }
+
+    option_minimum_trade_cost = _estimate_option_cost(option_obj, contracts=1, commission=commission)
+    option_capital_required = round(max(0.0, option_minimum_trade_cost - commission), 2)
+
+    option_score_value = _safe_float(option_score, -1.0)
+    option_dte = _safe_int(option_obj.get("dte", -1), -1)
+    option_spread_pct = _safe_float(option_obj.get("spread_pct", 999.0), 999.0)
+    option_exec_reason = _safe_str(option_obj.get("execution_reason", ""), "")
+    option_flagged_executable = _bool(option_obj.get("is_executable", False), False)
+
+    affordable = option_capital_required > 0 and option_minimum_trade_cost <= buying_power
+    score_ok = option_score_value >= 60
+    spread_ok = option_spread_pct <= 0.12
+    dte_ok = option_dte >= 0
+
+    executable = has_option and affordable and (
+        option_flagged_executable or (score_ok and spread_ok and dte_ok)
+    )
+
+    if not affordable and option_capital_required > 0:
+        reason = "option_not_affordable"
+    elif not score_ok:
+        reason = option_exec_reason or "option_score_too_low"
+    elif not spread_ok:
+        reason = option_exec_reason or "spread_too_wide"
+    elif not dte_ok:
+        reason = option_exec_reason or "invalid_option_dte"
+    elif not executable:
+        reason = option_exec_reason or "option_not_executable"
+    else:
+        reason = "option_executable"
+
+    return {
+        "vehicle": "OPTION",
+        "capital_required": round(option_capital_required, 2),
+        "minimum_trade_cost": round(option_minimum_trade_cost, 2),
+        "affordable": affordable,
+        "score_ok": score_ok,
+        "spread_ok": spread_ok,
+        "dte_ok": dte_ok,
+        "flagged_executable": option_flagged_executable,
+        "executable": executable,
+        "shares": 0,
+        "contracts": 1 if executable else 0,
+        "score": round(option_score_value, 2),
+        "dte": option_dte,
+        "spread_pct": round(option_spread_pct, 4) if option_spread_pct < 999 else option_spread_pct,
+        "execution_reason": option_exec_reason,
+        "reason": reason,
+    }
+
+
+def choose_best_vehicle(
+    base_trade: Dict[str, Any],
+    best_option: Optional[Dict[str, Any]],
+    option_score: float,
+    buying_power: float,
+    prefer_options: bool = True,
+    commission: float = 1.0,
+) -> Dict[str, Any]:
+    trade = dict(base_trade or {})
+    buying_power = _safe_float(buying_power, 0.0)
+    commission = _safe_float(commission, 1.0)
+
+    stock_path = _score_stock_path(trade, buying_power, commission)
+    option_path = _score_option_path(best_option, option_score, buying_power, commission)
+
+    has_option_contract = bool(_safe_dict(best_option))
+    prefer_options = bool(prefer_options)
+
+    vehicle = "RESEARCH_ONLY"
+    reason = "no_executable_vehicle"
+    capital_required = 0.0
+    minimum_trade_cost = 0.0
+
+    if prefer_options and option_path["executable"]:
+        vehicle = "OPTION"
+        reason = "preferred_option_contract"
+        capital_required = option_path["capital_required"]
+        minimum_trade_cost = option_path["minimum_trade_cost"]
+    elif stock_path["executable"]:
+        vehicle = "STOCK"
+        capital_required = stock_path["capital_required"]
+        minimum_trade_cost = stock_path["minimum_trade_cost"]
+        if has_option_contract:
+            if not option_path["affordable"] and option_path["capital_required"] > 0:
+                reason = "option_too_expensive_stock_fallback"
+            elif not option_path["score_ok"]:
+                reason = "weak_option_contract_stock_fallback"
+            elif not option_path["spread_ok"]:
+                reason = "wide_option_spread_stock_fallback"
+            elif not option_path["dte_ok"]:
+                reason = "invalid_option_dte_stock_fallback"
+            elif not option_path["executable"]:
+                reason = option_path["reason"] or "option_not_executable_stock_fallback"
+            else:
+                reason = "stock_selected"
+        else:
+            reason = "stock_only_executable"
+    elif option_path["executable"]:
+        vehicle = "OPTION"
+        reason = "option_only_executable"
+        capital_required = option_path["capital_required"]
+        minimum_trade_cost = option_path["minimum_trade_cost"]
+    else:
+        vehicle = "RESEARCH_ONLY"
+        capital_required = 0.0
+        minimum_trade_cost = 0.0
+        if has_option_contract:
+            reason = option_path["reason"] or stock_path["reason"] or "no_executable_vehicle"
+        else:
+            reason = stock_path["reason"] or "no_executable_vehicle"
+
+    result = {
+        "vehicle_selected": vehicle,
+        "capital_required": round(capital_required, 2),
+        "minimum_trade_cost": round(minimum_trade_cost, 2),
+        "best_vehicle_reason": reason,
+        "vehicle_reason": reason,
+        "prefer_options": prefer_options,
+        "stock_path": stock_path,
+        "option_path": option_path,
+        "stock_affordable": _bool(stock_path.get("affordable", False), False),
+        "option_affordable": _bool(option_path.get("affordable", False), False),
+        "stock_score_ok": _bool(stock_path.get("score_ok", False), False),
+        "stock_conf_ok": _bool(stock_path.get("confidence_ok", False), False),
+        "option_good": _bool(option_path.get("score_ok", False), False),
+        "option_dte_ok": _bool(option_path.get("dte_ok", False), False),
+        "option_spread_ok": _bool(option_path.get("spread_ok", False), False),
+        "option_score_value": _safe_float(option_path.get("score", -1.0), -1.0),
+        "option_dte": _safe_int(option_path.get("dte", -1), -1),
+        "option_spread_pct": _safe_float(option_path.get("spread_pct", 999.0), 999.0),
+        "option_execution_reason": _safe_str(option_path.get("execution_reason", ""), ""),
+        "option_flagged_executable": _bool(option_path.get("flagged_executable", False), False),
+        "trade_intent": _safe_str(
+            _safe_dict(best_option).get("trade_intent", "GRIND"),
+            "GRIND",
+        ).upper(),
+    }
+
+    return _set_vehicle_state(
+        result,
+        vehicle,
+        capital_required=capital_required,
+        minimum_trade_cost=minimum_trade_cost,
+        vehicle_reason=reason,
+    )
+
+
 def finalize_candidate_state(candidate: Dict[str, Any]) -> Dict[str, Any]:
     out = dict(candidate or {})
-
     vehicle = _safe_str(out.get("vehicle_selected", "RESEARCH_ONLY"), "RESEARCH_ONLY").upper()
     blocked_at = _safe_str(out.get("blocked_at", ""), "")
     final_reason = _safe_str(out.get("final_reason", ""), "")
-    research_approved = bool(out.get("research_approved", False))
-    execution_ready = bool(out.get("execution_ready", False))
-    selected_for_execution = bool(out.get("selected_for_execution", False))
+    final_reason_code = _safe_str(out.get("final_reason_code", final_reason), final_reason)
 
-    if blocked_at == "strategy_router" or final_reason == "strategy_router_returned_no_trade":
-        return _collapse_to_research_only(
-            out,
-            reason=final_reason or "strategy_router_returned_no_trade",
-            blocked_at="strategy_router",
-        )
+    research_approved = _bool(out.get("research_approved", False), False)
+    execution_ready = _bool(out.get("execution_ready", False), False)
+    selected_for_execution = _bool(out.get("selected_for_execution", False), False)
 
-    if blocked_at in {
+    hard_research_fail_blocks = {
+        "strategy_router",
         "score_threshold",
         "reentry_guard",
         "duplicate_guard",
@@ -435,39 +512,55 @@ def finalize_candidate_state(candidate: Dict[str, Any]) -> Dict[str, Any]:
         "breadth_guard",
         "breadth_filter",
         "option_executable",
-    }:
+    }
+
+    if blocked_at == "strategy_router" or final_reason_code == "strategy_router_returned_no_trade":
+        return _collapse_to_research_only(
+            out,
+            reason=final_reason or "strategy_router_returned_no_trade",
+            blocked_at="strategy_router",
+            reason_code="strategy_router_returned_no_trade",
+        )
+
+    if blocked_at in hard_research_fail_blocks:
         return _collapse_to_research_only(
             out,
             reason=final_reason or f"{blocked_at}_blocked",
             blocked_at=blocked_at,
+            reason_code=final_reason_code or f"{blocked_at}_blocked",
         )
 
     if vehicle == "RESEARCH_ONLY":
-        out["research_approved"] = bool(research_approved)
+        out["research_approved"] = research_approved
         out["execution_ready"] = False
         out["selected_for_execution"] = False
-        if not out.get("blocked_at"):
-            out["blocked_at"] = "vehicle_selection"
-        if not out.get("final_reason"):
-            out["final_reason"] = "no_executable_vehicle_selected"
-        out = _set_vehicle_state(
+        out["blocked_at"] = blocked_at or "vehicle_selection"
+        out["final_reason"] = final_reason or "no_executable_vehicle_selected"
+        out["final_reason_code"] = final_reason_code or "no_executable_vehicle_selected"
+        out["decision_reason"] = _safe_str(out.get("decision_reason", out["final_reason"]), out["final_reason"])
+        out["decision_reason_code"] = _safe_str(
+            out.get("decision_reason_code", out["final_reason_code"]),
+            out["final_reason_code"],
+        )
+        return _set_vehicle_state(
             out,
             "RESEARCH_ONLY",
             capital_required=0.0,
             minimum_trade_cost=0.0,
-            vehicle_reason=(
-                out.get("vehicle_reason")
-                or out.get("best_vehicle_reason")
-                or "research_only"
-            ),
+            vehicle_reason=out.get("vehicle_reason") or out.get("best_vehicle_reason") or "research_only",
         )
-        return out
 
-    if blocked_at == "governor":
-        out["research_approved"] = bool(research_approved)
+    if blocked_at in {"governor", "execution_guard"}:
+        out["research_approved"] = research_approved
         out["execution_ready"] = False
         out["selected_for_execution"] = False
-        out = _set_vehicle_state(
+        out["final_reason_code"] = final_reason_code or final_reason
+        out["decision_reason"] = _safe_str(out.get("decision_reason", final_reason), final_reason)
+        out["decision_reason_code"] = _safe_str(
+            out.get("decision_reason_code", out["final_reason_code"]),
+            out["final_reason_code"],
+        )
+        return _set_vehicle_state(
             out,
             vehicle,
             capital_required=out.get("capital_required", 0.0),
@@ -475,64 +568,43 @@ def finalize_candidate_state(candidate: Dict[str, Any]) -> Dict[str, Any]:
             vehicle_reason=(
                 out.get("vehicle_reason")
                 or out.get("best_vehicle_reason")
-                or "execution_blocked_by_governor"
+                or ("execution_blocked_by_governor" if blocked_at == "governor" else "execution_blocked_by_execution_guard")
             ),
         )
-        return out
-
-    if blocked_at == "execution_guard":
-        out["research_approved"] = bool(research_approved)
-        out["execution_ready"] = False
-        out["selected_for_execution"] = False
-        out = _set_vehicle_state(
-            out,
-            vehicle,
-            capital_required=out.get("capital_required", 0.0),
-            minimum_trade_cost=out.get("minimum_trade_cost", 0.0),
-            vehicle_reason=(
-                out.get("vehicle_reason")
-                or out.get("best_vehicle_reason")
-                or "execution_blocked_by_execution_guard"
-            ),
-        )
-        return out
-
-    if research_approved and not blocked_at:
-        out["research_approved"] = True
-        out["execution_ready"] = bool(execution_ready)
-        out["selected_for_execution"] = bool(selected_for_execution)
-        out = _set_vehicle_state(
-            out,
-            vehicle,
-            capital_required=out.get("capital_required", 0.0),
-            minimum_trade_cost=out.get("minimum_trade_cost", 0.0),
-            vehicle_reason=(
-                out.get("vehicle_reason")
-                or out.get("best_vehicle_reason")
-                or "vehicle_selected"
-            ),
-        )
-        return out
 
     if not research_approved:
         return _collapse_to_research_only(
             out,
             reason=final_reason or "not_research_approved",
             blocked_at=blocked_at or "research_gate",
+            reason_code=final_reason_code or "not_research_approved",
         )
 
-    out = _set_vehicle_state(
+    out["research_approved"] = True
+    out["execution_ready"] = execution_ready
+    out["selected_for_execution"] = selected_for_execution
+
+    if execution_ready and not out.get("final_reason"):
+        out["final_reason"] = "execution_ready"
+    if execution_ready and not out.get("final_reason_code"):
+        out["final_reason_code"] = "execution_ready"
+
+    out["decision_reason"] = _safe_str(
+        out.get("decision_reason", out.get("final_reason", "")),
+        out.get("final_reason", ""),
+    )
+    out["decision_reason_code"] = _safe_str(
+        out.get("decision_reason_code", out.get("final_reason_code", "")),
+        out.get("final_reason_code", ""),
+    )
+
+    return _set_vehicle_state(
         out,
         vehicle,
         capital_required=out.get("capital_required", 0.0),
         minimum_trade_cost=out.get("minimum_trade_cost", 0.0),
-        vehicle_reason=(
-            out.get("vehicle_reason")
-            or out.get("best_vehicle_reason")
-            or "vehicle_selected"
-        ),
+        vehicle_reason=out.get("vehicle_reason") or out.get("best_vehicle_reason") or "vehicle_selected",
     )
-    return out
 
 
 def build_fused_candidate(
@@ -560,139 +632,35 @@ def build_fused_candidate(
 
     row = apply_v2_overlay(row, v2_row=v2_row)
 
-    price = round(
-        _safe_float(row.get("price", row.get("current_price", row.get("entry", 0.0))), 0.0),
-        2,
-    )
-
-    stock_capital_required = price
-    stock_minimum_trade_cost = round(stock_capital_required + commission, 2)
-    stock_affordable = stock_capital_required > 0 and buying_power >= stock_minimum_trade_cost
-
-    row["stock_path"] = {
-        "vehicle": "STOCK",
-        "capital_required": stock_capital_required,
-        "minimum_trade_cost": stock_minimum_trade_cost,
-        "affordable": stock_affordable,
-        "shares": 1,
-        "contracts": 0,
-    }
-
-    if isinstance(best_option, dict) and best_option:
-        option_mark = _safe_float(
-            best_option.get("mark", best_option.get("last", best_option.get("ask", 0.0))),
-            0.0,
-        )
-        option_capital_required = round(option_mark * 100, 2)
-        option_minimum_trade_cost = round(option_capital_required + commission, 2)
-        option_affordable = option_capital_required > 0 and buying_power >= option_minimum_trade_cost
-
-        row["option"] = dict(best_option)
-        row["option_contract_score"] = _safe_float(option_score, -1.0)
-        row["option_path"] = {
-            "vehicle": "OPTION",
-            "capital_required": option_capital_required,
-            "minimum_trade_cost": option_minimum_trade_cost,
-            "affordable": option_affordable,
-            "contracts": 1,
-            "shares": 0,
-            "score": _safe_float(option_score, -1.0),
-            "dte": int(_safe_float(best_option.get("dte", -1), -1)),
-            "spread_pct": _safe_float(best_option.get("spread_pct", 999.0), 999.0),
-        }
-    else:
-        row["option"] = None
-        row["option_contract_score"] = -1.0
-        row["option_path"] = {
-            "vehicle": "OPTION",
-            "capital_required": 0.0,
-            "minimum_trade_cost": 0.0,
-            "affordable": False,
-            "contracts": 0,
-            "shares": 0,
-            "score": -1.0,
-            "dte": -1,
-            "spread_pct": 999.0,
-        }
-
-    if row.get("v2_vehicle_bias") == "OPTION" and row.get("option_path", {}).get("affordable"):
-        row["prefer_options"] = True
-    elif row.get("v2_vehicle_bias") == "STOCK":
-        row["prefer_options"] = False
+    row["option"] = dict(best_option) if isinstance(best_option, dict) and best_option else None
+    row["option_contract_score"] = _safe_float(option_score, -1.0)
 
     vehicle = choose_best_vehicle(
         row,
         best_option=best_option,
         option_score=option_score,
         buying_power=buying_power,
-        prefer_options=bool(row.get("prefer_options", True)),
+        prefer_options=_bool(row.get("prefer_options", True), True),
         commission=commission,
     )
+
     row.update(vehicle)
 
-    selected_vehicle = _safe_str(row.get("vehicle_selected", "RESEARCH_ONLY"), "RESEARCH_ONLY").upper()
-    option_path = _safe_dict(row.get("option_path"))
-    stock_path = _safe_dict(row.get("stock_path"))
-
-    if selected_vehicle == "OPTION":
-        option_quality = _safe_float(option_path.get("score", -1.0), -1.0)
-
-        if option_path.get("affordable") is False or option_quality < 60:
-            if stock_path.get("affordable"):
-                row = _set_vehicle_state(
-                    row,
-                    "STOCK",
-                    capital_required=stock_path.get("capital_required", 0.0),
-                    minimum_trade_cost=stock_path.get("minimum_trade_cost", 0.0),
-                    vehicle_reason=(
-                        "stock_fallback_from_option:"
-                        f"{'unaffordable' if option_path.get('affordable') is False else 'weak_contract'}"
-                    ),
-                )
-            else:
-                row = _set_vehicle_state(
-                    row,
-                    "RESEARCH_ONLY",
-                    capital_required=0.0,
-                    minimum_trade_cost=0.0,
-                    vehicle_reason="option_selected_no_stock_fallback",
-                )
-        else:
-            row = _set_vehicle_state(
-                row,
-                "OPTION",
-                capital_required=option_path.get("capital_required", row.get("capital_required", 0.0)),
-                minimum_trade_cost=option_path.get("minimum_trade_cost", row.get("minimum_trade_cost", 0.0)),
-                vehicle_reason=row.get("vehicle_reason") or "option_selected",
-            )
-
-    elif selected_vehicle == "STOCK":
-        row = _set_vehicle_state(
-            row,
-            "STOCK",
-            capital_required=stock_path.get("capital_required", row.get("capital_required", 0.0)),
-            minimum_trade_cost=stock_path.get("minimum_trade_cost", row.get("minimum_trade_cost", 0.0)),
-            vehicle_reason=row.get("vehicle_reason") or "stock_selected",
-        )
-
-    else:
-        row = _set_vehicle_state(
-            row,
-            "RESEARCH_ONLY",
-            capital_required=0.0,
-            minimum_trade_cost=0.0,
-            vehicle_reason=row.get("vehicle_reason") or "research_only",
-        )
-
     row["governor"] = governor
-    row["governor_blocked"] = bool(governor.get("blocked", False))
+    row["governor_blocked"] = _bool(governor.get("blocked", False), False)
     row["governor_status"] = _safe_str(governor.get("status_label", ""), "")
+    row["governor_reason"] = _safe_str((_safe_list(governor.get("reasons")) or [""])[0], "")
     row["governor_reasons"] = _safe_list(governor.get("reasons"))
     row["governor_warnings"] = _safe_list(governor.get("warnings"))
 
     row["research_approved"] = False
     row["execution_ready"] = False
     row["selected_for_execution"] = False
+    row["blocked_at"] = _safe_str(row.get("blocked_at", ""), "")
+    row["final_reason"] = _safe_str(row.get("final_reason", ""), "")
+    row["final_reason_code"] = _safe_str(row.get("final_reason_code", row.get("final_reason", "")), "")
+    row["decision_reason"] = _safe_str(row.get("decision_reason", row.get("final_reason", "")), "")
+    row["decision_reason_code"] = _safe_str(row.get("decision_reason_code", row.get("final_reason_code", "")), "")
 
     row = _set_vehicle_state(
         row,
