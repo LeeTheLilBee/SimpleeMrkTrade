@@ -24,7 +24,6 @@ KNOWN_REGIME_WORDS = {
     "TREND_DOWN",
     "NEUTRAL",
 }
-
 KNOWN_VOL_WORDS = {
     "LOW",
     "LOW_VOL",
@@ -37,7 +36,6 @@ KNOWN_VOL_WORDS = {
     "HIGH_VOLATILITY",
     "ELEVATED",
 }
-
 KNOWN_BREADTH_WORDS = {
     "BULL",
     "BULLISH",
@@ -63,8 +61,23 @@ def _safe_float(value, default=0.0):
         return float(default)
 
 
-def _normalize_trend(trend):
-    text = str(trend or "").strip().upper()
+def _safe_str(value, default=""):
+    try:
+        text = str(value or "").strip()
+        return text if text else default
+    except Exception:
+        return default
+
+
+def _normalize_mode(value):
+    text = _safe_str(value, "").upper()
+    if text in {"SURVEY", "PAPER", "LIVE"}:
+        return text
+    return "PAPER"
+
+
+def _normalize_regime(value):
+    text = _safe_str(value, "").upper()
     if text in {
         "UP",
         "UPTREND",
@@ -87,11 +100,13 @@ def _normalize_trend(trend):
         "TREND_DOWN",
     }:
         return "DOWNTREND"
+    if text == "NEUTRAL":
+        return "NEUTRAL"
     return "SIDEWAYS"
 
 
 def _normalize_breadth(value):
-    text = str(value or "").strip().upper()
+    text = _safe_str(value, "").upper()
     if text in {"BULL", "BULLISH", "POSITIVE", "STRONG", "RISK_ON", "UPTREND"}:
         return "BULLISH"
     if text in {"BEAR", "BEARISH", "NEGATIVE", "WEAK", "RISK_OFF", "DOWNTREND"}:
@@ -100,7 +115,7 @@ def _normalize_breadth(value):
 
 
 def _normalize_volatility(value):
-    text = str(value or "").strip().upper()
+    text = _safe_str(value, "").upper()
     if text in {"LOW", "LOW_VOL", "LOW_VOLATILITY", "CALM"}:
         return "LOW"
     if text in {"HIGH", "HIGH_VOL", "HIGH_VOLATILITY", "ELEVATED"}:
@@ -109,7 +124,7 @@ def _normalize_volatility(value):
 
 
 def _normalize_strategy(value):
-    text = str(value or "").strip().upper()
+    text = _safe_str(value, "").upper()
     if text in {"CALL", "PUT", "NO_TRADE"}:
         return text
     return None
@@ -123,6 +138,168 @@ def _opposite_direction(a, b):
     return a in {"CALL", "PUT"} and b in {"CALL", "PUT"} and a != b
 
 
+def _derive_trade_trend(regime, breadth):
+    regime = _normalize_regime(regime)
+    breadth = _normalize_breadth(breadth)
+
+    if regime == "UPTREND":
+        return "UPTREND"
+    if regime == "DOWNTREND":
+        return "DOWNTREND"
+
+    if regime == "NEUTRAL":
+        if breadth == "BULLISH":
+            return "UPTREND"
+        if breadth == "BEARISH":
+            return "DOWNTREND"
+        return "SIDEWAYS"
+
+    if breadth == "BULLISH":
+        return "UPTREND"
+    if breadth == "BEARISH":
+        return "DOWNTREND"
+
+    return "SIDEWAYS"
+
+
+def _build_bias(trend, breadth):
+    if breadth == "BULLISH":
+        return {
+            "bullish_bias": True,
+            "bearish_bias": False,
+        }
+    if breadth == "BEARISH":
+        return {
+            "bullish_bias": False,
+            "bearish_bias": True,
+        }
+    return {
+        "bullish_bias": trend == "UPTREND",
+        "bearish_bias": trend == "DOWNTREND",
+    }
+
+
+def _score_tier(score):
+    score = _safe_float(score, 0.0)
+    if score >= 400:
+        return "EXTREME"
+    if score >= 220:
+        return "VERY_HIGH"
+    if score >= 120:
+        return "HIGH"
+    if score >= 90:
+        return "VALID"
+    return "WEAK"
+
+
+def _can_soft_preserve_starting_strategy(
+    *,
+    starting_strategy,
+    score,
+    rsi,
+    trend,
+    breadth,
+    vol,
+    mode,
+):
+    if starting_strategy not in {"CALL", "PUT"}:
+        return False
+
+    if mode == "LIVE":
+        return False
+
+    score = _safe_float(score, 0.0)
+    rsi = _safe_float(rsi, 50.0)
+    tier = _score_tier(score)
+
+    if starting_strategy == "CALL":
+        directional_ok = breadth == "BULLISH" or trend == "UPTREND"
+        if not directional_ok and tier not in {"VERY_HIGH", "EXTREME"}:
+            return False
+        if vol == "HIGH" and score < 140:
+            return False
+        if rsi >= 92 and score < 260:
+            return False
+        return score >= 120
+
+    if starting_strategy == "PUT":
+        directional_ok = breadth == "BEARISH" or trend == "DOWNTREND"
+        if not directional_ok and tier not in {"VERY_HIGH", "EXTREME"}:
+            return False
+        if vol == "HIGH" and score < 140:
+            return False
+        if rsi <= 8 and score < 260:
+            return False
+        return score >= 120
+
+    return False
+
+
+def _can_hard_preserve_starting_strategy(
+    *,
+    starting_strategy,
+    score,
+    trend,
+    breadth,
+    mode,
+):
+    if starting_strategy not in {"CALL", "PUT"}:
+        return False
+
+    if mode == "LIVE":
+        return False
+
+    score = _safe_float(score, 0.0)
+    tier = _score_tier(score)
+
+    if tier not in {"VERY_HIGH", "EXTREME"}:
+        return False
+
+    if starting_strategy == "CALL":
+        return breadth == "BULLISH" or trend == "UPTREND"
+
+    if starting_strategy == "PUT":
+        return breadth == "BEARISH" or trend == "DOWNTREND"
+
+    return False
+
+
+def _allow_reversal(
+    *,
+    starting_strategy,
+    reversal_pick,
+    score,
+    rsi,
+    trend,
+    breadth,
+):
+    if starting_strategy not in {"CALL", "PUT"}:
+        return False
+    if reversal_pick not in {"CALL", "PUT"}:
+        return False
+    if reversal_pick == starting_strategy:
+        return False
+
+    score = _safe_float(score, 0.0)
+    rsi = _safe_float(rsi, 50.0)
+
+    if starting_strategy == "CALL" and reversal_pick == "PUT":
+        if breadth == "BEARISH" and trend == "DOWNTREND" and score >= 120:
+            return True
+        if rsi >= 92 and score >= 320:
+            return True
+        return False
+
+    if starting_strategy == "PUT" and reversal_pick == "CALL":
+        if breadth == "BULLISH" and trend == "UPTREND" and score >= 120:
+            return True
+        if rsi <= 8 and score >= 320:
+            return True
+        return False
+
+    return False
+
+
 def _run_router(
     symbol,
     score,
@@ -134,14 +311,17 @@ def _run_router(
     starting_strategy=None,
     **kwargs,
 ):
-    raw_trend = market_regime if market_regime is not None else mode
-    trend = _normalize_trend(raw_trend)
+    raw_regime = market_regime
     breadth = _normalize_breadth(market_breadth)
     vol = _normalize_volatility(volatility_state)
+    mode_name = _normalize_mode(mode)
     score = _safe_float(score)
     rsi = _safe_float(rsi, 50.0)
-    symbol = str(symbol or "UNKNOWN")
+    symbol = _safe_str(symbol, "UNKNOWN")
     starting_strategy = _normalize_strategy(starting_strategy)
+
+    normalized_regime = _normalize_regime(raw_regime)
+    trend = _derive_trade_trend(normalized_regime, breadth)
 
     print(
         "RUN ROUTER INPUTS:",
@@ -152,7 +332,7 @@ def _run_router(
             "market_regime": market_regime,
             "market_breadth": market_breadth,
             "volatility_state": volatility_state,
-            "mode": mode,
+            "mode": mode_name,
             "starting_strategy": starting_strategy,
             "extra_kwargs_seen": list(kwargs.keys()),
         },
@@ -178,15 +358,10 @@ def _run_router(
     mean_reversion_pick = _normalize_strategy(mean_reversion_pick) or "NO_TRADE"
     defensive_pick = _normalize_strategy(defensive_pick) or "NO_TRADE"
 
-    if breadth == "BULLISH":
-        bullish_bias = True
-        bearish_bias = False
-    elif breadth == "BEARISH":
-        bullish_bias = False
-        bearish_bias = True
-    else:
-        bullish_bias = trend == "UPTREND"
-        bearish_bias = trend == "DOWNTREND"
+    bias = _build_bias(trend, breadth)
+    bullish_bias = bias["bullish_bias"]
+    bearish_bias = bias["bearish_bias"]
+    tier = _score_tier(score)
 
     chosen = "NO_TRADE"
     decision_reason = "no_valid_signal"
@@ -195,9 +370,11 @@ def _run_router(
         if _same_direction(momentum_pick, starting_strategy):
             chosen = momentum_pick
             decision_reason = "momentum_confirms_starting_strategy"
+
         elif _same_direction(mean_reversion_pick, starting_strategy):
             chosen = mean_reversion_pick
             decision_reason = "mean_reversion_confirms_starting_strategy"
+
         elif _same_direction(defensive_pick, starting_strategy):
             if starting_strategy == "CALL" and bullish_bias:
                 chosen = defensive_pick
@@ -205,22 +382,106 @@ def _run_router(
             elif starting_strategy == "PUT" and bearish_bias:
                 chosen = defensive_pick
                 decision_reason = "defensive_confirms_bearish_starting_strategy"
+            elif _can_soft_preserve_starting_strategy(
+                starting_strategy=starting_strategy,
+                score=score,
+                rsi=rsi,
+                trend=trend,
+                breadth=breadth,
+                vol=vol,
+                mode=mode_name,
+            ):
+                chosen = starting_strategy
+                decision_reason = "soft_preserve_starting_strategy_after_defensive_mismatch"
             else:
                 chosen = "NO_TRADE"
                 decision_reason = "defensive_signal_not_aligned_with_bias"
+
         elif _opposite_direction(momentum_pick, starting_strategy):
-            chosen = momentum_pick
-            decision_reason = "strong_momentum_reversal"
+            if _allow_reversal(
+                starting_strategy=starting_strategy,
+                reversal_pick=momentum_pick,
+                score=score,
+                rsi=rsi,
+                trend=trend,
+                breadth=breadth,
+            ):
+                chosen = momentum_pick
+                decision_reason = "strong_momentum_reversal"
+            elif _can_hard_preserve_starting_strategy(
+                starting_strategy=starting_strategy,
+                score=score,
+                trend=trend,
+                breadth=breadth,
+                mode=mode_name,
+            ):
+                chosen = starting_strategy
+                decision_reason = "hard_preserve_starting_strategy_over_momentum_reversal"
+            else:
+                chosen = "NO_TRADE"
+                decision_reason = "momentum_reversal_not_allowed"
+
+        elif _opposite_direction(mean_reversion_pick, starting_strategy):
+            if _allow_reversal(
+                starting_strategy=starting_strategy,
+                reversal_pick=mean_reversion_pick,
+                score=score,
+                rsi=rsi,
+                trend=trend,
+                breadth=breadth,
+            ):
+                chosen = mean_reversion_pick
+                decision_reason = "mean_reversion_reversal"
+            elif _can_soft_preserve_starting_strategy(
+                starting_strategy=starting_strategy,
+                score=score,
+                rsi=rsi,
+                trend=trend,
+                breadth=breadth,
+                vol=vol,
+                mode=mode_name,
+            ):
+                chosen = starting_strategy
+                decision_reason = "soft_preserve_starting_strategy"
+            else:
+                chosen = "NO_TRADE"
+                decision_reason = "starting_strategy_not_confirmed"
+
+        elif _can_hard_preserve_starting_strategy(
+            starting_strategy=starting_strategy,
+            score=score,
+            trend=trend,
+            breadth=breadth,
+            mode=mode_name,
+        ):
+            chosen = starting_strategy
+            decision_reason = "hard_preserve_starting_strategy"
+
+        elif _can_soft_preserve_starting_strategy(
+            starting_strategy=starting_strategy,
+            score=score,
+            rsi=rsi,
+            trend=trend,
+            breadth=breadth,
+            vol=vol,
+            mode=mode_name,
+        ):
+            chosen = starting_strategy
+            decision_reason = "soft_preserve_starting_strategy"
+
         else:
             chosen = "NO_TRADE"
             decision_reason = "starting_strategy_not_confirmed"
+
     else:
         if momentum_pick in {"CALL", "PUT"}:
             chosen = momentum_pick
             decision_reason = "momentum_primary"
+
         elif mean_reversion_pick in {"CALL", "PUT"}:
             chosen = mean_reversion_pick
             decision_reason = "mean_reversion_fallback"
+
         elif defensive_pick in {"CALL", "PUT"}:
             if defensive_pick == "CALL" and bullish_bias:
                 chosen = defensive_pick
@@ -231,19 +492,34 @@ def _run_router(
             else:
                 chosen = "NO_TRADE"
                 decision_reason = "defensive_not_aligned"
+
         else:
-            chosen = "NO_TRADE"
-            decision_reason = "no_signal"
+            if tier in {"VERY_HIGH", "EXTREME"}:
+                if breadth == "BULLISH":
+                    chosen = "CALL"
+                    decision_reason = "high_score_bias_fallback_call"
+                elif breadth == "BEARISH":
+                    chosen = "PUT"
+                    decision_reason = "high_score_bias_fallback_put"
+                else:
+                    chosen = "NO_TRADE"
+                    decision_reason = "high_score_but_no_bias_alignment"
+            else:
+                chosen = "NO_TRADE"
+                decision_reason = "no_signal"
 
     print(
         "ROUTER TRACE",
         {
             "symbol": symbol,
-            "raw_trend": raw_trend,
-            "normalized_trend": trend,
+            "raw_regime": raw_regime,
+            "normalized_regime": normalized_regime,
+            "derived_trend": trend,
             "breadth": breadth,
             "volatility": vol,
+            "mode": mode_name,
             "score": score,
+            "score_tier": tier,
             "rsi": rsi,
             "starting_strategy": starting_strategy,
             "momentum_pick": momentum_pick,
@@ -254,6 +530,7 @@ def _run_router(
             "extra_kwargs_seen": list(kwargs.keys()),
         },
     )
+
     return chosen
 
 
@@ -312,7 +589,7 @@ def choose_trade_strategy(*args, **kwargs):
             starting_strategy=None,
         )
 
-    first_upper = str(args[0]).strip().upper()
+    first_upper = _safe_str(args[0], "").upper()
 
     if first_upper not in KNOWN_REGIME_WORDS:
         symbol = args[0] if len(args) > 0 else "UNKNOWN"
@@ -323,7 +600,6 @@ def choose_trade_strategy(*args, **kwargs):
         volatility_state = args[5] if len(args) > 5 else None
         mode = args[6] if len(args) > 6 else None
         starting_strategy = args[7] if len(args) > 7 else None
-
         return _run_router(
             symbol=symbol,
             score=score,
@@ -336,8 +612,8 @@ def choose_trade_strategy(*args, **kwargs):
         )
 
     if len(args) >= 5:
-        second_upper = str(args[1]).strip().upper()
-        third_upper = str(args[2]).strip().upper()
+        second_upper = _safe_str(args[1], "").upper()
+        third_upper = _safe_str(args[2], "").upper()
 
         if second_upper in KNOWN_VOL_WORDS and third_upper in KNOWN_BREADTH_WORDS:
             market_regime = args[0]
@@ -348,7 +624,6 @@ def choose_trade_strategy(*args, **kwargs):
             symbol = args[5] if len(args) > 5 else "UNKNOWN"
             mode = args[6] if len(args) > 6 else None
             starting_strategy = args[7] if len(args) > 7 else None
-
             return _run_router(
                 symbol=symbol,
                 score=score,

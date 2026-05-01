@@ -68,5 +68,15 @@
     "timestamp": "2026-04-20T16:07:42.152302",
     "strategy": "CALL",
     "status": "CLOSED"
+  },
+  {
+    "index": 7,
+    "equity": 1007.05,
+    "pnl": 0.0,
+    "symbol": "ROKU",
+    "trade_id": "ROKU-CALL-20260501225539",
+    "timestamp": "",
+    "strategy": "CALL",
+    "status": "OPEN"
   }
 ]

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-20T17:03:43.686770",
+  "timestamp": "2026-05-01T23:26:06.090595",
   "performance": {
     "trades": 3,
     "wins": 1,
@@ -7,57 +7,58 @@
     "winrate": 0.33,
     "total_pnl": 7.05,
     "max_drawdown": 6.96,
-    "entries_today": 0,
-    "closes_today": 1,
-    "round_trips_today": 1,
-    "realized_pnl_today": -6.96
+    "entries_today": 1,
+    "closes_today": 0,
+    "round_trips_today": 0,
+    "realized_pnl_today": 0.0
   },
   "portfolio": {
-    "open_positions": 0,
+    "open_positions": 1,
     "closed_positions": 3,
     "realized_pnl": 7.05,
     "unrealized_pnl": 0.0,
-    "gross_capital_open": 0.0,
+    "gross_capital_open": 123.58,
     "vehicle_mix": {
       "OPTION": 0,
-      "STOCK": 0,
+      "STOCK": 1,
       "RESEARCH_ONLY": 0,
       "UNKNOWN": 0
     },
     "net_pnl": 7.05
   },
   "analytics": {
-    "trades": 6,
+    "trades": 7,
     "wins": 1,
     "losses": 2,
-    "flats": 3,
-    "winrate": 0.1667,
-    "lossrate": 0.3333,
+    "flats": 4,
+    "winrate": 0.1429,
+    "lossrate": 0.2857,
     "total_pnl": 7.05,
-    "average_pnl": 1.18,
+    "average_pnl": 1.01,
     "strategies": {
-      "CALL": 6
+      "CALL": 7
     },
     "symbols": {
       "AAPL": 2,
-      "MSFT": 4
+      "MSFT": 4,
+      "ROKU": 1
     },
     "last_trade": {
-      "symbol": "MSFT",
-      "trade_id": "MSFT-CALL-20260416224923",
+      "symbol": "ROKU",
+      "trade_id": "ROKU-CALL-20260501225539",
       "strategy": "CALL",
-      "pnl": -6.96,
-      "timestamp": "2026-04-20T16:07:42.152302"
+      "pnl": 0.0,
+      "timestamp": ""
     },
     "portfolio": {
-      "open_positions": 0,
+      "open_positions": 1,
       "closed_positions": 3,
       "realized_pnl": 7.05,
       "unrealized_pnl": 0.0,
-      "gross_capital_open": 0.0,
+      "gross_capital_open": 123.58,
       "vehicle_mix": {
         "OPTION": 0,
-        "STOCK": 0,
+        "STOCK": 1,
         "RESEARCH_ONLY": 0,
         "UNKNOWN": 0
       },
@@ -65,10 +66,10 @@
     }
   },
   "headline": {
-    "trades": 6,
-    "winrate": 0.1667,
+    "trades": 7,
+    "winrate": 0.1429,
     "realized_pnl": 7.05,
     "unrealized_pnl": 0.0,
-    "open_positions": 0
+    "open_positions": 1
   }
 }

@@ -673,5 +673,50 @@
     "timestamp": "2026-04-20T17:03:43.596995",
     "level": "WARN",
     "message": "BAC rejected | Option path would violate reserve floor."
+  },
+  {
+    "timestamp": "2026-05-01T22:50:08.648610",
+    "level": "INFO",
+    "message": "Bot run started in Paper Mode (paper)"
+  },
+  {
+    "timestamp": "2026-05-01T22:54:13.334107",
+    "level": "INFO",
+    "message": "Bot run started in Paper Mode (paper)"
+  },
+  {
+    "timestamp": "2026-05-01T22:56:37.423809",
+    "level": "WARN",
+    "message": "INTC rejected | option_dte_below_mode_minimum"
+  },
+  {
+    "timestamp": "2026-05-01T22:56:37.535139",
+    "level": "WARN",
+    "message": "AMD rejected | option_dte_below_mode_minimum"
+  },
+  {
+    "timestamp": "2026-05-01T22:56:37.928904",
+    "level": "SUCCESS",
+    "message": "ROKU executed successfully | mode=paper vehicle=STOCK shares=1 contracts=0 fill=123.58 trade_id=ROKU-CALL-20260501225539"
+  },
+  {
+    "timestamp": "2026-05-01T23:23:34.831870",
+    "level": "INFO",
+    "message": "Bot run started in Paper Mode (paper)"
+  },
+  {
+    "timestamp": "2026-05-01T23:26:04.653392",
+    "level": "WARN",
+    "message": "INTC rejected | option_dte_below_mode_minimum"
+  },
+  {
+    "timestamp": "2026-05-01T23:26:04.751747",
+    "level": "WARN",
+    "message": "AMD rejected | option_dte_below_mode_minimum"
+  },
+  {
+    "timestamp": "2026-05-01T23:26:04.847152",
+    "level": "WARN",
+    "message": "PYPL rejected | option_dte_below_mode_minimum"
   }
 ]
