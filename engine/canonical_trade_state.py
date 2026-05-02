@@ -5,6 +5,9 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 
+OPTION_CONTRACT_MULTIPLIER = 100
+
+
 def _safe_dict(value: Any) -> Dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
@@ -91,57 +94,80 @@ def _derive_trade_id(symbol: str, strategy: str, opened_at: str) -> str:
     return f"{symbol}-{strategy}-{stamp}"
 
 
-def _default_stop(entry: float, strategy: str) -> float:
-    if entry <= 0:
-        return 0.0
-    return round(entry * (1.03 if strategy == "PUT" else 0.97), 4)
+def _vehicle(vehicle: Any) -> str:
+    value = _safe_str(vehicle, "RESEARCH_ONLY").upper()
+    if value not in {"OPTION", "STOCK", "RESEARCH_ONLY"}:
+        return "RESEARCH_ONLY"
+    return value
 
 
-def _default_target(entry: float, strategy: str) -> float:
-    if entry <= 0:
-        return 0.0
-    return round(entry * (0.90 if strategy == "PUT" else 1.10), 4)
+def _direction(strategy: str) -> str:
+    return "SHORT" if "PUT" in _safe_str(strategy, "CALL").upper() else "LONG"
 
 
 def _capital_buffer_after(capital_available: float, capital_required: float) -> float:
     return round(_safe_float(capital_available, 0.0) - _safe_float(capital_required, 0.0), 4)
 
 
-def _vehicle_shape(vehicle: str) -> Dict[str, int]:
-    vehicle = _safe_str(vehicle, "RESEARCH_ONLY").upper()
-    if vehicle == "OPTION":
-        return {"shares": 0, "contracts": 1}
-    if vehicle == "STOCK":
-        return {"shares": 1, "contracts": 0}
-    return {"shares": 0, "contracts": 0}
-
-
-def _best_execution_price(payload: Dict[str, Any]) -> float:
-    payload = _safe_dict(payload)
-    option_obj = _safe_dict(payload.get("option"))
-    execution_result = _safe_dict(payload.get("execution_result"))
-    execution_record = _safe_dict(execution_result.get("execution_record"))
-    lifecycle = _safe_dict(payload.get("lifecycle"))
-
-    return _first_positive_float(
-        payload.get("fill_price"),
-        execution_result.get("fill_price"),
-        execution_record.get("fill_price"),
-        execution_record.get("filled_price"),
-        payload.get("entry"),
-        payload.get("requested_price"),
-        payload.get("price"),
-        payload.get("current_price"),
-        payload.get("stock_price"),
-        payload.get("underlying_price"),
-        option_obj.get("mark"),
-        option_obj.get("last"),
-        lifecycle.get("fill_price"),
-        lifecycle.get("entry"),
-        lifecycle.get("requested_price"),
-        lifecycle.get("price"),
-        default=0.0,
+def _option_price_from_obj(option_obj: Dict[str, Any], fallback: float = 0.0) -> float:
+    option_obj = _safe_dict(option_obj)
+    return round(
+        _first_positive_float(
+            option_obj.get("mark"),
+            option_obj.get("last"),
+            option_obj.get("price"),
+            option_obj.get("mid"),
+            option_obj.get("ask"),
+            fallback,
+            default=0.0,
+        ),
+        4,
     )
+
+
+def _default_stock_stop(entry: float, direction: str) -> float:
+    if entry <= 0:
+        return 0.0
+    return round(entry * (1.03 if direction == "SHORT" else 0.97), 4)
+
+
+def _default_stock_target(entry: float, direction: str) -> float:
+    if entry <= 0:
+        return 0.0
+    return round(entry * (0.90 if direction == "SHORT" else 1.10), 4)
+
+
+def _default_option_stop(entry: float, direction: str) -> float:
+    if entry <= 0:
+        return 0.0
+    return round(entry * (1.35 if direction == "SHORT" else 0.70), 4)
+
+
+def _default_option_target(entry: float, direction: str) -> float:
+    if entry <= 0:
+        return 0.0
+    return round(entry * (0.65 if direction == "SHORT" else 1.35), 4)
+
+
+def _calc_unrealized_pnl(
+    *,
+    vehicle_selected: str,
+    strategy: str,
+    entry: float,
+    current_price: float,
+    shares: int,
+    contracts: int,
+) -> float:
+    direction = _direction(strategy)
+    if entry <= 0 or current_price <= 0:
+        return 0.0
+
+    delta = (entry - current_price) if direction == "SHORT" else (current_price - entry)
+    if vehicle_selected == "OPTION":
+        return round(delta * max(1, contracts) * OPTION_CONTRACT_MULTIPLIER, 4)
+    if vehicle_selected == "STOCK":
+        return round(delta * max(1, shares), 4)
+    return 0.0
 
 
 def build_open_trade_state(
@@ -174,6 +200,22 @@ def build_open_trade_state(
         "CALL",
     ).upper()
 
+    vehicle_selected = _vehicle(
+        merged.get("vehicle_selected")
+        or merged.get("selected_vehicle")
+        or merged.get("vehicle")
+        or source_trade.get("vehicle_selected")
+        or "RESEARCH_ONLY"
+    )
+    direction = _direction(strategy)
+
+    option_obj = _first_dict(
+        merged.get("option"),
+        merged.get("contract"),
+        source_trade.get("option"),
+        source_trade.get("contract"),
+    )
+
     opened_at = _first_nonempty(
         merged.get("opened_at"),
         execution_record.get("opened_at"),
@@ -194,87 +236,134 @@ def build_open_trade_state(
         default=_derive_trade_id(symbol, strategy, opened_at),
     )
 
-    vehicle_selected = _safe_str(
-        merged.get("vehicle_selected")
-        or merged.get("selected_vehicle")
-        or merged.get("vehicle")
-        or source_trade.get("vehicle_selected")
-        or "STOCK",
-        "STOCK",
-    ).upper()
-    if vehicle_selected not in {"OPTION", "STOCK", "RESEARCH_ONLY"}:
-        vehicle_selected = "STOCK"
-
-    shape = _vehicle_shape(vehicle_selected)
-
-    fill_price = round(
+    underlying_price = round(
         _first_positive_float(
-            execution_result.get("fill_price"),
-            execution_record.get("fill_price"),
-            execution_record.get("filled_price"),
-            merged.get("fill_price"),
-            merged.get("entry"),
+            merged.get("underlying_price"),
+            merged.get("stock_price"),
             merged.get("price"),
-            default=0.0,
-        ),
-        4,
-    )
-    requested_price = round(
-        _first_positive_float(
-            execution_record.get("requested_price"),
-            merged.get("requested_price"),
-            merged.get("price"),
-            fill_price,
-            default=0.0,
-        ),
-        4,
-    )
-    entry = round(
-        _first_positive_float(
-            merged.get("entry"),
-            fill_price,
-            requested_price,
-            merged.get("price"),
-            default=0.0,
-        ),
-        4,
-    )
-    current_price = round(
-        _first_positive_float(
-            merged.get("current_price"),
-            fill_price,
-            entry,
-            requested_price,
+            source_trade.get("underlying_price"),
+            source_trade.get("stock_price"),
+            source_trade.get("price"),
             default=0.0,
         ),
         4,
     )
 
-    shares = _safe_int(
-        execution_record.get("shares", merged.get("shares", merged.get("size", shape["shares"]))),
-        shape["shares"],
+    option_entry = _first_positive_float(
+        execution_result.get("fill_price"),
+        execution_record.get("fill_price"),
+        execution_record.get("filled_price"),
+        merged.get("option_entry"),
+        merged.get("fill_price"),
+        merged.get("entry"),
+        merged.get("requested_price"),
+        merged.get("current_price"),
+        _option_price_from_obj(option_obj),
+        default=0.0,
     )
-    contracts = _safe_int(
-        execution_record.get("contracts", merged.get("contracts", shape["contracts"])),
-        shape["contracts"],
-    )
-    filled_quantity = _safe_int(
-        execution_result.get("filled_quantity", execution_record.get("filled_quantity", execution_record.get("quantity", 0))),
-        0,
+
+    stock_entry = _first_positive_float(
+        execution_result.get("fill_price"),
+        execution_record.get("fill_price"),
+        execution_record.get("filled_price"),
+        merged.get("entry"),
+        merged.get("requested_price"),
+        merged.get("price"),
+        underlying_price,
+        default=0.0,
     )
 
     if vehicle_selected == "OPTION":
-        contracts = max(1, contracts or filled_quantity or 1)
-        shares = 0
-        size = contracts
+        entry = round(option_entry, 4)
+        current_price = round(
+            _first_positive_float(
+                merged.get("option_current_price"),
+                merged.get("current_option_price"),
+                merged.get("current_price"),
+                _option_price_from_obj(option_obj, entry),
+                entry,
+                default=entry,
+            ),
+            4,
+        )
+        requested_price = round(
+            _first_positive_float(
+                execution_record.get("requested_price"),
+                merged.get("requested_price"),
+                _option_price_from_obj(option_obj, entry),
+                entry,
+                default=entry,
+            ),
+            4,
+        )
+        fill_price = round(
+            _first_positive_float(
+                execution_result.get("fill_price"),
+                execution_record.get("fill_price"),
+                execution_record.get("filled_price"),
+                entry,
+                default=entry,
+            ),
+            4,
+        )
     elif vehicle_selected == "STOCK":
-        shares = max(1, shares or filled_quantity or 1)
-        contracts = 0
-        size = shares
+        entry = round(stock_entry, 4)
+        current_price = round(
+            _first_positive_float(
+                merged.get("current_price"),
+                merged.get("underlying_price"),
+                underlying_price,
+                entry,
+                default=entry,
+            ),
+            4,
+        )
+        requested_price = round(
+            _first_positive_float(
+                execution_record.get("requested_price"),
+                merged.get("requested_price"),
+                merged.get("price"),
+                entry,
+                default=entry,
+            ),
+            4,
+        )
+        fill_price = round(
+            _first_positive_float(
+                execution_result.get("fill_price"),
+                execution_record.get("fill_price"),
+                execution_record.get("filled_price"),
+                entry,
+                default=entry,
+            ),
+            4,
+        )
     else:
-        shares = 0
-        contracts = 0
-        size = 0
+        entry = 0.0
+        current_price = 0.0
+        requested_price = 0.0
+        fill_price = 0.0
+
+    shares = 0
+    contracts = 0
+    if vehicle_selected == "OPTION":
+        contracts = max(
+            1,
+            _safe_int(
+                execution_record.get("contracts", merged.get("contracts", 1)),
+                1,
+            ),
+        )
+    elif vehicle_selected == "STOCK":
+        shares = max(
+            1,
+            _safe_int(
+                execution_record.get("shares", merged.get("shares", merged.get("size", 1))),
+                1,
+            ),
+        )
+
+    size = contracts if vehicle_selected == "OPTION" else shares
 
     capital_required = round(
         _first_positive_float(
@@ -304,23 +393,65 @@ def build_open_trade_state(
         4,
     )
 
-    stop = round(
-        _safe_float(merged.get("stop", _default_stop(entry, strategy)), _default_stop(entry, strategy)),
-        4,
-    )
-    target = round(
-        _safe_float(merged.get("target", _default_target(entry, strategy)), _default_target(entry, strategy)),
-        4,
-    )
+    if vehicle_selected == "OPTION":
+        stop = round(
+            _safe_float(
+                merged.get("stop", _default_option_stop(entry, direction)),
+                _default_option_stop(entry, direction),
+            ),
+            4,
+        )
+        target = round(
+            _safe_float(
+                merged.get("target", _default_option_target(entry, direction)),
+                _default_option_target(entry, direction),
+            ),
+            4,
+        )
+        monitoring_price_type = "OPTION_PREMIUM"
+    elif vehicle_selected == "STOCK":
+        stop = round(
+            _safe_float(
+                merged.get("stop", _default_stock_stop(entry, direction)),
+                _default_stock_stop(entry, direction),
+            ),
+            4,
+        )
+        target = round(
+            _safe_float(
+                merged.get("target", _default_stock_target(entry, direction)),
+                _default_stock_target(entry, direction),
+            ),
+            4,
+        )
+        monitoring_price_type = "UNDERLYING"
+    else:
+        stop = 0.0
+        target = 0.0
+        monitoring_price_type = "RESEARCH_ONLY"
 
-    option_obj = _first_dict(merged.get("option"), source_trade.get("option"), merged.get("contract"))
-    option_path = _first_dict(merged.get("option_path"), source_trade.get("option_path"))
-    stock_path = _first_dict(merged.get("stock_path"), source_trade.get("stock_path"))
-    reserve_check = _first_dict(merged.get("reserve_check"), source_trade.get("reserve_check"))
-    governor = _first_dict(merged.get("governor"), source_trade.get("governor"))
+    unrealized_pnl = _calc_unrealized_pnl(
+        vehicle_selected=vehicle_selected,
+        strategy=strategy,
+        entry=entry,
+        current_price=current_price,
+        shares=shares,
+        contracts=contracts,
+    )
 
     v2 = _first_dict(merged.get("v2"), source_trade.get("v2"))
     v2_payload = _first_dict(merged.get("v2_payload"), source_trade.get("v2_payload"), v2)
+
+    contract_symbol = _first_nonempty(
+        merged.get("contract_symbol"),
+        option_obj.get("contract_symbol"),
+        option_obj.get("contractSymbol"),
+    )
+    expiry = _first_nonempty(
+        merged.get("expiry"),
+        option_obj.get("expiry"),
+        option_obj.get("expiration"),
+    )
 
     state = {
         "trade_id": trade_id,
@@ -336,7 +467,6 @@ def build_open_trade_state(
             source_trade.get("sector"),
             "UNKNOWN",
         ),
-
         "status": "OPEN",
         "timestamp": timestamp,
         "opened_at": opened_at,
@@ -345,42 +475,40 @@ def build_open_trade_state(
             execution_result.get("status", execution_record.get("status", "FILLED")),
             "FILLED",
         ).upper(),
-
         "strategy": strategy,
-        "direction": _safe_str(merged.get("direction", strategy), strategy).upper(),
+        "direction": direction,
         "vehicle_selected": vehicle_selected,
         "selected_vehicle": vehicle_selected,
         "vehicle": vehicle_selected,
-
         "shares": shares,
         "contracts": contracts,
         "size": size,
-
-        "price": round(_first_positive_float(merged.get("price"), entry, fill_price, requested_price, default=0.0), 4),
+        "price": underlying_price if vehicle_selected != "OPTION" else entry,
         "requested_price": requested_price,
         "fill_price": fill_price,
         "entry": entry,
         "current_price": current_price,
+        "current": current_price,
+        "option_entry": entry if vehicle_selected == "OPTION" else 0.0,
+        "option_current_price": current_price if vehicle_selected == "OPTION" else 0.0,
+        "underlying_price": underlying_price,
         "exit_price": 0.0,
-
         "stop": stop,
         "target": target,
         "commission": round(_safe_float(execution_record.get("commission", merged.get("commission", 0.0)), 0.0), 4),
-        "pnl": round(_safe_float(merged.get("pnl", 0.0), 0.0), 4),
-
+        "pnl": 0.0,
+        "unrealized_pnl": unrealized_pnl,
+        "realized_pnl": 0.0,
         "capital_required": capital_required,
         "minimum_trade_cost": minimum_trade_cost,
         "capital_available": capital_available,
         "capital_buffer_after": _capital_buffer_after(capital_available, capital_required),
-
         "score": round(_safe_float(merged.get("score", 0.0), 0.0), 4),
         "base_score": round(_safe_float(merged.get("base_score", merged.get("score", 0.0)), 0.0), 4),
         "fused_score": round(_safe_float(merged.get("fused_score", merged.get("score", 0.0)), 0.0), 4),
-
         "confidence": _safe_str(merged.get("confidence", "LOW"), "LOW").upper(),
         "base_confidence": _safe_str(merged.get("base_confidence", merged.get("confidence", "LOW")), "LOW").upper(),
         "v2_confidence": _safe_str(merged.get("v2_confidence", merged.get("confidence", "LOW")), "LOW").upper(),
-
         "decision_reason": _first_nonempty(
             merged.get("decision_reason"),
             merged.get("final_reason"),
@@ -403,16 +531,14 @@ def build_open_trade_state(
             "executed",
         ),
         "blocked_at": _safe_str(merged.get("blocked_at"), ""),
-
         "research_approved": _safe_bool(merged.get("research_approved", True), True),
         "execution_ready": _safe_bool(merged.get("execution_ready", True), True),
         "selected_for_execution": _safe_bool(merged.get("selected_for_execution", True), True),
-
         "mode": _first_nonempty(mode, merged.get("mode"), ""),
         "trading_mode": _first_nonempty(mode, merged.get("trading_mode"), ""),
         "execution_mode": _first_nonempty(mode, merged.get("execution_mode"), ""),
         "mode_context": mode_context,
-
+        "monitoring_price_type": monitoring_price_type,
         "regime": _safe_str(merged.get("regime"), ""),
         "breadth": _safe_str(merged.get("breadth"), ""),
         "volatility_state": _safe_str(merged.get("volatility_state"), ""),
@@ -422,18 +548,19 @@ def build_open_trade_state(
         "entry_quality": _safe_str(merged.get("entry_quality"), ""),
         "atr": round(_safe_float(merged.get("atr", 0.0), 0.0), 4),
         "rsi": round(_safe_float(merged.get("rsi", 0.0), 0.0), 4),
-
         "option": option_obj,
         "contract": option_obj,
-        "contract_symbol": _safe_str(option_obj.get("contractSymbol"), ""),
-        "expiry": _safe_str(option_obj.get("expiration"), ""),
-        "strike": round(_safe_float(option_obj.get("strike", 0.0), 0.0), 4),
-        "right": _safe_str(option_obj.get("right", strategy), strategy).upper(),
-        "mark": round(_safe_float(option_obj.get("mark", option_obj.get("last", 0.0)), 0.0), 4),
-        "bid": round(_safe_float(option_obj.get("bid", 0.0), 0.0), 4),
-        "ask": round(_safe_float(option_obj.get("ask", 0.0), 0.0), 4),
-        "volume": _safe_int(option_obj.get("volume", 0), 0),
-        "open_interest": _safe_int(option_obj.get("open_interest", option_obj.get("openInterest", 0)), 0),
+        "contract_symbol": contract_symbol,
+        "expiry": expiry,
+        "strike": round(_safe_float(merged.get("strike", option_obj.get("strike", 0.0)), 0.0), 4),
+        "right": _safe_str(merged.get("right", option_obj.get("right", strategy)), strategy).upper(),
+        "mark": round(_safe_float(merged.get("mark", option_obj.get("mark", option_obj.get("last", 0.0))), 0.0), 4),
+        "bid": round(_safe_float(merged.get("bid", option_obj.get("bid", 0.0)), 0.0), 4),
+        "ask": round(_safe_float(merged.get("ask", option_obj.get("ask", 0.0)), 0.0), 4),
+        "last": round(_safe_float(merged.get("last", option_obj.get("last", 0.0)), 0.0), 4),
+        "volume": _safe_int(merged.get("volume", option_obj.get("volume", 0)), 0),
+        "open_interest": _safe_int(merged.get("open_interest", option_obj.get("open_interest", option_obj.get("openInterest", 0))), 0),
+        "dte": _safe_int(merged.get("dte", option_obj.get("dte", option_obj.get("daysToExpiration", 0))), 0),
         "option_contract_score": round(
             _safe_float(
                 merged.get("option_contract_score", merged.get("option_score", option_obj.get("contract_score", 0.0))),
@@ -442,44 +569,33 @@ def build_open_trade_state(
             4,
         ),
         "option_explanation": _first_list(merged.get("option_explanation"), option_obj.get("contract_notes")),
-
-        "option_path": option_path,
-        "stock_path": stock_path,
-        "reserve_check": reserve_check,
-        "governor": governor,
-
+        "option_path": _first_dict(merged.get("option_path"), source_trade.get("option_path")),
+        "stock_path": _first_dict(merged.get("stock_path"), source_trade.get("stock_path")),
+        "reserve_check": _first_dict(merged.get("reserve_check"), source_trade.get("reserve_check")),
+        "governor": _first_dict(merged.get("governor"), source_trade.get("governor")),
         "governor_blocked": _safe_bool(merged.get("governor_blocked", False), False),
         "governor_status": _safe_str(merged.get("governor_status"), ""),
         "governor_reason": _safe_str(merged.get("governor_reason"), ""),
         "governor_reasons": _safe_list(merged.get("governor_reasons")),
         "governor_warnings": _safe_list(merged.get("governor_warnings")),
-
         "why": _first_list(merged.get("why")),
         "supports": _first_list(merged.get("supports")),
         "blockers": _first_list(merged.get("blockers")),
         "rejection_reason": _safe_str(merged.get("rejection_reason"), ""),
         "rejection_analysis": _first_list(merged.get("rejection_analysis")),
         "stronger_competing_setups": _first_list(merged.get("stronger_competing_setups")),
-
         "v2": v2,
         "v2_payload": v2_payload,
         "v2_score": round(_safe_float(merged.get("v2_score", v2.get("score", 0.0)), 0.0), 4),
         "v2_quality": round(_safe_float(merged.get("v2_quality", v2.get("quality", 0.0)), 0.0), 4),
         "v2_reason": _safe_str(merged.get("v2_reason", v2.get("reason", "")), ""),
         "v2_regime_alignment": _safe_str(merged.get("v2_regime_alignment", v2.get("regime_alignment", "")), ""),
-        "v2_signal_strength": round(
-            _safe_float(merged.get("v2_signal_strength", v2.get("signal_strength", 0.0)), 0.0),
-            4,
-        ),
-        "v2_conviction_adjustment": round(
-            _safe_float(merged.get("v2_conviction_adjustment", v2.get("conviction_adjustment", 0.0)), 0.0),
-            4,
-        ),
+        "v2_signal_strength": round(_safe_float(merged.get("v2_signal_strength", v2.get("signal_strength", 0.0)), 0.0), 4),
+        "v2_conviction_adjustment": round(_safe_float(merged.get("v2_conviction_adjustment", v2.get("conviction_adjustment", 0.0)), 0.0), 4),
         "v2_vehicle_bias": _safe_str(merged.get("v2_vehicle_bias", v2.get("vehicle_bias", "")), "").upper(),
         "v2_thesis": _safe_str(merged.get("v2_thesis", v2.get("thesis", "")), ""),
         "v2_notes": _first_list(merged.get("v2_notes"), v2.get("notes")),
         "v2_risk_flags": _first_list(merged.get("v2_risk_flags"), v2.get("risk_flags")),
-
         "readiness_score": round(_safe_float(merged.get("readiness_score", 0.0), 0.0), 4),
         "promotion_score": round(_safe_float(merged.get("promotion_score", 0.0), 0.0), 4),
         "rebuild_pressure": round(_safe_float(merged.get("rebuild_pressure", 0.0), 0.0), 4),
@@ -488,18 +604,14 @@ def build_open_trade_state(
         "rebuild_notes": _first_list(merged.get("rebuild_notes")),
         "learning_notes": _first_list(merged.get("learning_notes")),
         "learning_exit_notes": _first_list(merged.get("learning_exit_notes")),
-
         "position_explanation": _first_dict(merged.get("position_explanation")),
         "soulaana": _first_dict(merged.get("soulaana")),
         "monitor_debug": _first_dict(merged.get("monitor_debug")),
-
         "capital_protection_mode": _safe_bool(merged.get("capital_protection_mode", False), False),
         "capital_protection_snapshot": _first_dict(merged.get("capital_protection_snapshot")),
-
         "close_reason": "",
         "exit_explanation": {},
         "execution_result": execution_result,
-
         "raw_source_trade": source_trade,
         "raw_lifecycle": lifecycle,
     }
@@ -520,16 +632,18 @@ def build_closed_trade_state(
     open_trade = deepcopy(_safe_dict(open_trade))
     closed = dict(open_trade)
 
+    resolved_pnl = _safe_float(pnl, 0.0)
     closed["status"] = "CLOSED"
     closed["closed_at"] = _safe_str(closed_at, _now_iso())
     closed["exit_price"] = round(_safe_float(exit_price, 0.0), 4)
     closed["close_reason"] = _safe_str(close_reason, "manual")
     closed["reason"] = closed["close_reason"]
-    closed["pnl"] = round(_safe_float(pnl, 0.0), 4)
+    closed["pnl"] = round(resolved_pnl, 4)
+    closed["realized_pnl"] = round(resolved_pnl, 4)
+    closed["unrealized_pnl"] = 0.0
     closed["exit_explanation"] = _safe_dict(exit_explanation)
     closed["capital_release"] = _safe_dict(capital_release)
     closed["execution_status"] = "CLOSED"
-
     return closed
 
 
@@ -547,22 +661,18 @@ def build_trade_log_row(
         "symbol": _norm_symbol(trade_state.get("symbol")),
         "strategy": _safe_str(trade_state.get("strategy"), "CALL").upper(),
         "vehicle_selected": _safe_str(trade_state.get("vehicle_selected"), "STOCK").upper(),
-
         "price": round(_safe_float(trade_state.get("price", 0.0), 0.0), 4),
         "requested_price": round(_safe_float(trade_state.get("requested_price", 0.0), 0.0), 4),
         "fill_price": round(_safe_float(trade_state.get("fill_price", 0.0), 0.0), 4),
         "entry": round(_safe_float(trade_state.get("entry", 0.0), 0.0), 4),
         "current_price": round(_safe_float(trade_state.get("current_price", 0.0), 0.0), 4),
         "exit_price": round(_safe_float(trade_state.get("exit_price", 0.0), 0.0), 4),
-
         "size": _safe_int(trade_state.get("size", 0), 0),
         "shares": _safe_int(trade_state.get("shares", 0), 0),
         "contracts": _safe_int(trade_state.get("contracts", 0), 0),
-
         "score": round(_safe_float(trade_state.get("score", 0.0), 0.0), 4),
         "fused_score": round(_safe_float(trade_state.get("fused_score", 0.0), 0.0), 4),
         "confidence": _safe_str(trade_state.get("confidence"), "LOW").upper(),
-
         "status": _safe_str(trade_state.get("status", event), event).upper(),
         "opened_at": _safe_str(trade_state.get("opened_at"), ""),
         "closed_at": _safe_str(trade_state.get("closed_at"), ""),
@@ -573,30 +683,27 @@ def build_trade_log_row(
             "",
         ),
         "pnl": round(_safe_float(trade_state.get("pnl", 0.0), 0.0), 4),
-
         "trading_mode": _safe_str(trade_state.get("trading_mode"), ""),
         "mode": _safe_str(trade_state.get("mode"), ""),
         "regime": _safe_str(trade_state.get("regime"), ""),
         "breadth": _safe_str(trade_state.get("breadth"), ""),
         "volatility_state": _safe_str(trade_state.get("volatility_state"), ""),
-        "vehicle_reason": _safe_str(trade_state.get("vehicle_reason"), ""),
-
         "capital_required": round(_safe_float(trade_state.get("capital_required", 0.0), 0.0), 4),
         "minimum_trade_cost": round(_safe_float(trade_state.get("minimum_trade_cost", 0.0), 0.0), 4),
         "capital_available": round(_safe_float(trade_state.get("capital_available", 0.0), 0.0), 4),
-
         "research_approved": _safe_bool(trade_state.get("research_approved", False), False),
         "execution_ready": _safe_bool(trade_state.get("execution_ready", False), False),
         "selected_for_execution": _safe_bool(trade_state.get("selected_for_execution", False), False),
-
         "v2_score": round(_safe_float(trade_state.get("v2_score", 0.0), 0.0), 4),
         "v2_reason": _safe_str(trade_state.get("v2_reason"), ""),
         "readiness_score": round(_safe_float(trade_state.get("readiness_score", 0.0), 0.0), 4),
         "promotion_score": round(_safe_float(trade_state.get("promotion_score", 0.0), 0.0), 4),
         "rebuild_pressure": round(_safe_float(trade_state.get("rebuild_pressure", 0.0), 0.0), 4),
-
         "final_reason": _safe_str(trade_state.get("final_reason"), ""),
         "final_reason_code": _safe_str(trade_state.get("final_reason_code"), ""),
+        "monitoring_price_type": _safe_str(trade_state.get("monitoring_price_type"), ""),
+        "underlying_price": round(_safe_float(trade_state.get("underlying_price", 0.0), 0.0), 4),
+        "option_current_price": round(_safe_float(trade_state.get("option_current_price", 0.0), 0.0), 4),
     }
 
 
@@ -641,12 +748,14 @@ def summarize_trade_state(trade_state: Dict[str, Any]) -> Dict[str, Any]:
         "stop": round(_safe_float(trade_state.get("stop", 0.0), 0.0), 4),
         "target": round(_safe_float(trade_state.get("target", 0.0), 0.0), 4),
         "pnl": round(_safe_float(trade_state.get("pnl", 0.0), 0.0), 4),
+        "unrealized_pnl": round(_safe_float(trade_state.get("unrealized_pnl", 0.0), 0.0), 4),
         "research_approved": _safe_bool(trade_state.get("research_approved", False), False),
         "execution_ready": _safe_bool(trade_state.get("execution_ready", False), False),
         "selected_for_execution": _safe_bool(trade_state.get("selected_for_execution", False), False),
         "final_reason": _safe_str(trade_state.get("final_reason"), ""),
         "final_reason_code": _safe_str(trade_state.get("final_reason_code"), ""),
         "trading_mode": _safe_str(trade_state.get("trading_mode"), ""),
+        "monitoring_price_type": _safe_str(trade_state.get("monitoring_price_type"), ""),
     }
 
 
