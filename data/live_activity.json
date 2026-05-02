@@ -1,54 +1,5 @@
 [
   {
-    "timestamp": "2026-04-16T23:29:05.428670",
-    "event_type": "MARKET",
-    "message": "Market regime identified as BULL_TREND",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:29:14.782307",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:29:14.786139",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 8 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:29:14.788996",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 0 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:29:14.814717",
-    "event_type": "QUEUE",
-    "message": "Approved 7 research trades; selected 1 execution trades in mode AGGRESSIVE_BULL",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:29:15.385957",
-    "event_type": "RISK",
-    "message": "Blocked by governor: daily_entry_cap",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:41:50.886474",
-    "event_type": "SYSTEM",
-    "message": "Bot run started",
-    "symbol": null,
-    "meta": {}
-  },
-  {
     "timestamp": "2026-04-16T23:41:52.202911",
     "event_type": "MARKET",
     "message": "Market regime identified as BULL_TREND",
@@ -2234,6 +2185,55 @@
     "timestamp": "2026-05-02T03:25:37.205456",
     "event_type": "SYSTEM",
     "message": "Bot run completed in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T23:10:37.296767",
+    "event_type": "SYSTEM",
+    "message": "Bot run started in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T23:10:51.507114",
+    "event_type": "MARKET",
+    "message": "Market regime identified as NEUTRAL",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T23:11:10.452899",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 50 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T23:11:45.581468",
+    "event_type": "EXECUTION",
+    "message": "Aggressive execution universe rebuilt with 50 candidates",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T23:11:45.584605",
+    "event_type": "SPOTLIGHT",
+    "message": "Top spotlight contains 5 names",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T23:11:48.925856",
+    "event_type": "QUEUE",
+    "message": "Approved 37 research trades; selected 0 execution trades in market mode NEUTRAL / trading mode Paper Mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T23:13:18.582443",
+    "event_type": "RISK",
+    "message": "Blocked by correlation risk in paper mode",
     "symbol": null,
     "meta": {}
   }

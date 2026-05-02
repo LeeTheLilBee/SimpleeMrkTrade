@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-05-02T03:25:19.177077",
+  "timestamp": "2026-05-02T23:10:50.588570",
   "cash": 1804.63,
   "buying_power": 1804.63,
   "equity": 1907.26,
   "open_positions": 3,
   "executed_trades": 4,
-  "regime": "NEUTRAL",
-  "volatility": "NORMAL",
-  "mode": "NEUTRAL|paper",
+  "regime": "STARTING",
+  "volatility": "UNKNOWN",
+  "mode": "BOOT_PAPER",
   "total_trades": 9,
   "winrate": 0.78,
   "max_drawdown": 6.96
