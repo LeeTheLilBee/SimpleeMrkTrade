@@ -1,85 +1,5 @@
 [
   {
-    "timestamp": "2026-04-16T22:49:23.565391",
-    "event_type": "SIGNAL",
-    "message": "MSFT approved as CALL with score 207",
-    "symbol": "MSFT",
-    "meta": {
-      "trade_id": "MSFT-CALL-20260416224923",
-      "strategy": "CALL",
-      "score": 207,
-      "confidence": "HIGH"
-    }
-  },
-  {
-    "timestamp": "2026-04-16T22:49:23.818281",
-    "event_type": "SIGNAL",
-    "message": "AMZN approved as CALL with score 201",
-    "symbol": "AMZN",
-    "meta": {
-      "trade_id": "AMZN-CALL-20260416224923",
-      "strategy": "CALL",
-      "score": 201,
-      "confidence": "HIGH"
-    }
-  },
-  {
-    "timestamp": "2026-04-16T22:49:42.311567",
-    "event_type": "SYSTEM",
-    "message": "Bot run completed",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:07:33.041618",
-    "event_type": "SYSTEM",
-    "message": "Bot run started",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:07:34.248979",
-    "event_type": "MARKET",
-    "message": "Market regime identified as BULL_TREND",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:07:43.182647",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:07:43.186722",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 8 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:07:43.189690",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 0 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:07:43.193063",
-    "event_type": "ERROR",
-    "message": "Bot error: momentum_strategy() missing 2 required positional arguments: 'market_breadth' and 'volatility_state'",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-16T23:29:04.022098",
-    "event_type": "SYSTEM",
-    "message": "Bot run started",
-    "symbol": null,
-    "meta": {}
-  },
-  {
     "timestamp": "2026-04-16T23:29:05.428670",
     "event_type": "MARKET",
     "message": "Market regime identified as BULL_TREND",
@@ -2224,6 +2144,94 @@
   },
   {
     "timestamp": "2026-05-02T02:22:58.598015",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T03:22:32.779075",
+    "event_type": "SYSTEM",
+    "message": "Bot run started in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T03:22:36.329616",
+    "event_type": "MARKET",
+    "message": "Market regime identified as NEUTRAL",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T03:22:46.352502",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 50 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T03:23:22.349268",
+    "event_type": "EXECUTION",
+    "message": "Aggressive execution universe rebuilt with 50 candidates",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T03:23:22.352373",
+    "event_type": "SPOTLIGHT",
+    "message": "Top spotlight contains 5 names",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T03:23:33.337482",
+    "event_type": "QUEUE",
+    "message": "Approved 38 research trades; selected 3 execution trades in market mode NEUTRAL / trading mode Paper Mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-02T03:25:06.544450",
+    "event_type": "SIGNAL",
+    "message": "INTC approved as CALL with score 1061.8",
+    "symbol": "INTC",
+    "meta": {
+      "trade_id": "INTC-CALL-20260502032333",
+      "strategy": "CALL",
+      "score": 1061.8,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T03:25:06.611597",
+    "event_type": "SIGNAL",
+    "message": "MU approved as CALL with score 535.33",
+    "symbol": "MU",
+    "meta": {
+      "trade_id": "MU-CALL-20260502032335",
+      "strategy": "CALL",
+      "score": 535.33,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T03:25:06.677893",
+    "event_type": "SIGNAL",
+    "message": "QCOM approved as CALL with score 507.86",
+    "symbol": "QCOM",
+    "meta": {
+      "trade_id": "QCOM-CALL-20260502032337",
+      "strategy": "CALL",
+      "score": 507.86,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T03:25:37.205456",
     "event_type": "SYSTEM",
     "message": "Bot run completed in Paper Mode (paper)",
     "symbol": null,

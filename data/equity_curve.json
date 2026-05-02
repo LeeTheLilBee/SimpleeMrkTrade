@@ -128,5 +128,35 @@
     "timestamp": "2026-05-02T02:22:37.099596",
     "strategy": "CALL",
     "status": "CLOSED"
+  },
+  {
+    "index": 13,
+    "equity": 1733.58,
+    "pnl": 95.27,
+    "symbol": "INTC",
+    "trade_id": "INTC-CALL-20260502032333",
+    "timestamp": "2026-05-02T03:25:10.332473",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 14,
+    "equity": 1733.58,
+    "pnl": 0.0,
+    "symbol": "MU",
+    "trade_id": "MU-CALL-20260502032335",
+    "timestamp": "2026-05-02T03:25:07.861765",
+    "strategy": "CALL",
+    "status": "FILLED"
+  },
+  {
+    "index": 15,
+    "equity": 1907.26,
+    "pnl": 173.68,
+    "symbol": "QCOM",
+    "trade_id": "QCOM-CALL-20260502032337",
+    "timestamp": "2026-05-02T03:25:12.344940",
+    "strategy": "CALL",
+    "status": "CLOSED"
   }
 ]

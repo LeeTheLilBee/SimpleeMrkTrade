@@ -1,7 +1,13 @@
-from datetime import datetime
-from typing import Any, Dict, List
+from __future__ import annotations
 
-from engine.paper_portfolio import show_positions, replace_position
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+from engine.paper_portfolio import (
+    show_positions,
+    replace_position,
+    open_count,
+)
 from engine.close_trade import close_position
 from engine.data_utils import safe_download
 from engine.explainability_engine import explain_position_state
@@ -10,13 +16,14 @@ from engine.engine_readiness import build_readiness_layer
 from engine.engine_promotion import build_promotion_layer
 from engine.engine_rebuild import build_rebuild_layer
 from engine.soulaana_core import soulaana_explain_position
-from engine.paper_portfolio import open_count
 from engine.trade_history import executed_trade_count
 from engine.risk_governor import governor_status
 
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
+        if value is None or value == "":
+            return float(default)
         return float(value)
     except Exception:
         return float(default)
@@ -24,14 +31,16 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
-        return int(value)
+        if value is None or value == "":
+            return int(default)
+        return int(float(value))
     except Exception:
         return int(default)
 
 
 def _safe_str(value: Any, default: str = "") -> str:
     try:
-        text = str(value).strip()
+        text = str(value or "").strip()
         return text if text else default
     except Exception:
         return default
@@ -48,52 +57,232 @@ def _safe_dict(value: Any) -> Dict[str, Any]:
 def _days_open(opened_at: Any) -> float:
     try:
         dt = datetime.fromisoformat(str(opened_at))
-        return max((datetime.now() - dt).total_seconds() / 86400, 0.0)
+        return max((datetime.now() - dt).total_seconds() / 86400.0, 0.0)
     except Exception:
         return 0.0
 
 
-def _progress(entry: Any, current: Any, target: Any) -> float:
-    try:
-        entry = float(entry or 0)
-        current = float(current or 0)
-        target = float(target or 0)
-    except Exception:
-        return 0.0
-    if not entry or not target or target == entry:
-        return 0.0
-    try:
-        return (current - entry) / (target - entry)
-    except Exception:
-        return 0.0
+def _norm_vehicle(pos: Dict[str, Any]) -> str:
+    vehicle = _safe_str(
+        pos.get("vehicle_selected", pos.get("selected_vehicle", pos.get("vehicle", "STOCK"))),
+        "STOCK",
+    ).upper()
+    if vehicle not in {"OPTION", "STOCK", "RESEARCH_ONLY"}:
+        return "STOCK"
+    return vehicle
 
 
-def _pct_change(entry: Any, current: Any) -> float:
+def _strategy_direction(pos: Dict[str, Any]) -> str:
+    strategy = _safe_str(pos.get("strategy"), "CALL").upper()
+    if "PUT" in strategy:
+        return "SHORT"
+    return "LONG"
+
+
+def _extract_option_contract(pos: Dict[str, Any]) -> Dict[str, Any]:
+    contract = pos.get("option") if isinstance(pos.get("option"), dict) else {}
+    if contract:
+        return dict(contract)
+
+    contract = pos.get("contract") if isinstance(pos.get("contract"), dict) else {}
+    if contract:
+        return dict(contract)
+
+    lifecycle = pos.get("lifecycle") if isinstance(pos.get("lifecycle"), dict) else {}
+    contract = lifecycle.get("option") if isinstance(lifecycle.get("option"), dict) else {}
+    if contract:
+        return dict(contract)
+
+    contract = lifecycle.get("contract") if isinstance(lifecycle.get("contract"), dict) else {}
+    if contract:
+        return dict(contract)
+
+    execution_result = pos.get("execution_result") if isinstance(pos.get("execution_result"), dict) else {}
+    execution_record = execution_result.get("execution_record") if isinstance(execution_result.get("execution_record"), dict) else {}
+    contract = execution_record.get("contract") if isinstance(execution_record.get("contract"), dict) else {}
+    if contract:
+        return dict(contract)
+
+    return {}
+
+
+def _latest_underlying_price(symbol: str, fallback_price: Any) -> float:
     try:
-        entry = float(entry or 0)
-        current = float(current or 0)
-        if entry <= 0:
-            return 0.0
+        df = safe_download(symbol, period="5d", auto_adjust=True, progress=False)
+        if df is None or getattr(df, "empty", True):
+            return _safe_float(fallback_price, 0.0)
+
+        close = df["Close"]
+        if hasattr(close, "iloc"):
+            value = close.iloc[-1]
+            try:
+                return float(value.item())
+            except Exception:
+                return float(value)
+    except Exception:
+        pass
+
+    return _safe_float(fallback_price, 0.0)
+
+
+def _latest_option_price(pos: Dict[str, Any]) -> float:
+    """
+    Canonical rule:
+    option position monitoring must use option-premium prices, not underlying prices.
+    """
+    contract = _extract_option_contract(pos)
+
+    for value in [
+        pos.get("option_current_price"),
+        pos.get("current_option_price"),
+        pos.get("mark"),
+        pos.get("current_price"),
+        contract.get("current_price"),
+        contract.get("mark"),
+        contract.get("last"),
+        contract.get("price"),
+        pos.get("fill_price"),
+        pos.get("entry"),
+        pos.get("price"),
+    ]:
+        price = _safe_float(value, 0.0)
+        if price > 0:
+            return price
+
+    return 0.0
+
+
+def _latest_price_for_position(pos: Dict[str, Any]) -> float:
+    vehicle = _norm_vehicle(pos)
+    if vehicle == "OPTION":
+        return _latest_option_price(pos)
+
+    symbol = _safe_str(pos.get("symbol"), "").upper()
+    fallback_price = pos.get("current_price", pos.get("entry", pos.get("price", 0.0)))
+    return _latest_underlying_price(symbol, fallback_price)
+
+
+def _pct_change(entry: Any, current: Any, direction: str = "LONG") -> float:
+    entry = _safe_float(entry, 0.0)
+    current = _safe_float(current, 0.0)
+    direction = _safe_str(direction, "LONG").upper()
+
+    if entry <= 0:
+        return 0.0
+
+    try:
+        if direction == "SHORT":
+            return ((entry - current) / entry) * 100.0
         return ((current - entry) / entry) * 100.0
     except Exception:
         return 0.0
 
 
-def _latest_price(symbol: str, fallback_price: Any) -> float:
+def _progress(entry: Any, current: Any, target: Any, direction: str = "LONG") -> float:
+    entry = _safe_float(entry, 0.0)
+    current = _safe_float(current, 0.0)
+    target = _safe_float(target, 0.0)
+    direction = _safe_str(direction, "LONG").upper()
+
+    if entry <= 0 or target <= 0 or target == entry:
+        return 0.0
+
     try:
-        df = safe_download(symbol, period="5d", auto_adjust=True, progress=False)
-        if df is None or getattr(df, "empty", True):
-            return float(fallback_price or 0)
-        close = df["Close"]
-        if hasattr(close, "iloc"):
-            val = close.iloc[-1]
-            try:
-                return float(val.item())
-            except Exception:
-                return float(val)
+        if direction == "SHORT":
+            denom = entry - target
+            if denom == 0:
+                return 0.0
+            return (entry - current) / denom
+        denom = target - entry
+        if denom == 0:
+            return 0.0
+        return (current - entry) / denom
     except Exception:
-        pass
-    return float(fallback_price or 0)
+        return 0.0
+
+
+def _default_option_stop(entry: float, direction: str) -> float:
+    if entry <= 0:
+        return 0.0
+    if direction == "SHORT":
+        return round(entry * 1.35, 4)
+    return round(entry * 0.70, 4)
+
+
+def _default_option_target(entry: float, direction: str) -> float:
+    if entry <= 0:
+        return 0.0
+    if direction == "SHORT":
+        return round(entry * 0.65, 4)
+    return round(entry * 1.35, 4)
+
+
+def _default_stock_stop(entry: float, direction: str) -> float:
+    if entry <= 0:
+        return 0.0
+    if direction == "SHORT":
+        return round(entry * 1.03, 4)
+    return round(entry * 0.97, 4)
+
+
+def _default_stock_target(entry: float, direction: str) -> float:
+    if entry <= 0:
+        return 0.0
+    if direction == "SHORT":
+        return round(entry * 0.90, 4)
+    return round(entry * 1.10, 4)
+
+
+def _normalize_position_prices(pos: Dict[str, Any]) -> Dict[str, Any]:
+    vehicle = _norm_vehicle(pos)
+    direction = _strategy_direction(pos)
+
+    entry = _safe_float(pos.get("entry", pos.get("price", pos.get("fill_price", 0.0))), 0.0)
+    if entry <= 0:
+        entry = _safe_float(pos.get("current_price", 0.0), 0.0)
+
+    current = _latest_price_for_position(pos)
+    if current <= 0:
+        current = entry
+
+    stop = _safe_float(pos.get("stop", 0.0), 0.0)
+    target = _safe_float(pos.get("target", 0.0), 0.0)
+
+    if vehicle == "OPTION":
+        if stop <= 0:
+            stop = _default_option_stop(entry, direction)
+        if target <= 0:
+            target = _default_option_target(entry, direction)
+    else:
+        if stop <= 0:
+            stop = _default_stock_stop(entry, direction)
+        if target <= 0:
+            target = _default_stock_target(entry, direction)
+
+    pos["symbol"] = _safe_str(pos.get("symbol"), "").upper()
+    pos["vehicle_selected"] = vehicle
+    pos["selected_vehicle"] = vehicle
+    pos["vehicle"] = vehicle
+
+    pos["entry"] = round(entry, 4 if vehicle == "OPTION" else 2)
+    pos["price"] = pos["entry"]
+    pos["current_price"] = round(current, 4 if vehicle == "OPTION" else 2)
+    pos["current"] = pos["current_price"]
+    pos["stop"] = round(stop, 4 if vehicle == "OPTION" else 2)
+    pos["target"] = round(target, 4 if vehicle == "OPTION" else 2)
+
+    if vehicle == "OPTION":
+        pos["option_current_price"] = pos["current_price"]
+        pos["underlying_price"] = _latest_underlying_price(
+            pos["symbol"],
+            pos.get("underlying_price", 0.0),
+        )
+        pos["monitoring_price_type"] = "OPTION_PREMIUM"
+    else:
+        pos["underlying_price"] = pos["current_price"]
+        pos["monitoring_price_type"] = "UNDERLYING"
+
+    return pos
 
 
 def _build_learning_exit_map() -> Dict[str, Any]:
@@ -101,6 +290,7 @@ def _build_learning_exit_map() -> Dict[str, Any]:
         adjustment_map = get_learning_adjustment_map()
     except Exception:
         adjustment_map = {}
+
     items = adjustment_map.get("items", []) if isinstance(adjustment_map, dict) else []
     behavior_flags = []
     for item in items:
@@ -108,6 +298,7 @@ def _build_learning_exit_map() -> Dict[str, Any]:
             continue
         if str(item.get("type", "") or "").strip().lower() == "behavior_flag":
             behavior_flags.append(item)
+
     return {"behavior_flags": behavior_flags}
 
 
@@ -136,7 +327,6 @@ def _extract_v2_context(pos: Dict[str, Any]) -> Dict[str, Any]:
     merged.update(v2_payload)
     merged.update(v2)
 
-    # also fold in top-level persisted V2 fields
     if "v2_score" in pos and "score" not in merged:
         merged["score"] = pos.get("v2_score")
     if "v2_reason" in pos and "reason" not in merged:
@@ -212,7 +402,6 @@ def _build_position_intelligence(pos: Dict[str, Any]) -> Dict[str, Any]:
         "entry_quality": _safe_str(pos.get("entry_quality", ""), ""),
     }
 
-    # Prefer existing canonical/fused values if already present.
     if _has_meaningful_existing_intelligence(pos):
         return {
             **existing,
@@ -277,9 +466,9 @@ def _build_position_intelligence(pos: Dict[str, Any]) -> Dict[str, Any]:
         rebuild_row = promotion_row
 
     return {
-        "readiness_score": float(rebuild_row.get("readiness_score", 0) or 0),
-        "promotion_score": float(rebuild_row.get("promotion_score", 0) or 0),
-        "rebuild_pressure": float(rebuild_row.get("rebuild_pressure", 0) or 0),
+        "readiness_score": _safe_float(rebuild_row.get("readiness_score", 0.0), 0.0),
+        "promotion_score": _safe_float(rebuild_row.get("promotion_score", 0.0), 0.0),
+        "rebuild_pressure": _safe_float(rebuild_row.get("rebuild_pressure", 0.0), 0.0),
         "readiness_notes": rebuild_row.get("readiness_notes", []) or [],
         "promotion_notes": rebuild_row.get("promotion_notes", []) or [],
         "rebuild_notes": rebuild_row.get("rebuild_notes", []) or [],
@@ -313,9 +502,11 @@ def _get_governor_snapshot() -> Dict[str, Any]:
 def _capital_protection_mode(governor: Dict[str, Any]) -> Dict[str, Any]:
     controls = governor.get("controls", {}) if isinstance(governor, dict) else {}
     reasons = governor.get("reasons", []) if isinstance(governor, dict) else []
+
     reserve_broken = bool(controls.get("cash_reserve_too_low", False)) or ("cash_reserve_too_low" in reasons)
     max_positions_hit = bool(controls.get("max_open_positions", False)) or ("max_open_positions" in reasons)
     enabled = reserve_broken or max_positions_hit
+
     return {
         "enabled": enabled,
         "reserve_broken": reserve_broken,
@@ -332,7 +523,7 @@ def _capital_pressure_score(pos: Dict[str, Any]) -> float:
     readiness_score = _safe_float(pos.get("readiness_score", 0.0), 0.0)
     rebuild_pressure = _safe_float(pos.get("rebuild_pressure", 0.0), 0.0)
     promotion_score = _safe_float(pos.get("promotion_score", 0.0), 0.0)
-    confidence_text = str(pos.get("confidence", "LOW") or "LOW").upper().strip()
+    confidence_text = _safe_str(pos.get("confidence", "LOW"), "LOW").upper()
     v2_signal_strength = _safe_float(pos.get("v2_signal_strength", 0.0), 0.0)
     v2_conviction_adjustment = _safe_float(pos.get("v2_conviction_adjustment", 0.0), 0.0)
     v2_regime_alignment = _safe_str(pos.get("v2_regime_alignment", ""), "").lower()
@@ -408,39 +599,38 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
     delay_exit_bias_active = _has_delay_exit_bias(learning_exit_map)
     governor = _get_governor_snapshot()
     protection = _capital_protection_mode(governor)
+
     enriched_positions: List[Dict[str, Any]] = []
 
     for pos in positions:
         if not isinstance(pos, dict):
             continue
 
-        symbol = str(pos.get("symbol", "") or "").upper().strip()
+        symbol = _safe_str(pos.get("symbol"), "").upper()
         if not symbol:
             continue
 
-        entry = float(pos.get("entry", pos.get("price", 0)) or 0)
-        current = _latest_price(symbol, pos.get("current_price", entry))
-        target = float(pos.get("target", entry) or entry)
-        stop = float(pos.get("stop", entry) or entry)
+        pos = _normalize_position_prices(dict(pos))
+        vehicle = _norm_vehicle(pos)
+        direction = _strategy_direction(pos)
 
-        pos["symbol"] = symbol
-        pos["current_price"] = round(current, 2)
+        entry = _safe_float(pos.get("entry", 0.0), 0.0)
+        current = _safe_float(pos.get("current_price", entry), entry)
+        stop = _safe_float(pos.get("stop", 0.0), 0.0)
+        target = _safe_float(pos.get("target", 0.0), 0.0)
 
         position_intel = _build_position_intelligence(pos)
 
-        # preserve existing upstream values unless missing/zeroish
         if _safe_float(pos.get("readiness_score", 0.0), 0.0) <= 0:
             pos["readiness_score"] = position_intel.get("readiness_score", 0)
         if _safe_float(pos.get("promotion_score", 0.0), 0.0) <= 0:
             pos["promotion_score"] = position_intel.get("promotion_score", 0)
         if _safe_float(pos.get("rebuild_pressure", 0.0), 0.0) <= 0:
             pos["rebuild_pressure"] = position_intel.get("rebuild_pressure", 0)
-
         if not _safe_str(pos.get("setup_family", ""), ""):
             pos["setup_family"] = position_intel.get("setup_family", "")
         if not _safe_str(pos.get("entry_quality", ""), ""):
             pos["entry_quality"] = position_intel.get("entry_quality", "")
-
         if not _safe_list(pos.get("readiness_notes", [])):
             pos["readiness_notes"] = position_intel.get("readiness_notes", [])
         if not _safe_list(pos.get("promotion_notes", [])):
@@ -464,11 +654,11 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
         pos["v2_risk_flags"] = position_intel.get("v2_risk_flags", pos.get("v2_risk_flags", []))
         pos["v2_quality"] = position_intel.get("v2_quality", pos.get("v2_quality", 0.0))
 
-        rebuild_pressure = float(pos.get("rebuild_pressure", 0) or 0)
-        readiness_score = float(pos.get("readiness_score", 0) or 0)
+        rebuild_pressure = _safe_float(pos.get("rebuild_pressure", 0.0), 0.0)
+        readiness_score = _safe_float(pos.get("readiness_score", 0.0), 0.0)
         days = _days_open(pos.get("opened_at"))
-        prog = _progress(entry, current, target)
-        pct_change = _pct_change(entry, current)
+        prog = _progress(entry, current, target, direction=direction)
+        pct_change = _pct_change(entry, current, direction=direction)
 
         try:
             pos["position_explanation"] = explain_position_state(
@@ -492,10 +682,13 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
             pos["soulaana"] = soulaana_explain_position(
                 {
                     "symbol": symbol,
-                    "current_price": round(current, 2),
-                    "entry": entry,
-                    "target": target,
-                    "stop": stop,
+                    "vehicle_selected": vehicle,
+                    "monitoring_price_type": pos.get("monitoring_price_type", "UNKNOWN"),
+                    "current_price": round(current, 4 if vehicle == "OPTION" else 2),
+                    "underlying_price": round(_safe_float(pos.get("underlying_price", 0.0), 0.0), 2),
+                    "entry": round(entry, 4 if vehicle == "OPTION" else 2),
+                    "target": round(target, 4 if vehicle == "OPTION" else 2),
+                    "stop": round(stop, 4 if vehicle == "OPTION" else 2),
                     "pnl": pos.get("pnl", pos.get("unrealized_pnl", 0)),
                     "progress": prog,
                     "pct_change": pct_change,
@@ -506,7 +699,6 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
                     "setup_family": pos.get("setup_family"),
                     "entry_quality": pos.get("entry_quality"),
                     "decision_reason": pos.get("decision_reason", pos.get("final_reason", "")),
-                    "vehicle_selected": pos.get("vehicle_selected", pos.get("vehicle", "STOCK")),
                     "v2": pos.get("v2", {}),
                     "v2_score": pos.get("v2_score", 0.0),
                     "v2_confidence": pos.get("v2_confidence", ""),
@@ -528,6 +720,7 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
         pos["_monitor_progress"] = prog
         pos["_monitor_pct_change"] = pct_change
         pos["_capital_pressure_score"] = _capital_pressure_score(pos)
+
         enriched_positions.append(pos)
 
     weakest_symbol = None
@@ -542,21 +735,27 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
             ),
             reverse=True,
         )
-        weakest_symbol = str(ranked[0].get("symbol", "") or "").upper().strip()
+        weakest_symbol = _safe_str(ranked[0].get("symbol"), "").upper()
 
     for pos in enriched_positions:
         symbol = pos["symbol"]
-        entry = float(pos.get("entry", pos.get("price", 0)) or 0)
-        current = float(pos.get("current_price", entry) or entry)
-        stop = float(pos.get("stop", entry) or entry)
-        target = float(pos.get("target", entry) or entry)
-        score = float(pos.get("score", 0) or 0)
-        prev_score = float(pos.get("previous_score", score) or score)
+        vehicle = _norm_vehicle(pos)
+        direction = _strategy_direction(pos)
+
+        entry = _safe_float(pos.get("entry", 0.0), 0.0)
+        current = _safe_float(pos.get("current_price", entry), entry)
+        stop = _safe_float(pos.get("stop", entry), entry)
+        target = _safe_float(pos.get("target", entry), entry)
+
+        score = _safe_float(pos.get("score", 0.0), 0.0)
+        prev_score = _safe_float(pos.get("previous_score", score), score)
+
         days = _safe_float(pos.get("_monitor_days_open", 0.0), 0.0)
         prog = _safe_float(pos.get("_monitor_progress", 0.0), 0.0)
         pct_change = _safe_float(pos.get("_monitor_pct_change", 0.0), 0.0)
-        rebuild_pressure = float(pos.get("rebuild_pressure", 0) or 0)
-        readiness_score = float(pos.get("readiness_score", 0) or 0)
+
+        rebuild_pressure = _safe_float(pos.get("rebuild_pressure", 0.0), 0.0)
+        readiness_score = _safe_float(pos.get("readiness_score", 0.0), 0.0)
         v2_signal_strength = _safe_float(pos.get("v2_signal_strength", 0.0), 0.0)
         v2_conviction_adjustment = _safe_float(pos.get("v2_conviction_adjustment", 0.0), 0.0)
         v2_regime_alignment = _safe_str(pos.get("v2_regime_alignment", ""), "").lower()
@@ -566,11 +765,16 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
         pressure_reasons: List[str] = []
         action = "HOLD"
 
-        hard_stop_hit = current <= stop
-        target_hit = current >= target
-        deep_loss = pct_change <= -1.25
-        medium_loss = pct_change <= -0.75
-        light_loss = pct_change <= -0.35
+        if direction == "SHORT":
+            hard_stop_hit = current >= stop
+            target_hit = current <= target
+        else:
+            hard_stop_hit = current <= stop
+            target_hit = current >= target
+
+        deep_loss = pct_change <= -25.0 if vehicle == "OPTION" else pct_change <= -1.25
+        medium_loss = pct_change <= -15.0 if vehicle == "OPTION" else pct_change <= -0.75
+        light_loss = pct_change <= -7.0 if vehicle == "OPTION" else pct_change <= -0.35
         very_new_trade = days < 0.20
         early_trade = days < 0.50
         meaningful_progress_failure = days >= 1.5 and prog < 0.10
@@ -618,10 +822,10 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
             else:
                 action = "STRUCTURE_DETERIORATION"
                 pressure_reasons.append("structure deteriorated with rebuild pressure")
-        elif v2_negative and days >= 0.50 and prog < 0.15 and pct_change <= -0.35:
+        elif v2_negative and days >= 0.50 and prog < 0.15 and pct_change <= (-8.0 if vehicle == "OPTION" else -0.35):
             action = "V2_DETERIORATION"
             pressure_reasons.append("V2 posture turned against the position")
-        elif prog > 0.60 and current > entry:
+        elif prog > 0.60 and pct_change > 0:
             action = "PROTECT_PROFIT"
             pressure_reasons.append("profit protection zone reached")
         else:
@@ -640,19 +844,20 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
         if protection["enabled"]:
             pos["capital_protection_mode"] = True
             pos["capital_protection_snapshot"] = protection
+
             if symbol == weakest_symbol:
                 if action == "HOLD":
                     if days >= 0.20:
-                        if pct_change < -0.75 and rebuild_pressure >= 20:
+                        if pct_change < (-15.0 if vehicle == "OPTION" else -0.75) and rebuild_pressure >= 20:
                             action = "CAPITAL_PROTECTION_EXIT"
                             pressure_reasons.append("weakest open position under reserve breach")
-                        elif pct_change <= -0.50:
+                        elif pct_change <= (-10.0 if vehicle == "OPTION" else -0.50):
                             action = "CAPITAL_PROTECTION_EXIT"
                             pressure_reasons.append("capital protection exit on active loser")
                         elif days >= 1 and prog < 0.10:
                             action = "CAPITAL_PROTECTION_EXIT"
                             pressure_reasons.append("capital protection exit on stalled position")
-                        elif v2_negative and pct_change < -0.25:
+                        elif v2_negative and pct_change < (-6.0 if vehicle == "OPTION" else -0.25):
                             action = "CAPITAL_PROTECTION_EXIT"
                             pressure_reasons.append("capital protection plus negative V2 posture")
                         else:
@@ -672,6 +877,9 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
             pos["learning_exit_notes"] = existing_notes + learning_notes
 
         pos["monitor_debug"] = {
+            "vehicle_selected": vehicle,
+            "direction": direction,
+            "monitoring_price_type": pos.get("monitoring_price_type", "UNKNOWN"),
             "days_open": round(days, 3),
             "progress": round(prog, 3),
             "pct_change": round(pct_change, 3),
@@ -695,10 +903,15 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
 
         replace_position(symbol, pos)
 
+        display_current = round(current, 4) if vehicle == "OPTION" else round(current, 2)
+        display_entry = round(entry, 4) if vehicle == "OPTION" else round(entry, 2)
+        display_stop = round(stop, 4) if vehicle == "OPTION" else round(stop, 2)
+
         print(
-            f"{symbol} | Current: {round(current, 2)} | Entry: {round(entry, 2)} | "
-            f"Stop: {round(stop, 2)} | Progress: {round(prog, 2)} | "
-            f"Readiness: {round(readiness_score, 2)} | Rebuild: {round(rebuild_pressure, 2)} | "
+            f"{symbol} | Vehicle: {vehicle} | MonitorPrice: {pos.get('monitoring_price_type', 'UNKNOWN')} | "
+            f"Current: {display_current} | Entry: {display_entry} | Stop: {display_stop} | "
+            f"Progress: {round(prog, 2)} | Readiness: {round(readiness_score, 2)} | "
+            f"Rebuild: {round(rebuild_pressure, 2)} | "
             f"V2Score: {round(_safe_float(pos.get('v2_score', 0.0), 0.0), 2)} | "
             f"V2Strength: {round(v2_signal_strength, 2)} | "
             f"CapitalPressure: {round(_safe_float(pos.get('_capital_pressure_score', 0.0), 0.0), 2)} | "
@@ -708,6 +921,7 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
         if action != "HOLD":
             close_reason = action.lower()
             result = close_position(symbol, current, reason=close_reason)
+
             actions.append(
                 {
                     "symbol": symbol,
@@ -715,12 +929,13 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
                     "result": result,
                 }
             )
-            if result.get("closed"):
+
+            if isinstance(result, dict) and result.get("closed"):
                 print(
                     f"CLOSED: {symbol} | Reason: {action} | "
                     f"PnL: {result.get('pnl')} | Exit: {result.get('exit_price')}"
                 )
-            elif result.get("blocked"):
+            elif isinstance(result, dict) and result.get("blocked"):
                 print(f"BLOCKED CLOSE: {symbol} | Reason: {result.get('reason')}")
 
     return actions
