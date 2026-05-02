@@ -1,37 +1,32 @@
 from __future__ import annotations
 
+import json
 from copy import deepcopy
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from pathlib import Path
+from typing import Any, Dict, List
 
-from engine.account_state import record_trade
-from engine.bot_logger import log_bot as default_log_bot
-from engine.canonical_execution_guard import validate_selected_trade_for_execution
-from engine.canonical_trade_state import build_open_trade_state
-from engine.execution_handoff import execute_via_adapter, summarize_execution_packet
-from engine.observatory_mode import build_mode_context, normalize_mode
-from engine.paper_portfolio import add_position, get_position
-from engine.trade_logger import log_trade_open_from_position
-from engine.trade_summary import trade_summary
-from engine.trade_timeline import add_timeline_event
+from engine.execution_handoff import (
+    execute_via_adapter,
+    summarize_execution_packet,
+)
 
 try:
-    from engine.premium_feed import write_premium_feed_item
+    from engine.paper_portfolio import open_count
 except Exception:
-    def write_premium_feed_item(_payload):
-        return None
-
-
-def _now_iso() -> str:
-    return datetime.now().isoformat()
+    def open_count():
+        positions = _load_json("data/user_positions.json", [])
+        if isinstance(positions, list):
+            return len([p for p in positions if isinstance(p, dict)])
+        return 0
 
 
 def _safe_dict(value: Any) -> Dict[str, Any]:
-    return dict(value) if isinstance(value, dict) else {}
+    return value if isinstance(value, dict) else {}
 
 
 def _safe_list(value: Any) -> List[Any]:
-    return list(value) if isinstance(value, list) else []
+    return value if isinstance(value, list) else []
 
 
 def _safe_str(value: Any, default: str = "") -> str:
@@ -73,438 +68,390 @@ def _norm_symbol(value: Any) -> str:
     return _safe_str(value, "UNKNOWN").upper()
 
 
-def _write_skip_feed(trade: Dict[str, Any], summary: str) -> None:
-    if not isinstance(trade, dict):
-        return
-    symbol = _norm_symbol(trade.get("symbol"))
-    mode = _safe_str(trade.get("mode"), "UNKNOWN")
-    write_premium_feed_item(
-        {
-            "title": f"{symbol} Skipped",
-            "summary": summary,
-            "pro_lines": [],
-            "elite_lines": [],
-            "timestamp": trade.get("timestamp"),
-            "mode": mode,
-            "symbol": symbol,
-            "status": "SKIPPED",
-            "final_reason": summary,
-        }
+def _now_iso() -> str:
+    return datetime.now().isoformat()
+
+
+def _load_json(path: str, default: Any) -> Any:
+    try:
+        p = Path(path)
+        if not p.exists():
+            return default
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return default
+
+
+def _write_json(path: str, payload: Any) -> None:
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def _extract_trade_id(packet: Dict[str, Any]) -> str:
+    lifecycle_after = _safe_dict(packet.get("lifecycle_after"))
+    execution_result = _safe_dict(packet.get("execution_result"))
+    execution_record = _safe_dict(execution_result.get("execution_record"))
+    return _safe_str(
+        lifecycle_after.get("trade_id")
+        or execution_record.get("trade_id")
+        or packet.get("trade_id"),
+        "",
     )
 
 
-def _resolve_trade_mode(trade: Dict[str, Any]) -> str:
-    trade = _safe_dict(trade)
-    return normalize_mode(
-        trade.get("trading_mode")
-        or trade.get("execution_mode")
-        or trade.get("mode")
-        or _safe_dict(trade.get("mode_context")).get("mode")
-        or "paper"
-    )
+def _build_position_record(packet: Dict[str, Any]) -> Dict[str, Any]:
+    lifecycle_after = _safe_dict(packet.get("lifecycle_after"))
+    execution_result = _safe_dict(packet.get("execution_result"))
+    execution_record = _safe_dict(execution_result.get("execution_record"))
 
+    raw = _safe_dict(lifecycle_after.get("raw"))
+    option = _safe_dict(lifecycle_after.get("option")) or _safe_dict(raw.get("option"))
+    contract = _safe_dict(lifecycle_after.get("contract")) or _safe_dict(raw.get("contract"))
+    mode_context = _safe_dict(packet.get("mode_context")) or _safe_dict(lifecycle_after.get("mode_context"))
 
-def _build_trade_mode_context(trade_mode: str, trade: Dict[str, Any]) -> Dict[str, Any]:
-    resolved = build_mode_context(trade_mode)
-    incoming = _safe_dict(_safe_dict(trade).get("mode_context"))
-    merged = dict(resolved)
-    for key, value in incoming.items():
-        if value is not None:
-            merged[key] = value
-    merged["mode"] = normalize_mode(merged.get("mode", trade_mode))
-    return merged
-
-
-def _position_already_present(
-    open_positions: List[Dict[str, Any]],
-    trade_id: str,
-    symbol: str,
-) -> bool:
-    trade_id = _safe_str(trade_id, "")
-    symbol = _norm_symbol(symbol)
-
-    for pos in _safe_list(open_positions):
-        pos = _safe_dict(pos)
-        if trade_id and _safe_str(pos.get("trade_id"), "") == trade_id:
-            return True
-        if not trade_id and symbol and _norm_symbol(pos.get("symbol")) == symbol:
-            if _safe_str(pos.get("status"), "").upper() == "OPEN":
-                return True
-    return False
-
-
-def _append_result(
-    results: List[Dict[str, Any]],
-    *,
-    success: bool,
-    status: str,
-    symbol: str,
-    selected_vehicle: str,
-    guard: Optional[Dict[str, Any]],
-    execution_result: Optional[Dict[str, Any]],
-    lifecycle_after: Optional[Dict[str, Any]],
-    trade_mode: str,
-    mode_context: Dict[str, Any],
-    extra: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
-    payload = {
-        "success": bool(success),
-        "status": _safe_str(status, "UNKNOWN").upper(),
-        "symbol": _norm_symbol(symbol),
-        "selected_vehicle": _safe_str(selected_vehicle, "UNKNOWN").upper(),
-        "guard": _safe_dict(guard),
-        "execution_result": _safe_dict(execution_result),
-        "lifecycle_after": _safe_dict(lifecycle_after),
-        "trading_mode": normalize_mode(trade_mode),
-        "mode_context": _safe_dict(mode_context),
-        "timestamp": _now_iso(),
-    }
-    if isinstance(extra, dict):
-        payload.update(extra)
-    results.append(payload)
-    return payload
-
-
-def _build_stored_position(
-    trade: Dict[str, Any],
-    lifecycle_after: Dict[str, Any],
-    execution_result: Dict[str, Any],
-    trade_mode: str,
-    mode_context: Dict[str, Any],
-) -> Dict[str, Any]:
-    position = build_open_trade_state(
-        trade,
-        lifecycle=lifecycle_after,
-        execution_result=execution_result,
-        mode=trade_mode,
-        mode_context=mode_context,
-    )
-
-    position["trading_mode"] = trade_mode
-    position["execution_mode"] = trade_mode
-    position["mode"] = trade_mode
-    position["mode_context"] = mode_context
-    position["status"] = "OPEN"
-    position["research_approved"] = True
-    position["execution_ready"] = True
-    position["selected_for_execution"] = True
-    position["execution_result"] = _safe_dict(execution_result)
-    position["execution_status"] = _safe_str(
-        _safe_dict(execution_result).get("status"),
-        "FILLED",
+    symbol = _norm_symbol(lifecycle_after.get("symbol") or raw.get("symbol"))
+    strategy = _safe_str(lifecycle_after.get("strategy") or raw.get("strategy"), "CALL").upper()
+    vehicle_selected = _safe_str(
+        lifecycle_after.get("vehicle_selected")
+        or lifecycle_after.get("selected_vehicle")
+        or raw.get("vehicle_selected")
+        or raw.get("selected_vehicle")
+        or raw.get("vehicle"),
+        "RESEARCH_ONLY",
     ).upper()
+
+    fill_price = round(
+        _safe_float(
+            execution_result.get("fill_price", execution_record.get("fill_price", 0.0)),
+            0.0,
+        ),
+        4,
+    )
+
+    contracts = _safe_int(
+        execution_record.get("contracts", lifecycle_after.get("contracts", raw.get("contracts", 0))),
+        0,
+    )
+    shares = _safe_int(
+        execution_record.get("shares", lifecycle_after.get("shares", raw.get("shares", raw.get("size", 0)))),
+        0,
+    )
+
+    if vehicle_selected == "OPTION":
+        quantity = contracts if contracts > 0 else max(1, _safe_int(execution_record.get("filled_quantity", 1), 1))
+    else:
+        quantity = shares if shares > 0 else max(1, _safe_int(execution_record.get("filled_quantity", 1), 1))
+
+    capital_committed = round(
+        _safe_float(execution_result.get("actual_cost", lifecycle_after.get("capital_required", 0.0)), 0.0),
+        4,
+    )
+
+    position = {
+        "trade_id": _extract_trade_id(packet),
+        "symbol": symbol,
+        "strategy": strategy,
+        "vehicle": vehicle_selected,
+        "vehicle_selected": vehicle_selected,
+        "selected_vehicle": vehicle_selected,
+        "status": "OPEN",
+        "opened_at": _safe_str(execution_record.get("opened_at"), _now_iso()),
+        "entry": fill_price,
+        "fill_price": fill_price,
+        "price": fill_price,
+        "current": fill_price,
+        "current_price": fill_price,
+        "requested_price": round(
+            _safe_float(execution_record.get("requested_price", fill_price), fill_price),
+            4,
+        ),
+        "commission": round(_safe_float(execution_record.get("commission", 0.0), 0.0), 4),
+        "capital_committed": capital_committed,
+        "capital_required": round(_safe_float(lifecycle_after.get("capital_required", 0.0), 0.0), 4),
+        "minimum_trade_cost": round(_safe_float(lifecycle_after.get("minimum_trade_cost", 0.0), 0.0), 4),
+        "capital_available_at_entry": round(_safe_float(lifecycle_after.get("capital_available", 0.0), 0.0), 4),
+        "contracts": contracts if vehicle_selected == "OPTION" else 0,
+        "shares": shares if vehicle_selected == "STOCK" else 0,
+        "quantity": quantity,
+        "score": _safe_float(lifecycle_after.get("score", raw.get("score", 0.0)), 0.0),
+        "fused_score": _safe_float(lifecycle_after.get("fused_score", raw.get("fused_score", 0.0)), 0.0),
+        "confidence": _safe_str(lifecycle_after.get("confidence", raw.get("confidence", "LOW")), "LOW").upper(),
+        "mode": _safe_str(packet.get("trading_mode", lifecycle_after.get("trading_mode", "paper")), "paper"),
+        "trading_mode": _safe_str(packet.get("trading_mode", lifecycle_after.get("trading_mode", "paper")), "paper"),
+        "mode_context": mode_context,
+        "final_reason": _safe_str(lifecycle_after.get("final_reason", "entered"), "entered"),
+        "final_reason_code": _safe_str(lifecycle_after.get("final_reason_code", "entered"), "entered"),
+        "execution_reason": _safe_str(lifecycle_after.get("execution_reason", "entered"), "entered"),
+        "execution_reason_code": _safe_str(lifecycle_after.get("execution_reason_code", "entered"), "entered"),
+        "broker_order_id": _safe_str(execution_result.get("broker_order_id"), ""),
+        "actual_cost": capital_committed,
+        "pnl": 0.0,
+        "unrealized_pnl": 0.0,
+        "realized_pnl": 0.0,
+        "stop": _safe_float(
+            lifecycle_after.get("stop", raw.get("stop", 0.0)),
+            0.0,
+        ),
+        "target": _safe_float(
+            lifecycle_after.get("target", raw.get("target", 0.0)),
+            0.0,
+        ),
+    }
+
+    if option or contract:
+        option_payload = option or contract
+        position.update({
+            "option": option_payload,
+            "contract": contract or option_payload,
+            "contract_symbol": _safe_str(
+                option_payload.get("contract_symbol")
+                or option_payload.get("contractSymbol"),
+                "",
+            ),
+            "expiry": _safe_str(
+                option_payload.get("expiry")
+                or option_payload.get("expiration"),
+                "",
+            ),
+            "strike": _safe_float(option_payload.get("strike"), 0.0),
+            "right": _safe_str(option_payload.get("right"), strategy),
+            "bid": _safe_float(option_payload.get("bid"), 0.0),
+            "ask": _safe_float(option_payload.get("ask"), 0.0),
+            "mark": _safe_float(
+                option_payload.get("mark", option_payload.get("last", option_payload.get("price", fill_price))),
+                fill_price,
+            ),
+            "last": _safe_float(option_payload.get("last", fill_price), fill_price),
+            "open_interest": _safe_int(
+                option_payload.get("open_interest", option_payload.get("openInterest", 0)),
+                0,
+            ),
+            "volume": _safe_int(option_payload.get("volume", 0), 0),
+            "dte": _safe_int(
+                option_payload.get("dte", option_payload.get("daysToExpiration", 0)),
+                0,
+            ),
+            "contract_score": round(
+                _safe_float(
+                    lifecycle_after.get(
+                        "option_contract_score",
+                        option_payload.get("contract_score", 0.0),
+                    ),
+                    0.0,
+                ),
+                4,
+            ),
+        })
 
     return position
 
 
+def _append_open_position(position: Dict[str, Any]) -> None:
+    positions = _load_json("data/user_positions.json", [])
+    if not isinstance(positions, list):
+        positions = []
+
+    trade_id = _safe_str(position.get("trade_id"), "")
+    symbol = _norm_symbol(position.get("symbol"))
+
+    deduped: List[Dict[str, Any]] = []
+    for row in positions:
+        row = _safe_dict(row)
+        existing_trade_id = _safe_str(row.get("trade_id"), "")
+        existing_symbol = _norm_symbol(row.get("symbol"))
+        if trade_id and existing_trade_id == trade_id:
+            continue
+        if not trade_id and symbol and existing_symbol == symbol and _safe_str(row.get("status", "OPEN"), "OPEN").upper() == "OPEN":
+            continue
+        deduped.append(row)
+
+    deduped.append(position)
+    _write_json("data/user_positions.json", deduped)
+
+
+def _append_trade_log(packet: Dict[str, Any], position: Dict[str, Any]) -> None:
+    trade_log = _load_json("data/trade_log.json", [])
+    if not isinstance(trade_log, list):
+        trade_log = []
+
+    lifecycle_after = _safe_dict(packet.get("lifecycle_after"))
+    execution_result = _safe_dict(packet.get("execution_result"))
+    execution_record = _safe_dict(execution_result.get("execution_record"))
+
+    trade_log.append({
+        "timestamp": _safe_str(position.get("opened_at"), _now_iso()),
+        "trade_id": _safe_str(position.get("trade_id"), ""),
+        "symbol": _norm_symbol(position.get("symbol")),
+        "strategy": _safe_str(position.get("strategy"), "CALL").upper(),
+        "vehicle_selected": _safe_str(position.get("vehicle_selected"), "RESEARCH_ONLY").upper(),
+        "action": "OPEN",
+        "status": "FILLED",
+        "fill_price": round(_safe_float(position.get("fill_price", 0.0), 0.0), 4),
+        "quantity": _safe_int(position.get("quantity", 0), 0),
+        "shares": _safe_int(position.get("shares", 0), 0),
+        "contracts": _safe_int(position.get("contracts", 0), 0),
+        "commission": round(_safe_float(position.get("commission", 0.0), 0.0), 4),
+        "actual_cost": round(_safe_float(execution_result.get("actual_cost", 0.0), 0.0), 4),
+        "broker_order_id": _safe_str(execution_result.get("broker_order_id"), ""),
+        "trading_mode": _safe_str(packet.get("trading_mode", lifecycle_after.get("trading_mode", "paper")), "paper"),
+        "reason": _safe_str(lifecycle_after.get("final_reason", execution_result.get("reason", "entered")), "entered"),
+        "reason_code": _safe_str(lifecycle_after.get("final_reason_code", execution_result.get("reason_code", "entered")), "entered"),
+        "execution_record": execution_record,
+    })
+
+    _write_json("data/trade_log.json", trade_log)
+
+
+def _persist_via_module(position: Dict[str, Any]) -> bool:
+    try:
+        import engine.paper_portfolio as pp  # type: ignore
+    except Exception:
+        return False
+
+    candidate_funcs = [
+        "open_position",
+        "open_trade",
+        "add_position",
+        "save_position",
+        "append_position",
+    ]
+
+    for name in candidate_funcs:
+        fn = getattr(pp, name, None)
+        if callable(fn):
+            try:
+                fn(position)
+                return True
+            except TypeError:
+                try:
+                    fn(**position)
+                    return True
+                except Exception:
+                    continue
+            except Exception:
+                continue
+    return False
+
+
+def _persist_executed_trade(packet: Dict[str, Any]) -> Dict[str, Any]:
+    position = _build_position_record(packet)
+
+    persisted_via_module = _persist_via_module(position)
+    if not persisted_via_module:
+        _append_open_position(position)
+
+    _append_trade_log(packet, position)
+
+    return {
+        "persisted": True,
+        "position": position,
+        "persisted_via_module": persisted_via_module,
+    }
+
+
 def execute_trades(
-    queue,
-    limit=3,
-    portfolio_context=None,
-    max_open_positions=5,
-    open_positions=None,
-    kill_switch_enabled=False,
-    session_healthy=True,
-    broker_adapter=None,
-    log_bot=None,
-):
+    queue: List[Dict[str, Any]] | None,
+    limit: int = 3,
+    portfolio_context: Dict[str, Any] | None = None,
+    broker_adapter: Any = None,
+    trading_mode: str | None = None,
+    max_open_positions: int = 5,
+    current_open_positions: int | None = None,
+    kill_switch_enabled: bool = False,
+    session_healthy: bool = True,
+) -> Dict[str, Any]:
     queue = queue if isinstance(queue, list) else []
-    portfolio_context = portfolio_context if isinstance(portfolio_context, dict) else {}
-    open_positions = open_positions if isinstance(open_positions, list) else []
+    portfolio_context = _safe_dict(portfolio_context)
+
+    results: List[Dict[str, Any]] = []
+    summaries: List[Dict[str, Any]] = []
 
     executed = 0
-    results: List[Dict[str, Any]] = []
-    remaining_queue: List[Dict[str, Any]] = []
+    rejected = 0
+    skipped = 0
 
-    def _log(message: str, level: str = "INFO") -> None:
-        logger = log_bot if callable(log_bot) else default_log_bot
-        try:
-            logger(message, level)
-        except Exception:
-            pass
+    open_positions_running = (
+        _safe_int(current_open_positions, open_count())
+        if current_open_positions is not None
+        else _safe_int(open_count(), 0)
+    )
 
-    for trade in queue:
-        if executed >= limit:
-            if isinstance(trade, dict):
-                remaining_queue.append(trade)
+    for queued_trade in queue:
+        if executed >= max(0, limit):
+            break
+
+        queued_trade = deepcopy(_safe_dict(queued_trade))
+        if not queued_trade:
+            skipped += 1
             continue
 
-        if not isinstance(trade, dict):
-            _log("Skipped malformed queued trade payload.", "WARN")
-            continue
-
-        trade = deepcopy(_safe_dict(trade))
-        trade_mode = _resolve_trade_mode(trade)
-        mode_context = _build_trade_mode_context(trade_mode, trade)
-
-        symbol = _norm_symbol(trade.get("symbol"))
-        strategy = _safe_str(trade.get("strategy"), "CALL").upper()
-        selected_vehicle = _safe_str(
-            trade.get("vehicle_selected", trade.get("selected_vehicle", "STOCK")),
-            "STOCK",
-        ).upper()
-
-        queue_limit = _safe_int(mode_context.get("queue_limit", limit), limit)
-        if queue_limit > 0 and executed >= queue_limit:
-            remaining_queue.append(trade)
-            continue
-
-        print("PRE-EXECUTION-HANDOFF:", {
-            "symbol": symbol,
-            "trade_id": _safe_str(trade.get("trade_id"), ""),
-            "research_approved": _safe_bool(trade.get("research_approved"), False),
-            "execution_ready": _safe_bool(trade.get("execution_ready"), False),
-            "selected_for_execution": _safe_bool(trade.get("selected_for_execution"), False),
-            "vehicle_selected": selected_vehicle,
-            "lifecycle_stage": trade.get("lifecycle_stage"),
-            "trading_mode": trade_mode,
-        })
-
-        existing_position = get_position(symbol, trade_id=_safe_str(trade.get("trade_id"), ""))
-        if existing_position:
-            reason_text = "Existing open position."
-            reason_code = "existing_open_position"
-            _log(f"{symbol} rejected | {reason_code}", "WARN")
-            _write_skip_feed(trade, f"{symbol} skipped because there is already an open position.")
-            add_timeline_event(symbol, "SKIPPED", {"reason": reason_code, "trading_mode": trade_mode})
-            _append_result(
-                results,
-                success=False,
-                status="REJECTED",
-                symbol=symbol,
-                selected_vehicle=selected_vehicle,
-                guard={
-                    "decision": "REJECT",
-                    "guard_reason": reason_text,
-                    "guard_reason_code": reason_code,
-                    "warnings": [],
-                    "guard_details": {},
-                },
-                execution_result=None,
-                lifecycle_after=trade,
-                trade_mode=trade_mode,
-                mode_context=mode_context,
-            )
-            continue
-
-        local_guard = validate_selected_trade_for_execution(
-            trade,
-            capital_available=_safe_float(
-                trade.get(
-                    "capital_available",
-                    portfolio_context.get("cash_available", portfolio_context.get("cash", 0.0)),
-                ),
-                0.0,
-            ),
-            trading_mode=trade_mode,
-            current_open_positions=len(open_positions),
-            max_open_positions=max_open_positions,
-            kill_switch_enabled=kill_switch_enabled,
-            session_healthy=session_healthy,
-            broker_healthy=True,
+        resolved_mode = _safe_str(
+            trading_mode
+            or queued_trade.get("trading_mode")
+            or queued_trade.get("execution_mode")
+            or queued_trade.get("mode"),
+            "paper",
         )
 
-        if _safe_bool(local_guard.get("blocked"), False):
-            reason_text = _safe_str(local_guard.get("reason"), "Execution blocked.")
-            reason_code = _safe_str(local_guard.get("reason_code"), "execution_blocked")
-            _log(f"{symbol} rejected | {reason_code}", "WARN")
-            _write_skip_feed(trade, f"{symbol} skipped: {reason_text}")
-            add_timeline_event(symbol, "SKIPPED", {"reason": reason_code, "trading_mode": trade_mode})
-            _append_result(
-                results,
-                success=False,
-                status="REJECTED",
-                symbol=symbol,
-                selected_vehicle=selected_vehicle,
-                guard={
-                    "decision": "REJECT",
-                    "guard_reason": reason_text,
-                    "guard_reason_code": reason_code,
-                    "warnings": _safe_list(local_guard.get("warnings")),
-                    "guard_details": _safe_dict(local_guard.get("details")),
-                },
-                execution_result=None,
-                lifecycle_after=trade,
-                trade_mode=trade_mode,
-                mode_context=mode_context,
-            )
-            continue
+        print("PRE-EXECUTION-HANDOFF:", {
+            "symbol": queued_trade.get("symbol"),
+            "trade_id": queued_trade.get("trade_id"),
+            "research_approved": queued_trade.get("research_approved"),
+            "execution_ready": queued_trade.get("execution_ready"),
+            "selected_for_execution": queued_trade.get("selected_for_execution"),
+            "vehicle_selected": queued_trade.get("vehicle_selected"),
+            "lifecycle_stage": queued_trade.get("lifecycle_stage"),
+            "trading_mode": resolved_mode,
+        })
 
-        packet_raw = execute_via_adapter(
-            queued_trade=trade,
+        packet = execute_via_adapter(
+            queued_trade=queued_trade,
             portfolio_context=portfolio_context,
             max_open_positions=max_open_positions,
-            current_open_positions=len(open_positions),
+            current_open_positions=open_positions_running,
             kill_switch_enabled=kill_switch_enabled,
             session_healthy=session_healthy,
             broker_adapter=broker_adapter,
         )
 
-        summary = _safe_dict(summarize_execution_packet(_safe_dict(packet_raw)))
-        lifecycle_after = _safe_dict(packet_raw.get("lifecycle_after"))
-        execution_result = _safe_dict(packet_raw.get("execution_result"))
-        guard = _safe_dict(packet_raw.get("guard"))
+        packet = _safe_dict(packet)
+        packet["trade_id"] = _extract_trade_id(packet) or _safe_str(queued_trade.get("trade_id"), "")
+        packet["trading_mode"] = _safe_str(packet.get("trading_mode", resolved_mode), resolved_mode)
 
-        print("QUEUE EXECUTION PACKET:", {
-            "symbol": packet_raw.get("symbol") or symbol,
-            "success": packet_raw.get("success"),
-            "status": packet_raw.get("status"),
-            "selected_vehicle": packet_raw.get("selected_vehicle") or selected_vehicle,
-            "guard_decision": guard.get("decision"),
-            "guard_reason": guard.get("guard_reason"),
-            "lifecycle_stage_after": lifecycle_after.get("lifecycle_stage"),
-            "trade_id_after": lifecycle_after.get("trade_id"),
-            "fill_price": execution_result.get("fill_price"),
-            "filled_quantity": execution_result.get("filled_quantity"),
-        })
-
-        if not _safe_bool(packet_raw.get("success"), False):
-            reason_text = _safe_str(
-                guard.get("guard_reason"),
-                summary.get("guard_reason", "Execution rejected."),
-            )
-            reason_code = _safe_str(
-                guard.get("guard_reason_code"),
-                summary.get("guard_reason_code", "execution_rejected"),
-            )
-            _log(f"{symbol} rejected | {reason_code}", "WARN")
-            _write_skip_feed(trade, f"{symbol} skipped: {reason_text}")
-            add_timeline_event(symbol, "SKIPPED", {"reason": reason_code, "trading_mode": trade_mode})
-            _append_result(
-                results,
-                success=False,
-                status="REJECTED",
-                symbol=symbol,
-                selected_vehicle=selected_vehicle,
-                guard=guard,
-                execution_result=execution_result,
-                lifecycle_after=lifecycle_after,
-                trade_mode=trade_mode,
-                mode_context=mode_context,
-            )
-            continue
-
-        try:
-            position_payload = _build_stored_position(
-                trade=trade,
-                lifecycle_after=lifecycle_after,
-                execution_result=execution_result,
-                trade_mode=trade_mode,
-                mode_context=mode_context,
-            )
-            stored_position = add_position(position_payload)
-            stored_position = _safe_dict(stored_position) or position_payload
-        except Exception as e:
-            _log(f"{symbol} execution succeeded but add_position failed: {e}", "ERROR")
-            _append_result(
-                results,
-                success=False,
-                status="STORAGE_FAILED",
-                symbol=symbol,
-                selected_vehicle=selected_vehicle,
-                guard={
-                    "decision": "REJECT",
-                    "guard_reason": str(e),
-                    "guard_reason_code": "storage_failed",
-                    "warnings": [],
-                    "guard_details": {},
-                },
-                execution_result=execution_result,
-                lifecycle_after=lifecycle_after,
-                trade_mode=trade_mode,
-                mode_context=mode_context,
-                extra={"storage_error": str(e)},
-            )
-            continue
-
-        if not _position_already_present(
-            open_positions,
-            _safe_str(stored_position.get("trade_id"), ""),
-            symbol,
-        ):
-            open_positions.append(stored_position)
-
-        try:
-            log_trade_open_from_position(stored_position)
-        except Exception:
-            pass
-
-        fill_price = _safe_float(execution_result.get("fill_price"), 0.0)
-
-        if selected_vehicle == "OPTION":
-            quantity_for_account = _safe_int(stored_position.get("contracts", 1), 1)
+        if _safe_bool(packet.get("success"), False):
+            persistence = _persist_executed_trade(packet)
+            packet["persistence"] = persistence
+            open_positions_running += 1
+            executed += 1
         else:
-            quantity_for_account = _safe_int(
-                stored_position.get("shares", stored_position.get("size", 1)),
-                1,
-            )
+            rejected += 1
 
-        try:
-            record_trade(symbol, fill_price, quantity_for_account)
-        except Exception:
-            pass
+        summaries.append(summarize_execution_packet(packet))
+        results.append(packet)
 
-        add_timeline_event(
-            symbol,
-            "OPENED",
-            {
-                "trade_id": stored_position.get("trade_id"),
-                "strategy": strategy,
-                "vehicle_selected": stored_position.get("vehicle_selected"),
-                "requested_price": round(_safe_float(stored_position.get("requested_price", 0.0), 0.0), 4),
-                "fill_price": round(fill_price, 4),
-                "shares": stored_position.get("shares", 0),
-                "contracts": stored_position.get("contracts", 0),
-                "size": stored_position.get("size", 0),
-                "stop": round(_safe_float(stored_position.get("stop", 0.0), 0.0), 4),
-                "target": round(_safe_float(stored_position.get("target", 0.0), 0.0), 4),
-                "mode": stored_position.get("mode"),
-                "trading_mode": trade_mode,
-                "fused_score": stored_position.get("fused_score", stored_position.get("score")),
-                "v2_score": stored_position.get("v2_score"),
-                "final_reason": stored_position.get("final_reason"),
-                "final_reason_code": stored_position.get("final_reason_code"),
-            },
-        )
-
-        try:
-            trade_summary(stored_position)
-        except Exception:
-            pass
-
-        executed += 1
-
-        _log(
-            f"{symbol} executed successfully | mode={trade_mode} "
-            f"vehicle={stored_position.get('vehicle_selected')} "
-            f"shares={stored_position.get('shares', 0)} "
-            f"contracts={stored_position.get('contracts', 0)} "
-            f"fill={round(fill_price, 4)} "
-            f"trade_id={stored_position.get('trade_id')}",
-            "SUCCESS",
-        )
-
-        _append_result(
-            results,
-            success=True,
-            status="EXECUTED",
-            symbol=symbol,
-            selected_vehicle=selected_vehicle,
-            guard=guard,
-            execution_result=execution_result,
-            lifecycle_after=lifecycle_after,
-            trade_mode=trade_mode,
-            mode_context=mode_context,
-            extra={
-                "stored_position": stored_position,
-                "fill_price": fill_price,
-                "trade_id": stored_position.get("trade_id"),
-            },
-        )
+    print("EXECUTION LOOP SUMMARY:", {
+        "queue_size": len(queue),
+        "processed": len(results),
+        "executed": executed,
+        "rejected": rejected,
+        "skipped": skipped,
+        "open_positions_after": open_positions_running,
+    })
 
     return {
-        "executed_count": executed,
         "results": results,
-        "remaining_queue": remaining_queue,
-        "open_positions": open_positions,
+        "summaries": summaries,
+        "executed": executed,
+        "rejected": rejected,
+        "skipped": skipped,
+        "processed": len(results),
+        "queue_size": len(queue),
+        "open_positions_after": open_positions_running,
+        "timestamp": _now_iso(),
     }
+
+
+__all__ = [
+    "execute_trades",
+]
