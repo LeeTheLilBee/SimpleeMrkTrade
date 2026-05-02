@@ -1,21 +1,21 @@
 {
-  "timestamp": "2026-05-01T23:26:06.090595",
+  "timestamp": "2026-05-02T02:03:43.792667",
   "performance": {
-    "trades": 3,
-    "wins": 1,
+    "trades": 5,
+    "wins": 3,
     "losses": 2,
-    "winrate": 0.33,
-    "total_pnl": 7.05,
+    "winrate": 0.6,
+    "total_pnl": 276.0,
     "max_drawdown": 6.96,
-    "entries_today": 1,
-    "closes_today": 0,
-    "round_trips_today": 0,
-    "realized_pnl_today": 0.0
+    "entries_today": 0,
+    "closes_today": 2,
+    "round_trips_today": 2,
+    "realized_pnl_today": 268.95
   },
   "portfolio": {
     "open_positions": 1,
-    "closed_positions": 3,
-    "realized_pnl": 7.05,
+    "closed_positions": 5,
+    "realized_pnl": 276.0,
     "unrealized_pnl": 0.0,
     "gross_capital_open": 123.58,
     "vehicle_mix": {
@@ -24,36 +24,38 @@
       "RESEARCH_ONLY": 0,
       "UNKNOWN": 0
     },
-    "net_pnl": 7.05
+    "net_pnl": 276.0
   },
   "analytics": {
-    "trades": 7,
-    "wins": 1,
+    "trades": 9,
+    "wins": 3,
     "losses": 2,
     "flats": 4,
-    "winrate": 0.1429,
-    "lossrate": 0.2857,
-    "total_pnl": 7.05,
-    "average_pnl": 1.01,
+    "winrate": 0.3333,
+    "lossrate": 0.2222,
+    "total_pnl": 276.0,
+    "average_pnl": 30.67,
     "strategies": {
-      "CALL": 7
+      "CALL": 9
     },
     "symbols": {
       "AAPL": 2,
       "MSFT": 4,
-      "ROKU": 1
+      "ROKU": 1,
+      "INTC": 1,
+      "QCOM": 1
     },
     "last_trade": {
-      "symbol": "ROKU",
-      "trade_id": "ROKU-CALL-20260501225539",
+      "symbol": "QCOM",
+      "trade_id": "QCOM-CALL-20260502020216",
       "strategy": "CALL",
-      "pnl": 0.0,
-      "timestamp": ""
+      "pnl": 173.68,
+      "timestamp": "2026-05-02T02:03:40.686795"
     },
     "portfolio": {
       "open_positions": 1,
-      "closed_positions": 3,
-      "realized_pnl": 7.05,
+      "closed_positions": 5,
+      "realized_pnl": 276.0,
       "unrealized_pnl": 0.0,
       "gross_capital_open": 123.58,
       "vehicle_mix": {
@@ -62,13 +64,13 @@
         "RESEARCH_ONLY": 0,
         "UNKNOWN": 0
       },
-      "net_pnl": 7.05
+      "net_pnl": 276.0
     }
   },
   "headline": {
-    "trades": 7,
-    "winrate": 0.1429,
-    "realized_pnl": 7.05,
+    "trades": 9,
+    "winrate": 0.3333,
+    "realized_pnl": 276.0,
     "unrealized_pnl": 0.0,
     "open_positions": 1
   }

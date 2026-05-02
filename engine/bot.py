@@ -11,6 +11,7 @@ from engine.market_volatility import get_volatility_environment
 from engine.signal_feed import push_signal
 from engine.data_utils import safe_download
 from engine.account_state import settle_cash
+from engine.daily_report import write_daily_report
 from engine.backtest_summary import print_backtest_summary
 from engine.portfolio_summary import portfolio_summary
 from engine.alerts import alert_trade

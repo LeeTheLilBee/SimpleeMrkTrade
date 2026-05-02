@@ -451,6 +451,14 @@
     "learning_exit_notes": [
       "very new trade protected from premature exit",
       "very new trade protected from premature exit",
+      "very new trade protected from premature exit",
+      "very new trade protected from premature exit",
+      "very new trade protected from premature exit",
+      "very new trade protected from premature exit",
+      "very new trade protected from premature exit",
+      "very new trade protected from premature exit",
+      "very new trade protected from premature exit",
+      "very new trade protected from premature exit",
       "very new trade protected from premature exit"
     ],
     "position_explanation": {
@@ -483,7 +491,7 @@
       "entry_quality": "high_conviction"
     },
     "monitor_debug": {
-      "days_open": 0.02,
+      "days_open": 0.13,
       "progress": 0.0,
       "pct_change": 0.0,
       "readiness_score": 297.05,
@@ -510,8 +518,8 @@
       "enabled": false,
       "reserve_broken": false,
       "max_positions_hit": false,
-      "cash": 883.48,
-      "buying_power": 883.48
+      "cash": 1160.11,
+      "buying_power": 1160.11
     },
     "close_reason": "",
     "exit_explanation": {},
@@ -24797,7 +24805,7 @@
     "execution_quality": 0.0,
     "canonical_decision": {},
     "final_decision": {},
-    "_monitor_days_open": 0.02045866965277778,
+    "_monitor_days_open": 0.12991485383101853,
     "_monitor_progress": 1.4814358326903744e-07,
     "_monitor_pct_change": 1.4816755860214457e-06,
     "_capital_pressure_score": 6.4

@@ -718,5 +718,25 @@
     "timestamp": "2026-05-01T23:26:04.847152",
     "level": "WARN",
     "message": "PYPL rejected | option_dte_below_mode_minimum"
+  },
+  {
+    "timestamp": "2026-05-02T01:29:03.925164",
+    "level": "INFO",
+    "message": "Bot run started in Paper Mode (paper)"
+  },
+  {
+    "timestamp": "2026-05-02T01:36:38.552384",
+    "level": "INFO",
+    "message": "Bot run started in Paper Mode (paper)"
+  },
+  {
+    "timestamp": "2026-05-02T01:40:55.327432",
+    "level": "INFO",
+    "message": "Bot run started in Paper Mode (paper)"
+  },
+  {
+    "timestamp": "2026-05-02T02:01:11.258051",
+    "level": "INFO",
+    "message": "Bot run started in Paper Mode (paper)"
   }
 ]

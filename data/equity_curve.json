@@ -78,5 +78,25 @@
     "timestamp": "",
     "strategy": "CALL",
     "status": "OPEN"
+  },
+  {
+    "index": 8,
+    "equity": 1102.32,
+    "pnl": 95.27,
+    "symbol": "INTC",
+    "trade_id": "INTC-CALL-20260502020208",
+    "timestamp": "2026-05-02T02:03:39.223281",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 9,
+    "equity": 1276.0,
+    "pnl": 173.68,
+    "symbol": "QCOM",
+    "trade_id": "QCOM-CALL-20260502020216",
+    "timestamp": "2026-05-02T02:03:40.686795",
+    "strategy": "CALL",
+    "status": "CLOSED"
   }
 ]

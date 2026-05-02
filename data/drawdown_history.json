@@ -26,5 +26,13 @@
   {
     "equity": 1007.05,
     "drawdown": 6.960000000000036
+  },
+  {
+    "equity": 1102.32,
+    "drawdown": 0.0
+  },
+  {
+    "equity": 1276.0,
+    "drawdown": 0.0
   }
 ]

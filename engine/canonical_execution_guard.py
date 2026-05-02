@@ -165,20 +165,39 @@ def validate_selected_trade_for_execution(
             trading_mode,
         )
 
-    if not _safe_bool(trade.get("execution_ready"), False):
-        reason_code = _safe_str(
-            trade.get("final_reason_code", trade.get("decision_reason_code", "execution_not_ready")),
-            "execution_not_ready",
-        )
-        reason = _safe_str(
-            trade.get("final_reason", trade.get("decision_reason", "Execution not ready.")),
-            "Execution not ready.",
-        )
+    # IMPORTANT:
+    # Do NOT require execution_ready here.
+    # This guard is what helps determine whether the trade can become execution_ready.
+    existing_reason_code = _safe_str(
+        trade.get("final_reason_code", trade.get("decision_reason_code", "")),
+        "",
+    ).lower()
+    existing_reason = _safe_str(
+        trade.get("final_reason", trade.get("decision_reason", "")),
+        "",
+    )
+
+    hard_preblocked_codes = {
+        "execution_not_ready",
+        "research_only_candidate",
+        "missing_option_contract",
+        "option_not_executable",
+        "invalid_trade_cost",
+        "invalid_stock_payload",
+        "insufficient_capital",
+        "no_buying_power",
+        "max_open_positions_reached",
+        "kill_switch_enabled",
+        "session_unhealthy",
+        "broker_unhealthy",
+    }
+
+    if existing_reason_code in hard_preblocked_codes and existing_reason_code != "execution_not_ready":
         return apply_mode_to_execution_guard(
             _guard_payload(
                 blocked=True,
-                reason=reason,
-                reason_code=reason_code,
+                reason=existing_reason or existing_reason_code,
+                reason_code=existing_reason_code,
                 status_label="BLOCKED",
                 details={"symbol": symbol},
                 mode_context=mode_context,
