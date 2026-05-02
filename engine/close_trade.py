@@ -1,61 +1,23 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
 from pathlib import Path
+from datetime import datetime
 from typing import Any, Dict, List
 
+from engine.trade_timeline import add_timeline_event
+from engine.pdt_guard import can_close_position
 from engine.account_state import release_trade_cap
 from engine.explainability_engine import explain_exit
-from engine.pdt_guard import can_close_position
-from engine.paper_portfolio import (
-    archive_closed_position,
-    get_position,
-    remove_position,
-    show_positions,
-)
-from engine.trade_timeline import add_timeline_event
+from engine.paper_portfolio import archive_closed_position
 
+OPEN_FILE = "data/open_positions.json"
+CLOSED_FILE = "data/closed_positions.json"
 TRADE_LOG = "data/trade_log.json"
-TRADE_DETAILS = "data/trade_details.json"
+OPTION_CONTRACT_MULTIPLIER = 100
 
 
-def _safe_list(value: Any) -> List[Any]:
-    return value if isinstance(value, list) else []
-
-
-def _safe_dict(value: Any) -> Dict[str, Any]:
-    return value if isinstance(value, dict) else {}
-
-
-def _safe_str(value: Any, default: str = "") -> str:
-    try:
-        text = str(value or "").strip()
-        return text if text else default
-    except Exception:
-        return default
-
-
-def _safe_float(value: Any, default: float = 0.0) -> float:
-    try:
-        return float(value)
-    except Exception:
-        return float(default)
-
-
-def _norm_symbol(value: Any) -> str:
-    return _safe_str(value, "").upper()
-
-
-def _normalize_reason(reason: Any) -> str:
-    return _safe_str(reason, "manual").lower().replace(" ", "_")
-
-
-def _now_iso() -> str:
-    return datetime.now().isoformat()
-
-
-def _load(path: str, default: Any) -> Any:
+def _load(path, default):
     file_path = Path(path)
     if not file_path.exists():
         return default
@@ -66,190 +28,225 @@ def _load(path: str, default: Any) -> Any:
         return default
 
 
-def _save(path: str, data: Any) -> None:
+def _save(path, data):
     file_path = Path(path)
     file_path.parent.mkdir(parents=True, exist_ok=True)
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
 
 
-def _update_trade_log_close(
-    symbol: str,
-    trade_id: str,
-    close_payload: Dict[str, Any],
-) -> None:
-    trade_log = _load(TRADE_LOG, [])
-    trade_log = _safe_list(trade_log)
-
-    matched = False
-    for row in reversed(trade_log):
-        if not isinstance(row, dict):
-            continue
-
-        row_symbol = _norm_symbol(row.get("symbol"))
-        row_trade_id = _safe_str(row.get("trade_id"), "")
-        row_status = _safe_str(row.get("status"), "").upper()
-
-        same_trade = trade_id and row_trade_id == trade_id
-        same_symbol_open = (not trade_id) and row_symbol == symbol and row_status == "OPEN"
-
-        if same_trade or same_symbol_open:
-            row["status"] = "CLOSED"
-            row["exit_price"] = close_payload.get("exit_price")
-            row["closed_at"] = close_payload.get("closed_at")
-            row["reason"] = close_payload.get("reason")
-            row["pnl"] = close_payload.get("pnl")
-            row["exit_explanation"] = close_payload.get("exit_explanation")
-            matched = True
-            break
-
-    if not matched:
-        trade_log.append(
-            {
-                "timestamp": close_payload.get("closed_at"),
-                "trade_id": trade_id,
-                "symbol": symbol,
-                "strategy": close_payload.get("strategy"),
-                "price": close_payload.get("entry"),
-                "size": close_payload.get("size"),
-                "score": close_payload.get("score"),
-                "confidence": close_payload.get("confidence"),
-                "status": "CLOSED",
-                "pnl": close_payload.get("pnl"),
-                "exit_price": close_payload.get("exit_price"),
-                "closed_at": close_payload.get("closed_at"),
-                "reason": close_payload.get("reason"),
-                "exit_explanation": close_payload.get("exit_explanation"),
-            }
-        )
-
-    _save(TRADE_LOG, trade_log)
+def _safe_dict(value: Any) -> Dict[str, Any]:
+    return value if isinstance(value, dict) else {}
 
 
-def _append_trade_details_close(close_payload: Dict[str, Any]) -> None:
-    details = _load(TRADE_DETAILS, [])
-    details = _safe_list(details)
-
-    details.append(
-        {
-            "trade_id": close_payload.get("trade_id"),
-            "timestamp": close_payload.get("closed_at"),
-            "symbol": close_payload.get("symbol"),
-            "strategy": close_payload.get("strategy"),
-            "source": "close_trade",
-            "event": "CLOSED",
-            "entry": close_payload.get("entry"),
-            "exit_price": close_payload.get("exit_price"),
-            "size": close_payload.get("size"),
-            "pnl": close_payload.get("pnl"),
-            "reason": close_payload.get("reason"),
-            "exit_explanation": close_payload.get("exit_explanation"),
-        }
-    )
-
-    _save(TRADE_DETAILS, details)
+def _safe_float(value, default=0.0):
+    try:
+        if value is None or value == "":
+            return float(default)
+        return float(value)
+    except Exception:
+        return default
 
 
-def close_position(symbol: str, exit_price: float, reason: str = "manual", trade_id: str = "") -> Dict[str, Any]:
+def _safe_int(value, default=0):
+    try:
+        if value is None or value == "":
+            return int(default)
+        return int(float(value))
+    except Exception:
+        return default
+
+
+def _safe_str(value, default=""):
+    try:
+        text = str(value or "").strip()
+        return text if text else default
+    except Exception:
+        return default
+
+
+def _normalize_reason(reason):
+    return str(reason or "manual").strip().lower().replace(" ", "_")
+
+
+def _norm_symbol(value: Any) -> str:
+    return _safe_str(value, "").upper()
+
+
+def _find_open_position(open_positions: List[Dict[str, Any]], symbol: str, trade_id: str = ""):
+    symbol = _norm_symbol(symbol)
+    trade_id = _safe_str(trade_id, "")
+
+    for idx, pos in enumerate(open_positions):
+        row = _safe_dict(pos)
+        if trade_id and _safe_str(row.get("trade_id"), "") == trade_id:
+            return idx, dict(row)
+        if symbol and _norm_symbol(row.get("symbol")) == symbol:
+            return idx, dict(row)
+    return -1, None
+
+
+def _compute_pnl(position: Dict[str, Any], exit_price: float) -> float:
+    vehicle_selected = _safe_str(
+        position.get("vehicle_selected", position.get("vehicle", "STOCK")),
+        "STOCK",
+    ).upper()
+    strategy = _safe_str(position.get("strategy", "CALL"), "CALL").upper()
+    entry_price = _safe_float(position.get("entry", position.get("price", 0.0)), 0.0)
+
+    if vehicle_selected == "OPTION":
+        size = max(1, _safe_int(position.get("contracts", position.get("size", 1)), 1))
+        multiplier = OPTION_CONTRACT_MULTIPLIER
+    else:
+        size = max(1, _safe_int(position.get("shares", position.get("size", 1)), 1))
+        multiplier = 1
+
+    if "PUT" in strategy:
+        pnl = (entry_price - exit_price) * size * multiplier
+    else:
+        pnl = (exit_price - entry_price) * size * multiplier
+
+    return round(pnl, 2)
+
+
+def close_position(symbol, exit_price, reason="manual", trade_id=""):
     symbol = _norm_symbol(symbol)
     trade_id = _safe_str(trade_id, "")
     reason = _normalize_reason(reason)
 
-    matched = get_position(symbol, trade_id=trade_id)
-    if not matched:
+    open_positions = _load(OPEN_FILE, [])
+    closed_positions = _load(CLOSED_FILE, [])
+    trade_log = _load(TRADE_LOG, [])
+
+    if not isinstance(open_positions, list):
+        open_positions = []
+    if not isinstance(closed_positions, list):
+        closed_positions = []
+    if not isinstance(trade_log, list):
+        trade_log = []
+
+    idx, matched = _find_open_position(open_positions, symbol=symbol, trade_id=trade_id)
+
+    if matched is None or idx < 0:
         return {
             "closed": False,
             "blocked": False,
             "reason": "position_not_found",
-            "symbol": symbol,
-            "trade_id": trade_id,
         }
 
-    matched = dict(matched)
     emergency = ("risk" in reason) or ("stop" in reason)
-
     pdt_check = can_close_position(matched, emergency=emergency)
+
     if isinstance(pdt_check, dict) and pdt_check.get("blocked"):
         return {
             "closed": False,
             "blocked": True,
             "reason": pdt_check.get("reason"),
-            "symbol": symbol,
-            "trade_id": _safe_str(matched.get("trade_id"), trade_id),
             "meta": pdt_check.get("meta", {}),
         }
 
     exit_price = _safe_float(exit_price, 0.0)
-    entry_price = _safe_float(matched.get("entry", matched.get("price", 0.0)), 0.0)
-    size = _safe_float(matched.get("size", 1.0), 1.0)
-    strategy = _safe_str(matched.get("strategy"), "CALL").upper()
+    if exit_price <= 0:
+        exit_price = _safe_float(
+            matched.get("option_current_price", matched.get("current_price", matched.get("entry", 0.0))),
+            0.0,
+        )
 
-    if strategy == "PUT":
-        pnl = (entry_price - exit_price) * size
-    else:
-        pnl = (exit_price - entry_price) * size
-    pnl = round(pnl, 2)
+    pnl = _compute_pnl(matched, exit_price)
+    closed_at = datetime.now().isoformat()
 
-    closed_at = _now_iso()
-    resolved_trade_id = _safe_str(matched.get("trade_id"), trade_id)
-
-    exit_explanation = explain_exit(
-        {
-            "symbol": symbol,
-            "pnl": pnl,
-            "reason": reason,
-            "exit_reason": reason,
-            "decision_reason": reason,
-            "position": matched,
-            "exit_price": round(exit_price, 2),
-        }
+    matched["exit_price"] = round(exit_price, 4)
+    matched["closed_at"] = closed_at
+    matched["reason"] = reason
+    matched["close_reason"] = reason
+    matched["status"] = "CLOSED"
+    matched["pnl"] = pnl
+    matched["realized_pnl"] = pnl
+    matched["unrealized_pnl"] = 0.0
+    matched["exit_explanation"] = explain_exit(
+        reason=reason,
+        pnl=pnl,
+        position=matched,
+        exit_price=exit_price,
     )
 
-    close_payload = dict(matched)
-    close_payload["symbol"] = symbol
-    close_payload["trade_id"] = resolved_trade_id
-    close_payload["exit_price"] = round(exit_price, 2)
-    close_payload["closed_at"] = closed_at
-    close_payload["reason"] = reason
-    close_payload["status"] = "CLOSED"
-    close_payload["pnl"] = pnl
-    close_payload["exit_explanation"] = exit_explanation
-    close_payload["entry"] = round(entry_price, 4)
-    close_payload["size"] = size
-    close_payload["strategy"] = strategy
+    vehicle_selected = _safe_str(
+        matched.get("vehicle_selected", matched.get("vehicle", "STOCK")),
+        "STOCK",
+    ).upper()
+    entry_price = _safe_float(matched.get("entry", matched.get("price", 0.0)), 0.0)
 
-    removed = remove_position(symbol, trade_id=resolved_trade_id, reason=reason)
-    if not removed:
-        return {
-            "closed": False,
-            "blocked": False,
-            "reason": "position_remove_failed",
-            "symbol": symbol,
-            "trade_id": resolved_trade_id,
-        }
-
-    archived = archive_closed_position(close_payload)
+    if vehicle_selected == "OPTION":
+        size_for_release = max(1, _safe_int(matched.get("contracts", matched.get("size", 1)), 1))
+        release_basis_entry = entry_price * OPTION_CONTRACT_MULTIPLIER
+    else:
+        size_for_release = max(1, _safe_int(matched.get("shares", matched.get("size", 1)), 1))
+        release_basis_entry = entry_price
 
     capital_release = release_trade_cap(
-        entry_price=entry_price,
-        size=size,
+        entry_price=release_basis_entry,
+        size=size_for_release,
         pnl=pnl,
         immediate=True,
     )
 
-    _update_trade_log_close(symbol, resolved_trade_id, close_payload)
-    _append_trade_details_close(close_payload)
+    try:
+        archived = archive_closed_position(
+            matched,
+            exit_price=exit_price,
+            close_reason=reason,
+            closed_at=closed_at,
+            pnl=pnl,
+            exit_explanation=matched["exit_explanation"],
+            capital_release=capital_release,
+        )
+    except Exception:
+        archived = matched
+        closed_positions.append(matched)
+        _save(CLOSED_FILE, closed_positions)
+
+    remaining = [row for i, row in enumerate(open_positions) if i != idx]
+
+    updated_trade = None
+    resolved_trade_id = _safe_str(matched.get("trade_id"), "")
+
+    for trade in reversed(trade_log):
+        if not isinstance(trade, dict):
+            continue
+
+        same_trade_id = resolved_trade_id and _safe_str(trade.get("trade_id"), "") == resolved_trade_id
+        same_symbol_open = (
+            not resolved_trade_id
+            and _safe_str(trade.get("symbol"), "").upper() == symbol
+            and _safe_str(trade.get("status"), "").upper() in {"OPEN", "FILLED"}
+        )
+
+        if same_trade_id or same_symbol_open:
+            trade["status"] = "CLOSED"
+            trade["exit_price"] = round(exit_price, 4)
+            trade["closed_at"] = closed_at
+            trade["reason"] = reason
+            trade["close_reason"] = reason
+            trade["pnl"] = pnl
+            trade["exit_explanation"] = matched["exit_explanation"]
+            updated_trade = trade
+            break
+
+    _save(OPEN_FILE, remaining)
+    _save(TRADE_LOG, trade_log)
 
     try:
         add_timeline_event(
             symbol,
             "CLOSED",
             {
-                "trade_id": resolved_trade_id,
-                "exit_price": round(exit_price, 2),
+                "trade_id": matched.get("trade_id"),
+                "exit_price": round(exit_price, 4),
                 "reason": reason,
                 "pnl": pnl,
-                "size": size,
+                "vehicle_selected": vehicle_selected,
+                "contracts": matched.get("contracts", 0),
+                "shares": matched.get("shares", 0),
             },
         )
     except Exception as e:
@@ -259,12 +256,12 @@ def close_position(symbol: str, exit_price: float, reason: str = "manual", trade
         "closed": True,
         "blocked": False,
         "symbol": symbol,
-        "trade_id": resolved_trade_id,
-        "exit_price": round(exit_price, 2),
+        "trade_id": matched.get("trade_id", ""),
+        "exit_price": round(exit_price, 4),
         "reason": reason,
         "pnl": pnl,
         "capital_release": capital_release,
-        "archived": bool(archived),
-        "remaining_open_positions": len(show_positions()),
         "meta": pdt_check.get("meta", {}) if isinstance(pdt_check, dict) else {},
+        "closed_position": archived,
+        "trade_log_row": updated_trade or {},
     }

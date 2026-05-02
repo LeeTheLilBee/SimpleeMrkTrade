@@ -1,23 +1,13 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
-from engine.paper_portfolio import (
-    show_positions,
-    replace_position,
-    open_count,
-)
+from engine.paper_portfolio import show_positions, replace_position
 from engine.close_trade import close_position
-from engine.data_utils import safe_download
-from engine.explainability_engine import explain_position_state
-from engine.engine_selection import get_learning_adjustment_map
-from engine.engine_readiness import build_readiness_layer
-from engine.engine_promotion import build_promotion_layer
-from engine.engine_rebuild import build_rebuild_layer
-from engine.soulaana_core import soulaana_explain_position
-from engine.trade_history import executed_trade_count
-from engine.risk_governor import governor_status
+
+
+OPTION_CONTRACT_MULTIPLIER = 100
 
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
@@ -46,12 +36,26 @@ def _safe_str(value: Any, default: str = "") -> str:
         return default
 
 
-def _safe_list(value: Any) -> List[Any]:
-    return value if isinstance(value, list) else []
-
-
 def _safe_dict(value: Any) -> Dict[str, Any]:
     return value if isinstance(value, dict) else {}
+
+
+def _norm_symbol(value: Any) -> str:
+    return _safe_str(value, "").upper()
+
+
+def _vehicle(pos: Dict[str, Any]) -> str:
+    value = _safe_str(
+        pos.get("vehicle_selected", pos.get("selected_vehicle", pos.get("vehicle", "STOCK"))),
+        "STOCK",
+    ).upper()
+    if value not in {"OPTION", "STOCK", "RESEARCH_ONLY"}:
+        return "STOCK"
+    return value
+
+
+def _direction(strategy: str) -> str:
+    return "SHORT" if "PUT" in _safe_str(strategy, "CALL").upper() else "LONG"
 
 
 def _days_open(opened_at: Any) -> float:
@@ -62,527 +66,155 @@ def _days_open(opened_at: Any) -> float:
         return 0.0
 
 
-def _norm_vehicle(pos: Dict[str, Any]) -> str:
-    vehicle = _safe_str(
-        pos.get("vehicle_selected", pos.get("selected_vehicle", pos.get("vehicle", "STOCK"))),
-        "STOCK",
-    ).upper()
-    if vehicle not in {"OPTION", "STOCK", "RESEARCH_ONLY"}:
-        return "STOCK"
-    return vehicle
-
-
-def _strategy_direction(pos: Dict[str, Any]) -> str:
-    strategy = _safe_str(pos.get("strategy"), "CALL").upper()
-    if "PUT" in strategy:
-        return "SHORT"
-    return "LONG"
-
-
-def _extract_option_contract(pos: Dict[str, Any]) -> Dict[str, Any]:
-    contract = pos.get("option") if isinstance(pos.get("option"), dict) else {}
-    if contract:
-        return dict(contract)
-
-    contract = pos.get("contract") if isinstance(pos.get("contract"), dict) else {}
-    if contract:
-        return dict(contract)
-
-    lifecycle = pos.get("lifecycle") if isinstance(pos.get("lifecycle"), dict) else {}
-    contract = lifecycle.get("option") if isinstance(lifecycle.get("option"), dict) else {}
-    if contract:
-        return dict(contract)
-
-    contract = lifecycle.get("contract") if isinstance(lifecycle.get("contract"), dict) else {}
-    if contract:
-        return dict(contract)
-
-    execution_result = pos.get("execution_result") if isinstance(pos.get("execution_result"), dict) else {}
-    execution_record = execution_result.get("execution_record") if isinstance(execution_result.get("execution_record"), dict) else {}
-    contract = execution_record.get("contract") if isinstance(execution_record.get("contract"), dict) else {}
-    if contract:
-        return dict(contract)
-
-    return {}
-
-
-def _latest_underlying_price(symbol: str, fallback_price: Any) -> float:
-    try:
-        df = safe_download(symbol, period="5d", auto_adjust=True, progress=False)
-        if df is None or getattr(df, "empty", True):
-            return _safe_float(fallback_price, 0.0)
-
-        close = df["Close"]
-        if hasattr(close, "iloc"):
-            value = close.iloc[-1]
-            try:
-                return float(value.item())
-            except Exception:
-                return float(value)
-    except Exception:
-        pass
-
-    return _safe_float(fallback_price, 0.0)
-
-
 def _latest_option_price(pos: Dict[str, Any]) -> float:
-    """
-    Canonical rule:
-    option position monitoring must use option-premium prices, not underlying prices.
-    """
-    contract = _extract_option_contract(pos)
+    option = _safe_dict(pos.get("option"))
+    contract = _safe_dict(pos.get("contract"))
 
     for value in [
         pos.get("option_current_price"),
         pos.get("current_option_price"),
-        pos.get("mark"),
-        pos.get("current_price"),
-        contract.get("current_price"),
+        option.get("mark"),
+        option.get("last"),
         contract.get("mark"),
         contract.get("last"),
-        contract.get("price"),
-        pos.get("fill_price"),
+        pos.get("mark"),
+        pos.get("last"),
+        pos.get("current_price"),
         pos.get("entry"),
-        pos.get("price"),
     ]:
         price = _safe_float(value, 0.0)
         if price > 0:
-            return price
-
+            return round(price, 4)
     return 0.0
 
 
-def _latest_price_for_position(pos: Dict[str, Any]) -> float:
-    vehicle = _norm_vehicle(pos)
-    if vehicle == "OPTION":
-        return _latest_option_price(pos)
-
-    symbol = _safe_str(pos.get("symbol"), "").upper()
-    fallback_price = pos.get("current_price", pos.get("entry", pos.get("price", 0.0)))
-    return _latest_underlying_price(symbol, fallback_price)
-
-
-def _pct_change(entry: Any, current: Any, direction: str = "LONG") -> float:
-    entry = _safe_float(entry, 0.0)
-    current = _safe_float(current, 0.0)
-    direction = _safe_str(direction, "LONG").upper()
-
-    if entry <= 0:
-        return 0.0
-
-    try:
-        if direction == "SHORT":
-            return ((entry - current) / entry) * 100.0
-        return ((current - entry) / entry) * 100.0
-    except Exception:
-        return 0.0
+def _latest_stock_price(pos: Dict[str, Any]) -> float:
+    for value in [
+        pos.get("current_price"),
+        pos.get("underlying_price"),
+        pos.get("price"),
+        pos.get("entry"),
+    ]:
+        price = _safe_float(value, 0.0)
+        if price > 0:
+            return round(price, 4)
+    return 0.0
 
 
-def _progress(entry: Any, current: Any, target: Any, direction: str = "LONG") -> float:
-    entry = _safe_float(entry, 0.0)
-    current = _safe_float(current, 0.0)
-    target = _safe_float(target, 0.0)
-    direction = _safe_str(direction, "LONG").upper()
-
-    if entry <= 0 or target <= 0 or target == entry:
-        return 0.0
-
-    try:
-        if direction == "SHORT":
-            denom = entry - target
-            if denom == 0:
-                return 0.0
-            return (entry - current) / denom
-        denom = target - entry
-        if denom == 0:
-            return 0.0
-        return (current - entry) / denom
-    except Exception:
-        return 0.0
-
-
-def _default_option_stop(entry: float, direction: str) -> float:
-    if entry <= 0:
-        return 0.0
-    if direction == "SHORT":
-        return round(entry * 1.35, 4)
-    return round(entry * 0.70, 4)
-
-
-def _default_option_target(entry: float, direction: str) -> float:
-    if entry <= 0:
-        return 0.0
-    if direction == "SHORT":
-        return round(entry * 0.65, 4)
-    return round(entry * 1.35, 4)
-
-
-def _default_stock_stop(entry: float, direction: str) -> float:
-    if entry <= 0:
-        return 0.0
-    if direction == "SHORT":
-        return round(entry * 1.03, 4)
-    return round(entry * 0.97, 4)
-
-
-def _default_stock_target(entry: float, direction: str) -> float:
-    if entry <= 0:
-        return 0.0
-    if direction == "SHORT":
-        return round(entry * 0.90, 4)
-    return round(entry * 1.10, 4)
-
-
-def _normalize_position_prices(pos: Dict[str, Any]) -> Dict[str, Any]:
-    vehicle = _norm_vehicle(pos)
-    direction = _strategy_direction(pos)
-
-    entry = _safe_float(pos.get("entry", pos.get("price", pos.get("fill_price", 0.0))), 0.0)
-    if entry <= 0:
-        entry = _safe_float(pos.get("current_price", 0.0), 0.0)
-
-    current = _latest_price_for_position(pos)
-    if current <= 0:
-        current = entry
-
-    stop = _safe_float(pos.get("stop", 0.0), 0.0)
-    target = _safe_float(pos.get("target", 0.0), 0.0)
+def _ensure_monitor_defaults(pos: Dict[str, Any]) -> Dict[str, Any]:
+    pos = dict(pos)
+    vehicle = _vehicle(pos)
+    strategy = _safe_str(pos.get("strategy"), "CALL").upper()
+    direction = _direction(strategy)
 
     if vehicle == "OPTION":
+        entry = _safe_float(pos.get("entry", pos.get("option_entry", 0.0)), 0.0)
+        current = _latest_option_price(pos)
+        if current <= 0:
+            current = entry
+        stop = _safe_float(pos.get("stop", 0.0), 0.0)
+        target = _safe_float(pos.get("target", 0.0), 0.0)
         if stop <= 0:
-            stop = _default_option_stop(entry, direction)
+            stop = round(entry * (1.35 if direction == "SHORT" else 0.70), 4)
         if target <= 0:
-            target = _default_option_target(entry, direction)
-    else:
-        if stop <= 0:
-            stop = _default_stock_stop(entry, direction)
-        if target <= 0:
-            target = _default_stock_target(entry, direction)
+            target = round(entry * (0.65 if direction == "SHORT" else 1.35), 4)
 
-    pos["symbol"] = _safe_str(pos.get("symbol"), "").upper()
-    pos["vehicle_selected"] = vehicle
-    pos["selected_vehicle"] = vehicle
-    pos["vehicle"] = vehicle
-
-    pos["entry"] = round(entry, 4 if vehicle == "OPTION" else 2)
-    pos["price"] = pos["entry"]
-    pos["current_price"] = round(current, 4 if vehicle == "OPTION" else 2)
-    pos["current"] = pos["current_price"]
-    pos["stop"] = round(stop, 4 if vehicle == "OPTION" else 2)
-    pos["target"] = round(target, 4 if vehicle == "OPTION" else 2)
-
-    if vehicle == "OPTION":
-        pos["option_current_price"] = pos["current_price"]
-        pos["underlying_price"] = _latest_underlying_price(
-            pos["symbol"],
-            pos.get("underlying_price", 0.0),
-        )
+        pos["entry"] = round(entry, 4)
+        pos["current_price"] = round(current, 4)
+        pos["option_current_price"] = round(current, 4)
+        pos["stop"] = round(stop, 4)
+        pos["target"] = round(target, 4)
         pos["monitoring_price_type"] = "OPTION_PREMIUM"
     else:
-        pos["underlying_price"] = pos["current_price"]
+        entry = _safe_float(pos.get("entry", pos.get("price", 0.0)), 0.0)
+        current = _latest_stock_price(pos)
+        if current <= 0:
+            current = entry
+        stop = _safe_float(pos.get("stop", 0.0), 0.0)
+        target = _safe_float(pos.get("target", 0.0), 0.0)
+        if stop <= 0:
+            stop = round(entry * (1.03 if direction == "SHORT" else 0.97), 4)
+        if target <= 0:
+            target = round(entry * (0.90 if direction == "SHORT" else 1.10), 4)
+
+        pos["entry"] = round(entry, 4)
+        pos["current_price"] = round(current, 4)
+        pos["underlying_price"] = round(current, 4)
+        pos["stop"] = round(stop, 4)
+        pos["target"] = round(target, 4)
         pos["monitoring_price_type"] = "UNDERLYING"
 
     return pos
 
 
-def _build_learning_exit_map() -> Dict[str, Any]:
-    try:
-        adjustment_map = get_learning_adjustment_map()
-    except Exception:
-        adjustment_map = {}
-
-    items = adjustment_map.get("items", []) if isinstance(adjustment_map, dict) else []
-    behavior_flags = []
-    for item in items:
-        if not isinstance(item, dict):
-            continue
-        if str(item.get("type", "") or "").strip().lower() == "behavior_flag":
-            behavior_flags.append(item)
-
-    return {"behavior_flags": behavior_flags}
-
-
-def _has_delay_exit_bias(learning_exit_map: Dict[str, Any]) -> bool:
-    behavior_flags = learning_exit_map.get("behavior_flags", []) if isinstance(learning_exit_map, dict) else []
-    for item in behavior_flags:
-        if not isinstance(item, dict):
-            continue
-        action = str(item.get("action", "") or "").strip().lower()
-        if action == "delay_exit_bias":
-            return True
-    return False
-
-
-def _extract_v2_context(pos: Dict[str, Any]) -> Dict[str, Any]:
-    v2 = _safe_dict(pos.get("v2", {}))
-    v2_signal = _safe_dict(pos.get("v2_signal", {}))
-    v2_overlay = _safe_dict(pos.get("v2_overlay", {}))
-    v2_intelligence = _safe_dict(pos.get("v2_intelligence", {}))
-    v2_payload = _safe_dict(pos.get("v2_payload", {}))
-
-    merged: Dict[str, Any] = {}
-    merged.update(v2_signal)
-    merged.update(v2_overlay)
-    merged.update(v2_intelligence)
-    merged.update(v2_payload)
-    merged.update(v2)
-
-    if "v2_score" in pos and "score" not in merged:
-        merged["score"] = pos.get("v2_score")
-    if "v2_reason" in pos and "reason" not in merged:
-        merged["reason"] = pos.get("v2_reason")
-    if "v2_vehicle_bias" in pos and "vehicle_bias" not in merged:
-        merged["vehicle_bias"] = pos.get("v2_vehicle_bias")
-    if "v2_confidence" in pos and "confidence" not in merged:
-        merged["confidence"] = pos.get("v2_confidence")
-    if "v2_quality" in pos and "quality" not in merged:
-        merged["quality"] = pos.get("v2_quality")
-
-    return {
-        "v2": merged,
-        "v2_score": _safe_float(merged.get("score", pos.get("v2_score", 0.0)), 0.0),
-        "v2_confidence": _safe_str(merged.get("confidence", pos.get("v2_confidence", "")), "").upper(),
-        "v2_reason": _safe_str(merged.get("reason", pos.get("v2_reason", "")), ""),
-        "v2_regime_alignment": _safe_str(
-            merged.get("regime_alignment", merged.get("alignment", pos.get("v2_regime_alignment", ""))),
-            "",
-        ),
-        "v2_signal_strength": _safe_float(
-            merged.get("signal_strength", merged.get("strength", pos.get("v2_signal_strength", 0.0))),
-            0.0,
-        ),
-        "v2_conviction_adjustment": _safe_float(
-            merged.get(
-                "conviction_adjustment",
-                merged.get("confidence_adjustment", pos.get("v2_conviction_adjustment", 0.0)),
-            ),
-            0.0,
-        ),
-        "v2_vehicle_bias": _safe_str(
-            merged.get("vehicle_bias", merged.get("preferred_vehicle", pos.get("v2_vehicle_bias", ""))),
-            "",
-        ).upper(),
-        "v2_thesis": _safe_str(
-            merged.get("thesis", merged.get("summary", pos.get("v2_thesis", ""))),
-            "",
-        ),
-        "v2_notes": _safe_list(
-            merged.get("notes", pos.get("v2_notes", merged.get("signals", [])))
-        ),
-        "v2_risk_flags": _safe_list(
-            merged.get("risk_flags", pos.get("v2_risk_flags", merged.get("warnings", [])))
-        ),
-        "v2_quality": _safe_float(merged.get("quality", pos.get("v2_quality", 0.0)), 0.0),
-    }
-
-
-def _has_meaningful_existing_intelligence(pos: Dict[str, Any]) -> bool:
-    return any(
-        [
-            _safe_float(pos.get("readiness_score", 0.0), 0.0) > 0,
-            _safe_float(pos.get("promotion_score", 0.0), 0.0) > 0,
-            _safe_float(pos.get("rebuild_pressure", 0.0), 0.0) > 0,
-            bool(_safe_str(pos.get("setup_family", ""), "")),
-            bool(_safe_str(pos.get("entry_quality", ""), "")),
-        ]
-    )
-
-
-def _build_position_intelligence(pos: Dict[str, Any]) -> Dict[str, Any]:
-    v2_context = _extract_v2_context(pos)
-
-    existing = {
-        "readiness_score": _safe_float(pos.get("readiness_score", 0.0), 0.0),
-        "promotion_score": _safe_float(pos.get("promotion_score", 0.0), 0.0),
-        "rebuild_pressure": _safe_float(pos.get("rebuild_pressure", 0.0), 0.0),
-        "readiness_notes": _safe_list(pos.get("readiness_notes", [])),
-        "promotion_notes": _safe_list(pos.get("promotion_notes", [])),
-        "rebuild_notes": _safe_list(pos.get("rebuild_notes", [])),
-        "setup_family": _safe_str(pos.get("setup_family", ""), ""),
-        "entry_quality": _safe_str(pos.get("entry_quality", ""), ""),
-    }
-
-    if _has_meaningful_existing_intelligence(pos):
-        return {
-            **existing,
-            "v2": v2_context.get("v2", {}),
-            "v2_score": v2_context.get("v2_score", 0.0),
-            "v2_confidence": v2_context.get("v2_confidence", ""),
-            "v2_reason": v2_context.get("v2_reason", ""),
-            "v2_regime_alignment": v2_context.get("v2_regime_alignment", ""),
-            "v2_signal_strength": v2_context.get("v2_signal_strength", 0.0),
-            "v2_conviction_adjustment": v2_context.get("v2_conviction_adjustment", 0.0),
-            "v2_vehicle_bias": v2_context.get("v2_vehicle_bias", ""),
-            "v2_thesis": v2_context.get("v2_thesis", ""),
-            "v2_notes": v2_context.get("v2_notes", []),
-            "v2_risk_flags": v2_context.get("v2_risk_flags", []),
-            "v2_quality": v2_context.get("v2_quality", 0.0),
-        }
-
-    signal_like = {
-        "symbol": pos.get("symbol"),
-        "score": pos.get("fused_score", pos.get("score", 0)),
-        "confidence": pos.get("confidence", "LOW"),
-        "setup_type": pos.get("setup_type", "Continuation"),
-        "setup_family": pos.get("setup_family", ""),
-        "entry_quality": pos.get("entry_quality", ""),
-        "vehicle_selected": pos.get("vehicle_selected", pos.get("vehicle", "STOCK")),
-        "decision_reason": pos.get("decision_reason", pos.get("final_reason", "")),
-        "v2": v2_context.get("v2", {}),
-        "v2_score": v2_context.get("v2_score", 0.0),
-        "v2_confidence": v2_context.get("v2_confidence", ""),
-        "v2_reason": v2_context.get("v2_reason", ""),
-        "v2_regime_alignment": v2_context.get("v2_regime_alignment", ""),
-        "v2_signal_strength": v2_context.get("v2_signal_strength", 0.0),
-        "v2_conviction_adjustment": v2_context.get("v2_conviction_adjustment", 0.0),
-        "v2_vehicle_bias": v2_context.get("v2_vehicle_bias", ""),
-        "v2_thesis": v2_context.get("v2_thesis", ""),
-        "v2_notes": v2_context.get("v2_notes", []),
-        "v2_risk_flags": v2_context.get("v2_risk_flags", []),
-        "v2_quality": v2_context.get("v2_quality", 0.0),
-    }
-
-    try:
-        adjustment_map = get_learning_adjustment_map()
-    except Exception:
-        adjustment_map = {}
-
-    try:
-        readiness_view = build_readiness_layer([signal_like], adjustment_map)
-        readiness_row = readiness_view[0] if readiness_view else {}
-    except Exception:
-        readiness_row = {}
-
-    try:
-        promotion_view = build_promotion_layer([readiness_row], adjustment_map)
-        promotion_row = promotion_view[0] if promotion_view else readiness_row
-    except Exception:
-        promotion_row = readiness_row
-
-    try:
-        rebuild_view = build_rebuild_layer([promotion_row], adjustment_map)
-        rebuild_row = rebuild_view[0] if rebuild_view else promotion_row
-    except Exception:
-        rebuild_row = promotion_row
-
-    return {
-        "readiness_score": _safe_float(rebuild_row.get("readiness_score", 0.0), 0.0),
-        "promotion_score": _safe_float(rebuild_row.get("promotion_score", 0.0), 0.0),
-        "rebuild_pressure": _safe_float(rebuild_row.get("rebuild_pressure", 0.0), 0.0),
-        "readiness_notes": rebuild_row.get("readiness_notes", []) or [],
-        "promotion_notes": rebuild_row.get("promotion_notes", []) or [],
-        "rebuild_notes": rebuild_row.get("rebuild_notes", []) or [],
-        "setup_family": rebuild_row.get("setup_family", pos.get("setup_family", "")),
-        "entry_quality": rebuild_row.get("entry_quality", pos.get("entry_quality", "")),
-        "v2": v2_context.get("v2", {}),
-        "v2_score": v2_context.get("v2_score", 0.0),
-        "v2_confidence": v2_context.get("v2_confidence", ""),
-        "v2_reason": v2_context.get("v2_reason", ""),
-        "v2_regime_alignment": v2_context.get("v2_regime_alignment", ""),
-        "v2_signal_strength": v2_context.get("v2_signal_strength", 0.0),
-        "v2_conviction_adjustment": v2_context.get("v2_conviction_adjustment", 0.0),
-        "v2_vehicle_bias": v2_context.get("v2_vehicle_bias", ""),
-        "v2_thesis": v2_context.get("v2_thesis", ""),
-        "v2_notes": v2_context.get("v2_notes", []),
-        "v2_risk_flags": v2_context.get("v2_risk_flags", []),
-        "v2_quality": v2_context.get("v2_quality", 0.0),
-    }
-
-
-def _get_governor_snapshot() -> Dict[str, Any]:
-    try:
-        return governor_status(
-            current_open_positions=_safe_int(open_count(), 0),
-            executed_trades_today=_safe_int(executed_trade_count(), 0),
-        )
-    except Exception:
-        return {}
-
-
-def _capital_protection_mode(governor: Dict[str, Any]) -> Dict[str, Any]:
-    controls = governor.get("controls", {}) if isinstance(governor, dict) else {}
-    reasons = governor.get("reasons", []) if isinstance(governor, dict) else []
-
-    reserve_broken = bool(controls.get("cash_reserve_too_low", False)) or ("cash_reserve_too_low" in reasons)
-    max_positions_hit = bool(controls.get("max_open_positions", False)) or ("max_open_positions" in reasons)
-    enabled = reserve_broken or max_positions_hit
-
-    return {
-        "enabled": enabled,
-        "reserve_broken": reserve_broken,
-        "max_positions_hit": max_positions_hit,
-        "cash": _safe_float(governor.get("cash", 0.0), 0.0),
-        "buying_power": _safe_float(governor.get("buying_power", 0.0), 0.0),
-    }
-
-
-def _capital_pressure_score(pos: Dict[str, Any]) -> float:
-    pct_change = _safe_float(pos.get("_monitor_pct_change", 0.0), 0.0)
-    progress = _safe_float(pos.get("_monitor_progress", 0.0), 0.0)
-    days_open = _safe_float(pos.get("_monitor_days_open", 0.0), 0.0)
-    readiness_score = _safe_float(pos.get("readiness_score", 0.0), 0.0)
-    rebuild_pressure = _safe_float(pos.get("rebuild_pressure", 0.0), 0.0)
-    promotion_score = _safe_float(pos.get("promotion_score", 0.0), 0.0)
-    confidence_text = _safe_str(pos.get("confidence", "LOW"), "LOW").upper()
-    v2_signal_strength = _safe_float(pos.get("v2_signal_strength", 0.0), 0.0)
-    v2_conviction_adjustment = _safe_float(pos.get("v2_conviction_adjustment", 0.0), 0.0)
-    v2_regime_alignment = _safe_str(pos.get("v2_regime_alignment", ""), "").lower()
-    v2_risk_flags = _safe_list(pos.get("v2_risk_flags", []))
-
-    score = 0.0
-
-    if pct_change < 0:
-        score += min(abs(pct_change) * 18.0, 36.0)
+def _pct_change(entry: float, current: float, strategy: str, vehicle: str) -> float:
+    if entry <= 0 or current <= 0:
+        return 0.0
+    direction = _direction(strategy)
+    if direction == "SHORT":
+        base = ((entry - current) / entry) * 100.0
     else:
-        score -= min(pct_change * 8.0, 10.0)
+        base = ((current - entry) / entry) * 100.0
+    return round(base, 4)
 
-    if progress < 0:
-        score += min(abs(progress) * 30.0, 24.0)
-    elif progress < 0.10:
-        score += (0.10 - progress) * 40.0
+
+def _progress(entry: float, current: float, stop: float, target: float, strategy: str) -> float:
+    direction = _direction(strategy)
+    if entry <= 0:
+        return 0.0
+    try:
+        if direction == "SHORT":
+            denom = entry - target
+            if denom == 0:
+                return 0.0
+            return round((entry - current) / denom, 4)
+        denom = target - entry
+        if denom == 0:
+            return 0.0
+        return round((current - entry) / denom, 4)
+    except Exception:
+        return 0.0
+
+
+def _action_for_position(pos: Dict[str, Any]) -> str:
+    vehicle = _vehicle(pos)
+    strategy = _safe_str(pos.get("strategy"), "CALL").upper()
+    direction = _direction(strategy)
+
+    entry = _safe_float(pos.get("entry", 0.0), 0.0)
+    current = _safe_float(pos.get("current_price", 0.0), 0.0)
+    stop = _safe_float(pos.get("stop", 0.0), 0.0)
+    target = _safe_float(pos.get("target", 0.0), 0.0)
+    days_open = _days_open(pos.get("opened_at"))
+    pct = _pct_change(entry, current, strategy, vehicle)
+
+    if entry <= 0 or current <= 0:
+        return "HOLD"
+
+    if direction == "SHORT":
+        stop_hit = current >= stop if stop > 0 else False
+        target_hit = current <= target if target > 0 else False
     else:
-        score -= min(progress * 8.0, 8.0)
+        stop_hit = current <= stop if stop > 0 else False
+        target_hit = current >= target if target > 0 else False
 
-    if days_open >= 0.5 and progress < 0.15:
-        score += min(days_open * 4.0, 18.0)
+    if stop_hit:
+        return "STOP_LOSS"
+    if target_hit and days_open >= 0.01:
+        return "TAKE_PROFIT"
 
-    score += min(rebuild_pressure * 0.55, 32.0)
+    if vehicle == "OPTION":
+        if pct <= -35:
+            return "CUT_WEAKNESS"
+        if pct >= 45 and days_open >= 0.01:
+            return "PROTECT_PROFIT"
+    else:
+        if pct <= -1.5:
+            return "CUT_WEAKNESS"
+        if pct >= 3.0 and days_open >= 0.01:
+            return "PROTECT_PROFIT"
 
-    if readiness_score < 160:
-        score += min((160.0 - readiness_score) * 0.18, 26.0)
-
-    if promotion_score < 160:
-        score += min((160.0 - promotion_score) * 0.08, 10.0)
-
-    if confidence_text == "LOW":
-        score += 8.0
-    elif confidence_text == "MEDIUM":
-        score += 3.5
-    elif confidence_text == "HIGH":
-        score -= 2.0
-
-    if pct_change < 0 and days_open >= 1.0:
-        score += min(days_open * 2.5, 10.0)
-
-    if v2_signal_strength < 0:
-        score += min(abs(v2_signal_strength) * 10.0, 12.0)
-    elif v2_signal_strength > 0:
-        score -= min(v2_signal_strength * 4.0, 6.0)
-
-    if v2_conviction_adjustment < 0:
-        score += min(abs(v2_conviction_adjustment) * 8.0, 10.0)
-    elif v2_conviction_adjustment > 0:
-        score -= min(v2_conviction_adjustment * 4.0, 5.0)
-
-    if v2_regime_alignment in {"misaligned", "against_regime", "weak"}:
-        score += 8.0
-    elif v2_regime_alignment in {"aligned", "strong"}:
-        score -= 4.0
-
-    if v2_risk_flags:
-        score += min(len(v2_risk_flags) * 2.5, 10.0)
-
-    return round(max(score, 0.0), 2)
+    return "HOLD"
 
 
 def monitor_open_positions() -> List[Dict[str, Any]]:
@@ -591,350 +223,60 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
     except Exception:
         positions = []
 
-    if not isinstance(positions, list):
-        positions = []
-
     actions: List[Dict[str, Any]] = []
-    learning_exit_map = _build_learning_exit_map()
-    delay_exit_bias_active = _has_delay_exit_bias(learning_exit_map)
-    governor = _get_governor_snapshot()
-    protection = _capital_protection_mode(governor)
 
-    enriched_positions: List[Dict[str, Any]] = []
-
-    for pos in positions:
-        if not isinstance(pos, dict):
+    for raw_pos in positions if isinstance(positions, list) else []:
+        if not isinstance(raw_pos, dict):
             continue
 
-        symbol = _safe_str(pos.get("symbol"), "").upper()
-        if not symbol:
-            continue
-
-        pos = _normalize_position_prices(dict(pos))
-        vehicle = _norm_vehicle(pos)
-        direction = _strategy_direction(pos)
+        pos = _ensure_monitor_defaults(raw_pos)
+        symbol = _norm_symbol(pos.get("symbol"))
+        trade_id = _safe_str(pos.get("trade_id"), "")
+        vehicle = _vehicle(pos)
 
         entry = _safe_float(pos.get("entry", 0.0), 0.0)
-        current = _safe_float(pos.get("current_price", entry), entry)
+        current = _safe_float(pos.get("current_price", 0.0), 0.0)
         stop = _safe_float(pos.get("stop", 0.0), 0.0)
         target = _safe_float(pos.get("target", 0.0), 0.0)
 
-        position_intel = _build_position_intelligence(pos)
-
-        if _safe_float(pos.get("readiness_score", 0.0), 0.0) <= 0:
-            pos["readiness_score"] = position_intel.get("readiness_score", 0)
-        if _safe_float(pos.get("promotion_score", 0.0), 0.0) <= 0:
-            pos["promotion_score"] = position_intel.get("promotion_score", 0)
-        if _safe_float(pos.get("rebuild_pressure", 0.0), 0.0) <= 0:
-            pos["rebuild_pressure"] = position_intel.get("rebuild_pressure", 0)
-        if not _safe_str(pos.get("setup_family", ""), ""):
-            pos["setup_family"] = position_intel.get("setup_family", "")
-        if not _safe_str(pos.get("entry_quality", ""), ""):
-            pos["entry_quality"] = position_intel.get("entry_quality", "")
-        if not _safe_list(pos.get("readiness_notes", [])):
-            pos["readiness_notes"] = position_intel.get("readiness_notes", [])
-        if not _safe_list(pos.get("promotion_notes", [])):
-            pos["promotion_notes"] = position_intel.get("promotion_notes", [])
-        if not _safe_list(pos.get("rebuild_notes", [])):
-            pos["rebuild_notes"] = position_intel.get("rebuild_notes", [])
-
-        pos["v2"] = position_intel.get("v2", pos.get("v2", {}))
-        pos["v2_score"] = position_intel.get("v2_score", pos.get("v2_score", 0.0))
-        pos["v2_confidence"] = position_intel.get("v2_confidence", pos.get("v2_confidence", ""))
-        pos["v2_reason"] = position_intel.get("v2_reason", pos.get("v2_reason", ""))
-        pos["v2_regime_alignment"] = position_intel.get("v2_regime_alignment", pos.get("v2_regime_alignment", ""))
-        pos["v2_signal_strength"] = position_intel.get("v2_signal_strength", pos.get("v2_signal_strength", 0.0))
-        pos["v2_conviction_adjustment"] = position_intel.get(
-            "v2_conviction_adjustment",
-            pos.get("v2_conviction_adjustment", 0.0),
-        )
-        pos["v2_vehicle_bias"] = position_intel.get("v2_vehicle_bias", pos.get("v2_vehicle_bias", ""))
-        pos["v2_thesis"] = position_intel.get("v2_thesis", pos.get("v2_thesis", ""))
-        pos["v2_notes"] = position_intel.get("v2_notes", pos.get("v2_notes", []))
-        pos["v2_risk_flags"] = position_intel.get("v2_risk_flags", pos.get("v2_risk_flags", []))
-        pos["v2_quality"] = position_intel.get("v2_quality", pos.get("v2_quality", 0.0))
-
-        rebuild_pressure = _safe_float(pos.get("rebuild_pressure", 0.0), 0.0)
-        readiness_score = _safe_float(pos.get("readiness_score", 0.0), 0.0)
-        days = _days_open(pos.get("opened_at"))
-        prog = _progress(entry, current, target, direction=direction)
-        pct_change = _pct_change(entry, current, direction=direction)
-
-        try:
-            pos["position_explanation"] = explain_position_state(
-                pos,
-                current_price=current,
-                progress=prog,
-                pct_change=pct_change,
-                days_open=days,
-                readiness_score=readiness_score,
-                rebuild_pressure=rebuild_pressure,
-            )
-        except TypeError:
-            pos["position_explanation"] = explain_position_state(pos, current)
-        except Exception:
-            pos["position_explanation"] = {
-                "headline": f"{symbol} position review",
-                "summary": "Position explanation unavailable.",
-            }
-
-        try:
-            pos["soulaana"] = soulaana_explain_position(
-                {
-                    "symbol": symbol,
-                    "vehicle_selected": vehicle,
-                    "monitoring_price_type": pos.get("monitoring_price_type", "UNKNOWN"),
-                    "current_price": round(current, 4 if vehicle == "OPTION" else 2),
-                    "underlying_price": round(_safe_float(pos.get("underlying_price", 0.0), 0.0), 2),
-                    "entry": round(entry, 4 if vehicle == "OPTION" else 2),
-                    "target": round(target, 4 if vehicle == "OPTION" else 2),
-                    "stop": round(stop, 4 if vehicle == "OPTION" else 2),
-                    "pnl": pos.get("pnl", pos.get("unrealized_pnl", 0)),
-                    "progress": prog,
-                    "pct_change": pct_change,
-                    "days_open": days,
-                    "readiness_score": pos.get("readiness_score"),
-                    "promotion_score": pos.get("promotion_score"),
-                    "rebuild_pressure": pos.get("rebuild_pressure"),
-                    "setup_family": pos.get("setup_family"),
-                    "entry_quality": pos.get("entry_quality"),
-                    "decision_reason": pos.get("decision_reason", pos.get("final_reason", "")),
-                    "v2": pos.get("v2", {}),
-                    "v2_score": pos.get("v2_score", 0.0),
-                    "v2_confidence": pos.get("v2_confidence", ""),
-                    "v2_reason": pos.get("v2_reason", ""),
-                    "v2_regime_alignment": pos.get("v2_regime_alignment", ""),
-                    "v2_signal_strength": pos.get("v2_signal_strength", 0.0),
-                    "v2_conviction_adjustment": pos.get("v2_conviction_adjustment", 0.0),
-                    "v2_vehicle_bias": pos.get("v2_vehicle_bias", ""),
-                    "v2_thesis": pos.get("v2_thesis", ""),
-                    "v2_notes": pos.get("v2_notes", []),
-                    "v2_risk_flags": pos.get("v2_risk_flags", []),
-                    "v2_quality": pos.get("v2_quality", 0.0),
-                }
-            )
-        except Exception:
-            pos["soulaana"] = {}
-
-        pos["_monitor_days_open"] = days
-        pos["_monitor_progress"] = prog
-        pos["_monitor_pct_change"] = pct_change
-        pos["_capital_pressure_score"] = _capital_pressure_score(pos)
-
-        enriched_positions.append(pos)
-
-    weakest_symbol = None
-    if protection["enabled"] and enriched_positions:
-        ranked = sorted(
-            enriched_positions,
-            key=lambda p: (
-                _safe_float(p.get("_capital_pressure_score", 0.0), 0.0),
-                _safe_float(p.get("rebuild_pressure", 0.0), 0.0),
-                -_safe_float(p.get("_monitor_progress", 0.0), 0.0),
-                -_safe_float(p.get("readiness_score", 0.0), 0.0),
-            ),
-            reverse=True,
-        )
-        weakest_symbol = _safe_str(ranked[0].get("symbol"), "").upper()
-
-    for pos in enriched_positions:
-        symbol = pos["symbol"]
-        vehicle = _norm_vehicle(pos)
-        direction = _strategy_direction(pos)
-
-        entry = _safe_float(pos.get("entry", 0.0), 0.0)
-        current = _safe_float(pos.get("current_price", entry), entry)
-        stop = _safe_float(pos.get("stop", entry), entry)
-        target = _safe_float(pos.get("target", entry), entry)
-
-        score = _safe_float(pos.get("score", 0.0), 0.0)
-        prev_score = _safe_float(pos.get("previous_score", score), score)
-
-        days = _safe_float(pos.get("_monitor_days_open", 0.0), 0.0)
-        prog = _safe_float(pos.get("_monitor_progress", 0.0), 0.0)
-        pct_change = _safe_float(pos.get("_monitor_pct_change", 0.0), 0.0)
-
-        rebuild_pressure = _safe_float(pos.get("rebuild_pressure", 0.0), 0.0)
-        readiness_score = _safe_float(pos.get("readiness_score", 0.0), 0.0)
-        v2_signal_strength = _safe_float(pos.get("v2_signal_strength", 0.0), 0.0)
-        v2_conviction_adjustment = _safe_float(pos.get("v2_conviction_adjustment", 0.0), 0.0)
-        v2_regime_alignment = _safe_str(pos.get("v2_regime_alignment", ""), "").lower()
-        v2_risk_flags = _safe_list(pos.get("v2_risk_flags", []))
-
-        learning_notes: List[str] = []
-        pressure_reasons: List[str] = []
-        action = "HOLD"
-
-        if direction == "SHORT":
-            hard_stop_hit = current >= stop
-            target_hit = current <= target
-        else:
-            hard_stop_hit = current <= stop
-            target_hit = current >= target
-
-        deep_loss = pct_change <= -25.0 if vehicle == "OPTION" else pct_change <= -1.25
-        medium_loss = pct_change <= -15.0 if vehicle == "OPTION" else pct_change <= -0.75
-        light_loss = pct_change <= -7.0 if vehicle == "OPTION" else pct_change <= -0.35
-        very_new_trade = days < 0.20
-        early_trade = days < 0.50
-        meaningful_progress_failure = days >= 1.5 and prog < 0.10
-        severe_stall = days >= 3 and prog < 0.20
-        structure_drop = score < prev_score - 12
-        heavy_rebuild = rebuild_pressure >= 45
-        very_heavy_rebuild = rebuild_pressure >= 60
-        weak_readiness = readiness_score < 105
-
-        v2_negative = (
-            v2_signal_strength < 0
-            or v2_conviction_adjustment < 0
-            or v2_regime_alignment in {"misaligned", "against_regime", "weak"}
-            or len(v2_risk_flags) > 0
-        )
-
-        if hard_stop_hit:
-            action = "STOP_LOSS"
-            pressure_reasons.append("hard stop hit")
-        elif target_hit:
-            action = "TAKE_PROFIT"
-            pressure_reasons.append("target hit")
-        elif very_new_trade:
-            action = "HOLD"
-            learning_notes.append("very new trade protected from premature exit")
-        elif early_trade and not deep_loss:
-            action = "HOLD"
-            learning_notes.append("early trade given room before weakness exit logic")
-        elif deep_loss and days >= 0.10:
-            action = "CUT_WEAKNESS"
-            pressure_reasons.append("deep adverse move")
-        elif medium_loss and very_heavy_rebuild and days >= 0.20:
-            action = "RISK_ALERT"
-            pressure_reasons.append("medium loss with heavy rebuild pressure")
-        elif severe_stall and heavy_rebuild:
-            action = "TIME_EXIT"
-            pressure_reasons.append("trade stalled too long with elevated rebuild pressure")
-        elif meaningful_progress_failure and weak_readiness and heavy_rebuild:
-            action = "NO_FOLLOW_THROUGH"
-            pressure_reasons.append("weak follow-through plus weak readiness")
-        elif structure_drop and heavy_rebuild and days >= 0.25:
-            if delay_exit_bias_active and current > stop * 1.01:
-                action = "HOLD"
-                learning_notes.append("delay_exit_bias held the position despite structure deterioration")
-            else:
-                action = "STRUCTURE_DETERIORATION"
-                pressure_reasons.append("structure deteriorated with rebuild pressure")
-        elif v2_negative and days >= 0.50 and prog < 0.15 and pct_change <= (-8.0 if vehicle == "OPTION" else -0.35):
-            action = "V2_DETERIORATION"
-            pressure_reasons.append("V2 posture turned against the position")
-        elif prog > 0.60 and pct_change > 0:
-            action = "PROTECT_PROFIT"
-            pressure_reasons.append("profit protection zone reached")
-        else:
-            action = "HOLD"
-            if light_loss:
-                learning_notes.append("minor weakness tolerated")
-            if days < 0.50:
-                learning_notes.append("early-life trade given room to work")
-            if not heavy_rebuild:
-                learning_notes.append("rebuild pressure not extreme")
-            if readiness_score >= 105:
-                learning_notes.append("readiness still supportive")
-            if not v2_negative:
-                learning_notes.append("V2 posture not materially bearish")
-
-        if protection["enabled"]:
-            pos["capital_protection_mode"] = True
-            pos["capital_protection_snapshot"] = protection
-
-            if symbol == weakest_symbol:
-                if action == "HOLD":
-                    if days >= 0.20:
-                        if pct_change < (-15.0 if vehicle == "OPTION" else -0.75) and rebuild_pressure >= 20:
-                            action = "CAPITAL_PROTECTION_EXIT"
-                            pressure_reasons.append("weakest open position under reserve breach")
-                        elif pct_change <= (-10.0 if vehicle == "OPTION" else -0.50):
-                            action = "CAPITAL_PROTECTION_EXIT"
-                            pressure_reasons.append("capital protection exit on active loser")
-                        elif days >= 1 and prog < 0.10:
-                            action = "CAPITAL_PROTECTION_EXIT"
-                            pressure_reasons.append("capital protection exit on stalled position")
-                        elif v2_negative and pct_change < (-6.0 if vehicle == "OPTION" else -0.25):
-                            action = "CAPITAL_PROTECTION_EXIT"
-                            pressure_reasons.append("capital protection plus negative V2 posture")
-                        else:
-                            learning_notes.append("flagged as weakest position, but not weak enough to force exit yet")
-                    else:
-                        learning_notes.append("capital protection active, but fresh trade shield delayed forced exit")
-            else:
-                learning_notes.append("capital protection active, but this is not the weakest position")
-        else:
-            pos["capital_protection_mode"] = False
-            pos["capital_protection_snapshot"] = protection
-
-        if learning_notes:
-            existing_notes = pos.get("learning_exit_notes", [])
-            if not isinstance(existing_notes, list):
-                existing_notes = []
-            pos["learning_exit_notes"] = existing_notes + learning_notes
+        action = _action_for_position(pos)
 
         pos["monitor_debug"] = {
             "vehicle_selected": vehicle,
-            "direction": direction,
-            "monitoring_price_type": pos.get("monitoring_price_type", "UNKNOWN"),
-            "days_open": round(days, 3),
-            "progress": round(prog, 3),
-            "pct_change": round(pct_change, 3),
-            "readiness_score": round(readiness_score, 2),
-            "rebuild_pressure": round(rebuild_pressure, 2),
-            "score": round(score, 2),
-            "previous_score": round(prev_score, 2),
-            "pressure_reasons": pressure_reasons,
-            "learning_notes": learning_notes,
-            "delay_exit_bias_active": delay_exit_bias_active,
-            "capital_protection_mode": protection["enabled"],
-            "weakest_symbol": weakest_symbol,
-            "capital_pressure_score": round(_safe_float(pos.get("_capital_pressure_score", 0.0), 0.0), 2),
-            "v2_score": round(_safe_float(pos.get("v2_score", 0.0), 0.0), 2),
-            "v2_signal_strength": round(v2_signal_strength, 2),
-            "v2_conviction_adjustment": round(v2_conviction_adjustment, 2),
-            "v2_regime_alignment": v2_regime_alignment,
-            "v2_risk_flags": v2_risk_flags,
+            "monitoring_price_type": pos.get("monitoring_price_type", ""),
+            "entry": round(entry, 4),
+            "current": round(current, 4),
+            "stop": round(stop, 4),
+            "target": round(target, 4),
+            "days_open": round(_days_open(pos.get("opened_at")), 4),
             "final_action": action,
         }
 
         replace_position(symbol, pos)
 
-        display_current = round(current, 4) if vehicle == "OPTION" else round(current, 2)
-        display_entry = round(entry, 4) if vehicle == "OPTION" else round(entry, 2)
-        display_stop = round(stop, 4) if vehicle == "OPTION" else round(stop, 2)
-
         print(
-            f"{symbol} | Vehicle: {vehicle} | MonitorPrice: {pos.get('monitoring_price_type', 'UNKNOWN')} | "
-            f"Current: {display_current} | Entry: {display_entry} | Stop: {display_stop} | "
-            f"Progress: {round(prog, 2)} | Readiness: {round(readiness_score, 2)} | "
-            f"Rebuild: {round(rebuild_pressure, 2)} | "
-            f"V2Score: {round(_safe_float(pos.get('v2_score', 0.0), 0.0), 2)} | "
-            f"V2Strength: {round(v2_signal_strength, 2)} | "
-            f"CapitalPressure: {round(_safe_float(pos.get('_capital_pressure_score', 0.0), 0.0), 2)} | "
+            f"{symbol} | Vehicle: {vehicle} | MonitorPrice: {pos.get('monitoring_price_type', '')} | "
+            f"Current: {round(current, 4)} | Entry: {round(entry, 4)} | Stop: {round(stop, 4)} | "
             f"Action: {action}"
         )
 
         if action != "HOLD":
-            close_reason = action.lower()
-            result = close_position(symbol, current, reason=close_reason)
-
+            result = close_position(
+                symbol,
+                current,
+                reason=action.lower(),
+                trade_id=trade_id,
+            )
             actions.append(
                 {
                     "symbol": symbol,
-                    "reason": close_reason,
+                    "trade_id": trade_id,
+                    "reason": action.lower(),
                     "result": result,
                 }
             )
-
             if isinstance(result, dict) and result.get("closed"):
-                print(
-                    f"CLOSED: {symbol} | Reason: {action} | "
-                    f"PnL: {result.get('pnl')} | Exit: {result.get('exit_price')}"
-                )
+                print(f"CLOSED: {symbol} | Reason: {action} | PnL: {result.get('pnl')}")
             elif isinstance(result, dict) and result.get("blocked"):
                 print(f"BLOCKED CLOSE: {symbol} | Reason: {result.get('reason')}")
 
