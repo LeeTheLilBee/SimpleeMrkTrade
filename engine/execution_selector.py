@@ -1,182 +1,144 @@
-from typing import Any, Dict, List, Optional
+from __future__ import annotations
 
-from engine.reserve_selector import diagnose_reserve_queue_fit
+from copy import deepcopy
+from typing import Any, Dict, List
+
+
+def _safe_dict(value: Any) -> Dict[str, Any]:
+    return value if isinstance(value, dict) else {}
 
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
-        if value is None:
-            return default
+        if value is None or value == "":
+            return float(default)
         return float(value)
-    except (TypeError, ValueError):
-        return default
+    except Exception:
+        return float(default)
 
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
-        if value is None:
-            return default
-        return int(value)
-    except (TypeError, ValueError):
-        return default
+        if value is None or value == "":
+            return int(default)
+        return int(float(value))
+    except Exception:
+        return int(default)
 
 
 def _safe_str(value: Any, default: str = "") -> str:
-    if value is None:
-        return default
     try:
-        return str(value).strip()
+        text = str(value or "").strip()
+        return text if text else default
     except Exception:
         return default
 
 
-def _normalize_symbol(value: Any) -> str:
-    return _safe_str(value, "UNKNOWN").upper()
+def _symbol(row: Dict[str, Any]) -> str:
+    return _safe_str(row.get("symbol"), "").upper()
 
 
-def _normalize_vehicle(value: Any) -> str:
-    return _safe_str(value, "RESEARCH_ONLY").upper()
-
-
-def _mode_reserve_floor(
+def select_for_execution(
+    candidates: List[Dict[str, Any]] | None,
     *,
     available_cash: float,
-    mode_context: Optional[Dict[str, Any]] = None,
-) -> float:
-    mode_context = mode_context if isinstance(mode_context, dict) else {}
-    reserve_floor_pct = _safe_float(mode_context.get("reserve_floor_pct"), 0.10)
-    return round(max(0.0, available_cash * reserve_floor_pct), 2)
-
-
-def _build_selector_debug_row(
-    trade: Dict[str, Any],
-    *,
-    available_cash_before: float,
     reserve_floor: float,
-    chosen: bool,
-    reason: str,
-    remaining_after: Optional[float] = None,
-) -> Dict[str, Any]:
-    score = _safe_float(trade.get("fused_score", trade.get("score", 0.0)), 0.0)
-    capital_required = _safe_float(trade.get("capital_required"), 0.0)
-    minimum_trade_cost = _safe_float(trade.get("minimum_trade_cost"), 0.0)
-    estimated_cost = _safe_float(trade.get("estimated_cost"), 0.0)
-
-    effective_cost = minimum_trade_cost
-    if effective_cost <= 0:
-        effective_cost = capital_required
-    if effective_cost <= 0:
-        effective_cost = estimated_cost
-
-    if remaining_after is None:
-        remaining_after = round(available_cash_before - effective_cost, 2)
-
-    return {
-        "symbol": _normalize_symbol(trade.get("symbol")),
-        "vehicle_selected": _normalize_vehicle(
-            trade.get("vehicle_selected") or trade.get("selected_vehicle")
-        ),
-        "score": round(score, 2),
-        "capital_required": round(capital_required, 2),
-        "minimum_trade_cost": round(minimum_trade_cost, 2),
-        "estimated_cost": round(estimated_cost, 2),
-        "effective_cost": round(effective_cost, 2),
-        "available_cash_before": round(available_cash_before, 2),
-        "reserve_floor": round(reserve_floor, 2),
-        "remaining_after": round(remaining_after, 2),
-        "chosen": chosen,
-        "selector_reason": reason,
-    }
-
-
-def choose_execution_queue_option_b(
-    execution_ready: List[Dict[str, Any]],
-    *,
     limit: int = 3,
-    available_cash: float = 0.0,
-    trading_mode: str = "paper",
-    mode_context: Optional[Dict[str, Any]] = None,
+    current_open_positions: int = 0,
+    max_open_positions: int = 3,
     allow_soft_reserve: bool = False,
-) -> List[Dict[str, Any]]:
-    mode_context = mode_context if isinstance(mode_context, dict) else {}
-    limit = max(_safe_int(limit, 3), 0)
-    available_cash = round(_safe_float(available_cash, 0.0), 2)
+) -> Dict[str, Any]:
+    candidates = candidates if isinstance(candidates, list) else []
+    working_cash = _safe_float(available_cash, 0.0)
+    reserve_floor = _safe_float(reserve_floor, 0.0)
+    current_open_positions = _safe_int(current_open_positions, 0)
+    max_open_positions = _safe_int(max_open_positions, 0)
 
-    reserve_floor = _mode_reserve_floor(
-        available_cash=available_cash,
-        mode_context=mode_context,
-    )
+    remaining_slots = max(0, max_open_positions - current_open_positions)
+    effective_limit = min(max(0, _safe_int(limit, 0)), remaining_slots)
 
-    ranked_candidates = [
-        candidate for candidate in execution_ready
-        if isinstance(candidate, dict)
-    ]
-    ranked_candidates.sort(
-        key=lambda trade: (
-            _safe_float(trade.get("fused_score", trade.get("score", 0.0)), 0.0),
-            _safe_float(trade.get("score", 0.0), 0.0),
+    print("OPTION B SELECTOR START")
+    print({
+        "available_cash": working_cash,
+        "reserve_floor": reserve_floor,
+        "candidate_count": len(candidates),
+        "limit": limit,
+        "remaining_slots": remaining_slots,
+        "effective_limit": effective_limit,
+        "allow_soft_reserve": allow_soft_reserve,
+    })
+
+    ranked = []
+    for row in candidates:
+        item = deepcopy(_safe_dict(row))
+        if not item:
+            continue
+        ranked.append(item)
+
+    ranked.sort(
+        key=lambda x: (
+            _safe_float(x.get("fused_score", x.get("score", 0.0)), 0.0),
+            _safe_float(x.get("score", 0.0), 0.0),
         ),
         reverse=True,
     )
 
-    print("OPTION B SELECTOR MODULE:", __file__)
-    print("OPTION B SELECTOR START")
-    print(
-        {
-            "trading_mode": _safe_str(trading_mode, "paper"),
-            "available_cash": available_cash,
-            "reserve_floor": reserve_floor,
-            "candidate_count": len(ranked_candidates),
-            "limit": limit,
-            "allow_soft_reserve": allow_soft_reserve,
+    selected: List[Dict[str, Any]] = []
+    decisions: List[Dict[str, Any]] = []
+
+    for row in ranked:
+        symbol = _symbol(row)
+        vehicle_selected = _safe_str(row.get("vehicle_selected", "RESEARCH_ONLY"), "RESEARCH_ONLY").upper()
+        capital_required = _safe_float(row.get("capital_required", 0.0), 0.0)
+        minimum_trade_cost = _safe_float(row.get("minimum_trade_cost", capital_required), capital_required)
+        effective_cost = minimum_trade_cost if minimum_trade_cost > 0 else capital_required
+        remaining_after = round(working_cash - effective_cost, 4)
+
+        decision = {
+            "symbol": symbol,
+            "vehicle_selected": vehicle_selected,
+            "score": _safe_float(row.get("score", 0.0), 0.0),
+            "capital_required": capital_required,
+            "minimum_trade_cost": minimum_trade_cost,
+            "effective_cost": effective_cost,
+            "available_cash_before": round(working_cash, 4),
+            "reserve_floor": round(reserve_floor, 4),
+            "remaining_after": remaining_after,
+            "chosen": False,
+            "selector_reason": "",
         }
-    )
 
-    diagnosis = diagnose_reserve_queue_fit(
-        candidates=ranked_candidates,
-        cash=available_cash,
-        reserve_floor=reserve_floor,
-        queue_limit=limit if limit > 0 else 1,
-        allow_soft_reserve=allow_soft_reserve,
-    )
+        if len(selected) >= effective_limit:
+            decision["selector_reason"] = "queue_limit_or_position_cap_reached"
+        elif vehicle_selected == "RESEARCH_ONLY":
+            decision["selector_reason"] = "research_only_candidate"
+        elif effective_cost <= 0:
+            decision["selector_reason"] = "invalid_cost"
+        elif remaining_after < reserve_floor and not allow_soft_reserve:
+            decision["selector_reason"] = "fails_reserve"
+        else:
+            decision["chosen"] = True
+            decision["selector_reason"] = "fits_with_reserve_and_slots"
+            selected.append(row)
+            working_cash = remaining_after
 
-    for row in diagnosis.get("selected", []):
-        debug_row = _build_selector_debug_row(
-            row.get("raw_candidate", {}),
-            available_cash_before=_safe_float(row.get("running_cash_before_decision"), available_cash),
-            reserve_floor=reserve_floor,
-            chosen=True,
-            reason=_safe_str(row.get("selection_reason"), "selected"),
-            remaining_after=_safe_float(row.get("post_trade_cash_sequential"), available_cash),
-        )
-        print("OPTION B SELECTOR:", debug_row)
+        print("OPTION B SELECTOR:", decision)
+        decisions.append(decision)
 
-    for row in diagnosis.get("skipped", []):
-        debug_row = _build_selector_debug_row(
-            row.get("raw_candidate", {}),
-            available_cash_before=_safe_float(row.get("running_cash_before_decision"), available_cash),
-            reserve_floor=reserve_floor,
-            chosen=False,
-            reason=_safe_str(row.get("skip_reason"), "skipped"),
-            remaining_after=_safe_float(
-                row.get("post_trade_cash_sequential"),
-                row.get("post_trade_cash_if_alone"),
-            ),
-        )
-        print("OPTION B SELECTOR:", debug_row)
+    print("OPTION B SELECTOR FINAL:", {
+        "selected_symbols": [_symbol(row) for row in selected],
+        "ending_cash_after_selection": round(working_cash, 4),
+        "reserve_floor": round(reserve_floor, 4),
+        "remaining_slots": remaining_slots,
+        "effective_limit": effective_limit,
+    })
 
-    selected = [row.get("raw_candidate", {}) for row in diagnosis.get("selected", [])]
-
-    print(
-        "OPTION B SELECTOR FINAL:",
-        {
-            "selected_symbols": [_normalize_symbol(t.get("symbol")) for t in selected],
-            "ending_cash_after_selection": round(
-                _safe_float(diagnosis.get("cash_after_selected_queue"), available_cash),
-                2,
-            ),
-            "reserve_floor": reserve_floor,
-        },
-    )
-
-    return selected
+    return {
+        "selected": selected,
+        "selected_symbols": [_symbol(row) for row in selected],
+        "decisions": decisions,
+        "ending_cash_after_selection": round(working_cash, 4),
+        "reserve_floor": round(reserve_floor, 4),
+        "remaining_slots": remaining_slots,
+        "effective_limit": effective_limit,
+    }

@@ -1,17 +1,3 @@
-from datetime import datetime
-
-def log_trade_state(positions):
-    journal = []
-
-    for p in positions:
-        journal.append({
-            "symbol": p["symbol"],
-            "health": p["health"]["score"],
-            "action": p["health"]["action"],
-            "timestamp": datetime.now().isoformat()
-        })
-
-    return journal%%writefile /content/SimpleeMrkTrade/engine/trade_journal.py
 from __future__ import annotations
 
 from datetime import datetime
@@ -91,9 +77,12 @@ def _build_open_journal_row(position: Dict[str, Any]) -> Dict[str, Any]:
         "vehicle_selected": _safe_str(position.get("vehicle_selected"), "STOCK").upper(),
         "entry": round(_safe_float(position.get("entry", 0.0), 0.0), 4),
         "current_price": round(_safe_float(position.get("current_price", 0.0), 0.0), 4),
+        "option_current_price": round(_safe_float(position.get("option_current_price", 0.0), 0.0), 4),
+        "underlying_price": round(_safe_float(position.get("underlying_price", 0.0), 0.0), 4),
         "stop": round(_safe_float(position.get("stop", 0.0), 0.0), 4),
         "target": round(_safe_float(position.get("target", 0.0), 0.0), 4),
         "pnl": round(_safe_float(position.get("pnl", 0.0), 0.0), 4),
+        "unrealized_pnl": round(_safe_float(position.get("unrealized_pnl", 0.0), 0.0), 4),
         "readiness_score": round(_safe_float(position.get("readiness_score", 0.0), 0.0), 4),
         "promotion_score": round(_safe_float(position.get("promotion_score", 0.0), 0.0), 4),
         "rebuild_pressure": round(_safe_float(position.get("rebuild_pressure", 0.0), 0.0), 4),
@@ -122,6 +111,7 @@ def _build_closed_journal_row(position: Dict[str, Any]) -> Dict[str, Any]:
         "exit_price": round(_safe_float(position.get("exit_price", 0.0), 0.0), 4),
         "pnl": round(_safe_float(position.get("pnl", 0.0), 0.0), 4),
         "close_reason": _safe_str(position.get("close_reason", position.get("reason", "")), ""),
+        "monitoring_price_type": _safe_str(position.get("monitoring_price_type"), ""),
         "final_reason": _safe_str(position.get("final_reason"), ""),
         "summary": summary,
     }
@@ -164,11 +154,6 @@ def read_trade_journal() -> List[Dict[str, Any]]:
 
 
 def log_trade_state(positions=None) -> List[Dict[str, Any]]:
-    """
-    Compatibility wrapper for older callers.
-    If positions are passed, snapshot those.
-    Otherwise snapshot canonical open/closed portfolio state.
-    """
     if isinstance(positions, list):
         rows = []
         for position in positions:
