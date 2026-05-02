@@ -1,804 +1,5 @@
 [
   {
-    "timestamp": "2026-04-20T03:15:13.881506",
-    "symbol": "DIA",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "DIA-CALL-20260420031512",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "DIA-CALL-20260420031512",
-      "strategy": "CALL",
-      "score": 148.42,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T03:15:15.006411",
-    "symbol": "COIN",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "COIN-CALL-20260420031513",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "COIN-CALL-20260420031513",
-      "strategy": "CALL",
-      "score": 144.71,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T03:15:16.071219",
-    "symbol": "UBER",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "UBER-CALL-20260420031515",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "UBER-CALL-20260420031515",
-      "strategy": "CALL",
-      "score": 143.71,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T03:15:17.092521",
-    "symbol": "ABNB",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "ABNB-CALL-20260420031516",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "ABNB-CALL-20260420031516",
-      "strategy": "CALL",
-      "score": 136.25,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T03:15:18.113208",
-    "symbol": "CMCSA",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "CMCSA-CALL-20260420031517",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "CMCSA-CALL-20260420031517",
-      "strategy": "CALL",
-      "score": 132.89,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T03:15:19.151834",
-    "symbol": "XLV",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "XLV-CALL-20260420031518",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "XLV-CALL-20260420031518",
-      "strategy": "CALL",
-      "score": 128.09,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T03:15:20.185423",
-    "symbol": "PANW",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "PANW-CALL-20260420031519",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "PANW-CALL-20260420031519",
-      "strategy": "CALL",
-      "score": 118.16,
-      "confidence": "MEDIUM",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:15.978852",
-    "symbol": "INTC",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "INTC-CALL-20260420042415",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "INTC-CALL-20260420042415",
-      "strategy": "CALL",
-      "score": 661.43,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:17.701573",
-    "symbol": "AMD",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "AMD-CALL-20260420042416",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "AMD-CALL-20260420042416",
-      "strategy": "CALL",
-      "score": 482.75,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:19.290971",
-    "symbol": "AVGO",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "AVGO-CALL-20260420042417",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "AVGO-CALL-20260420042417",
-      "strategy": "CALL",
-      "score": 412.01,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:20.263377",
-    "symbol": "SOXX",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "SOXX-CALL-20260420042419",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "SOXX-CALL-20260420042419",
-      "strategy": "CALL",
-      "score": 321.72,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:21.272105",
-    "symbol": "AMZN",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "AMZN-CALL-20260420042420",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "AMZN-CALL-20260420042420",
-      "strategy": "CALL",
-      "score": 320.04,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:22.252074",
-    "symbol": "C",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "C-CALL-20260420042421",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "C-CALL-20260420042421",
-      "strategy": "CALL",
-      "score": 306.9,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:23.239659",
-    "symbol": "ORCL",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "ORCL-CALL-20260420042422",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "ORCL-CALL-20260420042422",
-      "strategy": "CALL",
-      "score": 273.65,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:24.286637",
-    "symbol": "ROKU",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "ROKU-CALL-20260420042423",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "ROKU-CALL-20260420042423",
-      "strategy": "CALL",
-      "score": 270.44,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:25.284889",
-    "symbol": "NVDA",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "NVDA-CALL-20260420042424",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "NVDA-CALL-20260420042424",
-      "strategy": "CALL",
-      "score": 267.81,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:26.289032",
-    "symbol": "META",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "META-CALL-20260420042425",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "META-CALL-20260420042425",
-      "strategy": "CALL",
-      "score": 259.84,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:27.389713",
-    "symbol": "PYPL",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "PYPL-CALL-20260420042426",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "PYPL-CALL-20260420042426",
-      "strategy": "CALL",
-      "score": 254.51,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:28.438484",
-    "symbol": "ARKK",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "ARKK-CALL-20260420042427",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "ARKK-CALL-20260420042427",
-      "strategy": "CALL",
-      "score": 245.77,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:29.775035",
-    "symbol": "BAC",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "BAC-CALL-20260420042428",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "BAC-CALL-20260420042428",
-      "strategy": "CALL",
-      "score": 243.13,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:31.545455",
-    "symbol": "XLK",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "XLK-CALL-20260420042429",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "XLK-CALL-20260420042429",
-      "strategy": "CALL",
-      "score": 242.3,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:32.791412",
-    "symbol": "MS",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "MS-CALL-20260420042431",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "MS-CALL-20260420042431",
-      "strategy": "CALL",
-      "score": 241.46,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:33.827051",
-    "symbol": "IWM",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "IWM-CALL-20260420042432",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "IWM-CALL-20260420042432",
-      "strategy": "CALL",
-      "score": 238.55,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:34.930055",
-    "symbol": "GOOGL",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "GOOGL-CALL-20260420042433",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "GOOGL-CALL-20260420042433",
-      "strategy": "CALL",
-      "score": 235.15,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:35.977114",
-    "symbol": "DAL",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "DAL-CALL-20260420042434",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "DAL-CALL-20260420042434",
-      "strategy": "CALL",
-      "score": 230.52,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:37.012287",
-    "symbol": "UAL",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "UAL-CALL-20260420042436",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "UAL-CALL-20260420042436",
-      "strategy": "CALL",
-      "score": 216.99,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:38.072138",
-    "symbol": "QQQ",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "QQQ-CALL-20260420042437",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "QQQ-CALL-20260420042437",
-      "strategy": "CALL",
-      "score": 216.15,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:39.175377",
-    "symbol": "SHOP",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "SHOP-CALL-20260420042438",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "SHOP-CALL-20260420042438",
-      "strategy": "CALL",
-      "score": 208.67,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:40.216440",
-    "symbol": "SPY",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "SPY-CALL-20260420042439",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "SPY-CALL-20260420042439",
-      "strategy": "CALL",
-      "score": 194.93,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:41.277396",
-    "symbol": "ZM",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "ZM-CALL-20260420042440",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "ZM-CALL-20260420042440",
-      "strategy": "CALL",
-      "score": 190.09,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:42.495066",
-    "symbol": "AAPL",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "AAPL-CALL-20260420042441",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "AAPL-CALL-20260420042441",
-      "strategy": "CALL",
-      "score": 189.68,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:44.349636",
-    "symbol": "TSLA",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "TSLA-CALL-20260420042442",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "TSLA-CALL-20260420042442",
-      "strategy": "CALL",
-      "score": 188.76,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:45.772224",
-    "symbol": "JPM",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "JPM-CALL-20260420042444",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "JPM-CALL-20260420042444",
-      "strategy": "CALL",
-      "score": 188.35,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:46.817663",
-    "symbol": "MU",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "MU-CALL-20260420042445",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "MU-CALL-20260420042445",
-      "strategy": "CALL",
-      "score": 176.52,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:47.865645",
-    "symbol": "XLF",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "XLF-CALL-20260420042446",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "XLF-CALL-20260420042446",
-      "strategy": "CALL",
-      "score": 173.75,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:48.970747",
-    "symbol": "WMT",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "WMT-CALL-20260420042447",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "WMT-CALL-20260420042447",
-      "strategy": "CALL",
-      "score": 171.25,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:50.010807",
-    "symbol": "DIS",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "DIS-CALL-20260420042449",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "DIS-CALL-20260420042449",
-      "strategy": "CALL",
-      "score": 166.43,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:51.092941",
-    "symbol": "GS",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "GS-CALL-20260420042450",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "GS-CALL-20260420042450",
-      "strategy": "CALL",
-      "score": 160.3,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:52.174805",
-    "symbol": "NFLX",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "NFLX-CALL-20260420042451",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "NFLX-CALL-20260420042451",
-      "strategy": "CALL",
-      "score": 159.79,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:53.228651",
-    "symbol": "AXP",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "AXP-CALL-20260420042452",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "AXP-CALL-20260420042452",
-      "strategy": "CALL",
-      "score": 157.37,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:54.330539",
-    "symbol": "SBUX",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "SBUX-CALL-20260420042453",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "SBUX-CALL-20260420042453",
-      "strategy": "CALL",
-      "score": 154.09,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:55.446326",
-    "symbol": "WFC",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "WFC-CALL-20260420042454",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "WFC-CALL-20260420042454",
-      "strategy": "CALL",
-      "score": 149.1,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:57.318111",
-    "symbol": "QCOM",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "QCOM-CALL-20260420042455",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "QCOM-CALL-20260420042455",
-      "strategy": "CALL",
-      "score": 148.5,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:58.840656",
-    "symbol": "DIA",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "DIA-CALL-20260420042457",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "DIA-CALL-20260420042457",
-      "strategy": "CALL",
-      "score": 148.42,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:24:59.964786",
-    "symbol": "COIN",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "COIN-CALL-20260420042458",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "COIN-CALL-20260420042458",
-      "strategy": "CALL",
-      "score": 144.71,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:25:01.035722",
-    "symbol": "UBER",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "UBER-CALL-20260420042500",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "UBER-CALL-20260420042500",
-      "strategy": "CALL",
-      "score": 143.71,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T04:25:02.125804",
-    "symbol": "ABNB",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "ABNB-CALL-20260420042501",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "ABNB-CALL-20260420042501",
-      "strategy": "CALL",
-      "score": 136.25,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
     "timestamp": "2026-04-20T04:25:03.224771",
     "symbol": "CMCSA",
     "event": "RESEARCH_APPROVED",
@@ -8372,6 +7573,792 @@
       "exit_price": 177.01,
       "reason": "take_profit",
       "pnl": 173.68,
+      "size": 1.0
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:20:59.984689",
+    "symbol": "INTC",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "INTC-CALL-20260502022057",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "INTC-CALL-20260502022057",
+      "strategy": "CALL",
+      "score": 1061.8,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:03.886530",
+    "symbol": "AMD",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "AMD-CALL-20260502022100",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "AMD-CALL-20260502022100",
+      "strategy": "CALL",
+      "score": 737.48,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:06.096412",
+    "symbol": "MU",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "MU-CALL-20260502022103",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "MU-CALL-20260502022103",
+      "strategy": "CALL",
+      "score": 535.33,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:08.308308",
+    "symbol": "QCOM",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "QCOM-CALL-20260502022106",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "QCOM-CALL-20260502022106",
+      "strategy": "CALL",
+      "score": 507.86,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:10.314643",
+    "symbol": "AVGO",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "AVGO-CALL-20260502022108",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "AVGO-CALL-20260502022108",
+      "strategy": "CALL",
+      "score": 439.82,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:12.367056",
+    "symbol": "SOXX",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "SOXX-CALL-20260502022110",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "SOXX-CALL-20260502022110",
+      "strategy": "CALL",
+      "score": 414.87,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:14.826096",
+    "symbol": "GOOGL",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "GOOGL-CALL-20260502022112",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "GOOGL-CALL-20260502022112",
+      "strategy": "CALL",
+      "score": 385.68,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:17.854491",
+    "symbol": "AMZN",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "AMZN-CALL-20260502022114",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "AMZN-CALL-20260502022114",
+      "strategy": "CALL",
+      "score": 360.68,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:21.870813",
+    "symbol": "SMCI",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "SMCI-CALL-20260502022118",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "SMCI-CALL-20260502022118",
+      "strategy": "CALL",
+      "score": 328.57,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:23.858906",
+    "symbol": "ZM",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "ZM-CALL-20260502022121",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "ZM-CALL-20260502022121",
+      "strategy": "CALL",
+      "score": 297.19,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:25.887148",
+    "symbol": "ORCL",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "ORCL-CALL-20260502022123",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "ORCL-CALL-20260502022123",
+      "strategy": "CALL",
+      "score": 284.76,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:28.475311",
+    "symbol": "XLK",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "XLK-CALL-20260502022125",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "XLK-CALL-20260502022125",
+      "strategy": "CALL",
+      "score": 283.43,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:31.254546",
+    "symbol": "QQQ",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "QQQ-CALL-20260502022128",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "QQQ-CALL-20260502022128",
+      "strategy": "CALL",
+      "score": 245.54,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:33.342132",
+    "symbol": "NVDA",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "NVDA-CALL-20260502022131",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "NVDA-CALL-20260502022131",
+      "strategy": "CALL",
+      "score": 217.15,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:35.387717",
+    "symbol": "MSFT",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "MSFT-CALL-20260502022133",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "MSFT-CALL-20260502022133",
+      "strategy": "CALL",
+      "score": 211.46,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:37.369900",
+    "symbol": "PYPL",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "PYPL-CALL-20260502022135",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "PYPL-CALL-20260502022135",
+      "strategy": "CALL",
+      "score": 209.06,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:39.434199",
+    "symbol": "ARKK",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "ARKK-CALL-20260502022137",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "ARKK-CALL-20260502022137",
+      "strategy": "CALL",
+      "score": 208.02,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:42.532765",
+    "symbol": "TSLA",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "TSLA-CALL-20260502022139",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "TSLA-CALL-20260502022139",
+      "strategy": "CALL",
+      "score": 207.7,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:44.951998",
+    "symbol": "IWM",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "IWM-CALL-20260502022142",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "IWM-CALL-20260502022142",
+      "strategy": "CALL",
+      "score": 206.67,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:47.029338",
+    "symbol": "MS",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "MS-CALL-20260502022145",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "MS-CALL-20260502022145",
+      "strategy": "CALL",
+      "score": 204.51,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:49.092348",
+    "symbol": "SPY",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "SPY-CALL-20260502022147",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "SPY-CALL-20260502022147",
+      "strategy": "CALL",
+      "score": 193.67,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:51.162188",
+    "symbol": "PANW",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "PANW-CALL-20260502022149",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "PANW-CALL-20260502022149",
+      "strategy": "CALL",
+      "score": 192.06,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:53.239266",
+    "symbol": "COIN",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "COIN-CALL-20260502022151",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "COIN-CALL-20260502022151",
+      "strategy": "CALL",
+      "score": 190.77,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:56.654231",
+    "symbol": "SBUX",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "SBUX-CALL-20260502022153",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "SBUX-CALL-20260502022153",
+      "strategy": "CALL",
+      "score": 190.31,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:21:58.669444",
+    "symbol": "C",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "C-CALL-20260502022156",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "C-CALL-20260502022156",
+      "strategy": "CALL",
+      "score": 185.89,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:00.708523",
+    "symbol": "AAPL",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "AAPL-CALL-20260502022158",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "AAPL-CALL-20260502022158",
+      "strategy": "CALL",
+      "score": 182.21,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:02.717126",
+    "symbol": "BAC",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "BAC-CALL-20260502022200",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "BAC-CALL-20260502022200",
+      "strategy": "CALL",
+      "score": 163.52,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:04.813340",
+    "symbol": "META",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "META-CALL-20260502022202",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "META-CALL-20260502022202",
+      "strategy": "CALL",
+      "score": 162.35,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:07.288211",
+    "symbol": "ABNB",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "ABNB-CALL-20260502022204",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "ABNB-CALL-20260502022204",
+      "strategy": "CALL",
+      "score": 149.29,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:10.504021",
+    "symbol": "SHOP",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "SHOP-CALL-20260502022207",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "SHOP-CALL-20260502022207",
+      "strategy": "CALL",
+      "score": 147.7,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:12.563877",
+    "symbol": "DIS",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "DIS-CALL-20260502022210",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "DIS-CALL-20260502022210",
+      "strategy": "CALL",
+      "score": 145.23,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:14.662732",
+    "symbol": "XLF",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "XLF-CALL-20260502022212",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "XLF-CALL-20260502022212",
+      "strategy": "CALL",
+      "score": 140.9,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:16.750814",
+    "symbol": "UBER",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "UBER-CALL-20260502022214",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "UBER-CALL-20260502022214",
+      "strategy": "CALL",
+      "score": 140.88,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:18.785717",
+    "symbol": "WMT",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "WMT-CALL-20260502022216",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "WMT-CALL-20260502022216",
+      "strategy": "CALL",
+      "score": 137.94,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:22.516306",
+    "symbol": "JPM",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "JPM-CALL-20260502022218",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "JPM-CALL-20260502022218",
+      "strategy": "CALL",
+      "score": 137.75,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:24.816908",
+    "symbol": "DAL",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "DAL-CALL-20260502022222",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "DAL-CALL-20260502022222",
+      "strategy": "CALL",
+      "score": 132.94,
+      "confidence": "HIGH",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:26.861863",
+    "symbol": "NKE",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "NKE-CALL-20260502022224",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "NKE-CALL-20260502022224",
+      "strategy": "CALL",
+      "score": 108.4,
+      "confidence": "MEDIUM",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:28.944883",
+    "symbol": "DIA",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "DIA-CALL-20260502022226",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "DIA-CALL-20260502022226",
+      "strategy": "CALL",
+      "score": 101.91,
+      "confidence": "MEDIUM",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:30.990989",
+    "symbol": "UAL",
+    "event": "RESEARCH_APPROVED",
+    "trade_id": "UAL-CALL-20260502022228",
+    "strategy": "CALL",
+    "source": "research",
+    "mode": "paper",
+    "details": {
+      "trade_id": "UAL-CALL-20260502022228",
+      "strategy": "CALL",
+      "score": 98.12,
+      "confidence": "MEDIUM",
+      "source": "research",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:31.035718",
+    "symbol": "INTC",
+    "event": "EXECUTION_APPROVED",
+    "trade_id": "INTC-CALL-20260502022057",
+    "strategy": "CALL",
+    "source": "execution",
+    "mode": "paper",
+    "details": {
+      "trade_id": "INTC-CALL-20260502022057",
+      "strategy": "CALL",
+      "score": 1061.8,
+      "confidence": "HIGH",
+      "source": "execution",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:31.096133",
+    "symbol": "AMD",
+    "event": "EXECUTION_APPROVED",
+    "trade_id": "AMD-CALL-20260502022100",
+    "strategy": "CALL",
+    "source": "execution",
+    "mode": "paper",
+    "details": {
+      "trade_id": "AMD-CALL-20260502022100",
+      "strategy": "CALL",
+      "score": 737.48,
+      "confidence": "HIGH",
+      "source": "execution",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:31.156478",
+    "symbol": "AMZN",
+    "event": "EXECUTION_APPROVED",
+    "trade_id": "AMZN-CALL-20260502022114",
+    "strategy": "CALL",
+    "source": "execution",
+    "mode": "paper",
+    "details": {
+      "trade_id": "AMZN-CALL-20260502022114",
+      "strategy": "CALL",
+      "score": 360.68,
+      "confidence": "HIGH",
+      "source": "execution",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:34.240759",
+    "symbol": "INTC",
+    "event": "EXECUTED",
+    "trade_id": "INTC-CALL-20260502022057",
+    "strategy": "CALL",
+    "source": "execution",
+    "mode": "paper",
+    "details": {
+      "trade_id": "INTC-CALL-20260502022057",
+      "strategy": "CALL",
+      "score": 1061.8,
+      "source": "execution",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:34.309569",
+    "symbol": "AMD",
+    "event": "EXECUTED",
+    "trade_id": "AMD-CALL-20260502022100",
+    "strategy": "CALL",
+    "source": "execution",
+    "mode": "paper",
+    "details": {
+      "trade_id": "AMD-CALL-20260502022100",
+      "strategy": "CALL",
+      "score": 737.48,
+      "source": "execution",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:34.380192",
+    "symbol": "AMZN",
+    "event": "EXECUTED",
+    "trade_id": "AMZN-CALL-20260502022114",
+    "strategy": "CALL",
+    "source": "execution",
+    "mode": "paper",
+    "details": {
+      "trade_id": "AMZN-CALL-20260502022114",
+      "strategy": "CALL",
+      "score": 360.68,
+      "source": "execution",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:36.808145",
+    "symbol": "INTC",
+    "event": "CLOSED",
+    "details": {
+      "trade_id": "INTC-CALL-20260502022057",
+      "exit_price": 99.62,
+      "reason": "take_profit",
+      "pnl": 95.27,
+      "size": 1.0
+    }
+  },
+  {
+    "timestamp": "2026-05-02T02:22:38.565637",
+    "symbol": "AMZN",
+    "event": "CLOSED",
+    "details": {
+      "trade_id": "AMZN-CALL-20260502022114",
+      "exit_price": 268.26,
+      "reason": "take_profit",
+      "pnl": 267.04,
       "size": 1.0
     }
   }

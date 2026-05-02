@@ -1,15 +1,29 @@
-from math import fabs
+from __future__ import annotations
+
 from datetime import datetime
+from math import fabs
+from typing import Any, Dict, List, Optional, Tuple
 
 
-def _safe_float(v, default=0.0):
+def _safe_float(v: Any, default: float = 0.0) -> float:
     try:
+        if v is None or v == "":
+            return float(default)
         return float(v)
     except Exception:
         return float(default)
 
 
-def _safe_str(v, default=""):
+def _safe_int(v: Any, default: int = 0) -> int:
+    try:
+        if v is None or v == "":
+            return int(default)
+        return int(float(v))
+    except Exception:
+        return int(default)
+
+
+def _safe_str(v: Any, default: str = "") -> str:
     try:
         text = str(v).strip()
         return text if text else default
@@ -17,7 +31,11 @@ def _safe_str(v, default=""):
         return default
 
 
-def _normalize_option_type(value):
+def _safe_dict(v: Any) -> Dict[str, Any]:
+    return v if isinstance(v, dict) else {}
+
+
+def _normalize_option_type(value: Any) -> str:
     text = _safe_str(value, "").upper()
     if text in {"CALL", "C"}:
         return "CALL"
@@ -26,9 +44,8 @@ def _normalize_option_type(value):
     return ""
 
 
-def _extract_option_type(option):
-    if not isinstance(option, dict):
-        return ""
+def _extract_option_type(option: Dict[str, Any]) -> str:
+    option = _safe_dict(option)
 
     for key in ("type", "right", "option_type", "side"):
         normalized = _normalize_option_type(option.get(key))
@@ -36,17 +53,23 @@ def _extract_option_type(option):
             return normalized
 
     contract_symbol = _safe_str(option.get("contractSymbol", ""), "")
-    if contract_symbol:
-        tail = contract_symbol[-15:]
-        if "C" in tail:
+    if not contract_symbol:
+        return ""
+
+    # Standard OCC style has ...C........ or ...P........ near the suffix.
+    # We only trust explicit C/P in the expected position zone.
+    tail = contract_symbol[-15:]
+    if len(tail) >= 9:
+        cp_flag = tail[0]
+        if cp_flag == "C":
             return "CALL"
-        if "P" in tail:
+        if cp_flag == "P":
             return "PUT"
 
     return ""
 
 
-def _parse_expiry(expiry):
+def _parse_expiry(expiry: Any) -> Optional[datetime]:
     raw = _safe_str(expiry, "")
     if not raw:
         return None
@@ -65,21 +88,20 @@ def _parse_expiry(expiry):
     return None
 
 
-def _days_to_expiry(expiry):
+def _days_to_expiry(expiry: Any) -> int:
     exp = _parse_expiry(expiry)
     if not exp:
         return 0
 
     now = datetime.now()
-    delta_days = (exp.date() - now.date()).days
-    return max(0, int(delta_days))
+    return max(0, int((exp.date() - now.date()).days))
 
 
-def determine_trade_intent(trade):
-    trade = trade if isinstance(trade, dict) else {}
+def determine_trade_intent(trade: Dict[str, Any]) -> str:
+    trade = _safe_dict(trade)
 
-    score = _safe_float(trade.get("score", trade.get("fused_score", 0)), 0.0)
-    atr = _safe_float(trade.get("atr", 0), 0.0)
+    score = _safe_float(trade.get("score", trade.get("fused_score", 0.0)), 0.0)
+    atr = _safe_float(trade.get("atr", 0.0), 0.0)
     setup_family = _safe_str(trade.get("setup_family", ""), "").lower()
     entry_quality = _safe_str(trade.get("entry_quality", ""), "").lower()
 
@@ -93,11 +115,12 @@ def determine_trade_intent(trade):
         return "MOMENTUM"
     if entry_quality in {"high_conviction", "aggressive"}:
         return "MOMENTUM"
-
     return "GRIND"
 
 
-def _build_option_metrics(option, stock_price):
+def _build_option_metrics(option: Dict[str, Any], stock_price: float) -> Dict[str, Any]:
+    option = _safe_dict(option)
+
     strike = _safe_float(option.get("strike"), 0.0)
     volume = _safe_float(option.get("volume"), 0.0)
     oi = _safe_float(option.get("openInterest", option.get("open_interest")), 0.0)
@@ -111,9 +134,10 @@ def _build_option_metrics(option, stock_price):
         ask = mark
     if bid <= 0 and last > 0:
         bid = last
-
     if mark <= 0 and bid > 0 and ask > 0:
-        mark = (bid + ask) / 2
+        mark = (bid + ask) / 2.0
+    if mark <= 0 and last > 0:
+        mark = last
 
     spread = abs(ask - bid) if (bid > 0 or ask > 0) else _safe_float(option.get("bidAskSpread"), 0.0)
     spread_pct = (spread / ask) if ask > 0 and spread > 0 else 0.0
@@ -141,9 +165,14 @@ def _build_option_metrics(option, stock_price):
     }
 
 
-def contract_quality_score(option, stock_price, strategy, trade=None):
-    option = option if isinstance(option, dict) else {}
-    trade = trade if isinstance(trade, dict) else {}
+def contract_quality_score(
+    option: Dict[str, Any],
+    stock_price: float,
+    strategy: str,
+    trade: Optional[Dict[str, Any]] = None,
+) -> Tuple[int, List[str]]:
+    option = _safe_dict(option)
+    trade = _safe_dict(trade)
 
     metrics = _build_option_metrics(option, stock_price)
     option_type = _extract_option_type(option)
@@ -161,7 +190,7 @@ def contract_quality_score(option, stock_price, strategy, trade=None):
     mark = metrics["mark"]
 
     score = 0
-    notes = []
+    notes: List[str] = []
 
     if normalized_strategy == option_type and option_type:
         score += 20
@@ -176,9 +205,10 @@ def contract_quality_score(option, stock_price, strategy, trade=None):
         option["spread_pct"] = round(spread_pct, 4)
         option["mark"] = round(mark, 4)
         option["distance_pct"] = round(distance_pct, 4)
+        option["monitoring_mode"] = "OPTION_PREMIUM"
+        option["price_reference"] = round(mark if mark > 0 else ask, 4)
         return 0, notes
 
-    # Expiry scoring: heavily punish same-day for non-scalp behavior
     if intent == "EXPLOSIVE":
         if 2 <= dte <= 7:
             score += 28
@@ -191,7 +221,7 @@ def contract_quality_score(option, stock_price, strategy, trade=None):
             notes.append("Near-expiry contract is aggressive for explosive setup.")
         elif dte == 0:
             score -= 18
-            notes.append("Same-day expiry is too fragile for standard explosive execution.")
+            notes.append("Same-day expiry is fragile for explosive execution.")
         else:
             score -= 3
             notes.append("Expiry is not ideal for explosive setup.")
@@ -212,9 +242,8 @@ def contract_quality_score(option, stock_price, strategy, trade=None):
             score -= 30
             notes.append("Same-day expiry is not suitable for momentum execution.")
         else:
-            score += 0
             notes.append("Expiry is usable but not ideal for momentum.")
-    else:  # GRIND
+    else:
         if 10 <= dte <= 45:
             score += 28
             notes.append("Longer expiry supports slower grind setup.")
@@ -237,7 +266,6 @@ def contract_quality_score(option, stock_price, strategy, trade=None):
             score -= 2
             notes.append("Expiry is not ideal for grind setup.")
 
-    # Liquidity scoring
     if volume >= 20000:
         score += 30
         notes.append("Exceptional contract volume.")
@@ -276,7 +304,6 @@ def contract_quality_score(option, stock_price, strategy, trade=None):
         score -= 12
         notes.append("Very weak open interest.")
 
-    # Spread scoring
     if ask <= 0:
         score -= 18
         notes.append("Ask unavailable.")
@@ -302,7 +329,6 @@ def contract_quality_score(option, stock_price, strategy, trade=None):
         score -= 16
         notes.append("Very wide spread reduces execution quality.")
 
-    # Strike distance scoring
     if stock_price > 0 and strike > 0:
         if intent == "EXPLOSIVE":
             if distance_pct <= 0.01:
@@ -344,7 +370,6 @@ def contract_quality_score(option, stock_price, strategy, trade=None):
                 score -= 6
                 notes.append("Strike is too far for grind setup.")
 
-    # Premium sanity
     if ask <= 0:
         notes.append("Premium unavailable.")
     elif 0.25 <= ask <= 3.50:
@@ -366,21 +391,29 @@ def contract_quality_score(option, stock_price, strategy, trade=None):
     option["spread_pct"] = round(spread_pct, 4)
     option["mark"] = round(mark, 4)
     option["distance_pct"] = round(distance_pct, 4)
+    option["monitoring_mode"] = "OPTION_PREMIUM"
+    option["price_reference"] = round(mark if mark > 0 else ask, 4)
 
     return int(round(score)), notes
 
 
-def option_is_executable(option, min_score=60, trading_mode="paper"):
+def option_is_executable(
+    option: Dict[str, Any],
+    min_score: int = 60,
+    trading_mode: str = "paper",
+) -> Tuple[bool, str]:
+    option = _safe_dict(option)
+    trading_mode = _safe_str(trading_mode, "paper").lower()
+
     if not option:
         return False, "no_option_contract"
 
-    trading_mode = _safe_str(trading_mode, "paper").lower()
     score = _safe_float(option.get("contract_score"), 0.0)
     volume = _safe_float(option.get("volume"), 0.0)
     oi = _safe_float(option.get("openInterest", option.get("open_interest")), 0.0)
     ask = _safe_float(option.get("ask", option.get("mark", option.get("last"))), 0.0)
     spread_pct = _safe_float(option.get("spread_pct"), 0.0)
-    dte = int(_safe_float(option.get("dte", 0), 0))
+    dte = _safe_int(option.get("dte", 0), 0)
     intent = _safe_str(option.get("trade_intent", "GRIND"), "GRIND").upper()
 
     if score < min_score:
@@ -394,14 +427,12 @@ def option_is_executable(option, min_score=60, trading_mode="paper"):
         if ask <= 0:
             return False, "ask_unavailable"
     else:
-        # paper mode: allow mark/last fallback
-        if ask <= 0:
-            fallback_price = _safe_float(
-                option.get("mark", option.get("last", option.get("price", 0.0))),
-                0.0,
-            )
-            if fallback_price <= 0:
-                return False, "quote_unavailable_paper_mode"
+        fallback_price = _safe_float(
+            option.get("mark", option.get("last", option.get("price", 0.0))),
+            0.0,
+        )
+        if ask <= 0 and fallback_price <= 0:
+            return False, "quote_unavailable_paper_mode"
 
     if spread_pct > 0.12:
         return False, "spread_too_wide"
@@ -414,8 +445,8 @@ def option_is_executable(option, min_score=60, trading_mode="paper"):
         if intent == "EXPLOSIVE" and dte < 1:
             return False, "expiry_too_close_for_explosive"
     else:
-        # paper mode: allow 0DTE if everything else is strong enough
-        if intent == "GRIND" and dte < 0:
+        # Paper mode can allow 0DTE, but only for faster intent styles.
+        if intent == "GRIND" and dte < 1:
             return False, "expiry_too_close_for_grind"
         if intent == "MOMENTUM" and dte < 0:
             return False, "expiry_too_close_for_momentum"
@@ -425,11 +456,17 @@ def option_is_executable(option, min_score=60, trading_mode="paper"):
     return True, "ok"
 
 
-def choose_best_option(option_chain, stock_price, strategy, trade=None):
+def choose_best_option(
+    option_chain: List[Dict[str, Any]],
+    stock_price: float,
+    strategy: str,
+    trade: Optional[Dict[str, Any]] = None,
+    trading_mode: str = "paper",
+):
     normalized_strategy = _normalize_option_type(strategy)
 
-    executable_pool = []
-    fallback_pool = []
+    executable_pool: List[Dict[str, Any]] = []
+    fallback_pool: List[Dict[str, Any]] = []
 
     for raw_option in option_chain or []:
         option = dict(raw_option) if isinstance(raw_option, dict) else {}
@@ -437,15 +474,23 @@ def choose_best_option(option_chain, stock_price, strategy, trade=None):
         option["contract_score"] = score
         option["contract_notes"] = notes
 
-        is_exec, exec_reason = option_is_executable(option, min_score=60)
+        is_exec, exec_reason = option_is_executable(
+            option,
+            min_score=60,
+            trading_mode=trading_mode,
+        )
         option["is_executable"] = is_exec
         option["execution_reason"] = exec_reason
+        option["selected_price_reference"] = _safe_float(
+            option.get("mark", option.get("ask", option.get("last", 0.0))),
+            0.0,
+        )
 
         fallback_pool.append(option)
         if is_exec:
             executable_pool.append(option)
 
-    def _sort_key(opt):
+    def _sort_key(opt: Dict[str, Any]):
         return (
             _safe_float(opt.get("contract_score"), 0.0),
             -_safe_float(opt.get("spread_pct"), 999.0),
@@ -466,7 +511,47 @@ def choose_best_option(option_chain, stock_price, strategy, trade=None):
     return None, -1, []
 
 
-def explain_option_choice(option):
+def build_option_execution_payload(
+    option: Dict[str, Any],
+    underlying_symbol: str,
+    underlying_price: float,
+) -> Dict[str, Any]:
+    option = _safe_dict(option)
+
+    entry_price = _safe_float(
+        option.get("mark", option.get("ask", option.get("last", 0.0))),
+        0.0,
+    )
+
+    return {
+        "symbol": _safe_str(underlying_symbol, "UNKNOWN").upper(),
+        "vehicle_selected": "OPTION",
+        "contract_symbol": _safe_str(option.get("contractSymbol", ""), ""),
+        "option_type": _extract_option_type(option),
+        "strike": _safe_float(option.get("strike"), 0.0),
+        "expiry": option.get("expiry", option.get("expiration")),
+        "contracts": _safe_int(option.get("contracts", 1), 1),
+        "entry": entry_price,
+        "entry_price_reference": entry_price,
+        "monitoring_mode": "OPTION_PREMIUM",
+        "current_price_field": "option_mark",
+        "underlying_entry": _safe_float(underlying_price, 0.0),
+        "mark": _safe_float(option.get("mark"), entry_price),
+        "bid": _safe_float(option.get("bid"), 0.0),
+        "ask": _safe_float(option.get("ask"), 0.0),
+        "last": _safe_float(option.get("last"), 0.0),
+        "spread_pct": _safe_float(option.get("spread_pct"), 0.0),
+        "contract_score": _safe_float(option.get("contract_score"), 0.0),
+        "trade_intent": _safe_str(option.get("trade_intent", "GRIND"), "GRIND"),
+        "dte": _safe_int(option.get("dte", 0), 0),
+        "is_executable": bool(option.get("is_executable")),
+        "execution_reason": _safe_str(option.get("execution_reason", ""), ""),
+        "contract_notes": list(option.get("contract_notes", [])),
+    }
+
+
+def explain_option_choice(option: Dict[str, Any]) -> List[str]:
+    option = _safe_dict(option)
     if not option:
         return ["No suitable option contract was selected."]
 
@@ -490,3 +575,13 @@ def explain_option_choice(option):
         f"Execution check: {exec_reason}.",
         f"Final contract quality score: {score}.",
     ]
+
+
+__all__ = [
+    "determine_trade_intent",
+    "contract_quality_score",
+    "option_is_executable",
+    "choose_best_option",
+    "build_option_execution_payload",
+    "explain_option_choice",
+]

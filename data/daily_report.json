@@ -1,77 +1,79 @@
 {
-  "timestamp": "2026-05-02T02:03:43.792667",
+  "timestamp": "2026-05-02T02:22:40.837412",
   "performance": {
-    "trades": 5,
-    "wins": 3,
+    "trades": 7,
+    "wins": 5,
     "losses": 2,
-    "winrate": 0.6,
-    "total_pnl": 276.0,
+    "winrate": 0.71,
+    "total_pnl": 638.31,
     "max_drawdown": 6.96,
     "entries_today": 0,
-    "closes_today": 2,
-    "round_trips_today": 2,
-    "realized_pnl_today": 268.95
+    "closes_today": 4,
+    "round_trips_today": 4,
+    "realized_pnl_today": 631.26
   },
   "portfolio": {
-    "open_positions": 1,
-    "closed_positions": 5,
-    "realized_pnl": 276.0,
+    "open_positions": 2,
+    "closed_positions": 7,
+    "realized_pnl": 638.31,
     "unrealized_pnl": 0.0,
-    "gross_capital_open": 123.58,
+    "gross_capital_open": 484.12,
     "vehicle_mix": {
       "OPTION": 0,
-      "STOCK": 1,
+      "STOCK": 2,
       "RESEARCH_ONLY": 0,
       "UNKNOWN": 0
     },
-    "net_pnl": 276.0
+    "net_pnl": 638.31
   },
   "analytics": {
-    "trades": 9,
-    "wins": 3,
+    "trades": 12,
+    "wins": 5,
     "losses": 2,
-    "flats": 4,
-    "winrate": 0.3333,
-    "lossrate": 0.2222,
-    "total_pnl": 276.0,
-    "average_pnl": 30.67,
+    "flats": 5,
+    "winrate": 0.4167,
+    "lossrate": 0.1667,
+    "total_pnl": 638.31,
+    "average_pnl": 53.19,
     "strategies": {
-      "CALL": 9
+      "CALL": 12
     },
     "symbols": {
       "AAPL": 2,
       "MSFT": 4,
       "ROKU": 1,
-      "INTC": 1,
-      "QCOM": 1
+      "INTC": 2,
+      "QCOM": 1,
+      "AMD": 1,
+      "AMZN": 1
     },
     "last_trade": {
-      "symbol": "QCOM",
-      "trade_id": "QCOM-CALL-20260502020216",
+      "symbol": "AMZN",
+      "trade_id": "AMZN-CALL-20260502022114",
       "strategy": "CALL",
-      "pnl": 173.68,
-      "timestamp": "2026-05-02T02:03:40.686795"
+      "pnl": 267.04,
+      "timestamp": "2026-05-02T02:22:37.099596"
     },
     "portfolio": {
-      "open_positions": 1,
-      "closed_positions": 5,
-      "realized_pnl": 276.0,
+      "open_positions": 2,
+      "closed_positions": 7,
+      "realized_pnl": 638.31,
       "unrealized_pnl": 0.0,
-      "gross_capital_open": 123.58,
+      "gross_capital_open": 484.12,
       "vehicle_mix": {
         "OPTION": 0,
-        "STOCK": 1,
+        "STOCK": 2,
         "RESEARCH_ONLY": 0,
         "UNKNOWN": 0
       },
-      "net_pnl": 276.0
+      "net_pnl": 638.31
     }
   },
   "headline": {
-    "trades": 9,
-    "winrate": 0.3333,
-    "realized_pnl": 276.0,
+    "trades": 12,
+    "winrate": 0.4167,
+    "realized_pnl": 638.31,
     "unrealized_pnl": 0.0,
-    "open_positions": 1
+    "open_positions": 2
   }
 }

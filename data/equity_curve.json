@@ -98,5 +98,35 @@
     "timestamp": "2026-05-02T02:03:40.686795",
     "strategy": "CALL",
     "status": "CLOSED"
+  },
+  {
+    "index": 10,
+    "equity": 1371.27,
+    "pnl": 95.27,
+    "symbol": "INTC",
+    "trade_id": "INTC-CALL-20260502022057",
+    "timestamp": "2026-05-02T02:22:34.875837",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 11,
+    "equity": 1371.27,
+    "pnl": 0.0,
+    "symbol": "AMD",
+    "trade_id": "AMD-CALL-20260502022100",
+    "timestamp": "2026-05-02T02:22:32.149409",
+    "strategy": "CALL",
+    "status": "FILLED"
+  },
+  {
+    "index": 12,
+    "equity": 1638.31,
+    "pnl": 267.04,
+    "symbol": "AMZN",
+    "trade_id": "AMZN-CALL-20260502022114",
+    "timestamp": "2026-05-02T02:22:37.099596",
+    "strategy": "CALL",
+    "status": "CLOSED"
   }
 ]
