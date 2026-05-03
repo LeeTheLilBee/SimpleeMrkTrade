@@ -47,10 +47,45 @@ def _norm_vehicle(value: Any) -> str:
 
 
 def _score_of(trade: Dict[str, Any]) -> float:
-    return _safe_float(trade.get("fused_score", trade.get("score", 0.0)), 0.0)
+    trade = _safe_dict(trade)
+    return _safe_float(
+        trade.get(
+            "fused_score",
+            trade.get(
+                "readiness_score",
+                trade.get(
+                    "promotion_score",
+                    trade.get("score", 0.0),
+                ),
+            ),
+        ),
+        0.0,
+    )
+
+
+def _option_score_of(trade: Dict[str, Any]) -> float:
+    trade = _safe_dict(trade)
+    option = _safe_dict(trade.get("option"))
+    contract = _safe_dict(trade.get("contract"))
+
+    return _safe_float(
+        trade.get(
+            "option_contract_score",
+            trade.get(
+                "contract_score",
+                option.get(
+                    "contract_score",
+                    contract.get("contract_score", 0.0),
+                ),
+            ),
+        ),
+        0.0,
+    )
 
 
 def _effective_cost(trade: Dict[str, Any]) -> float:
+    trade = _safe_dict(trade)
+
     minimum_trade_cost = _safe_float(trade.get("minimum_trade_cost"), 0.0)
     capital_required = _safe_float(trade.get("capital_required"), 0.0)
     estimated_cost = _safe_float(trade.get("estimated_cost"), 0.0)
@@ -61,6 +96,50 @@ def _effective_cost(trade: Dict[str, Any]) -> float:
         return capital_required
     if estimated_cost > 0:
         return estimated_cost
+
+    vehicle = _norm_vehicle(
+        trade.get("vehicle_selected")
+        or trade.get("selected_vehicle")
+        or trade.get("vehicle")
+    )
+
+    if vehicle == "OPTION":
+        option = _safe_dict(trade.get("option"))
+        premium = _safe_float(
+            trade.get(
+                "option_entry",
+                trade.get(
+                    "price_reference",
+                    option.get(
+                        "price_reference",
+                        option.get(
+                            "selected_price_reference",
+                            option.get(
+                                "mark",
+                                option.get("last", trade.get("entry", 0.0)),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            0.0,
+        )
+        contracts = max(_safe_int(trade.get("contracts"), 1), 1)
+        if premium > 0:
+            return round((premium * 100.0 * contracts) + 1.0, 4)
+
+    if vehicle == "STOCK":
+        price = _safe_float(
+            trade.get(
+                "underlying_price",
+                trade.get("price", trade.get("entry", 0.0)),
+            ),
+            0.0,
+        )
+        shares = max(_safe_int(trade.get("shares"), 1), 1)
+        if price > 0:
+            return round((price * shares) + 1.0, 4)
+
     return 0.0
 
 
@@ -98,6 +177,44 @@ def _allow_soft_reserve_for_mode(
     return False
 
 
+def _resolve_max_open_positions(
+    *,
+    explicit_max_open_positions: Optional[int],
+    mode_context: Dict[str, Any],
+    fallback: int = 3,
+) -> int:
+    if explicit_max_open_positions is not None:
+        return max(_safe_int(explicit_max_open_positions, fallback), 0)
+
+    value = mode_context.get(
+        "max_open_positions",
+        mode_context.get("position_cap", fallback),
+    )
+    return max(_safe_int(value, fallback), 0)
+
+
+def _resolve_current_open_positions(
+    *,
+    explicit_current_open_positions: int,
+    mode_context: Dict[str, Any],
+) -> int:
+    if explicit_current_open_positions is not None:
+        current = _safe_int(explicit_current_open_positions, 0)
+        if current > 0:
+            return max(current, 0)
+
+    for key in (
+        "current_open_positions",
+        "open_positions",
+        "open_position_count",
+        "positions_open",
+    ):
+        if key in mode_context:
+            return max(_safe_int(mode_context.get(key), 0), 0)
+
+    return max(_safe_int(explicit_current_open_positions, 0), 0)
+
+
 def _debug_row(
     trade: Dict[str, Any],
     *,
@@ -107,6 +224,7 @@ def _debug_row(
     reason: str,
     remaining_after: Optional[float] = None,
 ) -> Dict[str, Any]:
+    trade = _safe_dict(trade)
     cost = _effective_cost(trade)
 
     if remaining_after is None:
@@ -120,6 +238,7 @@ def _debug_row(
             or trade.get("vehicle")
         ),
         "score": round(_score_of(trade), 2),
+        "option_contract_score": round(_option_score_of(trade), 2),
         "capital_required": round(_safe_float(trade.get("capital_required"), 0.0), 2),
         "minimum_trade_cost": round(_safe_float(trade.get("minimum_trade_cost"), 0.0), 2),
         "estimated_cost": round(_safe_float(trade.get("estimated_cost"), 0.0), 2),
@@ -132,6 +251,52 @@ def _debug_row(
     }
 
 
+def _candidate_is_executable(candidate: Dict[str, Any]) -> bool:
+    candidate = _safe_dict(candidate)
+
+    if not bool(candidate.get("research_approved", True)):
+        return False
+
+    if not bool(candidate.get("execution_ready", False)):
+        return False
+
+    vehicle = _norm_vehicle(
+        candidate.get("vehicle_selected")
+        or candidate.get("selected_vehicle")
+        or candidate.get("vehicle")
+    )
+
+    if vehicle in {"RESEARCH_ONLY", "NONE"}:
+        return False
+
+    if _effective_cost(candidate) <= 0:
+        return False
+
+    return True
+
+
+def _annotate_unselected_for_capacity(
+    candidates: List[Dict[str, Any]],
+    selected_symbols: set[str],
+    *,
+    available_cash: float,
+    reserve_floor: float,
+) -> None:
+    for candidate in candidates:
+        symbol = _norm_symbol(candidate.get("symbol"))
+        if symbol in selected_symbols:
+            continue
+
+        print("OPTION B SELECTOR:", _debug_row(
+            candidate,
+            available_cash_before=available_cash,
+            reserve_floor=reserve_floor,
+            chosen=False,
+            reason="position_capacity_reached",
+            remaining_after=available_cash,
+        ))
+
+
 def choose_execution_queue_option_b(
     execution_ready: List[Dict[str, Any]],
     *,
@@ -140,29 +305,48 @@ def choose_execution_queue_option_b(
     trading_mode: str = "paper",
     mode_context: Optional[Dict[str, Any]] = None,
     allow_soft_reserve: bool = False,
+    current_open_positions: int = 0,
+    max_open_positions: Optional[int] = None,
 ) -> List[Dict[str, Any]]:
     """
     Selects the final execution queue.
 
-    Purpose:
+    Compatibility goals:
+    - Keeps the existing function name.
+    - Keeps old callers working.
+    - Still uses diagnose_reserve_queue_fit for reserve/cash sequencing.
+    - Adds open-position capacity awareness so the selector cannot choose more
+      trades than the account can actually hold.
+
+    Selection rules:
     - Rank strongest execution-ready candidates first.
-    - Respect the queue limit.
-    - Spend sequentially from available cash.
-    - Preserve reserve rules.
-    - In warning-only paper/survey mode, allow soft reserve behavior when configured.
+    - Remove research-only / none vehicles.
+    - Respect available cash and reserve behavior.
+    - Respect both queue limit and remaining open-position slots.
     """
 
     context = _safe_dict(mode_context)
-    limit = max(_safe_int(limit, 3), 0)
+
+    raw_limit = max(_safe_int(limit, 3), 0)
     available_cash = round(_safe_float(available_cash, 0.0), 2)
 
-    if limit <= 0:
-        print("OPTION B SELECTOR FINAL:", {
-            "selected_symbols": [],
-            "reason": "limit_zero",
-            "available_cash": available_cash,
-        })
-        return []
+    resolved_max_open_positions = _resolve_max_open_positions(
+        explicit_max_open_positions=max_open_positions,
+        mode_context=context,
+        fallback=raw_limit if raw_limit > 0 else 3,
+    )
+
+    resolved_current_open_positions = _resolve_current_open_positions(
+        explicit_current_open_positions=current_open_positions,
+        mode_context=context,
+    )
+
+    remaining_position_slots = max(
+        resolved_max_open_positions - resolved_current_open_positions,
+        0,
+    )
+
+    effective_limit = min(raw_limit, remaining_position_slots)
 
     reserve_floor = _mode_reserve_floor(
         available_cash=available_cash,
@@ -182,21 +366,15 @@ def choose_execution_queue_option_b(
     ]
 
     ranked_candidates = [
-        candidate for candidate in ranked_candidates
-        if bool(candidate.get("research_approved", True))
-        and bool(candidate.get("execution_ready", False))
-        and _norm_vehicle(
-            candidate.get("vehicle_selected")
-            or candidate.get("selected_vehicle")
-            or candidate.get("vehicle")
-        ) not in {"RESEARCH_ONLY", "NONE"}
-        and _effective_cost(candidate) > 0
+        candidate
+        for candidate in ranked_candidates
+        if _candidate_is_executable(candidate)
     ]
 
     ranked_candidates.sort(
         key=lambda trade: (
             _score_of(trade),
-            _safe_float(trade.get("option_contract_score", trade.get("contract_score", 0.0)), 0.0),
+            _option_score_of(trade),
             -_effective_cost(trade),
         ),
         reverse=True,
@@ -209,24 +387,81 @@ def choose_execution_queue_option_b(
         "available_cash": available_cash,
         "reserve_floor": reserve_floor,
         "candidate_count": len(ranked_candidates),
-        "limit": limit,
+        "raw_queue_limit": raw_limit,
+        "max_open_positions": resolved_max_open_positions,
+        "current_open_positions": resolved_current_open_positions,
+        "remaining_position_slots": remaining_position_slots,
+        "effective_limit": effective_limit,
         "allow_soft_reserve": soft_reserve,
     })
+
+    if raw_limit <= 0:
+        print("OPTION B SELECTOR FINAL:", {
+            "selected_symbols": [],
+            "reason": "limit_zero",
+            "available_cash": available_cash,
+            "raw_queue_limit": raw_limit,
+            "max_open_positions": resolved_max_open_positions,
+            "current_open_positions": resolved_current_open_positions,
+            "remaining_position_slots": remaining_position_slots,
+            "effective_limit": effective_limit,
+        })
+        return []
+
+    if remaining_position_slots <= 0:
+        _annotate_unselected_for_capacity(
+            ranked_candidates,
+            set(),
+            available_cash=available_cash,
+            reserve_floor=reserve_floor,
+        )
+
+        print("OPTION B SELECTOR FINAL:", {
+            "selected_symbols": [],
+            "ending_cash_after_selection": available_cash,
+            "reserve_floor": reserve_floor,
+            "selected_count": 0,
+            "reason": "position_capacity_reached",
+            "raw_queue_limit": raw_limit,
+            "max_open_positions": resolved_max_open_positions,
+            "current_open_positions": resolved_current_open_positions,
+            "remaining_position_slots": remaining_position_slots,
+            "effective_limit": effective_limit,
+        })
+        return []
+
+    if effective_limit <= 0:
+        print("OPTION B SELECTOR FINAL:", {
+            "selected_symbols": [],
+            "ending_cash_after_selection": available_cash,
+            "reserve_floor": reserve_floor,
+            "selected_count": 0,
+            "reason": "effective_limit_zero",
+            "raw_queue_limit": raw_limit,
+            "max_open_positions": resolved_max_open_positions,
+            "current_open_positions": resolved_current_open_positions,
+            "remaining_position_slots": remaining_position_slots,
+            "effective_limit": effective_limit,
+        })
+        return []
 
     diagnosis = diagnose_reserve_queue_fit(
         candidates=ranked_candidates,
         cash=available_cash,
         reserve_floor=reserve_floor,
-        queue_limit=limit,
+        queue_limit=effective_limit,
         allow_soft_reserve=soft_reserve,
     )
 
     selected_rows = diagnosis.get("selected", []) if isinstance(diagnosis, dict) else []
     skipped_rows = diagnosis.get("skipped", []) if isinstance(diagnosis, dict) else []
 
+    selected_symbols: set[str] = set()
+
     for row in selected_rows:
         row = _safe_dict(row)
         raw_candidate = _safe_dict(row.get("raw_candidate"))
+        selected_symbols.add(_norm_symbol(raw_candidate.get("symbol")))
 
         print("OPTION B SELECTOR:", _debug_row(
             raw_candidate,
@@ -247,6 +482,10 @@ def choose_execution_queue_option_b(
         row = _safe_dict(row)
         raw_candidate = _safe_dict(row.get("raw_candidate"))
 
+        skip_reason = _safe_str(row.get("skip_reason"), "skipped")
+        if skip_reason == "queue_limit_reached" and len(selected_rows) >= remaining_position_slots:
+            skip_reason = "position_capacity_reached"
+
         print("OPTION B SELECTOR:", _debug_row(
             raw_candidate,
             available_cash_before=_safe_float(
@@ -255,7 +494,7 @@ def choose_execution_queue_option_b(
             ),
             reserve_floor=reserve_floor,
             chosen=False,
-            reason=_safe_str(row.get("skip_reason"), "skipped"),
+            reason=skip_reason,
             remaining_after=_safe_float(
                 row.get("post_trade_cash_sequential"),
                 row.get("post_trade_cash_if_alone", available_cash),
@@ -270,6 +509,16 @@ def choose_execution_queue_option_b(
 
         if not candidate:
             continue
+
+        vehicle = _norm_vehicle(
+            candidate.get("vehicle_selected")
+            or candidate.get("selected_vehicle")
+            or candidate.get("vehicle")
+        )
+
+        candidate["vehicle_selected"] = vehicle
+        candidate["selected_vehicle"] = vehicle
+        candidate["vehicle"] = vehicle
 
         candidate["selected_for_execution"] = True
         candidate["execution_ready"] = True
@@ -288,22 +537,31 @@ def choose_execution_queue_option_b(
         )
         candidate["selector_reserve_floor"] = reserve_floor
         candidate["selector_soft_reserve"] = soft_reserve
+        candidate["selector_raw_queue_limit"] = raw_limit
+        candidate["selector_effective_limit"] = effective_limit
+        candidate["selector_max_open_positions"] = resolved_max_open_positions
+        candidate["selector_current_open_positions"] = resolved_current_open_positions
+        candidate["selector_remaining_position_slots"] = remaining_position_slots
 
         selected.append(candidate)
 
+    cash_after_selected_queue = available_cash
+    if isinstance(diagnosis, dict):
+        cash_after_selected_queue = _safe_float(
+            diagnosis.get("cash_after_selected_queue", available_cash),
+            available_cash,
+        )
+
     print("OPTION B SELECTOR FINAL:", {
         "selected_symbols": [_norm_symbol(t.get("symbol")) for t in selected],
-        "ending_cash_after_selection": round(
-            _safe_float(
-                diagnosis.get("cash_after_selected_queue", available_cash)
-                if isinstance(diagnosis, dict)
-                else available_cash,
-                available_cash,
-            ),
-            2,
-        ),
+        "ending_cash_after_selection": round(cash_after_selected_queue, 2),
         "reserve_floor": reserve_floor,
         "selected_count": len(selected),
+        "raw_queue_limit": raw_limit,
+        "max_open_positions": resolved_max_open_positions,
+        "current_open_positions": resolved_current_open_positions,
+        "remaining_position_slots": remaining_position_slots,
+        "effective_limit": effective_limit,
     })
 
     return selected

@@ -18,7 +18,7 @@
     "avg_volume": 139361595.0,
     "momentum": 0.9618,
     "eligible": true,
-    "timestamp": "2026-05-03T01:25:20.937725",
+    "timestamp": "2026-05-03T01:50:46.986456",
     "option_chain": [
       {
         "symbol": "INTC",
@@ -424,7 +424,7 @@
       },
       "reserve_mode": "percent",
       "reserve_value": 20.0,
-      "timestamp": "2026-05-03T01:25:44.583056",
+      "timestamp": "2026-05-03T01:51:10.959506",
       "extra_kwargs_seen": [
         "trading_mode"
       ],
@@ -620,13 +620,13 @@
     "option_reason": "ok",
     "best_option_found": true,
     "candidate_display": {
-      "trade_id": "INTC-CALL-20260503T012520937725",
+      "trade_id": "INTC-CALL-20260503T015046986456",
       "symbol": "INTC",
       "company_name": "INTC",
       "sector": "General",
       "status": "selected",
       "source": "execution_universe",
-      "timestamp": "2026-05-03T01:25:20.937725",
+      "timestamp": "2026-05-03T01:50:46.986456",
       "strategy": "CALL",
       "direction": "CALL",
       "vehicle_selected": "OPTION",
@@ -943,7 +943,7 @@
         },
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-05-03T01:25:44.583056",
+        "timestamp": "2026-05-03T01:51:10.959506",
         "extra_kwargs_seen": [
           "trading_mode"
         ],
@@ -1065,7 +1065,7 @@
         "avg_volume": 139361595.0,
         "momentum": 0.9618,
         "eligible": true,
-        "timestamp": "2026-05-03T01:25:20.937725",
+        "timestamp": "2026-05-03T01:50:46.986456",
         "option_chain": [
           {
             "symbol": "INTC",
@@ -1471,7 +1471,7 @@
           },
           "reserve_mode": "percent",
           "reserve_value": 20.0,
-          "timestamp": "2026-05-03T01:25:44.583056",
+          "timestamp": "2026-05-03T01:51:10.959506",
           "extra_kwargs_seen": [
             "trading_mode"
           ],
@@ -1667,13 +1667,13 @@
         "option_reason": "ok",
         "best_option_found": true,
         "candidate_display": {
-          "trade_id": "INTC-CALL-20260503T012520937725",
+          "trade_id": "INTC-CALL-20260503T015046986456",
           "symbol": "INTC",
           "company_name": "INTC",
           "sector": "General",
           "status": "execution_ready",
           "source": "execution_universe",
-          "timestamp": "2026-05-03T01:25:20.937725",
+          "timestamp": "2026-05-03T01:50:46.986456",
           "strategy": "CALL",
           "direction": "CALL",
           "vehicle_selected": "OPTION",
@@ -1990,7 +1990,7 @@
             },
             "reserve_mode": "percent",
             "reserve_value": 20.0,
-            "timestamp": "2026-05-03T01:25:44.583056",
+            "timestamp": "2026-05-03T01:51:10.959506",
             "extra_kwargs_seen": [
               "trading_mode"
             ],
@@ -2112,7 +2112,7 @@
             "avg_volume": 139361595.0,
             "momentum": 0.9618,
             "eligible": true,
-            "timestamp": "2026-05-03T01:25:20.937725",
+            "timestamp": "2026-05-03T01:50:46.986456",
             "option_chain": [
               {
                 "symbol": "INTC",
@@ -2518,7 +2518,7 @@
               },
               "reserve_mode": "percent",
               "reserve_value": 20.0,
-              "timestamp": "2026-05-03T01:25:44.583056",
+              "timestamp": "2026-05-03T01:51:10.959506",
               "extra_kwargs_seen": [
                 "trading_mode"
               ],
@@ -2737,7 +2737,7 @@
     "avg_volume": 17213650.0,
     "momentum": 0.4079,
     "eligible": true,
-    "timestamp": "2026-05-03T01:25:22.584623",
+    "timestamp": "2026-05-03T01:50:48.378054",
     "option_chain": [
       {
         "symbol": "QCOM",
@@ -3143,7 +3143,7 @@
       },
       "reserve_mode": "percent",
       "reserve_value": 20.0,
-      "timestamp": "2026-05-03T01:25:44.583056",
+      "timestamp": "2026-05-03T01:51:10.959506",
       "extra_kwargs_seen": [
         "trading_mode"
       ],
@@ -3339,13 +3339,13 @@
     "option_reason": "ok",
     "best_option_found": true,
     "candidate_display": {
-      "trade_id": "QCOM-CALL-20260503T012522584623",
+      "trade_id": "QCOM-CALL-20260503T015048378054",
       "symbol": "QCOM",
       "company_name": "QCOM",
       "sector": "General",
       "status": "selected",
       "source": "execution_universe",
-      "timestamp": "2026-05-03T01:25:22.584623",
+      "timestamp": "2026-05-03T01:50:48.378054",
       "strategy": "CALL",
       "direction": "CALL",
       "vehicle_selected": "OPTION",
@@ -3662,7 +3662,7 @@
         },
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-05-03T01:25:44.583056",
+        "timestamp": "2026-05-03T01:51:10.959506",
         "extra_kwargs_seen": [
           "trading_mode"
         ],
@@ -3784,7 +3784,7 @@
         "avg_volume": 17213650.0,
         "momentum": 0.4079,
         "eligible": true,
-        "timestamp": "2026-05-03T01:25:22.584623",
+        "timestamp": "2026-05-03T01:50:48.378054",
         "option_chain": [
           {
             "symbol": "QCOM",
@@ -4190,7 +4190,7 @@
           },
           "reserve_mode": "percent",
           "reserve_value": 20.0,
-          "timestamp": "2026-05-03T01:25:44.583056",
+          "timestamp": "2026-05-03T01:51:10.959506",
           "extra_kwargs_seen": [
             "trading_mode"
           ],
@@ -4386,13 +4386,13 @@
         "option_reason": "ok",
         "best_option_found": true,
         "candidate_display": {
-          "trade_id": "QCOM-CALL-20260503T012522584623",
+          "trade_id": "QCOM-CALL-20260503T015048378054",
           "symbol": "QCOM",
           "company_name": "QCOM",
           "sector": "General",
           "status": "execution_ready",
           "source": "execution_universe",
-          "timestamp": "2026-05-03T01:25:22.584623",
+          "timestamp": "2026-05-03T01:50:48.378054",
           "strategy": "CALL",
           "direction": "CALL",
           "vehicle_selected": "OPTION",
@@ -4709,7 +4709,7 @@
             },
             "reserve_mode": "percent",
             "reserve_value": 20.0,
-            "timestamp": "2026-05-03T01:25:44.583056",
+            "timestamp": "2026-05-03T01:51:10.959506",
             "extra_kwargs_seen": [
               "trading_mode"
             ],
@@ -4831,7 +4831,7 @@
             "avg_volume": 17213650.0,
             "momentum": 0.4079,
             "eligible": true,
-            "timestamp": "2026-05-03T01:25:22.584623",
+            "timestamp": "2026-05-03T01:50:48.378054",
             "option_chain": [
               {
                 "symbol": "QCOM",
@@ -5237,7 +5237,7 @@
               },
               "reserve_mode": "percent",
               "reserve_value": 20.0,
-              "timestamp": "2026-05-03T01:25:44.583056",
+              "timestamp": "2026-05-03T01:51:10.959506",
               "extra_kwargs_seen": [
                 "trading_mode"
               ],
@@ -5456,7 +5456,7 @@
     "avg_volume": 21826940.0,
     "momentum": 0.3398,
     "eligible": true,
-    "timestamp": "2026-05-03T01:25:23.669324",
+    "timestamp": "2026-05-03T01:50:49.288461",
     "option_chain": [
       {
         "symbol": "AVGO",
@@ -5862,7 +5862,7 @@
       },
       "reserve_mode": "percent",
       "reserve_value": 20.0,
-      "timestamp": "2026-05-03T01:25:44.583056",
+      "timestamp": "2026-05-03T01:51:10.959506",
       "extra_kwargs_seen": [
         "trading_mode"
       ],
@@ -6058,13 +6058,13 @@
     "option_reason": "ok",
     "best_option_found": true,
     "candidate_display": {
-      "trade_id": "AVGO-CALL-20260503T012523669324",
+      "trade_id": "AVGO-CALL-20260503T015049288461",
       "symbol": "AVGO",
       "company_name": "AVGO",
       "sector": "General",
       "status": "selected",
       "source": "execution_universe",
-      "timestamp": "2026-05-03T01:25:23.669324",
+      "timestamp": "2026-05-03T01:50:49.288461",
       "strategy": "CALL",
       "direction": "CALL",
       "vehicle_selected": "OPTION",
@@ -6381,7 +6381,7 @@
         },
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-05-03T01:25:44.583056",
+        "timestamp": "2026-05-03T01:51:10.959506",
         "extra_kwargs_seen": [
           "trading_mode"
         ],
@@ -6503,7 +6503,7 @@
         "avg_volume": 21826940.0,
         "momentum": 0.3398,
         "eligible": true,
-        "timestamp": "2026-05-03T01:25:23.669324",
+        "timestamp": "2026-05-03T01:50:49.288461",
         "option_chain": [
           {
             "symbol": "AVGO",
@@ -6909,7 +6909,7 @@
           },
           "reserve_mode": "percent",
           "reserve_value": 20.0,
-          "timestamp": "2026-05-03T01:25:44.583056",
+          "timestamp": "2026-05-03T01:51:10.959506",
           "extra_kwargs_seen": [
             "trading_mode"
           ],
@@ -7105,13 +7105,13 @@
         "option_reason": "ok",
         "best_option_found": true,
         "candidate_display": {
-          "trade_id": "AVGO-CALL-20260503T012523669324",
+          "trade_id": "AVGO-CALL-20260503T015049288461",
           "symbol": "AVGO",
           "company_name": "AVGO",
           "sector": "General",
           "status": "execution_ready",
           "source": "execution_universe",
-          "timestamp": "2026-05-03T01:25:23.669324",
+          "timestamp": "2026-05-03T01:50:49.288461",
           "strategy": "CALL",
           "direction": "CALL",
           "vehicle_selected": "OPTION",
@@ -7428,7 +7428,7 @@
             },
             "reserve_mode": "percent",
             "reserve_value": 20.0,
-            "timestamp": "2026-05-03T01:25:44.583056",
+            "timestamp": "2026-05-03T01:51:10.959506",
             "extra_kwargs_seen": [
               "trading_mode"
             ],
@@ -7550,7 +7550,7 @@
             "avg_volume": 21826940.0,
             "momentum": 0.3398,
             "eligible": true,
-            "timestamp": "2026-05-03T01:25:23.669324",
+            "timestamp": "2026-05-03T01:50:49.288461",
             "option_chain": [
               {
                 "symbol": "AVGO",
@@ -7956,7 +7956,7 @@
               },
               "reserve_mode": "percent",
               "reserve_value": 20.0,
-              "timestamp": "2026-05-03T01:25:44.583056",
+              "timestamp": "2026-05-03T01:51:10.959506",
               "extra_kwargs_seen": [
                 "trading_mode"
               ],
@@ -8175,7 +8175,7 @@
     "avg_volume": 6137845.0,
     "momentum": 0.3535,
     "eligible": true,
-    "timestamp": "2026-05-03T01:25:23.165058",
+    "timestamp": "2026-05-03T01:50:48.827170",
     "option_chain": [
       {
         "symbol": "SOXX",
@@ -8581,7 +8581,7 @@
       },
       "reserve_mode": "percent",
       "reserve_value": 20.0,
-      "timestamp": "2026-05-03T01:25:44.583056",
+      "timestamp": "2026-05-03T01:51:10.959506",
       "extra_kwargs_seen": [
         "trading_mode"
       ],
@@ -8777,13 +8777,13 @@
     "option_reason": "contract_score_too_low",
     "best_option_found": true,
     "candidate_display": {
-      "trade_id": "SOXX-CALL-20260503T012523165058",
+      "trade_id": "SOXX-CALL-20260503T015048827170",
       "symbol": "SOXX",
       "company_name": "SOXX",
       "sector": "General",
       "status": "execution_ready_not_selected",
       "source": "execution_universe",
-      "timestamp": "2026-05-03T01:25:23.165058",
+      "timestamp": "2026-05-03T01:50:48.827170",
       "strategy": "CALL",
       "direction": "CALL",
       "vehicle_selected": "STOCK",
@@ -9120,7 +9120,7 @@
         },
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-05-03T01:25:44.583056",
+        "timestamp": "2026-05-03T01:51:10.959506",
         "extra_kwargs_seen": [
           "trading_mode"
         ],
@@ -9242,7 +9242,7 @@
         "avg_volume": 6137845.0,
         "momentum": 0.3535,
         "eligible": true,
-        "timestamp": "2026-05-03T01:25:23.165058",
+        "timestamp": "2026-05-03T01:50:48.827170",
         "option_chain": [
           {
             "symbol": "SOXX",
@@ -9648,7 +9648,7 @@
           },
           "reserve_mode": "percent",
           "reserve_value": 20.0,
-          "timestamp": "2026-05-03T01:25:44.583056",
+          "timestamp": "2026-05-03T01:51:10.959506",
           "extra_kwargs_seen": [
             "trading_mode"
           ],
@@ -9844,13 +9844,13 @@
         "option_reason": "contract_score_too_low",
         "best_option_found": true,
         "candidate_display": {
-          "trade_id": "SOXX-CALL-20260503T012523165058",
+          "trade_id": "SOXX-CALL-20260503T015048827170",
           "symbol": "SOXX",
           "company_name": "SOXX",
           "sector": "General",
           "status": "execution_ready",
           "source": "execution_universe",
-          "timestamp": "2026-05-03T01:25:23.165058",
+          "timestamp": "2026-05-03T01:50:48.827170",
           "strategy": "CALL",
           "direction": "CALL",
           "vehicle_selected": "STOCK",
@@ -10167,7 +10167,7 @@
             },
             "reserve_mode": "percent",
             "reserve_value": 20.0,
-            "timestamp": "2026-05-03T01:25:44.583056",
+            "timestamp": "2026-05-03T01:51:10.959506",
             "extra_kwargs_seen": [
               "trading_mode"
             ],
@@ -10289,7 +10289,7 @@
             "avg_volume": 6137845.0,
             "momentum": 0.3535,
             "eligible": true,
-            "timestamp": "2026-05-03T01:25:23.165058",
+            "timestamp": "2026-05-03T01:50:48.827170",
             "option_chain": [
               {
                 "symbol": "SOXX",
@@ -10695,7 +10695,7 @@
               },
               "reserve_mode": "percent",
               "reserve_value": 20.0,
-              "timestamp": "2026-05-03T01:25:44.583056",
+              "timestamp": "2026-05-03T01:51:10.959506",
               "extra_kwargs_seen": [
                 "trading_mode"
               ],
@@ -10958,7 +10958,7 @@
     "avg_volume": 26769485.0,
     "momentum": 0.2857,
     "eligible": true,
-    "timestamp": "2026-05-03T01:25:24.054416",
+    "timestamp": "2026-05-03T01:50:49.652849",
     "option_chain": [
       {
         "symbol": "GOOGL",
@@ -11364,7 +11364,7 @@
       },
       "reserve_mode": "percent",
       "reserve_value": 20.0,
-      "timestamp": "2026-05-03T01:25:44.583056",
+      "timestamp": "2026-05-03T01:51:10.959506",
       "extra_kwargs_seen": [
         "trading_mode"
       ],
@@ -11560,13 +11560,13 @@
     "option_reason": "ok",
     "best_option_found": true,
     "candidate_display": {
-      "trade_id": "GOOGL-CALL-20260503T012524054416",
+      "trade_id": "GOOGL-CALL-20260503T015049652849",
       "symbol": "GOOGL",
       "company_name": "GOOGL",
       "sector": "General",
       "status": "execution_ready_not_selected",
       "source": "execution_universe",
-      "timestamp": "2026-05-03T01:25:24.054416",
+      "timestamp": "2026-05-03T01:50:49.652849",
       "strategy": "CALL",
       "direction": "CALL",
       "vehicle_selected": "OPTION",
@@ -11903,7 +11903,7 @@
         },
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-05-03T01:25:44.583056",
+        "timestamp": "2026-05-03T01:51:10.959506",
         "extra_kwargs_seen": [
           "trading_mode"
         ],
@@ -12025,7 +12025,7 @@
         "avg_volume": 26769485.0,
         "momentum": 0.2857,
         "eligible": true,
-        "timestamp": "2026-05-03T01:25:24.054416",
+        "timestamp": "2026-05-03T01:50:49.652849",
         "option_chain": [
           {
             "symbol": "GOOGL",
@@ -12431,7 +12431,7 @@
           },
           "reserve_mode": "percent",
           "reserve_value": 20.0,
-          "timestamp": "2026-05-03T01:25:44.583056",
+          "timestamp": "2026-05-03T01:51:10.959506",
           "extra_kwargs_seen": [
             "trading_mode"
           ],
@@ -12627,13 +12627,13 @@
         "option_reason": "ok",
         "best_option_found": true,
         "candidate_display": {
-          "trade_id": "GOOGL-CALL-20260503T012524054416",
+          "trade_id": "GOOGL-CALL-20260503T015049652849",
           "symbol": "GOOGL",
           "company_name": "GOOGL",
           "sector": "General",
           "status": "execution_ready",
           "source": "execution_universe",
-          "timestamp": "2026-05-03T01:25:24.054416",
+          "timestamp": "2026-05-03T01:50:49.652849",
           "strategy": "CALL",
           "direction": "CALL",
           "vehicle_selected": "OPTION",
@@ -12950,7 +12950,7 @@
             },
             "reserve_mode": "percent",
             "reserve_value": 20.0,
-            "timestamp": "2026-05-03T01:25:44.583056",
+            "timestamp": "2026-05-03T01:51:10.959506",
             "extra_kwargs_seen": [
               "trading_mode"
             ],
@@ -13072,7 +13072,7 @@
             "avg_volume": 26769485.0,
             "momentum": 0.2857,
             "eligible": true,
-            "timestamp": "2026-05-03T01:25:24.054416",
+            "timestamp": "2026-05-03T01:50:49.652849",
             "option_chain": [
               {
                 "symbol": "GOOGL",
@@ -13478,7 +13478,7 @@
               },
               "reserve_mode": "percent",
               "reserve_value": 20.0,
-              "timestamp": "2026-05-03T01:25:44.583056",
+              "timestamp": "2026-05-03T01:51:10.959506",
               "extra_kwargs_seen": [
                 "trading_mode"
               ],
@@ -13741,7 +13741,7 @@
     "avg_volume": 50094230.0,
     "momentum": 0.2607,
     "eligible": true,
-    "timestamp": "2026-05-03T01:25:24.483469",
+    "timestamp": "2026-05-03T01:50:50.141524",
     "option_chain": [
       {
         "symbol": "AMZN",
@@ -14147,7 +14147,7 @@
       },
       "reserve_mode": "percent",
       "reserve_value": 20.0,
-      "timestamp": "2026-05-03T01:25:44.583056",
+      "timestamp": "2026-05-03T01:51:10.959506",
       "extra_kwargs_seen": [
         "trading_mode"
       ],
@@ -14343,13 +14343,13 @@
     "option_reason": "ok",
     "best_option_found": true,
     "candidate_display": {
-      "trade_id": "AMZN-CALL-20260503T012524483469",
+      "trade_id": "AMZN-CALL-20260503T015050141524",
       "symbol": "AMZN",
       "company_name": "AMZN",
       "sector": "General",
       "status": "execution_ready_not_selected",
       "source": "execution_universe",
-      "timestamp": "2026-05-03T01:25:24.483469",
+      "timestamp": "2026-05-03T01:50:50.141524",
       "strategy": "CALL",
       "direction": "CALL",
       "vehicle_selected": "OPTION",
@@ -14686,7 +14686,7 @@
         },
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-05-03T01:25:44.583056",
+        "timestamp": "2026-05-03T01:51:10.959506",
         "extra_kwargs_seen": [
           "trading_mode"
         ],
@@ -14808,7 +14808,7 @@
         "avg_volume": 50094230.0,
         "momentum": 0.2607,
         "eligible": true,
-        "timestamp": "2026-05-03T01:25:24.483469",
+        "timestamp": "2026-05-03T01:50:50.141524",
         "option_chain": [
           {
             "symbol": "AMZN",
@@ -15214,7 +15214,7 @@
           },
           "reserve_mode": "percent",
           "reserve_value": 20.0,
-          "timestamp": "2026-05-03T01:25:44.583056",
+          "timestamp": "2026-05-03T01:51:10.959506",
           "extra_kwargs_seen": [
             "trading_mode"
           ],
@@ -15410,13 +15410,13 @@
         "option_reason": "ok",
         "best_option_found": true,
         "candidate_display": {
-          "trade_id": "AMZN-CALL-20260503T012524483469",
+          "trade_id": "AMZN-CALL-20260503T015050141524",
           "symbol": "AMZN",
           "company_name": "AMZN",
           "sector": "General",
           "status": "execution_ready",
           "source": "execution_universe",
-          "timestamp": "2026-05-03T01:25:24.483469",
+          "timestamp": "2026-05-03T01:50:50.141524",
           "strategy": "CALL",
           "direction": "CALL",
           "vehicle_selected": "OPTION",
@@ -15733,7 +15733,7 @@
             },
             "reserve_mode": "percent",
             "reserve_value": 20.0,
-            "timestamp": "2026-05-03T01:25:44.583056",
+            "timestamp": "2026-05-03T01:51:10.959506",
             "extra_kwargs_seen": [
               "trading_mode"
             ],
@@ -15855,7 +15855,7 @@
             "avg_volume": 50094230.0,
             "momentum": 0.2607,
             "eligible": true,
-            "timestamp": "2026-05-03T01:25:24.483469",
+            "timestamp": "2026-05-03T01:50:50.141524",
             "option_chain": [
               {
                 "symbol": "AMZN",
@@ -16261,7 +16261,7 @@
               },
               "reserve_mode": "percent",
               "reserve_value": 20.0,
-              "timestamp": "2026-05-03T01:25:44.583056",
+              "timestamp": "2026-05-03T01:51:10.959506",
               "extra_kwargs_seen": [
                 "trading_mode"
               ],
@@ -16524,7 +16524,7 @@
     "avg_volume": 29468780.0,
     "momentum": 0.2286,
     "eligible": true,
-    "timestamp": "2026-05-03T01:25:27.701557",
+    "timestamp": "2026-05-03T01:50:52.959627",
     "option_chain": [
       {
         "symbol": "SMCI",
@@ -16930,7 +16930,7 @@
       },
       "reserve_mode": "percent",
       "reserve_value": 20.0,
-      "timestamp": "2026-05-03T01:25:44.583056",
+      "timestamp": "2026-05-03T01:51:10.959506",
       "extra_kwargs_seen": [
         "trading_mode"
       ],
@@ -17126,13 +17126,13 @@
     "option_reason": "ok",
     "best_option_found": true,
     "candidate_display": {
-      "trade_id": "SMCI-CALL-20260503T012527701557",
+      "trade_id": "SMCI-CALL-20260503T015052959627",
       "symbol": "SMCI",
       "company_name": "SMCI",
       "sector": "General",
       "status": "execution_ready_not_selected",
       "source": "execution_universe",
-      "timestamp": "2026-05-03T01:25:27.701557",
+      "timestamp": "2026-05-03T01:50:52.959627",
       "strategy": "CALL",
       "direction": "CALL",
       "vehicle_selected": "OPTION",
@@ -17469,7 +17469,7 @@
         },
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-05-03T01:25:44.583056",
+        "timestamp": "2026-05-03T01:51:10.959506",
         "extra_kwargs_seen": [
           "trading_mode"
         ],
@@ -17591,7 +17591,7 @@
         "avg_volume": 29468780.0,
         "momentum": 0.2286,
         "eligible": true,
-        "timestamp": "2026-05-03T01:25:27.701557",
+        "timestamp": "2026-05-03T01:50:52.959627",
         "option_chain": [
           {
             "symbol": "SMCI",
@@ -17997,7 +17997,7 @@
           },
           "reserve_mode": "percent",
           "reserve_value": 20.0,
-          "timestamp": "2026-05-03T01:25:44.583056",
+          "timestamp": "2026-05-03T01:51:10.959506",
           "extra_kwargs_seen": [
             "trading_mode"
           ],
@@ -18193,13 +18193,13 @@
         "option_reason": "ok",
         "best_option_found": true,
         "candidate_display": {
-          "trade_id": "SMCI-CALL-20260503T012527701557",
+          "trade_id": "SMCI-CALL-20260503T015052959627",
           "symbol": "SMCI",
           "company_name": "SMCI",
           "sector": "General",
           "status": "execution_ready",
           "source": "execution_universe",
-          "timestamp": "2026-05-03T01:25:27.701557",
+          "timestamp": "2026-05-03T01:50:52.959627",
           "strategy": "CALL",
           "direction": "CALL",
           "vehicle_selected": "OPTION",
@@ -18516,7 +18516,7 @@
             },
             "reserve_mode": "percent",
             "reserve_value": 20.0,
-            "timestamp": "2026-05-03T01:25:44.583056",
+            "timestamp": "2026-05-03T01:51:10.959506",
             "extra_kwargs_seen": [
               "trading_mode"
             ],
@@ -18638,7 +18638,7 @@
             "avg_volume": 29468780.0,
             "momentum": 0.2286,
             "eligible": true,
-            "timestamp": "2026-05-03T01:25:27.701557",
+            "timestamp": "2026-05-03T01:50:52.959627",
             "option_chain": [
               {
                 "symbol": "SMCI",
@@ -19044,7 +19044,7 @@
               },
               "reserve_mode": "percent",
               "reserve_value": 20.0,
-              "timestamp": "2026-05-03T01:25:44.583056",
+              "timestamp": "2026-05-03T01:51:10.959506",
               "extra_kwargs_seen": [
                 "trading_mode"
               ],
@@ -19307,7 +19307,7 @@
     "avg_volume": 4610925.0,
     "momentum": 0.2511,
     "eligible": true,
-    "timestamp": "2026-05-03T01:25:25.481820",
+    "timestamp": "2026-05-03T01:50:51.040318",
     "option_chain": [
       {
         "symbol": "ZM",
@@ -19713,7 +19713,7 @@
       },
       "reserve_mode": "percent",
       "reserve_value": 20.0,
-      "timestamp": "2026-05-03T01:25:44.583056",
+      "timestamp": "2026-05-03T01:51:10.959506",
       "extra_kwargs_seen": [
         "trading_mode"
       ],
@@ -19909,13 +19909,13 @@
     "option_reason": "ok",
     "best_option_found": true,
     "candidate_display": {
-      "trade_id": "ZM-CALL-20260503T012525481820",
+      "trade_id": "ZM-CALL-20260503T015051040318",
       "symbol": "ZM",
       "company_name": "ZM",
       "sector": "General",
       "status": "execution_ready_not_selected",
       "source": "execution_universe",
-      "timestamp": "2026-05-03T01:25:25.481820",
+      "timestamp": "2026-05-03T01:50:51.040318",
       "strategy": "CALL",
       "direction": "CALL",
       "vehicle_selected": "OPTION",
@@ -20252,7 +20252,7 @@
         },
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-05-03T01:25:44.583056",
+        "timestamp": "2026-05-03T01:51:10.959506",
         "extra_kwargs_seen": [
           "trading_mode"
         ],
@@ -20374,7 +20374,7 @@
         "avg_volume": 4610925.0,
         "momentum": 0.2511,
         "eligible": true,
-        "timestamp": "2026-05-03T01:25:25.481820",
+        "timestamp": "2026-05-03T01:50:51.040318",
         "option_chain": [
           {
             "symbol": "ZM",
@@ -20780,7 +20780,7 @@
           },
           "reserve_mode": "percent",
           "reserve_value": 20.0,
-          "timestamp": "2026-05-03T01:25:44.583056",
+          "timestamp": "2026-05-03T01:51:10.959506",
           "extra_kwargs_seen": [
             "trading_mode"
           ],
@@ -20976,13 +20976,13 @@
         "option_reason": "ok",
         "best_option_found": true,
         "candidate_display": {
-          "trade_id": "ZM-CALL-20260503T012525481820",
+          "trade_id": "ZM-CALL-20260503T015051040318",
           "symbol": "ZM",
           "company_name": "ZM",
           "sector": "General",
           "status": "execution_ready",
           "source": "execution_universe",
-          "timestamp": "2026-05-03T01:25:25.481820",
+          "timestamp": "2026-05-03T01:50:51.040318",
           "strategy": "CALL",
           "direction": "CALL",
           "vehicle_selected": "OPTION",
@@ -21299,7 +21299,7 @@
             },
             "reserve_mode": "percent",
             "reserve_value": 20.0,
-            "timestamp": "2026-05-03T01:25:44.583056",
+            "timestamp": "2026-05-03T01:51:10.959506",
             "extra_kwargs_seen": [
               "trading_mode"
             ],
@@ -21421,7 +21421,7 @@
             "avg_volume": 4610925.0,
             "momentum": 0.2511,
             "eligible": true,
-            "timestamp": "2026-05-03T01:25:25.481820",
+            "timestamp": "2026-05-03T01:50:51.040318",
             "option_chain": [
               {
                 "symbol": "ZM",
@@ -21827,7 +21827,7 @@
               },
               "reserve_mode": "percent",
               "reserve_value": 20.0,
-              "timestamp": "2026-05-03T01:25:44.583056",
+              "timestamp": "2026-05-03T01:51:10.959506",
               "extra_kwargs_seen": [
                 "trading_mode"
               ],
@@ -22090,7 +22090,7 @@
     "avg_volume": 2861080.0,
     "momentum": 0.2585,
     "eligible": true,
-    "timestamp": "2026-05-03T01:25:24.964258",
+    "timestamp": "2026-05-03T01:50:50.632803",
     "option_chain": [
       {
         "symbol": "ROKU",
@@ -22496,7 +22496,7 @@
       },
       "reserve_mode": "percent",
       "reserve_value": 20.0,
-      "timestamp": "2026-05-03T01:25:44.583056",
+      "timestamp": "2026-05-03T01:51:10.959506",
       "extra_kwargs_seen": [
         "trading_mode"
       ],
@@ -22692,13 +22692,13 @@
     "option_reason": "spread_too_wide",
     "best_option_found": true,
     "candidate_display": {
-      "trade_id": "ROKU-CALL-20260503T012524964258",
+      "trade_id": "ROKU-CALL-20260503T015050632803",
       "symbol": "ROKU",
       "company_name": "ROKU",
       "sector": "General",
       "status": "execution_ready_not_selected",
       "source": "execution_universe",
-      "timestamp": "2026-05-03T01:25:24.964258",
+      "timestamp": "2026-05-03T01:50:50.632803",
       "strategy": "CALL",
       "direction": "CALL",
       "vehicle_selected": "STOCK",
@@ -23035,7 +23035,7 @@
         },
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-05-03T01:25:44.583056",
+        "timestamp": "2026-05-03T01:51:10.959506",
         "extra_kwargs_seen": [
           "trading_mode"
         ],
@@ -23157,7 +23157,7 @@
         "avg_volume": 2861080.0,
         "momentum": 0.2585,
         "eligible": true,
-        "timestamp": "2026-05-03T01:25:24.964258",
+        "timestamp": "2026-05-03T01:50:50.632803",
         "option_chain": [
           {
             "symbol": "ROKU",
@@ -23563,7 +23563,7 @@
           },
           "reserve_mode": "percent",
           "reserve_value": 20.0,
-          "timestamp": "2026-05-03T01:25:44.583056",
+          "timestamp": "2026-05-03T01:51:10.959506",
           "extra_kwargs_seen": [
             "trading_mode"
           ],
@@ -23759,13 +23759,13 @@
         "option_reason": "spread_too_wide",
         "best_option_found": true,
         "candidate_display": {
-          "trade_id": "ROKU-CALL-20260503T012524964258",
+          "trade_id": "ROKU-CALL-20260503T015050632803",
           "symbol": "ROKU",
           "company_name": "ROKU",
           "sector": "General",
           "status": "execution_ready",
           "source": "execution_universe",
-          "timestamp": "2026-05-03T01:25:24.964258",
+          "timestamp": "2026-05-03T01:50:50.632803",
           "strategy": "CALL",
           "direction": "CALL",
           "vehicle_selected": "STOCK",
@@ -24082,7 +24082,7 @@
             },
             "reserve_mode": "percent",
             "reserve_value": 20.0,
-            "timestamp": "2026-05-03T01:25:44.583056",
+            "timestamp": "2026-05-03T01:51:10.959506",
             "extra_kwargs_seen": [
               "trading_mode"
             ],
@@ -24204,7 +24204,7 @@
             "avg_volume": 2861080.0,
             "momentum": 0.2585,
             "eligible": true,
-            "timestamp": "2026-05-03T01:25:24.964258",
+            "timestamp": "2026-05-03T01:50:50.632803",
             "option_chain": [
               {
                 "symbol": "ROKU",
@@ -24610,7 +24610,7 @@
               },
               "reserve_mode": "percent",
               "reserve_value": 20.0,
-              "timestamp": "2026-05-03T01:25:44.583056",
+              "timestamp": "2026-05-03T01:51:10.959506",
               "extra_kwargs_seen": [
                 "trading_mode"
               ],
@@ -24873,7 +24873,7 @@
     "avg_volume": 32145885.0,
     "momentum": 0.1848,
     "eligible": true,
-    "timestamp": "2026-05-03T01:25:26.671792",
+    "timestamp": "2026-05-03T01:50:52.119423",
     "option_chain": [
       {
         "symbol": "ORCL",
@@ -25279,7 +25279,7 @@
       },
       "reserve_mode": "percent",
       "reserve_value": 20.0,
-      "timestamp": "2026-05-03T01:25:44.583056",
+      "timestamp": "2026-05-03T01:51:10.959506",
       "extra_kwargs_seen": [
         "trading_mode"
       ],
@@ -25475,13 +25475,13 @@
     "option_reason": "ok",
     "best_option_found": true,
     "candidate_display": {
-      "trade_id": "ORCL-CALL-20260503T012526671792",
+      "trade_id": "ORCL-CALL-20260503T015052119423",
       "symbol": "ORCL",
       "company_name": "ORCL",
       "sector": "General",
       "status": "execution_ready_not_selected",
       "source": "execution_universe",
-      "timestamp": "2026-05-03T01:25:26.671792",
+      "timestamp": "2026-05-03T01:50:52.119423",
       "strategy": "CALL",
       "direction": "CALL",
       "vehicle_selected": "OPTION",
@@ -25818,7 +25818,7 @@
         },
         "reserve_mode": "percent",
         "reserve_value": 20.0,
-        "timestamp": "2026-05-03T01:25:44.583056",
+        "timestamp": "2026-05-03T01:51:10.959506",
         "extra_kwargs_seen": [
           "trading_mode"
         ],
@@ -25940,7 +25940,7 @@
         "avg_volume": 32145885.0,
         "momentum": 0.1848,
         "eligible": true,
-        "timestamp": "2026-05-03T01:25:26.671792",
+        "timestamp": "2026-05-03T01:50:52.119423",
         "option_chain": [
           {
             "symbol": "ORCL",
@@ -26346,7 +26346,7 @@
           },
           "reserve_mode": "percent",
           "reserve_value": 20.0,
-          "timestamp": "2026-05-03T01:25:44.583056",
+          "timestamp": "2026-05-03T01:51:10.959506",
           "extra_kwargs_seen": [
             "trading_mode"
           ],
@@ -26542,13 +26542,13 @@
         "option_reason": "ok",
         "best_option_found": true,
         "candidate_display": {
-          "trade_id": "ORCL-CALL-20260503T012526671792",
+          "trade_id": "ORCL-CALL-20260503T015052119423",
           "symbol": "ORCL",
           "company_name": "ORCL",
           "sector": "General",
           "status": "execution_ready",
           "source": "execution_universe",
-          "timestamp": "2026-05-03T01:25:26.671792",
+          "timestamp": "2026-05-03T01:50:52.119423",
           "strategy": "CALL",
           "direction": "CALL",
           "vehicle_selected": "OPTION",
@@ -26865,7 +26865,7 @@
             },
             "reserve_mode": "percent",
             "reserve_value": 20.0,
-            "timestamp": "2026-05-03T01:25:44.583056",
+            "timestamp": "2026-05-03T01:51:10.959506",
             "extra_kwargs_seen": [
               "trading_mode"
             ],
@@ -26987,7 +26987,7 @@
             "avg_volume": 32145885.0,
             "momentum": 0.1848,
             "eligible": true,
-            "timestamp": "2026-05-03T01:25:26.671792",
+            "timestamp": "2026-05-03T01:50:52.119423",
             "option_chain": [
               {
                 "symbol": "ORCL",
@@ -27393,7 +27393,7 @@
               },
               "reserve_mode": "percent",
               "reserve_value": 20.0,
-              "timestamp": "2026-05-03T01:25:44.583056",
+              "timestamp": "2026-05-03T01:51:10.959506",
               "extra_kwargs_seen": [
                 "trading_mode"
               ],
