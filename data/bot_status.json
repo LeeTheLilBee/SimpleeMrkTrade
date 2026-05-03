@@ -1,5 +1,5 @@
 {
   "running": false,
-  "last_run": "2026-05-02T23:13:18.581546",
-  "last_message": "blocked_by_correlation:paper"
+  "last_run": "2026-05-03T00:41:24.108314",
+  "last_message": "error:paper:can't compare offset-naive and offset-aware datetimes"
 }

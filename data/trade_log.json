@@ -130,17 +130,17 @@
     "fill_price": 123.58,
     "entry": 123.58,
     "current_price": 123.58,
-    "exit_price": 0.0,
+    "exit_price": 123.58,
     "size": 1,
     "shares": 1,
     "contracts": 0,
     "score": 287.05,
     "fused_score": 287.05,
     "confidence": "HIGH",
-    "status": "OPEN",
+    "status": "CLOSED",
     "opened_at": "2026-05-01T22:56:37.631646",
-    "closed_at": "",
-    "reason": "Position entered.",
+    "closed_at": "2026-05-03T00:40:30.414087+00:00",
+    "reason": "controlled_slot_release_for_option_lifecycle_test",
     "pnl": 0.0,
     "trading_mode": "paper",
     "mode": "paper",
@@ -221,7 +221,39 @@
         "opened_at": "2026-05-01T22:56:37.631646"
       }
     },
-    "exit_explanation": {}
+    "exit_explanation": {
+      "symbol": "UNKNOWN",
+      "headline": "UNKNOWN exit detail",
+      "summary": "The system is treating this as a neutral close.",
+      "verdict": "EXIT",
+      "reason": "The trade was closed without a strong profit or loss outcome.",
+      "why": "The trade was closed without a strong profit or loss outcome.",
+      "notes": [
+        "PnL: 0.0",
+        "The trade was closed without a strong profit or loss outcome.",
+        "The system is treating this as a neutral close."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    },
+    "vehicle": "STOCK",
+    "close_price": 123.58,
+    "exit_time": "2026-05-03T00:40:30.414087+00:00",
+    "close_reason": "controlled_slot_release_for_option_lifecycle_test",
+    "realized_pnl": 0.0,
+    "pnl_meta": {
+      "pnl_valid": true,
+      "pnl_basis": "stock_price_x_shares",
+      "entry_price": 123.58,
+      "exit_price": 123.58,
+      "shares": 1,
+      "pnl_pct": 0.0
+    },
+    "pnl_basis": "stock_price_x_shares",
+    "pnl_pct": 0.0,
+    "exit_price_source": "requested_exit_price",
+    "price_review_basis": "STOCK_PRICE",
+    "monitoring_price_type": "UNDERLYING",
+    "underlying_price_used_for_close_decision": true
   },
   {
     "timestamp": "2026-05-02T02:03:37.372344",
