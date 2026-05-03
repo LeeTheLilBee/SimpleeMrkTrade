@@ -75,9 +75,9 @@
     "pnl": 0.0,
     "symbol": "ROKU",
     "trade_id": "ROKU-CALL-20260501225539",
-    "timestamp": "",
+    "timestamp": "2026-05-03T00:40:30.414087+00:00",
     "strategy": "CALL",
-    "status": "OPEN"
+    "status": "CLOSED"
   },
   {
     "index": 8,
@@ -156,6 +156,36 @@
     "symbol": "QCOM",
     "trade_id": "QCOM-CALL-20260502032337",
     "timestamp": "2026-05-02T03:25:12.344940",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 16,
+    "equity": 1907.26,
+    "pnl": 0.0,
+    "symbol": "INTC",
+    "trade_id": "INTC-CALL-20260503214232",
+    "timestamp": "2026-05-03T21:44:23.023603+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 17,
+    "equity": 1907.26,
+    "pnl": 0.0,
+    "symbol": "AMD",
+    "trade_id": "AMD-CALL-20260503214234",
+    "timestamp": "2026-05-03T21:44:26.965493+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 18,
+    "equity": 1907.26,
+    "pnl": 0.0,
+    "symbol": "AMZN",
+    "trade_id": "AMZN-CALL-20260503214249",
+    "timestamp": "2026-05-03T21:44:29.900624+00:00",
     "strategy": "CALL",
     "status": "CLOSED"
   }

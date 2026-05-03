@@ -1,173 +1,5 @@
 [
   {
-    "timestamp": "2026-04-17T01:22:23.595998",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 5 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T01:22:25.975418",
-    "event_type": "QUEUE",
-    "message": "Approved 39 research trades; selected 0 execution trades in mode AGGRESSIVE_BULL",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T01:22:29.320496",
-    "event_type": "RISK",
-    "message": "Blocked by governor: cash_reserve_too_low",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T01:24:46.274745",
-    "event_type": "SYSTEM",
-    "message": "Bot run started",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T01:24:48.018766",
-    "event_type": "MARKET",
-    "message": "Market regime identified as BULL_TREND",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T01:24:57.014972",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T01:25:36.471742",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 50 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T01:25:36.476795",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 5 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T01:25:38.153442",
-    "event_type": "QUEUE",
-    "message": "Approved 39 research trades; selected 0 execution trades in mode AGGRESSIVE_BULL",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T01:25:41.429539",
-    "event_type": "RISK",
-    "message": "Blocked by governor: cash_reserve_too_low",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:06:32.787450",
-    "event_type": "SYSTEM",
-    "message": "Bot run started",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:06:34.173189",
-    "event_type": "MARKET",
-    "message": "Market regime identified as BULL_TREND",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:06:43.152780",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:07:21.595614",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 50 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:07:21.598641",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 5 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:07:23.550149",
-    "event_type": "QUEUE",
-    "message": "Approved 39 research trades; selected 0 execution trades in mode AGGRESSIVE_BULL",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:07:26.940720",
-    "event_type": "RISK",
-    "message": "Blocked by governor: cash_reserve_too_low",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:26:08.380533",
-    "event_type": "SYSTEM",
-    "message": "Bot run started",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:26:09.569535",
-    "event_type": "MARKET",
-    "message": "Market regime identified as BULL_TREND",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:26:18.531446",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:26:54.914162",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 50 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:26:54.917190",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 5 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:26:56.943445",
-    "event_type": "QUEUE",
-    "message": "Approved 39 research trades; selected 0 execution trades in mode AGGRESSIVE_BULL",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-17T02:27:00.305288",
-    "event_type": "RISK",
-    "message": "Blocked by governor: cash_reserve_too_low",
-    "symbol": null,
-    "meta": {}
-  },
-  {
     "timestamp": "2026-04-17T02:33:26.701488",
     "event_type": "SYSTEM",
     "message": "Bot run started",
@@ -2234,6 +2066,192 @@
     "timestamp": "2026-05-03T20:43:59.988518",
     "event_type": "RISK",
     "message": "Blocked by correlation risk in paper mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T20:53:06.318899",
+    "event_type": "SYSTEM",
+    "message": "Bot run started in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T20:53:14.092164",
+    "event_type": "MARKET",
+    "message": "Market regime identified as NEUTRAL",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T20:53:23.698438",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 50 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T20:54:01.286546",
+    "event_type": "EXECUTION",
+    "message": "Aggressive execution universe rebuilt with 50 candidates",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T20:54:01.289311",
+    "event_type": "SPOTLIGHT",
+    "message": "Top spotlight contains 5 names",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T20:54:10.824378",
+    "event_type": "QUEUE",
+    "message": "Approved 38 research trades; selected 1 execution trades in market mode NEUTRAL / trading mode Paper Mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T20:55:42.521116",
+    "event_type": "RISK",
+    "message": "Blocked by correlation risk in paper mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:14:55.805646",
+    "event_type": "SYSTEM",
+    "message": "Bot run started in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:15:03.139771",
+    "event_type": "MARKET",
+    "message": "Market regime identified as NEUTRAL",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:15:12.992818",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 50 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:15:50.845603",
+    "event_type": "EXECUTION",
+    "message": "Aggressive execution universe rebuilt with 50 candidates",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:15:50.848472",
+    "event_type": "SPOTLIGHT",
+    "message": "Top spotlight contains 5 names",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:16:00.552056",
+    "event_type": "QUEUE",
+    "message": "Approved 38 research trades; selected 1 execution trades in market mode NEUTRAL / trading mode Paper Mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:17:35.420452",
+    "event_type": "RISK",
+    "message": "Blocked by correlation risk in paper mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:41:33.670623",
+    "event_type": "SYSTEM",
+    "message": "Bot run started in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:41:34.320883",
+    "event_type": "MARKET",
+    "message": "Market regime identified as NEUTRAL",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:41:44.153629",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 50 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:42:22.074114",
+    "event_type": "EXECUTION",
+    "message": "Aggressive execution universe rebuilt with 50 candidates",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:42:22.077010",
+    "event_type": "SPOTLIGHT",
+    "message": "Top spotlight contains 5 names",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:42:32.084492",
+    "event_type": "QUEUE",
+    "message": "Approved 40 research trades; selected 3 execution trades in market mode NEUTRAL / trading mode Paper Mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-03T21:44:14.243987",
+    "event_type": "SIGNAL",
+    "message": "INTC approved as CALL with score 1061.8",
+    "symbol": "INTC",
+    "meta": {
+      "trade_id": "INTC-CALL-20260503214232",
+      "strategy": "CALL",
+      "score": 1061.8,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-03T21:44:14.313940",
+    "event_type": "SIGNAL",
+    "message": "AMD approved as CALL with score 737.48",
+    "symbol": "AMD",
+    "meta": {
+      "trade_id": "AMD-CALL-20260503214234",
+      "strategy": "CALL",
+      "score": 737.48,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-03T21:44:14.375620",
+    "event_type": "SIGNAL",
+    "message": "AMZN approved as CALL with score 360.68",
+    "symbol": "AMZN",
+    "meta": {
+      "trade_id": "AMZN-CALL-20260503214249",
+      "strategy": "CALL",
+      "score": 360.68,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-03T21:44:51.667771",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed in Paper Mode (paper)",
     "symbol": null,
     "meta": {}
   }
