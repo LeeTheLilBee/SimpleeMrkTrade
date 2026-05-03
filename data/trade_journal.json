@@ -1,6 +1,6 @@
 [
   {
-    "timestamp": "2026-05-02T23:46:44.955338",
+    "timestamp": "2026-05-03T00:28:19.680236",
     "journal_type": "CLOSED_POSITION_SNAPSHOT",
     "status": "CLOSED",
     "trade_id": "QCOM-CALL-20260502032337",
@@ -35,7 +35,7 @@
     }
   },
   {
-    "timestamp": "2026-05-02T23:46:44.955311",
+    "timestamp": "2026-05-03T00:28:19.680210",
     "journal_type": "CLOSED_POSITION_SNAPSHOT",
     "status": "CLOSED",
     "trade_id": "INTC-CALL-20260502032333",
@@ -70,7 +70,7 @@
     }
   },
   {
-    "timestamp": "2026-05-02T23:46:44.955284",
+    "timestamp": "2026-05-03T00:28:19.680164",
     "journal_type": "CLOSED_POSITION_SNAPSHOT",
     "status": "CLOSED",
     "trade_id": "AMZN-CALL-20260502022114",
@@ -105,7 +105,7 @@
     }
   },
   {
-    "timestamp": "2026-05-02T23:46:44.955259",
+    "timestamp": "2026-05-03T00:28:19.680138",
     "journal_type": "CLOSED_POSITION_SNAPSHOT",
     "status": "CLOSED",
     "trade_id": "INTC-CALL-20260502022057",
@@ -140,7 +140,7 @@
     }
   },
   {
-    "timestamp": "2026-05-02T23:46:44.955231",
+    "timestamp": "2026-05-03T00:28:19.680112",
     "journal_type": "CLOSED_POSITION_SNAPSHOT",
     "status": "CLOSED",
     "trade_id": "QCOM-CALL-20260502020216",
@@ -175,7 +175,7 @@
     }
   },
   {
-    "timestamp": "2026-05-02T23:46:44.955201",
+    "timestamp": "2026-05-03T00:28:19.680085",
     "journal_type": "CLOSED_POSITION_SNAPSHOT",
     "status": "CLOSED",
     "trade_id": "INTC-CALL-20260502020208",
@@ -210,7 +210,7 @@
     }
   },
   {
-    "timestamp": "2026-05-02T23:46:44.955153",
+    "timestamp": "2026-05-03T00:28:19.680055",
     "journal_type": "CLOSED_POSITION_SNAPSHOT",
     "status": "CLOSED",
     "trade_id": "MSFT-CALL-20260416224923",
@@ -245,7 +245,7 @@
     }
   },
   {
-    "timestamp": "2026-05-02T23:46:44.955119",
+    "timestamp": "2026-05-03T00:28:19.680024",
     "journal_type": "CLOSED_POSITION_SNAPSHOT",
     "status": "CLOSED",
     "trade_id": "MSFT-CALL-20260416032316",
@@ -280,7 +280,7 @@
     }
   },
   {
-    "timestamp": "2026-05-02T23:46:44.955085",
+    "timestamp": "2026-05-03T00:28:19.679992",
     "journal_type": "CLOSED_POSITION_SNAPSHOT",
     "status": "CLOSED",
     "trade_id": "AAPL-CALL-20260416030932",
@@ -315,7 +315,7 @@
     }
   },
   {
-    "timestamp": "2026-05-02T23:46:44.955036",
+    "timestamp": "2026-05-03T00:28:19.679946",
     "journal_type": "OPEN_POSITION_SNAPSHOT",
     "status": "OPEN",
     "trade_id": "MU-CALL-20260502032335",
@@ -344,7 +344,7 @@
       "current": 542.21,
       "stop": 525.94,
       "target": 596.43,
-      "days_open": 0.8431,
+      "days_open": 0.8761,
       "final_action": "HOLD"
     },
     "summary": {
@@ -369,7 +369,7 @@
     }
   },
   {
-    "timestamp": "2026-05-02T23:46:44.954985",
+    "timestamp": "2026-05-03T00:28:19.679902",
     "journal_type": "OPEN_POSITION_SNAPSHOT",
     "status": "OPEN",
     "trade_id": "AMD-CALL-20260502022100",
@@ -398,7 +398,7 @@
       "current": 360.54,
       "stop": 349.72,
       "target": 396.59,
-      "days_open": 0.8865,
+      "days_open": 0.9195,
       "final_action": "HOLD"
     },
     "summary": {
@@ -423,7 +423,7 @@
     }
   },
   {
-    "timestamp": "2026-05-02T23:46:44.954910",
+    "timestamp": "2026-05-03T00:28:19.679841",
     "journal_type": "OPEN_POSITION_SNAPSHOT",
     "status": "OPEN",
     "trade_id": "ROKU-CALL-20260501225539",
@@ -452,7 +452,7 @@
       "current": 123.58,
       "stop": 119.87,
       "target": 135.94,
-      "days_open": 1.0294,
+      "days_open": 1.0625,
       "final_action": "HOLD"
     },
     "summary": {
