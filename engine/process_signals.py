@@ -25,6 +25,7 @@ from engine.top_candidates_store import save_top_candidates
 from engine.top_candidates_view import print_top_candidates
 from engine.leaderboard import print_leaderboard
 
+
 try:
     from engine.canonical_execution_guard import validate_selected_trade_for_execution
 except Exception:
@@ -50,6 +51,7 @@ except Exception:
                 "warnings": [],
                 "details": {},
             }
+
         if not session_healthy:
             return {
                 "blocked": True,
@@ -58,6 +60,7 @@ except Exception:
                 "warnings": [],
                 "details": {},
             }
+
         if not broker_healthy:
             return {
                 "blocked": True,
@@ -66,6 +69,7 @@ except Exception:
                 "warnings": [],
                 "details": {},
             }
+
         if current_open_positions >= max_open_positions:
             return {
                 "blocked": True,
@@ -77,7 +81,8 @@ except Exception:
                     "max_open_positions": max_open_positions,
                 },
             }
-        if vehicle_selected == "RESEARCH_ONLY":
+
+        if vehicle_selected in {"RESEARCH_ONLY", "NONE"}:
             return {
                 "blocked": True,
                 "reason": "Research-only candidate cannot execute.",
@@ -85,6 +90,7 @@ except Exception:
                 "warnings": [],
                 "details": {},
             }
+
         if minimum_trade_cost > 0 and float(capital_available or 0.0) < minimum_trade_cost:
             return {
                 "blocked": True,
@@ -96,6 +102,7 @@ except Exception:
                     "minimum_trade_cost": minimum_trade_cost,
                 },
             }
+
         return {
             "blocked": False,
             "reason": "ok",
@@ -105,11 +112,26 @@ except Exception:
         }
 
 
+# ============================================================
+# SAFE HELPERS
+# ============================================================
+
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
+        if value is None or value == "":
+            return float(default)
         return float(value)
     except Exception:
-        return default
+        return float(default)
+
+
+def _safe_int(value: Any, default: int = 0) -> int:
+    try:
+        if value is None or value == "":
+            return int(default)
+        return int(float(value))
+    except Exception:
+        return int(default)
 
 
 def _safe_str(value: Any, default: str = "") -> str:
@@ -132,12 +154,39 @@ def _norm_symbol(value: Any) -> str:
     return _safe_str(value, "UNKNOWN").upper()
 
 
-def resolve_market_mode(regime: str, breadth: str, volatility_payload: Dict[str, Any] | None = None) -> str:
-    return market_mode(regime, breadth)
+def _norm_strategy(value: Any, default: str = "CALL") -> str:
+    strategy = _safe_str(value, default).upper()
+    return strategy if strategy else default
+
+
+def _norm_vehicle(value: Any) -> str:
+    vehicle = _safe_str(value, "RESEARCH_ONLY").upper()
+    if vehicle in {"OPTION", "STOCK", "RESEARCH_ONLY", "NONE"}:
+        return vehicle
+    return "RESEARCH_ONLY"
+
+
+def _candidate_score(trade: Dict[str, Any]) -> float:
+    return _safe_float(trade.get("fused_score", trade.get("score", 0.0)), 0.0)
+
+
+def _effective_cost(trade: Dict[str, Any]) -> float:
+    minimum_trade_cost = _safe_float(trade.get("minimum_trade_cost"), 0.0)
+    capital_required = _safe_float(trade.get("capital_required"), 0.0)
+    estimated_cost = _safe_float(trade.get("estimated_cost"), 0.0)
+
+    if minimum_trade_cost > 0:
+        return minimum_trade_cost
+    if capital_required > 0:
+        return capital_required
+    if estimated_cost > 0:
+        return estimated_cost
+    return 0.0
 
 
 def _normalize_why_lines(value: Any) -> List[str]:
     lines: List[str] = []
+
     if isinstance(value, list):
         lines = [str(x).strip() for x in value if str(x).strip()]
     elif isinstance(value, dict):
@@ -149,17 +198,178 @@ def _normalize_why_lines(value: Any) -> List[str]:
         text = value.strip()
         if text:
             lines = [text]
+
     return lines
 
 
-def stronger_competing_setups(trade: Dict[str, Any], selected_trades: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    current_score = _safe_float(trade.get("fused_score", trade.get("score", 0)), 0.0)
+# ============================================================
+# MODE / GOVERNOR / CAPACITY
+# ============================================================
+
+def resolve_market_mode(
+    regime: str,
+    breadth: str,
+    volatility_payload: Dict[str, Any] | None = None,
+) -> str:
+    return market_mode(regime, breadth)
+
+
+def _governor_snapshot(trading_mode: str | None = None) -> Dict[str, Any]:
+    from engine.performance_tracker import performance_summary
+    from engine.risk_governor import governor_status
+
+    try:
+        requested_mode = normalize_mode(trading_mode or "paper")
+        entries_today_value = 0
+
+        try:
+            perf = performance_summary()
+            if isinstance(perf, dict):
+                entries_today_value = _safe_int(perf.get("entries_today", 0), 0)
+        except Exception:
+            entries_today_value = 0
+
+        current_open = open_count()
+
+        print("GOVERNOR ENTRY FEED:", {
+            "entries_today_from_perf": entries_today_value,
+            "open_positions": current_open,
+            "requested_trading_mode": requested_mode,
+        })
+
+        gov = governor_status(
+            current_open_positions=current_open,
+            executed_entries_today=entries_today_value,
+            trading_mode=requested_mode,
+        )
+
+        print("PROCESS SIGNALS GOVERNOR MODE CHECK:", {
+            "requested_trading_mode": requested_mode,
+            "governor_returned_mode": gov.get("trading_mode") if isinstance(gov, dict) else None,
+        })
+
+        return gov if isinstance(gov, dict) else {}
+
+    except Exception as exc:
+        print("PROCESS SIGNALS GOVERNOR SNAPSHOT FAILED:", {
+            "error": str(exc),
+            "fallback": "empty_governor",
+        })
+        return {}
+
+
+def _governor_execution_block_reason(governor: Dict[str, Any]) -> str:
+    if not isinstance(governor, dict):
+        return ""
+
+    if not bool(governor.get("blocked", False)):
+        return ""
+
+    reasons = _safe_list(governor.get("reasons", []))
+    if reasons:
+        return f"governor_blocked:{reasons[0]}"
+
+    return "governor_blocked"
+
+
+def _current_open_positions_from_governor(governor: Dict[str, Any]) -> int:
+    try:
+        if isinstance(governor, dict) and "current_open_positions" in governor:
+            return max(0, _safe_int(governor.get("current_open_positions"), open_count()))
+    except Exception:
+        pass
+
+    try:
+        return max(0, open_count())
+    except Exception:
+        return 0
+
+
+def _max_open_positions_from_context(mode_context: Dict[str, Any], default: int = 3) -> int:
+    return max(0, _safe_int(_safe_dict(mode_context).get("max_open_positions", default), default))
+
+
+def _queue_limit_from_context(mode_context: Dict[str, Any], default: int = 3) -> int:
+    return max(0, _safe_int(_safe_dict(mode_context).get("queue_limit", default), default))
+
+
+def _build_selection_capacity(
+    *,
+    execution_ready: List[Dict[str, Any]],
+    governor: Dict[str, Any],
+    mode_context: Dict[str, Any],
+) -> Dict[str, Any]:
+    affordable = affordable_trade_count(execution_ready)
+
+    current_open_positions = _current_open_positions_from_governor(governor)
+    max_open_positions = _max_open_positions_from_context(mode_context, 3)
+    queue_limit = _queue_limit_from_context(mode_context, 3)
+
+    remaining_position_slots = max(0, max_open_positions - current_open_positions)
+
+    if affordable <= 0:
+        selection_limit = 0
+    else:
+        selection_limit = min(
+            affordable,
+            queue_limit,
+            remaining_position_slots,
+        )
+
+    capacity = {
+        "affordable": affordable,
+        "queue_limit": queue_limit,
+        "current_open_positions": current_open_positions,
+        "max_open_positions": max_open_positions,
+        "remaining_position_slots": remaining_position_slots,
+        "selection_limit": selection_limit,
+    }
+
+    print("PROCESS SIGNALS SELECTION CAPACITY:", capacity)
+
+    return capacity
+
+
+# ============================================================
+# V2 OVERLAY SUPPORT
+# ============================================================
+
+def _get_v2_overlay(symbol: str, trade: Dict[str, Any]) -> Dict[str, Any]:
+    try:
+        if "get_v2_candidate_overlay" in globals():
+            row = get_v2_candidate_overlay(symbol, trade)
+            return row if isinstance(row, dict) else {}
+    except Exception:
+        pass
+
+    try:
+        if "get_v2_signal_overlay" in globals():
+            row = get_v2_signal_overlay(symbol, trade)
+            return row if isinstance(row, dict) else {}
+    except Exception:
+        pass
+
+    return {}
+
+
+# ============================================================
+# LOGGING / PREMIUM FEED / CANDIDATE MEMORY
+# ============================================================
+
+def stronger_competing_setups(
+    trade: Dict[str, Any],
+    selected_trades: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    current_score = _candidate_score(trade)
 
     stronger: List[Dict[str, Any]] = []
     for other in selected_trades:
+        if not isinstance(other, dict):
+            continue
+
         other_symbol = other.get("symbol")
         other_strategy = other.get("strategy")
-        other_score = _safe_float(other.get("fused_score", other.get("score", 0)), 0.0)
+        other_score = _candidate_score(other)
 
         if other_symbol == trade.get("symbol") and other_strategy == trade.get("strategy"):
             continue
@@ -171,7 +381,7 @@ def stronger_competing_setups(trade: Dict[str, Any], selected_trades: List[Dict[
                 "score": other_score,
             })
 
-    stronger.sort(key=lambda x: x["score"], reverse=True)
+    stronger.sort(key=lambda x: _safe_float(x.get("score"), 0.0), reverse=True)
     return stronger
 
 
@@ -197,8 +407,10 @@ def log_candidate_decision(
         capital_available=_safe_float(trade.get("capital_available", 0.0), 0.0),
         stronger_competing_setups=_safe_list(trade.get("stronger_competing_setups", [])),
     )
+
     if extra:
         payload.update(extra)
+
     remember_candidate(payload)
     trade["candidate_display"] = payload
     return payload
@@ -238,6 +450,12 @@ def log_rejection(
         "mode": mode,
         "stronger_competing_setups": trade.get("stronger_competing_setups", []),
         "trading_mode": trade.get("trading_mode"),
+        "symbol": symbol,
+        "strategy": trade.get("strategy"),
+        "score": trade.get("fused_score", trade.get("score", 0)),
+        "vehicle_selected": trade.get("vehicle_selected"),
+        "blocked_at": trade.get("blocked_at"),
+        "final_reason": trade.get("final_reason"),
     })
 
     log_candidate_decision(
@@ -284,75 +502,87 @@ def log_approval(
         "strategy": trade.get("strategy", "CALL"),
         "score": trade.get("fused_score", trade.get("score", 0)),
         "confidence": trade.get("confidence", "LOW"),
+        "vehicle_selected": trade.get("vehicle_selected"),
         "trading_mode": trade.get("trading_mode"),
     })
 
 
-def _get_v2_overlay(symbol: str, trade: Dict[str, Any]) -> Dict[str, Any]:
-    try:
-        if "get_v2_candidate_overlay" in globals():
-            row = get_v2_candidate_overlay(symbol, trade)
-            return row if isinstance(row, dict) else {}
-    except Exception:
-        pass
+# ============================================================
+# DEBUG HELPERS
+# ============================================================
 
-    try:
-        if "get_v2_signal_overlay" in globals():
-            row = get_v2_signal_overlay(symbol, trade)
-            return row if isinstance(row, dict) else {}
-    except Exception:
-        pass
-
-    return {}
+def _print_candidate_line(trade: Dict[str, Any]) -> None:
+    print(
+        f"{trade.get('symbol', 'UNKNOWN')} | "
+        f"{trade.get('strategy', 'CALL')} | "
+        f"{trade.get('fused_score', trade.get('score', 0))} | "
+        f"{trade.get('confidence', 'LOW')} | "
+        f"{trade.get('vehicle_selected', 'RESEARCH_ONLY')}"
+    )
 
 
-def _governor_snapshot(trading_mode: str | None = None) -> Dict[str, Any]:
-    from engine.performance_tracker import performance_summary
-    from engine.risk_governor import governor_status
+def _build_debug_row(
+    *,
+    symbol: str,
+    strategy: str,
+    fused: Dict[str, Any],
+    score: float,
+    confidence_value: str,
+    breadth: str,
+    mode: str,
+    trading_mode: str,
+    volatility_state: str,
+    governor: Dict[str, Any],
+    governor_reason: str,
+    option_chain_count: int,
+    best_option: Any,
+    option_score: float,
+    option_allowed: Any,
+    option_reason: str,
+    capital_available_now: float,
+) -> Dict[str, Any]:
+    return {
+        "symbol": symbol,
+        "starting_strategy": strategy,
+        "final_strategy": fused.get("strategy", strategy),
+        "score": fused.get("fused_score", score),
+        "confidence": fused.get("confidence", confidence_value),
+        "breadth": breadth,
+        "mode": mode,
+        "trading_mode": trading_mode,
+        "volatility_state": volatility_state,
+        "governor_blocked": bool(_safe_dict(governor).get("blocked", False)),
+        "governor_reason": governor_reason,
+        "chosen_strategy": None,
+        "duplicate_open_found": None,
+        "duplicate_trade_id": "",
+        "reentry_allowed": None,
+        "reentry_reason": "",
+        "execution_guard_blocked": None,
+        "execution_guard_reason": "",
+        "score_allowed": None,
+        "volatility_allowed": None,
+        "option_chain_count": option_chain_count,
+        "best_option_found": bool(best_option),
+        "option_contract_score": option_score,
+        "option_allowed": option_allowed if best_option else None,
+        "option_reason": option_reason if best_option else "",
+        "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
+        "research_approved": False,
+        "execution_ready": False,
+        "selected_for_execution": False,
+        "blocked_at": "",
+        "final_reason": "",
+        "capital_required": fused.get("capital_required", 0.0),
+        "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
+        "effective_cost": _effective_cost(fused),
+        "capital_available": capital_available_now,
+    }
 
-    try:
-        requested_mode = normalize_mode(trading_mode or "paper")
-        entries_today_value = 0
 
-        try:
-            perf = performance_summary()
-            if isinstance(perf, dict):
-                entries_today_value = int(_safe_float(perf.get("entries_today", 0), 0))
-        except Exception:
-            entries_today_value = 0
-
-        print("GOVERNOR ENTRY FEED:", {
-            "entries_today_from_perf": entries_today_value,
-            "open_positions": open_count(),
-            "requested_trading_mode": requested_mode,
-        })
-
-        gov = governor_status(
-            current_open_positions=open_count(),
-            executed_entries_today=entries_today_value,
-            trading_mode=requested_mode,
-        )
-
-        print("PROCESS SIGNALS GOVERNOR MODE CHECK:", {
-            "requested_trading_mode": requested_mode,
-            "governor_returned_mode": gov.get("trading_mode") if isinstance(gov, dict) else None,
-        })
-
-        return gov if isinstance(gov, dict) else {}
-    except Exception:
-        return {}
-
-
-def _governor_execution_block_reason(governor: Dict[str, Any]) -> str:
-    if not isinstance(governor, dict):
-        return ""
-    if not bool(governor.get("blocked", False)):
-        return ""
-    reasons = _safe_list(governor.get("reasons", []))
-    if reasons:
-        return f"governor_blocked:{reasons[0]}"
-    return "governor_blocked"
-
+# ============================================================
+# CORE PROCESSOR
+# ============================================================
 
 def process_signals(
     results: List[Dict[str, Any]],
@@ -376,9 +606,13 @@ def process_signals(
     print("Market Mode:", mode)
 
     volatility_state = _safe_str(
-        (volatility_payload or {}).get("state", (volatility_payload or {}).get("volatility", "NORMAL")),
+        (volatility_payload or {}).get(
+            "state",
+            (volatility_payload or {}).get("volatility", "NORMAL"),
+        ),
         "NORMAL",
-    )
+    ).upper()
+
     vix_value = (volatility_payload or {}).get("vix", "N/A")
     print("Volatility State:", volatility_state, "| VIX:", vix_value)
 
@@ -391,11 +625,28 @@ def process_signals(
     resolved_trading_mode_context = build_mode_context(resolved_trading_mode)
     governor_reason = _governor_execution_block_reason(governor)
 
+    current_open_positions_for_guard = _current_open_positions_from_governor(governor)
+    max_open_positions_for_guard = _max_open_positions_from_context(
+        resolved_trading_mode_context,
+        3,
+    )
+
+    print("PROCESS SIGNALS POSITION CONTEXT:", {
+        "resolved_trading_mode": resolved_trading_mode,
+        "current_open_positions": current_open_positions_for_guard,
+        "max_open_positions": max_open_positions_for_guard,
+        "remaining_position_slots": max(
+            0,
+            max_open_positions_for_guard - current_open_positions_for_guard,
+        ),
+        "capital_available_now": capital_available_now,
+    })
+
     for raw_trade in results:
         trade = dict(raw_trade) if isinstance(raw_trade, dict) else {}
 
         symbol = _norm_symbol(trade.get("symbol", "UNKNOWN"))
-        strategy = _safe_str(trade.get("strategy", "CALL"), "CALL").upper()
+        strategy = _norm_strategy(trade.get("strategy", "CALL"), "CALL")
         score = _safe_float(trade.get("score", 0), 0.0)
         confidence_value = _safe_str(trade.get("confidence", "LOW"), "LOW").upper()
         price = _safe_float(
@@ -416,14 +667,17 @@ def process_signals(
         trade["regime"] = regime
         trade["mode"] = mode
         trade["trading_mode"] = resolved_trading_mode
-        trade["trading_mode_label"] = resolved_trading_mode_context.get("mode_label", resolved_trading_mode)
+        trade["trading_mode_label"] = resolved_trading_mode_context.get(
+            "mode_label",
+            resolved_trading_mode,
+        )
         trade["mode_context"] = resolved_trading_mode_context
         trade["volatility_state"] = volatility_state
         trade["breadth"] = breadth
         trade["option_chain"] = option_chain
         trade["capital_available"] = capital_available_now
         trade["governor"] = governor
-        trade["governor_blocked"] = bool(governor.get("blocked", False))
+        trade["governor_blocked"] = bool(_safe_dict(governor).get("blocked", False))
         trade["governor_reason"] = governor_reason
 
         print("OPTION PATH PRECHECK:", {
@@ -445,7 +699,11 @@ def process_signals(
                 strategy,
                 trade=trade,
             )
-        except Exception:
+        except Exception as exc:
+            print("OPTION PATH CHOICE FAILED:", {
+                "symbol": symbol,
+                "error": str(exc),
+            })
             best_option, option_score, option_notes = None, -1, []
 
         if isinstance(best_option, dict) and best_option:
@@ -456,6 +714,15 @@ def process_signals(
 
             best_option["is_executable"] = bool(option_allowed)
             best_option["execution_reason"] = _safe_str(option_reason, "")
+            best_option.setdefault("monitoring_mode", "OPTION_PREMIUM")
+            best_option.setdefault(
+                "price_reference",
+                best_option.get("mark", best_option.get("selected_price_reference")),
+            )
+            best_option.setdefault(
+                "selected_price_reference",
+                best_option.get("price_reference", best_option.get("mark")),
+            )
         else:
             option_allowed, option_reason = False, "no_option_contract"
 
@@ -480,13 +747,22 @@ def process_signals(
             commission=1.0,
         )
 
+        fused["symbol"] = symbol
         fused["trading_mode"] = resolved_trading_mode
-        fused["trading_mode_label"] = resolved_trading_mode_context.get("mode_label", resolved_trading_mode)
+        fused["trading_mode_label"] = resolved_trading_mode_context.get(
+            "mode_label",
+            resolved_trading_mode,
+        )
         fused["mode_context"] = resolved_trading_mode_context
         fused["capital_available"] = capital_available_now
         fused["option_allowed"] = option_allowed
         fused["option_reason"] = option_reason
         fused["best_option_found"] = bool(best_option)
+        fused["governor"] = governor
+        fused["governor_blocked"] = bool(_safe_dict(governor).get("blocked", False))
+        fused["governor_reason"] = governor_reason
+        fused["current_open_positions_seen"] = current_open_positions_for_guard
+        fused["max_open_positions_seen"] = max_open_positions_for_guard
 
         print("OPTION VS STOCK CAPITAL:", {
             "symbol": symbol,
@@ -494,47 +770,31 @@ def process_signals(
             "has_option": bool(fused.get("option")),
             "capital_required": fused.get("capital_required"),
             "minimum_trade_cost": fused.get("minimum_trade_cost"),
+            "effective_cost": _effective_cost(fused),
             "price": fused.get("price"),
             "shares": fused.get("size", fused.get("shares", 1)),
             "contracts": fused.get("contracts", 1),
         })
 
-        debug_row = {
-            "symbol": symbol,
-            "starting_strategy": strategy,
-            "final_strategy": fused.get("strategy", strategy),
-            "score": fused.get("fused_score", score),
-            "confidence": fused.get("confidence", confidence_value),
-            "breadth": breadth,
-            "mode": mode,
-            "trading_mode": resolved_trading_mode,
-            "volatility_state": volatility_state,
-            "governor_blocked": bool(governor.get("blocked", False)),
-            "governor_reason": governor_reason,
-            "chosen_strategy": None,
-            "duplicate_open_found": None,
-            "duplicate_trade_id": "",
-            "reentry_allowed": None,
-            "reentry_reason": "",
-            "execution_guard_blocked": None,
-            "execution_guard_reason": "",
-            "score_allowed": None,
-            "volatility_allowed": None,
-            "option_chain_count": len(option_chain),
-            "best_option_found": bool(best_option),
-            "option_contract_score": option_score,
-            "option_allowed": option_allowed if best_option else None,
-            "option_reason": option_reason if best_option else "",
-            "vehicle_selected": fused.get("vehicle_selected", "RESEARCH_ONLY"),
-            "research_approved": False,
-            "execution_ready": False,
-            "selected_for_execution": False,
-            "blocked_at": "",
-            "final_reason": "",
-            "capital_required": fused.get("capital_required", 0.0),
-            "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
-            "capital_available": capital_available_now,
-        }
+        debug_row = _build_debug_row(
+            symbol=symbol,
+            strategy=strategy,
+            fused=fused,
+            score=score,
+            confidence_value=confidence_value,
+            breadth=breadth,
+            mode=mode,
+            trading_mode=resolved_trading_mode,
+            volatility_state=volatility_state,
+            governor=governor,
+            governor_reason=governor_reason,
+            option_chain_count=len(option_chain),
+            best_option=best_option,
+            option_score=option_score,
+            option_allowed=option_allowed,
+            option_reason=option_reason,
+            capital_available_now=capital_available_now,
+        )
 
         chosen_strategy = choose_trade_strategy(
             symbol=symbol,
@@ -546,23 +806,35 @@ def process_signals(
             mode=resolved_trading_mode,
             starting_strategy=strategy,
         )
+
         debug_row["chosen_strategy"] = chosen_strategy
 
         if chosen_strategy:
-            fused["strategy"] = _safe_str(chosen_strategy, fused.get("strategy", strategy)).upper()
+            fused["strategy"] = _norm_strategy(chosen_strategy, fused.get("strategy", strategy))
             debug_row["final_strategy"] = fused["strategy"]
 
         breadth_ok = breadth_allows_trade(fused["strategy"], breadth)
         debug_row["breadth_allowed"] = breadth_ok
+
         if not breadth_ok:
             fused["blocked_at"] = "breadth_guard"
             fused["final_reason"] = "failed_breadth_filter"
             fused["final_reason_code"] = "failed_breadth_filter"
             fused = finalize_candidate_state(fused)
+
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
             debug_rows.append(debug_row)
-            log_rejection(fused, symbol, "breadth_blocked", "failed_breadth_filter", mode, breadth, volatility_state)
+
+            log_rejection(
+                fused,
+                symbol,
+                "breadth_blocked",
+                "failed_breadth_filter",
+                mode,
+                breadth,
+                volatility_state,
+            )
             continue
 
         if fused["strategy"] == "NO_TRADE":
@@ -570,10 +842,20 @@ def process_signals(
             fused["final_reason"] = "strategy_router_returned_no_trade"
             fused["final_reason_code"] = "strategy_router_returned_no_trade"
             fused = finalize_candidate_state(fused)
+
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
             debug_rows.append(debug_row)
-            log_rejection(fused, symbol, "strategy_router_blocked", "strategy_router_returned_no_trade", mode, breadth, volatility_state)
+
+            log_rejection(
+                fused,
+                symbol,
+                "strategy_router_blocked",
+                "strategy_router_returned_no_trade",
+                mode,
+                breadth,
+                volatility_state,
+            )
             continue
 
         existing_position = None
@@ -585,7 +867,8 @@ def process_signals(
         debug_row["duplicate_open_found"] = bool(existing_position)
         debug_row["duplicate_trade_id"] = (
             _safe_str(existing_position.get("trade_id", ""), "")
-            if isinstance(existing_position, dict) else ""
+            if isinstance(existing_position, dict)
+            else ""
         )
 
         if existing_position:
@@ -593,10 +876,20 @@ def process_signals(
             fused["final_reason"] = "already_open_position"
             fused["final_reason_code"] = "already_open_position"
             fused = finalize_candidate_state(fused)
+
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
             debug_rows.append(debug_row)
-            log_rejection(fused, symbol, "position_duplication_blocked", "already_open_position", mode, breadth, volatility_state)
+
+            log_rejection(
+                fused,
+                symbol,
+                "position_duplication_blocked",
+                "already_open_position",
+                mode,
+                breadth,
+                volatility_state,
+            )
             continue
 
         allowed_reentry, reentry_reason = reentry_allowed(fused)
@@ -609,51 +902,94 @@ def process_signals(
             fused["final_reason"] = reason
             fused["final_reason_code"] = reason
             fused = finalize_candidate_state(fused)
+
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
             debug_rows.append(debug_row)
-            log_rejection(fused, symbol, "reentry_blocked", reason, mode, breadth, volatility_state)
+
+            log_rejection(
+                fused,
+                symbol,
+                "reentry_blocked",
+                reason,
+                mode,
+                breadth,
+                volatility_state,
+            )
             continue
 
-        score_ok = _safe_float(fused.get("fused_score", fused.get("score", 0.0)), 0.0) >= 90
+        score_ok = _candidate_score(fused) >= 90
         debug_row["score_allowed"] = score_ok
+
         if not score_ok:
             fused["blocked_at"] = "score_threshold"
             fused["final_reason"] = "failed_score_threshold"
             fused["final_reason_code"] = "failed_score_threshold"
             fused = finalize_candidate_state(fused)
+
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
             debug_rows.append(debug_row)
-            log_rejection(fused, symbol, "score_too_low", "failed_score_threshold", mode, breadth, volatility_state)
+
+            log_rejection(
+                fused,
+                symbol,
+                "score_too_low",
+                "failed_score_threshold",
+                mode,
+                breadth,
+                volatility_state,
+            )
             continue
 
         volatility_ok = not (
             volatility_state == "ELEVATED"
             and fused.get("confidence", "LOW") == "LOW"
         )
+
         debug_row["volatility_allowed"] = volatility_ok
+
         if not volatility_ok:
             fused["blocked_at"] = "volatility_guard"
             fused["final_reason"] = "failed_volatility_filter"
             fused["final_reason_code"] = "failed_volatility_filter"
             fused = finalize_candidate_state(fused)
+
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
             debug_rows.append(debug_row)
-            log_rejection(fused, symbol, "volatility_blocked", "failed_volatility_filter", mode, breadth, volatility_state)
+
+            log_rejection(
+                fused,
+                symbol,
+                "volatility_blocked",
+                "failed_volatility_filter",
+                mode,
+                breadth,
+                volatility_state,
+            )
             continue
 
-        if fused.get("option") and fused.get("vehicle_selected") == "OPTION" and not option_allowed:
+        if fused.get("option") and _norm_vehicle(fused.get("vehicle_selected")) == "OPTION" and not option_allowed:
             reason = _safe_str(option_reason, "weak_option_contract")
             fused["blocked_at"] = "option_executable"
             fused["final_reason"] = reason
             fused["final_reason_code"] = reason
             fused = finalize_candidate_state(fused)
+
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
             debug_rows.append(debug_row)
-            log_rejection(fused, symbol, "weak_option_contract", reason, mode, breadth, volatility_state)
+
+            log_rejection(
+                fused,
+                symbol,
+                "weak_option_contract",
+                reason,
+                mode,
+                breadth,
+                volatility_state,
+            )
             continue
 
         fused["research_approved"] = True
@@ -664,15 +1000,20 @@ def process_signals(
             fused,
             capital_available=capital_available_now,
             trading_mode=resolved_trading_mode,
-            current_open_positions=open_count(),
-            max_open_positions=5,
+            current_open_positions=current_open_positions_for_guard,
+            max_open_positions=max_open_positions_for_guard,
             kill_switch_enabled=False,
             session_healthy=True,
             broker_healthy=True,
         )
 
-        blocked = bool(_safe_dict(guard).get("blocked", False))
-        exec_reason = _safe_str(_safe_dict(guard).get("reason_code", ""), "") or _safe_str(_safe_dict(guard).get("reason", ""), "")
+        guard = _safe_dict(guard)
+        blocked = bool(guard.get("blocked", False))
+        exec_reason = (
+            _safe_str(guard.get("reason_code", ""), "")
+            or _safe_str(guard.get("reason", ""), "")
+            or "ok"
+        )
 
         if governor_reason:
             blocked = True
@@ -686,11 +1027,14 @@ def process_signals(
             fused["final_reason"] = exec_reason or "execution_guard_blocked"
             fused["final_reason_code"] = exec_reason or "execution_guard_blocked"
             fused = finalize_candidate_state(fused)
+
             research_approved.append(fused)
+
             debug_row["research_approved"] = True
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
             debug_rows.append(debug_row)
+
             log_candidate_decision(
                 fused,
                 status="research_approved_not_execution_ready",
@@ -727,10 +1071,24 @@ def process_signals(
             volatility_state=volatility_state,
         )
 
-    affordable = affordable_trade_count(execution_ready)
-    selection_limit = min(affordable, 3) if affordable > 0 else 0
+    capacity = _build_selection_capacity(
+        execution_ready=execution_ready,
+        governor=governor,
+        mode_context=resolved_trading_mode_context,
+    )
+
+    selection_limit = _safe_int(capacity.get("selection_limit", 0), 0)
+    current_open_positions_for_selector = _safe_int(
+        capacity.get("current_open_positions", current_open_positions_for_guard),
+        current_open_positions_for_guard,
+    )
+    max_open_positions_for_selector = _safe_int(
+        capacity.get("max_open_positions", max_open_positions_for_guard),
+        max_open_positions_for_guard,
+    )
 
     selected_trades: List[Dict[str, Any]] = []
+
     if execution_ready and selection_limit > 0:
         selected_trades = choose_execution_queue_option_b(
             execution_ready,
@@ -738,12 +1096,24 @@ def process_signals(
             available_cash=capital_available_now,
             trading_mode=resolved_trading_mode,
             mode_context=resolved_trading_mode_context,
+            current_open_positions=current_open_positions_for_selector,
+            max_open_positions=max_open_positions_for_selector,
         )
+    else:
+        print("PROCESS SIGNALS SELECTOR SKIPPED:", {
+            "execution_ready_count": len(execution_ready),
+            "selection_limit": selection_limit,
+            "reason": (
+                "no_execution_ready"
+                if not execution_ready
+                else "no_remaining_capacity_or_affordability"
+            ),
+        })
 
     selected_keys = {
         (
             _norm_symbol(t.get("symbol", "")),
-            _safe_str(t.get("strategy", "CALL"), "CALL").upper(),
+            _norm_strategy(t.get("strategy", "CALL"), "CALL"),
         )
         for t in selected_trades
         if isinstance(t, dict)
@@ -755,7 +1125,7 @@ def process_signals(
     for trade in research_approved:
         key = (
             _norm_symbol(trade.get("symbol", "")),
-            _safe_str(trade.get("strategy", "CALL"), "CALL").upper(),
+            _norm_strategy(trade.get("strategy", "CALL"), "CALL"),
         )
 
         if key in selected_keys:
@@ -765,6 +1135,7 @@ def process_signals(
             trade["final_reason"] = "selected_for_execution"
             trade["final_reason_code"] = "selected_for_execution"
             trade["blocked_at"] = ""
+            trade["selector_capacity"] = capacity
             trade = finalize_candidate_state(trade)
 
             finalized_research_approved.append(trade)
@@ -777,6 +1148,7 @@ def process_signals(
                 mode=mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
+                extra={"selector_capacity": capacity},
             )
 
         elif trade.get("execution_ready"):
@@ -792,6 +1164,7 @@ def process_signals(
             trade["final_reason"] = "approved_but_ranked_below_execution_cut"
             trade["final_reason_code"] = "approved_but_ranked_below_execution_cut"
             trade["blocked_at"] = ""
+            trade["selector_capacity"] = capacity
             trade = finalize_candidate_state(trade)
 
             finalized_research_approved.append(trade)
@@ -803,6 +1176,7 @@ def process_signals(
                 mode=mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
+                extra={"selector_capacity": capacity},
             )
 
         else:
@@ -814,6 +1188,14 @@ def process_signals(
     print("\nAPPROVAL DEBUG")
     for row in debug_rows:
         print(row)
+
+    print("PROCESS SIGNALS FINAL SELECTION SUMMARY:", {
+        "research_approved_count": len(research_approved),
+        "execution_ready_count": len([t for t in research_approved if bool(t.get("execution_ready", False))]),
+        "selected_count": len(selected_trades),
+        "selected_symbols": [_norm_symbol(t.get("symbol")) for t in selected_trades],
+        "capacity": capacity,
+    })
 
     if research_approved:
         print_leaderboard(research_approved)
@@ -828,40 +1210,26 @@ def process_signals(
         print("None")
     else:
         for trade in research_approved:
-            print(
-                f"{trade.get('symbol', 'UNKNOWN')} | "
-                f"{trade.get('strategy', 'CALL')} | "
-                f"{trade.get('fused_score', trade.get('score', 0))} | "
-                f"{trade.get('confidence', 'LOW')} | "
-                f"{trade.get('vehicle_selected', 'RESEARCH_ONLY')}"
-            )
+            _print_candidate_line(trade)
 
     print("EXECUTION READY CANDIDATE INTELLIGENCE")
-    execution_ready_now = [t for t in research_approved if bool(t.get("execution_ready", False))]
+    execution_ready_now = [
+        t for t in research_approved
+        if bool(t.get("execution_ready", False))
+    ]
+
     if not execution_ready_now:
         print("None")
     else:
         for trade in execution_ready_now:
-            print(
-                f"{trade.get('symbol', 'UNKNOWN')} | "
-                f"{trade.get('strategy', 'CALL')} | "
-                f"{trade.get('fused_score', trade.get('score', 0))} | "
-                f"{trade.get('confidence', 'LOW')} | "
-                f"{trade.get('vehicle_selected', 'RESEARCH_ONLY')}"
-            )
+            _print_candidate_line(trade)
 
     print("SELECTED FOR EXECUTION CANDIDATE INTELLIGENCE")
     if not selected_trades:
         print("None")
     else:
         for trade in selected_trades:
-            print(
-                f"{trade.get('symbol', 'UNKNOWN')} | "
-                f"{trade.get('strategy', 'CALL')} | "
-                f"{trade.get('fused_score', trade.get('score', 0))} | "
-                f"{trade.get('confidence', 'LOW')} | "
-                f"{trade.get('vehicle_selected', 'RESEARCH_ONLY')}"
-            )
+            _print_candidate_line(trade)
 
     return research_approved, selected_trades, mode, breadth, volatility_state
 
