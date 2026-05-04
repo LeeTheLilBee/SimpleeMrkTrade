@@ -512,18 +512,22 @@ def run(trading_mode="paper"):
             return
 
         if corr.get("blocked"):
-            write_bot_status(False, f"blocked_by_correlation:{resolved_trading_mode}")
-            push_activity("RISK", f"Blocked by correlation risk in {resolved_trading_mode} mode")
-            notify_trade_risk("PORTFOLIO", corr.get("reason", "Correlation block"))
+            message = f"Correlation risk warning in {resolved_trading_mode} mode: {corr.get('reason', 'Correlation block')}"
+            write_bot_status(True, f"correlation_warning:{resolved_trading_mode}")
+            push_activity("RISK", message)
+            notify_trade_risk("PORTFOLIO", message)
             push_notification(
                 notif_type="RISK_WARNING",
-                message=f"Execution blocked by correlation risk: {corr.get('reason', 'Correlation block')}",
+                message=message,
                 min_tier="starter",
                 level="warning",
                 volatility=volatility_state,
                 source="execution",
             )
-            return
+
+            if resolved_trading_mode == "live":
+                write_bot_status(False, f"blocked_by_correlation:{resolved_trading_mode}")
+                return
 
         if sector_cap.get("blocked"):
             write_bot_status(False, f"blocked_by_sector_cap:{resolved_trading_mode}")
@@ -696,6 +700,8 @@ def run(trading_mode="paper"):
                 execution_queue,
                 limit=trades_remaining,
                 trading_mode=resolved_trading_mode,
+                max_open_positions=_safe_int(resolved_mode_context.get("max_open_positions"), 3),
+                current_open_positions=open_count(),
             )
             executed_results = packet.get("results", []) if isinstance(packet, dict) else []
 

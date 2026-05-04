@@ -1,20 +1,20 @@
 {
-  "timestamp": "2026-05-03T21:44:32.814907",
+  "timestamp": "2026-05-04T15:22:10.097893",
   "performance": {
-    "trades": 13,
+    "trades": 16,
     "wins": 7,
     "losses": 2,
-    "winrate": 0.54,
+    "winrate": 0.44,
     "total_pnl": 907.26,
     "max_drawdown": 6.96,
     "entries_today": 0,
-    "closes_today": 4,
+    "closes_today": 3,
     "round_trips_today": 3,
     "realized_pnl_today": 0.0
   },
   "portfolio": {
     "open_positions": 0,
-    "closed_positions": 13,
+    "closed_positions": 16,
     "realized_pnl": 907.26,
     "unrealized_pnl": 0.0,
     "gross_capital_open": 0.0,
@@ -27,37 +27,37 @@
     "net_pnl": 907.26
   },
   "analytics": {
-    "trades": 18,
+    "trades": 21,
     "wins": 7,
     "losses": 2,
-    "flats": 9,
-    "winrate": 0.3889,
-    "lossrate": 0.1111,
+    "flats": 12,
+    "winrate": 0.3333,
+    "lossrate": 0.0952,
     "total_pnl": 907.26,
-    "average_pnl": 50.4,
+    "average_pnl": 43.2,
     "strategies": {
-      "CALL": 18
+      "CALL": 21
     },
     "symbols": {
       "AAPL": 2,
       "MSFT": 4,
       "ROKU": 1,
-      "INTC": 4,
-      "QCOM": 2,
-      "AMD": 2,
+      "INTC": 5,
+      "QCOM": 3,
+      "AMD": 3,
       "AMZN": 2,
       "MU": 1
     },
     "last_trade": {
-      "symbol": "AMZN",
-      "trade_id": "AMZN-CALL-20260503214249",
+      "symbol": "QCOM",
+      "trade_id": "QCOM-CALL-20260504152020",
       "strategy": "CALL",
       "pnl": 0.0,
-      "timestamp": "2026-05-03T21:44:29.900624+00:00"
+      "timestamp": "2026-05-04T15:22:07.379792+00:00"
     },
     "portfolio": {
       "open_positions": 0,
-      "closed_positions": 13,
+      "closed_positions": 16,
       "realized_pnl": 907.26,
       "unrealized_pnl": 0.0,
       "gross_capital_open": 0.0,
@@ -71,8 +71,8 @@
     }
   },
   "headline": {
-    "trades": 18,
-    "winrate": 0.3889,
+    "trades": 21,
+    "winrate": 0.3333,
     "realized_pnl": 907.26,
     "unrealized_pnl": 0.0,
     "open_positions": 0
