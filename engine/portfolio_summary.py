@@ -22,10 +22,6 @@ OPTION_UNDERLYING_LEAK_MULTIPLE = 8.0
 OPTION_UNDERLYING_LEAK_ABSOLUTE = 25.0
 
 
-# =============================================================================
-# Safe helpers
-# =============================================================================
-
 def _safe_list(value: Any) -> List[Any]:
     return value if isinstance(value, list) else []
 
@@ -108,17 +104,17 @@ def _read_json(path_str: str, default: Any) -> Any:
         return default
 
 
-def _round_price(value: Any) -> float:
-    return round(_safe_float(value, 0.0), 4)
+def load_open_positions() -> List[Dict[str, Any]]:
+    return _safe_list(_read_json(OPEN_FILE, []))
 
 
-def _round_money(value: Any) -> float:
-    return round(_safe_float(value, 0.0), 2)
+def load_closed_positions() -> List[Dict[str, Any]]:
+    return _safe_list(_read_json(CLOSED_FILE, []))
 
 
-# =============================================================================
-# Position shape helpers
-# =============================================================================
+def load_account_state() -> Dict[str, Any]:
+    return _safe_dict(_read_json(ACCOUNT_FILE, {}))
+
 
 def _vehicle(pos: Dict[str, Any]) -> str:
     pos = _safe_dict(pos)
@@ -153,10 +149,7 @@ def _vehicle(pos: Dict[str, Any]) -> str:
                 "option_symbol",
                 pos.get(
                     "option_contract_symbol",
-                    option_obj.get(
-                        "contractSymbol",
-                        contract_obj.get("contractSymbol", ""),
-                    ),
+                    option_obj.get("contractSymbol", contract_obj.get("contractSymbol", "")),
                 ),
             ),
         ),
@@ -204,16 +197,9 @@ def _contracts(pos: Dict[str, Any]) -> int:
 def _shares(pos: Dict[str, Any]) -> int:
     return max(
         1,
-        _safe_int(
-            pos.get("shares", pos.get("quantity", pos.get("qty", pos.get("size", 1)))),
-            1,
-        ),
+        _safe_int(pos.get("shares", pos.get("quantity", pos.get("qty", pos.get("size", 1)))), 1),
     )
 
-
-# =============================================================================
-# Option premium safety
-# =============================================================================
 
 def _underlying_price(pos: Dict[str, Any]) -> Optional[float]:
     for value in [
@@ -262,7 +248,7 @@ def _option_entry_premium(pos: Dict[str, Any]) -> Tuple[float, str]:
     contract = _safe_dict(pos.get("contract"))
     underlying = _underlying_price(pos)
 
-    candidates: List[Tuple[str, Any]] = [
+    candidates = [
         ("entry_premium", pos.get("entry_premium")),
         ("premium_entry", pos.get("premium_entry")),
         ("option_entry", pos.get("option_entry")),
@@ -278,7 +264,6 @@ def _option_entry_premium(pos: Dict[str, Any]) -> Tuple[float, str]:
         ("executed_price", pos.get("executed_price")),
         ("entry", pos.get("entry")),
         ("entry_price", pos.get("entry_price")),
-
         ("option.entry_premium", option.get("entry_premium")),
         ("option.premium_entry", option.get("premium_entry")),
         ("option.entry_price", option.get("entry_price")),
@@ -288,7 +273,6 @@ def _option_entry_premium(pos: Dict[str, Any]) -> Tuple[float, str]:
         ("option.selected_price_reference", option.get("selected_price_reference")),
         ("option.price_reference", option.get("price_reference")),
         ("option.mark", option.get("mark")),
-
         ("contract.entry_premium", contract.get("entry_premium")),
         ("contract.premium_entry", contract.get("premium_entry")),
         ("contract.entry_price", contract.get("entry_price")),
@@ -301,14 +285,12 @@ def _option_entry_premium(pos: Dict[str, Any]) -> Tuple[float, str]:
         price = _safe_optional_float(value)
         if price is None or price < MIN_VALID_OPTION_PREMIUM:
             continue
-
         if _looks_like_underlying_leak(
             option_entry=None,
             candidate_price=price,
             underlying_price=underlying,
         ):
             continue
-
         return round(price, 4), source
 
     return 0.0, "missing_option_entry_premium"
@@ -319,10 +301,9 @@ def _option_current_premium(pos: Dict[str, Any], entry: float) -> Tuple[float, s
     option = _safe_dict(pos.get("option"))
     contract = _safe_dict(pos.get("contract"))
     underlying = _underlying_price(pos)
-
     leak_blocked = False
 
-    candidates: List[Tuple[str, Any]] = [
+    candidates = [
         ("current_premium", pos.get("current_premium")),
         ("premium_current", pos.get("premium_current")),
         ("current_option_mark", pos.get("current_option_mark")),
@@ -332,7 +313,6 @@ def _option_current_premium(pos: Dict[str, Any], entry: float) -> Tuple[float, s
         ("option_mark", pos.get("option_mark")),
         ("contract_mark", pos.get("contract_mark")),
         ("mark", pos.get("mark")),
-
         ("option.current_premium", option.get("current_premium")),
         ("option.premium_current", option.get("premium_current")),
         ("option.current_mark", option.get("current_mark")),
@@ -342,7 +322,6 @@ def _option_current_premium(pos: Dict[str, Any], entry: float) -> Tuple[float, s
         ("option.price_reference", option.get("price_reference")),
         ("option.last", option.get("last")),
         ("option.last_price", option.get("last_price")),
-
         ("contract.current_premium", contract.get("current_premium")),
         ("contract.current_mark", contract.get("current_mark")),
         ("contract.option_mark", contract.get("option_mark")),
@@ -386,22 +365,22 @@ def _option_current_premium(pos: Dict[str, Any], entry: float) -> Tuple[float, s
     return 0.0, "missing_option_current_premium", leak_blocked
 
 
-# =============================================================================
-# Stock price helpers
-# =============================================================================
-
 def _stock_entry_price(pos: Dict[str, Any]) -> float:
-    return _round_price(
-        pos.get(
-            "entry",
+    return round(
+        _safe_float(
             pos.get(
-                "entry_price",
+                "entry",
                 pos.get(
-                    "avg_entry",
-                    pos.get("average_entry", pos.get("fill_price", pos.get("price", 0.0))),
+                    "entry_price",
+                    pos.get(
+                        "avg_entry",
+                        pos.get("average_entry", pos.get("fill_price", pos.get("price", 0.0))),
+                    ),
                 ),
             ),
-        )
+            0.0,
+        ),
+        4,
     )
 
 
@@ -418,13 +397,8 @@ def _stock_current_price(pos: Dict[str, Any]) -> Tuple[float, str]:
         price = _safe_float(value, 0.0)
         if price > 0:
             return round(price, 4), source
-
     return 0.0, "missing_stock_current_price"
 
-
-# =============================================================================
-# Position valuation
-# =============================================================================
 
 def _position_cost_basis(pos: Dict[str, Any]) -> float:
     vehicle = _vehicle(pos)
@@ -544,7 +518,7 @@ def _position_unrealized(pos: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "symbol": symbol,
         "trade_id": _safe_str(pos.get("trade_id"), ""),
-        "vehicle": VEHICLE_UNKNOWN if vehicle == VEHICLE_UNKNOWN else VEHICLE_RESEARCH_ONLY,
+        "vehicle": VEHICLE_RESEARCH_ONLY if vehicle == VEHICLE_RESEARCH_ONLY else VEHICLE_UNKNOWN,
         "strategy": strategy,
         "direction": direction,
         "entry": 0.0,
@@ -564,24 +538,9 @@ def _position_unrealized(pos: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-# =============================================================================
-# Public API
-# =============================================================================
-
-def load_open_positions() -> List[Dict[str, Any]]:
-    return _safe_list(_read_json(OPEN_FILE, []))
-
-
-def load_closed_positions() -> List[Dict[str, Any]]:
-    return _safe_list(_read_json(CLOSED_FILE, []))
-
-
-def load_account_state() -> Dict[str, Any]:
-    return _safe_dict(_read_json(ACCOUNT_FILE, {}))
-
-
 def calculate_unrealized_pnl() -> Dict[str, Any]:
     open_positions = load_open_positions()
+
     position_rows = [
         _position_unrealized(pos)
         for pos in open_positions
@@ -662,9 +621,7 @@ def portfolio_summary() -> Dict[str, Any]:
     cash = round(_safe_float(account.get("cash", 0.0), 0.0), 2)
     buying_power = round(_safe_float(account.get("buying_power", cash), cash), 2)
     equity = round(_safe_float(account.get("equity", 0.0), 0.0), 2)
-
     unrealized_total = round(_safe_float(unrealized.get("total_unrealized"), 0.0), 2)
-    estimated_account_value = round(equity + unrealized_total, 2)
 
     return {
         "open_positions": len(open_positions),
@@ -676,13 +633,8 @@ def portfolio_summary() -> Dict[str, Any]:
         "cash": cash,
         "buying_power": buying_power,
         "equity": equity,
-        "estimated_account_value": estimated_account_value,
-        "vehicle_mix": unrealized.get("vehicle_mix", {
-            VEHICLE_OPTION: 0,
-            VEHICLE_STOCK: 0,
-            VEHICLE_RESEARCH_ONLY: 0,
-            VEHICLE_UNKNOWN: 0,
-        }),
+        "estimated_account_value": round(equity + unrealized_total, 2),
+        "vehicle_mix": unrealized.get("vehicle_mix"),
         "net_pnl": round(realized + unrealized_total, 2),
         "unrealized_detail": unrealized,
         "option_safety": unrealized.get("option_safety", {}),

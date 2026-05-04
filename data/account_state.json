@@ -1,46 +1,39 @@
 {
-  "equity": 2007.26,
+  "equity": 7080.71,
   "cash": 7080.71,
   "buying_power": 7080.71,
+  "estimated_account_value": 7080.71,
+  "open_market_value": 0.0,
+  "open_cost_basis": 0.0,
+  "open_unrealized_pnl": 0.0,
   "account_type": "margin",
-  "trade_history": [
-    {
-      "symbol": "AAPL",
-      "price": 267.0961,
-      "size": 3.0,
-      "timestamp": "2026-04-16T03:09:32.977165",
-      "settle_date": "2026-04-17T03:09:32.977169",
-      "cost": 801.29,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "MSFT",
-      "price": 412.2481,
-      "size": 2.0,
-      "timestamp": "2026-04-16T03:23:17.221292",
-      "settle_date": "2026-04-17T03:23:17.221296",
-      "cost": 824.5,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "MSFT",
-      "price": 421.3107,
-      "size": 2.0,
-      "timestamp": "2026-04-16T22:49:24.074550",
-      "settle_date": "2026-04-17T22:49:24.074557",
-      "cost": 842.62,
-      "status": "OPEN"
-    },
-    {
-      "symbol": "ROKU",
-      "price": 123.58,
-      "size": 1.0,
-      "timestamp": "2026-05-01T22:56:37.916869",
-      "settle_date": "2026-05-02T22:56:37.916884",
-      "cost": 123.58,
-      "status": "OPEN"
-    }
-  ],
+  "trade_history": [],
+  "activity_log": [],
   "reserve_mode": "percent",
-  "reserve_value": 20.0
+  "reserve_value": 20.0,
+  "last_account_sync": "2026-05-04T23:52:02.758270",
+  "account_math_basis": "cash_plus_open_market_value",
+  "open_positions": 0,
+  "vehicle_mix": {
+    "OPTION": 0,
+    "STOCK": 0,
+    "RESEARCH_ONLY": 0,
+    "UNKNOWN": 0
+  },
+  "option_safety": {
+    "option_positions": 0,
+    "underlying_used_for_option_pnl": false,
+    "basis": "OPTION positions use premium math only."
+  },
+  "stale_trade_history_cleanup": {
+    "timestamp": "2026-05-04T23:51:30.586393",
+    "removed_count": 4,
+    "removed_symbols": [
+      "AAPL",
+      "MSFT",
+      "MSFT",
+      "ROKU"
+    ],
+    "reason": "Removed stale OPEN trade_history rows that no longer exist in open_positions.json."
+  }
 }
