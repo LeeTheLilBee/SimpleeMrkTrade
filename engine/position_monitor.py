@@ -1,30 +1,5 @@
 from __future__ import annotations
 
-"""
-🔭 Observatory Position Monitor
-
-This monitor reviews open positions and decides whether each position should:
-    - HOLD
-    - STOP_LOSS
-    - TAKE_PROFIT
-    - CUT_WEAKNESS
-    - PROTECT_PROFIT
-
-Critical safety rule:
-    OPTION positions are reviewed using option premium / option mark only.
-
-The underlying stock price is allowed to exist as context, but it must never be
-used as the close/review/current price for an option position.
-
-This file is intentionally compatibility-preserving:
-    - Keeps monitor_open_positions()
-    - Keeps run_position_monitor and monitor_positions aliases
-    - Keeps show_positions(), replace_position(), close_position() flow
-    - Keeps old display fields: entry, entry_price, current_price, stop, target
-    - For options, those old fields are overwritten with premium-safe values
-    - Adds richer audit fields so fake closes are easier to catch
-"""
-
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 import math
@@ -32,10 +7,15 @@ import math
 from engine.paper_portfolio import show_positions, replace_position
 from engine.close_trade import close_position
 
+try:
+    from engine.option_repricing import (
+        reprice_open_option_position,
+        apply_option_reprice_to_position,
+    )
+except Exception:
+    reprice_open_option_position = None
+    apply_option_reprice_to_position = None
 
-# =============================================================================
-# Constants
-# =============================================================================
 
 OPTION_CONTRACT_MULTIPLIER = 100
 
@@ -52,7 +32,6 @@ ACTION_INVALID = "INVALID_MONITOR"
 
 DEFAULT_OPTION_STOP_LOSS_PCT = 0.35
 DEFAULT_OPTION_TARGET_GAIN_PCT = 0.60
-
 DEFAULT_STOCK_STOP_LOSS_PCT = 0.03
 DEFAULT_STOCK_TARGET_GAIN_PCT = 0.10
 
@@ -62,10 +41,6 @@ OPTION_UNDERLYING_LEAK_ABSOLUTE = 25.0
 
 SAME_MOMENT_CLOSE_GRACE_DAYS = 0.01
 
-
-# =============================================================================
-# Safe helpers
-# =============================================================================
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -82,7 +57,6 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
             if cleaned == "":
                 return float(default)
             value = cleaned
-
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return float(default)
@@ -102,7 +76,6 @@ def _safe_optional_float(value: Any) -> Optional[float]:
             if cleaned == "":
                 return None
             value = cleaned
-
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return None
@@ -170,14 +143,6 @@ def _first_str(payload: Dict[str, Any], keys: List[str], default: str = "") -> s
     return default
 
 
-def _round_money(value: Any, default: float = 0.0) -> float:
-    return round(_safe_float(value, default), 4)
-
-
-# =============================================================================
-# Shape helpers
-# =============================================================================
-
 def _vehicle(pos: Dict[str, Any]) -> str:
     pos = _safe_dict(pos)
 
@@ -217,32 +182,6 @@ def _vehicle(pos: Dict[str, Any]) -> str:
         "",
     )
 
-    option_contract_symbol = _first_str(
-        option_obj,
-        [
-            "contractSymbol",
-            "contract_symbol",
-            "option_symbol",
-            "option_contract_symbol",
-            "selected_contract_symbol",
-            "occ_symbol",
-        ],
-        "",
-    )
-
-    contract_contract_symbol = _first_str(
-        contract_obj,
-        [
-            "contractSymbol",
-            "contract_symbol",
-            "option_symbol",
-            "option_contract_symbol",
-            "selected_contract_symbol",
-            "occ_symbol",
-        ],
-        "",
-    )
-
     right = _upper(
         _first_str(pos, ["right", "option_type", "call_put", "contract_right"], "")
         or _first_str(option_obj, ["right", "option_type", "call_put", "contract_right"], "")
@@ -250,10 +189,7 @@ def _vehicle(pos: Dict[str, Any]) -> str:
         "",
     )
 
-    has_option_identity = bool(contract_symbol or option_contract_symbol or contract_contract_symbol)
-    has_option_right = right in {"CALL", "PUT", "C", "P"}
-
-    if has_option_identity or has_option_right:
+    if contract_symbol or option_obj or contract_obj or right in {"CALL", "PUT", "C", "P"}:
         return VEHICLE_OPTION
 
     return VEHICLE_STOCK
@@ -274,47 +210,32 @@ def _days_open(opened_at: Any) -> float:
     try:
         if not opened_at:
             return 0.0
-
         raw = str(opened_at).strip()
         if raw.endswith("Z"):
             raw = raw.replace("Z", "+00:00")
-
         dt = datetime.fromisoformat(raw)
-
-        if dt.tzinfo is None:
-            now = datetime.now()
-        else:
-            now = datetime.now(dt.tzinfo)
-
+        now = datetime.now(dt.tzinfo) if dt.tzinfo else datetime.now()
         return max((now - dt).total_seconds() / 86400.0, 0.0)
     except Exception:
         return 0.0
 
 
 def _position_identifier(pos: Dict[str, Any]) -> str:
-    return _safe_str(
-        pos.get("trade_id", pos.get("position_id", pos.get("id", pos.get("order_id", "")))),
-        "",
-    )
+    return _safe_str(pos.get("trade_id", pos.get("position_id", pos.get("id", pos.get("order_id", "")))), "")
 
 
 def _position_replace_key(pos: Dict[str, Any]) -> str:
-    """
-    paper_portfolio.replace_position historically takes symbol.
-    Keep that compatibility, but prefer symbol because that is what the old flow expects.
-    """
-    symbol = _norm_symbol(pos.get("symbol"))
-    return symbol
+    return _norm_symbol(pos.get("symbol"))
 
-
-# =============================================================================
-# Option contract extraction
-# =============================================================================
 
 def _extract_contract(pos: Dict[str, Any]) -> Dict[str, Any]:
     pos = _safe_dict(pos)
     option = _safe_dict(pos.get("option"))
     contract = _safe_dict(pos.get("contract"))
+
+    out: Dict[str, Any] = {}
+    out.update(contract)
+    out.update(option)
 
     contract_symbol = (
         _first_str(
@@ -329,73 +250,24 @@ def _extract_contract(pos: Dict[str, Any]) -> Dict[str, Any]:
             ],
             "",
         )
-        or _first_str(
-            option,
-            [
-                "contractSymbol",
-                "contract_symbol",
-                "option_symbol",
-                "option_contract_symbol",
-                "selected_contract_symbol",
-                "occ_symbol",
-            ],
-            "",
-        )
-        or _first_str(
-            contract,
-            [
-                "contractSymbol",
-                "contract_symbol",
-                "option_symbol",
-                "option_contract_symbol",
-                "selected_contract_symbol",
-                "occ_symbol",
-            ],
-            "",
-        )
+        or _first_str(out, ["contractSymbol", "contract_symbol", "option_symbol", "selected_contract_symbol", "occ_symbol"], "")
     )
 
     expiry = (
         _first_str(pos, ["expiry", "expiration", "expiration_date", "contract_expiry"], "")
-        or _first_str(option, ["expiration", "expiry", "expiration_date", "contract_expiry"], "")
-        or _first_str(contract, ["expiration", "expiry", "expiration_date", "contract_expiry"], "")
+        or _first_str(out, ["expiry", "expiration", "expiration_date", "contract_expiry"], "")
     )
 
     right = _upper(
         _first_str(pos, ["right", "option_type", "call_put", "contract_right"], "")
-        or _first_str(option, ["right", "option_type", "call_put", "contract_right"], "")
-        or _first_str(contract, ["right", "option_type", "call_put", "contract_right"], ""),
+        or _first_str(out, ["right", "option_type", "call_put", "contract_right"], ""),
         "",
     )
 
-    if right in {"C", "CALLS"}:
+    if right == "C":
         right = "CALL"
-    elif right in {"P", "PUTS"}:
+    elif right == "P":
         right = "PUT"
-
-    strike = _first_float(pos, ["strike", "strike_price", "contract_strike"])
-    if strike is None:
-        strike = _first_float(option, ["strike", "strike_price", "contract_strike"])
-    if strike is None:
-        strike = _first_float(contract, ["strike", "strike_price", "contract_strike"])
-
-    bid = _first_float(pos, ["option_bid", "bid"])
-    if bid is None:
-        bid = _first_float(option, ["bid"])
-    if bid is None:
-        bid = _first_float(contract, ["bid"])
-
-    ask = _first_float(pos, ["option_ask", "ask"])
-    if ask is None:
-        ask = _first_float(option, ["ask"])
-    if ask is None:
-        ask = _first_float(contract, ["ask"])
-
-    last = _first_float(pos, ["option_last", "last"])
-    if last is None:
-        last = _first_float(option, ["last", "last_price"])
-    if last is None:
-        last = _first_float(contract, ["last", "last_price"])
 
     mark = _first_float(
         pos,
@@ -411,11 +283,10 @@ def _extract_contract(pos: Dict[str, Any]) -> Dict[str, Any]:
     )
     if mark is None:
         mark = _first_float(
-            option,
+            out,
             [
                 "current_option_mark",
                 "option_current_mark",
-                "option_mark",
                 "current_mark",
                 "mark",
                 "mid",
@@ -423,76 +294,22 @@ def _extract_contract(pos: Dict[str, Any]) -> Dict[str, Any]:
                 "price_reference",
             ],
         )
-    if mark is None:
-        mark = _first_float(
-            contract,
-            [
-                "current_option_mark",
-                "option_current_mark",
-                "option_mark",
-                "current_mark",
-                "mark",
-                "mid",
-                "selected_price_reference",
-                "price_reference",
-            ],
-        )
-
-    volume = _safe_int(
-        pos.get("option_volume", pos.get("volume", option.get("volume", contract.get("volume")))),
-        0,
-    )
-
-    open_interest = _safe_int(
-        pos.get(
-            "option_open_interest",
-            pos.get(
-                "open_interest",
-                option.get("open_interest", option.get("oi", contract.get("open_interest", contract.get("oi")))),
-            ),
-        ),
-        0,
-    )
-
-    contract_score = _safe_float(
-        pos.get("contract_score", option.get("contract_score", contract.get("contract_score"))),
-        0.0,
-    )
-
-    monitoring_mode = _safe_str(
-        pos.get("monitoring_mode", option.get("monitoring_mode", contract.get("monitoring_mode"))),
-        "OPTION_PREMIUM",
-    )
-
-    price_reference = _safe_float(
-        pos.get(
-            "price_reference",
-            option.get(
-                "price_reference",
-                option.get(
-                    "selected_price_reference",
-                    contract.get("price_reference", contract.get("selected_price_reference")),
-                ),
-            ),
-        ),
-        0.0,
-    )
 
     return {
         "contract_symbol": contract_symbol,
         "expiry": expiry,
         "expiration": expiry,
         "right": right,
-        "strike": strike,
-        "bid": bid,
-        "ask": ask,
-        "last": last,
+        "strike": _first_float(pos, ["strike", "strike_price", "contract_strike"])
+        or _first_float(out, ["strike", "strike_price", "contract_strike"]),
+        "bid": _first_float(pos, ["option_bid", "bid"]) or _first_float(out, ["bid"]),
+        "ask": _first_float(pos, ["option_ask", "ask"]) or _first_float(out, ["ask"]),
+        "last": _first_float(pos, ["option_last", "last"]) or _first_float(out, ["last", "last_price"]),
         "mark": mark,
-        "volume": volume,
-        "open_interest": open_interest,
-        "contract_score": contract_score,
-        "monitoring_mode": monitoring_mode,
-        "price_reference": price_reference,
+        "volume": _safe_int(pos.get("option_volume", pos.get("volume", out.get("volume"))), 0),
+        "open_interest": _safe_int(pos.get("option_open_interest", pos.get("open_interest", out.get("open_interest", out.get("oi")))), 0),
+        "contract_score": _safe_float(pos.get("contract_score", pos.get("option_contract_score", out.get("contract_score"))), 0.0),
+        "price_reference": _safe_float(pos.get("price_reference", out.get("price_reference", out.get("selected_price_reference"))), 0.0),
     }
 
 
@@ -506,10 +323,6 @@ def _mid_from_bid_ask(bid: Optional[float], ask: Optional[float]) -> Optional[fl
     return round((bid + ask) / 2.0, 4)
 
 
-# =============================================================================
-# Price basis helpers
-# =============================================================================
-
 def _underlying_price(pos: Dict[str, Any]) -> Optional[float]:
     return _first_float(
         pos,
@@ -521,7 +334,7 @@ def _underlying_price(pos: Dict[str, Any]) -> Optional[float]:
             "underlying_mark",
             "spot_price",
             "last_underlying_price",
-            "price",
+            "market_price",
         ],
     )
 
@@ -540,10 +353,7 @@ def _looks_like_underlying_leak(
             return True
 
     if option_entry is not None and option_entry > 0:
-        if (
-            candidate_current >= OPTION_UNDERLYING_LEAK_ABSOLUTE
-            and candidate_current >= option_entry * OPTION_UNDERLYING_LEAK_MULTIPLE
-        ):
+        if candidate_current >= OPTION_UNDERLYING_LEAK_ABSOLUTE and candidate_current >= option_entry * OPTION_UNDERLYING_LEAK_MULTIPLE:
             return True
 
     return False
@@ -555,60 +365,51 @@ def _option_entry_premium(pos: Dict[str, Any]) -> Optional[float]:
     contract = _safe_dict(pos.get("contract"))
     underlying = _underlying_price(pos)
 
-    candidates: List[Tuple[str, Optional[float]]] = [
-        ("entry_premium", _safe_optional_float(pos.get("entry_premium"))),
-        ("premium_entry", _safe_optional_float(pos.get("premium_entry"))),
-        ("option_entry", _safe_optional_float(pos.get("option_entry"))),
-        ("option_entry_price", _safe_optional_float(pos.get("option_entry_price"))),
-        ("entry_option_mark", _safe_optional_float(pos.get("entry_option_mark"))),
-        ("contract_entry_price", _safe_optional_float(pos.get("contract_entry_price"))),
-        ("fill_premium", _safe_optional_float(pos.get("fill_premium"))),
-        ("average_premium", _safe_optional_float(pos.get("average_premium"))),
-        ("avg_premium", _safe_optional_float(pos.get("avg_premium"))),
-        ("debit", _safe_optional_float(pos.get("debit"))),
-        ("price_paid", _safe_optional_float(pos.get("price_paid"))),
-        ("entry", _safe_optional_float(pos.get("entry"))),
-        ("entry_price", _safe_optional_float(pos.get("entry_price"))),
-        ("fill_price", _safe_optional_float(pos.get("fill_price"))),
-        ("executed_price", _safe_optional_float(pos.get("executed_price"))),
-
-        ("option.entry_premium", _safe_optional_float(option.get("entry_premium"))),
-        ("option.premium_entry", _safe_optional_float(option.get("premium_entry"))),
-        ("option.entry_price", _safe_optional_float(option.get("entry_price"))),
-        ("option.premium", _safe_optional_float(option.get("premium"))),
-        ("option.mark_at_entry", _safe_optional_float(option.get("mark_at_entry"))),
-        ("option.fill_price", _safe_optional_float(option.get("fill_price"))),
-        ("option.executed_price", _safe_optional_float(option.get("executed_price"))),
-        ("option.selected_price_reference", _safe_optional_float(option.get("selected_price_reference"))),
-        ("option.price_reference", _safe_optional_float(option.get("price_reference"))),
-        ("option.mark", _safe_optional_float(option.get("mark"))),
-
-        ("contract.entry_premium", _safe_optional_float(contract.get("entry_premium"))),
-        ("contract.premium_entry", _safe_optional_float(contract.get("premium_entry"))),
-        ("contract.entry_price", _safe_optional_float(contract.get("entry_price"))),
-        ("contract.selected_price_reference", _safe_optional_float(contract.get("selected_price_reference"))),
-        ("contract.price_reference", _safe_optional_float(contract.get("price_reference"))),
-        ("contract.mark", _safe_optional_float(contract.get("mark"))),
+    candidates = [
+        pos.get("entry_premium"),
+        pos.get("premium_entry"),
+        pos.get("option_entry"),
+        pos.get("option_entry_price"),
+        pos.get("entry_option_mark"),
+        pos.get("contract_entry_price"),
+        pos.get("fill_premium"),
+        pos.get("average_premium"),
+        pos.get("avg_premium"),
+        pos.get("debit"),
+        pos.get("price_paid"),
+        pos.get("entry"),
+        pos.get("entry_price"),
+        pos.get("fill_price"),
+        pos.get("executed_price"),
+        option.get("entry_premium"),
+        option.get("premium_entry"),
+        option.get("entry_price"),
+        option.get("mark_at_entry"),
+        option.get("fill_price"),
+        option.get("executed_price"),
+        option.get("selected_price_reference"),
+        option.get("price_reference"),
+        option.get("mark"),
+        contract.get("entry_premium"),
+        contract.get("premium_entry"),
+        contract.get("entry_price"),
+        contract.get("selected_price_reference"),
+        contract.get("price_reference"),
+        contract.get("mark"),
     ]
 
-    for _, value in candidates:
-        if value is None or value < MIN_VALID_OPTION_PREMIUM:
+    for value in candidates:
+        price = _safe_optional_float(value)
+        if price is None or price < MIN_VALID_OPTION_PREMIUM:
             continue
-        if _looks_like_underlying_leak(None, value, underlying):
+        if _looks_like_underlying_leak(None, price, underlying):
             continue
-        return round(value, 4)
+        return round(price, 4)
 
     return None
 
 
 def _latest_option_price(pos: Dict[str, Any]) -> Tuple[float, str, bool]:
-    """
-    Returns:
-        premium, source, leak_blocked
-
-    This function does not blindly trust current_price.
-    current_price is treated as a last-resort compatibility field only.
-    """
     pos = _safe_dict(pos)
     option = _safe_dict(pos.get("option"))
     contract_obj = _safe_dict(pos.get("contract"))
@@ -618,52 +419,45 @@ def _latest_option_price(pos: Dict[str, Any]) -> Tuple[float, str, bool]:
     underlying = _underlying_price(pos)
     leak_blocked = False
 
-    premium_candidates: List[Tuple[str, Optional[float]]] = [
-        ("current_option_mark", _safe_optional_float(pos.get("current_option_mark"))),
-        ("option_current_mark", _safe_optional_float(pos.get("option_current_mark"))),
-        ("option_mark", _safe_optional_float(pos.get("option_mark"))),
-        ("current_premium", _safe_optional_float(pos.get("current_premium"))),
-        ("premium_current", _safe_optional_float(pos.get("premium_current"))),
-        ("option_current_price", _safe_optional_float(pos.get("option_current_price"))),
-        ("current_option_price", _safe_optional_float(pos.get("current_option_price"))),
-        ("contract_mark", _safe_optional_float(pos.get("contract_mark"))),
-        ("mark_price", _safe_optional_float(pos.get("mark_price"))),
-
-        ("option.mark", _safe_optional_float(option.get("mark"))),
-        ("option.current_mark", _safe_optional_float(option.get("current_mark"))),
-        ("option.option_mark", _safe_optional_float(option.get("option_mark"))),
-        ("option.current_premium", _safe_optional_float(option.get("current_premium"))),
-        ("option.selected_price_reference", _safe_optional_float(option.get("selected_price_reference"))),
-        ("option.price_reference", _safe_optional_float(option.get("price_reference"))),
-        ("option.last", _safe_optional_float(option.get("last"))),
-        ("option.last_price", _safe_optional_float(option.get("last_price"))),
-
-        ("contract.mark", _safe_optional_float(contract_obj.get("mark"))),
-        ("contract.current_mark", _safe_optional_float(contract_obj.get("current_mark"))),
-        ("contract.current_premium", _safe_optional_float(contract_obj.get("current_premium"))),
-        ("contract.selected_price_reference", _safe_optional_float(contract_obj.get("selected_price_reference"))),
-        ("contract.price_reference", _safe_optional_float(contract_obj.get("price_reference"))),
-        ("contract.last", _safe_optional_float(contract_obj.get("last"))),
-        ("contract.last_price", _safe_optional_float(contract_obj.get("last_price"))),
-
-        ("extracted_contract.mark", _safe_optional_float(contract.get("mark"))),
-        ("extracted_contract.price_reference", _safe_optional_float(contract.get("price_reference"))),
-        ("extracted_contract.last", _safe_optional_float(contract.get("last"))),
+    premium_candidates = [
+        ("current_premium", pos.get("current_premium")),
+        ("premium_current", pos.get("premium_current")),
+        ("current_option_mark", pos.get("current_option_mark")),
+        ("option_current_mark", pos.get("option_current_mark")),
+        ("option_current_price", pos.get("option_current_price")),
+        ("current_option_price", pos.get("current_option_price")),
+        ("option_mark", pos.get("option_mark")),
+        ("mark", pos.get("mark")),
+        ("option.mark", option.get("mark")),
+        ("option.current_mark", option.get("current_mark")),
+        ("option.selected_price_reference", option.get("selected_price_reference")),
+        ("option.price_reference", option.get("price_reference")),
+        ("option.last", option.get("last")),
+        ("contract.mark", contract_obj.get("mark")),
+        ("contract.current_mark", contract_obj.get("current_mark")),
+        ("contract.selected_price_reference", contract_obj.get("selected_price_reference")),
+        ("contract.price_reference", contract_obj.get("price_reference")),
+        ("contract.last", contract_obj.get("last")),
+        ("extracted_contract.mark", contract.get("mark")),
+        ("extracted_contract.price_reference", contract.get("price_reference")),
+        ("extracted_contract.last", contract.get("last")),
     ]
 
     for source, value in premium_candidates:
-        if value is None or value < MIN_VALID_OPTION_PREMIUM:
+        price = _safe_optional_float(value)
+        if price is None or price < MIN_VALID_OPTION_PREMIUM:
             continue
 
-        if _looks_like_underlying_leak(entry, value, underlying):
+        if _looks_like_underlying_leak(entry, price, underlying):
             leak_blocked = True
             continue
 
-        return round(value, 4), source, leak_blocked
+        return round(price, 4), source, leak_blocked
 
-    bid = _safe_optional_float(contract.get("bid"))
-    ask = _safe_optional_float(contract.get("ask"))
-    mid = _mid_from_bid_ask(bid, ask)
+    mid = _mid_from_bid_ask(
+        _safe_optional_float(contract.get("bid")),
+        _safe_optional_float(contract.get("ask")),
+    )
     if mid is not None and mid >= MIN_VALID_OPTION_PREMIUM:
         if _looks_like_underlying_leak(entry, mid, underlying):
             leak_blocked = True
@@ -688,13 +482,7 @@ def _stock_entry_price(pos: Dict[str, Any]) -> float:
     return _safe_float(
         pos.get(
             "entry",
-            pos.get(
-                "entry_price",
-                pos.get(
-                    "avg_entry",
-                    pos.get("average_entry", pos.get("fill_price", pos.get("price", 0.0))),
-                ),
-            ),
+            pos.get("entry_price", pos.get("avg_entry", pos.get("average_entry", pos.get("fill_price", pos.get("price", 0.0))))),
         ),
         0.0,
     )
@@ -718,15 +506,7 @@ def _latest_stock_price(pos: Dict[str, Any]) -> Tuple[float, str]:
     return 0.0, "missing_stock_price"
 
 
-# =============================================================================
-# Stop / target normalization
-# =============================================================================
-
-def _normalize_option_stop_target(
-    pos: Dict[str, Any],
-    entry: float,
-    current: float,
-) -> Tuple[float, float, List[str]]:
+def _normalize_option_stop_target(pos: Dict[str, Any], entry: float, current: float) -> Tuple[float, float, List[str]]:
     notes: List[str] = []
     underlying = _underlying_price(pos)
 
@@ -742,7 +522,6 @@ def _normalize_option_stop_target(
             "stop_loss",
         ],
     )
-
     raw_target = _first_float(
         pos,
         [
@@ -770,29 +549,18 @@ def _normalize_option_stop_target(
     if entry <= 0:
         entry = current
 
-    stop_default = entry * (1.0 - DEFAULT_OPTION_STOP_LOSS_PCT)
-    target_default = entry * (1.0 + DEFAULT_OPTION_TARGET_GAIN_PCT)
-
     if stop is None or stop <= 0:
-        stop = stop_default
+        stop = entry * (1.0 - DEFAULT_OPTION_STOP_LOSS_PCT)
         notes.append("rebuilt_option_stop_from_entry_premium")
 
     if target is None or target <= 0:
-        target = target_default
+        target = entry * (1.0 + DEFAULT_OPTION_TARGET_GAIN_PCT)
         notes.append("rebuilt_option_target_from_entry_premium")
 
-    stop = round(max(MIN_VALID_OPTION_PREMIUM, stop), 4)
-    target = round(max(MIN_VALID_OPTION_PREMIUM, target), 4)
-
-    return stop, target, notes
+    return round(max(MIN_VALID_OPTION_PREMIUM, stop), 4), round(max(MIN_VALID_OPTION_PREMIUM, target), 4), notes
 
 
-def _normalize_stock_stop_target(
-    pos: Dict[str, Any],
-    entry: float,
-    direction: str,
-    current: float,
-) -> Tuple[float, float, List[str]]:
+def _normalize_stock_stop_target(pos: Dict[str, Any], entry: float, direction: str, current: float) -> Tuple[float, float, List[str]]:
     notes: List[str] = []
 
     stop = _first_float(pos, ["stock_stop", "stop", "stop_loss"])
@@ -819,9 +587,51 @@ def _normalize_stock_stop_target(
     return round(stop, 4), round(target, 4), notes
 
 
-# =============================================================================
-# Position normalization
-# =============================================================================
+def _apply_option_reprice(pos: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    reprice_payload: Dict[str, Any] = {
+        "repriced": False,
+        "reason": "option_repricing_not_available",
+        "source": "",
+        "old_current": pos.get("current_price"),
+        "new_current": pos.get("current_price"),
+        "leak_blocked": False,
+    }
+
+    if callable(reprice_open_option_position) and callable(apply_option_reprice_to_position):
+        try:
+            reprice_payload = reprice_open_option_position(pos)
+            if not isinstance(reprice_payload, dict):
+                reprice_payload = {
+                    "repriced": False,
+                    "reason": "option_reprice_returned_non_dict",
+                    "source": "",
+                    "old_current": pos.get("current_price"),
+                    "new_current": pos.get("current_price"),
+                    "leak_blocked": False,
+                }
+            else:
+                updated = apply_option_reprice_to_position(pos, reprice_payload)
+                if isinstance(updated, dict):
+                    pos = updated
+        except Exception as exc:
+            reprice_payload = {
+                "repriced": False,
+                "reason": f"option_reprice_exception:{exc}",
+                "source": "",
+                "old_current": pos.get("current_price"),
+                "new_current": pos.get("current_price"),
+                "leak_blocked": False,
+            }
+
+    pos["option_reprice"] = reprice_payload
+    pos["option_repriced"] = bool(reprice_payload.get("repriced"))
+    pos["option_reprice_reason"] = reprice_payload.get("reason", "")
+    pos["option_reprice_source"] = reprice_payload.get("source", "")
+    pos["option_reprice_old_current"] = reprice_payload.get("old_current")
+    pos["option_reprice_new_current"] = reprice_payload.get("new_current")
+
+    return pos, reprice_payload
+
 
 def _ensure_monitor_defaults(pos: Dict[str, Any]) -> Dict[str, Any]:
     pos = dict(pos) if isinstance(pos, dict) else {}
@@ -837,10 +647,15 @@ def _ensure_monitor_defaults(pos: Dict[str, Any]) -> Dict[str, Any]:
     direction = _direction(strategy)
 
     if vehicle == VEHICLE_OPTION:
+        pos, reprice_payload = _apply_option_reprice(pos)
+
         contract = _extract_contract(pos)
 
         entry = _option_entry_premium(pos)
         current, source, leak_blocked = _latest_option_price(pos)
+
+        if bool(reprice_payload.get("leak_blocked")):
+            leak_blocked = True
 
         if entry is None or entry <= 0:
             entry = current
@@ -855,49 +670,47 @@ def _ensure_monitor_defaults(pos: Dict[str, Any]) -> Dict[str, Any]:
         stop, target, stop_target_notes = _normalize_option_stop_target(pos, entry, current)
 
         underlying = _underlying_price(pos)
-
-        contracts = _safe_int(
-            pos.get("contracts", pos.get("contract_count", pos.get("quantity", pos.get("qty", 1)))),
-            1,
-        )
-        contracts = max(1, contracts)
+        contracts = max(1, _safe_int(pos.get("contracts", pos.get("contract_count", pos.get("quantity", pos.get("qty", 1)))), 1))
 
         unrealized_pnl = round((current - entry) * OPTION_CONTRACT_MULTIPLIER * contracts, 2) if entry > 0 and current > 0 else 0.0
         unrealized_pnl_pct = round(((current - entry) / entry) * 100.0, 4) if entry > 0 and current > 0 else 0.0
 
         pos["vehicle"] = VEHICLE_OPTION
         pos["vehicle_selected"] = VEHICLE_OPTION
+        pos["selected_vehicle"] = VEHICLE_OPTION
         pos["asset_type"] = VEHICLE_OPTION
+        pos["instrument_type"] = VEHICLE_OPTION
 
-        # Premium-safe canonical fields
         pos["entry_premium"] = entry
         pos["premium_entry"] = entry
+        pos["option_entry"] = entry
+        pos["option_entry_price"] = entry
         pos["current_premium"] = current
         pos["premium_current"] = current
         pos["current_option_mark"] = current
+        pos["option_current_mark"] = current
         pos["option_current_price"] = current
+        pos["current_option_price"] = current
         pos["option_stop"] = stop
         pos["premium_stop"] = stop
         pos["option_target"] = target
         pos["premium_target"] = target
 
-        # Compatibility fields. For options, these are intentionally premium fields.
         pos["entry"] = entry
         pos["entry_price"] = entry
         pos["current_price"] = current
         pos["stop"] = stop
         pos["target"] = target
 
-        # Underlying context only
         if underlying is not None and underlying > 0:
             pos["underlying_price"] = round(underlying, 4)
             pos["current_underlying_price"] = round(underlying, 4)
 
-        # Contract preservation
         if contract.get("contract_symbol"):
             pos["contract_symbol"] = contract.get("contract_symbol")
             pos["option_symbol"] = contract.get("contract_symbol")
             pos["option_contract_symbol"] = contract.get("contract_symbol")
+            pos["contractSymbol"] = contract.get("contract_symbol")
         if contract.get("expiry"):
             pos["expiry"] = contract.get("expiry")
             pos["expiration"] = contract.get("expiry")
@@ -919,6 +732,7 @@ def _ensure_monitor_defaults(pos: Dict[str, Any]) -> Dict[str, Any]:
         pos["unrealized_pnl"] = unrealized_pnl
         pos["unrealized_pnl_pct"] = unrealized_pnl_pct
         pos["pnl_basis"] = "option_premium_x_100"
+        pos["execution_position_shape"] = "OPTION_PREMIUM_POSITION"
 
         pos["monitor_normalization_notes"] = stop_target_notes
         pos["option_safety"] = {
@@ -927,11 +741,13 @@ def _ensure_monitor_defaults(pos: Dict[str, Any]) -> Dict[str, Any]:
             "underlying_leak_blocked": bool(leak_blocked),
             "underlying_used_for_decision": False,
             "source": source,
+            "repriced": bool(pos.get("option_repriced", False)),
+            "reprice_reason": pos.get("option_reprice_reason", ""),
+            "reprice_source": pos.get("option_reprice_source", ""),
         }
 
         return pos
 
-    # Stock path
     entry = _stock_entry_price(pos)
     current, source = _latest_stock_price(pos)
 
@@ -943,8 +759,7 @@ def _ensure_monitor_defaults(pos: Dict[str, Any]) -> Dict[str, Any]:
 
     stop, target, stop_target_notes = _normalize_stock_stop_target(pos, entry, direction, current)
 
-    shares = _safe_int(pos.get("shares", pos.get("quantity", pos.get("qty", 1))), 1)
-    shares = max(1, shares)
+    shares = max(1, _safe_int(pos.get("shares", pos.get("quantity", pos.get("qty", 1))), 1))
 
     entry = round(entry, 4)
     current = round(current, 4)
@@ -958,7 +773,9 @@ def _ensure_monitor_defaults(pos: Dict[str, Any]) -> Dict[str, Any]:
 
     pos["vehicle"] = VEHICLE_STOCK
     pos["vehicle_selected"] = VEHICLE_STOCK
+    pos["selected_vehicle"] = VEHICLE_STOCK
     pos["asset_type"] = VEHICLE_STOCK
+    pos["instrument_type"] = VEHICLE_STOCK
 
     pos["entry"] = entry
     pos["entry_price"] = entry
@@ -979,15 +796,12 @@ def _ensure_monitor_defaults(pos: Dict[str, Any]) -> Dict[str, Any]:
     pos["unrealized_pnl"] = unrealized_pnl
     pos["unrealized_pnl_pct"] = unrealized_pnl_pct
     pos["pnl_basis"] = "stock_price_x_shares"
+    pos["execution_position_shape"] = "STOCK_UNDERLYING_POSITION"
 
     pos["monitor_normalization_notes"] = stop_target_notes
 
     return pos
 
-
-# =============================================================================
-# Action logic
-# =============================================================================
 
 def _pct_change(entry: float, current: float, strategy: str, vehicle: str) -> float:
     if entry <= 0 or current <= 0:
@@ -1052,13 +866,10 @@ def _action_for_position(pos: Dict[str, Any]) -> str:
         return ACTION_INVALID
 
     if vehicle == VEHICLE_OPTION:
-        stop_hit = current <= stop if stop > 0 else False
-        target_hit = current >= target if target > 0 else False
-
-        if stop_hit:
+        if stop > 0 and current <= stop:
             return ACTION_STOP_LOSS
 
-        if target_hit and days_open >= SAME_MOMENT_CLOSE_GRACE_DAYS:
+        if target > 0 and current >= target and days_open >= SAME_MOMENT_CLOSE_GRACE_DAYS:
             return ACTION_TAKE_PROFIT
 
         if pct <= -35:
@@ -1103,12 +914,7 @@ def _close_reason_from_action(action: str) -> str:
 
 
 def _should_attempt_close(action: str) -> bool:
-    return action in {
-        ACTION_STOP_LOSS,
-        ACTION_TAKE_PROFIT,
-        ACTION_CUT_WEAKNESS,
-        ACTION_PROTECT_PROFIT,
-    }
+    return action in {ACTION_STOP_LOSS, ACTION_TAKE_PROFIT, ACTION_CUT_WEAKNESS, ACTION_PROTECT_PROFIT}
 
 
 def _close_price_for_position(pos: Dict[str, Any]) -> float:
@@ -1118,10 +924,7 @@ def _close_price_for_position(pos: Dict[str, Any]) -> float:
         return _safe_float(
             pos.get(
                 "current_premium",
-                pos.get(
-                    "current_option_mark",
-                    pos.get("option_current_price", pos.get("current_price", 0.0)),
-                ),
+                pos.get("current_option_mark", pos.get("option_current_price", pos.get("current_price", 0.0))),
             ),
             0.0,
         )
@@ -1143,17 +946,19 @@ def _build_close_audit_payload(pos: Dict[str, Any], action: str, close_price: fl
         "current_underlying_price": pos.get("current_underlying_price"),
         "current_premium": pos.get("current_premium"),
         "current_option_mark": pos.get("current_option_mark"),
+        "option_current_price": pos.get("option_current_price"),
+        "option_repriced": bool(pos.get("option_repriced", False)),
+        "option_reprice_reason": pos.get("option_reprice_reason", ""),
+        "option_reprice_source": pos.get("option_reprice_source", ""),
+        "option_reprice": pos.get("option_reprice", {}),
         "underlying_price_used_for_close_decision": bool(
             pos.get("underlying_price_used_for_close_decision", _vehicle(pos) != VEHICLE_OPTION)
         ),
         "option_underlying_leak_blocked": bool(pos.get("option_underlying_leak_blocked", False)),
         "pnl_basis": pos.get("pnl_basis", ""),
+        "execution_position_shape": pos.get("execution_position_shape", ""),
     }
 
-
-# =============================================================================
-# Public monitor
-# =============================================================================
 
 def monitor_open_positions() -> List[Dict[str, Any]]:
     try:
@@ -1184,7 +989,6 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
         pct = _pct_change(entry, current, strategy, vehicle)
         progress = _progress(entry, current, stop, target, strategy, vehicle)
         close_price = _close_price_for_position(pos)
-
         days_open_value = _days_open(pos.get("opened_at", pos.get("timestamp", pos.get("created_at"))))
 
         pos["last_monitored_at"] = _now_iso()
@@ -1207,7 +1011,12 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
             "current_underlying_price": pos.get("current_underlying_price"),
             "current_premium": pos.get("current_premium"),
             "current_option_mark": pos.get("current_option_mark"),
+            "option_current_price": pos.get("option_current_price"),
             "option_price_source": pos.get("option_price_source", ""),
+            "option_repriced": bool(pos.get("option_repriced", False)),
+            "option_reprice_reason": pos.get("option_reprice_reason", ""),
+            "option_reprice_source": pos.get("option_reprice_source", ""),
+            "option_reprice": pos.get("option_reprice", {}),
             "option_underlying_leak_blocked": bool(pos.get("option_underlying_leak_blocked", False)),
             "underlying_price_used_for_close_decision": bool(
                 pos.get("underlying_price_used_for_close_decision", vehicle != VEHICLE_OPTION)
@@ -1218,6 +1027,7 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
             "unrealized_pnl": pos.get("unrealized_pnl", 0.0),
             "unrealized_pnl_pct": pos.get("unrealized_pnl_pct", 0.0),
             "pnl_basis": pos.get("pnl_basis", ""),
+            "execution_position_shape": pos.get("execution_position_shape", ""),
             "monitor_ready": bool(pos.get("monitor_ready", False)),
             "normalization_notes": _safe_list(pos.get("monitor_normalization_notes")),
             "final_action": action,
@@ -1236,6 +1046,8 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
                 f"PremiumCurrent: {round(current, 4)} | EntryPremium: {round(entry, 4)} | "
                 f"PremiumStop: {round(stop, 4)} | PremiumTarget: {round(target, 4)} | "
                 f"UnderlyingContext: {pos.get('underlying_price')} | Source: {pos.get('option_price_source')} | "
+                f"Repriced: {bool(pos.get('option_repriced', False))} | "
+                f"RepriceSource: {pos.get('option_reprice_source', '')} | "
                 f"LeakBlocked: {bool(pos.get('option_underlying_leak_blocked', False))} | Action: {action}"
             )
         else:
@@ -1250,22 +1062,26 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
 
         if close_price <= 0:
             blocked_payload = _build_close_audit_payload(pos, action, close_price)
-            blocked_payload.update({
-                "blocked": True,
-                "blocked_reason": "missing_valid_close_price",
-                "result": None,
-            })
+            blocked_payload.update(
+                {
+                    "blocked": True,
+                    "blocked_reason": "missing_valid_close_price",
+                    "result": None,
+                }
+            )
             actions.append(blocked_payload)
             print(f"BLOCKED CLOSE: {symbol} | Reason: missing_valid_close_price")
             continue
 
         if vehicle == VEHICLE_OPTION and bool(pos.get("underlying_price_used_for_close_decision", False)):
             blocked_payload = _build_close_audit_payload(pos, action, close_price)
-            blocked_payload.update({
-                "blocked": True,
-                "blocked_reason": "option_underlying_price_close_blocked",
-                "result": None,
-            })
+            blocked_payload.update(
+                {
+                    "blocked": True,
+                    "blocked_reason": "option_underlying_price_close_blocked",
+                    "result": None,
+                }
+            )
             actions.append(blocked_payload)
             print(f"BLOCKED CLOSE: {symbol} | Reason: option_underlying_price_close_blocked")
             continue
@@ -1278,11 +1094,7 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
                 trade_id=trade_id,
             )
         except TypeError:
-            result = close_position(
-                symbol,
-                close_price,
-                _close_reason_from_action(action),
-            )
+            result = close_position(symbol, close_price, _close_reason_from_action(action))
         except Exception as exc:
             result = {
                 "closed": False,
@@ -1308,7 +1120,6 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
     return actions
 
 
-# Compatibility aliases
 run_position_monitor = monitor_open_positions
 monitor_positions = monitor_open_positions
 

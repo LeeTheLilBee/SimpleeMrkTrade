@@ -11,7 +11,7 @@
   "activity_log": [],
   "reserve_mode": "percent",
   "reserve_value": 20.0,
-  "last_account_sync": "2026-05-05T00:51:35.825162",
+  "last_account_sync": "2026-05-05T03:09:43.748185",
   "account_math_basis": "cash_plus_open_market_value",
   "open_positions": 3,
   "vehicle_mix": {
