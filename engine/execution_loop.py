@@ -6,12 +6,6 @@ Observatory Execution Loop
 Purpose:
     Own the execution step after candidate selection.
 
-Why this file exists:
-    execute_trades() used to live inside the executive loop, which made execution
-    persistence too muddy. The system could select an OPTION contract, then save
-    the open position as a STOCK shell carrying option metadata. That created
-    downstream monitor/review/close bugs.
-
 Canonical rule:
     The selected vehicle controls the saved open-position shape.
 
@@ -22,6 +16,7 @@ Canonical rule:
         - underlying_price is context only
         - monitoring_price_type = OPTION_PREMIUM
         - price_review_basis = OPTION_PREMIUM_ONLY
+        - stop/target/take_profit aliases are all option-premium values
 
     STOCK:
         - shares > 0
@@ -29,12 +24,6 @@ Canonical rule:
         - entry/current_price are underlying stock values
         - monitoring_price_type = UNDERLYING
         - price_review_basis = STOCK_PRICE
-
-Compatibility:
-    - Keeps execute_trades() public API.
-    - Keeps execute_via_adapter() handoff.
-    - Keeps add_position() persistence.
-    - Adds strong normalization before add_position().
 """
 
 import json
@@ -42,7 +31,7 @@ import math
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from engine.execution_handoff import execute_via_adapter, summarize_execution_packet
 from engine.paper_portfolio import add_position, open_count
@@ -60,10 +49,6 @@ DEFAULT_OPTION_TARGET_GAIN_PCT = 0.60
 DEFAULT_STOCK_STOP_LOSS_PCT = 0.03
 DEFAULT_STOCK_TARGET_GAIN_PCT = 0.10
 
-
-# =============================================================================
-# Safe helpers
-# =============================================================================
 
 def _safe_dict(value: Any) -> Dict[str, Any]:
     return value if isinstance(value, dict) else {}
@@ -176,15 +161,9 @@ def _load_json(path: str, default: Any) -> Any:
 def _write_json(path: str, payload: Any) -> None:
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-
-def _first_present(payload: Dict[str, Any], keys: List[str], default: Any = None) -> Any:
-    payload = _safe_dict(payload)
-    for key in keys:
-        if key in payload and payload.get(key) not in (None, ""):
-            return payload.get(key)
-    return default
+    tmp = p.with_suffix(p.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
+    tmp.replace(p)
 
 
 def _first_float(payload: Dict[str, Any], keys: List[str]) -> Optional[float]:
@@ -204,10 +183,6 @@ def _first_str(payload: Dict[str, Any], keys: List[str], default: str = "") -> s
             return str(value).strip()
     return default
 
-
-# =============================================================================
-# Vehicle / contract extraction
-# =============================================================================
 
 def _selected_vehicle(payload: Dict[str, Any]) -> str:
     payload = _safe_dict(payload)
@@ -236,14 +211,20 @@ def _selected_vehicle(payload: Dict[str, Any]) -> str:
     contract = _safe_dict(payload.get("contract"))
     contract_symbol = _first_str(
         payload,
-        ["contract_symbol", "option_symbol", "option_contract_symbol", "selected_contract_symbol", "occ_symbol"],
+        ["contract_symbol", "option_symbol", "option_contract_symbol", "selected_contract_symbol", "occ_symbol", "contractSymbol"],
         "",
     )
 
-    if option or contract or contract_symbol:
+    right = _upper(
+        _first_str(payload, ["right", "option_type", "call_put", "contract_right"], "")
+        or _first_str(option, ["right", "option_type", "call_put", "contract_right"], "")
+        or _first_str(contract, ["right", "option_type", "call_put", "contract_right"], ""),
+        "",
+    )
+
+    if option or contract or contract_symbol or right in {"CALL", "PUT", "C", "P"}:
         contracts = _safe_int(payload.get("contracts", payload.get("contract_count", 0)), 0)
         shares = _safe_int(payload.get("shares", payload.get("quantity", payload.get("qty", 0))), 0)
-
         if contracts > 0 or shares <= 0:
             return VEHICLE_OPTION
 
@@ -282,6 +263,7 @@ def _extract_option_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
                 "option_contract_symbol",
                 "selected_contract_symbol",
                 "occ_symbol",
+                "contractSymbol",
             ],
             "",
         )
@@ -293,36 +275,19 @@ def _extract_option_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
                 "option_symbol",
                 "selected_contract_symbol",
                 "occ_symbol",
-                "symbol",
             ],
             "",
         )
     )
 
     expiry = (
-        _first_str(
-            payload,
-            ["expiry", "expiration", "expiration_date", "contract_expiry"],
-            "",
-        )
-        or _first_str(
-            merged,
-            ["expiration", "expiry", "expiration_date", "contract_expiry"],
-            "",
-        )
+        _first_str(payload, ["expiry", "expiration", "expiration_date", "contract_expiry"], "")
+        or _first_str(merged, ["expiration", "expiry", "expiration_date", "contract_expiry"], "")
     )
 
     right = _upper(
-        _first_str(
-            payload,
-            ["right", "option_type", "call_put", "contract_right"],
-            "",
-        )
-        or _first_str(
-            merged,
-            ["right", "option_type", "call_put", "contract_right"],
-            "",
-        ),
+        _first_str(payload, ["right", "option_type", "call_put", "contract_right"], "")
+        or _first_str(merged, ["right", "option_type", "call_put", "contract_right"], ""),
         "",
     )
 
@@ -385,8 +350,10 @@ def _extract_option_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
             ["selected_price_reference", "price_reference", "fill_price", "executed_price", "mark", "ask", "last"],
         )
 
-    return {
-        "symbol": _norm_symbol(payload.get("symbol", merged.get("underlying_symbol", merged.get("symbol", "")))),
+    final_price_reference = selected_price_reference if selected_price_reference is not None else mark
+
+    out = {
+        "symbol": _norm_symbol(payload.get("symbol", merged.get("underlying_symbol", ""))),
         "contractSymbol": contract_symbol,
         "contract_symbol": contract_symbol,
         "option_symbol": contract_symbol,
@@ -398,29 +365,35 @@ def _extract_option_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
         "ask": ask,
         "last": last,
         "mark": mark,
-        "selected_price_reference": selected_price_reference,
-        "price_reference": selected_price_reference if selected_price_reference is not None else mark,
+        "selected_price_reference": final_price_reference,
+        "price_reference": final_price_reference,
         "volume": _safe_int(payload.get("volume", merged.get("volume")), 0),
         "open_interest": _safe_int(payload.get("open_interest", merged.get("open_interest", merged.get("oi"))), 0),
-        "implied_volatility": _safe_float(
-            payload.get("implied_volatility", merged.get("implied_volatility")),
-            0.0,
-        ),
+        "implied_volatility": _safe_float(payload.get("implied_volatility", merged.get("implied_volatility")), 0.0),
         "in_the_money": _safe_bool(payload.get("in_the_money", merged.get("in_the_money")), False),
         "spread": _safe_float(payload.get("spread", merged.get("spread")), 0.0),
         "spread_pct": _safe_float(payload.get("spread_pct", merged.get("spread_pct")), 0.0),
         "distance_pct": _safe_float(payload.get("distance_pct", merged.get("distance_pct")), 0.0),
-        "contract_score": _safe_float(
-            payload.get("contract_score", merged.get("contract_score")),
-            0.0,
-        ),
+        "contract_score": _safe_float(payload.get("contract_score", merged.get("contract_score")), 0.0),
         "trade_intent": _safe_str(payload.get("trade_intent", merged.get("trade_intent")), ""),
         "dte": _safe_int(payload.get("dte", merged.get("dte")), 0),
         "monitoring_mode": "OPTION_PREMIUM",
+        "price_basis": "OPTION_PREMIUM",
         "is_executable": _safe_bool(payload.get("is_executable", merged.get("is_executable")), True),
         "execution_reason": _safe_str(payload.get("execution_reason", merged.get("execution_reason")), "ok"),
         "contract_notes": _safe_list(payload.get("contract_notes", merged.get("contract_notes"))),
     }
+
+    if final_price_reference is not None and final_price_reference > 0:
+        out["current_mark"] = final_price_reference
+        out["current_option_mark"] = final_price_reference
+        out["option_current_mark"] = final_price_reference
+        out["option_current_price"] = final_price_reference
+        out["current_option_price"] = final_price_reference
+        out["current_premium"] = final_price_reference
+        out["premium_current"] = final_price_reference
+
+    return out
 
 
 def _mid_from_bid_ask(bid: Optional[float], ask: Optional[float]) -> Optional[float]:
@@ -434,11 +407,17 @@ def _mid_from_bid_ask(bid: Optional[float], ask: Optional[float]) -> Optional[fl
 
 
 def _option_premium(payload: Dict[str, Any], execution_result: Dict[str, Any], contract: Dict[str, Any]) -> float:
+    execution_record = _safe_dict(execution_result.get("execution_record"))
+
     direct_candidates = [
         execution_result.get("fill_price"),
         execution_result.get("executed_price"),
         execution_result.get("average_fill_price"),
         execution_result.get("avg_fill_price"),
+        execution_record.get("fill_price"),
+        execution_record.get("filled_price"),
+        execution_record.get("entry_premium"),
+        execution_record.get("current_premium"),
         payload.get("fill_price"),
         payload.get("executed_price"),
         payload.get("entry_premium"),
@@ -475,6 +454,8 @@ def _option_premium(payload: Dict[str, Any], execution_result: Dict[str, Any], c
 
 
 def _underlying_price(payload: Dict[str, Any], execution_result: Dict[str, Any]) -> float:
+    execution_record = _safe_dict(execution_result.get("execution_record"))
+
     value = _first_float(
         payload,
         [
@@ -493,6 +474,18 @@ def _underlying_price(payload: Dict[str, Any], execution_result: Dict[str, Any])
 
     value = _first_float(
         execution_result,
+        [
+            "underlying_price",
+            "current_underlying_price",
+            "stock_price",
+            "market_price",
+        ],
+    )
+    if value is not None and value > 0:
+        return round(value, 4)
+
+    value = _first_float(
+        execution_record,
         [
             "underlying_price",
             "current_underlying_price",
@@ -539,9 +532,64 @@ def _extract_trade_id(packet: Dict[str, Any]) -> str:
     )
 
 
-# =============================================================================
-# Position normalization before add_position()
-# =============================================================================
+def _stamp_option_price_aliases(pos: Dict[str, Any], premium: float) -> None:
+    premium = round(_safe_float(premium, 0.0), 4)
+
+    pos["entry"] = premium
+    pos["entry_price"] = premium
+    pos["price"] = premium
+    pos["requested_price"] = premium
+    pos["fill_price"] = premium
+    pos["executed_price"] = premium
+    pos["current_price"] = premium
+    pos["current"] = premium
+
+    pos["entry_premium"] = premium
+    pos["premium_entry"] = premium
+    pos["option_entry"] = premium
+    pos["option_entry_price"] = premium
+    pos["current_premium"] = premium
+    pos["premium_current"] = premium
+    pos["current_option_mark"] = premium
+    pos["option_current_mark"] = premium
+    pos["option_current_price"] = premium
+    pos["current_option_price"] = premium
+    pos["mark"] = premium
+
+
+def _stamp_option_stop_target_aliases(pos: Dict[str, Any], stop: float, target: float) -> None:
+    stop = round(_safe_float(stop, 0.0), 4)
+    target = round(_safe_float(target, 0.0), 4)
+
+    pos["stop"] = stop
+    pos["stop_loss"] = stop
+    pos["option_stop"] = stop
+    pos["premium_stop"] = stop
+    pos["stop_premium"] = stop
+    pos["stop_loss_premium"] = stop
+    pos["contract_stop"] = stop
+
+    pos["target"] = target
+    pos["take_profit"] = target
+    pos["option_target"] = target
+    pos["premium_target"] = target
+    pos["target_premium"] = target
+    pos["take_profit_premium"] = target
+    pos["contract_target"] = target
+
+
+def _stamp_stock_stop_target_aliases(pos: Dict[str, Any], stop: float, target: float) -> None:
+    stop = round(_safe_float(stop, 0.0), 4)
+    target = round(_safe_float(target, 0.0), 4)
+
+    pos["stop"] = stop
+    pos["stop_loss"] = stop
+    pos["stock_stop"] = stop
+
+    pos["target"] = target
+    pos["take_profit"] = target
+    pos["stock_target"] = target
+
 
 def _normalize_option_lifecycle_for_position(
     lifecycle_after: Dict[str, Any],
@@ -560,21 +608,31 @@ def _normalize_option_lifecycle_for_position(
     underlying = _underlying_price(pos, execution_result)
 
     contracts = _safe_int(
-        pos.get(
-            "contracts",
-            pos.get("contract_count", pos.get("quantity", pos.get("qty", 1))),
-        ),
+        pos.get("contracts", pos.get("contract_count", pos.get("quantity", pos.get("qty", 1)))),
         1,
     )
     contracts = max(1, contracts)
 
     stop = _first_float(
         pos,
-        ["option_stop", "premium_stop", "stop_premium", "contract_stop", "stop_loss_premium"],
+        [
+            "option_stop",
+            "premium_stop",
+            "stop_premium",
+            "contract_stop",
+            "stop_loss_premium",
+        ],
     )
+
     target = _first_float(
         pos,
-        ["option_target", "premium_target", "target_premium", "contract_target", "take_profit_premium"],
+        [
+            "option_target",
+            "premium_target",
+            "target_premium",
+            "contract_target",
+            "take_profit_premium",
+        ],
     )
 
     if stop is None or stop <= 0:
@@ -596,6 +654,7 @@ def _normalize_option_lifecycle_for_position(
     commission = _safe_float(execution_result.get("commission"), 0.0)
 
     pos["symbol"] = symbol
+    pos["company_name"] = _safe_str(pos.get("company_name"), symbol)
     pos["trade_id"] = trade_id
     pos["strategy"] = strategy
     pos["side"] = strategy
@@ -614,42 +673,24 @@ def _normalize_option_lifecycle_for_position(
     pos["size"] = contracts
     pos["shares"] = 0
 
-    pos["entry"] = premium
-    pos["entry_price"] = premium
-    pos["fill_price"] = premium
-    pos["executed_price"] = premium
-    pos["current_price"] = premium
-
-    pos["entry_premium"] = premium
-    pos["premium_entry"] = premium
-    pos["option_entry"] = premium
-    pos["option_entry_price"] = premium
-    pos["current_premium"] = premium
-    pos["premium_current"] = premium
-    pos["current_option_mark"] = premium
-    pos["option_current_mark"] = premium
-    pos["option_current_price"] = premium
-    pos["current_option_price"] = premium
-
-    pos["stop"] = stop
-    pos["target"] = target
-    pos["option_stop"] = stop
-    pos["premium_stop"] = stop
-    pos["option_target"] = target
-    pos["premium_target"] = target
+    _stamp_option_price_aliases(pos, premium)
+    _stamp_option_stop_target_aliases(pos, stop, target)
 
     pos["underlying_price"] = underlying
     pos["current_underlying_price"] = underlying
     pos["stock_price"] = underlying
 
     pos["monitoring_price_type"] = "OPTION_PREMIUM"
+    pos["monitoring_mode"] = "OPTION_PREMIUM"
     pos["price_review_basis"] = "OPTION_PREMIUM_ONLY"
+    pos["price_basis"] = "OPTION_PREMIUM"
     pos["underlying_price_used_for_close_decision"] = False
     pos["pnl_basis"] = "option_premium_x_100"
 
     contract_symbol = _safe_str(contract.get("contract_symbol") or contract.get("contractSymbol"), "")
     if contract_symbol:
         pos["contract_symbol"] = contract_symbol
+        pos["contractSymbol"] = contract_symbol
         pos["option_symbol"] = contract_symbol
         pos["option_contract_symbol"] = contract_symbol
 
@@ -670,6 +711,38 @@ def _normalize_option_lifecycle_for_position(
         pos["strike"] = strike
         pos["strike_price"] = strike
 
+    for key in [
+        "bid",
+        "ask",
+        "last",
+        "volume",
+        "open_interest",
+        "dte",
+        "spread",
+        "spread_pct",
+        "distance_pct",
+        "implied_volatility",
+        "in_the_money",
+        "contract_score",
+        "trade_intent",
+        "contract_notes",
+    ]:
+        if key in contract:
+            pos[key] = contract.get(key)
+
+    contract["mark"] = premium
+    contract["selected_price_reference"] = premium
+    contract["price_reference"] = premium
+    contract["current_mark"] = premium
+    contract["current_option_mark"] = premium
+    contract["option_current_mark"] = premium
+    contract["option_current_price"] = premium
+    contract["current_option_price"] = premium
+    contract["current_premium"] = premium
+    contract["premium_current"] = premium
+    contract["monitoring_mode"] = "OPTION_PREMIUM"
+    contract["price_basis"] = "OPTION_PREMIUM"
+
     pos["option"] = contract
     pos["contract"] = contract
 
@@ -681,17 +754,39 @@ def _normalize_option_lifecycle_for_position(
 
     pos["opened_at"] = _safe_str(pos.get("opened_at"), _now_iso())
     pos["timestamp"] = _safe_str(pos.get("timestamp"), pos["opened_at"])
+    pos["entered_at"] = _safe_str(pos.get("entered_at"), pos["opened_at"])
+    pos["closed_at"] = _safe_str(pos.get("closed_at"), "")
+    pos["exit_price"] = _safe_float(pos.get("exit_price"), 0.0)
+    pos["close_price"] = _safe_float(pos.get("close_price"), 0.0)
+
     pos["status"] = "OPEN"
     pos["position_status"] = "OPEN"
+    pos["execution_status"] = "FILLED"
     pos["lifecycle_stage"] = "ENTERED"
 
     pos["trading_mode"] = trading_mode
     pos["mode"] = trading_mode
+    pos["execution_mode"] = trading_mode
     pos["mode_context"] = mode_context
 
     pos["execution_result"] = execution_result
     pos["execution_normalized_by"] = "engine.execution_loop"
     pos["execution_position_shape"] = "OPTION_PREMIUM_POSITION"
+
+    pos["execution_contract_audit"] = {
+        "vehicle": VEHICLE_OPTION,
+        "premium": premium,
+        "stop": stop,
+        "target": target,
+        "contracts": contracts,
+        "underlying_price": underlying,
+        "contract_symbol": contract_symbol,
+        "expiry": expiry,
+        "right": right,
+        "strike": strike,
+        "field_family_locked": True,
+        "stop_target_aliases_locked": True,
+    }
 
     return pos
 
@@ -740,6 +835,7 @@ def _normalize_stock_lifecycle_for_position(
     commission = _safe_float(execution_result.get("commission"), 0.0)
 
     pos["symbol"] = symbol
+    pos["company_name"] = _safe_str(pos.get("company_name"), symbol)
     pos["trade_id"] = trade_id
     pos["strategy"] = strategy
     pos["side"] = strategy
@@ -758,27 +854,37 @@ def _normalize_stock_lifecycle_for_position(
     pos["contracts"] = 0
     pos["contract_count"] = 0
 
-    pos["entry"] = round(entry, 4)
-    pos["entry_price"] = round(entry, 4)
-    pos["fill_price"] = round(entry, 4)
-    pos["executed_price"] = round(entry, 4)
-    pos["current_price"] = round(entry, 4)
-    pos["underlying_price"] = round(entry, 4)
-    pos["current_underlying_price"] = round(entry, 4)
-    pos["stock_price"] = round(entry, 4)
+    entry = round(entry, 4)
+
+    pos["entry"] = entry
+    pos["entry_price"] = entry
+    pos["price"] = entry
+    pos["requested_price"] = entry
+    pos["fill_price"] = entry
+    pos["executed_price"] = entry
+    pos["current_price"] = entry
+    pos["current"] = entry
+    pos["underlying_price"] = entry
+    pos["current_underlying_price"] = entry
+    pos["stock_price"] = entry
 
     pos["entry_premium"] = None
     pos["premium_entry"] = None
+    pos["option_entry"] = None
+    pos["option_entry_price"] = None
     pos["current_premium"] = None
     pos["premium_current"] = None
     pos["current_option_mark"] = None
+    pos["option_current_mark"] = None
     pos["option_current_price"] = None
+    pos["current_option_price"] = None
 
-    pos["stop"] = round(stop, 4) if stop > 0 else 0.0
-    pos["target"] = round(target, 4) if target > 0 else 0.0
+    _stamp_stock_stop_target_aliases(pos, stop, target)
 
     pos["monitoring_price_type"] = "UNDERLYING"
+    pos["monitoring_mode"] = "UNDERLYING"
     pos["price_review_basis"] = "STOCK_PRICE"
+    pos["price_basis"] = "STOCK_PRICE"
     pos["underlying_price_used_for_close_decision"] = True
     pos["pnl_basis"] = "stock_price_x_shares"
 
@@ -790,12 +896,19 @@ def _normalize_stock_lifecycle_for_position(
 
     pos["opened_at"] = _safe_str(pos.get("opened_at"), _now_iso())
     pos["timestamp"] = _safe_str(pos.get("timestamp"), pos["opened_at"])
+    pos["entered_at"] = _safe_str(pos.get("entered_at"), pos["opened_at"])
+    pos["closed_at"] = _safe_str(pos.get("closed_at"), "")
+    pos["exit_price"] = _safe_float(pos.get("exit_price"), 0.0)
+    pos["close_price"] = _safe_float(pos.get("close_price"), 0.0)
+
     pos["status"] = "OPEN"
     pos["position_status"] = "OPEN"
+    pos["execution_status"] = "FILLED"
     pos["lifecycle_stage"] = "ENTERED"
 
     pos["trading_mode"] = trading_mode
     pos["mode"] = trading_mode
+    pos["execution_mode"] = trading_mode
     pos["mode_context"] = mode_context
 
     pos["execution_result"] = execution_result
@@ -830,6 +943,7 @@ def _normalize_lifecycle_for_position(packet: Dict[str, Any]) -> Dict[str, Any]:
     if vehicle == VEHICLE_RESEARCH_ONLY:
         lifecycle_after["vehicle"] = VEHICLE_RESEARCH_ONLY
         lifecycle_after["vehicle_selected"] = VEHICLE_RESEARCH_ONLY
+        lifecycle_after["selected_vehicle"] = VEHICLE_RESEARCH_ONLY
         lifecycle_after["monitoring_price_type"] = "RESEARCH_ONLY"
         lifecycle_after["price_review_basis"] = "NO_POSITION"
         lifecycle_after["status"] = "RESEARCH_ONLY"
@@ -846,10 +960,6 @@ def _normalize_lifecycle_for_position(packet: Dict[str, Any]) -> Dict[str, Any]:
     )
 
 
-# =============================================================================
-# Logging
-# =============================================================================
-
 def _append_trade_log(packet: Dict[str, Any], position: Dict[str, Any]) -> None:
     trade_log = _load_json("data/trade_log.json", [])
     if not isinstance(trade_log, list):
@@ -864,13 +974,14 @@ def _append_trade_log(packet: Dict[str, Any], position: Dict[str, Any]) -> None:
 
     vehicle = _selected_vehicle(position)
 
-    trade_log.append({
+    row = {
         "timestamp": _safe_str(position.get("opened_at"), _now_iso()),
         "trade_id": _safe_str(position.get("trade_id"), ""),
         "symbol": _norm_symbol(position.get("symbol")),
         "strategy": _upper(position.get("strategy", "CALL"), "CALL"),
         "vehicle": vehicle,
         "vehicle_selected": vehicle,
+        "selected_vehicle": vehicle,
         "action": "OPEN",
         "status": "FILLED",
         "fill_price": round(_safe_float(position.get("fill_price", position.get("entry", 0.0)), 0.0), 4),
@@ -880,8 +991,22 @@ def _append_trade_log(packet: Dict[str, Any], position: Dict[str, Any]) -> None:
         "underlying_price": round(_safe_float(position.get("underlying_price", 0.0), 0.0), 4),
         "current_underlying_price": round(_safe_float(position.get("current_underlying_price", 0.0), 0.0), 4),
         "entry_premium": round(_safe_float(position.get("entry_premium", 0.0), 0.0), 4),
+        "premium_entry": round(_safe_float(position.get("premium_entry", 0.0), 0.0), 4),
         "current_premium": round(_safe_float(position.get("current_premium", 0.0), 0.0), 4),
+        "premium_current": round(_safe_float(position.get("premium_current", 0.0), 0.0), 4),
         "current_option_mark": round(_safe_float(position.get("current_option_mark", 0.0), 0.0), 4),
+        "option_current_price": round(_safe_float(position.get("option_current_price", 0.0), 0.0), 4),
+        "stop": round(_safe_float(position.get("stop", 0.0), 0.0), 4),
+        "stop_loss": round(_safe_float(position.get("stop_loss", 0.0), 0.0), 4),
+        "target": round(_safe_float(position.get("target", 0.0), 0.0), 4),
+        "take_profit": round(_safe_float(position.get("take_profit", 0.0), 0.0), 4),
+        "option_stop": round(_safe_float(position.get("option_stop", 0.0), 0.0), 4),
+        "premium_stop": round(_safe_float(position.get("premium_stop", 0.0), 0.0), 4),
+        "stop_premium": round(_safe_float(position.get("stop_premium", 0.0), 0.0), 4),
+        "option_target": round(_safe_float(position.get("option_target", 0.0), 0.0), 4),
+        "premium_target": round(_safe_float(position.get("premium_target", 0.0), 0.0), 4),
+        "target_premium": round(_safe_float(position.get("target_premium", 0.0), 0.0), 4),
+        "take_profit_premium": round(_safe_float(position.get("take_profit_premium", 0.0), 0.0), 4),
         "quantity": _safe_int(position.get("size", position.get("quantity", 0)), 0),
         "shares": _safe_int(position.get("shares", 0), 0),
         "contracts": _safe_int(position.get("contracts", 0), 0),
@@ -896,19 +1021,25 @@ def _append_trade_log(packet: Dict[str, Any], position: Dict[str, Any]) -> None:
             "entered",
         ),
         "monitoring_price_type": _safe_str(position.get("monitoring_price_type"), ""),
+        "monitoring_mode": _safe_str(position.get("monitoring_mode"), ""),
         "price_review_basis": _safe_str(position.get("price_review_basis"), ""),
+        "price_basis": _safe_str(position.get("price_basis"), ""),
         "underlying_price_used_for_close_decision": _safe_bool(
             position.get("underlying_price_used_for_close_decision"),
             vehicle != VEHICLE_OPTION,
         ),
+        "pnl_basis": _safe_str(position.get("pnl_basis"), ""),
         "contract_symbol": _safe_str(position.get("contract_symbol", position.get("option_symbol")), ""),
+        "option_symbol": _safe_str(position.get("option_symbol", position.get("contract_symbol")), ""),
         "expiry": _safe_str(position.get("expiry", position.get("expiration")), ""),
+        "expiration": _safe_str(position.get("expiration", position.get("expiry")), ""),
         "strike": _safe_float(position.get("strike"), 0.0),
         "right": _safe_str(position.get("right"), ""),
         "execution_position_shape": _safe_str(position.get("execution_position_shape"), ""),
         "execution_record": execution_record,
-    })
+    }
 
+    trade_log.append(row)
     _write_json("data/trade_log.json", trade_log)
 
 
@@ -916,7 +1047,6 @@ def _persist_executed_trade(packet: Dict[str, Any]) -> Dict[str, Any]:
     packet = _safe_dict(packet)
 
     normalized_lifecycle = _normalize_lifecycle_for_position(packet)
-
     vehicle = _selected_vehicle(normalized_lifecycle)
 
     if vehicle == VEHICLE_RESEARCH_ONLY:
@@ -951,10 +1081,6 @@ def _persist_executed_trade(packet: Dict[str, Any]) -> Dict[str, Any]:
         "execution_position_shape": _safe_str(normalized_lifecycle.get("execution_position_shape"), ""),
     }
 
-
-# =============================================================================
-# Public execution loop
-# =============================================================================
 
 def execute_trades(
     queue: List[Dict[str, Any]] | None,
@@ -1018,6 +1144,9 @@ def execute_trades(
             "paper",
         )
 
+        option_obj = _safe_dict(queued_trade.get("option"))
+        contract_obj = _safe_dict(queued_trade.get("contract"))
+
         print("PRE-EXECUTION-HANDOFF:", {
             "symbol": queued_trade.get("symbol"),
             "trade_id": queued_trade.get("trade_id"),
@@ -1027,10 +1156,14 @@ def execute_trades(
             "vehicle_selected": queued_trade.get("vehicle_selected"),
             "contracts": queued_trade.get("contracts"),
             "shares": queued_trade.get("shares"),
-            "has_option": bool(_safe_dict(queued_trade.get("option")) or _safe_dict(queued_trade.get("contract"))),
-            "contract_symbol": queued_trade.get("contract_symbol")
-                or _safe_dict(queued_trade.get("option")).get("contractSymbol")
-                or _safe_dict(queued_trade.get("option")).get("contract_symbol"),
+            "has_option": bool(option_obj or contract_obj),
+            "contract_symbol": (
+                queued_trade.get("contract_symbol")
+                or option_obj.get("contractSymbol")
+                or option_obj.get("contract_symbol")
+                or contract_obj.get("contractSymbol")
+                or contract_obj.get("contract_symbol")
+            ),
             "lifecycle_stage": queued_trade.get("lifecycle_stage"),
             "trading_mode": resolved_mode,
         })
@@ -1059,7 +1192,6 @@ def execute_trades(
             if _safe_bool(persistence.get("persisted"), False):
                 persisted += 1
                 open_positions_running += 1
-
             else:
                 persistence_blocked += 1
 
@@ -1079,6 +1211,15 @@ def execute_trades(
                     "entry_premium": position.get("entry_premium"),
                     "current_premium": position.get("current_premium"),
                     "underlying_price": position.get("underlying_price"),
+                    "stop": position.get("stop"),
+                    "target": position.get("target"),
+                    "take_profit": position.get("take_profit"),
+                    "option_stop": position.get("option_stop"),
+                    "option_target": position.get("option_target"),
+                    "premium_stop": position.get("premium_stop"),
+                    "premium_target": position.get("premium_target"),
+                    "target_premium": position.get("target_premium"),
+                    "take_profit_premium": position.get("take_profit_premium"),
                     "monitoring_price_type": position.get("monitoring_price_type"),
                     "price_review_basis": position.get("price_review_basis"),
                     "execution_position_shape": position.get("execution_position_shape"),
