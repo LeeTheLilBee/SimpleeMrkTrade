@@ -32,9 +32,7 @@ def _safe_dict(value: Any) -> Dict[str, Any]:
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
-        if value is None:
-            return float(default)
-        if isinstance(value, bool):
+        if value is None or isinstance(value, bool):
             return float(default)
         if isinstance(value, str):
             value = value.replace("$", "").replace(",", "").strip()
@@ -50,9 +48,7 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
 
 def _safe_optional_float(value: Any) -> Optional[float]:
     try:
-        if value is None:
-            return None
-        if isinstance(value, bool):
+        if value is None or isinstance(value, bool):
             return None
         if isinstance(value, str):
             value = value.replace("$", "").replace(",", "").strip()
@@ -68,9 +64,7 @@ def _safe_optional_float(value: Any) -> Optional[float]:
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
-        if value is None:
-            return int(default)
-        if isinstance(value, bool):
+        if value is None or isinstance(value, bool):
             return int(default)
         if isinstance(value, str):
             value = value.replace(",", "").strip()
@@ -105,15 +99,18 @@ def _read_json(path_str: str, default: Any) -> Any:
 
 
 def load_open_positions() -> List[Dict[str, Any]]:
-    return _safe_list(_read_json(OPEN_FILE, []))
+    rows = _read_json(OPEN_FILE, [])
+    return rows if isinstance(rows, list) else []
 
 
 def load_closed_positions() -> List[Dict[str, Any]]:
-    return _safe_list(_read_json(CLOSED_FILE, []))
+    rows = _read_json(CLOSED_FILE, [])
+    return rows if isinstance(rows, list) else []
 
 
 def load_account_state() -> Dict[str, Any]:
-    return _safe_dict(_read_json(ACCOUNT_FILE, {}))
+    state = _read_json(ACCOUNT_FILE, {})
+    return state if isinstance(state, dict) else {}
 
 
 def _vehicle(pos: Dict[str, Any]) -> str:
@@ -179,26 +176,19 @@ def _direction(pos: Dict[str, Any]) -> str:
 
 
 def _contracts(pos: Dict[str, Any]) -> int:
-    return max(
-        1,
-        _safe_int(
-            pos.get(
-                "contracts",
-                pos.get(
-                    "contract_count",
-                    pos.get("quantity", pos.get("qty", pos.get("size", 1))),
-                ),
-            ),
-            1,
+    raw = pos.get(
+        "contracts",
+        pos.get(
+            "contract_count",
+            pos.get("quantity", pos.get("qty", pos.get("size", 1))),
         ),
     )
+    return max(1, _safe_int(raw, 1))
 
 
 def _shares(pos: Dict[str, Any]) -> int:
-    return max(
-        1,
-        _safe_int(pos.get("shares", pos.get("quantity", pos.get("qty", pos.get("size", 1)))), 1),
-    )
+    raw = pos.get("shares", pos.get("quantity", pos.get("qty", pos.get("size", 1))))
+    return max(1, _safe_int(raw, 1))
 
 
 def _underlying_price(pos: Dict[str, Any]) -> Optional[float]:
@@ -601,16 +591,74 @@ def get_unrealized_pnl() -> Dict[str, Any]:
     return calculate_unrealized_pnl()
 
 
+def _closed_trade_realized_pnl(closed_positions: List[Dict[str, Any]]) -> float:
+    realized = 0.0
+    for pos in closed_positions:
+        if isinstance(pos, dict):
+            realized += _safe_float(pos.get("pnl", pos.get("realized_pnl", 0.0)), 0.0)
+    return round(realized, 2)
+
+
+def _clean_account_math(
+    *,
+    account: Dict[str, Any],
+    cash: float,
+    buying_power: float,
+    open_market_value: float,
+    unrealized_total: float,
+) -> Dict[str, Any]:
+    account_equity_raw = _safe_optional_float(account.get("equity"))
+    account_estimated_raw = _safe_optional_float(account.get("estimated_account_value"))
+
+    calculated_equity = round(cash + open_market_value, 2)
+
+    if account_equity_raw is None or account_equity_raw <= 0:
+        equity = calculated_equity
+        equity_source = "cash_plus_open_market_value"
+    else:
+        account_equity = round(account_equity_raw, 2)
+        if open_market_value > 0:
+            gap = abs(account_equity - calculated_equity)
+            if gap <= max(2.0, calculated_equity * 0.03):
+                equity = account_equity
+                equity_source = "account_state_equity"
+            else:
+                equity = calculated_equity
+                equity_source = "recalculated_cash_plus_open_market_value_due_to_gap"
+        else:
+            equity = account_equity
+            equity_source = "account_state_equity_no_open_market_value"
+    
+    estimated_account_value = equity
+
+    double_count_warning = False
+    if account_estimated_raw is not None:
+        account_estimated = round(account_estimated_raw, 2)
+        if abs(account_estimated - round(equity + unrealized_total, 2)) <= 0.02 and abs(unrealized_total) > 0:
+            double_count_warning = True
+
+    return {
+        "cash": round(cash, 2),
+        "buying_power": round(buying_power, 2),
+        "equity": round(equity, 2),
+        "estimated_account_value": round(estimated_account_value, 2),
+        "calculated_equity": calculated_equity,
+        "open_market_value_included_in_equity": True,
+        "unrealized_already_in_equity": True,
+        "estimated_value_formula": "cash + open_market_value",
+        "equity_source": equity_source,
+        "account_state_equity": round(account_equity_raw, 2) if account_equity_raw is not None else 0.0,
+        "account_state_estimated_account_value": round(account_estimated_raw, 2) if account_estimated_raw is not None else 0.0,
+        "double_count_warning": double_count_warning,
+    }
+
+
 def portfolio_summary() -> Dict[str, Any]:
     open_positions = load_open_positions()
     closed_positions = load_closed_positions()
     account = load_account_state()
 
-    realized = 0.0
-    for pos in closed_positions:
-        if isinstance(pos, dict):
-            realized += _safe_float(pos.get("pnl", 0.0), 0.0)
-
+    realized = _closed_trade_realized_pnl(closed_positions)
     unrealized = calculate_unrealized_pnl()
 
     gross_capital_open = round(
@@ -618,26 +666,37 @@ def portfolio_summary() -> Dict[str, Any]:
         2,
     )
 
+    total_market_value_open = round(_safe_float(unrealized.get("total_market_value"), 0.0), 2)
+    unrealized_total = round(_safe_float(unrealized.get("total_unrealized"), 0.0), 2)
+
     cash = round(_safe_float(account.get("cash", 0.0), 0.0), 2)
     buying_power = round(_safe_float(account.get("buying_power", cash), cash), 2)
-    equity = round(_safe_float(account.get("equity", 0.0), 0.0), 2)
-    unrealized_total = round(_safe_float(unrealized.get("total_unrealized"), 0.0), 2)
+
+    clean_account = _clean_account_math(
+        account=account,
+        cash=cash,
+        buying_power=buying_power,
+        open_market_value=total_market_value_open,
+        unrealized_total=unrealized_total,
+    )
 
     return {
         "open_positions": len(open_positions),
         "closed_positions": len(closed_positions),
-        "realized_pnl": round(realized, 2),
+        "realized_pnl": realized,
         "unrealized_pnl": unrealized_total,
         "gross_capital_open": gross_capital_open,
-        "total_market_value_open": round(_safe_float(unrealized.get("total_market_value"), 0.0), 2),
-        "cash": cash,
-        "buying_power": buying_power,
-        "equity": equity,
-        "estimated_account_value": round(equity + unrealized_total, 2),
+        "total_market_value_open": total_market_value_open,
+        "cash": clean_account["cash"],
+        "buying_power": clean_account["buying_power"],
+        "equity": clean_account["equity"],
+        "estimated_account_value": clean_account["estimated_account_value"],
+        "calculated_equity": clean_account["calculated_equity"],
         "vehicle_mix": unrealized.get("vehicle_mix"),
         "net_pnl": round(realized + unrealized_total, 2),
         "unrealized_detail": unrealized,
         "option_safety": unrealized.get("option_safety", {}),
+        "account_math": clean_account,
     }
 
 
@@ -665,6 +724,7 @@ def print_portfolio_summary() -> None:
     print(f"Estimated Account Value: {summary.get('estimated_account_value')}")
     print(f"Vehicle Mix: {summary.get('vehicle_mix')}")
     print(f"Option Safety: {summary.get('option_safety')}")
+    print(f"Account Math: {summary.get('account_math')}")
 
 
 __all__ = [
