@@ -91,6 +91,7 @@ def _read_json(path_str: str, default: Any) -> Any:
     path = Path(path_str)
     if not path.exists():
         return default
+
     try:
         with open(path_str, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -170,8 +171,10 @@ def _strategy(pos: Dict[str, Any]) -> str:
 
 def _direction(pos: Dict[str, Any]) -> str:
     strategy = _strategy(pos)
+
     if "PUT" in strategy or "SHORT" in strategy:
         return "SHORT"
+
     return "LONG"
 
 
@@ -205,6 +208,7 @@ def _underlying_price(pos: Dict[str, Any]) -> Optional[float]:
         price = _safe_optional_float(value)
         if price is not None and price > 0:
             return round(price, 4)
+
     return None
 
 
@@ -273,14 +277,17 @@ def _option_entry_premium(pos: Dict[str, Any]) -> Tuple[float, str]:
 
     for source, value in candidates:
         price = _safe_optional_float(value)
+
         if price is None or price < MIN_VALID_OPTION_PREMIUM:
             continue
+
         if _looks_like_underlying_leak(
             option_entry=None,
             candidate_price=price,
             underlying_price=underlying,
         ):
             continue
+
         return round(price, 4), source
 
     return 0.0, "missing_option_entry_premium"
@@ -324,6 +331,7 @@ def _option_current_premium(pos: Dict[str, Any], entry: float) -> Tuple[float, s
 
     for source, value in candidates:
         price = _safe_optional_float(value)
+
         if price is None or price < MIN_VALID_OPTION_PREMIUM:
             continue
 
@@ -338,6 +346,7 @@ def _option_current_premium(pos: Dict[str, Any], entry: float) -> Tuple[float, s
         return round(price, 4), source, leak_blocked
 
     legacy_current = _safe_optional_float(pos.get("current_price"))
+
     if legacy_current is not None and legacy_current >= MIN_VALID_OPTION_PREMIUM:
         if _looks_like_underlying_leak(
             option_entry=entry,
@@ -387,6 +396,7 @@ def _stock_current_price(pos: Dict[str, Any]) -> Tuple[float, str]:
         price = _safe_float(value, 0.0)
         if price > 0:
             return round(price, 4), source
+
     return 0.0, "missing_stock_current_price"
 
 
@@ -591,12 +601,86 @@ def get_unrealized_pnl() -> Dict[str, Any]:
     return calculate_unrealized_pnl()
 
 
-def _closed_trade_realized_pnl(closed_positions: List[Dict[str, Any]]) -> float:
+def _raw_closed_trade_realized_pnl(closed_positions: List[Dict[str, Any]]) -> float:
     realized = 0.0
+
     for pos in closed_positions:
         if isinstance(pos, dict):
             realized += _safe_float(pos.get("pnl", pos.get("realized_pnl", 0.0)), 0.0)
+
     return round(realized, 2)
+
+
+def _classified_realized_pnl_from_strategy_performance() -> Dict[str, Any]:
+    """
+    Use engine.strategy_performance as the official realized-PnL filter.
+
+    This keeps portfolio_summary aligned with:
+    - REAL_TRADE rows counted
+    - QUARANTINED_BAD_CLOSE excluded
+    - MANUAL_TEST excluded
+    - NEEDS_REVIEW_HIGH_OPTION_MOVE excluded from official performance until verified
+
+    If that module is missing or temporarily broken, this safely falls back to raw closed PnL.
+    """
+    closed_positions = load_closed_positions()
+    raw_realized = _raw_closed_trade_realized_pnl(closed_positions)
+
+    try:
+        from engine.strategy_performance import strategy_performance_summary
+
+        payload = strategy_performance_summary(include_excluded=False)
+        source = _safe_dict(payload.get("source"))
+        summary = _safe_dict(payload.get("summary"))
+        classifications = _safe_dict(payload.get("classifications"))
+        excluded_rows = _safe_list(payload.get("excluded_rows"))
+        flattened_rows = _safe_list(payload.get("flattened_rows"))
+
+        official_realized = round(_safe_float(summary.get("pnl"), raw_realized), 2)
+        excluded_realized = round(raw_realized - official_realized, 2)
+
+        classification_pnl: Dict[str, float] = {}
+        classification_rows: Dict[str, int] = {}
+
+        for label, row in classifications.items():
+            row_dict = _safe_dict(row)
+            clean_label = _upper(label, "UNKNOWN")
+            classification_pnl[clean_label] = round(_safe_float(row_dict.get("pnl"), 0.0), 2)
+            classification_rows[clean_label] = _safe_int(row_dict.get("trades"), 0)
+
+        return {
+            "official_realized_pnl": official_realized,
+            "raw_realized_pnl_all_closed_records": raw_realized,
+            "excluded_realized_pnl": excluded_realized,
+            "official_rows_used": _safe_int(source.get("rows_used"), _safe_int(summary.get("trades"), 0)),
+            "closed_rows_loaded": len(closed_positions),
+            "flattened_rows": _safe_int(source.get("flattened_rows"), len(flattened_rows)),
+            "rows_excluded_from_performance": _safe_int(
+                source.get("rows_excluded_from_performance"),
+                len(excluded_rows),
+            ),
+            "classification_pnl": classification_pnl,
+            "classification_rows": classification_rows,
+            "realized_pnl_source": "strategy_performance_filtered",
+            "filter_note": "Official realized PnL excludes quarantined, manual/test, stale, controlled-release, and review-only rows.",
+            "fallback_used": False,
+        }
+
+    except Exception as exc:
+        return {
+            "official_realized_pnl": raw_realized,
+            "raw_realized_pnl_all_closed_records": raw_realized,
+            "excluded_realized_pnl": 0.0,
+            "official_rows_used": len(closed_positions),
+            "closed_rows_loaded": len(closed_positions),
+            "flattened_rows": len(closed_positions),
+            "rows_excluded_from_performance": 0,
+            "classification_pnl": {},
+            "classification_rows": {},
+            "realized_pnl_source": "raw_closed_positions_fallback",
+            "filter_note": f"Fallback used because strategy_performance filter was unavailable: {type(exc).__name__}",
+            "fallback_used": True,
+        }
 
 
 def _clean_account_math(
@@ -617,6 +701,7 @@ def _clean_account_math(
         equity_source = "cash_plus_open_market_value"
     else:
         account_equity = round(account_equity_raw, 2)
+
         if open_market_value > 0:
             gap = abs(account_equity - calculated_equity)
             if gap <= max(2.0, calculated_equity * 0.03):
@@ -628,7 +713,7 @@ def _clean_account_math(
         else:
             equity = account_equity
             equity_source = "account_state_equity_no_open_market_value"
-    
+
     estimated_account_value = equity
 
     double_count_warning = False
@@ -658,7 +743,11 @@ def portfolio_summary() -> Dict[str, Any]:
     closed_positions = load_closed_positions()
     account = load_account_state()
 
-    realized = _closed_trade_realized_pnl(closed_positions)
+    realized_detail = _classified_realized_pnl_from_strategy_performance()
+    realized = round(_safe_float(realized_detail.get("official_realized_pnl"), 0.0), 2)
+    raw_realized = round(_safe_float(realized_detail.get("raw_realized_pnl_all_closed_records"), realized), 2)
+    excluded_realized = round(_safe_float(realized_detail.get("excluded_realized_pnl"), 0.0), 2)
+
     unrealized = calculate_unrealized_pnl()
 
     gross_capital_open = round(
@@ -683,7 +772,15 @@ def portfolio_summary() -> Dict[str, Any]:
     return {
         "open_positions": len(open_positions),
         "closed_positions": len(closed_positions),
+
+        # Official, filtered, performance-safe realized PnL.
         "realized_pnl": realized,
+
+        # Audit trail so nothing is hidden or deleted.
+        "realized_pnl_all_closed_records": raw_realized,
+        "excluded_realized_pnl": excluded_realized,
+        "realized_pnl_detail": realized_detail,
+
         "unrealized_pnl": unrealized_total,
         "gross_capital_open": gross_capital_open,
         "total_market_value_open": total_market_value_open,
@@ -694,6 +791,7 @@ def portfolio_summary() -> Dict[str, Any]:
         "calculated_equity": clean_account["calculated_equity"],
         "vehicle_mix": unrealized.get("vehicle_mix"),
         "net_pnl": round(realized + unrealized_total, 2),
+        "net_pnl_all_closed_records": round(raw_realized + unrealized_total, 2),
         "unrealized_detail": unrealized,
         "option_safety": unrealized.get("option_safety", {}),
         "account_math": clean_account,
@@ -710,11 +808,17 @@ def build_portfolio_summary() -> Dict[str, Any]:
 
 def print_portfolio_summary() -> None:
     summary = portfolio_summary()
+    realized_detail = _safe_dict(summary.get("realized_pnl_detail"))
 
     print("PORTFOLIO SUMMARY")
     print(f"Open Positions: {summary.get('open_positions')}")
     print(f"Closed Positions: {summary.get('closed_positions')}")
     print(f"Realized PnL: {summary.get('realized_pnl')}")
+    print(f"Realized PnL All Closed Records: {summary.get('realized_pnl_all_closed_records')}")
+    print(f"Excluded Realized PnL: {summary.get('excluded_realized_pnl')}")
+    print(f"Official Closed Rows Used: {realized_detail.get('official_rows_used')}")
+    print(f"Rows Excluded From Performance: {realized_detail.get('rows_excluded_from_performance')}")
+    print(f"Realized PnL Source: {realized_detail.get('realized_pnl_source')}")
     print(f"Unrealized PnL: {summary.get('unrealized_pnl')}")
     print(f"Gross Capital Open: {summary.get('gross_capital_open')}")
     print(f"Market Value Open: {summary.get('total_market_value_open')}")
@@ -725,6 +829,18 @@ def print_portfolio_summary() -> None:
     print(f"Vehicle Mix: {summary.get('vehicle_mix')}")
     print(f"Option Safety: {summary.get('option_safety')}")
     print(f"Account Math: {summary.get('account_math')}")
+
+    classification_pnl = _safe_dict(realized_detail.get("classification_pnl"))
+    classification_rows = _safe_dict(realized_detail.get("classification_rows"))
+
+    if classification_pnl:
+        print()
+        print("REALIZED PNL CLASSIFICATIONS")
+        for label in sorted(classification_pnl.keys()):
+            print(
+                f"{label}: rows={classification_rows.get(label, 0)} "
+                f"pnl={classification_pnl.get(label, 0.0)}"
+            )
 
 
 __all__ = [
