@@ -1,34 +1,5 @@
 [
   {
-    "timestamp": "2026-04-16T03:31:59.181972",
-    "performance": {
-      "trades": 1,
-      "wins": 0,
-      "losses": 1,
-      "winrate": 0.0,
-      "total_pnl": -2.01,
-      "max_drawdown": 2.01,
-      "entries_today": 2,
-      "closes_today": 1,
-      "round_trips_today": 1,
-      "realized_pnl_today": -2.01
-    },
-    "portfolio": {
-      "open_positions": 1,
-      "closed_positions": 1,
-      "realized_pnl": -2.01
-    },
-    "snapshot": {
-      "cash": 173.5,
-      "buying_power": 173.5,
-      "equity": 997.99,
-      "open_positions": 1,
-      "realized_pnl": -2.01,
-      "unrealized_pnl": -1.03,
-      "estimated_account_value": 996.96
-    }
-  },
-  {
     "timestamp": "2026-04-16T03:38:51.432953",
     "performance": {
       "trades": 1,
@@ -936,6 +907,156 @@
       "realized_pnl": 907.26,
       "unrealized_pnl": 0.0,
       "estimated_account_value": 9698.21
+    }
+  },
+  {
+    "timestamp": "2026-05-05T05:52:29.426280",
+    "performance": {
+      "trades": 20,
+      "wins": 9,
+      "losses": 2,
+      "winrate": 0.45,
+      "total_pnl": 1007.26,
+      "max_drawdown": 6.96,
+      "entries_today": 0,
+      "closes_today": 4,
+      "round_trips_today": 4,
+      "realized_pnl_today": 100.0
+    },
+    "portfolio": {
+      "open_positions": 3,
+      "closed_positions": 19,
+      "realized_pnl": 957.26,
+      "unrealized_pnl": 0.0,
+      "gross_capital_open": 2437.5,
+      "total_market_value_open": 2437.5,
+      "cash": 8608.21,
+      "buying_power": 8608.21,
+      "equity": 9748.21,
+      "estimated_account_value": 9748.21,
+      "vehicle_mix": {
+        "OPTION": 3,
+        "STOCK": 0,
+        "RESEARCH_ONLY": 0,
+        "UNKNOWN": 0
+      },
+      "net_pnl": 957.26,
+      "unrealized_detail": {
+        "total_unrealized": 0.0,
+        "total_cost_basis": 2437.5,
+        "total_market_value": 2437.5,
+        "positions": [
+          {
+            "symbol": "MU",
+            "trade_id": "MU-CALL-20260505004922",
+            "vehicle": "OPTION",
+            "strategy": "CALL",
+            "direction": "LONG",
+            "entry": 11.4,
+            "current": 11.4,
+            "entry_premium": 11.4,
+            "current_premium": 11.4,
+            "underlying_price": 576.45,
+            "contracts": 1,
+            "shares": 0,
+            "pnl": 0.0,
+            "unrealized_pnl": 0.0,
+            "pnl_pct": 0.0,
+            "cost_basis": 1140.0,
+            "market_value": 1140.0,
+            "pnl_basis": "option_premium_x_100",
+            "price_review_basis": "OPTION_PREMIUM_ONLY",
+            "monitoring_price_type": "OPTION_PREMIUM",
+            "underlying_price_used_for_pnl": false,
+            "option_underlying_leak_blocked": false,
+            "entry_source": "entry_premium",
+            "current_source": "current_premium",
+            "valid": true
+          },
+          {
+            "symbol": "INTC",
+            "trade_id": "INTC-CALL-20260505055007",
+            "vehicle": "OPTION",
+            "strategy": "CALL",
+            "direction": "LONG",
+            "entry": 1.8,
+            "current": 1.8,
+            "entry_premium": 1.8,
+            "current_premium": 1.8,
+            "underlying_price": 95.78,
+            "contracts": 1,
+            "shares": 0,
+            "pnl": 0.0,
+            "unrealized_pnl": 0.0,
+            "pnl_pct": 0.0,
+            "cost_basis": 180.0,
+            "market_value": 180.0,
+            "pnl_basis": "option_premium_x_100",
+            "price_review_basis": "OPTION_PREMIUM_ONLY",
+            "monitoring_price_type": "OPTION_PREMIUM",
+            "underlying_price_used_for_pnl": false,
+            "option_underlying_leak_blocked": false,
+            "entry_source": "entry_premium",
+            "current_source": "current_premium",
+            "valid": true
+          },
+          {
+            "symbol": "AMD",
+            "trade_id": "AMD-CALL-20260505055010",
+            "vehicle": "OPTION",
+            "strategy": "CALL",
+            "direction": "LONG",
+            "entry": 11.175,
+            "current": 11.175,
+            "entry_premium": 11.175,
+            "current_premium": 11.175,
+            "underlying_price": 341.54,
+            "contracts": 1,
+            "shares": 0,
+            "pnl": 0.0,
+            "unrealized_pnl": 0.0,
+            "pnl_pct": 0.0,
+            "cost_basis": 1117.5,
+            "market_value": 1117.5,
+            "pnl_basis": "option_premium_x_100",
+            "price_review_basis": "OPTION_PREMIUM_ONLY",
+            "monitoring_price_type": "OPTION_PREMIUM",
+            "underlying_price_used_for_pnl": false,
+            "option_underlying_leak_blocked": false,
+            "entry_source": "entry_premium",
+            "current_source": "current_premium",
+            "valid": true
+          }
+        ],
+        "open_positions": 3,
+        "vehicle_mix": {
+          "OPTION": 3,
+          "STOCK": 0,
+          "RESEARCH_ONLY": 0,
+          "UNKNOWN": 0
+        },
+        "option_safety": {
+          "option_positions": 3,
+          "underlying_used_for_option_pnl": false,
+          "leak_blocked_count": 0,
+          "basis": "OPTION positions use premium math only."
+        }
+      },
+      "option_safety": {
+        "option_positions": 3,
+        "underlying_used_for_option_pnl": false,
+        "leak_blocked_count": 0,
+        "basis": "OPTION positions use premium math only."
+      }
+    },
+    "snapshot": {
+      "cash": 8608.21,
+      "buying_power": 8608.21,
+      "equity": 11045.71,
+      "open_positions": 3,
+      "realized_pnl": 957.26,
+      "unrealized_pnl": 0.0,
+      "estimated_account_value": 11045.71
     }
   }
 ]

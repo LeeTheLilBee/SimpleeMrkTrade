@@ -1,68 +1,5 @@
 [
   {
-    "timestamp": "2026-04-18T16:18:35.087147",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T16:18:59.092967",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 50 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T16:18:59.095814",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 5 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T16:19:00.867630",
-    "event_type": "QUEUE",
-    "message": "Approved 43 research trades; selected 0 execution trades in market mode AGGRESSIVE_BULL / trading mode Paper Mode",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T16:19:06.112578",
-    "event_type": "RISK",
-    "message": "Blocked by governor in paper mode: cash_reserve_too_low, pdt_restricted",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-19T03:45:51.041794",
-    "event_type": "SYSTEM",
-    "message": "Bot run started in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-19T03:45:52.688063",
-    "event_type": "MARKET",
-    "message": "Market regime identified as BULL_TREND",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-19T03:46:07.495982",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-19T03:46:39.809436",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 50 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
     "timestamp": "2026-04-19T03:46:39.812409",
     "event_type": "SPOTLIGHT",
     "message": "Top spotlight contains 5 names",
@@ -2292,6 +2229,81 @@
   },
   {
     "timestamp": "2026-05-05T04:37:21.543116",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T05:49:06.680986",
+    "event_type": "SYSTEM",
+    "message": "Bot run started in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T05:49:14.749043",
+    "event_type": "MARKET",
+    "message": "Market regime identified as NEUTRAL",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T05:49:23.389355",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 50 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T05:49:56.156964",
+    "event_type": "EXECUTION",
+    "message": "Aggressive execution universe rebuilt with 50 candidates",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T05:49:56.160031",
+    "event_type": "SPOTLIGHT",
+    "message": "Top spotlight contains 5 names",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T05:50:07.837743",
+    "event_type": "QUEUE",
+    "message": "Approved 39 research trades; selected 2 execution trades in market mode NEUTRAL / trading mode Paper Mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T05:51:56.584267",
+    "event_type": "SIGNAL",
+    "message": "INTC approved as CALL with score 910.24",
+    "symbol": "INTC",
+    "meta": {
+      "trade_id": "INTC-CALL-20260505055007",
+      "strategy": "CALL",
+      "score": 910.24,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-05T05:51:56.647894",
+    "event_type": "SIGNAL",
+    "message": "AMD approved as CALL with score 641.73",
+    "symbol": "AMD",
+    "meta": {
+      "trade_id": "AMD-CALL-20260505055010",
+      "strategy": "CALL",
+      "score": 641.73,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-05T05:52:46.039147",
     "event_type": "SYSTEM",
     "message": "Bot run completed in Paper Mode (paper)",
     "symbol": null,
