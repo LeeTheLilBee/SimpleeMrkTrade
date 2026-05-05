@@ -1,8 +1,8 @@
 {
-  "equity": 20520.71,
-  "cash": 16803.21,
-  "buying_power": 16803.21,
-  "estimated_account_value": 20520.71,
+  "equity": 19620.5,
+  "cash": 15903.0,
+  "buying_power": 15903.0,
+  "estimated_account_value": 19620.5,
   "open_market_value": 3717.5,
   "open_cost_basis": 3825.0,
   "open_unrealized_pnl": -107.5,
@@ -156,5 +156,11 @@
       "ROKU"
     ],
     "reason": "Removed stale OPEN trade_history rows that no longer exist in open_positions.json."
-  }
+  },
+  "calculated_equity": 19620.5,
+  "bad_option_close_cash_cleanup_applied": true,
+  "bad_option_close_cash_cleanup_at": "2026-05-05T19:54:55.275173",
+  "bad_option_close_cash_cleanup_amount": 900.21,
+  "bad_option_close_cash_cleanup_reason": "Removed historical fake realized gains caused by old OPTION closes using underlying prices.",
+  "bad_option_close_cash_cleanup_backup": "/content/SimpleeMrkTrade/data/account_state.backup_before_bad_close_cash_cleanup_20260505_195455.json"
 }

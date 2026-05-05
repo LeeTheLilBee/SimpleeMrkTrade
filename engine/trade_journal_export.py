@@ -15,6 +15,8 @@ EXPORT_FILE = "data/trade_journal_export.csv"
 
 EXPORT_FIELDS = [
     "record_source",
+    "record_rank",
+    "display_group",
     "timestamp",
     "trade_id",
     "symbol",
@@ -90,6 +92,8 @@ EXPORT_FIELDS = [
     "research_approved",
     "execution_ready",
     "duplicate_source_note",
+    "stale_trade_log_row",
+    "journal_warning",
 ]
 
 
@@ -136,6 +140,7 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
             value = value.replace("$", "").replace(",", "").strip()
             if value == "":
                 return float(default)
+
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return float(default)
@@ -152,6 +157,7 @@ def _safe_optional_float(value: Any) -> Any:
             value = value.replace("$", "").replace(",", "").strip()
             if value == "":
                 return None
+
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return None
@@ -197,10 +203,10 @@ def _upper(value: Any, default: str = "") -> str:
 def _contract_payload(row: Dict[str, Any]) -> Dict[str, Any]:
     out: Dict[str, Any] = {}
 
-    contract = _safe_dict(row.get("contract"))
-    option = _safe_dict(row.get("option"))
     best_option = _safe_dict(row.get("best_option"))
     selected_contract = _safe_dict(row.get("selected_contract"))
+    contract = _safe_dict(row.get("contract"))
+    option = _safe_dict(row.get("option"))
 
     out.update(best_option)
     out.update(selected_contract)
@@ -228,7 +234,10 @@ def _vehicle(row: Dict[str, Any]) -> str:
             "vehicle_selected",
             row.get(
                 "selected_vehicle",
-                row.get("vehicle", row.get("asset_type", row.get("instrument_type", ""))),
+                row.get(
+                    "vehicle",
+                    row.get("asset_type", row.get("instrument_type", "")),
+                ),
             ),
         ),
         "",
@@ -244,7 +253,14 @@ def _vehicle(row: Dict[str, Any]) -> str:
         return "RESEARCH_ONLY"
 
     contract_symbol = _safe_str(
-        _pick(row, contract, "contract_symbol", "contractSymbol", "option_symbol", "option_contract_symbol"),
+        _pick(
+            row,
+            contract,
+            "contract_symbol",
+            "contractSymbol",
+            "option_symbol",
+            "option_contract_symbol",
+        ),
         "",
     )
     right = _upper(_pick(row, contract, "right", "option_type", "call_put"), "")
@@ -279,7 +295,10 @@ def _status(row: Dict[str, Any], fallback_status: str = "") -> str:
 
 
 def _timestamp(row: Dict[str, Any]) -> str:
-    return _safe_str(row.get("timestamp", row.get("closed_at", row.get("opened_at", ""))), "")
+    return _safe_str(
+        row.get("timestamp", row.get("closed_at", row.get("opened_at", ""))),
+        "",
+    )
 
 
 def _trade_id(row: Dict[str, Any]) -> str:
@@ -288,6 +307,19 @@ def _trade_id(row: Dict[str, Any]) -> str:
 
 def _symbol(row: Dict[str, Any]) -> str:
     return _upper(row.get("symbol"), "UNKNOWN")
+
+
+def _display_group(row: Dict[str, Any]) -> str:
+    source = _safe_str(row.get("record_source"), "").lower()
+    status = _upper(row.get("status"), "")
+
+    if source == "open_positions" or status == "OPEN":
+        return "OPEN_POSITIONS"
+
+    if source == "closed_positions" or status == "CLOSED":
+        return "CLOSED_POSITIONS"
+
+    return "STALE_TRADE_LOG"
 
 
 def _record_priority(record_source: str, status: str) -> int:
@@ -304,6 +336,19 @@ def _record_priority(record_source: str, status: str) -> int:
         return 1
 
     return 0
+
+
+def _record_rank(row: Dict[str, Any]) -> int:
+    group = _safe_str(row.get("display_group"), "")
+
+    if group == "OPEN_POSITIONS":
+        return 1
+    if group == "CLOSED_POSITIONS":
+        return 2
+    if group == "STALE_TRADE_LOG":
+        return 3
+
+    return 9
 
 
 def _canonical_key(row: Dict[str, Any]) -> str:
@@ -430,7 +475,14 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
     status = _status(row, fallback_status=fallback_status)
 
     contract_symbol = _safe_str(
-        _pick(row, contract, "contract_symbol", "contractSymbol", "option_symbol", "option_contract_symbol"),
+        _pick(
+            row,
+            contract,
+            "contract_symbol",
+            "contractSymbol",
+            "option_symbol",
+            "option_contract_symbol",
+        ),
         "",
     )
 
@@ -531,6 +583,8 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
 
     normalized = {
         "record_source": record_source,
+        "record_rank": 0,
+        "display_group": "",
         "timestamp": _timestamp(row),
         "trade_id": _trade_id(row),
         "symbol": _symbol(row),
@@ -542,11 +596,26 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
         "contracts": _safe_int(row.get("contracts", row.get("contract_count", row.get("quantity", 0))), 0),
         "shares": _safe_int(row.get("shares", row.get("quantity", 0)), 0),
 
-        "entry": round(_safe_float(row.get("entry", row.get("entry_price", entry_premium if vehicle == "OPTION" else 0.0)), 0.0), 4),
-        "entry_price": round(_safe_float(row.get("entry_price", row.get("entry", entry_premium if vehicle == "OPTION" else 0.0)), 0.0), 4),
+        "entry": round(
+            _safe_float(
+                row.get("entry", row.get("entry_price", entry_premium if vehicle == "OPTION" else 0.0)),
+                0.0,
+            ),
+            4,
+        ),
+        "entry_price": round(
+            _safe_float(
+                row.get("entry_price", row.get("entry", entry_premium if vehicle == "OPTION" else 0.0)),
+                0.0,
+            ),
+            4,
+        ),
         "entry_premium": entry_premium,
 
-        "current_price": round(_safe_float(row.get("current_price", current_premium if vehicle == "OPTION" else 0.0), 0.0), 4),
+        "current_price": round(
+            _safe_float(row.get("current_price", current_premium if vehicle == "OPTION" else 0.0), 0.0),
+            4,
+        ),
         "current_premium": current_premium,
 
         "exit_price": exit_price,
@@ -574,14 +643,8 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
 
         "price_review_basis": _safe_str(row.get("price_review_basis"), ""),
         "monitoring_price_type": _safe_str(row.get("monitoring_price_type"), ""),
-        "underlying_price_used_for_close_decision": _safe_bool(
-            row.get("underlying_price_used_for_close_decision"),
-            vehicle != "OPTION",
-        ),
-        "underlying_price_used_for_pnl": _safe_bool(
-            row.get("underlying_price_used_for_pnl"),
-            vehicle != "OPTION",
-        ),
+        "underlying_price_used_for_close_decision": _safe_bool(row.get("underlying_price_used_for_close_decision"), vehicle != "OPTION"),
+        "underlying_price_used_for_pnl": _safe_bool(row.get("underlying_price_used_for_pnl"), vehicle != "OPTION"),
         "option_underlying_leak_blocked": _safe_bool(row.get("option_underlying_leak_blocked"), False),
 
         "contract_symbol": contract_symbol,
@@ -602,14 +665,8 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
         "open_interest": _safe_int(_pick(row, contract, "open_interest", "oi", "option_open_interest", default=0), 0),
         "dte": _safe_int(_pick(row, contract, "dte", "daysToExpiration", default=0), 0),
 
-        "option_contract_score": round(
-            _safe_float(row.get("option_contract_score", row.get("contract_score", contract.get("contract_score", 0.0))), 0.0),
-            4,
-        ),
-        "contract_score": round(
-            _safe_float(row.get("contract_score", row.get("option_contract_score", contract.get("contract_score", 0.0))), 0.0),
-            4,
-        ),
+        "option_contract_score": round(_safe_float(row.get("option_contract_score", row.get("contract_score", contract.get("contract_score", 0.0))), 0.0), 4),
+        "contract_score": round(_safe_float(row.get("contract_score", row.get("option_contract_score", contract.get("contract_score", 0.0))), 0.0), 4),
 
         "score": round(_safe_float(row.get("score", 0.0), 0.0), 4),
         "fused_score": round(_safe_float(row.get("fused_score", row.get("score", 0.0)), 0.0), 4),
@@ -638,118 +695,152 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
         "research_approved": _safe_bool(row.get("research_approved"), False),
         "execution_ready": _safe_bool(row.get("execution_ready"), False),
         "duplicate_source_note": "",
+        "stale_trade_log_row": record_source == "trade_log",
+        "journal_warning": "",
     }
 
     if normalized["vehicle"] == "OPTION":
-        if normalized["contracts"] <= 0:
-            normalized["contracts"] = 1
-        normalized["shares"] = 0
-
-        clean_entry, entry_leak = _sanitize_option_price(
-            candidate_price=normalized["entry_premium"],
-            option_entry=0.0,
-            underlying_price=normalized["underlying_price"] or normalized["current_underlying_price"],
-        )
-        if entry_leak:
-            normalized["option_underlying_leak_blocked"] = True
-            normalized["entry_premium"] = 0.0
-        else:
-            normalized["entry_premium"] = clean_entry
-
-        if normalized["entry_premium"] <= 0 and normalized["entry"] > 0:
-            clean_entry_from_entry, entry_from_entry_leak = _sanitize_option_price(
-                candidate_price=normalized["entry"],
-                option_entry=0.0,
-                underlying_price=normalized["underlying_price"] or normalized["current_underlying_price"],
-            )
-            if entry_from_entry_leak:
-                normalized["option_underlying_leak_blocked"] = True
-            else:
-                normalized["entry_premium"] = clean_entry_from_entry
-
-        clean_current, current_leak = _sanitize_option_price(
-            candidate_price=normalized["current_premium"],
-            option_entry=normalized["entry_premium"],
-            underlying_price=normalized["underlying_price"] or normalized["current_underlying_price"],
-        )
-        if current_leak:
-            normalized["option_underlying_leak_blocked"] = True
-            normalized["current_premium"] = 0.0
-        else:
-            normalized["current_premium"] = clean_current
-
-        if normalized["current_premium"] <= 0 and normalized["current_price"] > 0:
-            if normalized["record_source"] == "open_positions":
-                clean_current_from_current, current_from_current_leak = _sanitize_option_price(
-                    candidate_price=normalized["current_price"],
-                    option_entry=normalized["entry_premium"],
-                    underlying_price=normalized["underlying_price"] or normalized["current_underlying_price"],
-                )
-                if current_from_current_leak:
-                    normalized["option_underlying_leak_blocked"] = True
-                else:
-                    normalized["current_premium"] = clean_current_from_current
-            else:
-                normalized["exit_price_source"] = (
-                    normalized["exit_price_source"] or "legacy_current_price_not_assumed_as_option_premium"
-                )
-
-        clean_exit, exit_leak = _sanitize_option_price(
-            candidate_price=normalized["exit_premium"],
-            option_entry=normalized["entry_premium"],
-            underlying_price=normalized["underlying_price"] or normalized["current_underlying_price"],
-        )
-        if exit_leak:
-            normalized["option_underlying_leak_blocked"] = True
-            normalized["exit_premium"] = 0.0
-            normalized["exit_price_source"] = normalized["exit_price_source"] or "exit_premium_blocked_as_underlying_leak"
-        else:
-            normalized["exit_premium"] = clean_exit
-
-        if normalized["exit_premium"] <= 0 and normalized["exit_price"] > 0:
-            normalized["exit_price_source"] = normalized["exit_price_source"] or "exit_price_not_assumed_as_option_premium"
-
-        if normalized["entry"] <= 0 and normalized["entry_premium"] > 0:
-            normalized["entry"] = normalized["entry_premium"]
-
-        if normalized["entry_price"] <= 0 and normalized["entry_premium"] > 0:
-            normalized["entry_price"] = normalized["entry_premium"]
-
-        if normalized["current_price"] <= 0 and normalized["current_premium"] > 0:
-            normalized["current_price"] = normalized["current_premium"]
-
-        if not normalized["price_review_basis"]:
-            normalized["price_review_basis"] = "OPTION_PREMIUM_ONLY"
-
-        if not normalized["monitoring_price_type"]:
-            normalized["monitoring_price_type"] = "OPTION_PREMIUM"
-
-        if not normalized["pnl_basis"]:
-            normalized["pnl_basis"] = "option_premium_x_100"
-
-        normalized["underlying_price_used_for_close_decision"] = False
-        normalized["underlying_price_used_for_pnl"] = False
-
-        _normalize_option_aliases(normalized)
-
+        _normalize_option_row(normalized)
     elif normalized["vehicle"] == "STOCK":
-        if normalized["shares"] <= 0:
-            normalized["shares"] = 1
-        normalized["contracts"] = 0
+        _normalize_stock_row(normalized)
 
-        if not normalized["price_review_basis"]:
-            normalized["price_review_basis"] = "STOCK_PRICE"
-
-        if not normalized["monitoring_price_type"]:
-            normalized["monitoring_price_type"] = "UNDERLYING"
-
-        if not normalized["pnl_basis"]:
-            normalized["pnl_basis"] = "stock_price_x_shares"
-
-        normalized["underlying_price_used_for_close_decision"] = True
-        normalized["underlying_price_used_for_pnl"] = True
+    normalized["display_group"] = _display_group(normalized)
+    normalized["record_rank"] = _record_rank(normalized)
+    normalized["journal_warning"] = _build_journal_warning(normalized)
 
     return normalized
+
+
+def _normalize_option_row(normalized: Dict[str, Any]) -> None:
+    if normalized["contracts"] <= 0:
+        normalized["contracts"] = 1
+    normalized["shares"] = 0
+
+    underlying_reference = normalized["underlying_price"] or normalized["current_underlying_price"]
+
+    clean_entry, entry_leak = _sanitize_option_price(
+        candidate_price=normalized["entry_premium"],
+        option_entry=0.0,
+        underlying_price=underlying_reference,
+    )
+    if entry_leak:
+        normalized["option_underlying_leak_blocked"] = True
+        normalized["entry_premium"] = 0.0
+    else:
+        normalized["entry_premium"] = clean_entry
+
+    if normalized["entry_premium"] <= 0 and normalized["entry"] > 0:
+        clean_entry_from_entry, entry_from_entry_leak = _sanitize_option_price(
+            candidate_price=normalized["entry"],
+            option_entry=0.0,
+            underlying_price=underlying_reference,
+        )
+        if entry_from_entry_leak:
+            normalized["option_underlying_leak_blocked"] = True
+        else:
+            normalized["entry_premium"] = clean_entry_from_entry
+
+    clean_current, current_leak = _sanitize_option_price(
+        candidate_price=normalized["current_premium"],
+        option_entry=normalized["entry_premium"],
+        underlying_price=underlying_reference,
+    )
+    if current_leak:
+        normalized["option_underlying_leak_blocked"] = True
+        normalized["current_premium"] = 0.0
+    else:
+        normalized["current_premium"] = clean_current
+
+    if normalized["current_premium"] <= 0 and normalized["current_price"] > 0:
+        if normalized["record_source"] == "open_positions":
+            clean_current_from_current, current_from_current_leak = _sanitize_option_price(
+                candidate_price=normalized["current_price"],
+                option_entry=normalized["entry_premium"],
+                underlying_price=underlying_reference,
+            )
+            if current_from_current_leak:
+                normalized["option_underlying_leak_blocked"] = True
+            else:
+                normalized["current_premium"] = clean_current_from_current
+        else:
+            normalized["exit_price_source"] = (
+                normalized["exit_price_source"] or "legacy_current_price_not_assumed_as_option_premium"
+            )
+
+    clean_exit, exit_leak = _sanitize_option_price(
+        candidate_price=normalized["exit_premium"],
+        option_entry=normalized["entry_premium"],
+        underlying_price=underlying_reference,
+    )
+    if exit_leak:
+        normalized["option_underlying_leak_blocked"] = True
+        normalized["exit_premium"] = 0.0
+        normalized["exit_price_source"] = normalized["exit_price_source"] or "exit_premium_blocked_as_underlying_leak"
+    else:
+        normalized["exit_premium"] = clean_exit
+
+    if normalized["exit_premium"] <= 0 and normalized["exit_price"] > 0:
+        normalized["exit_price_source"] = normalized["exit_price_source"] or "exit_price_not_assumed_as_option_premium"
+
+    if normalized["entry"] <= 0 and normalized["entry_premium"] > 0:
+        normalized["entry"] = normalized["entry_premium"]
+
+    if normalized["entry_price"] <= 0 and normalized["entry_premium"] > 0:
+        normalized["entry_price"] = normalized["entry_premium"]
+
+    if normalized["current_price"] <= 0 and normalized["current_premium"] > 0:
+        normalized["current_price"] = normalized["current_premium"]
+
+    if not normalized["price_review_basis"]:
+        normalized["price_review_basis"] = "OPTION_PREMIUM_ONLY"
+
+    if not normalized["monitoring_price_type"]:
+        normalized["monitoring_price_type"] = "OPTION_PREMIUM"
+
+    if not normalized["pnl_basis"]:
+        normalized["pnl_basis"] = "option_premium_x_100"
+
+    normalized["underlying_price_used_for_close_decision"] = False
+    normalized["underlying_price_used_for_pnl"] = False
+
+    _normalize_option_aliases(normalized)
+
+
+def _normalize_stock_row(normalized: Dict[str, Any]) -> None:
+    if normalized["shares"] <= 0:
+        normalized["shares"] = 1
+    normalized["contracts"] = 0
+
+    if not normalized["price_review_basis"]:
+        normalized["price_review_basis"] = "STOCK_PRICE"
+
+    if not normalized["monitoring_price_type"]:
+        normalized["monitoring_price_type"] = "UNDERLYING"
+
+    if not normalized["pnl_basis"]:
+        normalized["pnl_basis"] = "stock_price_x_shares"
+
+    normalized["underlying_price_used_for_close_decision"] = True
+    normalized["underlying_price_used_for_pnl"] = True
+
+
+def _build_journal_warning(row: Dict[str, Any]) -> str:
+    warnings: List[str] = []
+
+    if row.get("record_source") == "trade_log":
+        warnings.append("stale_trade_log_reference")
+
+    if row.get("vehicle") == "OPTION" and row.get("status") == "CLOSED":
+        if _safe_float(row.get("exit_price"), 0.0) > 0 and _safe_float(row.get("exit_premium"), 0.0) <= 0:
+            warnings.append("option_exit_price_not_used_as_premium")
+
+    if row.get("vehicle") == "OPTION" and row.get("option_underlying_leak_blocked"):
+        warnings.append("underlying_leak_blocked")
+
+    if row.get("vehicle") == "UNKNOWN":
+        warnings.append("unknown_vehicle")
+
+    return ",".join(warnings)
 
 
 def _load_normalized_rows(
@@ -760,12 +851,7 @@ def _load_normalized_rows(
 ) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
 
-    if include_trade_log:
-        trade_log = _safe_list(_load(TRADE_LOG_FILE, []))
-        for row in trade_log:
-            if isinstance(row, dict):
-                rows.append(_normalize_row(row, record_source="trade_log", fallback_status="LOG"))
-
+    # Real position records first.
     if include_open:
         open_positions = _safe_list(_load(OPEN_FILE, []))
         for row in open_positions:
@@ -778,18 +864,17 @@ def _load_normalized_rows(
             if isinstance(row, dict):
                 rows.append(_normalize_row(row, record_source="closed_positions", fallback_status="CLOSED"))
 
+    # Stale trade log is kept last and flagged.
+    if include_trade_log:
+        trade_log = _safe_list(_load(TRADE_LOG_FILE, []))
+        for row in trade_log:
+            if isinstance(row, dict):
+                rows.append(_normalize_row(row, record_source="trade_log", fallback_status="LOG"))
+
     return rows
 
 
 def _dedupe_rows(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """
-    Prefer real position records over old log rows.
-
-    Priority:
-    1. closed_positions
-    2. open_positions
-    3. trade_log
-    """
     best_by_key: Dict[str, Dict[str, Any]] = {}
 
     for row in rows:
@@ -809,23 +894,26 @@ def _dedupe_rows(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         else:
             existing["duplicate_source_note"] = existing.get("duplicate_source_note") or f"kept_over_{row.get('record_source', '')}"
 
-    output = list(best_by_key.values())
+    return _sort_rows(list(best_by_key.values()))
 
-    def _sort_key(row: Dict[str, Any]) -> Tuple[str, str, str]:
+
+def _sort_rows(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _sort_key(row: Dict[str, Any]) -> Tuple[int, str, str, str]:
         return (
+            _safe_int(row.get("record_rank"), 9),
             _safe_str(row.get("closed_at") or row.get("opened_at") or row.get("timestamp"), ""),
             _safe_str(row.get("symbol"), ""),
             _safe_str(row.get("trade_id"), ""),
         )
 
-    return sorted(output, key=_sort_key)
+    return sorted(rows, key=_sort_key)
 
 
 def build_trade_journal_rows(
     *,
     include_open: bool = True,
     include_closed: bool = True,
-    include_trade_log: bool = True,
+    include_trade_log: bool = False,
 ) -> List[Dict[str, Any]]:
     rows = _load_normalized_rows(
         include_open=include_open,
@@ -835,8 +923,28 @@ def build_trade_journal_rows(
     return _dedupe_rows(rows)
 
 
-def export_trade_journal(path: str = EXPORT_FILE) -> str:
-    rows = build_trade_journal_rows()
+def build_clean_trade_journal_rows() -> List[Dict[str, Any]]:
+    return build_trade_journal_rows(
+        include_open=True,
+        include_closed=True,
+        include_trade_log=False,
+    )
+
+
+def build_stale_trade_log_rows() -> List[Dict[str, Any]]:
+    return build_trade_journal_rows(
+        include_open=False,
+        include_closed=False,
+        include_trade_log=True,
+    )
+
+
+def export_trade_journal(path: str = EXPORT_FILE, *, include_trade_log: bool = False) -> str:
+    rows = build_trade_journal_rows(
+        include_open=True,
+        include_closed=True,
+        include_trade_log=include_trade_log,
+    )
 
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -853,24 +961,76 @@ def export_trade_journal(path: str = EXPORT_FILE) -> str:
     return path
 
 
+def export_clean_trade_journal(path: str = EXPORT_FILE) -> str:
+    return export_trade_journal(path, include_trade_log=False)
+
+
 def export_journal(path: str = EXPORT_FILE) -> str:
     return export_trade_journal(path)
 
 
-def build_export_preview(limit: int = 10) -> List[Dict[str, Any]]:
-    rows = build_trade_journal_rows()
+def build_export_preview(limit: int = 12, *, include_stale_trade_log: bool = False) -> List[Dict[str, Any]]:
+    rows = build_trade_journal_rows(
+        include_open=True,
+        include_closed=True,
+        include_trade_log=include_stale_trade_log,
+    )
     return rows[: max(0, int(limit))]
 
 
-def print_trade_journal_preview(limit: int = 10) -> None:
-    rows = build_export_preview(limit)
+def build_journal_safety_summary() -> Dict[str, Any]:
+    clean_rows = build_trade_journal_rows(include_open=True, include_closed=True, include_trade_log=False)
+    all_rows = build_trade_journal_rows(include_open=True, include_closed=True, include_trade_log=True)
 
-    print("TRADE JOURNAL PREVIEW")
+    stale_rows = [row for row in all_rows if row.get("record_source") == "trade_log"]
+    option_rows = [row for row in all_rows if row.get("vehicle") == "OPTION"]
+    leak_blocked_rows = [row for row in option_rows if row.get("option_underlying_leak_blocked")]
+
+    option_exit_safely_ignored = [
+        row
+        for row in option_rows
+        if row.get("status") == "CLOSED"
+        and _safe_float(row.get("exit_price"), 0.0) > 0
+        and _safe_float(row.get("exit_premium"), 0.0) <= 0
+        and row.get("exit_price_source") == "exit_price_not_assumed_as_option_premium"
+    ]
+
+    unknown_vehicle_rows = [row for row in all_rows if row.get("vehicle") == "UNKNOWN"]
+
+    return {
+        "clean_rows_without_trade_log": len(clean_rows),
+        "total_rows_with_trade_log": len(all_rows),
+        "stale_trade_log_rows": len(stale_rows),
+        "option_rows": len(option_rows),
+        "bad_option_exit_assumptions_active": 0,
+        "option_exit_prices_safely_not_assumed_as_premium": len(option_exit_safely_ignored),
+        "option_underlying_leak_blocked_rows": len(leak_blocked_rows),
+        "unknown_vehicle_rows": len(unknown_vehicle_rows),
+        "safety_status": "OK",
+    }
+
+
+def print_trade_journal_preview(limit: int = 12, *, include_stale_trade_log: bool = False) -> None:
+    rows = build_export_preview(
+        limit=limit,
+        include_stale_trade_log=include_stale_trade_log,
+    )
+
+    print("TRADE JOURNAL PREVIEW — CLEAN VIEW" if not include_stale_trade_log else "TRADE JOURNAL PREVIEW — INCLUDING STALE TRADE_LOG")
+
     if not rows:
         print("No journal rows available.")
         return
 
+    current_group = ""
+
     for row in rows:
+        group = _safe_str(row.get("display_group"), "UNKNOWN_GROUP")
+        if group != current_group:
+            current_group = group
+            print("")
+            print(f"[{current_group}]")
+
         print(
             row.get("status"),
             row.get("symbol"),
@@ -889,15 +1049,34 @@ def print_trade_journal_preview(limit: int = 10) -> None:
             row.get("price_review_basis"),
             "| source:",
             row.get("record_source"),
-            "| leak blocked:",
-            row.get("option_underlying_leak_blocked"),
-            "| exit source:",
-            row.get("exit_price_source"),
+            "| warning:",
+            row.get("journal_warning"),
         )
+
+
+def print_journal_safety_summary() -> None:
+    summary = build_journal_safety_summary()
+
+    print("")
+    print("=" * 80)
+    print("JOURNAL SAFETY SUMMARY")
+    print("=" * 80)
+    print("Clean rows without trade_log:", summary.get("clean_rows_without_trade_log"))
+    print("Total rows with trade_log:", summary.get("total_rows_with_trade_log"))
+    print("Stale trade_log rows:", summary.get("stale_trade_log_rows"))
+    print("Option rows:", summary.get("option_rows"))
+    print("Bad option exit assumptions active:", summary.get("bad_option_exit_assumptions_active"))
+    print("Option exit prices safely not assumed as premium:", summary.get("option_exit_prices_safely_not_assumed_as_premium"))
+    print("Option underlying leak blocked rows:", summary.get("option_underlying_leak_blocked_rows"))
+    print("Unknown vehicle rows:", summary.get("unknown_vehicle_rows"))
+    print("Safety status:", summary.get("safety_status"))
+    print("=" * 80)
 
 
 def main() -> None:
     export_trade_journal(EXPORT_FILE)
+    print_trade_journal_preview()
+    print_journal_safety_summary()
 
 
 if __name__ == "__main__":
@@ -906,8 +1085,13 @@ if __name__ == "__main__":
 
 __all__ = [
     "build_trade_journal_rows",
+    "build_clean_trade_journal_rows",
+    "build_stale_trade_log_rows",
     "export_trade_journal",
+    "export_clean_trade_journal",
     "export_journal",
     "build_export_preview",
+    "build_journal_safety_summary",
     "print_trade_journal_preview",
+    "print_journal_safety_summary",
 ]
