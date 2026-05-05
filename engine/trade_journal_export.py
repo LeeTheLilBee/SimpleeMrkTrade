@@ -93,6 +93,11 @@ EXPORT_FIELDS = [
 ]
 
 
+OPTION_UNDERLYING_LEAK_MULTIPLE = 8.0
+OPTION_UNDERLYING_LEAK_ABSOLUTE = 25.0
+MIN_VALID_OPTION_PREMIUM = 0.01
+
+
 def _load(path: str, default: Any) -> Any:
     file_path = Path(path)
     if not file_path.exists():
@@ -221,7 +226,10 @@ def _vehicle(row: Dict[str, Any]) -> str:
     raw = _upper(
         row.get(
             "vehicle_selected",
-            row.get("selected_vehicle", row.get("vehicle", row.get("asset_type", row.get("instrument_type", "")))),
+            row.get(
+                "selected_vehicle",
+                row.get("vehicle", row.get("asset_type", row.get("instrument_type", ""))),
+            ),
         ),
         "",
     )
@@ -318,10 +326,63 @@ def _first_positive_float(row: Dict[str, Any], contract: Dict[str, Any], keys: L
         value = row.get(key)
         if value in (None, ""):
             value = contract.get(key)
+
         number = _safe_optional_float(value)
         if number is not None and number > 0:
             return round(number, 4)
+
     return 0.0
+
+
+def _first_positive_from_normalized(row: Dict[str, Any], keys: List[str]) -> float:
+    for key in keys:
+        number = _safe_optional_float(row.get(key))
+        if number is not None and number > 0:
+            return round(number, 4)
+    return 0.0
+
+
+def _looks_like_underlying_leak(
+    *,
+    option_entry: float,
+    candidate_price: float,
+    underlying_price: float,
+) -> bool:
+    if candidate_price <= 0:
+        return False
+
+    if underlying_price > 0:
+        tolerance = max(0.05, underlying_price * 0.002)
+        if abs(candidate_price - underlying_price) <= tolerance:
+            return True
+
+    if option_entry > 0:
+        if (
+            candidate_price >= OPTION_UNDERLYING_LEAK_ABSOLUTE
+            and candidate_price >= option_entry * OPTION_UNDERLYING_LEAK_MULTIPLE
+        ):
+            return True
+
+    return False
+
+
+def _sanitize_option_price(
+    *,
+    candidate_price: float,
+    option_entry: float,
+    underlying_price: float,
+) -> Tuple[float, bool]:
+    if candidate_price < MIN_VALID_OPTION_PREMIUM:
+        return 0.0, False
+
+    if _looks_like_underlying_leak(
+        option_entry=option_entry,
+        candidate_price=candidate_price,
+        underlying_price=underlying_price,
+    ):
+        return 0.0, True
+
+    return round(candidate_price, 4), False
 
 
 def _normalize_option_aliases(normalized: Dict[str, Any]) -> None:
@@ -362,14 +423,6 @@ def _normalize_option_aliases(normalized: Dict[str, Any]) -> None:
         normalized["take_profit_premium"] = option_target
 
 
-def _first_positive_from_normalized(row: Dict[str, Any], keys: List[str]) -> float:
-    for key in keys:
-        number = _safe_optional_float(row.get(key))
-        if number is not None and number > 0:
-            return round(number, 4)
-    return 0.0
-
-
 def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: str = "") -> Dict[str, Any]:
     row = dict(_safe_dict(row))
     contract = _contract_payload(row)
@@ -379,6 +432,31 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
     contract_symbol = _safe_str(
         _pick(row, contract, "contract_symbol", "contractSymbol", "option_symbol", "option_contract_symbol"),
         "",
+    )
+
+    underlying_price = round(
+        _safe_float(
+            row.get(
+                "underlying_price",
+                row.get(
+                    "current_underlying_price",
+                    row.get("stock_price", row.get("market_price", 0.0)),
+                ),
+            ),
+            0.0,
+        ),
+        4,
+    )
+
+    current_underlying_price = round(
+        _safe_float(
+            row.get(
+                "current_underlying_price",
+                row.get("underlying_price", row.get("stock_price", 0.0)),
+            ),
+            0.0,
+        ),
+        4,
     )
 
     entry_premium = _first_positive_float(
@@ -405,7 +483,12 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
     if entry_premium <= 0 and vehicle == "OPTION":
         entry_candidate = _safe_optional_float(row.get("entry", row.get("entry_price")))
         if entry_candidate is not None and entry_candidate > 0:
-            entry_premium = round(entry_candidate, 4)
+            clean_entry, _ = _sanitize_option_price(
+                candidate_price=entry_candidate,
+                option_entry=0.0,
+                underlying_price=underlying_price or current_underlying_price,
+            )
+            entry_premium = clean_entry
 
     current_premium = _first_positive_float(
         row,
@@ -427,7 +510,24 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
     )
 
     exit_price = round(_safe_float(row.get("exit_price", row.get("close_price", 0.0)), 0.0), 4)
-    exit_premium = round(_safe_float(row.get("exit_premium", exit_price if vehicle == "OPTION" else 0.0), 0.0), 4)
+
+    explicit_exit_premium = _first_positive_float(
+        row,
+        contract,
+        [
+            "exit_premium",
+            "close_premium",
+            "premium_exit",
+            "option_exit",
+            "option_exit_price",
+            "exit_option_mark",
+            "close_option_mark",
+            "final_option_mark",
+        ],
+    )
+
+    exit_premium = explicit_exit_premium
+    exit_price_source = _safe_str(row.get("exit_price_source"), "")
 
     normalized = {
         "record_source": record_source,
@@ -452,29 +552,8 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
         "exit_price": exit_price,
         "exit_premium": exit_premium,
 
-        "underlying_price": round(
-            _safe_float(
-                row.get(
-                    "underlying_price",
-                    row.get(
-                        "current_underlying_price",
-                        row.get("stock_price", row.get("market_price", 0.0)),
-                    ),
-                ),
-                0.0,
-            ),
-            4,
-        ),
-        "current_underlying_price": round(
-            _safe_float(
-                row.get(
-                    "current_underlying_price",
-                    row.get("underlying_price", row.get("stock_price", 0.0)),
-                ),
-                0.0,
-            ),
-            4,
-        ),
+        "underlying_price": underlying_price,
+        "current_underlying_price": current_underlying_price,
 
         "stop": round(_safe_float(row.get("stop", row.get("stop_loss", 0.0)), 0.0), 4),
         "target": round(_safe_float(row.get("target", row.get("take_profit", 0.0)), 0.0), 4),
@@ -554,7 +633,7 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
         "capital_available": round(_safe_float(row.get("capital_available", 0.0), 0.0), 4),
 
         "execution_position_shape": _safe_str(row.get("execution_position_shape"), ""),
-        "exit_price_source": _safe_str(row.get("exit_price_source"), ""),
+        "exit_price_source": exit_price_source,
         "selected_for_execution": _safe_bool(row.get("selected_for_execution"), False),
         "research_approved": _safe_bool(row.get("research_approved"), False),
         "execution_ready": _safe_bool(row.get("execution_ready"), False),
@@ -566,11 +645,69 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
             normalized["contracts"] = 1
         normalized["shares"] = 0
 
+        clean_entry, entry_leak = _sanitize_option_price(
+            candidate_price=normalized["entry_premium"],
+            option_entry=0.0,
+            underlying_price=normalized["underlying_price"] or normalized["current_underlying_price"],
+        )
+        if entry_leak:
+            normalized["option_underlying_leak_blocked"] = True
+            normalized["entry_premium"] = 0.0
+        else:
+            normalized["entry_premium"] = clean_entry
+
         if normalized["entry_premium"] <= 0 and normalized["entry"] > 0:
-            normalized["entry_premium"] = normalized["entry"]
+            clean_entry_from_entry, entry_from_entry_leak = _sanitize_option_price(
+                candidate_price=normalized["entry"],
+                option_entry=0.0,
+                underlying_price=normalized["underlying_price"] or normalized["current_underlying_price"],
+            )
+            if entry_from_entry_leak:
+                normalized["option_underlying_leak_blocked"] = True
+            else:
+                normalized["entry_premium"] = clean_entry_from_entry
+
+        clean_current, current_leak = _sanitize_option_price(
+            candidate_price=normalized["current_premium"],
+            option_entry=normalized["entry_premium"],
+            underlying_price=normalized["underlying_price"] or normalized["current_underlying_price"],
+        )
+        if current_leak:
+            normalized["option_underlying_leak_blocked"] = True
+            normalized["current_premium"] = 0.0
+        else:
+            normalized["current_premium"] = clean_current
 
         if normalized["current_premium"] <= 0 and normalized["current_price"] > 0:
-            normalized["current_premium"] = normalized["current_price"]
+            if normalized["record_source"] == "open_positions":
+                clean_current_from_current, current_from_current_leak = _sanitize_option_price(
+                    candidate_price=normalized["current_price"],
+                    option_entry=normalized["entry_premium"],
+                    underlying_price=normalized["underlying_price"] or normalized["current_underlying_price"],
+                )
+                if current_from_current_leak:
+                    normalized["option_underlying_leak_blocked"] = True
+                else:
+                    normalized["current_premium"] = clean_current_from_current
+            else:
+                normalized["exit_price_source"] = (
+                    normalized["exit_price_source"] or "legacy_current_price_not_assumed_as_option_premium"
+                )
+
+        clean_exit, exit_leak = _sanitize_option_price(
+            candidate_price=normalized["exit_premium"],
+            option_entry=normalized["entry_premium"],
+            underlying_price=normalized["underlying_price"] or normalized["current_underlying_price"],
+        )
+        if exit_leak:
+            normalized["option_underlying_leak_blocked"] = True
+            normalized["exit_premium"] = 0.0
+            normalized["exit_price_source"] = normalized["exit_price_source"] or "exit_premium_blocked_as_underlying_leak"
+        else:
+            normalized["exit_premium"] = clean_exit
+
+        if normalized["exit_premium"] <= 0 and normalized["exit_price"] > 0:
+            normalized["exit_price_source"] = normalized["exit_price_source"] or "exit_price_not_assumed_as_option_premium"
 
         if normalized["entry"] <= 0 and normalized["entry_premium"] > 0:
             normalized["entry"] = normalized["entry_premium"]
@@ -752,6 +889,10 @@ def print_trade_journal_preview(limit: int = 10) -> None:
             row.get("price_review_basis"),
             "| source:",
             row.get("record_source"),
+            "| leak blocked:",
+            row.get("option_underlying_leak_blocked"),
+            "| exit source:",
+            row.get("exit_price_source"),
         )
 
 
