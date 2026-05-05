@@ -241,17 +241,17 @@
   },
   {
     "index": 24,
-    "equity": 1957.26,
-    "pnl": 0.0,
+    "equity": 6152.26,
+    "pnl": 4195.0,
     "symbol": "MU",
     "trade_id": "MU-CALL-20260505004922",
-    "timestamp": "2026-05-05T00:51:17.420166",
+    "timestamp": "2026-05-05T16:27:29.771575+00:00",
     "strategy": "CALL",
-    "status": "FILLED"
+    "status": "CLOSED"
   },
   {
     "index": 25,
-    "equity": 1957.26,
+    "equity": 6152.26,
     "pnl": 0.0,
     "symbol": "INTC",
     "trade_id": "INTC-CALL-20260505043500",
@@ -261,7 +261,7 @@
   },
   {
     "index": 26,
-    "equity": 2007.26,
+    "equity": 6202.26,
     "pnl": 50.0,
     "symbol": "AMD",
     "trade_id": "AMD-CALL-20260505004920",
@@ -271,21 +271,81 @@
   },
   {
     "index": 27,
-    "equity": 2007.26,
-    "pnl": 0.0,
+    "equity": 7064.76,
+    "pnl": 862.5,
     "symbol": "INTC",
     "trade_id": "INTC-CALL-20260505055007",
-    "timestamp": "2026-05-05T05:51:56.864338",
+    "timestamp": "2026-05-05T16:27:44.483976+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 28,
+    "equity": 7764.76,
+    "pnl": 700.0,
+    "symbol": "AMD",
+    "trade_id": "AMD-CALL-20260505055010",
+    "timestamp": "2026-05-05T16:27:59.344082+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 29,
+    "equity": 11959.76,
+    "pnl": 4195.0,
+    "symbol": "MU",
+    "trade_id": "MU-CALL-20260505004922",
+    "timestamp": "2026-05-05T16:27:29.771575+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 30,
+    "equity": 12822.26,
+    "pnl": 862.5,
+    "symbol": "INTC",
+    "trade_id": "INTC-CALL-20260505055007",
+    "timestamp": "2026-05-05T16:27:44.483976+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 31,
+    "equity": 13522.26,
+    "pnl": 700.0,
+    "symbol": "AMD",
+    "trade_id": "AMD-CALL-20260505055010",
+    "timestamp": "2026-05-05T16:27:59.344082+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 32,
+    "equity": 13522.26,
+    "pnl": 0.0,
+    "symbol": "INTC",
+    "trade_id": "INTC-CALL-20260505162917",
+    "timestamp": "2026-05-05T16:31:19.745677",
     "strategy": "CALL",
     "status": "FILLED"
   },
   {
-    "index": 28,
-    "equity": 2007.26,
+    "index": 33,
+    "equity": 13522.26,
+    "pnl": 0.0,
+    "symbol": "MU",
+    "trade_id": "MU-CALL-20260505162920",
+    "timestamp": "2026-05-05T16:31:27.582553",
+    "strategy": "CALL",
+    "status": "FILLED"
+  },
+  {
+    "index": 34,
+    "equity": 13522.26,
     "pnl": 0.0,
     "symbol": "AMD",
-    "trade_id": "AMD-CALL-20260505055010",
-    "timestamp": "2026-05-05T05:52:03.513847",
+    "trade_id": "AMD-CALL-20260505162924",
+    "timestamp": "2026-05-05T16:31:34.059899",
     "strategy": "CALL",
     "status": "FILLED"
   }
