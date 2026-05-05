@@ -1,22 +1,5 @@
 [
   {
-    "timestamp": "2026-05-03T00:32:50.000480",
-    "symbol": "DIS",
-    "event": "RESEARCH_APPROVED",
-    "trade_id": "DIS-CALL-20260503003247",
-    "strategy": "CALL",
-    "source": "research",
-    "mode": "paper",
-    "details": {
-      "trade_id": "DIS-CALL-20260503003247",
-      "strategy": "CALL",
-      "score": 145.23,
-      "confidence": "HIGH",
-      "source": "research",
-      "trading_mode": "paper"
-    }
-  },
-  {
     "timestamp": "2026-05-03T00:32:53.174701",
     "symbol": "XLF",
     "event": "RESEARCH_APPROVED",
@@ -8586,6 +8569,35 @@
       "right": "CALL",
       "underlying_price": 95.78,
       "exit_price_source": "requested_exit_price"
+    }
+  },
+  {
+    "timestamp": "2026-05-05T05:31:17.987003",
+    "symbol": "AMD",
+    "event": "CLOSED",
+    "details": {
+      "trade_id": "AMD-CALL-20260505004920",
+      "exit_price": 11.675,
+      "close_price": 11.675,
+      "reason": "manual_option_premium_test",
+      "pnl": 50.0,
+      "pnl_basis": "option_premium_x_100",
+      "pnl_pct": 4.4743,
+      "vehicle_selected": "OPTION",
+      "vehicle": "OPTION",
+      "contracts": 1,
+      "shares": 0,
+      "price_review_basis": "OPTION_PREMIUM_ONLY",
+      "monitoring_price_type": "OPTION_PREMIUM",
+      "underlying_price_used_for_close_decision": false,
+      "option_underlying_leak_blocked": false,
+      "contract_symbol": "AMD260508C00350000",
+      "expiry": "2026-05-08",
+      "strike": 350.0,
+      "right": "CALL",
+      "underlying_price": 341.54,
+      "exit_price_source": "requested_exit_price",
+      "execution_position_shape": "OPTION_PREMIUM_POSITION"
     }
   }
 ]

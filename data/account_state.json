@@ -1,10 +1,10 @@
 {
-  "equity": 9878.21,
-  "cash": 7440.71,
-  "buying_power": 7440.71,
-  "estimated_account_value": 9878.21,
-  "open_market_value": 2437.5,
-  "open_cost_basis": 2437.5,
+  "equity": 10865.71,
+  "cash": 8608.21,
+  "buying_power": 8608.21,
+  "estimated_account_value": 10865.71,
+  "open_market_value": 2257.5,
+  "open_cost_basis": 2257.5,
   "open_unrealized_pnl": 0.0,
   "account_type": "margin",
   "trade_history": [],
@@ -48,21 +48,41 @@
         "vehicle": "",
         "capital_release_rule": "entry_price_x_size"
       }
+    },
+    {
+      "event_type": "CLOSE",
+      "symbol": "",
+      "trade_id": "",
+      "timestamp": "2026-05-05T05:31:05.789372",
+      "date_key": "2026-05-05",
+      "price": 1117.5,
+      "size": 1.0,
+      "cost": 1117.5,
+      "pnl": 50.0,
+      "metadata": {
+        "source": "release_trade_capital",
+        "principal": 1117.5,
+        "pnl": 50.0,
+        "total_credit": 1167.5,
+        "immediate": true,
+        "vehicle": "",
+        "capital_release_rule": "entry_price_x_size"
+      }
     }
   ],
   "reserve_mode": "percent",
   "reserve_value": 20.0,
-  "last_account_sync": "2026-05-05T05:07:16.717122",
+  "last_account_sync": "2026-05-05T05:31:05.836012",
   "account_math_basis": "cash_plus_open_market_value",
-  "open_positions": 3,
+  "open_positions": 2,
   "vehicle_mix": {
-    "OPTION": 3,
+    "OPTION": 2,
     "STOCK": 0,
     "RESEARCH_ONLY": 0,
     "UNKNOWN": 0
   },
   "option_safety": {
-    "option_positions": 3,
+    "option_positions": 2,
     "underlying_used_for_option_pnl": false,
     "basis": "OPTION positions use premium math only."
   },
