@@ -1687,5 +1687,32 @@
       "Market regime: Neutral.",
       "Trend context: Uptrend."
     ]
+  },
+  {
+    "timestamp": "2026-05-05T04:36:41.470722",
+    "symbol": "INTC",
+    "strategy": "CALL",
+    "score": 910.24,
+    "confidence": "HIGH",
+    "entry": 95.78,
+    "stop": 92.78,
+    "target": 99.78,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
   }
 ]

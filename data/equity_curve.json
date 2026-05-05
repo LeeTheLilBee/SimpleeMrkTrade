@@ -225,9 +225,9 @@
     "pnl": 0.0,
     "symbol": "INTC",
     "trade_id": "INTC-CALL-20260505004917",
-    "timestamp": "2026-05-05T00:51:09.140884",
+    "timestamp": "2026-05-05T03:58:32.815723+00:00",
     "strategy": "CALL",
-    "status": "FILLED"
+    "status": "CLOSED"
   },
   {
     "index": 23,
@@ -246,6 +246,16 @@
     "symbol": "MU",
     "trade_id": "MU-CALL-20260505004922",
     "timestamp": "2026-05-05T00:51:17.420166",
+    "strategy": "CALL",
+    "status": "FILLED"
+  },
+  {
+    "index": 25,
+    "equity": 1907.26,
+    "pnl": 0.0,
+    "symbol": "INTC",
+    "trade_id": "INTC-CALL-20260505043500",
+    "timestamp": "2026-05-05T04:36:41.561508",
     "strategy": "CALL",
     "status": "FILLED"
   }
