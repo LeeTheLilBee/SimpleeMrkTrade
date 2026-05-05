@@ -1,75 +1,5 @@
 [
   {
-    "timestamp": "2026-04-18T14:15:36.492835",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 50 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T14:15:36.495741",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 5 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T14:15:38.284391",
-    "event_type": "QUEUE",
-    "message": "Approved 43 research trades; selected 0 execution trades in market mode AGGRESSIVE_BULL / trading mode Paper Mode",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T14:15:43.300392",
-    "event_type": "RISK",
-    "message": "Blocked by governor in paper mode: cash_reserve_too_low",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T14:55:46.368480",
-    "event_type": "SYSTEM",
-    "message": "Bot run started in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T14:55:47.373811",
-    "event_type": "MARKET",
-    "message": "Market regime identified as BULL_TREND",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T14:55:53.946439",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T14:56:17.992973",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 50 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T14:56:17.995889",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 5 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-04-18T14:56:19.703441",
-    "event_type": "QUEUE",
-    "message": "Approved 43 research trades; selected 0 execution trades in market mode AGGRESSIVE_BULL / trading mode Paper Mode",
-    "symbol": null,
-    "meta": {}
-  },
-  {
     "timestamp": "2026-04-18T14:56:23.459195",
     "event_type": "RISK",
     "message": "Blocked by governor in paper mode: cash_reserve_too_low",
@@ -2268,6 +2198,94 @@
   },
   {
     "timestamp": "2026-05-04T15:22:19.680001",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T00:48:13.530220",
+    "event_type": "SYSTEM",
+    "message": "Bot run started in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T00:48:14.518454",
+    "event_type": "MARKET",
+    "message": "Market regime identified as NEUTRAL",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T00:48:30.578666",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 50 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T00:49:06.212803",
+    "event_type": "EXECUTION",
+    "message": "Aggressive execution universe rebuilt with 50 candidates",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T00:49:06.216094",
+    "event_type": "SPOTLIGHT",
+    "message": "Top spotlight contains 5 names",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T00:49:17.526508",
+    "event_type": "QUEUE",
+    "message": "Approved 40 research trades; selected 3 execution trades in market mode NEUTRAL / trading mode Paper Mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-05T00:51:08.833799",
+    "event_type": "SIGNAL",
+    "message": "INTC approved as CALL with score 910.24",
+    "symbol": "INTC",
+    "meta": {
+      "trade_id": "INTC-CALL-20260505004917",
+      "strategy": "CALL",
+      "score": 910.24,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-05T00:51:08.896809",
+    "event_type": "SIGNAL",
+    "message": "AMD approved as CALL with score 641.73",
+    "symbol": "AMD",
+    "meta": {
+      "trade_id": "AMD-CALL-20260505004920",
+      "strategy": "CALL",
+      "score": 641.73,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-05T00:51:08.959675",
+    "event_type": "SIGNAL",
+    "message": "MU approved as CALL with score 626.7",
+    "symbol": "MU",
+    "meta": {
+      "trade_id": "MU-CALL-20260505004922",
+      "strategy": "CALL",
+      "score": 626.7,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-05T00:51:54.192437",
     "event_type": "SYSTEM",
     "message": "Bot run completed in Paper Mode (paper)",
     "symbol": null,
