@@ -1,17 +1,38 @@
 {
-  "equity": 9518.21,
-  "cash": 7080.71,
-  "buying_power": 7080.71,
-  "estimated_account_value": 9518.21,
+  "equity": 9698.21,
+  "cash": 7260.71,
+  "buying_power": 7260.71,
+  "estimated_account_value": 9698.21,
   "open_market_value": 2437.5,
   "open_cost_basis": 2437.5,
   "open_unrealized_pnl": 0.0,
   "account_type": "margin",
   "trade_history": [],
-  "activity_log": [],
+  "activity_log": [
+    {
+      "event_type": "CLOSE",
+      "symbol": "",
+      "trade_id": "",
+      "timestamp": "2026-05-05T03:58:32.816044",
+      "date_key": "2026-05-05",
+      "price": 180.0,
+      "size": 1.0,
+      "cost": 180.0,
+      "pnl": 0.0,
+      "metadata": {
+        "source": "release_trade_capital",
+        "principal": 180.0,
+        "pnl": 0.0,
+        "total_credit": 180.0,
+        "immediate": true,
+        "vehicle": "",
+        "capital_release_rule": "entry_price_x_size"
+      }
+    }
+  ],
   "reserve_mode": "percent",
   "reserve_value": 20.0,
-  "last_account_sync": "2026-05-05T03:09:43.748185",
+  "last_account_sync": "2026-05-05T03:58:32.929115",
   "account_math_basis": "cash_plus_open_market_value",
   "open_positions": 3,
   "vehicle_mix": {

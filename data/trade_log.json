@@ -1407,7 +1407,7 @@
     "vehicle": "OPTION",
     "vehicle_selected": "OPTION",
     "action": "OPEN",
-    "status": "FILLED",
+    "status": "CLOSED",
     "fill_price": 1.8,
     "entry": 1.8,
     "entry_price": 1.8,
@@ -1425,7 +1425,7 @@
     "capital_required": 181.0,
     "broker_order_id": "SIM-INTC-20260505T005109140884",
     "trading_mode": "paper",
-    "reason": "Position entered.",
+    "reason": "take_profit",
     "reason_code": "entered",
     "monitoring_price_type": "OPTION_PREMIUM",
     "price_review_basis": "OPTION_PREMIUM_ONLY",
@@ -1476,7 +1476,43 @@
       "monitoring_price_type": "OPTION_PREMIUM",
       "price_review_basis": "OPTION_PREMIUM_ONLY",
       "underlying_price_used_for_close_decision": false
-    }
+    },
+    "exit_price": 1.8,
+    "close_price": 1.8,
+    "closed_at": "2026-05-05T03:58:32.815723+00:00",
+    "exit_time": "2026-05-05T03:58:32.815723+00:00",
+    "close_reason": "take_profit",
+    "pnl": 0.0,
+    "realized_pnl": 0.0,
+    "pnl_meta": {
+      "pnl_valid": true,
+      "pnl_basis": "option_premium_x_100",
+      "entry_premium": 1.8,
+      "exit_premium": 1.8,
+      "contracts": 1,
+      "multiplier": 100,
+      "pnl_pct": 0.0,
+      "option_pnl_rule": "(exit_premium - entry_premium) * 100 * contracts"
+    },
+    "pnl_basis": "option_premium_x_100",
+    "pnl_pct": 0.0,
+    "exit_price_source": "requested_exit_price",
+    "exit_explanation": {
+      "symbol": "UNKNOWN",
+      "headline": "UNKNOWN exit detail",
+      "summary": "The system is treating this as a neutral close.",
+      "verdict": "EXIT",
+      "reason": "The trade was closed without a strong profit or loss outcome.",
+      "why": "The trade was closed without a strong profit or loss outcome.",
+      "notes": [
+        "PnL: 0.0",
+        "The trade was closed without a strong profit or loss outcome.",
+        "The system is treating this as a neutral close."
+      ],
+      "next_action": "Review whether the exit matched the thesis and pressure profile."
+    },
+    "exit_premium": 1.8,
+    "option_underlying_leak_blocked": false
   },
   {
     "timestamp": "2026-05-05T00:51:12.993694",
