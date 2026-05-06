@@ -7,14 +7,23 @@ Purpose:
     Store open and closed paper positions in a shape that downstream modules can
     trust.
 
-Why this rewrite exists:
-    The execution loop now correctly creates OPTION positions using option premium
-    math, but build_open_trade_state() / persistence normalization can drop alias
-    fields like take_profit, target_premium, and take_profit_premium.
+Core rule:
+    paper_portfolio.py is a persistence layer. It should not undo the decisions
+    made by execution_loop.py, close_trade.py, position_monitor.py, or
+    position_review.py.
 
-Canonical rule:
-    For OPTION positions, all premium stop/target aliases must agree after
-    persistence.
+Why this rewrite exists:
+    The options lifecycle is now using premium math correctly, but persistence
+    still has to protect against:
+        - option stop/target aliases being dropped
+        - option exit_premium being lost after close
+        - closed option rows being reshaped as stock-like rows
+        - performance flags being erased after close_trade.py stamps them
+        - high-option-move audit fields disappearing
+        - underlying price leaking back into current_price for option positions
+
+Canonical OPTION rule:
+    OPTION positions use option premium values for entry/current/exit math.
 
     target == take_profit == option_target == premium_target == target_premium == take_profit_premium
 
@@ -23,7 +32,7 @@ Canonical rule:
     OPTION positions:
         - contracts > 0
         - shares = 0
-        - entry/current_price are option premium values
+        - entry/current/exit price fields are option premium values
         - underlying_price is context only
         - monitoring_price_type = OPTION_PREMIUM
         - price_review_basis = OPTION_PREMIUM_ONLY
@@ -32,7 +41,7 @@ Canonical rule:
     STOCK positions:
         - shares > 0
         - contracts = 0
-        - entry/current_price are underlying stock values
+        - entry/current/exit price fields are underlying stock values
         - monitoring_price_type = UNDERLYING
         - price_review_basis = STOCK_PRICE
         - pnl_basis = stock_price_x_shares
@@ -40,7 +49,7 @@ Canonical rule:
 Compatibility:
     - Keeps existing public API.
     - Still uses canonical_trade_state builders.
-    - Adds post-builder hardening so persistence cannot erase the option aliases.
+    - Adds post-builder hardening so persistence cannot erase option aliases.
 """
 
 import json
@@ -48,7 +57,7 @@ import math
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from engine.canonical_trade_state import (
     build_open_trade_state,
@@ -74,7 +83,7 @@ MIN_VALID_OPTION_PREMIUM = 0.01
 
 
 # =============================================================================
-# Safe helpers
+# SAFE HELPERS
 # =============================================================================
 
 def _safe_dict(value: Any) -> Dict[str, Any]:
@@ -108,18 +117,19 @@ def _now_iso() -> str:
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
-        if value is None:
+        if value is None or isinstance(value, bool):
             return float(default)
-        if isinstance(value, bool):
-            return float(default)
+
         if isinstance(value, str):
             cleaned = value.replace("$", "").replace(",", "").strip()
             if cleaned == "":
                 return float(default)
             value = cleaned
+
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return float(default)
+
         return number
     except Exception:
         return float(default)
@@ -127,18 +137,19 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
 
 def _safe_optional_float(value: Any) -> Optional[float]:
     try:
-        if value is None:
+        if value is None or isinstance(value, bool):
             return None
-        if isinstance(value, bool):
-            return None
+
         if isinstance(value, str):
             cleaned = value.replace("$", "").replace(",", "").strip()
             if cleaned == "":
                 return None
             value = cleaned
+
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return None
+
         return number
     except Exception:
         return None
@@ -146,15 +157,15 @@ def _safe_optional_float(value: Any) -> Optional[float]:
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
-        if value is None:
+        if value is None or isinstance(value, bool):
             return int(default)
-        if isinstance(value, bool):
-            return int(default)
+
         if isinstance(value, str):
             cleaned = value.replace(",", "").strip()
             if cleaned == "":
                 return int(default)
             value = cleaned
+
         return int(float(value))
     except Exception:
         return int(default)
@@ -164,12 +175,14 @@ def _safe_bool(value: Any, default: bool = False) -> bool:
     try:
         if value is None:
             return bool(default)
+
         if isinstance(value, str):
             lowered = value.strip().lower()
             if lowered in {"true", "yes", "1", "y"}:
                 return True
             if lowered in {"false", "no", "0", "n"}:
                 return False
+
         return bool(value)
     except Exception:
         return bool(default)
@@ -183,6 +196,7 @@ def _read_json(path_str: str, default: Any) -> Any:
     path = Path(path_str)
     if not path.exists():
         return deepcopy(default)
+
     try:
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -192,40 +206,38 @@ def _read_json(path_str: str, default: Any) -> Any:
 
 def _write_json(path_str: str, payload: Any) -> None:
     _ensure_parent(path_str)
+
     tmp_path = Path(path_str).with_suffix(Path(path_str).suffix + ".tmp")
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, default=str)
+
     tmp_path.replace(path_str)
-
-
-def _first_present(payload: Dict[str, Any], keys: List[str], default: Any = None) -> Any:
-    payload = _safe_dict(payload)
-    for key in keys:
-        if key in payload and payload.get(key) not in (None, ""):
-            return payload.get(key)
-    return default
 
 
 def _first_float(payload: Dict[str, Any], keys: List[str]) -> Optional[float]:
     payload = _safe_dict(payload)
+
     for key in keys:
         value = _safe_optional_float(payload.get(key))
         if value is not None:
             return value
+
     return None
 
 
 def _first_str(payload: Dict[str, Any], keys: List[str], default: str = "") -> str:
     payload = _safe_dict(payload)
+
     for key in keys:
         value = payload.get(key)
         if value is not None and str(value).strip():
             return str(value).strip()
+
     return default
 
 
 # =============================================================================
-# File loaders / writers
+# FILE LOADERS / WRITERS
 # =============================================================================
 
 def _load_open_positions() -> List[Dict[str, Any]]:
@@ -254,7 +266,7 @@ def _write_closed_positions(rows: List[Dict[str, Any]]) -> None:
 
 
 # =============================================================================
-# Mode helpers
+# MODE HELPERS
 # =============================================================================
 
 def _best_mode(payload: Dict[str, Any], mode: str = "") -> str:
@@ -282,7 +294,7 @@ def _best_mode_context(payload: Dict[str, Any], mode_context: Optional[Dict[str,
 
 
 # =============================================================================
-# Vehicle / option helpers
+# VEHICLE / OPTION HELPERS
 # =============================================================================
 
 def _detect_vehicle(payload: Dict[str, Any]) -> str:
@@ -310,6 +322,7 @@ def _detect_vehicle(payload: Dict[str, Any]) -> str:
 
     option = _safe_dict(payload.get("option"))
     contract = _safe_dict(payload.get("contract"))
+
     contract_symbol = _first_str(
         payload,
         [
@@ -342,10 +355,13 @@ def _detect_vehicle(payload: Dict[str, Any]) -> str:
 
 def _normalize_right(value: Any) -> str:
     right = _upper(value, "")
+
     if right in {"C", "CALLS"}:
         return "CALL"
+
     if right in {"P", "PUTS"}:
         return "PUT"
+
     return right
 
 
@@ -598,8 +614,50 @@ def _first_valid_option_current(payload: Dict[str, Any]) -> Optional[float]:
     return None
 
 
+def _first_valid_option_exit(payload: Dict[str, Any]) -> Optional[float]:
+    payload = _safe_dict(payload)
+    option = _safe_dict(payload.get("option"))
+    contract = _safe_dict(payload.get("contract"))
+
+    candidates = [
+        payload.get("exit_premium"),
+        payload.get("premium_exit"),
+        payload.get("option_exit"),
+        payload.get("option_exit_price"),
+        payload.get("exit_option_mark"),
+        payload.get("close_option_mark"),
+        payload.get("final_option_mark"),
+        payload.get("exit_price"),
+        payload.get("close_price"),
+        payload.get("current_premium"),
+        payload.get("premium_current"),
+        payload.get("current_option_mark"),
+        payload.get("option_current_mark"),
+        payload.get("option_current_price"),
+        payload.get("current_option_price"),
+        option.get("exit_premium"),
+        option.get("premium_exit"),
+        option.get("option_exit"),
+        option.get("exit_option_mark"),
+        option.get("mark"),
+        contract.get("exit_premium"),
+        contract.get("premium_exit"),
+        contract.get("option_exit"),
+        contract.get("exit_option_mark"),
+        contract.get("mark"),
+    ]
+
+    for candidate in candidates:
+        value = _safe_optional_float(candidate)
+        if value is not None and value >= MIN_VALID_OPTION_PREMIUM:
+            return round(value, 4)
+
+    return None
+
+
 def _underlying_context(payload: Dict[str, Any]) -> float:
     payload = _safe_dict(payload)
+
     value = _first_float(
         payload,
         [
@@ -613,11 +671,13 @@ def _underlying_context(payload: Dict[str, Any]) -> float:
             "market_price",
         ],
     )
+
     return round(value, 4) if value is not None and value > 0 else 0.0
 
 
 def _option_contracts(payload: Dict[str, Any]) -> int:
     payload = _safe_dict(payload)
+
     return max(
         1,
         _safe_int(
@@ -632,6 +692,7 @@ def _option_contracts(payload: Dict[str, Any]) -> int:
 
 def _stock_shares(payload: Dict[str, Any]) -> int:
     payload = _safe_dict(payload)
+
     return max(
         1,
         _safe_int(payload.get("shares", payload.get("quantity", payload.get("qty", payload.get("size", 1)))), 1),
@@ -673,7 +734,6 @@ def _stamp_option_stop_target_aliases(state: Dict[str, Any]) -> Dict[str, Any]:
 
     stop = _first_stop_value(state)
     target = _first_target_value(state)
-
     entry_premium = _first_valid_option_premium(state)
 
     if stop is None or stop <= 0:
@@ -761,6 +821,42 @@ def _stamp_option_premium_aliases(state: Dict[str, Any]) -> Dict[str, Any]:
     return state
 
 
+def _stamp_option_exit_aliases(state: Dict[str, Any]) -> Dict[str, Any]:
+    state = _safe_dict(state)
+
+    exit_premium = _first_valid_option_exit(state)
+
+    if exit_premium is None:
+        return state
+
+    exit_premium = round(_safe_float(exit_premium, 0.0), 4)
+
+    for key in [
+        "exit_price",
+        "close_price",
+        "exit_premium",
+        "premium_exit",
+        "option_exit",
+        "option_exit_price",
+        "exit_option_mark",
+        "close_option_mark",
+        "final_option_mark",
+        "current_price",
+        "current",
+        "current_premium",
+        "premium_current",
+        "current_option_mark",
+        "option_current_mark",
+        "option_current_price",
+        "current_option_price",
+        "option_mark",
+        "mark",
+    ]:
+        state[key] = exit_premium
+
+    return state
+
+
 def _stamp_option_contract_aliases(state: Dict[str, Any]) -> Dict[str, Any]:
     state = _safe_dict(state)
     contract = _extract_contract_fields(state)
@@ -825,6 +921,81 @@ def _stamp_option_contract_aliases(state: Dict[str, Any]) -> Dict[str, Any]:
 
     return state
 
+
+def _preserve_performance_fields(target: Dict[str, Any], source: Dict[str, Any]) -> Dict[str, Any]:
+    target = _safe_dict(target)
+    source = _safe_dict(source)
+
+    keys = [
+        "performance_classification",
+        "performance_include",
+        "include_in_performance",
+        "counts_in_performance",
+        "needs_review",
+        "classification_reason",
+        "review_classification",
+        "high_option_move",
+        "high_option_move_multiple",
+        "high_option_move_note",
+        "option_exit_validation_source",
+    ]
+
+    for key in keys:
+        if source.get(key) not in (None, ""):
+            target[key] = source.get(key)
+
+    if "performance_include" in target:
+        target["include_in_performance"] = target["performance_include"]
+        target["counts_in_performance"] = target["performance_include"]
+
+    return target
+
+
+def _stamp_default_performance_fields(state: Dict[str, Any]) -> Dict[str, Any]:
+    state = _safe_dict(state)
+
+    close_reason = _safe_str(state.get("close_reason", state.get("reason", "")), "").lower()
+
+    if "manual_option_premium_test" in close_reason or "manual_test" in close_reason or close_reason.endswith("_test"):
+        state.setdefault("performance_classification", "MANUAL_TEST")
+        state.setdefault("performance_include", False)
+        state.setdefault("include_in_performance", False)
+        state.setdefault("counts_in_performance", False)
+        state.setdefault("needs_review", False)
+        state.setdefault("classification_reason", "manual_or_test_reason")
+        return state
+
+    if "controlled_slot_release" in close_reason or "slot_release" in close_reason:
+        state.setdefault("performance_classification", "CONTROLLED_RELEASE")
+        state.setdefault("performance_include", False)
+        state.setdefault("include_in_performance", False)
+        state.setdefault("counts_in_performance", False)
+        state.setdefault("needs_review", False)
+        state.setdefault("classification_reason", "controlled_release_reason")
+        return state
+
+    if _safe_bool(state.get("option_underlying_leak_blocked"), False):
+        state.setdefault("performance_classification", "QUARANTINED_BAD_CLOSE")
+        state.setdefault("performance_include", False)
+        state.setdefault("include_in_performance", False)
+        state.setdefault("counts_in_performance", False)
+        state.setdefault("needs_review", False)
+        state.setdefault("classification_reason", "underlying_leak_blocked")
+        return state
+
+    state.setdefault("performance_classification", "REAL_TRADE")
+    state.setdefault("performance_include", True)
+    state.setdefault("include_in_performance", True)
+    state.setdefault("counts_in_performance", True)
+    state.setdefault("needs_review", False)
+    state.setdefault("classification_reason", "persisted_valid_close")
+
+    return state
+
+
+# =============================================================================
+# OPEN / CLOSED HARDENERS
+# =============================================================================
 
 def _harden_option_open_state(state: Dict[str, Any]) -> Dict[str, Any]:
     state = deepcopy(_safe_dict(state))
@@ -962,9 +1133,6 @@ def _harden_stock_open_state(state: Dict[str, Any]) -> Dict[str, Any]:
     state["current_underlying_price"] = current
     state["stock_price"] = current
 
-    state["contracts"] = 0
-    state["contract_count"] = 0
-
     for key in [
         "entry_premium",
         "premium_entry",
@@ -976,6 +1144,10 @@ def _harden_stock_open_state(state: Dict[str, Any]) -> Dict[str, Any]:
         "option_current_mark",
         "option_current_price",
         "current_option_price",
+        "exit_premium",
+        "premium_exit",
+        "option_exit",
+        "option_exit_price",
     ]:
         state[key] = None
 
@@ -1048,61 +1220,180 @@ def _harden_open_state(state: Dict[str, Any]) -> Dict[str, Any]:
     return _harden_stock_open_state(state)
 
 
-def _harden_closed_state(state: Dict[str, Any]) -> Dict[str, Any]:
+def _harden_option_closed_state(state: Dict[str, Any], original: Dict[str, Any]) -> Dict[str, Any]:
     state = deepcopy(_safe_dict(state))
-    vehicle = _detect_vehicle(state)
+    original = deepcopy(_safe_dict(original))
 
-    if vehicle == VEHICLE_OPTION:
-        state = _harden_option_open_state(state)
-        state["status"] = "CLOSED"
-        state["position_status"] = "CLOSED"
-        state["lifecycle_state"] = "CLOSED"
-        state["lifecycle_stage"] = "CLOSED"
+    state = _preserve_performance_fields(state, original)
 
-        exit_premium = _safe_optional_float(state.get("exit_premium"))
-        if exit_premium is None:
-            exit_premium = _safe_optional_float(state.get("exit_price"))
-        if exit_premium is not None and exit_premium > 0:
-            for key in [
-                "exit_price",
-                "close_price",
-                "exit_premium",
-                "premium_exit",
-                "option_exit",
-                "option_exit_price",
-            ]:
-                state[key] = round(exit_premium, 4)
+    state["vehicle"] = VEHICLE_OPTION
+    state["vehicle_selected"] = VEHICLE_OPTION
+    state["selected_vehicle"] = VEHICLE_OPTION
+    state["asset_type"] = VEHICLE_OPTION
+    state["instrument_type"] = VEHICLE_OPTION
 
-        state["monitoring_price_type"] = "OPTION_PREMIUM"
-        state["price_review_basis"] = "OPTION_PREMIUM_ONLY"
-        state["pnl_basis"] = _safe_str(state.get("pnl_basis"), "option_premium_x_100")
-        state["underlying_price_used_for_close_decision"] = False
-        state["underlying_price_used_for_pnl"] = False
-        state["execution_position_shape"] = "OPTION_PREMIUM_POSITION"
-        return state
+    contracts = _option_contracts(state)
+    state["contracts"] = contracts
+    state["contract_count"] = contracts
+    state["quantity"] = contracts
+    state["qty"] = contracts
+    state["size"] = contracts
+    state["shares"] = 0
 
-    if vehicle == VEHICLE_STOCK:
-        state = _harden_stock_open_state(state)
-        state["status"] = "CLOSED"
-        state["position_status"] = "CLOSED"
-        state["lifecycle_state"] = "CLOSED"
-        state["lifecycle_stage"] = "CLOSED"
-        state["monitoring_price_type"] = "UNDERLYING"
-        state["price_review_basis"] = "STOCK_PRICE"
-        state["pnl_basis"] = _safe_str(state.get("pnl_basis"), "stock_price_x_shares")
-        state["underlying_price_used_for_close_decision"] = True
-        state["underlying_price_used_for_pnl"] = True
-        return state
+    state = _stamp_option_contract_aliases(state)
+    state = _stamp_option_premium_aliases(state)
+    state = _stamp_option_exit_aliases(state)
+    state = _stamp_option_stop_target_aliases(state)
+
+    entry_premium = _safe_float(state.get("entry_premium"), 0.0)
+    exit_premium = _safe_float(state.get("exit_premium", state.get("exit_price", 0.0)), 0.0)
+
+    if exit_premium > 0:
+        for key in [
+            "exit_price",
+            "close_price",
+            "exit_premium",
+            "premium_exit",
+            "option_exit",
+            "option_exit_price",
+            "exit_option_mark",
+            "close_option_mark",
+            "final_option_mark",
+            "current_price",
+            "current",
+            "current_premium",
+            "premium_current",
+            "current_option_mark",
+            "option_current_mark",
+            "option_current_price",
+            "current_option_price",
+            "option_mark",
+            "mark",
+        ]:
+            state[key] = round(exit_premium, 4)
+
+    underlying = _underlying_context(state)
+    if underlying > 0:
+        state["underlying_price"] = underlying
+        state["current_underlying_price"] = underlying
+        state["stock_price"] = underlying
+
+    if entry_premium > 0 and exit_premium > 0:
+        pnl = round((exit_premium - entry_premium) * OPTION_CONTRACT_MULTIPLIER * contracts, 2)
+        if state.get("pnl") in (None, ""):
+            state["pnl"] = pnl
+        if state.get("realized_pnl") in (None, ""):
+            state["realized_pnl"] = state.get("pnl", pnl)
+
+        state["pnl_pct"] = round(((exit_premium - entry_premium) / entry_premium) * 100.0, 4)
+
+    state["unrealized_pnl"] = 0.0
+    state["cost_basis"] = round(entry_premium * OPTION_CONTRACT_MULTIPLIER * contracts, 4) if entry_premium > 0 else 0.0
+    state["market_value"] = 0.0
 
     state["status"] = "CLOSED"
     state["position_status"] = "CLOSED"
+    state["execution_status"] = "CLOSED"
     state["lifecycle_state"] = "CLOSED"
     state["lifecycle_stage"] = "CLOSED"
+
+    state["monitoring_price_type"] = "OPTION_PREMIUM"
+    state["price_review_basis"] = "OPTION_PREMIUM_ONLY"
+    state["pnl_basis"] = _safe_str(state.get("pnl_basis"), "option_premium_x_100")
+    state["underlying_price_used_for_close_decision"] = False
+    state["underlying_price_used_for_pnl"] = False
+    state["execution_position_shape"] = "OPTION_PREMIUM_POSITION"
+    state["option_underlying_leak_blocked"] = bool(state.get("option_underlying_leak_blocked", False))
+
+    state = _stamp_default_performance_fields(state)
+    state = _preserve_performance_fields(state, original)
+
+    state["persistence_hardened_by"] = "engine.paper_portfolio"
+    state["closed_persistence_hardened"] = True
+    state["option_aliases_preserved"] = True
+    state["closed_option_alias_audit"] = {
+        "entry_premium": state.get("entry_premium"),
+        "exit_premium": state.get("exit_premium"),
+        "current_premium": state.get("current_premium"),
+        "exit_price": state.get("exit_price"),
+        "close_price": state.get("close_price"),
+        "pnl": state.get("pnl"),
+        "realized_pnl": state.get("realized_pnl"),
+        "pnl_basis": state.get("pnl_basis"),
+        "performance_classification": state.get("performance_classification"),
+        "performance_include": state.get("performance_include"),
+        "needs_review": state.get("needs_review"),
+        "classification_reason": state.get("classification_reason"),
+    }
+
+    return state
+
+
+def _harden_stock_closed_state(state: Dict[str, Any], original: Dict[str, Any]) -> Dict[str, Any]:
+    state = deepcopy(_safe_dict(state))
+    original = deepcopy(_safe_dict(original))
+
+    state = _preserve_performance_fields(state, original)
+    state = _harden_stock_open_state(state)
+
+    exit_price = _first_float(state, ["exit_price", "close_price", "current_price", "underlying_price"])
+    if exit_price is None:
+        exit_price = 0.0
+
+    if exit_price > 0:
+        state["exit_price"] = round(exit_price, 4)
+        state["close_price"] = round(exit_price, 4)
+        state["current_price"] = round(exit_price, 4)
+        state["underlying_price"] = round(exit_price, 4)
+        state["current_underlying_price"] = round(exit_price, 4)
+
+    state["status"] = "CLOSED"
+    state["position_status"] = "CLOSED"
+    state["execution_status"] = "CLOSED"
+    state["lifecycle_state"] = "CLOSED"
+    state["lifecycle_stage"] = "CLOSED"
+
+    state["monitoring_price_type"] = "UNDERLYING"
+    state["price_review_basis"] = "STOCK_PRICE"
+    state["pnl_basis"] = _safe_str(state.get("pnl_basis"), "stock_price_x_shares")
+    state["underlying_price_used_for_close_decision"] = True
+    state["underlying_price_used_for_pnl"] = True
+    state["execution_position_shape"] = "STOCK_UNDERLYING_POSITION"
+
+    state = _stamp_default_performance_fields(state)
+    state = _preserve_performance_fields(state, original)
+
+    state["persistence_hardened_by"] = "engine.paper_portfolio"
+    state["closed_persistence_hardened"] = True
+
+    return state
+
+
+def _harden_closed_state(state: Dict[str, Any], original: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    state = deepcopy(_safe_dict(state))
+    original = deepcopy(_safe_dict(original or state))
+    vehicle = _detect_vehicle(state)
+
+    if vehicle == VEHICLE_OPTION:
+        return _harden_option_closed_state(state, original)
+
+    if vehicle == VEHICLE_STOCK:
+        return _harden_stock_closed_state(state, original)
+
+    state["status"] = "CLOSED"
+    state["position_status"] = "CLOSED"
+    state["execution_status"] = "CLOSED"
+    state["lifecycle_state"] = "CLOSED"
+    state["lifecycle_stage"] = "CLOSED"
+    state["persistence_hardened_by"] = "engine.paper_portfolio"
+    state["closed_persistence_hardened"] = True
+    state = _stamp_default_performance_fields(state)
+    state = _preserve_performance_fields(state, original)
     return state
 
 
 # =============================================================================
-# Ledger helpers
+# LEDGER HELPERS
 # =============================================================================
 
 def _append_ledger_event(event_type: str, payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -1127,6 +1418,7 @@ def _append_trade_log_event(event_type: str, trade_state: Dict[str, Any]) -> Non
     except Exception:
         payload = deepcopy(_safe_dict(trade_state))
         payload["event"] = event_type
+
     _append_ledger_event(event_type, payload)
 
 
@@ -1148,11 +1440,12 @@ def _append_audit_event(
         payload["event_type"] = event_type
         payload["note"] = note
         payload["extra"] = extra or {}
+
     _append_ledger_event(event_type, payload)
 
 
 # =============================================================================
-# Position finders
+# POSITION FINDERS
 # =============================================================================
 
 def _find_open_index(
@@ -1178,6 +1471,9 @@ def _find_open_index(
         if symbol and opened_at and pos_symbol == symbol and pos_opened_at == opened_at:
             return idx
 
+        if symbol and not trade_id and not opened_at and pos_symbol == symbol:
+            return idx
+
     return -1
 
 
@@ -1194,7 +1490,7 @@ def _find_closed_index(closed_positions: List[Dict[str, Any]], trade_id: str = "
 
 
 # =============================================================================
-# Canonical normalizers
+# CANONICAL NORMALIZERS
 # =============================================================================
 
 def _normalize_open_trade(
@@ -1229,7 +1525,6 @@ def _normalize_open_trade(
 
     state = deepcopy(_safe_dict(state))
 
-    # Preserve any source fields the canonical builder omitted.
     for key, value in merged_pre_builder.items():
         if key not in state or state.get(key) in (None, ""):
             state[key] = deepcopy(value)
@@ -1274,6 +1569,8 @@ def _normalize_closed_trade(
     resolved_exit_explanation = _safe_dict(exit_explanation or position.get("exit_explanation"))
     resolved_capital_release = _safe_dict(capital_release or position.get("capital_release"))
 
+    original = deepcopy(position)
+
     normalized = build_closed_trade_state(
         position,
         exit_price=resolved_exit_price,
@@ -1286,13 +1583,13 @@ def _normalize_closed_trade(
 
     normalized = deepcopy(_safe_dict(normalized))
 
-    # Preserve fields the closed builder may omit.
     for key, value in position.items():
         if key not in normalized or normalized.get(key) in (None, ""):
             normalized[key] = deepcopy(value)
 
     normalized["status"] = "CLOSED"
     normalized["position_status"] = "CLOSED"
+    normalized["execution_status"] = "CLOSED"
     normalized["lifecycle_state"] = "CLOSED"
     normalized["lifecycle_stage"] = "CLOSED"
     normalized["closed_at"] = resolved_closed_at
@@ -1307,10 +1604,12 @@ def _normalize_closed_trade(
     normalized["exit_explanation"] = resolved_exit_explanation
     normalized["capital_release"] = resolved_capital_release
 
-    normalized = _harden_closed_state(normalized)
+    normalized = _preserve_performance_fields(normalized, original)
+    normalized = _harden_closed_state(normalized, original=original)
 
     normalized["status"] = "CLOSED"
     normalized["position_status"] = "CLOSED"
+    normalized["execution_status"] = "CLOSED"
     normalized["lifecycle_state"] = "CLOSED"
     normalized["lifecycle_stage"] = "CLOSED"
     normalized["closed_at"] = resolved_closed_at
@@ -1320,12 +1619,17 @@ def _normalize_closed_trade(
     normalized["pnl"] = resolved_pnl
     normalized["realized_pnl"] = resolved_pnl
     normalized["unrealized_pnl"] = 0.0
+    normalized["exit_explanation"] = resolved_exit_explanation
+    normalized["capital_release"] = resolved_capital_release
+
+    normalized = _preserve_performance_fields(normalized, original)
+    normalized = _stamp_default_performance_fields(normalized)
 
     return normalized
 
 
 # =============================================================================
-# Public API
+# PUBLIC API
 # =============================================================================
 
 def clear_open_positions() -> None:
@@ -1574,6 +1878,11 @@ def archive_closed_position(
             "execution_position_shape": normalized.get("execution_position_shape"),
             "price_review_basis": normalized.get("price_review_basis"),
             "pnl_basis": normalized.get("pnl_basis"),
+            "performance_classification": normalized.get("performance_classification"),
+            "performance_include": normalized.get("performance_include"),
+            "needs_review": normalized.get("needs_review"),
+            "closed_persistence_hardened": normalized.get("closed_persistence_hardened", False),
+            "closed_option_alias_audit": normalized.get("closed_option_alias_audit", {}),
         },
     )
 
@@ -1706,6 +2015,10 @@ def print_closed_positions() -> None:
                 pos.get("exit_premium", pos.get("exit_price")),
                 "| pnl_basis:",
                 pos.get("pnl_basis"),
+                "| perf:",
+                pos.get("performance_classification"),
+                "| include:",
+                pos.get("performance_include"),
                 "| contract:",
                 pos.get("contract_symbol", pos.get("option_symbol")),
                 "| trade_id:",
@@ -1727,6 +2040,10 @@ def print_closed_positions() -> None:
                 pos.get("exit_price"),
                 "| pnl_basis:",
                 pos.get("pnl_basis"),
+                "| perf:",
+                pos.get("performance_classification"),
+                "| include:",
+                pos.get("performance_include"),
                 "| trade_id:",
                 pos.get("trade_id"),
                 "| closed_at:",
