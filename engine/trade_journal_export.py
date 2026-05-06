@@ -132,10 +132,9 @@ def _safe_str(value: Any, default: str = "") -> str:
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
-        if value is None:
+        if value is None or isinstance(value, bool):
             return float(default)
-        if isinstance(value, bool):
-            return float(default)
+
         if isinstance(value, str):
             value = value.replace("$", "").replace(",", "").strip()
             if value == "":
@@ -144,6 +143,7 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return float(default)
+
         return number
     except Exception:
         return float(default)
@@ -153,6 +153,7 @@ def _safe_optional_float(value: Any) -> Any:
     try:
         if value is None or isinstance(value, bool):
             return None
+
         if isinstance(value, str):
             value = value.replace("$", "").replace(",", "").strip()
             if value == "":
@@ -161,6 +162,7 @@ def _safe_optional_float(value: Any) -> Any:
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return None
+
         return number
     except Exception:
         return None
@@ -168,14 +170,14 @@ def _safe_optional_float(value: Any) -> Any:
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
-        if value is None:
+        if value is None or isinstance(value, bool):
             return int(default)
-        if isinstance(value, bool):
-            return int(default)
+
         if isinstance(value, str):
             value = value.replace(",", "").strip()
             if value == "":
                 return int(default)
+
         return int(float(value))
     except Exception:
         return int(default)
@@ -185,12 +187,14 @@ def _safe_bool(value: Any, default: bool = False) -> bool:
     try:
         if value is None:
             return bool(default)
+
         if isinstance(value, str):
             lowered = value.strip().lower()
             if lowered in {"true", "yes", "1", "y"}:
                 return True
             if lowered in {"false", "no", "0", "n"}:
                 return False
+
         return bool(value)
     except Exception:
         return bool(default)
@@ -222,6 +226,7 @@ def _pick(row: Dict[str, Any], contract: Dict[str, Any], *keys: str, default: An
             return row.get(key)
         if contract.get(key) not in (None, ""):
             return contract.get(key)
+
     return default
 
 
@@ -273,10 +278,13 @@ def _vehicle(row: Dict[str, Any]) -> str:
 
 def _strategy(row: Dict[str, Any]) -> str:
     strategy = _upper(row.get("strategy", row.get("direction", "")), "")
+
     if strategy in {"LONG", "BUY"}:
         return "CALL"
+
     if strategy in {"SHORT", "SELL"}:
         return "PUT"
+
     return strategy or "UNKNOWN"
 
 
@@ -313,10 +321,19 @@ def _display_group(row: Dict[str, Any]) -> str:
     source = _safe_str(row.get("record_source"), "").lower()
     status = _upper(row.get("status"), "")
 
-    if source == "open_positions" or status == "OPEN":
+    if source == "trade_log":
+        return "STALE_TRADE_LOG"
+
+    if source == "open_positions":
         return "OPEN_POSITIONS"
 
-    if source == "closed_positions" or status == "CLOSED":
+    if source == "closed_positions":
+        return "CLOSED_POSITIONS"
+
+    if status == "OPEN":
+        return "OPEN_POSITIONS"
+
+    if status == "CLOSED":
         return "CLOSED_POSITIONS"
 
     return "STALE_TRADE_LOG"
@@ -343,8 +360,10 @@ def _record_rank(row: Dict[str, Any]) -> int:
 
     if group == "OPEN_POSITIONS":
         return 1
+
     if group == "CLOSED_POSITIONS":
         return 2
+
     if group == "STALE_TRADE_LOG":
         return 3
 
@@ -384,6 +403,7 @@ def _first_positive_from_normalized(row: Dict[str, Any], keys: List[str]) -> flo
         number = _safe_optional_float(row.get(key))
         if number is not None and number > 0:
             return round(number, 4)
+
     return 0.0
 
 
@@ -578,9 +598,6 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
         ],
     )
 
-    exit_premium = explicit_exit_premium
-    exit_price_source = _safe_str(row.get("exit_price_source"), "")
-
     normalized = {
         "record_source": record_source,
         "record_rank": 0,
@@ -619,7 +636,7 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
         "current_premium": current_premium,
 
         "exit_price": exit_price,
-        "exit_premium": exit_premium,
+        "exit_premium": explicit_exit_premium,
 
         "underlying_price": underlying_price,
         "current_underlying_price": current_underlying_price,
@@ -690,7 +707,7 @@ def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: 
         "capital_available": round(_safe_float(row.get("capital_available", 0.0), 0.0), 4),
 
         "execution_position_shape": _safe_str(row.get("execution_position_shape"), ""),
-        "exit_price_source": exit_price_source,
+        "exit_price_source": _safe_str(row.get("exit_price_source"), ""),
         "selected_for_execution": _safe_bool(row.get("selected_for_execution"), False),
         "research_approved": _safe_bool(row.get("research_approved"), False),
         "execution_ready": _safe_bool(row.get("execution_ready"), False),
@@ -811,6 +828,15 @@ def _normalize_stock_row(normalized: Dict[str, Any]) -> None:
         normalized["shares"] = 1
     normalized["contracts"] = 0
 
+    if normalized["entry_price"] <= 0 and normalized["entry"] > 0:
+        normalized["entry_price"] = normalized["entry"]
+
+    if normalized["entry"] <= 0 and normalized["entry_price"] > 0:
+        normalized["entry"] = normalized["entry_price"]
+
+    if normalized["current_price"] <= 0:
+        normalized["current_price"] = normalized["underlying_price"] or normalized["current_underlying_price"]
+
     if not normalized["price_review_basis"]:
         normalized["price_review_basis"] = "STOCK_PRICE"
 
@@ -820,6 +846,9 @@ def _normalize_stock_row(normalized: Dict[str, Any]) -> None:
     if not normalized["pnl_basis"]:
         normalized["pnl_basis"] = "stock_price_x_shares"
 
+    normalized["entry_premium"] = 0.0
+    normalized["current_premium"] = 0.0
+    normalized["exit_premium"] = 0.0
     normalized["underlying_price_used_for_close_decision"] = True
     normalized["underlying_price_used_for_pnl"] = True
 
@@ -851,7 +880,6 @@ def _load_normalized_rows(
 ) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
 
-    # Real position records first.
     if include_open:
         open_positions = _safe_list(_load(OPEN_FILE, []))
         for row in open_positions:
@@ -864,7 +892,6 @@ def _load_normalized_rows(
             if isinstance(row, dict):
                 rows.append(_normalize_row(row, record_source="closed_positions", fallback_status="CLOSED"))
 
-    # Stale trade log is kept last and flagged.
     if include_trade_log:
         trade_log = _safe_list(_load(TRADE_LOG_FILE, []))
         for row in trade_log:
@@ -1010,13 +1037,88 @@ def build_journal_safety_summary() -> Dict[str, Any]:
     }
 
 
+def _print_option_preview_row(row: Dict[str, Any]) -> None:
+    print(
+        row.get("status"),
+        row.get("symbol"),
+        row.get("strategy"),
+        "| vehicle:",
+        row.get("vehicle"),
+        "| pnl:",
+        row.get("pnl"),
+        "| entry premium:",
+        row.get("entry_premium"),
+        "| current premium:",
+        row.get("current_premium"),
+        "| exit premium:",
+        row.get("exit_premium"),
+        "| basis:",
+        row.get("price_review_basis"),
+        "| source:",
+        row.get("record_source"),
+        "| warning:",
+        row.get("journal_warning"),
+    )
+
+
+def _print_stock_preview_row(row: Dict[str, Any]) -> None:
+    print(
+        row.get("status"),
+        row.get("symbol"),
+        row.get("strategy"),
+        "| vehicle:",
+        row.get("vehicle"),
+        "| pnl:",
+        row.get("pnl"),
+        "| entry price:",
+        row.get("entry_price"),
+        "| current price:",
+        row.get("current_price"),
+        "| exit price:",
+        row.get("exit_price"),
+        "| basis:",
+        row.get("price_review_basis"),
+        "| source:",
+        row.get("record_source"),
+        "| warning:",
+        row.get("journal_warning"),
+    )
+
+
+def _print_generic_preview_row(row: Dict[str, Any]) -> None:
+    print(
+        row.get("status"),
+        row.get("symbol"),
+        row.get("strategy"),
+        "| vehicle:",
+        row.get("vehicle"),
+        "| pnl:",
+        row.get("pnl"),
+        "| entry:",
+        row.get("entry"),
+        "| current:",
+        row.get("current_price"),
+        "| exit:",
+        row.get("exit_price"),
+        "| basis:",
+        row.get("price_review_basis"),
+        "| source:",
+        row.get("record_source"),
+        "| warning:",
+        row.get("journal_warning"),
+    )
+
+
 def print_trade_journal_preview(limit: int = 12, *, include_stale_trade_log: bool = False) -> None:
     rows = build_export_preview(
         limit=limit,
         include_stale_trade_log=include_stale_trade_log,
     )
 
-    print("TRADE JOURNAL PREVIEW — CLEAN VIEW" if not include_stale_trade_log else "TRADE JOURNAL PREVIEW — INCLUDING STALE TRADE_LOG")
+    if include_stale_trade_log:
+        print("TRADE JOURNAL PREVIEW — INCLUDING STALE TRADE_LOG")
+    else:
+        print("TRADE JOURNAL PREVIEW — CLEAN VIEW")
 
     if not rows:
         print("No journal rows available.")
@@ -1031,27 +1133,14 @@ def print_trade_journal_preview(limit: int = 12, *, include_stale_trade_log: boo
             print("")
             print(f"[{current_group}]")
 
-        print(
-            row.get("status"),
-            row.get("symbol"),
-            row.get("strategy"),
-            "| vehicle:",
-            row.get("vehicle"),
-            "| pnl:",
-            row.get("pnl"),
-            "| entry premium:",
-            row.get("entry_premium"),
-            "| current premium:",
-            row.get("current_premium"),
-            "| exit premium:",
-            row.get("exit_premium"),
-            "| basis:",
-            row.get("price_review_basis"),
-            "| source:",
-            row.get("record_source"),
-            "| warning:",
-            row.get("journal_warning"),
-        )
+        vehicle = _safe_str(row.get("vehicle"), "UNKNOWN").upper()
+
+        if vehicle == "OPTION":
+            _print_option_preview_row(row)
+        elif vehicle == "STOCK":
+            _print_stock_preview_row(row)
+        else:
+            _print_generic_preview_row(row)
 
 
 def print_journal_safety_summary() -> None:
