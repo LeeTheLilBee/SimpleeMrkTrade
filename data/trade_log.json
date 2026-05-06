@@ -8,7 +8,12 @@
     "score": 210,
     "confidence": "HIGH",
     "status": "OPEN",
-    "pnl": 0
+    "pnl": 0,
+    "journal_audit_bucket": "ACTIVE_OK",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.045916"
   },
   {
     "timestamp": "2026-04-16T03:09:33.380927",
@@ -37,7 +42,12 @@
         "The system is treating this as protective damage control."
       ],
       "next_action": "Review whether the exit matched the thesis and pressure profile."
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.045984"
   },
   {
     "timestamp": "2026-04-16T03:23:17.227325",
@@ -48,7 +58,12 @@
     "score": 207,
     "confidence": "HIGH",
     "status": "OPEN",
-    "pnl": 0
+    "pnl": 0,
+    "journal_audit_bucket": "ACTIVE_OK",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046015"
   },
   {
     "timestamp": "2026-04-16T22:49:01.559226",
@@ -77,7 +92,12 @@
         "The system is preserving realized gains."
       ],
       "next_action": "Review whether the exit matched the thesis and pressure profile."
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046064"
   },
   {
     "timestamp": "2026-04-16T22:49:24.091066",
@@ -88,7 +108,12 @@
     "score": 207,
     "confidence": "HIGH",
     "status": "OPEN",
-    "pnl": 0
+    "pnl": 0,
+    "journal_audit_bucket": "ACTIVE_OK",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046092"
   },
   {
     "timestamp": "2026-04-20T16:07:42.152302",
@@ -117,7 +142,12 @@
         "The system is treating this as protective damage control."
       ],
       "next_action": "Review whether the exit matched the thesis and pressure profile."
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046142"
   },
   {
     "timestamp": "2026-05-01T22:54:38.615493",
@@ -253,7 +283,19 @@
     "exit_price_source": "requested_exit_price",
     "price_review_basis": "STOCK_PRICE",
     "monitoring_price_type": "UNDERLYING",
-    "underlying_price_used_for_close_decision": true
+    "underlying_price_used_for_close_decision": true,
+    "performance_classification": "CONTROLLED_RELEASE",
+    "performance_include": false,
+    "include_in_performance": false,
+    "counts_in_performance": false,
+    "needs_review": false,
+    "journal_audit_bucket": "CONTROLLED_RELEASE",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "official_performance_note": "Excluded from official performance by design.",
+    "classification_reason": "manual_or_controlled_non_performance_row",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046189"
   },
   {
     "timestamp": "2026-05-02T02:03:37.372344",
@@ -314,7 +356,12 @@
         "The system is preserving realized gains."
       ],
       "next_action": "Review whether the exit matched the thesis and pressure profile."
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046236"
   },
   {
     "timestamp": "2026-05-02T02:03:38.115488",
@@ -375,7 +422,12 @@
         "The system is preserving realized gains."
       ],
       "next_action": "Review whether the exit matched the thesis and pressure profile."
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046277"
   },
   {
     "timestamp": "2026-05-02T02:22:31.316021",
@@ -436,7 +488,12 @@
         "The system is preserving realized gains."
       ],
       "next_action": "Review whether the exit matched the thesis and pressure profile."
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046319"
   },
   {
     "timestamp": "2026-05-02T02:22:32.149409",
@@ -480,7 +537,12 @@
       "open_interest": 3116,
       "volume": 11869,
       "dte": 6
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046361"
   },
   {
     "timestamp": "2026-05-02T02:22:32.974238",
@@ -541,7 +603,12 @@
         "The system is preserving realized gains."
       ],
       "next_action": "Review whether the exit matched the thesis and pressure profile."
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046422"
   },
   {
     "timestamp": "2026-05-02T03:25:06.941761",
@@ -602,7 +669,12 @@
         "The system is preserving realized gains."
       ],
       "next_action": "Review whether the exit matched the thesis and pressure profile."
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046459"
   },
   {
     "timestamp": "2026-05-02T03:25:07.861765",
@@ -646,7 +718,12 @@
       "open_interest": 1042,
       "volume": 6526,
       "dte": 6
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046491"
   },
   {
     "timestamp": "2026-05-02T03:25:08.801318",
@@ -707,7 +784,12 @@
         "The system is preserving realized gains."
       ],
       "next_action": "Review whether the exit matched the thesis and pressure profile."
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046524"
   },
   {
     "timestamp": "2026-05-03T21:44:14.534056",
@@ -822,7 +904,19 @@
       "next_action": "Review whether the exit matched the thesis and pressure profile."
     },
     "exit_premium": 4.35,
-    "option_underlying_leak_blocked": true
+    "option_underlying_leak_blocked": true,
+    "performance_classification": "QUARANTINED_BAD_CLOSE",
+    "performance_include": false,
+    "include_in_performance": false,
+    "counts_in_performance": false,
+    "needs_review": false,
+    "journal_audit_bucket": "HISTORICAL_WARNING",
+    "historical_warning": true,
+    "active_safety_issue": false,
+    "classification_reason": "historical_bad_option_close_quarantined",
+    "official_performance_note": "Excluded from official performance; retained for audit history.",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046557"
   },
   {
     "timestamp": "2026-05-03T21:44:17.192774",
@@ -937,7 +1031,19 @@
       "next_action": "Review whether the exit matched the thesis and pressure profile."
     },
     "exit_premium": 17.425,
-    "option_underlying_leak_blocked": true
+    "option_underlying_leak_blocked": true,
+    "performance_classification": "QUARANTINED_BAD_CLOSE",
+    "performance_include": false,
+    "include_in_performance": false,
+    "counts_in_performance": false,
+    "needs_review": false,
+    "journal_audit_bucket": "HISTORICAL_WARNING",
+    "historical_warning": true,
+    "active_safety_issue": false,
+    "classification_reason": "historical_bad_option_close_quarantined",
+    "official_performance_note": "Excluded from official performance; retained for audit history.",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046590"
   },
   {
     "timestamp": "2026-05-03T21:44:19.902960",
@@ -1052,7 +1158,19 @@
       "next_action": "Review whether the exit matched the thesis and pressure profile."
     },
     "exit_premium": 1.225,
-    "option_underlying_leak_blocked": true
+    "option_underlying_leak_blocked": true,
+    "performance_classification": "QUARANTINED_BAD_CLOSE",
+    "performance_include": false,
+    "include_in_performance": false,
+    "counts_in_performance": false,
+    "needs_review": false,
+    "journal_audit_bucket": "HISTORICAL_WARNING",
+    "historical_warning": true,
+    "active_safety_issue": false,
+    "classification_reason": "historical_bad_option_close_quarantined",
+    "official_performance_note": "Excluded from official performance; retained for audit history.",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046621"
   },
   {
     "timestamp": "2026-05-04T15:21:51.265768",
@@ -1167,7 +1285,19 @@
       "next_action": "Review whether the exit matched the thesis and pressure profile."
     },
     "exit_premium": 5.25,
-    "option_underlying_leak_blocked": true
+    "option_underlying_leak_blocked": true,
+    "performance_classification": "QUARANTINED_BAD_CLOSE",
+    "performance_include": false,
+    "include_in_performance": false,
+    "counts_in_performance": false,
+    "needs_review": false,
+    "journal_audit_bucket": "HISTORICAL_WARNING",
+    "historical_warning": true,
+    "active_safety_issue": false,
+    "classification_reason": "historical_bad_option_close_quarantined",
+    "official_performance_note": "Excluded from official performance; retained for audit history.",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046736"
   },
   {
     "timestamp": "2026-05-04T15:21:54.557883",
@@ -1282,7 +1412,19 @@
       "next_action": "Review whether the exit matched the thesis and pressure profile."
     },
     "exit_premium": 14.55,
-    "option_underlying_leak_blocked": true
+    "option_underlying_leak_blocked": true,
+    "performance_classification": "QUARANTINED_BAD_CLOSE",
+    "performance_include": false,
+    "include_in_performance": false,
+    "counts_in_performance": false,
+    "needs_review": false,
+    "journal_audit_bucket": "HISTORICAL_WARNING",
+    "historical_warning": true,
+    "active_safety_issue": false,
+    "classification_reason": "historical_bad_option_close_quarantined",
+    "official_performance_note": "Excluded from official performance; retained for audit history.",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046769"
   },
   {
     "timestamp": "2026-05-04T15:21:57.053046",
@@ -1397,7 +1539,19 @@
       "next_action": "Review whether the exit matched the thesis and pressure profile."
     },
     "exit_premium": 3.375,
-    "option_underlying_leak_blocked": true
+    "option_underlying_leak_blocked": true,
+    "performance_classification": "QUARANTINED_BAD_CLOSE",
+    "performance_include": false,
+    "include_in_performance": false,
+    "counts_in_performance": false,
+    "needs_review": false,
+    "journal_audit_bucket": "HISTORICAL_WARNING",
+    "historical_warning": true,
+    "active_safety_issue": false,
+    "classification_reason": "historical_bad_option_close_quarantined",
+    "official_performance_note": "Excluded from official performance; retained for audit history.",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046797"
   },
   {
     "timestamp": "2026-05-05T00:51:09.140884",
@@ -1512,7 +1666,12 @@
       "next_action": "Review whether the exit matched the thesis and pressure profile."
     },
     "exit_premium": 1.8,
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046832"
   },
   {
     "timestamp": "2026-05-05T00:51:12.993694",
@@ -1632,7 +1791,19 @@
     "exit_premium": 11.675,
     "option_symbol": "AMD260508C00350000",
     "expiration": "2026-05-08",
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "performance_classification": "MANUAL_TEST",
+    "performance_include": false,
+    "include_in_performance": false,
+    "counts_in_performance": false,
+    "needs_review": false,
+    "journal_audit_bucket": "MANUAL_TEST",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "official_performance_note": "Excluded from official performance by design.",
+    "classification_reason": "manual_or_controlled_non_performance_row",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046859"
   },
   {
     "timestamp": "2026-05-05T00:51:17.420166",
@@ -1752,7 +1923,12 @@
     "exit_premium": 53.35,
     "option_symbol": "MU260508C00600000",
     "expiration": "2026-05-08",
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046907"
   },
   {
     "timestamp": "2026-05-05T04:36:41.561508",
@@ -1867,7 +2043,12 @@
       "next_action": "Review whether the exit matched the thesis and pressure profile."
     },
     "exit_premium": 1.8,
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046943"
   },
   {
     "timestamp": "2026-05-05T05:31:05.788393+00:00",
@@ -1938,7 +2119,19 @@
     "expiration": "2026-05-08",
     "strike": 350.0,
     "right": "CALL",
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "performance_classification": "MANUAL_TEST",
+    "performance_include": false,
+    "include_in_performance": false,
+    "counts_in_performance": false,
+    "needs_review": false,
+    "journal_audit_bucket": "MANUAL_TEST",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "official_performance_note": "Excluded from official performance by design.",
+    "classification_reason": "manual_or_controlled_non_performance_row",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.046970"
   },
   {
     "timestamp": "2026-05-05T05:51:56.864338",
@@ -2074,7 +2267,12 @@
       "vehicle": "OPTION"
     },
     "exit_premium": 10.425,
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047009"
   },
   {
     "timestamp": "2026-05-05T05:52:03.513847",
@@ -2210,7 +2408,12 @@
       "vehicle": "OPTION"
     },
     "exit_premium": 18.175,
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047046"
   },
   {
     "timestamp": "2026-05-05T16:27:29.771575+00:00",
@@ -2281,7 +2484,12 @@
     "expiration": "2026-05-08",
     "strike": 600.0,
     "right": "CALL",
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047084"
   },
   {
     "timestamp": "2026-05-05T16:27:44.483976+00:00",
@@ -2352,7 +2560,12 @@
     "expiration": "2026-05-08",
     "strike": 100.0,
     "right": "CALL",
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047120"
   },
   {
     "timestamp": "2026-05-05T16:27:59.344082+00:00",
@@ -2423,7 +2636,12 @@
     "expiration": "2026-05-08",
     "strike": 350.0,
     "right": "CALL",
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047155"
   },
   {
     "timestamp": "2026-05-05T16:31:19.745677",
@@ -2522,7 +2740,12 @@
       "monitoring_price_type": "OPTION_PREMIUM",
       "price_review_basis": "OPTION_PREMIUM_ONLY",
       "underlying_price_used_for_close_decision": false
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047192"
   },
   {
     "timestamp": "2026-05-05T16:31:27.582553",
@@ -2621,7 +2844,12 @@
       "monitoring_price_type": "OPTION_PREMIUM",
       "price_review_basis": "OPTION_PREMIUM_ONLY",
       "underlying_price_used_for_close_decision": false
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047235"
   },
   {
     "timestamp": "2026-05-05T16:31:34.059899",
@@ -2771,7 +2999,13 @@
     "classification_reason": "verified_option_premium_close",
     "exit_premium": 55.95,
     "premium_exit": 55.95,
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "REAL_TRADE",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "official_performance_note": "Included in official filtered performance.",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047280"
   },
   {
     "timestamp": "2026-05-06T03:38:15.856094+00:00",
@@ -2842,7 +3076,12 @@
     "expiration": "2026-05-08",
     "strike": 100.0,
     "right": "CALL",
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047324"
   },
   {
     "timestamp": "2026-05-06T13:54:49.802007+00:00",
@@ -2938,7 +3177,13 @@
     "mark": 2.5,
     "open_interest": 500,
     "volume": 50,
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "MANUAL_TEST",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "official_performance_note": "Excluded from official performance by design.",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047356"
   },
   {
     "timestamp": "2026-05-06T17:59:08.422908+00:00",
@@ -3034,7 +3279,13 @@
     "mark": 2.5,
     "open_interest": 500,
     "volume": 50,
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "MANUAL_TEST",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "official_performance_note": "Excluded from official performance by design.",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047384"
   },
   {
     "timestamp": "2026-05-06T18:17:16.692595+00:00",
@@ -3130,7 +3381,13 @@
     "mark": 55.95,
     "open_interest": 7092,
     "volume": 6508,
-    "option_underlying_leak_blocked": false
+    "option_underlying_leak_blocked": false,
+    "journal_audit_bucket": "REAL_TRADE",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "official_performance_note": "Included in official filtered performance.",
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047458"
   },
   {
     "timestamp": "2026-05-06T18:20:33.784121",
@@ -3229,6 +3486,11 @@
       "monitoring_price_type": "OPTION_PREMIUM",
       "price_review_basis": "OPTION_PREMIUM_ONLY",
       "underlying_price_used_for_close_decision": false
-    }
+    },
+    "journal_audit_bucket": "CLEAN_HISTORY",
+    "historical_warning": false,
+    "active_safety_issue": false,
+    "journal_history_cleaned_by": "engine.journal_history_cleaner",
+    "journal_history_cleaned_at": "2026-05-06T20:13:01.047496"
   }
 ]

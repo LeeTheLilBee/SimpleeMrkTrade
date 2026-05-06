@@ -1,0 +1,35 @@
+{
+  "cleaned_at": "2026-05-06T20:15:20.637240",
+  "backup": {
+    "backup_dir": "data/_journal_history_cleaner_backups/20260506_201520",
+    "backed_up": [
+      {
+        "source": "data/closed_positions.json",
+        "backup": "data/_journal_history_cleaner_backups/20260506_201520/data/closed_positions.json",
+        "size_bytes": 7181401
+      },
+      {
+        "source": "data/trade_log.json",
+        "backup": "data/_journal_history_cleaner_backups/20260506_201520/data/trade_log.json",
+        "size_bytes": 114566
+      },
+      {
+        "source": "data/trade_journal_export.csv",
+        "backup": "data/_journal_history_cleaner_backups/20260506_201520/data/trade_journal_export.csv",
+        "size_bytes": 22800
+      },
+      {
+        "source": "data/quarantined_trade_audit.json",
+        "backup": "data/_journal_history_cleaner_backups/20260506_201520/data/quarantined_trade_audit.json",
+        "size_bytes": 56602
+      }
+    ],
+    "missing": []
+  },
+  "write": true,
+  "changed_closed_positions": 0,
+  "changed_trade_log_rows": 0,
+  "total_changed": 0,
+  "audit_rows": [],
+  "note": "Rows were labeled for audit/performance filtering. No rows were deleted."
+}
