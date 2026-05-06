@@ -26,6 +26,7 @@ VEHICLE_RESEARCH_ONLY = "RESEARCH_ONLY"
 MIN_VALID_OPTION_PREMIUM = 0.01
 OPTION_UNDERLYING_LEAK_MULTIPLE = 8.0
 OPTION_UNDERLYING_LEAK_ABSOLUTE = 25.0
+HIGH_OPTION_MOVE_REVIEW_MULTIPLE = 3.0
 
 
 # =============================================================================
@@ -40,6 +41,7 @@ def _load(path: str, default: Any) -> Any:
     file_path = Path(path)
     if not file_path.exists():
         return default
+
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -50,9 +52,11 @@ def _load(path: str, default: Any) -> Any:
 def _save(path: str, data: Any) -> None:
     file_path = Path(path)
     file_path.parent.mkdir(parents=True, exist_ok=True)
+
     tmp = file_path.with_suffix(file_path.suffix + ".tmp")
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, default=str)
+
     tmp.replace(file_path)
 
 
@@ -70,17 +74,18 @@ def _safe_list(value: Any) -> List[Any]:
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
-        if value is None:
+        if value is None or isinstance(value, bool):
             return float(default)
-        if isinstance(value, bool):
-            return float(default)
+
         if isinstance(value, str):
             value = value.replace("$", "").replace(",", "").strip()
             if value == "":
                 return float(default)
+
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return float(default)
+
         return number
     except Exception:
         return float(default)
@@ -88,17 +93,18 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
 
 def _safe_optional_float(value: Any) -> Optional[float]:
     try:
-        if value is None:
+        if value is None or isinstance(value, bool):
             return None
-        if isinstance(value, bool):
-            return None
+
         if isinstance(value, str):
             value = value.replace("$", "").replace(",", "").strip()
             if value == "":
                 return None
+
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return None
+
         return number
     except Exception:
         return None
@@ -106,17 +112,34 @@ def _safe_optional_float(value: Any) -> Optional[float]:
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
-        if value is None:
+        if value is None or isinstance(value, bool):
             return int(default)
-        if isinstance(value, bool):
-            return int(default)
+
         if isinstance(value, str):
             value = value.replace(",", "").strip()
             if value == "":
                 return int(default)
+
         return int(float(value))
     except Exception:
         return int(default)
+
+
+def _safe_bool(value: Any, default: bool = False) -> bool:
+    try:
+        if value is None:
+            return bool(default)
+
+        if isinstance(value, str):
+            lowered = value.strip().lower()
+            if lowered in {"true", "yes", "1", "y"}:
+                return True
+            if lowered in {"false", "no", "0", "n"}:
+                return False
+
+        return bool(value)
+    except Exception:
+        return bool(default)
 
 
 def _safe_str(value: Any, default: str = "") -> str:
@@ -140,29 +163,25 @@ def _normalize_reason(reason: Any) -> str:
     return text or "manual"
 
 
-def _round4(value: Any, default: float = 0.0) -> float:
-    return round(_safe_float(value, default), 4)
-
-
-def _round_money(value: Any, default: float = 0.0) -> float:
-    return round(_safe_float(value, default), 2)
-
-
 def _first_float(payload: Dict[str, Any], keys: List[str]) -> Optional[float]:
     payload = _safe_dict(payload)
+
     for key in keys:
         value = _safe_optional_float(payload.get(key))
         if value is not None:
             return value
+
     return None
 
 
 def _first_str(payload: Dict[str, Any], keys: List[str], default: str = "") -> str:
     payload = _safe_dict(payload)
+
     for key in keys:
         value = payload.get(key)
         if value is not None and str(value).strip():
             return str(value).strip()
+
     return default
 
 
@@ -229,8 +248,12 @@ def _detect_vehicle(position: Dict[str, Any]) -> str:
         "",
     )
 
-    if option or contract or contract_symbol or right in {"CALL", "PUT", "C", "P"}:
-        return VEHICLE_OPTION
+    contracts = _safe_int(position.get("contracts", position.get("contract_count", 0)), 0)
+    shares = _safe_int(position.get("shares", position.get("quantity", 0)), 0)
+
+    if option or contract or contract_symbol or right in {"CALL", "PUT", "C", "P"} or contracts > 0:
+        if shares <= 0 or contracts > 0:
+            return VEHICLE_OPTION
 
     return VEHICLE_STOCK
 
@@ -264,10 +287,18 @@ def _find_open_position(
 # =============================================================================
 
 def _extract_contract(position: Dict[str, Any]) -> Dict[str, Any]:
+    position = _safe_dict(position)
+
     option = _safe_dict(position.get("option"))
     contract = _safe_dict(position.get("contract"))
+    selected_contract = _safe_dict(position.get("selected_contract"))
+    best_option = _safe_dict(position.get("best_option"))
+    best_option_preview = _safe_dict(position.get("best_option_preview"))
 
     merged: Dict[str, Any] = {}
+    merged.update(best_option_preview)
+    merged.update(best_option)
+    merged.update(selected_contract)
     merged.update(contract)
     merged.update(option)
 
@@ -335,6 +366,9 @@ def _extract_contract(position: Dict[str, Any]) -> Dict[str, Any]:
             "current_premium",
             "premium_current",
             "option_current_price",
+            "current_option_price",
+            "price_reference",
+            "selected_price_reference",
         ],
     )
     if mark is None:
@@ -498,6 +532,8 @@ def _option_exit_premium(position: Dict[str, Any], requested_exit_price: Any) ->
         ("current_option_price", position.get("current_option_price")),
         ("option_mark", position.get("option_mark")),
         ("mark", position.get("mark")),
+        ("price_reference", position.get("price_reference")),
+        ("selected_price_reference", position.get("selected_price_reference")),
         ("option.mark", option.get("mark")),
         ("option.current_mark", option.get("current_mark")),
         ("option.selected_price_reference", option.get("selected_price_reference")),
@@ -623,6 +659,7 @@ def _compute_pnl(position: Dict[str, Any], exit_price: float) -> Tuple[float, Di
 
         pnl = (exit_premium - entry_premium) * OPTION_CONTRACT_MULTIPLIER * contracts
         pnl_pct = ((exit_premium - entry_premium) / entry_premium) * 100.0
+        move_multiple = exit_premium / entry_premium if entry_premium > 0 else 0.0
 
         return round(pnl, 2), {
             "pnl_valid": True,
@@ -632,6 +669,7 @@ def _compute_pnl(position: Dict[str, Any], exit_price: float) -> Tuple[float, Di
             "contracts": contracts,
             "multiplier": OPTION_CONTRACT_MULTIPLIER,
             "pnl_pct": round(pnl_pct, 4),
+            "move_multiple": round(move_multiple, 4),
             "option_pnl_rule": "(exit_premium - entry_premium) * 100 * contracts",
         }
 
@@ -677,8 +715,6 @@ def _capital_release_inputs(position: Dict[str, Any], exit_price: float) -> Tupl
         exit_premium = _safe_float(exit_price, 0.0)
         contracts = _option_contracts(position)
 
-        # Keep release_trade_cap compatible: entry_price * size + pnl.
-        # For options, entry_price must be premium * 100.
         release_basis_entry = entry_premium * OPTION_CONTRACT_MULTIPLIER
 
         return release_basis_entry, contracts, {
@@ -724,6 +760,82 @@ def _patch_capital_release_metadata(capital_release: Any, release_meta: Dict[str
 
     patched["metadata"] = metadata
     return patched
+
+
+# =============================================================================
+# PERFORMANCE CLASSIFICATION
+# =============================================================================
+
+def _performance_classification(
+    *,
+    vehicle: str,
+    reason: str,
+    pnl_meta: Dict[str, Any],
+    exit_source: str,
+    leak_blocked: bool,
+) -> Dict[str, Any]:
+    reason_text = _safe_str(reason, "").lower()
+    pnl_valid = _safe_bool(pnl_meta.get("pnl_valid"), False)
+
+    if "manual_option_premium_test" in reason_text or "manual_test" in reason_text or reason_text.endswith("_test"):
+        return {
+            "performance_classification": "MANUAL_TEST",
+            "performance_include": False,
+            "needs_review": False,
+            "classification_reason": "manual_or_test_reason",
+        }
+
+    if "controlled_slot_release" in reason_text or "slot_release" in reason_text:
+        return {
+            "performance_classification": "CONTROLLED_RELEASE",
+            "performance_include": False,
+            "needs_review": False,
+            "classification_reason": "controlled_release_reason",
+        }
+
+    if leak_blocked:
+        return {
+            "performance_classification": "QUARANTINED_BAD_CLOSE",
+            "performance_include": False,
+            "needs_review": False,
+            "classification_reason": "option_underlying_leak_blocked_on_close",
+        }
+
+    if not pnl_valid:
+        return {
+            "performance_classification": "QUARANTINED_BAD_CLOSE",
+            "performance_include": False,
+            "needs_review": False,
+            "classification_reason": "invalid_pnl_inputs",
+        }
+
+    if vehicle == VEHICLE_OPTION:
+        move_multiple = _safe_float(pnl_meta.get("move_multiple"), 0.0)
+        high_move = move_multiple >= HIGH_OPTION_MOVE_REVIEW_MULTIPLE
+
+        # High option moves are allowed when the close was premium-based and leak checks passed.
+        # We still stamp an audit flag so they can be reviewed later without removing them.
+        return {
+            "performance_classification": "REAL_TRADE",
+            "performance_include": True,
+            "needs_review": False,
+            "classification_reason": "verified_option_premium_close",
+            "high_option_move": bool(high_move),
+            "high_option_move_multiple": round(move_multiple, 4),
+            "high_option_move_note": (
+                "High premium move, but counted because exit premium passed option-premium validation."
+                if high_move
+                else ""
+            ),
+            "option_exit_validation_source": exit_source,
+        }
+
+    return {
+        "performance_classification": "REAL_TRADE",
+        "performance_include": True,
+        "needs_review": False,
+        "classification_reason": "valid_stock_close",
+    }
 
 
 # =============================================================================
@@ -810,6 +922,104 @@ def _clean_exit_explanation(
     return cleaned
 
 
+def _apply_contract_fields(matched: Dict[str, Any], contract: Dict[str, Any]) -> None:
+    contract_symbol = _safe_str(contract.get("contract_symbol"), "")
+    if contract_symbol:
+        matched["contract_symbol"] = contract_symbol
+        matched["option_symbol"] = contract_symbol
+        matched["option_contract_symbol"] = contract_symbol
+        matched["contractSymbol"] = contract_symbol
+
+    expiry = _safe_str(contract.get("expiry") or contract.get("expiration"), "")
+    if expiry:
+        matched["expiry"] = expiry
+        matched["expiration"] = expiry
+        matched["expiration_date"] = expiry
+
+    if contract.get("strike") is not None:
+        matched["strike"] = contract.get("strike")
+        matched["strike_price"] = contract.get("strike")
+
+    right = _safe_str(contract.get("right"), "")
+    if right:
+        matched["right"] = right
+        matched["option_type"] = right
+        matched["call_put"] = right
+
+    for key in ["bid", "ask", "last", "mark", "volume", "open_interest", "contract_score", "price_reference"]:
+        if contract.get(key) not in (None, ""):
+            matched[key] = contract.get(key)
+
+
+def _apply_option_close_aliases(
+    matched: Dict[str, Any],
+    *,
+    entry_premium: float,
+    exit_premium: float,
+    contracts: int,
+    underlying: Optional[float],
+    leak_blocked: bool,
+) -> None:
+    entry_premium = round(_safe_float(entry_premium, 0.0), 4)
+    exit_premium = round(_safe_float(exit_premium, 0.0), 4)
+    contracts = max(1, _safe_int(contracts, 1))
+
+    for key in [
+        "entry",
+        "entry_price",
+        "fill_price",
+        "executed_price",
+        "entry_premium",
+        "premium_entry",
+        "option_entry",
+        "option_entry_price",
+        "entry_option_mark",
+        "contract_entry_price",
+    ]:
+        matched[key] = entry_premium
+
+    for key in [
+        "exit_price",
+        "close_price",
+        "exit_premium",
+        "premium_exit",
+        "option_exit",
+        "option_exit_price",
+        "current_price",
+        "current",
+        "current_premium",
+        "premium_current",
+        "current_option_mark",
+        "option_current_mark",
+        "option_current_price",
+        "current_option_price",
+        "option_mark",
+        "mark",
+    ]:
+        matched[key] = exit_premium
+
+    matched["contracts"] = contracts
+    matched["contract_count"] = contracts
+    matched["quantity"] = contracts
+    matched["qty"] = contracts
+    matched["size"] = contracts
+    matched["shares"] = 0
+
+    if underlying is not None and underlying > 0:
+        matched["underlying_price"] = round(underlying, 4)
+        matched["current_underlying_price"] = round(underlying, 4)
+
+    matched["price_review_basis"] = "OPTION_PREMIUM_ONLY"
+    matched["monitoring_price_type"] = "OPTION_PREMIUM"
+    matched["monitoring_mode"] = "OPTION_PREMIUM"
+    matched["price_basis"] = "OPTION_PREMIUM"
+    matched["underlying_price_used_for_close_decision"] = False
+    matched["underlying_price_used_for_pnl"] = False
+    matched["option_underlying_leak_blocked"] = bool(leak_blocked)
+    matched["option_underlying_leak_blocked_on_close"] = bool(leak_blocked)
+    matched["execution_position_shape"] = "OPTION_PREMIUM_POSITION"
+
+
 def _apply_close_fields(
     position: Dict[str, Any],
     *,
@@ -838,6 +1048,7 @@ def _apply_close_fields(
     matched["position_status"] = "CLOSED"
     matched["execution_status"] = "CLOSED"
     matched["lifecycle_state"] = "CLOSED"
+    matched["lifecycle_stage"] = "CLOSED"
 
     matched["closed_at"] = closed_at
     matched["exit_time"] = closed_at
@@ -845,8 +1056,6 @@ def _apply_close_fields(
 
     matched["reason"] = reason
     matched["close_reason"] = reason
-    matched["exit_price"] = round(exit_price, 4)
-    matched["close_price"] = round(exit_price, 4)
 
     matched["pnl"] = pnl
     matched["realized_pnl"] = pnl
@@ -862,76 +1071,45 @@ def _apply_close_fields(
 
     if vehicle == VEHICLE_OPTION:
         underlying = _underlying_price(matched)
-        entry_premium = pnl_meta.get("entry_premium", _option_entry_premium(matched))
-        contracts = pnl_meta.get("contracts", _option_contracts(matched))
+        entry_premium = _safe_float(pnl_meta.get("entry_premium", _option_entry_premium(matched)), 0.0)
+        exit_premium = _safe_float(pnl_meta.get("exit_premium", exit_price), 0.0)
+        contracts = _safe_int(pnl_meta.get("contracts", _option_contracts(matched)), 1)
 
-        matched["entry"] = round(_safe_float(entry_premium, 0.0), 4)
-        matched["entry_price"] = round(_safe_float(entry_premium, 0.0), 4)
-        matched["entry_premium"] = round(_safe_float(entry_premium, 0.0), 4)
-        matched["premium_entry"] = matched["entry_premium"]
-        matched["option_entry"] = matched["entry_premium"]
-        matched["option_entry_price"] = matched["entry_premium"]
-
-        matched["exit_premium"] = round(exit_price, 4)
-        matched["current_premium"] = round(exit_price, 4)
-        matched["premium_current"] = round(exit_price, 4)
-        matched["current_option_mark"] = round(exit_price, 4)
-        matched["option_current_mark"] = round(exit_price, 4)
-        matched["option_current_price"] = round(exit_price, 4)
-        matched["current_option_price"] = round(exit_price, 4)
-        matched["current_price"] = round(exit_price, 4)
-        matched["current"] = round(exit_price, 4)
-
-        matched["contracts"] = _safe_int(contracts, 1)
-        matched["contract_count"] = _safe_int(contracts, 1)
-        matched["quantity"] = _safe_int(contracts, 1)
-        matched["qty"] = _safe_int(contracts, 1)
-        matched["size"] = _safe_int(contracts, 1)
-        matched["shares"] = 0
-
-        if underlying is not None and underlying > 0:
-            matched["underlying_price"] = round(underlying, 4)
-            matched["current_underlying_price"] = round(underlying, 4)
-
-        matched["price_review_basis"] = "OPTION_PREMIUM_ONLY"
-        matched["monitoring_price_type"] = "OPTION_PREMIUM"
-        matched["monitoring_mode"] = "OPTION_PREMIUM"
-        matched["price_basis"] = "OPTION_PREMIUM"
-        matched["underlying_price_used_for_close_decision"] = False
-        matched["option_underlying_leak_blocked"] = bool(leak_blocked)
-        matched["option_underlying_leak_blocked_on_close"] = bool(leak_blocked)
-        matched["execution_position_shape"] = "OPTION_PREMIUM_POSITION"
-
-        if contract.get("contract_symbol"):
-            matched["contract_symbol"] = contract.get("contract_symbol")
-            matched["option_symbol"] = contract.get("contract_symbol")
-            matched["option_contract_symbol"] = contract.get("contract_symbol")
-            matched["contractSymbol"] = contract.get("contract_symbol")
-        if contract.get("expiry"):
-            matched["expiry"] = contract.get("expiry")
-            matched["expiration"] = contract.get("expiry")
-            matched["expiration_date"] = contract.get("expiry")
-        if contract.get("strike") is not None:
-            matched["strike"] = contract.get("strike")
-            matched["strike_price"] = contract.get("strike")
-        if contract.get("right"):
-            matched["right"] = contract.get("right")
-            matched["option_type"] = contract.get("right")
-            matched["call_put"] = contract.get("right")
+        _apply_option_close_aliases(
+            matched,
+            entry_premium=entry_premium,
+            exit_premium=exit_premium,
+            contracts=contracts,
+            underlying=underlying,
+            leak_blocked=leak_blocked,
+        )
+        _apply_contract_fields(matched, contract)
 
     elif vehicle == VEHICLE_STOCK:
+        matched["exit_price"] = round(exit_price, 4)
+        matched["close_price"] = round(exit_price, 4)
+        matched["current_price"] = round(exit_price, 4)
+        matched["current"] = round(exit_price, 4)
+        matched["underlying_price"] = round(exit_price, 4)
+        matched["current_underlying_price"] = round(exit_price, 4)
         matched["price_review_basis"] = "STOCK_PRICE"
         matched["monitoring_price_type"] = "UNDERLYING"
         matched["monitoring_mode"] = "UNDERLYING"
         matched["price_basis"] = "STOCK_PRICE"
         matched["underlying_price_used_for_close_decision"] = True
-        matched["current_price"] = round(exit_price, 4)
-        matched["current"] = round(exit_price, 4)
-        matched["underlying_price"] = round(exit_price, 4)
-        matched["current_underlying_price"] = round(exit_price, 4)
+        matched["underlying_price_used_for_pnl"] = True
         matched["contracts"] = 0
         matched["contract_count"] = 0
         matched["execution_position_shape"] = "STOCK_UNDERLYING_POSITION"
+
+    perf = _performance_classification(
+        vehicle=vehicle,
+        reason=reason,
+        pnl_meta=pnl_meta,
+        exit_source=exit_source,
+        leak_blocked=leak_blocked,
+    )
+    matched.update(perf)
 
     matched["close_audit"] = {
         "closed_at": closed_at,
@@ -947,7 +1125,12 @@ def _apply_close_fields(
         "price_review_basis": matched.get("price_review_basis"),
         "monitoring_price_type": matched.get("monitoring_price_type"),
         "underlying_price_used_for_close_decision": matched.get("underlying_price_used_for_close_decision"),
+        "underlying_price_used_for_pnl": matched.get("underlying_price_used_for_pnl"),
         "option_underlying_leak_blocked": bool(leak_blocked),
+        "performance_classification": matched.get("performance_classification"),
+        "performance_include": matched.get("performance_include"),
+        "needs_review": matched.get("needs_review"),
+        "classification_reason": matched.get("classification_reason"),
     }
 
     return matched
@@ -999,7 +1182,16 @@ def _build_close_trade_log_row(
         "price_review_basis": matched.get("price_review_basis"),
         "monitoring_price_type": matched.get("monitoring_price_type"),
         "underlying_price_used_for_close_decision": matched.get("underlying_price_used_for_close_decision"),
+        "underlying_price_used_for_pnl": matched.get("underlying_price_used_for_pnl"),
         "execution_position_shape": matched.get("execution_position_shape"),
+        "performance_classification": matched.get("performance_classification"),
+        "performance_include": matched.get("performance_include"),
+        "include_in_performance": matched.get("performance_include"),
+        "counts_in_performance": matched.get("performance_include"),
+        "needs_review": matched.get("needs_review"),
+        "classification_reason": matched.get("classification_reason"),
+        "high_option_move": matched.get("high_option_move", False),
+        "high_option_move_multiple": matched.get("high_option_move_multiple", 0.0),
     }
 
     if vehicle == VEHICLE_OPTION:
@@ -1008,7 +1200,9 @@ def _build_close_trade_log_row(
                 "entry": matched.get("entry_premium", matched.get("entry")),
                 "entry_price": matched.get("entry_premium", matched.get("entry_price")),
                 "entry_premium": matched.get("entry_premium"),
+                "premium_entry": matched.get("entry_premium"),
                 "exit_premium": round(exit_price, 4),
+                "premium_exit": round(exit_price, 4),
                 "current_premium": round(exit_price, 4),
                 "current_option_mark": round(exit_price, 4),
                 "contracts": matched.get("contracts", pnl_meta.get("contracts", 1)),
@@ -1022,6 +1216,12 @@ def _build_close_trade_log_row(
                 "expiration": matched.get("expiration", matched.get("expiry")),
                 "strike": matched.get("strike"),
                 "right": matched.get("right"),
+                "bid": matched.get("bid"),
+                "ask": matched.get("ask"),
+                "last": matched.get("last"),
+                "mark": matched.get("mark"),
+                "open_interest": matched.get("open_interest"),
+                "volume": matched.get("volume"),
                 "option_underlying_leak_blocked": matched.get("option_underlying_leak_blocked"),
             }
         )
@@ -1056,8 +1256,6 @@ def _update_or_append_trade_log_row(
     resolved_trade_id = _position_trade_id(matched)
     vehicle = _detect_vehicle(matched)
 
-    updated_trade: Optional[Dict[str, Any]] = None
-
     for trade in reversed(trade_log):
         if not isinstance(trade, dict):
             continue
@@ -1076,7 +1274,6 @@ def _update_or_append_trade_log_row(
         trade["vehicle"] = vehicle
         trade["vehicle_selected"] = vehicle
         trade["selected_vehicle"] = vehicle
-        trade["action"] = trade.get("action", "OPEN")
         trade["exit_price"] = round(exit_price, 4)
         trade["close_price"] = round(exit_price, 4)
         trade["closed_at"] = closed_at
@@ -1094,13 +1291,24 @@ def _update_or_append_trade_log_row(
         trade["price_review_basis"] = matched.get("price_review_basis")
         trade["monitoring_price_type"] = matched.get("monitoring_price_type")
         trade["underlying_price_used_for_close_decision"] = matched.get("underlying_price_used_for_close_decision")
+        trade["underlying_price_used_for_pnl"] = matched.get("underlying_price_used_for_pnl")
         trade["execution_position_shape"] = matched.get("execution_position_shape")
+        trade["performance_classification"] = matched.get("performance_classification")
+        trade["performance_include"] = matched.get("performance_include")
+        trade["include_in_performance"] = matched.get("performance_include")
+        trade["counts_in_performance"] = matched.get("performance_include")
+        trade["needs_review"] = matched.get("needs_review")
+        trade["classification_reason"] = matched.get("classification_reason")
 
         if vehicle == VEHICLE_OPTION:
+            trade["entry"] = matched.get("entry_premium")
+            trade["entry_price"] = matched.get("entry_premium")
+            trade["entry_premium"] = matched.get("entry_premium")
+            trade["premium_entry"] = matched.get("entry_premium")
             trade["exit_premium"] = round(exit_price, 4)
+            trade["premium_exit"] = round(exit_price, 4)
             trade["current_premium"] = round(exit_price, 4)
             trade["current_option_mark"] = round(exit_price, 4)
-            trade["entry_premium"] = pnl_meta.get("entry_premium")
             trade["contracts"] = pnl_meta.get("contracts")
             trade["shares"] = 0
             trade["contract_symbol"] = matched.get("contract_symbol", matched.get("option_symbol"))
@@ -1111,7 +1319,6 @@ def _update_or_append_trade_log_row(
             trade["right"] = matched.get("right")
             trade["option_underlying_leak_blocked"] = matched.get("option_underlying_leak_blocked")
 
-        updated_trade = trade
         break
 
     close_row = _build_close_trade_log_row(
@@ -1126,10 +1333,8 @@ def _update_or_append_trade_log_row(
         exit_explanation=exit_explanation,
     )
 
-    # Always append a distinct CLOSE row so verification does not come back None.
     trade_log.append(close_row)
-
-    return close_row if close_row else (updated_trade or {})
+    return close_row
 
 
 # =============================================================================
@@ -1208,6 +1413,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
                 "requested_exit_price": exit_price,
                 "price_review_basis": "OPTION_PREMIUM_ONLY",
                 "underlying_price_used_for_close_decision": False,
+                "underlying_price_used_for_pnl": False,
                 "option_underlying_leak_blocked": leak_blocked,
             }
 
@@ -1226,6 +1432,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
                 "requested_exit_price": exit_price,
                 "price_review_basis": "STOCK_PRICE",
                 "underlying_price_used_for_close_decision": True,
+                "underlying_price_used_for_pnl": True,
             }
 
     pnl, pnl_meta = _compute_pnl(matched, resolved_exit_price)
@@ -1366,6 +1573,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
                 "trade_id": matched.get("trade_id"),
                 "exit_price": round(resolved_exit_price, 4),
                 "close_price": round(resolved_exit_price, 4),
+                "exit_premium": matched.get("exit_premium") if vehicle == VEHICLE_OPTION else None,
                 "reason": reason,
                 "pnl": pnl,
                 "pnl_basis": pnl_meta.get("pnl_basis"),
@@ -1377,6 +1585,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
                 "price_review_basis": matched.get("price_review_basis"),
                 "monitoring_price_type": matched.get("monitoring_price_type"),
                 "underlying_price_used_for_close_decision": matched.get("underlying_price_used_for_close_decision"),
+                "underlying_price_used_for_pnl": matched.get("underlying_price_used_for_pnl"),
                 "option_underlying_leak_blocked": matched.get("option_underlying_leak_blocked", False),
                 "contract_symbol": matched.get("contract_symbol", matched.get("option_symbol")),
                 "expiry": matched.get("expiry", matched.get("expiration")),
@@ -1385,6 +1594,9 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
                 "underlying_price": matched.get("underlying_price"),
                 "exit_price_source": exit_source,
                 "execution_position_shape": matched.get("execution_position_shape"),
+                "performance_classification": matched.get("performance_classification"),
+                "performance_include": matched.get("performance_include"),
+                "needs_review": matched.get("needs_review"),
             },
         )
     except Exception as e:
@@ -1398,6 +1610,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
         "vehicle": vehicle,
         "exit_price": round(resolved_exit_price, 4),
         "close_price": round(resolved_exit_price, 4),
+        "exit_premium": matched.get("exit_premium") if vehicle == VEHICLE_OPTION else None,
         "exit_price_source": exit_source,
         "reason": reason,
         "pnl": pnl,
@@ -1407,8 +1620,15 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
         "price_review_basis": matched.get("price_review_basis"),
         "monitoring_price_type": matched.get("monitoring_price_type"),
         "underlying_price_used_for_close_decision": matched.get("underlying_price_used_for_close_decision"),
+        "underlying_price_used_for_pnl": matched.get("underlying_price_used_for_pnl"),
         "option_underlying_leak_blocked": bool(leak_blocked),
         "execution_position_shape": matched.get("execution_position_shape"),
+        "performance_classification": matched.get("performance_classification"),
+        "performance_include": matched.get("performance_include"),
+        "needs_review": matched.get("needs_review"),
+        "classification_reason": matched.get("classification_reason"),
+        "high_option_move": matched.get("high_option_move", False),
+        "high_option_move_multiple": matched.get("high_option_move_multiple", 0.0),
         "capital_release": capital_release,
         "capital_release_meta": release_meta,
         "meta": pdt_meta,
