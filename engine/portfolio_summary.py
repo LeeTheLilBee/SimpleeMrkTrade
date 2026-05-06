@@ -1,5 +1,36 @@
 from __future__ import annotations
 
+"""
+🔭 Observatory Portfolio Summary
+
+Canonical summary rules:
+
+1. Open position value is recalculated from open_positions.json.
+2. OPTION positions use option premium math only:
+       market_value = current_premium * 100 * contracts
+       cost_basis   = entry_premium * 100 * contracts
+
+3. STOCK positions use stock/share math:
+       market_value = current_price * shares
+       cost_basis   = entry_price * shares
+
+4. Account equity is not trusted blindly from account_state.json.
+   Portfolio summary uses:
+       equity = cash + open_market_value
+
+5. Official realized PnL comes from strategy_performance.py when available.
+   This keeps quarantined/manual/test/stale/review rows out of official performance.
+
+Compatibility preserved:
+- portfolio_summary()
+- get_portfolio_summary()
+- build_portfolio_summary()
+- calculate_unrealized_pnl()
+- unrealized_pnl()
+- get_unrealized_pnl()
+- print_portfolio_summary()
+"""
+
 import json
 import math
 from pathlib import Path
@@ -22,6 +53,10 @@ OPTION_UNDERLYING_LEAK_MULTIPLE = 8.0
 OPTION_UNDERLYING_LEAK_ABSOLUTE = 25.0
 
 
+# =============================================================================
+# Safe helpers
+# =============================================================================
+
 def _safe_list(value: Any) -> List[Any]:
     return value if isinstance(value, list) else []
 
@@ -35,9 +70,10 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
         if value is None or isinstance(value, bool):
             return float(default)
         if isinstance(value, str):
-            value = value.replace("$", "").replace(",", "").strip()
-            if value == "":
+            cleaned = value.replace("$", "").replace(",", "").strip()
+            if cleaned == "":
                 return float(default)
+            value = cleaned
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return float(default)
@@ -51,9 +87,10 @@ def _safe_optional_float(value: Any) -> Optional[float]:
         if value is None or isinstance(value, bool):
             return None
         if isinstance(value, str):
-            value = value.replace("$", "").replace(",", "").strip()
-            if value == "":
+            cleaned = value.replace("$", "").replace(",", "").strip()
+            if cleaned == "":
                 return None
+            value = cleaned
         number = float(value)
         if math.isnan(number) or math.isinf(number):
             return None
@@ -67,9 +104,10 @@ def _safe_int(value: Any, default: int = 0) -> int:
         if value is None or isinstance(value, bool):
             return int(default)
         if isinstance(value, str):
-            value = value.replace(",", "").strip()
-            if value == "":
+            cleaned = value.replace(",", "").strip()
+            if cleaned == "":
                 return int(default)
+            value = cleaned
         return int(float(value))
     except Exception:
         return int(default)
@@ -87,6 +125,14 @@ def _upper(value: Any, default: str = "") -> str:
     return _safe_str(value, default).upper()
 
 
+def _round_money(value: Any, default: float = 0.0) -> float:
+    return round(_safe_float(value, default), 2)
+
+
+def _round_price(value: Any, default: float = 0.0) -> float:
+    return round(_safe_float(value, default), 4)
+
+
 def _read_json(path_str: str, default: Any) -> Any:
     path = Path(path_str)
     if not path.exists():
@@ -99,6 +145,10 @@ def _read_json(path_str: str, default: Any) -> Any:
         return default
 
 
+# =============================================================================
+# Loaders
+# =============================================================================
+
 def load_open_positions() -> List[Dict[str, Any]]:
     rows = _read_json(OPEN_FILE, [])
     return rows if isinstance(rows, list) else []
@@ -110,8 +160,34 @@ def load_closed_positions() -> List[Dict[str, Any]]:
 
 
 def load_account_state() -> Dict[str, Any]:
-    state = _read_json(ACCOUNT_FILE, {})
-    return state if isinstance(state, dict) else {}
+    """
+    Prefer account_state.sync_account_from_portfolio() when available so this module
+    reads the current canonical account state, not stale raw JSON.
+
+    If account_state is temporarily unavailable, fall back to account_state.json.
+    """
+    try:
+        from engine.account_state import sync_account_from_portfolio
+
+        synced = sync_account_from_portfolio()
+        return synced if isinstance(synced, dict) else {}
+    except Exception:
+        state = _read_json(ACCOUNT_FILE, {})
+        return state if isinstance(state, dict) else {}
+
+
+# =============================================================================
+# Position identity / vehicle helpers
+# =============================================================================
+
+def _position_trade_id(pos: Dict[str, Any]) -> str:
+    return _safe_str(
+        pos.get(
+            "trade_id",
+            pos.get("position_id", pos.get("id", pos.get("order_id", ""))),
+        ),
+        "",
+    )
 
 
 def _vehicle(pos: Dict[str, Any]) -> str:
@@ -147,7 +223,13 @@ def _vehicle(pos: Dict[str, Any]) -> str:
                 "option_symbol",
                 pos.get(
                     "option_contract_symbol",
-                    option_obj.get("contractSymbol", contract_obj.get("contractSymbol", "")),
+                    pos.get(
+                        "selected_contract_symbol",
+                        pos.get(
+                            "contractSymbol",
+                            option_obj.get("contractSymbol", contract_obj.get("contractSymbol", "")),
+                        ),
+                    ),
                 ),
             ),
         ),
@@ -155,26 +237,37 @@ def _vehicle(pos: Dict[str, Any]) -> str:
     )
 
     right = _upper(
-        pos.get("right", option_obj.get("right", contract_obj.get("right", ""))),
+        pos.get(
+            "right",
+            pos.get(
+                "option_type",
+                pos.get(
+                    "call_put",
+                    option_obj.get("right", contract_obj.get("right", "")),
+                ),
+            ),
+        ),
         "",
     )
 
-    if contract_symbol or right in {"CALL", "PUT", "C", "P"}:
-        return VEHICLE_OPTION
+    contracts = _safe_int(pos.get("contracts", pos.get("contract_count", 0)), 0)
+    shares = _safe_int(pos.get("shares", pos.get("quantity", 0)), 0)
+
+    if option_obj or contract_obj or contract_symbol or right in {"CALL", "PUT", "C", "P"} or contracts > 0:
+        if shares <= 0 or contracts > 0:
+            return VEHICLE_OPTION
 
     return VEHICLE_UNKNOWN
 
 
 def _strategy(pos: Dict[str, Any]) -> str:
-    return _upper(pos.get("strategy", pos.get("direction", "CALL")), "CALL")
+    return _upper(pos.get("strategy", pos.get("direction", pos.get("side", "CALL"))), "CALL")
 
 
 def _direction(pos: Dict[str, Any]) -> str:
     strategy = _strategy(pos)
-
     if "PUT" in strategy or "SHORT" in strategy:
         return "SHORT"
-
     return "LONG"
 
 
@@ -193,6 +286,10 @@ def _shares(pos: Dict[str, Any]) -> int:
     raw = pos.get("shares", pos.get("quantity", pos.get("qty", pos.get("size", 1))))
     return max(1, _safe_int(raw, 1))
 
+
+# =============================================================================
+# Price extraction
+# =============================================================================
 
 def _underlying_price(pos: Dict[str, Any]) -> Optional[float]:
     for value in [
@@ -392,6 +489,7 @@ def _stock_current_price(pos: Dict[str, Any]) -> Tuple[float, str]:
         ("stock_price", pos.get("stock_price")),
         ("price", pos.get("price")),
         ("entry", pos.get("entry")),
+        ("entry_price", pos.get("entry_price")),
     ]:
         price = _safe_float(value, 0.0)
         if price > 0:
@@ -399,6 +497,10 @@ def _stock_current_price(pos: Dict[str, Any]) -> Tuple[float, str]:
 
     return 0.0, "missing_stock_current_price"
 
+
+# =============================================================================
+# Position value / PnL
+# =============================================================================
 
 def _position_cost_basis(pos: Dict[str, Any]) -> float:
     vehicle = _vehicle(pos)
@@ -417,6 +519,7 @@ def _position_cost_basis(pos: Dict[str, Any]) -> float:
 def _position_unrealized(pos: Dict[str, Any]) -> Dict[str, Any]:
     pos = _safe_dict(pos)
     symbol = _upper(pos.get("symbol", "UNKNOWN"), "UNKNOWN")
+    trade_id = _position_trade_id(pos)
     vehicle = _vehicle(pos)
     strategy = _strategy(pos)
     direction = _direction(pos)
@@ -442,7 +545,7 @@ def _position_unrealized(pos: Dict[str, Any]) -> Dict[str, Any]:
 
         return {
             "symbol": symbol,
-            "trade_id": _safe_str(pos.get("trade_id"), ""),
+            "trade_id": trade_id,
             "vehicle": VEHICLE_OPTION,
             "strategy": strategy,
             "direction": direction,
@@ -493,7 +596,7 @@ def _position_unrealized(pos: Dict[str, Any]) -> Dict[str, Any]:
 
         return {
             "symbol": symbol,
-            "trade_id": _safe_str(pos.get("trade_id"), ""),
+            "trade_id": trade_id,
             "vehicle": VEHICLE_STOCK,
             "strategy": strategy,
             "direction": direction,
@@ -517,7 +620,7 @@ def _position_unrealized(pos: Dict[str, Any]) -> Dict[str, Any]:
 
     return {
         "symbol": symbol,
-        "trade_id": _safe_str(pos.get("trade_id"), ""),
+        "trade_id": trade_id,
         "vehicle": VEHICLE_RESEARCH_ONLY if vehicle == VEHICLE_RESEARCH_ONLY else VEHICLE_UNKNOWN,
         "strategy": strategy,
         "direction": direction,
@@ -601,6 +704,10 @@ def get_unrealized_pnl() -> Dict[str, Any]:
     return calculate_unrealized_pnl()
 
 
+# =============================================================================
+# Realized PnL filtering
+# =============================================================================
+
 def _raw_closed_trade_realized_pnl(closed_positions: List[Dict[str, Any]]) -> float:
     realized = 0.0
 
@@ -612,17 +719,6 @@ def _raw_closed_trade_realized_pnl(closed_positions: List[Dict[str, Any]]) -> fl
 
 
 def _classified_realized_pnl_from_strategy_performance() -> Dict[str, Any]:
-    """
-    Use engine.strategy_performance as the official realized-PnL filter.
-
-    This keeps portfolio_summary aligned with:
-    - REAL_TRADE rows counted
-    - QUARANTINED_BAD_CLOSE excluded
-    - MANUAL_TEST excluded
-    - NEEDS_REVIEW_HIGH_OPTION_MOVE excluded from official performance until verified
-
-    If that module is missing or temporarily broken, this safely falls back to raw closed PnL.
-    """
     closed_positions = load_closed_positions()
     raw_realized = _raw_closed_trade_realized_pnl(closed_positions)
 
@@ -630,6 +726,8 @@ def _classified_realized_pnl_from_strategy_performance() -> Dict[str, Any]:
         from engine.strategy_performance import strategy_performance_summary
 
         payload = strategy_performance_summary(include_excluded=False)
+        payload = payload if isinstance(payload, dict) else {}
+
         source = _safe_dict(payload.get("source"))
         summary = _safe_dict(payload.get("summary"))
         classifications = _safe_dict(payload.get("classifications"))
@@ -646,24 +744,31 @@ def _classified_realized_pnl_from_strategy_performance() -> Dict[str, Any]:
             row_dict = _safe_dict(row)
             clean_label = _upper(label, "UNKNOWN")
             classification_pnl[clean_label] = round(_safe_float(row_dict.get("pnl"), 0.0), 2)
-            classification_rows[clean_label] = _safe_int(row_dict.get("trades"), 0)
+            classification_rows[clean_label] = _safe_int(
+                row_dict.get("trades", row_dict.get("rows", 0)),
+                0,
+            )
+
+        rows_used = _safe_int(source.get("rows_used"), _safe_int(summary.get("trades"), 0))
+        rows_excluded = _safe_int(
+            source.get("rows_excluded_from_performance", source.get("rows_excluded", len(excluded_rows))),
+            len(excluded_rows),
+        )
 
         return {
             "official_realized_pnl": official_realized,
             "raw_realized_pnl_all_closed_records": raw_realized,
             "excluded_realized_pnl": excluded_realized,
-            "official_rows_used": _safe_int(source.get("rows_used"), _safe_int(summary.get("trades"), 0)),
+            "official_rows_used": rows_used,
             "closed_rows_loaded": len(closed_positions),
             "flattened_rows": _safe_int(source.get("flattened_rows"), len(flattened_rows)),
-            "rows_excluded_from_performance": _safe_int(
-                source.get("rows_excluded_from_performance"),
-                len(excluded_rows),
-            ),
+            "rows_excluded_from_performance": rows_excluded,
             "classification_pnl": classification_pnl,
             "classification_rows": classification_rows,
             "realized_pnl_source": "strategy_performance_filtered",
             "filter_note": "Official realized PnL excludes quarantined, manual/test, stale, controlled-release, and review-only rows.",
             "fallback_used": False,
+            "strategy_performance_payload": payload,
         }
 
     except Exception as exc:
@@ -680,8 +785,13 @@ def _classified_realized_pnl_from_strategy_performance() -> Dict[str, Any]:
             "realized_pnl_source": "raw_closed_positions_fallback",
             "filter_note": f"Fallback used because strategy_performance filter was unavailable: {type(exc).__name__}",
             "fallback_used": True,
+            "strategy_performance_payload": {},
         }
 
+
+# =============================================================================
+# Account math
+# =============================================================================
 
 def _clean_account_math(
     *,
@@ -696,12 +806,6 @@ def _clean_account_math(
 
     calculated_equity = round(cash + open_market_value, 2)
 
-    # Observatory paper-mode canonical rule:
-    # equity = cash + current open market value.
-    #
-    # We do NOT trust stored account_state equity here, because account_state can
-    # temporarily drift during close flow if capital is released before
-    # open_positions.json is rewritten.
     equity = calculated_equity
     estimated_account_value = calculated_equity
 
@@ -715,7 +819,8 @@ def _clean_account_math(
 
     double_count_warning = False
     if account_estimated_raw is not None:
-        if abs(account_estimated - round(calculated_equity + unrealized_total, 2)) <= 0.02 and abs(unrealized_total) > 0:
+        double_count_candidate = round(calculated_equity + unrealized_total, 2)
+        if abs(account_estimated - double_count_candidate) <= 0.02 and abs(unrealized_total) > 0:
             double_count_warning = True
 
     return {
@@ -734,8 +839,14 @@ def _clean_account_math(
         "account_state_estimated_gap": estimated_gap,
         "stale_account_state_warning": stale_account_state_warning,
         "double_count_warning": double_count_warning,
+        "account_state_last_sync": account.get("last_account_sync", ""),
+        "account_state_last_sync_adjustment": account.get("last_account_sync_adjustment", {}),
     }
 
+
+# =============================================================================
+# Public summary
+# =============================================================================
 
 def portfolio_summary() -> Dict[str, Any]:
     open_positions = load_open_positions()
@@ -743,6 +854,7 @@ def portfolio_summary() -> Dict[str, Any]:
     account = load_account_state()
 
     realized_detail = _classified_realized_pnl_from_strategy_performance()
+
     realized = round(_safe_float(realized_detail.get("official_realized_pnl"), 0.0), 2)
     raw_realized = round(_safe_float(realized_detail.get("raw_realized_pnl_all_closed_records"), realized), 2)
     excluded_realized = round(_safe_float(realized_detail.get("excluded_realized_pnl"), 0.0), 2)
@@ -768,29 +880,67 @@ def portfolio_summary() -> Dict[str, Any]:
         unrealized_total=unrealized_total,
     )
 
+    classification_pnl = _safe_dict(realized_detail.get("classification_pnl"))
+    classification_rows = _safe_dict(realized_detail.get("classification_rows"))
+
     return {
         "open_positions": len(open_positions),
         "closed_positions": len(closed_positions),
 
-        # Official, filtered, performance-safe realized PnL.
         "realized_pnl": realized,
-
-        # Audit trail so nothing is hidden or deleted.
+        "official_realized_pnl": realized,
         "realized_pnl_all_closed_records": raw_realized,
+        "all_closed_records_pnl": raw_realized,
         "excluded_realized_pnl": excluded_realized,
+        "under_review_realized_pnl": excluded_realized,
         "realized_pnl_detail": realized_detail,
+
+        "official_closed_rows_used": _safe_int(realized_detail.get("official_rows_used"), 0),
+        "official_closed_rows": _safe_int(realized_detail.get("official_rows_used"), 0),
+        "closed_rows_used": _safe_int(realized_detail.get("official_rows_used"), 0),
+        "rows_used": _safe_int(realized_detail.get("official_rows_used"), 0),
+
+        "rows_excluded_from_performance": _safe_int(realized_detail.get("rows_excluded_from_performance"), 0),
+        "closed_rows_excluded_from_performance": _safe_int(realized_detail.get("rows_excluded_from_performance"), 0),
+        "rows_excluded": _safe_int(realized_detail.get("rows_excluded_from_performance"), 0),
+
+        "realized_pnl_source": realized_detail.get("realized_pnl_source", "unknown"),
+        "realized_source": realized_detail.get("realized_pnl_source", "unknown"),
+        "pnl_source": realized_detail.get("realized_pnl_source", "unknown"),
+
+        "realized_pnl_classifications": {
+            label: {
+                "rows": _safe_int(classification_rows.get(label), 0),
+                "trades": _safe_int(classification_rows.get(label), 0),
+                "pnl": round(_safe_float(classification_pnl.get(label), 0.0), 2),
+            }
+            for label in sorted(classification_pnl.keys())
+        },
+        "realized_classifications": {
+            label: {
+                "rows": _safe_int(classification_rows.get(label), 0),
+                "trades": _safe_int(classification_rows.get(label), 0),
+                "pnl": round(_safe_float(classification_pnl.get(label), 0.0), 2),
+            }
+            for label in sorted(classification_pnl.keys())
+        },
 
         "unrealized_pnl": unrealized_total,
         "gross_capital_open": gross_capital_open,
         "total_market_value_open": total_market_value_open,
+
         "cash": clean_account["cash"],
         "buying_power": clean_account["buying_power"],
         "equity": clean_account["equity"],
         "estimated_account_value": clean_account["estimated_account_value"],
         "calculated_equity": clean_account["calculated_equity"],
+
         "vehicle_mix": unrealized.get("vehicle_mix"),
         "net_pnl": round(realized + unrealized_total, 2),
+        "net_official_pnl": round(realized + unrealized_total, 2),
         "net_pnl_all_closed_records": round(raw_realized + unrealized_total, 2),
+        "net_audit_pnl": round(raw_realized + unrealized_total, 2),
+
         "unrealized_detail": unrealized,
         "option_safety": unrealized.get("option_safety", {}),
         "account_math": clean_account,
@@ -815,9 +965,9 @@ def print_portfolio_summary() -> None:
     print(f"Realized PnL: {summary.get('realized_pnl')}")
     print(f"Realized PnL All Closed Records: {summary.get('realized_pnl_all_closed_records')}")
     print(f"Excluded Realized PnL: {summary.get('excluded_realized_pnl')}")
-    print(f"Official Closed Rows Used: {realized_detail.get('official_rows_used')}")
-    print(f"Rows Excluded From Performance: {realized_detail.get('rows_excluded_from_performance')}")
-    print(f"Realized PnL Source: {realized_detail.get('realized_pnl_source')}")
+    print(f"Official Closed Rows Used: {summary.get('official_closed_rows_used')}")
+    print(f"Rows Excluded From Performance: {summary.get('rows_excluded_from_performance')}")
+    print(f"Realized PnL Source: {summary.get('realized_pnl_source')}")
     print(f"Unrealized PnL: {summary.get('unrealized_pnl')}")
     print(f"Gross Capital Open: {summary.get('gross_capital_open')}")
     print(f"Market Value Open: {summary.get('total_market_value_open')}")

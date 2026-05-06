@@ -6,6 +6,7 @@
   "open_market_value": 3592.5,
   "open_cost_basis": 3825.0,
   "open_unrealized_pnl": -232.5,
+  "open_positions": 3,
   "account_type": "margin",
   "trade_history": [],
   "activity_log": [
@@ -186,9 +187,9 @@
   ],
   "reserve_mode": "percent",
   "reserve_value": 20.0,
-  "last_account_sync": "2026-05-06T13:55:00.823047",
+  "last_account_sync": "2026-05-06T17:23:50.160275",
+  "last_account_sync_adjustment": {},
   "account_math_basis": "cash_plus_open_market_value",
-  "open_positions": 3,
   "vehicle_mix": {
     "OPTION": 3,
     "STOCK": 0,

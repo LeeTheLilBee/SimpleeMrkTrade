@@ -1,5 +1,23 @@
 from __future__ import annotations
 
+"""
+🔭 Observatory Account Snapshot
+
+This is the display-friendly account view.
+
+Canonical source:
+- portfolio_summary() for cash, equity, open market value, official PnL,
+  and performance filtering.
+- strategy_performance only as a fallback if portfolio_summary is missing
+  nested performance fields.
+
+Compatibility preserved:
+- account_snapshot()
+- get_account_snapshot()
+- build_account_snapshot()
+- print_account_snapshot()
+"""
+
 from typing import Any, Dict, List
 
 from engine.portfolio_summary import portfolio_summary
@@ -10,9 +28,10 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
         if value is None or isinstance(value, bool):
             return float(default)
         if isinstance(value, str):
-            value = value.replace("$", "").replace(",", "").strip()
-            if value == "":
+            cleaned = value.replace("$", "").replace(",", "").strip()
+            if cleaned == "":
                 return float(default)
+            value = cleaned
         return float(value)
     except Exception:
         return float(default)
@@ -23,9 +42,10 @@ def _safe_int(value: Any, default: int = 0) -> int:
         if value is None or isinstance(value, bool):
             return int(default)
         if isinstance(value, str):
-            value = value.replace(",", "").strip()
-            if value == "":
+            cleaned = value.replace(",", "").strip()
+            if cleaned == "":
                 return int(default)
+            value = cleaned
         return int(float(value))
     except Exception:
         return int(default)
@@ -46,10 +66,6 @@ def _first_present(payload: Dict[str, Any], keys: List[str], default: Any = None
 
 
 def _strategy_performance_fallback() -> Dict[str, Any]:
-    """
-    Pull performance-filter metadata directly if portfolio_summary does not expose it.
-    This keeps account_snapshot aligned with strategy_performance.py.
-    """
     try:
         from engine.strategy_performance import strategy_performance_summary
 
@@ -59,13 +75,53 @@ def _strategy_performance_fallback() -> Dict[str, Any]:
         return {}
 
 
+def _classifications_from_portfolio_or_performance(
+    portfolio: Dict[str, Any],
+    performance: Dict[str, Any],
+) -> Dict[str, Any]:
+    direct = _safe_dict(
+        _first_present(
+            portfolio,
+            [
+                "realized_pnl_classifications",
+                "realized_classifications",
+                "performance_classifications",
+            ],
+            {},
+        )
+    )
+
+    if direct:
+        return direct
+
+    detail = _safe_dict(portfolio.get("realized_pnl_detail"))
+    classification_pnl = _safe_dict(detail.get("classification_pnl"))
+    classification_rows = _safe_dict(detail.get("classification_rows"))
+
+    if classification_pnl:
+        return {
+            label: {
+                "rows": _safe_int(classification_rows.get(label), 0),
+                "trades": _safe_int(classification_rows.get(label), 0),
+                "pnl": round(_safe_float(pnl, 0.0), 2),
+            }
+            for label, pnl in sorted(classification_pnl.items())
+        }
+
+    performance_classifications = _safe_dict(performance.get("classifications"))
+    if performance_classifications:
+        return performance_classifications
+
+    return {}
+
+
 def account_snapshot() -> Dict[str, Any]:
     portfolio = portfolio_summary()
     performance = _strategy_performance_fallback()
 
-    performance_source = _safe_dict(performance.get("source", {}))
-    performance_summary = _safe_dict(performance.get("summary", {}))
-    performance_classifications = _safe_dict(performance.get("classifications", {}))
+    realized_detail = _safe_dict(portfolio.get("realized_pnl_detail"))
+    performance_source = _safe_dict(performance.get("source"))
+    performance_summary = _safe_dict(performance.get("summary"))
 
     cash = round(_safe_float(portfolio.get("cash"), 0.0), 2)
     buying_power = round(_safe_float(portfolio.get("buying_power"), cash), 2)
@@ -85,7 +141,10 @@ def account_snapshot() -> Dict[str, Any]:
                     "official_realized_pnl",
                     "filtered_realized_pnl",
                 ],
-                performance_summary.get("pnl", 0.0),
+                realized_detail.get(
+                    "official_realized_pnl",
+                    performance_summary.get("pnl", 0.0),
+                ),
             ),
             0.0,
         ),
@@ -104,7 +163,10 @@ def account_snapshot() -> Dict[str, Any]:
                     "realized_pnl_all_records",
                     "realized_pnl_unfiltered",
                 ],
-                official_realized_pnl,
+                realized_detail.get(
+                    "raw_realized_pnl_all_closed_records",
+                    official_realized_pnl,
+                ),
             ),
             official_realized_pnl,
         ),
@@ -121,7 +183,10 @@ def account_snapshot() -> Dict[str, Any]:
                     "excluded_pnl",
                     "under_review_realized_pnl",
                 ],
-                realized_pnl_all_closed_records - official_realized_pnl,
+                realized_detail.get(
+                    "excluded_realized_pnl",
+                    realized_pnl_all_closed_records - official_realized_pnl,
+                ),
             ),
             0.0,
         ),
@@ -138,7 +203,10 @@ def account_snapshot() -> Dict[str, Any]:
                 "rows_used",
                 "performance_rows_used",
             ],
-            performance_source.get("rows_used", 0),
+            realized_detail.get(
+                "official_rows_used",
+                performance_source.get("rows_used", 0),
+            ),
         ),
         0,
     )
@@ -153,7 +221,10 @@ def account_snapshot() -> Dict[str, Any]:
                 "excluded_rows_count",
                 "performance_rows_excluded",
             ],
-            performance_source.get("rows_excluded_from_performance", 0),
+            realized_detail.get(
+                "rows_excluded_from_performance",
+                performance_source.get("rows_excluded_from_performance", 0),
+            ),
         ),
         0,
     )
@@ -166,23 +237,21 @@ def account_snapshot() -> Dict[str, Any]:
             "pnl_source",
             "performance_source",
         ],
-        "strategy_performance_filtered" if performance else "portfolio_summary",
+        realized_detail.get(
+            "realized_pnl_source",
+            "strategy_performance_filtered" if performance else "portfolio_summary",
+        ),
     )
 
-    realized_classifications = _safe_dict(
-        _first_present(
-            portfolio,
-            [
-                "realized_pnl_classifications",
-                "realized_classifications",
-                "performance_classifications",
-            ],
-            performance_classifications,
-        )
+    realized_classifications = _classifications_from_portfolio_or_performance(
+        portfolio,
+        performance,
     )
 
     net_official_pnl = round(official_realized_pnl + unrealized_pnl, 2)
     net_audit_pnl = round(realized_pnl_all_closed_records + unrealized_pnl, 2)
+
+    account_math = _safe_dict(portfolio.get("account_math"))
 
     return {
         "cash": cash,
@@ -201,6 +270,7 @@ def account_snapshot() -> Dict[str, Any]:
 
         "gross_capital_open": round(_safe_float(portfolio.get("gross_capital_open"), 0.0), 2),
         "total_market_value_open": round(_safe_float(portfolio.get("total_market_value_open"), 0.0), 2),
+        "calculated_equity": round(_safe_float(portfolio.get("calculated_equity"), equity), 2),
 
         "official_closed_rows_used": official_closed_rows_used,
         "rows_excluded_from_performance": rows_excluded_from_performance,
@@ -209,7 +279,12 @@ def account_snapshot() -> Dict[str, Any]:
 
         "vehicle_mix": portfolio.get("vehicle_mix", {}),
         "option_safety": portfolio.get("option_safety", {}),
-        "account_math": portfolio.get("account_math", {}),
+        "account_math": account_math,
+
+        "stale_account_state_warning": bool(account_math.get("stale_account_state_warning", False)),
+        "double_count_warning": bool(account_math.get("double_count_warning", False)),
+        "account_state_equity_gap": round(_safe_float(account_math.get("account_state_equity_gap"), 0.0), 2),
+        "account_state_estimated_gap": round(_safe_float(account_math.get("account_state_estimated_gap"), 0.0), 2),
     }
 
 
@@ -243,6 +318,17 @@ def print_account_snapshot() -> None:
     print(f"Official Closed Rows Used: {snap.get('official_closed_rows_used')}")
     print(f"Rows Excluded From Performance: {snap.get('rows_excluded_from_performance')}")
     print(f"Realized PnL Source: {snap.get('realized_pnl_source')}")
+
+    account_math = _safe_dict(snap.get("account_math"))
+    print()
+    print("ACCOUNT MATH")
+    print(f"Calculated Equity: {snap.get('calculated_equity')}")
+    print(f"Stale Account State Warning: {snap.get('stale_account_state_warning')}")
+    print(f"Double Count Warning: {snap.get('double_count_warning')}")
+    print(f"Account State Equity Gap: {snap.get('account_state_equity_gap')}")
+    print(f"Account State Estimated Gap: {snap.get('account_state_estimated_gap')}")
+    print(f"Equity Source: {account_math.get('equity_source')}")
+    print(f"Formula: {account_math.get('estimated_value_formula')}")
 
     classifications = _safe_dict(snap.get("realized_pnl_classifications", {}))
     if classifications:
