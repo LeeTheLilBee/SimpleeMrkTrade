@@ -91,6 +91,12 @@ EXPORT_FIELDS = [
     "selected_for_execution",
     "research_approved",
     "execution_ready",
+    "performance_classification",
+    "performance_include",
+    "include_in_performance",
+    "counts_in_performance",
+    "needs_review",
+    "classification_reason",
     "duplicate_source_note",
     "stale_trade_log_row",
     "journal_warning",
@@ -101,6 +107,10 @@ OPTION_UNDERLYING_LEAK_MULTIPLE = 8.0
 OPTION_UNDERLYING_LEAK_ABSOLUTE = 25.0
 MIN_VALID_OPTION_PREMIUM = 0.01
 
+
+# =============================================================================
+# File / safety helpers
+# =============================================================================
 
 def _load(path: str, default: Any) -> Any:
     file_path = Path(path)
@@ -204,14 +214,20 @@ def _upper(value: Any, default: str = "") -> str:
     return _safe_str(value, default).upper()
 
 
+# =============================================================================
+# Row extraction helpers
+# =============================================================================
+
 def _contract_payload(row: Dict[str, Any]) -> Dict[str, Any]:
     out: Dict[str, Any] = {}
 
+    best_option_preview = _safe_dict(row.get("best_option_preview"))
     best_option = _safe_dict(row.get("best_option"))
     selected_contract = _safe_dict(row.get("selected_contract"))
     contract = _safe_dict(row.get("contract"))
     option = _safe_dict(row.get("option"))
 
+    out.update(best_option_preview)
     out.update(best_option)
     out.update(selected_contract)
     out.update(contract)
@@ -265,10 +281,11 @@ def _vehicle(row: Dict[str, Any]) -> str:
             "contractSymbol",
             "option_symbol",
             "option_contract_symbol",
+            "selected_contract_symbol",
         ),
         "",
     )
-    right = _upper(_pick(row, contract, "right", "option_type", "call_put"), "")
+    right = _upper(_pick(row, contract, "right", "option_type", "call_put", "contract_right"), "")
 
     if contract_symbol or right in {"CALL", "PUT", "C", "P"} or contract:
         return "OPTION"
@@ -277,7 +294,7 @@ def _vehicle(row: Dict[str, Any]) -> str:
 
 
 def _strategy(row: Dict[str, Any]) -> str:
-    strategy = _upper(row.get("strategy", row.get("direction", "")), "")
+    strategy = _upper(row.get("strategy", row.get("direction", row.get("side", ""))), "")
 
     if strategy in {"LONG", "BUY"}:
         return "CALL"
@@ -289,7 +306,7 @@ def _strategy(row: Dict[str, Any]) -> str:
 
 
 def _status(row: Dict[str, Any], fallback_status: str = "") -> str:
-    status = _upper(row.get("status", ""), "")
+    status = _upper(row.get("status", row.get("position_status", row.get("execution_status", ""))), "")
     if status:
         return status
 
@@ -304,13 +321,13 @@ def _status(row: Dict[str, Any], fallback_status: str = "") -> str:
 
 def _timestamp(row: Dict[str, Any]) -> str:
     return _safe_str(
-        row.get("timestamp", row.get("closed_at", row.get("opened_at", ""))),
+        row.get("timestamp", row.get("closed_at", row.get("exit_time", row.get("opened_at", "")))),
         "",
     )
 
 
 def _trade_id(row: Dict[str, Any]) -> str:
-    return _safe_str(row.get("trade_id"), "")
+    return _safe_str(row.get("trade_id", row.get("position_id", row.get("id", ""))), "")
 
 
 def _symbol(row: Dict[str, Any]) -> str:
@@ -321,14 +338,14 @@ def _display_group(row: Dict[str, Any]) -> str:
     source = _safe_str(row.get("record_source"), "").lower()
     status = _upper(row.get("status"), "")
 
-    if source == "trade_log":
-        return "STALE_TRADE_LOG"
-
     if source == "open_positions":
         return "OPEN_POSITIONS"
 
     if source == "closed_positions":
         return "CLOSED_POSITIONS"
+
+    if source == "trade_log":
+        return "STALE_TRADE_LOG"
 
     if status == "OPEN":
         return "OPEN_POSITIONS"
@@ -406,6 +423,10 @@ def _first_positive_from_normalized(row: Dict[str, Any], keys: List[str]) -> flo
 
     return 0.0
 
+
+# =============================================================================
+# Option safety
+# =============================================================================
 
 def _looks_like_underlying_leak(
     *,
@@ -486,246 +507,6 @@ def _normalize_option_aliases(normalized: Dict[str, Any]) -> None:
         normalized["premium_target"] = option_target
         normalized["target_premium"] = option_target
         normalized["take_profit_premium"] = option_target
-
-
-def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: str = "") -> Dict[str, Any]:
-    row = dict(_safe_dict(row))
-    contract = _contract_payload(row)
-    vehicle = _vehicle(row)
-    status = _status(row, fallback_status=fallback_status)
-
-    contract_symbol = _safe_str(
-        _pick(
-            row,
-            contract,
-            "contract_symbol",
-            "contractSymbol",
-            "option_symbol",
-            "option_contract_symbol",
-        ),
-        "",
-    )
-
-    underlying_price = round(
-        _safe_float(
-            row.get(
-                "underlying_price",
-                row.get(
-                    "current_underlying_price",
-                    row.get("stock_price", row.get("market_price", 0.0)),
-                ),
-            ),
-            0.0,
-        ),
-        4,
-    )
-
-    current_underlying_price = round(
-        _safe_float(
-            row.get(
-                "current_underlying_price",
-                row.get("underlying_price", row.get("stock_price", 0.0)),
-            ),
-            0.0,
-        ),
-        4,
-    )
-
-    entry_premium = _first_positive_float(
-        row,
-        contract,
-        [
-            "entry_premium",
-            "premium_entry",
-            "option_entry",
-            "option_entry_price",
-            "entry_option_mark",
-            "contract_entry_price",
-            "fill_premium",
-            "average_premium",
-            "avg_premium",
-            "executed_price",
-            "fill_price",
-            "selected_price_reference",
-            "price_reference",
-            "mark",
-        ],
-    )
-
-    if entry_premium <= 0 and vehicle == "OPTION":
-        entry_candidate = _safe_optional_float(row.get("entry", row.get("entry_price")))
-        if entry_candidate is not None and entry_candidate > 0:
-            clean_entry, _ = _sanitize_option_price(
-                candidate_price=entry_candidate,
-                option_entry=0.0,
-                underlying_price=underlying_price or current_underlying_price,
-            )
-            entry_premium = clean_entry
-
-    current_premium = _first_positive_float(
-        row,
-        contract,
-        [
-            "current_premium",
-            "premium_current",
-            "current_option_mark",
-            "option_current_mark",
-            "option_current_price",
-            "current_option_price",
-            "option_mark",
-            "contract_mark",
-            "mark",
-            "last",
-            "selected_price_reference",
-            "price_reference",
-        ],
-    )
-
-    exit_price = round(_safe_float(row.get("exit_price", row.get("close_price", 0.0)), 0.0), 4)
-
-    explicit_exit_premium = _first_positive_float(
-        row,
-        contract,
-        [
-            "exit_premium",
-            "close_premium",
-            "premium_exit",
-            "option_exit",
-            "option_exit_price",
-            "exit_option_mark",
-            "close_option_mark",
-            "final_option_mark",
-        ],
-    )
-
-    normalized = {
-        "record_source": record_source,
-        "record_rank": 0,
-        "display_group": "",
-        "timestamp": _timestamp(row),
-        "trade_id": _trade_id(row),
-        "symbol": _symbol(row),
-        "strategy": _strategy(row),
-        "status": status,
-        "vehicle": vehicle,
-        "vehicle_selected": vehicle,
-
-        "contracts": _safe_int(row.get("contracts", row.get("contract_count", row.get("quantity", 0))), 0),
-        "shares": _safe_int(row.get("shares", row.get("quantity", 0)), 0),
-
-        "entry": round(
-            _safe_float(
-                row.get("entry", row.get("entry_price", entry_premium if vehicle == "OPTION" else 0.0)),
-                0.0,
-            ),
-            4,
-        ),
-        "entry_price": round(
-            _safe_float(
-                row.get("entry_price", row.get("entry", entry_premium if vehicle == "OPTION" else 0.0)),
-                0.0,
-            ),
-            4,
-        ),
-        "entry_premium": entry_premium,
-
-        "current_price": round(
-            _safe_float(row.get("current_price", current_premium if vehicle == "OPTION" else 0.0), 0.0),
-            4,
-        ),
-        "current_premium": current_premium,
-
-        "exit_price": exit_price,
-        "exit_premium": explicit_exit_premium,
-
-        "underlying_price": underlying_price,
-        "current_underlying_price": current_underlying_price,
-
-        "stop": round(_safe_float(row.get("stop", row.get("stop_loss", 0.0)), 0.0), 4),
-        "target": round(_safe_float(row.get("target", row.get("take_profit", 0.0)), 0.0), 4),
-        "take_profit": round(_safe_float(row.get("take_profit", row.get("target", 0.0)), 0.0), 4),
-
-        "option_stop": round(_safe_float(row.get("option_stop", row.get("premium_stop", row.get("stop_premium", 0.0))), 0.0), 4),
-        "option_target": round(_safe_float(row.get("option_target", row.get("premium_target", row.get("target_premium", 0.0))), 0.0), 4),
-        "premium_stop": round(_safe_float(row.get("premium_stop", row.get("option_stop", row.get("stop_premium", 0.0))), 0.0), 4),
-        "premium_target": round(_safe_float(row.get("premium_target", row.get("option_target", row.get("target_premium", 0.0))), 0.0), 4),
-        "target_premium": round(_safe_float(row.get("target_premium", row.get("premium_target", row.get("option_target", 0.0))), 0.0), 4),
-        "take_profit_premium": round(_safe_float(row.get("take_profit_premium", row.get("target_premium", row.get("premium_target", 0.0))), 0.0), 4),
-
-        "pnl": round(_safe_float(row.get("pnl", 0.0), 0.0), 4),
-        "realized_pnl": round(_safe_float(row.get("realized_pnl", row.get("pnl", 0.0)), 0.0), 4),
-        "unrealized_pnl": round(_safe_float(row.get("unrealized_pnl", 0.0), 0.0), 4),
-        "pnl_pct": round(_safe_float(row.get("pnl_pct", 0.0), 0.0), 4),
-        "pnl_basis": _safe_str(row.get("pnl_basis"), ""),
-
-        "price_review_basis": _safe_str(row.get("price_review_basis"), ""),
-        "monitoring_price_type": _safe_str(row.get("monitoring_price_type"), ""),
-        "underlying_price_used_for_close_decision": _safe_bool(row.get("underlying_price_used_for_close_decision"), vehicle != "OPTION"),
-        "underlying_price_used_for_pnl": _safe_bool(row.get("underlying_price_used_for_pnl"), vehicle != "OPTION"),
-        "option_underlying_leak_blocked": _safe_bool(row.get("option_underlying_leak_blocked"), False),
-
-        "contract_symbol": contract_symbol,
-        "option_symbol": _safe_str(
-            _pick(row, contract, "option_symbol", "contract_symbol", "contractSymbol", "option_contract_symbol"),
-            "",
-        ),
-        "expiry": _safe_str(_pick(row, contract, "expiry", "expiration", "expiration_date"), ""),
-        "expiration": _safe_str(_pick(row, contract, "expiration", "expiry", "expiration_date"), ""),
-        "strike": round(_safe_float(_pick(row, contract, "strike", "strike_price", default=0.0), 0.0), 4),
-        "right": _upper(_pick(row, contract, "right", "option_type", "call_put"), ""),
-
-        "bid": round(_safe_float(_pick(row, contract, "bid", "option_bid", default=0.0), 0.0), 4),
-        "ask": round(_safe_float(_pick(row, contract, "ask", "option_ask", default=0.0), 0.0), 4),
-        "last": round(_safe_float(_pick(row, contract, "last", "last_price", "option_last", default=0.0), 0.0), 4),
-        "mark": round(_safe_float(_pick(row, contract, "mark", "option_mark", "current_option_mark", "price_reference", default=0.0), 0.0), 4),
-        "volume": _safe_int(_pick(row, contract, "volume", "option_volume", default=0), 0),
-        "open_interest": _safe_int(_pick(row, contract, "open_interest", "oi", "option_open_interest", default=0), 0),
-        "dte": _safe_int(_pick(row, contract, "dte", "daysToExpiration", default=0), 0),
-
-        "option_contract_score": round(_safe_float(row.get("option_contract_score", row.get("contract_score", contract.get("contract_score", 0.0))), 0.0), 4),
-        "contract_score": round(_safe_float(row.get("contract_score", row.get("option_contract_score", contract.get("contract_score", 0.0))), 0.0), 4),
-
-        "score": round(_safe_float(row.get("score", 0.0), 0.0), 4),
-        "fused_score": round(_safe_float(row.get("fused_score", row.get("score", 0.0)), 0.0), 4),
-        "confidence": _upper(row.get("confidence"), ""),
-
-        "final_reason": _safe_str(row.get("final_reason"), ""),
-        "final_reason_code": _safe_str(row.get("final_reason_code"), ""),
-        "reason": _safe_str(row.get("reason"), ""),
-        "close_reason": _safe_str(row.get("close_reason"), ""),
-
-        "opened_at": _safe_str(row.get("opened_at"), ""),
-        "closed_at": _safe_str(row.get("closed_at"), ""),
-        "trading_mode": _safe_str(row.get("trading_mode"), ""),
-        "mode": _safe_str(row.get("mode"), ""),
-        "regime": _safe_str(row.get("regime"), ""),
-        "breadth": _safe_str(row.get("breadth"), ""),
-        "volatility_state": _safe_str(row.get("volatility_state"), ""),
-
-        "capital_required": round(_safe_float(row.get("capital_required", 0.0), 0.0), 4),
-        "minimum_trade_cost": round(_safe_float(row.get("minimum_trade_cost", 0.0), 0.0), 4),
-        "capital_available": round(_safe_float(row.get("capital_available", 0.0), 0.0), 4),
-
-        "execution_position_shape": _safe_str(row.get("execution_position_shape"), ""),
-        "exit_price_source": _safe_str(row.get("exit_price_source"), ""),
-        "selected_for_execution": _safe_bool(row.get("selected_for_execution"), False),
-        "research_approved": _safe_bool(row.get("research_approved"), False),
-        "execution_ready": _safe_bool(row.get("execution_ready"), False),
-        "duplicate_source_note": "",
-        "stale_trade_log_row": record_source == "trade_log",
-        "journal_warning": "",
-    }
-
-    if normalized["vehicle"] == "OPTION":
-        _normalize_option_row(normalized)
-    elif normalized["vehicle"] == "STOCK":
-        _normalize_stock_row(normalized)
-
-    normalized["display_group"] = _display_group(normalized)
-    normalized["record_rank"] = _record_rank(normalized)
-    normalized["journal_warning"] = _build_journal_warning(normalized)
-
-    return normalized
 
 
 def _normalize_option_row(normalized: Dict[str, Any]) -> None:
@@ -853,6 +634,259 @@ def _normalize_stock_row(normalized: Dict[str, Any]) -> None:
     normalized["underlying_price_used_for_pnl"] = True
 
 
+# =============================================================================
+# Row normalization
+# =============================================================================
+
+def _normalize_row(row: Dict[str, Any], *, record_source: str, fallback_status: str = "") -> Dict[str, Any]:
+    row = dict(_safe_dict(row))
+    contract = _contract_payload(row)
+    vehicle = _vehicle(row)
+    status = _status(row, fallback_status=fallback_status)
+
+    contract_symbol = _safe_str(
+        _pick(
+            row,
+            contract,
+            "contract_symbol",
+            "contractSymbol",
+            "option_symbol",
+            "option_contract_symbol",
+            "selected_contract_symbol",
+        ),
+        "",
+    )
+
+    underlying_price = round(
+        _safe_float(
+            row.get(
+                "underlying_price",
+                row.get(
+                    "current_underlying_price",
+                    row.get("stock_price", row.get("market_price", 0.0)),
+                ),
+            ),
+            0.0,
+        ),
+        4,
+    )
+
+    current_underlying_price = round(
+        _safe_float(
+            row.get(
+                "current_underlying_price",
+                row.get("underlying_price", row.get("stock_price", row.get("market_price", 0.0))),
+            ),
+            0.0,
+        ),
+        4,
+    )
+
+    entry_premium = _first_positive_float(
+        row,
+        contract,
+        [
+            "entry_premium",
+            "premium_entry",
+            "option_entry",
+            "option_entry_price",
+            "entry_option_mark",
+            "contract_entry_price",
+            "fill_premium",
+            "average_premium",
+            "avg_premium",
+            "executed_price",
+            "fill_price",
+            "selected_price_reference",
+            "price_reference",
+            "mark",
+        ],
+    )
+
+    if entry_premium <= 0 and vehicle == "OPTION":
+        entry_candidate = _safe_optional_float(row.get("entry", row.get("entry_price")))
+        if entry_candidate is not None and entry_candidate > 0:
+            clean_entry, _ = _sanitize_option_price(
+                candidate_price=entry_candidate,
+                option_entry=0.0,
+                underlying_price=underlying_price or current_underlying_price,
+            )
+            entry_premium = clean_entry
+
+    current_premium = _first_positive_float(
+        row,
+        contract,
+        [
+            "current_premium",
+            "premium_current",
+            "current_option_mark",
+            "option_current_mark",
+            "option_current_price",
+            "current_option_price",
+            "option_mark",
+            "contract_mark",
+            "mark",
+            "last",
+            "selected_price_reference",
+            "price_reference",
+        ],
+    )
+
+    exit_price = round(_safe_float(row.get("exit_price", row.get("close_price", 0.0)), 0.0), 4)
+
+    explicit_exit_premium = _first_positive_float(
+        row,
+        contract,
+        [
+            "exit_premium",
+            "close_premium",
+            "premium_exit",
+            "option_exit",
+            "option_exit_price",
+            "exit_option_mark",
+            "close_option_mark",
+            "final_option_mark",
+        ],
+    )
+
+    normalized = {
+        "record_source": record_source,
+        "record_rank": 0,
+        "display_group": "",
+        "timestamp": _timestamp(row),
+        "trade_id": _trade_id(row),
+        "symbol": _symbol(row),
+        "strategy": _strategy(row),
+        "status": status,
+        "vehicle": vehicle,
+        "vehicle_selected": vehicle,
+
+        "contracts": _safe_int(row.get("contracts", row.get("contract_count", row.get("quantity", row.get("qty", 0)))), 0),
+        "shares": _safe_int(row.get("shares", row.get("quantity", row.get("qty", 0))), 0),
+
+        "entry": round(
+            _safe_float(
+                row.get("entry", row.get("entry_price", entry_premium if vehicle == "OPTION" else 0.0)),
+                0.0,
+            ),
+            4,
+        ),
+        "entry_price": round(
+            _safe_float(
+                row.get("entry_price", row.get("entry", entry_premium if vehicle == "OPTION" else 0.0)),
+                0.0,
+            ),
+            4,
+        ),
+        "entry_premium": entry_premium,
+
+        "current_price": round(
+            _safe_float(row.get("current_price", current_premium if vehicle == "OPTION" else 0.0), 0.0),
+            4,
+        ),
+        "current_premium": current_premium,
+
+        "exit_price": exit_price,
+        "exit_premium": explicit_exit_premium,
+
+        "underlying_price": underlying_price,
+        "current_underlying_price": current_underlying_price,
+
+        "stop": round(_safe_float(row.get("stop", row.get("stop_loss", 0.0)), 0.0), 4),
+        "target": round(_safe_float(row.get("target", row.get("take_profit", 0.0)), 0.0), 4),
+        "take_profit": round(_safe_float(row.get("take_profit", row.get("target", 0.0)), 0.0), 4),
+
+        "option_stop": round(_safe_float(row.get("option_stop", row.get("premium_stop", row.get("stop_premium", 0.0))), 0.0), 4),
+        "option_target": round(_safe_float(row.get("option_target", row.get("premium_target", row.get("target_premium", 0.0))), 0.0), 4),
+        "premium_stop": round(_safe_float(row.get("premium_stop", row.get("option_stop", row.get("stop_premium", 0.0))), 0.0), 4),
+        "premium_target": round(_safe_float(row.get("premium_target", row.get("option_target", row.get("target_premium", 0.0))), 0.0), 4),
+        "target_premium": round(_safe_float(row.get("target_premium", row.get("premium_target", row.get("option_target", 0.0))), 0.0), 4),
+        "take_profit_premium": round(_safe_float(row.get("take_profit_premium", row.get("target_premium", row.get("premium_target", 0.0))), 0.0), 4),
+
+        "pnl": round(_safe_float(row.get("pnl", 0.0), 0.0), 4),
+        "realized_pnl": round(_safe_float(row.get("realized_pnl", row.get("pnl", 0.0)), 0.0), 4),
+        "unrealized_pnl": round(_safe_float(row.get("unrealized_pnl", 0.0), 0.0), 4),
+        "pnl_pct": round(_safe_float(row.get("pnl_pct", 0.0), 0.0), 4),
+        "pnl_basis": _safe_str(row.get("pnl_basis"), ""),
+
+        "price_review_basis": _safe_str(row.get("price_review_basis"), ""),
+        "monitoring_price_type": _safe_str(row.get("monitoring_price_type"), ""),
+        "underlying_price_used_for_close_decision": _safe_bool(row.get("underlying_price_used_for_close_decision"), vehicle != "OPTION"),
+        "underlying_price_used_for_pnl": _safe_bool(row.get("underlying_price_used_for_pnl"), vehicle != "OPTION"),
+        "option_underlying_leak_blocked": _safe_bool(row.get("option_underlying_leak_blocked"), False),
+
+        "contract_symbol": contract_symbol,
+        "option_symbol": _safe_str(
+            _pick(row, contract, "option_symbol", "contract_symbol", "contractSymbol", "option_contract_symbol"),
+            "",
+        ),
+        "expiry": _safe_str(_pick(row, contract, "expiry", "expiration", "expiration_date"), ""),
+        "expiration": _safe_str(_pick(row, contract, "expiration", "expiry", "expiration_date"), ""),
+        "strike": round(_safe_float(_pick(row, contract, "strike", "strike_price", default=0.0), 0.0), 4),
+        "right": _upper(_pick(row, contract, "right", "option_type", "call_put"), ""),
+
+        "bid": round(_safe_float(_pick(row, contract, "bid", "option_bid", default=0.0), 0.0), 4),
+        "ask": round(_safe_float(_pick(row, contract, "ask", "option_ask", default=0.0), 0.0), 4),
+        "last": round(_safe_float(_pick(row, contract, "last", "last_price", "option_last", default=0.0), 0.0), 4),
+        "mark": round(_safe_float(_pick(row, contract, "mark", "option_mark", "current_option_mark", "price_reference", default=0.0), 0.0), 4),
+        "volume": _safe_int(_pick(row, contract, "volume", "option_volume", default=0), 0),
+        "open_interest": _safe_int(_pick(row, contract, "open_interest", "oi", "option_open_interest", default=0), 0),
+        "dte": _safe_int(_pick(row, contract, "dte", "daysToExpiration", default=0), 0),
+
+        "option_contract_score": round(_safe_float(row.get("option_contract_score", row.get("contract_score", contract.get("contract_score", 0.0))), 0.0), 4),
+        "contract_score": round(_safe_float(row.get("contract_score", row.get("option_contract_score", contract.get("contract_score", 0.0))), 0.0), 4),
+
+        "score": round(_safe_float(row.get("score", 0.0), 0.0), 4),
+        "fused_score": round(_safe_float(row.get("fused_score", row.get("score", 0.0)), 0.0), 4),
+        "confidence": _upper(row.get("confidence"), ""),
+
+        "final_reason": _safe_str(row.get("final_reason"), ""),
+        "final_reason_code": _safe_str(row.get("final_reason_code"), ""),
+        "reason": _safe_str(row.get("reason"), ""),
+        "close_reason": _safe_str(row.get("close_reason"), ""),
+
+        "opened_at": _safe_str(row.get("opened_at"), ""),
+        "closed_at": _safe_str(row.get("closed_at"), ""),
+        "trading_mode": _safe_str(row.get("trading_mode"), ""),
+        "mode": _safe_str(row.get("mode"), ""),
+        "regime": _safe_str(row.get("regime"), ""),
+        "breadth": _safe_str(row.get("breadth"), ""),
+        "volatility_state": _safe_str(row.get("volatility_state"), ""),
+
+        "capital_required": round(_safe_float(row.get("capital_required", 0.0), 0.0), 4),
+        "minimum_trade_cost": round(_safe_float(row.get("minimum_trade_cost", 0.0), 0.0), 4),
+        "capital_available": round(_safe_float(row.get("capital_available", 0.0), 0.0), 4),
+
+        "execution_position_shape": _safe_str(row.get("execution_position_shape"), ""),
+        "exit_price_source": _safe_str(row.get("exit_price_source"), ""),
+        "selected_for_execution": _safe_bool(row.get("selected_for_execution"), False),
+        "research_approved": _safe_bool(row.get("research_approved"), False),
+        "execution_ready": _safe_bool(row.get("execution_ready"), False),
+
+        "performance_classification": _safe_str(row.get("performance_classification"), ""),
+        "performance_include": _safe_bool(row.get("performance_include"), False),
+        "include_in_performance": _safe_bool(row.get("include_in_performance", row.get("performance_include")), False),
+        "counts_in_performance": _safe_bool(row.get("counts_in_performance", row.get("performance_include")), False),
+        "needs_review": _safe_bool(row.get("needs_review"), False),
+        "classification_reason": _safe_str(row.get("classification_reason"), ""),
+
+        "duplicate_source_note": "",
+        "stale_trade_log_row": record_source == "trade_log",
+        "journal_warning": "",
+    }
+
+    if normalized["vehicle"] == "OPTION":
+        _normalize_option_row(normalized)
+    elif normalized["vehicle"] == "STOCK":
+        _normalize_stock_row(normalized)
+
+    normalized["display_group"] = _display_group(normalized)
+    normalized["record_rank"] = _record_rank(normalized)
+    normalized["journal_warning"] = _build_journal_warning(normalized)
+
+    return normalized
+
+
 def _build_journal_warning(row: Dict[str, Any]) -> str:
     warnings: List[str] = []
 
@@ -871,6 +905,10 @@ def _build_journal_warning(row: Dict[str, Any]) -> str:
 
     return ",".join(warnings)
 
+
+# =============================================================================
+# Build / export rows
+# =============================================================================
 
 def _load_normalized_rows(
     *,
@@ -901,6 +939,18 @@ def _load_normalized_rows(
     return rows
 
 
+def _sort_rows(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _sort_key(row: Dict[str, Any]) -> Tuple[int, str, str, str]:
+        return (
+            _safe_int(row.get("record_rank"), 9),
+            _safe_str(row.get("closed_at") or row.get("opened_at") or row.get("timestamp"), ""),
+            _safe_str(row.get("symbol"), ""),
+            _safe_str(row.get("trade_id"), ""),
+        )
+
+    return sorted(rows, key=_sort_key)
+
+
 def _dedupe_rows(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     best_by_key: Dict[str, Dict[str, Any]] = {}
 
@@ -922,18 +972,6 @@ def _dedupe_rows(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             existing["duplicate_source_note"] = existing.get("duplicate_source_note") or f"kept_over_{row.get('record_source', '')}"
 
     return _sort_rows(list(best_by_key.values()))
-
-
-def _sort_rows(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    def _sort_key(row: Dict[str, Any]) -> Tuple[int, str, str, str]:
-        return (
-            _safe_int(row.get("record_rank"), 9),
-            _safe_str(row.get("closed_at") or row.get("opened_at") or row.get("timestamp"), ""),
-            _safe_str(row.get("symbol"), ""),
-            _safe_str(row.get("trade_id"), ""),
-        )
-
-    return sorted(rows, key=_sort_key)
 
 
 def build_trade_journal_rows(
@@ -1005,6 +1043,10 @@ def build_export_preview(limit: int = 12, *, include_stale_trade_log: bool = Fal
     return rows[: max(0, int(limit))]
 
 
+# =============================================================================
+# Safety summary
+# =============================================================================
+
 def build_journal_safety_summary() -> Dict[str, Any]:
     clean_rows = build_trade_journal_rows(include_open=True, include_closed=True, include_trade_log=False)
     all_rows = build_trade_journal_rows(include_open=True, include_closed=True, include_trade_log=True)
@@ -1012,6 +1054,7 @@ def build_journal_safety_summary() -> Dict[str, Any]:
     stale_rows = [row for row in all_rows if row.get("record_source") == "trade_log"]
     option_rows = [row for row in all_rows if row.get("vehicle") == "OPTION"]
     leak_blocked_rows = [row for row in option_rows if row.get("option_underlying_leak_blocked")]
+    unknown_vehicle_rows = [row for row in all_rows if row.get("vehicle") == "UNKNOWN"]
 
     option_exit_safely_ignored = [
         row
@@ -1022,20 +1065,45 @@ def build_journal_safety_summary() -> Dict[str, Any]:
         and row.get("exit_price_source") == "exit_price_not_assumed_as_option_premium"
     ]
 
-    unknown_vehicle_rows = [row for row in all_rows if row.get("vehicle") == "UNKNOWN"]
+    bad_option_exit_assumptions = [
+        row
+        for row in option_rows
+        if row.get("status") == "CLOSED"
+        and bool(row.get("underlying_price_used_for_pnl"))
+    ]
+
+    safety_status = "OK"
+    if bad_option_exit_assumptions or unknown_vehicle_rows:
+        safety_status = "REVIEW"
 
     return {
         "clean_rows_without_trade_log": len(clean_rows),
         "total_rows_with_trade_log": len(all_rows),
         "stale_trade_log_rows": len(stale_rows),
         "option_rows": len(option_rows),
-        "bad_option_exit_assumptions_active": 0,
+        "bad_option_exit_assumptions_active": len(bad_option_exit_assumptions),
         "option_exit_prices_safely_not_assumed_as_premium": len(option_exit_safely_ignored),
         "option_underlying_leak_blocked_rows": len(leak_blocked_rows),
         "unknown_vehicle_rows": len(unknown_vehicle_rows),
-        "safety_status": "OK",
+        "safety_status": safety_status,
     }
 
+
+def journal_safety_summary() -> Dict[str, Any]:
+    return build_journal_safety_summary()
+
+
+def get_journal_safety_summary() -> Dict[str, Any]:
+    return build_journal_safety_summary()
+
+
+def trade_journal_safety_summary() -> Dict[str, Any]:
+    return build_journal_safety_summary()
+
+
+# =============================================================================
+# Printing helpers
+# =============================================================================
 
 def _print_option_preview_row(row: Dict[str, Any]) -> None:
     print(
@@ -1181,6 +1249,10 @@ __all__ = [
     "export_journal",
     "build_export_preview",
     "build_journal_safety_summary",
+    "journal_safety_summary",
+    "get_journal_safety_summary",
+    "trade_journal_safety_summary",
     "print_trade_journal_preview",
     "print_journal_safety_summary",
+    "main",
 ]
