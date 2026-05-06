@@ -45,8 +45,27 @@ def _first_present(payload: Dict[str, Any], keys: List[str], default: Any = None
     return default
 
 
+def _strategy_performance_fallback() -> Dict[str, Any]:
+    """
+    Pull performance-filter metadata directly if portfolio_summary does not expose it.
+    This keeps account_snapshot aligned with strategy_performance.py.
+    """
+    try:
+        from engine.strategy_performance import strategy_performance_summary
+
+        payload = strategy_performance_summary(include_excluded=False)
+        return payload if isinstance(payload, dict) else {}
+    except Exception:
+        return {}
+
+
 def account_snapshot() -> Dict[str, Any]:
     portfolio = portfolio_summary()
+    performance = _strategy_performance_fallback()
+
+    performance_source = _safe_dict(performance.get("source", {}))
+    performance_summary = _safe_dict(performance.get("summary", {}))
+    performance_classifications = _safe_dict(performance.get("classifications", {}))
 
     cash = round(_safe_float(portfolio.get("cash"), 0.0), 2)
     buying_power = round(_safe_float(portfolio.get("buying_power"), cash), 2)
@@ -57,7 +76,22 @@ def account_snapshot() -> Dict[str, Any]:
         2,
     )
 
-    official_realized_pnl = round(_safe_float(portfolio.get("realized_pnl"), 0.0), 2)
+    official_realized_pnl = round(
+        _safe_float(
+            _first_present(
+                portfolio,
+                [
+                    "realized_pnl",
+                    "official_realized_pnl",
+                    "filtered_realized_pnl",
+                ],
+                performance_summary.get("pnl", 0.0),
+            ),
+            0.0,
+        ),
+        2,
+    )
+
     unrealized_pnl = round(_safe_float(portfolio.get("unrealized_pnl"), 0.0), 2)
 
     realized_pnl_all_closed_records = round(
@@ -94,9 +128,6 @@ def account_snapshot() -> Dict[str, Any]:
         2,
     )
 
-    net_official_pnl = round(official_realized_pnl + unrealized_pnl, 2)
-    net_audit_pnl = round(realized_pnl_all_closed_records + unrealized_pnl, 2)
-
     official_closed_rows_used = _safe_int(
         _first_present(
             portfolio,
@@ -107,7 +138,7 @@ def account_snapshot() -> Dict[str, Any]:
                 "rows_used",
                 "performance_rows_used",
             ],
-            0,
+            performance_source.get("rows_used", 0),
         ),
         0,
     )
@@ -119,10 +150,10 @@ def account_snapshot() -> Dict[str, Any]:
                 "rows_excluded_from_performance",
                 "closed_rows_excluded_from_performance",
                 "rows_excluded",
-                "excluded_rows",
+                "excluded_rows_count",
                 "performance_rows_excluded",
             ],
-            0,
+            performance_source.get("rows_excluded_from_performance", 0),
         ),
         0,
     )
@@ -135,10 +166,8 @@ def account_snapshot() -> Dict[str, Any]:
             "pnl_source",
             "performance_source",
         ],
-        "portfolio_summary",
+        "strategy_performance_filtered" if performance else "portfolio_summary",
     )
-
-    account_math = _safe_dict(portfolio.get("account_math", {}))
 
     realized_classifications = _safe_dict(
         _first_present(
@@ -146,12 +175,14 @@ def account_snapshot() -> Dict[str, Any]:
             [
                 "realized_pnl_classifications",
                 "realized_classifications",
-                "classifications",
                 "performance_classifications",
             ],
-            {},
+            performance_classifications,
         )
     )
+
+    net_official_pnl = round(official_realized_pnl + unrealized_pnl, 2)
+    net_audit_pnl = round(realized_pnl_all_closed_records + unrealized_pnl, 2)
 
     return {
         "cash": cash,
@@ -178,7 +209,7 @@ def account_snapshot() -> Dict[str, Any]:
 
         "vehicle_mix": portfolio.get("vehicle_mix", {}),
         "option_safety": portfolio.get("option_safety", {}),
-        "account_math": account_math,
+        "account_math": portfolio.get("account_math", {}),
     }
 
 
