@@ -4,12 +4,74 @@ from datetime import datetime
 from typing import Any, Dict, List
 
 from engine.account_state import load_state, resolve_min_cash_reserve
+
+try:
+    from engine.account_state import get_daily_trade_counters
+except Exception:
+    get_daily_trade_counters = None
+
 from engine.performance_tracker import performance_summary
 from engine.pdt_guard import pdt_status_preview
-from engine.observatory_mode import (
-    normalize_mode,
-    build_mode_context,
-)
+
+try:
+    from engine.observatory_mode import normalize_mode, build_mode_context
+except Exception:
+    def normalize_mode(value: Any) -> str:
+        raw = str(value or "paper").strip().lower()
+        return raw if raw in {"survey", "paper", "live"} else "paper"
+
+    def build_mode_context(mode: str) -> Dict[str, Any]:
+        mode = normalize_mode(mode)
+        base = {
+            "mode": mode,
+            "mode_label": f"{mode.title()} Mode",
+            "mode_shell": "Solar System" if mode == "paper" else mode.title(),
+            "mode_description": "",
+            "theme_family": mode,
+            "strict_reserve": False if mode == "paper" else True,
+            "strict_pdt": False if mode == "paper" else True,
+            "strict_execution_gate": True,
+            "strict_position_cap": True,
+            "strict_daily_loss": True,
+            "strict_drawdown": True,
+            "strict_kill_switch": True,
+            "reserve_warning_only": True if mode == "paper" else False,
+            "pdt_warning_only": True if mode == "paper" else False,
+            "execution_warning_only": False,
+            "position_cap_warning_only": False,
+            "daily_loss_warning_only": False,
+            "allow_stock_fallback": True,
+            "options_first": True,
+            "allow_same_day_high_risk_contracts": False,
+            "minimum_option_dte": 1,
+            "minimum_stock_cash_buffer_pct": 0.10,
+            "minimum_live_like_cash_buffer_pct": 0.10,
+            "reserve_floor_pct": 0.10 if mode == "paper" else 0.20,
+            "max_daily_entries": 3,
+            "max_open_positions": 3,
+            "queue_limit": 3,
+            "soft_block_reasons": [
+                "cash_reserve_too_low",
+                "governor_blocked:cash_reserve_too_low",
+                "reserve_blocked",
+                "insufficient_cash_after_reserve",
+                "pdt_restricted",
+                "governor_blocked:pdt_restricted",
+            ],
+            "hard_block_reasons": [
+                "max_open_positions",
+                "max_open_positions_reached",
+                "max_daily_loss_hit",
+                "daily_entry_cap",
+                "kill_switch",
+                "kill_switch_enabled",
+                "session_unhealthy",
+                "broker_unhealthy",
+                "max_drawdown_hit",
+            ],
+        }
+        return base
+
 
 MAX_DAILY_ENTRIES = 3
 MAX_DRAWDOWN_DOLLARS = 150.0
@@ -20,6 +82,8 @@ MAX_DAILY_LOSS = 250.0
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
+        if value is None or value == "":
+            return float(default)
         return float(value)
     except Exception:
         return float(default)
@@ -27,6 +91,8 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
+        if value is None or value == "":
+            return int(default)
         return int(float(value))
     except Exception:
         return int(default)
@@ -43,16 +109,23 @@ def _safe_dict(value: Any) -> Dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
-def _safe_list(value: Any) -> List[Any]:
-    return value if isinstance(value, list) else []
-
-
 def _safe_str(value: Any, default: str = "") -> str:
     try:
         text = str(value or "").strip()
         return text if text else default
     except Exception:
         return default
+
+
+def _dedupe_keep_order(items: List[str]) -> List[str]:
+    seen = set()
+    out: List[str] = []
+    for item in items:
+        text = _safe_str(item, "")
+        if text and text not in seen:
+            seen.add(text)
+            out.append(text)
+    return out
 
 
 def _detect_trading_mode(kwargs: Dict[str, Any]) -> str:
@@ -73,22 +146,139 @@ def _resolve_account_type(state: Dict[str, Any], pdt: Dict[str, Any]) -> str:
     return account_type if account_type in {"cash", "margin"} else "margin"
 
 
-def _dedupe_keep_order(items: List[str]) -> List[str]:
-    seen = set()
-    out: List[str] = []
-    for item in items:
-        text = _safe_str(item, "")
-        if text and text not in seen:
-            seen.add(text)
-            out.append(text)
-    return out
+def _today_key() -> str:
+    return datetime.now().strftime("%Y-%m-%d")
+
+
+def _load_reconciled_day_counters() -> Dict[str, Any]:
+    if callable(get_daily_trade_counters):
+        try:
+            counters = _safe_dict(get_daily_trade_counters(_today_key()))
+            if counters:
+                return counters
+        except Exception:
+            pass
+
+    return {
+        "date_key": _today_key(),
+        "entries_today": 0,
+        "executed_entries_today": 0,
+        "executed_trades_today": 0,
+        "closes_today": 0,
+        "round_trips_today": 0,
+        "counter_source": "unavailable",
+    }
+
+
+def _is_position_capacity_reason(reason: str) -> bool:
+    return _safe_str(reason, "") in {
+        "max_open_positions",
+        "max_open_positions_reached",
+        "governor_blocked:max_open_positions",
+        "governor_blocked:max_open_positions_reached",
+    }
+
+
+def _is_daily_capacity_reason(reason: str) -> bool:
+    return _safe_str(reason, "") in {
+        "daily_entry_cap",
+        "governor_blocked:daily_entry_cap",
+    }
+
+
+def _is_cash_reserve_reason(reason: str) -> bool:
+    return _safe_str(reason, "") in {
+        "cash_reserve_too_low",
+        "governor_blocked:cash_reserve_too_low",
+        "reserve_blocked",
+        "insufficient_cash_after_reserve",
+    }
+
+
+def _build_governor_message(
+    *,
+    blocked: bool,
+    reasons: List[str],
+    warnings: List[str],
+    current_open_positions: int,
+    max_open_positions: int,
+    trading_mode: str,
+    mode_context: Dict[str, Any],
+) -> Dict[str, Any]:
+    reasons = _dedupe_keep_order(reasons)
+    warnings = _dedupe_keep_order(warnings)
+
+    primary_reason = reasons[0] if reasons else ""
+    mode_label = _safe_str(mode_context.get("mode_label"), trading_mode.title())
+
+    execution_paused = bool(blocked)
+    scan_can_continue = True
+
+    if not blocked and warnings:
+        headline = "Execution is allowed with warnings."
+        summary = "The Observatory may still select trades, but the run should be reviewed before acting."
+    elif not blocked:
+        headline = "Execution is allowed."
+        summary = "The Observatory can research, rank, and select trades normally."
+    elif _is_position_capacity_reason(primary_reason):
+        headline = "Portfolio full. Execution intentionally paused."
+        summary = (
+            f"The Observatory can keep researching, but it should not open another position because "
+            f"the book already has {current_open_positions}/{max_open_positions} open positions."
+        )
+    elif _is_daily_capacity_reason(primary_reason):
+        headline = "Daily entry cap reached. Execution paused."
+        summary = (
+            "The Observatory can keep researching, but it should not open more entries today "
+            "because the daily entry limit is already reached."
+        )
+    elif _is_cash_reserve_reason(primary_reason):
+        headline = "Cash reserve protection active."
+        summary = (
+            "The Observatory can keep researching, but execution is paused because opening another "
+            "position would violate the current reserve rule."
+        )
+    elif primary_reason in {"pdt_restricted", "governor_blocked:pdt_restricted"}:
+        headline = "PDT guard active."
+        summary = (
+            "The Observatory can keep researching, but execution is paused because the account is "
+            "under PDT-sensitive conditions."
+        )
+    elif primary_reason in {"kill_switch", "kill_switch_enabled"}:
+        headline = "Kill switch active."
+        summary = "Execution is paused because the kill switch is enabled."
+        scan_can_continue = False
+    elif primary_reason in {"session_unhealthy", "broker_unhealthy"}:
+        headline = "Execution health check failed."
+        summary = "Execution is paused because the session or broker connection is unhealthy."
+        scan_can_continue = False
+    elif primary_reason in {"max_daily_loss_hit", "max_drawdown_hit"}:
+        headline = "Risk brake active."
+        summary = "Execution is paused because loss or drawdown protection is active."
+    else:
+        headline = "Execution paused by governor."
+        summary = f"The Observatory can keep researching, but execution is paused by: {primary_reason or 'unknown'}."
+
+    return {
+        "headline": headline,
+        "summary": summary,
+        "primary_reason": primary_reason,
+        "reasons": reasons,
+        "warnings": warnings,
+        "execution_paused": execution_paused,
+        "scan_can_continue": scan_can_continue,
+        "mode": trading_mode,
+        "mode_label": mode_label,
+        "current_open_positions": current_open_positions,
+        "max_open_positions": max_open_positions,
+        "remaining_position_slots": max(0, max_open_positions - current_open_positions),
+    }
 
 
 def _apply_mode_softening(governor_status: Dict[str, Any], mode_context: Dict[str, Any]) -> Dict[str, Any]:
     governor_status = governor_status if isinstance(governor_status, dict) else {}
     mode_context = mode_context if isinstance(mode_context, dict) else {}
 
-    blocked = bool(governor_status.get("blocked", False))
     reasons = list(governor_status.get("reasons", []) or [])
     warnings = list(governor_status.get("warnings", []) or [])
 
@@ -170,6 +360,7 @@ def _apply_mode_softening(governor_status: Dict[str, Any], mode_context: Dict[st
     )
 
     controls = _safe_dict(governor_status.get("controls"))
+
     if reserve_warning_only and any(
         r in converted_warnings
         for r in {
@@ -180,6 +371,7 @@ def _apply_mode_softening(governor_status: Dict[str, Any], mode_context: Dict[st
         }
     ):
         controls["cash_reserve_warning_only"] = True
+
     if pdt_warning_only and any(
         r in converted_warnings
         for r in {
@@ -188,6 +380,7 @@ def _apply_mode_softening(governor_status: Dict[str, Any], mode_context: Dict[st
         }
     ):
         controls["pdt_warning_only"] = True
+
     if position_cap_warning_only and any(
         r in converted_warnings
         for r in {
@@ -197,6 +390,7 @@ def _apply_mode_softening(governor_status: Dict[str, Any], mode_context: Dict[st
         }
     ):
         controls["position_cap_warning_only"] = True
+
     if daily_loss_warning_only and any(
         r in converted_warnings
         for r in {
@@ -212,7 +406,7 @@ def _apply_mode_softening(governor_status: Dict[str, Any], mode_context: Dict[st
 
 def governor_status(
     current_open_positions=0,
-    executed_entries_today=0,
+    executed_entries_today=None,
     executed_trades_today=None,
     max_daily_entries=None,
     max_drawdown_dollars=None,
@@ -225,6 +419,7 @@ def governor_status(
     state = _safe_dict(load_state())
     perf = _safe_dict(performance_summary())
     pdt = _safe_dict(pdt_status_preview())
+    reconciled = _load_reconciled_day_counters()
 
     cash = round(_safe_float(state.get("cash", 0.0), 0.0), 2)
     equity = round(_safe_float(state.get("equity", 0.0), 0.0), 2)
@@ -235,21 +430,67 @@ def governor_status(
     unrealized_pnl = round(_safe_float(perf.get("unrealized_pnl", 0.0), 0.0), 2)
 
     current_open_positions = _safe_int(current_open_positions, 0)
+
+    reconciled_entries_today = _safe_int(reconciled.get("entries_today", 0), 0)
+    reconciled_executed_entries_today = _safe_int(
+        reconciled.get("executed_entries_today", reconciled_entries_today),
+        reconciled_entries_today,
+    )
+    reconciled_executed_trades_today = _safe_int(
+        reconciled.get("executed_trades_today", reconciled_executed_entries_today),
+        reconciled_executed_entries_today,
+    )
+    reconciled_closes_today = _safe_int(reconciled.get("closes_today", 0), 0)
+    reconciled_round_trips_today = _safe_int(reconciled.get("round_trips_today", 0), 0)
+
     perf_entries_today = _safe_int(perf.get("entries_today", 0), 0)
     perf_closes_today = _safe_int(perf.get("closes_today", 0), 0)
     perf_round_trips_today = _safe_int(perf.get("round_trips_today", 0), 0)
-
-    executed_entries_today = _safe_int(
-        perf_entries_today if perf_entries_today > 0 else executed_entries_today,
-        0,
+    perf_executed_trades_today = _safe_int(
+        perf.get("executed_trades_today", perf_entries_today),
+        perf_entries_today,
     )
 
-    executed_trades_today_value = _safe_int(
-        perf.get(
-            "executed_trades_today",
-            executed_trades_today if executed_trades_today is not None else executed_entries_today,
-        ),
-        executed_entries_today,
+    counter_source = _safe_str(reconciled.get("counter_source"), "unavailable")
+    using_reconciled = counter_source not in {"", "unavailable"}
+
+    if executed_entries_today is None:
+        executed_entries_today_value = (
+            reconciled_executed_entries_today if using_reconciled else perf_entries_today
+        )
+        executed_entries_today_source = (
+            f"{counter_source}.executed_entries_today" if using_reconciled else "performance_summary.entries_today"
+        )
+    else:
+        executed_entries_today_value = _safe_int(executed_entries_today, 0)
+        executed_entries_today_source = "caller_override"
+
+    entries_today_value = (
+        reconciled_entries_today if using_reconciled else perf_entries_today
+    )
+    entries_today_source = (
+        f"{counter_source}.entries_today" if using_reconciled else "performance_summary.entries_today"
+    )
+
+    if executed_trades_today is None:
+        executed_trades_today_value = (
+            reconciled_executed_trades_today if using_reconciled else perf_executed_trades_today
+        )
+        executed_trades_today_source = (
+            f"{counter_source}.executed_trades_today" if using_reconciled else "performance_summary.executed_trades_today"
+        )
+    else:
+        executed_trades_today_value = _safe_int(executed_trades_today, executed_entries_today_value)
+        executed_trades_today_source = "caller_override"
+
+    closes_today_value = reconciled_closes_today if using_reconciled else perf_closes_today
+    closes_today_source = (
+        f"{counter_source}.closes_today" if using_reconciled else "performance_summary.closes_today"
+    )
+
+    round_trips_today_value = reconciled_round_trips_today if using_reconciled else perf_round_trips_today
+    round_trips_today_source = (
+        f"{counter_source}.round_trips_today" if using_reconciled else "performance_summary.round_trips_today"
     )
 
     trading_mode = _detect_trading_mode(kwargs)
@@ -274,6 +515,7 @@ def governor_status(
         else max_daily_entries,
         MAX_DAILY_ENTRIES,
     )
+
     max_drawdown_dollars = round(
         _safe_float(
             MAX_DRAWDOWN_DOLLARS if max_drawdown_dollars is None else max_drawdown_dollars,
@@ -281,12 +523,14 @@ def governor_status(
         ),
         2,
     )
+
     max_open_positions = _safe_int(
         mode_context.get("max_open_positions", MAX_OPEN_POSITIONS)
         if max_open_positions is None
         else max_open_positions,
         MAX_OPEN_POSITIONS,
     )
+
     max_daily_loss = round(
         _safe_float(
             MAX_DAILY_LOSS if max_daily_loss is None else max_daily_loss,
@@ -350,7 +594,7 @@ def governor_status(
     def _add_warning(warning: str) -> None:
         warnings.append(warning)
 
-    if executed_entries_today >= max_daily_entries:
+    if executed_entries_today_value >= max_daily_entries:
         raw_triggers["daily_entry_cap"] = True
         controls["daily_entry_cap"] = True
         if strict_position_cap:
@@ -465,11 +709,11 @@ def governor_status(
         "realized_pnl_today": realized_pnl_today,
         "unrealized_pnl": unrealized_pnl,
         "current_open_positions": current_open_positions,
-        "entries_today": executed_entries_today,
-        "executed_entries_today": executed_entries_today,
+        "entries_today": entries_today_value,
+        "executed_entries_today": executed_entries_today_value,
         "executed_trades_today": executed_trades_today_value,
-        "closes_today": perf_closes_today,
-        "round_trips_today": perf_round_trips_today,
+        "closes_today": closes_today_value,
+        "round_trips_today": round_trips_today_value,
         "limits": {
             "max_daily_entries": max_daily_entries,
             "max_drawdown_dollars": max_drawdown_dollars,
@@ -493,6 +737,23 @@ def governor_status(
         "raw_reasons": list(reasons),
         "raw_warnings": list(warnings),
         "health": health,
+        "counter_reconciliation": {
+            "date_key": reconciled.get("date_key", _today_key()),
+            "counter_source": counter_source,
+            "using_reconciled_counters": using_reconciled,
+            "entries_today_source": entries_today_source,
+            "executed_entries_today_source": executed_entries_today_source,
+            "executed_trades_today_source": executed_trades_today_source,
+            "closes_today_source": closes_today_source,
+            "round_trips_today_source": round_trips_today_source,
+            "reconciled_snapshot": reconciled,
+            "performance_snapshot": {
+                "entries_today": perf_entries_today,
+                "executed_trades_today": perf_executed_trades_today,
+                "closes_today": perf_closes_today,
+                "round_trips_today": perf_round_trips_today,
+            },
+        },
         "diagnostics": {
             "strict_reserve": strict_reserve,
             "strict_pdt": strict_pdt,
@@ -524,4 +785,28 @@ def governor_status(
         "status_label": governor.get("status_label", "OK"),
     }
 
+    governor["block_summary"] = _build_governor_message(
+        blocked=bool(governor.get("blocked", False)),
+        reasons=list(governor.get("reasons", [])),
+        warnings=list(governor.get("warnings", [])),
+        current_open_positions=current_open_positions,
+        max_open_positions=max_open_positions,
+        trading_mode=trading_mode,
+        mode_context=mode_context,
+    )
+
+    governor["execution_pause"] = {
+        "paused": bool(governor.get("blocked", False)),
+        "primary_reason": governor["block_summary"].get("primary_reason", ""),
+        "headline": governor["block_summary"].get("headline", ""),
+        "summary": governor["block_summary"].get("summary", ""),
+        "scan_can_continue": governor["block_summary"].get("scan_can_continue", True),
+        "remaining_position_slots": governor["block_summary"].get("remaining_position_slots", 0),
+    }
+
     return governor
+
+
+__all__ = [
+    "governor_status",
+]

@@ -195,13 +195,11 @@ def _resolve_max_open_positions(
 
 def _resolve_current_open_positions(
     *,
-    explicit_current_open_positions: int,
+    explicit_current_open_positions: Optional[int],
     mode_context: Dict[str, Any],
 ) -> int:
     if explicit_current_open_positions is not None:
-        current = _safe_int(explicit_current_open_positions, 0)
-        if current > 0:
-            return max(current, 0)
+        return max(_safe_int(explicit_current_open_positions, 0), 0)
 
     for key in (
         "current_open_positions",
@@ -212,7 +210,7 @@ def _resolve_current_open_positions(
         if key in mode_context:
             return max(_safe_int(mode_context.get(key), 0), 0)
 
-    return max(_safe_int(explicit_current_open_positions, 0), 0)
+    return 0
 
 
 def _debug_row(
@@ -297,6 +295,53 @@ def _annotate_unselected_for_capacity(
         ))
 
 
+def _selector_pause_payload(
+    *,
+    reason: str,
+    available_cash: float,
+    reserve_floor: float,
+    raw_limit: int,
+    effective_limit: int,
+    current_open_positions: int,
+    max_open_positions: int,
+    remaining_position_slots: int,
+    candidate_count: int,
+) -> Dict[str, Any]:
+    if reason == "position_capacity_reached":
+        headline = "Portfolio full. Selector paused execution."
+        summary = (
+            f"No trades were selected because open positions are already "
+            f"{current_open_positions}/{max_open_positions}."
+        )
+    elif reason == "limit_zero":
+        headline = "Selector limit is zero."
+        summary = "No trades were selected because the queue limit resolved to zero."
+    elif reason == "no_candidates":
+        headline = "No executable candidates reached selector."
+        summary = "No trades were selected because there were no execution-ready candidates."
+    elif reason == "effective_limit_zero":
+        headline = "Effective selector capacity is zero."
+        summary = "No trades were selected because queue limit, affordability, or position slots resolved to zero."
+    else:
+        headline = "Selector did not choose trades."
+        summary = f"No trades were selected because: {reason}."
+
+    return {
+        "paused": True,
+        "reason": reason,
+        "headline": headline,
+        "summary": summary,
+        "available_cash": round(available_cash, 2),
+        "reserve_floor": round(reserve_floor, 2),
+        "raw_queue_limit": raw_limit,
+        "effective_limit": effective_limit,
+        "candidate_count": candidate_count,
+        "current_open_positions": current_open_positions,
+        "max_open_positions": max_open_positions,
+        "remaining_position_slots": remaining_position_slots,
+    }
+
+
 def choose_execution_queue_option_b(
     execution_ready: List[Dict[str, Any]],
     *,
@@ -305,26 +350,9 @@ def choose_execution_queue_option_b(
     trading_mode: str = "paper",
     mode_context: Optional[Dict[str, Any]] = None,
     allow_soft_reserve: bool = False,
-    current_open_positions: int = 0,
+    current_open_positions: Optional[int] = 0,
     max_open_positions: Optional[int] = None,
 ) -> List[Dict[str, Any]]:
-    """
-    Selects the final execution queue.
-
-    Compatibility goals:
-    - Keeps the existing function name.
-    - Keeps old callers working.
-    - Still uses diagnose_reserve_queue_fit for reserve/cash sequencing.
-    - Adds open-position capacity awareness so the selector cannot choose more
-      trades than the account can actually hold.
-
-    Selection rules:
-    - Rank strongest execution-ready candidates first.
-    - Remove research-only / none vehicles.
-    - Respect available cash and reserve behavior.
-    - Respect both queue limit and remaining open-position slots.
-    """
-
     context = _safe_dict(mode_context)
 
     raw_limit = max(_safe_int(limit, 3), 0)
@@ -395,16 +423,43 @@ def choose_execution_queue_option_b(
         "allow_soft_reserve": soft_reserve,
     })
 
-    if raw_limit <= 0:
+    if not ranked_candidates:
+        pause = _selector_pause_payload(
+            reason="no_candidates",
+            available_cash=available_cash,
+            reserve_floor=reserve_floor,
+            raw_limit=raw_limit,
+            effective_limit=effective_limit,
+            current_open_positions=resolved_current_open_positions,
+            max_open_positions=resolved_max_open_positions,
+            remaining_position_slots=remaining_position_slots,
+            candidate_count=0,
+        )
+        print("OPTION B SELECTOR PAUSE:", pause)
         print("OPTION B SELECTOR FINAL:", {
             "selected_symbols": [],
-            "reason": "limit_zero",
-            "available_cash": available_cash,
-            "raw_queue_limit": raw_limit,
-            "max_open_positions": resolved_max_open_positions,
-            "current_open_positions": resolved_current_open_positions,
-            "remaining_position_slots": remaining_position_slots,
-            "effective_limit": effective_limit,
+            "selected_count": 0,
+            "pause": pause,
+        })
+        return []
+
+    if raw_limit <= 0:
+        pause = _selector_pause_payload(
+            reason="limit_zero",
+            available_cash=available_cash,
+            reserve_floor=reserve_floor,
+            raw_limit=raw_limit,
+            effective_limit=effective_limit,
+            current_open_positions=resolved_current_open_positions,
+            max_open_positions=resolved_max_open_positions,
+            remaining_position_slots=remaining_position_slots,
+            candidate_count=len(ranked_candidates),
+        )
+        print("OPTION B SELECTOR PAUSE:", pause)
+        print("OPTION B SELECTOR FINAL:", {
+            "selected_symbols": [],
+            "selected_count": 0,
+            "pause": pause,
         })
         return []
 
@@ -416,32 +471,44 @@ def choose_execution_queue_option_b(
             reserve_floor=reserve_floor,
         )
 
+        pause = _selector_pause_payload(
+            reason="position_capacity_reached",
+            available_cash=available_cash,
+            reserve_floor=reserve_floor,
+            raw_limit=raw_limit,
+            effective_limit=effective_limit,
+            current_open_positions=resolved_current_open_positions,
+            max_open_positions=resolved_max_open_positions,
+            remaining_position_slots=remaining_position_slots,
+            candidate_count=len(ranked_candidates),
+        )
+        print("OPTION B SELECTOR PAUSE:", pause)
         print("OPTION B SELECTOR FINAL:", {
             "selected_symbols": [],
             "ending_cash_after_selection": available_cash,
             "reserve_floor": reserve_floor,
             "selected_count": 0,
-            "reason": "position_capacity_reached",
-            "raw_queue_limit": raw_limit,
-            "max_open_positions": resolved_max_open_positions,
-            "current_open_positions": resolved_current_open_positions,
-            "remaining_position_slots": remaining_position_slots,
-            "effective_limit": effective_limit,
+            "pause": pause,
         })
         return []
 
     if effective_limit <= 0:
+        pause = _selector_pause_payload(
+            reason="effective_limit_zero",
+            available_cash=available_cash,
+            reserve_floor=reserve_floor,
+            raw_limit=raw_limit,
+            effective_limit=effective_limit,
+            current_open_positions=resolved_current_open_positions,
+            max_open_positions=resolved_max_open_positions,
+            remaining_position_slots=remaining_position_slots,
+            candidate_count=len(ranked_candidates),
+        )
+        print("OPTION B SELECTOR PAUSE:", pause)
         print("OPTION B SELECTOR FINAL:", {
             "selected_symbols": [],
-            "ending_cash_after_selection": available_cash,
-            "reserve_floor": reserve_floor,
             "selected_count": 0,
-            "reason": "effective_limit_zero",
-            "raw_queue_limit": raw_limit,
-            "max_open_positions": resolved_max_open_positions,
-            "current_open_positions": resolved_current_open_positions,
-            "remaining_position_slots": remaining_position_slots,
-            "effective_limit": effective_limit,
+            "pause": pause,
         })
         return []
 
@@ -562,6 +629,7 @@ def choose_execution_queue_option_b(
         "current_open_positions": resolved_current_open_positions,
         "remaining_position_slots": remaining_position_slots,
         "effective_limit": effective_limit,
+        "selection_status": "SELECTED" if selected else "NONE_SELECTED",
     })
 
     return selected

@@ -3,6 +3,10 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 
+# ============================================================
+# SAFE HELPERS
+# ============================================================
+
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
         if hasattr(value, "iloc"):
@@ -15,6 +19,8 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
                 return float(value.item())
             except Exception:
                 pass
+        if value is None or value == "":
+            return float(default)
         return float(value)
     except Exception:
         return float(default)
@@ -32,14 +38,16 @@ def _safe_int(value: Any, default: int = 0) -> int:
                 return int(value.item())
             except Exception:
                 pass
-        return int(value)
+        if value is None or value == "":
+            return int(default)
+        return int(float(value))
     except Exception:
         return int(default)
 
 
 def _safe_str(value: Any, default: str = "") -> str:
     try:
-        text = str(value).strip()
+        text = str(value or "").strip()
         return text if text else default
     except Exception:
         return default
@@ -64,7 +72,19 @@ def _bool(value: Any, default: bool = False) -> bool:
         return bool(default)
 
 
+def _norm_vehicle(value: Any) -> str:
+    vehicle = _safe_str(value, "RESEARCH_ONLY").upper()
+    if vehicle in {"OPTION", "STOCK", "RESEARCH_ONLY", "NONE"}:
+        return vehicle
+    return "RESEARCH_ONLY"
+
+
+# ============================================================
+# COST / VEHICLE SHAPE
+# ============================================================
+
 def _estimate_stock_cost(row: Dict[str, Any]) -> float:
+    row = _safe_dict(row)
     price = _safe_float(
         row.get("price", row.get("current_price", row.get("entry", 0.0))),
         0.0,
@@ -73,19 +93,29 @@ def _estimate_stock_cost(row: Dict[str, Any]) -> float:
     return round(price * shares, 2)
 
 
+def _option_mark(option_obj: Dict[str, Any]) -> float:
+    option_obj = _safe_dict(option_obj)
+    return _safe_float(
+        option_obj.get(
+            "mark",
+            option_obj.get(
+                "price_reference",
+                option_obj.get(
+                    "selected_price_reference",
+                    option_obj.get("ask", option_obj.get("last", option_obj.get("price", 0.0))),
+                ),
+            ),
+        ),
+        0.0,
+    )
+
+
 def _estimate_option_cost(
     option_obj: Dict[str, Any],
     contracts: int = 1,
     commission: float = 1.0,
 ) -> float:
-    option_obj = _safe_dict(option_obj)
-    mark = _safe_float(
-        option_obj.get(
-            "mark",
-            option_obj.get("ask", option_obj.get("last", option_obj.get("price", 0.0))),
-        ),
-        0.0,
-    )
+    mark = _option_mark(option_obj)
     contracts = max(1, _safe_int(contracts, 1))
     if mark <= 0:
         return 0.0
@@ -93,7 +123,7 @@ def _estimate_option_cost(
 
 
 def _vehicle_shape(vehicle: str) -> Dict[str, int]:
-    vehicle = _safe_str(vehicle, "RESEARCH_ONLY").upper()
+    vehicle = _norm_vehicle(vehicle)
     if vehicle == "OPTION":
         return {"shares": 0, "contracts": 1}
     if vehicle == "STOCK":
@@ -103,12 +133,18 @@ def _vehicle_shape(vehicle: str) -> Dict[str, int]:
 
 def _apply_vehicle_shape(candidate: Dict[str, Any], vehicle: str) -> Dict[str, Any]:
     out = dict(candidate or {})
+    vehicle = _norm_vehicle(vehicle)
     shape = _vehicle_shape(vehicle)
-    out["vehicle_selected"] = _safe_str(vehicle, "RESEARCH_ONLY").upper()
+
+    out["vehicle_selected"] = vehicle
+    out["selected_vehicle"] = vehicle
+    out["vehicle"] = vehicle
+
     out["shares"] = shape["shares"]
     out["contracts"] = shape["contracts"]
-    out["stock_position_size"] = shape["shares"] if out["vehicle_selected"] == "STOCK" else 0
-    out["option_position_size"] = shape["contracts"] if out["vehicle_selected"] == "OPTION" else 0
+    out["stock_position_size"] = shape["shares"] if vehicle == "STOCK" else 0
+    out["option_position_size"] = shape["contracts"] if vehicle == "OPTION" else 0
+
     return out
 
 
@@ -121,7 +157,7 @@ def _set_vehicle_state(
     vehicle_reason: Optional[str] = None,
 ) -> Dict[str, Any]:
     out = _apply_vehicle_shape(candidate, vehicle)
-    vehicle = _safe_str(vehicle, "RESEARCH_ONLY").upper()
+    vehicle = _norm_vehicle(vehicle)
 
     out["capital_required"] = round(
         _safe_float(
@@ -137,17 +173,25 @@ def _set_vehicle_state(
         ),
         2,
     )
+
     out["vehicle_reason"] = _safe_str(
         vehicle_reason if vehicle_reason is not None else out.get("vehicle_reason", out.get("best_vehicle_reason", "")),
         "",
     )
+    out["best_vehicle_reason"] = out["vehicle_reason"] or out.get("best_vehicle_reason", "")
 
     if vehicle == "RESEARCH_ONLY":
         out["capital_required"] = 0.0
         out["minimum_trade_cost"] = 0.0
+        out["shares"] = 0
+        out["contracts"] = 0
 
     return out
 
+
+# ============================================================
+# STATE COLLAPSE / FINALIZATION
+# ============================================================
 
 def _collapse_to_research_only(
     candidate: Dict[str, Any],
@@ -174,10 +218,166 @@ def _collapse_to_research_only(
     return out
 
 
+def _execution_pause_details(candidate: Dict[str, Any]) -> Dict[str, Any]:
+    candidate = _safe_dict(candidate)
+    governor = _safe_dict(candidate.get("governor"))
+    pause = _safe_dict(governor.get("execution_pause"))
+    block_summary = _safe_dict(governor.get("block_summary"))
+
+    return {
+        "execution_paused": bool(pause.get("paused", bool(block_summary.get("execution_paused", False)))),
+        "pause_headline": _safe_str(pause.get("headline", block_summary.get("headline", "")), ""),
+        "pause_summary": _safe_str(pause.get("summary", block_summary.get("summary", "")), ""),
+        "remaining_position_slots": _safe_int(
+            pause.get("remaining_position_slots", block_summary.get("remaining_position_slots", -1)),
+            -1,
+        ),
+    }
+
+
+def finalize_candidate_state(candidate: Dict[str, Any]) -> Dict[str, Any]:
+    out = dict(candidate or {})
+
+    vehicle = _norm_vehicle(out.get("vehicle_selected", "RESEARCH_ONLY"))
+    blocked_at = _safe_str(out.get("blocked_at", ""), "")
+    final_reason = _safe_str(out.get("final_reason", ""), "")
+    final_reason_code = _safe_str(out.get("final_reason_code", final_reason), final_reason)
+
+    research_approved = _bool(out.get("research_approved", False), False)
+    execution_ready = _bool(out.get("execution_ready", False), False)
+    selected_for_execution = _bool(out.get("selected_for_execution", False), False)
+
+    hard_research_fail_blocks = {
+        "strategy_router",
+        "score_threshold",
+        "reentry_guard",
+        "duplicate_guard",
+        "position_duplication_guard",
+        "volatility_guard",
+        "volatility_filter",
+        "breadth_guard",
+        "breadth_filter",
+        "option_executable",
+    }
+
+    if blocked_at == "strategy_router" or final_reason_code == "strategy_router_returned_no_trade":
+        return _collapse_to_research_only(
+            out,
+            reason=final_reason or "strategy_router_returned_no_trade",
+            blocked_at="strategy_router",
+            reason_code="strategy_router_returned_no_trade",
+        )
+
+    if blocked_at in hard_research_fail_blocks:
+        return _collapse_to_research_only(
+            out,
+            reason=final_reason or f"{blocked_at}_blocked",
+            blocked_at=blocked_at,
+            reason_code=final_reason_code or f"{blocked_at}_blocked",
+        )
+
+    if vehicle == "RESEARCH_ONLY":
+        out["research_approved"] = research_approved
+        out["execution_ready"] = False
+        out["selected_for_execution"] = False
+        out["blocked_at"] = blocked_at or "vehicle_selection"
+        out["final_reason"] = final_reason or "no_executable_vehicle_selected"
+        out["final_reason_code"] = final_reason_code or "no_executable_vehicle_selected"
+        out["decision_reason"] = _safe_str(out.get("decision_reason", out["final_reason"]), out["final_reason"])
+        out["decision_reason_code"] = _safe_str(
+            out.get("decision_reason_code", out["final_reason_code"]),
+            out["final_reason_code"],
+        )
+        return _set_vehicle_state(
+            out,
+            "RESEARCH_ONLY",
+            capital_required=0.0,
+            minimum_trade_cost=0.0,
+            vehicle_reason=out.get("vehicle_reason") or out.get("best_vehicle_reason") or "research_only",
+        )
+
+    if blocked_at in {"governor", "execution_guard"}:
+        pause_details = _execution_pause_details(out)
+        out.update({k: v for k, v in pause_details.items() if v not in {"", -1, False}})
+
+        out["research_approved"] = research_approved
+        out["execution_ready"] = False
+        out["selected_for_execution"] = False
+        out["final_reason_code"] = final_reason_code or final_reason
+        out["decision_reason"] = _safe_str(out.get("decision_reason", final_reason), final_reason)
+        out["decision_reason_code"] = _safe_str(
+            out.get("decision_reason_code", out["final_reason_code"]),
+            out["final_reason_code"],
+        )
+        out["research_status_label"] = "Research Qualified"
+        out["execution_status_label"] = "Execution Blocked"
+
+        return _set_vehicle_state(
+            out,
+            vehicle,
+            capital_required=out.get("capital_required", 0.0),
+            minimum_trade_cost=out.get("minimum_trade_cost", 0.0),
+            vehicle_reason=(
+                out.get("vehicle_reason")
+                or out.get("best_vehicle_reason")
+                or ("execution_blocked_by_governor" if blocked_at == "governor" else "execution_blocked_by_execution_guard")
+            ),
+        )
+
+    if not research_approved:
+        return _collapse_to_research_only(
+            out,
+            reason=final_reason or "not_research_approved",
+            blocked_at=blocked_at or "research_gate",
+            reason_code=final_reason_code or "not_research_approved",
+        )
+
+    out["research_approved"] = True
+    out["execution_ready"] = execution_ready
+    out["selected_for_execution"] = selected_for_execution
+
+    if selected_for_execution:
+        out["research_status_label"] = "Research Qualified"
+        out["execution_status_label"] = "Selected"
+    elif execution_ready:
+        out["research_status_label"] = "Research Qualified"
+        out["execution_status_label"] = "Execution Ready"
+    else:
+        out["research_status_label"] = "Research Qualified"
+        out["execution_status_label"] = "Execution Not Ready"
+
+    if execution_ready and not out.get("final_reason"):
+        out["final_reason"] = "execution_ready"
+    if execution_ready and not out.get("final_reason_code"):
+        out["final_reason_code"] = "execution_ready"
+
+    out["decision_reason"] = _safe_str(
+        out.get("decision_reason", out.get("final_reason", "")),
+        out.get("final_reason", ""),
+    )
+    out["decision_reason_code"] = _safe_str(
+        out.get("decision_reason_code", out.get("final_reason_code", "")),
+        out.get("final_reason_code", ""),
+    )
+
+    return _set_vehicle_state(
+        out,
+        vehicle,
+        capital_required=out.get("capital_required", 0.0),
+        minimum_trade_cost=out.get("minimum_trade_cost", 0.0),
+        vehicle_reason=out.get("vehicle_reason") or out.get("best_vehicle_reason") or "vehicle_selected",
+    )
+
+
+# ============================================================
+# V2 OVERLAY
+# ============================================================
+
 def _normalize_v2_row(v2_row: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     v2_row = _safe_dict(v2_row)
     notes = v2_row.get("notes", v2_row.get("signals", []))
     risk_flags = v2_row.get("risk_flags", v2_row.get("warnings", []))
+
     return {
         "score": _safe_float(v2_row.get("score", v2_row.get("v2_score", 0.0)), 0.0),
         "quality": _safe_str(v2_row.get("quality", ""), ""),
@@ -238,6 +438,7 @@ def apply_v2_overlay(
 
     out["base_score"] = base_score
     out["fused_score"] = fused_score
+    out["score"] = base_score
     out["confidence"] = fused_confidence
     out["base_confidence"] = base_confidence
 
@@ -247,9 +448,9 @@ def apply_v2_overlay(
     out["v2_reason"] = _safe_str(normalized_v2.get("reason", ""), "")
     out["v2_regime_alignment"] = _safe_str(normalized_v2.get("regime_alignment", ""), "")
     out["v2_signal_strength"] = _safe_float(normalized_v2.get("signal_strength", 0.0), 0.0)
-    out["v2_conviction_adjustment"] = _safe_float(normalized_v2.get("conviction_adjustment", 0.0), 0.0)
-    out["v2_vehicle_bias"] = _safe_str(normalized_v2.get("vehicle_bias", ""), "").upper()
-    out["v2_thesis"] = _safe_str(normalized_v2.get("thesis", ""), "")
+    out["v2_conviction_adjustment"] = v2_conviction_adjustment
+    out["v2_vehicle_bias"] = v2_bias
+    out["v2_thesis"] = v2_reason
     out["v2_notes"] = _safe_list(normalized_v2.get("notes", []))
     out["v2_risk_flags"] = _safe_list(normalized_v2.get("risk_flags", []))
 
@@ -267,6 +468,10 @@ def apply_v2_overlay(
 
     return out
 
+
+# ============================================================
+# VEHICLE SCORING
+# ============================================================
 
 def _score_stock_path(
     trade: Dict[str, Any],
@@ -331,6 +536,7 @@ def _score_option_path(
             "score_ok": False,
             "spread_ok": False,
             "dte_ok": False,
+            "quote_ok": False,
             "flagged_executable": False,
             "executable": False,
             "shares": 0,
@@ -339,25 +545,35 @@ def _score_option_path(
             "dte": -1,
             "spread_pct": 999.0,
             "execution_reason": "no_option_contract",
+            "quote_quality": "NONE",
             "reason": "no_option_contract",
         }
 
     option_minimum_trade_cost = _estimate_option_cost(option_obj, contracts=1, commission=commission)
     option_capital_required = round(max(0.0, option_minimum_trade_cost - commission), 2)
 
-    option_score_value = _safe_float(option_score, -1.0)
+    option_score_value = _safe_float(option_score, _safe_float(option_obj.get("contract_score"), -1.0))
     option_dte = _safe_int(option_obj.get("dte", -1), -1)
     option_spread_pct = _safe_float(option_obj.get("spread_pct", 999.0), 999.0)
     option_exec_reason = _safe_str(option_obj.get("execution_reason", ""), "")
     option_flagged_executable = _bool(option_obj.get("is_executable", False), False)
+    quote_quality = _safe_str(option_obj.get("quote_quality", ""), "").upper()
+    quote_flags = _safe_dict(option_obj.get("quote_flags"))
 
     affordable = option_capital_required > 0 and option_minimum_trade_cost <= buying_power
     score_ok = option_score_value >= 60
     spread_ok = option_spread_pct <= 0.12
     dte_ok = option_dte >= 0
+    quote_ok = quote_quality != "BAD" and not bool(quote_flags.get("bad_quote", False))
 
-    executable = has_option and affordable and (
-        option_flagged_executable or (score_ok and spread_ok and dte_ok)
+    executable = (
+        has_option
+        and affordable
+        and option_flagged_executable
+        and score_ok
+        and spread_ok
+        and dte_ok
+        and quote_ok
     )
 
     if not affordable and option_capital_required > 0:
@@ -368,6 +584,10 @@ def _score_option_path(
         reason = option_exec_reason or "spread_too_wide"
     elif not dte_ok:
         reason = option_exec_reason or "invalid_option_dte"
+    elif not quote_ok:
+        reason = option_exec_reason or "bad_option_quote"
+    elif not option_flagged_executable:
+        reason = option_exec_reason or "option_not_executable"
     elif not executable:
         reason = option_exec_reason or "option_not_executable"
     else:
@@ -381,6 +601,7 @@ def _score_option_path(
         "score_ok": score_ok,
         "spread_ok": spread_ok,
         "dte_ok": dte_ok,
+        "quote_ok": quote_ok,
         "flagged_executable": option_flagged_executable,
         "executable": executable,
         "shares": 0,
@@ -389,8 +610,30 @@ def _score_option_path(
         "dte": option_dte,
         "spread_pct": round(option_spread_pct, 4) if option_spread_pct < 999 else option_spread_pct,
         "execution_reason": option_exec_reason,
+        "quote_quality": quote_quality or "UNKNOWN",
+        "quote_flags": quote_flags,
         "reason": reason,
     }
+
+
+def _fallback_reason_from_option(option_path: Dict[str, Any]) -> str:
+    reason = _safe_str(option_path.get("reason"), "")
+    execution_reason = _safe_str(option_path.get("execution_reason"), "")
+
+    reason = reason or execution_reason or "option_not_executable"
+
+    if reason in {"spread_too_wide", "wide_option_spread_stock_fallback"}:
+        return "option_rejected_spread_too_wide_stock_fallback"
+    if reason in {"contract_score_too_low", "option_score_too_low", "weak_option_contract_stock_fallback"}:
+        return "option_rejected_contract_score_too_low_stock_fallback"
+    if reason in {"same_day_expiry_not_allowed", "penny_0dte_contract_not_allowed", "phantom_lottery_contract"}:
+        return "option_rejected_0dte_or_phantom_quote_stock_fallback"
+    if reason in {"bad_option_quote", "quote_unavailable", "bid_ask_unavailable", "bid_unavailable_exit_realism_weak"}:
+        return "option_rejected_bad_quote_stock_fallback"
+    if reason in {"option_not_affordable"}:
+        return "option_rejected_not_affordable_stock_fallback"
+
+    return f"option_rejected_{reason}_stock_fallback"
 
 
 def choose_best_vehicle(
@@ -421,34 +664,28 @@ def choose_best_vehicle(
         reason = "preferred_option_contract"
         capital_required = option_path["capital_required"]
         minimum_trade_cost = option_path["minimum_trade_cost"]
+
     elif stock_path["executable"]:
         vehicle = "STOCK"
         capital_required = stock_path["capital_required"]
         minimum_trade_cost = stock_path["minimum_trade_cost"]
+
         if has_option_contract:
-            if not option_path["affordable"] and option_path["capital_required"] > 0:
-                reason = "option_too_expensive_stock_fallback"
-            elif not option_path["score_ok"]:
-                reason = "weak_option_contract_stock_fallback"
-            elif not option_path["spread_ok"]:
-                reason = "wide_option_spread_stock_fallback"
-            elif not option_path["dte_ok"]:
-                reason = "invalid_option_dte_stock_fallback"
-            elif not option_path["executable"]:
-                reason = option_path["reason"] or "option_not_executable_stock_fallback"
-            else:
-                reason = "stock_selected"
+            reason = _fallback_reason_from_option(option_path)
         else:
             reason = "stock_only_executable"
+
     elif option_path["executable"]:
         vehicle = "OPTION"
         reason = "option_only_executable"
         capital_required = option_path["capital_required"]
         minimum_trade_cost = option_path["minimum_trade_cost"]
+
     else:
         vehicle = "RESEARCH_ONLY"
         capital_required = 0.0
         minimum_trade_cost = 0.0
+
         if has_option_contract:
             reason = option_path["reason"] or stock_path["reason"] or "no_executable_vehicle"
         else:
@@ -461,20 +698,27 @@ def choose_best_vehicle(
         "best_vehicle_reason": reason,
         "vehicle_reason": reason,
         "prefer_options": prefer_options,
+
         "stock_path": stock_path,
         "option_path": option_path,
+
         "stock_affordable": _bool(stock_path.get("affordable", False), False),
         "option_affordable": _bool(option_path.get("affordable", False), False),
+
         "stock_score_ok": _bool(stock_path.get("score_ok", False), False),
         "stock_conf_ok": _bool(stock_path.get("confidence_ok", False), False),
+
         "option_good": _bool(option_path.get("score_ok", False), False),
         "option_dte_ok": _bool(option_path.get("dte_ok", False), False),
         "option_spread_ok": _bool(option_path.get("spread_ok", False), False),
+        "option_quote_ok": _bool(option_path.get("quote_ok", False), False),
         "option_score_value": _safe_float(option_path.get("score", -1.0), -1.0),
         "option_dte": _safe_int(option_path.get("dte", -1), -1),
         "option_spread_pct": _safe_float(option_path.get("spread_pct", 999.0), 999.0),
         "option_execution_reason": _safe_str(option_path.get("execution_reason", ""), ""),
         "option_flagged_executable": _bool(option_path.get("flagged_executable", False), False),
+        "option_quote_quality": _safe_str(option_path.get("quote_quality", ""), ""),
+
         "trade_intent": _safe_str(
             _safe_dict(best_option).get("trade_intent", "GRIND"),
             "GRIND",
@@ -490,122 +734,9 @@ def choose_best_vehicle(
     )
 
 
-def finalize_candidate_state(candidate: Dict[str, Any]) -> Dict[str, Any]:
-    out = dict(candidate or {})
-    vehicle = _safe_str(out.get("vehicle_selected", "RESEARCH_ONLY"), "RESEARCH_ONLY").upper()
-    blocked_at = _safe_str(out.get("blocked_at", ""), "")
-    final_reason = _safe_str(out.get("final_reason", ""), "")
-    final_reason_code = _safe_str(out.get("final_reason_code", final_reason), final_reason)
-
-    research_approved = _bool(out.get("research_approved", False), False)
-    execution_ready = _bool(out.get("execution_ready", False), False)
-    selected_for_execution = _bool(out.get("selected_for_execution", False), False)
-
-    hard_research_fail_blocks = {
-        "strategy_router",
-        "score_threshold",
-        "reentry_guard",
-        "duplicate_guard",
-        "position_duplication_guard",
-        "volatility_guard",
-        "volatility_filter",
-        "breadth_guard",
-        "breadth_filter",
-        "option_executable",
-    }
-
-    if blocked_at == "strategy_router" or final_reason_code == "strategy_router_returned_no_trade":
-        return _collapse_to_research_only(
-            out,
-            reason=final_reason or "strategy_router_returned_no_trade",
-            blocked_at="strategy_router",
-            reason_code="strategy_router_returned_no_trade",
-        )
-
-    if blocked_at in hard_research_fail_blocks:
-        return _collapse_to_research_only(
-            out,
-            reason=final_reason or f"{blocked_at}_blocked",
-            blocked_at=blocked_at,
-            reason_code=final_reason_code or f"{blocked_at}_blocked",
-        )
-
-    if vehicle == "RESEARCH_ONLY":
-        out["research_approved"] = research_approved
-        out["execution_ready"] = False
-        out["selected_for_execution"] = False
-        out["blocked_at"] = blocked_at or "vehicle_selection"
-        out["final_reason"] = final_reason or "no_executable_vehicle_selected"
-        out["final_reason_code"] = final_reason_code or "no_executable_vehicle_selected"
-        out["decision_reason"] = _safe_str(out.get("decision_reason", out["final_reason"]), out["final_reason"])
-        out["decision_reason_code"] = _safe_str(
-            out.get("decision_reason_code", out["final_reason_code"]),
-            out["final_reason_code"],
-        )
-        return _set_vehicle_state(
-            out,
-            "RESEARCH_ONLY",
-            capital_required=0.0,
-            minimum_trade_cost=0.0,
-            vehicle_reason=out.get("vehicle_reason") or out.get("best_vehicle_reason") or "research_only",
-        )
-
-    if blocked_at in {"governor", "execution_guard"}:
-        out["research_approved"] = research_approved
-        out["execution_ready"] = False
-        out["selected_for_execution"] = False
-        out["final_reason_code"] = final_reason_code or final_reason
-        out["decision_reason"] = _safe_str(out.get("decision_reason", final_reason), final_reason)
-        out["decision_reason_code"] = _safe_str(
-            out.get("decision_reason_code", out["final_reason_code"]),
-            out["final_reason_code"],
-        )
-        return _set_vehicle_state(
-            out,
-            vehicle,
-            capital_required=out.get("capital_required", 0.0),
-            minimum_trade_cost=out.get("minimum_trade_cost", 0.0),
-            vehicle_reason=(
-                out.get("vehicle_reason")
-                or out.get("best_vehicle_reason")
-                or ("execution_blocked_by_governor" if blocked_at == "governor" else "execution_blocked_by_execution_guard")
-            ),
-        )
-
-    if not research_approved:
-        return _collapse_to_research_only(
-            out,
-            reason=final_reason or "not_research_approved",
-            blocked_at=blocked_at or "research_gate",
-            reason_code=final_reason_code or "not_research_approved",
-        )
-
-    out["research_approved"] = True
-    out["execution_ready"] = execution_ready
-    out["selected_for_execution"] = selected_for_execution
-
-    if execution_ready and not out.get("final_reason"):
-        out["final_reason"] = "execution_ready"
-    if execution_ready and not out.get("final_reason_code"):
-        out["final_reason_code"] = "execution_ready"
-
-    out["decision_reason"] = _safe_str(
-        out.get("decision_reason", out.get("final_reason", "")),
-        out.get("final_reason", ""),
-    )
-    out["decision_reason_code"] = _safe_str(
-        out.get("decision_reason_code", out.get("final_reason_code", "")),
-        out.get("final_reason_code", ""),
-    )
-
-    return _set_vehicle_state(
-        out,
-        vehicle,
-        capital_required=out.get("capital_required", 0.0),
-        minimum_trade_cost=out.get("minimum_trade_cost", 0.0),
-        vehicle_reason=out.get("vehicle_reason") or out.get("best_vehicle_reason") or "vehicle_selected",
-    )
-
+# ============================================================
+# MAIN BUILDER
+# ============================================================
 
 def build_fused_candidate(
     trade: Dict[str, Any],
@@ -652,6 +783,8 @@ def build_fused_candidate(
     row["governor_reason"] = _safe_str((_safe_list(governor.get("reasons")) or [""])[0], "")
     row["governor_reasons"] = _safe_list(governor.get("reasons"))
     row["governor_warnings"] = _safe_list(governor.get("warnings"))
+    row["execution_pause"] = _safe_dict(governor.get("execution_pause"))
+    row["block_summary"] = _safe_dict(governor.get("block_summary"))
 
     row["research_approved"] = False
     row["execution_ready"] = False
@@ -671,3 +804,11 @@ def build_fused_candidate(
     )
 
     return row
+
+
+__all__ = [
+    "apply_v2_overlay",
+    "choose_best_vehicle",
+    "finalize_candidate_state",
+    "build_fused_candidate",
+]

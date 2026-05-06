@@ -112,10 +112,6 @@ except Exception:
         }
 
 
-# ============================================================
-# SAFE HELPERS
-# ============================================================
-
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
         if value is None or value == "":
@@ -202,9 +198,101 @@ def _normalize_why_lines(value: Any) -> List[str]:
     return lines
 
 
-# ============================================================
-# MODE / GOVERNOR / CAPACITY
-# ============================================================
+def _is_position_capacity_reason(reason: str) -> bool:
+    reason = _safe_str(reason, "")
+    return reason in {
+        "max_open_positions",
+        "max_open_positions_reached",
+        "governor_blocked:max_open_positions",
+        "governor_blocked:max_open_positions_reached",
+    }
+
+
+def _is_execution_pause_reason(reason: str) -> bool:
+    reason = _safe_str(reason, "")
+    if not reason:
+        return False
+
+    return (
+        reason.startswith("governor_blocked:")
+        or reason in {
+            "max_open_positions",
+            "max_open_positions_reached",
+            "daily_entry_cap",
+            "cash_reserve_too_low",
+            "pdt_restricted",
+            "max_daily_loss_hit",
+            "max_drawdown_hit",
+            "kill_switch",
+            "kill_switch_enabled",
+            "session_unhealthy",
+            "broker_unhealthy",
+        }
+    )
+
+
+def _human_execution_pause(
+    *,
+    reason: str,
+    governor: Dict[str, Any],
+    capacity: Dict[str, Any] | None = None,
+) -> Dict[str, Any]:
+    governor = _safe_dict(governor)
+    capacity = _safe_dict(capacity)
+
+    block_summary = _safe_dict(governor.get("block_summary"))
+    execution_pause = _safe_dict(governor.get("execution_pause"))
+
+    current_open = _safe_int(
+        capacity.get(
+            "current_open_positions",
+            governor.get("current_open_positions", 0),
+        ),
+        0,
+    )
+    max_open = _safe_int(
+        capacity.get(
+            "max_open_positions",
+            _safe_dict(governor.get("limits")).get("max_open_positions", 0),
+        ),
+        0,
+    )
+    remaining_slots = max(0, max_open - current_open)
+
+    if block_summary:
+        headline = _safe_str(block_summary.get("headline"), "")
+        summary = _safe_str(block_summary.get("summary"), "")
+    else:
+        headline = ""
+        summary = ""
+
+    if not headline:
+        if _is_position_capacity_reason(reason):
+            headline = "Portfolio full. Execution intentionally paused."
+            summary = (
+                f"The Observatory kept researching, but it should not select a new trade because "
+                f"open positions are already {current_open}/{max_open}."
+            )
+        elif reason:
+            headline = "Execution paused by governor."
+            summary = f"The Observatory kept researching, but execution is paused by: {reason}."
+        else:
+            headline = "Execution allowed."
+            summary = "The Observatory may select trades if candidates pass all checks."
+
+    return {
+        "paused": bool(reason),
+        "reason": reason,
+        "headline": headline,
+        "summary": summary,
+        "scan_continued": True,
+        "execution_blocked": bool(reason),
+        "current_open_positions": current_open,
+        "max_open_positions": max_open,
+        "remaining_position_slots": remaining_slots,
+        "governor_execution_pause": execution_pause,
+    }
+
 
 def resolve_market_mode(
     regime: str,
@@ -248,6 +336,11 @@ def _governor_snapshot(trading_mode: str | None = None) -> Dict[str, Any]:
             "governor_returned_mode": gov.get("trading_mode") if isinstance(gov, dict) else None,
         })
 
+        if isinstance(gov, dict):
+            pause = _safe_dict(gov.get("execution_pause"))
+            if pause:
+                print("PROCESS SIGNALS GOVERNOR EXECUTION PAUSE:", pause)
+
         return gov if isinstance(gov, dict) else {}
 
     except Exception as exc:
@@ -268,6 +361,11 @@ def _governor_execution_block_reason(governor: Dict[str, Any]) -> str:
     reasons = _safe_list(governor.get("reasons", []))
     if reasons:
         return f"governor_blocked:{reasons[0]}"
+
+    pause = _safe_dict(governor.get("execution_pause"))
+    primary = _safe_str(pause.get("primary_reason"), "")
+    if primary:
+        return f"governor_blocked:{primary}" if not primary.startswith("governor_blocked:") else primary
 
     return "governor_blocked"
 
@@ -316,6 +414,17 @@ def _build_selection_capacity(
             remaining_position_slots,
         )
 
+    if remaining_position_slots <= 0:
+        capacity_reason = "position_capacity_reached"
+    elif not execution_ready:
+        capacity_reason = "no_execution_ready"
+    elif affordable <= 0:
+        capacity_reason = "not_affordable_after_reserve"
+    elif selection_limit <= 0:
+        capacity_reason = "selection_limit_zero"
+    else:
+        capacity_reason = "capacity_available"
+
     capacity = {
         "affordable": affordable,
         "queue_limit": queue_limit,
@@ -323,16 +432,24 @@ def _build_selection_capacity(
         "max_open_positions": max_open_positions,
         "remaining_position_slots": remaining_position_slots,
         "selection_limit": selection_limit,
+        "capacity_reason": capacity_reason,
+        "execution_ready_count": len(execution_ready),
     }
 
     print("PROCESS SIGNALS SELECTION CAPACITY:", capacity)
 
+    if capacity_reason == "position_capacity_reached":
+        print("PROCESS SIGNALS EXECUTION PAUSED:", {
+            "headline": "Portfolio full. Research continued, execution paused.",
+            "current_open_positions": current_open_positions,
+            "max_open_positions": max_open_positions,
+            "remaining_position_slots": remaining_position_slots,
+            "research_scan_status": "continued",
+            "selection_status": "paused",
+        })
+
     return capacity
 
-
-# ============================================================
-# V2 OVERLAY SUPPORT
-# ============================================================
 
 def _get_v2_overlay(symbol: str, trade: Dict[str, Any]) -> Dict[str, Any]:
     try:
@@ -351,10 +468,6 @@ def _get_v2_overlay(symbol: str, trade: Dict[str, Any]) -> Dict[str, Any]:
 
     return {}
 
-
-# ============================================================
-# LOGGING / PREMIUM FEED / CANDIDATE MEMORY
-# ============================================================
 
 def stronger_competing_setups(
     trade: Dict[str, Any],
@@ -411,6 +524,17 @@ def log_candidate_decision(
     if extra:
         payload.update(extra)
 
+    for key in (
+        "execution_pause",
+        "selector_capacity",
+        "final_reason_detail",
+        "blocked_at",
+        "final_reason",
+        "final_reason_code",
+    ):
+        if key in trade:
+            payload[key] = trade.get(key)
+
     remember_candidate(payload)
     trade["candidate_display"] = payload
     return payload
@@ -456,6 +580,8 @@ def log_rejection(
         "vehicle_selected": trade.get("vehicle_selected"),
         "blocked_at": trade.get("blocked_at"),
         "final_reason": trade.get("final_reason"),
+        "final_reason_detail": trade.get("final_reason_detail"),
+        "execution_pause": trade.get("execution_pause"),
     })
 
     log_candidate_decision(
@@ -507,17 +633,14 @@ def log_approval(
     })
 
 
-# ============================================================
-# DEBUG HELPERS
-# ============================================================
-
 def _print_candidate_line(trade: Dict[str, Any]) -> None:
     print(
         f"{trade.get('symbol', 'UNKNOWN')} | "
         f"{trade.get('strategy', 'CALL')} | "
         f"{trade.get('fused_score', trade.get('score', 0))} | "
         f"{trade.get('confidence', 'LOW')} | "
-        f"{trade.get('vehicle_selected', 'RESEARCH_ONLY')}"
+        f"{trade.get('vehicle_selected', 'RESEARCH_ONLY')} | "
+        f"{trade.get('final_reason', '')}"
     )
 
 
@@ -573,16 +696,13 @@ def _build_debug_row(
         "selected_for_execution": False,
         "blocked_at": "",
         "final_reason": "",
+        "final_reason_detail": "",
         "capital_required": fused.get("capital_required", 0.0),
         "minimum_trade_cost": fused.get("minimum_trade_cost", 0.0),
         "effective_cost": _effective_cost(fused),
         "capital_available": capital_available_now,
     }
 
-
-# ============================================================
-# CORE PROCESSOR
-# ============================================================
 
 def process_signals(
     results: List[Dict[str, Any]],
@@ -631,6 +751,15 @@ def process_signals(
         3,
     )
 
+    pre_capacity_pause = _human_execution_pause(
+        reason=governor_reason,
+        governor=governor,
+        capacity={
+            "current_open_positions": current_open_positions_for_guard,
+            "max_open_positions": max_open_positions_for_guard,
+        },
+    )
+
     print("PROCESS SIGNALS POSITION CONTEXT:", {
         "resolved_trading_mode": resolved_trading_mode,
         "current_open_positions": current_open_positions_for_guard,
@@ -640,6 +769,7 @@ def process_signals(
             max_open_positions_for_guard - current_open_positions_for_guard,
         ),
         "capital_available_now": capital_available_now,
+        "execution_pause": pre_capacity_pause,
     })
 
     for raw_trade in results:
@@ -679,6 +809,7 @@ def process_signals(
         trade["governor"] = governor
         trade["governor_blocked"] = bool(_safe_dict(governor).get("blocked", False))
         trade["governor_reason"] = governor_reason
+        trade["execution_pause"] = pre_capacity_pause
 
         print("OPTION PATH PRECHECK:", {
             "symbol": symbol,
@@ -761,6 +892,7 @@ def process_signals(
         fused["governor"] = governor
         fused["governor_blocked"] = bool(_safe_dict(governor).get("blocked", False))
         fused["governor_reason"] = governor_reason
+        fused["execution_pause"] = pre_capacity_pause
         fused["current_open_positions_seen"] = current_open_positions_for_guard
         fused["max_open_positions_seen"] = max_open_positions_for_guard
 
@@ -820,10 +952,12 @@ def process_signals(
             fused["blocked_at"] = "breadth_guard"
             fused["final_reason"] = "failed_breadth_filter"
             fused["final_reason_code"] = "failed_breadth_filter"
+            fused["final_reason_detail"] = "Breadth filter blocked this setup before execution review."
             fused = finalize_candidate_state(fused)
 
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
+            debug_row["final_reason_detail"] = fused.get("final_reason_detail", "")
             debug_rows.append(debug_row)
 
             log_rejection(
@@ -841,10 +975,12 @@ def process_signals(
             fused["blocked_at"] = "strategy_router"
             fused["final_reason"] = "strategy_router_returned_no_trade"
             fused["final_reason_code"] = "strategy_router_returned_no_trade"
+            fused["final_reason_detail"] = "Strategy router did not confirm the starting thesis."
             fused = finalize_candidate_state(fused)
 
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
+            debug_row["final_reason_detail"] = fused.get("final_reason_detail", "")
             debug_rows.append(debug_row)
 
             log_rejection(
@@ -875,10 +1011,12 @@ def process_signals(
             fused["blocked_at"] = "duplicate_guard"
             fused["final_reason"] = "already_open_position"
             fused["final_reason_code"] = "already_open_position"
+            fused["final_reason_detail"] = "Research saw the setup, but the symbol is already open in the book."
             fused = finalize_candidate_state(fused)
 
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
+            debug_row["final_reason_detail"] = fused.get("final_reason_detail", "")
             debug_rows.append(debug_row)
 
             log_rejection(
@@ -901,10 +1039,12 @@ def process_signals(
             fused["blocked_at"] = "reentry_guard"
             fused["final_reason"] = reason
             fused["final_reason_code"] = reason
+            fused["final_reason_detail"] = "Re-entry guard blocked this setup based on recent trade history."
             fused = finalize_candidate_state(fused)
 
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
+            debug_row["final_reason_detail"] = fused.get("final_reason_detail", "")
             debug_rows.append(debug_row)
 
             log_rejection(
@@ -925,10 +1065,12 @@ def process_signals(
             fused["blocked_at"] = "score_threshold"
             fused["final_reason"] = "failed_score_threshold"
             fused["final_reason_code"] = "failed_score_threshold"
+            fused["final_reason_detail"] = "Candidate did not clear the minimum research approval score."
             fused = finalize_candidate_state(fused)
 
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
+            debug_row["final_reason_detail"] = fused.get("final_reason_detail", "")
             debug_rows.append(debug_row)
 
             log_rejection(
@@ -953,10 +1095,12 @@ def process_signals(
             fused["blocked_at"] = "volatility_guard"
             fused["final_reason"] = "failed_volatility_filter"
             fused["final_reason_code"] = "failed_volatility_filter"
+            fused["final_reason_detail"] = "Volatility guard blocked low-confidence setup under elevated volatility."
             fused = finalize_candidate_state(fused)
 
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
+            debug_row["final_reason_detail"] = fused.get("final_reason_detail", "")
             debug_rows.append(debug_row)
 
             log_rejection(
@@ -975,10 +1119,12 @@ def process_signals(
             fused["blocked_at"] = "option_executable"
             fused["final_reason"] = reason
             fused["final_reason_code"] = reason
+            fused["final_reason_detail"] = "Option contract was found, but contract quality/executability failed."
             fused = finalize_candidate_state(fused)
 
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
+            debug_row["final_reason_detail"] = fused.get("final_reason_detail", "")
             debug_rows.append(debug_row)
 
             log_rejection(
@@ -1026,6 +1172,26 @@ def process_signals(
             fused["blocked_at"] = "execution_guard"
             fused["final_reason"] = exec_reason or "execution_guard_blocked"
             fused["final_reason_code"] = exec_reason or "execution_guard_blocked"
+
+            pause_payload = _human_execution_pause(
+                reason=fused["final_reason"],
+                governor=governor,
+                capacity={
+                    "current_open_positions": current_open_positions_for_guard,
+                    "max_open_positions": max_open_positions_for_guard,
+                },
+            )
+            fused["execution_pause"] = pause_payload
+
+            if _is_position_capacity_reason(fused["final_reason"]):
+                fused["final_reason_detail"] = pause_payload["summary"]
+                fused["execution_pause_label"] = "portfolio_full_execution_paused"
+            elif _is_execution_pause_reason(fused["final_reason"]):
+                fused["final_reason_detail"] = pause_payload["summary"]
+                fused["execution_pause_label"] = "governor_execution_paused"
+            else:
+                fused["final_reason_detail"] = "Execution guard blocked this candidate."
+
             fused = finalize_candidate_state(fused)
 
             research_approved.append(fused)
@@ -1033,6 +1199,7 @@ def process_signals(
             debug_row["research_approved"] = True
             debug_row["blocked_at"] = fused.get("blocked_at", "")
             debug_row["final_reason"] = fused.get("final_reason", "")
+            debug_row["final_reason_detail"] = fused.get("final_reason_detail", "")
             debug_rows.append(debug_row)
 
             log_candidate_decision(
@@ -1042,12 +1209,14 @@ def process_signals(
                 mode=mode,
                 breadth=breadth,
                 volatility_state=volatility_state,
+                extra={"execution_pause": fused.get("execution_pause")},
             )
             continue
 
         fused["blocked_at"] = ""
         fused["final_reason"] = "execution_ready"
         fused["final_reason_code"] = "execution_ready"
+        fused["final_reason_detail"] = "Candidate passed research, guard, and capacity checks."
         fused["research_approved"] = True
         fused["execution_ready"] = True
         fused["selected_for_execution"] = False
@@ -1056,6 +1225,7 @@ def process_signals(
         debug_row["research_approved"] = True
         debug_row["execution_ready"] = True
         debug_row["final_reason"] = "execution_ready"
+        debug_row["final_reason_detail"] = fused.get("final_reason_detail", "")
         debug_rows.append(debug_row)
 
         research_approved.append(fused)
@@ -1100,14 +1270,22 @@ def process_signals(
             max_open_positions=max_open_positions_for_selector,
         )
     else:
+        pause_payload = _human_execution_pause(
+            reason=governor_reason if governor_reason else capacity.get("capacity_reason", ""),
+            governor=governor,
+            capacity=capacity,
+        )
+
         print("PROCESS SIGNALS SELECTOR SKIPPED:", {
             "execution_ready_count": len(execution_ready),
             "selection_limit": selection_limit,
             "reason": (
-                "no_execution_ready"
+                capacity.get("capacity_reason")
+                or "no_execution_ready"
                 if not execution_ready
                 else "no_remaining_capacity_or_affordability"
             ),
+            "execution_pause": pause_payload,
         })
 
     selected_keys = {
@@ -1134,6 +1312,7 @@ def process_signals(
             trade["research_approved"] = True
             trade["final_reason"] = "selected_for_execution"
             trade["final_reason_code"] = "selected_for_execution"
+            trade["final_reason_detail"] = "Candidate was selected into the execution queue."
             trade["blocked_at"] = ""
             trade["selector_capacity"] = capacity
             trade = finalize_candidate_state(trade)
@@ -1163,6 +1342,7 @@ def process_signals(
             trade["selected_for_execution"] = False
             trade["final_reason"] = "approved_but_ranked_below_execution_cut"
             trade["final_reason_code"] = "approved_but_ranked_below_execution_cut"
+            trade["final_reason_detail"] = "Candidate was execution-ready but did not rank into the final queue."
             trade["blocked_at"] = ""
             trade["selector_capacity"] = capacity
             trade = finalize_candidate_state(trade)
@@ -1180,6 +1360,7 @@ def process_signals(
             )
 
         else:
+            trade["selector_capacity"] = capacity
             finalized_research_approved.append(trade)
 
     research_approved = finalized_research_approved
@@ -1189,12 +1370,19 @@ def process_signals(
     for row in debug_rows:
         print(row)
 
+    final_execution_pause = _human_execution_pause(
+        reason=governor_reason if governor_reason else capacity.get("capacity_reason", ""),
+        governor=governor,
+        capacity=capacity,
+    )
+
     print("PROCESS SIGNALS FINAL SELECTION SUMMARY:", {
         "research_approved_count": len(research_approved),
         "execution_ready_count": len([t for t in research_approved if bool(t.get("execution_ready", False))]),
         "selected_count": len(selected_trades),
         "selected_symbols": [_norm_symbol(t.get("symbol")) for t in selected_trades],
         "capacity": capacity,
+        "execution_pause": final_execution_pause,
     })
 
     if research_approved:
@@ -1230,6 +1418,14 @@ def process_signals(
     else:
         for trade in selected_trades:
             _print_candidate_line(trade)
+
+    if final_execution_pause.get("paused"):
+        print("OBSERVATORY EXECUTION STATUS:", {
+            "headline": final_execution_pause.get("headline"),
+            "summary": final_execution_pause.get("summary"),
+            "research_scan_status": "continued",
+            "execution_status": "paused",
+        })
 
     return research_approved, selected_trades, mode, breadth, volatility_state
 
