@@ -341,11 +341,61 @@
   },
   {
     "index": 34,
-    "equity": 13522.26,
-    "pnl": 0.0,
+    "equity": 17807.26,
+    "pnl": 4285.0,
     "symbol": "AMD",
     "trade_id": "AMD-CALL-20260505162924",
-    "timestamp": "2026-05-05T16:31:34.059899",
+    "timestamp": "2026-05-06T18:17:16.692595+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 35,
+    "equity": 17882.26,
+    "pnl": 75.0,
+    "symbol": "TESTOPT",
+    "trade_id": "TESTOPT-CALL-CLOSE-FLOW-001",
+    "timestamp": "2026-05-06T03:38:15.856094+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 36,
+    "equity": 17957.26,
+    "pnl": 75.0,
+    "symbol": "TESTCLOSE",
+    "trade_id": "TESTCLOSE-CALL-ACCOUNT-RELEASE-001",
+    "timestamp": "2026-05-06T13:54:49.802007+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 37,
+    "equity": 18032.26,
+    "pnl": 75.0,
+    "symbol": "TESTCLOSE",
+    "trade_id": "TESTCLOSE-CALL-ACCOUNT-RELEASE-002",
+    "timestamp": "2026-05-06T17:59:08.422908+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 38,
+    "equity": 22317.26,
+    "pnl": 4285.0,
+    "symbol": "AMD",
+    "trade_id": "AMD-CALL-20260505162924",
+    "timestamp": "2026-05-06T18:17:16.692595+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 39,
+    "equity": 22317.26,
+    "pnl": 0.0,
+    "symbol": "AMD",
+    "trade_id": "AMD-CALL-20260506181852",
+    "timestamp": "2026-05-06T18:20:33.784121",
     "strategy": "CALL",
     "status": "FILLED"
   }

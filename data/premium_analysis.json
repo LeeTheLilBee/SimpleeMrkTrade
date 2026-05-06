@@ -2071,5 +2071,35 @@
       "Market regime: Neutral.",
       "Trend context: Uptrend."
     ]
+  },
+  {
+    "timestamp": "2026-05-06T18:20:33.679442",
+    "symbol": "AMD",
+    "strategy": "CALL",
+    "score": 862.59,
+    "confidence": "HIGH",
+    "entry": 417.1,
+    "stop": 414.1,
+    "target": 421.1,
+    "mode": "NEUTRAL",
+    "regime": "NEUTRAL",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
   }
 ]

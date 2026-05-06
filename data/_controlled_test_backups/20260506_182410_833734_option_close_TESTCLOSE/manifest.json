@@ -1,0 +1,46 @@
+{
+  "created_at": "2026-05-06T18:24:10.888625",
+  "label": "option_close_TESTCLOSE",
+  "project_root": "/content/SimpleeMrkTrade",
+  "backup_dir": "/content/SimpleeMrkTrade/data/_controlled_test_backups/20260506_182410_833734_option_close_TESTCLOSE",
+  "copied": [
+    {
+      "relative_path": "data/account_state.json",
+      "source": "/content/SimpleeMrkTrade/data/account_state.json",
+      "backup": "/content/SimpleeMrkTrade/data/_controlled_test_backups/20260506_182410_833734_option_close_TESTCLOSE/data/account_state.json",
+      "size_bytes": 9542
+    },
+    {
+      "relative_path": "data/open_positions.json",
+      "source": "/content/SimpleeMrkTrade/data/open_positions.json",
+      "backup": "/content/SimpleeMrkTrade/data/_controlled_test_backups/20260506_182410_833734_option_close_TESTCLOSE/data/open_positions.json",
+      "size_bytes": 2477387
+    },
+    {
+      "relative_path": "data/closed_positions.json",
+      "source": "/content/SimpleeMrkTrade/data/closed_positions.json",
+      "backup": "/content/SimpleeMrkTrade/data/_controlled_test_backups/20260506_182410_833734_option_close_TESTCLOSE/data/closed_positions.json",
+      "size_bytes": 7169371
+    },
+    {
+      "relative_path": "data/trade_log.json",
+      "source": "/content/SimpleeMrkTrade/data/trade_log.json",
+      "backup": "/content/SimpleeMrkTrade/data/_controlled_test_backups/20260506_182410_833734_option_close_TESTCLOSE/data/trade_log.json",
+      "size_bytes": 101514
+    },
+    {
+      "relative_path": "data/trade_journal_export.csv",
+      "source": "/content/SimpleeMrkTrade/data/trade_journal_export.csv",
+      "backup": "/content/SimpleeMrkTrade/data/_controlled_test_backups/20260506_182410_833734_option_close_TESTCLOSE/data/trade_journal_export.csv",
+      "size_bytes": 61155
+    }
+  ],
+  "missing": [],
+  "data_files": [
+    "data/account_state.json",
+    "data/open_positions.json",
+    "data/closed_positions.json",
+    "data/trade_log.json",
+    "data/trade_journal_export.csv"
+  ]
+}
