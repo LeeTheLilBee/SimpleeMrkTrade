@@ -696,30 +696,26 @@ def _clean_account_math(
 
     calculated_equity = round(cash + open_market_value, 2)
 
-    if account_equity_raw is None or account_equity_raw <= 0:
-        equity = calculated_equity
-        equity_source = "cash_plus_open_market_value"
-    else:
-        account_equity = round(account_equity_raw, 2)
+    # Observatory paper-mode canonical rule:
+    # equity = cash + current open market value.
+    #
+    # We do NOT trust stored account_state equity here, because account_state can
+    # temporarily drift during close flow if capital is released before
+    # open_positions.json is rewritten.
+    equity = calculated_equity
+    estimated_account_value = calculated_equity
 
-        if open_market_value > 0:
-            gap = abs(account_equity - calculated_equity)
-            if gap <= max(2.0, calculated_equity * 0.03):
-                equity = account_equity
-                equity_source = "account_state_equity"
-            else:
-                equity = calculated_equity
-                equity_source = "recalculated_cash_plus_open_market_value_due_to_gap"
-        else:
-            equity = account_equity
-            equity_source = "account_state_equity_no_open_market_value"
+    account_equity = round(account_equity_raw, 2) if account_equity_raw is not None else 0.0
+    account_estimated = round(account_estimated_raw, 2) if account_estimated_raw is not None else 0.0
 
-    estimated_account_value = equity
+    equity_gap = round(account_equity - calculated_equity, 2)
+    estimated_gap = round(account_estimated - calculated_equity, 2)
+
+    stale_account_state_warning = abs(equity_gap) > 0.02 or abs(estimated_gap) > 0.02
 
     double_count_warning = False
     if account_estimated_raw is not None:
-        account_estimated = round(account_estimated_raw, 2)
-        if abs(account_estimated - round(equity + unrealized_total, 2)) <= 0.02 and abs(unrealized_total) > 0:
+        if abs(account_estimated - round(calculated_equity + unrealized_total, 2)) <= 0.02 and abs(unrealized_total) > 0:
             double_count_warning = True
 
     return {
@@ -731,9 +727,12 @@ def _clean_account_math(
         "open_market_value_included_in_equity": True,
         "unrealized_already_in_equity": True,
         "estimated_value_formula": "cash + open_market_value",
-        "equity_source": equity_source,
-        "account_state_equity": round(account_equity_raw, 2) if account_equity_raw is not None else 0.0,
-        "account_state_estimated_account_value": round(account_estimated_raw, 2) if account_estimated_raw is not None else 0.0,
+        "equity_source": "calculated_cash_plus_open_market_value",
+        "account_state_equity": account_equity,
+        "account_state_estimated_account_value": account_estimated,
+        "account_state_equity_gap": equity_gap,
+        "account_state_estimated_gap": estimated_gap,
+        "stale_account_state_warning": stale_account_state_warning,
         "double_count_warning": double_count_warning,
     }
 
