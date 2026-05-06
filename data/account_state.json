@@ -1,11 +1,11 @@
 {
-  "equity": 20020.5,
-  "cash": 16178.0,
-  "buying_power": 16178.0,
-  "estimated_account_value": 20020.5,
-  "open_market_value": 3842.5,
-  "open_cost_basis": 4025.0,
-  "open_unrealized_pnl": -182.5,
+  "equity": 20045.5,
+  "cash": 16453.0,
+  "buying_power": 16453.0,
+  "estimated_account_value": 20045.5,
+  "open_market_value": 3592.5,
+  "open_cost_basis": 3825.0,
+  "open_unrealized_pnl": -232.5,
   "account_type": "margin",
   "trade_history": [],
   "activity_log": [
@@ -148,21 +148,55 @@
         "vehicle": "",
         "capital_release_rule": "entry_price_x_size"
       }
+    },
+    {
+      "event_type": "CLOSE",
+      "symbol": "TESTCLOSE",
+      "trade_id": "TESTCLOSE-CALL-ACCOUNT-RELEASE-001",
+      "timestamp": "2026-05-06T13:54:49.802554",
+      "date_key": "2026-05-06",
+      "price": 2.0,
+      "size": 1.0,
+      "cost": 200.0,
+      "pnl": 75.0,
+      "metadata": {
+        "source": "close_trade.py",
+        "principal": 200.0,
+        "pnl": 75.0,
+        "total_credit": 275.0,
+        "immediate": true,
+        "vehicle": "OPTION",
+        "capital_release_rule": "option_premium_x_100_x_contracts",
+        "symbol": "TESTCLOSE",
+        "trade_id": "TESTCLOSE-CALL-ACCOUNT-RELEASE-001",
+        "price_review_basis": "OPTION_PREMIUM_ONLY",
+        "monitoring_price_type": "OPTION_PREMIUM",
+        "exit_price": 2.75,
+        "exit_price_source": "requested_exit_price",
+        "close_reason": "manual_option_premium_test",
+        "capital_release_basis": "option_entry_premium_x_100_x_contracts",
+        "entry_premium": 2.0,
+        "exit_premium": 2.75,
+        "contracts": 1,
+        "multiplier": 100,
+        "release_basis_entry": 200.0,
+        "release_basis_exit": 275.0
+      }
     }
   ],
   "reserve_mode": "percent",
   "reserve_value": 20.0,
-  "last_account_sync": "2026-05-06T03:38:15.989946",
+  "last_account_sync": "2026-05-06T13:55:00.823047",
   "account_math_basis": "cash_plus_open_market_value",
-  "open_positions": 4,
+  "open_positions": 3,
   "vehicle_mix": {
-    "OPTION": 4,
+    "OPTION": 3,
     "STOCK": 0,
     "RESEARCH_ONLY": 0,
     "UNKNOWN": 0
   },
   "option_safety": {
-    "option_positions": 4,
+    "option_positions": 3,
     "underlying_used_for_option_pnl": false,
     "basis": "OPTION positions use premium math only."
   },

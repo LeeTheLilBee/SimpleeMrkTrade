@@ -7,7 +7,7 @@ Canonical paper-account rules:
 
 1. Cash is spendable cash.
 2. Buying power follows cash for this paper simulator.
-3. Open market value is computed from open positions.
+3. Open market value is computed from open_positions.json.
 4. Equity / estimated account value is computed as:
 
        equity = cash + open_market_value
@@ -22,29 +22,42 @@ Canonical paper-account rules:
        stock market value = current_price * shares
        stock cost basis   = entry_price * shares
 
-This file is compatibility-preserving:
-- keeps load_state()
-- keeps save_state()
-- keeps buying_power()
-- keeps record_trade()
-- keeps release_trade_capital()
-- keeps release_trade_cap()
-- keeps reserve functions
-- keeps daily counter functions
-- keeps reset_account_state()
+Close-flow protection:
+    close_trade.py may release capital before the position is removed from
+    open_positions.json. If account_state immediately syncs against that stale
+    open_positions file, equity can be temporarily inflated because the closing
+    position is counted both as returned cash and still-open market value.
 
-It also adds:
-- get_account_snapshot()
-- sync_account_from_portfolio()
-- calculate_open_market_value()
-- print_account_snapshot()
+    This file protects that close window by:
+        - accepting symbol/trade_id/vehicle metadata in release_trade_capital()
+        - detecting the closing open position
+        - subtracting that position's current market value during release sync
+        - returning audit metadata so the test output shows what happened
+
+Compatibility:
+    Keeps:
+        load_state()
+        save_state()
+        buying_power()
+        record_trade()
+        release_trade_capital()
+        release_trade_cap()
+        reserve functions
+        daily counter functions
+        reset_account_state()
+
+    Adds / preserves:
+        get_account_snapshot()
+        sync_account_from_portfolio()
+        calculate_open_market_value()
+        print_account_snapshot()
 """
 
 import json
 import math
 from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 
 FILE = "data/account_state.json"
@@ -66,12 +79,14 @@ DEFAULT_STATE = {
     "open_market_value": 0.0,
     "open_cost_basis": 0.0,
     "open_unrealized_pnl": 0.0,
+    "open_positions": 0,
     "account_type": "margin",
     "trade_history": [],
     "activity_log": [],
     "reserve_mode": "percent",
     "reserve_value": 20.0,
     "last_account_sync": "",
+    "last_account_sync_adjustment": {},
     "account_math_basis": "cash_plus_open_market_value",
 }
 
@@ -82,18 +97,20 @@ DEFAULT_STATE = {
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
-        if value is None:
+        if value is None or isinstance(value, bool):
             return float(default)
-        if isinstance(value, bool):
-            return float(default)
+
         if isinstance(value, str):
             cleaned = value.replace("$", "").replace(",", "").strip()
             if cleaned == "":
                 return float(default)
             value = cleaned
+
         number = float(value)
+
         if math.isnan(number) or math.isinf(number):
             return float(default)
+
         return number
     except Exception:
         return float(default)
@@ -101,18 +118,20 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
 
 def _safe_optional_float(value: Any) -> Optional[float]:
     try:
-        if value is None:
+        if value is None or isinstance(value, bool):
             return None
-        if isinstance(value, bool):
-            return None
+
         if isinstance(value, str):
             cleaned = value.replace("$", "").replace(",", "").strip()
             if cleaned == "":
                 return None
             value = cleaned
+
         number = float(value)
+
         if math.isnan(number) or math.isinf(number):
             return None
+
         return number
     except Exception:
         return None
@@ -120,15 +139,15 @@ def _safe_optional_float(value: Any) -> Optional[float]:
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
-        if value is None:
+        if value is None or isinstance(value, bool):
             return int(default)
-        if isinstance(value, bool):
-            return int(default)
+
         if isinstance(value, str):
             cleaned = value.replace(",", "").strip()
             if cleaned == "":
                 return int(default)
             value = cleaned
+
         return int(float(value))
     except Exception:
         return int(default)
@@ -171,7 +190,10 @@ def _timestamp_to_date_key(value: Any) -> str:
     raw = _safe_str(value, "")
     if not raw:
         return ""
+
     try:
+        if raw.endswith("Z"):
+            raw = raw.replace("Z", "+00:00")
         return datetime.fromisoformat(raw).strftime("%Y-%m-%d")
     except Exception:
         return ""
@@ -191,8 +213,10 @@ def _ensure_parent_dir(path_str: str = FILE) -> None:
 
 def _read_json(path_str: str, default: Any) -> Any:
     path = Path(path_str)
+
     if not path.exists():
         return default
+
     try:
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -202,10 +226,22 @@ def _read_json(path_str: str, default: Any) -> Any:
 
 def _write_json(path_str: str, payload: Any) -> None:
     _ensure_parent_dir(path_str)
+
     tmp = Path(path_str).with_suffix(Path(path_str).suffix + ".tmp")
+
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, default=str)
+
     tmp.replace(path_str)
+
+
+def _first_positive_float(*values: Any, default: float = 0.0) -> float:
+    for value in values:
+        number = _safe_float(value, 0.0)
+        if number > 0:
+            return number
+
+    return float(default)
 
 
 # =============================================================================
@@ -220,7 +256,10 @@ def _detect_vehicle(pos: Dict[str, Any]) -> str:
             "vehicle_selected",
             pos.get(
                 "selected_vehicle",
-                pos.get("vehicle", pos.get("asset_type", pos.get("instrument_type", ""))),
+                pos.get(
+                    "vehicle",
+                    pos.get("asset_type", pos.get("instrument_type", "")),
+                ),
             ),
         ),
         "",
@@ -228,33 +267,58 @@ def _detect_vehicle(pos: Dict[str, Any]) -> str:
 
     if raw in {"OPTION", "OPTIONS", "OPT"}:
         return VEHICLE_OPTION
+
     if raw in {"STOCK", "EQUITY", "SHARE", "SHARES"}:
         return VEHICLE_STOCK
+
     if raw in {"RESEARCH_ONLY", "RESEARCH"}:
         return VEHICLE_RESEARCH_ONLY
 
     option = _safe_dict(pos.get("option"))
     contract = _safe_dict(pos.get("contract"))
+
     contract_symbol = _safe_str(
         pos.get(
             "contract_symbol",
-            pos.get("option_symbol", pos.get("option_contract_symbol", "")),
+            pos.get(
+                "option_symbol",
+                pos.get(
+                    "option_contract_symbol",
+                    pos.get(
+                        "selected_contract_symbol",
+                        pos.get("contractSymbol", ""),
+                    ),
+                ),
+            ),
         ),
         "",
     )
 
-    if option or contract or contract_symbol:
-        return VEHICLE_OPTION
+    right = _upper(
+        pos.get(
+            "right",
+            pos.get(
+                "option_type",
+                pos.get(
+                    "call_put",
+                    pos.get(
+                        "contract_right",
+                        option.get("right", contract.get("right", "")),
+                    ),
+                ),
+            ),
+        ),
+        "",
+    )
+
+    contracts = _safe_int(pos.get("contracts", pos.get("contract_count", 0)), 0)
+    shares = _safe_int(pos.get("shares", pos.get("quantity", 0)), 0)
+
+    if option or contract or contract_symbol or right in {"CALL", "PUT", "C", "P"} or contracts > 0:
+        if shares <= 0 or contracts > 0:
+            return VEHICLE_OPTION
 
     return VEHICLE_STOCK
-
-
-def _first_positive_float(*values: Any, default: float = 0.0) -> float:
-    for value in values:
-        number = _safe_float(value, 0.0)
-        if number > 0:
-            return number
-    return float(default)
 
 
 def _option_contracts(pos: Dict[str, Any]) -> int:
@@ -263,7 +327,13 @@ def _option_contracts(pos: Dict[str, Any]) -> int:
         _safe_int(
             pos.get(
                 "contracts",
-                pos.get("contract_count", pos.get("quantity", pos.get("qty", pos.get("size", 1)))),
+                pos.get(
+                    "contract_count",
+                    pos.get(
+                        "quantity",
+                        pos.get("qty", pos.get("size", 1)),
+                    ),
+                ),
             ),
             1,
         ),
@@ -274,7 +344,13 @@ def _stock_shares(pos: Dict[str, Any]) -> int:
     return max(
         1,
         _safe_int(
-            pos.get("shares", pos.get("quantity", pos.get("qty", pos.get("size", 1)))),
+            pos.get(
+                "shares",
+                pos.get(
+                    "quantity",
+                    pos.get("qty", pos.get("size", 1)),
+                ),
+            ),
             1,
         ),
     )
@@ -319,6 +395,7 @@ def _option_entry_premium(pos: Dict[str, Any]) -> float:
         contract.get("mark"),
         default=0.0,
     )
+
     return _round_price(value)
 
 
@@ -376,6 +453,7 @@ def _stock_entry_price(pos: Dict[str, Any]) -> float:
         pos.get("price"),
         default=0.0,
     )
+
     return _round_price(value)
 
 
@@ -391,6 +469,7 @@ def _stock_current_price(pos: Dict[str, Any]) -> float:
         pos.get("entry_price"),
         default=0.0,
     )
+
     return _round_price(value)
 
 
@@ -505,6 +584,7 @@ def calculate_open_market_value() -> Dict[str, Any]:
 
         row = _position_market_values(raw_pos)
         vehicle = row.get("vehicle", VEHICLE_UNKNOWN)
+
         if vehicle not in vehicle_mix:
             vehicle = VEHICLE_UNKNOWN
 
@@ -537,19 +617,151 @@ def calculate_open_market_value() -> Dict[str, Any]:
 
 def _realized_pnl_from_closed_positions() -> float:
     total = 0.0
+
     for row in _load_closed_positions():
         if not isinstance(row, dict):
             continue
         total += _safe_float(row.get("pnl"), 0.0)
+
     return round(total, 2)
 
 
+def _find_closing_open_market_value(
+    *,
+    principal: float,
+    size: float,
+    symbol: str = "",
+    trade_id: str = "",
+    vehicle: str = "",
+) -> Dict[str, Any]:
+    """
+    Finds the open position that is probably being closed while
+    release_trade_capital() is running.
+
+    Matching order:
+        1. trade_id exact
+        2. symbol exact when unique
+        3. unique cost_basis match
+        4. closest cost_basis match inside tolerance
+    """
+    principal = _round_money(principal, 0.0)
+    symbol = _safe_str(symbol, "").upper()
+    trade_id = _safe_str(trade_id, "")
+    vehicle = _upper(vehicle, "")
+
+    candidates: List[Dict[str, Any]] = []
+
+    for raw_pos in _load_open_positions():
+        if not isinstance(raw_pos, dict):
+            continue
+
+        math_row = _position_market_values(raw_pos)
+
+        row_vehicle = _safe_str(math_row.get("vehicle"), VEHICLE_UNKNOWN).upper()
+        row_symbol = _safe_str(math_row.get("symbol"), "").upper()
+        row_trade_id = _safe_str(math_row.get("trade_id"), "")
+
+        if vehicle and row_vehicle != vehicle:
+            continue
+
+        candidates.append(
+            {
+                "raw": raw_pos,
+                "math": math_row,
+                "symbol": row_symbol,
+                "trade_id": row_trade_id,
+                "vehicle": row_vehicle,
+                "cost_basis": _round_money(math_row.get("cost_basis"), 0.0),
+                "market_value": _round_money(math_row.get("market_value"), 0.0),
+            }
+        )
+
+    if trade_id:
+        exact = [row for row in candidates if row.get("trade_id") == trade_id]
+        if exact:
+            chosen = exact[0]
+            return {
+                "matched": True,
+                "match_reason": "trade_id",
+                "market_value": chosen["market_value"],
+                "cost_basis": chosen["cost_basis"],
+                "symbol": chosen["symbol"],
+                "trade_id": chosen["trade_id"],
+                "vehicle": chosen["vehicle"],
+            }
+
+    if symbol:
+        exact_symbol = [row for row in candidates if row.get("symbol") == symbol]
+        if len(exact_symbol) == 1:
+            chosen = exact_symbol[0]
+            return {
+                "matched": True,
+                "match_reason": "symbol_unique",
+                "market_value": chosen["market_value"],
+                "cost_basis": chosen["cost_basis"],
+                "symbol": chosen["symbol"],
+                "trade_id": chosen["trade_id"],
+                "vehicle": chosen["vehicle"],
+            }
+
+    tolerance = max(0.05, abs(principal) * 0.01)
+
+    cost_matches = [
+        row
+        for row in candidates
+        if abs(_safe_float(row.get("cost_basis"), 0.0) - principal) <= tolerance
+    ]
+
+    if len(cost_matches) == 1:
+        chosen = cost_matches[0]
+        return {
+            "matched": True,
+            "match_reason": "unique_cost_basis_match",
+            "market_value": chosen["market_value"],
+            "cost_basis": chosen["cost_basis"],
+            "symbol": chosen["symbol"],
+            "trade_id": chosen["trade_id"],
+            "vehicle": chosen["vehicle"],
+        }
+
+    if candidates and principal > 0:
+        closest = sorted(
+            candidates,
+            key=lambda row: abs(_safe_float(row.get("cost_basis"), 0.0) - principal),
+        )[0]
+
+        gap = abs(_safe_float(closest.get("cost_basis"), 0.0) - principal)
+
+        if gap <= max(2.0, abs(principal) * 0.05):
+            return {
+                "matched": True,
+                "match_reason": "closest_cost_basis_match",
+                "market_value": closest["market_value"],
+                "cost_basis": closest["cost_basis"],
+                "symbol": closest["symbol"],
+                "trade_id": closest["trade_id"],
+                "vehicle": closest["vehicle"],
+                "cost_basis_gap": round(gap, 2),
+            }
+
+    return {
+        "matched": False,
+        "match_reason": "no_closing_open_position_match",
+        "market_value": 0.0,
+        "cost_basis": 0.0,
+        "symbol": symbol,
+        "trade_id": trade_id,
+        "vehicle": vehicle,
+    }
+
+
 # =============================================================================
-# State normalization and sync
+# State normalization / sync
 # =============================================================================
 
 def _normalize_state(data: Any) -> Dict[str, Any]:
     state = dict(DEFAULT_STATE)
+
     if isinstance(data, dict):
         state.update(data)
 
@@ -564,6 +776,7 @@ def _normalize_state(data: Any) -> Dict[str, Any]:
     state["open_market_value"] = _round_money(state.get("open_market_value", 0.0), 0.0)
     state["open_cost_basis"] = _round_money(state.get("open_cost_basis", 0.0), 0.0)
     state["open_unrealized_pnl"] = _round_money(state.get("open_unrealized_pnl", 0.0), 0.0)
+    state["open_positions"] = _safe_int(state.get("open_positions", 0), 0)
 
     account_type = _safe_str(state.get("account_type", "margin"), "margin").lower()
     if account_type not in {"cash", "margin"}:
@@ -586,6 +799,7 @@ def _normalize_state(data: Any) -> Dict[str, Any]:
     state["activity_log"] = _safe_list(state.get("activity_log"))
 
     state["last_account_sync"] = _safe_str(state.get("last_account_sync"), "")
+    state["last_account_sync_adjustment"] = _safe_dict(state.get("last_account_sync_adjustment"))
     state["account_math_basis"] = _safe_str(
         state.get("account_math_basis"),
         "cash_plus_open_market_value",
@@ -594,22 +808,31 @@ def _normalize_state(data: Any) -> Dict[str, Any]:
     return state
 
 
-def _sync_state_with_open_positions(state: Dict[str, Any]) -> Dict[str, Any]:
+def _sync_state_with_open_positions(
+    state: Dict[str, Any],
+    *,
+    closing_market_value_adjustment: float = 0.0,
+    sync_note: str = "",
+) -> Dict[str, Any]:
     state = _normalize_state(state)
     open_math = calculate_open_market_value()
 
     cash = _round_money(state.get("cash", 0.0), 0.0)
-    open_market_value = _round_money(open_math.get("total_market_value", 0.0), 0.0)
-    open_cost_basis = _round_money(open_math.get("total_cost_basis", 0.0), 0.0)
-    open_unrealized = _round_money(open_math.get("total_unrealized", 0.0), 0.0)
 
-    estimated_account_value = round(cash + open_market_value, 2)
+    raw_open_market_value = _round_money(open_math.get("total_market_value", 0.0), 0.0)
+    raw_open_cost_basis = _round_money(open_math.get("total_cost_basis", 0.0), 0.0)
+    raw_open_unrealized = _round_money(open_math.get("total_unrealized", 0.0), 0.0)
+
+    adjustment = max(0.0, _safe_float(closing_market_value_adjustment, 0.0))
+    adjusted_open_market_value = max(0.0, round(raw_open_market_value - adjustment, 2))
+
+    estimated_account_value = round(cash + adjusted_open_market_value, 2)
 
     state["cash"] = cash
     state["buying_power"] = cash
-    state["open_market_value"] = open_market_value
-    state["open_cost_basis"] = open_cost_basis
-    state["open_unrealized_pnl"] = open_unrealized
+    state["open_market_value"] = adjusted_open_market_value
+    state["open_cost_basis"] = raw_open_cost_basis
+    state["open_unrealized_pnl"] = raw_open_unrealized
     state["equity"] = estimated_account_value
     state["estimated_account_value"] = estimated_account_value
     state["open_positions"] = _safe_int(open_math.get("open_positions"), 0)
@@ -617,6 +840,17 @@ def _sync_state_with_open_positions(state: Dict[str, Any]) -> Dict[str, Any]:
     state["option_safety"] = open_math.get("option_safety", {})
     state["last_account_sync"] = _now_iso()
     state["account_math_basis"] = "cash_plus_open_market_value"
+
+    if adjustment > 0:
+        state["last_account_sync_adjustment"] = {
+            "closing_market_value_adjustment": round(adjustment, 2),
+            "raw_open_market_value_before_adjustment": raw_open_market_value,
+            "adjusted_open_market_value": adjusted_open_market_value,
+            "sync_note": sync_note or "release_trade_capital_close_window_adjustment",
+            "timestamp": state["last_account_sync"],
+        }
+    else:
+        state["last_account_sync_adjustment"] = {}
 
     return state
 
@@ -626,12 +860,7 @@ def load_state(sync: bool = True) -> Dict[str, Any]:
         save_state(DEFAULT_STATE, sync=False)
         state = dict(DEFAULT_STATE)
     else:
-        try:
-            with open(FILE, "r", encoding="utf-8") as f:
-                raw = json.load(f)
-        except Exception:
-            raw = dict(DEFAULT_STATE)
-
+        raw = _read_json(FILE, dict(DEFAULT_STATE))
         state = _normalize_state(raw)
 
     if sync:
@@ -645,9 +874,12 @@ def load_state(sync: bool = True) -> Dict[str, Any]:
 
 def save_state(state: Dict[str, Any], sync: bool = True) -> None:
     _ensure_parent_dir(FILE)
+
     normalized = _normalize_state(state)
+
     if sync:
         normalized = _sync_state_with_open_positions(normalized)
+
     _write_json(FILE, normalized)
 
 
@@ -687,6 +919,7 @@ def set_reserve_policy(mode: str = "percent", value: float = 20.0) -> Dict[str, 
         mode = "percent"
 
     value = _safe_float(value, 20.0)
+
     if mode == "percent":
         value = max(0.0, min(value, 100.0))
     else:
@@ -697,6 +930,7 @@ def set_reserve_policy(mode: str = "percent", value: float = 20.0) -> Dict[str, 
     save_state(state)
 
     synced = load_state()
+
     return {
         "reserve_mode": synced["reserve_mode"],
         "reserve_value": synced["reserve_value"],
@@ -706,6 +940,7 @@ def set_reserve_policy(mode: str = "percent", value: float = 20.0) -> Dict[str, 
 
 def get_reserve_policy() -> Dict[str, Any]:
     state = load_state()
+
     return {
         "reserve_mode": state.get("reserve_mode", "percent"),
         "reserve_value": state.get("reserve_value", 20.0),
@@ -714,7 +949,7 @@ def get_reserve_policy() -> Dict[str, Any]:
 
 
 # =============================================================================
-# Activity events and trading cash movements
+# Activity events / trading cash movements
 # =============================================================================
 
 def _append_activity_event(
@@ -731,6 +966,7 @@ def _append_activity_event(
     timestamp: Optional[str] = None,
 ) -> Dict[str, Any]:
     ts = _safe_str(timestamp, _now_iso())
+
     event = {
         "event_type": _safe_str(event_type, "").upper(),
         "symbol": _safe_str(symbol, "").upper(),
@@ -743,8 +979,10 @@ def _append_activity_event(
         "pnl": _round_money(pnl),
         "metadata": metadata if isinstance(metadata, dict) else {},
     }
+
     state.setdefault("activity_log", [])
     state["activity_log"].append(event)
+
     return event
 
 
@@ -778,6 +1016,7 @@ def record_trade(
     vehicle = _upper(vehicle, "")
 
     metadata = _safe_dict(metadata)
+
     if not vehicle:
         vehicle = _upper(metadata.get("vehicle_selected", metadata.get("vehicle", "")), "")
 
@@ -785,6 +1024,7 @@ def record_trade(
 
     ts = _safe_str(timestamp, _now_iso())
     action = _safe_str(action, "OPEN").upper()
+
     if action not in {"OPEN", "ENTRY"}:
         action = "OPEN"
 
@@ -819,7 +1059,11 @@ def record_trade(
         metadata={
             "source": "record_trade",
             "vehicle": vehicle,
-            "capital_cost_rule": "option_premium_x_100_x_contracts" if vehicle == VEHICLE_OPTION else "price_x_size",
+            "capital_cost_rule": (
+                "option_premium_x_100_x_contracts"
+                if vehicle == VEHICLE_OPTION
+                else "price_x_size"
+            ),
             **metadata,
         },
     )
@@ -828,6 +1072,7 @@ def record_trade(
     state["buying_power"] = round(_safe_float(state.get("cash", 0.0), 0.0), 2)
 
     save_state(state)
+
     return trade
 
 
@@ -841,6 +1086,7 @@ def settle_cash() -> Dict[str, Any]:
     for trade in _safe_list(state.get("trade_history")):
         trade = _safe_dict(trade)
         settle_date_raw = trade.get("settle_date")
+
         try:
             settle_date = datetime.fromisoformat(_safe_str(settle_date_raw, ""))
         except Exception:
@@ -857,6 +1103,7 @@ def settle_cash() -> Dict[str, Any]:
     state["buying_power"] = round(_safe_float(state.get("cash", 0.0), 0.0), 2)
 
     save_state(state)
+
     return load_state()
 
 
@@ -886,6 +1133,7 @@ def apply_realized_pnl(pnl: float) -> Dict[str, Any]:
     )
 
     save_state(state)
+
     return load_state()
 
 
@@ -906,17 +1154,27 @@ def release_trade_capital(
     size = _safe_float(size, 0.0)
     pnl = _safe_float(pnl, 0.0)
     vehicle = _upper(vehicle, "")
+
     metadata = _safe_dict(metadata)
 
     if not vehicle:
         vehicle = _upper(metadata.get("vehicle_selected", metadata.get("vehicle", "")), "")
 
+    symbol = _safe_str(symbol or metadata.get("symbol", ""), "").upper()
+    trade_id = _safe_str(trade_id or metadata.get("trade_id", ""), "")
+
     principal = _capital_cost(entry_price, size, vehicle=vehicle)
     total_credit = round(principal + pnl, 2)
 
     ts = _safe_str(timestamp, _now_iso())
-    symbol = _safe_str(symbol, "").upper()
-    trade_id = _safe_str(trade_id, "")
+
+    closing_match = _find_closing_open_market_value(
+        principal=principal,
+        size=size,
+        symbol=symbol,
+        trade_id=trade_id,
+        vehicle=vehicle,
+    )
 
     release_meta = {
         "principal": principal,
@@ -924,7 +1182,14 @@ def release_trade_capital(
         "total_credit": total_credit,
         "immediate": bool(immediate),
         "vehicle": vehicle,
-        "capital_release_rule": "option_premium_x_100_x_contracts" if vehicle == VEHICLE_OPTION else "entry_price_x_size",
+        "symbol": symbol,
+        "trade_id": trade_id,
+        "capital_release_rule": (
+            "option_premium_x_100_x_contracts"
+            if vehicle == VEHICLE_OPTION
+            else "entry_price_x_size"
+        ),
+        "closing_open_market_value_match": closing_match,
         **metadata,
     }
 
@@ -947,21 +1212,31 @@ def release_trade_capital(
                 **release_meta,
             },
         )
+
+        adjusted_state = _sync_state_with_open_positions(
+            state,
+            closing_market_value_adjustment=_safe_float(closing_match.get("market_value"), 0.0),
+            sync_note="release_trade_capital_called_before_open_position_removed",
+        )
+        save_state(adjusted_state, sync=False)
+
     else:
         state.setdefault("trade_history", [])
-        state["trade_history"].append({
-            "timestamp": ts,
-            "date_key": _timestamp_to_date_key(ts) or _date_key(),
-            "settle_date": (_now() + timedelta(days=1)).isoformat(),
-            "status": "SETTLED_CREDIT",
-            "credit_amount": total_credit,
-            "trade_id": trade_id,
-            "symbol": symbol,
-            "principal": principal,
-            "pnl": round(pnl, 2),
-            "vehicle": vehicle,
-            "metadata": release_meta,
-        })
+        state["trade_history"].append(
+            {
+                "timestamp": ts,
+                "date_key": _timestamp_to_date_key(ts) or _date_key(),
+                "settle_date": (_now() + timedelta(days=1)).isoformat(),
+                "status": "SETTLED_CREDIT",
+                "credit_amount": total_credit,
+                "trade_id": trade_id,
+                "symbol": symbol,
+                "principal": principal,
+                "pnl": round(pnl, 2),
+                "vehicle": vehicle,
+                "metadata": release_meta,
+            }
+        )
 
         _append_activity_event(
             state,
@@ -979,8 +1254,9 @@ def release_trade_capital(
             },
         )
 
-    save_state(state)
-    synced = load_state()
+        save_state(state)
+
+    synced = load_state(sync=False)
 
     return {
         "principal": principal,
@@ -1000,12 +1276,29 @@ def release_trade_cap(
     size: float,
     pnl: float = 0.0,
     immediate: bool = True,
+    symbol: str = "",
+    trade_id: str = "",
+    timestamp: Optional[str] = None,
+    vehicle: str = "",
+    metadata: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
+    """
+    Compatibility wrapper.
+
+    Older code called release_trade_cap(entry_price, size, pnl, immediate).
+    Newer close code can pass symbol/trade_id/vehicle/metadata so the close-window
+    adjustment does not lose the identity of the closing position.
+    """
     return release_trade_capital(
         entry_price=entry_price,
         size=size,
         pnl=pnl,
         immediate=immediate,
+        symbol=symbol,
+        trade_id=trade_id,
+        timestamp=timestamp,
+        vehicle=vehicle,
+        metadata=metadata,
     )
 
 
@@ -1020,6 +1313,7 @@ def get_daily_trade_counters(date_key: Optional[str] = None) -> Dict[str, Any]:
     entries = 0
     closes = 0
     pending_closes = 0
+
     entry_trade_ids = set()
     close_trade_ids = set()
     symbols_opened = set()
@@ -1028,6 +1322,7 @@ def get_daily_trade_counters(date_key: Optional[str] = None) -> Dict[str, Any]:
     for event in _safe_list(state.get("activity_log")):
         event = _safe_dict(event)
         event_day = _safe_str(event.get("date_key"), "") or _timestamp_to_date_key(event.get("timestamp"))
+
         if event_day != target_day:
             continue
 
@@ -1057,6 +1352,7 @@ def get_daily_trade_counters(date_key: Optional[str] = None) -> Dict[str, Any]:
                 symbols_closed.add(symbol)
 
     round_trips = 0
+
     if entry_trade_ids and close_trade_ids:
         round_trips = len(entry_trade_ids.intersection(close_trade_ids))
     elif closes > 0 and entries > 0:
@@ -1079,7 +1375,7 @@ def get_daily_trade_counters(date_key: Optional[str] = None) -> Dict[str, Any]:
 
 
 # =============================================================================
-# Snapshots and display
+# Snapshots / display
 # =============================================================================
 
 def get_account_snapshot() -> Dict[str, Any]:
@@ -1091,13 +1387,17 @@ def get_account_snapshot() -> Dict[str, Any]:
         "cash": _round_money(state.get("cash", 0.0)),
         "buying_power": _round_money(state.get("buying_power", 0.0)),
         "equity": _round_money(state.get("equity", 0.0)),
-        "estimated_account_value": _round_money(state.get("estimated_account_value", state.get("equity", 0.0))),
+        "estimated_account_value": _round_money(
+            state.get("estimated_account_value", state.get("equity", 0.0))
+        ),
         "open_positions": _safe_int(open_math.get("open_positions"), 0),
         "open_market_value": _round_money(open_math.get("total_market_value", 0.0)),
         "open_cost_basis": _round_money(open_math.get("total_cost_basis", 0.0)),
         "open_unrealized_pnl": _round_money(open_math.get("total_unrealized", 0.0)),
         "realized_pnl": realized_pnl,
-        "net_liquidation_value": _round_money(state.get("estimated_account_value", state.get("equity", 0.0))),
+        "net_liquidation_value": _round_money(
+            state.get("estimated_account_value", state.get("equity", 0.0))
+        ),
         "account_type": _safe_str(state.get("account_type"), "margin"),
         "reserve_mode": _safe_str(state.get("reserve_mode"), "percent"),
         "reserve_value": _safe_float(state.get("reserve_value"), 20.0),
@@ -1106,6 +1406,7 @@ def get_account_snapshot() -> Dict[str, Any]:
         "option_safety": open_math.get("option_safety", {}),
         "account_math_basis": "cash + open_market_value",
         "last_account_sync": state.get("last_account_sync", ""),
+        "last_account_sync_adjustment": state.get("last_account_sync_adjustment", {}),
     }
 
 
@@ -1125,6 +1426,10 @@ def print_account_snapshot() -> Dict[str, Any]:
     print(f"Vehicle Mix: {snapshot['vehicle_mix']}")
     print(f"Option Safety: {snapshot['option_safety']}")
     print(f"Math Basis: {snapshot['account_math_basis']}")
+
+    adjustment = _safe_dict(snapshot.get("last_account_sync_adjustment"))
+    if adjustment:
+        print(f"Last Sync Adjustment: {adjustment}")
 
     return snapshot
 
@@ -1149,10 +1454,13 @@ def reset_account_state(
         reserve_mode = "percent"
 
     reserve_value = _safe_float(reserve_value, 20.0)
+
     if reserve_mode == "percent":
         reserve_value = max(0.0, min(reserve_value, 100.0))
     else:
         reserve_value = max(0.0, reserve_value)
+
+    prior = load_state(sync=False)
 
     state = {
         "equity": _round_money(equity, 1000.0),
@@ -1162,12 +1470,14 @@ def reset_account_state(
         "open_market_value": 0.0,
         "open_cost_basis": 0.0,
         "open_unrealized_pnl": 0.0,
+        "open_positions": 0,
         "account_type": _safe_str(account_type, "margin").lower(),
-        "trade_history": [] if clear_activity else _safe_list(load_state(sync=False).get("trade_history")),
-        "activity_log": [] if clear_activity else _safe_list(load_state(sync=False).get("activity_log")),
+        "trade_history": [] if clear_activity else _safe_list(prior.get("trade_history")),
+        "activity_log": [] if clear_activity else _safe_list(prior.get("activity_log")),
         "reserve_mode": reserve_mode,
         "reserve_value": reserve_value,
         "last_account_sync": _now_iso(),
+        "last_account_sync_adjustment": {},
         "account_math_basis": "cash_plus_open_market_value",
     }
 
@@ -1175,6 +1485,7 @@ def reset_account_state(
         state["account_type"] = "margin"
 
     save_state(state)
+
     return load_state()
 
 

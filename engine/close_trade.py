@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from engine.trade_timeline import add_timeline_event
 from engine.pdt_guard import can_close_position
-from engine.account_state import release_trade_cap
+from engine.account_state import release_trade_capital
 from engine.explainability_engine import explain_exit
 from engine.paper_portfolio import archive_closed_position
 
@@ -715,15 +715,13 @@ def _capital_release_inputs(position: Dict[str, Any], exit_price: float) -> Tupl
         exit_premium = _safe_float(exit_price, 0.0)
         contracts = _option_contracts(position)
 
-        release_basis_entry = entry_premium * OPTION_CONTRACT_MULTIPLIER
-
-        return release_basis_entry, contracts, {
+        return entry_premium, contracts, {
             "capital_release_basis": "option_entry_premium_x_100_x_contracts",
             "entry_premium": round(entry_premium, 4),
             "exit_premium": round(exit_premium, 4),
             "contracts": contracts,
             "multiplier": OPTION_CONTRACT_MULTIPLIER,
-            "release_basis_entry": round(release_basis_entry, 4),
+            "release_basis_entry": round(entry_premium * OPTION_CONTRACT_MULTIPLIER, 4),
             "release_basis_exit": round(exit_premium * OPTION_CONTRACT_MULTIPLIER, 4),
             "vehicle": VEHICLE_OPTION,
         }
@@ -781,6 +779,8 @@ def _performance_classification(
         return {
             "performance_classification": "MANUAL_TEST",
             "performance_include": False,
+            "include_in_performance": False,
+            "counts_in_performance": False,
             "needs_review": False,
             "classification_reason": "manual_or_test_reason",
         }
@@ -789,6 +789,8 @@ def _performance_classification(
         return {
             "performance_classification": "CONTROLLED_RELEASE",
             "performance_include": False,
+            "include_in_performance": False,
+            "counts_in_performance": False,
             "needs_review": False,
             "classification_reason": "controlled_release_reason",
         }
@@ -797,6 +799,8 @@ def _performance_classification(
         return {
             "performance_classification": "QUARANTINED_BAD_CLOSE",
             "performance_include": False,
+            "include_in_performance": False,
+            "counts_in_performance": False,
             "needs_review": False,
             "classification_reason": "option_underlying_leak_blocked_on_close",
         }
@@ -805,6 +809,8 @@ def _performance_classification(
         return {
             "performance_classification": "QUARANTINED_BAD_CLOSE",
             "performance_include": False,
+            "include_in_performance": False,
+            "counts_in_performance": False,
             "needs_review": False,
             "classification_reason": "invalid_pnl_inputs",
         }
@@ -813,11 +819,11 @@ def _performance_classification(
         move_multiple = _safe_float(pnl_meta.get("move_multiple"), 0.0)
         high_move = move_multiple >= HIGH_OPTION_MOVE_REVIEW_MULTIPLE
 
-        # High option moves are allowed when the close was premium-based and leak checks passed.
-        # We still stamp an audit flag so they can be reviewed later without removing them.
         return {
             "performance_classification": "REAL_TRADE",
             "performance_include": True,
+            "include_in_performance": True,
+            "counts_in_performance": True,
             "needs_review": False,
             "classification_reason": "verified_option_premium_close",
             "high_option_move": bool(high_move),
@@ -833,6 +839,8 @@ def _performance_classification(
     return {
         "performance_classification": "REAL_TRADE",
         "performance_include": True,
+        "include_in_performance": True,
+        "counts_in_performance": True,
         "needs_review": False,
         "classification_reason": "valid_stock_close",
     }
@@ -875,9 +883,9 @@ def _fallback_exit_explanation(
         "reason": f"Closed by {reason}.",
         "why": f"Closed by {reason}.",
         "notes": [
-            f"PnL: {pnl}",
+            f"PnL: {round(pnl, 2)}",
             f"PnL %: {pnl_pct}",
-            f"Exit price: {exit_price}",
+            f"Exit price: {round(exit_price, 4)}",
             f"PnL basis: {pnl_meta.get('pnl_basis', '')}",
         ],
         "next_action": "Review whether the exit matched the thesis and pressure profile.",
@@ -908,16 +916,33 @@ def _clean_exit_explanation(
 
     cleaned = dict(exit_explanation)
 
-    if _upper(cleaned.get("symbol"), "UNKNOWN") in {"", "UNKNOWN", "NONE"}:
-        cleaned["symbol"] = symbol
-    else:
-        cleaned["symbol"] = _upper(cleaned.get("symbol"), symbol)
-
-    cleaned["vehicle"] = _upper(cleaned.get("vehicle"), vehicle) or vehicle
+    cleaned["symbol"] = symbol
+    cleaned["vehicle"] = vehicle
 
     for key, value in fallback.items():
         if key not in cleaned or cleaned.get(key) in [None, "", [], {}]:
             cleaned[key] = value
+
+    # close_trade.py is the source of truth for realized close math.
+    # This prevents old explainability text from saying PnL: 0.0 after a real close.
+    cleaned["notes"] = fallback["notes"]
+    cleaned["realized_pnl"] = round(pnl, 2)
+    cleaned["pnl_basis"] = pnl_meta.get("pnl_basis", "")
+    cleaned["pnl_pct"] = pnl_meta.get("pnl_pct", 0.0)
+    cleaned["exit_price"] = round(exit_price, 4)
+
+    if pnl > 0:
+        cleaned["verdict"] = "PROFIT"
+        cleaned["summary"] = fallback["summary"]
+        if not cleaned.get("headline") or "unknown" in str(cleaned.get("headline", "")).lower():
+            cleaned["headline"] = fallback["headline"]
+    elif pnl < 0:
+        cleaned["verdict"] = "LOSS"
+        cleaned["summary"] = fallback["summary"]
+        if not cleaned.get("headline") or "unknown" in str(cleaned.get("headline", "")).lower():
+            cleaned["headline"] = fallback["headline"]
+    else:
+        cleaned["verdict"] = cleaned.get("verdict") or "FLAT"
 
     return cleaned
 
@@ -985,6 +1010,9 @@ def _apply_option_close_aliases(
         "premium_exit",
         "option_exit",
         "option_exit_price",
+        "exit_option_mark",
+        "close_option_mark",
+        "final_option_mark",
         "current_price",
         "current",
         "current_premium",
@@ -1203,6 +1231,8 @@ def _build_close_trade_log_row(
                 "premium_entry": matched.get("entry_premium"),
                 "exit_premium": round(exit_price, 4),
                 "premium_exit": round(exit_price, 4),
+                "option_exit": round(exit_price, 4),
+                "option_exit_price": round(exit_price, 4),
                 "current_premium": round(exit_price, 4),
                 "current_option_mark": round(exit_price, 4),
                 "contracts": matched.get("contracts", pnl_meta.get("contracts", 1)),
@@ -1372,6 +1402,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
         symbol = _norm_symbol(matched.get("symbol"))
 
     vehicle = _detect_vehicle(matched)
+    resolved_trade_id = _position_trade_id(matched) or trade_id
 
     if vehicle == VEHICLE_RESEARCH_ONLY:
         return {
@@ -1379,7 +1410,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
             "blocked": True,
             "reason": "research_only_position_cannot_be_closed",
             "symbol": symbol,
-            "trade_id": matched.get("trade_id", trade_id),
+            "trade_id": resolved_trade_id,
             "vehicle": vehicle,
         }
 
@@ -1392,7 +1423,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
             "blocked": True,
             "reason": pdt_check.get("reason"),
             "symbol": symbol,
-            "trade_id": matched.get("trade_id", trade_id),
+            "trade_id": resolved_trade_id,
             "vehicle": vehicle,
             "meta": pdt_check.get("meta", {}),
         }
@@ -1408,7 +1439,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
                 "blocked": True,
                 "reason": "missing_valid_option_exit_premium",
                 "symbol": symbol,
-                "trade_id": matched.get("trade_id", trade_id),
+                "trade_id": resolved_trade_id,
                 "vehicle": vehicle,
                 "requested_exit_price": exit_price,
                 "price_review_basis": "OPTION_PREMIUM_ONLY",
@@ -1427,7 +1458,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
                 "blocked": True,
                 "reason": "missing_valid_stock_exit_price",
                 "symbol": symbol,
-                "trade_id": matched.get("trade_id", trade_id),
+                "trade_id": resolved_trade_id,
                 "vehicle": vehicle,
                 "requested_exit_price": exit_price,
                 "price_review_basis": "STOCK_PRICE",
@@ -1440,12 +1471,21 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
 
     matched_for_explanation = dict(matched)
     matched_for_explanation["symbol"] = symbol
+    matched_for_explanation["trade_id"] = resolved_trade_id
     matched_for_explanation["vehicle"] = vehicle
     matched_for_explanation["vehicle_selected"] = vehicle
     matched_for_explanation["selected_vehicle"] = vehicle
     matched_for_explanation["pnl"] = pnl
     matched_for_explanation["realized_pnl"] = pnl
     matched_for_explanation["exit_price"] = resolved_exit_price
+
+    if vehicle == VEHICLE_OPTION:
+        matched_for_explanation["exit_premium"] = resolved_exit_price
+        matched_for_explanation["current_premium"] = resolved_exit_price
+        matched_for_explanation["price_review_basis"] = "OPTION_PREMIUM_ONLY"
+        matched_for_explanation["monitoring_price_type"] = "OPTION_PREMIUM"
+        matched_for_explanation["underlying_price_used_for_close_decision"] = False
+        matched_for_explanation["underlying_price_used_for_pnl"] = False
 
     try:
         raw_exit_explanation = explain_exit(
@@ -1479,11 +1519,26 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
     release_price_basis, release_size, release_meta = _capital_release_inputs(matched, resolved_exit_price)
 
     try:
-        capital_release = release_trade_cap(
+        capital_release = release_trade_capital(
             entry_price=release_price_basis,
             size=release_size,
             pnl=pnl,
             immediate=True,
+            symbol=symbol,
+            trade_id=resolved_trade_id,
+            vehicle=vehicle,
+            metadata={
+                "source": "close_trade.py",
+                "symbol": symbol,
+                "trade_id": resolved_trade_id,
+                "vehicle": vehicle,
+                "price_review_basis": "OPTION_PREMIUM_ONLY" if vehicle == VEHICLE_OPTION else "STOCK_PRICE",
+                "monitoring_price_type": "OPTION_PREMIUM" if vehicle == VEHICLE_OPTION else "UNDERLYING",
+                "exit_price": round(resolved_exit_price, 4),
+                "exit_price_source": exit_source,
+                "close_reason": reason,
+                **release_meta,
+            },
         )
     except Exception as exc:
         capital_release = {
@@ -1508,6 +1563,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
         leak_blocked=leak_blocked,
     )
 
+    matched["trade_id"] = resolved_trade_id
     matched["exit_explanation"] = exit_explanation
     matched["capital_release_meta"] = release_meta
 
@@ -1570,7 +1626,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
             symbol,
             "CLOSED",
             {
-                "trade_id": matched.get("trade_id"),
+                "trade_id": resolved_trade_id,
                 "exit_price": round(resolved_exit_price, 4),
                 "close_price": round(resolved_exit_price, 4),
                 "exit_premium": matched.get("exit_premium") if vehicle == VEHICLE_OPTION else None,
@@ -1597,16 +1653,17 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
                 "performance_classification": matched.get("performance_classification"),
                 "performance_include": matched.get("performance_include"),
                 "needs_review": matched.get("needs_review"),
+                "classification_reason": matched.get("classification_reason"),
             },
         )
-    except Exception as e:
-        print(f"[TIMELINE_CLOSE_EVENT:{symbol}] {e}")
+    except Exception as exc:
+        print(f"[TIMELINE_CLOSE_EVENT:{symbol}] {exc}")
 
     return {
         "closed": True,
         "blocked": False,
         "symbol": symbol,
-        "trade_id": matched.get("trade_id", ""),
+        "trade_id": resolved_trade_id,
         "vehicle": vehicle,
         "exit_price": round(resolved_exit_price, 4),
         "close_price": round(resolved_exit_price, 4),
@@ -1625,6 +1682,8 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
         "execution_position_shape": matched.get("execution_position_shape"),
         "performance_classification": matched.get("performance_classification"),
         "performance_include": matched.get("performance_include"),
+        "include_in_performance": matched.get("include_in_performance"),
+        "counts_in_performance": matched.get("counts_in_performance"),
         "needs_review": matched.get("needs_review"),
         "classification_reason": matched.get("classification_reason"),
         "high_option_move": matched.get("high_option_move", False),
@@ -1634,6 +1693,7 @@ def close_position(symbol: Any, exit_price: Any, reason: str = "manual", trade_i
         "meta": pdt_meta,
         "closed_position": archived,
         "trade_log_row": trade_log_row,
+        "exit_explanation": exit_explanation,
     }
 
 
