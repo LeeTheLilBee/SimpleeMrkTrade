@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-05-07T03:02:02.980945",
+  "timestamp": "2026-05-07T12:17:30.240345",
   "cash": 22048.0,
   "buying_power": 22048.0,
-  "equity": 26408.0,
+  "equity": 26407.0,
   "open_positions": 3,
   "executed_trades": 3,
   "regime": "STARTING",
