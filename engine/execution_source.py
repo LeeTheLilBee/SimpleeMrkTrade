@@ -1,32 +1,8 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
-
-
-# ============================================================
-# PURPOSE
-# ============================================================
-# This file is the safety bridge between data/execution_universe.json
-# and process_signals().
-#
-# Critical rule:
-#   Candidate rows may carry stale, synthetic, or corrupted prices.
-#   Before a candidate is allowed into process_signals(), this layer
-#   attempts to refresh and validate the underlying stock price.
-#
-# This prevents bad upstream prices from poisoning:
-#   - option moneyness
-#   - option strike distance scoring
-#   - stop/target defaults
-#   - stock fallback sizing
-#   - candidate display
-#   - reentry comparisons
-
-
-EXECUTION_UNIVERSE_FILE = "data/execution_universe.json"
 
 
 # ============================================================
@@ -53,19 +29,6 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
         if value is None or value == "":
             return float(default)
-
-        if hasattr(value, "iloc"):
-            try:
-                value = value.iloc[-1]
-            except Exception:
-                value = value.iloc[0]
-
-        if hasattr(value, "item"):
-            try:
-                value = value.item()
-            except Exception:
-                pass
-
         return float(value)
     except Exception:
         return float(default)
@@ -75,19 +38,6 @@ def _safe_int(value: Any, default: int = 0) -> int:
     try:
         if value is None or value == "":
             return int(default)
-
-        if hasattr(value, "iloc"):
-            try:
-                value = value.iloc[-1]
-            except Exception:
-                value = value.iloc[0]
-
-        if hasattr(value, "item"):
-            try:
-                value = value.item()
-            except Exception:
-                pass
-
         return int(float(value))
     except Exception:
         return int(default)
@@ -106,10 +56,6 @@ def _norm_symbol(value: Any) -> str:
     return _safe_str(value, "").upper()
 
 
-def _now_iso() -> str:
-    return datetime.now().isoformat()
-
-
 def load_json(path: str, default: Any) -> Any:
     try:
         p = Path(path)
@@ -121,16 +67,11 @@ def load_json(path: str, default: Any) -> Any:
         return default
 
 
-# ============================================================
-# WATCHLIST FILTER
-# ============================================================
-
 def _watchlist_to_symbol_set(watchlist: Any) -> Optional[Set[str]]:
     if not isinstance(watchlist, list) or not watchlist:
         return None
 
     out: Set[str] = set()
-
     for item in watchlist:
         if isinstance(item, dict):
             symbol = _norm_symbol(item.get("symbol", ""))
@@ -144,76 +85,165 @@ def _watchlist_to_symbol_set(watchlist: Any) -> Optional[Set[str]]:
 
 
 # ============================================================
-# PRICE EXTRACTION / VALIDATION
+# PRICE EXTRACTION
 # ============================================================
 
-def _stored_price_candidates(row: Dict[str, Any]) -> List[Tuple[str, float]]:
-    row = _safe_dict(row)
-
-    ordered_fields = [
-        "underlying_price",
-        "stock_price",
-        "market_price",
-        "latest_price",
-        "last_price",
-        "regular_market_price",
-        "current_price",
-        "price",
-        "entry",
-        "close",
-        "fill_price",
-        "requested_price",
-    ]
-
-    out: List[Tuple[str, float]] = []
-
-    for field in ordered_fields:
-        value = _safe_float(row.get(field), 0.0)
-        if value > 0:
-            out.append((field, value))
-
-    return out
-
-
-def _first_stored_price(row: Dict[str, Any]) -> Tuple[float, str]:
-    for field, price in _stored_price_candidates(row):
-        if price > 0:
-            return round(price, 4), field
-
-    return 0.0, ""
-
-
-def _extract_last_close_from_df(df: Any) -> float:
+def _extract_last_price_from_dataframe(df: Any) -> Tuple[float, str]:
+    """
+    Handles normal yfinance frames, MultiIndex columns, lowercase columns,
+    Adj Close, Close, and final numeric fallback.
+    """
     try:
-        if df is None or getattr(df, "empty", True):
-            return 0.0
+        if df is None:
+            return 0.0, "df_none"
 
-        columns = getattr(df, "columns", [])
+        if getattr(df, "empty", True):
+            return 0.0, "df_empty"
 
-        for field in ["Close", "Adj Close", "close", "adj_close"]:
+        columns = list(getattr(df, "columns", []))
+
+        # Direct simple columns.
+        for col in ["Close", "Adj Close", "close", "adj close"]:
             try:
-                if field in columns:
-                    series = df[field].dropna()
+                if col in columns:
+                    series = df[col].dropna()
                     if len(series) > 0:
-                        value = _safe_float(series.iloc[-1], 0.0)
-                        if value > 0:
-                            return round(value, 4)
+                        price = _safe_float(series.iloc[-1], 0.0)
+                        if price > 0:
+                            return price, f"dataframe_column:{col}"
             except Exception:
-                continue
+                pass
 
+        # MultiIndex columns, common with yfinance group_by behavior.
         try:
-            last_row = df.dropna().iloc[-1]
-            for field in ["Close", "Adj Close", "close", "adj_close"]:
-                value = _safe_float(last_row.get(field), 0.0)
-                if value > 0:
-                    return round(value, 4)
+            if hasattr(df.columns, "levels"):
+                for col in columns:
+                    col_text = "|".join([str(x) for x in col]) if isinstance(col, tuple) else str(col)
+                    col_text_l = col_text.lower()
+
+                    if "close" in col_text_l and "adj" not in col_text_l:
+                        series = df[col].dropna()
+                        if len(series) > 0:
+                            price = _safe_float(series.iloc[-1], 0.0)
+                            if price > 0:
+                                return price, f"dataframe_multi_close:{col_text}"
+
+                for col in columns:
+                    col_text = "|".join([str(x) for x in col]) if isinstance(col, tuple) else str(col)
+                    col_text_l = col_text.lower()
+
+                    if "adj close" in col_text_l or ("adj" in col_text_l and "close" in col_text_l):
+                        series = df[col].dropna()
+                        if len(series) > 0:
+                            price = _safe_float(series.iloc[-1], 0.0)
+                            if price > 0:
+                                return price, f"dataframe_multi_adj_close:{col_text}"
+        except Exception:
+            pass
+
+        # Last-resort: scan last row for usable positive numeric value.
+        try:
+            last_row = df.dropna(how="all").iloc[-1]
+            numeric_values = []
+            for value in list(last_row.values):
+                price = _safe_float(value, 0.0)
+                if price > 0:
+                    numeric_values.append(price)
+
+            if numeric_values:
+                # Usually Close/Open/High/Low are clustered. Pick the last positive.
+                return float(numeric_values[-1]), "dataframe_numeric_last_row_fallback"
         except Exception:
             pass
 
     except Exception:
-        pass
+        return 0.0, "dataframe_extract_exception"
 
-    return 0.0
+    return 0.0, "dataframe_no_price"
+
+
+def _fresh_price_via_safe_download(symbol: str) -> Tuple[float, str]:
+    try:
+        from engine.data_utils import safe_download
+
+        df = safe_download(
+            symbol,
+            period="5d",
+            interval="1d",
+            auto_adjust=True,
+            progress=False,
+        )
+
+        price, source = _extract_last_price_from_dataframe(df)
+        if price > 0:
+            return round(price, 4), f"safe_download:{source}"
+
+        # Try shorter plain call too, because some wrappers dislike interval.
+        df = safe_download(
+            symbol,
+            period="1mo",
+            auto_adjust=True,
+            progress=False,
+        )
+
+        price, source = _extract_last_price_from_dataframe(df)
+        if price > 0:
+            return round(price, 4), f"safe_download_retry:{source}"
+
+        return 0.0, f"safe_download_no_price:{source}"
+
+    except Exception as exc:
+        return 0.0, f"safe_download_exception:{exc}"
+
+
+def _fresh_price_via_yfinance(symbol: str) -> Tuple[float, str]:
+    try:
+        import yfinance as yf
+
+        ticker = yf.Ticker(symbol)
+
+        # Fast info first.
+        try:
+            info = getattr(ticker, "fast_info", None)
+            if info:
+                for key in ["last_price", "lastPrice", "regular_market_price", "regularMarketPrice"]:
+                    try:
+                        price = _safe_float(info.get(key), 0.0)
+                        if price > 0:
+                            return round(price, 4), f"yfinance_fast_info:{key}"
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+
+        # History fallback.
+        try:
+            df = ticker.history(period="5d", interval="1d", auto_adjust=True)
+            price, source = _extract_last_price_from_dataframe(df)
+            if price > 0:
+                return round(price, 4), f"yfinance_history:{source}"
+        except Exception:
+            pass
+
+        try:
+            df = yf.download(
+                symbol,
+                period="5d",
+                interval="1d",
+                auto_adjust=True,
+                progress=False,
+                threads=False,
+            )
+            price, source = _extract_last_price_from_dataframe(df)
+            if price > 0:
+                return round(price, 4), f"yfinance_download:{source}"
+        except Exception:
+            pass
+
+    except Exception as exc:
+        return 0.0, f"yfinance_exception:{exc}"
+
+    return 0.0, "yfinance_no_price"
 
 
 def _fresh_underlying_price(symbol: str) -> Tuple[float, str]:
@@ -221,115 +251,107 @@ def _fresh_underlying_price(symbol: str) -> Tuple[float, str]:
     if not clean_symbol:
         return 0.0, "missing_symbol"
 
-    try:
-        from engine.data_utils import safe_download
+    price, source = _fresh_price_via_safe_download(clean_symbol)
+    if price > 0:
+        return price, source
 
-        df = safe_download(
-            clean_symbol,
-            period="5d",
-            auto_adjust=True,
-            progress=False,
-        )
+    yf_price, yf_source = _fresh_price_via_yfinance(clean_symbol)
+    if yf_price > 0:
+        return yf_price, yf_source
 
-        price = _extract_last_close_from_df(df)
-
-        if price > 0:
-            return price, "safe_download_close"
-
-        return 0.0, "safe_download_no_price"
-
-    except Exception as exc:
-        return 0.0, f"safe_download_failed:{exc}"
+    return 0.0, f"{source}|{yf_source}"
 
 
-def _price_delta_pct(a: float, b: float) -> float:
-    a = _safe_float(a, 0.0)
-    b = _safe_float(b, 0.0)
-
-    if a <= 0 or b <= 0:
-        return 0.0
-
-    base = min(a, b)
-    if base <= 0:
-        return 0.0
-
-    return abs(a - b) / base
-
-
-def _resolve_underlying_price(row: Dict[str, Any], symbol: str) -> Dict[str, Any]:
+def _stored_price_from_candidate(row: Dict[str, Any]) -> Tuple[float, str]:
     row = _safe_dict(row)
-    symbol = _norm_symbol(symbol)
 
-    stored_price, stored_source = _first_stored_price(row)
+    candidates = [
+        ("current_price", row.get("current_price")),
+        ("price", row.get("price")),
+        ("entry", row.get("entry")),
+        ("last_price", row.get("last_price")),
+        ("close", row.get("close")),
+        ("underlying_price", row.get("underlying_price")),
+        ("market_price", row.get("market_price")),
+        ("latest_price", row.get("latest_price")),
+        ("fill_price", row.get("fill_price")),
+        ("requested_price", row.get("requested_price")),
+    ]
+
+    for source, value in candidates:
+        price = _safe_float(value, 0.0)
+        if price > 0:
+            return round(price, 4), source
+
+    option = _safe_dict(row.get("option"))
+    for source, value in [
+        ("option.mark", option.get("mark")),
+        ("option.last", option.get("last")),
+    ]:
+        price = _safe_float(value, 0.0)
+        if price > 0:
+            return round(price, 4), source
+
+    return 0.0, "no_stored_price"
+
+
+def _resolve_candidate_price(symbol: str, row: Dict[str, Any]) -> Dict[str, Any]:
+    stored_price, stored_source = _stored_price_from_candidate(row)
     fresh_price, fresh_source = _fresh_underlying_price(symbol)
 
-    delta_pct = _price_delta_pct(stored_price, fresh_price)
-
-    # Fresh market data wins when available.
-    if fresh_price > 0:
-        if stored_price > 0 and delta_pct >= 0.25:
-            return {
-                "price": round(fresh_price, 4),
-                "price_source": fresh_source,
-                "stored_price": round(stored_price, 4),
-                "stored_price_source": stored_source,
-                "fresh_price": round(fresh_price, 4),
-                "fresh_price_source": fresh_source,
-                "price_delta_pct": round(delta_pct, 4),
-                "price_status": "fresh_price_used_stored_price_suspicious",
-                "price_warning": (
-                    f"Stored price {stored_price} from {stored_source} differed from "
-                    f"fresh price {fresh_price} by {round(delta_pct * 100, 2)}%."
-                ),
-            }
-
-        return {
-            "price": round(fresh_price, 4),
-            "price_source": fresh_source,
-            "stored_price": round(stored_price, 4),
-            "stored_price_source": stored_source,
-            "fresh_price": round(fresh_price, 4),
-            "fresh_price_source": fresh_source,
-            "price_delta_pct": round(delta_pct, 4),
-            "price_status": "fresh_price_used",
-            "price_warning": "",
-        }
-
-    # If no fresh price is available, fall back to stored price but mark it.
-    if stored_price > 0:
-        return {
-            "price": round(stored_price, 4),
-            "price_source": stored_source,
-            "stored_price": round(stored_price, 4),
-            "stored_price_source": stored_source,
-            "fresh_price": 0.0,
-            "fresh_price_source": fresh_source,
-            "price_delta_pct": 0.0,
-            "price_status": "stored_price_used_no_fresh_price",
-            "price_warning": f"Fresh price unavailable; using stored {stored_source}.",
-        }
-
-    return {
-        "price": 0.0,
-        "price_source": "",
-        "stored_price": 0.0,
-        "stored_price_source": "",
-        "fresh_price": 0.0,
+    payload = {
+        "price": stored_price,
+        "current_price": stored_price,
+        "underlying_price": stored_price,
+        "stored_price": stored_price,
+        "stored_price_source": stored_source,
+        "fresh_price": fresh_price,
         "fresh_price_source": fresh_source,
+        "price_status": "stored_price_used_no_fresh_price",
+        "price_warning": "",
         "price_delta_pct": 0.0,
-        "price_status": "no_price_available",
-        "price_warning": "No usable underlying price available.",
+        "price_is_fresh": False,
     }
+
+    if fresh_price > 0:
+        payload["price"] = round(fresh_price, 4)
+        payload["current_price"] = round(fresh_price, 4)
+        payload["underlying_price"] = round(fresh_price, 4)
+        payload["price_status"] = "fresh_price_used"
+        payload["price_is_fresh"] = True
+
+        if stored_price > 0:
+            delta_pct = abs(fresh_price - stored_price) / stored_price
+            payload["price_delta_pct"] = round(delta_pct, 4)
+
+            if delta_pct >= 0.20:
+                payload["price_status"] = "fresh_price_used_large_stored_delta"
+                payload["price_warning"] = (
+                    f"Fresh price differs from stored {stored_source} by "
+                    f"{round(delta_pct * 100, 2)}%."
+                )
+
+        return payload
+
+    if stored_price > 0:
+        payload["price_warning"] = "Fresh price unavailable; using stored current_price."
+        return payload
+
+    payload["price"] = 0.0
+    payload["current_price"] = 0.0
+    payload["underlying_price"] = 0.0
+    payload["price_status"] = "no_usable_price"
+    payload["price_warning"] = "No fresh or stored price available."
+    return payload
 
 
 # ============================================================
-# CANDIDATE QUALITY / SORTING
+# SCORING / SORTING
 # ============================================================
 
 def _confidence_rank(value: Any) -> int:
     confidence = _safe_str(value, "LOW").upper()
     mapping = {
-        "STRONG": 4,
         "HIGH": 3,
         "MEDIUM": 2,
         "LOW": 1,
@@ -340,102 +362,25 @@ def _confidence_rank(value: Any) -> int:
 
 def _candidate_sort_key(row: Dict[str, Any]) -> tuple:
     row = _safe_dict(row)
-
     return (
         _safe_float(row.get("fused_score", row.get("score", 0.0)), 0.0),
         _confidence_rank(row.get("confidence", "LOW")),
         _safe_float(row.get("score", 0.0), 0.0),
         _safe_float(row.get("base_score", 0.0), 0.0),
-        _safe_float(row.get("readiness_score", 0.0), 0.0),
-        _safe_float(row.get("promotion_score", 0.0), 0.0),
     )
 
 
-def _normalize_strategy(value: Any) -> str:
-    strategy = _safe_str(value, "CALL").upper()
-
-    if strategy in {"CALL", "PUT", "NO_TRADE"}:
-        return strategy
-
-    if strategy in {"LONG", "BUY", "BULLISH"}:
-        return "CALL"
-
-    if strategy in {"SHORT", "SELL", "BEARISH"}:
-        return "PUT"
-
-    return "CALL"
-
-
-def _default_stop(price: float, strategy: str) -> float:
-    price = _safe_float(price, 0.0)
-    strategy = _normalize_strategy(strategy)
-
-    if price <= 0:
-        return 0.0
-
-    if strategy == "PUT":
-        return round(price * 1.03, 4)
-
-    return round(price * 0.97, 4)
-
-
-def _default_target(price: float, strategy: str) -> float:
-    price = _safe_float(price, 0.0)
-    strategy = _normalize_strategy(strategy)
-
-    if price <= 0:
-        return 0.0
-
-    if strategy == "PUT":
-        return round(price * 0.90, 4)
-
-    return round(price * 1.10, 4)
-
-
-# ============================================================
-# OPTION CHAIN PRICE CONTEXT
-# ============================================================
-
-def _normalize_option_chain(option_chain: Any, underlying_price: float) -> List[Dict[str, Any]]:
-    rows = _safe_list(option_chain)
-    normalized: List[Dict[str, Any]] = []
-
-    for raw in rows:
-        if not isinstance(raw, dict):
-            continue
-
-        option = dict(raw)
-        option.setdefault("underlying_price", round(_safe_float(underlying_price, 0.0), 4))
-        option.setdefault("stock_price", round(_safe_float(underlying_price, 0.0), 4))
-        option.setdefault("monitoring_mode", "OPTION_PREMIUM")
-
-        normalized.append(option)
-
-    return normalized
-
-
-# ============================================================
-# NORMALIZATION
-# ============================================================
-
-def _normalize_candidate(candidate: Dict[str, Any], *, debug: bool = False) -> Dict[str, Any]:
+def _normalize_candidate(candidate: Dict[str, Any]) -> Dict[str, Any]:
     row = dict(candidate or {})
     symbol = _norm_symbol(row.get("symbol", ""))
 
     if not symbol:
         return {}
 
-    price_resolution = _resolve_underlying_price(row, symbol)
-    current_price = _safe_float(price_resolution.get("price"), 0.0)
+    price_payload = _resolve_candidate_price(symbol, row)
+    price = _safe_float(price_payload.get("price"), 0.0)
 
-    if current_price <= 0:
-        if debug:
-            print("EXECUTION SOURCE PRICE DROP:", {
-                "symbol": symbol,
-                "reason": price_resolution.get("price_status"),
-                "fresh_source": price_resolution.get("fresh_price_source"),
-                "stored_source": price_resolution.get("stored_price_source"),
-            })
+    if price <= 0:
         return {}
 
     score = _safe_float(
@@ -450,64 +395,52 @@ def _normalize_candidate(candidate: Dict[str, Any], *, debug: bool = False) -> D
         "LOW",
     ).upper()
 
-    strategy = _normalize_strategy(row.get("strategy", "CALL"))
+    strategy = _safe_str(row.get("strategy", "CALL"), "CALL").upper()
+    if not strategy:
+        strategy = "CALL"
 
     company_name = _safe_str(
         row.get("company_name", row.get("company", symbol)),
         symbol,
     )
 
+    current_price = round(price, 4)
     entry = round(_safe_float(row.get("entry", current_price), current_price), 4)
 
-    # If entry is suspiciously far from refreshed underlying price, reset entry too.
-    entry_delta = _price_delta_pct(entry, current_price)
-    if entry <= 0 or entry_delta >= 0.25:
-        entry = round(current_price, 4)
+    # If entry came from stale stored price and fresh is available, use fresh for candidate entry preview.
+    if bool(price_payload.get("price_is_fresh")):
+        entry = current_price
 
     stop_existing = _safe_float(row.get("stop"), 0.0)
     target_existing = _safe_float(row.get("target"), 0.0)
 
-    stop = round(
-        stop_existing
-        if stop_existing > 0 and _price_delta_pct(stop_existing, current_price) < 0.50
-        else _default_stop(current_price, strategy),
-        4,
-    )
-
-    target = round(
-        target_existing
-        if target_existing > 0 and _price_delta_pct(target_existing, current_price) < 0.75
-        else _default_target(current_price, strategy),
-        4,
-    )
+    if strategy == "PUT":
+        stop = round(stop_existing if stop_existing > 0 and not price_payload.get("price_is_fresh") else current_price * 1.03, 4)
+        target = round(target_existing if target_existing > 0 and not price_payload.get("price_is_fresh") else current_price * 0.90, 4)
+    else:
+        stop = round(stop_existing if stop_existing > 0 and not price_payload.get("price_is_fresh") else current_price * 0.97, 4)
+        target = round(target_existing if target_existing > 0 and not price_payload.get("price_is_fresh") else current_price * 1.10, 4)
 
     normalized = dict(row)
-
     normalized["symbol"] = symbol
     normalized["company_name"] = company_name
     normalized["strategy"] = strategy
 
-    # Canonical underlying fields for candidates entering process_signals.
-    normalized["price"] = round(current_price, 4)
-    normalized["current_price"] = round(current_price, 4)
-    normalized["underlying_price"] = round(current_price, 4)
-    normalized["stock_price"] = round(current_price, 4)
-    normalized["market_price"] = round(current_price, 4)
+    normalized["price"] = current_price
+    normalized["current_price"] = current_price
+    normalized["underlying_price"] = current_price
     normalized["entry"] = entry
-    normalized["requested_price"] = round(current_price, 4)
-
     normalized["stop"] = stop
     normalized["target"] = target
 
-    normalized["price_audit"] = price_resolution
-    normalized["price_source"] = price_resolution.get("price_source", "")
-    normalized["price_status"] = price_resolution.get("price_status", "")
-    normalized["price_warning"] = price_resolution.get("price_warning", "")
-    normalized["stored_price"] = price_resolution.get("stored_price", 0.0)
-    normalized["stored_price_source"] = price_resolution.get("stored_price_source", "")
-    normalized["fresh_price"] = price_resolution.get("fresh_price", 0.0)
-    normalized["fresh_price_source"] = price_resolution.get("fresh_price_source", "")
-    normalized["price_delta_pct"] = price_resolution.get("price_delta_pct", 0.0)
+    normalized["stored_price"] = price_payload.get("stored_price", 0.0)
+    normalized["stored_price_source"] = price_payload.get("stored_price_source", "")
+    normalized["fresh_price"] = price_payload.get("fresh_price", 0.0)
+    normalized["fresh_price_source"] = price_payload.get("fresh_price_source", "")
+    normalized["price_status"] = price_payload.get("price_status", "")
+    normalized["price_warning"] = price_payload.get("price_warning", "")
+    normalized["price_delta_pct"] = price_payload.get("price_delta_pct", 0.0)
+    normalized["price_is_fresh"] = bool(price_payload.get("price_is_fresh", False))
 
     normalized["trend"] = _safe_str(row.get("trend", "UPTREND"), "UPTREND")
     normalized["rsi"] = _safe_float(row.get("rsi", 55.0), 55.0)
@@ -522,10 +455,7 @@ def _normalize_candidate(candidate: Dict[str, Any], *, debug: bool = False) -> D
     normalized["base_score"] = round(base_score, 4)
     normalized["confidence"] = confidence
 
-    normalized["option_chain"] = _normalize_option_chain(
-        row.get("option_chain"),
-        current_price,
-    )
+    normalized["option_chain"] = _safe_list(row.get("option_chain"))
     normalized["option"] = _safe_dict(row.get("option"))
     normalized["v2"] = _safe_dict(row.get("v2"))
     normalized["governor"] = _safe_dict(row.get("governor"))
@@ -565,53 +495,37 @@ def _normalize_candidate(candidate: Dict[str, Any], *, debug: bool = False) -> D
     normalized["option_explanation"] = _safe_list(row.get("option_explanation"))
     normalized["learning_notes"] = _safe_list(row.get("learning_notes"))
 
+    v2 = _safe_dict(normalized.get("v2"))
+
     normalized["v2_regime_alignment"] = _safe_str(
-        row.get("v2_regime_alignment", normalized["v2"].get("regime_alignment", "")),
+        row.get("v2_regime_alignment", v2.get("regime_alignment", "")),
         "",
     )
     normalized["v2_signal_strength"] = round(
-        _safe_float(row.get("v2_signal_strength", normalized["v2"].get("signal_strength", 0.0)), 0.0),
+        _safe_float(row.get("v2_signal_strength", v2.get("signal_strength", 0.0)), 0.0),
         4,
     )
     normalized["v2_conviction_adjustment"] = round(
-        _safe_float(row.get("v2_conviction_adjustment", normalized["v2"].get("conviction_adjustment", 0.0)), 0.0),
+        _safe_float(row.get("v2_conviction_adjustment", v2.get("conviction_adjustment", 0.0)), 0.0),
         4,
     )
     normalized["v2_vehicle_bias"] = _safe_str(
-        row.get("v2_vehicle_bias", normalized["v2"].get("vehicle_bias", "")),
+        row.get("v2_vehicle_bias", v2.get("vehicle_bias", "")),
         "",
     ).upper()
     normalized["v2_thesis"] = _safe_str(
-        row.get("v2_thesis", normalized["v2"].get("thesis", "")),
+        row.get("v2_thesis", v2.get("thesis", "")),
         "",
     )
     normalized["v2_notes"] = _safe_list(
-        row.get("v2_notes", normalized["v2"].get("notes", []))
+        row.get("v2_notes", v2.get("notes", []))
     )
     normalized["v2_risk_flags"] = _safe_list(
-        row.get("v2_risk_flags", normalized["v2"].get("risk_flags", []))
+        row.get("v2_risk_flags", v2.get("risk_flags", []))
     )
-
-    normalized["execution_source_checked_at"] = _now_iso()
-
-    if debug and normalized.get("price_warning"):
-        print("EXECUTION SOURCE PRICE WARNING:", {
-            "symbol": symbol,
-            "warning": normalized.get("price_warning"),
-            "used_price": normalized.get("price"),
-            "stored_price": normalized.get("stored_price"),
-            "stored_source": normalized.get("stored_price_source"),
-            "fresh_price": normalized.get("fresh_price"),
-            "fresh_source": normalized.get("fresh_price_source"),
-            "delta_pct": normalized.get("price_delta_pct"),
-        })
 
     return normalized
 
-
-# ============================================================
-# DEDUPE
-# ============================================================
 
 def _dedupe_by_symbol(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     best_by_symbol: Dict[str, Dict[str, Any]] = {}
@@ -625,7 +539,6 @@ def _dedupe_by_symbol(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             continue
 
         current_best = best_by_symbol.get(symbol)
-
         if current_best is None:
             best_by_symbol[symbol] = row
             continue
@@ -662,7 +575,6 @@ def get_execution_candidates(
 
     if force_rebuild:
         rebuilt = False
-
         try:
             from engine.execution_universe_builder import build_execution_universe
 
@@ -673,18 +585,13 @@ def get_execution_candidates(
                 universe_limit=universe_limit,
             )
             rebuilt = True
-
         except Exception as exc:
-            if debug:
-                print("[EXECUTION_UNIVERSE_REBUILD_SKIPPED]", {
-                    "reason": "builder_failed_or_unavailable",
-                    "error": str(exc),
-                })
+            print("[EXECUTION_UNIVERSE_REBUILD_FAILED]", exc)
 
-        if not rebuilt and debug:
+        if not rebuilt:
             print("[EXECUTION_UNIVERSE_REBUILD_SKIPPED] no compatible builder found")
 
-    universe = load_json(EXECUTION_UNIVERSE_FILE, {})
+    universe = load_json("data/execution_universe.json", {})
     universe = _safe_dict(universe)
 
     selected = _safe_list(universe.get("selected", []))
@@ -696,14 +603,26 @@ def get_execution_candidates(
         if not isinstance(item, dict):
             continue
 
-        candidate = _normalize_candidate(item, debug=debug)
+        candidate = _normalize_candidate(item)
         if not candidate:
             continue
 
         symbol = candidate["symbol"]
-
         if watchlist_set is not None and symbol not in watchlist_set:
             continue
+
+        if candidate.get("price_warning"):
+            print("EXECUTION SOURCE PRICE WARNING:", {
+                "symbol": symbol,
+                "warning": candidate.get("price_warning"),
+                "used_price": candidate.get("price"),
+                "stored_price": candidate.get("stored_price"),
+                "stored_source": candidate.get("stored_price_source"),
+                "fresh_price": candidate.get("fresh_price"),
+                "fresh_source": candidate.get("fresh_price_source"),
+                "delta_pct": candidate.get("price_delta_pct"),
+                "price_status": candidate.get("price_status"),
+            })
 
         normalized.append(candidate)
 
@@ -712,7 +631,6 @@ def get_execution_candidates(
 
     if debug:
         spotlight = _safe_list(universe.get("spotlight", []))
-
         print("Execution candidates:", [row.get("symbol") for row in final_rows[:8]])
         print("Execution candidate count:", len(final_rows))
         print(
@@ -724,6 +642,7 @@ def get_execution_candidates(
                     "price_status": row.get("price_status"),
                     "stored_price": row.get("stored_price"),
                     "fresh_price": row.get("fresh_price"),
+                    "fresh_source": row.get("fresh_price_source"),
                 }
                 for row in final_rows[:8]
             ],
@@ -749,13 +668,11 @@ def print_execution_candidates(
     )
 
     print("EXECUTION CANDIDATES")
-
     if not rows:
         print("None")
         return []
 
     for row in rows:
-        warning = row.get("price_warning", "")
         print(
             row.get("symbol", "UNKNOWN"),
             "|",
@@ -767,13 +684,13 @@ def print_execution_candidates(
             "| price:",
             row.get("price", 0),
             "| price_status:",
-            row.get("price_status", ""),
+            row.get("price_status", "UNKNOWN"),
             "| vehicle:",
             row.get("vehicle_selected", "RESEARCH_ONLY"),
         )
 
-        if warning:
-            print("  PRICE WARNING:", warning)
+        if row.get("price_warning"):
+            print("  PRICE WARNING:", row.get("price_warning"))
 
     return rows
 
@@ -789,7 +706,6 @@ def get_execution_candidate_symbols(
         limit=limit,
         debug=False,
     )
-
     return [
         _norm_symbol(row.get("symbol", ""))
         for row in rows
