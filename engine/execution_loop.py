@@ -34,7 +34,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from engine.execution_handoff import execute_via_adapter, summarize_execution_packet
-from engine.paper_portfolio import add_position, open_count
+from engine.paper_portfolio import add_position, open_count, get_position
 
 try:
     from engine.risk_governor import governor_status
@@ -1264,6 +1264,75 @@ def _resolve_execution_limits_from_governor(
     }
 
 
+
+def _find_existing_open_position_for_trade(trade: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Execution-time duplicate guard.
+
+    This is intentionally inside execution_loop because selection can become stale.
+    Example:
+        selected_trades = [QCOM, SMCI, ORCL]
+        QCOM and SMCI were already opened in a prior run.
+        The execution loop must skip QCOM/SMCI and let ORCL use the remaining slot.
+    """
+    trade = _safe_dict(trade)
+    symbol = _norm_symbol(trade.get("symbol"))
+    if not symbol or symbol == "UNKNOWN":
+        return {}
+
+    try:
+        existing = get_position(symbol)
+        if isinstance(existing, dict) and existing:
+            return existing
+    except Exception:
+        pass
+
+    # Fallback: scan the open positions file directly if get_position misses it.
+    try:
+        data = _load_json("data/open_positions.json", [])
+        rows = data if isinstance(data, list) else list(data.values()) if isinstance(data, dict) else []
+        for row in rows:
+            row = _safe_dict(row)
+            if _norm_symbol(row.get("symbol")) != symbol:
+                continue
+
+            status = _upper(row.get("status", row.get("position_status", "OPEN")), "OPEN")
+            if status in {"CLOSED", "EXITED", "CANCELLED"}:
+                continue
+
+            return row
+    except Exception:
+        pass
+
+    return {}
+
+
+def _duplicate_skip_summary(trade: Dict[str, Any], existing: Dict[str, Any]) -> Dict[str, Any]:
+    trade = _safe_dict(trade)
+    existing = _safe_dict(existing)
+
+    return {
+        "success": False,
+        "status": "SKIPPED_DUPLICATE_OPEN_POSITION",
+        "symbol": _norm_symbol(trade.get("symbol")),
+        "trade_id": _safe_str(trade.get("trade_id"), ""),
+        "selected_vehicle": _selected_vehicle(trade),
+        "trading_mode": _safe_str(trade.get("trading_mode", trade.get("mode", "paper")), "paper"),
+        "reason": "already_open_position",
+        "reason_code": "duplicate_open_position",
+        "duplicate": True,
+        "existing_trade_id": _safe_str(existing.get("trade_id"), ""),
+        "existing_vehicle": _safe_str(
+            existing.get("vehicle_selected", existing.get("vehicle", existing.get("asset_type", ""))),
+            "",
+        ),
+        "existing_contract_symbol": _safe_str(
+            existing.get("contract_symbol", existing.get("contractSymbol", existing.get("option_symbol", ""))),
+            "",
+        ),
+    }
+
+
 def execute_trades(
     queue: List[Dict[str, Any]] | None,
     limit: int | None = None,
@@ -1373,6 +1442,27 @@ def execute_trades(
 
         if not queued_trade:
             skipped += 1
+            continue
+
+        existing_open_position = _find_existing_open_position_for_trade(queued_trade)
+        if existing_open_position:
+            skipped += 1
+            duplicate_packet = _duplicate_skip_summary(queued_trade, existing_open_position)
+            duplicate_packet["governor"] = governor
+            duplicate_packet["governor_limits"] = governor_limits
+            duplicate_packet["mode_context"] = mode_context
+
+            print("EXECUTION SKIPPED DUPLICATE:", {
+                "symbol": duplicate_packet.get("symbol"),
+                "reason_code": duplicate_packet.get("reason_code"),
+                "existing_trade_id": duplicate_packet.get("existing_trade_id"),
+                "existing_vehicle": duplicate_packet.get("existing_vehicle"),
+                "existing_contract_symbol": duplicate_packet.get("existing_contract_symbol"),
+                "slot_consumed": False,
+            })
+
+            summaries.append(duplicate_packet)
+            results.append(duplicate_packet)
             continue
 
         queued_trade["trading_mode"] = _safe_str(
