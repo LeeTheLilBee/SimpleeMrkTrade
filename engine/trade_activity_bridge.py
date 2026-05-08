@@ -4,19 +4,24 @@ from __future__ import annotations
 Observatory Trade Activity Bridge
 
 Purpose:
-    Create one safe place where execution modules can record trade activity
-    after a position is successfully persisted.
+    Feed executed trade activity back into the governor-readable account state.
 
-Why this exists:
-    The risk governor now reads reconciled activity counters, but execution_loop
-    must feed that activity log every time it opens a position.
+Why this matters:
+    The risk governor can only enforce daily / rolling activity limits if every
+    successful execution creates an activity event.
 
-Design:
-    - Safe for paper mode.
-    - Safe no-op if account_state does not expose a recorder yet.
-    - Writes a fallback JSON event file so the activity is still auditable.
-    - Keeps ENTRY, CLOSE, REJECT, SKIP activity separate.
-    - Does not change live execution behavior.
+Writes:
+    1. data/trade_activity_events.json
+       - fallback audit trail
+
+    2. data/account_state.json["activity_log"]
+       - official account activity source used by governor reconciliation
+
+Rules:
+    - ENTRY events count as new openings.
+    - SKIP / REJECT events are stored for audit but should not count as entries.
+    - Duplicate ENTRY events for the same trade_id are ignored.
+    - This module does not place trades. It only records already-finished outcomes.
 """
 
 import json
@@ -28,6 +33,7 @@ from typing import Any, Dict, List
 PROJECT_ROOT = Path("/content/SimpleeMrkTrade")
 DATA_DIR = PROJECT_ROOT / "data"
 FALLBACK_EVENT_PATH = DATA_DIR / "trade_activity_events.json"
+ACCOUNT_STATE_PATH = DATA_DIR / "account_state.json"
 
 
 def _safe_dict(value: Any) -> Dict[str, Any]:
@@ -51,9 +57,10 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
         if value is None or value == "":
             return float(default)
         if isinstance(value, str):
-            value = value.replace("$", "").replace(",", "").strip()
-            if value == "":
+            cleaned = value.replace("$", "").replace(",", "").strip()
+            if cleaned == "":
                 return float(default)
+            value = cleaned
         return float(value)
     except Exception:
         return float(default)
@@ -64,9 +71,10 @@ def _safe_int(value: Any, default: int = 0) -> int:
         if value is None or value == "":
             return int(default)
         if isinstance(value, str):
-            value = value.replace(",", "").strip()
-            if value == "":
+            cleaned = value.replace(",", "").strip()
+            if cleaned == "":
                 return int(default)
+            value = cleaned
         return int(float(value))
     except Exception:
         return int(default)
@@ -94,6 +102,16 @@ def _write_json(path: Path, payload: Any) -> None:
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
     tmp.replace(path)
+
+
+def _event_key(event: Dict[str, Any]) -> str:
+    event = _safe_dict(event)
+    return "|".join([
+        _safe_str(event.get("event_type"), "").upper(),
+        _safe_str(event.get("trade_id"), ""),
+        _safe_str(event.get("symbol"), "").upper(),
+        _safe_str(event.get("account_id"), "default"),
+    ])
 
 
 def _activity_event_from_position(
@@ -146,12 +164,18 @@ def _activity_event_from_position(
         0.0,
     )
 
+    timestamp = _safe_str(position.get("opened_at") or position.get("timestamp"), _now_iso())
+    date_key = timestamp[:10] if len(timestamp) >= 10 else _today_key()
+
     return {
         "event_id": f"{event_type}-{trade_id}-{datetime.now().strftime('%Y%m%d%H%M%S%f')}",
+        "event_key": "",
         "event_type": event_type,
+        "activity_type": event_type,
+        "type": event_type,
         "action": event_type,
-        "timestamp": _now_iso(),
-        "date_key": _today_key(),
+        "timestamp": timestamp,
+        "date_key": date_key,
         "account_id": _safe_str(account_id, "default"),
         "source": _safe_str(source, "execution_loop"),
         "reason": _safe_str(reason, ""),
@@ -182,93 +206,94 @@ def _activity_event_from_position(
             "",
         ),
         "expiry": _safe_str(position.get("expiry") or position.get("expiration"), ""),
+        "expiration": _safe_str(position.get("expiration") or position.get("expiry"), ""),
         "right": _safe_str(position.get("right") or position.get("option_type") or position.get("call_put"), ""),
         "strike": _safe_float(position.get("strike") or position.get("strike_price"), 0.0),
         "monitoring_price_type": _safe_str(position.get("monitoring_price_type"), ""),
         "price_review_basis": _safe_str(position.get("price_review_basis"), ""),
         "pnl_basis": _safe_str(position.get("pnl_basis"), ""),
-        "activity_bridge_version": "2026-05-08.1",
+        "count_as_entry": event_type == "ENTRY",
+        "count_as_close": event_type == "CLOSE",
+        "activity_bridge_version": "2026-05-08.2",
     }
 
 
-def _append_fallback_event(event: Dict[str, Any]) -> None:
-    events = _read_json(FALLBACK_EVENT_PATH, [])
+def _append_unique_event(path: Path, event: Dict[str, Any]) -> bool:
+    events = _read_json(path, [])
     if not isinstance(events, list):
         events = []
 
-    event_id = _safe_str(event.get("event_id"), "")
-    existing_ids = {
-        _safe_str(row.get("event_id"), "")
+    key = _event_key(event)
+    event["event_key"] = key
+
+    existing_keys = {
+        _safe_str(row.get("event_key"), "") or _event_key(row)
         for row in events
         if isinstance(row, dict)
     }
 
-    if event_id and event_id in existing_ids:
-        return
+    if key in existing_keys:
+        return False
 
     events.append(event)
-    _write_json(FALLBACK_EVENT_PATH, events)
+    _write_json(path, events)
+    return True
 
 
-def _try_account_state_record(event: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Attempts several likely recorder names without breaking if account_state
-    has not implemented one yet.
-    """
+def _append_account_state_activity(event: Dict[str, Any]) -> Dict[str, Any]:
+    state = _read_json(ACCOUNT_STATE_PATH, {})
+    if not isinstance(state, dict):
+        state = {}
 
-    result = {
-        "attempted": False,
-        "recorded": False,
-        "recorder": "",
-        "error": "",
+    activity_log = state.get("activity_log", [])
+    if not isinstance(activity_log, list):
+        activity_log = []
+
+    key = _event_key(event)
+    event["event_key"] = key
+
+    existing_keys = {
+        _safe_str(row.get("event_key"), "") or _event_key(row)
+        for row in activity_log
+        if isinstance(row, dict)
     }
 
-    try:
-        import engine.account_state as account_state
-    except Exception as exc:
-        result["error"] = f"account_state_import_failed: {exc}"
-        return result
+    existing_entry_trade_ids = {
+        _safe_str(row.get("trade_id"), "")
+        for row in activity_log
+        if isinstance(row, dict)
+        and _safe_str(row.get("event_type") or row.get("activity_type") or row.get("type"), "").upper() == "ENTRY"
+    }
 
-    recorder_names = [
-        "record_trade_activity",
-        "record_activity_event",
-        "append_activity_event",
-        "record_account_activity",
-        "remember_trade_activity",
-        "record_trade_event",
-    ]
+    event_type = _safe_str(event.get("event_type"), "").upper()
+    trade_id = _safe_str(event.get("trade_id"), "")
 
-    for name in recorder_names:
-        fn = getattr(account_state, name, None)
-        if not callable(fn):
-            continue
+    if key in existing_keys:
+        return {
+            "recorded": False,
+            "reason": "duplicate_event_key",
+            "activity_log_count": len(activity_log),
+        }
 
-        result["attempted"] = True
-        result["recorder"] = name
+    if event_type == "ENTRY" and trade_id and trade_id in existing_entry_trade_ids:
+        return {
+            "recorded": False,
+            "reason": "duplicate_entry_trade_id",
+            "activity_log_count": len(activity_log),
+        }
 
-        try:
-            fn(event)
-            result["recorded"] = True
-            return result
-        except TypeError:
-            try:
-                fn(
-                    event_type=event.get("event_type"),
-                    trade_id=event.get("trade_id"),
-                    symbol=event.get("symbol"),
-                    vehicle=event.get("vehicle"),
-                    timestamp=event.get("timestamp"),
-                    account_id=event.get("account_id"),
-                    payload=event,
-                )
-                result["recorded"] = True
-                return result
-            except Exception as exc:
-                result["error"] = f"{name}_failed: {exc}"
-        except Exception as exc:
-            result["error"] = f"{name}_failed: {exc}"
+    activity_log.append(event)
+    state["activity_log"] = activity_log
+    state["last_activity_event"] = event
+    state["last_activity_update"] = _now_iso()
 
-    return result
+    _write_json(ACCOUNT_STATE_PATH, state)
+
+    return {
+        "recorded": True,
+        "reason": "recorded_to_account_state_activity_log",
+        "activity_log_count": len(activity_log),
+    }
 
 
 def record_entry_event(
@@ -286,16 +311,8 @@ def record_entry_event(
         reason=reason,
     )
 
-    account_state_result = _try_account_state_record(event)
-    _append_fallback_event(event)
-
-    result = {
-        "recorded": True,
-        "event": event,
-        "account_state_result": account_state_result,
-        "fallback_path": str(FALLBACK_EVENT_PATH),
-        "fallback_recorded": True,
-    }
+    fallback_recorded = _append_unique_event(FALLBACK_EVENT_PATH, dict(event))
+    account_state_result = _append_account_state_activity(dict(event))
 
     print("TRADE ACTIVITY RECORDED:", {
         "event_type": event.get("event_type"),
@@ -303,10 +320,17 @@ def record_entry_event(
         "trade_id": event.get("trade_id"),
         "vehicle": event.get("vehicle"),
         "account_state_recorded": account_state_result.get("recorded"),
-        "fallback_recorded": True,
+        "account_state_reason": account_state_result.get("reason"),
+        "fallback_recorded": fallback_recorded,
     })
 
-    return result
+    return {
+        "recorded": bool(account_state_result.get("recorded")) or fallback_recorded,
+        "event": event,
+        "account_state_result": account_state_result,
+        "fallback_path": str(FALLBACK_EVENT_PATH),
+        "fallback_recorded": fallback_recorded,
+    }
 
 
 def record_skip_event(
@@ -324,8 +348,8 @@ def record_skip_event(
         reason=reason,
     )
 
-    account_state_result = _try_account_state_record(event)
-    _append_fallback_event(event)
+    fallback_recorded = _append_unique_event(FALLBACK_EVENT_PATH, dict(event))
+    account_state_result = _append_account_state_activity(dict(event))
 
     print("TRADE SKIP ACTIVITY RECORDED:", {
         "event_type": event.get("event_type"),
@@ -333,15 +357,16 @@ def record_skip_event(
         "trade_id": event.get("trade_id"),
         "reason": reason,
         "account_state_recorded": account_state_result.get("recorded"),
-        "fallback_recorded": True,
+        "account_state_reason": account_state_result.get("reason"),
+        "fallback_recorded": fallback_recorded,
     })
 
     return {
-        "recorded": True,
+        "recorded": bool(account_state_result.get("recorded")) or fallback_recorded,
         "event": event,
         "account_state_result": account_state_result,
         "fallback_path": str(FALLBACK_EVENT_PATH),
-        "fallback_recorded": True,
+        "fallback_recorded": fallback_recorded,
     }
 
 
