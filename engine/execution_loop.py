@@ -36,6 +36,29 @@ from typing import Any, Dict, List, Optional
 from engine.execution_handoff import execute_via_adapter, summarize_execution_packet
 from engine.paper_portfolio import add_position, open_count
 
+try:
+    from engine.risk_governor import governor_status
+except Exception:
+    governor_status = None
+
+try:
+    from engine.observatory_mode import normalize_mode, build_mode_context
+except Exception:
+    def normalize_mode(value):
+        raw = str(value or "paper").strip().lower()
+        return raw if raw in {"survey", "paper", "live"} else "paper"
+
+    def build_mode_context(mode):
+        mode = normalize_mode(mode)
+        return {
+            "mode": mode,
+            "mode_label": f"{mode.title()} Mode",
+            "max_open_positions": 3,
+            "queue_limit": 3,
+            "max_daily_entries": 3,
+        }
+
+
 
 OPTION_CONTRACT_MULTIPLIER = 100
 
@@ -1082,9 +1105,168 @@ def _persist_executed_trade(packet: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+
+def _resolve_execution_limits_from_governor(
+    *,
+    trading_mode: str,
+    portfolio_context: Dict[str, Any],
+    current_open_positions: int | None,
+    requested_limit: int | None,
+    fallback_max_open_positions: int,
+) -> Dict[str, Any]:
+    """
+    Canonical execution-limit resolver.
+
+    Authority order:
+        1. risk_governor.governor_status()
+        2. governor limits
+        3. governor mode_context
+        4. portfolio_context
+        5. legacy function defaults
+
+    This prevents execution_loop from silently falling back to stale values like max_open_positions=5.
+    """
+    portfolio_context = _safe_dict(portfolio_context)
+
+    resolved_mode = _safe_str(
+        trading_mode
+        or portfolio_context.get("trading_mode")
+        or portfolio_context.get("mode")
+        or portfolio_context.get("execution_mode"),
+        "paper",
+    )
+
+    try:
+        resolved_mode = normalize_mode(resolved_mode)
+    except Exception:
+        resolved_mode = _safe_str(resolved_mode, "paper").lower()
+
+    open_positions_running = (
+        _safe_int(current_open_positions, open_count())
+        if current_open_positions is not None
+        else _safe_int(open_count(), 0)
+    )
+
+    governor = {}
+    if callable(governor_status):
+        try:
+            governor = governor_status(
+                current_open_positions=open_positions_running,
+                trading_mode=resolved_mode,
+                account_id=portfolio_context.get("account_id", "default"),
+            )
+            governor = _safe_dict(governor)
+        except Exception as exc:
+            governor = {
+                "blocked": False,
+                "reasons": [],
+                "warnings": [f"governor_status_failed:{exc}"],
+                "limits": {},
+                "mode_context": {},
+                "execution_pause": {},
+                "trading_mode": resolved_mode,
+            }
+
+    governor_limits = _safe_dict(governor.get("limits"))
+    governor_mode_context = _safe_dict(governor.get("mode_context"))
+
+    if not governor_mode_context:
+        try:
+            governor_mode_context = _safe_dict(build_mode_context(resolved_mode))
+        except Exception:
+            governor_mode_context = {}
+
+    resolved_mode = _safe_str(
+        governor.get("trading_mode")
+        or governor_mode_context.get("mode")
+        or resolved_mode,
+        resolved_mode,
+    )
+
+    max_open_positions = _safe_int(
+        governor_limits.get(
+            "max_open_positions",
+            governor_mode_context.get(
+                "max_open_positions",
+                portfolio_context.get("max_open_positions", fallback_max_open_positions),
+            ),
+        ),
+        fallback_max_open_positions,
+    )
+
+    queue_limit = _safe_int(
+        governor_limits.get(
+            "queue_limit",
+            governor_mode_context.get(
+                "queue_limit",
+                portfolio_context.get("queue_limit", requested_limit if requested_limit is not None else max_open_positions),
+            ),
+        ),
+        max_open_positions,
+    )
+
+    max_daily_entries = _safe_int(
+        governor_limits.get(
+            "max_daily_entries",
+            governor_mode_context.get("max_daily_entries", portfolio_context.get("max_daily_entries", 3)),
+        ),
+        3,
+    )
+
+    max_rolling_5_business_day_entries = _safe_int(
+        governor_limits.get(
+            "max_rolling_5_business_day_entries",
+            governor_mode_context.get("max_rolling_5_business_day_entries", 0),
+        ),
+        0,
+    )
+
+    over_25k = _safe_bool(
+        governor.get("over_25k", governor_mode_context.get("over_25k", False)),
+        False,
+    )
+
+    remaining_slots = max(0, max_open_positions - open_positions_running)
+
+    raw_limit = (
+        _safe_int(requested_limit, queue_limit)
+        if requested_limit is not None
+        else queue_limit
+    )
+
+    effective_limit = min(
+        max(0, raw_limit),
+        max(0, queue_limit),
+        remaining_slots,
+    )
+
+    if _safe_bool(governor.get("blocked"), False):
+        effective_limit = 0
+
+    return {
+        "trading_mode": resolved_mode,
+        "mode_context": governor_mode_context,
+        "governor": governor,
+        "governor_limits": governor_limits,
+        "governor_blocked": _safe_bool(governor.get("blocked"), False),
+        "governor_reasons": _safe_list(governor.get("reasons")),
+        "governor_warnings": _safe_list(governor.get("warnings")),
+        "execution_pause": _safe_dict(governor.get("execution_pause")),
+        "open_positions_running": open_positions_running,
+        "max_open_positions": max_open_positions,
+        "queue_limit": queue_limit,
+        "max_daily_entries": max_daily_entries,
+        "max_rolling_5_business_day_entries": max_rolling_5_business_day_entries,
+        "over_25k": over_25k,
+        "remaining_slots": remaining_slots,
+        "requested_limit": raw_limit,
+        "effective_limit": effective_limit,
+    }
+
+
 def execute_trades(
     queue: List[Dict[str, Any]] | None,
-    limit: int = 3,
+    limit: int | None = None,
     portfolio_context: Dict[str, Any] | None = None,
     broker_adapter: Any = None,
     trading_mode: str | None = None,
@@ -1096,6 +1278,39 @@ def execute_trades(
     queue = queue if isinstance(queue, list) else []
     portfolio_context = _safe_dict(portfolio_context)
 
+    resolved_limits = _resolve_execution_limits_from_governor(
+        trading_mode=trading_mode
+        or portfolio_context.get("trading_mode")
+        or portfolio_context.get("mode")
+        or "paper",
+        portfolio_context=portfolio_context,
+        current_open_positions=current_open_positions,
+        requested_limit=limit,
+        fallback_max_open_positions=max_open_positions,
+    )
+
+    resolved_mode = _safe_str(resolved_limits.get("trading_mode"), "paper")
+    mode_context = _safe_dict(resolved_limits.get("mode_context"))
+    governor = _safe_dict(resolved_limits.get("governor"))
+    governor_limits = _safe_dict(resolved_limits.get("governor_limits"))
+
+    max_open_positions = _safe_int(resolved_limits.get("max_open_positions"), max_open_positions)
+    queue_limit = _safe_int(resolved_limits.get("queue_limit"), max_open_positions)
+    open_positions_running = _safe_int(resolved_limits.get("open_positions_running"), 0)
+    remaining_slots = _safe_int(resolved_limits.get("remaining_slots"), 0)
+    effective_limit = _safe_int(resolved_limits.get("effective_limit"), 0)
+
+    if "mode_context" not in portfolio_context:
+        portfolio_context["mode_context"] = mode_context
+
+    portfolio_context["trading_mode"] = resolved_mode
+    portfolio_context["mode"] = resolved_mode
+    portfolio_context["governor"] = governor
+    portfolio_context["governor_limits"] = governor_limits
+    portfolio_context["max_open_positions"] = max_open_positions
+    portfolio_context["queue_limit"] = queue_limit
+    portfolio_context["over_25k"] = resolved_limits.get("over_25k")
+
     results: List[Dict[str, Any]] = []
     summaries: List[Dict[str, Any]] = []
 
@@ -1105,28 +1320,54 @@ def execute_trades(
     persisted = 0
     persistence_blocked = 0
 
-    open_positions_running = (
-        _safe_int(current_open_positions, open_count())
-        if current_open_positions is not None
-        else _safe_int(open_count(), 0)
-    )
-
-    remaining_slots = max(0, _safe_int(max_open_positions, 0) - open_positions_running)
-    effective_limit = min(max(0, _safe_int(limit, 0)), remaining_slots)
-
     print("EXECUTION LOOP START:", {
         "queue_size": len(queue),
         "requested_limit": limit,
+        "resolved_requested_limit": resolved_limits.get("requested_limit"),
+        "governor_blocked": resolved_limits.get("governor_blocked"),
+        "governor_reasons": resolved_limits.get("governor_reasons"),
+        "over_25k": resolved_limits.get("over_25k"),
         "max_open_positions": max_open_positions,
+        "queue_limit": queue_limit,
+        "max_daily_entries": resolved_limits.get("max_daily_entries"),
+        "max_rolling_5_business_day_entries": resolved_limits.get("max_rolling_5_business_day_entries"),
         "current_open_positions": open_positions_running,
         "remaining_slots": remaining_slots,
         "effective_limit": effective_limit,
-        "trading_mode": trading_mode or portfolio_context.get("trading_mode") or portfolio_context.get("mode") or "paper",
+        "trading_mode": resolved_mode,
+        "governor_limits": governor_limits,
+        "execution_pause": resolved_limits.get("execution_pause"),
     })
+
+    if _safe_bool(resolved_limits.get("governor_blocked"), False):
+        print("EXECUTION LOOP GOVERNOR BLOCKED:", {
+            "reasons": resolved_limits.get("governor_reasons"),
+            "warnings": resolved_limits.get("governor_warnings"),
+            "execution_pause": resolved_limits.get("execution_pause"),
+        })
+
+        return {
+            "results": [],
+            "summaries": [],
+            "executed": 0,
+            "persisted": 0,
+            "persistence_blocked": 0,
+            "rejected": 0,
+            "skipped": len(queue),
+            "processed": 0,
+            "queue_size": len(queue),
+            "open_positions_after": open_positions_running,
+            "timestamp": _now_iso(),
+            "status": "GOVERNOR_BLOCKED",
+            "governor": governor,
+            "governor_limits": governor_limits,
+            "execution_pause": resolved_limits.get("execution_pause"),
+        }
 
     for queued_trade in queue:
         if executed >= effective_limit:
-            break
+            skipped += 1
+            continue
 
         queued_trade = deepcopy(_safe_dict(queued_trade))
 
@@ -1134,15 +1375,24 @@ def execute_trades(
             skipped += 1
             continue
 
-        resolved_mode = _safe_str(
-            trading_mode
-            or queued_trade.get("trading_mode")
+        queued_trade["trading_mode"] = _safe_str(
+            queued_trade.get("trading_mode")
             or queued_trade.get("execution_mode")
             or queued_trade.get("mode")
-            or portfolio_context.get("trading_mode")
-            or portfolio_context.get("mode"),
-            "paper",
+            or resolved_mode,
+            resolved_mode,
         )
+
+        queued_trade["mode"] = queued_trade["trading_mode"]
+
+        if "mode_context" not in queued_trade:
+            queued_trade["mode_context"] = mode_context
+
+        if "governor" not in queued_trade:
+            queued_trade["governor"] = governor
+
+        if "governor_limits" not in queued_trade:
+            queued_trade["governor_limits"] = governor_limits
 
         option_obj = _safe_dict(queued_trade.get("option"))
         contract_obj = _safe_dict(queued_trade.get("contract"))
@@ -1165,7 +1415,10 @@ def execute_trades(
                 or contract_obj.get("contract_symbol")
             ),
             "lifecycle_stage": queued_trade.get("lifecycle_stage"),
-            "trading_mode": resolved_mode,
+            "trading_mode": queued_trade.get("trading_mode"),
+            "governor_max_open_positions": max_open_positions,
+            "governor_queue_limit": queue_limit,
+            "open_positions_running": open_positions_running,
         })
 
         packet = execute_via_adapter(
@@ -1180,10 +1433,16 @@ def execute_trades(
 
         packet = _safe_dict(packet)
         packet["trade_id"] = _extract_trade_id(packet) or _safe_str(queued_trade.get("trade_id"), "")
-        packet["trading_mode"] = _safe_str(packet.get("trading_mode", resolved_mode), resolved_mode)
+        packet["trading_mode"] = _safe_str(packet.get("trading_mode", queued_trade.get("trading_mode")), resolved_mode)
 
-        if "mode_context" not in packet and "mode_context" in queued_trade:
-            packet["mode_context"] = queued_trade.get("mode_context")
+        if "mode_context" not in packet:
+            packet["mode_context"] = queued_trade.get("mode_context", mode_context)
+
+        if "governor" not in packet:
+            packet["governor"] = governor
+
+        if "governor_limits" not in packet:
+            packet["governor_limits"] = governor_limits
 
         if _safe_bool(packet.get("success"), False):
             persistence = _persist_executed_trade(packet)
@@ -1251,6 +1510,9 @@ def execute_trades(
         "open_positions_after": open_positions_running,
         "remaining_slots_before_execution": remaining_slots,
         "effective_limit": effective_limit,
+        "max_open_positions": max_open_positions,
+        "queue_limit": queue_limit,
+        "over_25k": resolved_limits.get("over_25k"),
     })
 
     return {
@@ -1265,6 +1527,12 @@ def execute_trades(
         "queue_size": len(queue),
         "open_positions_after": open_positions_running,
         "timestamp": _now_iso(),
+        "governor": governor,
+        "governor_limits": governor_limits,
+        "execution_pause": resolved_limits.get("execution_pause"),
+        "max_open_positions": max_open_positions,
+        "queue_limit": queue_limit,
+        "over_25k": resolved_limits.get("over_25k"),
     }
 
 
