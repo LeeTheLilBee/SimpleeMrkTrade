@@ -60,6 +60,14 @@ except Exception:
 
 
 
+
+try:
+    from engine.trade_activity_bridge import record_entry_event, record_skip_event
+except Exception:
+    record_entry_event = None
+    record_skip_event = None
+
+
 OPTION_CONTRACT_MULTIPLIER = 100
 
 VEHICLE_OPTION = "OPTION"
@@ -1541,6 +1549,39 @@ def execute_trades(
             if _safe_bool(persistence.get("persisted"), False):
                 persisted += 1
                 open_positions_running += 1
+
+                position_for_activity = _safe_dict(persistence.get("position"))
+                if callable(record_entry_event) and position_for_activity:
+                    try:
+                        activity_result = record_entry_event(
+                            position_for_activity,
+                            account_id=_safe_str(
+                                queued_trade.get("account_id")
+                                or portfolio_context.get("account_id")
+                                or "default",
+                                "default",
+                            ),
+                            source="execution_loop",
+                            reason="position_persisted",
+                        )
+                        packet["activity_recording"] = activity_result
+                    except Exception as activity_exc:
+                        packet["activity_recording"] = {
+                            "recorded": False,
+                            "error": str(activity_exc),
+                            "source": "execution_loop",
+                            "reason": "activity_bridge_failed",
+                        }
+                        print("EXECUTION ACTIVITY RECORDING FAILED:", {
+                            "symbol": position_for_activity.get("symbol"),
+                            "trade_id": position_for_activity.get("trade_id"),
+                            "error": str(activity_exc),
+                        })
+                else:
+                    packet["activity_recording"] = {
+                        "recorded": False,
+                        "reason": "trade_activity_bridge_unavailable_or_missing_position",
+                    }
             else:
                 persistence_blocked += 1
 

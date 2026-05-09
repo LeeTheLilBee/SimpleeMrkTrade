@@ -1307,56 +1307,165 @@ def release_trade_cap(
 # =============================================================================
 
 def get_daily_trade_counters(date_key: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Return same-day and rolling 5-business-day trade activity counters.
+
+    This is used by risk_governor for:
+        - daily entry limits
+        - rolling activity awareness
+        - PDT/day-trade discipline previews
+        - execution throttles
+
+    Important:
+        This function counts ENTRY / CLOSE rows from account_state.activity_log.
+        It accepts both event_type and action so backfilled rows and future
+        execution_loop bridge rows are both readable.
+    """
     state = load_state()
     target_day = _safe_str(date_key, _date_key())
+
+    def _parse_day(value: Any) -> Optional[date]:
+        text = _safe_str(value, "")
+        if not text:
+            return None
+        try:
+            return datetime.fromisoformat(text[:10]).date()
+        except Exception:
+            return None
+
+    def _event_day(event: Dict[str, Any]) -> str:
+        event = _safe_dict(event)
+        return (
+            _safe_str(event.get("date_key"), "")
+            or _timestamp_to_date_key(event.get("timestamp"))
+        )
+
+    def _normalize_event_type(event: Dict[str, Any]) -> str:
+        event = _safe_dict(event)
+        return (
+            _safe_str(event.get("event_type"), "")
+            or _safe_str(event.get("action"), "")
+        ).upper()
+
+    def _business_days_ending(end_day: date, count: int = 5) -> List[str]:
+        days: List[str] = []
+        cursor = end_day
+
+        while len(days) < count:
+            if cursor.weekday() < 5:
+                days.append(cursor.isoformat())
+            cursor = cursor - timedelta(days=1)
+
+        return days
+
+    target_date = _parse_day(target_day) or date.today()
+    rolling_days = set(_business_days_ending(target_date, 5))
 
     entries = 0
     closes = 0
     pending_closes = 0
+
+    rolling_entries = 0
+    rolling_closes = 0
+    rolling_pending_closes = 0
 
     entry_trade_ids = set()
     close_trade_ids = set()
     symbols_opened = set()
     symbols_closed = set()
 
-    for event in _safe_list(state.get("activity_log")):
-        event = _safe_dict(event)
-        event_day = _safe_str(event.get("date_key"), "") or _timestamp_to_date_key(event.get("timestamp"))
+    rolling_entry_trade_ids = set()
+    rolling_close_trade_ids = set()
+    rolling_symbols_opened = set()
+    rolling_symbols_closed = set()
 
-        if event_day != target_day:
+    activity_events_seen = 0
+    activity_events_today = 0
+    activity_events_rolling = 0
+
+    for raw_event in _safe_list(state.get("activity_log")):
+        event = _safe_dict(raw_event)
+        if not event:
             continue
 
-        event_type = _safe_str(event.get("event_type"), "").upper()
+        event_type = _normalize_event_type(event)
+        if not event_type:
+            continue
+
+        if event_type not in {"ENTRY", "OPEN", "BUY", "CLOSE", "EXIT", "SELL", "CLOSE_PENDING_SETTLEMENT"}:
+            continue
+
+        activity_events_seen += 1
+
+        event_day = _event_day(event)
         trade_id = _safe_str(event.get("trade_id"), "")
         symbol = _safe_str(event.get("symbol"), "").upper()
 
-        if event_type == "ENTRY":
-            entries += 1
-            if trade_id:
-                entry_trade_ids.add(trade_id)
-            if symbol:
-                symbols_opened.add(symbol)
+        is_entry = event_type in {"ENTRY", "OPEN", "BUY"}
+        is_close = event_type in {"CLOSE", "EXIT", "SELL"}
+        is_pending_close = event_type == "CLOSE_PENDING_SETTLEMENT"
 
-        elif event_type == "CLOSE":
-            closes += 1
-            if trade_id:
-                close_trade_ids.add(trade_id)
-            if symbol:
-                symbols_closed.add(symbol)
+        # Same-day counters
+        if event_day == target_day:
+            activity_events_today += 1
 
-        elif event_type == "CLOSE_PENDING_SETTLEMENT":
-            pending_closes += 1
-            if trade_id:
-                close_trade_ids.add(trade_id)
-            if symbol:
-                symbols_closed.add(symbol)
+            if is_entry:
+                entries += 1
+                if trade_id:
+                    entry_trade_ids.add(trade_id)
+                if symbol:
+                    symbols_opened.add(symbol)
+
+            elif is_close:
+                closes += 1
+                if trade_id:
+                    close_trade_ids.add(trade_id)
+                if symbol:
+                    symbols_closed.add(symbol)
+
+            elif is_pending_close:
+                pending_closes += 1
+                if trade_id:
+                    close_trade_ids.add(trade_id)
+                if symbol:
+                    symbols_closed.add(symbol)
+
+        # Rolling 5-business-day counters
+        if event_day in rolling_days:
+            activity_events_rolling += 1
+
+            if is_entry:
+                rolling_entries += 1
+                if trade_id:
+                    rolling_entry_trade_ids.add(trade_id)
+                if symbol:
+                    rolling_symbols_opened.add(symbol)
+
+            elif is_close:
+                rolling_closes += 1
+                if trade_id:
+                    rolling_close_trade_ids.add(trade_id)
+                if symbol:
+                    rolling_symbols_closed.add(symbol)
+
+            elif is_pending_close:
+                rolling_pending_closes += 1
+                if trade_id:
+                    rolling_close_trade_ids.add(trade_id)
+                if symbol:
+                    rolling_symbols_closed.add(symbol)
 
     round_trips = 0
-
     if entry_trade_ids and close_trade_ids:
         round_trips = len(entry_trade_ids.intersection(close_trade_ids))
     elif closes > 0 and entries > 0:
         round_trips = min(entries, closes)
+
+    rolling_round_trips = 0
+    if rolling_entry_trade_ids and rolling_close_trade_ids:
+        rolling_round_trips = len(rolling_entry_trade_ids.intersection(rolling_close_trade_ids))
+    elif rolling_closes > 0 and rolling_entries > 0:
+        rolling_round_trips = min(rolling_entries, rolling_closes)
 
     return {
         "date_key": target_day,
@@ -1366,17 +1475,36 @@ def get_daily_trade_counters(date_key: Optional[str] = None) -> Dict[str, Any]:
         "pending_closes_today": int(pending_closes),
         "executed_trades_today": int(entries),
         "round_trips_today": int(round_trips),
+
         "entry_trade_ids": sorted(entry_trade_ids),
         "close_trade_ids": sorted(close_trade_ids),
         "symbols_opened_today": sorted(symbols_opened),
         "symbols_closed_today": sorted(symbols_closed),
+
+        "rolling_business_days": 5,
+        "rolling_business_day_keys": sorted(rolling_days),
+        "entries_rolling_5_business_days": int(rolling_entries),
+        "executed_entries_rolling_5_business_days": int(rolling_entries),
+        "closes_rolling_5_business_days": int(rolling_closes),
+        "pending_closes_rolling_5_business_days": int(rolling_pending_closes),
+        "round_trips_rolling_5_business_days": int(rolling_round_trips),
+        "rolling_entry_trade_ids": sorted(rolling_entry_trade_ids),
+        "rolling_close_trade_ids": sorted(rolling_close_trade_ids),
+        "symbols_opened_rolling_5_business_days": sorted(rolling_symbols_opened),
+        "symbols_closed_rolling_5_business_days": sorted(rolling_symbols_closed),
+
+        "discipline_event_count": int(activity_events_rolling),
+        "discipline_entries_today": int(entries),
+        "discipline_entries_rolling_5_business_days": int(rolling_entries),
+        "discipline_round_trips_rolling_5_business_days": int(rolling_round_trips),
+
+        "activity_events_seen": int(activity_events_seen),
+        "activity_events_today": int(activity_events_today),
+        "activity_events_rolling_5_business_days": int(activity_events_rolling),
         "counter_source": "account_state.activity_log",
     }
 
 
-# =============================================================================
-# Snapshots / display
-# =============================================================================
 
 def get_account_snapshot() -> Dict[str, Any]:
     state = sync_account_from_portfolio()

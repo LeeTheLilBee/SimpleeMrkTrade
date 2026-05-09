@@ -730,6 +730,31 @@ def governor_status(
     counter_source = _safe_str(reconciled.get("counter_source"), "unavailable")
     using_reconciled = counter_source not in {"", "unavailable"}
 
+    reconciled_entries_rolling_5 = _safe_int(
+        reconciled.get(
+            "entries_rolling_5_business_days",
+            reconciled.get("discipline_entries_rolling_5_business_days", 0),
+        ),
+        0,
+    )
+    reconciled_round_trips_rolling_5 = _safe_int(
+        reconciled.get(
+            "round_trips_rolling_5_business_days",
+            reconciled.get("discipline_round_trips_rolling_5_business_days", 0),
+        ),
+        0,
+    )
+
+    entries_rolling_5_value = max(
+        discipline_entries_rolling_5,
+        reconciled_entries_rolling_5 if using_reconciled else 0,
+    )
+
+    round_trips_rolling_5_value = max(
+        discipline_round_trips_rolling_5,
+        reconciled_round_trips_rolling_5 if using_reconciled else 0,
+    )
+
     caller_executed_entries = (
         None if executed_entries_today is None else _safe_int(executed_entries_today, 0)
     )
@@ -852,12 +877,12 @@ def governor_status(
         controls["daily_entry_cap"] = True
         _add_reason("daily_entry_cap")
 
-    if not over_25k and discipline_entries_rolling_5 >= max_rolling_entries_value:
+    if not over_25k and entries_rolling_5_value >= max_rolling_entries_value:
         raw_triggers["rolling_5_business_day_entry_cap"] = True
         controls["rolling_5_business_day_entry_cap"] = True
         _add_reason("rolling_5_business_day_entry_cap")
 
-    if pdt_sensitive and discipline_round_trips_rolling_5 >= DEFAULT_MAX_ROUND_TRIPS_UNDER_25K:
+    if pdt_sensitive and round_trips_rolling_5_value >= DEFAULT_MAX_ROUND_TRIPS_UNDER_25K:
         raw_triggers["pdt_3_round_trips_5_business_days"] = True
         controls["pdt_3_round_trips_5_business_days"] = True
         _add_reason("pdt_3_round_trips_5_business_days")
@@ -976,8 +1001,8 @@ def governor_status(
         "executed_trades_today": executed_trades_today_value,
         "closes_today": closes_today_value,
         "round_trips_today": round_trips_today_value,
-        "entries_rolling_5_business_days": discipline_entries_rolling_5,
-        "round_trips_rolling_5_business_days": discipline_round_trips_rolling_5,
+        "entries_rolling_5_business_days": entries_rolling_5_value,
+        "round_trips_rolling_5_business_days": round_trips_rolling_5_value,
         "pdt_sensitive": pdt_sensitive,
         "over_25k": over_25k,
         "equity_scale_profile": tier_limits["scale_profile"],
@@ -999,7 +1024,7 @@ def governor_status(
             "account_type": account_type,
             "pdt_restricted": raw_pdt_restricted,
             "pdt_sensitive": pdt_sensitive,
-            "round_trips_rolling_5_business_days": discipline_round_trips_rolling_5,
+            "round_trips_rolling_5_business_days": round_trips_rolling_5_value,
             "max_round_trips_under_25k": DEFAULT_MAX_ROUND_TRIPS_UNDER_25K,
             "over_25k": over_25k,
         },
@@ -1027,6 +1052,10 @@ def governor_status(
             "discipline_entries_today": discipline_entries_today,
             "discipline_entries_rolling_5_business_days": discipline_entries_rolling_5,
             "discipline_round_trips_rolling_5_business_days": discipline_round_trips_rolling_5,
+            "reconciled_entries_rolling_5_business_days": reconciled_entries_rolling_5,
+            "reconciled_round_trips_rolling_5_business_days": reconciled_round_trips_rolling_5,
+            "effective_entries_rolling_5_business_days": entries_rolling_5_value,
+            "effective_round_trips_rolling_5_business_days": round_trips_rolling_5_value,
             "caller_override": {
                 "executed_entries_today": caller_executed_entries,
                 "executed_trades_today": caller_executed_trades,
@@ -1080,9 +1109,9 @@ def governor_status(
         max_open_positions=max_open_positions_value,
         trading_mode=trading_mode,
         mode_context=mode_context,
-        entries_rolling_5_business_days=discipline_entries_rolling_5,
+        entries_rolling_5_business_days=entries_rolling_5_value,
         max_rolling_5_business_day_entries=max_rolling_entries_value,
-        round_trips_rolling_5_business_days=discipline_round_trips_rolling_5,
+        round_trips_rolling_5_business_days=round_trips_rolling_5_value,
         over_25k=over_25k,
     )
 
@@ -1093,9 +1122,9 @@ def governor_status(
         "summary": governor["block_summary"].get("summary", ""),
         "scan_can_continue": governor["block_summary"].get("scan_can_continue", True),
         "remaining_position_slots": governor["block_summary"].get("remaining_position_slots", 0),
-        "entries_rolling_5_business_days": discipline_entries_rolling_5,
+        "entries_rolling_5_business_days": entries_rolling_5_value,
         "max_rolling_5_business_day_entries": max_rolling_entries_value,
-        "round_trips_rolling_5_business_days": discipline_round_trips_rolling_5,
+        "round_trips_rolling_5_business_days": round_trips_rolling_5_value,
         "over_25k": over_25k,
     }
 
