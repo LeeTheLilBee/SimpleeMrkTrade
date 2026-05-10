@@ -49,6 +49,14 @@ OPTION_UNDERLYING_LEAK_ABSOLUTE = 25.0
 # because option marks can move immediately after creation.
 SAME_MOMENT_CLOSE_GRACE_DAYS = 0.01
 
+# Fresh-option behavior gate:
+# A normal profit target should not close a brand-new paper option too quickly.
+# This prevents the review layer from turning healthy execution tests into instant churn.
+FRESH_OPTION_TAKE_PROFIT_GRACE_DAYS = 0.125      # 3 hours
+FRESH_OPTION_PROTECT_PROFIT_GRACE_DAYS = 0.25    # 6 hours
+EXTREME_OPTION_PROFIT_EXIT_PCT = 250.0           # allow urgent win capture
+SUSPICIOUS_FRESH_OPTION_JUMP_PCT = 500.0         # hold + flag unless later confirmed
+
 
 # =============================================================================
 # SAFE HELPERS
@@ -882,15 +890,46 @@ def _review_one_position(pos: Dict[str, Any], *, allow_closes: bool = True) -> D
         target_hit = current >= target
 
         action = ACTION_HOLD
+        exit_gate_reason = "hold"
+        exit_gate_notes: List[str] = []
 
-        if stop_hit:
+        fresh_take_profit_window = days_open < FRESH_OPTION_TAKE_PROFIT_GRACE_DAYS
+        fresh_protect_window = days_open < FRESH_OPTION_PROTECT_PROFIT_GRACE_DAYS
+        extreme_profit = pct >= EXTREME_OPTION_PROFIT_EXIT_PCT
+        suspicious_fresh_jump = fresh_take_profit_window and pct >= SUSPICIOUS_FRESH_OPTION_JUMP_PCT
+
+        if suspicious_fresh_jump:
+            action = ACTION_HOLD
+            exit_gate_reason = "hold_suspicious_fresh_option_reprice"
+            exit_gate_notes.append("fresh_option_jump_needs_confirmation_before_close")
+
+        elif stop_hit:
             action = ACTION_STOP_LOSS
-        elif target_hit and days_open >= SAME_MOMENT_CLOSE_GRACE_DAYS:
+            exit_gate_reason = "stop_loss_confirmed"
+
+        elif target_hit and (not fresh_take_profit_window or extreme_profit):
             action = ACTION_TAKE_PROFIT
+            exit_gate_reason = "take_profit_confirmed"
+            if extreme_profit and fresh_take_profit_window:
+                exit_gate_notes.append("extreme_profit_allowed_inside_fresh_window")
+
+        elif target_hit and fresh_take_profit_window:
+            action = ACTION_HOLD
+            exit_gate_reason = "hold_fresh_option_target_hit"
+            exit_gate_notes.append("fresh_option_profit_waiting_for_confirmation")
+
         elif pct <= -35:
             action = ACTION_CUT_WEAKNESS
-        elif pct >= 45 and days_open >= SAME_MOMENT_CLOSE_GRACE_DAYS:
+            exit_gate_reason = "cut_weakness_confirmed"
+
+        elif pct >= 45 and not fresh_protect_window:
             action = ACTION_PROTECT_PROFIT
+            exit_gate_reason = "protect_profit_confirmed"
+
+        elif pct >= 45 and fresh_protect_window:
+            action = ACTION_HOLD
+            exit_gate_reason = "hold_fresh_option_protect_profit"
+            exit_gate_notes.append("fresh_option_profit_protection_waiting_for_confirmation")
 
         result.update(
             {
@@ -911,9 +950,18 @@ def _review_one_position(pos: Dict[str, Any], *, allow_closes: bool = True) -> D
                 "pnl_pct": pct,
                 "pnl_basis": "option_premium_x_100",
                 "days_open": round(days_open, 4),
-                "normalization_notes": notes,
+                "normalization_notes": notes + exit_gate_notes,
+                "fresh_option_exit_gate": {
+                    "days_open": round(days_open, 4),
+                    "fresh_take_profit_window": bool(fresh_take_profit_window),
+                    "fresh_protect_profit_window": bool(fresh_protect_window),
+                    "extreme_profit": bool(extreme_profit),
+                    "suspicious_fresh_jump": bool(suspicious_fresh_jump),
+                    "exit_gate_reason": exit_gate_reason,
+                    "exit_gate_notes": exit_gate_notes,
+                },
                 "action": action,
-                "reason": action.lower(),
+                "reason": exit_gate_reason if action == ACTION_HOLD else action.lower(),
             }
         )
 

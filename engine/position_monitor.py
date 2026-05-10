@@ -41,6 +41,14 @@ OPTION_UNDERLYING_LEAK_ABSOLUTE = 25.0
 
 SAME_MOMENT_CLOSE_GRACE_DAYS = 0.01
 
+# Fresh-option behavior gate:
+# Normal target/profit-protect exits should wait a little so fresh paper trades
+# do not instantly churn from quote spikes right after entry.
+FRESH_OPTION_TAKE_PROFIT_GRACE_DAYS = 0.125      # 3 hours
+FRESH_OPTION_PROTECT_PROFIT_GRACE_DAYS = 0.25    # 6 hours
+EXTREME_OPTION_PROFIT_EXIT_PCT = 250.0
+SUSPICIOUS_FRESH_OPTION_JUMP_PCT = 500.0
+
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -866,16 +874,24 @@ def _action_for_position(pos: Dict[str, Any]) -> str:
         return ACTION_INVALID
 
     if vehicle == VEHICLE_OPTION:
+        fresh_take_profit_window = days_open < FRESH_OPTION_TAKE_PROFIT_GRACE_DAYS
+        fresh_protect_window = days_open < FRESH_OPTION_PROTECT_PROFIT_GRACE_DAYS
+        extreme_profit = pct >= EXTREME_OPTION_PROFIT_EXIT_PCT
+        suspicious_fresh_jump = fresh_take_profit_window and pct >= SUSPICIOUS_FRESH_OPTION_JUMP_PCT
+
+        if suspicious_fresh_jump:
+            return ACTION_HOLD
+
         if stop > 0 and current <= stop:
             return ACTION_STOP_LOSS
 
-        if target > 0 and current >= target and days_open >= SAME_MOMENT_CLOSE_GRACE_DAYS:
+        if target > 0 and current >= target and (not fresh_take_profit_window or extreme_profit):
             return ACTION_TAKE_PROFIT
 
         if pct <= -35:
             return ACTION_CUT_WEAKNESS
 
-        if pct >= 45 and days_open >= SAME_MOMENT_CLOSE_GRACE_DAYS:
+        if pct >= 45 and not fresh_protect_window:
             return ACTION_PROTECT_PROFIT
 
         return ACTION_HOLD
@@ -1030,6 +1046,21 @@ def monitor_open_positions() -> List[Dict[str, Any]]:
             "execution_position_shape": pos.get("execution_position_shape", ""),
             "monitor_ready": bool(pos.get("monitor_ready", False)),
             "normalization_notes": _safe_list(pos.get("monitor_normalization_notes")),
+            "fresh_option_exit_gate": {
+                "days_open": round(days_open_value, 4),
+                "fresh_take_profit_window": bool(
+                    vehicle == VEHICLE_OPTION and days_open_value < FRESH_OPTION_TAKE_PROFIT_GRACE_DAYS
+                ),
+                "fresh_protect_profit_window": bool(
+                    vehicle == VEHICLE_OPTION and days_open_value < FRESH_OPTION_PROTECT_PROFIT_GRACE_DAYS
+                ),
+                "extreme_profit": bool(vehicle == VEHICLE_OPTION and pct >= EXTREME_OPTION_PROFIT_EXIT_PCT),
+                "suspicious_fresh_jump": bool(
+                    vehicle == VEHICLE_OPTION
+                    and days_open_value < FRESH_OPTION_TAKE_PROFIT_GRACE_DAYS
+                    and pct >= SUSPICIOUS_FRESH_OPTION_JUMP_PCT
+                ),
+            },
             "final_action": action,
         }
 
