@@ -200,120 +200,6 @@ def _effective_cost(trade: Dict[str, Any]) -> float:
     return 0.0
 
 
-def _option_contract_identity(trade: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Keep option contract identity visible at the top level.
-
-    This matters because cooldown/anti-repeat guards need stable contract fields.
-    Some candidate builders keep the selected contract nested under option/best_option,
-    while execution/debug layers look for contract_symbol directly on the candidate.
-    """
-    trade = trade if isinstance(trade, dict) else {}
-
-    option = _safe_dict(
-        trade.get("option")
-        or trade.get("best_option")
-        or trade.get("selected_contract")
-        or trade.get("contract")
-    )
-
-    contract_symbol = (
-        _safe_str(trade.get("contract_symbol"), "")
-        or _safe_str(trade.get("option_symbol"), "")
-        or _safe_str(trade.get("option_contract_symbol"), "")
-        or _safe_str(trade.get("selected_contract_symbol"), "")
-        or _safe_str(trade.get("contractSymbol"), "")
-        or _safe_str(option.get("contract_symbol"), "")
-        or _safe_str(option.get("contractSymbol"), "")
-        or _safe_str(option.get("option_symbol"), "")
-        or _safe_str(option.get("selected_contract_symbol"), "")
-    )
-
-    expiration = (
-        _safe_str(trade.get("expiration"), "")
-        or _safe_str(trade.get("expiry"), "")
-        or _safe_str(trade.get("expiration_date"), "")
-        or _safe_str(option.get("expiration"), "")
-        or _safe_str(option.get("expiry"), "")
-        or _safe_str(option.get("expiration_date"), "")
-    )
-
-    right = (
-        _safe_str(trade.get("right"), "")
-        or _safe_str(trade.get("option_type"), "")
-        or _safe_str(option.get("right"), "")
-        or _safe_str(option.get("option_type"), "")
-        or _safe_str(option.get("call_put"), "")
-    ).upper()
-
-    if right == "C":
-        right = "CALL"
-    elif right == "P":
-        right = "PUT"
-
-    strike = (
-        _safe_float(trade.get("strike"), 0.0)
-        or _safe_float(option.get("strike"), 0.0)
-        or _safe_float(option.get("strike_price"), 0.0)
-    )
-
-    mark = (
-        _safe_float(trade.get("entry_premium"), 0.0)
-        or _safe_float(trade.get("current_premium"), 0.0)
-        or _safe_float(trade.get("selected_price_reference"), 0.0)
-        or _safe_float(trade.get("price_reference"), 0.0)
-        or _safe_float(option.get("mark"), 0.0)
-        or _safe_float(option.get("selected_price_reference"), 0.0)
-        or _safe_float(option.get("price_reference"), 0.0)
-        or _safe_float(option.get("last"), 0.0)
-    )
-
-    return {
-        "contract_symbol": contract_symbol,
-        "option_symbol": contract_symbol,
-        "option_contract_symbol": contract_symbol,
-        "selected_contract_symbol": contract_symbol,
-        "contractSymbol": contract_symbol,
-        "expiration": expiration,
-        "expiry": expiration,
-        "expiration_date": expiration,
-        "right": right,
-        "option_type": right,
-        "strike": strike,
-        "entry_premium": mark,
-        "current_premium": mark,
-        "price_reference": mark,
-        "selected_price_reference": mark,
-    }
-
-
-def _normalize_option_contract_identity(trade: Dict[str, Any]) -> Dict[str, Any]:
-    trade = dict(trade) if isinstance(trade, dict) else {}
-    vehicle = _norm_vehicle(
-        trade.get("vehicle_selected")
-        or trade.get("selected_vehicle")
-        or trade.get("vehicle")
-    )
-
-    if vehicle != "OPTION" and not isinstance(trade.get("option"), dict):
-        return trade
-
-    identity = _option_contract_identity(trade)
-
-    for key, value in identity.items():
-        if value not in ("", 0, 0.0, None):
-            trade[key] = value
-
-    option = _safe_dict(trade.get("option"))
-    if option:
-        for key, value in identity.items():
-            if value not in ("", 0, 0.0, None):
-                option.setdefault(key, value)
-        trade["option"] = option
-
-    return trade
-
-
 def _normalize_why_lines(value: Any) -> List[str]:
     lines: List[str] = []
 
@@ -1068,8 +954,6 @@ def process_signals(
             commission=1.0,
         )
 
-        fused = _normalize_option_contract_identity(fused)
-
         fused["symbol"] = symbol
         fused["trading_mode"] = resolved_trading_mode
         fused["trading_mode_label"] = resolved_trading_mode_context.get(
@@ -1461,12 +1345,6 @@ def process_signals(
             "execution_pause": final_execution_pause,
         })
 
-    selected_trades = [
-        _normalize_option_contract_identity(t)
-        for t in selected_trades
-        if isinstance(t, dict)
-    ]
-
     anti_repeat_selection_guard: Dict[str, Any] = {
         "input_count": len(selected_trades),
         "allowed_count": len(selected_trades),
@@ -1639,7 +1517,6 @@ def process_signals(
             continue
 
         if key in selected_keys:
-            trade = _normalize_option_contract_identity(trade)
             trade["selected_for_execution"] = True
             trade["execution_ready"] = True
             trade["research_approved"] = True

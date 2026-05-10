@@ -25,11 +25,6 @@ from engine.top_candidates_store import save_top_candidates
 from engine.top_candidates_view import print_top_candidates
 from engine.leaderboard import print_leaderboard
 
-try:
-    from engine.trade_cooldown_guard import guard_execution_queue
-except Exception:
-    guard_execution_queue = None
-
 
 try:
     from engine.canonical_execution_guard import validate_selected_trade_for_execution
@@ -198,120 +193,6 @@ def _effective_cost(trade: Dict[str, Any]) -> float:
     if estimated_cost > 0:
         return estimated_cost
     return 0.0
-
-
-def _option_contract_identity(trade: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Keep option contract identity visible at the top level.
-
-    This matters because cooldown/anti-repeat guards need stable contract fields.
-    Some candidate builders keep the selected contract nested under option/best_option,
-    while execution/debug layers look for contract_symbol directly on the candidate.
-    """
-    trade = trade if isinstance(trade, dict) else {}
-
-    option = _safe_dict(
-        trade.get("option")
-        or trade.get("best_option")
-        or trade.get("selected_contract")
-        or trade.get("contract")
-    )
-
-    contract_symbol = (
-        _safe_str(trade.get("contract_symbol"), "")
-        or _safe_str(trade.get("option_symbol"), "")
-        or _safe_str(trade.get("option_contract_symbol"), "")
-        or _safe_str(trade.get("selected_contract_symbol"), "")
-        or _safe_str(trade.get("contractSymbol"), "")
-        or _safe_str(option.get("contract_symbol"), "")
-        or _safe_str(option.get("contractSymbol"), "")
-        or _safe_str(option.get("option_symbol"), "")
-        or _safe_str(option.get("selected_contract_symbol"), "")
-    )
-
-    expiration = (
-        _safe_str(trade.get("expiration"), "")
-        or _safe_str(trade.get("expiry"), "")
-        or _safe_str(trade.get("expiration_date"), "")
-        or _safe_str(option.get("expiration"), "")
-        or _safe_str(option.get("expiry"), "")
-        or _safe_str(option.get("expiration_date"), "")
-    )
-
-    right = (
-        _safe_str(trade.get("right"), "")
-        or _safe_str(trade.get("option_type"), "")
-        or _safe_str(option.get("right"), "")
-        or _safe_str(option.get("option_type"), "")
-        or _safe_str(option.get("call_put"), "")
-    ).upper()
-
-    if right == "C":
-        right = "CALL"
-    elif right == "P":
-        right = "PUT"
-
-    strike = (
-        _safe_float(trade.get("strike"), 0.0)
-        or _safe_float(option.get("strike"), 0.0)
-        or _safe_float(option.get("strike_price"), 0.0)
-    )
-
-    mark = (
-        _safe_float(trade.get("entry_premium"), 0.0)
-        or _safe_float(trade.get("current_premium"), 0.0)
-        or _safe_float(trade.get("selected_price_reference"), 0.0)
-        or _safe_float(trade.get("price_reference"), 0.0)
-        or _safe_float(option.get("mark"), 0.0)
-        or _safe_float(option.get("selected_price_reference"), 0.0)
-        or _safe_float(option.get("price_reference"), 0.0)
-        or _safe_float(option.get("last"), 0.0)
-    )
-
-    return {
-        "contract_symbol": contract_symbol,
-        "option_symbol": contract_symbol,
-        "option_contract_symbol": contract_symbol,
-        "selected_contract_symbol": contract_symbol,
-        "contractSymbol": contract_symbol,
-        "expiration": expiration,
-        "expiry": expiration,
-        "expiration_date": expiration,
-        "right": right,
-        "option_type": right,
-        "strike": strike,
-        "entry_premium": mark,
-        "current_premium": mark,
-        "price_reference": mark,
-        "selected_price_reference": mark,
-    }
-
-
-def _normalize_option_contract_identity(trade: Dict[str, Any]) -> Dict[str, Any]:
-    trade = dict(trade) if isinstance(trade, dict) else {}
-    vehicle = _norm_vehicle(
-        trade.get("vehicle_selected")
-        or trade.get("selected_vehicle")
-        or trade.get("vehicle")
-    )
-
-    if vehicle != "OPTION" and not isinstance(trade.get("option"), dict):
-        return trade
-
-    identity = _option_contract_identity(trade)
-
-    for key, value in identity.items():
-        if value not in ("", 0, 0.0, None):
-            trade[key] = value
-
-    option = _safe_dict(trade.get("option"))
-    if option:
-        for key, value in identity.items():
-            if value not in ("", 0, 0.0, None):
-                option.setdefault(key, value)
-        trade["option"] = option
-
-    return trade
 
 
 def _normalize_why_lines(value: Any) -> List[str]:
@@ -1068,8 +949,6 @@ def process_signals(
             commission=1.0,
         )
 
-        fused = _normalize_option_contract_identity(fused)
-
         fused["symbol"] = symbol
         fused["trading_mode"] = resolved_trading_mode
         fused["trading_mode_label"] = resolved_trading_mode_context.get(
@@ -1461,110 +1340,6 @@ def process_signals(
             "execution_pause": final_execution_pause,
         })
 
-    selected_trades = [
-        _normalize_option_contract_identity(t)
-        for t in selected_trades
-        if isinstance(t, dict)
-    ]
-
-    anti_repeat_selection_guard: Dict[str, Any] = {
-        "input_count": len(selected_trades),
-        "allowed_count": len(selected_trades),
-        "blocked_count": 0,
-        "allowed_symbols": [
-            _norm_symbol(t.get("symbol", ""))
-            for t in selected_trades
-            if isinstance(t, dict)
-        ],
-        "blocked_symbols": [],
-        "blocked": [],
-        "queue": selected_trades,
-    }
-
-    if selected_trades and callable(guard_execution_queue):
-        try:
-            anti_repeat_selection_guard = guard_execution_queue(
-                selected_trades,
-                symbol_cooldown_hours=48,
-                contract_cooldown_hours=96,
-                rejection_cooldown_hours=24,
-                stale_setup_lookback_hours=36,
-                stale_setup_max_appearances=4,
-            )
-            if not isinstance(anti_repeat_selection_guard, dict):
-                anti_repeat_selection_guard = {
-                    "input_count": len(selected_trades),
-                    "allowed_count": len(selected_trades),
-                    "blocked_count": 0,
-                    "allowed_symbols": [
-                        _norm_symbol(t.get("symbol", ""))
-                        for t in selected_trades
-                        if isinstance(t, dict)
-                    ],
-                    "blocked_symbols": [],
-                    "blocked": [],
-                    "queue": selected_trades,
-                    "reason": "anti_repeat_guard_returned_non_dict",
-                }
-
-            allowed_after_cooldown = anti_repeat_selection_guard.get("queue", [])
-            if not isinstance(allowed_after_cooldown, list):
-                allowed_after_cooldown = []
-
-            blocked_after_cooldown = anti_repeat_selection_guard.get("blocked", [])
-            if not isinstance(blocked_after_cooldown, list):
-                blocked_after_cooldown = []
-
-            anti_repeat_selection_guard["queue"] = allowed_after_cooldown
-            anti_repeat_selection_guard["blocked"] = blocked_after_cooldown
-            anti_repeat_selection_guard["input_count"] = len(selected_trades)
-            anti_repeat_selection_guard["allowed_count"] = len(allowed_after_cooldown)
-            anti_repeat_selection_guard["blocked_count"] = len(blocked_after_cooldown)
-            anti_repeat_selection_guard["allowed_symbols"] = [
-                _norm_symbol(t.get("symbol", ""))
-                for t in allowed_after_cooldown
-                if isinstance(t, dict)
-            ]
-            anti_repeat_selection_guard["blocked_symbols"] = [
-                _norm_symbol(t.get("symbol", ""))
-                for t in blocked_after_cooldown
-                if isinstance(t, dict)
-            ]
-
-            if blocked_after_cooldown:
-                print("PROCESS SIGNALS ANTI-REPEAT FILTER:", {
-                    "input_count": anti_repeat_selection_guard.get("input_count"),
-                    "allowed_count": anti_repeat_selection_guard.get("allowed_count"),
-                    "blocked_count": anti_repeat_selection_guard.get("blocked_count"),
-                    "allowed_symbols": anti_repeat_selection_guard.get("allowed_symbols"),
-                    "blocked_symbols": anti_repeat_selection_guard.get("blocked_symbols"),
-                    "blocked_reasons": [
-                        item.get("cooldown_reason") or item.get("final_reason")
-                        for item in blocked_after_cooldown
-                        if isinstance(item, dict)
-                    ],
-                })
-
-            selected_trades = allowed_after_cooldown
-
-        except Exception as anti_repeat_exc:
-            anti_repeat_selection_guard = {
-                "input_count": len(selected_trades),
-                "allowed_count": len(selected_trades),
-                "blocked_count": 0,
-                "allowed_symbols": [
-                    _norm_symbol(t.get("symbol", ""))
-                    for t in selected_trades
-                    if isinstance(t, dict)
-                ],
-                "blocked_symbols": [],
-                "blocked": [],
-                "queue": selected_trades,
-                "error": str(anti_repeat_exc),
-                "reason": "anti_repeat_guard_exception_process_signals_continued",
-            }
-            print("PROCESS SIGNALS ANTI-REPEAT FILTER ERROR:", anti_repeat_selection_guard)
-
     selected_keys = {
         (
             _norm_symbol(t.get("symbol", "")),
@@ -1573,16 +1348,6 @@ def process_signals(
         for t in selected_trades
         if isinstance(t, dict)
     }
-
-    cooldown_blocked_by_key: Dict[Tuple[str, str], Dict[str, Any]] = {}
-    for blocked_trade in _safe_list(anti_repeat_selection_guard.get("blocked", [])):
-        if not isinstance(blocked_trade, dict):
-            continue
-        cooldown_key = (
-            _norm_symbol(blocked_trade.get("symbol", "")),
-            _norm_strategy(blocked_trade.get("strategy", "CALL"), "CALL"),
-        )
-        cooldown_blocked_by_key[cooldown_key] = blocked_trade
 
     finalized_research_approved: List[Dict[str, Any]] = []
     finalized_selected_trades: List[Dict[str, Any]] = []
@@ -1596,50 +1361,7 @@ def process_signals(
         trade["selector_capacity"] = capacity
         trade["execution_pause"] = final_execution_pause
 
-        if key in cooldown_blocked_by_key:
-            blocked_trade = cooldown_blocked_by_key.get(key, {})
-            cooldown_reason = (
-                _safe_str(blocked_trade.get("cooldown_reason"), "")
-                or _safe_str(blocked_trade.get("final_reason"), "")
-                or "anti_repeat_cooldown_active"
-            )
-            cooldown_detail = (
-                _safe_str(blocked_trade.get("cooldown_detail"), "")
-                or "Anti-repeat guard blocked this setup before execution selection."
-            )
-
-            trade["selected_for_execution"] = False
-            trade["execution_ready"] = False
-            trade["research_approved"] = True
-            trade["blocked_at"] = "anti_repeat_guard"
-            trade["final_reason"] = cooldown_reason
-            trade["final_reason_code"] = cooldown_reason
-            trade["final_reason_detail"] = cooldown_detail
-            trade["cooldown_reason"] = cooldown_reason
-            trade["cooldown_detail"] = cooldown_detail
-            trade["anti_repeat_guard"] = anti_repeat_selection_guard
-            trade["selector_capacity"] = capacity
-            trade = finalize_candidate_state(trade)
-
-            finalized_research_approved.append(trade)
-
-            log_candidate_decision(
-                trade,
-                status="execution_ready_blocked_by_cooldown",
-                reason=cooldown_reason,
-                mode=mode,
-                breadth=breadth,
-                volatility_state=volatility_state,
-                extra={
-                    "selector_capacity": capacity,
-                    "anti_repeat_guard": anti_repeat_selection_guard,
-                    "cooldown_detail": cooldown_detail,
-                },
-            )
-            continue
-
         if key in selected_keys:
-            trade = _normalize_option_contract_identity(trade)
             trade["selected_for_execution"] = True
             trade["execution_ready"] = True
             trade["research_approved"] = True
@@ -1704,13 +1426,6 @@ def process_signals(
         "selected_count": len(selected_trades),
         "selected_symbols": [_norm_symbol(t.get("symbol")) for t in selected_trades],
         "capacity": capacity,
-        "anti_repeat_selection_guard": {
-            "input_count": anti_repeat_selection_guard.get("input_count"),
-            "allowed_count": anti_repeat_selection_guard.get("allowed_count"),
-            "blocked_count": anti_repeat_selection_guard.get("blocked_count"),
-            "allowed_symbols": anti_repeat_selection_guard.get("allowed_symbols"),
-            "blocked_symbols": anti_repeat_selection_guard.get("blocked_symbols"),
-        },
         "execution_pause": final_execution_pause,
     })
 
