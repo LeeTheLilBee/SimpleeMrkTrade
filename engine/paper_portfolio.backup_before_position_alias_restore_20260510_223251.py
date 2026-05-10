@@ -1648,25 +1648,7 @@ def show_positions() -> List[Dict[str, Any]]:
     return _load_open_positions()
 
 
-def get_open_positions() -> List[Dict[str, Any]]:
-    """
-    Compatibility alias.
-
-    Several notebook tests and engine modules expect get_open_positions().
-    The canonical storage function is show_positions(), but this keeps older
-    callers working without changing their imports.
-    """
-    return _load_open_positions()
-
-
 def show_closed_positions() -> List[Dict[str, Any]]:
-    return _load_closed_positions()
-
-
-def get_closed_positions() -> List[Dict[str, Any]]:
-    """
-    Compatibility alias for closed-position readers.
-    """
     return _load_closed_positions()
 
 
@@ -2080,9 +2062,7 @@ __all__ = [
     "clear_open_positions",
     "open_count",
     "show_positions",
-    "get_open_positions",
     "show_closed_positions",
-    "get_closed_positions",
     "get_position",
     "add_position",
     "replace_position",
