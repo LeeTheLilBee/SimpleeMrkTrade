@@ -870,7 +870,6 @@ def _apply_strict_recent_close_guard(
 def _is_position_capacity_reason(reason: str) -> bool:
     reason = _safe_str(reason, "")
     return reason in {
-        "position_capacity_reached",
         "max_open_positions",
         "max_open_positions_reached",
         "governor_blocked:max_open_positions",
@@ -1098,16 +1097,8 @@ def _build_selection_capacity(
     affordable = affordable_trade_count(execution_ready)
 
     current_open_positions = _current_open_positions_from_governor(governor)
-    max_open_positions = _max_open_positions_from_governor_or_context(
-        governor,
-        mode_context,
-        3,
-    )
-    queue_limit = _queue_limit_from_governor_or_context(
-        governor,
-        mode_context,
-        3,
-    )
+    max_open_positions = _max_open_positions_from_context(mode_context, governor, 3)
+    queue_limit = _queue_limit_from_context(mode_context, governor, 3)
 
     gov_limits = _safe_dict(_safe_dict(governor).get("limits"))
 
@@ -1484,9 +1475,9 @@ def process_signals(
     governor_reason = _governor_execution_block_reason(governor)
 
     current_open_positions_for_guard = _current_open_positions_from_governor(governor)
-    max_open_positions_for_guard = _max_open_positions_from_governor_or_context(
-        governor,
+    max_open_positions_for_guard = _max_open_positions_from_context(
         resolved_trading_mode_context,
+        governor,
         3,
     )
 
@@ -1506,7 +1497,7 @@ def process_signals(
         "max_daily_entries": _safe_dict(governor.get("limits")).get("max_daily_entries") if isinstance(governor, dict) else None,
         "max_rolling_5_business_day_entries": _safe_dict(governor.get("limits")).get("max_rolling_5_business_day_entries") if isinstance(governor, dict) else None,
         "max_open_positions": max_open_positions_for_guard,
-        "queue_limit": _queue_limit_from_governor_or_context(governor, resolved_trading_mode_context, 3),
+        "queue_limit": _queue_limit_from_context(resolved_trading_mode_context, governor, 3),
     })
 
     print("PROCESS SIGNALS POSITION CONTEXT:", {
@@ -1517,7 +1508,7 @@ def process_signals(
             0,
             max_open_positions_for_guard - current_open_positions_for_guard,
         ),
-        "queue_limit": _queue_limit_from_governor_or_context(governor, resolved_trading_mode_context, 3),
+        "queue_limit": _queue_limit_from_context(resolved_trading_mode_context, governor, 3),
         "capital_available_now": capital_available_now,
         "execution_pause": pre_capacity_pause,
     })
@@ -2219,9 +2210,7 @@ def process_signals(
         print(row)
 
     final_execution_reason = governor_reason if governor_reason else (
-        ""
-        if capacity.get("capacity_reason") in {"selection_capacity_available", "capacity_available"}
-        else capacity.get("capacity_reason", "")
+        "" if capacity.get("capacity_reason") == "selection_capacity_available" else capacity.get("capacity_reason", "")
     )
 
     final_execution_pause = _human_execution_pause(
