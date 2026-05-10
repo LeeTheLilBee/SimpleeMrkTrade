@@ -68,6 +68,11 @@ except Exception:
     record_skip_event = None
 
 
+try:
+    from engine.trade_cooldown_guard import guard_execution_queue
+except Exception:
+    guard_execution_queue = None
+
 OPTION_CONTRACT_MULTIPLIER = 100
 
 VEHICLE_OPTION = "OPTION"
@@ -173,6 +178,92 @@ def _safe_bool(value: Any, default: bool = False) -> bool:
 
 def _norm_symbol(value: Any) -> str:
     return _safe_str(value, "UNKNOWN").upper()
+
+
+
+
+def _guard_execution_queue_with_metadata(queue: List[Dict[str, Any]], *args: Any, **kwargs: Any) -> Dict[str, Any]:
+    """
+    Safe wrapper around trade_cooldown_guard.guard_execution_queue.
+    Keeps anti-repeat behavior and gives execute_trades clean return metadata.
+    """
+    original_queue = queue if isinstance(queue, list) else []
+    original_count = len(original_queue)
+
+    fallback = {
+        "input_count": original_count,
+        "original_queue_size": original_count,
+        "allowed_count": original_count,
+        "blocked_count": 0,
+        "queue": original_queue,
+        "allowed": original_queue,
+        "blocked": [],
+        "allowed_symbols": [
+            item.get("symbol")
+            for item in original_queue
+            if isinstance(item, dict)
+        ],
+        "blocked_symbols": [],
+    }
+
+    if not callable(guard_execution_queue):
+        fallback["reason"] = "guard_execution_queue_unavailable"
+        return fallback
+
+    try:
+        result = guard_execution_queue(original_queue, *args, **kwargs)
+    except Exception as exc:
+        fallback["reason"] = f"guard_execution_queue_exception:{exc}"
+        return fallback
+
+    if not isinstance(result, dict):
+        fallback["reason"] = "guard_execution_queue_returned_non_dict"
+        return fallback
+
+    allowed_queue = result.get("queue", result.get("allowed", []))
+    if not isinstance(allowed_queue, list):
+        allowed_queue = []
+
+    blocked_items = result.get("blocked", [])
+    if not isinstance(blocked_items, list):
+        blocked_items = []
+
+    allowed_symbols = result.get("allowed_symbols")
+    if not isinstance(allowed_symbols, list):
+        allowed_symbols = [
+            item.get("symbol")
+            for item in allowed_queue
+            if isinstance(item, dict)
+        ]
+
+    blocked_symbols = result.get("blocked_symbols")
+    if not isinstance(blocked_symbols, list):
+        blocked_symbols = [
+            item.get("symbol")
+            for item in blocked_items
+            if isinstance(item, dict)
+        ]
+
+    result["input_count"] = _safe_int(
+        result.get("input_count", result.get("original_queue_size", original_count)),
+        original_count,
+    )
+    result["original_queue_size"] = result["input_count"]
+    result["queue"] = allowed_queue
+    result["allowed"] = allowed_queue
+    result["blocked"] = blocked_items
+    result["allowed_count"] = _safe_int(
+        result.get("allowed_count", len(allowed_queue)),
+        len(allowed_queue),
+    )
+    result["blocked_count"] = _safe_int(
+        result.get("blocked_count", len(blocked_items)),
+        len(blocked_items),
+    )
+    result["allowed_symbols"] = allowed_symbols
+    result["blocked_symbols"] = blocked_symbols
+
+    return result
 
 
 def _now_iso() -> str:
@@ -1353,6 +1444,53 @@ def execute_trades(
     session_healthy: bool = True,
 ) -> Dict[str, Any]:
     queue = queue if isinstance(queue, list) else []
+
+    anti_repeat_result = {}
+    anti_repeat_skipped = 0
+    original_queue_size = len(queue)
+
+    if callable(guard_execution_queue) and queue:
+        try:
+            anti_repeat_result = _guard_execution_queue_with_metadata(
+                queue,
+                symbol_cooldown_hours=48,
+                contract_cooldown_hours=96,
+                rejection_cooldown_hours=24,
+                stale_setup_lookback_hours=36,
+                stale_setup_max_appearances=4,
+            )
+
+            guarded_queue = anti_repeat_result.get("queue", queue)
+            if isinstance(guarded_queue, list):
+                queue = guarded_queue
+
+            anti_repeat_skipped = max(0, original_queue_size - len(queue))
+
+            if anti_repeat_skipped:
+                print("EXECUTION LOOP ANTI-REPEAT GUARD:", {
+                    "input_queue_size": original_queue_size,
+                    "allowed_queue_size": len(queue),
+                    "blocked_count": anti_repeat_result.get("blocked_count", anti_repeat_skipped),
+                    "blocked_symbols": [
+                        item.get("symbol")
+                        for item in anti_repeat_result.get("blocked", [])
+                        if isinstance(item, dict)
+                    ],
+                    "blocked_reasons": [
+                        item.get("cooldown_reason") or item.get("final_reason")
+                        for item in anti_repeat_result.get("blocked", [])
+                        if isinstance(item, dict)
+                    ],
+                })
+
+        except Exception as cooldown_exc:
+            anti_repeat_result = {
+                "error": str(cooldown_exc),
+                "blocked": False,
+                "reason": "anti_repeat_guard_exception_execution_continued",
+            }
+            print("EXECUTION LOOP ANTI-REPEAT GUARD ERROR:", anti_repeat_result)
+
     portfolio_context = _safe_dict(portfolio_context)
 
     resolved_limits = _resolve_execution_limits_from_governor(
@@ -1394,6 +1532,7 @@ def execute_trades(
     executed = 0
     rejected = 0
     skipped = 0
+    skipped += anti_repeat_skipped
     persisted = 0
     persistence_blocked = 0
 
@@ -1434,6 +1573,9 @@ def execute_trades(
             "processed": 0,
             "queue_size": len(queue),
             "open_positions_after": open_positions_running,
+            "original_queue_size": original_queue_size,
+            "anti_repeat_skipped": anti_repeat_skipped,
+            "anti_repeat_guard": anti_repeat_result,
             "timestamp": _now_iso(),
             "status": "GOVERNOR_BLOCKED",
             "governor": governor,
@@ -1657,6 +1799,9 @@ def execute_trades(
         "processed": len(results),
         "queue_size": len(queue),
         "open_positions_after": open_positions_running,
+        "original_queue_size": original_queue_size,
+        "anti_repeat_skipped": anti_repeat_skipped,
+        "anti_repeat_guard": anti_repeat_result,
         "timestamp": _now_iso(),
         "governor": governor,
         "governor_limits": governor_limits,
