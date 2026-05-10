@@ -895,7 +895,7 @@
   ],
   "reserve_mode": "percent",
   "reserve_value": 20.0,
-  "last_account_sync": "2026-05-10T06:33:34.753134",
+  "last_account_sync": "2026-05-10T17:46:47.804512",
   "last_account_sync_adjustment": {},
   "account_math_basis": "cash_plus_open_market_value",
   "vehicle_mix": {
