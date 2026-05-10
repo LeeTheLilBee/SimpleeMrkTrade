@@ -960,6 +960,103 @@ def _human_execution_pause(
     }
 
 
+
+def _apply_anti_repeat_status_overlay(
+    *,
+    final_execution_pause: Dict[str, Any],
+    anti_repeat_selection_guard: Dict[str, Any],
+    selected_trades: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """
+    Clarifies the difference between:
+      - governor allowed execution
+      - selector/anti-repeat guard refused all selected candidates
+
+    This prevents misleading final output like:
+      "Execution is allowed"
+    when the governor is open but every selected trade was blocked by cooldown,
+    duplicate contract protection, or setup fatigue.
+    """
+    final_execution_pause = dict(final_execution_pause) if isinstance(final_execution_pause, dict) else {}
+    anti_repeat_selection_guard = _safe_dict(anti_repeat_selection_guard)
+
+    input_count = _safe_int(anti_repeat_selection_guard.get("input_count"), 0)
+    blocked_count = _safe_int(anti_repeat_selection_guard.get("blocked_count"), 0)
+    allowed_count = _safe_int(anti_repeat_selection_guard.get("allowed_count"), 0)
+
+    blocked_items = [
+        item for item in _safe_list(anti_repeat_selection_guard.get("blocked", []))
+        if isinstance(item, dict)
+    ]
+
+    blocked_symbols = [
+        _norm_symbol(item.get("symbol", ""))
+        for item in blocked_items
+        if _norm_symbol(item.get("symbol", ""))
+    ]
+
+    blocked_reasons = []
+    for item in blocked_items:
+        reason = (
+            _safe_str(item.get("cooldown_reason"), "")
+            or _safe_str(item.get("final_reason"), "")
+            or _safe_str(item.get("reason"), "")
+        )
+        if reason:
+            blocked_reasons.append(reason)
+
+    all_selected_blocked = (
+        input_count > 0
+        and blocked_count >= input_count
+        and allowed_count == 0
+        and len(selected_trades if isinstance(selected_trades, list) else []) == 0
+    )
+
+    partial_selection_blocked = (
+        input_count > 0
+        and blocked_count > 0
+        and allowed_count > 0
+    )
+
+    if all_selected_blocked:
+        final_execution_pause.update({
+            "paused": True,
+            "execution_blocked": True,
+            "selection_blocked": True,
+            "anti_repeat_blocked": True,
+            "reason": "anti_repeat_guard_blocked_all_selected_candidates",
+            "headline": "Execution allowed, but anti-repeat blocked every selected candidate.",
+            "summary": (
+                f"The governor allowed execution, but the anti-repeat guard blocked "
+                f"{blocked_count}/{input_count} selected candidate(s). "
+                f"Reasons: {', '.join(blocked_reasons[:5]) if blocked_reasons else 'anti-repeat protection'}."
+            ),
+            "blocked_symbols": blocked_symbols,
+            "blocked_reasons": blocked_reasons,
+            "execution_status": "blocked_by_anti_repeat",
+            "selection_status": "blocked_by_anti_repeat",
+        })
+    elif partial_selection_blocked:
+        final_execution_pause.update({
+            "selection_blocked": True,
+            "anti_repeat_blocked": True,
+            "anti_repeat_partial_block": True,
+            "summary": (
+                f"{allowed_count}/{input_count} selected candidate(s) remained after anti-repeat filtering; "
+                f"{blocked_count} were blocked."
+            ),
+            "blocked_symbols": blocked_symbols,
+            "blocked_reasons": blocked_reasons,
+            "selection_status": "partially_filtered_by_anti_repeat",
+        })
+    else:
+        final_execution_pause.setdefault("selection_blocked", False)
+        final_execution_pause.setdefault("anti_repeat_blocked", False)
+        final_execution_pause.setdefault("selection_status", "clear")
+
+    return final_execution_pause
+
+
 def resolve_market_mode(
     regime: str,
     breadth: str,
@@ -2228,6 +2325,12 @@ def process_signals(
         reason=final_execution_reason,
         governor=governor,
         capacity=capacity,
+    )
+
+    final_execution_pause = _apply_anti_repeat_status_overlay(
+        final_execution_pause=final_execution_pause,
+        anti_repeat_selection_guard=anti_repeat_selection_guard,
+        selected_trades=selected_trades,
     )
 
     print("PROCESS SIGNALS FINAL SELECTION SUMMARY:", {
