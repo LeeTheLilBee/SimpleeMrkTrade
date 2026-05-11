@@ -1646,6 +1646,178 @@ def _build_debug_row(
 # MAIN PROCESS
 # =============================================================================
 
+
+def _backfill_selected_after_strict_antirepeat_filter(
+    *,
+    selected_trades,
+    execution_ready,
+    blocked_symbols=None,
+    capacity=None,
+    current_open_positions=0,
+    max_open_positions=0,
+    queue_limit=0,
+):
+    selected_trades = selected_trades if isinstance(selected_trades, list) else []
+    execution_ready = execution_ready if isinstance(execution_ready, list) else []
+    blocked_symbols = {
+        str(s or "").strip().upper()
+        for s in (blocked_symbols or [])
+        if str(s or "").strip()
+    }
+    capacity = capacity if isinstance(capacity, dict) else {}
+
+    def _bf_symbol(row):
+        if not isinstance(row, dict):
+            return ""
+        return str(row.get("symbol", "") or "").strip().upper()
+
+    def _bf_bool(value):
+        if isinstance(value, bool):
+            return value
+        if value is None:
+            return False
+        return str(value).strip().lower() in {"1", "true", "yes", "y", "on"}
+
+    def _bf_float(value, default=0.0):
+        try:
+            if value is None or value == "":
+                return default
+            return float(value)
+        except Exception:
+            return default
+
+    def _bf_int(value, default=0):
+        try:
+            if value is None or value == "":
+                return default
+            return int(float(value))
+        except Exception:
+            return default
+
+    selected_symbols = {_bf_symbol(row) for row in selected_trades if _bf_symbol(row)}
+
+    selection_limit = _bf_int(
+        capacity.get("selection_limit"),
+        _bf_int(queue_limit, 0),
+    )
+
+    remaining_position_slots = _bf_int(
+        capacity.get("remaining_position_slots"),
+        max(0, _bf_int(max_open_positions, 0) - _bf_int(current_open_positions, 0)),
+    )
+
+    if selection_limit <= 0:
+        selection_limit = remaining_position_slots
+
+    if remaining_position_slots > 0:
+        selection_limit = min(selection_limit, remaining_position_slots)
+
+    if selection_limit <= 0:
+        return {
+            "selected_trades": selected_trades,
+            "backfilled": [],
+            "backfilled_symbols": [],
+            "needed": 0,
+            "reason": "no_selection_capacity",
+        }
+
+    needed = max(0, selection_limit - len(selected_trades))
+
+    if needed <= 0:
+        return {
+            "selected_trades": selected_trades,
+            "backfilled": [],
+            "backfilled_symbols": [],
+            "needed": 0,
+            "reason": "selection_already_full",
+        }
+
+    replacement_pool = []
+
+    for row in execution_ready:
+        if not isinstance(row, dict):
+            continue
+
+        symbol = _bf_symbol(row)
+        if not symbol:
+            continue
+
+        if symbol in selected_symbols:
+            continue
+
+        if symbol in blocked_symbols:
+            continue
+
+        if _bf_bool(row.get("selected_for_execution")):
+            continue
+
+        if not _bf_bool(row.get("execution_ready")):
+            continue
+
+        blocked_at = str(row.get("blocked_at", "") or "").strip()
+        final_reason = str(row.get("final_reason", "") or "").strip().lower()
+        final_reason_code = str(row.get("final_reason_code", "") or "").strip().lower()
+
+        blocked_reasons = {
+            "recently_closed_symbol",
+            "already_open_position",
+            "duplicate_open_position",
+            "duplicate_guard",
+            "cooldown_active",
+            "fresh_catalyst_required",
+        }
+
+        if blocked_at:
+            continue
+
+        if final_reason in blocked_reasons or final_reason_code in blocked_reasons:
+            continue
+
+        replacement_pool.append(row)
+
+    replacement_pool = sorted(
+        replacement_pool,
+        key=lambda r: (
+            _bf_float(r.get("fused_score", r.get("score", 0.0)), 0.0),
+            _bf_float(r.get("option_contract_score", 0.0), 0.0),
+        ),
+        reverse=True,
+    )
+
+    backfilled = []
+
+    for row in replacement_pool:
+        if len(backfilled) >= needed:
+            break
+
+        candidate = dict(row)
+        symbol = _bf_symbol(candidate)
+
+        if not symbol or symbol in selected_symbols:
+            continue
+
+        candidate["selected_for_execution"] = True
+        candidate["execution_ready"] = True
+        candidate["final_reason"] = "selected_for_execution"
+        candidate["final_reason_code"] = "selected_for_execution"
+        candidate["final_reason_detail"] = (
+            "Candidate was backfilled into the execution queue after strict anti-repeat filtering."
+        )
+        candidate["selection_reason"] = "backfilled_after_strict_antirepeat_filter"
+        candidate["backfill_after_strict_antirepeat"] = True
+
+        selected_trades.append(candidate)
+        backfilled.append(candidate)
+        selected_symbols.add(symbol)
+
+    return {
+        "selected_trades": selected_trades,
+        "backfilled": backfilled,
+        "backfilled_symbols": [_bf_symbol(row) for row in backfilled],
+        "needed": needed,
+        "reason": "backfilled" if backfilled else "no_clean_backfill_candidates",
+    }
+
 def process_signals(
     results: List[Dict[str, Any]],
     regime: str,
@@ -2472,6 +2644,56 @@ def process_signals(
     selected_trades = finalized_selected_trades
 
     print("\nAPPROVAL DEBUG")
+    # ------------------------------------------------------------
+    # Backfill selected queue after strict anti-repeat filtering
+    # ------------------------------------------------------------
+    try:
+        strict_blocked_symbols_for_backfill = []
+
+        try:
+            strict_blocked_symbols_for_backfill = [
+                str(x.get("symbol", "") or "").strip().upper()
+                for x in newly_blocked
+                if isinstance(x, dict) and str(x.get("symbol", "") or "").strip()
+            ]
+        except Exception:
+            strict_blocked_symbols_for_backfill = []
+
+        if selected_trades is None:
+            selected_trades = []
+
+        if execution_ready is None:
+            execution_ready = []
+
+        backfill_payload = _backfill_selected_after_strict_antirepeat_filter(
+            selected_trades=selected_trades,
+            execution_ready=execution_ready,
+            blocked_symbols=strict_blocked_symbols_for_backfill,
+            capacity=capacity,
+            current_open_positions=current_open_positions_for_guard,
+            max_open_positions=max_open_positions_for_guard,
+            queue_limit=_safe_int(capacity.get("selection_limit", capacity.get("queue_limit", 0)), 0),
+        )
+
+        selected_trades = backfill_payload.get("selected_trades", selected_trades)
+        backfilled = backfill_payload.get("backfilled", [])
+        backfilled_symbols = backfill_payload.get("backfilled_symbols", [])
+
+        print("PROCESS SIGNALS STRICT ANTI-REPEAT BACKFILL:", {
+            "backfilled_count": len(backfilled),
+            "backfilled_symbols": backfilled_symbols,
+            "blocked_symbols_respected": strict_blocked_symbols_for_backfill,
+            "selected_symbols_after_backfill": [
+                str(x.get("symbol", "") or "").strip().upper()
+                for x in selected_trades
+                if isinstance(x, dict)
+            ],
+            "reason": backfill_payload.get("reason", ""),
+        })
+
+    except Exception as backfill_error:
+        print("PROCESS SIGNALS STRICT ANTI-REPEAT BACKFILL ERROR:", str(backfill_error))
+
     for row in debug_rows:
         print(row)
 
