@@ -328,113 +328,6 @@ def _effective_cost(trade: Dict[str, Any]) -> float:
     return 0.0
 
 
-def _stock_fallback_payload_after_bad_option(
-    trade: Dict[str, Any],
-    *,
-    best_option: Dict[str, Any] | None = None,
-    option_reason: str = "",
-    trading_mode: str = "paper",
-    commission: float = 1.0,
-) -> Dict[str, Any]:
-    """
-    When options-first sees an option contract but the quote is observed-only
-    or non-executable, keep the option intelligence but do not let the bad
-    option quote block the whole candidate in paper mode.
-
-    This keeps the Observatory options-first, but not options-blind:
-      - executable option => OPTION
-      - non-executable option + stock fallback allowed => STOCK
-      - non-executable option + no fallback => RESEARCH_ONLY / blocked
-    """
-    row = dict(trade or {})
-    best_option = dict(best_option or {})
-
-    mode = normalize_mode(
-        trading_mode
-        or row.get("trading_mode")
-        or row.get("execution_mode")
-        or row.get("mode")
-        or "paper"
-    )
-
-    try:
-        mode_context = build_mode_context(mode)
-    except Exception:
-        mode_context = {}
-
-    allow_stock_fallback = bool(mode_context.get("allow_stock_fallback", True))
-
-    price = _safe_float(
-        row.get("price", row.get("current_price", row.get("fresh_price", row.get("underlying_price", 0.0)))),
-        0.0,
-    )
-
-    if price <= 0:
-        row["vehicle_selected"] = "RESEARCH_ONLY"
-        row["vehicle"] = "RESEARCH_ONLY"
-        row["execution_ready"] = False
-        row["selected_for_execution"] = False
-        row["blocked_at"] = "stock_fallback_price_unavailable"
-        row["final_reason"] = "stock_fallback_price_unavailable"
-        row["final_reason_detail"] = "Option quote was observed-only and stock fallback had no usable price."
-        row["option_observed_only"] = True
-        row["option_fallback_attempted"] = True
-        row["option_fallback_used"] = False
-        row["option_fallback_reason"] = option_reason or "option_not_executable"
-        row["observed_option"] = best_option
-        return row
-
-    if not allow_stock_fallback:
-        row["vehicle_selected"] = "RESEARCH_ONLY"
-        row["vehicle"] = "RESEARCH_ONLY"
-        row["execution_ready"] = False
-        row["selected_for_execution"] = False
-        row["blocked_at"] = "option_executable"
-        row["final_reason"] = option_reason or "option_not_executable"
-        row["final_reason_detail"] = "Option contract was observed-only and stock fallback is disabled for this mode."
-        row["option_observed_only"] = True
-        row["option_fallback_attempted"] = True
-        row["option_fallback_used"] = False
-        row["option_fallback_reason"] = option_reason or "option_not_executable"
-        row["observed_option"] = best_option
-        return row
-
-    # Stock fallback path.
-    row["vehicle_selected"] = "STOCK"
-    row["vehicle"] = "STOCK"
-    row["option_observed_only"] = True
-    row["option_fallback_attempted"] = True
-    row["option_fallback_used"] = True
-    row["option_fallback_reason"] = option_reason or "option_not_executable"
-    row["observed_option"] = best_option
-
-    row["contract_symbol"] = None
-    row["option_symbol"] = None
-    row["option"] = None
-    row["contracts"] = 0
-
-    shares = int(_safe_float(row.get("shares"), 0.0) or 0)
-    if shares <= 0:
-        shares = 1
-
-    row["shares"] = shares
-    row["capital_required"] = round(price * shares, 4)
-    row["minimum_trade_cost"] = round((price * shares) + _safe_float(commission, 1.0), 4)
-    row["effective_cost"] = row["minimum_trade_cost"]
-
-    row["price"] = price
-    row["current_price"] = price
-    row["underlying_price"] = price
-
-    row["final_reason"] = "option_observed_stock_fallback"
-    row["final_reason_detail"] = (
-        "Option contract was observed-only/non-executable, so the candidate fell back to STOCK "
-        "while preserving the option preview for intelligence."
-    )
-
-    return row
-
-
 def _normalize_why_lines(value: Any) -> List[str]:
     lines: List[str] = []
 
@@ -2073,80 +1966,27 @@ def process_signals(
 
         if fused.get("option") and _norm_vehicle(fused.get("vehicle_selected")) == "OPTION" and not option_allowed:
             reason = _safe_str(option_reason, "weak_option_contract")
+            fused["blocked_at"] = "option_executable"
+            fused["final_reason"] = reason
+            fused["final_reason_code"] = reason
+            fused["final_reason_detail"] = "Option contract was found, but contract quality/executability failed."
+            fused = finalize_candidate_state(fused)
 
-            # Options-first does not mean options-only.
-            # If the option contract is observed-only/bad quote/low executable quality,
-            # preserve it as intelligence, then fall back to STOCK when the current
-            # mode allows stock fallback.
-            fallback_trade = _stock_fallback_payload_after_bad_option(
+            debug_row["blocked_at"] = fused.get("blocked_at", "")
+            debug_row["final_reason"] = fused.get("final_reason", "")
+            debug_row["final_reason_detail"] = fused.get("final_reason_detail", "")
+            debug_rows.append(debug_row)
+
+            log_rejection(
                 fused,
-                best_option=best_option,
-                option_reason=reason,
-                trading_mode=resolved_trading_mode,
-                commission=_safe_float(fused.get('commission', 1.0), 1.0),
+                symbol,
+                "weak_option_contract",
+                reason,
+                mode,
+                breadth,
+                volatility_state,
             )
-
-            if (
-                isinstance(fallback_trade, dict)
-                and fallback_trade.get("option_fallback_used")
-                and _norm_vehicle(fallback_trade.get("vehicle_selected")) == "STOCK"
-            ):
-                fused.update(fallback_trade)
-
-                vehicle_selected = "STOCK"
-                contract_symbol = None
-                option_allowed = True
-                option_reason = "option_observed_stock_fallback"
-
-                capital_required = _safe_float(fused.get("capital_required"), 0.0)
-                minimum_trade_cost = _safe_float(fused.get("minimum_trade_cost"), 0.0)
-                effective_cost = _effective_cost(fused)
-
-                debug_row["vehicle_selected"] = "STOCK"
-                debug_row["contract_symbol"] = None
-                debug_row["option_allowed"] = True
-                debug_row["option_reason"] = "option_observed_stock_fallback"
-                debug_row["blocked_at"] = ""
-                debug_row["final_reason"] = "stock_fallback_after_observed_option"
-                debug_row["final_reason_detail"] = fused.get(
-                    "final_reason_detail",
-                    "Option was observed-only, so stock fallback was used.",
-                )
-                debug_row["capital_required"] = capital_required
-                debug_row["minimum_trade_cost"] = minimum_trade_cost
-                debug_row["effective_cost"] = effective_cost
-
-                print("OPTION OBSERVED-ONLY STOCK FALLBACK:", {
-                    "symbol": symbol,
-                    "bad_option_reason": reason,
-                    "vehicle_selected": fused.get("vehicle_selected"),
-                    "option_fallback_used": fused.get("option_fallback_used"),
-                    "capital_required": fused.get("capital_required"),
-                    "minimum_trade_cost": fused.get("minimum_trade_cost"),
-                    "effective_cost": effective_cost,
-                })
-            else:
-                fused["blocked_at"] = "option_executable"
-                fused["final_reason"] = reason
-                fused["final_reason_code"] = reason
-                fused["final_reason_detail"] = "Option contract was found, but contract quality/executability failed."
-                fused = finalize_candidate_state(fused)
-
-                debug_row["blocked_at"] = fused.get("blocked_at", "")
-                debug_row["final_reason"] = fused.get("final_reason", "")
-                debug_row["final_reason_detail"] = fused.get("final_reason_detail", "")
-                debug_rows.append(debug_row)
-
-                log_rejection(
-                    fused,
-                    symbol,
-                    "weak_option_contract",
-                    reason,
-                    mode,
-                    breadth,
-                    volatility_state,
-                )
-                continue
+            continue
 
         fused["research_approved"] = True
         fused["execution_ready"] = False

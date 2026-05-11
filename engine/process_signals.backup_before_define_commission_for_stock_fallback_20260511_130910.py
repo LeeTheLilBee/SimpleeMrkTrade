@@ -2083,7 +2083,7 @@ def process_signals(
                 best_option=best_option,
                 option_reason=reason,
                 trading_mode=resolved_trading_mode,
-                commission=_safe_float(fused.get('commission', 1.0), 1.0),
+                commission=commission,
             )
 
             if (
