@@ -3047,3 +3047,41 @@ __all__ = [
     "log_approval",
     "_normalize_option_contract_identity",
 ]
+
+# === OBSERVATORY LEDGER COMPACT WRAPPER START ===
+# Keeps data/canonical_ledger.json small after each process_signals run.
+# This wrapper is compatibility-preserving: it does not alter trade selection,
+# execution results, or return shape. It only compacts ledger storage after run.
+try:
+    import functools as _observatory_functools
+
+    if "process_signals" in globals() and not getattr(process_signals, "_observatory_ledger_compact_wrapped", False):
+        _observatory_original_process_signals = process_signals
+
+        @_observatory_functools.wraps(_observatory_original_process_signals)
+        def process_signals(*args, **kwargs):
+            _observatory_result = _observatory_original_process_signals(*args, **kwargs)
+            try:
+                from engine.ledger_storage import compact_canonical_ledger
+                _ledger_compact_result = compact_canonical_ledger(
+                    snapshot_rows=750,
+                    archive_trigger_mb=25.0,
+                    force_archive=False,
+                )
+                print("OBSERVATORY LEDGER COMPACT:", {
+                    "status": _ledger_compact_result.get("status"),
+                    "before_size_mb": _ledger_compact_result.get("before_size_mb"),
+                    "after_size_mb": _ledger_compact_result.get("after_size_mb"),
+                    "rows_before": _ledger_compact_result.get("rows_before"),
+                    "rows_after": _ledger_compact_result.get("rows_after"),
+                    "git_safe": _ledger_compact_result.get("git_safe"),
+                })
+            except Exception as _ledger_compact_error:
+                print("OBSERVATORY LEDGER COMPACT ERROR:", str(_ledger_compact_error))
+            return _observatory_result
+
+        process_signals._observatory_ledger_compact_wrapped = True
+
+except Exception as _observatory_wrapper_error:
+    print("OBSERVATORY LEDGER WRAPPER INSTALL ERROR:", str(_observatory_wrapper_error))
+# === OBSERVATORY LEDGER COMPACT WRAPPER END ===

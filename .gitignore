@@ -8,3 +8,7 @@ streamlit.log
 data/_local_archives/
 data/canonical_ledger.full.json
 data/canonical_ledger_*.json
+# Observatory local heavy archives
+data/*.bak*
+data/canonical_ledger_full*.json
+data/canonical_ledger_archive*.json
