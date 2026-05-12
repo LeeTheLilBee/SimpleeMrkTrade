@@ -2919,9 +2919,7 @@ def process_signals(
             )
 
         except Exception as e:
-            print("PROCESS SIGNALS STRICT ANTI-REPEAT BACKFILL ERROR:", str(e))
-            selected_trades = selected_trades if selected_trades is not None else []
-        if selected_trades is None:
+    if selected_trades is None:
             selected_trades = []
 
         if execution_ready is None:
