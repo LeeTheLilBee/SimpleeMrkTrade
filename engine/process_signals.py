@@ -2921,40 +2921,40 @@ def process_signals(
         except Exception as e:
             print("PROCESS SIGNALS STRICT ANTI-REPEAT BACKFILL ERROR:", str(e))
             selected_trades = selected_trades if selected_trades is not None else []
-        if selected_trades is None:
-            selected_trades = []
+        # MICRO FIX 7:
+        # The earlier APPROVAL DEBUG backfill is authoritative.
+        # Do not run the stale duplicate backfill here because it can
+        # reselect a symbol already blocked by setup fatigue.
+        try:
+            if isinstance(selected_for_execution, list):
+                selected_trades = [
+                    row for row in selected_for_execution
+                    if isinstance(row, dict) and row.get('selected_for_execution') is True
+                ]
+        
+            if selected_trades is None:
+                selected_trades = []
+        
+            if execution_ready is None:
+                execution_ready = []
+        
+            print('PROCESS SIGNALS STRICT ANTI-REPEAT BACKFILL SYNC:', {
+                'selected_symbols_after_sync': [
+                    str(row.get('symbol', '') or '').strip().upper()
+                    for row in selected_trades
+                    if isinstance(row, dict)
+                ],
+                'source': 'selected_for_execution_authoritative',
+            })
+        except Exception as backfill_sync_error:
+            print('PROCESS SIGNALS STRICT ANTI-REPEAT BACKFILL SYNC ERROR:', str(backfill_sync_error))
 
-        if execution_ready is None:
-            execution_ready = []
-
-        backfill_payload = _backfill_selected_after_strict_antirepeat_filter(
-            selected_trades=selected_trades,
-            execution_ready=execution_ready,
-            blocked_symbols=strict_blocked_symbols_for_backfill,
-            capacity=capacity,
-            current_open_positions=current_open_positions_for_guard,
-            max_open_positions=max_open_positions_for_guard,
-            queue_limit=_safe_int(capacity.get("selection_limit", capacity.get("queue_limit", 0)), 0),
+    except Exception as strict_backfill_outer_error:
+        print(
+            'PROCESS SIGNALS STRICT ANTI-REPEAT BACKFILL OUTER ERROR:',
+            str(strict_backfill_outer_error),
         )
-
-        selected_trades = backfill_payload.get("selected_trades", selected_trades)
-        backfilled = backfill_payload.get("backfilled", [])
-        backfilled_symbols = backfill_payload.get("backfilled_symbols", [])
-
-        print("PROCESS SIGNALS STRICT ANTI-REPEAT BACKFILL:", {
-            "backfilled_count": len(backfilled),
-            "backfilled_symbols": backfilled_symbols,
-            "blocked_symbols_respected": strict_blocked_symbols_for_backfill,
-            "selected_symbols_after_backfill": [
-                str(x.get("symbol", "") or "").strip().upper()
-                for x in selected_trades
-                if isinstance(x, dict)
-            ],
-            "reason": backfill_payload.get("reason", ""),
-        })
-
-    except Exception as backfill_error:
-        print("PROCESS SIGNALS STRICT ANTI-REPEAT BACKFILL ERROR:", str(backfill_error))
+        selected_trades = selected_trades if selected_trades is not None else []
 
     for row in debug_rows:
         print(row)
