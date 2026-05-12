@@ -12,3 +12,9 @@ data/canonical_ledger_*.json
 data/*.bak*
 data/canonical_ledger_full*.json
 data/canonical_ledger_archive*.json
+# Local patch/backups
+*.bak
+*.bak_*
+*_backup*
+*_pre_compact.json
+data/_local_archives/
