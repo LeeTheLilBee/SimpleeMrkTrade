@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-05-07T12:17:30.240345",
-  "cash": 22048.0,
-  "buying_power": 22048.0,
-  "equity": 26407.0,
-  "open_positions": 3,
+  "timestamp": "2026-05-12T16:44:30.174101",
+  "cash": 29449.26,
+  "buying_power": 29449.26,
+  "equity": 34798.06,
+  "open_positions": 6,
   "executed_trades": 3,
   "regime": "STARTING",
   "volatility": "UNKNOWN",
   "mode": "BOOT_PAPER",
-  "total_trades": 31,
-  "winrate": 0.65,
+  "total_trades": 45,
+  "winrate": 0.71,
   "max_drawdown": 6.96
 }

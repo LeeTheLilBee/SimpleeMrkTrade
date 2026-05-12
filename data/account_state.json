@@ -1,12 +1,12 @@
 {
-  "equity": 34575.06,
+  "equity": 34798.06,
   "cash": 29449.26,
   "buying_power": 29449.26,
-  "estimated_account_value": 34575.06,
-  "open_market_value": 5125.8,
-  "open_cost_basis": 4046.8,
-  "open_unrealized_pnl": 1079.0,
-  "open_positions": 5,
+  "estimated_account_value": 34798.06,
+  "open_market_value": 5348.8,
+  "open_cost_basis": 4225.8,
+  "open_unrealized_pnl": 1123.0,
+  "open_positions": 6,
   "account_type": "margin",
   "trade_history": [],
   "activity_log": [
@@ -1108,17 +1108,17 @@
   ],
   "reserve_mode": "percent",
   "reserve_value": 20.0,
-  "last_account_sync": "2026-05-12T16:09:37.172716",
+  "last_account_sync": "2026-05-12T16:45:34.619475",
   "last_account_sync_adjustment": {},
   "account_math_basis": "cash_plus_open_market_value",
   "vehicle_mix": {
-    "OPTION": 3,
+    "OPTION": 4,
     "STOCK": 2,
     "RESEARCH_ONLY": 0,
     "UNKNOWN": 0
   },
   "option_safety": {
-    "option_positions": 3,
+    "option_positions": 4,
     "underlying_used_for_option_pnl": false,
     "basis": "OPTION positions use premium math only."
   },

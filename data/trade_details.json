@@ -1,1586 +1,5 @@
 [
   {
-    "trade_id": "DIA-CALL-20260505031121",
-    "timestamp": "2026-05-05T03:11:21.203761",
-    "symbol": "DIA",
-    "strategy": "CALL",
-    "score": 92.39,
-    "confidence": "MEDIUM",
-    "entry": 489.56,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 486.56,
-      "target_logic": 493.56,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 92.39
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Setup quality is mixed or early-stage.",
-      "Confirmation is weaker than elite-quality opportunities.",
-      "Risk management should stay tight."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T03:11:23.690507",
-        "event": "RESEARCH_APPROVED",
-        "note": "DIA approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 92.39,
-          "confidence": "MEDIUM",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "INTC-CALL-20260505043500",
-    "timestamp": "2026-05-05T04:35:00.784035",
-    "symbol": "INTC",
-    "strategy": "CALL",
-    "score": 910.24,
-    "confidence": "HIGH",
-    "entry": 95.78,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 92.78,
-      "target_logic": 99.78,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 910.24
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:03.373496",
-        "event": "RESEARCH_APPROVED",
-        "note": "INTC approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 910.24,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      },
-      {
-        "timestamp": "2026-05-05T04:36:41.439171",
-        "event": "EXECUTION_APPROVED",
-        "note": "INTC approved in the execution layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 910.24,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      },
-      {
-        "timestamp": "2026-05-05T04:36:47.340877",
-        "event": "EXECUTED",
-        "note": "INTC entered execution flow.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 910.24,
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "QCOM-CALL-20260505043503",
-    "timestamp": "2026-05-05T04:35:03.418506",
-    "symbol": "QCOM",
-    "strategy": "CALL",
-    "score": 457.14,
-    "confidence": "HIGH",
-    "entry": 168.38,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 165.38,
-      "target_logic": 172.38,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 457.14
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:05.749795",
-        "event": "RESEARCH_APPROVED",
-        "note": "QCOM approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 457.14,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "SOXX-CALL-20260505043505",
-    "timestamp": "2026-05-05T04:35:05.799635",
-    "symbol": "SOXX",
-    "strategy": "CALL",
-    "score": 391.12,
-    "confidence": "HIGH",
-    "entry": 462.06,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 459.06,
-      "target_logic": 466.06,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 391.12
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:08.111735",
-        "event": "RESEARCH_APPROVED",
-        "note": "SOXX approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 391.12,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "AMZN-CALL-20260505043508",
-    "timestamp": "2026-05-05T04:35:08.158619",
-    "symbol": "AMZN",
-    "strategy": "CALL",
-    "score": 372.63,
-    "confidence": "HIGH",
-    "entry": 272.05,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 269.05,
-      "target_logic": 276.05,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 372.63
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:10.473284",
-        "event": "RESEARCH_APPROVED",
-        "note": "AMZN approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 372.63,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "ORCL-CALL-20260505043510",
-    "timestamp": "2026-05-05T04:35:10.518253",
-    "symbol": "ORCL",
-    "strategy": "CALL",
-    "score": 363.67,
-    "confidence": "HIGH",
-    "entry": 180.29,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 177.29,
-      "target_logic": 184.29,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 363.67
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:14.116882",
-        "event": "RESEARCH_APPROVED",
-        "note": "ORCL approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 363.67,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "GOOGL-CALL-20260505043514",
-    "timestamp": "2026-05-05T04:35:14.200516",
-    "symbol": "GOOGL",
-    "strategy": "CALL",
-    "score": 354.67,
-    "confidence": "HIGH",
-    "entry": 383.25,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 380.25,
-      "target_logic": 387.25,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 354.67
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:16.602115",
-        "event": "RESEARCH_APPROVED",
-        "note": "GOOGL approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 354.67,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "AVGO-CALL-20260505043516",
-    "timestamp": "2026-05-05T04:35:16.650906",
-    "symbol": "AVGO",
-    "strategy": "CALL",
-    "score": 347.12,
-    "confidence": "HIGH",
-    "entry": 416.5,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 413.5,
-      "target_logic": 420.5,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 347.12
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:18.978966",
-        "event": "RESEARCH_APPROVED",
-        "note": "AVGO approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 347.12,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "SMCI-CALL-20260505043519",
-    "timestamp": "2026-05-05T04:35:19.023661",
-    "symbol": "SMCI",
-    "strategy": "CALL",
-    "score": 331.58,
-    "confidence": "HIGH",
-    "entry": 27.92,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 24.92,
-      "target_logic": 31.92,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 331.58
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:21.310673",
-        "event": "RESEARCH_APPROVED",
-        "note": "SMCI approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 331.58,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "ZM-CALL-20260505043521",
-    "timestamp": "2026-05-05T04:35:21.374969",
-    "symbol": "ZM",
-    "strategy": "CALL",
-    "score": 316.61,
-    "confidence": "HIGH",
-    "entry": 106.63,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 103.63,
-      "target_logic": 110.63,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 316.61
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:23.710242",
-        "event": "RESEARCH_APPROVED",
-        "note": "ZM approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 316.61,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "ROKU-CALL-20260505043523",
-    "timestamp": "2026-05-05T04:35:23.754802",
-    "symbol": "ROKU",
-    "strategy": "CALL",
-    "score": 308.5,
-    "confidence": "HIGH",
-    "entry": 126.02,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 123.02,
-      "target_logic": 130.02,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 308.5
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:27.408500",
-        "event": "RESEARCH_APPROVED",
-        "note": "ROKU approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 308.5,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "XLK-CALL-20260505043527",
-    "timestamp": "2026-05-05T04:35:27.489377",
-    "symbol": "XLK",
-    "strategy": "CALL",
-    "score": 279.15,
-    "confidence": "HIGH",
-    "entry": 162.05,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 159.05,
-      "target_logic": 166.05,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 279.15
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:29.936762",
-        "event": "RESEARCH_APPROVED",
-        "note": "XLK approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 279.15,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "COIN-CALL-20260505043529",
-    "timestamp": "2026-05-05T04:35:29.981317",
-    "symbol": "COIN",
-    "strategy": "CALL",
-    "score": 257.52,
-    "confidence": "HIGH",
-    "entry": 202.99,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 199.99,
-      "target_logic": 206.99,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 257.52
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:32.366502",
-        "event": "RESEARCH_APPROVED",
-        "note": "COIN approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 257.52,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "QQQ-CALL-20260505043532",
-    "timestamp": "2026-05-05T04:35:32.416501",
-    "symbol": "QQQ",
-    "strategy": "CALL",
-    "score": 243.21,
-    "confidence": "HIGH",
-    "entry": 672.88,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 669.88,
-      "target_logic": 676.88,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 243.21
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:34.750223",
-        "event": "RESEARCH_APPROVED",
-        "note": "QQQ approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 243.21,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "TSLA-CALL-20260505043534",
-    "timestamp": "2026-05-05T04:35:34.794883",
-    "symbol": "TSLA",
-    "strategy": "CALL",
-    "score": 232.29,
-    "confidence": "HIGH",
-    "entry": 392.51,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 389.51,
-      "target_logic": 396.51,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 232.29
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:37.137114",
-        "event": "RESEARCH_APPROVED",
-        "note": "TSLA approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 232.29,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "ARKK-CALL-20260505043537",
-    "timestamp": "2026-05-05T04:35:37.182038",
-    "symbol": "ARKK",
-    "strategy": "CALL",
-    "score": 227.44,
-    "confidence": "HIGH",
-    "entry": 78.23,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 75.23,
-      "target_logic": 82.23,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 227.44
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:40.955581",
-        "event": "RESEARCH_APPROVED",
-        "note": "ARKK approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 227.44,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "PYPL-CALL-20260505043541",
-    "timestamp": "2026-05-05T04:35:41.000099",
-    "symbol": "PYPL",
-    "strategy": "CALL",
-    "score": 223.02,
-    "confidence": "HIGH",
-    "entry": 50.39,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 47.39,
-      "target_logic": 54.39,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 223.02
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:43.479124",
-        "event": "RESEARCH_APPROVED",
-        "note": "PYPL approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 223.02,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "NVDA-CALL-20260505043543",
-    "timestamp": "2026-05-05T04:35:43.523496",
-    "symbol": "NVDA",
-    "strategy": "CALL",
-    "score": 214.43,
-    "confidence": "HIGH",
-    "entry": 198.48,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 195.48,
-      "target_logic": 202.48,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 214.43
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:45.857593",
-        "event": "RESEARCH_APPROVED",
-        "note": "NVDA approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 214.43,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "MSFT-CALL-20260505043545",
-    "timestamp": "2026-05-05T04:35:45.902095",
-    "symbol": "MSFT",
-    "strategy": "CALL",
-    "score": 211.02,
-    "confidence": "HIGH",
-    "entry": 413.62,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 410.62,
-      "target_logic": 417.62,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 211.02
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:48.269757",
-        "event": "RESEARCH_APPROVED",
-        "note": "MSFT approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 211.02,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "IWM-CALL-20260505043548",
-    "timestamp": "2026-05-05T04:35:48.328435",
-    "symbol": "IWM",
-    "strategy": "CALL",
-    "score": 198.73,
-    "confidence": "HIGH",
-    "entry": 277.88,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 274.88,
-      "target_logic": 281.88,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 198.73
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:50.669555",
-        "event": "RESEARCH_APPROVED",
-        "note": "IWM approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 198.73,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "AAPL-CALL-20260505043550",
-    "timestamp": "2026-05-05T04:35:50.708696",
-    "symbol": "AAPL",
-    "strategy": "CALL",
-    "score": 192.03,
-    "confidence": "HIGH",
-    "entry": 276.83,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 273.83,
-      "target_logic": 280.83,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 192.03
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:54.363060",
-        "event": "RESEARCH_APPROVED",
-        "note": "AAPL approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 192.03,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "SPY-CALL-20260505043554",
-    "timestamp": "2026-05-05T04:35:54.405508",
-    "symbol": "SPY",
-    "strategy": "CALL",
-    "score": 189.18,
-    "confidence": "HIGH",
-    "entry": 718.01,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 715.01,
-      "target_logic": 722.01,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 189.18
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Strong structural alignment is present.",
-      "Momentum and participation support continuation.",
-      "This setup is acting like a leadership-quality opportunity."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:56.711067",
-        "event": "RESEARCH_APPROVED",
-        "note": "SPY approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 189.18,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "MS-CALL-20260505043556",
-    "timestamp": "2026-05-05T04:35:56.751630",
-    "symbol": "MS",
-    "strategy": "CALL",
-    "score": 179.59,
-    "confidence": "HIGH",
-    "entry": 188.01,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 185.01,
-      "target_logic": 192.01,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 179.59
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Constructive setup with meaningful support.",
-      "Conditions are favorable but still developing.",
-      "Follow-through matters more than early excitement."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:35:59.094476",
-        "event": "RESEARCH_APPROVED",
-        "note": "MS approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 179.59,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
-    "trade_id": "C-CALL-20260505043559",
-    "timestamp": "2026-05-05T04:35:59.134923",
-    "symbol": "C",
-    "strategy": "CALL",
-    "score": 177.64,
-    "confidence": "HIGH",
-    "entry": 125.63,
-    "atr": 2.0,
-    "regime": null,
-    "mode": null,
-    "volatility_state": "NORMAL",
-    "breadth": null,
-    "source": "execution",
-    "risk": {
-      "stop_logic": 122.63,
-      "target_logic": 129.63,
-      "note": "Stops and targets are volatility-aware.",
-      "story": "Risk is framed around ATR and structural confirmation, not random distance."
-    },
-    "signal_decay": {
-      "minutes_old": 0,
-      "decay_pct": 0,
-      "adjusted_score": 177.64
-    },
-    "crowd_pressure": {
-      "score": 0,
-      "label": "LOW",
-      "note": "Crowd pressure not elevated."
-    },
-    "thesis": [
-      "Constructive setup with meaningful support.",
-      "Conditions are favorable but still developing.",
-      "Follow-through matters more than early excitement."
-    ],
-    "narrative": {
-      "entry_story": "The engine found enough alignment to justify consideration for entry.",
-      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
-      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
-    },
-    "context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_not_this_trade": [],
-    "timeline": [
-      {
-        "timestamp": "2026-05-05T04:36:01.492096",
-        "event": "RESEARCH_APPROVED",
-        "note": "C approved in the research layer.",
-        "extra": {
-          "strategy": "CALL",
-          "score": 177.64,
-          "confidence": "HIGH",
-          "trading_mode": "paper"
-        }
-      }
-    ]
-  },
-  {
     "trade_id": "SBUX-CALL-20260505043601",
     "timestamp": "2026-05-05T04:36:01.535472",
     "symbol": "SBUX",
@@ -19640,6 +18059,1566 @@
         "extra": {
           "strategy": "CALL",
           "score": 92.55,
+          "confidence": "MEDIUM",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "SMCI-CALL-20260512164535",
+    "timestamp": "2026-05-12T16:45:35.543326",
+    "symbol": "SMCI",
+    "strategy": "CALL",
+    "score": 252.99,
+    "confidence": "HIGH",
+    "entry": 31.45,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 28.45,
+      "target_logic": 35.45,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 252.99
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:45:38.385214",
+        "event": "RESEARCH_APPROVED",
+        "note": "SMCI approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 252.99,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "XLK-CALL-20260512164538",
+    "timestamp": "2026-05-12T16:45:38.474158",
+    "symbol": "XLK",
+    "strategy": "CALL",
+    "score": 242.45,
+    "confidence": "HIGH",
+    "entry": 171.63,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 168.63,
+      "target_logic": 175.63,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 242.45
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:45:41.829667",
+        "event": "RESEARCH_APPROVED",
+        "note": "XLK approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 242.45,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "GOOGL-CALL-20260512164541",
+    "timestamp": "2026-05-12T16:45:41.876197",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 239.48,
+    "confidence": "HIGH",
+    "entry": 384.11,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 381.11,
+      "target_logic": 388.11,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 239.48
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:45:44.126200",
+        "event": "RESEARCH_APPROVED",
+        "note": "GOOGL approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 239.48,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AAPL-CALL-20260512164544",
+    "timestamp": "2026-05-12T16:45:44.178661",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "score": 205.55,
+    "confidence": "HIGH",
+    "entry": 294.18,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 291.18,
+      "target_logic": 298.18,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 205.55
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:45:46.525349",
+        "event": "RESEARCH_APPROVED",
+        "note": "AAPL approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 205.55,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "ZM-CALL-20260512164546",
+    "timestamp": "2026-05-12T16:45:46.575261",
+    "symbol": "ZM",
+    "strategy": "CALL",
+    "score": 201.8,
+    "confidence": "HIGH",
+    "entry": 102.85,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 99.85,
+      "target_logic": 106.85,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 201.8
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:45:49.723786",
+        "event": "RESEARCH_APPROVED",
+        "note": "ZM approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 201.8,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "QQQ-CALL-20260512164550",
+    "timestamp": "2026-05-12T16:45:50.040303",
+    "symbol": "QQQ",
+    "strategy": "CALL",
+    "score": 194.93,
+    "confidence": "HIGH",
+    "entry": 697.75,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 694.75,
+      "target_logic": 701.75,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 194.93
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:45:54.239574",
+        "event": "RESEARCH_APPROVED",
+        "note": "QQQ approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 194.93,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "NVDA-CALL-20260512164554",
+    "timestamp": "2026-05-12T16:45:54.319249",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 192.67,
+    "confidence": "HIGH",
+    "entry": 217.23,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 214.23,
+      "target_logic": 221.23,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 192.67
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:45:56.642716",
+        "event": "RESEARCH_APPROVED",
+        "note": "NVDA approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 192.67,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "ROKU-CALL-20260512164556",
+    "timestamp": "2026-05-12T16:45:56.685192",
+    "symbol": "ROKU",
+    "strategy": "CALL",
+    "score": 180.56,
+    "confidence": "HIGH",
+    "entry": 125.92,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 122.92,
+      "target_logic": 129.92,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 180.56
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Strong structural alignment is present.",
+      "Momentum and participation support continuation.",
+      "This setup is acting like a leadership-quality opportunity."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:45:58.933706",
+        "event": "RESEARCH_APPROVED",
+        "note": "ROKU approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 180.56,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "TSLA-CALL-20260512164558",
+    "timestamp": "2026-05-12T16:45:58.975847",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 179.63,
+    "confidence": "HIGH",
+    "entry": 422.91,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 419.91,
+      "target_logic": 426.91,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 179.63
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Constructive setup with meaningful support.",
+      "Conditions are favorable but still developing.",
+      "Follow-through matters more than early excitement."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:01.204851",
+        "event": "RESEARCH_APPROVED",
+        "note": "TSLA approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 179.63,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "ORCL-CALL-20260512164601",
+    "timestamp": "2026-05-12T16:46:01.255162",
+    "symbol": "ORCL",
+    "strategy": "CALL",
+    "score": 172.05,
+    "confidence": "HIGH",
+    "entry": 181.85,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 178.85,
+      "target_logic": 185.85,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 172.05
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Constructive setup with meaningful support.",
+      "Conditions are favorable but still developing.",
+      "Follow-through matters more than early excitement."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:03.455148",
+        "event": "RESEARCH_APPROVED",
+        "note": "ORCL approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 172.05,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "MPC-CALL-20260512164603",
+    "timestamp": "2026-05-12T16:46:03.501407",
+    "symbol": "MPC",
+    "strategy": "CALL",
+    "score": 171.2,
+    "confidence": "HIGH",
+    "entry": 256.46,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 253.46,
+      "target_logic": 260.46,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 171.2
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Constructive setup with meaningful support.",
+      "Conditions are favorable but still developing.",
+      "Follow-through matters more than early excitement."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:06.700600",
+        "event": "RESEARCH_APPROVED",
+        "note": "MPC approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 171.2,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AMZN-CALL-20260512164606",
+    "timestamp": "2026-05-12T16:46:06.776057",
+    "symbol": "AMZN",
+    "strategy": "CALL",
+    "score": 160.1,
+    "confidence": "HIGH",
+    "entry": 263.42,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 260.42,
+      "target_logic": 267.42,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 160.1
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Constructive setup with meaningful support.",
+      "Conditions are favorable but still developing.",
+      "Follow-through matters more than early excitement."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:09.445661",
+        "event": "RESEARCH_APPROVED",
+        "note": "AMZN approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 160.1,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "SBUX-CALL-20260512164609",
+    "timestamp": "2026-05-12T16:46:09.488728",
+    "symbol": "SBUX",
+    "strategy": "CALL",
+    "score": 157.94,
+    "confidence": "HIGH",
+    "entry": 106.65,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 103.65,
+      "target_logic": 110.65,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 157.94
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Constructive setup with meaningful support.",
+      "Conditions are favorable but still developing.",
+      "Follow-through matters more than early excitement."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:11.741671",
+        "event": "RESEARCH_APPROVED",
+        "note": "SBUX approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 157.94,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "WMT-CALL-20260512164611",
+    "timestamp": "2026-05-12T16:46:11.783819",
+    "symbol": "WMT",
+    "strategy": "CALL",
+    "score": 149.77,
+    "confidence": "HIGH",
+    "entry": 130.73,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 127.73,
+      "target_logic": 134.73,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 149.77
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Constructive setup with meaningful support.",
+      "Conditions are favorable but still developing.",
+      "Follow-through matters more than early excitement."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:13.982886",
+        "event": "RESEARCH_APPROVED",
+        "note": "WMT approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 149.77,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "SPY-CALL-20260512164614",
+    "timestamp": "2026-05-12T16:46:14.024851",
+    "symbol": "SPY",
+    "strategy": "CALL",
+    "score": 146.4,
+    "confidence": "HIGH",
+    "entry": 732.34,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 729.34,
+      "target_logic": 736.34,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 146.4
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Constructive setup with meaningful support.",
+      "Conditions are favorable but still developing.",
+      "Follow-through matters more than early excitement."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:16.220632",
+        "event": "RESEARCH_APPROVED",
+        "note": "SPY approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 146.4,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "COIN-CALL-20260512164616",
+    "timestamp": "2026-05-12T16:46:16.267393",
+    "symbol": "COIN",
+    "strategy": "CALL",
+    "score": 137.8,
+    "confidence": "HIGH",
+    "entry": 203.01,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 200.01,
+      "target_logic": 207.01,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 137.8
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Constructive setup with meaningful support.",
+      "Conditions are favorable but still developing.",
+      "Follow-through matters more than early excitement."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:18.941265",
+        "event": "RESEARCH_APPROVED",
+        "note": "COIN approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 137.8,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "IWM-CALL-20260512164619",
+    "timestamp": "2026-05-12T16:46:19.016180",
+    "symbol": "IWM",
+    "strategy": "CALL",
+    "score": 134.52,
+    "confidence": "HIGH",
+    "entry": 278.61,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 275.61,
+      "target_logic": 282.61,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 134.52
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Constructive setup with meaningful support.",
+      "Conditions are favorable but still developing.",
+      "Follow-through matters more than early excitement."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:22.308500",
+        "event": "RESEARCH_APPROVED",
+        "note": "IWM approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 134.52,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "XLE-CALL-20260512164622",
+    "timestamp": "2026-05-12T16:46:22.353902",
+    "symbol": "XLE",
+    "strategy": "CALL",
+    "score": 133.78,
+    "confidence": "HIGH",
+    "entry": 57.66,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 54.66,
+      "target_logic": 61.66,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 133.78
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Constructive setup with meaningful support.",
+      "Conditions are favorable but still developing.",
+      "Follow-through matters more than early excitement."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:24.579429",
+        "event": "RESEARCH_APPROVED",
+        "note": "XLE approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 133.78,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "AVGO-CALL-20260512164624",
+    "timestamp": "2026-05-12T16:46:24.623356",
+    "symbol": "AVGO",
+    "strategy": "CALL",
+    "score": 132.18,
+    "confidence": "HIGH",
+    "entry": 409.35,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 406.35,
+      "target_logic": 413.35,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 132.18
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Constructive setup with meaningful support.",
+      "Conditions are favorable but still developing.",
+      "Follow-through matters more than early excitement."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:26.870731",
+        "event": "RESEARCH_APPROVED",
+        "note": "AVGO approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 132.18,
+          "confidence": "HIGH",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "PSX-CALL-20260512164626",
+    "timestamp": "2026-05-12T16:46:26.912896",
+    "symbol": "PSX",
+    "strategy": "CALL",
+    "score": 119.78,
+    "confidence": "MEDIUM",
+    "entry": 176.82,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 173.82,
+      "target_logic": 180.82,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 119.78
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Setup quality is mixed or early-stage.",
+      "Confirmation is weaker than elite-quality opportunities.",
+      "Risk management should stay tight."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:29.130385",
+        "event": "RESEARCH_APPROVED",
+        "note": "PSX approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 119.78,
+          "confidence": "MEDIUM",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "XOM-CALL-20260512164629",
+    "timestamp": "2026-05-12T16:46:29.154178",
+    "symbol": "XOM",
+    "strategy": "CALL",
+    "score": 115.3,
+    "confidence": "MEDIUM",
+    "entry": 151.32,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 148.32,
+      "target_logic": 155.32,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 115.3
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Setup quality is mixed or early-stage.",
+      "Confirmation is weaker than elite-quality opportunities.",
+      "Risk management should stay tight."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:31.385740",
+        "event": "RESEARCH_APPROVED",
+        "note": "XOM approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 115.3,
+          "confidence": "MEDIUM",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "DIS-CALL-20260512164631",
+    "timestamp": "2026-05-12T16:46:31.429681",
+    "symbol": "DIS",
+    "strategy": "CALL",
+    "score": 113.54,
+    "confidence": "MEDIUM",
+    "entry": 105.68,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 102.68,
+      "target_logic": 109.68,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 113.54
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Setup quality is mixed or early-stage.",
+      "Confirmation is weaker than elite-quality opportunities.",
+      "Risk management should stay tight."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:35.094741",
+        "event": "RESEARCH_APPROVED",
+        "note": "DIS approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 113.54,
+          "confidence": "MEDIUM",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "SNOW-CALL-20260512164635",
+    "timestamp": "2026-05-12T16:46:35.117444",
+    "symbol": "SNOW",
+    "strategy": "CALL",
+    "score": 111.97,
+    "confidence": "MEDIUM",
+    "entry": 150.62,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 147.62,
+      "target_logic": 154.62,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 111.97
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Setup quality is mixed or early-stage.",
+      "Confirmation is weaker than elite-quality opportunities.",
+      "Risk management should stay tight."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:37.352216",
+        "event": "RESEARCH_APPROVED",
+        "note": "SNOW approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 111.97,
+          "confidence": "MEDIUM",
+          "trading_mode": "paper"
+        }
+      }
+    ]
+  },
+  {
+    "trade_id": "CVX-CALL-20260512164637",
+    "timestamp": "2026-05-12T16:46:37.374319",
+    "symbol": "CVX",
+    "strategy": "CALL",
+    "score": 105.54,
+    "confidence": "MEDIUM",
+    "entry": 186.49,
+    "atr": 2.0,
+    "regime": null,
+    "mode": null,
+    "volatility_state": "NORMAL",
+    "breadth": null,
+    "source": "execution",
+    "risk": {
+      "stop_logic": 183.49,
+      "target_logic": 190.49,
+      "note": "Stops and targets are volatility-aware.",
+      "story": "Risk is framed around ATR and structural confirmation, not random distance."
+    },
+    "signal_decay": {
+      "minutes_old": 0,
+      "decay_pct": 0,
+      "adjusted_score": 105.54
+    },
+    "crowd_pressure": {
+      "score": 0,
+      "label": "LOW",
+      "note": "Crowd pressure not elevated."
+    },
+    "thesis": [
+      "Setup quality is mixed or early-stage.",
+      "Confirmation is weaker than elite-quality opportunities.",
+      "Risk management should stay tight."
+    ],
+    "narrative": {
+      "entry_story": "The engine found enough alignment to justify consideration for entry.",
+      "management_story": "Trade management should adapt to volatility, confirmation, and structural strength.",
+      "exit_story": "The trade should be exited if structure degrades or invalidation is triggered."
+    },
+    "context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_not_this_trade": [],
+    "timeline": [
+      {
+        "timestamp": "2026-05-12T16:46:39.571649",
+        "event": "RESEARCH_APPROVED",
+        "note": "CVX approved in the research layer.",
+        "extra": {
+          "strategy": "CALL",
+          "score": 105.54,
           "confidence": "MEDIUM",
           "trading_mode": "paper"
         }
