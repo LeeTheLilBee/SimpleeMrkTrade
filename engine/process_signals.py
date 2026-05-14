@@ -152,6 +152,164 @@ except Exception:
 # SAFE HELPERS
 # =============================================================================
 
+
+# ============================================================
+# OBSERVATORY_PATCH_GROUP_3_STRICT_ANTI_REPEAT_BACKFILL_20260513
+# Strict anti-repeat backfill helpers.
+# ============================================================
+
+def _obs_patch_bool(value):
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return False
+    return str(value).strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def _obs_patch_symbol(row):
+    if not isinstance(row, dict):
+        return ""
+    return str(row.get("symbol", "") or "").strip().upper()
+
+
+def _obs_patch_is_execution_ready(row):
+    if not isinstance(row, dict):
+        return False
+    if _obs_patch_bool(row.get("selected_for_execution")):
+        return True
+    if _obs_patch_bool(row.get("execution_ready")):
+        return True
+    return str(row.get("final_reason", "") or "").strip() in {
+        "selected_for_execution",
+        "approved_but_ranked_below_execution_cut",
+        "execution_ready",
+    }
+
+
+def _obs_patch_is_blocked_by_repeat(row, blocked_symbols=None):
+    if not isinstance(row, dict):
+        return True
+
+    blocked_symbols = set(blocked_symbols or set())
+    symbol = _obs_patch_symbol(row)
+
+    if symbol and symbol in blocked_symbols:
+        return True
+
+    blocked_at = str(row.get("blocked_at", "") or "").strip().lower()
+    final_reason = str(row.get("final_reason", "") or "").strip().lower()
+    selector_reason = str(row.get("selector_reason", "") or "").strip().lower()
+
+    repeat_reasons = {
+        "duplicate_guard",
+        "anti_repeat_guard",
+        "duplicate_open_symbol",
+        "duplicate_open_position",
+        "already_open_position",
+        "cooldown_active",
+        "recently_rejected",
+        "recently_closed",
+        "fresh_catalyst_required",
+        "reentry_not_ready",
+        "setup_fatigue",
+    }
+
+    return (
+        blocked_at in repeat_reasons
+        or final_reason in repeat_reasons
+        or selector_reason in repeat_reasons
+        or _obs_patch_bool(row.get("duplicate_open_found"))
+    )
+
+
+def _strict_anti_repeat_backfill_selection(
+    selected_trades,
+    approved_trades,
+    execution_ready_candidates=None,
+    selection_limit=None,
+    blocked_symbols=None,
+):
+    selected_trades = [r for r in (selected_trades or []) if isinstance(r, dict)]
+    approved_trades = [r for r in (approved_trades or []) if isinstance(r, dict)]
+    execution_ready_candidates = [
+        r for r in (execution_ready_candidates or []) if isinstance(r, dict)
+    ]
+
+    blocked_symbols = {
+        str(s or "").strip().upper()
+        for s in (blocked_symbols or set())
+        if str(s or "").strip()
+    }
+
+    try:
+        selection_limit = int(selection_limit or len(selected_trades) or 1)
+    except Exception:
+        selection_limit = len(selected_trades) or 1
+
+    selection_limit = max(0, selection_limit)
+
+    already = []
+    already_symbols = set()
+
+    for row in selected_trades:
+        symbol = _obs_patch_symbol(row)
+        if not symbol:
+            continue
+        if _obs_patch_is_blocked_by_repeat(row, blocked_symbols=blocked_symbols):
+            blocked_symbols.add(symbol)
+            continue
+        if symbol not in already_symbols:
+            already.append(row)
+            already_symbols.add(symbol)
+
+    pool = []
+    seen_pool = set()
+
+    for source in (execution_ready_candidates, approved_trades):
+        for row in source:
+            symbol = _obs_patch_symbol(row)
+            if not symbol or symbol in seen_pool:
+                continue
+            seen_pool.add(symbol)
+            pool.append(row)
+
+    for row in pool:
+        if len(already) >= selection_limit:
+            break
+
+        symbol = _obs_patch_symbol(row)
+        if not symbol:
+            continue
+        if symbol in already_symbols:
+            continue
+        if symbol in blocked_symbols:
+            continue
+        if _obs_patch_is_blocked_by_repeat(row, blocked_symbols=blocked_symbols):
+            blocked_symbols.add(symbol)
+            continue
+        if not _obs_patch_is_execution_ready(row):
+            continue
+
+        row["selected_for_execution"] = True
+        row["execution_ready"] = True
+        row["final_reason"] = "selected_for_execution"
+        row["blocked_at"] = ""
+        already.append(row)
+        already_symbols.add(symbol)
+
+    for row in approved_trades:
+        symbol = _obs_patch_symbol(row)
+        if symbol in already_symbols:
+            row["selected_for_execution"] = True
+            row["execution_ready"] = True
+            row["final_reason"] = "selected_for_execution"
+            row["blocked_at"] = ""
+        elif isinstance(row, dict):
+            row["selected_for_execution"] = False
+
+    return already[:selection_limit]
+
+
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
         if value is None or isinstance(value, bool):

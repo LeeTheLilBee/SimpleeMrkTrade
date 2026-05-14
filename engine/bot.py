@@ -530,18 +530,42 @@ def run(trading_mode="paper"):
                 return
 
         if sector_cap.get("blocked"):
-            write_bot_status(False, f"blocked_by_sector_cap:{resolved_trading_mode}")
-            push_activity("RISK", f"Blocked by sector concentration cap in {resolved_trading_mode} mode")
-            notify_trade_risk("PORTFOLIO", sector_cap.get("reason", "Sector cap block"))
+            sector_message = sector_cap.get("reason", "Sector cap block")
+
+            if resolved_trading_mode == "live":
+                write_bot_status(False, f"blocked_by_sector_cap:{resolved_trading_mode}")
+                push_activity("RISK", f"Blocked by sector concentration cap in {resolved_trading_mode} mode")
+                notify_trade_risk("PORTFOLIO", sector_message)
+                push_notification(
+                    notif_type="RISK_WARNING",
+                    message=f"Execution blocked by sector cap: {sector_message}",
+                    min_tier="starter",
+                    level="warning",
+                    volatility=volatility_state,
+                    source="execution",
+                )
+                return
+
+            write_bot_status(True, f"sector_cap_warning_only:{resolved_trading_mode}")
+            print("SECTOR CAP WARNING ONLY:", {
+                "trading_mode": resolved_trading_mode,
+                "reason": sector_message,
+                "selected_symbols": [t.get("symbol") for t in selected_trades if isinstance(t, dict)],
+                "action": "continuing_to_execution_in_non_live_mode",
+            })
+            push_activity(
+                "RISK",
+                f"Sector concentration warning in {resolved_trading_mode} mode; continuing because this is not live mode",
+            )
+            notify_trade_risk("PORTFOLIO", f"Sector cap warning only: {sector_message}")
             push_notification(
                 notif_type="RISK_WARNING",
-                message=f"Execution blocked by sector cap: {sector_cap.get('reason', 'Sector cap block')}",
+                message=f"Sector cap warning only in {resolved_trading_mode} mode: {sector_message}",
                 min_tier="starter",
                 level="warning",
                 volatility=volatility_state,
                 source="execution",
             )
-            return
 
         if governor.get("blocked"):
             joined = ", ".join(governor.get("reasons", []))
