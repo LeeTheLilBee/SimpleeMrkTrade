@@ -64,6 +64,71 @@ from engine.options_lifecycle import build_options_lifecycle
 from engine.process_signals import process_signals
 from engine.execution_loop import execute_trades
 
+
+
+# ============================================================
+# OBSERVATORY_PATCH_BOT_STRATEGY_KEY_COMPATIBILITY_20260513
+# Safe strategy resolver/normalizer for bot-level handoff.
+# Keeps bot.py compatible with selected trades that may use:
+# strategy, final_strategy, chosen_strategy, starting_strategy, side, action.
+# ============================================================
+
+def _resolve_bot_trade_strategy(trade, default="NO_TRADE"):
+    """
+    Return a safe canonical strategy without directly requiring _resolve_bot_trade_strategy(trade).
+    """
+    if not isinstance(trade, dict):
+        return default
+
+    for key in (
+        "strategy",
+        "final_strategy",
+        "chosen_strategy",
+        "starting_strategy",
+        "selected_strategy",
+        "recommended_strategy",
+        "trade_strategy",
+        "side",
+        "action",
+    ):
+        value = trade.get(key)
+        if value is not None and str(value).strip():
+            resolved = str(value).strip().upper()
+            if resolved in {"BUY", "LONG", "BULLISH"}:
+                return "CALL"
+            if resolved in {"SELL", "SHORT", "BEARISH"}:
+                return "PUT"
+            return resolved
+
+    return default
+
+
+def _normalize_bot_trade_keys(trade):
+    """
+    Make selected trade payloads safe for older bot.py paths.
+    """
+    if not isinstance(trade, dict):
+        return trade
+
+    strategy = _resolve_bot_trade_strategy(trade)
+
+    trade.setdefault("strategy", strategy)
+    trade.setdefault("final_strategy", strategy)
+    trade.setdefault("chosen_strategy", strategy)
+    trade.setdefault("starting_strategy", strategy)
+
+    if not str(trade.get("strategy", "") or "").strip():
+        trade["strategy"] = strategy
+    if not str(trade.get("final_strategy", "") or "").strip():
+        trade["final_strategy"] = strategy
+    if not str(trade.get("chosen_strategy", "") or "").strip():
+        trade["chosen_strategy"] = strategy
+    if not str(trade.get("starting_strategy", "") or "").strip():
+        trade["starting_strategy"] = strategy
+
+    return trade
+
+
 try:
     from engine.drawdown_brake import drawdown_brake
 except Exception:
@@ -424,7 +489,7 @@ def run(trading_mode="paper"):
 
             push_signal(
                 trade["symbol"],
-                trade["strategy"],
+                _resolve_bot_trade_strategy(trade),
                 trade["score"],
                 trade["confidence"],
                 trade_id=trade.get("trade_id"),
@@ -443,7 +508,7 @@ def run(trading_mode="paper"):
                 "RESEARCH_APPROVED",
                 {
                     "trade_id": trade.get("trade_id"),
-                    "strategy": trade["strategy"],
+                    "strategy": _resolve_bot_trade_strategy(trade),
                     "score": trade["score"],
                     "confidence": trade["confidence"],
                     "source": "research",
@@ -456,7 +521,7 @@ def run(trading_mode="paper"):
                 "RESEARCH_APPROVED",
                 f"{trade['symbol']} approved in the research layer.",
                 {
-                    "strategy": trade["strategy"],
+                    "strategy": _resolve_bot_trade_strategy(trade),
                     "score": trade["score"],
                     "confidence": trade["confidence"],
                     "trading_mode": resolved_trading_mode,
@@ -471,7 +536,7 @@ def run(trading_mode="paper"):
                     min_tier="pro",
                     level="success",
                     score=trade["score"],
-                    strategy=trade["strategy"],
+                    strategy=_resolve_bot_trade_strategy(trade),
                     volatility=volatility_state,
                     source="research",
                 )
@@ -492,7 +557,7 @@ def run(trading_mode="paper"):
                     min_tier="elite",
                     level="info",
                     score=trade["score"],
-                    strategy=trade["strategy"],
+                    strategy=_resolve_bot_trade_strategy(trade),
                     volatility=volatility_state,
                     source="research",
                 )
@@ -586,6 +651,7 @@ def run(trading_mode="paper"):
             selected_trades = _trim_for_reduced_risk(selected_trades)
             push_activity("RISK", f"Reduced-risk mode active in {resolved_trading_mode}: trimmed trade queue")
 
+        selected_trades = [_normalize_bot_trade_keys(t) for t in (selected_trades or []) if isinstance(t, dict)]
         for trade in selected_trades:
             if not trade.get("trade_id"):
                 trade_id, detail = build_trade_detail(
@@ -603,7 +669,7 @@ def run(trading_mode="paper"):
                 "APPROVED:",
                 trade["symbol"],
                 "| Strategy:",
-                trade["strategy"],
+                _resolve_bot_trade_strategy(trade),
                 "| Confidence:",
                 trade["confidence"],
             )
@@ -613,11 +679,11 @@ def run(trading_mode="paper"):
 
             push_activity(
                 "SIGNAL",
-                f"{trade['symbol']} approved as {trade['strategy']} with score {trade['score']}",
+                f"{trade['symbol']} approved as {_resolve_bot_trade_strategy(trade)} with score {trade['score']}",
                 symbol=trade["symbol"],
                 meta={
                     "trade_id": trade["trade_id"],
-                    "strategy": trade["strategy"],
+                    "strategy": _resolve_bot_trade_strategy(trade),
                     "score": trade["score"],
                     "confidence": trade["confidence"],
                     "trading_mode": resolved_trading_mode,
@@ -629,7 +695,7 @@ def run(trading_mode="paper"):
                 "EXECUTION_APPROVED",
                 {
                     "trade_id": trade["trade_id"],
-                    "strategy": trade["strategy"],
+                    "strategy": _resolve_bot_trade_strategy(trade),
                     "score": trade["score"],
                     "confidence": trade["confidence"],
                     "source": "execution",
@@ -642,7 +708,7 @@ def run(trading_mode="paper"):
                 "EXECUTION_APPROVED",
                 f"{trade['symbol']} approved in the execution layer.",
                 {
-                    "strategy": trade["strategy"],
+                    "strategy": _resolve_bot_trade_strategy(trade),
                     "score": trade["score"],
                     "confidence": trade["confidence"],
                     "trading_mode": resolved_trading_mode,
@@ -658,7 +724,7 @@ def run(trading_mode="paper"):
                 min_tier="starter",
                 level="info",
                 score=trade["score"],
-                strategy=trade["strategy"],
+                strategy=_resolve_bot_trade_strategy(trade),
                 volatility=volatility_state,
                 source="execution",
             )

@@ -127,22 +127,38 @@ def normalize_alert_trade(trade):
 
 
 def alert_trade(trade):
-    row = normalize_alert_trade(trade)
+    trade = normalize_alert_trade(trade)
+
+    symbol = trade.get("symbol", "UNKNOWN")
+    strategy = trade.get("strategy", "UNKNOWN")
+    score = trade.get("score", 0)
+    confidence = trade.get("confidence", "UNKNOWN")
+    vehicle = trade.get("vehicle_selected", trade.get("vehicle", "UNKNOWN"))
 
     print(
         "ALERT:",
-        row.get("symbol", "UNKNOWN"),
+        symbol,
         "|",
-        row.get("strategy", "UNKNOWN"),
+        strategy,
         "| Score:",
-        row.get("score", 0),
+        score,
         "| Confidence:",
-        row.get("confidence", "UNKNOWN"),
+        confidence,
         "| Vehicle:",
-        row.get("vehicle_selected", row.get("vehicle", "UNKNOWN")),
+        vehicle,
     )
 
-    return row
+    return {
+        "ok": True,
+        "symbol": symbol,
+        "strategy": strategy,
+        "score": score,
+        "confidence": confidence,
+        "vehicle": vehicle,
+    }
+
+
+
 
 
 def notify_trade_risk(symbol, message):
