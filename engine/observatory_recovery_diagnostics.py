@@ -1568,3 +1568,478 @@ def find_open_positions(verbose=True):
             print(position)
 
     return result
+
+# ============================================================
+# OBSERVATORY_PATCH_DETECTOR_FAKE_ROW_FILTER_AND_MARKER_COMPAT_20260514
+# Compatibility + strict fake-row rejection for recovery diagnostics.
+# ============================================================
+
+def _observatory_safe_read_text_20260514(path):
+    try:
+        from pathlib import Path
+        p = Path(path)
+        if not p.exists():
+            return ""
+        return p.read_text(encoding="utf-8", errors="ignore")
+    except Exception:
+        return ""
+
+
+def check_patch_markers(verbose=True):
+    """
+    Compatibility helper for older recovery/bot test cells.
+
+    Returns a simple marker report without crashing if a file is missing.
+    """
+    from pathlib import Path
+
+    project_root = Path("/content/SimpleeMrkTrade")
+
+    checks = {
+        "bot_strategy_key_patch": {
+            "file": str(project_root / "engine" / "bot.py"),
+            "needles": [
+                "OBSERVATORY_PATCH_BOT_STRATEGY_KEY_COMPATIBILITY_20260513",
+                "_resolve_bot_trade_strategy",
+                "_normalize_bot_trade_keys",
+            ],
+        },
+        "strict_detector_patch": {
+            "file": str(project_root / "engine" / "observatory_recovery_diagnostics.py"),
+            "needles": [
+                "OBSERVATORY_PATCH_FORCE_STRICT_ACTIVE_BOOK_DETECTOR_20260514",
+                "OBSERVATORY_PATCH_DETECTOR_FAKE_ROW_FILTER_AND_MARKER_COMPAT_20260514",
+            ],
+            "any_ok": True,
+        },
+        "sector_cap_warning_patch": {
+            "file": str(project_root / "engine" / "bot.py"),
+            "needles": [
+                "SECTOR CAP WARNING ONLY",
+                "sector_cap_warning_only",
+            ],
+            "any_ok": True,
+        },
+        "strict_backfill_patch": {
+            "file": str(project_root / "engine" / "process_signals.py"),
+            "needles": [
+                "_strict_anti_repeat_backfill_selection",
+                "PROCESS SIGNALS STRICT ANTI-REPEAT BACKFILL",
+            ],
+            "any_ok": True,
+        },
+        "alert_strategy_patch": {
+            "file": str(project_root / "engine" / "alerts.py"),
+            "needles": [
+                "normalize_alert_trade",
+                "_resolve_strategy",
+                "final_strategy",
+                "chosen_strategy",
+                "starting_strategy",
+            ],
+            "any_ok": False,
+        },
+    }
+
+    report = {}
+    overall = True
+
+    for name, cfg in checks.items():
+        file_path = Path(cfg["file"])
+        file_text = _observatory_safe_read_text_20260514(file_path)
+        exists = file_path.exists()
+        any_ok = bool(cfg.get("any_ok", False))
+
+        needle_report = {}
+        for needle in cfg["needles"]:
+            needle_report[needle] = needle in file_text
+
+        if any_ok:
+            passed = exists and any(needle_report.values())
+        else:
+            passed = exists and all(needle_report.values())
+
+        report[name] = {
+            "file": str(file_path),
+            "exists": exists,
+            "needles": needle_report,
+            "passed": passed,
+            "mode": "any_ok" if any_ok else "all_required",
+        }
+
+        if not passed:
+            overall = False
+
+    report["overall_pass"] = overall
+
+    if verbose:
+        import json
+        print(json.dumps(report, indent=2))
+
+    return report
+
+
+def _observatory_is_fake_nested_position_row_20260514(row):
+    """
+    Reject rows that look like nested option/underlying/context payloads,
+    not real active position rows.
+
+    The bug this fixes:
+    - blank trade_id
+    - vehicle UNKNOWN
+    - status OPEN inferred from nested dicts
+    - entry/current equal to underlying context prices
+    """
+    if not isinstance(row, dict):
+        return True
+
+    symbol = str(row.get("symbol") or row.get("ticker") or row.get("underlying") or "").strip().upper()
+    trade_id = str(row.get("trade_id") or row.get("position_id") or row.get("id") or "").strip()
+
+    vehicle = str(
+        row.get("vehicle")
+        or row.get("vehicle_selected")
+        or row.get("selected_vehicle")
+        or row.get("asset_type")
+        or row.get("instrument_type")
+        or ""
+    ).strip().upper()
+
+    # Real rows should have either a trade id or a clear vehicle/quantity/status identity.
+    has_real_identity = any(
+        key in row and row.get(key) not in [None, ""]
+        for key in [
+            "trade_id",
+            "position_id",
+            "opened_at",
+            "open_time",
+            "entry_time",
+            "contracts",
+            "shares",
+            "quantity",
+            "qty",
+            "vehicle",
+            "vehicle_selected",
+            "asset_type",
+        ]
+    )
+
+    if not symbol:
+        return True
+
+    if not trade_id and vehicle in {"", "UNKNOWN", "N/A", "NONE"}:
+        return True
+
+    if not has_real_identity:
+        return True
+
+    # Reject bare nested quote/contract/price-context rows.
+    quote_keys = {
+        "bid",
+        "ask",
+        "strike",
+        "expiration",
+        "expiry",
+        "implied_volatility",
+        "open_interest",
+        "volume",
+        "mark",
+        "last",
+    }
+
+    position_identity_keys = {
+        "trade_id",
+        "position_id",
+        "opened_at",
+        "open_time",
+        "entry_time",
+        "status",
+        "position_status",
+        "contracts",
+        "shares",
+        "quantity",
+        "qty",
+        "vehicle",
+        "vehicle_selected",
+        "asset_type",
+    }
+
+    if quote_keys.intersection(row.keys()) and not position_identity_keys.intersection(row.keys()):
+        return True
+
+    return False
+
+
+def _observatory_normalize_position_row_20260514(row, source_file="", json_path=""):
+    def _safe_str(value, default=""):
+        if value is None:
+            return default
+        return str(value).strip()
+
+    def _upper(value, default=""):
+        return _safe_str(value, default).upper()
+
+    def _num(value, default=0):
+        try:
+            if value in [None, ""]:
+                return default
+            return float(value)
+        except Exception:
+            return default
+
+    symbol = ""
+    for key in ["symbol", "ticker", "underlying", "asset"]:
+        if row.get(key):
+            symbol = _upper(row.get(key))
+            break
+
+    trade_id = ""
+    for key in ["trade_id", "position_id", "id", "order_id"]:
+        if row.get(key):
+            trade_id = str(row.get(key))
+            break
+
+    vehicle = ""
+    for key in ["vehicle", "vehicle_selected", "selected_vehicle", "asset_type", "instrument_type", "trade_type"]:
+        if row.get(key):
+            vehicle = _upper(row.get(key))
+            break
+
+    if vehicle in {"OPTIONS"}:
+        vehicle = "OPTION"
+    if vehicle in {"EQUITY", "SHARE", "SHARES"}:
+        vehicle = "STOCK"
+    if not vehicle:
+        if row.get("contract_symbol") or row.get("contractSymbol") or isinstance(row.get("option"), dict):
+            vehicle = "OPTION"
+        else:
+            vehicle = "STOCK"
+
+    entry = 0
+    for key in ["entry", "entry_price", "entry_premium", "premium_entry", "option_entry", "fill_price", "avg_price", "average_price", "executed_price"]:
+        if row.get(key) not in [None, ""]:
+            entry = _num(row.get(key), 0)
+            break
+
+    current = 0
+    for key in ["current", "current_price", "current_premium", "premium_current", "current_option_mark", "option_current_price", "current_option_price"]:
+        if row.get(key) not in [None, ""]:
+            current = _num(row.get(key), 0)
+            break
+
+    monitoring = ""
+    for key in ["monitoring", "monitoring_mode", "monitoring_price_type", "monitor_price", "price_monitoring", "price_review_basis"]:
+        if row.get(key):
+            monitoring = _upper(row.get(key))
+            break
+
+    if not monitoring:
+        monitoring = "OPTION_PREMIUM" if vehicle == "OPTION" else "UNDERLYING"
+
+    basis = ""
+    for key in ["basis", "price_basis", "pnl_basis", "price_review_basis"]:
+        if row.get(key):
+            basis = _upper(row.get(key))
+            break
+
+    if not basis:
+        basis = "OPTION_PREMIUM" if vehicle == "OPTION" else "STOCK_PRICE"
+
+    return {
+        "symbol": symbol,
+        "trade_id": trade_id,
+        "vehicle": vehicle,
+        "status": _upper(row.get("status")) or "OPEN",
+        "position_status": _upper(row.get("position_status")) or "OPEN",
+        "entry": entry,
+        "current": current,
+        "monitoring": monitoring,
+        "basis": basis,
+        "source_file": str(source_file),
+        "json_path": str(json_path),
+    }
+
+
+def _observatory_row_is_open_20260514(row):
+    if not isinstance(row, dict):
+        return False
+
+    closed_keys = [
+        "closed_at",
+        "close_time",
+        "closed_time",
+        "exit_time",
+        "exit_date",
+        "close_date",
+        "closed_date",
+    ]
+
+    if any(row.get(key) for key in closed_keys):
+        return False
+
+    closed_statuses = {
+        "CLOSED",
+        "EXITED",
+        "COMPLETE",
+        "COMPLETED",
+        "ARCHIVED",
+        "CANCELLED",
+        "CANCELED",
+        "EXPIRED",
+    }
+
+    open_statuses = {
+        "OPEN",
+        "ACTIVE",
+        "HELD",
+        "HOLD",
+        "LIVE",
+        "MONITORING",
+        "IN_POSITION",
+        "FILLED",
+    }
+
+    status_values = [
+        str(row.get("status") or "").strip().upper(),
+        str(row.get("position_status") or "").strip().upper(),
+        str(row.get("lifecycle_status") or "").strip().upper(),
+    ]
+
+    if any(s in closed_statuses for s in status_values):
+        return False
+
+    explicit_statuses = [s for s in status_values if s]
+    if explicit_statuses and not any(s in open_statuses for s in explicit_statuses):
+        return False
+
+    return True
+
+
+def _observatory_iter_root_position_rows_20260514(data):
+    """
+    Root-only. No recursion into option, contract, raw_source_trade,
+    monitor_debug, option_chain, ledgers, or history.
+    """
+    if isinstance(data, list):
+        for idx, row in enumerate(data):
+            if isinstance(row, dict):
+                yield f"root[{idx}]", row
+        return
+
+    if not isinstance(data, dict):
+        return
+
+    allowed_keys = [
+        "positions",
+        "open_positions",
+        "active_positions",
+        "current_positions",
+        "holdings",
+        "portfolio_positions",
+    ]
+
+    for key in allowed_keys:
+        value = data.get(key)
+        if isinstance(value, list):
+            for idx, row in enumerate(value):
+                if isinstance(row, dict):
+                    yield f"root.{key}[{idx}]", row
+
+    portfolio = data.get("portfolio")
+    if isinstance(portfolio, dict):
+        for key in allowed_keys:
+            value = portfolio.get(key)
+            if isinstance(value, list):
+                for idx, row in enumerate(value):
+                    if isinstance(row, dict):
+                        yield f"root.portfolio.{key}[{idx}]", row
+
+
+def strict_path_filter_open_positions():
+    """
+    Strict active-book detector used by before/after bot tests.
+    Counts only root-level real active position rows.
+    """
+    import json
+    from pathlib import Path
+
+    project_root = Path("/content/SimpleeMrkTrade")
+    data_dir = project_root / "data"
+
+    candidate_files = [
+        data_dir / "positions.json",
+        data_dir / "open_positions.json",
+        data_dir / "user_positions.json",
+        data_dir / "account_state.json",
+    ]
+
+    found = []
+    seen = set()
+    errors = []
+
+    for file_path in candidate_files:
+        try:
+            if not file_path.exists():
+                continue
+
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            for json_path, row in _observatory_iter_root_position_rows_20260514(data):
+                if not _observatory_row_is_open_20260514(row):
+                    continue
+
+                if _observatory_is_fake_nested_position_row_20260514(row):
+                    continue
+
+                normalized = _observatory_normalize_position_row_20260514(
+                    row,
+                    source_file=file_path,
+                    json_path=json_path,
+                )
+
+                symbol = normalized.get("symbol", "")
+                trade_id = normalized.get("trade_id", "")
+                vehicle = normalized.get("vehicle", "")
+                entry = normalized.get("entry", 0)
+
+                dedupe_key = trade_id or f"{symbol}|{vehicle}|{entry}|{json_path}"
+
+                if dedupe_key in seen:
+                    continue
+
+                seen.add(dedupe_key)
+                found.append(normalized)
+
+        except Exception as exc:
+            errors.append({
+                "file": str(file_path),
+                "error": repr(exc),
+            })
+
+    # Prefer the primary active book if it has clean rows.
+    primary = [p for p in found if str(p.get("source_file", "")).endswith("/positions.json")]
+    if primary:
+        found = primary
+
+    return {
+        "open_count": len(found),
+        "positions": found,
+        "files_checked": len(candidate_files),
+        "sources": sorted(set(p.get("source_file", "") for p in found)),
+        "error_count": len(errors),
+        "errors": errors,
+        "detector_mode": "strict_active_book_only_path_filtered_root_rows",
+    }
+
+
+def strict_active_book_open_positions():
+    return strict_path_filter_open_positions()
+
+
+def root_only_active_position_detector():
+    return strict_path_filter_open_positions()
+
+
+def detect_open_positions():
+    return strict_path_filter_open_positions()
