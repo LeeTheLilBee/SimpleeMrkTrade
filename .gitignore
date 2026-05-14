@@ -24,3 +24,5 @@ data/research_signals*.json
 data/git_large_file_backups/
 data/git_conflict_backups/
 engine/*.backup_*
+
+# Observatory local-heavy data / backups

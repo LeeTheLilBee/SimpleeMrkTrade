@@ -894,3 +894,677 @@ def find_open_positions(verbose=True):
             print(position)
 
     return result
+
+
+
+
+# ============================================================
+# OBSERVATORY_PATCH_FORCE_STRICT_ACTIVE_BOOK_DETECTOR_20260514
+# Purpose:
+# - Authoritative active-position detector for recovery tests.
+# - This intentionally ignores archives, candidate logs, reports,
+#   trade queues, journals, and stale account history.
+# - The active execution book is data/positions.json.
+# ============================================================
+
+def _observatory_safe_upper(value, default=""):
+    try:
+        text = str(value if value is not None else "").strip().upper()
+        return text if text else default
+    except Exception:
+        return default
+
+
+def _observatory_safe_float(value, default=0.0):
+    try:
+        if value is None or value == "":
+            return default
+        return float(value)
+    except Exception:
+        return default
+
+
+def _observatory_load_json_file(path, default=None):
+    import json
+    import os
+
+    if default is None:
+        default = []    
+
+    try:
+        if not os.path.exists(path):
+            return default
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return default
+
+
+def _observatory_walk_json_active_book(obj, path="root", max_depth=40):
+    """
+    Walk JSON safely, but only accept records that live under active-position
+    style containers. This prevents raw_source_trade history, reports, and
+    stale nested snapshots from being treated as active positions.
+    """
+    if max_depth <= 0:
+        return
+
+    if isinstance(obj, dict):
+        yield path, obj
+        for key, value in obj.items():
+            key_text = str(key)
+            next_path = f"{path}.{key_text}"
+            yield from _observatory_walk_json_active_book(value, next_path, max_depth - 1)
+
+    elif isinstance(obj, list):
+        for idx, item in enumerate(obj):
+            next_path = f"{path}[{idx}]"
+            yield from _observatory_walk_json_active_book(item, next_path, max_depth - 1)
+
+
+def _observatory_path_allowed_for_active_book(json_path):
+    """
+    Only allow top-level/list-level position records and recognized active
+    position containers. Reject nested raw_source_trade chains because those
+    are historical payload echoes, not authoritative active book rows.
+    """
+    p = str(json_path or "").lower()
+
+    if "raw_source_trade" in p:
+        return False
+
+    if "closed" in p:
+        return False
+
+    allowed_tokens = [
+        "root[",
+        "root.positions",
+        "root.open_positions",
+        "root.active_positions",
+        "root.current_positions",
+        "root.portfolio_positions",
+        "root.holdings",
+    ]
+
+    return any(token in p for token in allowed_tokens)
+
+
+def _observatory_record_looks_like_active_position(record):
+    if not isinstance(record, dict):
+        return False
+
+    symbol = str(record.get("symbol") or record.get("ticker") or "").strip().upper()
+    if not symbol:
+        return False
+
+    status = _observatory_safe_upper(
+        record.get("position_status")
+        or record.get("status")
+        or record.get("state")
+        or ""
+    )
+
+    # If status is present, it must be active/open-like.
+    if status:
+        active_statuses = {
+            "OPEN",
+            "ACTIVE",
+            "HELD",
+            "HOLDING",
+            "FILLED_OPEN",
+            "LIVE",
+        }
+        closed_statuses = {
+            "CLOSED",
+            "CLOSE",
+            "EXITED",
+            "SOLD",
+            "TAKE_PROFIT",
+            "STOP_LOSS",
+            "CANCELLED",
+            "CANCELED",
+            "REJECTED",
+            "EXPIRED",
+            "ARCHIVED",
+            "QUARANTINED",
+            "EXECUTION_READY",
+            "EXECUTION_READY_NOT_SELECTED",
+            "SELECTED",
+        }
+
+        if status in closed_statuses:
+            return False
+
+        if status not in active_statuses and status != "":
+            return False
+
+    # Must have something position-like.
+    position_like_keys = {
+        "entry",
+        "entry_price",
+        "entry_premium",
+        "premium_entry",
+        "quantity",
+        "qty",
+        "shares",
+        "contracts",
+        "vehicle",
+        "asset_type",
+        "trade_id",
+        "opened_at",
+    }
+
+    if not any(k in record for k in position_like_keys):
+        return False
+
+    return True
+
+
+def _observatory_normalize_active_position(record, source_file="", json_path=""):
+    symbol = str(record.get("symbol") or record.get("ticker") or "").strip().upper()
+
+    vehicle = _observatory_safe_upper(
+        record.get("vehicle")
+        or record.get("asset_type")
+        or record.get("trade_type")
+        or "UNKNOWN",
+        "UNKNOWN",
+    )
+
+    trade_id = str(
+        record.get("trade_id")
+        or record.get("id")
+        or record.get("position_id")
+        or ""
+    ).strip()
+
+    status = _observatory_safe_upper(record.get("status") or "OPEN", "OPEN")
+    position_status = _observatory_safe_upper(
+        record.get("position_status") or status or "OPEN",
+        "OPEN",
+    )
+
+    entry = _observatory_safe_float(
+        record.get("entry")
+        or record.get("entry_price")
+        or record.get("entry_premium")
+        or record.get("premium_entry")
+        or record.get("fill_price")
+        or 0.0,
+        0.0,
+    )
+
+    current = _observatory_safe_float(
+        record.get("current")
+        or record.get("current_price")
+        or record.get("current_premium")
+        or record.get("premium_current")
+        or record.get("current_option_mark")
+        or record.get("mark")
+        or entry,
+        entry,
+    )
+
+    monitoring = _observatory_safe_upper(
+        record.get("monitoring")
+        or record.get("monitoring_mode")
+        or record.get("monitoring_price_type")
+        or record.get("price_review_basis")
+        or ""
+    )
+
+    basis = _observatory_safe_upper(
+        record.get("basis")
+        or record.get("pnl_basis")
+        or record.get("price_basis")
+        or record.get("price_review_basis")
+        or ""
+    )
+
+    # Normalize option monitoring labels for cleaner diagnostics.
+    if vehicle == "OPTION" and not monitoring:
+        monitoring = "OPTION_PREMIUM"
+    if vehicle == "OPTION" and not basis:
+        basis = "OPTION_PREMIUM"
+    if vehicle == "STOCK" and not monitoring:
+        monitoring = "UNDERLYING"
+    if vehicle == "STOCK" and not basis:
+        basis = "STOCK_PRICE"
+
+    return {
+        "symbol": symbol,
+        "trade_id": trade_id,
+        "vehicle": vehicle,
+        "status": status,
+        "position_status": position_status,
+        "entry": entry,
+        "current": current,
+        "monitoring": monitoring,
+        "basis": basis,
+        "source_file": str(source_file),
+        "json_path": str(json_path),
+    }
+
+
+def find_open_positions(verbose=True):
+    """
+    Authoritative strict detector.
+
+    Recovery tests must use this version. It only reads data/positions.json
+    and only counts records that look like active book positions.
+    """
+    import os
+
+    project_root = "/content/SimpleeMrkTrade"
+    data_dir = os.path.join(project_root, "data")
+
+    active_book_files = [
+        os.path.join(data_dir, "positions.json"),
+    ]
+
+    positions = []
+    sources = []
+    errors = []
+
+    for file_path in active_book_files:
+        if not os.path.exists(file_path):
+            continue
+
+        payload = _observatory_load_json_file(file_path, default=[])
+
+        for json_path, record in _observatory_walk_json_active_book(payload):
+            if not _observatory_path_allowed_for_active_book(json_path):
+                continue
+
+            if not _observatory_record_looks_like_active_position(record):
+                continue
+
+            normalized = _observatory_normalize_active_position(
+                record,
+                source_file=file_path,
+                json_path=json_path,
+            )
+
+            # De-dupe by trade_id if available; otherwise symbol/vehicle/path.
+            dedupe_key = (
+                normalized.get("trade_id")
+                or f"{normalized.get('symbol')}|{normalized.get('vehicle')}|{normalized.get('json_path')}"
+            )
+
+            if not any(
+                (p.get("trade_id") or f"{p.get('symbol')}|{p.get('vehicle')}|{p.get('json_path')}") == dedupe_key
+                for p in positions
+            ):
+                positions.append(normalized)
+
+        if positions and file_path not in sources:
+            sources.append(file_path)
+
+    result = {
+        "open_count": len(positions),
+        "positions": positions,
+        "sources": sources,
+        "files_checked": len(active_book_files),
+        "error_count": len(errors),
+        "errors": errors,
+        "detector_mode": "strict_active_book_only_path_filtered",
+        "allowed_path_tokens": [
+            "positions",
+            "open_positions",
+            "active_positions",
+            "current_positions",
+            "portfolio_positions",
+            "holdings",
+        ],
+        "patch_marker": "OBSERVATORY_PATCH_FORCE_STRICT_ACTIVE_BOOK_DETECTOR_20260514",
+    }
+
+    if verbose:
+        print("STRICT OPEN POSITION DETECTOR:", {
+            "open_count": result["open_count"],
+            "files_checked": result["files_checked"],
+            "sources": result["sources"],
+            "error_count": result["error_count"],
+            "detector_mode": result["detector_mode"],
+        })
+        for position in positions:
+            print(position)
+
+    return result
+
+
+
+
+# ============================================================
+# OBSERVATORY_PATCH_FORCE_STRICT_ACTIVE_BOOK_DETECTOR_20260514
+# Purpose:
+# - Authoritative active-position detector for recovery tests.
+# - This intentionally ignores archives, candidate logs, reports,
+#   trade queues, journals, and stale account history.
+# - The active execution book is data/positions.json.
+# ============================================================
+
+def _observatory_safe_upper(value, default=""):
+    try:
+        text = str(value if value is not None else "").strip().upper()
+        return text if text else default
+    except Exception:
+        return default
+
+
+def _observatory_safe_float(value, default=0.0):
+    try:
+        if value is None or value == "":
+            return default
+        return float(value)
+    except Exception:
+        return default
+
+
+def _observatory_load_json_file(path, default=None):
+    import json
+    import os
+
+    if default is None:
+        default = []    
+
+    try:
+        if not os.path.exists(path):
+            return default
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return default
+
+
+def _observatory_walk_json_active_book(obj, path="root", max_depth=40):
+    """
+    Walk JSON safely, but only accept records that live under active-position
+    style containers. This prevents raw_source_trade history, reports, and
+    stale nested snapshots from being treated as active positions.
+    """
+    if max_depth <= 0:
+        return
+
+    if isinstance(obj, dict):
+        yield path, obj
+        for key, value in obj.items():
+            key_text = str(key)
+            next_path = f"{path}.{key_text}"
+            yield from _observatory_walk_json_active_book(value, next_path, max_depth - 1)
+
+    elif isinstance(obj, list):
+        for idx, item in enumerate(obj):
+            next_path = f"{path}[{idx}]"
+            yield from _observatory_walk_json_active_book(item, next_path, max_depth - 1)
+
+
+def _observatory_path_allowed_for_active_book(json_path):
+    """
+    Only allow top-level/list-level position records and recognized active
+    position containers. Reject nested raw_source_trade chains because those
+    are historical payload echoes, not authoritative active book rows.
+    """
+    p = str(json_path or "").lower()
+
+    if "raw_source_trade" in p:
+        return False
+
+    if "closed" in p:
+        return False
+
+    allowed_tokens = [
+        "root[",
+        "root.positions",
+        "root.open_positions",
+        "root.active_positions",
+        "root.current_positions",
+        "root.portfolio_positions",
+        "root.holdings",
+    ]
+
+    return any(token in p for token in allowed_tokens)
+
+
+def _observatory_record_looks_like_active_position(record):
+    if not isinstance(record, dict):
+        return False
+
+    symbol = str(record.get("symbol") or record.get("ticker") or "").strip().upper()
+    if not symbol:
+        return False
+
+    status = _observatory_safe_upper(
+        record.get("position_status")
+        or record.get("status")
+        or record.get("state")
+        or ""
+    )
+
+    # If status is present, it must be active/open-like.
+    if status:
+        active_statuses = {
+            "OPEN",
+            "ACTIVE",
+            "HELD",
+            "HOLDING",
+            "FILLED_OPEN",
+            "LIVE",
+        }
+        closed_statuses = {
+            "CLOSED",
+            "CLOSE",
+            "EXITED",
+            "SOLD",
+            "TAKE_PROFIT",
+            "STOP_LOSS",
+            "CANCELLED",
+            "CANCELED",
+            "REJECTED",
+            "EXPIRED",
+            "ARCHIVED",
+            "QUARANTINED",
+            "EXECUTION_READY",
+            "EXECUTION_READY_NOT_SELECTED",
+            "SELECTED",
+        }
+
+        if status in closed_statuses:
+            return False
+
+        if status not in active_statuses and status != "":
+            return False
+
+    # Must have something position-like.
+    position_like_keys = {
+        "entry",
+        "entry_price",
+        "entry_premium",
+        "premium_entry",
+        "quantity",
+        "qty",
+        "shares",
+        "contracts",
+        "vehicle",
+        "asset_type",
+        "trade_id",
+        "opened_at",
+    }
+
+    if not any(k in record for k in position_like_keys):
+        return False
+
+    return True
+
+
+def _observatory_normalize_active_position(record, source_file="", json_path=""):
+    symbol = str(record.get("symbol") or record.get("ticker") or "").strip().upper()
+
+    vehicle = _observatory_safe_upper(
+        record.get("vehicle")
+        or record.get("asset_type")
+        or record.get("trade_type")
+        or "UNKNOWN",
+        "UNKNOWN",
+    )
+
+    trade_id = str(
+        record.get("trade_id")
+        or record.get("id")
+        or record.get("position_id")
+        or ""
+    ).strip()
+
+    status = _observatory_safe_upper(record.get("status") or "OPEN", "OPEN")
+    position_status = _observatory_safe_upper(
+        record.get("position_status") or status or "OPEN",
+        "OPEN",
+    )
+
+    entry = _observatory_safe_float(
+        record.get("entry")
+        or record.get("entry_price")
+        or record.get("entry_premium")
+        or record.get("premium_entry")
+        or record.get("fill_price")
+        or 0.0,
+        0.0,
+    )
+
+    current = _observatory_safe_float(
+        record.get("current")
+        or record.get("current_price")
+        or record.get("current_premium")
+        or record.get("premium_current")
+        or record.get("current_option_mark")
+        or record.get("mark")
+        or entry,
+        entry,
+    )
+
+    monitoring = _observatory_safe_upper(
+        record.get("monitoring")
+        or record.get("monitoring_mode")
+        or record.get("monitoring_price_type")
+        or record.get("price_review_basis")
+        or ""
+    )
+
+    basis = _observatory_safe_upper(
+        record.get("basis")
+        or record.get("pnl_basis")
+        or record.get("price_basis")
+        or record.get("price_review_basis")
+        or ""
+    )
+
+    # Normalize option monitoring labels for cleaner diagnostics.
+    if vehicle == "OPTION" and not monitoring:
+        monitoring = "OPTION_PREMIUM"
+    if vehicle == "OPTION" and not basis:
+        basis = "OPTION_PREMIUM"
+    if vehicle == "STOCK" and not monitoring:
+        monitoring = "UNDERLYING"
+    if vehicle == "STOCK" and not basis:
+        basis = "STOCK_PRICE"
+
+    return {
+        "symbol": symbol,
+        "trade_id": trade_id,
+        "vehicle": vehicle,
+        "status": status,
+        "position_status": position_status,
+        "entry": entry,
+        "current": current,
+        "monitoring": monitoring,
+        "basis": basis,
+        "source_file": str(source_file),
+        "json_path": str(json_path),
+    }
+
+
+def find_open_positions(verbose=True):
+    """
+    Authoritative strict detector.
+
+    Recovery tests must use this version. It only reads data/positions.json
+    and only counts records that look like active book positions.
+    """
+    import os
+
+    project_root = "/content/SimpleeMrkTrade"
+    data_dir = os.path.join(project_root, "data")
+
+    active_book_files = [
+        os.path.join(data_dir, "positions.json"),
+    ]
+
+    positions = []
+    sources = []
+    errors = []
+
+    for file_path in active_book_files:
+        if not os.path.exists(file_path):
+            continue
+
+        payload = _observatory_load_json_file(file_path, default=[])
+
+        for json_path, record in _observatory_walk_json_active_book(payload):
+            if not _observatory_path_allowed_for_active_book(json_path):
+                continue
+
+            if not _observatory_record_looks_like_active_position(record):
+                continue
+
+            normalized = _observatory_normalize_active_position(
+                record,
+                source_file=file_path,
+                json_path=json_path,
+            )
+
+            # De-dupe by trade_id if available; otherwise symbol/vehicle/path.
+            dedupe_key = (
+                normalized.get("trade_id")
+                or f"{normalized.get('symbol')}|{normalized.get('vehicle')}|{normalized.get('json_path')}"
+            )
+
+            if not any(
+                (p.get("trade_id") or f"{p.get('symbol')}|{p.get('vehicle')}|{p.get('json_path')}") == dedupe_key
+                for p in positions
+            ):
+                positions.append(normalized)
+
+        if positions and file_path not in sources:
+            sources.append(file_path)
+
+    result = {
+        "open_count": len(positions),
+        "positions": positions,
+        "sources": sources,
+        "files_checked": len(active_book_files),
+        "error_count": len(errors),
+        "errors": errors,
+        "detector_mode": "strict_active_book_only_path_filtered",
+        "allowed_path_tokens": [
+            "positions",
+            "open_positions",
+            "active_positions",
+            "current_positions",
+            "portfolio_positions",
+            "holdings",
+        ],
+        "patch_marker": "OBSERVATORY_PATCH_FORCE_STRICT_ACTIVE_BOOK_DETECTOR_20260514",
+    }
+
+    if verbose:
+        print("STRICT OPEN POSITION DETECTOR:", {
+            "open_count": result["open_count"],
+            "files_checked": result["files_checked"],
+            "sources": result["sources"],
+            "error_count": result["error_count"],
+            "detector_mode": result["detector_mode"],
+        })
+        for position in positions:
+            print(position)
+
+    return result
