@@ -1876,5 +1876,55 @@
       "Market regime: Neutral.",
       "Trend context: Uptrend."
     ]
+  },
+  {
+    "timestamp": "2026-05-14T12:55:03.508381",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 298.2,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-14T13:52:55.441094",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 269.5,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
   }
 ]

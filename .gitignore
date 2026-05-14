@@ -18,3 +18,9 @@ data/canonical_ledger_archive*.json
 *_backup*
 *_pre_compact.json
 data/_local_archives/
+# Observatory generated large data files
+data/research_signals.json
+data/research_signals*.json
+data/git_large_file_backups/
+data/git_conflict_backups/
+engine/*.backup_*

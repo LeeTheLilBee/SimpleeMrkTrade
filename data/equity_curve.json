@@ -398,5 +398,195 @@
     "timestamp": "2026-05-06T18:20:33.784121",
     "strategy": "CALL",
     "status": "FILLED"
+  },
+  {
+    "index": 40,
+    "equity": 24338.26,
+    "pnl": 2021.0,
+    "symbol": "QCOM",
+    "trade_id": "QCOM-CALL-20260508160920",
+    "timestamp": "2026-05-09T21:45:08.727300+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 41,
+    "equity": 24391.26,
+    "pnl": 53.0,
+    "symbol": "SMCI",
+    "trade_id": "SMCI-CALL-20260508160937",
+    "timestamp": "2026-05-09T21:45:35.674098+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 42,
+    "equity": 26412.26,
+    "pnl": 2021.0,
+    "symbol": "QCOM",
+    "trade_id": "QCOM-CALL-20260508162348",
+    "timestamp": "2026-05-09T21:46:02.851449+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 43,
+    "equity": 28433.26,
+    "pnl": 2021.0,
+    "symbol": "QCOM",
+    "trade_id": "QCOM-CALL-20260508160920",
+    "timestamp": "2026-05-09T21:45:08.727300+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 44,
+    "equity": 28486.26,
+    "pnl": 53.0,
+    "symbol": "SMCI",
+    "trade_id": "SMCI-CALL-20260508160937",
+    "timestamp": "2026-05-09T21:45:35.674098+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 45,
+    "equity": 30507.26,
+    "pnl": 2021.0,
+    "symbol": "QCOM",
+    "trade_id": "QCOM-CALL-20260508162348",
+    "timestamp": "2026-05-09T21:46:02.851449+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 46,
+    "equity": 32528.26,
+    "pnl": 2021.0,
+    "symbol": "QCOM",
+    "trade_id": "QCOM-CALL-20260509221732",
+    "timestamp": "2026-05-09T22:36:10.510485+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 47,
+    "equity": 32581.26,
+    "pnl": 53.0,
+    "symbol": "SMCI",
+    "trade_id": "SMCI-CALL-20260509221804",
+    "timestamp": "2026-05-09T22:36:40.747742+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 48,
+    "equity": 32823.26,
+    "pnl": 242.0,
+    "symbol": "ORCL",
+    "trade_id": "ORCL-CALL-20260509221819",
+    "timestamp": "2026-05-09T22:37:13.081171+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 49,
+    "equity": 34844.26,
+    "pnl": 2021.0,
+    "symbol": "QCOM",
+    "trade_id": "QCOM-CALL-20260509221732",
+    "timestamp": "2026-05-09T22:36:10.510485+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 50,
+    "equity": 34897.26,
+    "pnl": 53.0,
+    "symbol": "SMCI",
+    "trade_id": "SMCI-CALL-20260509221804",
+    "timestamp": "2026-05-09T22:36:40.747742+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 51,
+    "equity": 35139.26,
+    "pnl": 242.0,
+    "symbol": "ORCL",
+    "trade_id": "ORCL-CALL-20260509221819",
+    "timestamp": "2026-05-09T22:37:13.081171+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 52,
+    "equity": 35139.26,
+    "pnl": 0.0,
+    "symbol": "SOXX",
+    "trade_id": "SOXX-CALL-20260511160823",
+    "timestamp": "2026-05-11T16:08:23.246360",
+    "strategy": "CALL",
+    "status": "FILLED"
+  },
+  {
+    "index": 53,
+    "equity": 35117.61,
+    "pnl": -21.65,
+    "symbol": "QCOM",
+    "trade_id": "QCOM-CALL-20260511180400",
+    "timestamp": "2026-05-14T12:55:06.346617+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 54,
+    "equity": 35116.83,
+    "pnl": -0.78,
+    "symbol": "SMCI",
+    "trade_id": "SMCI-CALL-20260511181542",
+    "timestamp": "2026-05-11T19:35:08.554280+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 55,
+    "equity": 35116.05,
+    "pnl": -0.78,
+    "symbol": "SMCI",
+    "trade_id": "SMCI-CALL-20260511181542",
+    "timestamp": "2026-05-11T19:35:08.554280+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 56,
+    "equity": 35824.55,
+    "pnl": 708.5,
+    "symbol": "PANW",
+    "trade_id": "PANW-CALL-20260512160937",
+    "timestamp": "2026-05-14T01:41:29.328837+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 57,
+    "equity": 36533.05,
+    "pnl": 708.5,
+    "symbol": "PANW",
+    "trade_id": "PANW-CALL-20260512160937",
+    "timestamp": "2026-05-14T01:41:29.328837+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
+  },
+  {
+    "index": 58,
+    "equity": 36511.4,
+    "pnl": -21.65,
+    "symbol": "QCOM",
+    "trade_id": "QCOM-CALL-20260511180400",
+    "timestamp": "2026-05-14T12:55:06.346617+00:00",
+    "strategy": "CALL",
+    "status": "CLOSED"
   }
 ]
