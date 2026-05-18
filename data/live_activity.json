@@ -1,176 +1,5 @@
 [
   {
-    "timestamp": "2026-04-20T17:03:43.505657",
-    "event_type": "SIGNAL",
-    "message": "BAC approved as CALL with score 231.94",
-    "symbol": "BAC",
-    "meta": {
-      "trade_id": "BAC-CALL-20260420170241",
-      "strategy": "CALL",
-      "score": 231.94,
-      "confidence": "HIGH",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-04-20T17:04:06.662580",
-    "event_type": "SYSTEM",
-    "message": "Bot run completed in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:50:08.650149",
-    "event_type": "SYSTEM",
-    "message": "Bot run started in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:50:10.666668",
-    "event_type": "MARKET",
-    "message": "Market regime identified as NEUTRAL",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:50:25.749295",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:51:03.770066",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 50 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:51:03.773160",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 5 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:51:08.493004",
-    "event_type": "QUEUE",
-    "message": "Approved 0 research trades; selected 0 execution trades in market mode NEUTRAL / trading mode Paper Mode",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:51:25.938517",
-    "event_type": "SYSTEM",
-    "message": "Bot run completed in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:54:13.335568",
-    "event_type": "SYSTEM",
-    "message": "Bot run started in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:54:14.169567",
-    "event_type": "MARKET",
-    "message": "Market regime identified as NEUTRAL",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:54:23.631190",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:55:01.335514",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 50 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:55:01.338508",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 5 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:55:19.623231",
-    "event_type": "QUEUE",
-    "message": "Approved 40 research trades; selected 3 execution trades in market mode NEUTRAL / trading mode Paper Mode",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T22:56:37.152043",
-    "event_type": "SIGNAL",
-    "message": "INTC approved as CALL with score 1061.8",
-    "symbol": "INTC",
-    "meta": {
-      "trade_id": "INTC-CALL-20260501225519",
-      "strategy": "CALL",
-      "score": 1061.8,
-      "confidence": "HIGH",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-05-01T22:56:37.213734",
-    "event_type": "SIGNAL",
-    "message": "AMD approved as CALL with score 737.48",
-    "symbol": "AMD",
-    "meta": {
-      "trade_id": "AMD-CALL-20260501225521",
-      "strategy": "CALL",
-      "score": 737.48,
-      "confidence": "HIGH",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-05-01T22:56:37.276018",
-    "event_type": "SIGNAL",
-    "message": "ROKU approved as CALL with score 287.05",
-    "symbol": "ROKU",
-    "meta": {
-      "trade_id": "ROKU-CALL-20260501225539",
-      "strategy": "CALL",
-      "score": 287.05,
-      "confidence": "HIGH",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-05-01T22:56:55.736423",
-    "event_type": "SYSTEM",
-    "message": "Bot run completed in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T23:23:34.833583",
-    "event_type": "SYSTEM",
-    "message": "Bot run started in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-01T23:23:36.356180",
-    "event_type": "MARKET",
-    "message": "Market regime identified as NEUTRAL",
-    "symbol": null,
-    "meta": {}
-  },
-  {
     "timestamp": "2026-05-01T23:23:46.387759",
     "event_type": "WATCHLIST",
     "message": "Watchlist built with 50 symbols",
@@ -2292,6 +2121,165 @@
   },
   {
     "timestamp": "2026-05-14T13:54:16.948768",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:41:23.432586",
+    "event_type": "SYSTEM",
+    "message": "Bot run started in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:41:44.086791",
+    "event_type": "MARKET",
+    "message": "Market regime identified as NEUTRAL",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:42:08.506398",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 50 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:43:10.429952",
+    "event_type": "EXECUTION",
+    "message": "Aggressive execution universe rebuilt with 50 candidates",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:43:10.432057",
+    "event_type": "SPOTLIGHT",
+    "message": "Top spotlight contains 5 names",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:43:46.012891",
+    "event_type": "QUEUE",
+    "message": "Approved 27 research trades; selected 2 execution trades in market mode NEUTRAL / trading mode Paper Mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:44:33.269039",
+    "event_type": "RISK",
+    "message": "Correlation risk warning in paper mode: Too many positions concentrated in one sector.",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:44:33.312866",
+    "event_type": "RISK",
+    "message": "Sector concentration warning in paper mode; continuing because this is not live mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:44:33.337674",
+    "event_type": "RISK",
+    "message": "Reduced-risk mode active in paper: trimmed trade queue",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:44:33.403381",
+    "event_type": "SIGNAL",
+    "message": "QCOM approved as CALL with score 559.24",
+    "symbol": "QCOM",
+    "meta": {
+      "trade_id": "QCOM-CALL-20260518164433",
+      "strategy": "CALL",
+      "score": 559.24,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-18T16:45:51.919033",
+    "event_type": "SYSTEM",
+    "message": "Bot run completed in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:46:44.213349",
+    "event_type": "SYSTEM",
+    "message": "Bot run started in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:47:07.008945",
+    "event_type": "MARKET",
+    "message": "Market regime identified as NEUTRAL",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:47:21.072706",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 50 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:48:21.652424",
+    "event_type": "EXECUTION",
+    "message": "Aggressive execution universe rebuilt with 50 candidates",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:48:21.654507",
+    "event_type": "SPOTLIGHT",
+    "message": "Top spotlight contains 5 names",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:49:12.410454",
+    "event_type": "QUEUE",
+    "message": "Approved 28 research trades; selected 3 execution trades in market mode NEUTRAL / trading mode Paper Mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:51:31.482980",
+    "event_type": "RISK",
+    "message": "Correlation risk warning in paper mode: Too many positions concentrated in one sector.",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:51:31.490896",
+    "event_type": "RISK",
+    "message": "Reduced-risk mode active in paper: trimmed trade queue",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-05-18T16:51:31.511706",
+    "event_type": "SIGNAL",
+    "message": "QCOM approved as CALL with score 560.17",
+    "symbol": "QCOM",
+    "meta": {
+      "trade_id": "QCOM-CALL-20260518165131",
+      "strategy": "CALL",
+      "score": 560.17,
+      "confidence": "HIGH",
+      "trading_mode": "paper"
+    }
+  },
+  {
+    "timestamp": "2026-05-18T16:52:28.385255",
     "event_type": "SYSTEM",
     "message": "Bot run completed in Paper Mode (paper)",
     "symbol": null,

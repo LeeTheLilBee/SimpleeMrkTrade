@@ -1,0 +1,24 @@
+{
+  "label": "OBSERVATORY_TEST_C_REAL_BOT_CAPTURED_OUTPUT_20260514",
+  "started_at": "2026-05-18T16:46:44.195721",
+  "finished_at": "2026-05-18T16:52:28.400534",
+  "log_path": "/content/SimpleeMrkTrade/data/test_logs/OBSERVATORY_TEST_C_REAL_BOT_CAPTURED_OUTPUT_20260514_20260518_164643.log",
+  "open_count_before": 3,
+  "open_count_after": 3,
+  "before_symbols": [
+    "INTC",
+    "MU",
+    "AMD"
+  ],
+  "after_symbols": [
+    "INTC",
+    "MU",
+    "AMD"
+  ],
+  "new_positions_count": 0,
+  "new_trade_ids": [],
+  "removed_positions_count": 0,
+  "removed_trade_ids": [],
+  "bot_error_type": null,
+  "bot_error": null
+}

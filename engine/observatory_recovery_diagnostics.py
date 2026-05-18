@@ -2043,3 +2043,282 @@ def root_only_active_position_detector():
 
 def detect_open_positions():
     return strict_path_filter_open_positions()
+
+# ============================================================
+# OBSERVATORY_PATCH_ROOT_ONLY_ACTIVE_POSITION_DETECTOR_20260514
+# Root-only active-book detector.
+# This intentionally avoids recursive scans into option chains, contracts,
+# raw_source_trade, monitor_debug, ledgers, reports, and historical payloads.
+# ============================================================
+
+def root_only_active_position_detector():
+    import json
+    from pathlib import Path
+
+    project_root = Path("/content/SimpleeMrkTrade")
+    data_dir = project_root / "data"
+
+    def _safe_read_json(path, default=None):
+        try:
+            path = Path(path)
+            if not path.exists():
+                return default
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return default
+
+    def _safe_str(value, default=""):
+        if value is None:
+            return default
+        return str(value).strip()
+
+    def _upper(value, default=""):
+        return _safe_str(value, default).upper()
+
+    def _num(value, default=0):
+        try:
+            if value is None or value == "":
+                return default
+            return float(value)
+        except Exception:
+            return default
+
+    def _is_open_status(value):
+        text = _upper(value)
+        return text in {"OPEN", "ACTIVE", "HELD", "HOLD", "LIVE", "MONITORING", "IN_POSITION", "FILLED"}
+
+    def _is_closed_status(value):
+        text = _upper(value)
+        return text in {"CLOSED", "EXITED", "COMPLETE", "COMPLETED", "ARCHIVED", "CANCELLED", "CANCELED", "EXPIRED"}
+
+    def _looks_closed(position):
+        if not isinstance(position, dict):
+            return True
+        for key in ["closed_at", "close_time", "closed_time", "exit_time", "exit_date", "close_date", "closed_date"]:
+            if position.get(key):
+                return True
+        for key in ["status", "position_status", "lifecycle_status"]:
+            if _is_closed_status(position.get(key)):
+                return True
+        return False
+
+    def _extract_symbol(position):
+        if not isinstance(position, dict):
+            return ""
+        for key in ["symbol", "ticker", "underlying", "asset"]:
+            value = position.get(key)
+            if value:
+                return _upper(value)
+        option = position.get("option")
+        if isinstance(option, dict):
+            for key in ["symbol", "underlying", "ticker"]:
+                value = option.get(key)
+                if value:
+                    return _upper(value)
+        return ""
+
+    def _extract_trade_id(position):
+        if not isinstance(position, dict):
+            return ""
+        for key in ["trade_id", "id", "position_id", "order_id"]:
+            value = position.get(key)
+            if value:
+                return str(value)
+        return ""
+
+    def _extract_vehicle(position):
+        if not isinstance(position, dict):
+            return "UNKNOWN"
+        for key in ["vehicle", "vehicle_selected", "selected_vehicle", "asset_type", "instrument_type", "trade_type"]:
+            value = position.get(key)
+            if value:
+                text = _upper(value)
+                if text in {"OPTION", "OPTIONS"}:
+                    return "OPTION"
+                if text in {"STOCK", "EQUITY", "SHARE", "SHARES"}:
+                    return "STOCK"
+                return text
+        if isinstance(position.get("option"), dict) and position.get("option"):
+            return "OPTION"
+        if position.get("contract_symbol") or position.get("contractSymbol") or position.get("option_symbol"):
+            return "OPTION"
+        return "STOCK"
+
+    def _extract_entry(position):
+        for key in ["entry", "entry_price", "entry_premium", "premium_entry", "option_entry", "fill_price", "avg_price", "average_price", "executed_price"]:
+            value = position.get(key)
+            if value not in [None, ""]:
+                return _num(value, 0)
+        return 0
+
+    def _extract_current(position):
+        for key in ["current", "current_price", "current_premium", "premium_current", "current_option_mark", "option_current_price", "current_option_price", "mark", "last"]:
+            value = position.get(key)
+            if value not in [None, ""]:
+                return _num(value, 0)
+        return 0
+
+    def _extract_monitoring(position):
+        for key in ["monitoring", "monitoring_mode", "monitoring_price_type", "monitor_price", "price_monitoring", "price_review_basis"]:
+            value = position.get(key)
+            if value:
+                text = _upper(value)
+                if "OPTION" in text and "PREMIUM" in text:
+                    return "OPTION_PREMIUM"
+                return text
+        if _extract_vehicle(position) == "OPTION":
+            return "OPTION_PREMIUM"
+        return "UNDERLYING"
+
+    def _extract_basis(position):
+        for key in ["basis", "price_basis", "pnl_basis", "price_review_basis"]:
+            value = position.get(key)
+            if value:
+                text = _upper(value)
+                if "OPTION" in text and "PREMIUM" in text:
+                    return "OPTION_PREMIUM"
+                if "STOCK" in text or "UNDERLYING" in text:
+                    return "STOCK_PRICE"
+                return text
+        if _extract_vehicle(position) == "OPTION":
+            return "OPTION_PREMIUM"
+        return "STOCK_PRICE"
+
+    def _position_row_is_real(position):
+        if not isinstance(position, dict):
+            return False
+
+        symbol = _extract_symbol(position)
+        if not symbol:
+            return False
+
+        identity_keys = {
+            "trade_id", "position_id", "id", "opened_at", "status", "position_status",
+            "entry", "entry_price", "entry_premium", "contracts", "shares", "quantity",
+            "qty", "asset_type", "vehicle", "vehicle_selected"
+        }
+
+        has_identity = any(k in position and position.get(k) not in [None, ""] for k in identity_keys)
+        if not has_identity:
+            return False
+
+        if _looks_closed(position):
+            return False
+
+        status_values = [position.get("status"), position.get("position_status"), position.get("lifecycle_status")]
+        has_status = any(v not in [None, ""] for v in status_values)
+        has_open_status = any(_is_open_status(v) for v in status_values)
+
+        if has_status and not has_open_status:
+            return False
+
+        return True
+
+    def _normalize_position(position, source_file, json_path):
+        return {
+            "symbol": _extract_symbol(position),
+            "trade_id": _extract_trade_id(position),
+            "vehicle": _extract_vehicle(position),
+            "status": _upper(position.get("status")) or "OPEN",
+            "position_status": _upper(position.get("position_status")) or "OPEN",
+            "entry": _extract_entry(position),
+            "current": _extract_current(position),
+            "monitoring": _extract_monitoring(position),
+            "basis": _extract_basis(position),
+            "source_file": str(source_file),
+            "json_path": json_path,
+        }
+
+    def _iter_root_position_rows(data):
+        if isinstance(data, list):
+            for idx, row in enumerate(data):
+                if isinstance(row, dict):
+                    yield f"root[{idx}]", row
+            return
+
+        if not isinstance(data, dict):
+            return
+
+        allowed_container_keys = [
+            "positions", "open_positions", "active_positions",
+            "current_positions", "holdings", "portfolio_positions"
+        ]
+
+        for key in allowed_container_keys:
+            value = data.get(key)
+            if isinstance(value, list):
+                for idx, row in enumerate(value):
+                    if isinstance(row, dict):
+                        yield f"root.{key}[{idx}]", row
+
+        portfolio = data.get("portfolio")
+        if isinstance(portfolio, dict):
+            for key in allowed_container_keys:
+                value = portfolio.get(key)
+                if isinstance(value, list):
+                    for idx, row in enumerate(value):
+                        if isinstance(row, dict):
+                            yield f"root.portfolio.{key}[{idx}]", row
+
+    candidate_files = [
+        data_dir / "positions.json",
+        data_dir / "open_positions.json",
+        data_dir / "user_positions.json",
+        data_dir / "account_state.json",
+    ]
+
+    found = []
+    seen = set()
+    errors = []
+
+    for file_path in candidate_files:
+        try:
+            data = _safe_read_json(file_path, default=None)
+            if data is None:
+                continue
+
+            for json_path, row in _iter_root_position_rows(data):
+                if not _position_row_is_real(row):
+                    continue
+
+                normalized = _normalize_position(row, file_path, json_path)
+                trade_id = normalized.get("trade_id")
+                dedupe_key = trade_id or "|".join([
+                    normalized.get("symbol", ""),
+                    normalized.get("vehicle", ""),
+                    str(normalized.get("entry", "")),
+                    json_path,
+                ])
+
+                if dedupe_key in seen:
+                    continue
+
+                seen.add(dedupe_key)
+                found.append(normalized)
+
+        except Exception as exc:
+            errors.append({"file": str(file_path), "error": repr(exc)})
+
+    return {
+        "open_count": len(found),
+        "positions": found,
+        "files_checked": len(candidate_files),
+        "sources": sorted(set(p["source_file"] for p in found)),
+        "error_count": len(errors),
+        "errors": errors,
+        "detector_mode": "root_only_active_book_positions",
+    }
+
+
+# Compatibility aliases so older recovery tests can call the stricter detector.
+def strict_path_filter_open_positions():
+    return root_only_active_position_detector()
+
+
+def strict_active_book_open_positions():
+    return root_only_active_position_detector()
+
+
+def detect_open_positions():
+    return root_only_active_position_detector()
