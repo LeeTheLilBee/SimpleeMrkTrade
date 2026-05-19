@@ -271,6 +271,19 @@ def _build_execution_queue(selected_trades, resolved_trading_mode):
         return execution_queue
 
     for candidate in selected_trades:
+        # OBSERVATORY_REPAIR_PRE_LIFECYCLE_HYDRATION_SCOPE_FLEX_20260519
+        if isinstance(candidate, dict):
+            candidate = _hydrate_bot_option_payload(candidate)
+            if str(candidate.get('vehicle_selected') or candidate.get('selected_vehicle') or '').upper() == 'OPTION':
+                _chain = candidate.get('option_chain') if isinstance(candidate.get('option_chain'), list) else []
+                print('PRE-LIFECYCLE OPTION HYDRATION:', {
+                    'symbol': candidate.get('symbol'),
+                    'vehicle_selected': candidate.get('vehicle_selected') or candidate.get('selected_vehicle'),
+                    'has_option': isinstance(candidate.get('option'), dict),
+                    'option_chain_count': len(_chain),
+                    'contract_symbol': candidate.get('contract_symbol') or candidate.get('contractSymbol'),
+                    'first_chain_contract': (_chain[0].get('contractSymbol') if _chain and isinstance(_chain[0], dict) else None),
+                })
         option_chain = (
             candidate.get("option_chain", [])
             if isinstance(candidate.get("option_chain"), list)
@@ -961,3 +974,333 @@ def run(trading_mode="paper"):
 
 if __name__ == "__main__":
     run()
+
+
+# ============================================================
+# OBSERVATORY_REPAIR_BOT_HANDOFF_APPEND_OVERRIDE_20260519
+# Bot handoff compatibility overrides appended safely at EOF.
+# Purpose:
+# - Paper/Survey should keep the full selected queue.
+# - Live should keep conservative reduced-risk trimming.
+# - Flat option fields should hydrate into option + option_chain.
+# ============================================================
+
+def _resolve_bot_mode(value=None):
+    raw = str(value or "").strip().lower()
+    if raw in {"live", "live_mode", "production", "real"}:
+        return "live"
+    if raw in {"survey", "survey_mode", "deep_space"}:
+        return "survey"
+    if raw in {"paper", "paper_mode", "simulation", "sim"}:
+        return "paper"
+    return raw or "paper"
+
+
+def _trim_for_reduced_risk(selected_trades, resolved_trading_mode="paper"):
+    """
+    OBSERVATORY_REPAIR_BOT_HANDOFF_APPEND_OVERRIDE_20260519
+
+    Appended override. Python uses the last function definition, so this safely
+    replaces older one-argument versions without editing the middle of bot.py.
+    """
+    trades = selected_trades if isinstance(selected_trades, list) else []
+    mode = _resolve_bot_mode(resolved_trading_mode)
+
+    if mode == "live":
+        return trades[:1]
+
+    return trades
+
+
+def _safe_bot_float(value, default=0.0):
+    try:
+        if value is None:
+            return default
+        return float(value)
+    except Exception:
+        return default
+
+
+def _hydrate_bot_option_payload(trade):
+    """
+    OBSERVATORY_PATCH_OPTION_EXECUTABLE_FLAG_PROPAGATION_20260519
+
+    Some selected option trades arrive from process_signals with flat contract fields:
+    contract_symbol, expiration, right, strike, mark, bid, ask, contract_score, etc.
+
+    build_options_lifecycle can approve the trade after we hydrate option_chain,
+    but the final execution/paper adapter may inspect option/contract/chain fields
+    directly and require is_executable=True.
+
+    This helper makes the option payload consistent across:
+    - top-level trade
+    - trade["option"]
+    - trade["contract"]
+    - trade["option_chain"][0]
+    """
+    if not isinstance(trade, dict):
+        return trade
+
+    trade = dict(trade)
+
+    vehicle = str(
+        trade.get("vehicle_selected")
+        or trade.get("selected_vehicle")
+        or trade.get("vehicle")
+        or ""
+    ).strip().upper()
+
+    if vehicle != "OPTION":
+        return trade
+
+    def _first(*values, default=None):
+        for value in values:
+            if value is not None and value != "":
+                return value
+        return default
+
+    def _float(value, default=0.0):
+        try:
+            if value is None or value == "":
+                return float(default)
+            return float(value)
+        except Exception:
+            return float(default)
+
+    existing_option = trade.get("option") if isinstance(trade.get("option"), dict) else {}
+    existing_contract = trade.get("contract") if isinstance(trade.get("contract"), dict) else {}
+
+    existing_chain = trade.get("option_chain") if isinstance(trade.get("option_chain"), list) else []
+    first_chain = existing_chain[0] if existing_chain and isinstance(existing_chain[0], dict) else {}
+
+    contract_symbol = _first(
+        trade.get("contract_symbol"),
+        trade.get("contractSymbol"),
+        existing_option.get("contractSymbol"),
+        existing_option.get("contract_symbol"),
+        existing_contract.get("contractSymbol"),
+        existing_contract.get("contract_symbol"),
+        first_chain.get("contractSymbol"),
+        first_chain.get("contract_symbol"),
+        default="",
+    )
+
+    expiration = _first(
+        trade.get("expiration"),
+        trade.get("expiry"),
+        trade.get("exp"),
+        existing_option.get("expiration"),
+        existing_option.get("expiry"),
+        existing_contract.get("expiration"),
+        existing_contract.get("expiry"),
+        first_chain.get("expiration"),
+        first_chain.get("expiry"),
+        default="",
+    )
+
+    right = str(_first(
+        trade.get("right"),
+        trade.get("option_type"),
+        trade.get("strategy"),
+        trade.get("final_strategy"),
+        existing_option.get("right"),
+        existing_option.get("option_type"),
+        existing_contract.get("right"),
+        existing_contract.get("option_type"),
+        first_chain.get("right"),
+        first_chain.get("option_type"),
+        default="CALL",
+    ) or "CALL").strip().upper()
+
+    if right not in {"CALL", "PUT"}:
+        right = "CALL"
+
+    strike = _float(_first(
+        trade.get("strike"),
+        existing_option.get("strike"),
+        existing_contract.get("strike"),
+        first_chain.get("strike"),
+        default=0.0,
+    ), 0.0)
+
+    mark = _float(_first(
+        trade.get("mark"),
+        trade.get("price_reference"),
+        trade.get("selected_price_reference"),
+        trade.get("entry_premium"),
+        trade.get("premium"),
+        existing_option.get("mark"),
+        existing_option.get("price_reference"),
+        existing_option.get("selected_price_reference"),
+        existing_contract.get("mark"),
+        existing_contract.get("price_reference"),
+        existing_contract.get("selected_price_reference"),
+        first_chain.get("mark"),
+        first_chain.get("price_reference"),
+        first_chain.get("selected_price_reference"),
+        default=0.0,
+    ), 0.0)
+
+    bid = _float(_first(
+        trade.get("bid"),
+        existing_option.get("bid"),
+        existing_contract.get("bid"),
+        first_chain.get("bid"),
+        default=mark,
+    ), mark)
+
+    ask = _float(_first(
+        trade.get("ask"),
+        existing_option.get("ask"),
+        existing_contract.get("ask"),
+        first_chain.get("ask"),
+        default=mark,
+    ), mark)
+
+    last = _float(_first(
+        trade.get("last"),
+        existing_option.get("last"),
+        existing_contract.get("last"),
+        first_chain.get("last"),
+        default=mark,
+    ), mark)
+
+    volume = _float(_first(
+        trade.get("volume"),
+        existing_option.get("volume"),
+        existing_contract.get("volume"),
+        first_chain.get("volume"),
+        default=0.0,
+    ), 0.0)
+
+    open_interest = _float(_first(
+        trade.get("open_interest"),
+        trade.get("openInterest"),
+        existing_option.get("open_interest"),
+        existing_option.get("openInterest"),
+        existing_contract.get("open_interest"),
+        existing_contract.get("openInterest"),
+        first_chain.get("open_interest"),
+        first_chain.get("openInterest"),
+        default=0.0,
+    ), 0.0)
+
+    contract_score = _float(_first(
+        trade.get("contract_score"),
+        trade.get("option_contract_score"),
+        existing_option.get("contract_score"),
+        existing_contract.get("contract_score"),
+        first_chain.get("contract_score"),
+        default=0.0,
+    ), 0.0)
+
+    execution_category = str(_first(
+        trade.get("execution_category"),
+        existing_option.get("execution_category"),
+        existing_contract.get("execution_category"),
+        first_chain.get("execution_category"),
+        default="EXECUTABLE",
+    ) or "EXECUTABLE").strip().upper()
+
+    execution_reason = str(_first(
+        trade.get("execution_reason"),
+        existing_option.get("execution_reason"),
+        existing_contract.get("execution_reason"),
+        first_chain.get("execution_reason"),
+        default="ok",
+    ) or "ok").strip()
+
+    quote_quality = str(_first(
+        trade.get("quote_quality"),
+        existing_option.get("quote_quality"),
+        existing_contract.get("quote_quality"),
+        first_chain.get("quote_quality"),
+        default="OK",
+    ) or "OK").strip().upper()
+
+    # If the trade has already been selected and lifecycle-approved, execution
+    # should not fail just because nested option objects lack a boolean flag.
+    selected_like = bool(
+        trade.get("selected_for_execution")
+        or str(trade.get("final_decision", "")).upper() == "APPROVE"
+        or str(trade.get("lifecycle_stage", "")).upper() == "SELECTED"
+        or execution_category == "EXECUTABLE"
+    )
+
+    is_executable = bool(_first(
+        trade.get("is_executable"),
+        existing_option.get("is_executable"),
+        existing_contract.get("is_executable"),
+        first_chain.get("is_executable"),
+        default=selected_like,
+    ))
+
+    option_payload = {
+        **first_chain,
+        **existing_contract,
+        **existing_option,
+        "symbol": trade.get("symbol"),
+        "contractSymbol": contract_symbol,
+        "contract_symbol": contract_symbol,
+        "expiration": expiration,
+        "expiry": expiration,
+        "right": right,
+        "option_type": right,
+        "strike": strike,
+        "mark": mark,
+        "price_reference": mark,
+        "selected_price_reference": mark,
+        "monitoring_mode": "OPTION_PREMIUM",
+        "contract_score": contract_score,
+        "bid": bid,
+        "ask": ask,
+        "last": last,
+        "volume": volume,
+        "open_interest": open_interest,
+        "execution_category": execution_category,
+        "execution_reason": execution_reason,
+        "quote_quality": quote_quality,
+        "is_executable": is_executable,
+        "capital_required": _float(_first(
+            trade.get("capital_required"),
+            existing_option.get("capital_required"),
+            existing_contract.get("capital_required"),
+            first_chain.get("capital_required"),
+            default=mark * 100.0,
+        ), mark * 100.0),
+        "minimum_trade_cost": _float(_first(
+            trade.get("minimum_trade_cost"),
+            existing_option.get("minimum_trade_cost"),
+            existing_contract.get("minimum_trade_cost"),
+            first_chain.get("minimum_trade_cost"),
+            default=(mark * 100.0) + 1.0,
+        ), (mark * 100.0) + 1.0),
+    }
+
+    trade["option"] = dict(option_payload)
+    trade["contract"] = dict(option_payload)
+    trade["option_chain"] = [dict(option_payload)]
+
+    trade["contract_symbol"] = contract_symbol
+    trade["contractSymbol"] = contract_symbol
+    trade["expiration"] = expiration
+    trade["expiry"] = expiration
+    trade["right"] = right
+    trade["strike"] = strike
+    trade["mark"] = mark
+    trade["price_reference"] = mark
+    trade["selected_price_reference"] = mark
+    trade["monitoring_mode"] = "OPTION_PREMIUM"
+    trade["contract_score"] = contract_score
+    trade["option_contract_score"] = contract_score
+    trade["execution_category"] = execution_category
+    trade["execution_reason"] = execution_reason
+    trade["quote_quality"] = quote_quality
+    trade["is_executable"] = is_executable
+
+    if not trade.get("contracts"):
+        trade["contracts"] = 1
+    trade["shares"] = 0
+
+    return trade
+

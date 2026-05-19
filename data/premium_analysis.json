@@ -2213,5 +2213,229 @@
       "Extremely strong setup with multiple aligned factors.",
       "High conviction based on strong confirmation signals."
     ]
+  },
+  {
+    "timestamp": "2026-05-19T16:37:09.991541",
+    "symbol": "QCOM",
+    "strategy": "CALL",
+    "score": 553.63,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "mode": "NEUTRAL",
+    "regime": "NEUTRAL",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-19T16:37:10.087200",
+    "symbol": "PANW",
+    "strategy": "CALL",
+    "score": 406.08,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "mode": "NEUTRAL",
+    "regime": "NEUTRAL",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-19T16:37:10.177257",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 243.29,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "mode": "NEUTRAL",
+    "regime": "NEUTRAL",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-19T16:56:51.862736",
+    "symbol": "QCOM",
+    "strategy": "CALL",
+    "score": 548.15,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "mode": "NEUTRAL",
+    "regime": "NEUTRAL",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-19T16:56:51.950671",
+    "symbol": "PANW",
+    "strategy": "CALL",
+    "score": 410.35,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "mode": "NEUTRAL",
+    "regime": "NEUTRAL",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-19T16:56:52.039440",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 243.95,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "mode": "NEUTRAL",
+    "regime": "NEUTRAL",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-19T17:27:29.609909",
+    "symbol": "PANW",
+    "strategy": "CALL",
+    "score": 414.18,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "mode": "NEUTRAL",
+    "regime": "NEUTRAL",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-19T17:27:29.707288",
+    "symbol": "GOOGL",
+    "strategy": "CALL",
+    "score": 257.49,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "mode": "NEUTRAL",
+    "regime": "NEUTRAL",
+    "volatility": "NORMAL",
+    "source": "execution",
+    "snippets": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "reasons": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
   }
 ]

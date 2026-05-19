@@ -26,3 +26,8 @@ data/git_conflict_backups/
 engine/*.backup_*
 
 # Observatory local-heavy data / backups
+
+# Observatory local-heavy/generated data / backups
+data/canonical_ledger.json
+data/recent_reports.json
+data/test_logs/
