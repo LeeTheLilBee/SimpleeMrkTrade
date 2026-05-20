@@ -1,6 +1,6 @@
 {
-  "market_universe_run_at": "2026-04-14T00:04:20.525636",
-  "market_universe_count": 163,
+  "market_universe_run_at": "2026-05-20T19:04:15.636282",
+  "market_universe_count": 166,
   "market_universe_source_status": {
     "diversity_seed": {
       "ok": true,
@@ -32,33 +32,33 @@
     },
     "candidate_log": {
       "ok": true,
-      "rows_added_estimate": 0,
-      "source_rows": 8
+      "rows_added_estimate": 1,
+      "source_rows": 78
     },
     "trade_details": {
       "ok": true,
       "rows_added_estimate": 0,
-      "source_rows": 223
+      "source_rows": 300
     },
     "positions": {
       "ok": true,
       "rows_added_estimate": 0,
-      "source_rows": 0
+      "source_rows": 3
     },
     "open_positions": {
       "ok": true,
       "rows_added_estimate": 0,
-      "source_rows": 0
+      "source_rows": 3
     },
     "closed_positions": {
       "ok": true,
-      "rows_added_estimate": 0,
-      "source_rows": 18
+      "rows_added_estimate": 2,
+      "source_rows": 30
     },
     "user_positions": {
       "ok": true,
       "rows_added_estimate": 0,
-      "source_rows": 1
+      "source_rows": 3
     },
     "my_plays": {
       "ok": true,
