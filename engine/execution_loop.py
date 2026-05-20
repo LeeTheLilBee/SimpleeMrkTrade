@@ -2191,52 +2191,81 @@ def execute_trades(
             session_healthy=session_healthy,
             broker_adapter=broker_adapter,
         )
-        # OBSERVATORY_REPAIR_FILL_REHYDRATION_CALLSITE_ASSIGNMENT_20260520
+        # OBSERVATORY_REPAIR_EXECUTION_LOOP_PRESERVE_PACKET_SHAPE_20260520
+        # Important:
+        # The rehydration helpers return an execution_result dict.
+        # Do NOT assign that directly to packet, or the loop loses packet["success"].
+        # Always write repaired fills back into packet["execution_result"].
         try:
-            _observatory_fill_trade = {}
-            for _name in ('trade', 'queued_trade', 'candidate', 'payload', 'order', 'selected_trade'):
-                _value = locals().get(_name)
-                if isinstance(_value, dict) and _value:
-                    _observatory_fill_trade = _value
-                    break
-        
-            if isinstance(packet, dict):
-                _observatory_fill_record = packet.get('execution_record') if isinstance(packet.get('execution_record'), dict) else {}
-                _observatory_fill_vehicle = str(
-                    _observatory_fill_trade.get('vehicle_selected')
-                    or _observatory_fill_trade.get('selected_vehicle')
-                    or _observatory_fill_trade.get('vehicle')
-                    or _observatory_fill_record.get('vehicle_selected')
-                    or _observatory_fill_record.get('selected_vehicle')
-                    or _observatory_fill_record.get('vehicle')
-                    or packet.get('vehicle_selected')
-                    or packet.get('selected_vehicle')
-                    or packet.get('vehicle')
-                    or ''
-                ).upper()
-        
-                if _observatory_fill_vehicle == 'OPTION' and '_observatory_patch_rehydrate_paper_option_fill_packet' in globals():
-                    packet = _observatory_patch_rehydrate_paper_option_fill_packet(
-                        packet,
-                        _observatory_fill_trade,
-                        _observatory_fill_record,
-                    )
-        
-                if _observatory_fill_vehicle == 'STOCK' and '_observatory_patch_rehydrate_paper_stock_fill_packet_20260520' in globals():
-                    packet = _observatory_patch_rehydrate_paper_stock_fill_packet_20260520(
-                        packet,
-                        _observatory_fill_trade,
-                        _observatory_fill_record,
-                    )
-        
-        except Exception as _observatory_fill_patch_error:
-            print('PAPER FILL REHYDRATION CALLSITE ERROR:', {
-                'error': str(_observatory_fill_patch_error),
-                'assigned_var': 'packet',
-            })
+            packet = _safe_dict(packet)
 
-        # OBSERVATORY_PATCH_PAPER_OPTION_FILL_REHYDRATION_20260519
-        packet = _observatory_patch_rehydrate_paper_option_fill_packet(queued_trade, packet, resolved_mode)
+            _observatory_fill_trade = queued_trade if isinstance(queued_trade, dict) else {}
+            _observatory_fill_result = packet.get("execution_result")
+            if not isinstance(_observatory_fill_result, dict):
+                _observatory_fill_result = {}
+
+            _observatory_fill_record = {}
+            if isinstance(_observatory_fill_result.get("execution_record"), dict):
+                _observatory_fill_record = _observatory_fill_result.get("execution_record")
+            elif isinstance(packet.get("execution_record"), dict):
+                _observatory_fill_record = packet.get("execution_record")
+
+            _observatory_fill_vehicle = str(
+                _observatory_fill_trade.get("vehicle_selected")
+                or _observatory_fill_trade.get("selected_vehicle")
+                or _observatory_fill_trade.get("vehicle")
+                or _observatory_fill_record.get("vehicle_selected")
+                or _observatory_fill_record.get("selected_vehicle")
+                or _observatory_fill_record.get("vehicle")
+                or packet.get("vehicle_selected")
+                or packet.get("selected_vehicle")
+                or packet.get("vehicle")
+                or ""
+            ).upper()
+
+            if _observatory_fill_vehicle == "OPTION" and "_observatory_patch_rehydrate_paper_option_fill_packet" in globals():
+                _observatory_fill_result = _observatory_patch_rehydrate_paper_option_fill_packet(
+                    _observatory_fill_result,
+                    _observatory_fill_trade,
+                    _observatory_fill_record,
+                )
+                if isinstance(_observatory_fill_result, dict):
+                    packet["execution_result"] = _observatory_fill_result
+
+            if _observatory_fill_vehicle == "STOCK" and "_observatory_patch_rehydrate_paper_stock_fill_packet_20260520" in globals():
+                _observatory_fill_result = _observatory_patch_rehydrate_paper_stock_fill_packet_20260520(
+                    _observatory_fill_result,
+                    _observatory_fill_trade,
+                    _observatory_fill_record,
+                )
+                if isinstance(_observatory_fill_result, dict):
+                    packet["execution_result"] = _observatory_fill_result
+
+            _observatory_fill_result = packet.get("execution_result")
+            if isinstance(_observatory_fill_result, dict):
+                _observatory_fill_status = str(_observatory_fill_result.get("status") or "").upper()
+                _observatory_fill_price = _safe_float(
+                    _observatory_fill_result.get("fill_price")
+                    or _observatory_fill_result.get("filled_price")
+                    or _observatory_fill_result.get("entry_premium"),
+                    0.0,
+                )
+                _observatory_fill_cost = _safe_float(_observatory_fill_result.get("actual_cost"), 0.0)
+
+                if _observatory_fill_status in {"FILLED", "EXECUTED"} and _observatory_fill_price > 0 and _observatory_fill_cost > 0:
+                    packet["success"] = True
+                    packet["status"] = "FILLED"
+                    packet["reason"] = packet.get("reason") or "executed"
+                    packet["reason_code"] = packet.get("reason_code") or "executed"
+                    packet["vehicle"] = _observatory_fill_vehicle
+                    packet["vehicle_selected"] = _observatory_fill_vehicle
+                    packet["selected_vehicle"] = _observatory_fill_vehicle
+
+        except Exception as _observatory_fill_patch_error:
+            print("PAPER FILL REHYDRATION CALLSITE ERROR:", {
+                "error": str(_observatory_fill_patch_error),
+                "assigned_var": "packet.execution_result",
+            })
 
         packet = _safe_dict(packet)
         packet["trade_id"] = _extract_trade_id(packet) or _safe_str(queued_trade.get("trade_id"), "")
@@ -2328,20 +2357,36 @@ def execute_trades(
 
         else:
             rejected += 1
-            # OBSERVATORY_REPAIR_FINAL_PAPER_FILL_RESULT_RESCUE_20260520_BEFORE_REJECTION
+            # OBSERVATORY_REPAIR_FINAL_PAPER_FILL_RESULT_RESCUE_20260520_PACKET_ASSIGNMENT
             try:
-                if '_observatory_final_rescue_paper_fill_result_20260520' in globals():
-                    _observatory_reject_trade = locals().get('trade') if isinstance(locals().get('trade'), dict) else {}
-                    if not _observatory_reject_trade:
-                        for _observatory_name in ('queued_trade', 'candidate', 'payload', 'order', 'selected_trade'):
-                            _observatory_value = locals().get(_observatory_name)
-                            if isinstance(_observatory_value, dict) and _observatory_value:
-                                _observatory_reject_trade = _observatory_value
-                                break
-                    if 'execution_result' in locals():
-                        execution_result = _observatory_final_rescue_paper_fill_result_20260520(execution_result, _observatory_reject_trade)
+                if "_observatory_final_rescue_paper_fill_result_20260520" in globals():
+                    _observatory_reject_trade = queued_trade if isinstance(queued_trade, dict) else {}
+                    _observatory_reject_result = packet.get("execution_result") if isinstance(packet.get("execution_result"), dict) else {}
+                    _observatory_reject_result = _observatory_final_rescue_paper_fill_result_20260520(
+                        _observatory_reject_result,
+                        _observatory_reject_trade,
+                    )
+
+                    if isinstance(_observatory_reject_result, dict):
+                        packet["execution_result"] = _observatory_reject_result
+
+                        _observatory_rescue_status = str(_observatory_reject_result.get("status") or "").upper()
+                        _observatory_rescue_fill = _safe_float(
+                            _observatory_reject_result.get("fill_price")
+                            or _observatory_reject_result.get("filled_price")
+                            or _observatory_reject_result.get("entry_premium"),
+                            0.0,
+                        )
+                        _observatory_rescue_cost = _safe_float(_observatory_reject_result.get("actual_cost"), 0.0)
+
+                        if _observatory_rescue_status in {"FILLED", "EXECUTED"} and _observatory_rescue_fill > 0 and _observatory_rescue_cost > 0:
+                            packet["success"] = True
+                            packet["status"] = "FILLED"
+                            packet["reason"] = packet.get("reason") or "executed"
+                            packet["reason_code"] = packet.get("reason_code") or "executed"
+
             except Exception as _observatory_final_rescue_error:
-                print('FINAL PAPER FILL RESULT RESCUE ERROR:', str(_observatory_final_rescue_error))
+                print("FINAL PAPER FILL RESULT RESCUE ERROR:", str(_observatory_final_rescue_error))
             print("EXECUTION REJECTED:", {
                 "symbol": queued_trade.get("symbol"),
                 "trade_id": packet.get("trade_id"),
