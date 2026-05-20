@@ -1,0 +1,79 @@
+{
+  "updated_at": "2026-05-20T15:07:25.558280Z",
+  "users": [
+    {
+      "account_type": "owner",
+      "app_access": {
+        "archive_vault": "allowed",
+        "observatory": "allowed",
+        "simpleepay": "allowed",
+        "tower_admin": "allowed"
+      },
+      "can_export": true,
+      "consents": {
+        "automated_trading_consent": true,
+        "beta_confidentiality_terms": true,
+        "live_trading_consent": true,
+        "paper_trading_disclosure": true,
+        "privacy_policy": true,
+        "terms_of_service": true
+      },
+      "created_at": "2026-05-20T15:07:25.553727Z",
+      "display_name": "Solice Bowdre",
+      "email": "bowdre.solice@gmail.com",
+      "risk_state": "clear",
+      "role": "owner",
+      "status": "active",
+      "trust_score": 95,
+      "updated_at": "2026-05-20T15:07:25.553727Z",
+      "user_id": "owner_solice"
+    },
+    {
+      "account_type": "beta_user",
+      "app_access": {
+        "archive_vault": "denied",
+        "observatory": "allowed",
+        "simpleepay": "denied",
+        "tower_admin": "denied"
+      },
+      "can_export": false,
+      "consents": {
+        "beta_confidentiality_terms": false,
+        "paper_trading_disclosure": true,
+        "privacy_policy": false,
+        "terms_of_service": false
+      },
+      "created_at": "2026-05-20T15:07:25.554779Z",
+      "display_name": "Beta Tester",
+      "email": "beta@example.com",
+      "risk_state": "clear",
+      "role": "user",
+      "status": "active",
+      "trust_score": 70,
+      "updated_at": "2026-05-20T15:07:25.558280Z",
+      "user_id": "beta_001"
+    },
+    {
+      "account_type": "beta_user",
+      "app_access": {
+        "archive_vault": "denied",
+        "observatory": "allowed",
+        "simpleepay": "denied",
+        "tower_admin": "denied"
+      },
+      "can_export": false,
+      "consents": {
+        "paper_trading_disclosure": true
+      },
+      "created_at": "2026-05-20T15:07:25.555857Z",
+      "display_name": "Locked User",
+      "email": "locked@example.com",
+      "risk_state": "locked",
+      "role": "user",
+      "status": "locked",
+      "trust_score": 10,
+      "updated_at": "2026-05-20T15:07:25.555857Z",
+      "user_id": "locked_001"
+    }
+  ]
+}
