@@ -17,7 +17,7 @@ from tower.evidence_capsules import create_evidence_capsule
 from tower.policy_engine import evaluate_policy
 from tower.security_events import create_security_event
 from tower.security_state import action_requires_step_up
-from tower.step_up import approve_step_up_challenge, create_step_up_challenge, get_latest_approved_step_up
+from tower.step_up import approve_step_up_challenge, create_step_up_challenge, get_latest_approved_step_up, consume_step_up_challenge
 from tower.user_store import get_user
 
 
@@ -354,6 +354,23 @@ def request_admin_action(
 
             _create_admin_action_evidence(actor, saved, decision, policy_report, context)
             return saved
+
+    if _requires_admin_step_up(admin_action):
+        approved_to_consume = get_latest_approved_step_up(
+            user_id=actor_user_id,
+            app_name="tower_admin",
+            action=admin_action,
+            object_type=object_type,
+            object_id=object_id,
+            reason_code=f"{admin_action}_admin_step_up_required",
+        )
+
+        if approved_to_consume:
+            consume_step_up_challenge(
+                challenge_id=approved_to_consume.get("challenge_id"),
+                used_by=actor_user_id,
+                use_reason=f"{admin_action}_admin_step_up_consumed",
+            )
 
     decision = {
         "allowed": True,

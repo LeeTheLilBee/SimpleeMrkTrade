@@ -761,6 +761,123 @@
       "status": "active",
       "token_id": "uvQVy98W0MRwcIIwCLa7H2tn",
       "user_id": "owner_solice"
+    },
+    {
+      "action": "enter_admin",
+      "app_name": "tower_admin",
+      "expires_at": "2026-05-20T17:20:36.227401Z",
+      "issued_at": "2026-05-20T17:05:36.227388Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T17:20:36.226837Z",
+          "human_reason": "Tower clearance granted.",
+          "metadata": {
+            "action": "enter_admin",
+            "app_name": "tower_admin",
+            "user_id": "owner_solice"
+          },
+          "reason_code": "clearance_granted",
+          "required_actions": [],
+          "risk_score": 10,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "clearance_granted"
+      },
+      "mode_name": null,
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 10,
+      "risk_state": "clear",
+      "scope": "tower_admin:enter_admin:*",
+      "signature": "6a39f3411ae019f4850abe5e9ea64c9da71dbd875fe08cfa8bc5f685776bb330",
+      "status": "active",
+      "token_id": "dn3E1SP6q-Qv72m_hTT69x8a",
+      "user_id": "owner_solice"
+    },
+    {
+      "action": "enter_admin",
+      "app_name": "tower_admin",
+      "expires_at": "2026-05-20T17:20:36.252542Z",
+      "issued_at": "2026-05-20T17:05:36.252532Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T17:20:36.251951Z",
+          "human_reason": "Tower clearance granted.",
+          "metadata": {
+            "action": "enter_admin",
+            "app_name": "tower_admin",
+            "user_id": "owner_solice"
+          },
+          "reason_code": "clearance_granted",
+          "required_actions": [],
+          "risk_score": 10,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "clearance_granted"
+      },
+      "mode_name": null,
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 10,
+      "risk_state": "clear",
+      "scope": "tower_admin:enter_admin:*",
+      "signature": "14510120f808fb56446eb69630824de8339c4c830ae6d19df5b7f1422ad1c933",
+      "status": "active",
+      "token_id": "tTUdF7BIukgyRjZjvZZe9y-g",
+      "user_id": "owner_solice"
+    },
+    {
+      "action": "enter_admin",
+      "app_name": "tower_admin",
+      "expires_at": "2026-05-20T17:20:36.274689Z",
+      "issued_at": "2026-05-20T17:05:36.274681Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T17:20:36.274093Z",
+          "human_reason": "Tower clearance granted.",
+          "metadata": {
+            "action": "enter_admin",
+            "app_name": "tower_admin",
+            "user_id": "owner_solice"
+          },
+          "reason_code": "clearance_granted",
+          "required_actions": [],
+          "risk_score": 10,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "clearance_granted"
+      },
+      "mode_name": null,
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 10,
+      "risk_state": "clear",
+      "scope": "tower_admin:enter_admin:*",
+      "signature": "a9407c99b3d1c4ff0c71efd394ba69ac822288dd2bc14bfa3df0dad7da116faa",
+      "status": "active",
+      "token_id": "PtyyeIjqtwa61ivLM70_ukrt",
+      "user_id": "owner_solice"
     }
   ]
 }

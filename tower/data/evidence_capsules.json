@@ -2985,6 +2985,496 @@
         "trust_score": 95,
         "user_id": "owner_solice"
       }
+    },
+    {
+      "audit": {
+        "latest_audit_hash_at_creation": "3a819fb631cf47540ff3e4020d52286945c23d22c0a3d893c6876c6ecb282cce"
+      },
+      "capsule_hash": "7a4b679ca58f6447b1f102f692c5e72ec21dc7291225a3906c0a3ea6d0fc33ef",
+      "capsule_id": "mIXRkQC2Cnv40wfZ6Y_ZNU0r",
+      "context": {
+        "object": {
+          "admin_action_hash": "491c1bf5aa96e02aee3214bebfaaa0b19ce3e2b71974e6c0d07a6fc6e401bcd1",
+          "admin_action_id": "oHER76UW3xZpdzdasW1Ru95g",
+          "requested_changes": {
+            "can_export": true
+          },
+          "target_app": "tower_admin",
+          "target_user_id": "beta_001"
+        },
+        "session": {},
+        "token": {
+          "admin_action_id": "oHER76UW3xZpdzdasW1Ru95g",
+          "admin_action_status": "step_up_required"
+        }
+      },
+      "created_at": "2026-05-20T17:05:36.235841Z",
+      "created_by": "tower_admin_action_gate",
+      "decision": {
+        "allowed": false,
+        "decision": "step_up",
+        "human_reason": "This admin action requires step-up authorization before continuing.",
+        "metadata": {
+          "action_risk": {
+            "risk_score": 75,
+            "risk_state": "sensitive_admin_action",
+            "severity": "high"
+          },
+          "actor_user_id": "owner_solice",
+          "admin_action": "change_permissions",
+          "challenge_id": "1AXMzLEPDbC08dCsh-v0LIb3",
+          "object_id": "beta_pack_014",
+          "object_type": "tower_user",
+          "target_app": "tower_admin",
+          "target_user_id": "beta_001"
+        },
+        "reason_code": "change_permissions_admin_step_up_required",
+        "required_actions": [
+          "complete_step_up"
+        ],
+        "risk_score": 75,
+        "risk_state": "step_up_required"
+      },
+      "notes": "Evidence capsule for admin action oHER76UW3xZpdzdasW1Ru95g.",
+      "policy_report": {
+        "allowed": true,
+        "decision": "allow",
+        "human_reason": "Policy engine allowed this request.",
+        "metadata": {
+          "action": "enter_admin",
+          "app_name": "tower_admin",
+          "evaluated_at": "2026-05-20T17:05:36.231162Z",
+          "mode_name": null,
+          "object_id": null,
+          "object_type": null,
+          "policy_version": "tower_policy_v0.1.0"
+        },
+        "policy_version": "tower_policy_v0.1.0",
+        "reason_code": "policy_clearance_allowed",
+        "required_actions": [],
+        "risk_score": 10,
+        "risk_state": "clear",
+        "rule_results": [
+          {
+            "decision": "allow",
+            "human_reason": "User status is active.",
+            "metadata": {
+              "status": "active"
+            },
+            "passed": true,
+            "reason_code": "policy_user_status_ok",
+            "required_actions": [],
+            "rule_id": "user.status.active",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Session risk is acceptable.",
+            "metadata": {
+              "risk_score": 0,
+              "risk_state": "clear"
+            },
+            "passed": true,
+            "reason_code": "policy_session_risk_ok",
+            "required_actions": [],
+            "rule_id": "session.risk.threshold",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has app clearance for tower_admin.",
+            "metadata": {
+              "app_name": "tower_admin"
+            },
+            "passed": true,
+            "reason_code": "policy_app_access_ok",
+            "required_actions": [],
+            "rule_id": "app.access.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has owner/admin role.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_admin_role_ok",
+            "required_actions": [],
+            "rule_id": "admin.requires.role",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Observatory mode rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_ob_mode_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "observatory.mode.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Export permission rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_export_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "export.permission.allowed",
+            "severity": "info"
+          }
+        ]
+      },
+      "request": {
+        "action": "change_permissions",
+        "app_name": "tower_admin",
+        "mode_name": null,
+        "object_id": "beta_pack_014",
+        "object_type": "tower_user"
+      },
+      "risk": {
+        "decision_risk_score": 75,
+        "decision_risk_state": "step_up_required",
+        "policy_risk_score": 10,
+        "policy_risk_state": "clear"
+      },
+      "status": "open",
+      "trigger": "admin_action_gate",
+      "user": {
+        "account_type": "owner",
+        "display_name": "Solice Bowdre",
+        "email": "bowdre.solice@gmail.com",
+        "risk_state": "clear",
+        "role": "owner",
+        "status": "active",
+        "trust_score": 95,
+        "user_id": "owner_solice"
+      }
+    },
+    {
+      "audit": {
+        "latest_audit_hash_at_creation": "e0799f10923d6b829f89a8a3fdd83e7ea331966ff92e6b072f00770279feae7a"
+      },
+      "capsule_hash": "8f7834e4d478de638aa2fa316af60f8f0db750e65f025a81a06165ae15abc1fa",
+      "capsule_id": "FZVhcthUIggwajL1yGWjefwA",
+      "context": {
+        "object": {
+          "admin_action_hash": "58ab8180f0115deaf8879cf9eb3f29b0eaeb8c80d2f691ff88ae20501876aa3b",
+          "admin_action_id": "g7DXJXZHHdyeyRpnuDtAINaH",
+          "requested_changes": {
+            "can_export": true
+          },
+          "target_app": "tower_admin",
+          "target_user_id": "beta_001"
+        },
+        "session": {},
+        "token": {
+          "admin_action_id": "g7DXJXZHHdyeyRpnuDtAINaH",
+          "admin_action_status": "approved"
+        }
+      },
+      "created_at": "2026-05-20T17:05:36.261061Z",
+      "created_by": "tower_admin_action_gate",
+      "decision": {
+        "allowed": true,
+        "decision": "allow",
+        "human_reason": "Admin action approved by The Tower.",
+        "metadata": {
+          "action_risk": {
+            "risk_score": 75,
+            "risk_state": "sensitive_admin_action",
+            "severity": "high"
+          },
+          "actor_user_id": "owner_solice",
+          "admin_action": "change_permissions",
+          "object_id": "beta_pack_014",
+          "object_type": "tower_user",
+          "target_app": "tower_admin",
+          "target_user_id": "beta_001",
+          "target_user_status": "active"
+        },
+        "reason_code": "admin_action_gate_approved",
+        "required_actions": [],
+        "risk_score": 75,
+        "risk_state": "sensitive_admin_action"
+      },
+      "notes": "Evidence capsule for admin action g7DXJXZHHdyeyRpnuDtAINaH.",
+      "policy_report": {
+        "allowed": true,
+        "decision": "allow",
+        "human_reason": "Policy engine allowed this request.",
+        "metadata": {
+          "action": "enter_admin",
+          "app_name": "tower_admin",
+          "evaluated_at": "2026-05-20T17:05:36.255973Z",
+          "mode_name": null,
+          "object_id": null,
+          "object_type": null,
+          "policy_version": "tower_policy_v0.1.0"
+        },
+        "policy_version": "tower_policy_v0.1.0",
+        "reason_code": "policy_clearance_allowed",
+        "required_actions": [],
+        "risk_score": 10,
+        "risk_state": "clear",
+        "rule_results": [
+          {
+            "decision": "allow",
+            "human_reason": "User status is active.",
+            "metadata": {
+              "status": "active"
+            },
+            "passed": true,
+            "reason_code": "policy_user_status_ok",
+            "required_actions": [],
+            "rule_id": "user.status.active",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Session risk is acceptable.",
+            "metadata": {
+              "risk_score": 0,
+              "risk_state": "clear"
+            },
+            "passed": true,
+            "reason_code": "policy_session_risk_ok",
+            "required_actions": [],
+            "rule_id": "session.risk.threshold",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has app clearance for tower_admin.",
+            "metadata": {
+              "app_name": "tower_admin"
+            },
+            "passed": true,
+            "reason_code": "policy_app_access_ok",
+            "required_actions": [],
+            "rule_id": "app.access.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has owner/admin role.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_admin_role_ok",
+            "required_actions": [],
+            "rule_id": "admin.requires.role",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Observatory mode rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_ob_mode_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "observatory.mode.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Export permission rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_export_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "export.permission.allowed",
+            "severity": "info"
+          }
+        ]
+      },
+      "request": {
+        "action": "change_permissions",
+        "app_name": "tower_admin",
+        "mode_name": null,
+        "object_id": "beta_pack_014",
+        "object_type": "tower_user"
+      },
+      "risk": {
+        "decision_risk_score": 75,
+        "decision_risk_state": "sensitive_admin_action",
+        "policy_risk_score": 10,
+        "policy_risk_state": "clear"
+      },
+      "status": "open",
+      "trigger": "admin_action_gate",
+      "user": {
+        "account_type": "owner",
+        "display_name": "Solice Bowdre",
+        "email": "bowdre.solice@gmail.com",
+        "risk_state": "clear",
+        "role": "owner",
+        "status": "active",
+        "trust_score": 95,
+        "user_id": "owner_solice"
+      }
+    },
+    {
+      "audit": {
+        "latest_audit_hash_at_creation": "07fca7395439f3043483a4e76f98c65391f4c8292edd126110f8b685c9c0ca72"
+      },
+      "capsule_hash": "12faa8b19ea58f484c6e454ce3929d1133c6dcb3e9b9b70f9a4c45b6a9e4259c",
+      "capsule_id": "qm1jVdy8sK04y-OeXf27XkKp",
+      "context": {
+        "object": {
+          "admin_action_hash": "31777d7dcbbedc7daef034530e6eb97dff076187c682332bbc667ea547ee88ba",
+          "admin_action_id": "tYDukIlTkxB3qndEnLSe4pgi",
+          "requested_changes": {
+            "can_export": true
+          },
+          "target_app": "tower_admin",
+          "target_user_id": "beta_001"
+        },
+        "session": {},
+        "token": {
+          "admin_action_id": "tYDukIlTkxB3qndEnLSe4pgi",
+          "admin_action_status": "step_up_required"
+        }
+      },
+      "created_at": "2026-05-20T17:05:36.284417Z",
+      "created_by": "tower_admin_action_gate",
+      "decision": {
+        "allowed": false,
+        "decision": "step_up",
+        "human_reason": "This admin action requires step-up authorization before continuing.",
+        "metadata": {
+          "action_risk": {
+            "risk_score": 75,
+            "risk_state": "sensitive_admin_action",
+            "severity": "high"
+          },
+          "actor_user_id": "owner_solice",
+          "admin_action": "change_permissions",
+          "challenge_id": "425zyVEbzIOxyD0C18aXA-6K",
+          "object_id": "beta_pack_014",
+          "object_type": "tower_user",
+          "target_app": "tower_admin",
+          "target_user_id": "beta_001"
+        },
+        "reason_code": "change_permissions_admin_step_up_required",
+        "required_actions": [
+          "complete_step_up"
+        ],
+        "risk_score": 75,
+        "risk_state": "step_up_required"
+      },
+      "notes": "Evidence capsule for admin action tYDukIlTkxB3qndEnLSe4pgi.",
+      "policy_report": {
+        "allowed": true,
+        "decision": "allow",
+        "human_reason": "Policy engine allowed this request.",
+        "metadata": {
+          "action": "enter_admin",
+          "app_name": "tower_admin",
+          "evaluated_at": "2026-05-20T17:05:36.278101Z",
+          "mode_name": null,
+          "object_id": null,
+          "object_type": null,
+          "policy_version": "tower_policy_v0.1.0"
+        },
+        "policy_version": "tower_policy_v0.1.0",
+        "reason_code": "policy_clearance_allowed",
+        "required_actions": [],
+        "risk_score": 10,
+        "risk_state": "clear",
+        "rule_results": [
+          {
+            "decision": "allow",
+            "human_reason": "User status is active.",
+            "metadata": {
+              "status": "active"
+            },
+            "passed": true,
+            "reason_code": "policy_user_status_ok",
+            "required_actions": [],
+            "rule_id": "user.status.active",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Session risk is acceptable.",
+            "metadata": {
+              "risk_score": 0,
+              "risk_state": "clear"
+            },
+            "passed": true,
+            "reason_code": "policy_session_risk_ok",
+            "required_actions": [],
+            "rule_id": "session.risk.threshold",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has app clearance for tower_admin.",
+            "metadata": {
+              "app_name": "tower_admin"
+            },
+            "passed": true,
+            "reason_code": "policy_app_access_ok",
+            "required_actions": [],
+            "rule_id": "app.access.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has owner/admin role.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_admin_role_ok",
+            "required_actions": [],
+            "rule_id": "admin.requires.role",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Observatory mode rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_ob_mode_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "observatory.mode.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Export permission rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_export_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "export.permission.allowed",
+            "severity": "info"
+          }
+        ]
+      },
+      "request": {
+        "action": "change_permissions",
+        "app_name": "tower_admin",
+        "mode_name": null,
+        "object_id": "beta_pack_014",
+        "object_type": "tower_user"
+      },
+      "risk": {
+        "decision_risk_score": 75,
+        "decision_risk_state": "step_up_required",
+        "policy_risk_score": 10,
+        "policy_risk_state": "clear"
+      },
+      "status": "open",
+      "trigger": "admin_action_gate",
+      "user": {
+        "account_type": "owner",
+        "display_name": "Solice Bowdre",
+        "email": "bowdre.solice@gmail.com",
+        "risk_state": "clear",
+        "role": "owner",
+        "status": "active",
+        "trust_score": 95,
+        "user_id": "owner_solice"
+      }
     }
   ]
 }

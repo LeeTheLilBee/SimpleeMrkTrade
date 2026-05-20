@@ -16,7 +16,7 @@ from tower.security_state import (
     is_app_locked,
     is_mode_locked,
 )
-from tower.step_up import create_step_up_challenge, get_latest_approved_step_up
+from tower.step_up import create_step_up_challenge, get_latest_approved_step_up, consume_step_up_challenge
 from tower.user_store import get_user
 
 
@@ -231,6 +231,12 @@ def _check_session_risk_first(
                 reason_code="session_risk_step_up_required",
                 extra_metadata={"session_risk": session_risk},
             )
+
+        consume_step_up_challenge(
+            challenge_id=approved.get("challenge_id"),
+            used_by=user_id,
+            use_reason="session_risk_step_up_consumed",
+        )
 
     return None
 
