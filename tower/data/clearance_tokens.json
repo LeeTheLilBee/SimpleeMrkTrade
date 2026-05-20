@@ -439,6 +439,211 @@
       "status": "active",
       "token_id": "pIa1i0C7RV2GSzssdSjtnanj",
       "user_id": "beta_001"
+    },
+    {
+      "action": "export",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:49:10.241420Z",
+      "issued_at": "2026-05-20T16:34:10.241413Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:39:10.241117Z",
+          "human_reason": "Export clearance granted after Tower checks.",
+          "metadata": {
+            "action": "export",
+            "app_name": "observatory",
+            "object_id": "owner_confidential_export_001",
+            "object_type": "analysis_export",
+            "user_id": "owner_solice"
+          },
+          "reason_code": "export_clearance_granted",
+          "required_actions": [],
+          "risk_score": 35,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "export_clearance_granted"
+      },
+      "mode_name": null,
+      "object_id": "owner_confidential_export_001",
+      "object_type": "analysis_export",
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 35,
+      "risk_state": "clear",
+      "scope": "observatory:export:*",
+      "signature": "14dfd1eeb5acc9a85c8cae17ccc50835e456212b85bcbcce6f7c76291ae4eb98",
+      "status": "active",
+      "token_id": "YGAQj-7mQr1NtAOqbbRjYALA",
+      "user_id": "owner_solice"
+    },
+    {
+      "action": "export",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:53:09.941070Z",
+      "issued_at": "2026-05-20T16:38:09.941063Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:43:09.940754Z",
+          "human_reason": "Export clearance granted after Tower checks.",
+          "metadata": {
+            "action": "export",
+            "app_name": "observatory",
+            "object_id": "owner_confidential_export_012b",
+            "object_type": "analysis_export",
+            "user_id": "owner_solice"
+          },
+          "reason_code": "export_clearance_granted",
+          "required_actions": [],
+          "risk_score": 35,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "export_clearance_granted"
+      },
+      "mode_name": null,
+      "object_id": "owner_confidential_export_012b",
+      "object_type": "analysis_export",
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 35,
+      "risk_state": "clear",
+      "scope": "observatory:export:*",
+      "signature": "6faf622b90a210f16abb300100af2c8c6c3408eb3e2fdce93170168d87fa8aad",
+      "status": "active",
+      "token_id": "sZAR61WNQ9mkDOpX5gDqUBZt",
+      "user_id": "owner_solice"
+    },
+    {
+      "action": "export",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:55:36.638143Z",
+      "issued_at": "2026-05-20T16:40:36.638134Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:45:36.637645Z",
+          "human_reason": "Export clearance granted after Tower checks.",
+          "metadata": {
+            "action": "export",
+            "app_name": "observatory",
+            "object_id": "owner_confidential_export_012c",
+            "object_type": "analysis_export",
+            "user_id": "owner_solice"
+          },
+          "reason_code": "export_clearance_granted",
+          "required_actions": [],
+          "risk_score": 35,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "export_clearance_granted"
+      },
+      "mode_name": null,
+      "object_id": "owner_confidential_export_012c",
+      "object_type": "analysis_export",
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 35,
+      "risk_state": "clear",
+      "scope": "observatory:export:*",
+      "signature": "f3c6e61991302b2355db95bc00c000dac9e09f459a8db03ccfcd0b16a1312404",
+      "status": "active",
+      "token_id": "tFQcfPy8W4yyNvLPrnlQbu8B",
+      "user_id": "owner_solice"
+    },
+    {
+      "action": "export",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:57:54.302044Z",
+      "issued_at": "2026-05-20T16:42:54.302033Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:47:54.301427Z",
+          "human_reason": "Export clearance granted after Tower checks.",
+          "metadata": {
+            "action": "export",
+            "app_name": "observatory",
+            "object_id": "owner_confidential_export_012b",
+            "object_type": "analysis_export",
+            "user_id": "owner_solice"
+          },
+          "reason_code": "export_clearance_granted",
+          "required_actions": [],
+          "risk_score": 35,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "export_clearance_granted"
+      },
+      "mode_name": null,
+      "object_id": "owner_confidential_export_012b",
+      "object_type": "analysis_export",
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 35,
+      "risk_state": "clear",
+      "scope": "observatory:export:*",
+      "signature": "9d4a2a15d2cda4c929a47c2a715d1609316877a648cee3a07200323ca87410b0",
+      "status": "active",
+      "token_id": "KrI_Dt2FboB0Ez1482ilu37Q",
+      "user_id": "owner_solice"
+    },
+    {
+      "action": "export",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:57:54.313937Z",
+      "issued_at": "2026-05-20T16:42:54.313930Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:47:54.313562Z",
+          "human_reason": "Export clearance granted after Tower checks.",
+          "metadata": {
+            "action": "export",
+            "app_name": "observatory",
+            "object_id": "owner_confidential_export_012b",
+            "object_type": "analysis_export",
+            "user_id": "owner_solice"
+          },
+          "reason_code": "export_clearance_granted",
+          "required_actions": [],
+          "risk_score": 35,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "export_clearance_granted"
+      },
+      "mode_name": null,
+      "object_id": "owner_confidential_export_012b",
+      "object_type": "analysis_export",
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 35,
+      "risk_state": "clear",
+      "scope": "observatory:export:*",
+      "signature": "acbb9501beec897283b52a8f08cd71281b70ea8c77a8108a84f38c8ca966bcae",
+      "status": "active",
+      "token_id": "27_hpt9Ea0BlhfxCppk0DbQ1",
+      "user_id": "owner_solice"
     }
   ]
 }

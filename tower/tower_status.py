@@ -9,6 +9,7 @@ from tower.audit import get_audit_summary, verify_audit_chain
 from tower.security_events import get_security_summary
 from tower.user_store import list_users
 from tower.evidence_capsules import get_evidence_summary
+from tower.export_vault import get_export_summary
 
 
 def get_tower_status() -> Dict[str, Any]:
@@ -23,6 +24,7 @@ def get_tower_status() -> Dict[str, Any]:
     audit = get_audit_summary()
     security = get_security_summary()
     evidence = get_evidence_summary()
+    export_summary = get_export_summary()
     chain = verify_audit_chain()
 
     status_counts = {}
@@ -55,6 +57,11 @@ def get_tower_status() -> Dict[str, Any]:
         "evidence_total_capsules": evidence.get("total_capsules"),
         "evidence_open_capsules": evidence.get("open"),
         "evidence_closed_capsules": evidence.get("closed"),
+        "export_total_exports": export_summary.get("total_exports"),
+        "export_approved": export_summary.get("approved"),
+        "export_denied": export_summary.get("denied"),
+        "export_step_up_required": export_summary.get("step_up_required"),
+        "export_revoked": export_summary.get("revoked"),
         "apps_seen_in_audit": audit.get("apps", {}),
         "risk_states_seen_in_audit": audit.get("risk_states", {}),
     }

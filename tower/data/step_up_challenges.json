@@ -59,6 +59,66 @@
       "reason_code": "session_risk_step_up_required",
       "status": "approved",
       "user_id": "beta_001"
+    },
+    {
+      "action": "export",
+      "app_name": "observatory",
+      "approved_at": null,
+      "approved_by": null,
+      "challenge_id": "oaGVFwbS_RU3m4K_a4E_8cTa",
+      "created_at": "2026-05-20T16:34:10.231670Z",
+      "expires_at": "2026-05-20T16:44:10.231677Z",
+      "mode_name": null,
+      "object_id": "trade_beta_export_001",
+      "object_type": "trade_record",
+      "reason_code": "export_step_up_required",
+      "status": "pending",
+      "user_id": "beta_001"
+    },
+    {
+      "action": "export",
+      "app_name": "observatory",
+      "approved_at": "2026-05-20T16:34:10.240238Z",
+      "approved_by": "owner_solice",
+      "challenge_id": "O-yXSaN91vbzrq4XCJWC31FO",
+      "created_at": "2026-05-20T16:34:10.235902Z",
+      "expires_at": "2026-05-20T16:44:10.235909Z",
+      "mode_name": null,
+      "object_id": "owner_confidential_export_001",
+      "object_type": "analysis_export",
+      "reason_code": "export_step_up_required",
+      "status": "approved",
+      "user_id": "owner_solice"
+    },
+    {
+      "action": "export",
+      "app_name": "observatory",
+      "approved_at": "2026-05-20T16:38:09.939890Z",
+      "approved_by": "owner_solice",
+      "challenge_id": "REGCdsaCo1hJ3kGGLYHpSf_9",
+      "created_at": "2026-05-20T16:38:09.933848Z",
+      "expires_at": "2026-05-20T16:48:09.933855Z",
+      "mode_name": null,
+      "object_id": "owner_confidential_export_012b",
+      "object_type": "analysis_export",
+      "reason_code": "export_step_up_required",
+      "status": "approved",
+      "user_id": "owner_solice"
+    },
+    {
+      "action": "export",
+      "app_name": "observatory",
+      "approved_at": "2026-05-20T16:40:36.636102Z",
+      "approved_by": "owner_solice",
+      "challenge_id": "pU2w3GCpW6OoNVx5KPMGT97V",
+      "created_at": "2026-05-20T16:40:36.620805Z",
+      "expires_at": "2026-05-20T16:50:36.620816Z",
+      "mode_name": null,
+      "object_id": "owner_confidential_export_012c",
+      "object_type": "analysis_export",
+      "reason_code": "export_step_up_required",
+      "status": "approved",
+      "user_id": "owner_solice"
     }
   ]
 }

@@ -1,498 +1,8 @@
 {
-  "capsules": [
+  "exports": [
     {
-      "audit": {
-        "latest_audit_hash_at_creation": "8ea619356b4e4cfa484be8b618e2ca06cf91107b096f5b561c8c29d00381da4f"
-      },
-      "capsule_hash": "f52ac1941dd62d5d2a8d30409044c97beed12f1c251f1046ac558adecb4416a0",
-      "capsule_id": "UwyOi1TjeadhYHhtTwwD1t4Q",
-      "closed_at": "2026-05-20T16:22:06.294860Z",
-      "closed_by": "owner_solice",
-      "context": {
-        "object": {},
-        "session": {
-          "risk_score": 15,
-          "risk_state": "clear",
-          "session_id": "test_session_010"
-        },
-        "token": {}
-      },
-      "created_at": "2026-05-20T16:22:06.290664Z",
-      "created_by": "tower_test",
-      "decision": {
-        "allowed": false,
-        "decision": "deny",
-        "human_reason": "Advanced Live modes are locked until legal/control approval.",
-        "metadata": {
-          "action": "enter_app",
-          "app_name": "observatory",
-          "blocking_rule_id": "observatory.mode.allowed",
-          "evaluated_at": "2026-05-20T16:22:06.290594Z",
-          "mode_name": "live_automated",
-          "object_id": null,
-          "object_type": null,
-          "policy_version": "tower_policy_v0.1.0"
-        },
-        "policy_version": "tower_policy_v0.1.0",
-        "reason_code": "policy_public_live_advanced_locked",
-        "required_actions": [
-          "broker_permission_check_required",
-          "control_tower_approval_required",
-          "legal_review_required",
-          "owner_approval_required"
-        ],
-        "risk_score": 75,
-        "risk_state": "restricted",
-        "rule_results": [
-          {
-            "decision": "allow",
-            "human_reason": "User status is active.",
-            "metadata": {
-              "status": "active"
-            },
-            "passed": true,
-            "reason_code": "policy_user_status_ok",
-            "required_actions": [],
-            "rule_id": "user.status.active",
-            "severity": "info"
-          },
-          {
-            "decision": "allow",
-            "human_reason": "Session risk is acceptable.",
-            "metadata": {
-              "risk_score": 0,
-              "risk_state": "clear"
-            },
-            "passed": true,
-            "reason_code": "policy_session_risk_ok",
-            "required_actions": [],
-            "rule_id": "session.risk.threshold",
-            "severity": "info"
-          },
-          {
-            "decision": "allow",
-            "human_reason": "User has app clearance for observatory.",
-            "metadata": {
-              "app_name": "observatory"
-            },
-            "passed": true,
-            "reason_code": "policy_app_access_ok",
-            "required_actions": [],
-            "rule_id": "app.access.allowed",
-            "severity": "info"
-          },
-          {
-            "decision": "not_applicable",
-            "human_reason": "Admin role rule is not applicable.",
-            "metadata": {},
-            "passed": true,
-            "reason_code": "policy_admin_rule_not_applicable",
-            "required_actions": [],
-            "rule_id": "admin.requires.role",
-            "severity": "info"
-          },
-          {
-            "decision": "deny",
-            "human_reason": "Advanced Live modes are locked until legal/control approval.",
-            "metadata": {
-              "mode_name": "live_automated"
-            },
-            "passed": false,
-            "reason_code": "policy_public_live_advanced_locked",
-            "required_actions": [
-              "owner_approval_required",
-              "legal_review_required",
-              "broker_permission_check_required",
-              "control_tower_approval_required"
-            ],
-            "rule_id": "observatory.mode.allowed",
-            "severity": "critical"
-          },
-          {
-            "decision": "not_applicable",
-            "human_reason": "Export permission rule is not applicable.",
-            "metadata": {},
-            "passed": true,
-            "reason_code": "policy_export_rule_not_applicable",
-            "required_actions": [],
-            "rule_id": "export.permission.allowed",
-            "severity": "info"
-          }
-        ]
-      },
-      "notes": "Pack 010 test capsule for blocked Live Automated.",
-      "policy_report": {
-        "allowed": false,
-        "decision": "deny",
-        "human_reason": "Advanced Live modes are locked until legal/control approval.",
-        "metadata": {
-          "action": "enter_app",
-          "app_name": "observatory",
-          "blocking_rule_id": "observatory.mode.allowed",
-          "evaluated_at": "2026-05-20T16:22:06.290594Z",
-          "mode_name": "live_automated",
-          "object_id": null,
-          "object_type": null,
-          "policy_version": "tower_policy_v0.1.0"
-        },
-        "policy_version": "tower_policy_v0.1.0",
-        "reason_code": "policy_public_live_advanced_locked",
-        "required_actions": [
-          "broker_permission_check_required",
-          "control_tower_approval_required",
-          "legal_review_required",
-          "owner_approval_required"
-        ],
-        "risk_score": 75,
-        "risk_state": "restricted",
-        "rule_results": [
-          {
-            "decision": "allow",
-            "human_reason": "User status is active.",
-            "metadata": {
-              "status": "active"
-            },
-            "passed": true,
-            "reason_code": "policy_user_status_ok",
-            "required_actions": [],
-            "rule_id": "user.status.active",
-            "severity": "info"
-          },
-          {
-            "decision": "allow",
-            "human_reason": "Session risk is acceptable.",
-            "metadata": {
-              "risk_score": 0,
-              "risk_state": "clear"
-            },
-            "passed": true,
-            "reason_code": "policy_session_risk_ok",
-            "required_actions": [],
-            "rule_id": "session.risk.threshold",
-            "severity": "info"
-          },
-          {
-            "decision": "allow",
-            "human_reason": "User has app clearance for observatory.",
-            "metadata": {
-              "app_name": "observatory"
-            },
-            "passed": true,
-            "reason_code": "policy_app_access_ok",
-            "required_actions": [],
-            "rule_id": "app.access.allowed",
-            "severity": "info"
-          },
-          {
-            "decision": "not_applicable",
-            "human_reason": "Admin role rule is not applicable.",
-            "metadata": {},
-            "passed": true,
-            "reason_code": "policy_admin_rule_not_applicable",
-            "required_actions": [],
-            "rule_id": "admin.requires.role",
-            "severity": "info"
-          },
-          {
-            "decision": "deny",
-            "human_reason": "Advanced Live modes are locked until legal/control approval.",
-            "metadata": {
-              "mode_name": "live_automated"
-            },
-            "passed": false,
-            "reason_code": "policy_public_live_advanced_locked",
-            "required_actions": [
-              "owner_approval_required",
-              "legal_review_required",
-              "broker_permission_check_required",
-              "control_tower_approval_required"
-            ],
-            "rule_id": "observatory.mode.allowed",
-            "severity": "critical"
-          },
-          {
-            "decision": "not_applicable",
-            "human_reason": "Export permission rule is not applicable.",
-            "metadata": {},
-            "passed": true,
-            "reason_code": "policy_export_rule_not_applicable",
-            "required_actions": [],
-            "rule_id": "export.permission.allowed",
-            "severity": "info"
-          }
-        ]
-      },
-      "request": {
-        "action": "enter_app",
-        "app_name": "observatory",
-        "mode_name": "live_automated",
-        "object_id": null,
-        "object_type": null
-      },
-      "resolution": "reviewed_test_capsule",
-      "review_notes": "Reviewed during Pack 010 test.",
-      "risk": {
-        "decision_risk_score": 75,
-        "decision_risk_state": "restricted",
-        "policy_risk_score": 75,
-        "policy_risk_state": "restricted"
-      },
-      "status": "closed",
-      "trigger": "live_automated_denial_test",
-      "user": {
-        "account_type": "beta_user",
-        "display_name": "Beta Tester",
-        "email": "beta@example.com",
-        "risk_state": "clear",
-        "role": "user",
-        "status": "active",
-        "trust_score": 70,
-        "user_id": "beta_001"
-      }
-    },
-    {
-      "audit": {
-        "latest_audit_hash_at_creation": "9d7f4dfb914b6c59fd6fc5494b2d4cb9d44a6d14852b5ff3827fd47d28706a6a"
-      },
-      "capsule_hash": "bdf1e01b6dac2a38ef78b2264b01725d47711f956f786352fbf751ac248885fe",
-      "capsule_id": "eokJH4qno0QrciT0HNPu4Dx3",
-      "context": {
-        "object": {},
-        "session": {},
-        "token": {}
-      },
-      "created_at": "2026-05-20T16:22:06.389966Z",
-      "created_by": "tower_test",
-      "decision": {
-        "allowed": true,
-        "decision": "allow",
-        "human_reason": "Policy engine allowed this request.",
-        "metadata": {
-          "action": "enter_app",
-          "app_name": "observatory",
-          "evaluated_at": "2026-05-20T16:22:06.389912Z",
-          "mode_name": "paper",
-          "object_id": null,
-          "object_type": null,
-          "policy_version": "tower_policy_v0.1.0"
-        },
-        "policy_version": "tower_policy_v0.1.0",
-        "reason_code": "policy_clearance_allowed",
-        "required_actions": [],
-        "risk_score": 10,
-        "risk_state": "clear",
-        "rule_results": [
-          {
-            "decision": "allow",
-            "human_reason": "User status is active.",
-            "metadata": {
-              "status": "active"
-            },
-            "passed": true,
-            "reason_code": "policy_user_status_ok",
-            "required_actions": [],
-            "rule_id": "user.status.active",
-            "severity": "info"
-          },
-          {
-            "decision": "allow",
-            "human_reason": "Session risk is acceptable.",
-            "metadata": {
-              "risk_score": 0,
-              "risk_state": "clear"
-            },
-            "passed": true,
-            "reason_code": "policy_session_risk_ok",
-            "required_actions": [],
-            "rule_id": "session.risk.threshold",
-            "severity": "info"
-          },
-          {
-            "decision": "allow",
-            "human_reason": "User has app clearance for observatory.",
-            "metadata": {
-              "app_name": "observatory"
-            },
-            "passed": true,
-            "reason_code": "policy_app_access_ok",
-            "required_actions": [],
-            "rule_id": "app.access.allowed",
-            "severity": "info"
-          },
-          {
-            "decision": "not_applicable",
-            "human_reason": "Admin role rule is not applicable.",
-            "metadata": {},
-            "passed": true,
-            "reason_code": "policy_admin_rule_not_applicable",
-            "required_actions": [],
-            "rule_id": "admin.requires.role",
-            "severity": "info"
-          },
-          {
-            "decision": "allow",
-            "human_reason": "Paper Mode requirements are satisfied.",
-            "metadata": {
-              "mode_name": "paper"
-            },
-            "passed": true,
-            "reason_code": "policy_paper_mode_ok",
-            "required_actions": [],
-            "rule_id": "observatory.mode.allowed",
-            "severity": "info"
-          },
-          {
-            "decision": "not_applicable",
-            "human_reason": "Export permission rule is not applicable.",
-            "metadata": {},
-            "passed": true,
-            "reason_code": "policy_export_rule_not_applicable",
-            "required_actions": [],
-            "rule_id": "export.permission.allowed",
-            "severity": "info"
-          }
-        ]
-      },
-      "notes": "Pack 010 test capsule for allowed Paper Mode.",
-      "policy_report": {
-        "allowed": true,
-        "decision": "allow",
-        "human_reason": "Policy engine allowed this request.",
-        "metadata": {
-          "action": "enter_app",
-          "app_name": "observatory",
-          "evaluated_at": "2026-05-20T16:22:06.389912Z",
-          "mode_name": "paper",
-          "object_id": null,
-          "object_type": null,
-          "policy_version": "tower_policy_v0.1.0"
-        },
-        "policy_version": "tower_policy_v0.1.0",
-        "reason_code": "policy_clearance_allowed",
-        "required_actions": [],
-        "risk_score": 10,
-        "risk_state": "clear",
-        "rule_results": [
-          {
-            "decision": "allow",
-            "human_reason": "User status is active.",
-            "metadata": {
-              "status": "active"
-            },
-            "passed": true,
-            "reason_code": "policy_user_status_ok",
-            "required_actions": [],
-            "rule_id": "user.status.active",
-            "severity": "info"
-          },
-          {
-            "decision": "allow",
-            "human_reason": "Session risk is acceptable.",
-            "metadata": {
-              "risk_score": 0,
-              "risk_state": "clear"
-            },
-            "passed": true,
-            "reason_code": "policy_session_risk_ok",
-            "required_actions": [],
-            "rule_id": "session.risk.threshold",
-            "severity": "info"
-          },
-          {
-            "decision": "allow",
-            "human_reason": "User has app clearance for observatory.",
-            "metadata": {
-              "app_name": "observatory"
-            },
-            "passed": true,
-            "reason_code": "policy_app_access_ok",
-            "required_actions": [],
-            "rule_id": "app.access.allowed",
-            "severity": "info"
-          },
-          {
-            "decision": "not_applicable",
-            "human_reason": "Admin role rule is not applicable.",
-            "metadata": {},
-            "passed": true,
-            "reason_code": "policy_admin_rule_not_applicable",
-            "required_actions": [],
-            "rule_id": "admin.requires.role",
-            "severity": "info"
-          },
-          {
-            "decision": "allow",
-            "human_reason": "Paper Mode requirements are satisfied.",
-            "metadata": {
-              "mode_name": "paper"
-            },
-            "passed": true,
-            "reason_code": "policy_paper_mode_ok",
-            "required_actions": [],
-            "rule_id": "observatory.mode.allowed",
-            "severity": "info"
-          },
-          {
-            "decision": "not_applicable",
-            "human_reason": "Export permission rule is not applicable.",
-            "metadata": {},
-            "passed": true,
-            "reason_code": "policy_export_rule_not_applicable",
-            "required_actions": [],
-            "rule_id": "export.permission.allowed",
-            "severity": "info"
-          }
-        ]
-      },
-      "request": {
-        "action": "enter_app",
-        "app_name": "observatory",
-        "mode_name": "paper",
-        "object_id": null,
-        "object_type": null
-      },
-      "risk": {
-        "decision_risk_score": 10,
-        "decision_risk_state": "clear",
-        "policy_risk_score": 10,
-        "policy_risk_state": "clear"
-      },
-      "status": "open",
-      "trigger": "paper_mode_allow_test",
-      "user": {
-        "account_type": "beta_user",
-        "display_name": "Beta Tester",
-        "email": "beta@example.com",
-        "risk_state": "clear",
-        "role": "user",
-        "status": "active",
-        "trust_score": 70,
-        "user_id": "beta_001"
-      }
-    },
-    {
-      "audit": {
-        "latest_audit_hash_at_creation": "2ec00ea24a2766b5a94de537e86f040c2afcf44c18a57e4d7c1fcceeea2e916d"
-      },
-      "capsule_hash": "f445e6639cc0145fb8c9657b6fa2b552e3df430315fc60a1bb1bb8f9962e7071",
-      "capsule_id": "nLE1jd0EFtwzz7x_8MipNAUp",
-      "context": {
-        "object": {
-          "app_name": "observatory",
-          "classification": "user_private",
-          "object_id": "trade_beta_export_001",
-          "object_type": "trade_record",
-          "owner_user_id": "beta_001"
-        },
-        "session": {},
-        "token": {
-          "export_hash": "8c0a129458b0ba5819dd4efffe910351f0e8c5edd01b330efae69a36367a7b35",
-          "export_id": "3SLQdCkv0sXEvCZ9RVxB-co4",
-          "export_status": "step_up_required"
-        }
-      },
-      "created_at": "2026-05-20T16:34:10.233052Z",
-      "created_by": "tower_export_vault",
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:34:10.232212Z",
       "decision": {
         "allowed": false,
         "audit_required": true,
@@ -515,7 +25,12 @@
         "risk_score": 70,
         "risk_state": "step_up_required"
       },
-      "notes": "Evidence capsule for export request 3SLQdCkv0sXEvCZ9RVxB-co4.",
+      "expires_at": "2026-05-21T16:34:10.232216Z",
+      "export_hash": "8c0a129458b0ba5819dd4efffe910351f0e8c5edd01b330efae69a36367a7b35",
+      "export_id": "3SLQdCkv0sXEvCZ9RVxB-co4",
+      "export_reason": "pack_012_beta_trade_export_test",
+      "object_id": "trade_beta_export_001",
+      "object_type": "trade_record",
       "policy_report": {
         "allowed": false,
         "decision": "deny",
@@ -609,57 +124,14 @@
           }
         ]
       },
-      "request": {
-        "action": "export",
-        "app_name": "observatory",
-        "mode_name": null,
-        "object_id": "trade_beta_export_001",
-        "object_type": "trade_record"
-      },
-      "risk": {
-        "decision_risk_score": 70,
-        "decision_risk_state": "step_up_required",
-        "policy_risk_score": 75,
-        "policy_risk_state": "restricted"
-      },
-      "status": "open",
-      "trigger": "export_vault_request",
-      "user": {
-        "account_type": "beta_user",
-        "display_name": "Beta Tester",
-        "email": "beta@example.com",
-        "risk_state": "clear",
-        "role": "user",
-        "status": "active",
-        "trust_score": 70,
-        "user_id": "beta_001"
-      }
+      "record": null,
+      "redaction_report": null,
+      "status": "step_up_required",
+      "user_id": "beta_001"
     },
     {
-      "audit": {
-        "latest_audit_hash_at_creation": "ec00a47a416d7b5be84399b84bec4c8171f7c810e23e0e2be6a8e27181aa499d"
-      },
-      "capsule_hash": "9d069e1d6ca61754843b61f4b0d4fbf133c8117895953d7907ab9a09e0cde9b5",
-      "capsule_id": "q4iA_2P6f10gNPtTIxFmYnxm",
-      "context": {
-        "object": {
-          "allowed_roles": [
-            "owner"
-          ],
-          "app_name": "observatory",
-          "classification": "confidential",
-          "object_id": "owner_confidential_export_001",
-          "object_type": "analysis_export"
-        },
-        "session": {},
-        "token": {
-          "export_hash": "37e6ce322caa82055feac56b26cdb2430a95c02a7e1b645e436d4334d5fce79b",
-          "export_id": "ajVFPmKlNFMf2lFsghtheTC8",
-          "export_status": "step_up_required"
-        }
-      },
-      "created_at": "2026-05-20T16:34:10.237559Z",
-      "created_by": "tower_export_vault",
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:34:10.236392Z",
       "decision": {
         "allowed": false,
         "audit_required": true,
@@ -682,7 +154,12 @@
         "risk_score": 70,
         "risk_state": "step_up_required"
       },
-      "notes": "Evidence capsule for export request ajVFPmKlNFMf2lFsghtheTC8.",
+      "expires_at": "2026-05-21T16:34:10.236396Z",
+      "export_hash": "37e6ce322caa82055feac56b26cdb2430a95c02a7e1b645e436d4334d5fce79b",
+      "export_id": "ajVFPmKlNFMf2lFsghtheTC8",
+      "export_reason": "pack_012_owner_export_test",
+      "object_id": "owner_confidential_export_001",
+      "object_type": "analysis_export",
       "policy_report": {
         "allowed": true,
         "decision": "allow",
@@ -771,57 +248,14 @@
           }
         ]
       },
-      "request": {
-        "action": "export",
-        "app_name": "observatory",
-        "mode_name": null,
-        "object_id": "owner_confidential_export_001",
-        "object_type": "analysis_export"
-      },
-      "risk": {
-        "decision_risk_score": 70,
-        "decision_risk_state": "step_up_required",
-        "policy_risk_score": 10,
-        "policy_risk_state": "clear"
-      },
-      "status": "open",
-      "trigger": "export_vault_request",
-      "user": {
-        "account_type": "owner",
-        "display_name": "Solice Bowdre",
-        "email": "bowdre.solice@gmail.com",
-        "risk_state": "clear",
-        "role": "owner",
-        "status": "active",
-        "trust_score": 95,
-        "user_id": "owner_solice"
-      }
+      "record": null,
+      "redaction_report": null,
+      "status": "step_up_required",
+      "user_id": "owner_solice"
     },
     {
-      "audit": {
-        "latest_audit_hash_at_creation": "94d31749d99f9ab9877bd86cb6bec57d4ad1fea0b33762adcd34e134f944eb48"
-      },
-      "capsule_hash": "99ff4fc991a73bb0ba8f7addb5ff31dab79aa25ff89e387ac00d741c8e7a0dd6",
-      "capsule_id": "QovD8GORCmGmWtNo2XvMjHBQ",
-      "context": {
-        "object": {
-          "allowed_roles": [
-            "owner"
-          ],
-          "app_name": "observatory",
-          "classification": "confidential",
-          "object_id": "owner_confidential_export_001",
-          "object_type": "analysis_export"
-        },
-        "session": {},
-        "token": {
-          "export_hash": "abc6b8efff8bdae0833e26d3873fa27745d5bbb239b88be8b5f8b653a670ab75",
-          "export_id": "EigcXKR0W6IreN2R-_vYauu-",
-          "export_status": "approved"
-        }
-      },
-      "created_at": "2026-05-20T16:34:10.245561Z",
-      "created_by": "tower_export_vault",
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:34:10.243390Z",
       "decision": {
         "allowed": true,
         "audit_required": true,
@@ -846,7 +280,12 @@
         "risk_score": 35,
         "risk_state": "clear"
       },
-      "notes": "Evidence capsule for export request EigcXKR0W6IreN2R-_vYauu-.",
+      "expires_at": "2026-05-21T16:34:10.243398Z",
+      "export_hash": "22c834e4e9f1c64cd3891c082b90c60295d2d425eec3cd20f9c1f8839b58b1f8",
+      "export_id": "EigcXKR0W6IreN2R-_vYauu-",
+      "export_reason": "pack_012_owner_export_test_after_stepup",
+      "object_id": "owner_confidential_export_001",
+      "object_type": "analysis_export",
       "policy_report": {
         "allowed": true,
         "decision": "allow",
@@ -935,55 +374,47 @@
           }
         ]
       },
-      "request": {
-        "action": "export",
+      "record": {
         "app_name": "observatory",
-        "mode_name": null,
+        "broker_token": "OWNER_SECRET_TOKEN",
+        "classification": "confidential",
         "object_id": "owner_confidential_export_001",
-        "object_type": "analysis_export"
+        "object_type": "analysis_export",
+        "public_summary": "Owner export summary.",
+        "strategy_core": "owner visible strategy core",
+        "symbol": "TSLA",
+        "title": "Owner Analysis Export"
       },
-      "risk": {
-        "decision_risk_score": 35,
-        "decision_risk_state": "clear",
-        "policy_risk_score": 10,
-        "policy_risk_state": "clear"
-      },
-      "status": "open",
-      "trigger": "export_vault_request",
-      "user": {
+      "redaction_report": {
         "account_type": "owner",
-        "display_name": "Solice Bowdre",
-        "email": "bowdre.solice@gmail.com",
-        "risk_state": "clear",
+        "classification": "confidential",
+        "redacted_count": 0,
+        "redacted_fields": [],
+        "redaction_style": "mask",
         "role": "owner",
-        "status": "active",
-        "trust_score": 95,
-        "user_id": "owner_solice"
-      }
+        "user_id": "owner_solice",
+        "visible_count": 9,
+        "visible_fields": [
+          "object_id",
+          "object_type",
+          "app_name",
+          "classification",
+          "title",
+          "symbol",
+          "strategy_core",
+          "broker_token",
+          "public_summary"
+        ]
+      },
+      "revoke_reason": "pack_012_test_revoke_export",
+      "revoked_at": "2026-05-20T16:34:10.320835Z",
+      "revoked_by": "owner_solice",
+      "status": "revoked",
+      "user_id": "owner_solice"
     },
     {
-      "audit": {
-        "latest_audit_hash_at_creation": "b0b8f75b28d29dd9ad603d79aa368dace271cac544c18f934b65914ebca53429"
-      },
-      "capsule_hash": "2876e3ff685c99b8eb7bf8348cadaf8b28ac49ba3bcc6e4a54b8836c309f764c",
-      "capsule_id": "kVU2sevFEhBDTw9NQSmkYW8Y",
-      "context": {
-        "object": {
-          "app_name": "observatory",
-          "classification": "user_private",
-          "object_id": "trade_beta_export_012b",
-          "object_type": "trade_record",
-          "owner_user_id": "beta_001"
-        },
-        "session": {},
-        "token": {
-          "export_hash": "2ea7f7662e0a9661e2b40f69fe19bfd2bd9a4a8d83e44b676c812ffab757a57f",
-          "export_id": "4ZlZYhrDhi3HPqc6o_xFFq8c",
-          "export_status": "denied"
-        }
-      },
-      "created_at": "2026-05-20T16:38:09.928547Z",
-      "created_by": "tower_export_vault",
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:38:09.926608Z",
       "decision": {
         "allowed": false,
         "decision": "deny",
@@ -1077,7 +508,12 @@
           }
         ]
       },
-      "notes": "Evidence capsule for export request 4ZlZYhrDhi3HPqc6o_xFFq8c.",
+      "expires_at": "2026-05-21T16:38:09.926612Z",
+      "export_hash": "2ea7f7662e0a9661e2b40f69fe19bfd2bd9a4a8d83e44b676c812ffab757a57f",
+      "export_id": "4ZlZYhrDhi3HPqc6o_xFFq8c",
+      "export_reason": "pack_012b_beta_export_denial_test",
+      "object_id": "trade_beta_export_012b",
+      "object_type": "trade_record",
       "policy_report": {
         "allowed": false,
         "decision": "deny",
@@ -1171,57 +607,14 @@
           }
         ]
       },
-      "request": {
-        "action": "export",
-        "app_name": "observatory",
-        "mode_name": null,
-        "object_id": "trade_beta_export_012b",
-        "object_type": "trade_record"
-      },
-      "risk": {
-        "decision_risk_score": 75,
-        "decision_risk_state": "restricted",
-        "policy_risk_score": 75,
-        "policy_risk_state": "restricted"
-      },
-      "status": "open",
-      "trigger": "export_vault_request",
-      "user": {
-        "account_type": "beta_user",
-        "display_name": "Beta Tester",
-        "email": "beta@example.com",
-        "risk_state": "clear",
-        "role": "user",
-        "status": "active",
-        "trust_score": 70,
-        "user_id": "beta_001"
-      }
+      "record": null,
+      "redaction_report": null,
+      "status": "denied",
+      "user_id": "beta_001"
     },
     {
-      "audit": {
-        "latest_audit_hash_at_creation": "67ee6cb64f683e6349c2842c0627c083ef391010d13d6e3740b171a431a354c0"
-      },
-      "capsule_hash": "0d0495e624efc9c434693213c08b61f30c8789a772dc01bb3fe46657014dfe2e",
-      "capsule_id": "M5jvCgNOhs3pxq7cnpnPHjik",
-      "context": {
-        "object": {
-          "allowed_roles": [
-            "owner"
-          ],
-          "app_name": "observatory",
-          "classification": "confidential",
-          "object_id": "owner_confidential_export_012b",
-          "object_type": "analysis_export"
-        },
-        "session": {},
-        "token": {
-          "export_hash": "24bbac461125f13183498f121818d17327de393f386c4c9ab59181f681e0e8ff",
-          "export_id": "YlchimT7AYeJjjKJ1uBlqytK",
-          "export_status": "step_up_required"
-        }
-      },
-      "created_at": "2026-05-20T16:38:09.936410Z",
-      "created_by": "tower_export_vault",
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:38:09.934342Z",
       "decision": {
         "allowed": false,
         "audit_required": true,
@@ -1244,7 +637,12 @@
         "risk_score": 70,
         "risk_state": "step_up_required"
       },
-      "notes": "Evidence capsule for export request YlchimT7AYeJjjKJ1uBlqytK.",
+      "expires_at": "2026-05-21T16:38:09.934349Z",
+      "export_hash": "24bbac461125f13183498f121818d17327de393f386c4c9ab59181f681e0e8ff",
+      "export_id": "YlchimT7AYeJjjKJ1uBlqytK",
+      "export_reason": "pack_012b_owner_export_test",
+      "object_id": "owner_confidential_export_012b",
+      "object_type": "analysis_export",
       "policy_report": {
         "allowed": true,
         "decision": "allow",
@@ -1333,57 +731,14 @@
           }
         ]
       },
-      "request": {
-        "action": "export",
-        "app_name": "observatory",
-        "mode_name": null,
-        "object_id": "owner_confidential_export_012b",
-        "object_type": "analysis_export"
-      },
-      "risk": {
-        "decision_risk_score": 70,
-        "decision_risk_state": "step_up_required",
-        "policy_risk_score": 10,
-        "policy_risk_state": "clear"
-      },
-      "status": "open",
-      "trigger": "export_vault_request",
-      "user": {
-        "account_type": "owner",
-        "display_name": "Solice Bowdre",
-        "email": "bowdre.solice@gmail.com",
-        "risk_state": "clear",
-        "role": "owner",
-        "status": "active",
-        "trust_score": 95,
-        "user_id": "owner_solice"
-      }
+      "record": null,
+      "redaction_report": null,
+      "status": "step_up_required",
+      "user_id": "owner_solice"
     },
     {
-      "audit": {
-        "latest_audit_hash_at_creation": "0eac3c626fa6a29389aba1a5d3fac57ffa9c384e402fc9a14cf0d64e82a917d4"
-      },
-      "capsule_hash": "4da754e4662444aea39f2f77065a79db02688fe048fb853d96cf8a0d05a762f1",
-      "capsule_id": "7xHvbh2RgVa5V0NAQ4rXZ1Mf",
-      "context": {
-        "object": {
-          "allowed_roles": [
-            "owner"
-          ],
-          "app_name": "observatory",
-          "classification": "confidential",
-          "object_id": "owner_confidential_export_012b",
-          "object_type": "analysis_export"
-        },
-        "session": {},
-        "token": {
-          "export_hash": "028065256c65cb5bd26b8f78b6a84df770b967d99eff4465e7c1cb9bf5ee0452",
-          "export_id": "WIRtJgH_y4yDCAbSNO9Kmh53",
-          "export_status": "approved"
-        }
-      },
-      "created_at": "2026-05-20T16:38:09.945203Z",
-      "created_by": "tower_export_vault",
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:38:09.942667Z",
       "decision": {
         "allowed": true,
         "audit_required": true,
@@ -1408,7 +763,12 @@
         "risk_score": 35,
         "risk_state": "clear"
       },
-      "notes": "Evidence capsule for export request WIRtJgH_y4yDCAbSNO9Kmh53.",
+      "expires_at": "2026-05-21T16:38:09.942674Z",
+      "export_hash": "028065256c65cb5bd26b8f78b6a84df770b967d99eff4465e7c1cb9bf5ee0452",
+      "export_id": "WIRtJgH_y4yDCAbSNO9Kmh53",
+      "export_reason": "pack_012b_owner_export_after_stepup_test",
+      "object_id": "owner_confidential_export_012b",
+      "object_type": "analysis_export",
       "policy_report": {
         "allowed": true,
         "decision": "allow",
@@ -1497,57 +857,44 @@
           }
         ]
       },
-      "request": {
-        "action": "export",
+      "record": {
         "app_name": "observatory",
-        "mode_name": null,
+        "broker_token": "OWNER_SECRET_TOKEN",
+        "classification": "confidential",
         "object_id": "owner_confidential_export_012b",
-        "object_type": "analysis_export"
+        "object_type": "analysis_export",
+        "public_summary": "Owner export summary.",
+        "strategy_core": "owner visible internally but not normal export",
+        "symbol": "TSLA",
+        "title": "Owner Analysis Export"
       },
-      "risk": {
-        "decision_risk_score": 35,
-        "decision_risk_state": "clear",
-        "policy_risk_score": 10,
-        "policy_risk_state": "clear"
-      },
-      "status": "open",
-      "trigger": "export_vault_request",
-      "user": {
+      "redaction_report": {
         "account_type": "owner",
-        "display_name": "Solice Bowdre",
-        "email": "bowdre.solice@gmail.com",
-        "risk_state": "clear",
+        "classification": "confidential",
+        "redacted_count": 0,
+        "redacted_fields": [],
+        "redaction_style": "mask",
         "role": "owner",
-        "status": "active",
-        "trust_score": 95,
-        "user_id": "owner_solice"
-      }
+        "user_id": "owner_solice",
+        "visible_count": 9,
+        "visible_fields": [
+          "object_id",
+          "object_type",
+          "app_name",
+          "classification",
+          "title",
+          "symbol",
+          "strategy_core",
+          "broker_token",
+          "public_summary"
+        ]
+      },
+      "status": "approved",
+      "user_id": "owner_solice"
     },
     {
-      "audit": {
-        "latest_audit_hash_at_creation": "1190ee3cf935bb4bd3a1255ea299787ae34811ca65a9264f7837eccfe3c2c94d"
-      },
-      "capsule_hash": "524e128c60125833fcf8a8d0c2611d6b04a96d462f2c88c9e927df9fb0f1f6df",
-      "capsule_id": "XKTaB6BmQTBtQmjHe_TsK4la",
-      "context": {
-        "object": {
-          "allowed_roles": [
-            "owner"
-          ],
-          "app_name": "observatory",
-          "classification": "confidential",
-          "object_id": "owner_confidential_export_012c",
-          "object_type": "analysis_export"
-        },
-        "session": {},
-        "token": {
-          "export_hash": "4960fe0fe052237157efcb10da1b6a90dc2a91f4c021c236b75dae81d47605a7",
-          "export_id": "YKLnBvB07YeTJmiZg2mOnRhg",
-          "export_status": "step_up_required"
-        }
-      },
-      "created_at": "2026-05-20T16:40:36.626528Z",
-      "created_by": "tower_export_vault",
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:40:36.621875Z",
       "decision": {
         "allowed": false,
         "audit_required": true,
@@ -1570,7 +917,12 @@
         "risk_score": 70,
         "risk_state": "step_up_required"
       },
-      "notes": "Evidence capsule for export request YKLnBvB07YeTJmiZg2mOnRhg.",
+      "expires_at": "2026-05-21T16:40:36.621886Z",
+      "export_hash": "4960fe0fe052237157efcb10da1b6a90dc2a91f4c021c236b75dae81d47605a7",
+      "export_id": "YKLnBvB07YeTJmiZg2mOnRhg",
+      "export_reason": "pack_012c_owner_export_test",
+      "object_id": "owner_confidential_export_012c",
+      "object_type": "analysis_export",
       "policy_report": {
         "allowed": true,
         "decision": "allow",
@@ -1659,57 +1011,14 @@
           }
         ]
       },
-      "request": {
-        "action": "export",
-        "app_name": "observatory",
-        "mode_name": null,
-        "object_id": "owner_confidential_export_012c",
-        "object_type": "analysis_export"
-      },
-      "risk": {
-        "decision_risk_score": 70,
-        "decision_risk_state": "step_up_required",
-        "policy_risk_score": 10,
-        "policy_risk_state": "clear"
-      },
-      "status": "open",
-      "trigger": "export_vault_request",
-      "user": {
-        "account_type": "owner",
-        "display_name": "Solice Bowdre",
-        "email": "bowdre.solice@gmail.com",
-        "risk_state": "clear",
-        "role": "owner",
-        "status": "active",
-        "trust_score": 95,
-        "user_id": "owner_solice"
-      }
+      "record": null,
+      "redaction_report": null,
+      "status": "step_up_required",
+      "user_id": "owner_solice"
     },
     {
-      "audit": {
-        "latest_audit_hash_at_creation": "cea0fc038536b118979b0687452c652f149cb4c4897d883aea8b56d4ddc1921f"
-      },
-      "capsule_hash": "5523476718f265b8b7785ce5d22ca910310b485a20bf5e713d775804efc5c3b4",
-      "capsule_id": "SRXnrJh2PugOWOCzl9FNfidv",
-      "context": {
-        "object": {
-          "allowed_roles": [
-            "owner"
-          ],
-          "app_name": "observatory",
-          "classification": "confidential",
-          "object_id": "owner_confidential_export_012c",
-          "object_type": "analysis_export"
-        },
-        "session": {},
-        "token": {
-          "export_hash": "d1b2a5dcdadee86292bb3695cf93d745106b5f9e6b7b2e32b7c1496ada44365f",
-          "export_id": "tDALQmwNFXqOCIo_47ndO1PD",
-          "export_status": "approved"
-        }
-      },
-      "created_at": "2026-05-20T16:40:36.646382Z",
-      "created_by": "tower_export_vault",
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:40:36.641271Z",
       "decision": {
         "allowed": true,
         "audit_required": true,
@@ -1734,7 +1043,12 @@
         "risk_score": 35,
         "risk_state": "clear"
       },
-      "notes": "Evidence capsule for export request tDALQmwNFXqOCIo_47ndO1PD.",
+      "expires_at": "2026-05-21T16:40:36.641281Z",
+      "export_hash": "d1b2a5dcdadee86292bb3695cf93d745106b5f9e6b7b2e32b7c1496ada44365f",
+      "export_id": "tDALQmwNFXqOCIo_47ndO1PD",
+      "export_reason": "pack_012c_owner_export_after_stepup_test",
+      "object_id": "owner_confidential_export_012c",
+      "object_type": "analysis_export",
       "policy_report": {
         "allowed": true,
         "decision": "allow",
@@ -1823,55 +1137,50 @@
           }
         ]
       },
-      "request": {
-        "action": "export",
+      "record": {
         "app_name": "observatory",
-        "mode_name": null,
+        "broker_token": "[REDACTED]",
+        "classification": "confidential",
         "object_id": "owner_confidential_export_012c",
-        "object_type": "analysis_export"
+        "object_type": "analysis_export",
+        "public_summary": "Owner export summary.",
+        "strategy_core": "[REDACTED]",
+        "symbol": "TSLA",
+        "title": "Owner Analysis Export"
       },
-      "risk": {
-        "decision_risk_score": 35,
-        "decision_risk_state": "clear",
-        "policy_risk_score": 10,
-        "policy_risk_state": "clear"
-      },
-      "status": "open",
-      "trigger": "export_vault_request",
-      "user": {
+      "redaction_report": {
         "account_type": "owner",
-        "display_name": "Solice Bowdre",
-        "email": "bowdre.solice@gmail.com",
-        "risk_state": "clear",
+        "classification": "confidential",
+        "forced_export_redacted_fields": [
+          "strategy_core",
+          "broker_token"
+        ],
+        "forced_export_redaction": true,
+        "redacted_count": 2,
+        "redacted_fields": [
+          "broker_token",
+          "strategy_core"
+        ],
+        "redaction_style": "mask",
         "role": "owner",
-        "status": "active",
-        "trust_score": 95,
-        "user_id": "owner_solice"
-      }
+        "user_id": "owner_solice",
+        "visible_count": 7,
+        "visible_fields": [
+          "object_id",
+          "object_type",
+          "app_name",
+          "classification",
+          "title",
+          "symbol",
+          "public_summary"
+        ]
+      },
+      "status": "approved",
+      "user_id": "owner_solice"
     },
     {
-      "audit": {
-        "latest_audit_hash_at_creation": "89478ddd5fc55dc430de2f3f7b99b88de25bf250c0d21202ffcca5921cdea8bc"
-      },
-      "capsule_hash": "6b8c2a2400a532e44b6e392b398233fa3f8c12417877ec61bcb65a6fdaa7365c",
-      "capsule_id": "sM9r4EZZAzzyxY3598QPfCK5",
-      "context": {
-        "object": {
-          "app_name": "observatory",
-          "classification": "user_private",
-          "object_id": "trade_beta_export_012b",
-          "object_type": "trade_record",
-          "owner_user_id": "beta_001"
-        },
-        "session": {},
-        "token": {
-          "export_hash": "88711b3203e27c009279cbc39515f9670f18c17c7f71df2c7bf3a123a42f2ca1",
-          "export_id": "BBpnSyrswjroknVDHAstPCWl",
-          "export_status": "denied"
-        }
-      },
-      "created_at": "2026-05-20T16:42:54.294823Z",
-      "created_by": "tower_export_vault",
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:42:54.289678Z",
       "decision": {
         "allowed": false,
         "decision": "deny",
@@ -1965,7 +1274,12 @@
           }
         ]
       },
-      "notes": "Evidence capsule for export request BBpnSyrswjroknVDHAstPCWl.",
+      "expires_at": "2026-05-21T16:42:54.289683Z",
+      "export_hash": "88711b3203e27c009279cbc39515f9670f18c17c7f71df2c7bf3a123a42f2ca1",
+      "export_id": "BBpnSyrswjroknVDHAstPCWl",
+      "export_reason": "pack_012b_beta_export_denial_test",
+      "object_id": "trade_beta_export_012b",
+      "object_type": "trade_record",
       "policy_report": {
         "allowed": false,
         "decision": "deny",
@@ -2059,57 +1373,14 @@
           }
         ]
       },
-      "request": {
-        "action": "export",
-        "app_name": "observatory",
-        "mode_name": null,
-        "object_id": "trade_beta_export_012b",
-        "object_type": "trade_record"
-      },
-      "risk": {
-        "decision_risk_score": 75,
-        "decision_risk_state": "restricted",
-        "policy_risk_score": 75,
-        "policy_risk_state": "restricted"
-      },
-      "status": "open",
-      "trigger": "export_vault_request",
-      "user": {
-        "account_type": "beta_user",
-        "display_name": "Beta Tester",
-        "email": "beta@example.com",
-        "risk_state": "clear",
-        "role": "user",
-        "status": "active",
-        "trust_score": 70,
-        "user_id": "beta_001"
-      }
+      "record": null,
+      "redaction_report": null,
+      "status": "denied",
+      "user_id": "beta_001"
     },
     {
-      "audit": {
-        "latest_audit_hash_at_creation": "9b1f60d369897657c1705b6e086c2e385fcaf7e26833a8ebae817e2717cd4da3"
-      },
-      "capsule_hash": "6eaac115d6112a736b5e05638f7e8128458a00b1e2f603399fe5585ada98aa28",
-      "capsule_id": "2jzKb_SY6BmpQUtEaUSna3mw",
-      "context": {
-        "object": {
-          "allowed_roles": [
-            "owner"
-          ],
-          "app_name": "observatory",
-          "classification": "confidential",
-          "object_id": "owner_confidential_export_012b",
-          "object_type": "analysis_export"
-        },
-        "session": {},
-        "token": {
-          "export_hash": "a84b393d9c02ef8b61529eaf47c287203cfa40d937e1f23f5e5b9c9abd3b31e1",
-          "export_id": "1nHpdaNmBTbti45hcJtf6nb8",
-          "export_status": "approved"
-        }
-      },
-      "created_at": "2026-05-20T16:42:54.307259Z",
-      "created_by": "tower_export_vault",
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:42:54.303996Z",
       "decision": {
         "allowed": true,
         "audit_required": true,
@@ -2134,7 +1405,12 @@
         "risk_score": 35,
         "risk_state": "clear"
       },
-      "notes": "Evidence capsule for export request 1nHpdaNmBTbti45hcJtf6nb8.",
+      "expires_at": "2026-05-21T16:42:54.304002Z",
+      "export_hash": "a84b393d9c02ef8b61529eaf47c287203cfa40d937e1f23f5e5b9c9abd3b31e1",
+      "export_id": "1nHpdaNmBTbti45hcJtf6nb8",
+      "export_reason": "pack_012b_owner_export_test",
+      "object_id": "owner_confidential_export_012b",
+      "object_type": "analysis_export",
       "policy_report": {
         "allowed": true,
         "decision": "allow",
@@ -2223,57 +1499,50 @@
           }
         ]
       },
-      "request": {
-        "action": "export",
+      "record": {
         "app_name": "observatory",
-        "mode_name": null,
+        "broker_token": "[REDACTED]",
+        "classification": "confidential",
         "object_id": "owner_confidential_export_012b",
-        "object_type": "analysis_export"
+        "object_type": "analysis_export",
+        "public_summary": "Owner export summary.",
+        "strategy_core": "[REDACTED]",
+        "symbol": "TSLA",
+        "title": "Owner Analysis Export"
       },
-      "risk": {
-        "decision_risk_score": 35,
-        "decision_risk_state": "clear",
-        "policy_risk_score": 10,
-        "policy_risk_state": "clear"
-      },
-      "status": "open",
-      "trigger": "export_vault_request",
-      "user": {
+      "redaction_report": {
         "account_type": "owner",
-        "display_name": "Solice Bowdre",
-        "email": "bowdre.solice@gmail.com",
-        "risk_state": "clear",
+        "classification": "confidential",
+        "forced_export_redacted_fields": [
+          "strategy_core",
+          "broker_token"
+        ],
+        "forced_export_redaction": true,
+        "redacted_count": 2,
+        "redacted_fields": [
+          "broker_token",
+          "strategy_core"
+        ],
+        "redaction_style": "mask",
         "role": "owner",
-        "status": "active",
-        "trust_score": 95,
-        "user_id": "owner_solice"
-      }
+        "user_id": "owner_solice",
+        "visible_count": 7,
+        "visible_fields": [
+          "object_id",
+          "object_type",
+          "app_name",
+          "classification",
+          "title",
+          "symbol",
+          "public_summary"
+        ]
+      },
+      "status": "approved",
+      "user_id": "owner_solice"
     },
     {
-      "audit": {
-        "latest_audit_hash_at_creation": "8a6da411b2e4a5adf20bb51dab66aeaf3a00fea35ce88ddd0219a3b900536781"
-      },
-      "capsule_hash": "5ea54edc62f2fa80f2b3a4ac528168d61c4062274b651410909675cc79ca9c44",
-      "capsule_id": "nPzLIjRSvkyN-stK-D5fIlDx",
-      "context": {
-        "object": {
-          "allowed_roles": [
-            "owner"
-          ],
-          "app_name": "observatory",
-          "classification": "confidential",
-          "object_id": "owner_confidential_export_012b",
-          "object_type": "analysis_export"
-        },
-        "session": {},
-        "token": {
-          "export_hash": "003398a6b21e329aa47cb3c8e5c271e59acd77e8e08142512ebf9dc8f5cf8c7c",
-          "export_id": "M5a1JVPh6ZbBar2pT_Zzhuss",
-          "export_status": "approved"
-        }
-      },
-      "created_at": "2026-05-20T16:42:54.319318Z",
-      "created_by": "tower_export_vault",
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:42:54.315886Z",
       "decision": {
         "allowed": true,
         "audit_required": true,
@@ -2298,7 +1567,12 @@
         "risk_score": 35,
         "risk_state": "clear"
       },
-      "notes": "Evidence capsule for export request M5a1JVPh6ZbBar2pT_Zzhuss.",
+      "expires_at": "2026-05-21T16:42:54.315893Z",
+      "export_hash": "003398a6b21e329aa47cb3c8e5c271e59acd77e8e08142512ebf9dc8f5cf8c7c",
+      "export_id": "M5a1JVPh6ZbBar2pT_Zzhuss",
+      "export_reason": "pack_012b_owner_export_after_stepup_test",
+      "object_id": "owner_confidential_export_012b",
+      "object_type": "analysis_export",
       "policy_report": {
         "allowed": true,
         "decision": "allow",
@@ -2387,31 +1661,46 @@
           }
         ]
       },
-      "request": {
-        "action": "export",
+      "record": {
         "app_name": "observatory",
-        "mode_name": null,
+        "broker_token": "[REDACTED]",
+        "classification": "confidential",
         "object_id": "owner_confidential_export_012b",
-        "object_type": "analysis_export"
+        "object_type": "analysis_export",
+        "public_summary": "Owner export summary.",
+        "strategy_core": "[REDACTED]",
+        "symbol": "TSLA",
+        "title": "Owner Analysis Export"
       },
-      "risk": {
-        "decision_risk_score": 35,
-        "decision_risk_state": "clear",
-        "policy_risk_score": 10,
-        "policy_risk_state": "clear"
-      },
-      "status": "open",
-      "trigger": "export_vault_request",
-      "user": {
+      "redaction_report": {
         "account_type": "owner",
-        "display_name": "Solice Bowdre",
-        "email": "bowdre.solice@gmail.com",
-        "risk_state": "clear",
+        "classification": "confidential",
+        "forced_export_redacted_fields": [
+          "strategy_core",
+          "broker_token"
+        ],
+        "forced_export_redaction": true,
+        "redacted_count": 2,
+        "redacted_fields": [
+          "broker_token",
+          "strategy_core"
+        ],
+        "redaction_style": "mask",
         "role": "owner",
-        "status": "active",
-        "trust_score": 95,
-        "user_id": "owner_solice"
-      }
+        "user_id": "owner_solice",
+        "visible_count": 7,
+        "visible_fields": [
+          "object_id",
+          "object_type",
+          "app_name",
+          "classification",
+          "title",
+          "symbol",
+          "public_summary"
+        ]
+      },
+      "status": "approved",
+      "user_id": "owner_solice"
     }
   ]
 }
