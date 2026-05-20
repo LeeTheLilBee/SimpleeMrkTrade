@@ -2339,3 +2339,346 @@ def execute_trades(
 __all__ = [
     "execute_trades",
 ]
+
+
+# ============================================================
+# OBSERVATORY_REPAIR_PAPER_OPTION_FILL_PREMIUM_FALLBACK_20260519
+# Robust paper-option fill rehydration fallback.
+# This override is intentionally placed after earlier helper definitions so the
+# execution loop resolves this safer version at runtime.
+# ============================================================
+
+def _observatory_patch_first_present_dict_20260519(*values):
+    for value in values:
+        if isinstance(value, dict) and value:
+            return value
+    return {}
+
+
+def _observatory_patch_first_present_list_20260519(*values):
+    for value in values:
+        if isinstance(value, list) and value:
+            return value
+    return []
+
+
+def _observatory_patch_safe_float_20260519(value, default=0.0):
+    try:
+        if value is None or value == "":
+            return float(default)
+        return float(value)
+    except Exception:
+        return float(default)
+
+
+def _observatory_patch_first_positive_float_20260519(*values, default=0.0):
+    for value in values:
+        number = _observatory_patch_safe_float_20260519(value, 0.0)
+        if number > 0:
+            return number
+    return float(default)
+
+
+def _observatory_patch_contract_dict_from_trade_20260519(trade):
+    trade = trade if isinstance(trade, dict) else {}
+
+    option = _observatory_patch_first_present_dict_20260519(
+        trade.get("option"),
+        trade.get("selected_option"),
+        trade.get("best_option"),
+        trade.get("best_option_preview"),
+        trade.get("option_contract"),
+        trade.get("selected_contract"),
+    )
+
+    chain = _observatory_patch_first_present_list_20260519(
+        trade.get("option_chain"),
+        trade.get("contracts"),
+        trade.get("option_contracts"),
+    )
+
+    chain_first = chain[0] if chain and isinstance(chain[0], dict) else {}
+
+    return _observatory_patch_first_present_dict_20260519(option, chain_first, trade)
+
+
+def _observatory_patch_rehydrate_paper_option_fill_packet(*args, **kwargs):
+    """
+    Compatibility override for prior paper option fill repair.
+
+    Expected inputs may arrive in different orders depending on the current
+    execution_loop.py callsite. This helper searches all dict args for:
+    - execution_result / result-like dict
+    - queued trade / candidate-like dict
+    - execution_record-like dict
+
+    It mutates dicts in place and returns the execution_result dict.
+    """
+
+    dict_args = [arg for arg in args if isinstance(arg, dict)]
+    dict_kwargs = [value for value in kwargs.values() if isinstance(value, dict)]
+    all_dicts = dict_args + dict_kwargs
+
+    execution_result = {}
+    queued_trade = {}
+    execution_record = {}
+
+    # Result dict usually has status/fill/broker fields.
+    for item in all_dicts:
+        if any(k in item for k in ("status", "fill_price", "filled_price", "broker_order_id", "execution_record")):
+            execution_result = item
+            break
+
+    # Queued trade usually has symbol, vehicle, capital_required, selected_for_execution.
+    for item in all_dicts:
+        vehicle = str(item.get("vehicle") or item.get("vehicle_selected") or item.get("selected_vehicle") or "").upper()
+        if vehicle == "OPTION" and any(k in item for k in ("capital_required", "minimum_trade_cost", "option_chain", "option", "contract_symbol")):
+            queued_trade = item
+            break
+
+    # Record may be nested in execution_result or passed separately.
+    nested_record = execution_result.get("execution_record") if isinstance(execution_result.get("execution_record"), dict) else {}
+    execution_record = nested_record
+
+    if not execution_record:
+        for item in all_dicts:
+            if item is not execution_result and any(k in item for k in ("execution_record", "filled_quantity", "trade_id", "opened_at")):
+                execution_record = item
+                break
+
+    if not execution_result and all_dicts:
+        execution_result = all_dicts[0]
+
+    if not isinstance(execution_result, dict):
+        return execution_result
+
+    if not isinstance(execution_record, dict):
+        execution_record = {}
+
+    if not isinstance(queued_trade, dict):
+        queued_trade = {}
+
+    vehicle = str(
+        queued_trade.get("vehicle_selected")
+        or queued_trade.get("selected_vehicle")
+        or queued_trade.get("vehicle")
+        or execution_record.get("vehicle_selected")
+        or execution_record.get("selected_vehicle")
+        or execution_record.get("vehicle")
+        or ""
+    ).upper()
+
+    if vehicle != "OPTION":
+        return execution_result
+
+    contract = _observatory_patch_contract_dict_from_trade_20260519(queued_trade)
+
+    contracts = int(_observatory_patch_first_positive_float_20260519(
+        queued_trade.get("contracts"),
+        queued_trade.get("quantity"),
+        execution_record.get("contracts"),
+        execution_record.get("quantity"),
+        execution_result.get("filled_quantity"),
+        default=1,
+    ) or 1)
+
+    raw_premium = _observatory_patch_first_positive_float_20260519(
+        execution_result.get("fill_price"),
+        execution_result.get("filled_price"),
+        execution_result.get("entry_premium"),
+        execution_result.get("premium_entry"),
+        execution_result.get("option_entry"),
+        execution_record.get("fill_price"),
+        execution_record.get("filled_price"),
+        execution_record.get("entry_premium"),
+        execution_record.get("premium_entry"),
+        execution_record.get("option_entry"),
+        queued_trade.get("price_reference"),
+        queued_trade.get("selected_price_reference"),
+        queued_trade.get("option_price"),
+        queued_trade.get("premium"),
+        queued_trade.get("mark"),
+        contract.get("mark"),
+        contract.get("last"),
+        contract.get("ask"),
+        contract.get("bid"),
+        default=0.0,
+    )
+
+    capital_required = _observatory_patch_first_positive_float_20260519(
+        queued_trade.get("capital_required"),
+        queued_trade.get("estimated_cost"),
+        queued_trade.get("effective_cost"),
+        default=0.0,
+    )
+
+    minimum_trade_cost = _observatory_patch_first_positive_float_20260519(
+        queued_trade.get("minimum_trade_cost"),
+        default=0.0,
+    )
+
+    # Prefer capital_required because minimum_trade_cost may include commission.
+    inferred_from_capital = 0.0
+    if capital_required > 0 and contracts > 0:
+        inferred_from_capital = capital_required / (contracts * 100.0)
+
+    inferred_from_minimum = 0.0
+    if minimum_trade_cost > 1.0 and contracts > 0:
+        # Most of this system uses +1.00 commission in paper mode.
+        inferred_from_minimum = max((minimum_trade_cost - 1.0) / (contracts * 100.0), 0.0)
+
+    premium = _observatory_patch_first_positive_float_20260519(
+        raw_premium,
+        inferred_from_capital,
+        inferred_from_minimum,
+        default=0.0,
+    )
+
+    symbol = str(
+        queued_trade.get("symbol")
+        or execution_record.get("symbol")
+        or execution_result.get("symbol")
+        or contract.get("symbol")
+        or ""
+    ).upper()
+
+    trade_id = (
+        queued_trade.get("trade_id")
+        or execution_record.get("trade_id")
+        or execution_result.get("trade_id")
+        or ""
+    )
+
+    contract_symbol = (
+        queued_trade.get("contract_symbol")
+        or queued_trade.get("contractSymbol")
+        or execution_record.get("contract_symbol")
+        or execution_record.get("contractSymbol")
+        or contract.get("contractSymbol")
+        or contract.get("contract_symbol")
+        or contract.get("option_symbol")
+        or ""
+    )
+
+    expiration = (
+        queued_trade.get("expiration")
+        or queued_trade.get("expiry")
+        or execution_record.get("expiration")
+        or execution_record.get("expiry")
+        or contract.get("expiration")
+        or contract.get("expiry")
+        or ""
+    )
+
+    strike = _observatory_patch_first_positive_float_20260519(
+        queued_trade.get("strike"),
+        execution_record.get("strike"),
+        contract.get("strike"),
+        default=0.0,
+    )
+
+    right = str(
+        queued_trade.get("right")
+        or queued_trade.get("option_type")
+        or execution_record.get("right")
+        or execution_record.get("option_type")
+        or contract.get("right")
+        or contract.get("option_type")
+        or queued_trade.get("strategy")
+        or execution_record.get("strategy")
+        or "CALL"
+    ).upper()
+
+    if right in ('C', 'CALLS'):
+        right = "CALL"
+    elif right in ('P', 'PUTS'):
+        right = "PUT"
+
+    commission = _observatory_patch_first_positive_float_20260519(
+        queued_trade.get("commission"),
+        execution_record.get("commission"),
+        execution_result.get("commission"),
+        default=1.0,
+    )
+
+    if premium <= 0:
+        print("PAPER OPTION FILL REHYDRATION SKIPPED:", {
+            "symbol": symbol,
+            "trade_id": trade_id,
+            "reason": "no_positive_option_premium_found_even_after_capital_fallback",
+            "contract_symbol": contract_symbol,
+            "capital_required": capital_required,
+            "minimum_trade_cost": minimum_trade_cost,
+            "contracts": contracts,
+        })
+        return execution_result
+
+    actual_cost = round((premium * contracts * 100.0) + commission, 4)
+
+    # Patch result shell.
+    execution_result["status"] = execution_result.get("status") or "FILLED"
+    execution_result["fill_price"] = premium
+    execution_result["filled_price"] = premium
+    execution_result["entry_premium"] = premium
+    execution_result["premium_entry"] = premium
+    execution_result["option_entry"] = premium
+    execution_result["filled_quantity"] = contracts
+    execution_result["quantity"] = contracts
+    execution_result["contracts"] = contracts
+    execution_result["shares"] = 0
+    execution_result["actual_cost"] = actual_cost
+    execution_result["paper_fill_rehydrated"] = True
+    execution_result["paper_fill_rehydration_source"] = "premium_or_capital_required_fallback"
+
+    # Patch execution record too.
+    for target in (execution_record,):
+        if isinstance(target, dict):
+            target["symbol"] = symbol or target.get("symbol")
+            target["vehicle"] = "OPTION"
+            target["vehicle_selected"] = "OPTION"
+            target["selected_vehicle"] = "OPTION"
+            target["fill_price"] = premium
+            target["filled_price"] = premium
+            target["entry_premium"] = premium
+            target["premium_entry"] = premium
+            target["option_entry"] = premium
+            target["current_premium"] = premium
+            target["premium_current"] = premium
+            target["current_option_mark"] = premium
+            target["option_current_price"] = premium
+            target["filled_quantity"] = contracts
+            target["quantity"] = contracts
+            target["contracts"] = contracts
+            target["shares"] = 0
+            target["actual_cost"] = actual_cost
+            target["contract_symbol"] = contract_symbol or target.get("contract_symbol")
+            target["option_symbol"] = contract_symbol or target.get("option_symbol")
+            target["expiration"] = expiration or target.get("expiration")
+            target["expiry"] = expiration or target.get("expiry")
+            target["strike"] = strike or target.get("strike")
+            target["right"] = right or target.get("right")
+            target["monitoring_price_type"] = "OPTION_PREMIUM"
+            target["price_review_basis"] = "OPTION_PREMIUM_ONLY"
+            target["underlying_price_used_for_close_decision"] = False
+            target["paper_fill_rehydrated"] = True
+            target["paper_fill_rehydration_source"] = "premium_or_capital_required_fallback"
+
+    execution_result["execution_record"] = execution_record
+
+    print("PAPER OPTION FILL REHYDRATED:", {
+        "symbol": symbol,
+        "trade_id": trade_id,
+        "premium": premium,
+        "contracts": contracts,
+        "contract_symbol": contract_symbol,
+        "expiration": expiration,
+        "strike": strike,
+        "right": right,
+        "actual_cost": actual_cost,
+        "capital_required": capital_required,
+        "minimum_trade_cost": minimum_trade_cost,
+    })
+
+    return execution_result
+
+
