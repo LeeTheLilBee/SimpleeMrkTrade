@@ -724,7 +724,71 @@
                 border-radius: 24px;
             }
         }
-    </style>
+    
+/* PACK 022: Tower Security Command Entry */
+.tower-command-link {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 190px;
+  padding: 13px 16px;
+  border-radius: 18px;
+  text-decoration: none;
+  color: #f8fafc;
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.96)),
+    radial-gradient(circle at top left, rgba(250, 204, 21, 0.22), transparent 38%);
+  border: 1px solid rgba(250, 204, 21, 0.36);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.tower-command-link:hover {
+  transform: translateY(-2px);
+  border-color: rgba(250, 204, 21, 0.72);
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.46),
+    0 0 28px rgba(250, 204, 21, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.tower-command-kicker {
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #facc15;
+  font-weight: 800;
+}
+
+.tower-command-main {
+  font-size: 0.94rem;
+  letter-spacing: 0.02em;
+  color: #f8fafc;
+  font-weight: 800;
+}
+
+@media (max-width: 720px) {
+  .tower-command-link {
+    right: 12px;
+    bottom: 12px;
+    min-width: 154px;
+    padding: 11px 13px;
+    border-radius: 15px;
+  }
+
+  .tower-command-main {
+    font-size: 0.82rem;
+  }
+}
+
+</style>
 </head>
 <body class="{{ current_theme }}">
 <div class="observatory-shell">
@@ -1012,6 +1076,13 @@ function toggleObservatoryRail() {
     rail.classList.toggle("is-open");
 }
 </script>
+
+<!-- PACK 022: Tower Security Command Entry -->
+<a class="tower-command-link" href="/tower/security-command?tower_user_id=owner_solice" title="Open The Tower Security Command">
+  <span class="tower-command-kicker">THE TOWER</span>
+  <span class="tower-command-main">Security Command</span>
+</a>
+
 </body>
 </html>
 :::

@@ -1,4 +1,3 @@
-
 import os
 import sys
 from pathlib import Path
@@ -121,9 +120,57 @@ from engine_v2.final_brain_live_helpers import (
 # --- APP INIT ---
 app = Flask(__name__)
 
+
+
+
+
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "simpleemrktrade-dev-key-change-later"
 app = Flask(__name__, template_folder="templates", static_folder="static")
+
+# PACK 022E: Register The Tower routes after final Flask app assignment.
+def _pack022e_register_tower_routes_once(_app):
+    try:
+        import sys as _sys
+        import importlib as _importlib
+        import importlib.util as _importlib_util
+        from pathlib import Path as _Path
+
+        _root = str(_Path(__file__).resolve().parents[1])
+        if _root not in _sys.path:
+            _sys.path.insert(0, _root)
+
+        _existing = {str(_rule.rule) for _rule in _app.url_map.iter_rules()}
+        if "/tower/security-command" in _existing:
+            print("PACK 022E: The Tower web routes already registered.")
+            return True
+
+        try:
+            _bridge = _importlib.import_module("tower.web_bridge")
+        except Exception as _import_error:
+            _bridge_path = _Path(_root) / "tower" / "web_bridge.py"
+            if not _bridge_path.exists():
+                raise _import_error
+
+            _spec = _importlib_util.spec_from_file_location("tower_web_bridge_pack022e", str(_bridge_path))
+            if _spec is None or _spec.loader is None:
+                raise _import_error
+
+            _bridge = _importlib_util.module_from_spec(_spec)
+            _spec.loader.exec_module(_bridge)
+
+        _bridge.register_tower_web_routes(_app)
+
+        _routes = sorted(str(_rule.rule) for _rule in _app.url_map.iter_rules() if str(_rule.rule).startswith("/tower"))
+        print("PACK 022E: The Tower web routes registered:", _routes)
+        return True
+
+    except Exception as exc:
+        print("PACK 022E: The Tower web routes failed:", type(exc).__name__, str(exc))
+        return False
+
+_pack022e_register_tower_routes_once(app)
+
 app.secret_key = "simpleemrktrade-dev-key-change-later"
 
 # SECTION 13G — AUTOMATIC market_universe HOOK
@@ -8184,7 +8231,7 @@ def account_page():
 
 
 @app.route("/my-portfolio")
-def my_portfolio_page():
+def my_portfolio_page__tower_endpoint_fix_2():
     portfolio = {"positions": get_positions_with_intelligence()}
     return render_template_safe("my_portfolio.html", **template_context({"portfolio": portfolio}))
 
