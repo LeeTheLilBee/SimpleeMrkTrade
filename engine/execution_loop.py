@@ -576,6 +576,16 @@ def _option_premium(payload: Dict[str, Any], execution_result: Dict[str, Any], c
 
 
 def _underlying_price(payload: Dict[str, Any], execution_result: Dict[str, Any]) -> float:
+    """
+    Resolve the underlying stock context for OPTION positions.
+
+    Important:
+    - This function must NOT use generic `price`, `current`, or `current_price`.
+    - Those fields can be option premium fields after paper fill rehydration.
+    - Underlying context is allowed only from explicit underlying/stock/spot fields.
+    """
+    payload = _safe_dict(payload)
+    execution_result = _safe_dict(execution_result)
     execution_record = _safe_dict(execution_result.get("execution_record"))
 
     value = _first_float(
@@ -587,8 +597,9 @@ def _underlying_price(payload: Dict[str, Any], execution_result: Dict[str, Any])
             "underlying_last",
             "underlying_mark",
             "spot_price",
-            "price",
-            "current_price",
+            "stock_last",
+            "stock_mark",
+            "underlying_context",
         ],
     )
     if value is not None and value > 0:
@@ -600,6 +611,12 @@ def _underlying_price(payload: Dict[str, Any], execution_result: Dict[str, Any])
             "underlying_price",
             "current_underlying_price",
             "stock_price",
+            "underlying_last",
+            "underlying_mark",
+            "spot_price",
+            "stock_last",
+            "stock_mark",
+            "underlying_context",
             "market_price",
         ],
     )
@@ -612,6 +629,12 @@ def _underlying_price(payload: Dict[str, Any], execution_result: Dict[str, Any])
             "underlying_price",
             "current_underlying_price",
             "stock_price",
+            "underlying_last",
+            "underlying_mark",
+            "spot_price",
+            "stock_last",
+            "stock_mark",
+            "underlying_context",
             "market_price",
         ],
     )
@@ -619,7 +642,6 @@ def _underlying_price(payload: Dict[str, Any], execution_result: Dict[str, Any])
         return round(value, 4)
 
     return 0.0
-
 
 def _stock_price(payload: Dict[str, Any], execution_result: Dict[str, Any]) -> float:
     value = _first_float(
@@ -728,6 +750,13 @@ def _normalize_option_lifecycle_for_position(
     contract = _extract_option_payload(pos)
     premium = _option_premium(pos, execution_result, contract)
     underlying = _underlying_price(pos, execution_result)
+
+    # OBSERVATORY_REPAIR_OPTION_UNDERLYING_PREMIUM_LEAK_GUARD_20260520
+    # If the only available "underlying" equals the option premium, it is not
+    # true underlying stock context. Keep it as 0.0 instead of polluting the
+    # position with premium-as-underlying.
+    if premium > 0 and underlying > 0 and abs(float(underlying) - float(premium)) < 0.0001:
+        underlying = 0.0
 
     contracts = _safe_int(
         pos.get("contracts", pos.get("contract_count", pos.get("quantity", pos.get("qty", 1)))),
@@ -1873,7 +1902,7 @@ def _observatory_patch_rehydrate_paper_option_fill_packet(queued_trade, packet, 
     underlying = _observatory_patch_first_positive_float(
         queued_trade.get("underlying_price"),
         queued_trade.get("stock_price"),
-        queued_trade.get("price"),
+        # Do not use queued_trade["price"] here; for option fills it may be premium.
         merged.get("underlying_price"),
         merged.get("stock_price"),
         default=0.0,
@@ -2281,6 +2310,56 @@ def execute_trades(
             packet["governor_limits"] = governor_limits
 
         if _safe_bool(packet.get("success"), False):
+            # OBSERVATORY_REPAIR_SUCCESS_REASON_AFTER_PAPER_FILL_RESCUE_20260520
+            # If Paper Mode rescued/rehydrated a valid simulated fill, do not keep
+            # stale adapter failure text like "Invalid stock payload" on a success.
+            try:
+                _execution_result_for_reason = _safe_dict(packet.get("execution_result"))
+                _execution_record_for_reason = _safe_dict(_execution_result_for_reason.get("execution_record"))
+                _stale_success_reasons = {
+                    "invalid stock payload.",
+                    "execution returned invalid fill payload.",
+                    "invalid fill payload.",
+                    "execution_rejected",
+                    "none",
+                    "",
+                }
+
+                _packet_reason_raw = str(packet.get("reason") or "").strip()
+                _result_reason_raw = str(_execution_result_for_reason.get("reason") or "").strip()
+                _packet_reason_key = _packet_reason_raw.lower()
+                _result_reason_key = _result_reason_raw.lower()
+
+                _rescued_or_rehydrated = (
+                    bool(packet.get("paper_fill_rescued"))
+                    or bool(packet.get("paper_fill_rehydrated"))
+                    or bool(_execution_result_for_reason.get("paper_fill_rescued"))
+                    or bool(_execution_result_for_reason.get("paper_fill_rehydrated"))
+                    or bool(_execution_record_for_reason.get("paper_fill_rescued"))
+                    or bool(_execution_record_for_reason.get("paper_fill_rehydrated"))
+                    or str(_execution_result_for_reason.get("status") or "").upper() in {"FILLED", "EXECUTED"}
+                )
+
+                if _rescued_or_rehydrated and (
+                    _packet_reason_key in _stale_success_reasons
+                    or _result_reason_key in _stale_success_reasons
+                ):
+                    packet["reason"] = "executed"
+                    packet["reason_code"] = "executed"
+
+                    _execution_result_for_reason["reason"] = "executed"
+                    _execution_result_for_reason["reason_code"] = "executed"
+                    _execution_result_for_reason["status"] = _execution_result_for_reason.get("status") or "FILLED"
+
+                    _execution_record_for_reason["reason"] = "executed"
+                    _execution_record_for_reason["reason_code"] = "executed"
+                    _execution_record_for_reason["status"] = _execution_record_for_reason.get("status") or "FILLED"
+
+                    _execution_result_for_reason["execution_record"] = _execution_record_for_reason
+                    packet["execution_result"] = _execution_result_for_reason
+            except Exception as _success_reason_cleanup_error:
+                print("SUCCESS REASON CLEANUP ERROR:", str(_success_reason_cleanup_error))
+
             persistence = _persist_executed_trade(packet)
             packet["persistence"] = persistence
 
@@ -3638,3 +3717,8 @@ def _observatory_final_rescue_paper_fill_result_20260520(execution_result, trade
     return rescued
 
 
+
+
+# OBSERVATORY_REPAIR_EXECUTION_LOOP_CLEAN_SUCCESS_REASON_AND_OPTION_UNDERLYING_20260520
+
+# OBSERVATORY_REPAIR_OPTION_SAFE_UNDERLYING_RESOLVER_STRICT_20260520

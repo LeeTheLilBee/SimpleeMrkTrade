@@ -1715,3 +1715,543 @@ __all__ = [
     "close_open_position",
     "close_by_trade_id",
 ]
+
+
+
+# OBSERVATORY_CLOSE_TRADE_ACTIVE_BOOK_SYNC_20260520
+# ------------------------------------------------------------------------------
+# Close-book sync hardener
+# ------------------------------------------------------------------------------
+# The canonical close_trade path may close and archive correctly while only
+# removing the closed trade from the primary open_positions book. The Observatory
+# keeps mirrored active books for different surfaces, so a successful close must
+# remove the trade from all active open-position books.
+#
+# This wrapper preserves the original close_trade behavior and then performs a
+# safe post-close reconciliation across:
+#   - data/open_positions.json
+#   - data/positions.json
+#   - data/user_positions.json
+# ------------------------------------------------------------------------------
+
+def _observatory_sync_closed_trade_across_active_books_20260520(trade_id=None, symbol=None):
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    try:
+        root = Path(__file__).resolve().parents[1]
+    except Exception:
+        root = Path("/content/SimpleeMrkTrade")
+
+    data_dir = root / "data"
+
+    active_books = [
+        data_dir / "open_positions.json",
+        data_dir / "positions.json",
+        data_dir / "user_positions.json",
+    ]
+
+    sync_result = {
+        "trade_id": trade_id,
+        "symbol": symbol,
+        "books_checked": [],
+        "books_changed": [],
+        "removed_total": 0,
+        "synced_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+    trade_id_s = str(trade_id or "").strip()
+    symbol_s = str(symbol or "").strip().upper()
+
+    if not trade_id_s and not symbol_s:
+        sync_result["skipped"] = True
+        sync_result["reason"] = "missing_trade_id_and_symbol"
+        return sync_result
+
+    def _read_json(path, default):
+        try:
+            if not path.exists():
+                return default
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return default
+
+    def _write_json(path, payload):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2, default=str)
+
+    def _extract_rows(payload):
+        if isinstance(payload, list):
+            return payload, None
+        if isinstance(payload, dict):
+            for key in ("positions", "open_positions", "data", "items"):
+                if isinstance(payload.get(key), list):
+                    return payload.get(key), key
+        return [], None
+
+    def _rebuild_payload(original, rows, key):
+        if isinstance(original, list):
+            return rows
+        if isinstance(original, dict) and key:
+            rebuilt = dict(original)
+            rebuilt[key] = rows
+            return rebuilt
+        return rows
+
+    def _matches(row):
+        if not isinstance(row, dict):
+            return False
+
+        row_trade_id = str(row.get("trade_id") or row.get("id") or "").strip()
+        row_symbol = str(row.get("symbol") or "").strip().upper()
+        row_status = str(
+            row.get("status")
+            or row.get("position_status")
+            or row.get("execution_status")
+            or row.get("lifecycle_stage")
+            or ""
+        ).strip().upper()
+
+        # Prefer exact trade_id. Symbol-only is intentionally conservative and
+        # only removes obvious controlled/test stale rows if trade_id is missing.
+        if trade_id_s and row_trade_id == trade_id_s:
+            return True
+
+        if symbol_s and not trade_id_s and row_symbol == symbol_s:
+            if row_status in ("CLOSED", "CLOSE", "EXITED"):
+                return True
+            if str(row.get("test_record") or "").lower() == "true":
+                return True
+            if str(row.get("controlled_test") or "").lower() == "true":
+                return True
+
+        return False
+
+    for path in active_books:
+        payload = _read_json(path, [])
+        rows, key = _extract_rows(payload)
+
+        before = len(rows)
+        kept = [row for row in rows if not _matches(row)]
+        removed = before - len(kept)
+
+        book_result = {
+            "path": str(path),
+            "before": before,
+            "after": len(kept),
+            "removed": removed,
+        }
+
+        sync_result["books_checked"].append(book_result)
+
+        if removed:
+            _write_json(path, _rebuild_payload(payload, kept, key))
+            sync_result["books_changed"].append(book_result)
+            sync_result["removed_total"] += removed
+
+    return sync_result
+
+
+def _observatory_extract_close_identity_20260520(args=None, kwargs=None, result=None):
+    args = args or ()
+    kwargs = kwargs or {}
+    result = result if isinstance(result, dict) else {}
+
+    trade_id = (
+        result.get("trade_id")
+        or result.get("id")
+        or kwargs.get("trade_id")
+        or kwargs.get("position_id")
+        or kwargs.get("id")
+    )
+
+    symbol = (
+        result.get("symbol")
+        or kwargs.get("symbol")
+    )
+
+    if not trade_id and args:
+        first = args[0]
+        if isinstance(first, dict):
+            trade_id = first.get("trade_id") or first.get("id")
+            symbol = symbol or first.get("symbol")
+        elif isinstance(first, str):
+            trade_id = first
+
+    return trade_id, symbol
+
+
+def _observatory_close_result_is_success_20260520(result):
+    if not isinstance(result, dict):
+        return False
+
+    if result.get("closed") is True:
+        return True
+
+    status = str(result.get("status") or "").strip().upper()
+    if status in ("CLOSED", "FILLED", "SUCCESS"):
+        return True
+
+    if result.get("blocked") is True:
+        return False
+
+    if result.get("error") or result.get("rejected"):
+        return False
+
+    # If a close payload has a closed_at timestamp and trade_id, treat it as closed.
+    if result.get("closed_at") and result.get("trade_id"):
+        return True
+
+    return False
+
+
+if "_OBSERVATORY_ORIGINAL_CLOSE_TRADE_20260520" not in globals():
+    _OBSERVATORY_ORIGINAL_CLOSE_TRADE_20260520 = close_trade
+
+
+def close_trade(*args, **kwargs):
+    result = _OBSERVATORY_ORIGINAL_CLOSE_TRADE_20260520(*args, **kwargs)
+
+    try:
+        if _observatory_close_result_is_success_20260520(result):
+            trade_id, symbol = _observatory_extract_close_identity_20260520(
+                args=args,
+                kwargs=kwargs,
+                result=result,
+            )
+
+            sync_result = _observatory_sync_closed_trade_across_active_books_20260520(
+                trade_id=trade_id,
+                symbol=symbol,
+            )
+
+            if isinstance(result, dict):
+                result["active_book_sync"] = sync_result
+                result["active_book_sync_removed_total"] = sync_result.get("removed_total", 0)
+                result["active_book_sync_ok"] = sync_result.get("removed_total", 0) >= 0
+
+    except Exception as sync_error:
+        if isinstance(result, dict):
+            result["active_book_sync_ok"] = False
+            result["active_book_sync_error"] = str(sync_error)
+
+    return result
+
+
+
+# OBSERVATORY_CLOSE_TRADE_FLEXIBLE_CALL_SHAPE_20260520
+# ------------------------------------------------------------------------------
+# Flexible close_trade wrapper
+# ------------------------------------------------------------------------------
+# The original close_trade function expects a narrower call shape, usually:
+#   close_trade(symbol, exit_price, ...)
+#
+# Test harnesses and future callers may send richer forms:
+#   close_trade(position_dict)
+#   close_trade(trade_id="...", close_price=1.25)
+#   close_trade(trade_id="...", exit_price=1.25)
+#   close_trade(symbol="...", close_price=1.25)
+#
+# This wrapper normalizes those shapes BEFORE calling the original close function.
+# After a successful close, it sync-removes the trade from all active books.
+# ------------------------------------------------------------------------------
+
+def _observatory_read_active_position_for_close_20260520(trade_id=None, symbol=None):
+    import json
+    from pathlib import Path
+
+    try:
+        root = Path(__file__).resolve().parents[1]
+    except Exception:
+        root = Path("/content/SimpleeMrkTrade")
+
+    data_dir = root / "data"
+    active_books = [
+        data_dir / "open_positions.json",
+        data_dir / "positions.json",
+        data_dir / "user_positions.json",
+    ]
+
+    trade_id_s = str(trade_id or "").strip()
+    symbol_s = str(symbol or "").strip().upper()
+
+    def _read_json(path, default):
+        try:
+            if not path.exists():
+                return default
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return default
+
+    def _rows(payload):
+        if isinstance(payload, list):
+            return payload
+        if isinstance(payload, dict):
+            for key in ("positions", "open_positions", "data", "items"):
+                if isinstance(payload.get(key), list):
+                    return payload.get(key)
+        return []
+
+    for path in active_books:
+        payload = _read_json(path, [])
+        for row in _rows(payload):
+            if not isinstance(row, dict):
+                continue
+
+            row_trade_id = str(row.get("trade_id") or row.get("id") or "").strip()
+            row_symbol = str(row.get("symbol") or "").strip().upper()
+
+            if trade_id_s and row_trade_id == trade_id_s:
+                return dict(row)
+
+            if symbol_s and row_symbol == symbol_s:
+                return dict(row)
+
+    return None
+
+
+def _observatory_float_first_20260520(*values, default=None):
+    for value in values:
+        try:
+            if value is None:
+                continue
+            if isinstance(value, str) and not value.strip():
+                continue
+            number = float(value)
+            if number == number:
+                return number
+        except Exception:
+            continue
+    return default
+
+
+def _observatory_get_ci_20260520(row, *keys, default=None):
+    if not isinstance(row, dict):
+        return default
+
+    # direct first
+    for key in keys:
+        if key in row:
+            return row.get(key)
+
+    # case-insensitive fallback
+    lowered = {str(k).lower(): k for k in row.keys()}
+    for key in keys:
+        lk = str(key).lower()
+        if lk in lowered:
+            return row.get(lowered[lk])
+
+    return default
+
+
+def _observatory_normalize_close_call_20260520(args=None, kwargs=None):
+    args = list(args or [])
+    kwargs = dict(kwargs or {})
+
+    position_obj = None
+
+    if args and isinstance(args[0], dict):
+        position_obj = dict(args.pop(0))
+
+    # Pull identity from kwargs first, then position object.
+    trade_id = (
+        kwargs.get("trade_id")
+        or kwargs.get("position_id")
+        or kwargs.get("id")
+        or _observatory_get_ci_20260520(position_obj, "trade_id", "position_id", "id")
+    )
+
+    symbol = (
+        kwargs.get("symbol")
+        or _observatory_get_ci_20260520(position_obj, "symbol")
+    )
+
+    # Map close_price/current premium/etc. to exit_price.
+    exit_price = _observatory_float_first_20260520(
+        kwargs.get("exit_price"),
+        kwargs.get("close_price"),
+        kwargs.get("price"),
+        kwargs.get("fill_price"),
+        kwargs.get("filled_price"),
+        kwargs.get("current_premium"),
+        kwargs.get("premium_current"),
+        kwargs.get("current_option_mark"),
+        kwargs.get("option_current_price"),
+        _observatory_get_ci_20260520(position_obj, "exit_price"),
+        _observatory_get_ci_20260520(position_obj, "close_price"),
+        _observatory_get_ci_20260520(position_obj, "current_premium"),
+        _observatory_get_ci_20260520(position_obj, "premium_current"),
+        _observatory_get_ci_20260520(position_obj, "current_option_mark"),
+        _observatory_get_ci_20260520(position_obj, "option_current_price"),
+        _observatory_get_ci_20260520(position_obj, "current"),
+        _observatory_get_ci_20260520(position_obj, "current_price"),
+        default=None,
+    )
+
+    # If caller passed trade_id only, find the active row and extract missing info.
+    active_row = None
+    if (trade_id or symbol) and (not symbol or exit_price is None):
+        active_row = _observatory_read_active_position_for_close_20260520(
+            trade_id=trade_id,
+            symbol=symbol,
+        )
+
+    if active_row:
+        if not symbol:
+            symbol = _observatory_get_ci_20260520(active_row, "symbol")
+
+        if exit_price is None:
+            exit_price = _observatory_float_first_20260520(
+                _observatory_get_ci_20260520(active_row, "current_premium"),
+                _observatory_get_ci_20260520(active_row, "premium_current"),
+                _observatory_get_ci_20260520(active_row, "current_option_mark"),
+                _observatory_get_ci_20260520(active_row, "option_current_price"),
+                _observatory_get_ci_20260520(active_row, "current"),
+                _observatory_get_ci_20260520(active_row, "current_price"),
+                default=None,
+            )
+
+    # Remove names the original function may not accept.
+    for bad_key in (
+        "close_price",
+        "position",
+        "position_obj",
+        "position_object",
+        "current_premium",
+        "premium_current",
+        "current_option_mark",
+        "option_current_price",
+    ):
+        kwargs.pop(bad_key, None)
+
+    if trade_id is not None:
+        kwargs.setdefault("trade_id", trade_id)
+
+    reason = (
+        kwargs.get("reason")
+        or kwargs.get("close_reason")
+        or kwargs.get("exit_reason")
+        or _observatory_get_ci_20260520(position_obj, "reason", "close_reason")
+        or "manual_close"
+    )
+    kwargs["reason"] = reason
+
+    return {
+        "symbol": symbol,
+        "exit_price": exit_price,
+        "trade_id": trade_id,
+        "kwargs": kwargs,
+        "position_obj": position_obj,
+        "active_row": active_row,
+    }
+
+
+def _observatory_call_original_close_trade_20260520(original_func, normalized):
+    import inspect
+
+    symbol = normalized.get("symbol")
+    exit_price = normalized.get("exit_price")
+    kwargs = dict(normalized.get("kwargs") or {})
+
+    if not symbol:
+        return {
+            "closed": False,
+            "blocked": False,
+            "reason": "missing_symbol_for_close",
+            "trade_id": normalized.get("trade_id"),
+            "symbol": symbol,
+        }
+
+    if exit_price is None:
+        return {
+            "closed": False,
+            "blocked": False,
+            "reason": "missing_exit_price_for_close",
+            "trade_id": normalized.get("trade_id"),
+            "symbol": symbol,
+        }
+
+    sig = inspect.signature(original_func)
+    params = sig.parameters
+
+    # Keep only kwargs accepted by the original function unless it supports **kwargs.
+    accepts_kwargs = any(
+        p.kind == inspect.Parameter.VAR_KEYWORD
+        for p in params.values()
+    )
+
+    if not accepts_kwargs:
+        kwargs = {k: v for k, v in kwargs.items() if k in params}
+
+    # Avoid duplicate positional/keyword values.
+    kwargs.pop("symbol", None)
+    kwargs.pop("exit_price", None)
+
+    # If original accepts trade_id, keep it. If not, it will already be filtered.
+    try:
+        return original_func(symbol, exit_price, **kwargs)
+    except TypeError as first_error:
+        # Fallback for functions that use close_price instead of exit_price.
+        try:
+            fallback_kwargs = dict(kwargs)
+            fallback_kwargs["close_price"] = exit_price
+            if not accepts_kwargs:
+                fallback_kwargs = {
+                    k: v for k, v in fallback_kwargs.items() if k in params
+                }
+            return original_func(symbol, **fallback_kwargs)
+        except Exception:
+            raise first_error
+
+
+# Choose the real original, not an already-flexible wrapper.
+if "_OBSERVATORY_ORIGINAL_CLOSE_TRADE_FLEXIBLE_20260520" not in globals():
+    _OBSERVATORY_ORIGINAL_CLOSE_TRADE_FLEXIBLE_20260520 = globals().get(
+        "_OBSERVATORY_ORIGINAL_CLOSE_TRADE_20260520",
+        close_trade,
+    )
+
+
+def close_trade(*args, **kwargs):
+    normalized = _observatory_normalize_close_call_20260520(args=args, kwargs=kwargs)
+
+    result = _observatory_call_original_close_trade_20260520(
+        _OBSERVATORY_ORIGINAL_CLOSE_TRADE_FLEXIBLE_20260520,
+        normalized,
+    )
+
+    try:
+        if _observatory_close_result_is_success_20260520(result):
+            trade_id, symbol = _observatory_extract_close_identity_20260520(
+                args=args,
+                kwargs=kwargs,
+                result=result,
+            )
+
+            if not trade_id:
+                trade_id = normalized.get("trade_id")
+            if not symbol:
+                symbol = normalized.get("symbol")
+
+            sync_result = _observatory_sync_closed_trade_across_active_books_20260520(
+                trade_id=trade_id,
+                symbol=symbol,
+            )
+
+            if isinstance(result, dict):
+                result["active_book_sync"] = sync_result
+                result["active_book_sync_removed_total"] = sync_result.get("removed_total", 0)
+                result["active_book_sync_ok"] = True
+
+    except Exception as sync_error:
+        if isinstance(result, dict):
+            result["active_book_sync_ok"] = False
+            result["active_book_sync_error"] = str(sync_error)
+
+    return result
+
+
