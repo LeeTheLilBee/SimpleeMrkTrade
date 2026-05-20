@@ -39,6 +39,406 @@
       "status": "revoked",
       "token_id": "XO3c8rTRVnzE7BL4dqIgvqJU",
       "user_id": "beta_001"
+    },
+    {
+      "action": "enter_app",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:14:01.280975Z",
+      "issued_at": "2026-05-20T15:59:01.280957Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:14:01.280728Z",
+          "human_reason": "Paper Mode clearance granted.",
+          "metadata": {
+            "action": "enter_app",
+            "app_name": "observatory",
+            "mode_name": "paper",
+            "user_id": "beta_001"
+          },
+          "reason_code": "paper_mode_allowed",
+          "required_actions": [],
+          "risk_score": 15,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "paper_mode_allowed"
+      },
+      "mode_name": "paper",
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 15,
+      "risk_state": "clear",
+      "scope": "observatory:enter_app:paper",
+      "signature": "5b6f8dab6fb170958a95b65facf89b89d5b4c07db402d54f562f0c1fac804818",
+      "status": "active",
+      "token_id": "3k16lc75x0e4yRmh1ys6UHgY",
+      "user_id": "beta_001"
+    },
+    {
+      "action": "enter_app",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:14:01.282943Z",
+      "issued_at": "2026-05-20T15:59:01.282938Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:14:01.282712Z",
+          "human_reason": "Paper Mode clearance granted.",
+          "metadata": {
+            "action": "enter_app",
+            "app_name": "observatory",
+            "mode_name": "paper",
+            "user_id": "beta_001"
+          },
+          "reason_code": "paper_mode_allowed",
+          "required_actions": [],
+          "risk_score": 15,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "paper_mode_allowed"
+      },
+      "mode_name": "paper",
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 15,
+      "risk_state": "clear",
+      "scope": "observatory:enter_app:paper",
+      "signature": "a209967eb920fbdf126e68731097f1b6448e026bb6058a6554da6c0ea969fb80",
+      "status": "active",
+      "token_id": "NWCGkuPzZH07KyD25AfxDcc7",
+      "user_id": "beta_001"
+    },
+    {
+      "action": "enter_app",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:17:51.951664Z",
+      "issued_at": "2026-05-20T16:02:51.951657Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:17:51.951386Z",
+          "human_reason": "Paper Mode clearance granted.",
+          "metadata": {
+            "action": "enter_app",
+            "app_name": "observatory",
+            "mode_name": "paper",
+            "user_id": "beta_001"
+          },
+          "reason_code": "paper_mode_allowed",
+          "required_actions": [],
+          "risk_score": 15,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "paper_mode_allowed"
+      },
+      "mode_name": "paper",
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 15,
+      "risk_state": "clear",
+      "scope": "observatory:enter_app:paper",
+      "signature": "71ff7864074250402a4b73bb9319982a5567d4fa6fc2070864b5056c5ad0bc8e",
+      "status": "active",
+      "token_id": "Xsu3wo6XMxBOszLKY4v3ADax",
+      "user_id": "beta_001"
+    },
+    {
+      "action": "enter_app",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:17:51.955751Z",
+      "issued_at": "2026-05-20T16:02:51.955744Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:17:51.955410Z",
+          "human_reason": "Paper Mode clearance granted.",
+          "metadata": {
+            "action": "enter_app",
+            "app_name": "observatory",
+            "mode_name": "paper",
+            "user_id": "beta_001"
+          },
+          "reason_code": "paper_mode_allowed",
+          "required_actions": [],
+          "risk_score": 15,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "paper_mode_allowed"
+      },
+      "mode_name": "paper",
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 15,
+      "risk_state": "clear",
+      "scope": "observatory:enter_app:paper",
+      "signature": "ab74c1ad4689255944d6227893de2e3d9906f612dfbff1a7f027c15db3261977",
+      "status": "active",
+      "token_id": "FVnAdRiJbW5TnkZ6o0uPL-lc",
+      "user_id": "beta_001"
+    },
+    {
+      "action": "enter_app",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:19:46.378991Z",
+      "issued_at": "2026-05-20T16:04:46.378985Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:19:46.378736Z",
+          "human_reason": "Paper Mode clearance granted.",
+          "metadata": {
+            "action": "enter_app",
+            "app_name": "observatory",
+            "mode_name": "paper",
+            "user_id": "beta_001"
+          },
+          "reason_code": "paper_mode_allowed",
+          "required_actions": [],
+          "risk_score": 15,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "paper_mode_allowed"
+      },
+      "mode_name": "paper",
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 15,
+      "risk_state": "clear",
+      "scope": "observatory:enter_app:paper",
+      "signature": "cabe056924addb63fec7f602339254715812a968ab250d565ebab29192da4da9",
+      "status": "active",
+      "token_id": "RoS6oFnIRXFrDbxnu-Hnqzzn",
+      "user_id": "beta_001"
+    },
+    {
+      "action": "enter_app",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:19:46.381584Z",
+      "issued_at": "2026-05-20T16:04:46.381575Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:19:46.381292Z",
+          "human_reason": "Paper Mode clearance granted.",
+          "metadata": {
+            "action": "enter_app",
+            "app_name": "observatory",
+            "mode_name": "paper",
+            "user_id": "beta_001"
+          },
+          "reason_code": "paper_mode_allowed",
+          "required_actions": [],
+          "risk_score": 15,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "paper_mode_allowed"
+      },
+      "mode_name": "paper",
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 15,
+      "risk_state": "clear",
+      "scope": "observatory:enter_app:paper",
+      "signature": "334d2cdabdebafd6cd15f7c49f89afaedd69d2dcc9416b32f2d2e4426a17b43f",
+      "status": "active",
+      "token_id": "ZfLAne6LO8tmpW9pscCyd__d",
+      "user_id": "beta_001"
+    },
+    {
+      "action": "enter_app",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:21:43.255430Z",
+      "issued_at": "2026-05-20T16:06:43.255418Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:21:43.254869Z",
+          "human_reason": "Paper Mode clearance granted.",
+          "metadata": {
+            "action": "enter_app",
+            "app_name": "observatory",
+            "mode_name": "paper",
+            "user_id": "beta_001"
+          },
+          "reason_code": "paper_mode_allowed",
+          "required_actions": [],
+          "risk_score": 15,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "paper_mode_allowed"
+      },
+      "mode_name": "paper",
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 15,
+      "risk_state": "clear",
+      "scope": "observatory:enter_app:paper",
+      "signature": "e017b8ea1d7b14d820ce24311d38cefde130086d28283b5b14dd35e084f5e78c",
+      "status": "active",
+      "token_id": "x9y8HgUs0CFKVCC26xD-nq1i",
+      "user_id": "beta_001"
+    },
+    {
+      "action": "enter_app",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:24:24.547984Z",
+      "issued_at": "2026-05-20T16:09:24.547974Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:24:24.547585Z",
+          "human_reason": "Paper Mode clearance granted.",
+          "metadata": {
+            "action": "enter_app",
+            "app_name": "observatory",
+            "mode_name": "paper",
+            "user_id": "beta_001"
+          },
+          "reason_code": "paper_mode_allowed",
+          "required_actions": [],
+          "risk_score": 15,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "paper_mode_allowed"
+      },
+      "mode_name": "paper",
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 15,
+      "risk_state": "clear",
+      "scope": "observatory:enter_app:paper",
+      "signature": "4816c464c87e9b68a92b413cbc629418c890fb24da8be9486669295431905aee",
+      "status": "active",
+      "token_id": "JSPFfEZrOrMr0wtsZs_2Tnv3",
+      "user_id": "beta_001"
+    },
+    {
+      "action": "enter_app",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:26:27.803169Z",
+      "issued_at": "2026-05-20T16:11:27.803153Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:26:27.801932Z",
+          "human_reason": "Paper Mode clearance granted.",
+          "metadata": {
+            "action": "enter_app",
+            "app_name": "observatory",
+            "mode_name": "paper",
+            "user_id": "beta_001"
+          },
+          "reason_code": "paper_mode_allowed",
+          "required_actions": [],
+          "risk_score": 15,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "paper_mode_allowed"
+      },
+      "mode_name": "paper",
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 15,
+      "risk_state": "clear",
+      "scope": "observatory:enter_app:paper",
+      "signature": "f936a212b368870394db6105eb4fc69c2eebd87125f268ffbf02c0ca2134fc70",
+      "status": "active",
+      "token_id": "6SoFkZFo4vA7FHXhIe8yVId0",
+      "user_id": "beta_001"
+    },
+    {
+      "action": "enter_app",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:28:12.673255Z",
+      "issued_at": "2026-05-20T16:13:12.673248Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:28:12.672778Z",
+          "human_reason": "Paper Mode clearance granted.",
+          "metadata": {
+            "action": "enter_app",
+            "app_name": "observatory",
+            "mode_name": "paper",
+            "user_id": "beta_001"
+          },
+          "reason_code": "paper_mode_allowed",
+          "required_actions": [],
+          "risk_score": 15,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "paper_mode_allowed"
+      },
+      "mode_name": "paper",
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 15,
+      "risk_state": "clear",
+      "scope": "observatory:enter_app:paper",
+      "signature": "e777f950b671922ab06b1e0f26974003d56976a7707263db9c46ae3c2e95289c",
+      "status": "active",
+      "token_id": "pIa1i0C7RV2GSzssdSjtnanj",
+      "user_id": "beta_001"
     }
   ]
 }

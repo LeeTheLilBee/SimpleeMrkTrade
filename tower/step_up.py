@@ -127,6 +127,7 @@ def get_latest_approved_step_up(
     mode_name: Optional[str] = None,
     object_type: Optional[str] = None,
     object_id: Optional[str] = None,
+    reason_code: Optional[str] = None,
 ) -> Optional[Dict[str, Any]]:
     """
     Finds a valid approved step-up challenge.
@@ -160,6 +161,9 @@ def get_latest_approved_step_up(
             continue
 
         if object_id is not None and challenge.get("object_id") != object_id:
+            continue
+
+        if reason_code is not None and challenge.get("reason_code") != reason_code:
             continue
 
         try:

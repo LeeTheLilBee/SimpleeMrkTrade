@@ -1,6 +1,7 @@
 # =============================================================================
 # THE TOWER — CLEARANCE SERVICE
 # FILE: tower/clearance_service.py
+# MARKER: PACK_008E_SESSION_RISK_ENFORCED_FIRST
 # =============================================================================
 
 from typing import Any, Dict, Optional
@@ -48,7 +49,59 @@ def _stamp_context_on_decision(
     return decision
 
 
-def _lockdown_decision(
+def _alert_if_needed(decision: Dict[str, Any], create_security_alerts: bool = True) -> None:
+    if create_security_alerts:
+        security_event_from_clearance_decision(decision)
+
+
+def _make_step_up_decision(
+    user_id: str,
+    app_name: str,
+    action: str,
+    mode_name: Optional[str] = None,
+    object_type: Optional[str] = None,
+    object_id: Optional[str] = None,
+    reason_code: str = "step_up_required",
+    extra_metadata: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    challenge = create_step_up_challenge(
+        user_id=user_id,
+        app_name=app_name,
+        action=action,
+        mode_name=mode_name,
+        object_type=object_type,
+        object_id=object_id,
+        reason_code=reason_code,
+    )
+
+    metadata = {
+        "user_id": user_id,
+        "app_name": app_name,
+        "action": action,
+        "mode_name": mode_name,
+        "object_type": object_type,
+        "object_id": object_id,
+        "challenge_id": challenge.get("challenge_id"),
+    }
+
+    if extra_metadata:
+        metadata.update(extra_metadata)
+
+    return {
+        "allowed": False,
+        "decision": "step_up",
+        "reason_code": reason_code,
+        "human_reason": "This action requires step-up authorization before continuing.",
+        "risk_score": 70,
+        "risk_state": "step_up_required",
+        "required_actions": ["complete_step_up"],
+        "audit_required": True,
+        "expires_at": None,
+        "metadata": metadata,
+    }
+
+
+def _make_lockdown_decision(
     lock: Dict[str, Any],
     user_id: str,
     app_name: str,
@@ -62,7 +115,7 @@ def _lockdown_decision(
         "decision": "lockdown",
         "reason_code": lock.get("reason_code", "tower_lockdown_active"),
         "human_reason": lock.get("human_reason", "The Tower has locked this access path."),
-        "risk_score": lock.get("risk_score", 100),
+        "risk_score": int(lock.get("risk_score") or 100),
         "risk_state": "locked",
         "required_actions": ["owner_review_required", "lockdown_review_required"],
         "audit_required": True,
@@ -79,45 +132,107 @@ def _lockdown_decision(
     }
 
 
-def _step_up_decision(
+def _issue_token_if_allowed(
+    decision: Dict[str, Any],
     user_id: str,
     app_name: str,
     action: str,
-    mode_name: Optional[str] = None,
-    object_type: Optional[str] = None,
-    object_id: Optional[str] = None,
-    reason_code: str = "step_up_required",
+    mode_name: Optional[str],
+    object_type: Optional[str],
+    object_id: Optional[str],
 ) -> Dict[str, Any]:
-    challenge = create_step_up_challenge(
+    if decision.get("allowed") is not True:
+        return decision
+
+    if decision.get("clearance_token"):
+        return decision
+
+    token = issue_clearance_token(
         user_id=user_id,
         app_name=app_name,
         action=action,
         mode_name=mode_name,
         object_type=object_type,
         object_id=object_id,
-        reason_code=reason_code,
+        issued_by="tower_clearance_service",
+        reason_code="clearance_service_token_issued",
+        risk_state=decision.get("risk_state", "clear"),
+        risk_score=int(decision.get("risk_score") or 10),
+        metadata={
+            "source_decision_reason_code": decision.get("reason_code"),
+            "source_decision": decision,
+        },
     )
 
-    return {
-        "allowed": False,
-        "decision": "step_up",
-        "reason_code": reason_code,
-        "human_reason": "This action requires step-up authorization before continuing.",
-        "risk_score": 70,
-        "risk_state": "step_up_required",
-        "required_actions": ["complete_step_up"],
-        "audit_required": True,
-        "expires_at": None,
-        "metadata": {
-            "user_id": user_id,
-            "app_name": app_name,
-            "action": action,
-            "mode_name": mode_name,
-            "object_type": object_type,
-            "object_id": object_id,
-            "challenge_id": challenge.get("challenge_id"),
-        },
+    decision["clearance_token"] = {
+        "token_id": token.get("token_id"),
+        "scope": token.get("scope"),
+        "expires_at": token.get("expires_at"),
+        "status": token.get("status"),
     }
+
+    return decision
+
+
+def _check_session_risk_first(
+    user_id: str,
+    app_name: str,
+    action: str,
+    mode_name: Optional[str],
+    object_type: Optional[str],
+    object_id: Optional[str],
+    context: Dict[str, Any],
+) -> Optional[Dict[str, Any]]:
+    session_risk = context.get("session_risk") or {}
+    session_risk_score = int(session_risk.get("risk_score") or 0)
+    session_risk_state = session_risk.get("risk_state") or "clear"
+
+    if session_risk_state == "quarantine_recommended" or session_risk_score >= 90:
+        return {
+            "allowed": False,
+            "decision": "quarantine",
+            "reason_code": "session_risk_quarantine_recommended",
+            "human_reason": "This session is too risky. Access is paused for review.",
+            "risk_score": session_risk_score,
+            "risk_state": "quarantined",
+            "required_actions": ["security_review_required", "step_up_required"],
+            "audit_required": True,
+            "expires_at": None,
+            "metadata": {
+                "user_id": user_id,
+                "app_name": app_name,
+                "action": action,
+                "mode_name": mode_name,
+                "object_type": object_type,
+                "object_id": object_id,
+                "session_risk": session_risk,
+            },
+        }
+
+    if session_risk_state == "step_up_required" or session_risk_score >= 70:
+        approved = get_latest_approved_step_up(
+            user_id=user_id,
+            app_name=app_name,
+            action=action,
+            mode_name=mode_name,
+            object_type=object_type,
+            object_id=object_id,
+            reason_code="session_risk_step_up_required",
+        )
+
+        if not approved:
+            return _make_step_up_decision(
+                user_id=user_id,
+                app_name=app_name,
+                action=action,
+                mode_name=mode_name,
+                object_type=object_type,
+                object_id=object_id,
+                reason_code="session_risk_step_up_required",
+                extra_metadata={"session_risk": session_risk},
+            )
+
+    return None
 
 
 def check_user_clearance(
@@ -131,87 +246,43 @@ def check_user_clearance(
     object_payload: Optional[Dict[str, Any]] = None,
     create_security_alerts: bool = True,
 ) -> Dict[str, Any]:
-    """
-    The main front-desk function for The Tower.
-
-    Baby version:
-    Before it asks the normal yes/no rules, it checks:
-    - Is the whole building locked?
-    - Is this app locked?
-    - Is this mode locked?
-    - Is this action locked?
-    - Does this action need extra proof?
-    """
-
     context = context or {}
 
-    # -------------------------------------------------------------------------
-    # Lockdown check 1: app/global lock
-    # -------------------------------------------------------------------------
-    app_lock = is_app_locked(app_name)
-    if app_lock:
-        decision = _lockdown_decision(
-            lock=app_lock,
-            user_id=user_id,
-            app_name=app_name,
-            action=action,
-            mode_name=mode_name,
-            object_type=object_type,
-            object_id=object_id,
-        )
+    # 1. Session risk MUST be first.
+    session_decision = _check_session_risk_first(
+        user_id=user_id,
+        app_name=app_name,
+        action=action,
+        mode_name=mode_name,
+        object_type=object_type,
+        object_id=object_id,
+        context=context,
+    )
 
-        if create_security_alerts:
-            security_event_from_clearance_decision(decision)
+    if session_decision is not None:
+        _alert_if_needed(session_decision, create_security_alerts)
+        return session_decision
 
-        return decision
+    # 2. Lockdowns.
+    for lock in [is_app_locked(app_name), is_mode_locked(mode_name), is_action_locked(action)]:
+        if lock:
+            decision = _make_lockdown_decision(
+                lock=lock,
+                user_id=user_id,
+                app_name=app_name,
+                action=action,
+                mode_name=mode_name,
+                object_type=object_type,
+                object_id=object_id,
+            )
+            _alert_if_needed(decision, create_security_alerts)
+            return decision
 
-    # -------------------------------------------------------------------------
-    # Lockdown check 2: mode lock
-    # -------------------------------------------------------------------------
-    mode_lock = is_mode_locked(mode_name)
-    if mode_lock:
-        decision = _lockdown_decision(
-            lock=mode_lock,
-            user_id=user_id,
-            app_name=app_name,
-            action=action,
-            mode_name=mode_name,
-            object_type=object_type,
-            object_id=object_id,
-        )
-
-        if create_security_alerts:
-            security_event_from_clearance_decision(decision)
-
-        return decision
-
-    # -------------------------------------------------------------------------
-    # Lockdown check 3: action lock
-    # -------------------------------------------------------------------------
-    action_lock = is_action_locked(action)
-    if action_lock:
-        decision = _lockdown_decision(
-            lock=action_lock,
-            user_id=user_id,
-            app_name=app_name,
-            action=action,
-            mode_name=mode_name,
-            object_type=object_type,
-            object_id=object_id,
-        )
-
-        if create_security_alerts:
-            security_event_from_clearance_decision(decision)
-
-        return decision
-
-    # -------------------------------------------------------------------------
-    # User existence check
-    # -------------------------------------------------------------------------
+    # 3. User lookup.
     user = get_user(user_id)
 
     if not user:
-        missing_user_decision = {
+        decision = {
             "allowed": False,
             "decision": "deny",
             "reason_code": "user_not_found",
@@ -230,15 +301,10 @@ def check_user_clearance(
                 "object_id": object_id,
             },
         }
+        _alert_if_needed(decision, create_security_alerts)
+        return decision
 
-        if create_security_alerts:
-            security_event_from_clearance_decision(missing_user_decision)
-
-        return missing_user_decision
-
-    # -------------------------------------------------------------------------
-    # Step-up check before sensitive actions.
-    # -------------------------------------------------------------------------
+    # 4. Sensitive action step-up.
     if action_requires_step_up(action):
         approved = get_latest_approved_step_up(
             user_id=user_id,
@@ -250,7 +316,7 @@ def check_user_clearance(
         )
 
         if not approved:
-            decision = _step_up_decision(
+            decision = _make_step_up_decision(
                 user_id=user_id,
                 app_name=app_name,
                 action=action,
@@ -259,15 +325,10 @@ def check_user_clearance(
                 object_id=object_id,
                 reason_code=f"{action}_step_up_required",
             )
-
-            if create_security_alerts:
-                security_event_from_clearance_decision(decision)
-
+            _alert_if_needed(decision, create_security_alerts)
             return decision
 
-    # -------------------------------------------------------------------------
-    # Object-level access check.
-    # -------------------------------------------------------------------------
+    # 5. Object-level access.
     if object_payload is not None:
         object_decision = evaluate_object_access(
             user=user,
@@ -286,15 +347,12 @@ def check_user_clearance(
             object_id=object_id,
         )
 
-        if create_security_alerts:
-            security_event_from_clearance_decision(object_decision)
+        _alert_if_needed(object_decision, create_security_alerts)
 
         if not object_decision.get("allowed"):
             return object_decision
 
-    # -------------------------------------------------------------------------
-    # Normal clearance brain.
-    # -------------------------------------------------------------------------
+    # 6. Normal permission brain.
     decision = request_clearance(
         user=user,
         app_name=app_name,
@@ -316,36 +374,18 @@ def check_user_clearance(
         object_id=object_id,
     )
 
-    # -------------------------------------------------------------------------
-    # Token issue after allow.
-    # -------------------------------------------------------------------------
-    if decision.get("allowed") is True:
-        token = issue_clearance_token(
-            user_id=user_id,
-            app_name=app_name,
-            action=action,
-            mode_name=mode_name,
-            object_type=object_type,
-            object_id=object_id,
-            issued_by="tower_clearance_service",
-            reason_code="clearance_service_token_issued",
-            risk_state=decision.get("risk_state", "clear"),
-            risk_score=int(decision.get("risk_score") or 10),
-            metadata={
-                "source_decision_reason_code": decision.get("reason_code"),
-                "source_decision": decision,
-            },
-        )
-        decision["clearance_token"] = {
-            "token_id": token.get("token_id"),
-            "scope": token.get("scope"),
-            "expires_at": token.get("expires_at"),
-            "status": token.get("status"),
-        }
+    # 7. Token only after allow.
+    decision = _issue_token_if_allowed(
+        decision=decision,
+        user_id=user_id,
+        app_name=app_name,
+        action=action,
+        mode_name=mode_name,
+        object_type=object_type,
+        object_id=object_id,
+    )
 
-    if create_security_alerts:
-        security_event_from_clearance_decision(decision)
-
+    _alert_if_needed(decision, create_security_alerts)
     return decision
 
 

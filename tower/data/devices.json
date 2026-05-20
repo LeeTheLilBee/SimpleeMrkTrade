@@ -1,0 +1,17 @@
+{
+  "devices": [
+    {
+      "device_fingerprint": "1c0a2d031e78c9e527d0d8dc98616f94fa8ca888969ae73180fac8ed83c7e922",
+      "device_hint": "colab_test_device",
+      "device_id": "gfIJUt93xxNAUeYA",
+      "first_seen_at": "2026-05-20T15:59:01.279328Z",
+      "last_ip_hash": "12ca17b49af2289436f303e0166030a21e525d266e209267433801a8fd4071a0",
+      "last_seen_at": "2026-05-20T16:04:46.377191Z",
+      "last_user_agent_hash": "5a87a9465078ac71c10a2a3e92aca4590efdb608f7b1277b8a924f3bfdae6f93",
+      "seen_count": 3,
+      "status": "active",
+      "trusted": false,
+      "user_id": "beta_001"
+    }
+  ]
+}

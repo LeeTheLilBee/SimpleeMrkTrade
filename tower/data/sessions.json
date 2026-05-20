@@ -1,0 +1,63 @@
+{
+  "sessions": [
+    {
+      "app_name": "observatory",
+      "created_at": "2026-05-20T15:59:01.279834Z",
+      "device_fingerprint": "1c0a2d031e78c9e527d0d8dc98616f94fa8ca888969ae73180fac8ed83c7e922",
+      "device_id": "gfIJUt93xxNAUeYA",
+      "failed_attempts": 7,
+      "ip_hash": "12ca17b49af2289436f303e0166030a21e525d266e209267433801a8fd4071a0",
+      "last_seen_at": "2026-05-20T15:59:01.281885Z",
+      "risk_reasons": [
+        "device_not_trusted",
+        "failed_attempts"
+      ],
+      "risk_score": 50,
+      "risk_state": "watch",
+      "session_id": "2bC2uX-Arz1U3zma627pIlWE",
+      "status": "active",
+      "user_agent_hash": "5a87a9465078ac71c10a2a3e92aca4590efdb608f7b1277b8a924f3bfdae6f93",
+      "user_id": "beta_001"
+    },
+    {
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:02:51.950357Z",
+      "device_fingerprint": "1c0a2d031e78c9e527d0d8dc98616f94fa8ca888969ae73180fac8ed83c7e922",
+      "device_id": "gfIJUt93xxNAUeYA",
+      "failed_attempts": 7,
+      "ip_hash": "12ca17b49af2289436f303e0166030a21e525d266e209267433801a8fd4071a0",
+      "last_seen_at": "2026-05-20T16:02:51.952921Z",
+      "risk_reasons": [
+        "device_not_trusted",
+        "failed_attempts",
+        "many_failed_attempts"
+      ],
+      "risk_score": 85,
+      "risk_state": "step_up_required",
+      "session_id": "wr7soyAE1EdpXHUhmUOFOKQA",
+      "status": "active",
+      "user_agent_hash": "5a87a9465078ac71c10a2a3e92aca4590efdb608f7b1277b8a924f3bfdae6f93",
+      "user_id": "beta_001"
+    },
+    {
+      "app_name": "observatory",
+      "created_at": "2026-05-20T16:04:46.377709Z",
+      "device_fingerprint": "1c0a2d031e78c9e527d0d8dc98616f94fa8ca888969ae73180fac8ed83c7e922",
+      "device_id": "gfIJUt93xxNAUeYA",
+      "failed_attempts": 7,
+      "ip_hash": "12ca17b49af2289436f303e0166030a21e525d266e209267433801a8fd4071a0",
+      "last_seen_at": "2026-05-20T16:04:46.380216Z",
+      "risk_reasons": [
+        "device_not_trusted",
+        "failed_attempts",
+        "many_failed_attempts"
+      ],
+      "risk_score": 85,
+      "risk_state": "step_up_required",
+      "session_id": "2K1LCNu9YoCXvnGWzmiz7gti",
+      "status": "active",
+      "user_agent_hash": "5a87a9465078ac71c10a2a3e92aca4590efdb608f7b1277b8a924f3bfdae6f93",
+      "user_id": "beta_001"
+    }
+  ]
+}
