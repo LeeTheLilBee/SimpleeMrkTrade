@@ -119,6 +119,36 @@
       "reason_code": "export_step_up_required",
       "status": "approved",
       "user_id": "owner_solice"
+    },
+    {
+      "action": "change_permissions",
+      "app_name": "tower_admin",
+      "approved_at": "2026-05-20T16:48:11.658437Z",
+      "approved_by": "owner_solice",
+      "challenge_id": "McdIEXLqvF8qiw_ADLtLC2Yw",
+      "created_at": "2026-05-20T16:48:11.648713Z",
+      "expires_at": "2026-05-20T16:58:11.648723Z",
+      "mode_name": null,
+      "object_id": "beta_001",
+      "object_type": "tower_user",
+      "reason_code": "change_permissions_admin_step_up_required",
+      "status": "approved",
+      "user_id": "owner_solice"
+    },
+    {
+      "action": "approve_automated_mode",
+      "app_name": "tower_admin",
+      "approved_at": null,
+      "approved_by": null,
+      "challenge_id": "l8mwWjQG3KDyCLwcrIOv1bi7",
+      "created_at": "2026-05-20T16:48:11.746433Z",
+      "expires_at": "2026-05-20T16:58:11.746475Z",
+      "mode_name": null,
+      "object_id": "live_automated",
+      "object_type": "mode_permission",
+      "reason_code": "approve_automated_mode_admin_step_up_required",
+      "status": "pending",
+      "user_id": "owner_solice"
     }
   ]
 }
