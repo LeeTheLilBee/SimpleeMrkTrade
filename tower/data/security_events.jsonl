@@ -1,0 +1,1 @@
+{"description": "Manual test security event from Pack 002.", "event_type": "manual_test_security_event", "metadata": {"pack": "002"}, "recommended_action": "review_event", "severity": "medium", "source_app": "tower_admin", "status": "open", "timestamp": "2026-05-20T14:59:43.175531Z", "user_id": "beta_001"}
