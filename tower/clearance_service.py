@@ -6,6 +6,7 @@
 from typing import Any, Dict, Optional
 
 from tower.clearance import request_clearance
+from tower.object_access import evaluate_object_access
 from tower.security_events import security_event_from_clearance_decision
 from tower.security_state import (
     action_requires_step_up,
@@ -126,6 +127,7 @@ def check_user_clearance(
     object_type: Optional[str] = None,
     object_id: Optional[str] = None,
     context: Optional[Dict[str, Any]] = None,
+    object_payload: Optional[Dict[str, Any]] = None,
     create_security_alerts: bool = True,
 ) -> Dict[str, Any]:
     """
@@ -263,6 +265,33 @@ def check_user_clearance(
             return decision
 
     # -------------------------------------------------------------------------
+    # Object-level access check.
+    # -------------------------------------------------------------------------
+    if object_payload is not None:
+        object_decision = evaluate_object_access(
+            user=user,
+            obj=object_payload,
+            action=action,
+            context=context,
+        ).to_dict()
+
+        object_decision = _stamp_context_on_decision(
+            decision=object_decision,
+            user_id=user_id,
+            app_name=app_name,
+            action=action,
+            mode_name=mode_name,
+            object_type=object_type,
+            object_id=object_id,
+        )
+
+        if create_security_alerts:
+            security_event_from_clearance_decision(object_decision)
+
+        if not object_decision.get("allowed"):
+            return object_decision
+
+    # -------------------------------------------------------------------------
     # Normal clearance brain.
     # -------------------------------------------------------------------------
     decision = request_clearance(
@@ -325,6 +354,7 @@ def check_export_clearance(
     object_type: str,
     object_id: str,
     context: Optional[Dict[str, Any]] = None,
+    object_payload: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     return check_user_clearance(
         user_id=user_id,
@@ -333,4 +363,5 @@ def check_export_clearance(
         object_type=object_type,
         object_id=object_id,
         context=context,
+        object_payload=object_payload,
     )
