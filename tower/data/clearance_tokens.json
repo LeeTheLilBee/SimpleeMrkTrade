@@ -1,0 +1,44 @@
+{
+  "tokens": [
+    {
+      "action": "enter_app",
+      "app_name": "observatory",
+      "expires_at": "2026-05-20T16:04:13.439565Z",
+      "issued_at": "2026-05-20T15:49:13.439553Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T16:04:13.439100Z",
+          "human_reason": "Paper Mode clearance granted.",
+          "metadata": {
+            "action": "enter_app",
+            "app_name": "observatory",
+            "mode_name": "paper",
+            "user_id": "beta_001"
+          },
+          "reason_code": "paper_mode_allowed",
+          "required_actions": [],
+          "risk_score": 15,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "paper_mode_allowed"
+      },
+      "mode_name": "paper",
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": "pack_007_test_revoke_token",
+      "revoked_at": "2026-05-20T15:49:13.441478Z",
+      "revoked_by": "owner_solice",
+      "risk_score": 15,
+      "risk_state": "clear",
+      "scope": "observatory:enter_app:paper",
+      "signature": "f7cc55ddca126f48ab18332a9cdc0ab3a69bd3535f47fac0235b85859c9ea6c9",
+      "status": "revoked",
+      "token_id": "XO3c8rTRVnzE7BL4dqIgvqJU",
+      "user_id": "beta_001"
+    }
+  ]
+}

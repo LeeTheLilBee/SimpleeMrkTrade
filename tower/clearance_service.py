@@ -6,6 +6,7 @@
 from typing import Any, Dict, Optional
 
 from tower.clearance import request_clearance
+from tower.clearance_tokens import issue_clearance_token
 from tower.object_access import evaluate_object_access
 from tower.security_events import security_event_from_clearance_decision
 from tower.security_state import (
@@ -314,6 +315,33 @@ def check_user_clearance(
         object_type=object_type,
         object_id=object_id,
     )
+
+    # -------------------------------------------------------------------------
+    # Token issue after allow.
+    # -------------------------------------------------------------------------
+    if decision.get("allowed") is True:
+        token = issue_clearance_token(
+            user_id=user_id,
+            app_name=app_name,
+            action=action,
+            mode_name=mode_name,
+            object_type=object_type,
+            object_id=object_id,
+            issued_by="tower_clearance_service",
+            reason_code="clearance_service_token_issued",
+            risk_state=decision.get("risk_state", "clear"),
+            risk_score=int(decision.get("risk_score") or 10),
+            metadata={
+                "source_decision_reason_code": decision.get("reason_code"),
+                "source_decision": decision,
+            },
+        )
+        decision["clearance_token"] = {
+            "token_id": token.get("token_id"),
+            "scope": token.get("scope"),
+            "expires_at": token.get("expires_at"),
+            "status": token.get("status"),
+        }
 
     if create_security_alerts:
         security_event_from_clearance_decision(decision)
