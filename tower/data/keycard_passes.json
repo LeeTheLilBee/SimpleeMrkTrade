@@ -1,0 +1,110 @@
+{
+  "passes": [
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "consent_ids": [],
+      "device_id": "device_owner_chromebook",
+      "door_id": "/tower/security-command",
+      "door_type": "route",
+      "expires_at": "2026-05-20T22:45:52.119306Z",
+      "issue_reason": "Pack 025 owner route access test.",
+      "issued_at": "2026-05-20T22:30:52.119306Z",
+      "issuer_user_id": "owner_solice",
+      "metadata": {},
+      "pass_id": "kcp_yr5wlgDRviGl3s-158UCzhNi",
+      "revocation_reason": "Pack 025 revocation test.",
+      "revoked_at": "2026-05-20T22:30:52.131846Z",
+      "revoked_by": "owner_solice",
+      "risk_score_at_issue": 10,
+      "role": "owner",
+      "session_id": "session_owner_001",
+      "status": "revoked",
+      "token_hash": "3038c1fd62a685cc6b269faa88a1f069f82d8cddfd8c004a86cff5ab6adb0d29",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "archive_vault",
+      "clearance_level": "internal",
+      "consent_ids": [],
+      "device_id": "device_owner_chromebook",
+      "door_id": "capsule_alpha",
+      "door_type": "record",
+      "expires_at": "2026-05-20T22:45:52.124488Z",
+      "issue_reason": "Pack 025 low clearance test.",
+      "issued_at": "2026-05-20T22:30:52.124488Z",
+      "issuer_user_id": "owner_solice",
+      "metadata": {},
+      "pass_id": "kcp_kym7_0pW1TiVViqXhRjffaUr",
+      "revocation_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score_at_issue": 0,
+      "role": "owner",
+      "session_id": "session_owner_001",
+      "status": "active",
+      "token_hash": "7c3d9f077e5f6fe55131a14767dcddbb9300c2c3d58b1b007c40321158af62e0",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "enter"
+      ],
+      "app_name": "observatory",
+      "clearance_level": "confidential",
+      "consent_ids": [],
+      "device_id": "device_owner_chromebook",
+      "door_id": "paper",
+      "door_type": "mode",
+      "expires_at": "2026-05-20T22:45:52.126837Z",
+      "issue_reason": "Pack 025 OB paper mode door test.",
+      "issued_at": "2026-05-20T22:30:52.126837Z",
+      "issuer_user_id": "owner_solice",
+      "metadata": {},
+      "pass_id": "kcp_KWWu0qIILYkN89Ad2Wur_cF3",
+      "revocation_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score_at_issue": 0,
+      "role": "owner",
+      "session_id": "session_owner_001",
+      "status": "active",
+      "token_hash": "5f8f15846eb8feab7aa20db202a70d5821c039e95b9119b3fcdf3b1650a56d94",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "consent_ids": [],
+      "device_id": "device_owner_chromebook",
+      "door_id": "/tower/status.json",
+      "door_type": "route",
+      "expired_at": "2026-05-20T22:30:52.134438Z",
+      "expires_at": "2026-05-20T22:30:47.129219Z",
+      "issue_reason": "Pack 025 expired test.",
+      "issued_at": "2026-05-20T22:30:52.129219Z",
+      "issuer_user_id": "owner_solice",
+      "metadata": {},
+      "pass_id": "kcp_34jb5VoU9MyXM-X6Xh5mplFl",
+      "revocation_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score_at_issue": 0,
+      "role": "owner",
+      "session_id": "session_owner_001",
+      "status": "expired",
+      "token_hash": "61f07b6fb725d17ab97c9cf21a56b55fe2cc136eae2bea86b8999cef02c6003f",
+      "user_id": "owner_solice"
+    }
+  ],
+  "updated_at": "2026-05-20T22:30:52.134494Z"
+}
