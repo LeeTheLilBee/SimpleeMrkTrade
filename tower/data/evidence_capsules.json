@@ -3475,6 +3475,406 @@
         "trust_score": 95,
         "user_id": "owner_solice"
       }
+    },
+    {
+      "audit": {
+        "latest_audit_hash_at_creation": "ce73f8ac34799d0bd221d80792dfd2915b436f952c0d6b3c28b288bab0377dbb"
+      },
+      "capsule_hash": "c41332aa591956335ce171c4c4c2862a464eb448fc9157d7236c88a5cb522fc1",
+      "capsule_id": "wevvruAsqbCgfDQPA1Lyy-cn",
+      "context": {
+        "object": {
+          "app_name": "observatory",
+          "classification": "user_private",
+          "object_id": "trade_beta_pack_015",
+          "object_type": "trade_record",
+          "owner_user_id": "beta_001"
+        },
+        "session": {},
+        "token": {
+          "export_hash": "95b333001f02386c60faa90e52514f252ff9528110d186260ab4fde7c3edd139",
+          "export_id": "Lc6PGB_134oKv5_BGjXgM1LD",
+          "export_status": "denied"
+        }
+      },
+      "created_at": "2026-05-20T17:12:54.591521Z",
+      "created_by": "tower_export_vault",
+      "decision": {
+        "allowed": false,
+        "decision": "deny",
+        "human_reason": "User does not have export permission.",
+        "metadata": {
+          "action": "export",
+          "app_name": "observatory",
+          "blocking_rule_id": "export.permission.allowed",
+          "evaluated_at": "2026-05-20T17:12:54.587469Z",
+          "mode_name": null,
+          "object_id": "trade_beta_pack_015",
+          "object_type": "trade_record",
+          "policy_version": "tower_policy_v0.1.0"
+        },
+        "policy_version": "tower_policy_v0.1.0",
+        "reason_code": "policy_export_permission_required",
+        "required_actions": [
+          "export_approval_required"
+        ],
+        "risk_score": 75,
+        "risk_state": "restricted",
+        "rule_results": [
+          {
+            "decision": "allow",
+            "human_reason": "User status is active.",
+            "metadata": {
+              "status": "active"
+            },
+            "passed": true,
+            "reason_code": "policy_user_status_ok",
+            "required_actions": [],
+            "rule_id": "user.status.active",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Session risk is acceptable.",
+            "metadata": {
+              "risk_score": 0,
+              "risk_state": "clear"
+            },
+            "passed": true,
+            "reason_code": "policy_session_risk_ok",
+            "required_actions": [],
+            "rule_id": "session.risk.threshold",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has app clearance for observatory.",
+            "metadata": {
+              "app_name": "observatory"
+            },
+            "passed": true,
+            "reason_code": "policy_app_access_ok",
+            "required_actions": [],
+            "rule_id": "app.access.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Admin role rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_admin_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "admin.requires.role",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Observatory mode rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_ob_mode_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "observatory.mode.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "deny",
+            "human_reason": "User does not have export permission.",
+            "metadata": {},
+            "passed": false,
+            "reason_code": "policy_export_permission_required",
+            "required_actions": [
+              "export_approval_required"
+            ],
+            "rule_id": "export.permission.allowed",
+            "severity": "high"
+          }
+        ]
+      },
+      "notes": "Evidence capsule for export request Lc6PGB_134oKv5_BGjXgM1LD.",
+      "policy_report": {
+        "allowed": false,
+        "decision": "deny",
+        "human_reason": "User does not have export permission.",
+        "metadata": {
+          "action": "export",
+          "app_name": "observatory",
+          "blocking_rule_id": "export.permission.allowed",
+          "evaluated_at": "2026-05-20T17:12:54.587469Z",
+          "mode_name": null,
+          "object_id": "trade_beta_pack_015",
+          "object_type": "trade_record",
+          "policy_version": "tower_policy_v0.1.0"
+        },
+        "policy_version": "tower_policy_v0.1.0",
+        "reason_code": "policy_export_permission_required",
+        "required_actions": [
+          "export_approval_required"
+        ],
+        "risk_score": 75,
+        "risk_state": "restricted",
+        "rule_results": [
+          {
+            "decision": "allow",
+            "human_reason": "User status is active.",
+            "metadata": {
+              "status": "active"
+            },
+            "passed": true,
+            "reason_code": "policy_user_status_ok",
+            "required_actions": [],
+            "rule_id": "user.status.active",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Session risk is acceptable.",
+            "metadata": {
+              "risk_score": 0,
+              "risk_state": "clear"
+            },
+            "passed": true,
+            "reason_code": "policy_session_risk_ok",
+            "required_actions": [],
+            "rule_id": "session.risk.threshold",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has app clearance for observatory.",
+            "metadata": {
+              "app_name": "observatory"
+            },
+            "passed": true,
+            "reason_code": "policy_app_access_ok",
+            "required_actions": [],
+            "rule_id": "app.access.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Admin role rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_admin_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "admin.requires.role",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Observatory mode rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_ob_mode_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "observatory.mode.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "deny",
+            "human_reason": "User does not have export permission.",
+            "metadata": {},
+            "passed": false,
+            "reason_code": "policy_export_permission_required",
+            "required_actions": [
+              "export_approval_required"
+            ],
+            "rule_id": "export.permission.allowed",
+            "severity": "high"
+          }
+        ]
+      },
+      "request": {
+        "action": "export",
+        "app_name": "observatory",
+        "mode_name": null,
+        "object_id": "trade_beta_pack_015",
+        "object_type": "trade_record"
+      },
+      "risk": {
+        "decision_risk_score": 75,
+        "decision_risk_state": "restricted",
+        "policy_risk_score": 75,
+        "policy_risk_state": "restricted"
+      },
+      "status": "open",
+      "trigger": "export_vault_request",
+      "user": {
+        "account_type": "beta_user",
+        "display_name": "Beta Tester",
+        "email": "beta@example.com",
+        "risk_state": "clear",
+        "role": "user",
+        "status": "active",
+        "trust_score": 70,
+        "user_id": "beta_001"
+      }
+    },
+    {
+      "audit": {
+        "latest_audit_hash_at_creation": "a83ddd254cf6d6871c051b71fb1140434c2d38cbddafe575ab00db6c1de8cf1f"
+      },
+      "capsule_hash": "905767dd3c43d40b2577f5dc5f82bc17df4d16edb59e16bf2d4945df188cc57a",
+      "capsule_id": "wJgFiLIYYFMmQwbahNecGRo9",
+      "context": {
+        "object": {
+          "admin_action_hash": "fff33c460ac99fa3ac621cab1dfe4554704ce604ee8fefcb57b7efe7ea54b4eb",
+          "admin_action_id": "60jfrEz06InPYGz47C7O9vwE",
+          "requested_changes": {
+            "live_automated": "requested"
+          },
+          "target_app": "observatory",
+          "target_user_id": "beta_001"
+        },
+        "session": {},
+        "token": {
+          "admin_action_id": "60jfrEz06InPYGz47C7O9vwE",
+          "admin_action_status": "step_up_required"
+        }
+      },
+      "created_at": "2026-05-20T17:12:54.608507Z",
+      "created_by": "tower_admin_action_gate",
+      "decision": {
+        "allowed": false,
+        "decision": "step_up",
+        "human_reason": "This admin action requires step-up authorization before continuing.",
+        "metadata": {
+          "action_risk": {
+            "risk_score": 95,
+            "risk_state": "critical_admin_action",
+            "severity": "critical"
+          },
+          "actor_user_id": "owner_solice",
+          "admin_action": "approve_automated_mode",
+          "challenge_id": "Whf5YSci6MtvXqtg8nF0hafW",
+          "object_id": "live_automated_pack_015",
+          "object_type": "mode_permission",
+          "target_app": "observatory",
+          "target_user_id": "beta_001"
+        },
+        "reason_code": "approve_automated_mode_admin_step_up_required",
+        "required_actions": [
+          "complete_step_up"
+        ],
+        "risk_score": 95,
+        "risk_state": "step_up_required"
+      },
+      "notes": "Evidence capsule for admin action 60jfrEz06InPYGz47C7O9vwE.",
+      "policy_report": {
+        "allowed": true,
+        "decision": "allow",
+        "human_reason": "Policy engine allowed this request.",
+        "metadata": {
+          "action": "enter_admin",
+          "app_name": "tower_admin",
+          "evaluated_at": "2026-05-20T17:12:54.604098Z",
+          "mode_name": null,
+          "object_id": null,
+          "object_type": null,
+          "policy_version": "tower_policy_v0.1.0"
+        },
+        "policy_version": "tower_policy_v0.1.0",
+        "reason_code": "policy_clearance_allowed",
+        "required_actions": [],
+        "risk_score": 10,
+        "risk_state": "clear",
+        "rule_results": [
+          {
+            "decision": "allow",
+            "human_reason": "User status is active.",
+            "metadata": {
+              "status": "active"
+            },
+            "passed": true,
+            "reason_code": "policy_user_status_ok",
+            "required_actions": [],
+            "rule_id": "user.status.active",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Session risk is acceptable.",
+            "metadata": {
+              "risk_score": 0,
+              "risk_state": "clear"
+            },
+            "passed": true,
+            "reason_code": "policy_session_risk_ok",
+            "required_actions": [],
+            "rule_id": "session.risk.threshold",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has app clearance for tower_admin.",
+            "metadata": {
+              "app_name": "tower_admin"
+            },
+            "passed": true,
+            "reason_code": "policy_app_access_ok",
+            "required_actions": [],
+            "rule_id": "app.access.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has owner/admin role.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_admin_role_ok",
+            "required_actions": [],
+            "rule_id": "admin.requires.role",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Observatory mode rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_ob_mode_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "observatory.mode.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Export permission rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_export_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "export.permission.allowed",
+            "severity": "info"
+          }
+        ]
+      },
+      "request": {
+        "action": "approve_automated_mode",
+        "app_name": "tower_admin",
+        "mode_name": null,
+        "object_id": "live_automated_pack_015",
+        "object_type": "mode_permission"
+      },
+      "risk": {
+        "decision_risk_score": 95,
+        "decision_risk_state": "step_up_required",
+        "policy_risk_score": 10,
+        "policy_risk_state": "clear"
+      },
+      "status": "open",
+      "trigger": "admin_action_gate",
+      "user": {
+        "account_type": "owner",
+        "display_name": "Solice Bowdre",
+        "email": "bowdre.solice@gmail.com",
+        "risk_state": "clear",
+        "role": "owner",
+        "status": "active",
+        "trust_score": 95,
+        "user_id": "owner_solice"
+      }
     }
   ]
 }

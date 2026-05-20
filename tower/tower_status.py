@@ -12,6 +12,7 @@ from tower.evidence_capsules import get_evidence_summary
 from tower.export_vault import get_export_summary
 from tower.admin_action_gate import get_admin_action_summary
 from tower.step_up import get_step_up_summary
+from tower.security_inbox import get_security_inbox_summary
 
 
 def get_tower_status() -> Dict[str, Any]:
@@ -29,6 +30,7 @@ def get_tower_status() -> Dict[str, Any]:
     export_summary = get_export_summary()
     admin_actions = get_admin_action_summary()
     step_up = get_step_up_summary()
+    security_inbox = get_security_inbox_summary()
     chain = verify_audit_chain()
 
     status_counts = {}
@@ -76,6 +78,12 @@ def get_tower_status() -> Dict[str, Any]:
         "step_up_approved": step_up.get("approved"),
         "step_up_used": step_up.get("used"),
         "step_up_expired": step_up.get("expired"),
+        "security_inbox_total": security_inbox.get("total_inbox_items"),
+        "security_inbox_open": security_inbox.get("open"),
+        "security_inbox_reviewing": security_inbox.get("reviewing"),
+        "security_inbox_resolved": security_inbox.get("resolved"),
+        "security_inbox_critical": security_inbox.get("critical"),
+        "security_inbox_high": security_inbox.get("high"),
         "apps_seen_in_audit": audit.get("apps", {}),
         "risk_states_seen_in_audit": audit.get("risk_states", {}),
     }

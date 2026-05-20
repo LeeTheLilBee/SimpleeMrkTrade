@@ -878,6 +878,45 @@
       "status": "active",
       "token_id": "PtyyeIjqtwa61ivLM70_ukrt",
       "user_id": "owner_solice"
+    },
+    {
+      "action": "enter_admin",
+      "app_name": "tower_admin",
+      "expires_at": "2026-05-20T17:27:54.601585Z",
+      "issued_at": "2026-05-20T17:12:54.601573Z",
+      "issued_by": "tower_clearance_service",
+      "metadata": {
+        "source_decision": {
+          "allowed": true,
+          "audit_required": true,
+          "decision": "allow",
+          "expires_at": "2026-05-20T17:27:54.600957Z",
+          "human_reason": "Tower clearance granted.",
+          "metadata": {
+            "action": "enter_admin",
+            "app_name": "tower_admin",
+            "user_id": "owner_solice"
+          },
+          "reason_code": "clearance_granted",
+          "required_actions": [],
+          "risk_score": 10,
+          "risk_state": "clear"
+        },
+        "source_decision_reason_code": "clearance_granted"
+      },
+      "mode_name": null,
+      "object_id": null,
+      "object_type": null,
+      "revoke_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score": 10,
+      "risk_state": "clear",
+      "scope": "tower_admin:enter_admin:*",
+      "signature": "d5885ee83fe17edd2472f339fb49ebb1e42266817105a81820101c21f7419759",
+      "status": "active",
+      "token_id": "gvplUJc3Z5CCkUyVe004Lu7Y",
+      "user_id": "owner_solice"
     }
   ]
 }
