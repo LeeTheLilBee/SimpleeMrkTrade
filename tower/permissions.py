@@ -214,6 +214,13 @@ def evaluate_clearance(
     # -------------------------------------------------------------------------
     # Rule 6: exports need special permission and step-up.
     # -------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
+    # Rule 6: exports need export permission.
+    # -------------------------------------------------------------------------
+    # Step-up is handled by tower/clearance_service.py before this point.
+    # Baby version:
+    # The front desk checks extra proof first.
+    # This brain only checks whether the user is allowed to export at all.
     if action == "export":
         if user.get("can_export") is not True:
             return ClearanceDecision(
@@ -234,13 +241,13 @@ def evaluate_clearance(
             )
 
         return ClearanceDecision(
-            allowed=False,
-            decision=DECISION_STEP_UP,
-            reason_code="export_step_up_required",
-            human_reason="Export access requires step-up confirmation before continuing.",
-            risk_score=60,
-            risk_state="step_up_required",
-            required_actions=["complete_step_up"],
+            allowed=True,
+            decision=DECISION_ALLOW,
+            reason_code="export_clearance_granted",
+            human_reason="Export clearance granted after Tower checks.",
+            risk_score=35,
+            risk_state="clear",
+            expires_at=_expires(5),
             metadata={
                 "user_id": user_id,
                 "app_name": app_name,

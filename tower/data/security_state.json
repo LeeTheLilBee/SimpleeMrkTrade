@@ -1,0 +1,21 @@
+{
+  "automated_mode_lockdown": true,
+  "broker_bridge_lockdown": true,
+  "export_lockdown": false,
+  "global_lockdown": false,
+  "global_lockdown_reason": null,
+  "live_mode_lockdown": true,
+  "locked_actions": {},
+  "locked_apps": {},
+  "locked_modes": {},
+  "step_up_required_actions": {
+    "broker_connect": true,
+    "change_permissions": true,
+    "enter_admin": false,
+    "export": true,
+    "kill_switch_change": true,
+    "live_mode_entry": true
+  },
+  "updated_at": "2026-05-20T15:32:11.646848Z",
+  "updated_by": "owner_solice"
+}
