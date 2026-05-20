@@ -1,0 +1,1051 @@
+{
+  "api_shape_version": "security_command_view_v0.1.0",
+  "dashboard_name": "The Tower Security Command Dashboard",
+  "generated_at": "2026-05-20T18:13:15.679896Z",
+  "hero": {
+    "headline": "The Tower needs owner review.",
+    "human_reason": "Critical open inbox items require owner review.",
+    "state_label": "Attention Required",
+    "subtitle": "Security Command Dashboard",
+    "title": "The Tower",
+    "tone": "critical"
+  },
+  "lanes": {
+    "high": [
+      {
+        "action_hints": [
+          {
+            "action": "require_step_up",
+            "human_reason": "The session is not fully trusted.",
+            "label": "Require Step-Up",
+            "tone": "high"
+          },
+          {
+            "action": "monitor",
+            "human_reason": "Keep watching before escalating further.",
+            "label": "Monitor",
+            "tone": "watch"
+          }
+        ],
+        "app_name": "observatory",
+        "group_key": "security_event:observatory:beta_001:session_risk_high",
+        "open_count": 2,
+        "priority": "high",
+        "priority_rank": 4,
+        "priority_score": 355,
+        "reason_code": "session_risk_high",
+        "sample_item_ids": [
+          "Tvjek_XLm42OuvJsRGwMztGL",
+          "84pGpcoqZyNW_5SCkVfoNPoa"
+        ],
+        "source_type": "security_event",
+        "summary": "A session risk score became high."
+      },
+      {
+        "action_hints": [
+          {
+            "action": "review_export",
+            "human_reason": "Check the export request and redaction behavior.",
+            "label": "Review Export",
+            "tone": "high"
+          },
+          {
+            "action": "expire_stale_stepups",
+            "human_reason": "Clean old pending challenges if they are stale.",
+            "label": "Expire Stale Step-Ups",
+            "tone": "watch"
+          }
+        ],
+        "app_name": "observatory",
+        "group_key": "evidence_capsule:observatory:owner_solice:export_step_up_required",
+        "open_count": 3,
+        "priority": "high",
+        "priority_rank": 4,
+        "priority_score": 330,
+        "reason_code": "export_step_up_required",
+        "sample_item_ids": [
+          "ABuNfB_PNbIMtS0dpvUqxCig",
+          "ESWBsOgUAOu7CqtN31fVCOnB",
+          "Rv1U84mjN8yX2K8XLpJ-xl4p"
+        ],
+        "source_type": "evidence_capsule",
+        "summary": "This action requires step-up authorization before continuing."
+      },
+      {
+        "action_hints": [
+          {
+            "action": "review",
+            "human_reason": "Review and decide whether to resolve, dismiss, or escalate.",
+            "label": "Review",
+            "tone": "watch"
+          }
+        ],
+        "app_name": "tower_admin",
+        "group_key": "admin_action:tower_admin:owner_solice:change_permissions_admin_step_up_required",
+        "open_count": 1,
+        "priority": "high",
+        "priority_rank": 4,
+        "priority_score": 330,
+        "reason_code": "change_permissions_admin_step_up_required",
+        "sample_item_ids": [
+          "0In6HmRxSlzYyOxzM3p943_b"
+        ],
+        "source_type": "admin_action",
+        "summary": "This admin action requires step-up authorization before continuing."
+      },
+      {
+        "action_hints": [
+          {
+            "action": "review_export",
+            "human_reason": "Check the export request and redaction behavior.",
+            "label": "Review Export",
+            "tone": "high"
+          },
+          {
+            "action": "expire_stale_stepups",
+            "human_reason": "Clean old pending challenges if they are stale.",
+            "label": "Expire Stale Step-Ups",
+            "tone": "watch"
+          }
+        ],
+        "app_name": "observatory",
+        "group_key": "evidence_capsule:observatory:beta_001:export_step_up_required",
+        "open_count": 1,
+        "priority": "high",
+        "priority_rank": 4,
+        "priority_score": 330,
+        "reason_code": "export_step_up_required",
+        "sample_item_ids": [
+          "FdrRL4U6tohiGgtCrmC8ms4h"
+        ],
+        "source_type": "evidence_capsule",
+        "summary": "This action requires step-up authorization before continuing."
+      },
+      {
+        "action_hints": [
+          {
+            "action": "review_evidence",
+            "human_reason": "Open the evidence capsule and decide whether it should remain open.",
+            "label": "Review Evidence",
+            "tone": "watch"
+          }
+        ],
+        "app_name": "tower_admin",
+        "group_key": "evidence_capsule:tower_admin:owner_solice:change_permissions_admin_step_up_required",
+        "open_count": 1,
+        "priority": "high",
+        "priority_rank": 4,
+        "priority_score": 330,
+        "reason_code": "change_permissions_admin_step_up_required",
+        "sample_item_ids": [
+          "-BuiTlPtan88I0Olj9Hoaeqp"
+        ],
+        "source_type": "evidence_capsule",
+        "summary": "This admin action requires step-up authorization before continuing."
+      }
+    ],
+    "other": [],
+    "urgent": [
+      {
+        "action_hints": [
+          {
+            "action": "keep_locked",
+            "human_reason": "Do not unlock Live Automated for public/beta users without legal, owner, and Control Tower clearance.",
+            "label": "Keep Locked",
+            "tone": "critical"
+          },
+          {
+            "action": "review_evidence",
+            "human_reason": "Open the related audit trail before deciding anything.",
+            "label": "Review Evidence",
+            "tone": "high"
+          }
+        ],
+        "app_name": "tower_admin",
+        "group_key": "admin_action:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
+        "open_count": 1,
+        "priority": "urgent",
+        "priority_rank": 5,
+        "priority_score": 460,
+        "reason_code": "approve_automated_mode_admin_step_up_required",
+        "sample_item_ids": [
+          "lLnTRO7sgMImcgG9Oe_yWvQL"
+        ],
+        "source_type": "admin_action",
+        "summary": "This admin action requires step-up authorization before continuing."
+      },
+      {
+        "action_hints": [
+          {
+            "action": "keep_locked",
+            "human_reason": "Do not unlock Live Automated for public/beta users without legal, owner, and Control Tower clearance.",
+            "label": "Keep Locked",
+            "tone": "critical"
+          },
+          {
+            "action": "review_evidence",
+            "human_reason": "Open the related audit trail before deciding anything.",
+            "label": "Review Evidence",
+            "tone": "high"
+          }
+        ],
+        "app_name": "tower_admin",
+        "group_key": "evidence_capsule:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
+        "open_count": 1,
+        "priority": "urgent",
+        "priority_rank": 5,
+        "priority_score": 460,
+        "reason_code": "approve_automated_mode_admin_step_up_required",
+        "sample_item_ids": [
+          "uszHo78QuqIeBjCCNDtScAGI"
+        ],
+        "source_type": "evidence_capsule",
+        "summary": "This admin action requires step-up authorization before continuing."
+      },
+      {
+        "action_hints": [
+          {
+            "action": "quarantine_user",
+            "human_reason": "Pause access until the risky session is reviewed.",
+            "label": "Quarantine User",
+            "tone": "critical"
+          },
+          {
+            "action": "require_step_up",
+            "human_reason": "Force fresh authorization before the user continues.",
+            "label": "Require Step-Up",
+            "tone": "high"
+          }
+        ],
+        "app_name": "observatory",
+        "group_key": "security_event:observatory:beta_001:session_risk_quarantine_recommended",
+        "open_count": 3,
+        "priority": "urgent",
+        "priority_rank": 5,
+        "priority_score": 455,
+        "reason_code": "session_risk_quarantine_recommended",
+        "sample_item_ids": [
+          "XYdQwwgKHD7QozeSmU4zhiw-",
+          "TRMF8BHVqHDjI0tjARneDEZ8",
+          "3Cea4XsqT5yAwHvzF5-wOsEe"
+        ],
+        "source_type": "security_event",
+        "summary": "This session is too risky. Access is paused for review."
+      },
+      {
+        "action_hints": [
+          {
+            "action": "confirm_block",
+            "human_reason": "Verify the non-admin was blocked correctly.",
+            "label": "Confirm Block",
+            "tone": "high"
+          },
+          {
+            "action": "resolve_or_keep_evidence",
+            "human_reason": "Keep as proof or resolve if it was only a test.",
+            "label": "Resolve or Keep Evidence",
+            "tone": "watch"
+          }
+        ],
+        "app_name": "tower_admin",
+        "group_key": "admin_action:tower_admin:beta_001:admin_role_required",
+        "open_count": 1,
+        "priority": "urgent",
+        "priority_rank": 5,
+        "priority_score": 435,
+        "reason_code": "admin_role_required",
+        "sample_item_ids": [
+          "W_k7t8no-Idq7htaAIDY1W56"
+        ],
+        "source_type": "admin_action",
+        "summary": "This action requires owner/admin role."
+      },
+      {
+        "action_hints": [
+          {
+            "action": "confirm_block",
+            "human_reason": "Verify the non-admin was blocked correctly.",
+            "label": "Confirm Block",
+            "tone": "high"
+          },
+          {
+            "action": "resolve_or_keep_evidence",
+            "human_reason": "Keep as proof or resolve if it was only a test.",
+            "label": "Resolve or Keep Evidence",
+            "tone": "watch"
+          }
+        ],
+        "app_name": "tower_admin",
+        "group_key": "evidence_capsule:tower_admin:beta_001:admin_role_required",
+        "open_count": 1,
+        "priority": "urgent",
+        "priority_rank": 5,
+        "priority_score": 435,
+        "reason_code": "admin_role_required",
+        "sample_item_ids": [
+          "QLdjlXEO0UyssYa99XI2L7Ww"
+        ],
+        "source_type": "evidence_capsule",
+        "summary": "This action requires owner/admin role."
+      },
+      {
+        "action_hints": [
+          {
+            "action": "keep_locked",
+            "human_reason": "Do not unlock Live Automated for public/beta users without legal, owner, and Control Tower clearance.",
+            "label": "Keep Locked",
+            "tone": "critical"
+          },
+          {
+            "action": "review_evidence",
+            "human_reason": "Open the related audit trail before deciding anything.",
+            "label": "Review Evidence",
+            "tone": "high"
+          }
+        ],
+        "app_name": "observatory",
+        "group_key": "security_event:observatory:beta_001:public_live_automated_blocked",
+        "open_count": 1,
+        "priority": "urgent",
+        "priority_rank": 5,
+        "priority_score": 430,
+        "reason_code": "public_live_automated_blocked",
+        "sample_item_ids": [
+          "HykT8-M4Ap5CxUpa9A1bWHnn"
+        ],
+        "source_type": "security_event",
+        "summary": "Live Automated is blocked for public and beta users."
+      },
+      {
+        "action_hints": [
+          {
+            "action": "confirm_lockdown_state",
+            "human_reason": "Decide whether this is test noise or a real emergency state.",
+            "label": "Confirm Lockdown State",
+            "tone": "critical"
+          },
+          {
+            "action": "review_security_state",
+            "human_reason": "Check The Tower security-state record before clearing anything.",
+            "label": "Review Security State",
+            "tone": "high"
+          }
+        ],
+        "app_name": "observatory",
+        "group_key": "security_event:observatory:owner_solice:global_lockdown_active",
+        "open_count": 1,
+        "priority": "urgent",
+        "priority_rank": 5,
+        "priority_score": 430,
+        "reason_code": "global_lockdown_active",
+        "sample_item_ids": [
+          "Y80zbiYsaEonfbboFHHatuu0"
+        ],
+        "source_type": "security_event",
+        "summary": "Global Tower lockdown is active."
+      }
+    ],
+    "watch": []
+  },
+  "metrics": {
+    "critical_alerts": 9,
+    "evidence_open": 22,
+    "high_alerts": 17,
+    "open_inbox": 77,
+    "review_groups": 33,
+    "step_up_pending": 14
+  },
+  "primary_owner_tasks": [
+    {
+      "action_hints": [
+        {
+          "action": "quarantine_user",
+          "human_reason": "Pause access until the risky session is reviewed.",
+          "label": "Quarantine User",
+          "tone": "critical"
+        },
+        {
+          "action": "require_step_up",
+          "human_reason": "Force fresh authorization before the user continues.",
+          "label": "Require Step-Up",
+          "tone": "high"
+        }
+      ],
+      "app_name": "observatory",
+      "group_key": "security_event:observatory:beta_001:session_risk_quarantine_recommended",
+      "human_task": "Review risky session, decide whether to quarantine user/session, and require fresh step-up.",
+      "open_count": 3,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "session_risk_quarantine_recommended"
+    },
+    {
+      "action_hints": [
+        {
+          "action": "keep_locked",
+          "human_reason": "Do not unlock Live Automated for public/beta users without legal, owner, and Control Tower clearance.",
+          "label": "Keep Locked",
+          "tone": "critical"
+        },
+        {
+          "action": "review_evidence",
+          "human_reason": "Open the related audit trail before deciding anything.",
+          "label": "Review Evidence",
+          "tone": "high"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "admin_action:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
+      "human_task": "Keep Live Automated locked unless this is an internal owner/trust-approved account with legal/compliance clearance.",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "approve_automated_mode_admin_step_up_required"
+    },
+    {
+      "action_hints": [
+        {
+          "action": "keep_locked",
+          "human_reason": "Do not unlock Live Automated for public/beta users without legal, owner, and Control Tower clearance.",
+          "label": "Keep Locked",
+          "tone": "critical"
+        },
+        {
+          "action": "review_evidence",
+          "human_reason": "Open the related audit trail before deciding anything.",
+          "label": "Review Evidence",
+          "tone": "high"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "evidence_capsule:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
+      "human_task": "Keep Live Automated locked unless this is an internal owner/trust-approved account with legal/compliance clearance.",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "approve_automated_mode_admin_step_up_required"
+    },
+    {
+      "action_hints": [
+        {
+          "action": "confirm_block",
+          "human_reason": "Verify the non-admin was blocked correctly.",
+          "label": "Confirm Block",
+          "tone": "high"
+        },
+        {
+          "action": "resolve_or_keep_evidence",
+          "human_reason": "Keep as proof or resolve if it was only a test.",
+          "label": "Resolve or Keep Evidence",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "admin_action:tower_admin:beta_001:admin_role_required",
+      "human_task": "Confirm non-admin was blocked correctly; keep as evidence or dismiss as completed test proof.",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "admin_role_required"
+    },
+    {
+      "action_hints": [
+        {
+          "action": "confirm_block",
+          "human_reason": "Verify the non-admin was blocked correctly.",
+          "label": "Confirm Block",
+          "tone": "high"
+        },
+        {
+          "action": "resolve_or_keep_evidence",
+          "human_reason": "Keep as proof or resolve if it was only a test.",
+          "label": "Resolve or Keep Evidence",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "evidence_capsule:tower_admin:beta_001:admin_role_required",
+      "human_task": "Confirm non-admin was blocked correctly; keep as evidence or dismiss as completed test proof.",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "admin_role_required"
+    }
+  ],
+  "recommended_owner_focus": [
+    {
+      "action_hints": [
+        {
+          "action": "quarantine_user",
+          "human_reason": "Pause access until the risky session is reviewed.",
+          "label": "Quarantine User",
+          "tone": "critical"
+        },
+        {
+          "action": "require_step_up",
+          "human_reason": "Force fresh authorization before the user continues.",
+          "label": "Require Step-Up",
+          "tone": "high"
+        }
+      ],
+      "app_name": "observatory",
+      "group_key": "security_event:observatory:beta_001:session_risk_quarantine_recommended",
+      "human_task": "Review risky session, decide whether to quarantine user/session, and require fresh step-up.",
+      "open_count": 3,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "session_risk_quarantine_recommended"
+    },
+    {
+      "action_hints": [
+        {
+          "action": "keep_locked",
+          "human_reason": "Do not unlock Live Automated for public/beta users without legal, owner, and Control Tower clearance.",
+          "label": "Keep Locked",
+          "tone": "critical"
+        },
+        {
+          "action": "review_evidence",
+          "human_reason": "Open the related audit trail before deciding anything.",
+          "label": "Review Evidence",
+          "tone": "high"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "admin_action:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
+      "human_task": "Keep Live Automated locked unless this is an internal owner/trust-approved account with legal/compliance clearance.",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "approve_automated_mode_admin_step_up_required"
+    },
+    {
+      "action_hints": [
+        {
+          "action": "keep_locked",
+          "human_reason": "Do not unlock Live Automated for public/beta users without legal, owner, and Control Tower clearance.",
+          "label": "Keep Locked",
+          "tone": "critical"
+        },
+        {
+          "action": "review_evidence",
+          "human_reason": "Open the related audit trail before deciding anything.",
+          "label": "Review Evidence",
+          "tone": "high"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "evidence_capsule:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
+      "human_task": "Keep Live Automated locked unless this is an internal owner/trust-approved account with legal/compliance clearance.",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "approve_automated_mode_admin_step_up_required"
+    },
+    {
+      "action_hints": [
+        {
+          "action": "confirm_block",
+          "human_reason": "Verify the non-admin was blocked correctly.",
+          "label": "Confirm Block",
+          "tone": "high"
+        },
+        {
+          "action": "resolve_or_keep_evidence",
+          "human_reason": "Keep as proof or resolve if it was only a test.",
+          "label": "Resolve or Keep Evidence",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "admin_action:tower_admin:beta_001:admin_role_required",
+      "human_task": "Confirm non-admin was blocked correctly; keep as evidence or dismiss as completed test proof.",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "admin_role_required"
+    },
+    {
+      "action_hints": [
+        {
+          "action": "confirm_block",
+          "human_reason": "Verify the non-admin was blocked correctly.",
+          "label": "Confirm Block",
+          "tone": "high"
+        },
+        {
+          "action": "resolve_or_keep_evidence",
+          "human_reason": "Keep as proof or resolve if it was only a test.",
+          "label": "Resolve or Keep Evidence",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "evidence_capsule:tower_admin:beta_001:admin_role_required",
+      "human_task": "Confirm non-admin was blocked correctly; keep as evidence or dismiss as completed test proof.",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "admin_role_required"
+    },
+    {
+      "action_hints": [
+        {
+          "action": "keep_locked",
+          "human_reason": "Do not unlock Live Automated for public/beta users without legal, owner, and Control Tower clearance.",
+          "label": "Keep Locked",
+          "tone": "critical"
+        },
+        {
+          "action": "review_evidence",
+          "human_reason": "Open the related audit trail before deciding anything.",
+          "label": "Review Evidence",
+          "tone": "high"
+        }
+      ],
+      "app_name": "observatory",
+      "group_key": "security_event:observatory:beta_001:public_live_automated_blocked",
+      "human_task": "Keep Live Automated locked unless this is an internal owner/trust-approved account with legal/compliance clearance.",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "public_live_automated_blocked"
+    },
+    {
+      "action_hints": [
+        {
+          "action": "confirm_lockdown_state",
+          "human_reason": "Decide whether this is test noise or a real emergency state.",
+          "label": "Confirm Lockdown State",
+          "tone": "critical"
+        },
+        {
+          "action": "review_security_state",
+          "human_reason": "Check The Tower security-state record before clearing anything.",
+          "label": "Review Security State",
+          "tone": "high"
+        }
+      ],
+      "app_name": "observatory",
+      "group_key": "security_event:observatory:owner_solice:global_lockdown_active",
+      "human_task": "Confirm whether global lockdown is test noise or a real emergency state.",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "reason_code": "global_lockdown_active"
+    },
+    {
+      "action_hints": [
+        {
+          "action": "require_step_up",
+          "human_reason": "The session is not fully trusted.",
+          "label": "Require Step-Up",
+          "tone": "high"
+        },
+        {
+          "action": "monitor",
+          "human_reason": "Keep watching before escalating further.",
+          "label": "Monitor",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "observatory",
+      "group_key": "security_event:observatory:beta_001:session_risk_high",
+      "human_task": "require_step_up_or_quarantine_session",
+      "open_count": 2,
+      "priority": "high",
+      "priority_rank": 4,
+      "reason_code": "session_risk_high"
+    }
+  ],
+  "source_generated_at": "2026-05-20T18:07:52.141482Z",
+  "status": {
+    "headline": "The Tower needs owner review.",
+    "human_reason": "Critical open inbox items require owner review.",
+    "label": "Attention Required",
+    "state": "attention_required",
+    "tone": "critical"
+  },
+  "summary_cards": [
+    {
+      "display_value": "77",
+      "human_reason": "Open Tower review items waiting for action.",
+      "label": "Open Inbox",
+      "tone": "critical",
+      "tone_rank": 5,
+      "value": 77
+    },
+    {
+      "display_value": "9",
+      "human_reason": "Items that may involve lockdowns, quarantine, live automation, or restricted access.",
+      "label": "Critical Alerts",
+      "tone": "critical",
+      "tone_rank": 5,
+      "value": 9
+    },
+    {
+      "display_value": "17",
+      "human_reason": "Items that likely need owner/admin review soon.",
+      "label": "High Alerts",
+      "tone": "high",
+      "tone_rank": 4,
+      "value": 17
+    },
+    {
+      "display_value": "22",
+      "human_reason": "Open evidence records for review or audit trail.",
+      "label": "Evidence Capsules",
+      "tone": "watch",
+      "tone_rank": 3,
+      "value": 22
+    },
+    {
+      "display_value": "14",
+      "human_reason": "Authorization challenges waiting to be completed, used, expired, or cleaned up.",
+      "label": "Pending Step-Ups",
+      "tone": "high",
+      "tone_rank": 4,
+      "value": 14
+    },
+    {
+      "display_value": "33",
+      "human_reason": "Grouped issues so admin screens do not drown in duplicate events.",
+      "label": "Review Groups",
+      "tone": "watch",
+      "tone_rank": 3,
+      "value": 33
+    }
+  ],
+  "top_review_groups": [
+    {
+      "action_hints": [
+        {
+          "action": "keep_locked",
+          "human_reason": "Do not unlock Live Automated for public/beta users without legal, owner, and Control Tower clearance.",
+          "label": "Keep Locked",
+          "tone": "critical"
+        },
+        {
+          "action": "review_evidence",
+          "human_reason": "Open the related audit trail before deciding anything.",
+          "label": "Review Evidence",
+          "tone": "high"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "admin_action:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "priority_score": 460,
+      "reason_code": "approve_automated_mode_admin_step_up_required",
+      "sample_item_ids": [
+        "lLnTRO7sgMImcgG9Oe_yWvQL"
+      ],
+      "source_type": "admin_action",
+      "summary": "This admin action requires step-up authorization before continuing."
+    },
+    {
+      "action_hints": [
+        {
+          "action": "keep_locked",
+          "human_reason": "Do not unlock Live Automated for public/beta users without legal, owner, and Control Tower clearance.",
+          "label": "Keep Locked",
+          "tone": "critical"
+        },
+        {
+          "action": "review_evidence",
+          "human_reason": "Open the related audit trail before deciding anything.",
+          "label": "Review Evidence",
+          "tone": "high"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "evidence_capsule:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "priority_score": 460,
+      "reason_code": "approve_automated_mode_admin_step_up_required",
+      "sample_item_ids": [
+        "uszHo78QuqIeBjCCNDtScAGI"
+      ],
+      "source_type": "evidence_capsule",
+      "summary": "This admin action requires step-up authorization before continuing."
+    },
+    {
+      "action_hints": [
+        {
+          "action": "quarantine_user",
+          "human_reason": "Pause access until the risky session is reviewed.",
+          "label": "Quarantine User",
+          "tone": "critical"
+        },
+        {
+          "action": "require_step_up",
+          "human_reason": "Force fresh authorization before the user continues.",
+          "label": "Require Step-Up",
+          "tone": "high"
+        }
+      ],
+      "app_name": "observatory",
+      "group_key": "security_event:observatory:beta_001:session_risk_quarantine_recommended",
+      "open_count": 3,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "priority_score": 455,
+      "reason_code": "session_risk_quarantine_recommended",
+      "sample_item_ids": [
+        "XYdQwwgKHD7QozeSmU4zhiw-",
+        "TRMF8BHVqHDjI0tjARneDEZ8",
+        "3Cea4XsqT5yAwHvzF5-wOsEe"
+      ],
+      "source_type": "security_event",
+      "summary": "This session is too risky. Access is paused for review."
+    },
+    {
+      "action_hints": [
+        {
+          "action": "confirm_block",
+          "human_reason": "Verify the non-admin was blocked correctly.",
+          "label": "Confirm Block",
+          "tone": "high"
+        },
+        {
+          "action": "resolve_or_keep_evidence",
+          "human_reason": "Keep as proof or resolve if it was only a test.",
+          "label": "Resolve or Keep Evidence",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "admin_action:tower_admin:beta_001:admin_role_required",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "priority_score": 435,
+      "reason_code": "admin_role_required",
+      "sample_item_ids": [
+        "W_k7t8no-Idq7htaAIDY1W56"
+      ],
+      "source_type": "admin_action",
+      "summary": "This action requires owner/admin role."
+    },
+    {
+      "action_hints": [
+        {
+          "action": "confirm_block",
+          "human_reason": "Verify the non-admin was blocked correctly.",
+          "label": "Confirm Block",
+          "tone": "high"
+        },
+        {
+          "action": "resolve_or_keep_evidence",
+          "human_reason": "Keep as proof or resolve if it was only a test.",
+          "label": "Resolve or Keep Evidence",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "evidence_capsule:tower_admin:beta_001:admin_role_required",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "priority_score": 435,
+      "reason_code": "admin_role_required",
+      "sample_item_ids": [
+        "QLdjlXEO0UyssYa99XI2L7Ww"
+      ],
+      "source_type": "evidence_capsule",
+      "summary": "This action requires owner/admin role."
+    },
+    {
+      "action_hints": [
+        {
+          "action": "keep_locked",
+          "human_reason": "Do not unlock Live Automated for public/beta users without legal, owner, and Control Tower clearance.",
+          "label": "Keep Locked",
+          "tone": "critical"
+        },
+        {
+          "action": "review_evidence",
+          "human_reason": "Open the related audit trail before deciding anything.",
+          "label": "Review Evidence",
+          "tone": "high"
+        }
+      ],
+      "app_name": "observatory",
+      "group_key": "security_event:observatory:beta_001:public_live_automated_blocked",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "priority_score": 430,
+      "reason_code": "public_live_automated_blocked",
+      "sample_item_ids": [
+        "HykT8-M4Ap5CxUpa9A1bWHnn"
+      ],
+      "source_type": "security_event",
+      "summary": "Live Automated is blocked for public and beta users."
+    },
+    {
+      "action_hints": [
+        {
+          "action": "confirm_lockdown_state",
+          "human_reason": "Decide whether this is test noise or a real emergency state.",
+          "label": "Confirm Lockdown State",
+          "tone": "critical"
+        },
+        {
+          "action": "review_security_state",
+          "human_reason": "Check The Tower security-state record before clearing anything.",
+          "label": "Review Security State",
+          "tone": "high"
+        }
+      ],
+      "app_name": "observatory",
+      "group_key": "security_event:observatory:owner_solice:global_lockdown_active",
+      "open_count": 1,
+      "priority": "urgent",
+      "priority_rank": 5,
+      "priority_score": 430,
+      "reason_code": "global_lockdown_active",
+      "sample_item_ids": [
+        "Y80zbiYsaEonfbboFHHatuu0"
+      ],
+      "source_type": "security_event",
+      "summary": "Global Tower lockdown is active."
+    },
+    {
+      "action_hints": [
+        {
+          "action": "require_step_up",
+          "human_reason": "The session is not fully trusted.",
+          "label": "Require Step-Up",
+          "tone": "high"
+        },
+        {
+          "action": "monitor",
+          "human_reason": "Keep watching before escalating further.",
+          "label": "Monitor",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "observatory",
+      "group_key": "security_event:observatory:beta_001:session_risk_high",
+      "open_count": 2,
+      "priority": "high",
+      "priority_rank": 4,
+      "priority_score": 355,
+      "reason_code": "session_risk_high",
+      "sample_item_ids": [
+        "Tvjek_XLm42OuvJsRGwMztGL",
+        "84pGpcoqZyNW_5SCkVfoNPoa"
+      ],
+      "source_type": "security_event",
+      "summary": "A session risk score became high."
+    },
+    {
+      "action_hints": [
+        {
+          "action": "review_export",
+          "human_reason": "Check the export request and redaction behavior.",
+          "label": "Review Export",
+          "tone": "high"
+        },
+        {
+          "action": "expire_stale_stepups",
+          "human_reason": "Clean old pending challenges if they are stale.",
+          "label": "Expire Stale Step-Ups",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "observatory",
+      "group_key": "evidence_capsule:observatory:owner_solice:export_step_up_required",
+      "open_count": 3,
+      "priority": "high",
+      "priority_rank": 4,
+      "priority_score": 330,
+      "reason_code": "export_step_up_required",
+      "sample_item_ids": [
+        "ABuNfB_PNbIMtS0dpvUqxCig",
+        "ESWBsOgUAOu7CqtN31fVCOnB",
+        "Rv1U84mjN8yX2K8XLpJ-xl4p"
+      ],
+      "source_type": "evidence_capsule",
+      "summary": "This action requires step-up authorization before continuing."
+    },
+    {
+      "action_hints": [
+        {
+          "action": "review",
+          "human_reason": "Review and decide whether to resolve, dismiss, or escalate.",
+          "label": "Review",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "admin_action:tower_admin:owner_solice:change_permissions_admin_step_up_required",
+      "open_count": 1,
+      "priority": "high",
+      "priority_rank": 4,
+      "priority_score": 330,
+      "reason_code": "change_permissions_admin_step_up_required",
+      "sample_item_ids": [
+        "0In6HmRxSlzYyOxzM3p943_b"
+      ],
+      "source_type": "admin_action",
+      "summary": "This admin action requires step-up authorization before continuing."
+    },
+    {
+      "action_hints": [
+        {
+          "action": "review_export",
+          "human_reason": "Check the export request and redaction behavior.",
+          "label": "Review Export",
+          "tone": "high"
+        },
+        {
+          "action": "expire_stale_stepups",
+          "human_reason": "Clean old pending challenges if they are stale.",
+          "label": "Expire Stale Step-Ups",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "observatory",
+      "group_key": "evidence_capsule:observatory:beta_001:export_step_up_required",
+      "open_count": 1,
+      "priority": "high",
+      "priority_rank": 4,
+      "priority_score": 330,
+      "reason_code": "export_step_up_required",
+      "sample_item_ids": [
+        "FdrRL4U6tohiGgtCrmC8ms4h"
+      ],
+      "source_type": "evidence_capsule",
+      "summary": "This action requires step-up authorization before continuing."
+    },
+    {
+      "action_hints": [
+        {
+          "action": "review_evidence",
+          "human_reason": "Open the evidence capsule and decide whether it should remain open.",
+          "label": "Review Evidence",
+          "tone": "watch"
+        }
+      ],
+      "app_name": "tower_admin",
+      "group_key": "evidence_capsule:tower_admin:owner_solice:change_permissions_admin_step_up_required",
+      "open_count": 1,
+      "priority": "high",
+      "priority_rank": 4,
+      "priority_score": 330,
+      "reason_code": "change_permissions_admin_step_up_required",
+      "sample_item_ids": [
+        "-BuiTlPtan88I0Olj9Hoaeqp"
+      ],
+      "source_type": "evidence_capsule",
+      "summary": "This admin action requires step-up authorization before continuing."
+    }
+  ],
+  "view_name": "The Tower Security Command View"
+}

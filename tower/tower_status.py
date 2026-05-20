@@ -12,7 +12,7 @@ from tower.evidence_capsules import get_evidence_summary
 from tower.export_vault import get_export_summary
 from tower.admin_action_gate import get_admin_action_summary
 from tower.step_up import get_step_up_summary
-from tower.security_inbox import get_security_inbox_summary
+from tower.security_inbox import get_security_inbox_summary, get_security_review_queue_summary, get_security_inbox_action_summary
 
 
 def get_tower_status() -> Dict[str, Any]:
@@ -31,6 +31,8 @@ def get_tower_status() -> Dict[str, Any]:
     admin_actions = get_admin_action_summary()
     step_up = get_step_up_summary()
     security_inbox = get_security_inbox_summary()
+    security_review_queue = get_security_review_queue_summary()
+    security_inbox_actions = get_security_inbox_action_summary()
     chain = verify_audit_chain()
 
     status_counts = {}
@@ -84,6 +86,14 @@ def get_tower_status() -> Dict[str, Any]:
         "security_inbox_resolved": security_inbox.get("resolved"),
         "security_inbox_critical": security_inbox.get("critical"),
         "security_inbox_high": security_inbox.get("high"),
+        "security_review_groups": security_review_queue.get("total_review_groups"),
+        "security_review_urgent_groups": security_review_queue.get("urgent"),
+        "security_review_high_groups": security_review_queue.get("high"),
+        "security_review_largest_group": security_review_queue.get("largest_group_size"),
+        "security_inbox_items_with_notes": security_inbox_actions.get("with_review_notes"),
+        "security_inbox_escalated": security_inbox_actions.get("escalated"),
+        "security_inbox_quarantine_requested": security_inbox_actions.get("quarantine_requested"),
+        "security_inbox_step_up_requested": security_inbox_actions.get("step_up_requested"),
         "apps_seen_in_audit": audit.get("apps", {}),
         "risk_states_seen_in_audit": audit.get("risk_states", {}),
     }

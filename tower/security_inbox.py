@@ -5,9 +5,10 @@
 
 import hashlib
 import json
+import inspect
 import os
 import secrets
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -515,3 +516,968 @@ def get_security_inbox_summary() -> Dict[str, Any]:
         summary["by_app"][app_name] = summary["by_app"].get(app_name, 0) + 1
 
     return summary
+
+
+
+# =============================================================================
+# PACK 016 — SECURITY INBOX GROUPING + CLEANUP
+# =============================================================================
+
+def _group_key_for_item(item: Dict[str, Any]) -> str:
+    """
+    Creates a stable group key.
+
+    Baby version:
+    Instead of treating every repeated scream as brand new,
+    we put similar screams in the same basket.
+    """
+
+    source_type = item.get("source_type") or "unknown"
+    reason_code = item.get("reason_code") or "unknown"
+    app_name = item.get("app_name") or "unknown"
+    user_id = item.get("user_id") or "unknown"
+
+    # Some repeated noisy events should group by reason/app/user.
+    if source_type == "security_event":
+        return f"security_event:{app_name}:{user_id}:{reason_code}"
+
+    # Evidence capsules are usually grouped by reason + app.
+    if source_type == "evidence_capsule":
+        return f"evidence_capsule:{app_name}:{reason_code}"
+
+    # Exports grouped by app + user + reason.
+    if source_type == "export":
+        return f"export:{app_name}:{user_id}:{reason_code}"
+
+    # Admin actions grouped by action/reason/target app.
+    if source_type == "admin_action":
+        source_payload = item.get("source_payload") or {}
+        admin_action = source_payload.get("admin_action") or item.get("title") or "admin_action"
+        return f"admin_action:{app_name}:{admin_action}:{reason_code}"
+
+    # Step-ups grouped by app + user + reason.
+    if source_type == "step_up_challenge":
+        return f"step_up:{app_name}:{user_id}:{reason_code}"
+
+    return f"{source_type}:{app_name}:{user_id}:{reason_code}"
+
+
+def _priority_for_group(items: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    Calculates group priority.
+
+    Baby version:
+    The loudest/scariest child in the group decides the group danger level.
+    """
+
+    if not items:
+        return {
+            "priority": "low",
+            "priority_score": 0,
+            "highest_severity": "info",
+            "highest_severity_rank": 0,
+        }
+
+    highest_rank = max(int(item.get("severity_rank") or 0) for item in items)
+
+    highest_severity = "info"
+    for name, rank in SEVERITY_ORDER.items():
+        if rank == highest_rank:
+            highest_severity = name
+            break
+
+    open_count = len([item for item in items if item.get("status") == INBOX_STATUS_OPEN])
+    reviewing_count = len([item for item in items if item.get("status") == INBOX_STATUS_REVIEWING])
+
+    priority_score = highest_rank * 100 + open_count * 5 + reviewing_count * 2
+
+    if highest_rank >= 4:
+        priority = "urgent"
+    elif highest_rank == 3:
+        priority = "high"
+    elif highest_rank == 2:
+        priority = "medium"
+    else:
+        priority = "low"
+
+    return {
+        "priority": priority,
+        "priority_score": priority_score,
+        "highest_severity": highest_severity,
+        "highest_severity_rank": highest_rank,
+    }
+
+
+def build_security_review_queue(
+    include_resolved: bool = False,
+    limit_groups: int = 25,
+) -> List[Dict[str, Any]]:
+    """
+    Builds a grouped review queue.
+
+    Baby version:
+    This turns many individual alerts into a smaller stack of review cards.
+    """
+
+    data = _load_raw()
+    rows = data.get("items", [])
+
+    if not include_resolved:
+        rows = [
+            item for item in rows
+            if item.get("status") not in {INBOX_STATUS_RESOLVED, INBOX_STATUS_DISMISSED}
+        ]
+
+    grouped: Dict[str, List[Dict[str, Any]]] = {}
+
+    for item in rows:
+        key = _group_key_for_item(item)
+        grouped.setdefault(key, []).append(item)
+
+    queue: List[Dict[str, Any]] = []
+
+    for group_key, items in grouped.items():
+        priority = _priority_for_group(items)
+
+        sorted_items = sorted(
+            items,
+            key=lambda item: (
+                -int(item.get("severity_rank") or 0),
+                item.get("created_at") or "",
+            ),
+        )
+
+        representative = sorted_items[0]
+
+        open_count = len([item for item in items if item.get("status") == INBOX_STATUS_OPEN])
+        reviewing_count = len([item for item in items if item.get("status") == INBOX_STATUS_REVIEWING])
+        resolved_count = len([item for item in items if item.get("status") == INBOX_STATUS_RESOLVED])
+        dismissed_count = len([item for item in items if item.get("status") == INBOX_STATUS_DISMISSED])
+
+        queue.append({
+            "group_key": group_key,
+            "title": representative.get("title"),
+            "summary": representative.get("summary"),
+            "recommended_action": representative.get("recommended_action"),
+            "source_type": representative.get("source_type"),
+            "app_name": representative.get("app_name"),
+            "user_id": representative.get("user_id"),
+            "reason_code": representative.get("reason_code"),
+            "priority": priority.get("priority"),
+            "priority_score": priority.get("priority_score"),
+            "highest_severity": priority.get("highest_severity"),
+            "highest_severity_rank": priority.get("highest_severity_rank"),
+            "total_items": len(items),
+            "open_count": open_count,
+            "reviewing_count": reviewing_count,
+            "resolved_count": resolved_count,
+            "dismissed_count": dismissed_count,
+            "first_seen_at": min(item.get("created_at") or "" for item in items),
+            "last_seen_at": max(item.get("created_at") or "" for item in items),
+            "sample_item_ids": [
+                item.get("inbox_item_id")
+                for item in sorted_items[:5]
+            ],
+            "items": sorted_items[:10],
+        })
+
+    queue.sort(
+        key=lambda group: (
+            -int(group.get("priority_score") or 0),
+            group.get("first_seen_at") or "",
+        )
+    )
+
+    return queue[:limit_groups]
+
+
+def get_security_review_queue_summary() -> Dict[str, Any]:
+    queue = build_security_review_queue(include_resolved=False, limit_groups=1000)
+
+    summary = {
+        "total_review_groups": len(queue),
+        "urgent": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "total_open_items_in_groups": 0,
+        "largest_group_size": 0,
+        "by_source_type": {},
+        "by_app": {},
+    }
+
+    for group in queue:
+        priority = group.get("priority") or "low"
+        source_type = group.get("source_type") or "unknown"
+        app_name = group.get("app_name") or "unknown"
+
+        if priority in summary:
+            summary[priority] += 1
+
+        summary["total_open_items_in_groups"] += int(group.get("open_count") or 0)
+        summary["largest_group_size"] = max(
+            summary["largest_group_size"],
+            int(group.get("total_items") or 0),
+        )
+
+        summary["by_source_type"][source_type] = summary["by_source_type"].get(source_type, 0) + 1
+        summary["by_app"][app_name] = summary["by_app"].get(app_name, 0) + 1
+
+    return summary
+
+
+def bulk_update_inbox_items(
+    inbox_item_ids: List[str],
+    status: str,
+    actor_user_id: str,
+    resolution_note: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Bulk updates specific inbox items.
+
+    Baby version:
+    Owner can clean a pile at once instead of clicking each item.
+    """
+
+    updated = []
+    missing = []
+
+    for inbox_item_id in inbox_item_ids:
+        item = update_inbox_item_status(
+            inbox_item_id=inbox_item_id,
+            status=status,
+            actor_user_id=actor_user_id,
+            resolution_note=resolution_note,
+        )
+
+        if item:
+            updated.append(inbox_item_id)
+        else:
+            missing.append(inbox_item_id)
+
+    return {
+        "status": "complete",
+        "requested": len(inbox_item_ids),
+        "updated": len(updated),
+        "missing": len(missing),
+        "updated_item_ids": updated,
+        "missing_item_ids": missing,
+    }
+
+
+def bulk_update_group(
+    group_key: str,
+    status: str,
+    actor_user_id: str,
+    resolution_note: Optional[str] = None,
+    max_items: int = 100,
+) -> Dict[str, Any]:
+    """
+    Bulk updates a grouped review queue.
+
+    Baby version:
+    If a group is test noise, owner can resolve/dismiss the group together.
+    """
+
+    data = _load_raw()
+    matching = [
+        item for item in data.get("items", [])
+        if _group_key_for_item(item) == group_key
+        and item.get("status") not in {INBOX_STATUS_RESOLVED, INBOX_STATUS_DISMISSED}
+    ][:max_items]
+
+    return bulk_update_inbox_items(
+        inbox_item_ids=[item.get("inbox_item_id") for item in matching],
+        status=status,
+        actor_user_id=actor_user_id,
+        resolution_note=resolution_note,
+    )
+
+
+def archive_test_noise(
+    actor_user_id: str = "owner_solice",
+    max_items: int = 500,
+) -> Dict[str, Any]:
+    """
+    Dismisses obvious Pack/test noise from the inbox.
+
+    Baby version:
+    This is the broom. It sweeps old test clutter out of the active review desk.
+    """
+
+    data = _load_raw()
+    candidates = []
+
+    test_markers = [
+        "pack_",
+        "test",
+        "manual_test",
+        "Pack 0",
+        "PACK_",
+    ]
+
+    for item in data.get("items", []):
+        if item.get("status") in {INBOX_STATUS_RESOLVED, INBOX_STATUS_DISMISSED}:
+            continue
+
+        blob = _safe_json({
+            "title": item.get("title"),
+            "summary": item.get("summary"),
+            "reason_code": item.get("reason_code"),
+            "source_payload": item.get("source_payload"),
+        })
+
+        if any(marker in blob for marker in test_markers):
+            candidates.append(item)
+
+    candidates = candidates[:max_items]
+
+    result = bulk_update_inbox_items(
+        inbox_item_ids=[item.get("inbox_item_id") for item in candidates],
+        status=INBOX_STATUS_DISMISSED,
+        actor_user_id=actor_user_id,
+        resolution_note="Archived by Pack 016 test-noise cleanup.",
+    )
+
+    return {
+        **result,
+        "cleanup_type": "archive_test_noise",
+    }
+
+
+def rebuild_security_inbox_dedupe() -> Dict[str, Any]:
+    """
+    Removes exact duplicate dedupe keys, keeping the newest active item.
+
+    Baby version:
+    If the same alert got copied twice, keep one copy.
+    """
+
+    data = _load_raw()
+    rows = data.get("items", [])
+
+    seen = {}
+    kept = []
+    removed = []
+
+    # Newest first, so we keep newest.
+    rows_sorted = sorted(rows, key=lambda item: item.get("created_at") or "", reverse=True)
+
+    for item in rows_sorted:
+        key = item.get("dedupe_key")
+        if not key:
+            kept.append(item)
+            continue
+
+        if key in seen:
+            removed.append(item)
+            continue
+
+        seen[key] = True
+        kept.append(item)
+
+    # Restore chronological-ish order.
+    kept = sorted(kept, key=lambda item: item.get("created_at") or "")
+
+    data["items"] = kept
+    _save_raw(data)
+
+    write_audit_event(
+        actor_user_id="tower_security_inbox",
+        target_user_id=None,
+        action="rebuild_security_inbox_dedupe",
+        app_name="tower_admin",
+        object_type="security_inbox",
+        object_id="security_inbox",
+        result="allow",
+        reason_code="security_inbox_dedupe_rebuilt",
+        human_reason="Tower security inbox dedupe was rebuilt.",
+        risk_score=20,
+        risk_state="clear",
+        metadata={
+            "kept": len(kept),
+            "removed": len(removed),
+        },
+    )
+
+    return {
+        "status": "complete",
+        "kept": len(kept),
+        "removed": len(removed),
+    }
+
+
+
+# =============================================================================
+# PACK 017 — SECURITY INBOX REVIEW ACTIONS
+# =============================================================================
+# Baby version:
+# These are backend “buttons” for the Security Inbox.
+# The dashboard can later call these to resolve, dismiss, reopen, escalate,
+# quarantine, require step-up, and add notes.
+
+INBOX_ACTION_RESOLVE = "resolve"
+INBOX_ACTION_DISMISS = "dismiss"
+INBOX_ACTION_REOPEN = "reopen"
+INBOX_ACTION_ESCALATE = "escalate"
+INBOX_ACTION_QUARANTINE_USER = "quarantine_user"
+INBOX_ACTION_REQUIRE_STEP_UP = "require_step_up"
+INBOX_ACTION_ADD_NOTE = "add_note"
+
+INBOX_STATUS_ESCALATED = "escalated"
+
+
+
+
+
+
+def _pack017_create_evidence_capsule_safe(**kwargs):
+    """
+    Signature-safe wrapper for evidence capsule creation.
+
+    Security Inbox escalation should never fail just because the evidence
+    capsule function expects stricter argument shapes. This wrapper:
+    - filters unsupported kwargs
+    - supplies missing user/app_name
+    - converts user_id strings into user-like dictionaries when needed
+    - preserves overflow context safely
+    """
+    try:
+        import inspect
+        from tower.evidence_capsules import create_evidence_capsule as _real_create_evidence_capsule
+
+        sig = inspect.signature(_real_create_evidence_capsule)
+        allowed = set(sig.parameters.keys())
+
+        actor_user_id = (
+            kwargs.get("actor_user_id")
+            or kwargs.get("reviewed_by")
+            or kwargs.get("owner_user_id")
+            or kwargs.get("user_id")
+            or "system"
+        )
+
+        related_user_id = (
+            kwargs.get("user_id")
+            or kwargs.get("target_user_id")
+            or kwargs.get("actor_user_id")
+            or actor_user_id
+            or "system"
+        )
+
+        app_name_value = (
+            kwargs.get("app_name")
+            or kwargs.get("source_app")
+            or kwargs.get("target_app")
+            or kwargs.get("app")
+            or "tower_admin"
+        )
+
+        # Load a real Tower user record when available.
+        user_obj = None
+        try:
+            from tower.user_store import get_user
+            user_obj = get_user(actor_user_id)
+        except Exception:
+            user_obj = None
+
+        if not isinstance(user_obj, dict):
+            user_obj = {
+                "user_id": actor_user_id,
+                "id": actor_user_id,
+                "role": "owner" if str(actor_user_id).startswith("owner") else "user",
+                "account_type": "owner" if str(actor_user_id).startswith("owner") else "beta_user",
+                "status": "active",
+            }
+
+        # Required compatibility for evidence_capsules.create_evidence_capsule.
+        if "user" in allowed:
+            current_user_arg = kwargs.get("user")
+            if isinstance(current_user_arg, dict):
+                kwargs["user"] = current_user_arg
+            else:
+                kwargs["user"] = user_obj
+
+        if "user_id" in allowed and "user_id" not in kwargs:
+            kwargs["user_id"] = related_user_id
+
+        if "app_name" in allowed:
+            kwargs["app_name"] = app_name_value
+
+        # Helpful aliases for different capsule signatures.
+        if "source_app" in allowed and "source_app" not in kwargs:
+            kwargs["source_app"] = app_name_value
+
+        if "actor_user_id" in allowed and "actor_user_id" not in kwargs:
+            kwargs["actor_user_id"] = actor_user_id
+
+        if "related_user_id" in allowed and "related_user_id" not in kwargs:
+            kwargs["related_user_id"] = related_user_id
+
+        filtered = {k: v for k, v in kwargs.items() if k in allowed}
+        overflow = {k: v for k, v in kwargs.items() if k not in allowed}
+
+        if overflow:
+            if "context" in allowed:
+                context = filtered.get("context")
+                if not isinstance(context, dict):
+                    context = {}
+                context.setdefault("security_inbox_overflow", overflow)
+                filtered["context"] = context
+
+            elif "metadata" in allowed:
+                metadata = filtered.get("metadata")
+                if not isinstance(metadata, dict):
+                    metadata = {}
+                metadata.setdefault("security_inbox_overflow", overflow)
+                filtered["metadata"] = metadata
+
+        result = _real_create_evidence_capsule(**filtered)
+
+        if isinstance(result, dict):
+            return result
+
+        return {
+            "capsule_result": result,
+            "human_reason": "Evidence capsule creation returned a non-dict result.",
+        }
+
+    except Exception as exc:
+        return {
+            "error": str(exc),
+            "human_reason": "Evidence capsule creation failed, but inbox item was still escalated.",
+        }
+
+
+def _pack017_now() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _pack017_find_item(inbox_item_id: str) -> Optional[Dict[str, Any]]:
+    data = _load_raw()
+    for item in data.get("items", []):
+        if item.get("inbox_item_id") == inbox_item_id:
+            return item
+    return None
+
+
+def _pack017_save_item(updated_item: Dict[str, Any]) -> Dict[str, Any]:
+    data = _load_raw()
+    rows = data.get("items", [])
+
+    saved = False
+    for idx, item in enumerate(rows):
+        if item.get("inbox_item_id") == updated_item.get("inbox_item_id"):
+            rows[idx] = updated_item
+            saved = True
+            break
+
+    if not saved:
+        rows.append(updated_item)
+
+    data["items"] = rows
+    _save_raw(data)
+    return updated_item
+
+
+def _pack017_add_note_to_item(
+    item: Dict[str, Any],
+    actor_user_id: str,
+    note: str,
+    action: str,
+) -> Dict[str, Any]:
+    notes = item.get("review_notes")
+    if not isinstance(notes, list):
+        notes = []
+
+    notes.append({
+        "actor_user_id": actor_user_id,
+        "action": action,
+        "note": note,
+        "created_at": _pack017_now(),
+    })
+
+    item["review_notes"] = notes
+    item["last_reviewed_by"] = actor_user_id
+    item["last_reviewed_at"] = _pack017_now()
+    return item
+
+
+def _pack017_audit_review_action(
+    actor_user_id: str,
+    action: str,
+    item: Optional[Dict[str, Any]],
+    result: str,
+    reason_code: str,
+    human_reason: str,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> None:
+    try:
+        write_audit_event(
+            actor_user_id=actor_user_id,
+            target_user_id=(item or {}).get("user_id"),
+            action=f"security_inbox_{action}",
+            app_name="tower_admin",
+            object_type="security_inbox_item",
+            object_id=(item or {}).get("inbox_item_id"),
+            result=result,
+            reason_code=reason_code,
+            human_reason=human_reason,
+            risk_score=int((item or {}).get("severity_rank") or 0) * 20,
+            risk_state="clear" if result == "allow" else "restricted",
+            metadata=metadata or {},
+        )
+    except Exception:
+        # Never let audit failure crash the review action in notebook testing.
+        pass
+
+
+def perform_inbox_item_action(
+    inbox_item_id: str,
+    action: str,
+    actor_user_id: str = "owner_solice",
+    note: str = "",
+    resolution_note: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Performs one review action on one inbox item.
+
+    Baby version:
+    This is one button press for one alert.
+    """
+
+    item = _pack017_find_item(inbox_item_id)
+
+    if not item:
+        return {
+            "ok": False,
+            "reason_code": "inbox_item_not_found",
+            "human_reason": "Security inbox item was not found.",
+            "inbox_item_id": inbox_item_id,
+            "action": action,
+        }
+
+    before_status = item.get("status")
+    now = _pack017_now()
+
+    if action == INBOX_ACTION_RESOLVE:
+        item["status"] = INBOX_STATUS_RESOLVED
+        item["resolved_at"] = now
+        item["resolved_by"] = actor_user_id
+        item["resolution_note"] = resolution_note or note or "Resolved from Security Inbox review action."
+        item = _pack017_add_note_to_item(item, actor_user_id, item["resolution_note"], action)
+
+    elif action == INBOX_ACTION_DISMISS:
+        item["status"] = INBOX_STATUS_DISMISSED
+        item["dismissed_at"] = now
+        item["dismissed_by"] = actor_user_id
+        item["dismissal_note"] = resolution_note or note or "Dismissed from Security Inbox review action."
+        item = _pack017_add_note_to_item(item, actor_user_id, item["dismissal_note"], action)
+
+    elif action == INBOX_ACTION_REOPEN:
+        item["status"] = INBOX_STATUS_OPEN
+        item["reopened_at"] = now
+        item["reopened_by"] = actor_user_id
+        item["reopen_note"] = resolution_note or note or "Reopened from Security Inbox review action."
+        item = _pack017_add_note_to_item(item, actor_user_id, item["reopen_note"], action)
+
+    elif action == INBOX_ACTION_ADD_NOTE:
+        item = _pack017_add_note_to_item(
+            item,
+            actor_user_id,
+            note or "Reviewed from Security Inbox.",
+            action,
+        )
+
+    elif action == INBOX_ACTION_ESCALATE:
+        item["status"] = INBOX_STATUS_ESCALATED
+        item["escalated_at"] = now
+        item["escalated_by"] = actor_user_id
+        item["escalation_note"] = note or "Escalated from Security Inbox."
+
+        # Try to create an evidence capsule for the escalation.
+        capsule = None
+        try:
+            from tower.evidence_capsules import create_evidence_capsule
+
+            capsule = _pack017_create_evidence_capsule_safe(
+                trigger="security_inbox_escalation",
+                user_id=item.get("user_id"),
+                request={
+                    "action": "security_inbox_escalation",
+                    "app_name": item.get("app_name") or "tower_admin",
+                    "object_type": "security_inbox_item",
+                    "object_id": item.get("inbox_item_id"),
+                },
+                decision={
+                    "allowed": False,
+                    "decision": "escalate",
+                    "reason_code": "security_inbox_item_escalated",
+                    "human_reason": item.get("summary") or "Security inbox item was escalated.",
+                    "risk_score": int(item.get("severity_rank") or 0) * 20,
+                    "risk_state": item.get("severity") or "high",
+                    "required_actions": ["owner_review_required"],
+                    "metadata": {
+                        "inbox_item_id": item.get("inbox_item_id"),
+                        "source_type": item.get("source_type"),
+                        "reason_code": item.get("reason_code"),
+                    },
+                },
+                policy_report=None,
+                context={
+                    "inbox_item": item,
+                },
+                notes=note or "Security Inbox escalation capsule.",
+                created_by=actor_user_id,
+            )
+        except Exception as exc:
+            capsule = {
+                "error": str(exc),
+                "human_reason": "Evidence capsule creation failed, but inbox item was still escalated.",
+            }
+
+        item["escalation_capsule"] = capsule
+        item = _pack017_add_note_to_item(item, actor_user_id, item["escalation_note"], action)
+
+    elif action == INBOX_ACTION_QUARANTINE_USER:
+        item["status"] = INBOX_STATUS_ESCALATED
+        item["quarantine_requested_at"] = now
+        item["quarantine_requested_by"] = actor_user_id
+        item["quarantine_note"] = note or "User quarantine requested from Security Inbox."
+
+        # In this pack, we record the quarantine request.
+        # Later packs can wire this to a hard user/session mutation.
+        item["requested_tower_actions"] = item.get("requested_tower_actions") or []
+        item["requested_tower_actions"].append({
+            "action": "quarantine_user",
+            "user_id": item.get("user_id"),
+            "requested_by": actor_user_id,
+            "requested_at": now,
+            "note": item["quarantine_note"],
+        })
+
+        item = _pack017_add_note_to_item(item, actor_user_id, item["quarantine_note"], action)
+
+    elif action == INBOX_ACTION_REQUIRE_STEP_UP:
+        item["status"] = INBOX_STATUS_ESCALATED
+        item["step_up_requested_at"] = now
+        item["step_up_requested_by"] = actor_user_id
+        item["step_up_note"] = note or "Step-up requested from Security Inbox."
+
+        challenge = None
+        try:
+            from tower.step_up import create_step_up_challenge
+
+            challenge = create_step_up_challenge(
+                user_id=item.get("user_id") or actor_user_id,
+                app_name=item.get("app_name") or "tower_admin",
+                action="security_inbox_review",
+                reason_code="security_inbox_step_up_required",
+                object_type="security_inbox_item",
+                object_id=item.get("inbox_item_id"),
+            )
+        except Exception as exc:
+            challenge = {
+                "error": str(exc),
+                "human_reason": "Step-up challenge creation failed, but request was recorded.",
+            }
+
+        item["step_up_challenge"] = challenge
+        item = _pack017_add_note_to_item(item, actor_user_id, item["step_up_note"], action)
+
+    else:
+        return {
+            "ok": False,
+            "reason_code": "unsupported_inbox_action",
+            "human_reason": f"Unsupported Security Inbox action: {action}",
+            "inbox_item_id": inbox_item_id,
+            "action": action,
+            "status_before": before_status,
+        }
+
+    item["updated_at"] = now
+    item["last_action"] = action
+
+    saved = _pack017_save_item(item)
+
+    _pack017_audit_review_action(
+        actor_user_id=actor_user_id,
+        action=action,
+        item=item,
+        result="allow",
+        reason_code=f"security_inbox_{action}_complete",
+        human_reason=f"Security Inbox item action complete: {action}",
+        metadata={
+            "status_before": before_status,
+            "status_after": item.get("status"),
+            "note": note or resolution_note,
+        },
+    )
+
+    return {
+        "ok": True,
+        "reason_code": f"security_inbox_{action}_complete",
+        "human_reason": f"Security Inbox item action complete: {action}",
+        "inbox_item_id": inbox_item_id,
+        "action": action,
+        "status_before": before_status,
+        "status_after": saved.get("status"),
+        "item": saved,
+    }
+
+
+def perform_inbox_group_action(
+    group_key: str,
+    action: str,
+    actor_user_id: str = "owner_solice",
+    note: str = "",
+    max_items: int = 100,
+) -> Dict[str, Any]:
+    """
+    Performs one review action on every open/reviewing/escalated item in a group.
+
+    Baby version:
+    This is one button press for a whole pile of similar alerts.
+    """
+
+    data = _load_raw()
+
+    candidates = [
+        item for item in data.get("items", [])
+        if _group_key_for_item(item) == group_key
+        and item.get("status") not in {INBOX_STATUS_RESOLVED, INBOX_STATUS_DISMISSED}
+    ][:max_items]
+
+    results = []
+    for item in candidates:
+        results.append(
+            perform_inbox_item_action(
+                inbox_item_id=item.get("inbox_item_id"),
+                action=action,
+                actor_user_id=actor_user_id,
+                note=note,
+                resolution_note=note,
+            )
+        )
+
+    ok_count = len([result for result in results if result.get("ok")])
+    failed_count = len(results) - ok_count
+
+    _pack017_audit_review_action(
+        actor_user_id=actor_user_id,
+        action=f"group_{action}",
+        item=None,
+        result="allow",
+        reason_code=f"security_inbox_group_{action}_complete",
+        human_reason=f"Security Inbox group action complete: {action}",
+        metadata={
+            "group_key": group_key,
+            "requested": len(candidates),
+            "ok_count": ok_count,
+            "failed_count": failed_count,
+        },
+    )
+
+    return {
+        "ok": failed_count == 0,
+        "reason_code": f"security_inbox_group_{action}_complete",
+        "human_reason": f"Security Inbox group action complete: {action}",
+        "group_key": group_key,
+        "action": action,
+        "requested": len(candidates),
+        "ok_count": ok_count,
+        "failed_count": failed_count,
+        "results": results[:10],
+    }
+
+
+def list_available_inbox_actions() -> List[Dict[str, Any]]:
+    """
+    Lists backend review actions.
+
+    Baby version:
+    These are the future dashboard buttons.
+    """
+
+    return [
+        {
+            "action": INBOX_ACTION_RESOLVE,
+            "label": "Resolve",
+            "human_reason": "Mark the alert as handled.",
+            "danger_level": "low",
+        },
+        {
+            "action": INBOX_ACTION_DISMISS,
+            "label": "Dismiss",
+            "human_reason": "Hide low-value or test-noise alerts from the active queue.",
+            "danger_level": "low",
+        },
+        {
+            "action": INBOX_ACTION_REOPEN,
+            "label": "Reopen",
+            "human_reason": "Put a resolved/dismissed alert back into active review.",
+            "danger_level": "medium",
+        },
+        {
+            "action": INBOX_ACTION_ADD_NOTE,
+            "label": "Add note",
+            "human_reason": "Attach an owner/admin note to an alert.",
+            "danger_level": "low",
+        },
+        {
+            "action": INBOX_ACTION_ESCALATE,
+            "label": "Escalate",
+            "human_reason": "Escalate an alert and try to create an evidence capsule.",
+            "danger_level": "high",
+        },
+        {
+            "action": INBOX_ACTION_REQUIRE_STEP_UP,
+            "label": "Require step-up",
+            "human_reason": "Request extra authorization before continuing.",
+            "danger_level": "high",
+        },
+        {
+            "action": INBOX_ACTION_QUARANTINE_USER,
+            "label": "Quarantine user",
+            "human_reason": "Record a quarantine request for the related user.",
+            "danger_level": "critical",
+        },
+    ]
+
+
+def get_security_inbox_action_summary() -> Dict[str, Any]:
+    """
+    Summarizes review actions already applied.
+    """
+
+    data = _load_raw()
+
+    summary = {
+        "total_items": 0,
+        "with_review_notes": 0,
+        "escalated": 0,
+        "quarantine_requested": 0,
+        "step_up_requested": 0,
+        "by_last_action": {},
+    }
+
+    for item in data.get("items", []):
+        summary["total_items"] += 1
+
+        if item.get("review_notes"):
+            summary["with_review_notes"] += 1
+
+        if item.get("status") == INBOX_STATUS_ESCALATED:
+            summary["escalated"] += 1
+
+        if item.get("quarantine_requested_at"):
+            summary["quarantine_requested"] += 1
+
+        if item.get("step_up_requested_at"):
+            summary["step_up_requested"] += 1
+
+        last_action = item.get("last_action") or "none"
+        summary["by_last_action"][last_action] = summary["by_last_action"].get(last_action, 0) + 1
+
+    return summary
+
