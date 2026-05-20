@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-05-19T17:29:18.315506",
+  "timestamp": "2026-05-20T15:45:06.099600",
   "cash": 31042.89,
   "buying_power": 31042.89,
-  "equity": 35931.89,
-  "open_positions": 4,
+  "equity": 35401.89,
+  "open_positions": 3,
   "executed_trades": 3,
   "regime": "NEUTRAL",
   "volatility": "NORMAL",

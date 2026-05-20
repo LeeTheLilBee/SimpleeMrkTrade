@@ -2176,5 +2176,230 @@
       "Extremely strong setup with multiple aligned factors.",
       "High conviction based on strong confirmation signals."
     ]
+  },
+  {
+    "timestamp": "2026-05-20T14:42:48.029687",
+    "symbol": "PANW",
+    "strategy": "CALL",
+    "score": 479.85,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-20T14:42:48.134060",
+    "symbol": "SMCI",
+    "strategy": "CALL",
+    "score": 329.72,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-20T14:42:48.238713",
+    "symbol": "SOXX",
+    "strategy": "CALL",
+    "score": 249.12,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-20T15:03:56.981018",
+    "symbol": "PANW",
+    "strategy": "CALL",
+    "score": 495.25,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-20T15:03:57.106473",
+    "symbol": "SMCI",
+    "strategy": "CALL",
+    "score": 338.13,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-20T15:03:57.217526",
+    "symbol": "SOXX",
+    "strategy": "CALL",
+    "score": 250.32,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-20T15:44:07.096063",
+    "symbol": "PANW",
+    "strategy": "CALL",
+    "score": 511.07,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-20T15:44:07.198340",
+    "symbol": "SMCI",
+    "strategy": "CALL",
+    "score": 342.06,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
+  },
+  {
+    "timestamp": "2026-05-20T15:44:07.306002",
+    "symbol": "SOXX",
+    "strategy": "CALL",
+    "score": 255.13,
+    "confidence": "HIGH",
+    "entry": null,
+    "stop": null,
+    "target": null,
+    "source": "execution",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals."
+    ]
   }
 ]
