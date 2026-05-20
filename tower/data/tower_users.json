@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-20T16:17:45.442150Z",
+  "updated_at": "2026-05-20T16:22:06.387993Z",
   "users": [
     {
       "account_type": "owner",
@@ -18,14 +18,14 @@
         "privacy_policy": true,
         "terms_of_service": true
       },
-      "created_at": "2026-05-20T16:17:45.433707Z",
+      "created_at": "2026-05-20T16:22:06.286528Z",
       "display_name": "Solice Bowdre",
       "email": "bowdre.solice@gmail.com",
       "risk_state": "clear",
       "role": "owner",
       "status": "active",
       "trust_score": 95,
-      "updated_at": "2026-05-20T16:17:45.433707Z",
+      "updated_at": "2026-05-20T16:22:06.286528Z",
       "user_id": "owner_solice"
     },
     {
@@ -43,14 +43,14 @@
         "privacy_policy": false,
         "terms_of_service": false
       },
-      "created_at": "2026-05-20T16:17:45.438038Z",
+      "created_at": "2026-05-20T16:22:06.288054Z",
       "display_name": "Beta Tester",
       "email": "beta@example.com",
       "risk_state": "clear",
       "role": "user",
       "status": "active",
       "trust_score": 70,
-      "updated_at": "2026-05-20T16:17:45.442150Z",
+      "updated_at": "2026-05-20T16:22:06.387993Z",
       "user_id": "beta_001"
     },
     {
@@ -65,14 +65,14 @@
       "consents": {
         "paper_trading_disclosure": true
       },
-      "created_at": "2026-05-20T16:17:45.439415Z",
+      "created_at": "2026-05-20T16:22:06.289244Z",
       "display_name": "Locked User",
       "email": "locked@example.com",
       "risk_state": "locked",
       "role": "user",
       "status": "locked",
       "trust_score": 10,
-      "updated_at": "2026-05-20T16:17:45.439415Z",
+      "updated_at": "2026-05-20T16:22:06.289244Z",
       "user_id": "locked_001"
     }
   ]

@@ -1,0 +1,474 @@
+{
+  "capsules": [
+    {
+      "audit": {
+        "latest_audit_hash_at_creation": "8ea619356b4e4cfa484be8b618e2ca06cf91107b096f5b561c8c29d00381da4f"
+      },
+      "capsule_hash": "f52ac1941dd62d5d2a8d30409044c97beed12f1c251f1046ac558adecb4416a0",
+      "capsule_id": "UwyOi1TjeadhYHhtTwwD1t4Q",
+      "closed_at": "2026-05-20T16:22:06.294860Z",
+      "closed_by": "owner_solice",
+      "context": {
+        "object": {},
+        "session": {
+          "risk_score": 15,
+          "risk_state": "clear",
+          "session_id": "test_session_010"
+        },
+        "token": {}
+      },
+      "created_at": "2026-05-20T16:22:06.290664Z",
+      "created_by": "tower_test",
+      "decision": {
+        "allowed": false,
+        "decision": "deny",
+        "human_reason": "Advanced Live modes are locked until legal/control approval.",
+        "metadata": {
+          "action": "enter_app",
+          "app_name": "observatory",
+          "blocking_rule_id": "observatory.mode.allowed",
+          "evaluated_at": "2026-05-20T16:22:06.290594Z",
+          "mode_name": "live_automated",
+          "object_id": null,
+          "object_type": null,
+          "policy_version": "tower_policy_v0.1.0"
+        },
+        "policy_version": "tower_policy_v0.1.0",
+        "reason_code": "policy_public_live_advanced_locked",
+        "required_actions": [
+          "broker_permission_check_required",
+          "control_tower_approval_required",
+          "legal_review_required",
+          "owner_approval_required"
+        ],
+        "risk_score": 75,
+        "risk_state": "restricted",
+        "rule_results": [
+          {
+            "decision": "allow",
+            "human_reason": "User status is active.",
+            "metadata": {
+              "status": "active"
+            },
+            "passed": true,
+            "reason_code": "policy_user_status_ok",
+            "required_actions": [],
+            "rule_id": "user.status.active",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Session risk is acceptable.",
+            "metadata": {
+              "risk_score": 0,
+              "risk_state": "clear"
+            },
+            "passed": true,
+            "reason_code": "policy_session_risk_ok",
+            "required_actions": [],
+            "rule_id": "session.risk.threshold",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has app clearance for observatory.",
+            "metadata": {
+              "app_name": "observatory"
+            },
+            "passed": true,
+            "reason_code": "policy_app_access_ok",
+            "required_actions": [],
+            "rule_id": "app.access.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Admin role rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_admin_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "admin.requires.role",
+            "severity": "info"
+          },
+          {
+            "decision": "deny",
+            "human_reason": "Advanced Live modes are locked until legal/control approval.",
+            "metadata": {
+              "mode_name": "live_automated"
+            },
+            "passed": false,
+            "reason_code": "policy_public_live_advanced_locked",
+            "required_actions": [
+              "owner_approval_required",
+              "legal_review_required",
+              "broker_permission_check_required",
+              "control_tower_approval_required"
+            ],
+            "rule_id": "observatory.mode.allowed",
+            "severity": "critical"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Export permission rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_export_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "export.permission.allowed",
+            "severity": "info"
+          }
+        ]
+      },
+      "notes": "Pack 010 test capsule for blocked Live Automated.",
+      "policy_report": {
+        "allowed": false,
+        "decision": "deny",
+        "human_reason": "Advanced Live modes are locked until legal/control approval.",
+        "metadata": {
+          "action": "enter_app",
+          "app_name": "observatory",
+          "blocking_rule_id": "observatory.mode.allowed",
+          "evaluated_at": "2026-05-20T16:22:06.290594Z",
+          "mode_name": "live_automated",
+          "object_id": null,
+          "object_type": null,
+          "policy_version": "tower_policy_v0.1.0"
+        },
+        "policy_version": "tower_policy_v0.1.0",
+        "reason_code": "policy_public_live_advanced_locked",
+        "required_actions": [
+          "broker_permission_check_required",
+          "control_tower_approval_required",
+          "legal_review_required",
+          "owner_approval_required"
+        ],
+        "risk_score": 75,
+        "risk_state": "restricted",
+        "rule_results": [
+          {
+            "decision": "allow",
+            "human_reason": "User status is active.",
+            "metadata": {
+              "status": "active"
+            },
+            "passed": true,
+            "reason_code": "policy_user_status_ok",
+            "required_actions": [],
+            "rule_id": "user.status.active",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Session risk is acceptable.",
+            "metadata": {
+              "risk_score": 0,
+              "risk_state": "clear"
+            },
+            "passed": true,
+            "reason_code": "policy_session_risk_ok",
+            "required_actions": [],
+            "rule_id": "session.risk.threshold",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has app clearance for observatory.",
+            "metadata": {
+              "app_name": "observatory"
+            },
+            "passed": true,
+            "reason_code": "policy_app_access_ok",
+            "required_actions": [],
+            "rule_id": "app.access.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Admin role rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_admin_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "admin.requires.role",
+            "severity": "info"
+          },
+          {
+            "decision": "deny",
+            "human_reason": "Advanced Live modes are locked until legal/control approval.",
+            "metadata": {
+              "mode_name": "live_automated"
+            },
+            "passed": false,
+            "reason_code": "policy_public_live_advanced_locked",
+            "required_actions": [
+              "owner_approval_required",
+              "legal_review_required",
+              "broker_permission_check_required",
+              "control_tower_approval_required"
+            ],
+            "rule_id": "observatory.mode.allowed",
+            "severity": "critical"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Export permission rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_export_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "export.permission.allowed",
+            "severity": "info"
+          }
+        ]
+      },
+      "request": {
+        "action": "enter_app",
+        "app_name": "observatory",
+        "mode_name": "live_automated",
+        "object_id": null,
+        "object_type": null
+      },
+      "resolution": "reviewed_test_capsule",
+      "review_notes": "Reviewed during Pack 010 test.",
+      "risk": {
+        "decision_risk_score": 75,
+        "decision_risk_state": "restricted",
+        "policy_risk_score": 75,
+        "policy_risk_state": "restricted"
+      },
+      "status": "closed",
+      "trigger": "live_automated_denial_test",
+      "user": {
+        "account_type": "beta_user",
+        "display_name": "Beta Tester",
+        "email": "beta@example.com",
+        "risk_state": "clear",
+        "role": "user",
+        "status": "active",
+        "trust_score": 70,
+        "user_id": "beta_001"
+      }
+    },
+    {
+      "audit": {
+        "latest_audit_hash_at_creation": "9d7f4dfb914b6c59fd6fc5494b2d4cb9d44a6d14852b5ff3827fd47d28706a6a"
+      },
+      "capsule_hash": "bdf1e01b6dac2a38ef78b2264b01725d47711f956f786352fbf751ac248885fe",
+      "capsule_id": "eokJH4qno0QrciT0HNPu4Dx3",
+      "context": {
+        "object": {},
+        "session": {},
+        "token": {}
+      },
+      "created_at": "2026-05-20T16:22:06.389966Z",
+      "created_by": "tower_test",
+      "decision": {
+        "allowed": true,
+        "decision": "allow",
+        "human_reason": "Policy engine allowed this request.",
+        "metadata": {
+          "action": "enter_app",
+          "app_name": "observatory",
+          "evaluated_at": "2026-05-20T16:22:06.389912Z",
+          "mode_name": "paper",
+          "object_id": null,
+          "object_type": null,
+          "policy_version": "tower_policy_v0.1.0"
+        },
+        "policy_version": "tower_policy_v0.1.0",
+        "reason_code": "policy_clearance_allowed",
+        "required_actions": [],
+        "risk_score": 10,
+        "risk_state": "clear",
+        "rule_results": [
+          {
+            "decision": "allow",
+            "human_reason": "User status is active.",
+            "metadata": {
+              "status": "active"
+            },
+            "passed": true,
+            "reason_code": "policy_user_status_ok",
+            "required_actions": [],
+            "rule_id": "user.status.active",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Session risk is acceptable.",
+            "metadata": {
+              "risk_score": 0,
+              "risk_state": "clear"
+            },
+            "passed": true,
+            "reason_code": "policy_session_risk_ok",
+            "required_actions": [],
+            "rule_id": "session.risk.threshold",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has app clearance for observatory.",
+            "metadata": {
+              "app_name": "observatory"
+            },
+            "passed": true,
+            "reason_code": "policy_app_access_ok",
+            "required_actions": [],
+            "rule_id": "app.access.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Admin role rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_admin_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "admin.requires.role",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Paper Mode requirements are satisfied.",
+            "metadata": {
+              "mode_name": "paper"
+            },
+            "passed": true,
+            "reason_code": "policy_paper_mode_ok",
+            "required_actions": [],
+            "rule_id": "observatory.mode.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Export permission rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_export_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "export.permission.allowed",
+            "severity": "info"
+          }
+        ]
+      },
+      "notes": "Pack 010 test capsule for allowed Paper Mode.",
+      "policy_report": {
+        "allowed": true,
+        "decision": "allow",
+        "human_reason": "Policy engine allowed this request.",
+        "metadata": {
+          "action": "enter_app",
+          "app_name": "observatory",
+          "evaluated_at": "2026-05-20T16:22:06.389912Z",
+          "mode_name": "paper",
+          "object_id": null,
+          "object_type": null,
+          "policy_version": "tower_policy_v0.1.0"
+        },
+        "policy_version": "tower_policy_v0.1.0",
+        "reason_code": "policy_clearance_allowed",
+        "required_actions": [],
+        "risk_score": 10,
+        "risk_state": "clear",
+        "rule_results": [
+          {
+            "decision": "allow",
+            "human_reason": "User status is active.",
+            "metadata": {
+              "status": "active"
+            },
+            "passed": true,
+            "reason_code": "policy_user_status_ok",
+            "required_actions": [],
+            "rule_id": "user.status.active",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Session risk is acceptable.",
+            "metadata": {
+              "risk_score": 0,
+              "risk_state": "clear"
+            },
+            "passed": true,
+            "reason_code": "policy_session_risk_ok",
+            "required_actions": [],
+            "rule_id": "session.risk.threshold",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "User has app clearance for observatory.",
+            "metadata": {
+              "app_name": "observatory"
+            },
+            "passed": true,
+            "reason_code": "policy_app_access_ok",
+            "required_actions": [],
+            "rule_id": "app.access.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Admin role rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_admin_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "admin.requires.role",
+            "severity": "info"
+          },
+          {
+            "decision": "allow",
+            "human_reason": "Paper Mode requirements are satisfied.",
+            "metadata": {
+              "mode_name": "paper"
+            },
+            "passed": true,
+            "reason_code": "policy_paper_mode_ok",
+            "required_actions": [],
+            "rule_id": "observatory.mode.allowed",
+            "severity": "info"
+          },
+          {
+            "decision": "not_applicable",
+            "human_reason": "Export permission rule is not applicable.",
+            "metadata": {},
+            "passed": true,
+            "reason_code": "policy_export_rule_not_applicable",
+            "required_actions": [],
+            "rule_id": "export.permission.allowed",
+            "severity": "info"
+          }
+        ]
+      },
+      "request": {
+        "action": "enter_app",
+        "app_name": "observatory",
+        "mode_name": "paper",
+        "object_id": null,
+        "object_type": null
+      },
+      "risk": {
+        "decision_risk_score": 10,
+        "decision_risk_state": "clear",
+        "policy_risk_score": 10,
+        "policy_risk_state": "clear"
+      },
+      "status": "open",
+      "trigger": "paper_mode_allow_test",
+      "user": {
+        "account_type": "beta_user",
+        "display_name": "Beta Tester",
+        "email": "beta@example.com",
+        "risk_state": "clear",
+        "role": "user",
+        "status": "active",
+        "trust_score": 70,
+        "user_id": "beta_001"
+      }
+    }
+  ]
+}
