@@ -1324,7 +1324,103 @@
       "status": "active",
       "token_hash": "6d62e5ca71dd5e0a506b7095567b3db7324c2a6ef08664a728bdab71f62b7c48",
       "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "consent_ids": [],
+      "device_id": "device_pack032",
+      "door_id": "/tower",
+      "door_type": "route",
+      "expires_at": "2026-05-21T14:28:29.637534Z",
+      "issue_reason": "Owner launch cell requested temporary Tower access URLs. Door: entry.",
+      "issued_at": "2026-05-21T14:13:29.637534Z",
+      "issuer_user_id": "owner_solice",
+      "metadata": {
+        "bundle": true,
+        "door_key": "entry",
+        "door_label": "Tower Entry",
+        "include_regenerate": false,
+        "source": "tower_keycard_issuer"
+      },
+      "pass_id": "kcp_y6WhnkksM3gtBNXy2ATq1D5C",
+      "revocation_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score_at_issue": 0,
+      "role": "owner",
+      "session_id": "session_pack032",
+      "status": "active",
+      "token_hash": "67134a5f95e1e4ffbeb9e1bce4737a6c1a72cffdf7bf1e1751dc7edbd1c1c5ce",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "consent_ids": [],
+      "device_id": "device_pack032",
+      "door_id": "/tower/security-command",
+      "door_type": "route",
+      "expires_at": "2026-05-21T14:28:29.646863Z",
+      "issue_reason": "Owner launch cell requested temporary Tower access URLs. Door: command.",
+      "issued_at": "2026-05-21T14:13:29.646863Z",
+      "issuer_user_id": "owner_solice",
+      "metadata": {
+        "bundle": true,
+        "door_key": "command",
+        "door_label": "Security Command",
+        "include_regenerate": false,
+        "source": "tower_keycard_issuer"
+      },
+      "pass_id": "kcp_amR95PAoMHlsSBwSNeSwZNi3",
+      "revocation_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score_at_issue": 0,
+      "role": "owner",
+      "session_id": "session_pack032",
+      "status": "active",
+      "token_hash": "5199f9fc5f6100aa2f22745326975a46dfe0086b964d62ccb5874300c4ffa54a",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "consent_ids": [],
+      "device_id": "device_pack032",
+      "door_id": "/tower/status.json",
+      "door_type": "route",
+      "expires_at": "2026-05-21T14:28:29.655824Z",
+      "issue_reason": "Owner launch cell requested temporary Tower access URLs. Door: status.",
+      "issued_at": "2026-05-21T14:13:29.655824Z",
+      "issuer_user_id": "owner_solice",
+      "metadata": {
+        "bundle": true,
+        "door_key": "status",
+        "door_label": "Tower Status JSON",
+        "include_regenerate": false,
+        "source": "tower_keycard_issuer"
+      },
+      "pass_id": "kcp_eO1gl4QHLMS_aCzNP1urR1_2",
+      "revocation_reason": null,
+      "revoked_at": null,
+      "revoked_by": null,
+      "risk_score_at_issue": 0,
+      "role": "owner",
+      "session_id": "session_pack032",
+      "status": "active",
+      "token_hash": "7be31baa66ff52ecc8acdebe3e61ead2ca98eac45a09d990656d0281f2295071",
+      "user_id": "owner_solice"
     }
   ],
-  "updated_at": "2026-05-21T14:09:11.996144Z"
+  "updated_at": "2026-05-21T14:13:29.656843Z"
 }

@@ -99,6 +99,7 @@ def build_security_command_view(tower_user_id: str = 'owner_solice') -> Dict[str
         'command_stats': [
             {'label': 'Owner attention', 'value': str(urgent_groups), 'note': 'urgent groups'},
             {'label': 'Security inbox', 'value': str(open_items), 'note': 'open signals'},
+            {'label': 'Access swipes', 'value': str(status.get('door_swipe_audit_denied', 0)), 'note': 'denied receipts'},
             {'label': 'Evidence chain', 'value': 'Clean' if status.get('audit_chain_ok') else 'Review', 'note': 'audit integrity'},
             {'label': 'Step-up gate', 'value': str(step_up_pending), 'note': 'pending keys'},
         ],
@@ -106,7 +107,8 @@ def build_security_command_view(tower_user_id: str = 'owner_solice') -> Dict[str
             {'title': 'Access risk', 'signal': f'{critical} critical / {high} high', 'plain': 'Soulaana: Review risky sessions, new devices, failed attempts, and anything that smells like forced entry.', 'next': 'Review access-risk group first.', 'priority': 'Priority 1'},
             {'title': 'Protected exports', 'signal': f'{exports_step_up} waiting', 'plain': 'Soulaana: Exports are how information leaves the building. Approve only what belongs, redact what is too sensitive, and deny anything unclear.', 'next': 'Check export requests after access risk.', 'priority': 'Priority 2'},
             {'title': 'Admin keys', 'signal': f'{admin_step_up} step-up', 'plain': 'Soulaana: Admin changes decide who can touch doors later. Match actor, target, permission, and reason.', 'next': 'Review admin authority changes.', 'priority': 'Priority 3'},
-            {'title': 'Evidence capsules', 'signal': f'{evidence_open} open', 'plain': 'Soulaana: Evidence capsules preserve the why. They are the receipts.', 'next': 'Open only when you need the story behind a decision.', 'priority': 'Priority 4'},
+            {'title': 'Door-swipe receipts', 'signal': f"{status.get('door_swipe_audit_denied', 0)} denied / {status.get('door_swipe_audit_allowed', 0)} allowed", 'plain': 'Soulaana: Every Tower door swipe leaves a receipt now. Allowed, denied, wrong-door, and missing-key attempts are visible without exposing raw keycards.', 'next': 'Review repeated denies or wrong-door attempts first.', 'priority': 'Priority 4'},
+            {'title': 'Evidence capsules', 'signal': f'{evidence_open} open', 'plain': 'Soulaana: Evidence capsules preserve the why. They are the receipts.', 'next': 'Open only when you need the story behind a decision.', 'priority': 'Priority 5'},
         ],
         'system_panels': [
             {'label': 'Identity Root', 'value': str(status.get('total_users', 0)), 'detail': 'known users', 'code': 'ID'},
@@ -115,6 +117,7 @@ def build_security_command_view(tower_user_id: str = 'owner_solice') -> Dict[str
             {'label': 'OB Bridge', 'value': 'Live', 'detail': 'protected route active', 'code': 'OB'},
             {'label': 'Step-up Gate', 'value': str(step_up_pending), 'detail': 'pending approvals', 'code': 'SG'},
             {'label': 'Mode Seal', 'value': 'Closed', 'detail': 'Live automation remains sealed', 'code': 'MS'},
+            {'label': 'Door Receipts', 'value': str(status.get('door_swipe_audit_total', 0)), 'detail': 'door-swipe audit capsules', 'code': 'DR'},
         ],
         'workflow': [
             {'title': 'Verify the gate', 'priority': 'Priority 1', 'lane': 'Access risk', 'why': 'Unsafe sessions can touch everything else if they get through.', 'action': 'Review devices, failed attempts, rapid denials, and session risk.'},

@@ -15,7 +15,7 @@ from tower.step_up import get_step_up_summary
 from tower.security_inbox import get_security_inbox_summary, get_security_review_queue_summary, get_security_inbox_action_summary
 
 
-def get_tower_status() -> Dict[str, Any]:
+def _pack032_base_get_tower_status() -> Dict[str, Any]:
     """
     Gives The Tower dashboard-friendly numbers.
 
@@ -97,3 +97,57 @@ def get_tower_status() -> Dict[str, Any]:
         "apps_seen_in_audit": audit.get("apps", {}),
         "risk_states_seen_in_audit": audit.get("risk_states", {}),
     }
+
+
+# ================================================================================
+# PACK032_DOOR_AUDIT_STATUS_ENRICHMENT
+# ================================================================================
+def _pack032_load_door_swipe_status_summary():
+    try:
+        from tower.door_audit_capsules import summarize_door_swipe_audit_capsules
+        summary = summarize_door_swipe_audit_capsules(limit=6)
+        if not isinstance(summary, dict):
+            return {
+                "door_swipe_audit_ok": False,
+                "door_swipe_audit_reason": "bad_summary_payload",
+            }
+
+        recent = summary.get("last", [])
+        if not isinstance(recent, list):
+            recent = []
+
+        return {
+            "door_swipe_audit_ok": bool(summary.get("ok")),
+            "door_swipe_audit_total": int(summary.get("total", 0) or 0),
+            "door_swipe_audit_allowed": int(summary.get("allowed", 0) or 0),
+            "door_swipe_audit_denied": int(summary.get("denied", 0) or 0),
+            "door_swipe_audit_surfaced": int(summary.get("surfaced", 0) or 0),
+            "door_swipe_audit_by_reason": summary.get("by_reason", {}) if isinstance(summary.get("by_reason"), dict) else {},
+            "door_swipe_audit_by_door": summary.get("by_door", {}) if isinstance(summary.get("by_door"), dict) else {},
+            "door_swipe_audit_recent": recent,
+            "door_swipe_audit_path": summary.get("path"),
+        }
+    except Exception as exc:
+        return {
+            "door_swipe_audit_ok": False,
+            "door_swipe_audit_reason": f"{type(exc).__name__}: {exc}",
+            "door_swipe_audit_total": 0,
+            "door_swipe_audit_allowed": 0,
+            "door_swipe_audit_denied": 0,
+            "door_swipe_audit_surfaced": 0,
+            "door_swipe_audit_recent": [],
+        }
+
+
+def get_tower_status(*args, **kwargs):
+    payload = _pack032_base_get_tower_status(*args, **kwargs)
+    if not isinstance(payload, dict):
+        payload = {
+            "ok": False,
+            "tower_name": "The Tower",
+            "reason_code": "tower_status_bad_payload",
+            "human_reason": "Base Tower status returned a non-dict payload.",
+        }
+
+    payload.update(_pack032_load_door_swipe_status_summary())
+    return payload
