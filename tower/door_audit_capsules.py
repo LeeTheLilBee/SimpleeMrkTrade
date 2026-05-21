@@ -395,3 +395,196 @@ def summarize_door_swipe_security_inbox(limit: int = 10) -> Dict[str, Any]:
         'path': str(DOOR_SECURITY_INBOX_PATH),
     }
 
+
+
+# ================================================================================
+# PACK037_DOOR_SECURITY_INBOX_ACTIONS
+# ================================================================================
+def list_door_swipe_security_inbox_items(
+    *,
+    status: str = "open",
+    severity: str = "",
+    limit: int = 25,
+) -> Dict[str, Any]:
+    """
+    List door-swipe security inbox items.
+
+    Defaults to open items because that is what the owner needs first.
+    """
+    items = load_door_swipe_security_inbox()
+    status = _safe_str(status)
+    severity = _safe_str(severity)
+
+    filtered = []
+    for item in items:
+        if status and item.get("status") != status:
+            continue
+        if severity and item.get("severity") != severity:
+            continue
+        filtered.append(item)
+
+    limit = max(1, min(int(limit or 25), 200))
+
+    return {
+        "ok": True,
+        "status_filter": status,
+        "severity_filter": severity,
+        "count": len(filtered),
+        "items": filtered[-limit:],
+        "path": str(DOOR_SECURITY_INBOX_PATH),
+    }
+
+
+def _append_inbox_history(item: Dict[str, Any], *, actor_user_id: str, action: str, note: str = "") -> None:
+    history = item.get("history")
+    if not isinstance(history, list):
+        history = []
+
+    history.append({
+        "timestamp": _utc_now(),
+        "actor_user_id": _safe_str(actor_user_id, "owner_solice"),
+        "action": _safe_str(action, "update"),
+        "note": _safe_str(note),
+    })
+
+    item["history"] = history[-50:]
+
+
+def update_door_swipe_security_inbox_item(
+    *,
+    inbox_item_id: str,
+    new_status: str,
+    actor_user_id: str = "owner_solice",
+    note: str = "",
+) -> Dict[str, Any]:
+    """
+    Update one door-swipe security inbox item.
+
+    Allowed statuses:
+    - open
+    - reviewing
+    - resolved
+    - ignored
+
+    This updates only the security inbox item.
+    It does not mutate the original door-swipe audit capsule.
+    """
+    inbox_item_id = _safe_str(inbox_item_id)
+    new_status = _safe_str(new_status).lower()
+    actor_user_id = _safe_str(actor_user_id, "owner_solice")
+    note = _safe_str(note)
+
+    allowed_statuses = {"open", "reviewing", "resolved", "ignored"}
+    if new_status not in allowed_statuses:
+        return {
+            "ok": False,
+            "reason_code": "invalid_inbox_status",
+            "human_reason": "Door-swipe inbox item status must be open, reviewing, resolved, or ignored.",
+            "allowed_statuses": sorted(allowed_statuses),
+        }
+
+    items = load_door_swipe_security_inbox()
+    for item in items:
+        if item.get("inbox_item_id") != inbox_item_id:
+            continue
+
+        old_status = item.get("status", "open")
+        item["status"] = new_status
+        item["updated_at"] = _utc_now()
+        item["updated_by"] = actor_user_id
+
+        if note:
+            notes = item.get("owner_notes")
+            if not isinstance(notes, list):
+                notes = []
+            notes.append({
+                "timestamp": _utc_now(),
+                "actor_user_id": actor_user_id,
+                "note": note,
+            })
+            item["owner_notes"] = notes[-50:]
+
+        if new_status == "reviewing":
+            item["review_started_at"] = item.get("review_started_at") or _utc_now()
+            item["review_started_by"] = actor_user_id
+
+        if new_status == "resolved":
+            item["resolved_at"] = item.get("resolved_at") or _utc_now()
+            item["resolved_by"] = actor_user_id
+            item["routing"] = item.get("routing") if isinstance(item.get("routing"), dict) else {}
+            item["routing"]["surface"] = "resolved_archive"
+            item["routing"]["requires_step_up_review"] = False
+
+        if new_status == "ignored":
+            item["ignored_at"] = item.get("ignored_at") or _utc_now()
+            item["ignored_by"] = actor_user_id
+            item["routing"] = item.get("routing") if isinstance(item.get("routing"), dict) else {}
+            item["routing"]["surface"] = "ignored_archive"
+            item["routing"]["requires_step_up_review"] = False
+
+        _append_inbox_history(
+            item,
+            actor_user_id=actor_user_id,
+            action=f"status:{old_status}->{new_status}",
+            note=note,
+        )
+
+        save_door_swipe_security_inbox(items)
+
+        return {
+            "ok": True,
+            "status": "updated",
+            "inbox_item_id": inbox_item_id,
+            "old_status": old_status,
+            "new_status": new_status,
+            "human_reason": "Door-swipe security inbox item updated.",
+        }
+
+    return {
+        "ok": False,
+        "reason_code": "door_swipe_inbox_item_not_found",
+        "human_reason": "No door-swipe security inbox item was found with that ID.",
+        "inbox_item_id": inbox_item_id,
+    }
+
+
+def mark_door_swipe_security_inbox_reviewing(
+    inbox_item_id: str,
+    *,
+    actor_user_id: str = "owner_solice",
+    note: str = "",
+) -> Dict[str, Any]:
+    return update_door_swipe_security_inbox_item(
+        inbox_item_id=inbox_item_id,
+        new_status="reviewing",
+        actor_user_id=actor_user_id,
+        note=note,
+    )
+
+
+def resolve_door_swipe_security_inbox_item(
+    inbox_item_id: str,
+    *,
+    actor_user_id: str = "owner_solice",
+    note: str = "",
+) -> Dict[str, Any]:
+    return update_door_swipe_security_inbox_item(
+        inbox_item_id=inbox_item_id,
+        new_status="resolved",
+        actor_user_id=actor_user_id,
+        note=note,
+    )
+
+
+def ignore_door_swipe_security_inbox_item(
+    inbox_item_id: str,
+    *,
+    actor_user_id: str = "owner_solice",
+    note: str = "",
+) -> Dict[str, Any]:
+    return update_door_swipe_security_inbox_item(
+        inbox_item_id=inbox_item_id,
+        new_status="ignored",
+        actor_user_id=actor_user_id,
+        note=note,
+    )
