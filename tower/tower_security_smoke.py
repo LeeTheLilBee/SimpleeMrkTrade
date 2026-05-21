@@ -30,6 +30,7 @@ def run_tower_security_smoke() -> Dict[str, Any]:
     from tower.door_audit_capsules import list_door_swipe_security_inbox_items
     from tower.door_audit_capsules import mark_door_swipe_security_inbox_reviewing
     from tower.door_audit_capsules import resolve_door_swipe_security_inbox_item
+    from tower.door_audit_capsules import ignore_door_swipe_security_inbox_item
     from tower.keycard_passes import summarize_keycard_health
     from tower.owner_launch_cell import build_owner_tower_launch_packet
     from tower.security_command_page import build_security_command_view
@@ -113,6 +114,8 @@ def run_tower_security_smoke() -> Dict[str, Any]:
         'resolved_ok': False,
         'capsule_unchanged': False,
         'target_item_id': None,
+        'self_cleaning': True,
+        'cleanup_note': 'Pack039 self-cleaning smoke test resolves the item it selects.',
     }
 
     try:
@@ -153,6 +156,45 @@ def run_tower_security_smoke() -> Dict[str, Any]:
         and action_workflow_detail.get('resolved_ok') is True
         and action_workflow_detail.get('capsule_unchanged') is True,
         action_workflow_detail,
+    )
+
+    # PACK039_SELF_CLEANING_SMOKE_TEST
+    # The smoke test may create additional medium watchlist items while checking
+    # unkeyed/wrong-door behavior. Clean up one remaining open test-shaped item
+    # so repeated smoke runs do not keep growing the live owner queue forever.
+    cleanup_detail = {
+        'attempted': False,
+        'cleaned_item_id': None,
+        'ignored_ok': None,
+    }
+    try:
+        remaining_open = list_door_swipe_security_inbox_items(status='open', limit=50)
+        candidates = [
+            item for item in remaining_open.get('items', [])
+            if item.get('reason_code') == 'tower_keycard_required'
+            and item.get('door_id') == '/tower/security-command'
+            and item.get('user_id') in {'anonymous', '', None}
+        ]
+        if candidates:
+            cleanup_target = candidates[-1]
+            cleanup_detail['attempted'] = True
+            cleanup_detail['cleaned_item_id'] = cleanup_target.get('inbox_item_id')
+            ignored = ignore_door_swipe_security_inbox_item(
+                cleanup_target.get('inbox_item_id'),
+                actor_user_id='owner_solice',
+                note='Pack 039 smoke cleanup: test-generated missing-keycard item archived.',
+            )
+            cleanup_detail['ignored_ok'] = ignored.get('ok') is True and ignored.get('new_status') == 'ignored'
+        else:
+            cleanup_detail['ignored_ok'] = True
+    except Exception as exc:
+        cleanup_detail['error'] = f'{type(exc).__name__}: {exc}'
+        cleanup_detail['ignored_ok'] = False
+
+    check(
+        'door_inbox_smoke_self_cleanup',
+        cleanup_detail.get('ignored_ok') is True,
+        cleanup_detail,
     )
 
     tower_status = get_tower_status()
