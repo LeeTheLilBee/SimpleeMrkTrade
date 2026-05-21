@@ -534,7 +534,10 @@ def register_tower_web_routes(app):
             user_id = _tower_user_id_from_request(request)
             try:
                 from tower.security_command_page import save_security_command_dashboard_html
-                result = save_security_command_dashboard_html(tower_user_id=user_id)
+                try:
+                    result = save_security_command_dashboard_html(tower_user_id=user_id)
+                except TypeError:
+                    result = save_security_command_dashboard_html()
                 payload = {
                     "ok": True,
                     "status": "regenerated",
