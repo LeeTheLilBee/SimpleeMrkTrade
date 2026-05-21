@@ -25,14 +25,14 @@
       "next": "Review open door access issues before deeper archive work.",
       "plain": "Soulaana: These are the door swipes that rose above quiet receipts and became owner-review items. Start here if the count is not zero.",
       "priority": "Priority 4",
-      "signal": "4 open",
+      "signal": "3 open",
       "title": "Door access inbox"
     },
     {
       "next": "Review repeated denies or wrong-door attempts first.",
       "plain": "Soulaana: Every Tower door swipe leaves a receipt now. Allowed, denied, wrong-door, and missing-key attempts are visible without exposing raw keycards.",
       "priority": "Priority 5",
-      "signal": "17 denied / 17 allowed",
+      "signal": "19 denied / 19 allowed",
       "title": "Door-swipe receipts"
     },
     {
@@ -57,12 +57,12 @@
     {
       "label": "Access swipes",
       "note": "denied receipts",
-      "value": "17"
+      "value": "19"
     },
     {
       "label": "Door inbox",
       "note": "review items",
-      "value": "4"
+      "value": "3"
     },
     {
       "label": "Evidence chain",
@@ -77,37 +77,10 @@
   ],
   "door_security_inbox": {
     "by_severity": {
-      "medium": 8
+      "medium": 9
     },
-    "open": 4,
+    "open": 3,
     "recent": [
-      {
-        "action": "view",
-        "allowed": false,
-        "created_at": "2026-05-21T14:55:23.821308Z",
-        "device_id": "",
-        "door_id": "/tower/security-command",
-        "event_type": "tower_door_swipe_security_review",
-        "inbox_item_id": "doorinbox_Q7kzKsoCQ7BvNc_MurUngw",
-        "ok": true,
-        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
-        "reason_code": "tower_keycard_required",
-        "risk_score": 60,
-        "risk_state": "restricted",
-        "routing": {
-          "queue": "tower_security_inbox",
-          "requires_step_up_review": false,
-          "surface": "watchlist"
-        },
-        "session_id": "",
-        "severity": "medium",
-        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
-        "source_capsule_id": "doorcap_CHg9oFC0KZUU5RwKUfH6k0UL",
-        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
-        "status": "open",
-        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
-        "user_id": "anonymous"
-      },
       {
         "action": "view",
         "allowed": false,
@@ -115,24 +88,43 @@
         "device_id": "",
         "door_id": "/tower/security-command",
         "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->ignored",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 039 smoke cleanup: test-generated missing-keycard item archived.",
+            "timestamp": "2026-05-21T15:30:42.924902Z"
+          }
+        ],
+        "ignored_at": "2026-05-21T15:30:42.924891Z",
+        "ignored_by": "owner_solice",
         "inbox_item_id": "doorinbox_mRDF8CejVWqR__0JMQZMSg",
         "ok": true,
         "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 039 smoke cleanup: test-generated missing-keycard item archived.",
+            "timestamp": "2026-05-21T15:30:42.924882Z"
+          }
+        ],
         "reason_code": "tower_keycard_required",
         "risk_score": 60,
         "risk_state": "restricted",
         "routing": {
           "queue": "tower_security_inbox",
           "requires_step_up_review": false,
-          "surface": "watchlist"
+          "surface": "ignored_archive"
         },
         "session_id": "",
         "severity": "medium",
         "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
         "source_capsule_id": "doorcap_QtlSbp6kRCWdHDzHcN3fC0DA",
         "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
-        "status": "open",
+        "status": "ignored",
         "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-21T15:30:42.924863Z",
+        "updated_by": "owner_solice",
         "user_id": "anonymous"
       },
       {
@@ -357,11 +349,70 @@
         "updated_at": "2026-05-21T15:24:23.940526Z",
         "updated_by": "owner_solice",
         "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-21T15:30:42.798850Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-21T15:30:42.920923Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-21T15:30:42.922428Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_9Xsrggb3HKzcpPBtODm9XA",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-21T15:30:42.920904Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-21T15:30:42.922407Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-21T15:30:42.922417Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-21T15:30:42.920914Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_vTZZUe4xYy_VRF_2Ez1mDBgJ",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-21T15:30:42.922387Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
       }
     ],
-    "total": 8
+    "total": 9
   },
-  "generated_at": "2026-05-21T15:24:23.979815Z",
+  "generated_at": "2026-05-21T15:30:42.967810Z",
   "health": {
     "factors": [
       {
@@ -403,156 +454,20 @@
     "audit_high_risk_events": 0,
     "audit_total_events": 1,
     "control_identity": "control_tower_security_command_center",
-    "door_swipe_audit_allowed": 17,
+    "door_swipe_audit_allowed": 19,
     "door_swipe_audit_by_door": {
-      "/tower/security-command": 27,
-      "/tower/status.json": 7
+      "/tower/security-command": 30,
+      "/tower/status.json": 8
     },
     "door_swipe_audit_by_reason": {
-      "keycard_pass_allowed": 17,
-      "tower_keycard_required": 10,
-      "wrong_door": 7
+      "keycard_pass_allowed": 19,
+      "tower_keycard_required": 11,
+      "wrong_door": 8
     },
-    "door_swipe_audit_denied": 17,
+    "door_swipe_audit_denied": 19,
     "door_swipe_audit_ok": true,
     "door_swipe_audit_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/door_swipe_audit_capsules.json",
     "door_swipe_audit_recent": [
-      {
-        "action": "view",
-        "allowed": true,
-        "app_name": "tower",
-        "capsule_id": "doorcap_rIX_G0DW3hHFMscHB2XxzEKe",
-        "decision": "allow",
-        "device_id": "device_pack036_smoke",
-        "door_id": "/tower/status.json",
-        "door_type": "route",
-        "event_type": "tower_door_swipe",
-        "fingerprint": "9be5bc6ae4bbe9573544950b",
-        "human_reason": "This scoped keycard pass opens this exact door.",
-        "ok": true,
-        "reason_code": "keycard_pass_allowed",
-        "request_context": {
-          "has_cookie_keycard": false,
-          "has_header_keycard": false,
-          "has_query_keycard": true,
-          "method": "GET",
-          "path": "/tower/status.json",
-          "remote_addr_present": true,
-          "user_agent_preview": "Werkzeug/3.1.8"
-        },
-        "required_actions": [],
-        "risk_score": 0,
-        "risk_state": "clear",
-        "session_id": "session_pack036_smoke",
-        "should_surface_in_inbox": false,
-        "soulaana_translation": "Soulaana: This door swipe was allowed for /tower/status.json. The pass matched the door and action view.",
-        "source": "tower_web_bridge",
-        "timestamp": "2026-05-21T15:20:20.953616Z",
-        "user_id": "owner_solice"
-      },
-      {
-        "action": "view",
-        "allowed": false,
-        "app_name": "tower",
-        "capsule_id": "doorcap_4CZZ0kJemIX3VjEa2LoQB8dV",
-        "decision": "deny",
-        "device_id": "device_pack036_smoke",
-        "door_id": "/tower/security-command",
-        "door_type": "route",
-        "event_type": "tower_door_swipe",
-        "fingerprint": "0a777ccb7882c5ade791a866",
-        "human_reason": "This pass does not open this specific door.",
-        "ok": true,
-        "reason_code": "wrong_door",
-        "request_context": {
-          "has_cookie_keycard": false,
-          "has_header_keycard": false,
-          "has_query_keycard": true,
-          "method": "GET",
-          "path": "/tower/security-command",
-          "remote_addr_present": true,
-          "user_agent_preview": "Werkzeug/3.1.8"
-        },
-        "required_actions": [
-          "request_correct_keycard_pass"
-        ],
-        "risk_score": 45,
-        "risk_state": "watch",
-        "session_id": "session_pack036_smoke",
-        "should_surface_in_inbox": false,
-        "soulaana_translation": "Soulaana: A keycard was presented, but it did not belong to /tower/security-command. Neighboring doors stayed sealed.",
-        "source": "tower_web_bridge",
-        "timestamp": "2026-05-21T15:20:20.986886Z",
-        "user_id": "owner_solice"
-      },
-      {
-        "action": "view",
-        "allowed": false,
-        "app_name": "tower",
-        "capsule_id": "doorcap_fQBGiZS9hdA5l9T38HIvfFPP",
-        "decision": "deny",
-        "device_id": "",
-        "door_id": "/tower/security-command",
-        "door_type": "route",
-        "event_type": "tower_door_swipe",
-        "fingerprint": "2e6e768641d7ff1d3d143b0e",
-        "human_reason": "Clearance required.",
-        "ok": true,
-        "reason_code": "tower_keycard_required",
-        "request_context": {
-          "has_cookie_keycard": false,
-          "has_header_keycard": false,
-          "has_query_keycard": false,
-          "method": "GET",
-          "path": "/tower/security-command",
-          "remote_addr_present": true,
-          "user_agent_preview": "Werkzeug/3.1.8"
-        },
-        "required_actions": [
-          "present_valid_keycard_pass"
-        ],
-        "risk_score": 60,
-        "risk_state": "restricted",
-        "session_id": "",
-        "should_surface_in_inbox": true,
-        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
-        "source": "tower_web_bridge",
-        "timestamp": "2026-05-21T15:24:23.821448Z",
-        "user_id": "anonymous"
-      },
-      {
-        "action": "view",
-        "allowed": true,
-        "app_name": "tower",
-        "capsule_id": "doorcap_Tk8CkFodT5ISLQQRWULvYjVL",
-        "decision": "allow",
-        "device_id": "device_pack036_smoke",
-        "door_id": "/tower/security-command",
-        "door_type": "route",
-        "event_type": "tower_door_swipe",
-        "fingerprint": "aa415687ae8ac0e5301202c9",
-        "human_reason": "This scoped keycard pass opens this exact door.",
-        "ok": true,
-        "reason_code": "keycard_pass_allowed",
-        "request_context": {
-          "has_cookie_keycard": false,
-          "has_header_keycard": false,
-          "has_query_keycard": true,
-          "method": "GET",
-          "path": "/tower/security-command",
-          "remote_addr_present": true,
-          "user_agent_preview": "Werkzeug/3.1.8"
-        },
-        "required_actions": [],
-        "risk_score": 0,
-        "risk_state": "clear",
-        "session_id": "session_pack036_smoke",
-        "should_surface_in_inbox": false,
-        "soulaana_translation": "Soulaana: This door swipe was allowed for /tower/security-command. The pass matched the door and action view.",
-        "source": "tower_web_bridge",
-        "timestamp": "2026-05-21T15:24:23.837595Z",
-        "user_id": "owner_solice"
-      },
       {
         "action": "view",
         "allowed": true,
@@ -620,52 +535,161 @@
         "source": "tower_web_bridge",
         "timestamp": "2026-05-21T15:24:23.932662Z",
         "user_id": "owner_solice"
-      }
-    ],
-    "door_swipe_audit_surfaced": 10,
-    "door_swipe_audit_total": 34,
-    "door_swipe_security_inbox_by_reason": {
-      "tower_keycard_required": 8
-    },
-    "door_swipe_security_inbox_by_severity": {
-      "medium": 8
-    },
-    "door_swipe_security_inbox_by_status": {
-      "ignored": 1,
-      "open": 4,
-      "resolved": 3
-    },
-    "door_swipe_security_inbox_ok": true,
-    "door_swipe_security_inbox_open": 4,
-    "door_swipe_security_inbox_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/door_swipe_security_inbox.json",
-    "door_swipe_security_inbox_recent": [
+      },
       {
         "action": "view",
         "allowed": false,
-        "created_at": "2026-05-21T14:55:23.821308Z",
+        "app_name": "tower",
+        "capsule_id": "doorcap_vTZZUe4xYy_VRF_2Ez1mDBgJ",
+        "decision": "deny",
         "device_id": "",
         "door_id": "/tower/security-command",
-        "event_type": "tower_door_swipe_security_review",
-        "inbox_item_id": "doorinbox_Q7kzKsoCQ7BvNc_MurUngw",
+        "door_type": "route",
+        "event_type": "tower_door_swipe",
+        "fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "human_reason": "Clearance required.",
         "ok": true,
-        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
         "reason_code": "tower_keycard_required",
+        "request_context": {
+          "has_cookie_keycard": false,
+          "has_header_keycard": false,
+          "has_query_keycard": false,
+          "method": "GET",
+          "path": "/tower/security-command",
+          "remote_addr_present": true,
+          "user_agent_preview": "Werkzeug/3.1.8"
+        },
+        "required_actions": [
+          "present_valid_keycard_pass"
+        ],
         "risk_score": 60,
         "risk_state": "restricted",
-        "routing": {
-          "queue": "tower_security_inbox",
-          "requires_step_up_review": false,
-          "surface": "watchlist"
-        },
         "session_id": "",
-        "severity": "medium",
+        "should_surface_in_inbox": true,
         "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
-        "source_capsule_id": "doorcap_CHg9oFC0KZUU5RwKUfH6k0UL",
-        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
-        "status": "open",
-        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "source": "tower_web_bridge",
+        "timestamp": "2026-05-21T15:30:42.795203Z",
         "user_id": "anonymous"
       },
+      {
+        "action": "view",
+        "allowed": true,
+        "app_name": "tower",
+        "capsule_id": "doorcap_4gzUmp1jVb4jo6rA_WFJla4u",
+        "decision": "allow",
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/security-command",
+        "door_type": "route",
+        "event_type": "tower_door_swipe",
+        "fingerprint": "aa415687ae8ac0e5301202c9",
+        "human_reason": "This scoped keycard pass opens this exact door.",
+        "ok": true,
+        "reason_code": "keycard_pass_allowed",
+        "request_context": {
+          "has_cookie_keycard": false,
+          "has_header_keycard": false,
+          "has_query_keycard": true,
+          "method": "GET",
+          "path": "/tower/security-command",
+          "remote_addr_present": true,
+          "user_agent_preview": "Werkzeug/3.1.8"
+        },
+        "required_actions": [],
+        "risk_score": 0,
+        "risk_state": "clear",
+        "session_id": "session_pack036_smoke",
+        "should_surface_in_inbox": false,
+        "soulaana_translation": "Soulaana: This door swipe was allowed for /tower/security-command. The pass matched the door and action view.",
+        "source": "tower_web_bridge",
+        "timestamp": "2026-05-21T15:30:42.812529Z",
+        "user_id": "owner_solice"
+      },
+      {
+        "action": "view",
+        "allowed": true,
+        "app_name": "tower",
+        "capsule_id": "doorcap_PXJEIr5_pKSJByA4bQ5GlYz_",
+        "decision": "allow",
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/status.json",
+        "door_type": "route",
+        "event_type": "tower_door_swipe",
+        "fingerprint": "9be5bc6ae4bbe9573544950b",
+        "human_reason": "This scoped keycard pass opens this exact door.",
+        "ok": true,
+        "reason_code": "keycard_pass_allowed",
+        "request_context": {
+          "has_cookie_keycard": false,
+          "has_header_keycard": false,
+          "has_query_keycard": true,
+          "method": "GET",
+          "path": "/tower/status.json",
+          "remote_addr_present": true,
+          "user_agent_preview": "Werkzeug/3.1.8"
+        },
+        "required_actions": [],
+        "risk_score": 0,
+        "risk_state": "clear",
+        "session_id": "session_pack036_smoke",
+        "should_surface_in_inbox": false,
+        "soulaana_translation": "Soulaana: This door swipe was allowed for /tower/status.json. The pass matched the door and action view.",
+        "source": "tower_web_bridge",
+        "timestamp": "2026-05-21T15:30:42.880192Z",
+        "user_id": "owner_solice"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "app_name": "tower",
+        "capsule_id": "doorcap_9_qUhOve0Eskq_l0uxTvxxus",
+        "decision": "deny",
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/security-command",
+        "door_type": "route",
+        "event_type": "tower_door_swipe",
+        "fingerprint": "0a777ccb7882c5ade791a866",
+        "human_reason": "This pass does not open this specific door.",
+        "ok": true,
+        "reason_code": "wrong_door",
+        "request_context": {
+          "has_cookie_keycard": false,
+          "has_header_keycard": false,
+          "has_query_keycard": true,
+          "method": "GET",
+          "path": "/tower/security-command",
+          "remote_addr_present": true,
+          "user_agent_preview": "Werkzeug/3.1.8"
+        },
+        "required_actions": [
+          "request_correct_keycard_pass"
+        ],
+        "risk_score": 45,
+        "risk_state": "watch",
+        "session_id": "session_pack036_smoke",
+        "should_surface_in_inbox": false,
+        "soulaana_translation": "Soulaana: A keycard was presented, but it did not belong to /tower/security-command. Neighboring doors stayed sealed.",
+        "source": "tower_web_bridge",
+        "timestamp": "2026-05-21T15:30:42.913525Z",
+        "user_id": "owner_solice"
+      }
+    ],
+    "door_swipe_audit_surfaced": 11,
+    "door_swipe_audit_total": 38,
+    "door_swipe_security_inbox_by_reason": {
+      "tower_keycard_required": 9
+    },
+    "door_swipe_security_inbox_by_severity": {
+      "medium": 9
+    },
+    "door_swipe_security_inbox_by_status": {
+      "ignored": 2,
+      "open": 3,
+      "resolved": 4
+    },
+    "door_swipe_security_inbox_ok": true,
+    "door_swipe_security_inbox_open": 3,
+    "door_swipe_security_inbox_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/door_swipe_security_inbox.json",
+    "door_swipe_security_inbox_recent": [
       {
         "action": "view",
         "allowed": false,
@@ -673,24 +697,43 @@
         "device_id": "",
         "door_id": "/tower/security-command",
         "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->ignored",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 039 smoke cleanup: test-generated missing-keycard item archived.",
+            "timestamp": "2026-05-21T15:30:42.924902Z"
+          }
+        ],
+        "ignored_at": "2026-05-21T15:30:42.924891Z",
+        "ignored_by": "owner_solice",
         "inbox_item_id": "doorinbox_mRDF8CejVWqR__0JMQZMSg",
         "ok": true,
         "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 039 smoke cleanup: test-generated missing-keycard item archived.",
+            "timestamp": "2026-05-21T15:30:42.924882Z"
+          }
+        ],
         "reason_code": "tower_keycard_required",
         "risk_score": 60,
         "risk_state": "restricted",
         "routing": {
           "queue": "tower_security_inbox",
           "requires_step_up_review": false,
-          "surface": "watchlist"
+          "surface": "ignored_archive"
         },
         "session_id": "",
         "severity": "medium",
         "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
         "source_capsule_id": "doorcap_QtlSbp6kRCWdHDzHcN3fC0DA",
         "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
-        "status": "open",
+        "status": "ignored",
         "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-21T15:30:42.924863Z",
+        "updated_by": "owner_solice",
         "user_id": "anonymous"
       },
       {
@@ -915,9 +958,68 @@
         "updated_at": "2026-05-21T15:24:23.940526Z",
         "updated_by": "owner_solice",
         "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-21T15:30:42.798850Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-21T15:30:42.920923Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-21T15:30:42.922428Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_9Xsrggb3HKzcpPBtODm9XA",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-21T15:30:42.920904Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-21T15:30:42.922407Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-21T15:30:42.922417Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-21T15:30:42.920914Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_vTZZUe4xYy_VRF_2Ez1mDBgJ",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-21T15:30:42.922387Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
       }
     ],
-    "door_swipe_security_inbox_total": 8,
+    "door_swipe_security_inbox_total": 9,
     "evidence_closed_capsules": 1,
     "evidence_open_capsules": 22,
     "evidence_total_capsules": 23,
@@ -1005,13 +1107,13 @@
       "code": "DR",
       "detail": "door-swipe audit capsules",
       "label": "Door Receipts",
-      "value": "34"
+      "value": "38"
     },
     {
       "code": "DI",
       "detail": "review-worthy door swipes",
       "label": "Door Inbox",
-      "value": "4"
+      "value": "3"
     }
   ],
   "tower_user_id": "owner_solice",
