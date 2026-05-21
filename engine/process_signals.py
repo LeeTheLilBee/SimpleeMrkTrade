@@ -3243,3 +3243,244 @@ try:
 except Exception as _observatory_wrapper_error:
     print("OBSERVATORY LEDGER WRAPPER INSTALL ERROR:", str(_observatory_wrapper_error))
 # === OBSERVATORY LEDGER COMPACT WRAPPER END ===
+
+
+# ==============================================================================
+# OBSERVATORY_PROCESS_SIGNALS_READINESS_WIRE_001_20260521
+# ==============================================================================
+# Compatibility wrapper.
+#
+# This wrapper keeps the original process_signals behavior, then runs the
+# canonical readiness guard over the produced candidate log / returned candidates.
+# It is intentionally defensive because process_signals has had multiple return
+# shapes during Observatory development.
+# ==============================================================================
+
+def _observatory_readiness_wire_load_json_20260521(path, default):
+    try:
+        import json
+        from pathlib import Path
+
+        p = Path(path)
+        if not p.exists():
+            return default
+        with p.open("r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return default
+
+
+def _observatory_readiness_wire_write_json_20260521(path, data):
+    try:
+        import json
+        import os
+        from pathlib import Path
+
+        p = Path(path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        tmp = p.with_suffix(p.suffix + ".tmp")
+        with tmp.open("w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        os.replace(tmp, p)
+        return True
+    except Exception as e:
+        print("OBSERVATORY READINESS WIRE WRITE ERROR:", e)
+        return False
+
+
+def _observatory_readiness_wire_project_root_20260521():
+    try:
+        from pathlib import Path
+        return Path(__file__).resolve().parents[1]
+    except Exception:
+        from pathlib import Path
+        return Path("/content/SimpleeMrkTrade")
+
+
+def _observatory_readiness_wire_extract_candidates_20260521(result):
+    candidates = []
+
+    if isinstance(result, list):
+        candidates.extend([row for row in result if isinstance(row, dict)])
+
+    elif isinstance(result, dict):
+        for key in (
+            "selected_for_execution",
+            "execution_ready",
+            "selected",
+            "candidates",
+            "candidate_log",
+            "top_candidates",
+            "results",
+            "signals",
+        ):
+            value = result.get(key)
+            if isinstance(value, list):
+                candidates.extend([row for row in value if isinstance(row, dict)])
+
+    root = _observatory_readiness_wire_project_root_20260521()
+    data_dir = root / "data"
+
+    # Candidate log is usually the richest post-process source.
+    candidate_log = _observatory_readiness_wire_load_json_20260521(data_dir / "candidate_log.json", [])
+    if isinstance(candidate_log, dict):
+        for key in ("candidates", "rows", "data", "candidate_log"):
+            if isinstance(candidate_log.get(key), list):
+                candidate_log = candidate_log.get(key)
+                break
+
+    if isinstance(candidate_log, list):
+        candidates.extend([row for row in candidate_log if isinstance(row, dict)])
+
+    # De-dupe while preserving order. trade_id is preferred, then symbol/strategy.
+    seen = set()
+    clean = []
+
+    for row in candidates:
+        tid = str(row.get("trade_id") or "").strip()
+        sym = str(row.get("symbol") or "").strip().upper()
+        strat = str(
+            row.get("final_strategy")
+            or row.get("chosen_strategy")
+            or row.get("strategy")
+            or row.get("starting_strategy")
+            or ""
+        ).strip().upper()
+        key = tid or f"{sym}:{strat}:{len(clean)}"
+
+        if key in seen:
+            continue
+
+        seen.add(key)
+        clean.append(row)
+
+    return clean
+
+
+def _observatory_readiness_wire_filter_return_20260521(result, evaluated):
+    ready_by_trade_id = {
+        str(row.get("trade_id") or "").strip()
+        for row in evaluated
+        if row.get("execution_ready") is True and row.get("readiness_status") == "READY"
+    }
+
+    ready_by_symbol_strategy = {
+        (
+            str(row.get("symbol") or "").strip().upper(),
+            str(
+                row.get("final_strategy")
+                or row.get("chosen_strategy")
+                or row.get("strategy")
+                or row.get("starting_strategy")
+                or ""
+            ).strip().upper(),
+        )
+        for row in evaluated
+        if row.get("execution_ready") is True and row.get("readiness_status") == "READY"
+    }
+
+    def is_ready(row):
+        if not isinstance(row, dict):
+            return False
+
+        tid = str(row.get("trade_id") or "").strip()
+        if tid and tid in ready_by_trade_id:
+            return True
+
+        key = (
+            str(row.get("symbol") or "").strip().upper(),
+            str(
+                row.get("final_strategy")
+                or row.get("chosen_strategy")
+                or row.get("strategy")
+                or row.get("starting_strategy")
+                or ""
+            ).strip().upper(),
+        )
+        return key in ready_by_symbol_strategy
+
+    if isinstance(result, list):
+        return [row for row in result if is_ready(row)]
+
+    if isinstance(result, dict):
+        out = dict(result)
+
+        for key in (
+            "selected_for_execution",
+            "execution_ready",
+            "selected",
+            "execution_queue",
+            "queue",
+        ):
+            value = out.get(key)
+            if isinstance(value, list):
+                out[key] = [row for row in value if is_ready(row)]
+
+        out["readiness_wire_applied"] = True
+        out["readiness_ready_count"] = len([r for r in evaluated if r.get("readiness_status") == "READY"])
+        out["readiness_watch_count"] = len([r for r in evaluated if r.get("readiness_status") == "WATCH"])
+        out["readiness_blocked_count"] = len([
+            r for r in evaluated
+            if r.get("readiness_status") in {"BLOCKED", "DUPLICATE", "NO_TRADE"}
+        ])
+
+        return out
+
+    return result
+
+
+try:
+    _OBSERVATORY_ORIGINAL_PROCESS_SIGNALS_20260521 = process_signals
+except NameError:
+    _OBSERVATORY_ORIGINAL_PROCESS_SIGNALS_20260521 = None
+
+
+if _OBSERVATORY_ORIGINAL_PROCESS_SIGNALS_20260521 is not None:
+
+    def process_signals(*args, **kwargs):
+        result = _OBSERVATORY_ORIGINAL_PROCESS_SIGNALS_20260521(*args, **kwargs)
+
+        try:
+            from engine.readiness_guard import evaluate_candidates, summarize_readiness
+            from engine.position_store import load_active_positions, load_closed_positions
+
+            root = _observatory_readiness_wire_project_root_20260521()
+            data_dir = root / "data"
+
+            candidates = _observatory_readiness_wire_extract_candidates_20260521(result)
+            open_positions = load_active_positions()
+            closed_positions = load_closed_positions()
+
+            evaluated = evaluate_candidates(
+                candidates,
+                open_positions=open_positions,
+                closed_positions=closed_positions,
+            )
+
+            summary = summarize_readiness(evaluated)
+
+            report = {
+                "wire": "OBSERVATORY_PROCESS_SIGNALS_READINESS_WIRE_001_20260521",
+                "applied": True,
+                "candidate_count": len(candidates),
+                "evaluated_count": len(evaluated),
+                "summary": summary,
+            }
+
+            _observatory_readiness_wire_write_json_20260521(data_dir / "candidate_log.json", evaluated)
+            _observatory_readiness_wire_write_json_20260521(data_dir / "readiness_report.json", report)
+
+            print("OBSERVATORY READINESS WIRE SUMMARY:", report)
+
+            return _observatory_readiness_wire_filter_return_20260521(result, evaluated)
+
+        except Exception as e:
+            print("OBSERVATORY READINESS WIRE ERROR:", e)
+            return result
+
+    process_signals._observatory_readiness_wrapped_20260521 = True
+
+# ==============================================================================
+# END OBSERVATORY_PROCESS_SIGNALS_READINESS_WIRE_001_20260521
+# ==============================================================================
+
