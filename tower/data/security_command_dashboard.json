@@ -1,1338 +1,221 @@
 {
-  "admin_actions": {
-    "by_action": {},
-    "by_actor": {},
-    "by_status": {},
-    "total": 0
-  },
-  "control_identity": "control_tower_security_command_center",
-  "dashboard_name": "The Tower Security Command Dashboard",
-  "evidence_capsules": {
-    "by_status": {
-      "closed": 1,
-      "open": 22
+  "attention_lanes": [
+    {
+      "next": "Review access-risk group first.",
+      "plain": "Soulaana: Review risky sessions, new devices, failed attempts, and anything that smells like forced entry.",
+      "priority": "Priority 1",
+      "signal": "14 critical / 49 high",
+      "title": "Access risk"
     },
-    "by_trigger": {
-      "admin_action_gate": 8,
-      "export_vault_request": 12,
-      "live_automated_denial_test": 1,
-      "paper_mode_allow_test": 1,
-      "security_inbox_escalation": 1
+    {
+      "next": "Check export requests after access risk.",
+      "plain": "Soulaana: Exports are how information leaves the building. Approve only what belongs, redact what is too sensitive, and deny anything unclear.",
+      "priority": "Priority 2",
+      "signal": "4 waiting",
+      "title": "Protected exports"
     },
-    "open": 22,
-    "total": 23
-  },
-  "generated_at": "2026-05-20T18:07:52.141482Z",
+    {
+      "next": "Review admin authority changes.",
+      "plain": "Soulaana: Admin changes decide who can touch doors later. Match actor, target, permission, and reason.",
+      "priority": "Priority 3",
+      "signal": "4 step-up",
+      "title": "Admin keys"
+    },
+    {
+      "next": "Open only when you need the story behind a decision.",
+      "plain": "Soulaana: Evidence capsules preserve the why. They are the receipts.",
+      "priority": "Priority 4",
+      "signal": "22 open",
+      "title": "Evidence capsules"
+    }
+  ],
+  "command_stats": [
+    {
+      "label": "Owner attention",
+      "note": "urgent groups",
+      "value": "7"
+    },
+    {
+      "label": "Security inbox",
+      "note": "open signals",
+      "value": "77"
+    },
+    {
+      "label": "Evidence chain",
+      "note": "audit integrity",
+      "value": "Clean"
+    },
+    {
+      "label": "Step-up gate",
+      "note": "pending keys",
+      "value": "14"
+    }
+  ],
+  "generated_at": "2026-05-21T01:11:58.344769Z",
   "health": {
-    "human_reason": "Critical open inbox items require owner review.",
-    "state": "attention_required"
+    "factors": [
+      {
+        "label": "Audit chain",
+        "value": "Clean"
+      },
+      {
+        "label": "Urgent groups",
+        "value": "7"
+      },
+      {
+        "label": "Open inbox",
+        "value": "77"
+      }
+    ],
+    "label": "Critical",
+    "posture": "Owner review should happen now.",
+    "score": 36,
+    "soulaana": "Soulaana: Start with access risk, then exports, then admin keys. Leave Live Automated sealed unless every gate is clean."
   },
-  "inbox": {
-    "by_app": {
+  "ok": true,
+  "open_inbox": 77,
+  "primary_owner_tasks": 7,
+  "state": "attention_required",
+  "status": {
+    "account_type_counts": {
+      "beta_user": 2,
+      "owner": 1
+    },
+    "admin_action_approved": 1,
+    "admin_action_executed": 1,
+    "admin_action_revoked": 1,
+    "admin_action_step_up_required": 4,
+    "admin_action_total": 8,
+    "apps_seen_in_audit": {
+      "archive_vault": 2,
       "observatory": 57,
-      "tower_admin": 68,
-      "unknown": 1
+      "tower_admin": 278
     },
-    "by_reason_code": {
-      "admin_action_denied": 1,
-      "admin_action_gate_approved": 2,
-      "admin_action_step_up_required": 5,
-      "admin_role_required": 2,
-      "app_lockdown_active": 1,
-      "approve_automated_mode_admin_step_up_required": 5,
-      "change_permissions_admin_step_up_required": 7,
-      "evidence_capsule_for_security_decision": 14,
-      "export_clearance_granted": 6,
-      "export_denied": 3,
-      "export_permission_required": 1,
-      "export_step_up_required": 19,
-      "global_lockdown_active": 1,
-      "manual_test_security_event": 1,
-      "mode_lockdown_active": 1,
-      "new_device_seen": 1,
-      "object_private_owner_required": 1,
-      "pack_015_manual_review_event": 1,
-      "pack_016_repeated_test_event": 3,
-      "pack_017_group_action_test": 12,
-      "pack_017_review_action_test": 6,
-      "policy_clearance_allowed": 1,
-      "policy_export_permission_required": 6,
-      "public_live_automated_blocked": 2,
-      "security_inbox_step_up_required": 10,
-      "security_state_updated": 6,
-      "session_risk_high": 2,
-      "session_risk_quarantine_recommended": 3,
-      "session_risk_step_up_required": 2,
-      "user_not_found": 1
+    "audit_chain_ok": true,
+    "audit_high_risk_events": 48,
+    "audit_total_events": 337,
+    "control_identity": "control_tower_security_command_center",
+    "evidence_closed_capsules": 1,
+    "evidence_open_capsules": 22,
+    "evidence_total_capsules": 23,
+    "export_approved": 4,
+    "export_denied": 3,
+    "export_revoked": 1,
+    "export_step_up_required": 4,
+    "export_total_exports": 12,
+    "ok": true,
+    "risk_states_seen_in_audit": {
+      "clear": 258,
+      "locked": 4,
+      "medium": 1,
+      "restricted": 28,
+      "sensitive_admin_action": 5,
+      "step_up_consumed": 1,
+      "step_up_required": 37,
+      "watch": 3
     },
-    "by_source_type": {
-      "admin_action": 6,
-      "evidence_capsule": 21,
-      "export": 8,
-      "security_event": 79,
-      "step_up_challenge": 12
+    "role_counts": {
+      "owner": 1,
+      "user": 2
     },
-    "by_status": {
-      "dismissed": 43,
-      "open": 77,
-      "resolved": 6
-    },
-    "dismissed": 43,
-    "open": 77,
-    "resolved": 6,
-    "total": 126
+    "security_critical_events": 8,
+    "security_high_events": 30,
+    "security_inbox_critical": 14,
+    "security_inbox_escalated": 0,
+    "security_inbox_high": 49,
+    "security_inbox_items_with_notes": 17,
+    "security_inbox_open": 77,
+    "security_inbox_quarantine_requested": 0,
+    "security_inbox_resolved": 6,
+    "security_inbox_reviewing": 0,
+    "security_inbox_step_up_requested": 12,
+    "security_inbox_total": 126,
+    "security_open_events": 79,
+    "security_review_groups": 32,
+    "security_review_high_groups": 10,
+    "security_review_largest_group": 10,
+    "security_review_urgent_groups": 7,
+    "security_total_events": 79,
+    "step_up_approved": 0,
+    "step_up_expired": 10,
+    "step_up_pending": 14,
+    "step_up_total": 25,
+    "step_up_used": 1,
+    "total_users": 3,
+    "tower_name": "The Tower",
+    "user_status_counts": {
+      "active": 2,
+      "locked": 1
+    }
   },
-  "recommended_owner_focus": [
+  "system_panels": [
     {
-      "app_name": "tower_admin",
-      "group_key": "admin_action:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
-      "human_task": "Keep Live Automated locked unless this is an internal owner/trust-approved account with legal/compliance clearance.",
-      "open_count": 1,
-      "priority": "urgent",
-      "reason_code": "approve_automated_mode_admin_step_up_required"
+      "code": "ID",
+      "detail": "known users",
+      "label": "Identity Root",
+      "value": "3"
     },
     {
-      "app_name": "tower_admin",
-      "group_key": "evidence_capsule:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
-      "human_task": "Keep Live Automated locked unless this is an internal owner/trust-approved account with legal/compliance clearance.",
-      "open_count": 1,
-      "priority": "urgent",
-      "reason_code": "approve_automated_mode_admin_step_up_required"
+      "code": "TW",
+      "detail": "Owner review should happen now.",
+      "label": "Threat Weather",
+      "value": "Critical"
     },
     {
-      "app_name": "observatory",
-      "group_key": "security_event:observatory:beta_001:session_risk_quarantine_recommended",
-      "human_task": "Review risky session, decide whether to quarantine user/session, and require fresh step-up.",
-      "open_count": 3,
-      "priority": "urgent",
-      "reason_code": "session_risk_quarantine_recommended"
+      "code": "ER",
+      "detail": "open capsules",
+      "label": "Evidence Rings",
+      "value": "22"
     },
     {
-      "app_name": "tower_admin",
-      "group_key": "admin_action:tower_admin:beta_001:admin_role_required",
-      "human_task": "Confirm non-admin was blocked correctly; keep as evidence or dismiss as completed test proof.",
-      "open_count": 1,
-      "priority": "urgent",
-      "reason_code": "admin_role_required"
+      "code": "OB",
+      "detail": "protected route active",
+      "label": "OB Bridge",
+      "value": "Live"
     },
     {
-      "app_name": "tower_admin",
-      "group_key": "evidence_capsule:tower_admin:beta_001:admin_role_required",
-      "human_task": "Confirm non-admin was blocked correctly; keep as evidence or dismiss as completed test proof.",
-      "open_count": 1,
-      "priority": "urgent",
-      "reason_code": "admin_role_required"
+      "code": "SG",
+      "detail": "pending approvals",
+      "label": "Step-up Gate",
+      "value": "14"
     },
     {
-      "app_name": "observatory",
-      "group_key": "security_event:observatory:beta_001:public_live_automated_blocked",
-      "human_task": "Keep Live Automated locked unless this is an internal owner/trust-approved account with legal/compliance clearance.",
-      "open_count": 1,
-      "priority": "urgent",
-      "reason_code": "public_live_automated_blocked"
-    },
-    {
-      "app_name": "observatory",
-      "group_key": "security_event:observatory:owner_solice:global_lockdown_active",
-      "human_task": "Confirm whether global lockdown is test noise or a real emergency state.",
-      "open_count": 1,
-      "priority": "urgent",
-      "reason_code": "global_lockdown_active"
-    },
-    {
-      "app_name": "observatory",
-      "group_key": "security_event:observatory:beta_001:session_risk_high",
-      "human_task": "require_step_up_or_quarantine_session",
-      "open_count": 2,
-      "priority": "high",
-      "reason_code": "session_risk_high"
+      "code": "MS",
+      "detail": "Live automation remains sealed",
+      "label": "Mode Seal",
+      "value": "Closed"
     }
   ],
-  "security_events": {
-    "by_app": {},
-    "by_event_type": {},
-    "by_severity": {},
-    "open": 0,
-    "total": 0
-  },
-  "step_up": {
-    "by_action": {
-      "approve_automated_mode": 2,
-      "change_permissions": 3,
-      "enter_app": 2,
-      "export": 6,
-      "security_inbox_review": 12
-    },
-    "by_status": {
-      "expired": 10,
-      "pending": 14,
-      "used": 1
-    },
-    "pending": 14,
-    "total": 25
-  },
-  "summary_cards": [
+  "tower_user_id": "owner_solice",
+  "view_name": "The Tower Security Command View",
+  "workflow": [
     {
-      "card": "Open Inbox",
-      "human_reason": "Open Tower review items waiting for action.",
-      "tone": "critical",
-      "value": 77
+      "action": "Review devices, failed attempts, rapid denials, and session risk.",
+      "lane": "Access risk",
+      "priority": "Priority 1",
+      "title": "Verify the gate",
+      "why": "Unsafe sessions can touch everything else if they get through."
     },
     {
-      "card": "Critical Alerts",
-      "human_reason": "Items that may involve lockdowns, quarantine, live automation, or restricted access.",
-      "tone": "critical",
-      "value": 9
+      "action": "Approve, deny, or redact export requests.",
+      "lane": "Protected exports",
+      "priority": "Priority 2",
+      "title": "Protect the vault",
+      "why": "Exports can leak sensitive OB records."
     },
     {
-      "card": "High Alerts",
-      "human_reason": "Items that likely need owner/admin review soon.",
-      "tone": "high",
-      "value": 17
+      "action": "Match actor, target, permission, reason, and risk.",
+      "lane": "Admin authority",
+      "priority": "Priority 3",
+      "title": "Check admin keys",
+      "why": "Permission changes decide who can touch the system later."
     },
     {
-      "card": "Evidence Capsules",
-      "human_reason": "Open evidence records for review or audit trail.",
-      "tone": "watch",
-      "value": 22
-    },
-    {
-      "card": "Pending Step-Ups",
-      "human_reason": "Authorization challenges waiting to be completed, used, expired, or cleaned up.",
-      "tone": "high",
-      "value": 14
-    },
-    {
-      "card": "Review Groups",
-      "human_reason": "Grouped issues so admin screens do not drown in duplicate events.",
-      "tone": "watch",
-      "value": 33
-    }
-  ],
-  "top_review_groups": [
-    {
-      "app_name": "tower_admin",
-      "first_seen_at": "2026-05-20T17:12:54.624167Z",
-      "group_key": "admin_action:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
-      "highest_severity": "critical",
-      "highest_severity_rank": 4,
-      "items": [
-        {
-          "app_name": "tower_admin",
-          "created_at": "2026-05-20T17:12:54.624167Z",
-          "dedupe_key": "admin_action:OSiCur3Ws3enNyx-hFEmzDzn:approve_automated_mode_admin_step_up_required",
-          "inbox_hash": "80a17d07ce5eb86d0c619cf74bca1582a09c81413967ccdaff6031a3bdee4fd1",
-          "inbox_item_id": "lLnTRO7sgMImcgG9Oe_yWvQL",
-          "reason_code": "approve_automated_mode_admin_step_up_required",
-          "recommended_action": "review_admin_action",
-          "severity": "critical",
-          "severity_rank": 4,
-          "source_id": "OSiCur3Ws3enNyx-hFEmzDzn",
-          "source_payload": {
-            "admin_action": "approve_automated_mode",
-            "admin_action_hash": "5d1e03f5030cec7d9e734be8087f880a442ae91798576d364c3818fb849aa8d7",
-            "admin_action_id": "OSiCur3Ws3enNyx-hFEmzDzn",
-            "decision": {
-              "allowed": false,
-              "decision": "step_up",
-              "human_reason": "This admin action requires step-up authorization before continuing.",
-              "metadata": {
-                "action_risk": {
-                  "risk_score": 95,
-                  "risk_state": "critical_admin_action",
-                  "severity": "critical"
-                },
-                "actor_user_id": "owner_solice",
-                "admin_action": "approve_automated_mode",
-                "challenge_id": "l8mwWjQG3KDyCLwcrIOv1bi7",
-                "object_id": "live_automated",
-                "object_type": "mode_permission",
-                "target_app": "observatory",
-                "target_user_id": "beta_001"
-              },
-              "reason_code": "approve_automated_mode_admin_step_up_required",
-              "required_actions": [
-                "complete_step_up"
-              ],
-              "risk_score": 95,
-              "risk_state": "step_up_required"
-            },
-            "requested_changes": {
-              "live_automated": "requested"
-            },
-            "status": "revoked",
-            "target_user_id": "beta_001"
-          },
-          "source_type": "admin_action",
-          "status": "open",
-          "summary": "This admin action requires step-up authorization before continuing.",
-          "title": "Admin action needs review: approve_automated_mode",
-          "updated_at": "2026-05-20T17:12:54.624170Z",
-          "user_id": "owner_solice"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.624170Z",
-      "open_count": 1,
-      "priority": "urgent",
-      "priority_score": 460,
-      "reason_code": "approve_automated_mode_admin_step_up_required",
-      "recommended_action": "review_admin_action",
-      "sample_item_ids": [
-        "lLnTRO7sgMImcgG9Oe_yWvQL"
-      ],
-      "source_type": "admin_action",
-      "summary": "This admin action requires step-up authorization before continuing.",
-      "title": "Admin action needs review: approve_automated_mode",
-      "user_id": "owner_solice"
-    },
-    {
-      "app_name": "tower_admin",
-      "first_seen_at": "2026-05-20T17:12:54.622268Z",
-      "group_key": "evidence_capsule:tower_admin:owner_solice:approve_automated_mode_admin_step_up_required",
-      "highest_severity": "critical",
-      "highest_severity_rank": 4,
-      "items": [
-        {
-          "app_name": "tower_admin",
-          "created_at": "2026-05-20T17:12:54.622268Z",
-          "dedupe_key": "evidence_capsule:1zdSjKjVIXp8tVu4AltbS_qo:approve_automated_mode_admin_step_up_required",
-          "inbox_hash": "bcc55eaea40c84473c5b2a530ccc6d62b76659377d0532c4ab31d1af09f905ca",
-          "inbox_item_id": "uszHo78QuqIeBjCCNDtScAGI",
-          "reason_code": "approve_automated_mode_admin_step_up_required",
-          "recommended_action": "review_evidence_capsule",
-          "severity": "critical",
-          "severity_rank": 4,
-          "source_id": "1zdSjKjVIXp8tVu4AltbS_qo",
-          "source_payload": {
-            "capsule_hash": "97cf9e6711d1e8ca5fb3fe5aefcdddffad8319090fb8436cace1d66d257d7f10",
-            "capsule_id": "1zdSjKjVIXp8tVu4AltbS_qo",
-            "decision": {
-              "allowed": false,
-              "decision": "step_up",
-              "human_reason": "This admin action requires step-up authorization before continuing.",
-              "metadata": {
-                "action_risk": {
-                  "risk_score": 95,
-                  "risk_state": "critical_admin_action",
-                  "severity": "critical"
-                },
-                "actor_user_id": "owner_solice",
-                "admin_action": "approve_automated_mode",
-                "challenge_id": "l8mwWjQG3KDyCLwcrIOv1bi7",
-                "object_id": "live_automated",
-                "object_type": "mode_permission",
-                "target_app": "observatory",
-                "target_user_id": "beta_001"
-              },
-              "reason_code": "approve_automated_mode_admin_step_up_required",
-              "required_actions": [
-                "complete_step_up"
-              ],
-              "risk_score": 95,
-              "risk_state": "step_up_required"
-            },
-            "risk_state": "step_up_required",
-            "trigger": "admin_action_gate"
-          },
-          "source_type": "evidence_capsule",
-          "status": "open",
-          "summary": "This admin action requires step-up authorization before continuing.",
-          "title": "Open evidence capsule: step_up",
-          "updated_at": "2026-05-20T17:12:54.622271Z",
-          "user_id": "owner_solice"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.622271Z",
-      "open_count": 1,
-      "priority": "urgent",
-      "priority_score": 460,
-      "reason_code": "approve_automated_mode_admin_step_up_required",
-      "recommended_action": "review_evidence_capsule",
-      "sample_item_ids": [
-        "uszHo78QuqIeBjCCNDtScAGI"
-      ],
-      "source_type": "evidence_capsule",
-      "summary": "This admin action requires step-up authorization before continuing.",
-      "title": "Open evidence capsule: step_up",
-      "user_id": "owner_solice"
-    },
-    {
-      "app_name": "observatory",
-      "first_seen_at": "2026-05-20T17:12:54.618593Z",
-      "group_key": "security_event:observatory:beta_001:session_risk_quarantine_recommended",
-      "highest_severity": "critical",
-      "highest_severity_rank": 4,
-      "items": [
-        {
-          "app_name": "observatory",
-          "created_at": "2026-05-20T17:12:54.618593Z",
-          "dedupe_key": "security_event:2026-05-20T15:59:01.284059Z:session_risk_quarantine_recommended:beta_001:session_risk_quarantine_recommended",
-          "inbox_hash": "7f3e54c95f5cb7d0fd387c07dc4311259ba4809c1277981aee03658b5f005a79",
-          "inbox_item_id": "XYdQwwgKHD7QozeSmU4zhiw-",
-          "reason_code": "session_risk_quarantine_recommended",
-          "recommended_action": "security_review_required, step_up_required",
-          "severity": "critical",
-          "severity_rank": 4,
-          "source_id": "2026-05-20T15:59:01.284059Z:session_risk_quarantine_recommended:beta_001",
-          "source_payload": {
-            "description": "This session is too risky. Access is paused for review.",
-            "event_type": "session_risk_quarantine_recommended",
-            "metadata": {
-              "decision": {
-                "allowed": false,
-                "audit_required": true,
-                "decision": "quarantine",
-                "expires_at": null,
-                "human_reason": "This session is too risky. Access is paused for review.",
-                "metadata": {
-                  "action": "enter_app",
-                  "app_name": "observatory",
-                  "mode_name": "paper",
-                  "object_id": null,
-                  "object_type": null,
-                  "session_risk": {
-                    "device_id": "gfIJUt93xxNAUeYA",
-                    "risk_reasons": [
-                      "new_device",
-                      "device_not_trusted",
-                      "failed_attempts",
-                      "sensitive_action",
-                      "rapid_denials"
-                    ],
-                    "risk_score": 130,
-                    "risk_state": "quarantine_recommended",
-                    "user_id": "beta_001"
-                  },
-                  "user_id": "beta_001"
-                },
-                "reason_code": "session_risk_quarantine_recommended",
-                "required_actions": [
-                  "security_review_required",
-                  "step_up_required"
-                ],
-                "risk_score": 130,
-                "risk_state": "quarantined"
-              }
-            },
-            "recommended_action": "security_review_required, step_up_required",
-            "severity": "critical",
-            "source_app": "observatory",
-            "status": "open",
-            "timestamp": "2026-05-20T15:59:01.284059Z",
-            "user_id": "beta_001"
-          },
-          "source_type": "security_event",
-          "status": "open",
-          "summary": "This session is too risky. Access is paused for review.",
-          "title": "Security event: session_risk_quarantine_recommended",
-          "updated_at": "2026-05-20T17:12:54.618595Z",
-          "user_id": "beta_001"
-        },
-        {
-          "app_name": "observatory",
-          "created_at": "2026-05-20T17:12:54.618711Z",
-          "dedupe_key": "security_event:2026-05-20T16:02:51.957025Z:session_risk_quarantine_recommended:beta_001:session_risk_quarantine_recommended",
-          "inbox_hash": "8cf99b503d0c888985833bddada7ec8db082311f343002b3e6771931622e7679",
-          "inbox_item_id": "TRMF8BHVqHDjI0tjARneDEZ8",
-          "reason_code": "session_risk_quarantine_recommended",
-          "recommended_action": "security_review_required, step_up_required",
-          "severity": "critical",
-          "severity_rank": 4,
-          "source_id": "2026-05-20T16:02:51.957025Z:session_risk_quarantine_recommended:beta_001",
-          "source_payload": {
-            "description": "This session is too risky. Access is paused for review.",
-            "event_type": "session_risk_quarantine_recommended",
-            "metadata": {
-              "decision": {
-                "allowed": false,
-                "audit_required": true,
-                "decision": "quarantine",
-                "expires_at": null,
-                "human_reason": "This session is too risky. Access is paused for review.",
-                "metadata": {
-                  "action": "enter_app",
-                  "app_name": "observatory",
-                  "mode_name": "paper",
-                  "object_id": null,
-                  "object_type": null,
-                  "session_risk": {
-                    "device_id": "gfIJUt93xxNAUeYA",
-                    "risk_reasons": [
-                      "new_device",
-                      "device_not_trusted",
-                      "failed_attempts",
-                      "many_failed_attempts",
-                      "sensitive_action",
-                      "rapid_denials"
-                    ],
-                    "risk_score": 165,
-                    "risk_state": "quarantine_recommended",
-                    "user_id": "beta_001"
-                  },
-                  "user_id": "beta_001"
-                },
-                "reason_code": "session_risk_quarantine_recommended",
-                "required_actions": [
-                  "security_review_required",
-                  "step_up_required"
-                ],
-                "risk_score": 165,
-                "risk_state": "quarantined"
-              }
-            },
-            "recommended_action": "security_review_required, step_up_required",
-            "severity": "critical",
-            "source_app": "observatory",
-            "status": "open",
-            "timestamp": "2026-05-20T16:02:51.957025Z",
-            "user_id": "beta_001"
-          },
-          "source_type": "security_event",
-          "status": "open",
-          "summary": "This session is too risky. Access is paused for review.",
-          "title": "Security event: session_risk_quarantine_recommended",
-          "updated_at": "2026-05-20T17:12:54.618714Z",
-          "user_id": "beta_001"
-        },
-        {
-          "app_name": "observatory",
-          "created_at": "2026-05-20T17:12:54.618786Z",
-          "dedupe_key": "security_event:2026-05-20T16:04:46.383182Z:session_risk_quarantine_recommended:beta_001:session_risk_quarantine_recommended",
-          "inbox_hash": "29494959ddeecee5aac0281fa2cf52afa1e57505e3d0dcfcea2e1233fd894b1f",
-          "inbox_item_id": "3Cea4XsqT5yAwHvzF5-wOsEe",
-          "reason_code": "session_risk_quarantine_recommended",
-          "recommended_action": "security_review_required, step_up_required",
-          "severity": "critical",
-          "severity_rank": 4,
-          "source_id": "2026-05-20T16:04:46.383182Z:session_risk_quarantine_recommended:beta_001",
-          "source_payload": {
-            "description": "This session is too risky. Access is paused for review.",
-            "event_type": "session_risk_quarantine_recommended",
-            "metadata": {
-              "decision": {
-                "allowed": false,
-                "audit_required": true,
-                "decision": "quarantine",
-                "expires_at": null,
-                "human_reason": "This session is too risky. Access is paused for review.",
-                "metadata": {
-                  "action": "enter_app",
-                  "app_name": "observatory",
-                  "mode_name": "paper",
-                  "object_id": null,
-                  "object_type": null,
-                  "session_risk": {
-                    "device_id": "gfIJUt93xxNAUeYA",
-                    "risk_reasons": [
-                      "new_device",
-                      "device_not_trusted",
-                      "failed_attempts",
-                      "many_failed_attempts",
-                      "sensitive_action",
-                      "rapid_denials"
-                    ],
-                    "risk_score": 165,
-                    "risk_state": "quarantine_recommended",
-                    "user_id": "beta_001"
-                  },
-                  "user_id": "beta_001"
-                },
-                "reason_code": "session_risk_quarantine_recommended",
-                "required_actions": [
-                  "security_review_required",
-                  "step_up_required"
-                ],
-                "risk_score": 165,
-                "risk_state": "quarantined"
-              }
-            },
-            "recommended_action": "security_review_required, step_up_required",
-            "severity": "critical",
-            "source_app": "observatory",
-            "status": "open",
-            "timestamp": "2026-05-20T16:04:46.383182Z",
-            "user_id": "beta_001"
-          },
-          "source_type": "security_event",
-          "status": "open",
-          "summary": "This session is too risky. Access is paused for review.",
-          "title": "Security event: session_risk_quarantine_recommended",
-          "updated_at": "2026-05-20T17:12:54.618789Z",
-          "user_id": "beta_001"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.618789Z",
-      "open_count": 3,
-      "priority": "urgent",
-      "priority_score": 455,
-      "reason_code": "session_risk_quarantine_recommended",
-      "recommended_action": "security_review_required, step_up_required",
-      "sample_item_ids": [
-        "XYdQwwgKHD7QozeSmU4zhiw-",
-        "TRMF8BHVqHDjI0tjARneDEZ8",
-        "3Cea4XsqT5yAwHvzF5-wOsEe"
-      ],
-      "source_type": "security_event",
-      "summary": "This session is too risky. Access is paused for review.",
-      "title": "Security event: session_risk_quarantine_recommended",
-      "user_id": "beta_001"
-    },
-    {
-      "app_name": "tower_admin",
-      "first_seen_at": "2026-05-20T17:12:54.624053Z",
-      "group_key": "admin_action:tower_admin:beta_001:admin_role_required",
-      "highest_severity": "critical",
-      "highest_severity_rank": 4,
-      "items": [
-        {
-          "app_name": "tower_admin",
-          "created_at": "2026-05-20T17:12:54.624053Z",
-          "dedupe_key": "admin_action:xMSDxqDQnmt1W9B9NOKiuCNh:admin_role_required",
-          "inbox_hash": "2614ba7806de796fc70f406daa171fb56e65db9581b90980d8700eab806be838",
-          "inbox_item_id": "W_k7t8no-Idq7htaAIDY1W56",
-          "reason_code": "admin_role_required",
-          "recommended_action": "review_admin_action",
-          "severity": "critical",
-          "severity_rank": 4,
-          "source_id": "xMSDxqDQnmt1W9B9NOKiuCNh",
-          "source_payload": {
-            "admin_action": "change_permissions",
-            "admin_action_hash": "0b6103baecd3c9417686f11857954c7bd19ea08f9eba94d00f71fe4b10915049",
-            "admin_action_id": "xMSDxqDQnmt1W9B9NOKiuCNh",
-            "decision": {
-              "allowed": false,
-              "decision": "deny",
-              "human_reason": "This action requires owner/admin role.",
-              "metadata": {
-                "actor_user_id": "beta_001",
-                "admin_action": "change_permissions",
-                "target_user_id": "locked_001"
-              },
-              "reason_code": "admin_role_required",
-              "required_actions": [
-                "admin_role_required"
-              ],
-              "risk_score": 90,
-              "risk_state": "restricted"
-            },
-            "requested_changes": {
-              "app_access.observatory": "allowed"
-            },
-            "status": "denied",
-            "target_user_id": "locked_001"
-          },
-          "source_type": "admin_action",
-          "status": "open",
-          "summary": "This action requires owner/admin role.",
-          "title": "Admin action needs review: change_permissions",
-          "updated_at": "2026-05-20T17:12:54.624058Z",
-          "user_id": "beta_001"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.624058Z",
-      "open_count": 1,
-      "priority": "urgent",
-      "priority_score": 435,
-      "reason_code": "admin_role_required",
-      "recommended_action": "review_admin_action",
-      "sample_item_ids": [
-        "W_k7t8no-Idq7htaAIDY1W56"
-      ],
-      "source_type": "admin_action",
-      "summary": "This action requires owner/admin role.",
-      "title": "Admin action needs review: change_permissions",
-      "user_id": "beta_001"
-    },
-    {
-      "app_name": "tower_admin",
-      "first_seen_at": "2026-05-20T17:12:54.622154Z",
-      "group_key": "evidence_capsule:tower_admin:beta_001:admin_role_required",
-      "highest_severity": "critical",
-      "highest_severity_rank": 4,
-      "items": [
-        {
-          "app_name": "tower_admin",
-          "created_at": "2026-05-20T17:12:54.622154Z",
-          "dedupe_key": "evidence_capsule:Cf_WOja0bmnL_6cMuSbddb6U:admin_role_required",
-          "inbox_hash": "20a3b540f9b8ead30cc8011259d8b67376b427d73f541cc5d91690f2a0e6c41b",
-          "inbox_item_id": "QLdjlXEO0UyssYa99XI2L7Ww",
-          "reason_code": "admin_role_required",
-          "recommended_action": "review_evidence_capsule",
-          "severity": "critical",
-          "severity_rank": 4,
-          "source_id": "Cf_WOja0bmnL_6cMuSbddb6U",
-          "source_payload": {
-            "capsule_hash": "cc9b7a85e5a36fa4882745828132ef5ee617dbd310b57f2a077203a22905d908",
-            "capsule_id": "Cf_WOja0bmnL_6cMuSbddb6U",
-            "decision": {
-              "allowed": false,
-              "decision": "deny",
-              "human_reason": "This action requires owner/admin role.",
-              "metadata": {
-                "actor_user_id": "beta_001",
-                "admin_action": "change_permissions",
-                "target_user_id": "locked_001"
-              },
-              "reason_code": "admin_role_required",
-              "required_actions": [
-                "admin_role_required"
-              ],
-              "risk_score": 90,
-              "risk_state": "restricted"
-            },
-            "risk_state": "restricted",
-            "trigger": "admin_action_gate"
-          },
-          "source_type": "evidence_capsule",
-          "status": "open",
-          "summary": "This action requires owner/admin role.",
-          "title": "Open evidence capsule: deny",
-          "updated_at": "2026-05-20T17:12:54.622156Z",
-          "user_id": "beta_001"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.622156Z",
-      "open_count": 1,
-      "priority": "urgent",
-      "priority_score": 435,
-      "reason_code": "admin_role_required",
-      "recommended_action": "review_evidence_capsule",
-      "sample_item_ids": [
-        "QLdjlXEO0UyssYa99XI2L7Ww"
-      ],
-      "source_type": "evidence_capsule",
-      "summary": "This action requires owner/admin role.",
-      "title": "Open evidence capsule: deny",
-      "user_id": "beta_001"
-    },
-    {
-      "app_name": "observatory",
-      "first_seen_at": "2026-05-20T17:12:54.618022Z",
-      "group_key": "security_event:observatory:beta_001:public_live_automated_blocked",
-      "highest_severity": "critical",
-      "highest_severity_rank": 4,
-      "items": [
-        {
-          "app_name": "observatory",
-          "created_at": "2026-05-20T17:12:54.618022Z",
-          "dedupe_key": "security_event:2026-05-20T15:28:28.874937Z:public_live_automated_blocked:beta_001:public_live_automated_blocked",
-          "inbox_hash": "d3c30974d152f9843e9b759c11943955944bc56bad2da229e767c17341d33900",
-          "inbox_item_id": "HykT8-M4Ap5CxUpa9A1bWHnn",
-          "reason_code": "public_live_automated_blocked",
-          "recommended_action": "internal_trust_account_required, owner_approval_required, legal_review_required, control_tower_approval_required",
-          "severity": "critical",
-          "severity_rank": 4,
-          "source_id": "2026-05-20T15:28:28.874937Z:public_live_automated_blocked:beta_001",
-          "source_payload": {
-            "description": "Live Automated is blocked for public and beta users.",
-            "event_type": "public_live_automated_blocked",
-            "metadata": {
-              "decision": {
-                "allowed": false,
-                "audit_required": true,
-                "decision": "deny",
-                "expires_at": null,
-                "human_reason": "Live Automated is blocked for public and beta users.",
-                "metadata": {
-                  "action": "enter_app",
-                  "app_name": "observatory",
-                  "mode_name": "live_automated",
-                  "user_id": "beta_001"
-                },
-                "reason_code": "public_live_automated_blocked",
-                "required_actions": [
-                  "internal_trust_account_required",
-                  "owner_approval_required",
-                  "legal_review_required",
-                  "control_tower_approval_required"
-                ],
-                "risk_score": 95,
-                "risk_state": "locked"
-              }
-            },
-            "recommended_action": "internal_trust_account_required, owner_approval_required, legal_review_required, control_tower_approval_required",
-            "severity": "critical",
-            "source_app": "observatory",
-            "status": "open",
-            "timestamp": "2026-05-20T15:28:28.874937Z",
-            "user_id": "beta_001"
-          },
-          "source_type": "security_event",
-          "status": "open",
-          "summary": "Live Automated is blocked for public and beta users.",
-          "title": "Security event: public_live_automated_blocked",
-          "updated_at": "2026-05-20T17:12:54.618025Z",
-          "user_id": "beta_001"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.618025Z",
-      "open_count": 1,
-      "priority": "urgent",
-      "priority_score": 430,
-      "reason_code": "public_live_automated_blocked",
-      "recommended_action": "internal_trust_account_required, owner_approval_required, legal_review_required, control_tower_approval_required",
-      "sample_item_ids": [
-        "HykT8-M4Ap5CxUpa9A1bWHnn"
-      ],
-      "source_type": "security_event",
-      "summary": "Live Automated is blocked for public and beta users.",
-      "title": "Security event: public_live_automated_blocked",
-      "user_id": "beta_001"
-    },
-    {
-      "app_name": "observatory",
-      "first_seen_at": "2026-05-20T17:12:54.618398Z",
-      "group_key": "security_event:observatory:owner_solice:global_lockdown_active",
-      "highest_severity": "critical",
-      "highest_severity_rank": 4,
-      "items": [
-        {
-          "app_name": "observatory",
-          "created_at": "2026-05-20T17:12:54.618398Z",
-          "dedupe_key": "security_event:2026-05-20T15:32:11.646587Z:global_lockdown_active:owner_solice:global_lockdown_active",
-          "inbox_hash": "c3764402182603bada710b6c9469c9e8979beaadcccb791f99de2c1c5eb03011",
-          "inbox_item_id": "Y80zbiYsaEonfbboFHHatuu0",
-          "reason_code": "global_lockdown_active",
-          "recommended_action": "owner_review_required, lockdown_review_required",
-          "severity": "critical",
-          "severity_rank": 4,
-          "source_id": "2026-05-20T15:32:11.646587Z:global_lockdown_active:owner_solice",
-          "source_payload": {
-            "description": "Global Tower lockdown is active.",
-            "event_type": "global_lockdown_active",
-            "metadata": {
-              "decision": {
-                "allowed": false,
-                "audit_required": true,
-                "decision": "lockdown",
-                "expires_at": null,
-                "human_reason": "Global Tower lockdown is active.",
-                "metadata": {
-                  "action": "enter_app",
-                  "app_name": "observatory",
-                  "lock": {
-                    "human_reason": "Global Tower lockdown is active.",
-                    "locked": true,
-                    "reason_code": "global_lockdown_active",
-                    "risk_score": 100
-                  },
-                  "mode_name": "survey",
-                  "object_id": null,
-                  "object_type": null,
-                  "user_id": "owner_solice"
-                },
-                "reason_code": "global_lockdown_active",
-                "required_actions": [
-                  "owner_review_required",
-                  "lockdown_review_required"
-                ],
-                "risk_score": 100,
-                "risk_state": "locked"
-              }
-            },
-            "recommended_action": "owner_review_required, lockdown_review_required",
-            "severity": "critical",
-            "source_app": "observatory",
-            "status": "open",
-            "timestamp": "2026-05-20T15:32:11.646587Z",
-            "user_id": "owner_solice"
-          },
-          "source_type": "security_event",
-          "status": "open",
-          "summary": "Global Tower lockdown is active.",
-          "title": "Security event: global_lockdown_active",
-          "updated_at": "2026-05-20T17:12:54.618401Z",
-          "user_id": "owner_solice"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.618401Z",
-      "open_count": 1,
-      "priority": "urgent",
-      "priority_score": 430,
-      "reason_code": "global_lockdown_active",
-      "recommended_action": "owner_review_required, lockdown_review_required",
-      "sample_item_ids": [
-        "Y80zbiYsaEonfbboFHHatuu0"
-      ],
-      "source_type": "security_event",
-      "summary": "Global Tower lockdown is active.",
-      "title": "Security event: global_lockdown_active",
-      "user_id": "owner_solice"
-    },
-    {
-      "app_name": "observatory",
-      "first_seen_at": "2026-05-20T17:12:54.618637Z",
-      "group_key": "security_event:observatory:beta_001:session_risk_high",
-      "highest_severity": "high",
-      "highest_severity_rank": 3,
-      "items": [
-        {
-          "app_name": "observatory",
-          "created_at": "2026-05-20T17:12:54.618637Z",
-          "dedupe_key": "security_event:2026-05-20T16:02:51.953607Z:session_risk_high:beta_001:session_risk_high",
-          "inbox_hash": "0383d4f650cce38e15fb55e40ea08b6dd1241591248ab5b4ac6518ce6ba1d2ef",
-          "inbox_item_id": "Tvjek_XLm42OuvJsRGwMztGL",
-          "reason_code": "session_risk_high",
-          "recommended_action": "require_step_up_or_quarantine_session",
-          "severity": "high",
-          "severity_rank": 3,
-          "source_id": "2026-05-20T16:02:51.953607Z:session_risk_high:beta_001",
-          "source_payload": {
-            "description": "A session risk score became high.",
-            "event_type": "session_risk_high",
-            "metadata": {
-              "risk_reasons": [
-                "device_not_trusted",
-                "failed_attempts",
-                "many_failed_attempts"
-              ],
-              "risk_score": 85,
-              "risk_state": "step_up_required",
-              "session_id": "wr7soyAE1EdpXHUhmUOFOKQA"
-            },
-            "recommended_action": "require_step_up_or_quarantine_session",
-            "severity": "high",
-            "source_app": "observatory",
-            "status": "open",
-            "timestamp": "2026-05-20T16:02:51.953607Z",
-            "user_id": "beta_001"
-          },
-          "source_type": "security_event",
-          "status": "open",
-          "summary": "A session risk score became high.",
-          "title": "Security event: session_risk_high",
-          "updated_at": "2026-05-20T17:12:54.618640Z",
-          "user_id": "beta_001"
-        },
-        {
-          "app_name": "observatory",
-          "created_at": "2026-05-20T17:12:54.618755Z",
-          "dedupe_key": "security_event:2026-05-20T16:04:46.380750Z:session_risk_high:beta_001:session_risk_high",
-          "inbox_hash": "76e5941db45d49ae89b0691696b007a23dae57052d2b352b43e002a1b1e46da5",
-          "inbox_item_id": "84pGpcoqZyNW_5SCkVfoNPoa",
-          "reason_code": "session_risk_high",
-          "recommended_action": "require_step_up_or_quarantine_session",
-          "severity": "high",
-          "severity_rank": 3,
-          "source_id": "2026-05-20T16:04:46.380750Z:session_risk_high:beta_001",
-          "source_payload": {
-            "description": "A session risk score became high.",
-            "event_type": "session_risk_high",
-            "metadata": {
-              "risk_reasons": [
-                "device_not_trusted",
-                "failed_attempts",
-                "many_failed_attempts"
-              ],
-              "risk_score": 85,
-              "risk_state": "step_up_required",
-              "session_id": "2K1LCNu9YoCXvnGWzmiz7gti"
-            },
-            "recommended_action": "require_step_up_or_quarantine_session",
-            "severity": "high",
-            "source_app": "observatory",
-            "status": "open",
-            "timestamp": "2026-05-20T16:04:46.380750Z",
-            "user_id": "beta_001"
-          },
-          "source_type": "security_event",
-          "status": "open",
-          "summary": "A session risk score became high.",
-          "title": "Security event: session_risk_high",
-          "updated_at": "2026-05-20T17:12:54.618757Z",
-          "user_id": "beta_001"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.618757Z",
-      "open_count": 2,
-      "priority": "high",
-      "priority_score": 355,
-      "reason_code": "session_risk_high",
-      "recommended_action": "require_step_up_or_quarantine_session",
-      "sample_item_ids": [
-        "Tvjek_XLm42OuvJsRGwMztGL",
-        "84pGpcoqZyNW_5SCkVfoNPoa"
-      ],
-      "source_type": "security_event",
-      "summary": "A session risk score became high.",
-      "title": "Security event: session_risk_high",
-      "user_id": "beta_001"
-    },
-    {
-      "app_name": "observatory",
-      "first_seen_at": "2026-05-20T17:12:54.621685Z",
-      "group_key": "evidence_capsule:observatory:owner_solice:export_step_up_required",
-      "highest_severity": "high",
-      "highest_severity_rank": 3,
-      "items": [
-        {
-          "app_name": "observatory",
-          "created_at": "2026-05-20T17:12:54.621685Z",
-          "dedupe_key": "evidence_capsule:q4iA_2P6f10gNPtTIxFmYnxm:export_step_up_required",
-          "inbox_hash": "aa5aab39a2716595f52cd627b3fafa37a49d49bc9367e150c4f86580ed662565",
-          "inbox_item_id": "ABuNfB_PNbIMtS0dpvUqxCig",
-          "reason_code": "export_step_up_required",
-          "recommended_action": "review_evidence_capsule",
-          "severity": "high",
-          "severity_rank": 3,
-          "source_id": "q4iA_2P6f10gNPtTIxFmYnxm",
-          "source_payload": {
-            "capsule_hash": "9d069e1d6ca61754843b61f4b0d4fbf133c8117895953d7907ab9a09e0cde9b5",
-            "capsule_id": "q4iA_2P6f10gNPtTIxFmYnxm",
-            "decision": {
-              "allowed": false,
-              "audit_required": true,
-              "decision": "step_up",
-              "expires_at": null,
-              "human_reason": "This action requires step-up authorization before continuing.",
-              "metadata": {
-                "action": "export",
-                "app_name": "observatory",
-                "challenge_id": "O-yXSaN91vbzrq4XCJWC31FO",
-                "mode_name": null,
-                "object_id": "owner_confidential_export_001",
-                "object_type": "analysis_export",
-                "user_id": "owner_solice"
-              },
-              "reason_code": "export_step_up_required",
-              "required_actions": [
-                "complete_step_up"
-              ],
-              "risk_score": 70,
-              "risk_state": "step_up_required"
-            },
-            "risk_state": "step_up_required",
-            "trigger": "export_vault_request"
-          },
-          "source_type": "evidence_capsule",
-          "status": "open",
-          "summary": "This action requires step-up authorization before continuing.",
-          "title": "Open evidence capsule: step_up",
-          "updated_at": "2026-05-20T17:12:54.621689Z",
-          "user_id": "owner_solice"
-        },
-        {
-          "app_name": "observatory",
-          "created_at": "2026-05-20T17:12:54.621849Z",
-          "dedupe_key": "evidence_capsule:M5jvCgNOhs3pxq7cnpnPHjik:export_step_up_required",
-          "inbox_hash": "59c438383ae01f54da90f2181e3f252c0da5af72c1ca43947984598c2bc978c2",
-          "inbox_item_id": "ESWBsOgUAOu7CqtN31fVCOnB",
-          "reason_code": "export_step_up_required",
-          "recommended_action": "review_evidence_capsule",
-          "severity": "high",
-          "severity_rank": 3,
-          "source_id": "M5jvCgNOhs3pxq7cnpnPHjik",
-          "source_payload": {
-            "capsule_hash": "0d0495e624efc9c434693213c08b61f30c8789a772dc01bb3fe46657014dfe2e",
-            "capsule_id": "M5jvCgNOhs3pxq7cnpnPHjik",
-            "decision": {
-              "allowed": false,
-              "audit_required": true,
-              "decision": "step_up",
-              "expires_at": null,
-              "human_reason": "This action requires step-up authorization before continuing.",
-              "metadata": {
-                "action": "export",
-                "app_name": "observatory",
-                "challenge_id": "REGCdsaCo1hJ3kGGLYHpSf_9",
-                "mode_name": null,
-                "object_id": "owner_confidential_export_012b",
-                "object_type": "analysis_export",
-                "user_id": "owner_solice"
-              },
-              "reason_code": "export_step_up_required",
-              "required_actions": [
-                "complete_step_up"
-              ],
-              "risk_score": 70,
-              "risk_state": "step_up_required"
-            },
-            "risk_state": "step_up_required",
-            "trigger": "export_vault_request"
-          },
-          "source_type": "evidence_capsule",
-          "status": "open",
-          "summary": "This action requires step-up authorization before continuing.",
-          "title": "Open evidence capsule: step_up",
-          "updated_at": "2026-05-20T17:12:54.621852Z",
-          "user_id": "owner_solice"
-        },
-        {
-          "app_name": "observatory",
-          "created_at": "2026-05-20T17:12:54.621928Z",
-          "dedupe_key": "evidence_capsule:XKTaB6BmQTBtQmjHe_TsK4la:export_step_up_required",
-          "inbox_hash": "553507227dc199a86fb11d860d3efae86f1adaf38a17bd3f3987a15ee5ec7ff0",
-          "inbox_item_id": "Rv1U84mjN8yX2K8XLpJ-xl4p",
-          "reason_code": "export_step_up_required",
-          "recommended_action": "review_evidence_capsule",
-          "severity": "high",
-          "severity_rank": 3,
-          "source_id": "XKTaB6BmQTBtQmjHe_TsK4la",
-          "source_payload": {
-            "capsule_hash": "524e128c60125833fcf8a8d0c2611d6b04a96d462f2c88c9e927df9fb0f1f6df",
-            "capsule_id": "XKTaB6BmQTBtQmjHe_TsK4la",
-            "decision": {
-              "allowed": false,
-              "audit_required": true,
-              "decision": "step_up",
-              "expires_at": null,
-              "human_reason": "This action requires step-up authorization before continuing.",
-              "metadata": {
-                "action": "export",
-                "app_name": "observatory",
-                "challenge_id": "pU2w3GCpW6OoNVx5KPMGT97V",
-                "mode_name": null,
-                "object_id": "owner_confidential_export_012c",
-                "object_type": "analysis_export",
-                "user_id": "owner_solice"
-              },
-              "reason_code": "export_step_up_required",
-              "required_actions": [
-                "complete_step_up"
-              ],
-              "risk_score": 70,
-              "risk_state": "step_up_required"
-            },
-            "risk_state": "step_up_required",
-            "trigger": "export_vault_request"
-          },
-          "source_type": "evidence_capsule",
-          "status": "open",
-          "summary": "This action requires step-up authorization before continuing.",
-          "title": "Open evidence capsule: step_up",
-          "updated_at": "2026-05-20T17:12:54.621931Z",
-          "user_id": "owner_solice"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.621931Z",
-      "open_count": 3,
-      "priority": "high",
-      "priority_score": 330,
-      "reason_code": "export_step_up_required",
-      "recommended_action": "review_evidence_capsule",
-      "sample_item_ids": [
-        "ABuNfB_PNbIMtS0dpvUqxCig",
-        "ESWBsOgUAOu7CqtN31fVCOnB",
-        "Rv1U84mjN8yX2K8XLpJ-xl4p"
-      ],
-      "source_type": "evidence_capsule",
-      "summary": "This action requires step-up authorization before continuing.",
-      "title": "Open evidence capsule: step_up",
-      "user_id": "owner_solice"
-    },
-    {
-      "app_name": "tower_admin",
-      "first_seen_at": "2026-05-20T17:12:54.624114Z",
-      "group_key": "admin_action:tower_admin:owner_solice:change_permissions_admin_step_up_required",
-      "highest_severity": "high",
-      "highest_severity_rank": 3,
-      "items": [
-        {
-          "app_name": "tower_admin",
-          "created_at": "2026-05-20T17:12:54.624114Z",
-          "dedupe_key": "admin_action:MGNggKHR4TqQxmeJ8PrpYxhU:change_permissions_admin_step_up_required",
-          "inbox_hash": "a90286e89f8d8d4da089ea741c63f3aee1c4a94de8acf9e559217a9168c56abb",
-          "inbox_item_id": "0In6HmRxSlzYyOxzM3p943_b",
-          "reason_code": "change_permissions_admin_step_up_required",
-          "recommended_action": "review_admin_action",
-          "severity": "high",
-          "severity_rank": 3,
-          "source_id": "MGNggKHR4TqQxmeJ8PrpYxhU",
-          "source_payload": {
-            "admin_action": "change_permissions",
-            "admin_action_hash": "8f0b04f14be55cf1c6a3b48b4e244f22257418fd240f7acc8475d0883e1aabc8",
-            "admin_action_id": "MGNggKHR4TqQxmeJ8PrpYxhU",
-            "decision": {
-              "allowed": false,
-              "decision": "step_up",
-              "human_reason": "This admin action requires step-up authorization before continuing.",
-              "metadata": {
-                "action_risk": {
-                  "risk_score": 75,
-                  "risk_state": "sensitive_admin_action",
-                  "severity": "high"
-                },
-                "actor_user_id": "owner_solice",
-                "admin_action": "change_permissions",
-                "challenge_id": "McdIEXLqvF8qiw_ADLtLC2Yw",
-                "object_id": "beta_001",
-                "object_type": "tower_user",
-                "target_app": "tower_admin",
-                "target_user_id": "beta_001"
-              },
-              "reason_code": "change_permissions_admin_step_up_required",
-              "required_actions": [
-                "complete_step_up"
-              ],
-              "risk_score": 75,
-              "risk_state": "step_up_required"
-            },
-            "requested_changes": {
-              "can_export": true
-            },
-            "status": "step_up_required",
-            "target_user_id": "beta_001"
-          },
-          "source_type": "admin_action",
-          "status": "open",
-          "summary": "This admin action requires step-up authorization before continuing.",
-          "title": "Admin action needs review: change_permissions",
-          "updated_at": "2026-05-20T17:12:54.624117Z",
-          "user_id": "owner_solice"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.624117Z",
-      "open_count": 1,
-      "priority": "high",
-      "priority_score": 330,
-      "reason_code": "change_permissions_admin_step_up_required",
-      "recommended_action": "review_admin_action",
-      "sample_item_ids": [
-        "0In6HmRxSlzYyOxzM3p943_b"
-      ],
-      "source_type": "admin_action",
-      "summary": "This admin action requires step-up authorization before continuing.",
-      "title": "Admin action needs review: change_permissions",
-      "user_id": "owner_solice"
-    },
-    {
-      "app_name": "observatory",
-      "first_seen_at": "2026-05-20T17:12:54.621636Z",
-      "group_key": "evidence_capsule:observatory:beta_001:export_step_up_required",
-      "highest_severity": "high",
-      "highest_severity_rank": 3,
-      "items": [
-        {
-          "app_name": "observatory",
-          "created_at": "2026-05-20T17:12:54.621636Z",
-          "dedupe_key": "evidence_capsule:nLE1jd0EFtwzz7x_8MipNAUp:export_step_up_required",
-          "inbox_hash": "c934404117f6160090169415576959458d38ccb82f1bdeac289cff0228938c4e",
-          "inbox_item_id": "FdrRL4U6tohiGgtCrmC8ms4h",
-          "reason_code": "export_step_up_required",
-          "recommended_action": "review_evidence_capsule",
-          "severity": "high",
-          "severity_rank": 3,
-          "source_id": "nLE1jd0EFtwzz7x_8MipNAUp",
-          "source_payload": {
-            "capsule_hash": "f445e6639cc0145fb8c9657b6fa2b552e3df430315fc60a1bb1bb8f9962e7071",
-            "capsule_id": "nLE1jd0EFtwzz7x_8MipNAUp",
-            "decision": {
-              "allowed": false,
-              "audit_required": true,
-              "decision": "step_up",
-              "expires_at": null,
-              "human_reason": "This action requires step-up authorization before continuing.",
-              "metadata": {
-                "action": "export",
-                "app_name": "observatory",
-                "challenge_id": "oaGVFwbS_RU3m4K_a4E_8cTa",
-                "mode_name": null,
-                "object_id": "trade_beta_export_001",
-                "object_type": "trade_record",
-                "user_id": "beta_001"
-              },
-              "reason_code": "export_step_up_required",
-              "required_actions": [
-                "complete_step_up"
-              ],
-              "risk_score": 70,
-              "risk_state": "step_up_required"
-            },
-            "risk_state": "step_up_required",
-            "trigger": "export_vault_request"
-          },
-          "source_type": "evidence_capsule",
-          "status": "open",
-          "summary": "This action requires step-up authorization before continuing.",
-          "title": "Open evidence capsule: step_up",
-          "updated_at": "2026-05-20T17:12:54.621639Z",
-          "user_id": "beta_001"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.621639Z",
-      "open_count": 1,
-      "priority": "high",
-      "priority_score": 330,
-      "reason_code": "export_step_up_required",
-      "recommended_action": "review_evidence_capsule",
-      "sample_item_ids": [
-        "FdrRL4U6tohiGgtCrmC8ms4h"
-      ],
-      "source_type": "evidence_capsule",
-      "summary": "This action requires step-up authorization before continuing.",
-      "title": "Open evidence capsule: step_up",
-      "user_id": "beta_001"
-    },
-    {
-      "app_name": "tower_admin",
-      "first_seen_at": "2026-05-20T17:12:54.622189Z",
-      "group_key": "evidence_capsule:tower_admin:owner_solice:change_permissions_admin_step_up_required",
-      "highest_severity": "high",
-      "highest_severity_rank": 3,
-      "items": [
-        {
-          "app_name": "tower_admin",
-          "created_at": "2026-05-20T17:12:54.622189Z",
-          "dedupe_key": "evidence_capsule:ZFZ-FtOD_RuoKvxPTfRHI-4x:change_permissions_admin_step_up_required",
-          "inbox_hash": "b69e0188f925cd570294910d37d52c18a265776fbaad5e88de8e38755973a1fe",
-          "inbox_item_id": "-BuiTlPtan88I0Olj9Hoaeqp",
-          "reason_code": "change_permissions_admin_step_up_required",
-          "recommended_action": "review_evidence_capsule",
-          "severity": "high",
-          "severity_rank": 3,
-          "source_id": "ZFZ-FtOD_RuoKvxPTfRHI-4x",
-          "source_payload": {
-            "capsule_hash": "d255e5e46eedf21ffceea44b577d0e2c35b6b03ec9074209efc08492d2cfa20a",
-            "capsule_id": "ZFZ-FtOD_RuoKvxPTfRHI-4x",
-            "decision": {
-              "allowed": false,
-              "decision": "step_up",
-              "human_reason": "This admin action requires step-up authorization before continuing.",
-              "metadata": {
-                "action_risk": {
-                  "risk_score": 75,
-                  "risk_state": "sensitive_admin_action",
-                  "severity": "high"
-                },
-                "actor_user_id": "owner_solice",
-                "admin_action": "change_permissions",
-                "challenge_id": "McdIEXLqvF8qiw_ADLtLC2Yw",
-                "object_id": "beta_001",
-                "object_type": "tower_user",
-                "target_app": "tower_admin",
-                "target_user_id": "beta_001"
-              },
-              "reason_code": "change_permissions_admin_step_up_required",
-              "required_actions": [
-                "complete_step_up"
-              ],
-              "risk_score": 75,
-              "risk_state": "step_up_required"
-            },
-            "risk_state": "step_up_required",
-            "trigger": "admin_action_gate"
-          },
-          "source_type": "evidence_capsule",
-          "status": "open",
-          "summary": "This admin action requires step-up authorization before continuing.",
-          "title": "Open evidence capsule: step_up",
-          "updated_at": "2026-05-20T17:12:54.622192Z",
-          "user_id": "owner_solice"
-        }
-      ],
-      "last_seen_at": "2026-05-20T17:12:54.622192Z",
-      "open_count": 1,
-      "priority": "high",
-      "priority_score": 330,
-      "reason_code": "change_permissions_admin_step_up_required",
-      "recommended_action": "review_evidence_capsule",
-      "sample_item_ids": [
-        "-BuiTlPtan88I0Olj9Hoaeqp"
-      ],
-      "source_type": "evidence_capsule",
-      "summary": "This admin action requires step-up authorization before continuing.",
-      "title": "Open evidence capsule: step_up",
-      "user_id": "owner_solice"
+      "action": "Make sure Live Automated remains locked unless every gate is clean.",
+      "lane": "Live Automated lock",
+      "priority": "Priority 4",
+      "title": "Confirm sealed modes",
+      "why": "This is a final confirmation step."
     }
   ]
 }

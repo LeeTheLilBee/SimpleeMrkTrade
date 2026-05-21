@@ -1,656 +1,225 @@
-
-# =============================================================================
-# The Tower - Security Command Dashboard Page Renderer
-# Pack 020
-# =============================================================================
-
 from __future__ import annotations
 
-import html
+import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
-from tower.security_command_view import build_security_command_view, load_security_command_view
+TOWER_ROOT = Path(__file__).resolve().parent
+DATA_DIR = TOWER_ROOT / 'data'
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-
-TOWER_DIR = Path(__file__).resolve().parent
-DATA_DIR = TOWER_DIR / "data"
-HTML_PATH = DATA_DIR / "security_command_dashboard.html"
-
+SECURITY_COMMAND_HTML = DATA_DIR / 'security_command_dashboard.html'
+SECURITY_COMMAND_JSON = DATA_DIR / 'security_command_dashboard.json'
+SECURITY_COMMAND_VIEW_JSON = DATA_DIR / 'security_command_dashboard_view.json'
 
 def _utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    return datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
 
-
-def _esc(value: Any) -> str:
-    if value is None:
-        return ""
-    return html.escape(str(value), quote=True)
-
-
-def _as_int(value: Any, default: int = 0) -> int:
+def _safe_int(value: Any, default: int = 0) -> int:
     try:
-        if value is None:
-            return default
         return int(value)
     except Exception:
         return default
 
+def _write_json(path: Path, payload: Any) -> None:
+    temp = path.with_suffix(path.suffix + '.tmp')
+    with temp.open('w', encoding='utf-8') as handle:
+        json.dump(payload, handle, indent=2, sort_keys=True)
+    temp.replace(path)
 
-def _safe_list(value: Any) -> List[Any]:
-    return value if isinstance(value, list) else []
+def _get_tower_status_safe() -> Dict[str, Any]:
+    try:
+        from tower.tower_status import get_tower_status
+        payload = get_tower_status()
+        if isinstance(payload, dict):
+            payload.setdefault('ok', True)
+            return payload
+    except Exception as exc:
+        return {'ok': False, 'tower_name': 'The Tower', 'reason_code': 'tower_status_unavailable', 'human_reason': 'Tower status could not be loaded.', 'error': f'{type(exc).__name__}: {exc}'}
+    return {'ok': False, 'tower_name': 'The Tower', 'reason_code': 'tower_status_bad_payload', 'human_reason': 'Tower status returned an invalid payload.'}
 
+def _health_score(status: Dict[str, Any]) -> Dict[str, Any]:
+    open_items = _safe_int(status.get('security_inbox_open'), 0)
+    critical = _safe_int(status.get('security_inbox_critical'), 0)
+    high = _safe_int(status.get('security_inbox_high'), 0)
+    urgent_groups = _safe_int(status.get('security_review_urgent_groups'), 0)
+    audit_ok = bool(status.get('audit_chain_ok', False))
+    score = 100
+    score -= min(30, critical * 2)
+    score -= min(22, high // 3)
+    score -= min(18, urgent_groups * 2)
+    score -= min(12, open_items // 12)
+    if not audit_ok:
+        score -= 35
+    score = max(0, min(100, score))
+    if score >= 85:
+        label = 'Calm'
+        posture = 'The Tower is quiet.'
+    elif score >= 68:
+        label = 'Guarded'
+        posture = 'Attention required, but the core is holding.'
+    elif score >= 45:
+        label = 'Strained'
+        posture = 'Security pressure is elevated.'
+    else:
+        label = 'Critical'
+        posture = 'Owner review should happen now.'
+    return {
+        'score': score,
+        'label': label,
+        'posture': posture,
+        'soulaana': 'Soulaana: Start with access risk, then exports, then admin keys. Leave Live Automated sealed unless every gate is clean.',
+        'factors': [
+            {'label': 'Audit chain', 'value': 'Clean' if audit_ok else 'Needs review'},
+            {'label': 'Urgent groups', 'value': str(urgent_groups)},
+            {'label': 'Open inbox', 'value': str(open_items)},
+        ],
+    }
 
-def _tone_class(tone: str) -> str:
-    tone = str(tone or "watch").lower().strip()
-    if tone in {"critical", "danger", "urgent"}:
-        return "tone-critical"
-    if tone in {"high", "warning"}:
-        return "tone-high"
-    if tone in {"clear", "good", "ok"}:
-        return "tone-clear"
-    return "tone-watch"
+def build_security_command_view(tower_user_id: str = 'owner_solice') -> Dict[str, Any]:
+    status = _get_tower_status_safe()
+    health = _health_score(status)
+    critical = _safe_int(status.get('security_inbox_critical'), 0)
+    high = _safe_int(status.get('security_inbox_high'), 0)
+    open_items = _safe_int(status.get('security_inbox_open'), 0)
+    urgent_groups = _safe_int(status.get('security_review_urgent_groups'), 0)
+    step_up_pending = _safe_int(status.get('step_up_pending'), 0)
+    evidence_open = _safe_int(status.get('evidence_open_capsules'), 0)
+    exports_step_up = _safe_int(status.get('export_step_up_required'), 0)
+    admin_step_up = _safe_int(status.get('admin_action_step_up_required'), 0)
+    return {
+        'ok': True,
+        'view_name': 'The Tower Security Command View',
+        'generated_at': _utc_now(),
+        'tower_user_id': tower_user_id,
+        'state': 'attention_required' if urgent_groups or critical or high else 'calm',
+        'status': status,
+        'health': health,
+        'command_stats': [
+            {'label': 'Owner attention', 'value': str(urgent_groups), 'note': 'urgent groups'},
+            {'label': 'Security inbox', 'value': str(open_items), 'note': 'open signals'},
+            {'label': 'Evidence chain', 'value': 'Clean' if status.get('audit_chain_ok') else 'Review', 'note': 'audit integrity'},
+            {'label': 'Step-up gate', 'value': str(step_up_pending), 'note': 'pending keys'},
+        ],
+        'attention_lanes': [
+            {'title': 'Access risk', 'signal': f'{critical} critical / {high} high', 'plain': 'Soulaana: Review risky sessions, new devices, failed attempts, and anything that smells like forced entry.', 'next': 'Review access-risk group first.', 'priority': 'Priority 1'},
+            {'title': 'Protected exports', 'signal': f'{exports_step_up} waiting', 'plain': 'Soulaana: Exports are how information leaves the building. Approve only what belongs, redact what is too sensitive, and deny anything unclear.', 'next': 'Check export requests after access risk.', 'priority': 'Priority 2'},
+            {'title': 'Admin keys', 'signal': f'{admin_step_up} step-up', 'plain': 'Soulaana: Admin changes decide who can touch doors later. Match actor, target, permission, and reason.', 'next': 'Review admin authority changes.', 'priority': 'Priority 3'},
+            {'title': 'Evidence capsules', 'signal': f'{evidence_open} open', 'plain': 'Soulaana: Evidence capsules preserve the why. They are the receipts.', 'next': 'Open only when you need the story behind a decision.', 'priority': 'Priority 4'},
+        ],
+        'system_panels': [
+            {'label': 'Identity Root', 'value': str(status.get('total_users', 0)), 'detail': 'known users', 'code': 'ID'},
+            {'label': 'Threat Weather', 'value': health['label'], 'detail': health['posture'], 'code': 'TW'},
+            {'label': 'Evidence Rings', 'value': str(evidence_open), 'detail': 'open capsules', 'code': 'ER'},
+            {'label': 'OB Bridge', 'value': 'Live', 'detail': 'protected route active', 'code': 'OB'},
+            {'label': 'Step-up Gate', 'value': str(step_up_pending), 'detail': 'pending approvals', 'code': 'SG'},
+            {'label': 'Mode Seal', 'value': 'Closed', 'detail': 'Live automation remains sealed', 'code': 'MS'},
+        ],
+        'workflow': [
+            {'title': 'Verify the gate', 'priority': 'Priority 1', 'lane': 'Access risk', 'why': 'Unsafe sessions can touch everything else if they get through.', 'action': 'Review devices, failed attempts, rapid denials, and session risk.'},
+            {'title': 'Protect the vault', 'priority': 'Priority 2', 'lane': 'Protected exports', 'why': 'Exports can leak sensitive OB records.', 'action': 'Approve, deny, or redact export requests.'},
+            {'title': 'Check admin keys', 'priority': 'Priority 3', 'lane': 'Admin authority', 'why': 'Permission changes decide who can touch the system later.', 'action': 'Match actor, target, permission, reason, and risk.'},
+            {'title': 'Confirm sealed modes', 'priority': 'Priority 4', 'lane': 'Live Automated lock', 'why': 'This is a final confirmation step.', 'action': 'Make sure Live Automated remains locked unless every gate is clean.'},
+        ],
+        'primary_owner_tasks': urgent_groups,
+        'open_inbox': open_items,
+    }
 
+def _render_stat_cards(view: Dict[str, Any]) -> str:
+    cards = []
+    for item in view.get('command_stats', []):
+        cards.append(f"<article class='card'><p class='tiny'>{item['label']}</p><h3>{item['value']}</h3><p>{item['note']}</p></article>")
+    return ''.join(cards)
 
-def _render_metric_cards(cards: List[Dict[str, Any]]) -> str:
-    parts = []
-    for card in cards:
-        label = _esc(card.get("label", "Metric"))
-        value = _esc(card.get("display_value", card.get("value", 0)))
-        reason = _esc(card.get("human_reason", ""))
-        tone = _tone_class(str(card.get("tone", "watch")))
+def _render_lanes(view: Dict[str, Any]) -> str:
+    cards = []
+    for lane in view.get('attention_lanes', []):
+        cards.append(f"<article class='lane'><div><p class='tiny'>{lane['priority']}</p><h3>{lane['title']}</h3></div><span>{lane['signal']}</span><p>{lane['plain']}</p><strong>{lane['next']}</strong></article>")
+    return ''.join(cards)
 
-        parts.append(f'''
-        <section class="metric-card {tone}">
-          <div class="metric-label">{label}</div>
-          <div class="metric-value">{value}</div>
-          <p>{reason}</p>
-        </section>
-        ''')
+def _render_system_panels(view: Dict[str, Any]) -> str:
+    cards = []
+    for panel in view.get('system_panels', []):
+        cards.append(f"<article class='panel'><p class='tiny'>{panel['code']}</p><h3>{panel['value']}</h3><p>{panel['label']}</p><small>{panel['detail']}</small></article>")
+    return ''.join(cards)
 
-    return "\\n".join(parts)
+def _render_workflow(view: Dict[str, Any]) -> str:
+    cards = []
+    for step in view.get('workflow', []):
+        cards.append(f"<article class='step'><p class='tiny'>{step['priority']} · {step['lane']}</p><h3>{step['title']}</h3><p><b>Why:</b> {step['why']}</p><p><b>Action:</b> {step['action']}</p></article>")
+    return ''.join(cards)
 
-
-def _render_action_hints(action_hints: List[Dict[str, Any]]) -> str:
-    pills = []
-    for action in _safe_list(action_hints):
-        if not isinstance(action, dict):
-            continue
-        label = _esc(action.get("label", action.get("action", "Review")))
-        reason = _esc(action.get("human_reason", ""))
-        tone = _tone_class(str(action.get("tone", "watch")))
-        pills.append(f'<span class="action-pill {tone}" title="{reason}">{label}</span>')
-    return "\\n".join(pills)
-
-
-def _render_owner_tasks(tasks: List[Dict[str, Any]]) -> str:
-    if not tasks:
-        return '<div class="empty-card">No owner tasks are currently available.</div>'
-
-    parts = []
-    for index, task in enumerate(tasks, start=1):
-        priority = _esc(task.get("priority", "watch"))
-        app_name = _esc(task.get("app_name", "unknown"))
-        reason_code = _esc(task.get("reason_code", "unknown"))
-        human_task = _esc(task.get("human_task", "Review this item."))
-        open_count = _as_int(task.get("open_count"), 0)
-        hints = _render_action_hints(_safe_list(task.get("action_hints")))
-
-        plural = "s" if open_count != 1 else ""
-
-        parts.append(f'''
-        <article class="task-card">
-          <div class="task-topline">
-            <span class="task-number">#{index}</span>
-            <span class="priority-chip">{priority}</span>
-            <span class="app-chip">{app_name}</span>
-          </div>
-          <h3>{reason_code}</h3>
-          <p>{human_task}</p>
-          <div class="task-meta">
-            <span>{open_count} open item{plural}</span>
-          </div>
-          <div class="action-row">{hints}</div>
-        </article>
-        ''')
-
-    return "\\n".join(parts)
-
-
-def _render_lane_groups(lanes: Dict[str, Any]) -> str:
-    lane_order = [
-        ("urgent", "Urgent"),
-        ("high", "High"),
-        ("watch", "Watch"),
-        ("other", "Other"),
-    ]
-
-    lane_blocks = []
-
-    for lane_key, lane_label in lane_order:
-        groups = _safe_list(lanes.get(lane_key))
-        cards = []
-
-        for group in groups[:8]:
-            if not isinstance(group, dict):
-                continue
-
-            app_name = _esc(group.get("app_name", "unknown"))
-            reason_code = _esc(group.get("reason_code", "unknown"))
-            source_type = _esc(group.get("source_type", "unknown"))
-            summary = _esc(group.get("summary", "Needs review."))
-            open_count = _as_int(group.get("open_count"), 0)
-            priority_score = _as_int(group.get("priority_score"), 0)
-            hints = _render_action_hints(_safe_list(group.get("action_hints")))
-
-            cards.append(f'''
-            <article class="group-card">
-              <div class="group-topline">
-                <span>{app_name}</span>
-                <span>{source_type}</span>
-              </div>
-              <h3>{reason_code}</h3>
-              <p>{summary}</p>
-              <div class="group-meta">
-                <span>{open_count} open</span>
-                <span>score {priority_score}</span>
-              </div>
-              <div class="action-row">{hints}</div>
-            </article>
-            ''')
-
-        if not cards:
-            cards.append('<div class="empty-card">No items in this lane.</div>')
-
-        group_plural = "s" if len(groups) != 1 else ""
-
-        lane_blocks.append(f'''
-        <section class="lane">
-          <div class="lane-header">
-            <h2>{lane_label}</h2>
-            <span>{len(groups)} group{group_plural}</span>
-          </div>
-          <div class="lane-stack">
-            {"".join(cards)}
-          </div>
-        </section>
-        ''')
-
-    return "\\n".join(lane_blocks)
-
-
-def render_security_command_dashboard_html(view: Optional[Dict[str, Any]] = None) -> str:
-    if view is None:
-        view = load_security_command_view()
-        if not view:
-            view = build_security_command_view()
-
-    hero = view.get("hero", {}) if isinstance(view.get("hero"), dict) else {}
-    metrics = view.get("metrics", {}) if isinstance(view.get("metrics"), dict) else {}
-    summary_cards = _safe_list(view.get("summary_cards"))
-    primary_owner_tasks = _safe_list(view.get("primary_owner_tasks"))
-    lanes = view.get("lanes", {}) if isinstance(view.get("lanes"), dict) else {}
-
-    title = _esc(hero.get("title", "The Tower"))
-    subtitle = _esc(hero.get("subtitle", "Security Command Dashboard"))
-    headline = _esc(hero.get("headline", "The Tower needs review."))
-    human_reason = _esc(hero.get("human_reason", "Review current security state."))
-    state_label = _esc(hero.get("state_label", "Review"))
-    hero_tone = _tone_class(str(hero.get("tone", "watch")))
-
-    generated_at = _esc(view.get("generated_at", _utc_now()))
-
-    open_inbox = _as_int(metrics.get("open_inbox"), 0)
-    critical_alerts = _as_int(metrics.get("critical_alerts"), 0)
-    high_alerts = _as_int(metrics.get("high_alerts"), 0)
-    step_up_pending = _as_int(metrics.get("step_up_pending"), 0)
-
-    metric_cards_html = _render_metric_cards(summary_cards)
-    owner_tasks_html = _render_owner_tasks(primary_owner_tasks)
-    lanes_html = _render_lane_groups(lanes)
-
+def render_security_command_dashboard_html(tower_user_id: str = 'owner_solice') -> str:
+    view = build_security_command_view(tower_user_id=tower_user_id)
+    health = view['health']
+    stats = _render_stat_cards(view)
+    lanes = _render_lanes(view)
+    panels = _render_system_panels(view)
+    workflow = _render_workflow(view)
+    generated = view['generated_at']
+    score = health['score']
+    label = health['label']
+    posture = health['posture']
+    soulaana = health['soulaana']
+    css = '''
+    <style>
+      body { margin:0; min-height:100vh; background:#030503; color:#f5f5f4; font-family:Arial, sans-serif; }
+      body:before { content:''; position:fixed; inset:0; background:radial-gradient(circle at 20% 10%, rgba(132,204,22,.14), transparent 28%), radial-gradient(circle at 70% 80%, rgba(16,185,129,.09), transparent 30%); pointer-events:none; }
+      main { position:relative; width:min(1180px, calc(100vw - 32px)); margin:0 auto; padding:38px 0 70px; }
+      .masthead,.hero,.section { border:1px solid rgba(245,245,244,.14); background:rgba(5,8,6,.88); border-radius:34px; padding:24px; box-shadow:0 24px 70px rgba(0,0,0,.55); margin-bottom:24px; }
+      .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; flex-wrap:wrap; }
+      .brand { display:flex; align-items:center; gap:18px; }
+      .mark { width:76px; height:76px; display:grid; place-items:center; border-radius:24px; border:1px solid rgba(217,249,157,.25); background:rgba(217,249,157,.08); color:#d9f99d; font-size:38px; font-weight:900; }
+      h1 { margin:0; font-size:clamp(3rem, 7vw, 5.4rem); letter-spacing:-.06em; }
+      h2 { margin:.4rem 0 0; font-size:clamp(2rem, 4vw, 3rem); letter-spacing:-.04em; }
+      h3 { margin:.35rem 0; font-size:1.45rem; }
+      p { color:#a8a29e; line-height:1.65; }
+      .tiny { margin:0; color:#78716c; text-transform:uppercase; letter-spacing:.2em; font-size:.7rem; font-weight:900; }
+      .hero { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:20px; }
+      .gauge { border:1px solid rgba(217,249,157,.18); background:#071009; border-radius:28px; padding:22px; display:grid; grid-template-columns:150px 1fr; gap:20px; align-items:center; margin:20px 0; }
+      .circle { width:140px; height:140px; border-radius:50%; border:12px solid rgba(217,249,157,.8); display:grid; place-items:center; color:#d9f99d; font-size:2.4rem; font-weight:900; }
+      .grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
+      .system { display:grid; grid-template-columns:repeat(6, 1fr); gap:12px; }
+      .lanes { display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; }
+      .workflow { display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; }
+      .card,.panel,.lane,.step,.soulaana { border:1px solid rgba(245,245,244,.12); background:#050806; border-radius:22px; padding:16px; }
+      .pill { display:inline-flex; border:1px solid rgba(217,249,157,.25); background:rgba(217,249,157,.08); color:#d9f99d; border-radius:999px; padding:8px 12px; font-weight:800; }
+      .soulaana { background:#101510; }
+      button { border:1px solid rgba(217,249,157,.25); background:rgba(217,249,157,.08); color:#d9f99d; border-radius:999px; padding:12px 16px; font-weight:800; }
+      footer { color:#78716c; text-align:center; margin-top:30px; line-height:1.6; }
+      @media(max-width:900px){ .hero,.grid,.system,.lanes,.workflow,.gauge { grid-template-columns:1fr; } }
+    </style>
+    '''
     return f'''<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{title} - {subtitle}</title>
-  <style>
-    :root {{
-      --bg: #070914;
-      --panel: rgba(255,255,255,0.065);
-      --panel-strong: rgba(255,255,255,0.105);
-      --line: rgba(255,255,255,0.14);
-      --text: #f7f2e8;
-      --muted: rgba(247,242,232,0.68);
-      --soft: rgba(247,242,232,0.48);
-      --gold: #d8b75d;
-      --red: #ff5f6d;
-      --orange: #ffb86b;
-      --blue: #89b7ff;
-      --green: #8be7b2;
-      --shadow: 0 24px 80px rgba(0,0,0,0.42);
-    }}
-
-    * {{
-      box-sizing: border-box;
-    }}
-
-    body {{
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(216,183,93,0.18), transparent 34rem),
-        radial-gradient(circle at top right, rgba(137,183,255,0.13), transparent 32rem),
-        linear-gradient(135deg, #050711 0%, #0b1020 52%, #050711 100%);
-    }}
-
-    .shell {{
-      width: min(1440px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 28px 0 48px;
-    }}
-
-    .hero {{
-      border: 1px solid var(--line);
-      border-radius: 30px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045)),
-        radial-gradient(circle at top right, rgba(216,183,93,0.18), transparent 28rem);
-      box-shadow: var(--shadow);
-      padding: 28px;
-      display: grid;
-      grid-template-columns: 1.4fr 0.9fr;
-      gap: 24px;
-      overflow: hidden;
-      position: relative;
-    }}
-
-    .hero:before {{
-      content: "";
-      position: absolute;
-      inset: -2px;
-      background: linear-gradient(90deg, transparent, rgba(216,183,93,0.18), transparent);
-      opacity: 0.7;
-      pointer-events: none;
-    }}
-
-    .hero-content,
-    .hero-stats {{
-      position: relative;
-      z-index: 1;
-    }}
-
-    .eyebrow {{
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      border: 1px solid rgba(216,183,93,0.34);
-      border-radius: 999px;
-      padding: 8px 12px;
-      color: var(--gold);
-      background: rgba(216,183,93,0.08);
-      font-size: 0.82rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }}
-
-    h1 {{
-      margin: 20px 0 8px;
-      font-size: clamp(2.35rem, 6vw, 5.4rem);
-      line-height: 0.94;
-      letter-spacing: -0.08em;
-    }}
-
-    .headline {{
-      margin: 0;
-      font-size: clamp(1.2rem, 2vw, 1.65rem);
-      color: var(--text);
-      max-width: 760px;
-    }}
-
-    .hero-reason {{
-      color: var(--muted);
-      max-width: 760px;
-      line-height: 1.65;
-      margin-top: 12px;
-    }}
-
-    .hero-stats {{
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }}
-
-    .stat {{
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: rgba(0,0,0,0.18);
-      padding: 18px;
-    }}
-
-    .stat span {{
-      display: block;
-      color: var(--muted);
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }}
-
-    .stat strong {{
-      display: block;
-      margin-top: 8px;
-      font-size: 2rem;
-    }}
-
-    .section-title {{
-      margin: 34px 0 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 12px;
-    }}
-
-    .section-title h2 {{
-      margin: 0;
-      font-size: 1.2rem;
-      letter-spacing: -0.03em;
-    }}
-
-    .section-title p {{
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.92rem;
-    }}
-
-    .metrics-grid {{
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 12px;
-    }}
-
-    .metric-card,
-    .task-card,
-    .group-card,
-    .empty-card {{
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      background: var(--panel);
-      box-shadow: 0 16px 44px rgba(0,0,0,0.20);
-    }}
-
-    .metric-card {{
-      padding: 18px;
-      min-height: 150px;
-    }}
-
-    .metric-label {{
-      color: var(--muted);
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }}
-
-    .metric-value {{
-      margin-top: 14px;
-      font-size: 2.35rem;
-      font-weight: 800;
-      letter-spacing: -0.06em;
-    }}
-
-    .metric-card p,
-    .task-card p,
-    .group-card p,
-    .empty-card {{
-      color: var(--muted);
-      line-height: 1.55;
-      font-size: 0.92rem;
-    }}
-
-    .tone-critical {{
-      border-color: rgba(255,95,109,0.42);
-      box-shadow: 0 18px 50px rgba(255,95,109,0.08);
-    }}
-
-    .tone-high {{
-      border-color: rgba(255,184,107,0.42);
-      box-shadow: 0 18px 50px rgba(255,184,107,0.07);
-    }}
-
-    .tone-watch {{
-      border-color: rgba(137,183,255,0.28);
-    }}
-
-    .tone-clear {{
-      border-color: rgba(139,231,178,0.38);
-      box-shadow: 0 18px 50px rgba(139,231,178,0.06);
-    }}
-
-    .tasks-grid {{
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 12px;
-    }}
-
-    .task-card {{
-      padding: 18px;
-    }}
-
-    .task-topline,
-    .group-topline,
-    .group-meta,
-    .task-meta {{
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-      color: var(--soft);
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-    }}
-
-    .task-number,
-    .priority-chip,
-    .app-chip,
-    .action-pill {{
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 6px 9px;
-      background: rgba(255,255,255,0.055);
-    }}
-
-    .task-card h3,
-    .group-card h3 {{
-      font-size: 1rem;
-      line-height: 1.2;
-      margin: 16px 0 8px;
-      letter-spacing: -0.03em;
-      word-break: break-word;
-    }}
-
-    .action-row {{
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
-    }}
-
-    .action-pill {{
-      color: var(--text);
-      font-size: 0.75rem;
-      text-transform: none;
-      letter-spacing: 0;
-    }}
-
-    .lanes-grid {{
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      align-items: start;
-    }}
-
-    .lane {{
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 12px;
-      background: rgba(0,0,0,0.15);
-      min-height: 420px;
-    }}
-
-    .lane-header {{
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 8px 14px;
-      border-bottom: 1px solid var(--line);
-      margin-bottom: 12px;
-    }}
-
-    .lane-header h2 {{
-      margin: 0;
-      font-size: 1rem;
-    }}
-
-    .lane-header span {{
-      color: var(--muted);
-      font-size: 0.82rem;
-    }}
-
-    .lane-stack {{
-      display: grid;
-      gap: 10px;
-    }}
-
-    .group-card {{
-      padding: 16px;
-      background: rgba(255,255,255,0.052);
-    }}
-
-    .empty-card {{
-      padding: 18px;
-    }}
-
-    .footer {{
-      margin-top: 34px;
-      color: var(--soft);
-      font-size: 0.84rem;
-      text-align: center;
-    }}
-
-    @media (max-width: 1180px) {{
-      .hero {{
-        grid-template-columns: 1fr;
-      }}
-
-      .metrics-grid {{
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }}
-
-      .tasks-grid {{
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }}
-
-      .lanes-grid {{
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }}
-    }}
-
-    @media (max-width: 720px) {{
-      .shell {{
-        width: min(100% - 20px, 1440px);
-      }}
-
-      .hero {{
-        padding: 20px;
-        border-radius: 24px;
-      }}
-
-      .hero-stats,
-      .metrics-grid,
-      .tasks-grid,
-      .lanes-grid {{
-        grid-template-columns: 1fr;
-      }}
-    }}
-  </style>
-</head>
+<html lang='en'>
+<head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>The Tower Security Command View</title>{css}</head>
 <body>
-  <main class="shell">
-    <section class="hero {hero_tone}">
-      <div class="hero-content">
-        <div class="eyebrow">{state_label}</div>
-        <h1>{title}</h1>
-        <p class="headline">{headline}</p>
-        <p class="hero-reason">{human_reason}</p>
-      </div>
-
-      <div class="hero-stats">
-        <div class="stat"><span>Open Inbox</span><strong>{open_inbox}</strong></div>
-        <div class="stat"><span>Critical</span><strong>{critical_alerts}</strong></div>
-        <div class="stat"><span>High</span><strong>{high_alerts}</strong></div>
-        <div class="stat"><span>Step-Ups</span><strong>{step_up_pending}</strong></div>
-      </div>
-    </section>
-
-    <div class="section-title">
-      <h2>Command Metrics</h2>
-      <p>Dashboard-ready cards from The Tower view model.</p>
-    </div>
-    <section class="metrics-grid">
-      {metric_cards_html}
-    </section>
-
-    <div class="section-title">
-      <h2>Primary Owner Focus</h2>
-      <p>The first things the owner should review.</p>
-    </div>
-    <section class="tasks-grid">
-      {owner_tasks_html}
-    </section>
-
-    <div class="section-title">
-      <h2>Review Lanes</h2>
-      <p>Grouped alerts separated by urgency.</p>
-    </div>
-    <section class="lanes-grid">
-      {lanes_html}
-    </section>
-
-    <div class="footer">
-      Generated by The Tower Security Command Renderer at {generated_at}
-    </div>
-  </main>
+<main>
+<section class='masthead'>
+  <div class='brand'><div class='mark'>T</div><div><p class='tiny'>The Tower behind OB</p><h1>The Tower</h1></div></div>
+  <div class='soulaana'><p class='tiny'>Role</p><p>The private security force behind OB, watching gates, roots, keys, and vault paths before anything reaches the Observatory.</p></div>
+</section>
+<section class='hero'>
+  <div>
+    <p class='tiny'>Command overview</p><h2>What needs attention</h2><p>This panel is only for the current security picture: status, pressure, and what needs your hand.</p>
+    <section class='gauge'><div class='circle'>{score}</div><div><p class='tiny'>Tower health gauge</p><h2>{label}</h2><span class='pill'>{posture}</span><p>{soulaana}</p></div></section>
+    <div class='grid'>{stats}</div>
+  </div>
+  <aside class='soulaana'><p class='tiny'>Soulaana</p><h3>Plain-language guardian</h3><p>I translate The Tower for OB. I do not make the page louder. I make the decision clearer.</p><button>Walk me through it with Soulaana</button></aside>
+</section>
+<section class='section'><p class='tiny'>System panels</p><h2>Security instruments behind OB</h2><div class='system'>{panels}</div></section>
+<section class='section'><p class='tiny'>Attention lanes</p><h2>Priority review</h2><div class='lanes'>{lanes}</div></section>
+<section class='section'><p class='tiny'>Soulaana workflow</p><h2>Walk me through it</h2><p>Exit workflow · Skip this · Back · Next priority</p><div class='workflow'>{workflow}</div></section>
+<footer>The Tower is the security force behind OB: rooted, quiet, strict, and hard to casually pass.<br>Generated at {generated}.</footer>
+</main>
 </body>
 </html>'''
 
-
-def save_security_command_dashboard_html(path: Optional[Path] = None) -> Dict[str, Any]:
-    view = load_security_command_view()
-    if not view:
-        view = build_security_command_view()
-
-    html_doc = render_security_command_dashboard_html(view=view)
-    output_path = path or HTML_PATH
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(html_doc, encoding="utf-8")
-
-    return {
-        "ok": True,
-        "status": "saved",
-        "path": str(output_path),
-        "bytes": len(html_doc.encode("utf-8")),
-        "view_name": view.get("view_name"),
-        "state": (view.get("status") or {}).get("state"),
-        "open_inbox": (view.get("metrics") or {}).get("open_inbox"),
-        "primary_owner_tasks": len(view.get("primary_owner_tasks") or []),
-    }
-
-
-def get_security_command_dashboard_html() -> str:
-    if not HTML_PATH.exists():
-        save_security_command_dashboard_html()
-    return HTML_PATH.read_text(encoding="utf-8")
+def save_security_command_dashboard_html(tower_user_id: str = 'owner_solice') -> Dict[str, Any]:
+    view = build_security_command_view(tower_user_id=tower_user_id)
+    html_text = render_security_command_dashboard_html(tower_user_id=tower_user_id)
+    SECURITY_COMMAND_HTML.write_text(html_text, encoding='utf-8')
+    _write_json(SECURITY_COMMAND_JSON, view)
+    _write_json(SECURITY_COMMAND_VIEW_JSON, {'ok': True, 'view_name': view.get('view_name'), 'generated_at': view.get('generated_at'), 'state': view.get('state'), 'tower_user_id': tower_user_id, 'html_path': str(SECURITY_COMMAND_HTML), 'json_path': str(SECURITY_COMMAND_JSON)})
+    return {'ok': True, 'status': 'saved', 'view_name': view.get('view_name'), 'state': view.get('state'), 'open_inbox': view.get('open_inbox'), 'primary_owner_tasks': view.get('primary_owner_tasks'), 'path': str(SECURITY_COMMAND_HTML), 'bytes': len(html_text.encode('utf-8'))}
