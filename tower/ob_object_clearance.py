@@ -124,10 +124,16 @@ def _object_required_level(
     object_type = _safe_str(object_type).lower()
     object_id = _safe_str(object_id).upper()
 
-    # Live/Automated objects are always critical.
+    # Mode objects should inherit the specific mode policy level when provided.
+    # Survey can be internal, Paper confidential, Manual restricted, Live critical.
     mode_name = _safe_str(metadata.get('mode_name')).lower()
-    if object_type == 'mode' and (mode_name in LIVE_MODE_NAMES or object_id.lower() in LIVE_MODE_NAMES):
-        return 'critical'
+    mode_required_level = _safe_str(metadata.get('mode_required_clearance_level'))
+
+    if object_type == 'mode':
+        if mode_name in LIVE_MODE_NAMES or object_id.lower() in LIVE_MODE_NAMES:
+            return 'critical'
+        if mode_required_level in CLEARANCE_ORDER:
+            return mode_required_level
 
     # Exports are always critical.
     if object_type == 'export':
