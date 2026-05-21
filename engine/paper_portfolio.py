@@ -2092,3 +2092,90 @@ __all__ = [
     "print_positions",
     "print_closed_positions",
 ]
+
+# ==============================================================================
+# OBSERVATORY_ENTRY_POSITION_STORE_WIRE_001_20260521
+# ==============================================================================
+# Compatibility-preserving entry-side active-book sync.
+#
+# Why this exists:
+# - Older Observatory code may write open positions to only one active book.
+# - The canonical active books must stay aligned:
+#   data/open_positions.json
+#   data/positions.json
+#   data/user_positions.json
+#
+# This wrapper does not change old function signatures. It lets the existing
+# function run first, then asks position_store to normalize/sync active books.
+# ==============================================================================
+
+try:
+    from functools import wraps as _observatory_entry_wraps_20260521
+    from engine.position_store import (
+        sync_active_books as _observatory_sync_active_books_20260521,
+        health_report as _observatory_position_store_health_20260521,
+    )
+
+    def _observatory_entry_sync_after_call_20260521(func_name, func):
+        @_observatory_entry_wraps_20260521(func)
+        def _wrapped(*args, **kwargs):
+            result = func(*args, **kwargs)
+            try:
+                sync_result = _observatory_sync_active_books_20260521()
+                if isinstance(result, dict):
+                    result.setdefault("position_store_entry_sync", sync_result)
+            except Exception as sync_error:
+                if isinstance(result, dict):
+                    result.setdefault("position_store_entry_sync_error", str(sync_error))
+                else:
+                    print(f"[POSITION_STORE_ENTRY_SYNC_WARNING] {func_name}: {sync_error}")
+            return result
+
+        _wrapped._observatory_entry_position_store_wrapped_20260521 = True
+        return _wrapped
+
+    def _observatory_wrap_entry_function_20260521(name):
+        obj = globals().get(name)
+        if not callable(obj):
+            return False
+        if getattr(obj, "_observatory_entry_position_store_wrapped_20260521", False):
+            return True
+        globals()[name] = _observatory_entry_sync_after_call_20260521(name, obj)
+        return True
+
+    _OBSERVATORY_ENTRY_FUNCTION_NAMES_20260521 = [
+        # common open/add entry names
+        "add_position",
+        "add_open_position",
+        "open_position",
+        "record_open_position",
+        "create_position",
+        "create_open_position",
+        "enter_position",
+        "enter_trade",
+        "add_trade",
+
+        # paper portfolio / execution helper names that may open positions
+        "execute_paper_trade",
+        "paper_execute_trade",
+        "record_paper_fill",
+        "record_fill",
+        "save_position",
+        "save_open_position",
+        "save_positions",
+        "save_open_positions",
+
+        # private/internal save helpers seen in older versions
+        "_save_open_positions",
+        "_save_positions",
+        "_write_open_positions",
+        "_write_positions",
+    ]
+
+    _OBSERVATORY_ENTRY_WRAPPED_20260521 = [
+        name for name in _OBSERVATORY_ENTRY_FUNCTION_NAMES_20260521
+        if _observatory_wrap_entry_function_20260521(name)
+    ]
+
+except Exception as _observatory_entry_wire_error_20260521:
+    print(f"[POSITION_STORE_ENTRY_WIRE_WARNING] paper_portfolio.py: {_observatory_entry_wire_error_20260521}")

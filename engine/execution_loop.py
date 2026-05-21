@@ -3722,3 +3722,62 @@ def _observatory_final_rescue_paper_fill_result_20260520(execution_result, trade
 # OBSERVATORY_REPAIR_EXECUTION_LOOP_CLEAN_SUCCESS_REASON_AND_OPTION_UNDERLYING_20260520
 
 # OBSERVATORY_REPAIR_OPTION_SAFE_UNDERLYING_RESOLVER_STRICT_20260520
+
+# ==============================================================================
+# OBSERVATORY_EXECUTION_LOOP_ENTRY_POSITION_STORE_SYNC_001_20260521
+# ==============================================================================
+# Compatibility-preserving execution-loop sync.
+#
+# The paper portfolio wrapper catches many direct entry writes, but execution_loop
+# may also write or mutate active books. This wrapper lets execution run normally
+# first, then syncs canonical active books afterward.
+# ==============================================================================
+
+try:
+    from functools import wraps as _observatory_exec_sync_wraps_20260521
+    from engine.position_store import sync_active_books as _observatory_exec_sync_active_books_20260521
+
+    def _observatory_execution_sync_after_call_20260521(func_name, func):
+        @_observatory_exec_sync_wraps_20260521(func)
+        def _wrapped(*args, **kwargs):
+            result = func(*args, **kwargs)
+            try:
+                sync_result = _observatory_exec_sync_active_books_20260521()
+                if isinstance(result, dict):
+                    result.setdefault("position_store_execution_sync", sync_result)
+            except Exception as sync_error:
+                if isinstance(result, dict):
+                    result.setdefault("position_store_execution_sync_error", str(sync_error))
+                else:
+                    print(f"[POSITION_STORE_EXECUTION_SYNC_WARNING] {func_name}: {sync_error}")
+            return result
+
+        _wrapped._observatory_execution_position_store_wrapped_20260521 = True
+        return _wrapped
+
+    def _observatory_wrap_execution_function_20260521(name):
+        obj = globals().get(name)
+        if not callable(obj):
+            return False
+        if getattr(obj, "_observatory_execution_position_store_wrapped_20260521", False):
+            return True
+        globals()[name] = _observatory_execution_sync_after_call_20260521(name, obj)
+        return True
+
+    _OBSERVATORY_EXECUTION_FUNCTION_NAMES_20260521 = [
+        "execute_trades",
+        "execute_trade",
+        "run_execution_loop",
+        "run_execution",
+        "process_execution_queue",
+        "execute_selected_trades",
+        "execute_selected_for_execution",
+    ]
+
+    _OBSERVATORY_EXECUTION_WRAPPED_20260521 = [
+        name for name in _OBSERVATORY_EXECUTION_FUNCTION_NAMES_20260521
+        if _observatory_wrap_execution_function_20260521(name)
+    ]
+
+except Exception as _observatory_exec_wire_error_20260521:
+    print(f"[POSITION_STORE_EXECUTION_WIRE_WARNING] execution_loop.py: {_observatory_exec_wire_error_20260521}")
