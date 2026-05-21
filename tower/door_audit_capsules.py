@@ -206,6 +206,19 @@ def record_tower_door_swipe(
         items = items[-1000:]
     save_door_swipe_audit_capsules(items)
 
+    inbox_result = {'ok': True, 'status': 'not_attempted'}
+    try:
+        inbox_result = maybe_create_security_inbox_item_from_door_swipe(capsule)
+    except NameError:
+        inbox_result = {'ok': True, 'status': 'bridge_not_loaded'}
+    except Exception as exc:
+        inbox_result = {
+            'ok': False,
+            'status': 'failed_safely',
+            'reason_code': 'door_swipe_inbox_bridge_failed',
+            'human_reason': f'{type(exc).__name__}: {exc}',
+        }
+
     return {
         'ok': True,
         'status': 'recorded',
@@ -213,6 +226,7 @@ def record_tower_door_swipe(
         'allowed': capsule['allowed'],
         'reason_code': capsule['reason_code'],
         'should_surface_in_inbox': capsule['should_surface_in_inbox'],
+        'security_inbox_bridge': inbox_result,
     }
 
 
@@ -239,3 +253,145 @@ def summarize_door_swipe_audit_capsules(limit: int = 10) -> Dict[str, Any]:
         'last': items[-int(limit or 10):],
         'path': str(DOOR_AUDIT_PATH),
     }
+
+
+# ================================================================================
+# PACK033_SECURITY_INBOX_BRIDGE
+# ================================================================================
+DOOR_SECURITY_INBOX_PATH = DATA_DIR / 'door_swipe_security_inbox.json'
+
+
+def load_door_swipe_security_inbox() -> List[Dict[str, Any]]:
+    payload = _read_json(DOOR_SECURITY_INBOX_PATH, [])
+    return payload if isinstance(payload, list) else []
+
+
+def save_door_swipe_security_inbox(items: List[Dict[str, Any]]) -> None:
+    _write_json(DOOR_SECURITY_INBOX_PATH, items)
+
+
+def _door_swipe_severity(capsule: Dict[str, Any]) -> str:
+    reason = _safe_str(capsule.get('reason_code'))
+    risk_score = _safe_int(capsule.get('risk_score'), 0)
+    if reason in {'wrong_user', 'wrong_device', 'wrong_session', 'tower_keycard_validation_failed'}:
+        return 'critical'
+    if risk_score >= 80:
+        return 'critical'
+    if reason in {'wrong_door', 'pass_not_active', 'pass_expired'}:
+        return 'high'
+    if reason == 'tower_keycard_required':
+        return 'medium'
+    if bool(capsule.get('allowed')):
+        return 'info'
+    return 'watch'
+
+
+def _door_swipe_owner_action(capsule: Dict[str, Any]) -> str:
+    reason = _safe_str(capsule.get('reason_code'))
+    if reason == 'tower_keycard_required':
+        return 'Check whether this was you opening a protected route without a fresh owner launch link.'
+    if reason == 'wrong_door':
+        return 'Review this wrong-door attempt. Make sure scoped keycards are not being reused across neighboring Tower doors.'
+    if reason in {'wrong_user', 'wrong_device', 'wrong_session'}:
+        return 'Review immediately. Identity binding failed, which may mean the user, session, or device does not match the issued keycard.'
+    if reason in {'pass_expired', 'pass_not_active'}:
+        return 'Usually safe, but review repeated stale-pass attempts. Old access should not keep trying to enter.'
+    if reason == 'tower_keycard_validation_failed':
+        return 'Review immediately. The Tower could not validate the keycard cleanly.'
+    return 'Review if this repeats, clusters, or appears near other suspicious activity.'
+
+
+def maybe_create_security_inbox_item_from_door_swipe(capsule: Dict[str, Any]) -> Dict[str, Any]:
+    if not isinstance(capsule, dict):
+        return {'ok': False, 'reason_code': 'bad_capsule'}
+
+    if not capsule.get('should_surface_in_inbox'):
+        return {
+            'ok': True,
+            'status': 'quiet',
+            'reason_code': 'door_swipe_not_review_required',
+            'human_reason': 'Door swipe was recorded as an audit capsule but does not need the security inbox.',
+        }
+
+    capsule_id = _safe_str(capsule.get('capsule_id'))
+    existing = load_door_swipe_security_inbox()
+    for item in existing:
+        if item.get('source_capsule_id') == capsule_id:
+            return {
+                'ok': True,
+                'status': 'already_exists',
+                'inbox_item_id': item.get('inbox_item_id'),
+                'source_capsule_id': capsule_id,
+            }
+
+    severity = _door_swipe_severity(capsule)
+    item = {
+        'ok': True,
+        'inbox_item_id': 'doorinbox_' + secrets.token_urlsafe(16).replace('-', '_'),
+        'event_type': 'tower_door_swipe_security_review',
+        'created_at': _utc_now(),
+        'status': 'open',
+        'severity': severity,
+        'source_capsule_id': capsule_id,
+        'source_fingerprint': capsule.get('fingerprint'),
+        'door_id': capsule.get('door_id'),
+        'action': capsule.get('action'),
+        'allowed': capsule.get('allowed'),
+        'reason_code': capsule.get('reason_code'),
+        'risk_state': capsule.get('risk_state'),
+        'risk_score': capsule.get('risk_score'),
+        'user_id': capsule.get('user_id'),
+        'session_id': capsule.get('session_id'),
+        'device_id': capsule.get('device_id'),
+        'title': f"Tower door swipe review: {capsule.get('reason_code')} at {capsule.get('door_id')}",
+        'soulaana_translation': capsule.get('soulaana_translation'),
+        'owner_action': _door_swipe_owner_action(capsule),
+        'routing': {
+            'queue': 'tower_security_inbox',
+            'surface': 'owner_review' if severity in {'critical', 'high'} else 'watchlist',
+            'requires_step_up_review': severity in {'critical', 'high'},
+        },
+    }
+
+    # Never store raw keycard tokens.
+    serialized = json.dumps(item, sort_keys=True)
+    if 'tower_keycard=' in serialized or 'raw_token' in serialized:
+        item['token_leak_guard'] = 'redacted_before_write'
+
+    existing.append(item)
+    if len(existing) > 1000:
+        existing = existing[-1000:]
+    save_door_swipe_security_inbox(existing)
+
+    return {
+        'ok': True,
+        'status': 'created',
+        'inbox_item_id': item['inbox_item_id'],
+        'severity': severity,
+        'source_capsule_id': capsule_id,
+    }
+
+
+def summarize_door_swipe_security_inbox(limit: int = 10) -> Dict[str, Any]:
+    items = load_door_swipe_security_inbox()
+    by_status: Dict[str, int] = {}
+    by_severity: Dict[str, int] = {}
+    by_reason: Dict[str, int] = {}
+    for item in items:
+        status = _safe_str(item.get('status'), 'unknown')
+        severity = _safe_str(item.get('severity'), 'unknown')
+        reason = _safe_str(item.get('reason_code'), 'unknown')
+        by_status[status] = by_status.get(status, 0) + 1
+        by_severity[severity] = by_severity.get(severity, 0) + 1
+        by_reason[reason] = by_reason.get(reason, 0) + 1
+    return {
+        'ok': True,
+        'total': len(items),
+        'open': by_status.get('open', 0),
+        'by_status': by_status,
+        'by_severity': by_severity,
+        'by_reason': by_reason,
+        'last': items[-int(limit or 10):],
+        'path': str(DOOR_SECURITY_INBOX_PATH),
+    }
+
