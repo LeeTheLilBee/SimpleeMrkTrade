@@ -2254,4 +2254,179 @@ def close_trade(*args, **kwargs):
 
     return result
 
+# ==============================================================================
+# OBSERVATORY_PACK_CLOSE_TRADE_POSITION_STORE_WIRE_001_20260521
+# ==============================================================================
+# Final active-book cleanup wrapper.
+#
+# Why this exists:
+# close_trade.py can correctly calculate option PnL and write a closed record,
+# but older paths may leave a closed/test trade inside one of the active books.
+#
+# This wrapper preserves the existing close behavior, then uses position_store.py
+# to remove the closed trade from every active book.
+# ==============================================================================
+
+try:
+    from engine.position_store import (
+        remove_trade_from_active_books as _observatory_remove_trade_from_active_books_001,
+        sync_active_books as _observatory_sync_active_books_001,
+        health_report as _observatory_position_store_health_report_001,
+    )
+except Exception:
+    _observatory_remove_trade_from_active_books_001 = None
+    _observatory_sync_active_books_001 = None
+    _observatory_position_store_health_report_001 = None
+
+
+def _observatory_close_result_is_closed_001(result):
+    if not isinstance(result, dict):
+        return False
+
+    if result.get("closed") is True:
+        return True
+
+    status = str(
+        result.get("status")
+        or result.get("position_status")
+        or result.get("execution_status")
+        or result.get("lifecycle_state")
+        or ""
+    ).strip().upper()
+
+    return status in {"CLOSED", "EXITED"}
+
+
+def _observatory_extract_close_identity_001(args, kwargs, result):
+    trade_id = ""
+    symbol = ""
+
+    if isinstance(result, dict):
+        trade_id = str(
+            result.get("trade_id")
+            or result.get("id")
+            or result.get("order_id")
+            or ""
+        ).strip()
+
+        symbol = str(
+            result.get("symbol")
+            or result.get("ticker")
+            or ""
+        ).strip().upper()
+
+    if not trade_id:
+        trade_id = str(
+            kwargs.get("trade_id")
+            or kwargs.get("id")
+            or kwargs.get("order_id")
+            or ""
+        ).strip()
+
+    if not symbol:
+        symbol = str(
+            kwargs.get("symbol")
+            or kwargs.get("ticker")
+            or ""
+        ).strip().upper()
+
+    # Support close_trade(position_dict, ...)
+    if args:
+        first = args[0]
+        if isinstance(first, dict):
+            if not trade_id:
+                trade_id = str(
+                    first.get("trade_id")
+                    or first.get("id")
+                    or first.get("order_id")
+                    or ""
+                ).strip()
+            if not symbol:
+                symbol = str(
+                    first.get("symbol")
+                    or first.get("ticker")
+                    or ""
+                ).strip().upper()
+        else:
+            # Original close_trade shape is often close_trade(symbol, exit_price, ...)
+            if not symbol:
+                symbol = str(first or "").strip().upper()
+
+    return trade_id, symbol
+
+
+def _observatory_after_successful_close_position_store_cleanup_001(args, kwargs, result):
+    if not _observatory_close_result_is_closed_001(result):
+        return result
+
+    if not isinstance(result, dict):
+        return result
+
+    if _observatory_remove_trade_from_active_books_001 is None:
+        result["position_store_cleanup"] = {
+            "status": "skipped",
+            "reason": "position_store_import_failed",
+        }
+        return result
+
+    trade_id, symbol = _observatory_extract_close_identity_001(args, kwargs, result)
+
+    cleanup = _observatory_remove_trade_from_active_books_001(
+        trade_id=trade_id,
+        symbol=symbol,
+        reason="close_trade_success_cleanup",
+        sync_all=True,
+    )
+
+    result["position_store_cleanup"] = cleanup
+    result["active_books_synced_after_close"] = True
+    result["active_book_cleanup_removed"] = cleanup.get("removed", 0)
+
+    if _observatory_sync_active_books_001 is not None:
+        try:
+            result["position_store_sync_after_close"] = _observatory_sync_active_books_001()
+        except Exception as exc:
+            result["position_store_sync_after_close"] = {
+                "status": "error",
+                "error": str(exc),
+            }
+
+    if _observatory_position_store_health_report_001 is not None:
+        try:
+            health = _observatory_position_store_health_report_001()
+            result["position_store_health_after_close"] = {
+                "status": health.get("status"),
+                "books_aligned": health.get("books_aligned"),
+                "option_rows_premium_safe": health.get("option_rows_premium_safe"),
+                "controlled_or_test_rows_open": health.get("controlled_or_test_rows_open"),
+            }
+        except Exception as exc:
+            result["position_store_health_after_close"] = {
+                "status": "error",
+                "error": str(exc),
+            }
+
+    return result
+
+
+if callable(globals().get("close_trade")) and not globals().get("_OBSERVATORY_POSITION_STORE_CLOSE_TRADE_WRAPPED_001"):
+    _OBSERVATORY_ORIGINAL_CLOSE_TRADE_BEFORE_POSITION_STORE_001 = close_trade
+
+    def close_trade(*args, **kwargs):
+        result = _OBSERVATORY_ORIGINAL_CLOSE_TRADE_BEFORE_POSITION_STORE_001(*args, **kwargs)
+        return _observatory_after_successful_close_position_store_cleanup_001(args, kwargs, result)
+
+    _OBSERVATORY_POSITION_STORE_CLOSE_TRADE_WRAPPED_001 = True
+
+
+if callable(globals().get("close_position")) and not globals().get("_OBSERVATORY_POSITION_STORE_CLOSE_POSITION_WRAPPED_001"):
+    _OBSERVATORY_ORIGINAL_CLOSE_POSITION_BEFORE_POSITION_STORE_001 = close_position
+
+    def close_position(*args, **kwargs):
+        result = _OBSERVATORY_ORIGINAL_CLOSE_POSITION_BEFORE_POSITION_STORE_001(*args, **kwargs)
+        return _observatory_after_successful_close_position_store_cleanup_001(args, kwargs, result)
+
+    _OBSERVATORY_POSITION_STORE_CLOSE_POSITION_WRAPPED_001 = True
+
+
 
