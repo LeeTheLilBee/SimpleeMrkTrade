@@ -26,6 +26,10 @@ def run_tower_security_smoke() -> Dict[str, Any]:
 
     from tower.door_audit_capsules import summarize_door_swipe_audit_capsules
     from tower.door_audit_capsules import summarize_door_swipe_security_inbox
+    from tower.door_audit_capsules import load_door_swipe_audit_capsules
+    from tower.door_audit_capsules import list_door_swipe_security_inbox_items
+    from tower.door_audit_capsules import mark_door_swipe_security_inbox_reviewing
+    from tower.door_audit_capsules import resolve_door_swipe_security_inbox_item
     from tower.keycard_passes import summarize_keycard_health
     from tower.owner_launch_cell import build_owner_tower_launch_packet
     from tower.security_command_page import build_security_command_view
@@ -97,6 +101,59 @@ def run_tower_security_smoke() -> Dict[str, Any]:
         'open': inbox_summary.get('open'),
         'by_reason': inbox_summary.get('by_reason'),
     })
+
+    # PACK038_INBOX_ACTION_WORKFLOW
+    open_items = list_door_swipe_security_inbox_items(status='open', limit=20)
+    check('door_inbox_open_items_listable', open_items.get('ok') is True and open_items.get('count', 0) >= 1, {
+        'count': open_items.get('count'),
+    })
+
+    action_workflow_detail = {
+        'reviewing_ok': False,
+        'resolved_ok': False,
+        'capsule_unchanged': False,
+        'target_item_id': None,
+    }
+
+    try:
+        target_item = open_items.get('items', [])[-1]
+        target_item_id = target_item.get('inbox_item_id')
+        source_capsule_id = target_item.get('source_capsule_id')
+        action_workflow_detail['target_item_id'] = target_item_id
+
+        capsules_before = load_door_swipe_audit_capsules()
+        matching_before = [x for x in capsules_before if x.get('capsule_id') == source_capsule_id]
+        capsule_before = json.dumps(matching_before[0], sort_keys=True, default=str) if matching_before else ''
+
+        reviewing = mark_door_swipe_security_inbox_reviewing(
+            target_item_id,
+            actor_user_id='owner_solice',
+            note='Pack 038 smoke test: reviewing generated door-swipe inbox item.',
+        )
+        action_workflow_detail['reviewing_ok'] = reviewing.get('ok') is True and reviewing.get('new_status') == 'reviewing'
+
+        resolved = resolve_door_swipe_security_inbox_item(
+            target_item_id,
+            actor_user_id='owner_solice',
+            note='Pack 038 smoke test: resolved generated door-swipe inbox item.',
+        )
+        action_workflow_detail['resolved_ok'] = resolved.get('ok') is True and resolved.get('new_status') == 'resolved'
+
+        capsules_after = load_door_swipe_audit_capsules()
+        matching_after = [x for x in capsules_after if x.get('capsule_id') == source_capsule_id]
+        capsule_after = json.dumps(matching_after[0], sort_keys=True, default=str) if matching_after else ''
+        action_workflow_detail['capsule_unchanged'] = bool(capsule_before and capsule_before == capsule_after)
+
+    except Exception as exc:
+        action_workflow_detail['error'] = f'{type(exc).__name__}: {exc}'
+
+    check(
+        'door_inbox_review_resolve_workflow',
+        action_workflow_detail.get('reviewing_ok') is True
+        and action_workflow_detail.get('resolved_ok') is True
+        and action_workflow_detail.get('capsule_unchanged') is True,
+        action_workflow_detail,
+    )
 
     tower_status = get_tower_status()
     check('tower_status_has_door_audit', tower_status.get('door_swipe_audit_ok') is True, {
