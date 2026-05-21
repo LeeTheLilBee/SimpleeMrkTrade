@@ -286,7 +286,7 @@ def _validate_front_door(
     device_id = _device_id_from_request(request_obj)
 
     if not token:
-        return {
+        decision = {
             "allowed": False,
             "decision": "deny",
             "reason_code": "tower_keycard_required",
@@ -296,11 +296,13 @@ def _validate_front_door(
             "required_actions": ["present_valid_keycard_pass"],
             "metadata": {"door_id": door_id, "action": action, "user_id": user_id},
         }
+        _record_tower_door_swipe_safe(decision, request_obj, door_id, action)
+        return decision
 
     try:
         from tower.keycard_passes import validate_keycard_pass
 
-        return validate_keycard_pass(
+        decision = validate_keycard_pass(
             token=token,
             app_name="tower",
             door_type="route",
@@ -313,8 +315,10 @@ def _validate_front_door(
             current_risk_score=0,
             max_allowed_risk_score=max_allowed_risk_score,
         )
+        _record_tower_door_swipe_safe(decision, request_obj, door_id, action)
+        return decision
     except Exception:
-        return {
+        decision = {
             "allowed": False,
             "decision": "deny",
             "reason_code": "tower_keycard_validation_failed",
@@ -324,7 +328,27 @@ def _validate_front_door(
             "required_actions": ["security_review_required"],
             "metadata": {"door_id": door_id, "action": action, "user_id": user_id},
         }
+        _record_tower_door_swipe_safe(decision, request_obj, door_id, action)
+        return decision
 
+
+
+def _record_tower_door_swipe_safe(decision, request_obj, door_id: str, action: str):
+    try:
+        from tower.door_audit_capsules import record_tower_door_swipe
+        return record_tower_door_swipe(
+            decision=decision,
+            request_obj=request_obj,
+            door_id=door_id,
+            action=action,
+            source='tower_web_bridge',
+        )
+    except Exception as exc:
+        return {
+            'ok': False,
+            'reason_code': 'door_swipe_audit_failed',
+            'human_reason': f'Door swipe audit failed safely: {type(exc).__name__}: {exc}',
+        }
 
 def _mark_response_private(response_obj):
     try:
