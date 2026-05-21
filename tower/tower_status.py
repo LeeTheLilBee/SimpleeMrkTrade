@@ -150,4 +150,42 @@ def get_tower_status(*args, **kwargs):
         }
 
     payload.update(_pack032_load_door_swipe_status_summary())
+    payload.update(_pack034_load_door_swipe_security_inbox_summary())
     return payload
+
+
+# ================================================================================
+# PACK034_DOOR_SECURITY_INBOX_STATUS_ENRICHMENT
+# ================================================================================
+def _pack034_load_door_swipe_security_inbox_summary():
+    try:
+        from tower.door_audit_capsules import summarize_door_swipe_security_inbox
+        summary = summarize_door_swipe_security_inbox(limit=6)
+        if not isinstance(summary, dict):
+            return {
+                "door_swipe_security_inbox_ok": False,
+                "door_swipe_security_inbox_reason": "bad_summary_payload",
+            }
+
+        recent = summary.get("last", [])
+        if not isinstance(recent, list):
+            recent = []
+
+        return {
+            "door_swipe_security_inbox_ok": bool(summary.get("ok")),
+            "door_swipe_security_inbox_total": int(summary.get("total", 0) or 0),
+            "door_swipe_security_inbox_open": int(summary.get("open", 0) or 0),
+            "door_swipe_security_inbox_by_status": summary.get("by_status", {}) if isinstance(summary.get("by_status"), dict) else {},
+            "door_swipe_security_inbox_by_severity": summary.get("by_severity", {}) if isinstance(summary.get("by_severity"), dict) else {},
+            "door_swipe_security_inbox_by_reason": summary.get("by_reason", {}) if isinstance(summary.get("by_reason"), dict) else {},
+            "door_swipe_security_inbox_recent": recent,
+            "door_swipe_security_inbox_path": summary.get("path"),
+        }
+    except Exception as exc:
+        return {
+            "door_swipe_security_inbox_ok": False,
+            "door_swipe_security_inbox_reason": f"{type(exc).__name__}: {exc}",
+            "door_swipe_security_inbox_total": 0,
+            "door_swipe_security_inbox_open": 0,
+            "door_swipe_security_inbox_recent": [],
+        }

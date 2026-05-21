@@ -25,5 +25,32 @@
     "status": "open",
     "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
     "user_id": "anonymous"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "created_at": "2026-05-21T14:20:44.282010Z",
+    "device_id": "",
+    "door_id": "/tower/security-command",
+    "event_type": "tower_door_swipe_security_review",
+    "inbox_item_id": "doorinbox_kMwY9lekc00hwNJwEyxGxg",
+    "ok": true,
+    "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+    "reason_code": "tower_keycard_required",
+    "risk_score": 60,
+    "risk_state": "restricted",
+    "routing": {
+      "queue": "tower_security_inbox",
+      "requires_step_up_review": false,
+      "surface": "watchlist"
+    },
+    "session_id": "",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+    "source_capsule_id": "doorcap_TRWGMhbbR19W93MFUrNKwmtQ",
+    "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+    "status": "open",
+    "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+    "user_id": "anonymous"
   }
 ]
