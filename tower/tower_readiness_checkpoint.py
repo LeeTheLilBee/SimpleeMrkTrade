@@ -24,12 +24,61 @@ def build_tower_readiness_checkpoint() -> Dict[str, Any]:
     from tower.keycard_passes import summarize_keycard_health
     from tower.tower_security_smoke import run_tower_security_smoke
     from tower.tower_status import get_tower_status
+    from tower.ob_clearance_bridge import evaluate_ob_route_clearance
+    from tower.ob_object_clearance import evaluate_ob_object_clearance
+    from tower.ob_mode_clearance import evaluate_ob_mode_clearance
 
     smoke = run_tower_security_smoke()
     status = get_tower_status()
     keycards = summarize_keycard_health()
     door_audit = summarize_door_swipe_audit_capsules(limit=6)
     door_inbox = summarize_door_swipe_security_inbox(limit=6)
+
+    # PACK044_OB_CLEARANCE_READINESS_SUMMARY
+    route_owner = evaluate_ob_route_clearance(
+        user_id='owner_solice',
+        role='owner',
+        route_key='live_automated',
+        action='enter',
+        current_risk_score=10,
+    )
+    object_owner = evaluate_ob_object_clearance(
+        user_id='owner_solice',
+        role='owner',
+        route_key='export',
+        object_type='export',
+        object_id='readiness_export_check',
+        action='download',
+        current_risk_score=5,
+    )
+    mode_owner = evaluate_ob_mode_clearance(
+        user_id='owner_solice',
+        role='owner',
+        mode_name='live_automated',
+        action='enter',
+        broker_connected=True,
+        broker_healthy=True,
+        live_authorized=True,
+        automation_authorized=True,
+        current_risk_score=10,
+    )
+    mode_beta_paper = evaluate_ob_mode_clearance(
+        user_id='beta_001',
+        role='user',
+        mode_name='paper',
+        action='enter',
+        current_risk_score=10,
+    )
+
+    ob_clearance_summary = {
+        'route_bridge_ok': route_owner.get('allowed') is True,
+        'object_bridge_ok': object_owner.get('allowed') is True,
+        'mode_bridge_ok': mode_owner.get('allowed') is True and mode_beta_paper.get('allowed') is False,
+        'route_reason': route_owner.get('reason_code'),
+        'object_reason': object_owner.get('reason_code'),
+        'mode_reason': mode_owner.get('reason_code'),
+        'paper_user_denial_reason': mode_beta_paper.get('reason_code'),
+    }
 
     built_packs = [
         {'pack': '025', 'name': 'Scoped keycard passes', 'plain': 'Every protected door can require a scoped pass.'},
@@ -47,6 +96,9 @@ def build_tower_readiness_checkpoint() -> Dict[str, Any]:
         {'pack': '037', 'name': 'Door inbox actions', 'plain': 'Door inbox items can be reviewed, resolved, ignored, and annotated.'},
         {'pack': '038', 'name': 'Smoke test validates inbox actions', 'plain': 'The smoke test checks review/resolve safety.'},
         {'pack': '039', 'name': 'Self-cleaning smoke test', 'plain': 'Smoke tests clean up test-generated inbox noise.'},
+        {'pack': '041', 'name': 'OB route/action clearance bridge', 'plain': 'OB can ask The Tower before opening a protected route or action.'},
+        {'pack': '042', 'name': 'OB object-level clearance bridge', 'plain': 'OB can ask The Tower before revealing a specific symbol, trade, account, export, mode, or record.'},
+        {'pack': '043', 'name': 'OB mode clearance bridge', 'plain': 'Survey, Paper, Manual, Live, and Live Automated modes have explicit Tower clearance.'},
     ]
 
     protected_surfaces = [
@@ -60,10 +112,10 @@ def build_tower_readiness_checkpoint() -> Dict[str, Any]:
     ]
 
     next_before_deeper_ob = [
-        {'priority': 1, 'item': 'Add Tower route/action clearance helper for OB routes', 'plain': 'OB needs a simple ask-The-Tower function before showing protected pages.'},
-        {'priority': 2, 'item': 'Add object-level clearance checks', 'plain': 'Not just can user enter OB, but can they see this symbol, trade, export, account, or mode.'},
-        {'priority': 3, 'item': 'Add mode clearance bridge for Survey/Paper/Live/Manual', 'plain': 'The Tower should approve mode access before OB loads sensitive mode features.'},
-        {'priority': 4, 'item': 'Add export/download lock', 'plain': 'Anything that leaves the app should ask The Tower first.'},
+        {'priority': 1, 'item': 'Wire OB pages to call Tower route clearance', 'plain': 'The helpers exist; next OB routes need to actually ask The Tower before showing protected screens.'},
+        {'priority': 2, 'item': 'Wire OB symbol/trade/account/export views to object clearance', 'plain': 'Specific objects should stay locked unless the exact object is cleared.'},
+        {'priority': 3, 'item': 'Wire OB mode switcher to Tower mode clearance', 'plain': 'Survey, Paper, Manual, Live, and Live Automated should ask the mode bridge before entering.'},
+        {'priority': 4, 'item': 'Add export/download lock UI and backend enforcement', 'plain': 'Anything leaving the app should ask The Tower first and leave an audit receipt.'},
         {'priority': 5, 'item': 'Add owner/admin UI actions for resolving Tower inbox items', 'plain': 'The backend can resolve items now; the UI needs buttons later.'},
         {'priority': 6, 'item': 'Add Archive Vault handoff', 'plain': 'Important security events should be able to become evidence bundles.'},
     ]
@@ -81,6 +133,12 @@ def build_tower_readiness_checkpoint() -> Dict[str, Any]:
         readiness_score += 10
     if status.get('door_swipe_security_inbox_ok') is True:
         readiness_score += 10
+    if ob_clearance_summary.get('route_bridge_ok'):
+        readiness_score += 5
+    if ob_clearance_summary.get('object_bridge_ok'):
+        readiness_score += 5
+    if ob_clearance_summary.get('mode_bridge_ok'):
+        readiness_score += 5
     readiness_score = min(100, readiness_score)
 
     if readiness_score >= 90 and smoke.get('ok') is True:
@@ -133,6 +191,7 @@ def build_tower_readiness_checkpoint() -> Dict[str, Any]:
             'by_severity': door_inbox.get('by_severity'),
             'by_reason': door_inbox.get('by_reason'),
         },
+        'ob_clearance_summary': ob_clearance_summary,
         'built_packs': built_packs,
         'protected_surfaces': protected_surfaces,
         'next_before_deeper_ob': next_before_deeper_ob,
