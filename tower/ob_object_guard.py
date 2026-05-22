@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, Optional, Tuple
 
 from tower.ob_object_clearance import evaluate_ob_object_clearance
+from tower.ob_object_audit_capsules import record_ob_object_audit_capsule
 
 
 def _utc_now() -> str:
@@ -200,7 +201,7 @@ def evaluate_ob_object_guard(
     policy = match.get("policy", {}) if isinstance(match.get("policy"), dict) else {}
 
     if match.get("match_type") == "unmapped_object_default_deny" and default_deny_unmapped:
-        return {
+        decision = {
             "ok": True,
             "allowed": False,
             "decision": "deny",
@@ -218,6 +219,22 @@ def evaluate_ob_object_guard(
                 "evaluated_at": _utc_now(),
             },
         }
+        # PACK056_OBJECT_AUDIT_WIRE
+        try:
+            capsule = record_ob_object_audit_capsule(
+                decision=decision,
+                object_kind=normalize_object_kind(object_kind),
+                object_type=normalize_object_kind(object_kind),
+                object_id=_safe_str(object_id),
+                action=_safe_str(action, "view"),
+                route_key=_safe_str(route_key, ""),
+                user_id=_safe_str(user_id, "anonymous"),
+                metadata={"guard_match": match, "audit_source": "unmapped_object_default_deny"},
+            )
+            decision.setdefault("metadata", {})["object_audit_capsule_id"] = capsule.get("capsule_id")
+        except Exception as audit_error:
+            decision.setdefault("metadata", {})["object_audit_error"] = str(audit_error)
+        return decision
 
     object_type = _safe_str(policy.get("object_type"), normalize_object_kind(object_kind))
     final_action = _safe_str(action, _safe_str(policy.get("default_action"), "view"))
@@ -246,6 +263,22 @@ def evaluate_ob_object_guard(
     if isinstance(decision["metadata"], dict):
         decision["metadata"]["object_guard_match"] = match
         decision["metadata"]["object_guard_policy"] = policy
+
+    # PACK056_OBJECT_AUDIT_WIRE
+    try:
+        capsule = record_ob_object_audit_capsule(
+            decision=decision,
+            object_kind=normalize_object_kind(object_kind),
+            object_type=object_type,
+            object_id=_safe_str(object_id),
+            action=final_action,
+            route_key=final_route_key,
+            user_id=_safe_str(user_id, "anonymous"),
+            metadata={"guard_match": match, "guard_policy": policy, "audit_source": "object_guard_decision"},
+        )
+        decision.setdefault("metadata", {})["object_audit_capsule_id"] = capsule.get("capsule_id")
+    except Exception as audit_error:
+        decision.setdefault("metadata", {})["object_audit_error"] = str(audit_error)
 
     return decision
 

@@ -243,3 +243,244 @@ def save_security_command_dashboard_html(tower_user_id: str = 'owner_solice') ->
     _write_json(SECURITY_COMMAND_JSON, view)
     _write_json(SECURITY_COMMAND_VIEW_JSON, {'ok': True, 'view_name': view.get('view_name'), 'generated_at': view.get('generated_at'), 'state': view.get('state'), 'tower_user_id': tower_user_id, 'html_path': str(SECURITY_COMMAND_HTML), 'json_path': str(SECURITY_COMMAND_JSON)})
     return {'ok': True, 'status': 'saved', 'view_name': view.get('view_name'), 'state': view.get('state'), 'open_inbox': view.get('open_inbox'), 'primary_owner_tasks': view.get('primary_owner_tasks'), 'path': str(SECURITY_COMMAND_HTML), 'bytes': len(html_text.encode('utf-8'))}
+
+
+
+# ================================================================================
+# PACK059_OBJECT_SECURITY_INBOX_UI_HELPERS
+# ================================================================================
+# Adds object-security-inbox fields to Tower Security Command view payloads.
+# ================================================================================
+
+def _pack059_object_security_inbox_panel_html():
+    try:
+        from tower.ob_object_audit_capsules import summarize_ob_object_security_inbox
+
+        summary = summarize_ob_object_security_inbox(limit=6)
+        total = summary.get("total", 0)
+        open_count = summary.get("open", 0)
+        by_severity = summary.get("by_severity", {})
+        by_object_type = summary.get("by_object_type", {})
+        recent = summary.get("recent", [])
+
+        recent_cards = []
+        for item in recent[-6:]:
+            title = str(item.get("title", "Object security review"))
+            severity = str(item.get("severity", "unknown"))
+            status = str(item.get("status", "open"))
+            owner_action = str(item.get("owner_action", "Review object event."))
+            soulaana = str(item.get("soulaana_translation", "Soulaana: Object event needs review."))
+            recent_cards.append(f"""
+              <div class="tower-mini-card">
+                <div class="tower-mini-top">
+                  <span>{severity.upper()}</span>
+                  <span>{status}</span>
+                </div>
+                <strong>{title}</strong>
+                <p>{owner_action}</p>
+                <p>{soulaana}</p>
+              </div>
+            """)
+
+        recent_html = "\n".join(recent_cards) if recent_cards else "<p>No object security inbox items yet.</p>"
+
+        return f"""
+        <section class="tower-panel">
+          <div class="tower-panel-kicker">OB OBJECT SECURITY INBOX</div>
+          <h2>Drawer Review Queue</h2>
+          <p>Review-worthy Observatory object attempts are surfaced here.</p>
+
+          <div class="tower-stat-grid">
+            <div class="tower-stat-card">
+              <span>Total</span>
+              <strong>{total}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>Open</span>
+              <strong>{open_count}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Severity</span>
+              <strong>{by_severity}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Object</span>
+              <strong>{by_object_type}</strong>
+            </div>
+          </div>
+
+          <div class="tower-mini-list">
+            {recent_html}
+          </div>
+        </section>
+        """
+    except Exception as exc:
+        return f"""
+        <section class="tower-panel">
+          <div class="tower-panel-kicker">OB OBJECT SECURITY INBOX</div>
+          <h2>Drawer Review Queue</h2>
+          <p>Object security inbox panel could not load: {type(exc).__name__}: {exc}</p>
+        </section>
+        """
+
+
+def _pack059_object_security_inbox_payload_fields():
+    try:
+        from tower.ob_object_audit_capsules import summarize_ob_object_security_inbox
+
+        summary = summarize_ob_object_security_inbox(limit=8)
+        return {
+            "ob_object_security_inbox_ok": bool(summary.get("ok")),
+            "ob_object_security_inbox_total": int(summary.get("total", 0) or 0),
+            "ob_object_security_inbox_open": int(summary.get("open", 0) or 0),
+            "ob_object_security_inbox_by_status": summary.get("by_status", {}),
+            "ob_object_security_inbox_by_reason": summary.get("by_reason", {}),
+            "ob_object_security_inbox_by_severity": summary.get("by_severity", {}),
+            "ob_object_security_inbox_by_object_type": summary.get("by_object_type", {}),
+            "ob_object_security_inbox_recent": summary.get("recent", []),
+        }
+    except Exception as exc:
+        return {
+            "ob_object_security_inbox_ok": False,
+            "ob_object_security_inbox_error": f"{type(exc).__name__}: {exc}",
+            "ob_object_security_inbox_total": 0,
+            "ob_object_security_inbox_open": 0,
+        }
+
+
+
+# ================================================================================
+# PACK059_SECURITY_COMMAND_VIEW_WRAPPER
+# ================================================================================
+# Wraps generate_security_command_dashboard() if it exists so the saved view/payload
+# includes object security inbox fields/panel without needing to rewrite the page.
+# ================================================================================
+
+try:
+    _pack059_original_generate_security_command_dashboard
+except NameError:
+    try:
+        _pack059_original_generate_security_command_dashboard = generate_security_command_dashboard
+    except NameError:
+        _pack059_original_generate_security_command_dashboard = None
+
+
+if _pack059_original_generate_security_command_dashboard is not None:
+    def generate_security_command_dashboard(*args, **kwargs):
+        result = _pack059_original_generate_security_command_dashboard(*args, **kwargs)
+
+        try:
+            fields = _pack059_object_security_inbox_payload_fields()
+
+            # If result is a dict, enrich it directly.
+            if isinstance(result, dict):
+                result.update(fields)
+
+                path = result.get("path")
+                if path:
+                    try:
+                        from pathlib import Path
+                        html_path = Path(path)
+                        if html_path.exists():
+                            html = html_path.read_text(encoding="utf-8", errors="replace")
+                            panel = _pack059_object_security_inbox_panel_html()
+                            if "OB OBJECT SECURITY INBOX" not in html:
+                                if "</body>" in html:
+                                    html = html.replace("</body>", panel + "\n</body>", 1)
+                                else:
+                                    html = html + "\n" + panel
+                                html_path.write_text(html, encoding="utf-8")
+                                result["bytes"] = html_path.stat().st_size
+                    except Exception as html_error:
+                        result["ob_object_security_inbox_html_error"] = str(html_error)
+
+                return result
+
+            return result
+        except Exception as exc:
+            if isinstance(result, dict):
+                result["ob_object_security_inbox_ok"] = False
+                result["ob_object_security_inbox_error"] = str(exc)
+            return result
+
+
+
+# ================================================================================
+# PACK059B_COMPAT_GENERATE_SECURITY_COMMAND_DASHBOARD
+# ================================================================================
+# Current Tower page uses render_security_command_dashboard_html().
+# This compatibility function gives tests and later routes a stable generator name.
+# ================================================================================
+
+def generate_security_command_dashboard(*args, **kwargs):
+    try:
+        from pathlib import Path
+        import json
+
+        root = Path(__file__).resolve().parents[1]
+        data_dir = root / "tower" / "data"
+        data_dir.mkdir(parents=True, exist_ok=True)
+
+        html_path = data_dir / "security_command_dashboard.html"
+        json_path = data_dir / "security_command_dashboard.json"
+        view_path = data_dir / "security_command_dashboard_view.json"
+
+        fields = _pack059_object_security_inbox_payload_fields()
+
+        # Use the current renderer if present.
+        html = ""
+        try:
+            html = render_security_command_dashboard_html()
+        except TypeError:
+            try:
+                html = render_security_command_dashboard_html({})
+            except Exception:
+                html = ""
+        except Exception:
+            html = ""
+
+        if not isinstance(html, str) or not html.strip():
+            html = """
+            <!doctype html>
+            <html>
+            <head><meta charset='utf-8'><title>The Tower Security Command View</title></head>
+            <body>
+              <h1>The Tower Security Command View</h1>
+            </body>
+            </html>
+            """
+
+        panel = _pack059_object_security_inbox_panel_html()
+        if "OB OBJECT SECURITY INBOX" not in html:
+            if "</body>" in html:
+                html = html.replace("</body>", panel + "\n</body>", 1)
+            else:
+                html = html + "\n" + panel
+
+        html_path.write_text(html, encoding="utf-8")
+
+        payload = {
+            "ok": True,
+            "status": "saved",
+            "view_name": "The Tower Security Command View",
+            "path": str(html_path),
+            "json_path": str(json_path),
+            "view_path": str(view_path),
+            "bytes": html_path.stat().st_size,
+            **fields,
+        }
+
+        json_path.write_text(json.dumps(payload, indent=2, sort_keys=True, default=str), encoding="utf-8")
+        view_path.write_text(json.dumps(payload, indent=2, sort_keys=True, default=str), encoding="utf-8")
+
+        return payload
+
+    except Exception as exc:
+        return {
+            "ok": False,
+            "status": "error",
+            "reason_code": "security_command_dashboard_generate_failed",
+            "human_reason": f"{type(exc).__name__}: {exc}",
+            "path": "",
+        }
+

@@ -1,0 +1,2867 @@
+[
+  {
+    "action": "view",
+    "allowed": true,
+    "capsule_id": "objcaps_muYdvkTuD8VyC_4zTbgFrBzI",
+    "created_at": "2026-05-22T15:09:09.943627Z",
+    "decision": "allow",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The Tower allowed this OB object action.",
+    "metadata": {
+      "decision_metadata": {
+        "account_id": "",
+        "action": "view",
+        "evaluated_at": "2026-05-22T15:09:09.943599Z",
+        "metadata": {
+          "guard_object_kind": "symbol",
+          "guard_policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "object_id": "AAPL",
+        "object_type": "symbol",
+        "owner_user_id": "",
+        "required_clearance_level": "confidential",
+        "role": "owner",
+        "route_key": "symbol_detail",
+        "user_clearance_level": "critical",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "AAPL",
+    "object_kind": "symbol",
+    "object_type": "symbol",
+    "ok": true,
+    "reason_code": "ob_object_clearance_allowed",
+    "required_actions": [],
+    "risk_score": 5,
+    "risk_state": "clear",
+    "route_key": "symbol_detail",
+    "severity": "info",
+    "soulaana_translation": "Soulaana: symbol:AAPL was opened for view. The drawer cleared, and the receipt is filed.",
+    "source_fingerprint": "a35b5962a4cb28fc1bcd240ccfc2",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "download",
+    "allowed": false,
+    "capsule_id": "objcaps_lzfNrnBVuyf27CCC4pCeXsN1",
+    "created_at": "2026-05-22T15:09:09.944164Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_056",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        },
+        "object_id": "export_056",
+        "object_type": "export",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "download",
+            "required_clearance_level": "critical",
+            "route_id": "action:export",
+            "route_key": "export",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+        },
+        "route_key": "export",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_056",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "export_056",
+    "object_kind": "export",
+    "object_type": "export",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "export",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: export:export_056 could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "4aac5055f7108a12125a653a91a2",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_DQ940xR4dzva3GfoBIJPkHAn",
+    "created_at": "2026-05-22T15:09:09.944828Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "This OB object kind is not mapped yet, so the private build blocks it by default.",
+    "metadata": {
+      "decision_metadata": {
+        "evaluated_at": "2026-05-22T15:09:09.944807Z",
+        "match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_056",
+          "object_kind": "mystery_drawer",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "mystery_drawer",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        },
+        "object_id": "secret_056",
+        "object_kind": "mystery_drawer",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "unmapped_object_default_deny",
+        "guard_match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_056",
+          "object_kind": "mystery_drawer",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "mystery_drawer",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "secret_056",
+    "object_kind": "mystery_drawer",
+    "object_type": "mystery_drawer",
+    "ok": true,
+    "reason_code": "ob_object_unmapped_default_deny",
+    "required_actions": [
+      "map_object_policy",
+      "owner_review"
+    ],
+    "risk_score": 65,
+    "risk_state": "restricted",
+    "route_key": "",
+    "severity": "high",
+    "soulaana_translation": "Soulaana: mystery_drawer:secret_056 is not on the drawer map. I kept it locked and filed the receipt.",
+    "source_fingerprint": "eb8268204b175f2c172ce0684518",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_xG80t4ydtQ-lSOTzfxKQOLzq",
+    "created_at": "2026-05-22T15:09:09.945503Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "Manual test object decision.",
+    "metadata": {
+      "decision_metadata": {
+        "__redacted_sensitive_field_count__": 2,
+        "action": "view",
+        "object_id": "analysis_056",
+        "object_type": "analysis_record",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "__redacted_sensitive_field_count__": 2
+      },
+      "pack": "056"
+    },
+    "object_id": "analysis_056",
+    "object_kind": "analysis_record",
+    "object_type": "analysis_record",
+    "ok": true,
+    "reason_code": "manual_test_object_denied",
+    "required_actions": [
+      "owner_review"
+    ],
+    "risk_score": 66,
+    "risk_state": "restricted",
+    "route_key": "analysis_vault",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: analysis_record:analysis_056 did not clear for view. No reveal. Receipt filed.",
+    "source_fingerprint": "6494b12ef02eb4d2260eb7b50bf5",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": true,
+    "capsule_id": "objcaps_0aPBTr5gMFs6fraVZmwCDD8D",
+    "created_at": "2026-05-22T15:19:29.693295Z",
+    "decision": "allow",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The Tower allowed this OB object action.",
+    "metadata": {
+      "decision_metadata": {
+        "account_id": "",
+        "action": "view",
+        "evaluated_at": "2026-05-22T15:19:29.693253Z",
+        "metadata": {
+          "guard_object_kind": "symbol",
+          "guard_policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "object_id": "AAPL",
+        "object_type": "symbol",
+        "owner_user_id": "",
+        "required_clearance_level": "confidential",
+        "role": "owner",
+        "route_key": "symbol_detail",
+        "user_clearance_level": "critical",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "AAPL",
+    "object_kind": "symbol",
+    "object_type": "symbol",
+    "ok": true,
+    "reason_code": "ob_object_clearance_allowed",
+    "required_actions": [],
+    "risk_score": 5,
+    "risk_state": "clear",
+    "route_key": "symbol_detail",
+    "severity": "info",
+    "soulaana_translation": "Soulaana: symbol:AAPL was opened for view. The drawer cleared, and the receipt is filed.",
+    "source_fingerprint": "a35b5962a4cb28fc1bcd240ccfc2",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "download",
+    "allowed": false,
+    "capsule_id": "objcaps_b4PZJM0BcSA_ZI1u84gUPTbi",
+    "created_at": "2026-05-22T15:19:29.694649Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_056",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        },
+        "object_id": "export_056",
+        "object_type": "export",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "download",
+            "required_clearance_level": "critical",
+            "route_id": "action:export",
+            "route_key": "export",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+        },
+        "route_key": "export",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_056",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "export_056",
+    "object_kind": "export",
+    "object_type": "export",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "export",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: export:export_056 could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "4aac5055f7108a12125a653a91a2",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_8P3viLS3IqvPYf2i-XVsEwTF",
+    "created_at": "2026-05-22T15:19:29.695983Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "This OB object kind is not mapped yet, so the private build blocks it by default.",
+    "metadata": {
+      "decision_metadata": {
+        "evaluated_at": "2026-05-22T15:19:29.695954Z",
+        "match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_056",
+          "object_kind": "mystery_drawer",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "mystery_drawer",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        },
+        "object_id": "secret_056",
+        "object_kind": "mystery_drawer",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "unmapped_object_default_deny",
+        "guard_match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_056",
+          "object_kind": "mystery_drawer",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "mystery_drawer",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "secret_056",
+    "object_kind": "mystery_drawer",
+    "object_type": "mystery_drawer",
+    "ok": true,
+    "reason_code": "ob_object_unmapped_default_deny",
+    "required_actions": [
+      "map_object_policy",
+      "owner_review"
+    ],
+    "risk_score": 65,
+    "risk_state": "restricted",
+    "route_key": "",
+    "severity": "high",
+    "soulaana_translation": "Soulaana: mystery_drawer:secret_056 is not on the drawer map. I kept it locked and filed the receipt.",
+    "source_fingerprint": "eb8268204b175f2c172ce0684518",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_f9ILDklLfy151rbJ82O03KqI",
+    "created_at": "2026-05-22T15:19:29.697261Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "Manual test object decision.",
+    "metadata": {
+      "decision_metadata": {
+        "__redacted_sensitive_field_count__": 2,
+        "action": "view",
+        "object_id": "analysis_056",
+        "object_type": "analysis_record",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "__redacted_sensitive_field_count__": 2
+      },
+      "pack": "056"
+    },
+    "object_id": "analysis_056",
+    "object_kind": "analysis_record",
+    "object_type": "analysis_record",
+    "ok": true,
+    "reason_code": "manual_test_object_denied",
+    "required_actions": [
+      "owner_review"
+    ],
+    "risk_score": 66,
+    "risk_state": "restricted",
+    "route_key": "analysis_vault",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: analysis_record:analysis_056 did not clear for view. No reveal. Receipt filed.",
+    "source_fingerprint": "6494b12ef02eb4d2260eb7b50bf5",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "download",
+    "allowed": false,
+    "capsule_id": "objcaps_YIBvIa1FZSNhZyRwnSy9SKFO",
+    "created_at": "2026-05-22T15:25:06.105618Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_057",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        },
+        "object_id": "export_057",
+        "object_type": "export",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "download",
+            "required_clearance_level": "critical",
+            "route_id": "action:export",
+            "route_key": "export",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+        },
+        "route_key": "export",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_057",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "export_057",
+    "object_kind": "export",
+    "object_type": "export",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "export",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: export:export_057 could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "aac692570b7084fc19ab717ce3aa",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": true,
+    "capsule_id": "objcaps_eNpy9T0rOWi9PCE6BcARVuV2",
+    "created_at": "2026-05-22T15:29:39.815252Z",
+    "decision": "allow",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The Tower allowed this OB object action.",
+    "metadata": {
+      "decision_metadata": {
+        "account_id": "",
+        "action": "view",
+        "evaluated_at": "2026-05-22T15:29:39.815210Z",
+        "metadata": {
+          "guard_object_kind": "symbol",
+          "guard_policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "MSFT",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "object_id": "MSFT",
+        "object_type": "symbol",
+        "owner_user_id": "",
+        "required_clearance_level": "confidential",
+        "role": "owner",
+        "route_key": "symbol_detail",
+        "user_clearance_level": "critical",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "MSFT",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "MSFT",
+    "object_kind": "symbol",
+    "object_type": "symbol",
+    "ok": true,
+    "reason_code": "ob_object_clearance_allowed",
+    "required_actions": [],
+    "risk_score": 5,
+    "risk_state": "clear",
+    "route_key": "symbol_detail",
+    "severity": "info",
+    "soulaana_translation": "Soulaana: symbol:MSFT was opened for view. The drawer cleared, and the receipt is filed.",
+    "source_fingerprint": "7f09000588bc706d83de6bdf4725",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "download",
+    "allowed": false,
+    "capsule_id": "objcaps_kYuCizULUv3QZ4F7TbFbSz0j",
+    "created_at": "2026-05-22T15:29:39.818244Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_058",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        },
+        "object_id": "export_058",
+        "object_type": "export",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "download",
+            "required_clearance_level": "critical",
+            "route_id": "action:export",
+            "route_key": "export",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+        },
+        "route_key": "export",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_058",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "export_058",
+    "object_kind": "export",
+    "object_type": "export",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "export",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: export:export_058 could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "30d3c704a05bfadfe7e7534c9af5",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_fUVUkW2qK5D3Di_e6_rnR1t0",
+    "created_at": "2026-05-22T15:29:39.820313Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "This OB object kind is not mapped yet, so the private build blocks it by default.",
+    "metadata": {
+      "decision_metadata": {
+        "evaluated_at": "2026-05-22T15:29:39.820288Z",
+        "match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_058",
+          "object_kind": "unknown_drawer_058",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "unknown_drawer_058",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        },
+        "object_id": "secret_058",
+        "object_kind": "unknown_drawer_058",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "unmapped_object_default_deny",
+        "guard_match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_058",
+          "object_kind": "unknown_drawer_058",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "unknown_drawer_058",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "secret_058",
+    "object_kind": "unknown_drawer_058",
+    "object_type": "unknown_drawer_058",
+    "ok": true,
+    "reason_code": "ob_object_unmapped_default_deny",
+    "required_actions": [
+      "map_object_policy",
+      "owner_review"
+    ],
+    "risk_score": 65,
+    "risk_state": "restricted",
+    "route_key": "",
+    "severity": "high",
+    "soulaana_translation": "Soulaana: unknown_drawer_058:secret_058 is not on the drawer map. I kept it locked and filed the receipt.",
+    "source_fingerprint": "eb8a769cb474faadc48982ed76a0",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "download",
+    "allowed": false,
+    "capsule_id": "objcaps_ZmOKkWLq54bv9i4afQkB_9S2",
+    "created_at": "2026-05-22T15:37:49.986558Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_059",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        },
+        "object_id": "export_059",
+        "object_type": "export",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "download",
+            "required_clearance_level": "critical",
+            "route_id": "action:export",
+            "route_key": "export",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+        },
+        "route_key": "export",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_059",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "export_059",
+    "object_kind": "export",
+    "object_type": "export",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "export",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: export:export_059 could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "8fed7d814db211da1fa77d6a0334",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": true,
+    "capsule_id": "objcaps_DGP_8jCoJkqrr7wuV1DiClF6",
+    "created_at": "2026-05-22T15:45:48.208344Z",
+    "decision": "allow",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The Tower allowed this OB object action.",
+    "metadata": {
+      "decision_metadata": {
+        "account_id": "",
+        "action": "view",
+        "evaluated_at": "2026-05-22T15:45:48.208308Z",
+        "metadata": {
+          "guard_object_kind": "symbol",
+          "guard_policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "object_id": "AAPL",
+        "object_type": "symbol",
+        "owner_user_id": "",
+        "required_clearance_level": "confidential",
+        "role": "owner",
+        "route_key": "symbol_detail",
+        "user_clearance_level": "critical",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "AAPL",
+    "object_kind": "symbol",
+    "object_type": "symbol",
+    "ok": true,
+    "reason_code": "ob_object_clearance_allowed",
+    "required_actions": [],
+    "risk_score": 0,
+    "risk_state": "clear",
+    "route_key": "symbol_detail",
+    "severity": "info",
+    "soulaana_translation": "Soulaana: symbol:AAPL was opened for view. The drawer cleared, and the receipt is filed.",
+    "source_fingerprint": "fca4e95c1f4659f45f7bf2bab9a1",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_vN8azgRmeMRT3IS-JAOkCIQU",
+    "created_at": "2026-05-22T15:45:48.210816Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "object_id": "AAPL",
+        "object_type": "symbol",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "view",
+            "required_clearance_level": "confidential",
+            "route_id": "/signals/<symbol>",
+            "route_key": "symbol_detail",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Symbol Intelligence needs confidential clearance. This user only has internal."
+        },
+        "route_key": "symbol_detail",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "AAPL",
+    "object_kind": "symbol",
+    "object_type": "symbol",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "symbol_detail",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: symbol:AAPL could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "67ca5750d45b52b308b8212489cc",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": true,
+    "capsule_id": "objcaps_vJ8a7PuUHaLzktB7FzASo1lD",
+    "created_at": "2026-05-22T15:45:48.213918Z",
+    "decision": "allow",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The Tower allowed this OB object action.",
+    "metadata": {
+      "decision_metadata": {
+        "account_id": "",
+        "action": "view",
+        "evaluated_at": "2026-05-22T15:45:48.213892Z",
+        "metadata": {
+          "guard_object_kind": "trade",
+          "guard_policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "trade_060",
+          "object_kind": "trade",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "trade",
+          "plain": "Specific trade, position, or lifecycle record.",
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "object_id": "trade_060",
+        "object_type": "trade",
+        "owner_user_id": "owner_solice",
+        "required_clearance_level": "restricted",
+        "role": "owner",
+        "route_key": "positions",
+        "user_clearance_level": "critical",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "trade_060",
+          "object_kind": "trade",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "trade",
+          "plain": "Specific trade, position, or lifecycle record.",
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "trade_060",
+    "object_kind": "trade",
+    "object_type": "trade",
+    "ok": true,
+    "reason_code": "ob_object_clearance_allowed",
+    "required_actions": [],
+    "risk_score": 0,
+    "risk_state": "clear",
+    "route_key": "positions",
+    "severity": "info",
+    "soulaana_translation": "Soulaana: trade:trade_060 was opened for view. The drawer cleared, and the receipt is filed.",
+    "source_fingerprint": "cf12865bbb222f88d16bf19ec46b",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "download",
+    "allowed": false,
+    "capsule_id": "objcaps_2Ry9R_VxHwOC1o9wrEECWbgs",
+    "created_at": "2026-05-22T15:45:48.216174Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_060",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        },
+        "object_id": "export_060",
+        "object_type": "export",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "download",
+            "required_clearance_level": "critical",
+            "route_id": "action:export",
+            "route_key": "export",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+        },
+        "route_key": "export",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_060",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "export_060",
+    "object_kind": "export",
+    "object_type": "export",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "export",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: export:export_060 could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "f42eecdc467ab68fa0297c407dc5",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_rTVWtUucRfKGFJhxis2BLmdj",
+    "created_at": "2026-05-22T15:45:48.219428Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "This OB object kind is not mapped yet, so the private build blocks it by default.",
+    "metadata": {
+      "decision_metadata": {
+        "evaluated_at": "2026-05-22T15:45:48.219398Z",
+        "match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_060",
+          "object_kind": "unknown_drawer_060",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "unknown_drawer_060",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        },
+        "object_id": "secret_060",
+        "object_kind": "unknown_drawer_060",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "unmapped_object_default_deny",
+        "guard_match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_060",
+          "object_kind": "unknown_drawer_060",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "unknown_drawer_060",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "secret_060",
+    "object_kind": "unknown_drawer_060",
+    "object_type": "unknown_drawer_060",
+    "ok": true,
+    "reason_code": "ob_object_unmapped_default_deny",
+    "required_actions": [
+      "map_object_policy",
+      "owner_review"
+    ],
+    "risk_score": 65,
+    "risk_state": "restricted",
+    "route_key": "",
+    "severity": "high",
+    "soulaana_translation": "Soulaana: unknown_drawer_060:secret_060 is not on the drawer map. I kept it locked and filed the receipt.",
+    "source_fingerprint": "cb76acac0f8dd895182c4ead9f8d",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "view",
+    "allowed": true,
+    "capsule_id": "objcaps_bPgjBzUtzBSIxGX7RIHgocCd",
+    "created_at": "2026-05-22T15:45:48.262335Z",
+    "decision": "allow",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The Tower allowed this OB object action.",
+    "metadata": {
+      "decision_metadata": {
+        "account_id": "",
+        "action": "view",
+        "evaluated_at": "2026-05-22T15:45:48.262302Z",
+        "metadata": {
+          "guard_object_kind": "symbol",
+          "guard_policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "object_id": "AAPL",
+        "object_type": "symbol",
+        "owner_user_id": "",
+        "required_clearance_level": "confidential",
+        "role": "owner",
+        "route_key": "symbol_detail",
+        "user_clearance_level": "critical",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "AAPL",
+    "object_kind": "symbol",
+    "object_type": "symbol",
+    "ok": true,
+    "reason_code": "ob_object_clearance_allowed",
+    "required_actions": [],
+    "risk_score": 0,
+    "risk_state": "clear",
+    "route_key": "symbol_detail",
+    "severity": "info",
+    "soulaana_translation": "Soulaana: symbol:AAPL was opened for view. The drawer cleared, and the receipt is filed.",
+    "source_fingerprint": "fca4e95c1f4659f45f7bf2bab9a1",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_frj4b-shBBsKjd71jWCXGg5J",
+    "created_at": "2026-05-22T15:45:48.266969Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "object_id": "AAPL",
+        "object_type": "symbol",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "view",
+            "required_clearance_level": "confidential",
+            "route_id": "/signals/<symbol>",
+            "route_key": "symbol_detail",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Symbol Intelligence needs confidential clearance. This user only has internal."
+        },
+        "route_key": "symbol_detail",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "AAPL",
+    "object_kind": "symbol",
+    "object_type": "symbol",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "symbol_detail",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: symbol:AAPL could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "67ca5750d45b52b308b8212489cc",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": true,
+    "capsule_id": "objcaps_xmGwyKptYlY-D27bQdxPnadM",
+    "created_at": "2026-05-22T15:45:48.274786Z",
+    "decision": "allow",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The Tower allowed this OB object action.",
+    "metadata": {
+      "decision_metadata": {
+        "account_id": "",
+        "action": "view",
+        "evaluated_at": "2026-05-22T15:45:48.274756Z",
+        "metadata": {
+          "guard_object_kind": "trade",
+          "guard_policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "trade_060",
+          "object_kind": "trade",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "trade",
+          "plain": "Specific trade, position, or lifecycle record.",
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "object_id": "trade_060",
+        "object_type": "trade",
+        "owner_user_id": "owner_solice",
+        "required_clearance_level": "restricted",
+        "role": "owner",
+        "route_key": "positions",
+        "user_clearance_level": "critical",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "trade_060",
+          "object_kind": "trade",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "trade",
+          "plain": "Specific trade, position, or lifecycle record.",
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "trade_060",
+    "object_kind": "trade",
+    "object_type": "trade",
+    "ok": true,
+    "reason_code": "ob_object_clearance_allowed",
+    "required_actions": [],
+    "risk_score": 0,
+    "risk_state": "clear",
+    "route_key": "positions",
+    "severity": "info",
+    "soulaana_translation": "Soulaana: trade:trade_060 was opened for view. The drawer cleared, and the receipt is filed.",
+    "source_fingerprint": "cf12865bbb222f88d16bf19ec46b",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "download",
+    "allowed": false,
+    "capsule_id": "objcaps_7T_k0lfDsItR2apTX8NCcfCU",
+    "created_at": "2026-05-22T15:45:48.283635Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_060",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        },
+        "object_id": "export_060",
+        "object_type": "export",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "download",
+            "required_clearance_level": "critical",
+            "route_id": "action:export",
+            "route_key": "export",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+        },
+        "route_key": "export",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_060",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "export_060",
+    "object_kind": "export",
+    "object_type": "export",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "export",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: export:export_060 could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "f42eecdc467ab68fa0297c407dc5",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_0IV0JmlBLuObyPIG5XTrdcVh",
+    "created_at": "2026-05-22T15:45:48.291091Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "This OB object kind is not mapped yet, so the private build blocks it by default.",
+    "metadata": {
+      "decision_metadata": {
+        "evaluated_at": "2026-05-22T15:45:48.291054Z",
+        "match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_060",
+          "object_kind": "unknown_drawer_060",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "unknown_drawer_060",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        },
+        "object_id": "secret_060",
+        "object_kind": "unknown_drawer_060",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "unmapped_object_default_deny",
+        "guard_match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_060",
+          "object_kind": "unknown_drawer_060",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "unknown_drawer_060",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "secret_060",
+    "object_kind": "unknown_drawer_060",
+    "object_type": "unknown_drawer_060",
+    "ok": true,
+    "reason_code": "ob_object_unmapped_default_deny",
+    "required_actions": [
+      "map_object_policy",
+      "owner_review"
+    ],
+    "risk_score": 65,
+    "risk_state": "restricted",
+    "route_key": "",
+    "severity": "high",
+    "soulaana_translation": "Soulaana: unknown_drawer_060:secret_060 is not on the drawer map. I kept it locked and filed the receipt.",
+    "source_fingerprint": "cb76acac0f8dd895182c4ead9f8d",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "view",
+    "allowed": true,
+    "capsule_id": "objcaps_b-xBcwFlFeu9BmJMAV0O37eE",
+    "created_at": "2026-05-22T15:46:16.510603Z",
+    "decision": "allow",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The Tower allowed this OB object action.",
+    "metadata": {
+      "decision_metadata": {
+        "account_id": "",
+        "action": "view",
+        "evaluated_at": "2026-05-22T15:46:16.510572Z",
+        "metadata": {
+          "guard_object_kind": "symbol",
+          "guard_policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "object_id": "AAPL",
+        "object_type": "symbol",
+        "owner_user_id": "",
+        "required_clearance_level": "confidential",
+        "role": "owner",
+        "route_key": "symbol_detail",
+        "user_clearance_level": "critical",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "AAPL",
+    "object_kind": "symbol",
+    "object_type": "symbol",
+    "ok": true,
+    "reason_code": "ob_object_clearance_allowed",
+    "required_actions": [],
+    "risk_score": 0,
+    "risk_state": "clear",
+    "route_key": "symbol_detail",
+    "severity": "info",
+    "soulaana_translation": "Soulaana: symbol:AAPL was opened for view. The drawer cleared, and the receipt is filed.",
+    "source_fingerprint": "fca4e95c1f4659f45f7bf2bab9a1",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_6XHCZfduI-xkEZXS4hiVuiew",
+    "created_at": "2026-05-22T15:46:16.513200Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "object_id": "AAPL",
+        "object_type": "symbol",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "view",
+            "required_clearance_level": "confidential",
+            "route_id": "/signals/<symbol>",
+            "route_key": "symbol_detail",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Symbol Intelligence needs confidential clearance. This user only has internal."
+        },
+        "route_key": "symbol_detail",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "AAPL",
+    "object_kind": "symbol",
+    "object_type": "symbol",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "symbol_detail",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: symbol:AAPL could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "67ca5750d45b52b308b8212489cc",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": true,
+    "capsule_id": "objcaps_TY55Go350m5Qh936yDNXUbse",
+    "created_at": "2026-05-22T15:46:16.516186Z",
+    "decision": "allow",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The Tower allowed this OB object action.",
+    "metadata": {
+      "decision_metadata": {
+        "account_id": "",
+        "action": "view",
+        "evaluated_at": "2026-05-22T15:46:16.516169Z",
+        "metadata": {
+          "guard_object_kind": "trade",
+          "guard_policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "trade_060",
+          "object_kind": "trade",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "trade",
+          "plain": "Specific trade, position, or lifecycle record.",
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "object_id": "trade_060",
+        "object_type": "trade",
+        "owner_user_id": "owner_solice",
+        "required_clearance_level": "restricted",
+        "role": "owner",
+        "route_key": "positions",
+        "user_clearance_level": "critical",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "trade_060",
+          "object_kind": "trade",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "trade",
+          "plain": "Specific trade, position, or lifecycle record.",
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "trade_060",
+    "object_kind": "trade",
+    "object_type": "trade",
+    "ok": true,
+    "reason_code": "ob_object_clearance_allowed",
+    "required_actions": [],
+    "risk_score": 0,
+    "risk_state": "clear",
+    "route_key": "positions",
+    "severity": "info",
+    "soulaana_translation": "Soulaana: trade:trade_060 was opened for view. The drawer cleared, and the receipt is filed.",
+    "source_fingerprint": "cf12865bbb222f88d16bf19ec46b",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "download",
+    "allowed": false,
+    "capsule_id": "objcaps_CDVtwgq0Oyp1LOJMqpxg9fkx",
+    "created_at": "2026-05-22T15:46:16.518394Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_060",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        },
+        "object_id": "export_060",
+        "object_type": "export",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "download",
+            "required_clearance_level": "critical",
+            "route_id": "action:export",
+            "route_key": "export",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+        },
+        "route_key": "export",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_060",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "export_060",
+    "object_kind": "export",
+    "object_type": "export",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "export",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: export:export_060 could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "f42eecdc467ab68fa0297c407dc5",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_M6RKC2jO5qLNkfDm2cSw4uff",
+    "created_at": "2026-05-22T15:46:16.521489Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "This OB object kind is not mapped yet, so the private build blocks it by default.",
+    "metadata": {
+      "decision_metadata": {
+        "evaluated_at": "2026-05-22T15:46:16.521466Z",
+        "match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_060",
+          "object_kind": "unknown_drawer_060",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "unknown_drawer_060",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        },
+        "object_id": "secret_060",
+        "object_kind": "unknown_drawer_060",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "unmapped_object_default_deny",
+        "guard_match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_060",
+          "object_kind": "unknown_drawer_060",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "unknown_drawer_060",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "secret_060",
+    "object_kind": "unknown_drawer_060",
+    "object_type": "unknown_drawer_060",
+    "ok": true,
+    "reason_code": "ob_object_unmapped_default_deny",
+    "required_actions": [
+      "map_object_policy",
+      "owner_review"
+    ],
+    "risk_score": 65,
+    "risk_state": "restricted",
+    "route_key": "",
+    "severity": "high",
+    "soulaana_translation": "Soulaana: unknown_drawer_060:secret_060 is not on the drawer map. I kept it locked and filed the receipt.",
+    "source_fingerprint": "cb76acac0f8dd895182c4ead9f8d",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "view",
+    "allowed": true,
+    "capsule_id": "objcaps_W7XyFMQ6Xaso1gvJNuxZcI7c",
+    "created_at": "2026-05-22T15:46:16.549191Z",
+    "decision": "allow",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The Tower allowed this OB object action.",
+    "metadata": {
+      "decision_metadata": {
+        "account_id": "",
+        "action": "view",
+        "evaluated_at": "2026-05-22T15:46:16.549163Z",
+        "metadata": {
+          "guard_object_kind": "symbol",
+          "guard_policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "object_id": "AAPL",
+        "object_type": "symbol",
+        "owner_user_id": "",
+        "required_clearance_level": "confidential",
+        "role": "owner",
+        "route_key": "symbol_detail",
+        "user_clearance_level": "critical",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "AAPL",
+    "object_kind": "symbol",
+    "object_type": "symbol",
+    "ok": true,
+    "reason_code": "ob_object_clearance_allowed",
+    "required_actions": [],
+    "risk_score": 0,
+    "risk_state": "clear",
+    "route_key": "symbol_detail",
+    "severity": "info",
+    "soulaana_translation": "Soulaana: symbol:AAPL was opened for view. The drawer cleared, and the receipt is filed.",
+    "source_fingerprint": "fca4e95c1f4659f45f7bf2bab9a1",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_aXEl6VJotbHAvAMe0Gx5OgVI",
+    "created_at": "2026-05-22T15:46:16.551801Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "object_id": "AAPL",
+        "object_type": "symbol",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "view",
+            "required_clearance_level": "confidential",
+            "route_id": "/signals/<symbol>",
+            "route_key": "symbol_detail",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Symbol Intelligence needs confidential clearance. This user only has internal."
+        },
+        "route_key": "symbol_detail",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "AAPL",
+          "object_kind": "symbol",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "symbol",
+            "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "symbol",
+          "plain": "Per-symbol intelligence, signal history, symbol notes, and chart intelligence.",
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "AAPL",
+    "object_kind": "symbol",
+    "object_type": "symbol",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "symbol_detail",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: symbol:AAPL could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "67ca5750d45b52b308b8212489cc",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": true,
+    "capsule_id": "objcaps_wGJOLV9WvBp7ZYJCDN8xaO7i",
+    "created_at": "2026-05-22T15:46:16.555153Z",
+    "decision": "allow",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The Tower allowed this OB object action.",
+    "metadata": {
+      "decision_metadata": {
+        "account_id": "",
+        "action": "view",
+        "evaluated_at": "2026-05-22T15:46:16.555135Z",
+        "metadata": {
+          "guard_object_kind": "trade",
+          "guard_policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "trade_060",
+          "object_kind": "trade",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "view",
+          "object_type": "trade",
+          "plain": "Specific trade, position, or lifecycle record.",
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "object_id": "trade_060",
+        "object_type": "trade",
+        "owner_user_id": "owner_solice",
+        "required_clearance_level": "restricted",
+        "role": "owner",
+        "route_key": "positions",
+        "user_clearance_level": "critical",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "trade_060",
+          "object_kind": "trade",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "trade",
+            "plain": "Specific trade, position, or lifecycle record.",
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          }
+        },
+        "guard_policy": {
+          "default_action": "view",
+          "object_type": "trade",
+          "plain": "Specific trade, position, or lifecycle record.",
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "trade_060",
+    "object_kind": "trade",
+    "object_type": "trade",
+    "ok": true,
+    "reason_code": "ob_object_clearance_allowed",
+    "required_actions": [],
+    "risk_score": 0,
+    "risk_state": "clear",
+    "route_key": "positions",
+    "severity": "info",
+    "soulaana_translation": "Soulaana: trade:trade_060 was opened for view. The drawer cleared, and the receipt is filed.",
+    "source_fingerprint": "cf12865bbb222f88d16bf19ec46b",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "download",
+    "allowed": false,
+    "capsule_id": "objcaps_y6yQfOl59lRZ-3DLKJN5OL_e",
+    "created_at": "2026-05-22T15:46:16.557728Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+    "metadata": {
+      "decision_metadata": {
+        "object_guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_060",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "object_guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        },
+        "object_id": "export_060",
+        "object_type": "export",
+        "parent_route_decision": {
+          "allowed": false,
+          "decision": "deny",
+          "human_reason": "User clearance is not high enough for this OB route/action.",
+          "metadata": {
+            "action": "download",
+            "required_clearance_level": "critical",
+            "route_id": "action:export",
+            "route_key": "export",
+            "user_clearance_level": "internal",
+            "user_id": "beta_001"
+          },
+          "ok": true,
+          "reason_code": "ob_clearance_level_too_low",
+          "required_actions": [
+            "upgrade_clearance",
+            "owner_review"
+          ],
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+        },
+        "route_key": "export",
+        "user_id": "beta_001"
+      },
+      "guard_metadata": {
+        "audit_source": "object_guard_decision",
+        "guard_match": {
+          "match_type": "object_policy",
+          "matched": true,
+          "object_id": "export_060",
+          "object_kind": "export",
+          "ok": true,
+          "policy": {
+            "default_action": "download",
+            "object_type": "export",
+            "plain": "Specific export/download/share request leaving OB.",
+            "route_key": "export",
+            "sensitivity": "critical"
+          }
+        },
+        "guard_policy": {
+          "default_action": "download",
+          "object_type": "export",
+          "plain": "Specific export/download/share request leaving OB.",
+          "route_key": "export",
+          "sensitivity": "critical"
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "export_060",
+    "object_kind": "export",
+    "object_type": "export",
+    "ok": true,
+    "reason_code": "parent_route_clearance_failed",
+    "required_actions": [
+      "upgrade_clearance",
+      "owner_review"
+    ],
+    "risk_score": 70,
+    "risk_state": "restricted",
+    "route_key": "export",
+    "severity": "medium",
+    "soulaana_translation": "Soulaana: export:export_060 could not open because the hallway failed first. Receipt filed.",
+    "source_fingerprint": "f42eecdc467ab68fa0297c407dc5",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "capsule_id": "objcaps_EJ1nw7uw6g3pAhiDWVWE-fUZ",
+    "created_at": "2026-05-22T15:46:16.561210Z",
+    "decision": "deny",
+    "event_type": "ob_object_guard_audit_capsule",
+    "human_reason": "This OB object kind is not mapped yet, so the private build blocks it by default.",
+    "metadata": {
+      "decision_metadata": {
+        "evaluated_at": "2026-05-22T15:46:16.561186Z",
+        "match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_060",
+          "object_kind": "unknown_drawer_060",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "unknown_drawer_060",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        },
+        "object_id": "secret_060",
+        "object_kind": "unknown_drawer_060",
+        "user_id": "owner_solice"
+      },
+      "guard_metadata": {
+        "audit_source": "unmapped_object_default_deny",
+        "guard_match": {
+          "match_type": "unmapped_object_default_deny",
+          "matched": false,
+          "object_id": "secret_060",
+          "object_kind": "unknown_drawer_060",
+          "ok": true,
+          "policy": {
+            "default_action": "view",
+            "object_type": "unknown_drawer_060",
+            "plain": "This object kind is not mapped yet. Default deny for private build.",
+            "route_key": "",
+            "sensitivity": "unknown"
+          }
+        }
+      },
+      "pack": "056"
+    },
+    "object_id": "secret_060",
+    "object_kind": "unknown_drawer_060",
+    "object_type": "unknown_drawer_060",
+    "ok": true,
+    "reason_code": "ob_object_unmapped_default_deny",
+    "required_actions": [
+      "map_object_policy",
+      "owner_review"
+    ],
+    "risk_score": 65,
+    "risk_state": "restricted",
+    "route_key": "",
+    "severity": "high",
+    "soulaana_translation": "Soulaana: unknown_drawer_060:secret_060 is not on the drawer map. I kept it locked and filed the receipt.",
+    "source_fingerprint": "cb76acac0f8dd895182c4ead9f8d",
+    "user_id": "owner_solice"
+  }
+]

@@ -189,3 +189,131 @@ def _pack034_load_door_swipe_security_inbox_summary():
             "door_swipe_security_inbox_open": 0,
             "door_swipe_security_inbox_recent": [],
         }
+
+
+
+# ================================================================================
+# PACK057_OBJECT_AUDIT_STATUS_WRAPPER
+# ================================================================================
+# Adds OB object audit capsule totals to get_tower_status() without rewriting the
+# original status function shape.
+# ================================================================================
+
+def _pack057_get_object_audit_status_fields():
+    try:
+        from tower.ob_object_audit_capsules import summarize_ob_object_audit_capsules
+
+        summary = summarize_ob_object_audit_capsules(limit=8)
+        return {
+            "ob_object_audit_ok": bool(summary.get("ok")),
+            "ob_object_audit_total": int(summary.get("total", 0) or 0),
+            "ob_object_audit_allowed": int(summary.get("allowed", 0) or 0),
+            "ob_object_audit_denied": int(summary.get("denied", 0) or 0),
+            "ob_object_audit_by_reason": summary.get("by_reason", {}),
+            "ob_object_audit_by_object_type": summary.get("by_object_type", {}),
+            "ob_object_audit_by_severity": summary.get("by_severity", {}),
+            "ob_object_audit_recent": summary.get("recent", []),
+            "ob_object_audit_human_reason": summary.get("human_reason", ""),
+            "ob_object_audit_soulaana": summary.get("soulaana_translation", ""),
+        }
+    except Exception as exc:
+        return {
+            "ob_object_audit_ok": False,
+            "ob_object_audit_error": f"{type(exc).__name__}: {exc}",
+            "ob_object_audit_total": 0,
+            "ob_object_audit_allowed": 0,
+            "ob_object_audit_denied": 0,
+            "ob_object_audit_by_reason": {},
+            "ob_object_audit_by_object_type": {},
+            "ob_object_audit_by_severity": {},
+            "ob_object_audit_recent": [],
+        }
+
+
+try:
+    _pack057_original_get_tower_status
+except NameError:
+    _pack057_original_get_tower_status = get_tower_status
+
+
+def get_tower_status(*args, **kwargs):
+    status = _pack057_original_get_tower_status(*args, **kwargs)
+
+    if not isinstance(status, dict):
+        status = {
+            "ok": False,
+            "tower_status_original_type": str(type(status).__name__),
+            "tower_status_original_value": str(status),
+        }
+
+    try:
+        status.update(_pack057_get_object_audit_status_fields())
+    except Exception as exc:
+        status["ob_object_audit_ok"] = False
+        status["ob_object_audit_error"] = str(exc)
+
+    return status
+
+
+
+# ================================================================================
+# PACK059_OBJECT_SECURITY_INBOX_STATUS_WRAPPER
+# ================================================================================
+# Adds OB object security inbox totals to get_tower_status().
+# ================================================================================
+
+def _pack059_get_object_security_inbox_status_fields():
+    try:
+        from tower.ob_object_audit_capsules import summarize_ob_object_security_inbox
+
+        summary = summarize_ob_object_security_inbox(limit=8)
+        return {
+            "ob_object_security_inbox_ok": bool(summary.get("ok")),
+            "ob_object_security_inbox_total": int(summary.get("total", 0) or 0),
+            "ob_object_security_inbox_open": int(summary.get("open", 0) or 0),
+            "ob_object_security_inbox_by_status": summary.get("by_status", {}),
+            "ob_object_security_inbox_by_reason": summary.get("by_reason", {}),
+            "ob_object_security_inbox_by_severity": summary.get("by_severity", {}),
+            "ob_object_security_inbox_by_object_type": summary.get("by_object_type", {}),
+            "ob_object_security_inbox_recent": summary.get("recent", []),
+            "ob_object_security_inbox_human_reason": summary.get("human_reason", ""),
+            "ob_object_security_inbox_soulaana": summary.get("soulaana_translation", ""),
+        }
+    except Exception as exc:
+        return {
+            "ob_object_security_inbox_ok": False,
+            "ob_object_security_inbox_error": f"{type(exc).__name__}: {exc}",
+            "ob_object_security_inbox_total": 0,
+            "ob_object_security_inbox_open": 0,
+            "ob_object_security_inbox_by_status": {},
+            "ob_object_security_inbox_by_reason": {},
+            "ob_object_security_inbox_by_severity": {},
+            "ob_object_security_inbox_by_object_type": {},
+            "ob_object_security_inbox_recent": [],
+        }
+
+
+try:
+    _pack059_original_get_tower_status
+except NameError:
+    _pack059_original_get_tower_status = get_tower_status
+
+
+def get_tower_status(*args, **kwargs):
+    status = _pack059_original_get_tower_status(*args, **kwargs)
+
+    if not isinstance(status, dict):
+        status = {
+            "ok": False,
+            "tower_status_original_type": str(type(status).__name__),
+            "tower_status_original_value": str(status),
+        }
+
+    try:
+        status.update(_pack059_get_object_security_inbox_status_fields())
+    except Exception as exc:
+        status["ob_object_security_inbox_ok"] = False
+        status["ob_object_security_inbox_error"] = str(exc)
+
+    return status
+
