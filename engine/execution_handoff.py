@@ -1036,10 +1036,59 @@ def execute_via_adapter(
     lifecycle_after["selected_for_execution"] = True
     lifecycle_after["lifecycle_stage"] = "ENTERED"
     lifecycle_after["final_decision"] = "APPROVE"
-    lifecycle_after["final_reason"] = "Position entered."
-    lifecycle_after["final_reason_code"] = "entered"
-    lifecycle_after["execution_reason"] = "Position entered."
-    lifecycle_after["execution_reason_code"] = "entered"
+    # OBSERVATORY_EXECUTION_HANDOFF_STOCK_FALLBACK_BIRTH_HARDEN_003_20260522
+    # Preserve richer reason language when a successful STOCK fill was born
+    # from observed-only/bad option research.
+    _is_stock_fallback_fill_20260522 = (
+        vehicle_selected == "STOCK"
+        and (
+            _safe_bool(queued_trade.get("option_fallback_used"), False)
+            or _safe_bool(queued_trade.get("stock_fallback_from_option_research"), False)
+            or _safe_bool(lifecycle_after.get("option_fallback_used"), False)
+            or _safe_bool(lifecycle_after.get("stock_fallback_from_option_research"), False)
+            or _safe_dict(queued_trade.get("option")) != {}
+            or _safe_str(queued_trade.get("final_reason"), "").strip() in {
+                "option_observed_stock_fallback",
+                "stock_fallback_after_observed_option",
+                "stock_fallback_position_entered",
+            }
+            or _safe_str(lifecycle_after.get("final_reason"), "").strip() in {
+                "option_observed_stock_fallback",
+                "stock_fallback_after_observed_option",
+                "stock_fallback_position_entered",
+            }
+        )
+    )
+
+    if _is_stock_fallback_fill_20260522:
+        lifecycle_after["final_reason"] = "stock_fallback_position_entered"
+        lifecycle_after["final_reason_code"] = "stock_fallback_position_entered"
+        lifecycle_after["execution_reason"] = "stock_fallback_position_entered"
+        lifecycle_after["execution_reason_code"] = "stock_fallback_position_entered"
+        lifecycle_after["final_reason_detail"] = (
+            lifecycle_after.get("final_reason_detail")
+            or queued_trade.get("final_reason_detail")
+            or "The option path was observed-only or unsuitable, so The Observatory entered a stock fallback position."
+        )
+        lifecycle_after["reason"] = "stock_fallback_position_entered"
+        lifecycle_after["reason_code"] = "stock_fallback_position_entered"
+        lifecycle_after["option_fallback_used"] = True
+        lifecycle_after["stock_fallback_from_option_research"] = True
+        lifecycle_after["option_fallback_reason"] = (
+            lifecycle_after.get("option_fallback_reason")
+            or queued_trade.get("option_fallback_reason")
+            or queued_trade.get("bad_option_reason")
+            or queued_trade.get("option_reason")
+            or queued_trade.get("execution_reason")
+            or "option_not_executable"
+        )
+        lifecycle_after["bad_option_reason"] = lifecycle_after.get("bad_option_reason") or lifecycle_after["option_fallback_reason"]
+        lifecycle_after["execution_birth_reason"] = "stock_fallback_position_entered"
+    else:
+        lifecycle_after["final_reason"] = "Position entered."
+        lifecycle_after["final_reason_code"] = "entered"
+        lifecycle_after["execution_reason"] = "Position entered."
+        lifecycle_after["execution_reason_code"] = "entered"
     lifecycle_after["fill_price"] = _round4(fill_price)
     lifecycle_after["filled_quantity"] = filled_quantity
     lifecycle_after["entered_at"] = _safe_str(execution_record.get("opened_at"), _now_iso())
@@ -1084,7 +1133,20 @@ def execute_via_adapter(
 
         lifecycle_after["entry"] = entry_price
         lifecycle_after["entry_price"] = entry_price
+        lifecycle_after["fill_price"] = entry_price
+        lifecycle_after["filled_price"] = entry_price
+        lifecycle_after["executed_price"] = entry_price
+        lifecycle_after["current"] = entry_price
         lifecycle_after["current_price"] = entry_price
+        lifecycle_after["underlying_price"] = _round4(
+            execution_record.get("underlying_price", lifecycle_after.get("underlying_price", entry_price)),
+            entry_price,
+        )
+        lifecycle_after["current_underlying_price"] = _round4(
+            execution_record.get("current_underlying_price", lifecycle_after.get("current_underlying_price", lifecycle_after["underlying_price"])),
+            lifecycle_after["underlying_price"],
+        )
+        lifecycle_after["stock_price"] = lifecycle_after["underlying_price"]
 
         lifecycle_after["entry_premium"] = None
         lifecycle_after["premium_entry"] = None
@@ -1098,14 +1160,26 @@ def execute_via_adapter(
 
         lifecycle_after["stop"] = _stock_stop(entry_price, queued_trade.get("stop"))
         lifecycle_after["target"] = _stock_target(entry_price, queued_trade.get("target"))
+        lifecycle_after["take_profit"] = lifecycle_after["target"]
 
         lifecycle_after["shares"] = max(1, _safe_int(execution_record.get("shares", filled_quantity), filled_quantity))
+        lifecycle_after["quantity"] = lifecycle_after["shares"]
+        lifecycle_after["qty"] = lifecycle_after["shares"]
+        lifecycle_after["size"] = lifecycle_after["shares"]
         lifecycle_after["contracts"] = 0
+        lifecycle_after["contract_count"] = 0
 
         lifecycle_after["monitoring_price_type"] = "UNDERLYING"
         lifecycle_after["monitoring_mode"] = "UNDERLYING"
-        lifecycle_after["price_review_basis"] = "UNDERLYING"
+        lifecycle_after["price_review_basis"] = "STOCK_PRICE"
+        lifecycle_after["price_basis"] = "STOCK_PRICE"
+        lifecycle_after["pnl_basis"] = "stock_price_x_shares"
+        lifecycle_after["execution_position_shape"] = "STOCK_UNDERLYING_POSITION"
+        lifecycle_after["cost_basis"] = _round4(entry_price * lifecycle_after["shares"])
+        lifecycle_after["market_value"] = _round4(entry_price * lifecycle_after["shares"])
         lifecycle_after["underlying_price_used_for_close_decision"] = True
+        lifecycle_after["underlying_price_used_for_pnl"] = True
+        lifecycle_after["stock_aliases_hardened_by"] = "execution_handoff.py"
 
     if execution_record:
         if vehicle_selected == "OPTION":
@@ -1210,3 +1284,218 @@ __all__ = [
     "execute_via_adapter",
     "summarize_execution_packet",
 ]
+
+# ==============================================================================
+# OBSERVATORY_BUILD_OPEN_TRADE_STATE_STOCK_FALLBACK_WRAPPER_20260522
+# ==============================================================================
+# Compatibility wrapper:
+# - build_open_trade_state can return a valid STOCK fallback row while preserving
+#   rejected option research inside option/contract fields.
+# - This wrapper prevents successful STOCK fallback births from keeping the softer
+#   "option_observed_stock_fallback" reason and ensures stock aliases are complete.
+# ==============================================================================
+
+_OBSERVATORY_ORIGINAL_BUILD_OPEN_TRADE_STATE_20260522 = build_open_trade_state
+
+
+def _observatory_is_stock_fallback_birth_20260522(row):
+    try:
+        if not isinstance(row, dict):
+            return False
+
+        vehicle = str(
+            row.get("vehicle")
+            or row.get("vehicle_selected")
+            or row.get("selected_vehicle")
+            or row.get("asset_type")
+            or ""
+        ).strip().upper()
+
+        if vehicle != "STOCK":
+            return False
+
+        reason_text = " ".join(
+            str(row.get(k, "") or "")
+            for k in (
+                "final_reason",
+                "final_reason_code",
+                "reason",
+                "reason_code",
+                "decision_reason",
+                "decision_reason_code",
+                "option_fallback_reason",
+                "bad_option_reason",
+                "rejected_option_reason",
+            )
+        ).strip().lower()
+
+        return (
+            bool(row.get("option_fallback_used"))
+            or bool(row.get("stock_fallback_from_option_research"))
+            or bool(row.get("option_fallback_attempted"))
+            or isinstance(row.get("option"), dict)
+            or isinstance(row.get("contract"), dict)
+            or "stock_fallback" in reason_text
+            or "option_observed" in reason_text
+            or "observed_stock_fallback" in reason_text
+            or "same_day_expiry" in reason_text
+            or "option_not_executable" in reason_text
+        )
+    except Exception:
+        return False
+
+
+def _observatory_harden_stock_fallback_birth_20260522(row):
+    if not isinstance(row, dict):
+        return row
+
+    if not _observatory_is_stock_fallback_birth_20260522(row):
+        return row
+
+    def _float(value, default=0.0):
+        try:
+            if value is None:
+                return float(default)
+            if isinstance(value, str) and not value.strip():
+                return float(default)
+            return float(value)
+        except Exception:
+            return float(default)
+
+    def _int(value, default=0):
+        try:
+            if value is None:
+                return int(default)
+            if isinstance(value, str) and not value.strip():
+                return int(default)
+            return int(float(value))
+        except Exception:
+            return int(default)
+
+    def _round4(value, default=0.0):
+        return round(_float(value, default), 4)
+
+    shares = _int(row.get("shares") or row.get("quantity") or row.get("qty") or row.get("size"), 1)
+    if shares <= 0:
+        shares = 1
+
+    entry = _round4(
+        row.get("entry")
+        or row.get("entry_price")
+        or row.get("fill_price")
+        or row.get("filled_price")
+        or row.get("executed_price")
+        or row.get("current")
+        or row.get("current_price")
+        or row.get("underlying_price")
+        or row.get("stock_price")
+        or row.get("price"),
+        0.0,
+    )
+
+    if entry <= 0:
+        capital_required = _float(row.get("capital_required") or row.get("actual_cost") or row.get("minimum_trade_cost"), 0.0)
+        if capital_required > 0 and shares > 0:
+            entry = round(capital_required / shares, 4)
+
+    current = _round4(
+        row.get("current")
+        or row.get("current_price")
+        or row.get("underlying_price")
+        or row.get("current_underlying_price")
+        or row.get("stock_price")
+        or entry,
+        entry,
+    )
+
+    row["vehicle"] = "STOCK"
+    row["vehicle_selected"] = "STOCK"
+    row["selected_vehicle"] = "STOCK"
+    row["asset_type"] = "STOCK"
+    row["instrument_type"] = "STOCK"
+
+    row["shares"] = shares
+    row["quantity"] = shares
+    row["qty"] = shares
+    row["size"] = shares
+    row["contracts"] = 0
+    row["contract_count"] = 0
+
+    if entry > 0:
+        row["price"] = entry
+        row["entry"] = entry
+        row["entry_price"] = entry
+        row["fill_price"] = entry
+        row["filled_price"] = entry
+        row["executed_price"] = entry
+
+    if current > 0:
+        row["current"] = current
+        row["current_price"] = current
+        row["underlying_price"] = current
+        row["current_underlying_price"] = current
+        row["stock_price"] = current
+
+    row["entry_premium"] = None
+    row["premium_entry"] = None
+    row["option_entry"] = None
+    row["option_entry_price"] = None
+    row["current_premium"] = None
+    row["premium_current"] = None
+    row["current_option_mark"] = None
+    row["option_current_mark"] = None
+    row["option_current_price"] = None
+    row["current_option_price"] = None
+
+    row["monitoring_price_type"] = "UNDERLYING"
+    row["monitoring_mode"] = "UNDERLYING"
+    row["price_review_basis"] = "STOCK_PRICE"
+    row["price_basis"] = "STOCK_PRICE"
+    row["pnl_basis"] = "stock_price_x_shares"
+    row["execution_position_shape"] = "STOCK_UNDERLYING_POSITION"
+    row["underlying_price_used_for_close_decision"] = True
+    row["underlying_price_used_for_pnl"] = True
+
+    row["final_reason"] = "stock_fallback_position_entered"
+    row["final_reason_code"] = "stock_fallback_position_entered"
+    row["execution_reason"] = "stock_fallback_position_entered"
+    row["execution_reason_code"] = "stock_fallback_position_entered"
+    row["reason"] = "stock_fallback_position_entered"
+    row["reason_code"] = "stock_fallback_position_entered"
+    row["blocked_at"] = ""
+
+    row["option_fallback_attempted"] = True
+    row["option_fallback_used"] = True
+    row["stock_fallback_from_option_research"] = True
+    row["option_fallback_reason"] = (
+        row.get("option_fallback_reason")
+        or row.get("bad_option_reason")
+        or row.get("rejected_option_reason")
+        or row.get("option_reason")
+        or "option_not_executable"
+    )
+    row["bad_option_reason"] = row.get("bad_option_reason") or row["option_fallback_reason"]
+    row["final_reason_detail"] = (
+        row.get("final_reason_detail")
+        or "The option path was observed-only or unsuitable, so The Observatory entered a stock fallback position."
+    )
+
+    if entry > 0:
+        row["cost_basis"] = round(entry * shares, 4)
+        row["market_value"] = round(current * shares, 4) if current > 0 else row["cost_basis"]
+
+    row["stock_aliases_hardened_by"] = "execution_handoff.py"
+    row["stock_fallback_birth_hardened_at"] = datetime.now().isoformat()
+
+    return row
+
+
+def build_open_trade_state(source_trade, *, lifecycle=None, execution_result=None, mode="", mode_context=None):
+    row = _OBSERVATORY_ORIGINAL_BUILD_OPEN_TRADE_STATE_20260522(
+        source_trade,
+        lifecycle=lifecycle,
+        execution_result=execution_result,
+        mode=mode,
+        mode_context=mode_context,
+    )
+    return _observatory_harden_stock_fallback_birth_20260522(row)

@@ -180,6 +180,9 @@ def _symbol(row: Dict[str, Any]) -> str:
 
 
 def _is_option(row: Dict[str, Any]) -> bool:
+    # OBSERVATORY_POSITION_STORE_EXPLICIT_STOCK_CLASSIFIER_REPAIR_20260522
+    # Explicit STOCK rows must remain STOCK even if they carry rejected option
+    # research fields such as option, contract_symbol, option_symbol, or contract.
     vehicle = _safe_upper(
         row.get("vehicle")
         or row.get("vehicle_selected")
@@ -188,8 +191,22 @@ def _is_option(row: Dict[str, Any]) -> bool:
         or row.get("instrument_type")
         or ""
     )
+
+    if vehicle in {"STOCK", "EQUITY", "SHARES"}:
+        return False
+
     if vehicle in OPTION_VEHICLES:
         return True
+
+    # If a stock fallback marker is present, this is a stock row carrying
+    # rejected option context, not an option position.
+    if (
+        bool(row.get("stock_fallback_from_option_research"))
+        or bool(row.get("option_fallback_used"))
+        or str(row.get("final_reason") or "").strip() == "stock_fallback_position_entered"
+        or str(row.get("execution_birth_reason") or "").strip() == "stock_fallback_position_entered"
+    ):
+        return False
 
     if row.get("contract_symbol") or row.get("option_symbol") or row.get("contractSymbol"):
         return True
