@@ -8682,6 +8682,461 @@ def _pack048_register_private_outer_shell_once(_app):
 _pack048_register_private_outer_shell_once(app)
 
 
+# ================================================================================
+# PACK 050 — SYMBOL OBJECT GUARD WIRING
+# ================================================================================
+# Baby version:
+# Route guard protects the hallway.
+# Symbol object guard protects the exact symbol drawer.
+#
+# Example:
+# /signals/AAPL must clear both:
+# 1. route corridor: symbol_detail
+# 2. object drawer: symbol AAPL
+# ================================================================================
+
+def _pack050_extract_symbol_from_path(path):
+    try:
+        path = str(path or "").strip()
+        if not path.startswith("/"):
+            path = "/" + path
+
+        pieces = [p for p in path.split("/") if p]
+
+        # /signals/AAPL
+        if len(pieces) >= 2 and pieces[0] in {"signals", "symbol", "symbols"}:
+            candidate = str(pieces[1] or "").strip().upper()
+            if candidate and candidate not in {"ALL", "SPOTLIGHT"}:
+                return candidate
+
+        # /ticker/AAPL or /stock/AAPL if those exist later
+        if len(pieces) >= 2 and pieces[0] in {"ticker", "stock"}:
+            candidate = str(pieces[1] or "").strip().upper()
+            if candidate:
+                return candidate
+
+        return ""
+    except Exception:
+        return ""
+
+
+def _pack050_should_check_symbol_object(path):
+    try:
+        path = str(path or "").strip()
+        if not path.startswith("/"):
+            path = "/" + path
+
+        # Only symbol-detail style paths for now.
+        if path.startswith("/signals/"):
+            symbol = _pack050_extract_symbol_from_path(path)
+            return bool(symbol)
+
+        if path.startswith("/symbol/") or path.startswith("/symbols/") or path.startswith("/ticker/") or path.startswith("/stock/"):
+            symbol = _pack050_extract_symbol_from_path(path)
+            return bool(symbol)
+
+        return False
+    except Exception:
+        return False
+
+
+def _pack050_register_symbol_object_guard_once(_app):
+    try:
+        if getattr(_app, "_pack050_symbol_object_guard_registered", False):
+            return True
+
+        from flask import request
+        from tower.ob_object_guard import build_locked_ob_object_response, should_block_ob_object
+
+        @_app.before_request
+        def _pack050_symbol_object_guard_before_request():
+            path = str(getattr(request, "path", "") or "/")
+
+            if not _pack050_should_check_symbol_object(path):
+                return None
+
+            # Reuse the same simple identity pattern as Pack 046.
+            try:
+                from flask import session
+                user_id = (
+                    request.args.get("ob_user_id")
+                    or request.args.get("tower_user_id")
+                    or session.get("user_id")
+                    or session.get("username")
+                    or "anonymous"
+                )
+                role = (
+                    request.args.get("ob_role")
+                    or request.args.get("role")
+                    or session.get("role")
+                    or session.get("tier")
+                    or ""
+                )
+                clearance = (
+                    request.args.get("ob_clearance")
+                    or request.args.get("clearance")
+                    or session.get("clearance_level")
+                    or ""
+                )
+                risk_score = (
+                    request.args.get("ob_risk_score")
+                    or request.args.get("risk_score")
+                    or session.get("risk_score")
+                    or 0
+                )
+                try:
+                    risk_score = int(risk_score)
+                except Exception:
+                    risk_score = 0
+            except Exception:
+                user_id = "anonymous"
+                role = ""
+                clearance = ""
+                risk_score = 0
+
+            symbol = _pack050_extract_symbol_from_path(path)
+            if not symbol:
+                return None
+
+            decision = should_block_ob_object(
+                user_id=str(user_id or "anonymous"),
+                role=str(role or ""),
+                user_clearance_level=str(clearance or ""),
+                object_kind="symbol",
+                object_id=symbol,
+                action="view",
+                route_key="symbol_detail",
+                current_risk_score=risk_score,
+                metadata={
+                    "method": getattr(request, "method", "GET"),
+                    "endpoint": getattr(request, "endpoint", None),
+                    "path": path,
+                    "pack": "050",
+                },
+            )
+
+            if decision.get("block"):
+                return build_locked_ob_object_response(
+                    reason_code=str(decision.get("reason_code", "ob_symbol_object_denied")),
+                    human_reason=str(decision.get("human_reason", "This symbol is private.")),
+                    object_kind="symbol",
+                    object_id=symbol,
+                    decision=decision,
+                )
+
+            return None
+
+        _app._pack050_symbol_object_guard_registered = True
+        print("PACK 050: Symbol object guard registered.")
+        return True
+
+    except Exception as exc:
+        print("PACK 050: Symbol object guard registration failed:", type(exc).__name__, str(exc))
+        return False
+
+
+_pack050_register_symbol_object_guard_once(app)
+
+
+# ================================================================================
+# PACK 051 — TRADE / POSITION OBJECT GUARD WIRING
+# ================================================================================
+
+def _pack051_extract_trade_or_position_from_path(path):
+    try:
+        path = str(path or "").strip()
+        if not path.startswith("/"):
+            path = "/" + path
+        pieces = [p for p in path.split("/") if p]
+        if len(pieces) >= 2 and pieces[0] in {"my-positions", "positions", "trade", "trades"}:
+            return pieces[-1]
+        return ""
+    except Exception:
+        return ""
+
+
+def _pack051_kind_from_path(path):
+    path = str(path or "")
+    if path.startswith("/my-positions") or path.startswith("/positions"):
+        return "position"
+    if path.startswith("/trade") or path.startswith("/trades"):
+        return "trade"
+    return "position"
+
+
+def _pack051_register_trade_position_object_guard_once(_app):
+    try:
+        if getattr(_app, "_pack051_trade_position_object_guard_registered", False):
+            return True
+
+        from flask import request
+        from tower.ob_object_guard import build_locked_ob_object_response, should_block_ob_object
+
+        @_app.before_request
+        def _pack051_trade_position_object_guard_before_request():
+            path = str(getattr(request, "path", "") or "/")
+            object_id = _pack051_extract_trade_or_position_from_path(path)
+
+            if not object_id:
+                return None
+
+            try:
+                from flask import session
+                user_id = request.args.get("ob_user_id") or request.args.get("tower_user_id") or session.get("user_id") or session.get("username") or "anonymous"
+                role = request.args.get("ob_role") or request.args.get("role") or session.get("role") or session.get("tier") or ""
+                clearance = request.args.get("ob_clearance") or request.args.get("clearance") or session.get("clearance_level") or ""
+                owner_user_id = request.args.get("owner_user_id") or request.args.get("object_owner_user_id") or session.get("user_id") or ""
+                risk_score = request.args.get("ob_risk_score") or request.args.get("risk_score") or session.get("risk_score") or 0
+                try:
+                    risk_score = int(risk_score)
+                except Exception:
+                    risk_score = 0
+            except Exception:
+                user_id, role, clearance, owner_user_id, risk_score = "anonymous", "", "", "", 0
+
+            object_kind = _pack051_kind_from_path(path)
+
+            decision = should_block_ob_object(
+                user_id=str(user_id or "anonymous"),
+                role=str(role or ""),
+                user_clearance_level=str(clearance or ""),
+                object_kind=object_kind,
+                object_id=str(object_id),
+                owner_user_id=str(owner_user_id or ""),
+                action="view",
+                route_key="positions",
+                current_risk_score=risk_score,
+                metadata={"method": getattr(request, "method", "GET"), "endpoint": getattr(request, "endpoint", None), "path": path, "pack": "051"},
+            )
+
+            if decision.get("block"):
+                return build_locked_ob_object_response(
+                    reason_code=str(decision.get("reason_code", "ob_trade_position_object_denied")),
+                    human_reason=str(decision.get("human_reason", "This trade or position is private.")),
+                    object_kind=object_kind,
+                    object_id=str(object_id),
+                    decision=decision,
+                )
+
+            return None
+
+        _app._pack051_trade_position_object_guard_registered = True
+        print("PACK 051: Trade/position object guard registered.")
+        return True
+
+    except Exception as exc:
+        print("PACK 051: Trade/position object guard registration failed:", type(exc).__name__, str(exc))
+        return False
+
+
+_pack051_register_trade_position_object_guard_once(app)
+
+
+# ================================================================================
+# PACK 052 — EXPORT / DOWNLOAD OBJECT GUARD WIRING
+# ================================================================================
+
+def _pack052_extract_export_id_from_request():
+    try:
+        from flask import request
+        return (
+            request.args.get("export_id")
+            or request.args.get("download_id")
+            or request.args.get("file_id")
+            or request.args.get("id")
+            or "requested_export"
+        )
+    except Exception:
+        return "requested_export"
+
+
+def _pack052_should_check_export_object(path):
+    try:
+        path = str(path or "")
+        return path == "/export" or path.startswith("/export/") or path == "/download" or path.startswith("/download/")
+    except Exception:
+        return False
+
+
+def _pack052_register_export_object_guard_once(_app):
+    try:
+        if getattr(_app, "_pack052_export_object_guard_registered", False):
+            return True
+
+        from flask import request
+        from tower.ob_object_guard import build_locked_ob_object_response, should_block_ob_object
+
+        @_app.before_request
+        def _pack052_export_object_guard_before_request():
+            path = str(getattr(request, "path", "") or "/")
+            if not _pack052_should_check_export_object(path):
+                return None
+
+            try:
+                from flask import session
+                user_id = request.args.get("ob_user_id") or request.args.get("tower_user_id") or session.get("user_id") or session.get("username") or "anonymous"
+                role = request.args.get("ob_role") or request.args.get("role") or session.get("role") or session.get("tier") or ""
+                clearance = request.args.get("ob_clearance") or request.args.get("clearance") or session.get("clearance_level") or ""
+                risk_score = request.args.get("ob_risk_score") or request.args.get("risk_score") or session.get("risk_score") or 0
+                try:
+                    risk_score = int(risk_score)
+                except Exception:
+                    risk_score = 0
+            except Exception:
+                user_id, role, clearance, risk_score = "anonymous", "", "", 0
+
+            export_id = _pack052_extract_export_id_from_request()
+
+            decision = should_block_ob_object(
+                user_id=str(user_id or "anonymous"),
+                role=str(role or ""),
+                user_clearance_level=str(clearance or ""),
+                object_kind="export",
+                object_id=str(export_id),
+                action="download",
+                route_key="export",
+                current_risk_score=risk_score,
+                metadata={"method": getattr(request, "method", "GET"), "endpoint": getattr(request, "endpoint", None), "path": path, "pack": "052"},
+            )
+
+            if decision.get("block"):
+                return build_locked_ob_object_response(
+                    reason_code=str(decision.get("reason_code", "ob_export_object_denied")),
+                    human_reason=str(decision.get("human_reason", "This export is private.")),
+                    object_kind="export",
+                    object_id=str(export_id),
+                    decision=decision,
+                )
+
+            return None
+
+        _app._pack052_export_object_guard_registered = True
+        print("PACK 052: Export/download object guard registered.")
+        return True
+
+    except Exception as exc:
+        print("PACK 052: Export/download object guard registration failed:", type(exc).__name__, str(exc))
+        return False
+
+
+_pack052_register_export_object_guard_once(app)
+
+
+# ================================================================================
+# PACK 053 — MODE SWITCHER GUARD WIRING
+# ================================================================================
+
+def _pack053_extract_mode_from_request():
+    try:
+        from flask import request
+        path = str(getattr(request, "path", "") or "/")
+        pieces = [p for p in path.split("/") if p]
+
+        if len(pieces) >= 2 and pieces[0] in {"mode", "modes"}:
+            return pieces[1]
+        if len(pieces) >= 3 and pieces[0] == "observatory" and pieces[1] == "mode":
+            return pieces[2]
+
+        return (
+            request.args.get("mode")
+            or request.args.get("mode_name")
+            or request.form.get("mode")
+            or request.form.get("mode_name")
+            or ""
+        )
+    except Exception:
+        return ""
+
+
+def _pack053_should_check_mode(path):
+    try:
+        from flask import request
+        path = str(path or "")
+        if path.startswith("/mode/") or path.startswith("/modes/") or path.startswith("/observatory/mode/"):
+            return True
+        if request.args.get("mode") or request.args.get("mode_name"):
+            return True
+        return False
+    except Exception:
+        return False
+
+
+def _pack053_register_mode_guard_once(_app):
+    try:
+        if getattr(_app, "_pack053_mode_guard_registered", False):
+            return True
+
+        from flask import request
+        from tower.ob_private_shell import build_private_outer_shell
+        from tower.ob_mode_clearance import evaluate_ob_mode_clearance
+
+        @_app.before_request
+        def _pack053_mode_guard_before_request():
+            path = str(getattr(request, "path", "") or "/")
+            if not _pack053_should_check_mode(path):
+                return None
+
+            mode_name = _pack053_extract_mode_from_request()
+            if not mode_name:
+                return None
+
+            try:
+                from flask import session
+                user_id = request.args.get("ob_user_id") or request.args.get("tower_user_id") or session.get("user_id") or session.get("username") or "anonymous"
+                role = request.args.get("ob_role") or request.args.get("role") or session.get("role") or session.get("tier") or ""
+                clearance = request.args.get("ob_clearance") or request.args.get("clearance") or session.get("clearance_level") or ""
+                risk_score = request.args.get("ob_risk_score") or request.args.get("risk_score") or session.get("risk_score") or 0
+                broker_connected = str(request.args.get("broker_connected") or session.get("broker_connected") or "").lower() in {"1", "true", "yes", "on"}
+                broker_healthy = str(request.args.get("broker_healthy") or session.get("broker_healthy") or "").lower() in {"1", "true", "yes", "on"}
+                live_authorized = str(request.args.get("live_authorized") or session.get("live_authorized") or "").lower() in {"1", "true", "yes", "on"}
+                automation_authorized = str(request.args.get("automation_authorized") or session.get("automation_authorized") or "").lower() in {"1", "true", "yes", "on"}
+                emergency_lockdown = str(request.args.get("emergency_lockdown") or session.get("emergency_lockdown") or "").lower() in {"1", "true", "yes", "on"}
+                try:
+                    risk_score = int(risk_score)
+                except Exception:
+                    risk_score = 0
+            except Exception:
+                user_id, role, clearance, risk_score = "anonymous", "", "", 0
+                broker_connected = broker_healthy = live_authorized = automation_authorized = emergency_lockdown = False
+
+            decision = evaluate_ob_mode_clearance(
+                user_id=str(user_id or "anonymous"),
+                role=str(role or ""),
+                user_clearance_level=str(clearance or ""),
+                mode_name=str(mode_name),
+                action="enter",
+                current_risk_score=risk_score,
+                broker_connected=broker_connected,
+                broker_healthy=broker_healthy,
+                live_authorized=live_authorized,
+                automation_authorized=automation_authorized,
+                emergency_lockdown=emergency_lockdown,
+                metadata={"method": getattr(request, "method", "GET"), "endpoint": getattr(request, "endpoint", None), "path": path, "pack": "053"},
+            )
+
+            if not decision.get("allowed"):
+                return build_private_outer_shell(
+                    reason_code=str(decision.get("reason_code", "ob_mode_denied")),
+                    message=str(decision.get("human_reason", "This Observatory mode is private.")),
+                    path=path + "?mode=" + str(mode_name),
+                    status_code=403,
+                    show_waitlist_hint=False,
+                )
+
+            return None
+
+        _app._pack053_mode_guard_registered = True
+        print("PACK 053: Mode guard registered.")
+        return True
+
+    except Exception as exc:
+        print("PACK 053: Mode guard registration failed:", type(exc).__name__, str(exc))
+        return False
+
+
+_pack053_register_mode_guard_once(app)
+
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)

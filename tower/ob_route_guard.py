@@ -95,6 +95,22 @@ OB_ROUTE_GUARD_MAP: Dict[str, Dict[str, Any]] = {
         'public_allowed': False,
         'plain': 'Analytics and performance intelligence.',
     },
+
+    # PACK052_EXPORT_ROUTE_MAP
+    '/export': {
+        'route_key': 'export',
+        'action': 'download',
+        'sensitivity': 'critical',
+        'public_allowed': False,
+        'plain': 'Export/download action corridor.',
+    },
+    '/download': {
+        'route_key': 'export',
+        'action': 'download',
+        'sensitivity': 'critical',
+        'public_allowed': False,
+        'plain': 'Download action corridor.',
+    },
 }
 
 
@@ -164,6 +180,30 @@ def match_ob_guard_policy(path: str) -> Dict[str, Any]:
                 'sensitivity': 'confidential',
                 'public_allowed': False,
                 'plain': 'Protected per-symbol intelligence page.',
+            },
+        }
+
+    # PACK051_DYNAMIC_POSITION_ROUTE_MATCH
+    # Nested position/trade pages still belong to the protected positions corridor.
+    if (
+        normalized.startswith('/my-positions/')
+        or normalized.startswith('/positions/')
+        or normalized.startswith('/trade/')
+        or normalized.startswith('/trades/')
+    ):
+        object_id = normalized.split('/')[-1]
+        return {
+            'ok': True,
+            'matched': True,
+            'match_type': 'dynamic_position_or_trade',
+            'path': normalized,
+            'object_id': object_id,
+            'policy': {
+                'route_key': 'positions',
+                'action': 'view',
+                'sensitivity': 'restricted',
+                'public_allowed': False,
+                'plain': 'Protected position/trade detail corridor.',
             },
         }
 
