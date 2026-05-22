@@ -274,3 +274,325 @@ if __name__ == "__main__":
     print(json.dumps(result, indent=2, sort_keys=True, default=str))
     if not result.get("ok"):
         raise SystemExit("OB privacy wall smoke failed.")
+
+
+
+# ================================================================================
+# PACK062_OBJECT_INBOX_ACTION_WORKFLOW_SMOKE_WRAPPER
+# ================================================================================
+# Adds proof that object security inbox items can be noted, reviewed, resolved,
+# and ignored, without rewriting the entire smoke runner.
+# ================================================================================
+
+def _pack062_prove_object_inbox_action_workflow():
+    try:
+        from tower.ob_object_guard import evaluate_ob_object_guard
+        from tower.ob_object_audit_capsules import (
+            add_note_to_ob_object_security_inbox_item,
+            ignore_ob_object_security_inbox_item,
+            list_open_ob_object_security_inbox,
+            mark_ob_object_security_inbox_reviewing,
+            resolve_ob_object_security_inbox_item,
+        )
+
+        detail = {}
+
+        decision = evaluate_ob_object_guard(
+            user_id="beta_001",
+            role="user",
+            object_kind="export",
+            object_id="export_062_workflow",
+            action="download",
+            route_key="export",
+            current_risk_score=5,
+        )
+        detail["decision_reason"] = decision.get("reason_code")
+
+        open_items = list_open_ob_object_security_inbox(limit=80)
+        target = None
+        for item in reversed(open_items.get("items", [])):
+            if item.get("object_id") == "export_062_workflow":
+                target = item
+                break
+
+        detail["found_review_target"] = bool(target)
+
+        if not target:
+            return {"ok": False, "detail": detail, "human_reason": "No workflow target item was found."}
+
+        target_id = target.get("inbox_item_id")
+        note = add_note_to_ob_object_security_inbox_item(
+            target_id,
+            actor_user_id="owner_solice",
+            note="Pack 062 smoke: note before review.",
+        )
+        reviewing = mark_ob_object_security_inbox_reviewing(
+            target_id,
+            actor_user_id="owner_solice",
+            note="Pack 062 smoke: reviewing object inbox workflow.",
+        )
+        resolved = resolve_ob_object_security_inbox_item(
+            target_id,
+            actor_user_id="owner_solice",
+            note="Pack 062 smoke: resolved object inbox workflow.",
+            resolution_reason="smoke_test_expected_block",
+        )
+
+        detail.update({
+            "target_id": target_id,
+            "note_ok": note.get("ok"),
+            "reviewing_status": reviewing.get("new_status"),
+            "resolved_status": resolved.get("new_status"),
+            "resolved_by": resolved.get("item", {}).get("resolved_by"),
+            "history_count": len(resolved.get("item", {}).get("history", [])),
+            "owner_notes_count": len(resolved.get("item", {}).get("owner_notes", [])),
+        })
+
+        decision_2 = evaluate_ob_object_guard(
+            user_id="owner_solice",
+            role="owner",
+            object_kind="unknown_drawer_062",
+            object_id="secret_062_workflow",
+            action="view",
+            route_key="",
+            current_risk_score=5,
+        )
+        detail["ignore_decision_reason"] = decision_2.get("reason_code")
+
+        open_items_2 = list_open_ob_object_security_inbox(limit=100)
+        ignore_target = None
+        for item in reversed(open_items_2.get("items", [])):
+            if item.get("object_id") == "secret_062_workflow":
+                ignore_target = item
+                break
+
+        detail["found_ignore_target"] = bool(ignore_target)
+
+        ignored_ok = False
+        if ignore_target:
+            ignored = ignore_ob_object_security_inbox_item(
+                ignore_target.get("inbox_item_id"),
+                actor_user_id="owner_solice",
+                note="Pack 062 smoke: ignored test-generated unmapped object.",
+                resolution_reason="smoke_test_noise",
+            )
+            detail.update({
+                "ignore_id": ignore_target.get("inbox_item_id"),
+                "ignored_status": ignored.get("new_status"),
+                "ignored_by": ignored.get("item", {}).get("ignored_by"),
+            })
+            ignored_ok = (
+                ignored.get("new_status") == "ignored"
+                and ignored.get("item", {}).get("ignored_by") == "owner_solice"
+            )
+
+        workflow_ok = (
+            note.get("ok") is True
+            and reviewing.get("new_status") == "reviewing"
+            and resolved.get("new_status") == "resolved"
+            and resolved.get("item", {}).get("resolved_by") == "owner_solice"
+            and len(resolved.get("item", {}).get("history", [])) >= 2
+            and ignored_ok
+        )
+
+        return {
+            "ok": workflow_ok,
+            "detail": detail,
+            "human_reason": "Object inbox action workflow proved." if workflow_ok else "Object inbox action workflow failed.",
+        }
+
+    except Exception as exc:
+        return {
+            "ok": False,
+            "detail": {"error": f"{type(exc).__name__}: {exc}"},
+            "human_reason": "Object inbox action workflow raised an exception.",
+        }
+
+
+try:
+    _pack062_original_run_ob_privacy_wall_smoke
+except NameError:
+    _pack062_original_run_ob_privacy_wall_smoke = run_ob_privacy_wall_smoke
+
+
+def run_ob_privacy_wall_smoke():
+    result = _pack062_original_run_ob_privacy_wall_smoke()
+    if not isinstance(result, dict):
+        result = {"ok": False, "checks": {}, "failures": ["invalid_smoke_result"]}
+
+    checks = result.setdefault("checks", {})
+    failures = result.setdefault("failures", [])
+
+    workflow = _pack062_prove_object_inbox_action_workflow()
+    checks["object_security_inbox_action_workflow"] = {
+        "ok": workflow.get("ok") is True,
+        "detail": workflow.get("detail"),
+    }
+
+    if workflow.get("ok") is not True and "object_security_inbox_action_workflow" not in failures:
+        failures.append("object_security_inbox_action_workflow")
+
+    result["ok"] = not failures
+    result["pack"] = "062"
+    result["human_reason"] = (
+        "OB privacy wall smoke test passed with object inbox action workflow."
+        if result["ok"]
+        else "OB privacy wall smoke test found failures."
+    )
+
+    return result
+
+
+
+# ================================================================================
+# PACK065_FINAL_SECURITY_BLOCK_SMOKE_WRAPPER
+# ================================================================================
+# Adds proof for:
+# - Tower UI object inbox action forms
+# - Archive Vault handoff queue
+# - final no-secret leakage check
+# ================================================================================
+
+def _pack065_prove_ui_actions_and_archive_handoff():
+    try:
+        from pathlib import Path
+        from tower.security_command_page import generate_security_command_dashboard
+        from tower.ob_object_guard import evaluate_ob_object_guard
+        from tower.ob_object_audit_capsules import (
+            list_open_ob_object_security_inbox,
+            queue_ob_object_security_inbox_item_for_archive,
+        )
+        from tower.archive_vault_handoff import summarize_archive_vault_handoffs
+
+        detail = {}
+
+        dashboard = generate_security_command_dashboard()
+        html_path = Path(dashboard.get("path", "")) if isinstance(dashboard, dict) else Path("")
+        html = html_path.read_text(encoding="utf-8", errors="replace") if html_path.exists() else ""
+
+        ui_ok = (
+            isinstance(dashboard, dict)
+            and dashboard.get("ok") is True
+            and "OB OBJECT SECURITY INBOX" in html
+            and "/tower/security-command/object-inbox/action" in html
+            and 'name="action_type"' in html
+            and 'value="reviewing"' in html
+            and 'value="resolve"' in html
+            and 'value="ignore"' in html
+            and "Add Note" in html
+        )
+
+        detail.update({
+            "dashboard_ok": dashboard.get("ok") if isinstance(dashboard, dict) else None,
+            "dashboard_path": str(html_path),
+            "html_has_object_inbox": "OB OBJECT SECURITY INBOX" in html,
+            "html_has_action_endpoint": "/tower/security-command/object-inbox/action" in html,
+            "html_has_reviewing": 'value="reviewing"' in html,
+            "html_has_resolve": 'value="resolve"' in html,
+            "html_has_ignore": 'value="ignore"' in html,
+            "html_has_add_note": "Add Note" in html,
+        })
+
+        before = summarize_archive_vault_handoffs(limit=5)
+
+        decision = evaluate_ob_object_guard(
+            user_id="beta_001",
+            role="user",
+            object_kind="export",
+            object_id="export_065",
+            action="download",
+            route_key="export",
+            current_risk_score=5,
+        )
+
+        open_items = list_open_ob_object_security_inbox(limit=100)
+        target = None
+        for item in reversed(open_items.get("items", [])):
+            if item.get("object_id") == "export_065":
+                target = item
+                break
+
+        archive_ok = False
+        archive_result = {}
+        if target:
+            archive_result = queue_ob_object_security_inbox_item_for_archive(
+                target.get("inbox_item_id"),
+                actor_user_id="owner_solice",
+                owner_note="Pack 065 final checkpoint: queue object security event for Archive Vault.",
+            )
+            archive_ok = archive_result.get("ok") is True and bool(archive_result.get("handoff_id"))
+
+        after = summarize_archive_vault_handoffs(limit=8)
+
+        detail.update({
+            "object_decision_reason": decision.get("reason_code"),
+            "found_archive_target": bool(target),
+            "archive_handoff_ok": archive_result.get("ok"),
+            "archive_handoff_id": archive_result.get("handoff_id"),
+            "archive_before_total": before.get("total"),
+            "archive_after_total": after.get("total"),
+            "archive_queued": after.get("queued"),
+        })
+
+        ok = (
+            ui_ok
+            and archive_ok
+            and after.get("ok") is True
+            and after.get("total", 0) >= before.get("total", 0) + 1
+        )
+
+        serialized = str([detail, dashboard, archive_result, after])
+        no_leak = (
+            "raw_token" not in serialized
+            and "tower_keycard=" not in serialized
+            and "SHOULD_NOT_SURVIVE" not in serialized
+        )
+        detail["no_secret_leakage"] = no_leak
+
+        return {
+            "ok": ok and no_leak,
+            "detail": detail,
+            "human_reason": "UI action forms and Archive Vault handoff proof passed." if ok and no_leak else "UI/archive proof failed.",
+        }
+
+    except Exception as exc:
+        return {
+            "ok": False,
+            "detail": {"error": f"{type(exc).__name__}: {exc}"},
+            "human_reason": "Pack 065 UI/archive proof raised an exception.",
+        }
+
+
+try:
+    _pack065_original_run_ob_privacy_wall_smoke
+except NameError:
+    _pack065_original_run_ob_privacy_wall_smoke = run_ob_privacy_wall_smoke
+
+
+def run_ob_privacy_wall_smoke():
+    result = _pack065_original_run_ob_privacy_wall_smoke()
+    if not isinstance(result, dict):
+        result = {"ok": False, "checks": {}, "failures": ["invalid_smoke_result"]}
+
+    checks = result.setdefault("checks", {})
+    failures = result.setdefault("failures", [])
+
+    proof = _pack065_prove_ui_actions_and_archive_handoff()
+    checks["ui_actions_and_archive_handoff_ready"] = {
+        "ok": proof.get("ok") is True,
+        "detail": proof.get("detail"),
+    }
+
+    if proof.get("ok") is not True and "ui_actions_and_archive_handoff_ready" not in failures:
+        failures.append("ui_actions_and_archive_handoff_ready")
+
+    result["ok"] = not failures
+    result["pack"] = "065"
+    result["human_reason"] = (
+        "OB privacy wall smoke test passed with UI actions and Archive Vault handoff proof."
+        if result["ok"]
+        else "OB privacy wall smoke test found failures."
+    )
+
+    return result
+

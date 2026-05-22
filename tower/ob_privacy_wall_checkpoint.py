@@ -151,3 +151,212 @@ if __name__ == "__main__":
     print(json.dumps(result, indent=2, sort_keys=True, default=str))
     if not result.get("ok"):
         raise SystemExit("OB privacy wall checkpoint failed.")
+
+
+
+# ================================================================================
+# PACK062_OBJECT_INBOX_ACTION_WORKFLOW_CHECKPOINT_WRAPPER
+# ================================================================================
+# Adds object inbox action workflow proof to the checkpoint result.
+# ================================================================================
+
+try:
+    _pack062_original_build_ob_privacy_wall_checkpoint
+except NameError:
+    _pack062_original_build_ob_privacy_wall_checkpoint = build_ob_privacy_wall_checkpoint
+
+
+def build_ob_privacy_wall_checkpoint():
+    checkpoint = _pack062_original_build_ob_privacy_wall_checkpoint()
+    if not isinstance(checkpoint, dict):
+        checkpoint = {"ok": False, "built_packs": [], "next_steps": []}
+
+    try:
+        from tower.ob_privacy_wall_smoke import run_ob_privacy_wall_smoke
+        from tower.ob_object_audit_capsules import summarize_ob_object_security_inbox
+
+        smoke = run_ob_privacy_wall_smoke()
+        workflow = smoke.get("checks", {}).get("object_security_inbox_action_workflow", {})
+        inbox = summarize_ob_object_security_inbox(limit=8)
+
+        checkpoint["pack"] = "062"
+        checkpoint["smoke_ok"] = smoke.get("ok")
+        checkpoint["smoke_failures"] = smoke.get("failures")
+        checkpoint["object_security_inbox_action_workflow"] = workflow
+        checkpoint["object_security_inbox_summary"] = {
+            "ok": inbox.get("ok"),
+            "total": inbox.get("total"),
+            "open": inbox.get("open"),
+            "by_status": inbox.get("by_status"),
+            "by_reason": inbox.get("by_reason"),
+            "by_object_type": inbox.get("by_object_type"),
+            "by_severity": inbox.get("by_severity"),
+        }
+
+        built_packs = checkpoint.setdefault("built_packs", [])
+        built_text = str(built_packs)
+        if "061" not in built_text:
+            built_packs.append({
+                "pack": "061",
+                "name": "Object inbox actions",
+                "plain": "Object security inbox items can be noted, reviewed, resolved, and ignored.",
+            })
+        if "062" not in built_text:
+            built_packs.append({
+                "pack": "062",
+                "name": "Object inbox action proof",
+                "plain": "Smoke and checkpoint prove object inbox owner workflow.",
+            })
+
+        checkpoint["readiness_score"] = max(int(checkpoint.get("readiness_score", 0) or 0), 100 if workflow.get("ok") else 90)
+        checkpoint["readiness_label"] = (
+            "Privacy wall audit and action chain active"
+            if workflow.get("ok")
+            else "Privacy wall workflow needs attention"
+        )
+        checkpoint["ok"] = smoke.get("ok") is True
+        checkpoint["soulaana_translation"] = (
+            "Soulaana: The Tower does not just block drawers now. It records them, queues them, reviews them, and closes the loop."
+        )
+        checkpoint["human_reason"] = "OB privacy wall checkpoint now includes object inbox owner action workflow proof."
+
+        next_steps = checkpoint.setdefault("next_steps", [])
+        next_text = str(next_steps)
+        if "Tower UI action buttons" not in next_text:
+            next_steps.insert(0, {
+                "priority": 1,
+                "item": "Add Tower UI action buttons/forms for object inbox items",
+                "plain": "Backend actions exist; now the owner needs buttons for review, resolve, ignore, and notes.",
+            })
+
+    except Exception as exc:
+        checkpoint["ok"] = False
+        checkpoint["pack062_error"] = f"{type(exc).__name__}: {exc}"
+
+    return checkpoint
+
+
+
+# ================================================================================
+# PACK065_FINAL_SECURITY_BLOCK_CHECKPOINT_WRAPPER
+# ================================================================================
+# Final checkpoint before polished locked-state templates.
+# ================================================================================
+
+try:
+    _pack065_original_build_ob_privacy_wall_checkpoint
+except NameError:
+    _pack065_original_build_ob_privacy_wall_checkpoint = build_ob_privacy_wall_checkpoint
+
+
+def build_ob_privacy_wall_checkpoint():
+    checkpoint = _pack065_original_build_ob_privacy_wall_checkpoint()
+    if not isinstance(checkpoint, dict):
+        checkpoint = {"ok": False, "built_packs": [], "next_steps": []}
+
+    try:
+        from tower.ob_privacy_wall_smoke import run_ob_privacy_wall_smoke
+        from tower.archive_vault_handoff import summarize_archive_vault_handoffs
+        from tower.ob_object_audit_capsules import summarize_ob_object_security_inbox
+
+        smoke = run_ob_privacy_wall_smoke()
+        checks = smoke.get("checks", {}) if isinstance(smoke.get("checks"), dict) else {}
+        ui_archive = checks.get("ui_actions_and_archive_handoff_ready", {})
+        action_workflow = checks.get("object_security_inbox_action_workflow", {})
+
+        archive_summary = summarize_archive_vault_handoffs(limit=8)
+        object_inbox = summarize_ob_object_security_inbox(limit=8)
+
+        checkpoint["pack"] = "065"
+        checkpoint["ok"] = smoke.get("ok") is True
+        checkpoint["smoke_ok"] = smoke.get("ok")
+        checkpoint["smoke_failures"] = smoke.get("failures")
+        checkpoint["ui_actions_and_archive_handoff_ready"] = ui_archive
+        checkpoint["object_security_inbox_action_workflow"] = action_workflow
+        checkpoint["archive_vault_handoff_summary"] = {
+            "ok": archive_summary.get("ok"),
+            "total": archive_summary.get("total"),
+            "queued": archive_summary.get("queued"),
+            "by_status": archive_summary.get("by_status"),
+            "by_source_type": archive_summary.get("by_source_type"),
+            "by_severity": archive_summary.get("by_severity"),
+        }
+        checkpoint["object_security_inbox_summary"] = {
+            "ok": object_inbox.get("ok"),
+            "total": object_inbox.get("total"),
+            "open": object_inbox.get("open"),
+            "by_status": object_inbox.get("by_status"),
+            "by_reason": object_inbox.get("by_reason"),
+            "by_object_type": object_inbox.get("by_object_type"),
+            "by_severity": object_inbox.get("by_severity"),
+        }
+
+        built_packs = checkpoint.setdefault("built_packs", [])
+        built_text = str(built_packs)
+        additions = [
+            {
+                "pack": "063",
+                "name": "Tower UI object inbox action forms",
+                "plain": "Security Command UI renders note, reviewing, resolve, and ignore forms for object inbox items.",
+            },
+            {
+                "pack": "064",
+                "name": "Archive Vault handoff stub",
+                "plain": "Object security events can be queued as future evidence-bundle requests.",
+            },
+            {
+                "pack": "065",
+                "name": "Final privacy wall checkpoint",
+                "plain": "Smoke/checkpoint prove UI action forms and Archive Vault handoff before locked-page polish.",
+            },
+        ]
+        for item in additions:
+            if item["pack"] not in built_text:
+                built_packs.append(item)
+
+        next_steps = [
+            {
+                "priority": 1,
+                "item": "Build polished locked-state templates",
+                "plain": "Make blocked route/object/mode pages feel intentional, premium, and aligned with The Tower.",
+            },
+            {
+                "priority": 2,
+                "item": "Wire the UI action endpoint",
+                "plain": "Forms render now; next the Flask POST route should call note/review/resolve/ignore backend actions.",
+            },
+            {
+                "priority": 3,
+                "item": "Surface Archive Vault handoff summary in Tower status/UI",
+                "plain": "The queue exists; now The Tower should show queued evidence handoffs.",
+            },
+            {
+                "priority": 4,
+                "item": "Map or intentionally retire unmapped Observatory routes",
+                "plain": "The exposure report shows default-deny routes; choose which become real corridors.",
+            },
+            {
+                "priority": 5,
+                "item": "Create action audit receipts for UI button clicks",
+                "plain": "Every owner action from the UI should leave its own admin action receipt.",
+            },
+        ]
+        checkpoint["next_steps"] = next_steps
+
+        checkpoint["readiness_score"] = 100 if smoke.get("ok") else 90
+        checkpoint["readiness_label"] = (
+            "Ready for polished locked-state templates"
+            if smoke.get("ok")
+            else "Needs repair before locked-state polish"
+        )
+        checkpoint["soulaana_translation"] = (
+            "Soulaana: The Tower can block, receipt, queue, review, archive-stub, and prove the chain. Now we can make the locked doors look expensive."
+        )
+        checkpoint["human_reason"] = "Final privacy wall checkpoint complete before polished locked-state templates."
+
+    except Exception as exc:
+        checkpoint["ok"] = False
+        checkpoint["pack065_error"] = f"{type(exc).__name__}: {exc}"
+
+    return checkpoint
+

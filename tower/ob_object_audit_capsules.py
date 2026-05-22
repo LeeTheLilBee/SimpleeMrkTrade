@@ -573,3 +573,264 @@ def summarize_ob_object_security_inbox(limit: int = 10) -> Dict[str, Any]:
         "soulaana_translation": "Soulaana: Review-worthy drawer events are now in the owner's queue.",
     }
 
+
+
+# ================================================================================
+# PACK061_OBJECT_SECURITY_INBOX_ACTIONS
+# ================================================================================
+# Owner workflow for object security inbox items.
+# ================================================================================
+
+def _pack061_valid_object_inbox_statuses() -> set:
+    return {"open", "reviewing", "resolved", "ignored"}
+
+
+def _pack061_find_object_inbox_item(items: List[Dict[str, Any]], inbox_item_id: str) -> int:
+    inbox_item_id = _safe_str(inbox_item_id)
+    if not inbox_item_id:
+        return -1
+
+    for index, item in enumerate(items):
+        if _safe_str(item.get("inbox_item_id")) == inbox_item_id:
+            return index
+    return -1
+
+
+def list_open_ob_object_security_inbox(limit: int = 25) -> Dict[str, Any]:
+    items = _load_json_list(OBJECT_SECURITY_INBOX_PATH)
+    open_items = [
+        item for item in items
+        if _safe_str(item.get("status"), "open") in {"open", "reviewing"}
+    ]
+
+    try:
+        limit = int(limit)
+    except Exception:
+        limit = 25
+    limit = max(1, min(limit, 500))
+
+    return {
+        "ok": True,
+        "path": str(OBJECT_SECURITY_INBOX_PATH),
+        "total": len(open_items),
+        "count": len(open_items[-limit:]),
+        "items": open_items[-limit:],
+        "human_reason": "Open OB object security inbox items loaded.",
+    }
+
+
+def update_ob_object_security_inbox_item(
+    *,
+    inbox_item_id: str,
+    new_status: str = "",
+    actor_user_id: str = "owner_solice",
+    note: str = "",
+    resolution_reason: str = "",
+) -> Dict[str, Any]:
+    items = _load_json_list(OBJECT_SECURITY_INBOX_PATH)
+    index = _pack061_find_object_inbox_item(items, inbox_item_id)
+
+    if index < 0:
+        return {
+            "ok": False,
+            "status": "not_found",
+            "reason_code": "object_inbox_item_not_found",
+            "inbox_item_id": _safe_str(inbox_item_id),
+            "human_reason": "OB object security inbox item was not found.",
+        }
+
+    new_status = _safe_str(new_status)
+    if new_status and new_status not in _pack061_valid_object_inbox_statuses():
+        return {
+            "ok": False,
+            "status": "invalid_status",
+            "reason_code": "invalid_object_inbox_status",
+            "allowed_statuses": sorted(list(_pack061_valid_object_inbox_statuses())),
+            "requested_status": new_status,
+            "human_reason": "Requested object inbox status is not allowed.",
+        }
+
+    actor_user_id = _safe_str(actor_user_id, "owner_solice")
+    note = _safe_str(note)
+    resolution_reason = _safe_str(resolution_reason)
+
+    item = items[index]
+    old_status = _safe_str(item.get("status"), "open")
+    now = _utc_now()
+
+    item.setdefault("owner_notes", [])
+    item.setdefault("history", [])
+
+    if note:
+        item["owner_notes"].append({
+            "timestamp": now,
+            "actor_user_id": actor_user_id,
+            "note": note,
+        })
+
+    if new_status:
+        item["status"] = new_status
+        item["updated_at"] = now
+        item["updated_by"] = actor_user_id
+
+        item["history"].append({
+            "timestamp": now,
+            "actor_user_id": actor_user_id,
+            "action": f"status:{old_status}->{new_status}",
+            "note": note,
+            "resolution_reason": resolution_reason,
+        })
+
+        if new_status == "reviewing":
+            item["review_started_at"] = now
+            item["review_started_by"] = actor_user_id
+            item.setdefault("routing", {})["surface"] = "active_review"
+
+        if new_status == "resolved":
+            item["resolved_at"] = now
+            item["resolved_by"] = actor_user_id
+            item["resolution_reason"] = resolution_reason or "owner_resolved"
+            item.setdefault("routing", {})["surface"] = "resolved_archive"
+
+        if new_status == "ignored":
+            item["ignored_at"] = now
+            item["ignored_by"] = actor_user_id
+            item["resolution_reason"] = resolution_reason or "owner_ignored"
+            item.setdefault("routing", {})["surface"] = "ignored_archive"
+
+    elif note:
+        item["updated_at"] = now
+        item["updated_by"] = actor_user_id
+        item["history"].append({
+            "timestamp": now,
+            "actor_user_id": actor_user_id,
+            "action": "note_added",
+            "note": note,
+        })
+
+    items[index] = item
+    _write_json(OBJECT_SECURITY_INBOX_PATH, items)
+
+    return {
+        "ok": True,
+        "status": "updated",
+        "inbox_item_id": _safe_str(inbox_item_id),
+        "old_status": old_status,
+        "new_status": _safe_str(item.get("status"), old_status),
+        "human_reason": "OB object security inbox item updated.",
+        "item": item,
+    }
+
+
+def mark_ob_object_security_inbox_reviewing(
+    inbox_item_id: str,
+    actor_user_id: str = "owner_solice",
+    note: str = "",
+) -> Dict[str, Any]:
+    return update_ob_object_security_inbox_item(
+        inbox_item_id=inbox_item_id,
+        new_status="reviewing",
+        actor_user_id=actor_user_id,
+        note=note,
+    )
+
+
+def resolve_ob_object_security_inbox_item(
+    inbox_item_id: str,
+    actor_user_id: str = "owner_solice",
+    note: str = "",
+    resolution_reason: str = "owner_reviewed",
+) -> Dict[str, Any]:
+    return update_ob_object_security_inbox_item(
+        inbox_item_id=inbox_item_id,
+        new_status="resolved",
+        actor_user_id=actor_user_id,
+        note=note,
+        resolution_reason=resolution_reason,
+    )
+
+
+def ignore_ob_object_security_inbox_item(
+    inbox_item_id: str,
+    actor_user_id: str = "owner_solice",
+    note: str = "",
+    resolution_reason: str = "owner_ignored",
+) -> Dict[str, Any]:
+    return update_ob_object_security_inbox_item(
+        inbox_item_id=inbox_item_id,
+        new_status="ignored",
+        actor_user_id=actor_user_id,
+        note=note,
+        resolution_reason=resolution_reason,
+    )
+
+
+def add_note_to_ob_object_security_inbox_item(
+    inbox_item_id: str,
+    actor_user_id: str = "owner_solice",
+    note: str = "",
+) -> Dict[str, Any]:
+    return update_ob_object_security_inbox_item(
+        inbox_item_id=inbox_item_id,
+        new_status="",
+        actor_user_id=actor_user_id,
+        note=note,
+    )
+
+
+
+# ================================================================================
+# PACK064_ARCHIVE_VAULT_HANDOFF_FOR_OBJECT_INBOX
+# ================================================================================
+# Convenience helper: queue an object security inbox item for Archive Vault.
+# ================================================================================
+
+def queue_ob_object_security_inbox_item_for_archive(
+    inbox_item_id: str,
+    actor_user_id: str = "owner_solice",
+    owner_note: str = "",
+) -> Dict[str, Any]:
+    items = _load_json_list(OBJECT_SECURITY_INBOX_PATH)
+    target = None
+
+    for item in items:
+        if _safe_str(item.get("inbox_item_id")) == _safe_str(inbox_item_id):
+            target = item
+            break
+
+    if target is None:
+        return {
+            "ok": False,
+            "status": "not_found",
+            "reason_code": "object_inbox_item_not_found",
+            "inbox_item_id": _safe_str(inbox_item_id),
+            "human_reason": "Object security inbox item was not found for Archive Vault handoff.",
+        }
+
+    try:
+        from tower.archive_vault_handoff import queue_object_security_event_for_archive
+
+        result = queue_object_security_event_for_archive(
+            inbox_item=target,
+            actor_user_id=actor_user_id,
+            owner_note=owner_note,
+        )
+
+        if result.get("ok"):
+            # Add a light marker to the inbox item history without changing terminal status.
+            update_ob_object_security_inbox_item(
+                inbox_item_id=inbox_item_id,
+                actor_user_id=actor_user_id,
+                note=f"Archive Vault handoff queued: {result.get('handoff_id')}",
+            )
+
+        return result
+
+    except Exception as exc:
+        return {
+            "ok": False,
+            "status": "error",
+            "reason_code": "archive_vault_handoff_error",
+            "human_reason": f"{type(exc).__name__}: {exc}",
+        }
+

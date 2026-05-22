@@ -484,3 +484,210 @@ def generate_security_command_dashboard(*args, **kwargs):
             "path": "",
         }
 
+
+
+# ================================================================================
+# PACK063_OBJECT_INBOX_UI_ACTION_FORMS
+# ================================================================================
+# Adds owner action forms to the OB Object Security Inbox panel.
+# ================================================================================
+
+def _pack063_escape_html(value):
+    text = "" if value is None else str(value)
+    return (
+        text.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&#x27;")
+    )
+
+
+def _pack063_object_inbox_action_forms(item):
+    inbox_item_id = _pack063_escape_html(item.get("inbox_item_id", ""))
+    status = _pack063_escape_html(item.get("status", "open"))
+    object_id = _pack063_escape_html(item.get("object_id", ""))
+    object_type = _pack063_escape_html(item.get("object_type", "object"))
+
+    return f"""
+      <div class="tower-action-box" data-pack="063" data-inbox-item-id="{inbox_item_id}">
+        <div class="tower-action-title">Owner Actions</div>
+        <p class="tower-action-hint">Item: {object_type}:{object_id} · Status: {status}</p>
+
+        <form class="tower-action-form" method="post" action="/tower/security-command/object-inbox/action">
+          <input type="hidden" name="inbox_item_id" value="{inbox_item_id}">
+          <input type="hidden" name="action_type" value="note">
+          <label>Add note</label>
+          <textarea name="note" placeholder="Owner note for this drawer event"></textarea>
+          <button type="submit">Add Note</button>
+        </form>
+
+        <div class="tower-action-row">
+          <form method="post" action="/tower/security-command/object-inbox/action">
+            <input type="hidden" name="inbox_item_id" value="{inbox_item_id}">
+            <input type="hidden" name="action_type" value="reviewing">
+            <input type="hidden" name="note" value="Owner marked this object inbox item as reviewing from Tower UI.">
+            <button type="submit">Mark Reviewing</button>
+          </form>
+
+          <form method="post" action="/tower/security-command/object-inbox/action">
+            <input type="hidden" name="inbox_item_id" value="{inbox_item_id}">
+            <input type="hidden" name="action_type" value="resolve">
+            <input type="hidden" name="resolution_reason" value="owner_resolved_from_tower_ui">
+            <input type="hidden" name="note" value="Owner resolved this object inbox item from Tower UI.">
+            <button type="submit">Resolve</button>
+          </form>
+
+          <form method="post" action="/tower/security-command/object-inbox/action">
+            <input type="hidden" name="inbox_item_id" value="{inbox_item_id}">
+            <input type="hidden" name="action_type" value="ignore">
+            <input type="hidden" name="resolution_reason" value="owner_ignored_from_tower_ui">
+            <input type="hidden" name="note" value="Owner ignored this object inbox item from Tower UI.">
+            <button type="submit">Ignore</button>
+          </form>
+        </div>
+      </div>
+    """
+
+
+def _pack063_object_inbox_panel_styles():
+    return """
+    <style data-pack="063-object-inbox-actions">
+      .tower-action-box {
+        margin-top: 14px;
+        padding: 14px;
+        border: 1px solid rgba(255,255,255,.16);
+        border-radius: 18px;
+        background: rgba(255,255,255,.045);
+      }
+      .tower-action-title {
+        font-size: 12px;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        opacity: .72;
+        margin-bottom: 6px;
+      }
+      .tower-action-hint {
+        font-size: 13px;
+        opacity: .76;
+        margin: 0 0 10px 0;
+      }
+      .tower-action-form textarea {
+        width: 100%;
+        min-height: 70px;
+        resize: vertical;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,.18);
+        background: rgba(0,0,0,.22);
+        color: inherit;
+        padding: 10px;
+        margin: 8px 0;
+      }
+      .tower-action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .tower-action-row form {
+        margin: 0;
+      }
+      .tower-action-box button {
+        border: 1px solid rgba(255,255,255,.2);
+        background: rgba(255,255,255,.10);
+        color: inherit;
+        border-radius: 999px;
+        padding: 9px 13px;
+        cursor: pointer;
+      }
+      .tower-action-box button:hover {
+        background: rgba(255,255,255,.16);
+      }
+    </style>
+    """
+
+
+def _pack063_object_security_inbox_panel_html_with_actions():
+    try:
+        from tower.ob_object_audit_capsules import summarize_ob_object_security_inbox
+
+        summary = summarize_ob_object_security_inbox(limit=6)
+        total = summary.get("total", 0)
+        open_count = summary.get("open", 0)
+        by_severity = summary.get("by_severity", {})
+        by_object_type = summary.get("by_object_type", {})
+        recent = summary.get("recent", [])
+
+        recent_cards = []
+        for item in recent[-6:]:
+            title = _pack063_escape_html(item.get("title", "Object security review"))
+            severity = _pack063_escape_html(item.get("severity", "unknown"))
+            status = _pack063_escape_html(item.get("status", "open"))
+            owner_action = _pack063_escape_html(item.get("owner_action", "Review object event."))
+            soulaana = _pack063_escape_html(item.get("soulaana_translation", "Soulaana: Object event needs review."))
+
+            actions_html = ""
+            if status in {"open", "reviewing"}:
+                actions_html = _pack063_object_inbox_action_forms(item)
+            else:
+                actions_html = "<p class='tower-action-hint'>Archived item. No active owner action needed.</p>"
+
+            recent_cards.append(f"""
+              <div class="tower-mini-card">
+                <div class="tower-mini-top">
+                  <span>{severity.upper()}</span>
+                  <span>{status}</span>
+                </div>
+                <strong>{title}</strong>
+                <p>{owner_action}</p>
+                <p>{soulaana}</p>
+                {actions_html}
+              </div>
+            """)
+
+        recent_html = "\n".join(recent_cards) if recent_cards else "<p>No object security inbox items yet.</p>"
+
+        return f"""
+        {_pack063_object_inbox_panel_styles()}
+        <section class="tower-panel" data-pack="063">
+          <div class="tower-panel-kicker">OB OBJECT SECURITY INBOX</div>
+          <h2>Drawer Review Queue</h2>
+          <p>Review-worthy Observatory object attempts are surfaced here with owner action forms.</p>
+
+          <div class="tower-stat-grid">
+            <div class="tower-stat-card">
+              <span>Total</span>
+              <strong>{total}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>Open</span>
+              <strong>{open_count}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Severity</span>
+              <strong>{_pack063_escape_html(by_severity)}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Object</span>
+              <strong>{_pack063_escape_html(by_object_type)}</strong>
+            </div>
+          </div>
+
+          <div class="tower-mini-list">
+            {recent_html}
+          </div>
+        </section>
+        """
+    except Exception as exc:
+        return f"""
+        <section class="tower-panel" data-pack="063">
+          <div class="tower-panel-kicker">OB OBJECT SECURITY INBOX</div>
+          <h2>Drawer Review Queue</h2>
+          <p>Object security inbox action panel could not load: {type(exc).__name__}: {_pack063_escape_html(exc)}</p>
+        </section>
+        """
+
+
+# Override the Pack 059 panel helper with the Pack 063 action-enabled version.
+_pack059_object_security_inbox_panel_html = _pack063_object_security_inbox_panel_html_with_actions
+
