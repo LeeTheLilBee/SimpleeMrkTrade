@@ -705,3 +705,166 @@ __all__ = [
     "summarize_readiness",
     "self_test",
 ]
+
+# ==============================================================================
+# OBSERVATORY_READINESS_REENTRY_DISCIPLINE_WIRE_V2_20260522
+# ==============================================================================
+# Compatibility wrapper:
+# - Existing readiness_guard.evaluate_candidates may return either:
+#     1. dict payload with {"evaluated": [...], "summary": {...}}
+#     2. plain list of evaluated rows
+# - This wrapper applies re-entry discipline to either shape.
+# - It preserves the original return shape so process_signals does not get shocked.
+# ==============================================================================
+
+from datetime import datetime, timezone
+
+_OBSERVATORY_ORIGINAL_EVALUATE_CANDIDATES_BEFORE_REENTRY_DISCIPLINE_V2_20260522 = evaluate_candidates
+
+
+def _observatory_rebuild_readiness_summary_after_reentry_v2_20260522(rows, existing_summary=None):
+    rows = rows if isinstance(rows, list) else []
+    summary = existing_summary if isinstance(existing_summary, dict) else {}
+
+    counts = {}
+    ready_symbols = []
+    watch_symbols = []
+    blocked_count = 0
+
+    blocker_counts = {}
+
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+
+        status = str(row.get("readiness_status") or "").strip().upper()
+        symbol = str(row.get("symbol") or "").strip().upper()
+
+        if row.get("reentry_discipline_allowed") is False:
+            status = "BLOCKED"
+            row["readiness_status"] = "BLOCKED"
+            row["research_approved"] = False
+            row["execution_ready"] = False
+            row["selected_for_execution"] = False
+            row["blocked_at"] = "reentry_discipline_guard"
+            row["final_reason"] = row.get("reentry_discipline_reason") or "reentry_discipline_blocked"
+            row["final_reason_detail"] = (
+                row.get("final_reason_detail")
+                or "Re-entry discipline guard blocked this candidate."
+            )
+
+        elif row.get("reentry_discipline_status") == "WATCH":
+            warnings = row.get("readiness_warnings")
+            if not isinstance(warnings, list):
+                warnings = []
+
+            reason = row.get("reentry_discipline_reason")
+            if reason and reason not in warnings:
+                warnings.append(reason)
+
+            row["readiness_warnings"] = warnings
+            row["reentry_allowed_with_caution"] = True
+
+            if status == "READY":
+                status = "WATCH"
+                row["readiness_status"] = "WATCH"
+
+        if not status:
+            status = "UNKNOWN"
+
+        counts[status] = counts.get(status, 0) + 1
+
+        if row.get("execution_ready") is True:
+            ready_symbols.append(symbol)
+
+        if row.get("readiness_status") == "WATCH":
+            watch_symbols.append(symbol)
+
+        if row.get("execution_ready") is not True:
+            blocked_count += 1
+
+        reason = (
+            row.get("final_reason")
+            or row.get("reentry_discipline_reason")
+            or row.get("blocked_at")
+            or row.get("readiness_status")
+            or "unknown"
+        )
+        reason = str(reason)
+        blocker_counts[reason] = blocker_counts.get(reason, 0) + 1
+
+    summary["counts"] = counts
+    summary["total"] = len(rows)
+    summary["ready_count"] = len(ready_symbols)
+    summary["watch_count"] = len(watch_symbols)
+    summary["blocked_count"] = blocked_count
+    summary["ready_symbols"] = ready_symbols
+    summary["watch_symbols"] = watch_symbols
+    summary["top_blockers"] = sorted(
+        blocker_counts.items(),
+        key=lambda item: item[1],
+        reverse=True,
+    )[:12]
+    summary["summary_generated_at"] = datetime.now(timezone.utc).isoformat()
+
+    return summary
+
+
+def _observatory_apply_reentry_discipline_wire_v2_20260522(payload):
+    try:
+        from engine.reentry_discipline_guard import evaluate_candidates as _discipline_evaluate
+    except Exception as exc:
+        if isinstance(payload, dict):
+            payload["reentry_discipline_wire_error"] = str(exc)
+        return payload
+
+    original_shape = "dict" if isinstance(payload, dict) else "list" if isinstance(payload, list) else "other"
+
+    if isinstance(payload, dict):
+        evaluated = payload.get("evaluated")
+        if not isinstance(evaluated, list):
+            return payload
+
+        existing_summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else {}
+
+    elif isinstance(payload, list):
+        evaluated = payload
+        existing_summary = {}
+
+    else:
+        return payload
+
+    discipline_result = _discipline_evaluate(evaluated)
+    disciplined_rows = discipline_result.get("evaluated", evaluated) if isinstance(discipline_result, dict) else evaluated
+    discipline_summary = discipline_result.get("summary", {}) if isinstance(discipline_result, dict) else {}
+
+    if not isinstance(disciplined_rows, list):
+        disciplined_rows = evaluated
+
+    summary = _observatory_rebuild_readiness_summary_after_reentry_v2_20260522(
+        disciplined_rows,
+        existing_summary=existing_summary,
+    )
+    summary["reentry_discipline"] = discipline_summary
+    summary["reentry_discipline_applied"] = True
+    summary["reentry_discipline_return_shape"] = original_shape
+
+    if original_shape == "dict":
+        payload["evaluated"] = disciplined_rows
+        payload["summary"] = summary
+        payload["reentry_discipline_applied"] = True
+        payload["reentry_discipline_summary"] = discipline_summary
+        return payload
+
+    # Preserve original list return shape.
+    # Attach summary lightly to each row so downstream can still inspect if needed.
+    for row in disciplined_rows:
+        if isinstance(row, dict):
+            row.setdefault("reentry_discipline_wire_applied", True)
+
+    return disciplined_rows
+
+
+def evaluate_candidates(*args, **kwargs):
+    payload = _OBSERVATORY_ORIGINAL_EVALUATE_CANDIDATES_BEFORE_REENTRY_DISCIPLINE_V2_20260522(*args, **kwargs)
+    return _observatory_apply_reentry_discipline_wire_v2_20260522(payload)
