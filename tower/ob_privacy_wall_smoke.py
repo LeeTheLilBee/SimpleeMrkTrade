@@ -760,3 +760,204 @@ def run_ob_privacy_wall_smoke():
 
     return result
 
+
+
+# ================================================================================
+# PACK073_AUDITED_UI_ENDPOINT_WORKFLOW_SMOKE_WRAPPER
+# ================================================================================
+# Proves the audited object inbox UI POST endpoint works and creates receipts.
+# ================================================================================
+
+def _pack073_prove_audited_ui_endpoint_workflow():
+    try:
+        from web.app import app
+        from tower.ob_object_guard import evaluate_ob_object_guard
+        from tower.ob_object_audit_capsules import list_open_ob_object_security_inbox
+        from tower.ui_action_audit import summarize_ui_action_audit_receipts
+
+        client = app.test_client()
+        endpoint = "/tower/security-command/object-inbox/action-audited"
+
+        before = summarize_ui_action_audit_receipts(limit=5)
+
+        decision = evaluate_ob_object_guard(
+            user_id="beta_001",
+            role="user",
+            object_kind="export",
+            object_id="export_073_endpoint",
+            action="download",
+            route_key="export",
+            current_risk_score=5,
+        )
+
+        open_items = list_open_ob_object_security_inbox(limit=160)
+        target = None
+        for item in reversed(open_items.get("items", [])):
+            if item.get("object_id") == "export_073_endpoint":
+                target = item
+                break
+
+        detail = {
+            "decision_reason": decision.get("reason_code"),
+            "target_found": bool(target),
+            "before_total": before.get("total"),
+        }
+
+        if not target:
+            return {
+                "ok": False,
+                "detail": detail,
+                "human_reason": "Audited UI endpoint target item was not found.",
+            }
+
+        target_id = target.get("inbox_item_id")
+
+        note_resp = client.post(endpoint, data={
+            "inbox_item_id": target_id,
+            "action_type": "note",
+            "note": "Pack 073 smoke: audited endpoint note.",
+            "actor_user_id": "owner_solice",
+        })
+        note_json = note_resp.get_json() or {}
+
+        review_resp = client.post(endpoint, data={
+            "inbox_item_id": target_id,
+            "action_type": "reviewing",
+            "note": "Pack 073 smoke: audited endpoint reviewing.",
+            "actor_user_id": "owner_solice",
+        })
+        review_json = review_resp.get_json() or {}
+
+        resolve_resp = client.post(endpoint, data={
+            "inbox_item_id": target_id,
+            "action_type": "resolve",
+            "note": "Pack 073 smoke: audited endpoint resolved.",
+            "resolution_reason": "pack073_smoke_resolved",
+            "actor_user_id": "owner_solice",
+        })
+        resolve_json = resolve_resp.get_json() or {}
+
+        bad_resp = client.post(endpoint, data={
+            "inbox_item_id": target_id,
+            "action_type": "explode",
+            "actor_user_id": "owner_solice",
+        })
+        bad_json = bad_resp.get_json() or {}
+
+        missing_resp = client.post(endpoint, data={
+            "action_type": "note",
+            "note": "Pack 073 smoke: missing id.",
+            "actor_user_id": "owner_solice",
+        })
+        missing_json = missing_resp.get_json() or {}
+
+        after = summarize_ui_action_audit_receipts(limit=20)
+
+        receipt_ids = [
+            note_json.get("ui_action_audit_receipt_id"),
+            review_json.get("ui_action_audit_receipt_id"),
+            resolve_json.get("ui_action_audit_receipt_id"),
+            bad_json.get("ui_action_audit_receipt_id"),
+            missing_json.get("ui_action_audit_receipt_id"),
+        ]
+
+        detail.update({
+            "target_id": target_id,
+            "note_status": note_resp.status_code,
+            "note_ok": note_json.get("ok"),
+            "review_status": review_resp.status_code,
+            "review_ok": review_json.get("ok"),
+            "review_new_status": review_json.get("result", {}).get("new_status"),
+            "resolve_status": resolve_resp.status_code,
+            "resolve_ok": resolve_json.get("ok"),
+            "resolve_new_status": resolve_json.get("result", {}).get("new_status"),
+            "resolve_reason": resolve_json.get("result", {}).get("item", {}).get("resolution_reason"),
+            "bad_status": bad_resp.status_code,
+            "bad_reason": bad_json.get("reason_code"),
+            "missing_status": missing_resp.status_code,
+            "missing_reason": missing_json.get("reason_code"),
+            "receipt_ids_present": all(bool(x) for x in receipt_ids),
+            "after_total": after.get("total"),
+            "after_action_ok": after.get("action_ok"),
+            "after_action_failed": after.get("action_failed"),
+            "after_by_action": after.get("by_action"),
+            "after_by_status_code": after.get("by_status_code"),
+        })
+
+        ok = (
+            note_resp.status_code == 200
+            and note_json.get("ok") is True
+            and review_resp.status_code == 200
+            and review_json.get("ok") is True
+            and review_json.get("result", {}).get("new_status") == "reviewing"
+            and resolve_resp.status_code == 200
+            and resolve_json.get("ok") is True
+            and resolve_json.get("result", {}).get("new_status") == "resolved"
+            and resolve_json.get("result", {}).get("item", {}).get("resolution_reason") == "pack073_smoke_resolved"
+            and bad_resp.status_code == 400
+            and bad_json.get("reason_code") == "invalid_object_inbox_action_type"
+            and missing_resp.status_code == 400
+            and missing_json.get("reason_code") == "object_inbox_item_id_required"
+            and all(bool(x) for x in receipt_ids)
+            and after.get("total", 0) >= before.get("total", 0) + 5
+            and after.get("action_ok", 0) >= 3
+            and after.get("action_failed", 0) >= 2
+        )
+
+        serialized = str([detail, note_json, review_json, resolve_json, bad_json, missing_json, after])
+        no_leak = (
+            "tower_keycard=" not in serialized
+            and "SHOULD_NOT_SURVIVE" not in serialized
+            and "raw_token=" not in serialized
+            and '"raw_token":' not in serialized
+            and "Bearer SHOULD_NOT_SURVIVE" not in serialized
+        )
+        detail["no_secret_leakage"] = no_leak
+
+        return {
+            "ok": ok and no_leak,
+            "detail": detail,
+            "human_reason": "Audited UI endpoint workflow proved." if ok and no_leak else "Audited UI endpoint workflow failed.",
+        }
+
+    except Exception as exc:
+        return {
+            "ok": False,
+            "detail": {"error": f"{type(exc).__name__}: {exc}"},
+            "human_reason": "Audited UI endpoint workflow proof raised an exception.",
+        }
+
+
+try:
+    _pack073_original_run_ob_privacy_wall_smoke
+except NameError:
+    _pack073_original_run_ob_privacy_wall_smoke = run_ob_privacy_wall_smoke
+
+
+def run_ob_privacy_wall_smoke():
+    result = _pack073_original_run_ob_privacy_wall_smoke()
+    if not isinstance(result, dict):
+        result = {"ok": False, "checks": {}, "failures": ["invalid_smoke_result"]}
+
+    checks = result.setdefault("checks", {})
+    failures = result.setdefault("failures", [])
+
+    proof = _pack073_prove_audited_ui_endpoint_workflow()
+    checks["audited_ui_endpoint_workflow_ready"] = {
+        "ok": proof.get("ok") is True,
+        "detail": proof.get("detail"),
+    }
+
+    if proof.get("ok") is not True and "audited_ui_endpoint_workflow_ready" not in failures:
+        failures.append("audited_ui_endpoint_workflow_ready")
+
+    result["ok"] = not failures
+    result["pack"] = "073"
+    result["human_reason"] = (
+        "OB privacy wall smoke test passed with audited UI endpoint workflow."
+        if result["ok"]
+        else "OB privacy wall smoke test found failures."
+    )
+
+    return result
+

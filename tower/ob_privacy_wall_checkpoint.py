@@ -465,3 +465,115 @@ def build_ob_privacy_wall_checkpoint():
 
     return checkpoint
 
+
+
+# ================================================================================
+# PACK073_AUDITED_UI_ENDPOINT_WORKFLOW_CHECKPOINT_WRAPPER
+# ================================================================================
+# Adds audited UI endpoint proof to privacy wall checkpoint.
+# ================================================================================
+
+try:
+    _pack073_original_build_ob_privacy_wall_checkpoint
+except NameError:
+    _pack073_original_build_ob_privacy_wall_checkpoint = build_ob_privacy_wall_checkpoint
+
+
+def build_ob_privacy_wall_checkpoint():
+    checkpoint = _pack073_original_build_ob_privacy_wall_checkpoint()
+    if not isinstance(checkpoint, dict):
+        checkpoint = {"ok": False, "built_packs": [], "next_steps": []}
+
+    try:
+        from tower.ob_privacy_wall_smoke import run_ob_privacy_wall_smoke
+        from tower.ui_action_audit import summarize_ui_action_audit_receipts
+
+        smoke = run_ob_privacy_wall_smoke()
+        checks = smoke.get("checks", {}) if isinstance(smoke.get("checks"), dict) else {}
+        audited_workflow = checks.get("audited_ui_endpoint_workflow_ready", {})
+        ui_audit_summary = summarize_ui_action_audit_receipts(limit=10)
+
+        checkpoint["pack"] = "073"
+        checkpoint["ok"] = smoke.get("ok") is True
+        checkpoint["smoke_ok"] = smoke.get("ok")
+        checkpoint["smoke_failures"] = smoke.get("failures")
+        checkpoint["audited_ui_endpoint_workflow_ready"] = audited_workflow
+        checkpoint["ui_action_audit_summary"] = {
+            "ok": ui_audit_summary.get("ok"),
+            "total": ui_audit_summary.get("total"),
+            "action_ok": ui_audit_summary.get("action_ok"),
+            "action_failed": ui_audit_summary.get("action_failed"),
+            "by_action": ui_audit_summary.get("by_action"),
+            "by_reason": ui_audit_summary.get("by_reason"),
+            "by_severity": ui_audit_summary.get("by_severity"),
+            "by_status_code": ui_audit_summary.get("by_status_code"),
+        }
+
+        built_packs = checkpoint.setdefault("built_packs", [])
+        built_text = str(built_packs)
+        additions = [
+            {
+                "pack": "071",
+                "name": "Object inbox UI POST endpoint",
+                "plain": "Object inbox forms can submit note/review/resolve/ignore actions.",
+            },
+            {
+                "pack": "072",
+                "name": "UI action audit receipts",
+                "plain": "Successful and failed owner UI actions create audit receipts.",
+            },
+            {
+                "pack": "073",
+                "name": "Audited UI endpoint workflow proof",
+                "plain": "Smoke/checkpoint prove audited UI endpoint actions.",
+            },
+        ]
+        for item in additions:
+            if item["pack"] not in built_text:
+                built_packs.append(item)
+
+        checkpoint["next_steps"] = [
+            {
+                "priority": 1,
+                "item": "Surface Archive Vault handoff summary in Tower status/UI",
+                "plain": "The queue exists; now The Tower should show queued evidence handoffs.",
+            },
+            {
+                "priority": 2,
+                "item": "Wire audited endpoint into Security Command forms",
+                "plain": "The audited route exists; update form actions from action to action-audited.",
+            },
+            {
+                "priority": 3,
+                "item": "Wire polished locked pages into actual privacy wall deny paths",
+                "plain": "Replace older deny shells route-by-route without breaking behavior.",
+            },
+            {
+                "priority": 4,
+                "item": "Map or intentionally retire unmapped Observatory routes",
+                "plain": "The exposure report shows default-deny routes; choose which become real corridors.",
+            },
+            {
+                "priority": 5,
+                "item": "Create Save/transition checkpoint",
+                "plain": "Close the UI endpoint block cleanly.",
+            },
+        ]
+
+        checkpoint["readiness_score"] = 100 if smoke.get("ok") else 90
+        checkpoint["readiness_label"] = (
+            "Ready to surface Archive Vault handoff summary"
+            if smoke.get("ok")
+            else "Needs repair before Archive Vault UI surfacing"
+        )
+        checkpoint["soulaana_translation"] = (
+            "Soulaana: The owner buttons now move the queue and leave receipts. Nothing important happens silently."
+        )
+        checkpoint["human_reason"] = "Privacy wall checkpoint now proves audited UI endpoint workflow."
+
+    except Exception as exc:
+        checkpoint["ok"] = False
+        checkpoint["pack073_error"] = f"{type(exc).__name__}: {exc}"
+
+    return checkpoint
+

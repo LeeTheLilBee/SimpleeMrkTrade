@@ -317,3 +317,43 @@ def get_tower_status(*args, **kwargs):
 
     return status
 
+
+
+# ================================================================================
+# PACK074_ARCHIVE_VAULT_HANDOFF_STATUS_WRAPPER
+# ================================================================================
+# Adds Archive Vault handoff queue summary fields to Tower status.
+# ================================================================================
+
+try:
+    _pack074_original_get_tower_status
+except NameError:
+    _pack074_original_get_tower_status = get_tower_status
+
+
+def get_tower_status():
+    payload = _pack074_original_get_tower_status()
+    if not isinstance(payload, dict):
+        payload = {}
+
+    try:
+        from tower.archive_vault_handoff import summarize_archive_vault_handoffs
+
+        summary = summarize_archive_vault_handoffs(limit=8)
+
+        payload["archive_vault_handoff_ok"] = summary.get("ok") is True
+        payload["archive_vault_handoff_total"] = summary.get("total", 0)
+        payload["archive_vault_handoff_queued"] = summary.get("queued", 0)
+        payload["archive_vault_handoff_by_status"] = summary.get("by_status", {})
+        payload["archive_vault_handoff_by_source_type"] = summary.get("by_source_type", {})
+        payload["archive_vault_handoff_by_severity"] = summary.get("by_severity", {})
+        payload["archive_vault_handoff_recent"] = summary.get("recent", [])
+        payload["archive_vault_handoff_human_reason"] = summary.get("human_reason")
+        payload["archive_vault_handoff_soulaana_translation"] = summary.get("soulaana_translation")
+
+    except Exception as exc:
+        payload["archive_vault_handoff_ok"] = False
+        payload["archive_vault_handoff_error"] = f"{type(exc).__name__}: {exc}"
+
+    return payload
+

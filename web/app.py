@@ -9342,3 +9342,306 @@ if app is not None:
             soulaana_translation="Soulaana: No clearance, no corridor. The real Observatory stays behind The Tower.",
         )
 
+
+
+# ================================================================================
+# PACK071_OBJECT_INBOX_UI_POST_ENDPOINT
+# ================================================================================
+# POST endpoint for Tower Security Command object inbox forms.
+# ================================================================================
+
+try:
+    app
+except NameError:
+    app = None
+
+if app is not None:
+    @app.route("/tower/security-command/object-inbox/action", methods=["POST"])
+    def pack071_object_inbox_action_endpoint():
+        try:
+            from flask import request, jsonify
+            from tower.ob_object_audit_capsules import (
+                add_note_to_ob_object_security_inbox_item,
+                ignore_ob_object_security_inbox_item,
+                mark_ob_object_security_inbox_reviewing,
+                resolve_ob_object_security_inbox_item,
+                summarize_ob_object_security_inbox,
+            )
+
+            inbox_item_id = (request.form.get("inbox_item_id") or "").strip()
+            action_type = (request.form.get("action_type") or "").strip().lower()
+            note = (request.form.get("note") or "").strip()
+            resolution_reason = (request.form.get("resolution_reason") or "").strip()
+            actor_user_id = (request.form.get("actor_user_id") or "owner_solice").strip()
+
+            if not inbox_item_id:
+                return jsonify({
+                    "ok": False,
+                    "status": "missing_inbox_item_id",
+                    "reason_code": "object_inbox_item_id_required",
+                    "human_reason": "Object inbox item id is required.",
+                }), 400
+
+            if action_type in {"note", "add_note"}:
+                result = add_note_to_ob_object_security_inbox_item(
+                    inbox_item_id,
+                    actor_user_id=actor_user_id,
+                    note=note or "Owner added a note from Tower UI.",
+                )
+            elif action_type in {"reviewing", "review", "mark_reviewing"}:
+                result = mark_ob_object_security_inbox_reviewing(
+                    inbox_item_id,
+                    actor_user_id=actor_user_id,
+                    note=note or "Owner marked this object inbox item as reviewing from Tower UI.",
+                )
+            elif action_type in {"resolve", "resolved"}:
+                result = resolve_ob_object_security_inbox_item(
+                    inbox_item_id,
+                    actor_user_id=actor_user_id,
+                    note=note or "Owner resolved this object inbox item from Tower UI.",
+                    resolution_reason=resolution_reason or "owner_resolved_from_tower_ui",
+                )
+            elif action_type in {"ignore", "ignored"}:
+                result = ignore_ob_object_security_inbox_item(
+                    inbox_item_id,
+                    actor_user_id=actor_user_id,
+                    note=note or "Owner ignored this object inbox item from Tower UI.",
+                    resolution_reason=resolution_reason or "owner_ignored_from_tower_ui",
+                )
+            else:
+                return jsonify({
+                    "ok": False,
+                    "status": "invalid_action_type",
+                    "reason_code": "invalid_object_inbox_action_type",
+                    "requested_action_type": action_type,
+                    "allowed_action_types": ["note", "reviewing", "resolve", "ignore"],
+                    "human_reason": "Requested object inbox action type is not allowed.",
+                }), 400
+
+            summary = summarize_ob_object_security_inbox(limit=8)
+
+            response = {
+                "ok": result.get("ok") is True,
+                "status": result.get("status"),
+                "action_type": action_type,
+                "inbox_item_id": inbox_item_id,
+                "result": result,
+                "object_security_inbox_summary": {
+                    "ok": summary.get("ok"),
+                    "total": summary.get("total"),
+                    "open": summary.get("open"),
+                    "by_status": summary.get("by_status"),
+                    "by_reason": summary.get("by_reason"),
+                    "by_object_type": summary.get("by_object_type"),
+                    "by_severity": summary.get("by_severity"),
+                },
+                "human_reason": "Object inbox UI action processed." if result.get("ok") else "Object inbox UI action failed.",
+                "soulaana_translation": "Soulaana: Owner action received. The drawer-review queue was updated.",
+            }
+
+            return jsonify(response), 200 if result.get("ok") else 404
+
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "status": "error",
+                    "reason_code": "object_inbox_ui_action_error",
+                    "human_reason": f"{type(exc).__name__}: {exc}",
+                }), 500
+            except Exception:
+                return "Object inbox UI action failed.", 500
+
+
+
+# ================================================================================
+# PACK072_UI_ACTION_AUDIT_RECEIPTS_ENDPOINT_PATCH
+# ================================================================================
+# A unique audited endpoint for object inbox UI actions.
+# Keeps Pack 071 endpoint intact, adds receipt-first endpoint for the next tests/UI.
+# ================================================================================
+
+try:
+    app
+except NameError:
+    app = None
+
+if app is not None:
+    @app.route("/tower/security-command/object-inbox/action-audited", methods=["POST"])
+    def pack072_object_inbox_action_endpoint_audited():
+        endpoint = "/tower/security-command/object-inbox/action-audited"
+        action_type = ""
+        inbox_item_id = ""
+        actor_user_id = "owner_solice"
+        request_payload = {}
+
+        try:
+            from flask import request, jsonify
+            from tower.ob_object_audit_capsules import (
+                add_note_to_ob_object_security_inbox_item,
+                ignore_ob_object_security_inbox_item,
+                mark_ob_object_security_inbox_reviewing,
+                resolve_ob_object_security_inbox_item,
+                summarize_ob_object_security_inbox,
+            )
+            from tower.ui_action_audit import record_ui_action_audit_receipt
+
+            inbox_item_id = (request.form.get("inbox_item_id") or "").strip()
+            action_type = (request.form.get("action_type") or "").strip().lower()
+            note = (request.form.get("note") or "").strip()
+            resolution_reason = (request.form.get("resolution_reason") or "").strip()
+            actor_user_id = (request.form.get("actor_user_id") or "owner_solice").strip()
+
+            request_payload = {
+                "inbox_item_id": inbox_item_id,
+                "action_type": action_type,
+                "note_present": bool(note),
+                "resolution_reason": resolution_reason,
+                "actor_user_id": actor_user_id,
+            }
+
+            if not inbox_item_id:
+                body = {
+                    "ok": False,
+                    "status": "missing_inbox_item_id",
+                    "reason_code": "object_inbox_item_id_required",
+                    "human_reason": "Object inbox item id is required.",
+                }
+                receipt = record_ui_action_audit_receipt(
+                    endpoint=endpoint,
+                    action_type=action_type or "missing_action",
+                    actor_user_id=actor_user_id,
+                    inbox_item_id=inbox_item_id,
+                    ok=False,
+                    status_code=400,
+                    reason_code=body["reason_code"],
+                    human_reason=body["human_reason"],
+                    request_payload=request_payload,
+                    result_payload=body,
+                )
+                body["ui_action_audit_receipt_id"] = receipt.get("receipt_id")
+                return jsonify(body), 400
+
+            if action_type in {"note", "add_note"}:
+                result = add_note_to_ob_object_security_inbox_item(
+                    inbox_item_id,
+                    actor_user_id=actor_user_id,
+                    note=note or "Owner added a note from Tower UI.",
+                )
+            elif action_type in {"reviewing", "review", "mark_reviewing"}:
+                result = mark_ob_object_security_inbox_reviewing(
+                    inbox_item_id,
+                    actor_user_id=actor_user_id,
+                    note=note or "Owner marked this object inbox item as reviewing from Tower UI.",
+                )
+            elif action_type in {"resolve", "resolved"}:
+                result = resolve_ob_object_security_inbox_item(
+                    inbox_item_id,
+                    actor_user_id=actor_user_id,
+                    note=note or "Owner resolved this object inbox item from Tower UI.",
+                    resolution_reason=resolution_reason or "owner_resolved_from_tower_ui",
+                )
+            elif action_type in {"ignore", "ignored"}:
+                result = ignore_ob_object_security_inbox_item(
+                    inbox_item_id,
+                    actor_user_id=actor_user_id,
+                    note=note or "Owner ignored this object inbox item from Tower UI.",
+                    resolution_reason=resolution_reason or "owner_ignored_from_tower_ui",
+                )
+            else:
+                body = {
+                    "ok": False,
+                    "status": "invalid_action_type",
+                    "reason_code": "invalid_object_inbox_action_type",
+                    "requested_action_type": action_type,
+                    "allowed_action_types": ["note", "reviewing", "resolve", "ignore"],
+                    "human_reason": "Requested object inbox action type is not allowed.",
+                }
+                receipt = record_ui_action_audit_receipt(
+                    endpoint=endpoint,
+                    action_type=action_type or "missing_action",
+                    actor_user_id=actor_user_id,
+                    inbox_item_id=inbox_item_id,
+                    ok=False,
+                    status_code=400,
+                    reason_code=body["reason_code"],
+                    human_reason=body["human_reason"],
+                    request_payload=request_payload,
+                    result_payload=body,
+                )
+                body["ui_action_audit_receipt_id"] = receipt.get("receipt_id")
+                return jsonify(body), 400
+
+            summary = summarize_ob_object_security_inbox(limit=8)
+
+            status_code = 200 if result.get("ok") else 404
+            body = {
+                "ok": result.get("ok") is True,
+                "status": result.get("status"),
+                "action_type": action_type,
+                "inbox_item_id": inbox_item_id,
+                "result": result,
+                "object_security_inbox_summary": {
+                    "ok": summary.get("ok"),
+                    "total": summary.get("total"),
+                    "open": summary.get("open"),
+                    "by_status": summary.get("by_status"),
+                    "by_reason": summary.get("by_reason"),
+                    "by_object_type": summary.get("by_object_type"),
+                    "by_severity": summary.get("by_severity"),
+                },
+                "human_reason": "Object inbox UI action processed." if result.get("ok") else "Object inbox UI action failed.",
+                "soulaana_translation": "Soulaana: Owner action received. The drawer-review queue was updated.",
+            }
+
+            receipt = record_ui_action_audit_receipt(
+                endpoint=endpoint,
+                action_type=action_type,
+                actor_user_id=actor_user_id,
+                inbox_item_id=inbox_item_id,
+                ok=result.get("ok") is True,
+                status_code=status_code,
+                reason_code=result.get("reason_code", "object_inbox_ui_action_processed"),
+                human_reason=body["human_reason"],
+                request_payload=request_payload,
+                result_payload={
+                    "status": body.get("status"),
+                    "action_type": action_type,
+                    "inbox_item_id": inbox_item_id,
+                    "new_status": result.get("new_status"),
+                    "reason_code": result.get("reason_code"),
+                },
+            )
+            body["ui_action_audit_receipt_id"] = receipt.get("receipt_id")
+
+            return jsonify(body), status_code
+
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                from tower.ui_action_audit import record_ui_action_audit_receipt
+
+                body = {
+                    "ok": False,
+                    "status": "error",
+                    "reason_code": "object_inbox_ui_action_error",
+                    "human_reason": f"{type(exc).__name__}: {exc}",
+                }
+                receipt = record_ui_action_audit_receipt(
+                    endpoint=endpoint,
+                    action_type=action_type or "unknown",
+                    actor_user_id=actor_user_id,
+                    inbox_item_id=inbox_item_id,
+                    ok=False,
+                    status_code=500,
+                    reason_code=body["reason_code"],
+                    human_reason=body["human_reason"],
+                    request_payload=request_payload,
+                    result_payload=body,
+                )
+                body["ui_action_audit_receipt_id"] = receipt.get("receipt_id")
+                return jsonify(body), 500
+            except Exception:
+                return "Object inbox UI action failed.", 500
+

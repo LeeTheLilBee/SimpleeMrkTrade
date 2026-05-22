@@ -691,3 +691,157 @@ def _pack063_object_security_inbox_panel_html_with_actions():
 # Override the Pack 059 panel helper with the Pack 063 action-enabled version.
 _pack059_object_security_inbox_panel_html = _pack063_object_security_inbox_panel_html_with_actions
 
+
+
+# ================================================================================
+# PACK074_ARCHIVE_VAULT_HANDOFF_UI_PANEL
+# ================================================================================
+# Adds Archive Vault handoff queue panel to Security Command dashboard.
+# ================================================================================
+
+def _pack074_escape_html(value):
+    text = "" if value is None else str(value)
+    return (
+        text.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&#x27;")
+    )
+
+
+def _pack074_archive_vault_handoff_panel_html():
+    try:
+        from tower.archive_vault_handoff import summarize_archive_vault_handoffs
+
+        summary = summarize_archive_vault_handoffs(limit=6)
+        total = summary.get("total", 0)
+        queued = summary.get("queued", 0)
+        by_status = summary.get("by_status", {})
+        by_source_type = summary.get("by_source_type", {})
+        by_severity = summary.get("by_severity", {})
+        recent = summary.get("recent", [])
+
+        cards = []
+        for item in recent[-6:]:
+            title = _pack074_escape_html(item.get("title", "Archive Vault handoff"))
+            status = _pack074_escape_html(item.get("status", "queued"))
+            severity = _pack074_escape_html(item.get("severity", "unknown"))
+            source_type = _pack074_escape_html(item.get("source_type", "unknown"))
+            source_id = _pack074_escape_html(item.get("source_id", ""))
+            summary_text = _pack074_escape_html(item.get("summary", "Evidence handoff queued."))
+            soulaana = _pack074_escape_html(item.get("soulaana_translation", "Soulaana: Evidence handoff queued safely."))
+
+            cards.append(f"""
+              <div class="tower-mini-card">
+                <div class="tower-mini-top">
+                  <span>{severity.upper()}</span>
+                  <span>{status}</span>
+                </div>
+                <strong>{title}</strong>
+                <p>{summary_text}</p>
+                <p>{soulaana}</p>
+                <div class="tower-action-hint">Source: {source_type} · {source_id}</div>
+              </div>
+            """)
+
+        recent_html = "\n".join(cards) if cards else "<p>No Archive Vault handoffs queued yet.</p>"
+
+        return f"""
+        <section class="tower-panel" data-pack="074">
+          <div class="tower-panel-kicker">ARCHIVE VAULT HANDOFFS</div>
+          <h2>Evidence Bundle Queue</h2>
+          <p>Security events prepared for future Archive Vault evidence bundles appear here.</p>
+
+          <div class="tower-stat-grid">
+            <div class="tower-stat-card">
+              <span>Total</span>
+              <strong>{total}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>Queued</span>
+              <strong>{queued}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Status</span>
+              <strong>{_pack074_escape_html(by_status)}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Source</span>
+              <strong>{_pack074_escape_html(by_source_type)}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Severity</span>
+              <strong>{_pack074_escape_html(by_severity)}</strong>
+            </div>
+          </div>
+
+          <div class="tower-mini-list">
+            {recent_html}
+          </div>
+        </section>
+        """
+    except Exception as exc:
+        return f"""
+        <section class="tower-panel" data-pack="074">
+          <div class="tower-panel-kicker">ARCHIVE VAULT HANDOFFS</div>
+          <h2>Evidence Bundle Queue</h2>
+          <p>Archive Vault handoff panel could not load: {type(exc).__name__}: {_pack074_escape_html(exc)}</p>
+        </section>
+        """
+
+
+try:
+    _pack074_original_render_security_command_dashboard_html
+except NameError:
+    _pack074_original_render_security_command_dashboard_html = render_security_command_dashboard_html
+
+
+def render_security_command_dashboard_html(*args, **kwargs):
+    html = _pack074_original_render_security_command_dashboard_html(*args, **kwargs)
+    panel = _pack074_archive_vault_handoff_panel_html()
+
+    if "</body>" in html:
+        return html.replace("</body>", panel + "\n</body>")
+    return html + panel
+
+
+try:
+    _pack074_original_generate_security_command_dashboard
+except NameError:
+    _pack074_original_generate_security_command_dashboard = generate_security_command_dashboard
+
+
+def generate_security_command_dashboard(*args, **kwargs):
+    result = _pack074_original_generate_security_command_dashboard(*args, **kwargs)
+    if not isinstance(result, dict):
+        result = {"ok": False, "status": "invalid_dashboard_result"}
+
+    try:
+        from tower.archive_vault_handoff import summarize_archive_vault_handoffs
+
+        summary = summarize_archive_vault_handoffs(limit=6)
+        result["archive_vault_handoff_ok"] = summary.get("ok") is True
+        result["archive_vault_handoff_total"] = summary.get("total", 0)
+        result["archive_vault_handoff_queued"] = summary.get("queued", 0)
+        result["archive_vault_handoff_by_status"] = summary.get("by_status", {})
+        result["archive_vault_handoff_by_source_type"] = summary.get("by_source_type", {})
+        result["archive_vault_handoff_by_severity"] = summary.get("by_severity", {})
+
+        path = result.get("path", "")
+        if path:
+            from pathlib import Path
+            html_path = Path(path)
+            if html_path.exists():
+                html = html_path.read_text(encoding="utf-8", errors="replace")
+                if "ARCHIVE VAULT HANDOFFS" not in html:
+                    html = html.replace("</body>", _pack074_archive_vault_handoff_panel_html() + "\n</body>") if "</body>" in html else html + _pack074_archive_vault_handoff_panel_html()
+                    html_path.write_text(html, encoding="utf-8")
+                    result["bytes"] = html_path.stat().st_size
+
+    except Exception as exc:
+        result["archive_vault_handoff_ok"] = False
+        result["archive_vault_handoff_error"] = f"{type(exc).__name__}: {exc}"
+
+    return result
+
