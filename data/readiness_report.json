@@ -6,8 +6,8 @@
   "summary": {
     "total": 50,
     "counts": {
-      "NO_TRADE": 10,
       "BLOCKED": 34,
+      "NO_TRADE": 10,
       "DUPLICATE": 6
     },
     "ready_count": 0,
@@ -18,7 +18,7 @@
     "top_blockers": [
       [
         "governor_blocked:max_open_positions",
-        27
+        26
       ],
       [
         "strategy_router_returned_no_trade",
@@ -29,11 +29,11 @@
         6
       ],
       [
-        "failed_score_threshold",
-        3
+        "missing_or_zero_capital_required",
+        4
       ],
       [
-        "missing_or_zero_capital_required",
+        "failed_score_threshold",
         3
       ],
       [
@@ -41,6 +41,6 @@
         1
       ]
     ],
-    "summary_generated_at": "2026-05-22T16:19:33.856457+00:00"
+    "summary_generated_at": "2026-05-22T17:30:00.576889+00:00"
   }
 }
