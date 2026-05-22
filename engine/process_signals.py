@@ -3484,3 +3484,559 @@ if _OBSERVATORY_ORIGINAL_PROCESS_SIGNALS_20260521 is not None:
 # END OBSERVATORY_PROCESS_SIGNALS_READINESS_WIRE_001_20260521
 # ==============================================================================
 
+# ==============================================================================
+# OBSERVATORY_READINESS_REPORT_ELEGANCE_001_20260522
+# ==============================================================================
+# Compatibility-preserving report layer.
+#
+# This does not alter selection, execution, or return shape. It only rewrites
+# data/readiness_report.json into a cleaner command-center structure after
+# process_signals finishes.
+# ==============================================================================
+
+def _observatory_rr_now_20260522():
+    try:
+        from datetime import datetime, timezone
+        return datetime.now(timezone.utc).isoformat()
+    except Exception:
+        from datetime import datetime
+        return datetime.now().isoformat()
+
+
+def _observatory_rr_project_root_20260522():
+    try:
+        from pathlib import Path
+        return Path(__file__).resolve().parents[1]
+    except Exception:
+        from pathlib import Path
+        return Path("/content/SimpleeMrkTrade")
+
+
+def _observatory_rr_load_json_20260522(path, default):
+    try:
+        if not path.exists():
+            return default
+        import json
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return default
+
+
+def _observatory_rr_write_json_20260522(path, payload):
+    try:
+        import json, os
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_suffix(path.suffix + ".tmp")
+        tmp.write_text(json.dumps(payload, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
+        os.replace(tmp, path)
+        return True
+    except Exception as exc:
+        print("OBSERVATORY READINESS REPORT ELEGANCE WRITE ERROR:", exc)
+        return False
+
+
+def _observatory_rr_str_20260522(value, default=""):
+    try:
+        text = str(value if value is not None else "").strip()
+        return text if text else default
+    except Exception:
+        return default
+
+
+def _observatory_rr_upper_20260522(value, default=""):
+    return _observatory_rr_str_20260522(value, default).upper()
+
+
+def _observatory_rr_bool_20260522(value, default=False):
+    try:
+        if value is None:
+            return bool(default)
+        if isinstance(value, str):
+            return value.strip().lower() in {"1", "true", "yes", "y", "on"}
+        return bool(value)
+    except Exception:
+        return bool(default)
+
+
+def _observatory_rr_float_20260522(value, default=0.0):
+    try:
+        if value is None:
+            return float(default)
+        if isinstance(value, str) and not value.strip():
+            return float(default)
+        return float(value)
+    except Exception:
+        return float(default)
+
+
+def _observatory_rr_compact_candidate_20260522(row):
+    row = row if isinstance(row, dict) else {}
+
+    symbol = _observatory_rr_upper_20260522(row.get("symbol"))
+    strategy = _observatory_rr_upper_20260522(
+        row.get("final_strategy")
+        or row.get("chosen_strategy")
+        or row.get("strategy")
+        or row.get("starting_strategy")
+    )
+    vehicle = _observatory_rr_upper_20260522(
+        row.get("vehicle")
+        or row.get("vehicle_selected")
+        or row.get("selected_vehicle")
+        or row.get("asset_type")
+    )
+
+    reason = _observatory_rr_str_20260522(
+        row.get("final_reason")
+        or row.get("reason")
+        or row.get("reason_code")
+        or row.get("execution_reason")
+        or row.get("decision_reason")
+        or "unknown"
+    )
+
+    blocked_at = _observatory_rr_str_20260522(row.get("blocked_at"))
+
+    option_obj = row.get("option") if isinstance(row.get("option"), dict) else {}
+    contract_obj = row.get("contract") if isinstance(row.get("contract"), dict) else {}
+
+    contract_symbol = _observatory_rr_str_20260522(
+        row.get("contract_symbol")
+        or row.get("option_symbol")
+        or row.get("contractSymbol")
+        or option_obj.get("contract_symbol")
+        or option_obj.get("contractSymbol")
+        or contract_obj.get("contract_symbol")
+        or contract_obj.get("contractSymbol")
+    )
+
+    option_category = _observatory_rr_str_20260522(
+        row.get("option_execution_category")
+        or row.get("execution_category")
+        or option_obj.get("execution_category")
+        or contract_obj.get("execution_category")
+    )
+
+    option_reason = _observatory_rr_str_20260522(
+        row.get("option_reason")
+        or row.get("bad_option_reason")
+        or row.get("option_fallback_reason")
+        or option_obj.get("execution_reason")
+        or contract_obj.get("execution_reason")
+    )
+
+    return {
+        "symbol": symbol,
+        "trade_id": _observatory_rr_str_20260522(row.get("trade_id")),
+        "strategy": strategy,
+        "vehicle": vehicle,
+        "score": _observatory_rr_float_20260522(row.get("score"), 0.0),
+        "confidence": _observatory_rr_str_20260522(row.get("confidence")),
+        "readiness_status": _observatory_rr_str_20260522(row.get("readiness_status")),
+        "research_approved": _observatory_rr_bool_20260522(row.get("research_approved"), False),
+        "execution_ready": _observatory_rr_bool_20260522(row.get("execution_ready"), False),
+        "selected_for_execution": _observatory_rr_bool_20260522(row.get("selected_for_execution"), False),
+        "blocked_at": blocked_at,
+        "final_reason": reason,
+        "final_reason_detail": _observatory_rr_str_20260522(row.get("final_reason_detail")),
+        "reentry_discipline_status": _observatory_rr_str_20260522(row.get("reentry_discipline_status")),
+        "reentry_discipline_reason": _observatory_rr_str_20260522(row.get("reentry_discipline_reason")),
+        "reentry_discipline_hours_since_close": row.get("reentry_discipline_hours_since_close"),
+        "option_execution_category": option_category,
+        "option_reason": option_reason,
+        "contract_symbol": contract_symbol,
+        "contract_score": row.get("contract_score") or row.get("option_contract_score") or option_obj.get("contract_score") or contract_obj.get("contract_score"),
+        "stock_fallback_from_option_research": _observatory_rr_bool_20260522(row.get("stock_fallback_from_option_research"), False),
+        "option_fallback_used": _observatory_rr_bool_20260522(row.get("option_fallback_used"), False),
+        "price_review_basis": _observatory_rr_str_20260522(row.get("price_review_basis")),
+        "monitoring_price_type": _observatory_rr_str_20260522(row.get("monitoring_price_type")),
+        "next_action": _observatory_rr_next_action_20260522(row),
+    }
+
+
+def _observatory_rr_next_action_20260522(row):
+    row = row if isinstance(row, dict) else {}
+    reason_blob = " ".join(
+        _observatory_rr_str_20260522(row.get(k))
+        for k in (
+            "final_reason",
+            "reason",
+            "reason_code",
+            "blocked_at",
+            "reentry_discipline_reason",
+            "option_reason",
+            "bad_option_reason",
+            "option_fallback_reason",
+            "execution_category",
+            "option_execution_category",
+        )
+    ).lower()
+
+    if "max_open_positions" in reason_blob or "position_capacity" in reason_blob:
+        return "Wait for a position to close or raise the max-open-position limit intentionally."
+
+    if "already_open" in reason_blob or "duplicate" in reason_blob:
+        return "Do not re-enter while this symbol is already open. Monitor the active position instead."
+
+    if "reentry" in reason_blob or "cooldown" in reason_blob:
+        return "Wait for cooldown, stronger score, stronger confidence, or a fresh catalyst."
+
+    if "same_day_expiry" in reason_blob:
+        return "Observe only or use stock fallback; avoid same-day option execution unless the mode explicitly permits it."
+
+    if "contract_score_too_low" in reason_blob or "spread" in reason_blob:
+        return "Keep researching, but wait for a cleaner option contract or use stock fallback if policy allows."
+
+    if "stock_fallback" in reason_blob:
+        return "Track as a stock fallback position and keep option context as rejected research evidence."
+
+    if row.get("execution_ready") is True:
+        return "Candidate is execution-ready if capacity and governor allow it."
+
+    return "Keep in research/watch until readiness improves."
+
+
+def _observatory_rr_bucket_candidates_20260522(rows):
+    buckets = {
+        "ready_candidates": [],
+        "watch_candidates": [],
+        "blocked_candidates": [],
+        "duplicate_candidates": [],
+        "reentry_blocked_candidates": [],
+        "observed_only_options": [],
+        "stock_fallback_candidates": [],
+        "governor_blocked_candidates": [],
+    }
+
+    seen = set()
+
+    for raw in rows:
+        if not isinstance(raw, dict):
+            continue
+
+        c = _observatory_rr_compact_candidate_20260522(raw)
+        key = c.get("trade_id") or f"{c.get('symbol')}:{c.get('strategy')}:{c.get('final_reason')}:{len(seen)}"
+        if key in seen:
+            continue
+        seen.add(key)
+
+        reason_blob = " ".join(
+            _observatory_rr_str_20260522(c.get(k))
+            for k in (
+                "final_reason",
+                "blocked_at",
+                "reentry_discipline_reason",
+                "option_execution_category",
+                "option_reason",
+            )
+        ).lower()
+
+        status = _observatory_rr_upper_20260522(c.get("readiness_status"))
+
+        if c.get("execution_ready") is True:
+            buckets["ready_candidates"].append(c)
+
+        if status == "WATCH" or "watch" in reason_blob:
+            buckets["watch_candidates"].append(c)
+
+        if c.get("execution_ready") is not True:
+            buckets["blocked_candidates"].append(c)
+
+        if "duplicate" in reason_blob or "already_open" in reason_blob:
+            buckets["duplicate_candidates"].append(c)
+
+        if "reentry" in reason_blob or _observatory_rr_upper_20260522(c.get("reentry_discipline_status")) == "BLOCKED":
+            buckets["reentry_blocked_candidates"].append(c)
+
+        if "observed_only" in reason_blob or c.get("option_execution_category") == "OBSERVED_ONLY":
+            buckets["observed_only_options"].append(c)
+
+        if c.get("stock_fallback_from_option_research") or c.get("option_fallback_used") or "stock_fallback" in reason_blob:
+            buckets["stock_fallback_candidates"].append(c)
+
+        if "governor" in reason_blob or "max_open_positions" in reason_blob or "position_capacity" in reason_blob:
+            buckets["governor_blocked_candidates"].append(c)
+
+    return buckets
+
+
+def _observatory_rr_top_blockers_20260522(rows):
+    counts = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        reason = _observatory_rr_str_20260522(
+            row.get("final_reason")
+            or row.get("reason")
+            or row.get("reason_code")
+            or row.get("blocked_at")
+            or row.get("readiness_status")
+            or "unknown"
+        )
+        counts[reason] = counts.get(reason, 0) + 1
+
+    return [
+        {"reason": reason, "count": count}
+        for reason, count in sorted(counts.items(), key=lambda item: item[1], reverse=True)[:15]
+    ]
+
+
+def _observatory_rr_extract_rows_20260522(root, process_result=None):
+    rows = []
+
+    def add_from(value):
+        if isinstance(value, list):
+            rows.extend([r for r in value if isinstance(r, dict)])
+        elif isinstance(value, dict):
+            for key in ("evaluated", "candidates", "rows", "data", "candidate_log", "top_candidates", "results", "signals"):
+                if isinstance(value.get(key), list):
+                    rows.extend([r for r in value.get(key) if isinstance(r, dict)])
+
+    add_from(process_result)
+
+    data_dir = root / "data"
+    for filename in ("readiness_report.json", "candidate_log.json", "top_candidates.json", "live_signals.json"):
+        add_from(_observatory_rr_load_json_20260522(data_dir / filename, []))
+
+    deduped = []
+    seen = set()
+
+    for row in rows:
+        symbol = _observatory_rr_upper_20260522(row.get("symbol"))
+        strategy = _observatory_rr_upper_20260522(row.get("final_strategy") or row.get("strategy") or row.get("starting_strategy"))
+        trade_id = _observatory_rr_str_20260522(row.get("trade_id"))
+        reason = _observatory_rr_str_20260522(row.get("final_reason") or row.get("reason"))
+        key = trade_id or f"{symbol}:{strategy}:{reason}:{len(deduped)}"
+
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(row)
+
+    return deduped
+
+
+def _observatory_rr_load_active_snapshot_20260522(root):
+    rows = _observatory_rr_load_json_20260522(root / "data" / "open_positions.json", [])
+    if not isinstance(rows, list):
+        rows = []
+
+    return {
+        "open_count": len(rows),
+        "symbols": [
+            _observatory_rr_upper_20260522(r.get("symbol"))
+            for r in rows
+            if isinstance(r, dict)
+        ],
+        "trade_ids": [
+            _observatory_rr_str_20260522(r.get("trade_id"))
+            for r in rows
+            if isinstance(r, dict)
+        ],
+        "stock_positions": [
+            _observatory_rr_compact_candidate_20260522(r)
+            for r in rows
+            if isinstance(r, dict)
+            and _observatory_rr_upper_20260522(r.get("vehicle") or r.get("vehicle_selected")) == "STOCK"
+        ],
+        "option_positions": [
+            _observatory_rr_compact_candidate_20260522(r)
+            for r in rows
+            if isinstance(r, dict)
+            and _observatory_rr_upper_20260522(r.get("vehicle") or r.get("vehicle_selected")) == "OPTION"
+        ],
+    }
+
+
+def _observatory_rr_extract_execution_pause_20260522(root):
+    # Prefer bot/system status if it already has a pause object.
+    for filename in ("bot_status.json", "system_status.json"):
+        obj = _observatory_rr_load_json_20260522(root / "data" / filename, {})
+        if isinstance(obj, dict):
+            for key in ("execution_pause", "governor_execution_pause", "block_summary"):
+                value = obj.get(key)
+                if isinstance(value, dict) and value:
+                    return value
+
+    # Fallback from active positions.
+    snapshot = _observatory_rr_load_active_snapshot_20260522(root)
+    open_count = snapshot.get("open_count", 0)
+
+    if open_count >= 6:
+        return {
+            "paused": True,
+            "primary_reason": "max_open_positions",
+            "headline": "Portfolio full. Execution intentionally paused.",
+            "summary": f"The Observatory can keep researching, but it should not open another position because the book already has {open_count}/6 open positions.",
+            "current_open_positions": open_count,
+            "max_open_positions": 6,
+            "remaining_position_slots": 0,
+            "scan_can_continue": True,
+        }
+
+    return {
+        "paused": False,
+        "primary_reason": "",
+        "headline": "Execution capacity available.",
+        "summary": "The Observatory may execute if a candidate clears readiness, governor, and risk checks.",
+        "current_open_positions": open_count,
+        "max_open_positions": 6,
+        "remaining_position_slots": max(0, 6 - open_count),
+        "scan_can_continue": True,
+    }
+
+
+def _observatory_rr_build_ui_cards_20260522(report):
+    summary = report.get("summary", {})
+    pause = report.get("execution_pause", {})
+    active = report.get("active_book", {})
+
+    cards = [
+        {
+            "card_type": "execution_status",
+            "title": pause.get("headline") or "Execution status",
+            "status": "PAUSED" if pause.get("paused") else "OPEN",
+            "body": pause.get("summary") or "",
+            "metric": {
+                "label": "Remaining slots",
+                "value": pause.get("remaining_position_slots"),
+            },
+        },
+        {
+            "card_type": "book_status",
+            "title": "Active book",
+            "status": "FULL" if active.get("open_count", 0) >= pause.get("max_open_positions", 6) else "AVAILABLE",
+            "body": f"{active.get('open_count', 0)} positions open: {', '.join(active.get('symbols', []))}",
+            "metric": {
+                "label": "Open positions",
+                "value": active.get("open_count", 0),
+            },
+        },
+        {
+            "card_type": "candidate_status",
+            "title": "Candidate readiness",
+            "status": "SCANNING",
+            "body": f"{summary.get('ready_count', 0)} ready, {summary.get('watch_count', 0)} watch, {summary.get('blocked_count', 0)} blocked.",
+            "metric": {
+                "label": "Total candidates",
+                "value": summary.get("total_candidates", 0),
+            },
+        },
+    ]
+
+    if summary.get("observed_only_count", 0):
+        cards.append({
+            "card_type": "options_quality",
+            "title": "Observed-only options",
+            "status": "CAUTION",
+            "body": f"{summary.get('observed_only_count')} option candidates were research-worthy but not executable.",
+            "metric": {
+                "label": "Observed-only",
+                "value": summary.get("observed_only_count"),
+            },
+        })
+
+    if summary.get("stock_fallback_count", 0):
+        cards.append({
+            "card_type": "stock_fallback",
+            "title": "Stock fallback evidence",
+            "status": "TRACKING",
+            "body": f"{summary.get('stock_fallback_count')} candidates or open positions carry stock-fallback context.",
+            "metric": {
+                "label": "Stock fallback",
+                "value": summary.get("stock_fallback_count"),
+            },
+        })
+
+    return cards
+
+
+def _observatory_rr_build_report_20260522(process_result=None):
+    root = _observatory_rr_project_root_20260522()
+    rows = _observatory_rr_extract_rows_20260522(root, process_result=process_result)
+    buckets = _observatory_rr_bucket_candidates_20260522(rows)
+    active = _observatory_rr_load_active_snapshot_20260522(root)
+    pause = _observatory_rr_extract_execution_pause_20260522(root)
+
+    summary = {
+        "total_candidates": len(rows),
+        "ready_count": len(buckets["ready_candidates"]),
+        "watch_count": len(buckets["watch_candidates"]),
+        "blocked_count": len(buckets["blocked_candidates"]),
+        "duplicate_count": len(buckets["duplicate_candidates"]),
+        "reentry_blocked_count": len(buckets["reentry_blocked_candidates"]),
+        "observed_only_count": len(buckets["observed_only_options"]),
+        "stock_fallback_count": len(buckets["stock_fallback_candidates"]) + len(active.get("stock_positions", [])),
+        "governor_blocked_count": len(buckets["governor_blocked_candidates"]),
+    }
+
+    next_actions = []
+    if pause.get("paused"):
+        next_actions.append({
+            "action": "wait_for_slot_or_close_position",
+            "reason": pause.get("primary_reason"),
+            "detail": pause.get("summary"),
+        })
+
+    if buckets["observed_only_options"]:
+        next_actions.append({
+            "action": "observe_options_or_use_stock_fallback",
+            "reason": "observed_only_options_present",
+            "detail": "Some options are research-worthy but not executable under current rules.",
+        })
+
+    if buckets["reentry_blocked_candidates"]:
+        next_actions.append({
+            "action": "wait_for_cooldown_or_fresh_catalyst",
+            "reason": "reentry_discipline",
+            "detail": "Some candidates need cooldown, stronger score, stronger confidence, or a fresh catalyst.",
+        })
+
+    report = {
+        "report_meta": {
+            "generated_at": _observatory_rr_now_20260522(),
+            "source": "process_signals.readiness_report_elegance",
+            "compatibility_preserving": True,
+            "selection_mutated": False,
+            "execution_mutated": False,
+        },
+        "summary": summary,
+        "execution_pause": pause,
+        "active_book": active,
+        "buckets": buckets,
+        "top_blockers": _observatory_rr_top_blockers_20260522(rows),
+        "next_eligible_actions": next_actions,
+    }
+
+    report["ui_cards"] = _observatory_rr_build_ui_cards_20260522(report)
+    return report
+
+
+try:
+    _OBSERVATORY_ORIGINAL_PROCESS_SIGNALS_BEFORE_REPORT_ELEGANCE_20260522 = process_signals
+except NameError:
+    _OBSERVATORY_ORIGINAL_PROCESS_SIGNALS_BEFORE_REPORT_ELEGANCE_20260522 = None
+
+
+if _OBSERVATORY_ORIGINAL_PROCESS_SIGNALS_BEFORE_REPORT_ELEGANCE_20260522 is not None:
+
+    def process_signals(*args, **kwargs):
+        result = _OBSERVATORY_ORIGINAL_PROCESS_SIGNALS_BEFORE_REPORT_ELEGANCE_20260522(*args, **kwargs)
+
+        try:
+            root = _observatory_rr_project_root_20260522()
+            report = _observatory_rr_build_report_20260522(process_result=result)
+            _observatory_rr_write_json_20260522(root / "data" / "readiness_report.json", report)
+            print("OBSERVATORY READINESS REPORT ELEGANCE:", {
+                "ready_count": report.get("summary", {}).get("ready_count"),
+                "watch_count": report.get("summary", {}).get("watch_count"),
+                "blocked_count": report.get("summary", {}).get("blocked_count"),
+                "observed_only_count": report.get("summary", {}).get("observed_only_count"),
+                "stock_fallback_count": report.get("summary", {}).get("stock_fallback_count"),
+                "execution_paused": report.get("execution_pause", {}).get("paused"),
+                "primary_reason": report.get("execution_pause", {}).get("primary_reason"),
+            })
+        except Exception as exc:
+            print("OBSERVATORY READINESS REPORT ELEGANCE ERROR:", exc)
+
+        return result
