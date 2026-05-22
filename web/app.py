@@ -9681,3 +9681,47 @@ if app is not None:
             soulaana_translation="Soulaana: This is the private Observatory wall. No clearance, no corridor, no peek.",
         )
 
+
+
+# ================================================================================
+# PACK082_REPLACE_LEGACY_NO_ACCESS_WITH_POLISHED_TOWER_LOCK
+# ================================================================================
+# Controlled replacement for the legacy /no-access shell.
+# This returns the polished Tower locked helper before the older route body can run.
+# ================================================================================
+
+try:
+    app
+except NameError:
+    app = None
+
+if app is not None:
+    @app.before_request
+    def pack082_replace_no_access_legacy_shell():
+        try:
+            current_path = request.path
+        except Exception:
+            current_path = ""
+
+        if current_path != "/no-access":
+            return None
+
+        try:
+            requested_path = request.args.get("path", "/no-access")
+        except Exception:
+            requested_path = "/no-access"
+
+        return _pack068_tower_locked_response(
+            lock_type="route",
+            path=requested_path,
+            user_id="anonymous",
+            reason_code="observatory_private_outer_shell",
+            human_reason="The Observatory is private. The legacy no-access shell has been replaced by the Tower clearance wall.",
+            required_actions=[
+                "return_to_tower_entry",
+                "request_observatory_clearance",
+                "keep_private_surface_closed",
+            ],
+            soulaana_translation="Soulaana: The old no-access shell is retired here. The Tower wall is now holding this corridor.",
+        )
+

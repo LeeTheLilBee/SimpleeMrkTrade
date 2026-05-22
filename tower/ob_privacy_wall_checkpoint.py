@@ -699,3 +699,115 @@ def build_ob_privacy_wall_checkpoint():
 
     return checkpoint
 
+
+
+# ================================================================================
+# PACK083_DENY_PATH_REPLACEMENT_RECEIPTS_CHECKPOINT_WRAPPER
+# ================================================================================
+# Adds deny-path replacement receipt proof to privacy wall checkpoint.
+# ================================================================================
+
+try:
+    _pack083_original_build_ob_privacy_wall_checkpoint
+except NameError:
+    _pack083_original_build_ob_privacy_wall_checkpoint = build_ob_privacy_wall_checkpoint
+
+
+def build_ob_privacy_wall_checkpoint():
+    checkpoint = _pack083_original_build_ob_privacy_wall_checkpoint()
+    if not isinstance(checkpoint, dict):
+        checkpoint = {"ok": False, "built_packs": [], "next_steps": []}
+
+    try:
+        from tower.ob_privacy_wall_smoke import run_ob_privacy_wall_smoke
+        from tower.deny_path_replacement_audit import summarize_deny_path_replacement_receipts
+
+        smoke = run_ob_privacy_wall_smoke()
+        checks = smoke.get("checks", {}) if isinstance(smoke.get("checks"), dict) else {}
+        replacement_proof = checks.get("deny_path_replacement_receipts_ready", {})
+        replacement_summary = summarize_deny_path_replacement_receipts(limit=10)
+
+        checkpoint["pack"] = "083"
+        checkpoint["ok"] = smoke.get("ok") is True
+        checkpoint["smoke_ok"] = smoke.get("ok")
+        checkpoint["smoke_failures"] = smoke.get("failures")
+        checkpoint["deny_path_replacement_receipts_ready"] = replacement_proof
+        checkpoint["deny_path_replacement_summary"] = {
+            "ok": replacement_summary.get("ok"),
+            "total": replacement_summary.get("total"),
+            "verified": replacement_summary.get("verified"),
+            "needs_review": replacement_summary.get("needs_review"),
+            "by_status": replacement_summary.get("by_status"),
+            "by_route": replacement_summary.get("by_route"),
+            "by_replacement_type": replacement_summary.get("by_replacement_type"),
+            "by_severity": replacement_summary.get("by_severity"),
+        }
+
+        built_packs = checkpoint.setdefault("built_packs", [])
+        built_text = str(built_packs)
+        additions = [
+            {
+                "pack": "081",
+                "name": "Deny-path replacement audit receipts",
+                "plain": "Polished lock replacements can record receipts with proof.",
+            },
+            {
+                "pack": "082",
+                "name": "Legacy no-access shell replacement",
+                "plain": "/no-access now renders the polished Tower locked page.",
+            },
+            {
+                "pack": "083",
+                "name": "Deny-path replacement receipt proof",
+                "plain": "Smoke/checkpoint prove /no-access replacement and receipt summary.",
+            },
+        ]
+        for item in additions:
+            if item["pack"] not in built_text:
+                built_packs.append(item)
+
+        checkpoint["next_steps"] = [
+            {
+                "priority": 1,
+                "item": "Exposure report mapping pass",
+                "plain": "Review unmapped/default-deny routes and categorize keep, map, retire, or later.",
+            },
+            {
+                "priority": 2,
+                "item": "Add deny-path replacement summary to Tower status/UI",
+                "plain": "Show replacement receipts in Security Command like other audit panels.",
+            },
+            {
+                "priority": 3,
+                "item": "Replace another real legacy deny surface",
+                "plain": "Move the next old locked response to polished Tower helper after mapping.",
+            },
+            {
+                "priority": 4,
+                "item": "Create route replacement policy list",
+                "plain": "Track which deny paths are approved for replacement and which must stay untouched.",
+            },
+            {
+                "priority": 5,
+                "item": "Create Save/transition checkpoint",
+                "plain": "Close the deny-path replacement and exposure mapping block cleanly.",
+            },
+        ]
+
+        checkpoint["readiness_score"] = 100 if smoke.get("ok") else 90
+        checkpoint["readiness_label"] = (
+            "Ready for exposure report mapping pass"
+            if smoke.get("ok")
+            else "Needs repair before exposure mapping"
+        )
+        checkpoint["soulaana_translation"] = (
+            "Soulaana: The old no-access shell is replaced, the proof is filed, and the replacement receipts are counted."
+        )
+        checkpoint["human_reason"] = "Privacy wall checkpoint now proves deny-path replacement receipts."
+
+    except Exception as exc:
+        checkpoint["ok"] = False
+        checkpoint["pack083_error"] = f"{type(exc).__name__}: {exc}"
+
+    return checkpoint
+

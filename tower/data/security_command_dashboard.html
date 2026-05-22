@@ -46,7 +46,7 @@
 <section class='section'><p class='tiny'>System panels</p><h2>Security instruments behind OB</h2><div class='system'><article class='panel'><p class='tiny'>ID</p><h3>3</h3><p>Identity Root</p><small>known users</small></article><article class='panel'><p class='tiny'>TW</p><h3>Critical</h3><p>Threat Weather</p><small>Owner review should happen now.</small></article><article class='panel'><p class='tiny'>ER</p><h3>22</h3><p>Evidence Rings</p><small>open capsules</small></article><article class='panel'><p class='tiny'>OB</p><h3>Live</h3><p>OB Bridge</p><small>protected route active</small></article><article class='panel'><p class='tiny'>SG</p><h3>14</h3><p>Step-up Gate</p><small>pending approvals</small></article><article class='panel'><p class='tiny'>MS</p><h3>Closed</h3><p>Mode Seal</p><small>Live automation remains sealed</small></article><article class='panel'><p class='tiny'>DR</p><h3>75</h3><p>Door Receipts</p><small>door-swipe audit capsules</small></article><article class='panel'><p class='tiny'>DI</p><h3>1</h3><p>Door Inbox</p><small>review-worthy door swipes</small></article></div></section>
 <section class='section'><p class='tiny'>Attention lanes</p><h2>Priority review</h2><div class='lanes'><article class='lane'><div><p class='tiny'>Priority 1</p><h3>Access risk</h3></div><span>14 critical / 49 high</span><p>Soulaana: Review risky sessions, new devices, failed attempts, and anything that smells like forced entry.</p><strong>Review access-risk group first.</strong></article><article class='lane'><div><p class='tiny'>Priority 2</p><h3>Protected exports</h3></div><span>4 waiting</span><p>Soulaana: Exports are how information leaves the building. Approve only what belongs, redact what is too sensitive, and deny anything unclear.</p><strong>Check export requests after access risk.</strong></article><article class='lane'><div><p class='tiny'>Priority 3</p><h3>Admin keys</h3></div><span>4 step-up</span><p>Soulaana: Admin changes decide who can touch doors later. Match actor, target, permission, and reason.</p><strong>Review admin authority changes.</strong></article><article class='lane'><div><p class='tiny'>Priority 4</p><h3>Door access inbox</h3></div><span>1 open</span><p>Soulaana: These are the door swipes that rose above quiet receipts and became owner-review items. Start here if the count is not zero.</p><strong>Review open door access issues before deeper archive work.</strong></article><article class='lane'><div><p class='tiny'>Priority 5</p><h3>Door-swipe receipts</h3></div><span>37 denied / 38 allowed</span><p>Soulaana: Every Tower door swipe leaves a receipt now. Allowed, denied, wrong-door, and missing-key attempts are visible without exposing raw keycards.</p><strong>Review repeated denies or wrong-door attempts first.</strong></article><article class='lane'><div><p class='tiny'>Priority 5</p><h3>Evidence capsules</h3></div><span>22 open</span><p>Soulaana: Evidence capsules preserve the why. They are the receipts.</p><strong>Open only when you need the story behind a decision.</strong></article></div></section>
 <section class='section'><p class='tiny'>Soulaana workflow</p><h2>Walk me through it</h2><p>Exit workflow · Skip this · Back · Next priority</p><div class='workflow'><article class='step'><p class='tiny'>Priority 1 · Access risk</p><h3>Verify the gate</h3><p><b>Why:</b> Unsafe sessions can touch everything else if they get through.</p><p><b>Action:</b> Review devices, failed attempts, rapid denials, and session risk.</p></article><article class='step'><p class='tiny'>Priority 2 · Protected exports</p><h3>Protect the vault</h3><p><b>Why:</b> Exports can leak sensitive OB records.</p><p><b>Action:</b> Approve, deny, or redact export requests.</p></article><article class='step'><p class='tiny'>Priority 3 · Admin authority</p><h3>Check admin keys</h3><p><b>Why:</b> Permission changes decide who can touch the system later.</p><p><b>Action:</b> Match actor, target, permission, reason, and risk.</p></article><article class='step'><p class='tiny'>Priority 4 · Live Automated lock</p><h3>Confirm sealed modes</h3><p><b>Why:</b> This is a final confirmation step.</p><p><b>Action:</b> Make sure Live Automated remains locked unless every gate is clean.</p></article></div></section>
-<footer>The Tower is the security force behind OB: rooted, quiet, strict, and hard to casually pass.<br>Generated at 2026-05-22T17:29:01.321256Z.</footer>
+<footer>The Tower is the security force behind OB: rooted, quiet, strict, and hard to casually pass.<br>Generated at 2026-05-22T17:57:27.259831Z.</footer>
 </main>
 
         <section class="tower-panel" data-pack="074">
@@ -57,23 +57,23 @@
           <div class="tower-stat-grid">
             <div class="tower-stat-card">
               <span>Total</span>
-              <strong>41</strong>
+              <strong>57</strong>
             </div>
             <div class="tower-stat-card">
               <span>Queued</span>
-              <strong>41</strong>
+              <strong>57</strong>
             </div>
             <div class="tower-stat-card">
               <span>By Status</span>
-              <strong>{&#x27;queued&#x27;: 41}</strong>
+              <strong>{&#x27;queued&#x27;: 57}</strong>
             </div>
             <div class="tower-stat-card">
               <span>By Source</span>
-              <strong>{&#x27;manual_test&#x27;: 1, &#x27;ob_object_security_inbox&#x27;: 39, &#x27;pack074_test&#x27;: 1}</strong>
+              <strong>{&#x27;manual_test&#x27;: 1, &#x27;ob_object_security_inbox&#x27;: 55, &#x27;pack074_test&#x27;: 1}</strong>
             </div>
             <div class="tower-stat-card">
               <span>By Severity</span>
-              <strong>{&#x27;medium&#x27;: 41}</strong>
+              <strong>{&#x27;medium&#x27;: 57}</strong>
             </div>
           </div>
 
@@ -87,7 +87,7 @@
                 <strong>Object security event: export:export_065</strong>
                 <p>Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.</p>
                 <p>Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.</p>
-                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_dPE655wGk0oouW63PUMYqieU</div>
+                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_9xDqJd6XVgDB4QJ4IxstzJV6</div>
               </div>
             
 
@@ -99,7 +99,7 @@
                 <strong>Object security event: export:export_065</strong>
                 <p>Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.</p>
                 <p>Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.</p>
-                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_Qtuy2Ku4J2YzpRmENYVyiZyz</div>
+                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_A2CFugmSrrfbq8CQ4HgkjMvv</div>
               </div>
             
 
@@ -111,7 +111,7 @@
                 <strong>Object security event: export:export_065</strong>
                 <p>Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.</p>
                 <p>Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.</p>
-                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_6S_um67rIrf5y9XhIb02gmHD</div>
+                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_JNxtyhxaAxLwCVZhsm9WHndm</div>
               </div>
             
 
@@ -123,7 +123,7 @@
                 <strong>Object security event: export:export_065</strong>
                 <p>Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.</p>
                 <p>Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.</p>
-                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_HXIOdlrrMNMEscVJBOMqdUpF</div>
+                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_rHJ0t9--UN_nKYfaGj8kwLGS</div>
               </div>
             
 
@@ -135,7 +135,7 @@
                 <strong>Object security event: export:export_065</strong>
                 <p>Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.</p>
                 <p>Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.</p>
-                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_s4GOmakMVlD4jlTBOQ2ryKhI</div>
+                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_soTg0eTQgFjA0Hc7u1RYuojn</div>
               </div>
             
 
@@ -147,7 +147,7 @@
                 <strong>Object security event: export:export_065</strong>
                 <p>Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.</p>
                 <p>Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.</p>
-                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_MvNg-7s_tG05M_XwQMxk6UsV</div>
+                <div class="tower-action-hint">Source: ob_object_security_inbox · objinbox_ADlBvlhz77z0biNP8U0lPFDW</div>
               </div>
             
           </div>
@@ -162,31 +162,31 @@
           <div class="tower-stat-grid">
             <div class="tower-stat-card">
               <span>Total</span>
-              <strong>110</strong>
+              <strong>206</strong>
             </div>
             <div class="tower-stat-card">
               <span>Successful</span>
-              <strong>70</strong>
+              <strong>134</strong>
             </div>
             <div class="tower-stat-card">
               <span>Failed / Blocked</span>
-              <strong>40</strong>
+              <strong>72</strong>
             </div>
             <div class="tower-stat-card">
               <span>By Action</span>
-              <strong>{&#x27;manual_test&#x27;: 1, &#x27;note&#x27;: 49, &#x27;reviewing&#x27;: 20, &#x27;resolve&#x27;: 20, &#x27;explode&#x27;: 20}</strong>
+              <strong>{&#x27;manual_test&#x27;: 1, &#x27;note&#x27;: 97, &#x27;reviewing&#x27;: 36, &#x27;resolve&#x27;: 36, &#x27;explode&#x27;: 36}</strong>
             </div>
             <div class="tower-stat-card">
               <span>By Reason</span>
-              <strong>{&#x27;manual_test_ok&#x27;: 1, &#x27;object_inbox_ui_action_processed&#x27;: 69, &#x27;invalid_object_inbox_action_type&#x27;: 20, &#x27;object_inbox_item_id_required&#x27;: 20}</strong>
+              <strong>{&#x27;manual_test_ok&#x27;: 1, &#x27;object_inbox_ui_action_processed&#x27;: 133, &#x27;invalid_object_inbox_action_type&#x27;: 36, &#x27;object_inbox_item_id_required&#x27;: 36}</strong>
             </div>
             <div class="tower-stat-card">
               <span>By Severity</span>
-              <strong>{&#x27;info&#x27;: 70, &#x27;medium&#x27;: 40}</strong>
+              <strong>{&#x27;info&#x27;: 134, &#x27;medium&#x27;: 72}</strong>
             </div>
             <div class="tower-stat-card">
               <span>By Status Code</span>
-              <strong>{&#x27;200&#x27;: 70, &#x27;400&#x27;: 40}</strong>
+              <strong>{&#x27;200&#x27;: 134, &#x27;400&#x27;: 72}</strong>
             </div>
           </div>
 
@@ -201,7 +201,7 @@
                 <p>Object inbox item id is required.</p>
                 <p>Soulaana: UI action did not clear cleanly. I recorded the attempt.</p>
                 <div class="tower-action-hint">Actor: owner_solice · Inbox item: </div>
-                <div class="tower-action-hint">Receipt: uiaudit_oZ4TmzgjkcrTFtR_5GukTLis</div>
+                <div class="tower-action-hint">Receipt: uiaudit_lmsACpSRvutjDuD--4FIIgh5</div>
               </div>
             
 
@@ -213,8 +213,8 @@
                 <strong>note · object_inbox_ui_action_processed</strong>
                 <p>Object inbox UI action processed.</p>
                 <p>Soulaana: Owner UI action recorded. The button click has a receipt.</p>
-                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_0UYw6qILdW3mBRGn2quYf5iP</div>
-                <div class="tower-action-hint">Receipt: uiaudit_rlQB1toIaQtPevoOpzZy_R13</div>
+                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_6PyX9bt3d3OSUuJ6ePD_3ZmE</div>
+                <div class="tower-action-hint">Receipt: uiaudit_2XpvchB2h5t5dgaauDKfV7yD</div>
               </div>
             
 
@@ -226,8 +226,8 @@
                 <strong>note · object_inbox_ui_action_processed</strong>
                 <p>Object inbox UI action processed.</p>
                 <p>Soulaana: Owner UI action recorded. The button click has a receipt.</p>
-                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_YB5b1H7YdjuIaC8jHj1Oa65y</div>
-                <div class="tower-action-hint">Receipt: uiaudit_sG3ltFEQiEO4H7ge61Hmn8dY</div>
+                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_Hii0tB39es3YDyabcaSTAHn4</div>
+                <div class="tower-action-hint">Receipt: uiaudit_SYtWkN0eg6ThipOWPyFEiLCX</div>
               </div>
             
 
@@ -239,8 +239,8 @@
                 <strong>reviewing · object_inbox_ui_action_processed</strong>
                 <p>Object inbox UI action processed.</p>
                 <p>Soulaana: Owner UI action recorded. The button click has a receipt.</p>
-                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_YB5b1H7YdjuIaC8jHj1Oa65y</div>
-                <div class="tower-action-hint">Receipt: uiaudit_vlbeKaQN1bfL4CYe4YPDZVxm</div>
+                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_Hii0tB39es3YDyabcaSTAHn4</div>
+                <div class="tower-action-hint">Receipt: uiaudit_ZQpqnlyJobo_kRpDI8fV4CNh</div>
               </div>
             
 
@@ -252,8 +252,8 @@
                 <strong>resolve · object_inbox_ui_action_processed</strong>
                 <p>Object inbox UI action processed.</p>
                 <p>Soulaana: Owner UI action recorded. The button click has a receipt.</p>
-                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_YB5b1H7YdjuIaC8jHj1Oa65y</div>
-                <div class="tower-action-hint">Receipt: uiaudit_XLseGPEWVY5Ui4EhK4Brg2Nx</div>
+                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_Hii0tB39es3YDyabcaSTAHn4</div>
+                <div class="tower-action-hint">Receipt: uiaudit_yv2pVAa3semNfCoP4w8XjbLC</div>
               </div>
             
 
@@ -265,8 +265,8 @@
                 <strong>explode · invalid_object_inbox_action_type</strong>
                 <p>Requested object inbox action type is not allowed.</p>
                 <p>Soulaana: UI action did not clear cleanly. I recorded the attempt.</p>
-                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_YB5b1H7YdjuIaC8jHj1Oa65y</div>
-                <div class="tower-action-hint">Receipt: uiaudit_elmu0tRWfmTQK-WC_xSg7s0g</div>
+                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_Hii0tB39es3YDyabcaSTAHn4</div>
+                <div class="tower-action-hint">Receipt: uiaudit_XdHy2VSxtxOhRmnijfbxKmOI</div>
               </div>
             
 
@@ -279,7 +279,7 @@
                 <p>Object inbox item id is required.</p>
                 <p>Soulaana: UI action did not clear cleanly. I recorded the attempt.</p>
                 <div class="tower-action-hint">Actor: owner_solice · Inbox item: </div>
-                <div class="tower-action-hint">Receipt: uiaudit_ELSlTagVsizKXWlsQaLC3S-T</div>
+                <div class="tower-action-hint">Receipt: uiaudit_RC4_Ox9GM6H5IDWVuSXAp5pL</div>
               </div>
             
 
@@ -291,8 +291,8 @@
                 <strong>note · object_inbox_ui_action_processed</strong>
                 <p>Object inbox UI action processed.</p>
                 <p>Soulaana: Owner UI action recorded. The button click has a receipt.</p>
-                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_Qhf8c3he7T8RU7y58Cy1jDBN</div>
-                <div class="tower-action-hint">Receipt: uiaudit_i5gpfWtHxBMqA4CAUxwijI-M</div>
+                <div class="tower-action-hint">Actor: owner_solice · Inbox item: objinbox_b30D4pOSxr6fQmIbkC-zKEVQ</div>
+                <div class="tower-action-hint">Receipt: uiaudit_E2Jog8ZI2Nz6jruvWpEMwr8a</div>
               </div>
             
           </div>
@@ -361,19 +361,19 @@
           <div class="tower-stat-grid">
             <div class="tower-stat-card">
               <span>Total</span>
-              <strong>315</strong>
+              <strong>443</strong>
             </div>
             <div class="tower-stat-card">
               <span>Open</span>
-              <strong>203</strong>
+              <strong>283</strong>
             </div>
             <div class="tower-stat-card">
               <span>By Severity</span>
-              <strong>{&#x27;medium&#x27;: 218, &#x27;high&#x27;: 97}</strong>
+              <strong>{&#x27;medium&#x27;: 314, &#x27;high&#x27;: 129}</strong>
             </div>
             <div class="tower-stat-card">
               <span>By Object</span>
-              <strong>{&#x27;export&#x27;: 168, &#x27;unknown_drawer_058&#x27;: 1, &#x27;mystery_drawer&#x27;: 2, &#x27;analysis_record&#x27;: 2, &#x27;symbol&#x27;: 48, &#x27;unknown_drawer_060&#x27;: 48, &#x27;unknown_drawer_061&#x27;: 1, &#x27;unknown_drawer_062&#x27;: 44, &#x27;unknown_drawer_071&#x27;: 1}</strong>
+              <strong>{&#x27;export&#x27;: 248, &#x27;unknown_drawer_058&#x27;: 1, &#x27;mystery_drawer&#x27;: 2, &#x27;analysis_record&#x27;: 2, &#x27;symbol&#x27;: 64, &#x27;unknown_drawer_060&#x27;: 64, &#x27;unknown_drawer_061&#x27;: 1, &#x27;unknown_drawer_062&#x27;: 60, &#x27;unknown_drawer_071&#x27;: 1}</strong>
             </div>
           </div>
 
@@ -388,12 +388,12 @@
                 <p>Review whether unknown_drawer_060:secret_060 should be mapped into the object guard policy.</p>
                 <p>Soulaana: unknown_drawer_060:secret_060 is not on the drawer map. I kept it locked and filed the receipt.</p>
                 
-      <div class="tower-action-box" data-pack="063" data-inbox-item-id="objinbox_fggqkkMCg_A4cT10lGcEVI8c">
+      <div class="tower-action-box" data-pack="063" data-inbox-item-id="objinbox_b_NXe8_5W4zxl4P9gGz_iWl3">
         <div class="tower-action-title">Owner Actions</div>
         <p class="tower-action-hint">Item: unknown_drawer_060:secret_060 · Status: open</p>
 
         <form class="tower-action-form" method="post" action="/tower/security-command/object-inbox/action-audited">
-          <input type="hidden" name="inbox_item_id" value="objinbox_fggqkkMCg_A4cT10lGcEVI8c">
+          <input type="hidden" name="inbox_item_id" value="objinbox_b_NXe8_5W4zxl4P9gGz_iWl3">
           <input type="hidden" name="action_type" value="note">
           <label>Add note</label>
           <textarea name="note" placeholder="Owner note for this drawer event"></textarea>
@@ -402,14 +402,14 @@
 
         <div class="tower-action-row">
           <form method="post" action="/tower/security-command/object-inbox/action-audited">
-            <input type="hidden" name="inbox_item_id" value="objinbox_fggqkkMCg_A4cT10lGcEVI8c">
+            <input type="hidden" name="inbox_item_id" value="objinbox_b_NXe8_5W4zxl4P9gGz_iWl3">
             <input type="hidden" name="action_type" value="reviewing">
             <input type="hidden" name="note" value="Owner marked this object inbox item as reviewing from Tower UI.">
             <button type="submit">Mark Reviewing</button>
           </form>
 
           <form method="post" action="/tower/security-command/object-inbox/action-audited">
-            <input type="hidden" name="inbox_item_id" value="objinbox_fggqkkMCg_A4cT10lGcEVI8c">
+            <input type="hidden" name="inbox_item_id" value="objinbox_b_NXe8_5W4zxl4P9gGz_iWl3">
             <input type="hidden" name="action_type" value="resolve">
             <input type="hidden" name="resolution_reason" value="owner_resolved_from_tower_ui">
             <input type="hidden" name="note" value="Owner resolved this object inbox item from Tower UI.">
@@ -417,7 +417,7 @@
           </form>
 
           <form method="post" action="/tower/security-command/object-inbox/action-audited">
-            <input type="hidden" name="inbox_item_id" value="objinbox_fggqkkMCg_A4cT10lGcEVI8c">
+            <input type="hidden" name="inbox_item_id" value="objinbox_b_NXe8_5W4zxl4P9gGz_iWl3">
             <input type="hidden" name="action_type" value="ignore">
             <input type="hidden" name="resolution_reason" value="owner_ignored_from_tower_ui">
             <input type="hidden" name="note" value="Owner ignored this object inbox item from Tower UI.">
@@ -462,12 +462,12 @@
                 <p>Review attempted export/download export_065. Confirm whether this was authorized.</p>
                 <p>Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.</p>
                 
-      <div class="tower-action-box" data-pack="063" data-inbox-item-id="objinbox_MvNg-7s_tG05M_XwQMxk6UsV">
+      <div class="tower-action-box" data-pack="063" data-inbox-item-id="objinbox_ADlBvlhz77z0biNP8U0lPFDW">
         <div class="tower-action-title">Owner Actions</div>
         <p class="tower-action-hint">Item: export:export_065 · Status: open</p>
 
         <form class="tower-action-form" method="post" action="/tower/security-command/object-inbox/action-audited">
-          <input type="hidden" name="inbox_item_id" value="objinbox_MvNg-7s_tG05M_XwQMxk6UsV">
+          <input type="hidden" name="inbox_item_id" value="objinbox_ADlBvlhz77z0biNP8U0lPFDW">
           <input type="hidden" name="action_type" value="note">
           <label>Add note</label>
           <textarea name="note" placeholder="Owner note for this drawer event"></textarea>
@@ -476,14 +476,14 @@
 
         <div class="tower-action-row">
           <form method="post" action="/tower/security-command/object-inbox/action-audited">
-            <input type="hidden" name="inbox_item_id" value="objinbox_MvNg-7s_tG05M_XwQMxk6UsV">
+            <input type="hidden" name="inbox_item_id" value="objinbox_ADlBvlhz77z0biNP8U0lPFDW">
             <input type="hidden" name="action_type" value="reviewing">
             <input type="hidden" name="note" value="Owner marked this object inbox item as reviewing from Tower UI.">
             <button type="submit">Mark Reviewing</button>
           </form>
 
           <form method="post" action="/tower/security-command/object-inbox/action-audited">
-            <input type="hidden" name="inbox_item_id" value="objinbox_MvNg-7s_tG05M_XwQMxk6UsV">
+            <input type="hidden" name="inbox_item_id" value="objinbox_ADlBvlhz77z0biNP8U0lPFDW">
             <input type="hidden" name="action_type" value="resolve">
             <input type="hidden" name="resolution_reason" value="owner_resolved_from_tower_ui">
             <input type="hidden" name="note" value="Owner resolved this object inbox item from Tower UI.">
@@ -491,7 +491,7 @@
           </form>
 
           <form method="post" action="/tower/security-command/object-inbox/action-audited">
-            <input type="hidden" name="inbox_item_id" value="objinbox_MvNg-7s_tG05M_XwQMxk6UsV">
+            <input type="hidden" name="inbox_item_id" value="objinbox_ADlBvlhz77z0biNP8U0lPFDW">
             <input type="hidden" name="action_type" value="ignore">
             <input type="hidden" name="resolution_reason" value="owner_ignored_from_tower_ui">
             <input type="hidden" name="note" value="Owner ignored this object inbox item from Tower UI.">
@@ -524,12 +524,12 @@
                 <p>Review attempted export/download export_078_panel. Confirm whether this was authorized.</p>
                 <p>Soulaana: export:export_078_panel could not open because the hallway failed first. Receipt filed.</p>
                 
-      <div class="tower-action-box" data-pack="063" data-inbox-item-id="objinbox_Qhf8c3he7T8RU7y58Cy1jDBN">
+      <div class="tower-action-box" data-pack="063" data-inbox-item-id="objinbox_b30D4pOSxr6fQmIbkC-zKEVQ">
         <div class="tower-action-title">Owner Actions</div>
         <p class="tower-action-hint">Item: export:export_078_panel · Status: open</p>
 
         <form class="tower-action-form" method="post" action="/tower/security-command/object-inbox/action-audited">
-          <input type="hidden" name="inbox_item_id" value="objinbox_Qhf8c3he7T8RU7y58Cy1jDBN">
+          <input type="hidden" name="inbox_item_id" value="objinbox_b30D4pOSxr6fQmIbkC-zKEVQ">
           <input type="hidden" name="action_type" value="note">
           <label>Add note</label>
           <textarea name="note" placeholder="Owner note for this drawer event"></textarea>
@@ -538,14 +538,14 @@
 
         <div class="tower-action-row">
           <form method="post" action="/tower/security-command/object-inbox/action-audited">
-            <input type="hidden" name="inbox_item_id" value="objinbox_Qhf8c3he7T8RU7y58Cy1jDBN">
+            <input type="hidden" name="inbox_item_id" value="objinbox_b30D4pOSxr6fQmIbkC-zKEVQ">
             <input type="hidden" name="action_type" value="reviewing">
             <input type="hidden" name="note" value="Owner marked this object inbox item as reviewing from Tower UI.">
             <button type="submit">Mark Reviewing</button>
           </form>
 
           <form method="post" action="/tower/security-command/object-inbox/action-audited">
-            <input type="hidden" name="inbox_item_id" value="objinbox_Qhf8c3he7T8RU7y58Cy1jDBN">
+            <input type="hidden" name="inbox_item_id" value="objinbox_b30D4pOSxr6fQmIbkC-zKEVQ">
             <input type="hidden" name="action_type" value="resolve">
             <input type="hidden" name="resolution_reason" value="owner_resolved_from_tower_ui">
             <input type="hidden" name="note" value="Owner resolved this object inbox item from Tower UI.">
@@ -553,7 +553,7 @@
           </form>
 
           <form method="post" action="/tower/security-command/object-inbox/action-audited">
-            <input type="hidden" name="inbox_item_id" value="objinbox_Qhf8c3he7T8RU7y58Cy1jDBN">
+            <input type="hidden" name="inbox_item_id" value="objinbox_b30D4pOSxr6fQmIbkC-zKEVQ">
             <input type="hidden" name="action_type" value="ignore">
             <input type="hidden" name="resolution_reason" value="owner_ignored_from_tower_ui">
             <input type="hidden" name="note" value="Owner ignored this object inbox item from Tower UI.">

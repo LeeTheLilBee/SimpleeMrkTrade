@@ -1140,3 +1140,150 @@ def run_ob_privacy_wall_smoke():
 
     return result
 
+
+
+# ================================================================================
+# PACK083_DENY_PATH_REPLACEMENT_RECEIPTS_SMOKE_WRAPPER
+# ================================================================================
+# Proves polished /no-access replacement and deny-path replacement receipts.
+# ================================================================================
+
+def _pack083_prove_deny_path_replacement_receipts():
+    try:
+        from web.app import app
+        from tower.deny_path_replacement_audit import (
+            record_deny_path_replacement_receipt,
+            summarize_deny_path_replacement_receipts,
+        )
+
+        client = app.test_client()
+        before = summarize_deny_path_replacement_receipts(limit=8)
+
+        resp = client.get("/no-access?path=/signals?tower_keycard=SHOULD_NOT_SURVIVE")
+        html = resp.get_data(as_text=True)
+
+        proof = {
+            "ok": (
+                resp.status_code == 403
+                and "The Tower" in html
+                and "Clearance Gate" in html
+                and "Restricted Zone" in html
+                and "Observatory Corridor Locked" in html
+                and "Soulaana:" in html
+                and "request_observatory_clearance" in html
+                and "<title>Observatory Locked</title>" not in html
+                and "tower_keycard=" not in html
+                and "SHOULD_NOT_SURVIVE" not in html
+            ),
+            "status_code": resp.status_code,
+            "route_path": "/no-access",
+            "has_tower": "The Tower" in html,
+            "has_clearance_gate": "Clearance Gate" in html,
+            "has_restricted_zone": "Restricted Zone" in html,
+            "has_polished_title": "Observatory Corridor Locked" in html,
+            "has_soulaana": "Soulaana:" in html,
+            "has_request_clearance": "request_observatory_clearance" in html,
+            "old_shell_absent": "<title>Observatory Locked</title>" not in html,
+            "no_keycard_query": "tower_keycard=" not in html,
+            "no_test_secret": "SHOULD_NOT_SURVIVE" not in html,
+        }
+
+        receipt = record_deny_path_replacement_receipt(
+            route_path="/no-access",
+            replacement_type="polished_tower_locked_page",
+            old_behavior="legacy_no_access_shell",
+            new_behavior="tower_polished_locked_helper",
+            actor_user_id="owner_solice",
+            reason="Pack 083 smoke proof confirmed /no-access replacement is polished and safe.",
+            proof=proof,
+            metadata={
+                "pack": "083",
+                "audit_source": "privacy_wall_smoke",
+                "raw_token": "SHOULD_NOT_SURVIVE",
+                "tower_keycard": "SHOULD_NOT_SURVIVE",
+            },
+        )
+
+        after = summarize_deny_path_replacement_receipts(limit=12)
+
+        detail = {
+            "before_total": before.get("total"),
+            "after_total": after.get("total"),
+            "verified": after.get("verified"),
+            "needs_review": after.get("needs_review"),
+            "by_route": after.get("by_route"),
+            "by_replacement_type": after.get("by_replacement_type"),
+            "receipt_id": receipt.get("receipt_id"),
+            "receipt_status": receipt.get("status"),
+            "route_status": resp.status_code,
+            "proof": proof,
+        }
+
+        ok = (
+            proof.get("ok") is True
+            and receipt.get("ok") is True
+            and receipt.get("status") == "verified"
+            and after.get("ok") is True
+            and after.get("total", 0) >= before.get("total", 0) + 1
+            and after.get("verified", 0) >= 1
+            and after.get("by_route", {}).get("/no-access", 0) >= 1
+            and after.get("by_replacement_type", {}).get("polished_tower_locked_page", 0) >= 1
+        )
+
+        serialized = str([detail, receipt, after]) + html
+        no_leak = (
+            "tower_keycard=" not in serialized
+            and "SHOULD_NOT_SURVIVE" not in serialized
+            and "raw_token=" not in serialized
+            and '"raw_token":' not in serialized
+            and "Bearer SHOULD_NOT_SURVIVE" not in serialized
+        )
+        detail["no_secret_leakage"] = no_leak
+
+        return {
+            "ok": ok and no_leak,
+            "detail": detail,
+            "human_reason": "Deny-path replacement receipts proved." if ok and no_leak else "Deny-path replacement receipt proof failed.",
+        }
+
+    except Exception as exc:
+        return {
+            "ok": False,
+            "detail": {"error": f"{type(exc).__name__}: {exc}"},
+            "human_reason": "Deny-path replacement receipt proof raised an exception.",
+        }
+
+
+try:
+    _pack083_original_run_ob_privacy_wall_smoke
+except NameError:
+    _pack083_original_run_ob_privacy_wall_smoke = run_ob_privacy_wall_smoke
+
+
+def run_ob_privacy_wall_smoke():
+    result = _pack083_original_run_ob_privacy_wall_smoke()
+    if not isinstance(result, dict):
+        result = {"ok": False, "checks": {}, "failures": ["invalid_smoke_result"]}
+
+    checks = result.setdefault("checks", {})
+    failures = result.setdefault("failures", [])
+
+    proof = _pack083_prove_deny_path_replacement_receipts()
+    checks["deny_path_replacement_receipts_ready"] = {
+        "ok": proof.get("ok") is True,
+        "detail": proof.get("detail"),
+    }
+
+    if proof.get("ok") is not True and "deny_path_replacement_receipts_ready" not in failures:
+        failures.append("deny_path_replacement_receipts_ready")
+
+    result["ok"] = not failures
+    result["pack"] = "083"
+    result["human_reason"] = (
+        "OB privacy wall smoke test passed with deny-path replacement receipts."
+        if result["ok"]
+        else "OB privacy wall smoke test found failures."
+    )
+
+    return result
+

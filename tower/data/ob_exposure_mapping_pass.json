@@ -1,0 +1,3018 @@
+{
+  "counts": {
+    "keep_protected": 19,
+    "keep_public_safe": 7,
+    "later_review": 32,
+    "map_next": 7,
+    "retire_or_redirect": 9
+  },
+  "generated_at": "2026-05-22T17:57:27.169936Z",
+  "human_reason": "OB exposure report mapping pass created.",
+  "items": [
+    {
+      "category": "keep_protected",
+      "classification": "unmapped_default_deny",
+      "path": "/all-symbols",
+      "plain": "Core Observatory surfaces stay protected behind Tower clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "all_symbols_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/all-symbols"
+      },
+      "reason_code": "core_ob_private_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "guarded",
+      "path": "/analytics",
+      "plain": "Core Observatory surfaces stay protected behind Tower clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "guarded",
+        "endpoint": "analytics_page",
+        "match_type": "exact",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Analytics and performance intelligence.",
+          "public_allowed": false,
+          "route_key": "analysis_vault",
+          "sensitivity": "restricted"
+        },
+        "route": "/analytics"
+      },
+      "reason_code": "core_ob_private_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "unmapped_default_deny",
+      "path": "/analytics-overview",
+      "plain": "Core Observatory surfaces stay protected behind Tower clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "analytics_overview",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/analytics-overview"
+      },
+      "reason_code": "core_ob_private_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "guarded",
+      "path": "/dashboard",
+      "plain": "Core Observatory surfaces stay protected behind Tower clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "guarded",
+        "endpoint": "dashboard_page",
+        "match_type": "exact",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Main OB dashboard. Private app surface.",
+          "public_allowed": false,
+          "route_key": "dashboard",
+          "sensitivity": "internal"
+        },
+        "route": "/dashboard"
+      },
+      "reason_code": "core_ob_private_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "unmapped_default_deny",
+      "path": "/positions",
+      "plain": "Core Observatory surfaces stay protected behind Tower clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "positions_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/positions"
+      },
+      "reason_code": "core_ob_private_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "guarded",
+      "path": "/premium-analysis",
+      "plain": "Core Observatory surfaces stay protected behind Tower clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "guarded",
+        "endpoint": "premium_analysis_page",
+        "match_type": "exact",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Premium analysis surface.",
+          "public_allowed": false,
+          "route_key": "analysis_vault",
+          "sensitivity": "restricted"
+        },
+        "route": "/premium-analysis"
+      },
+      "reason_code": "core_ob_private_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "guarded",
+      "path": "/research",
+      "plain": "Core Observatory surfaces stay protected behind Tower clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "guarded",
+        "endpoint": "research_overview",
+        "match_type": "exact",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Research overview and deeper intelligence.",
+          "public_allowed": false,
+          "route_key": "analysis_vault",
+          "sensitivity": "restricted"
+        },
+        "route": "/research"
+      },
+      "reason_code": "core_ob_private_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "guarded",
+      "path": "/signals",
+      "plain": "Core Observatory surfaces stay protected behind Tower clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "guarded",
+        "endpoint": "signals_page",
+        "match_type": "exact",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected signal intelligence.",
+          "public_allowed": false,
+          "route_key": "signals",
+          "sensitivity": "confidential"
+        },
+        "route": "/signals"
+      },
+      "reason_code": "core_ob_private_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_command_entry_no_slash",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "unmapped_default_deny",
+      "path": "/tower-locked-preview",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "pack068_tower_locked_preview",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/tower-locked-preview"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_command_entry",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/polished-locked-preview",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "pack068b_polished_locked_preview",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/polished-locked-preview"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/security-command",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_security_command",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/security-command"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/security-command/object-inbox/action",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "pack071_object_inbox_action_endpoint",
+        "match_type": "tower_owned",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/security-command/object-inbox/action"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/security-command/object-inbox/action-audited",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "pack072_object_inbox_action_endpoint_audited",
+        "match_type": "tower_owned",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/security-command/object-inbox/action-audited"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/security-command/regenerate",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_security_command_regenerate",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/security-command/regenerate"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/status.json",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_status_json",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/status.json"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "unmapped_default_deny",
+      "path": "/trade-review",
+      "plain": "Core Observatory surfaces stay protected behind Tower clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "trade_review_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/trade-review"
+      },
+      "reason_code": "core_ob_private_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "unmapped_default_deny",
+      "path": "/why-this-trade",
+      "plain": "Core Observatory surfaces stay protected behind Tower clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "why_this_trade_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/why-this-trade"
+      },
+      "reason_code": "core_ob_private_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_dashboard",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/diagnostics",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_diagnostics_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/diagnostics"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/intelligence",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_intelligence_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/intelligence"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/preview-tier/<tier>",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_preview_tier",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/preview-tier/<tier>"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/preview-tier/clear",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_clear_preview_tier",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/preview-tier/clear"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/product-analytics",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_product_analytics_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/product-analytics"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/product-monitoring",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_product_monitoring_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/product-monitoring"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/refresh-market-universe",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_refresh_market_universe",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/refresh-market-universe"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/refresh-news-cache",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_refresh_news_cache",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/refresh-news-cache"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_public_safe",
+      "classification": "public_safe",
+      "path": "/",
+      "plain": "Outer-shell and locked-preview routes may stay reachable because they expose no Observatory data.",
+      "priority": 2,
+      "raw": {
+        "category": "public_safe",
+        "endpoint": "landing_page",
+        "match_type": "public_safe",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Deliberately public or harmless shell route.",
+          "public_allowed": true,
+          "route_key": "public_safe",
+          "sensitivity": "public_shell"
+        },
+        "route": "/"
+      },
+      "reason_code": "outer_shell_or_locked_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_public_safe",
+      "classification": "public_safe",
+      "path": "/login",
+      "plain": "Outer-shell and locked-preview routes may stay reachable because they expose no Observatory data.",
+      "priority": 2,
+      "raw": {
+        "category": "public_safe",
+        "endpoint": "login_page",
+        "match_type": "public_safe",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Deliberately public or harmless shell route.",
+          "public_allowed": true,
+          "route_key": "public_safe",
+          "sensitivity": "public_shell"
+        },
+        "route": "/login"
+      },
+      "reason_code": "outer_shell_or_locked_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_public_safe",
+      "classification": "public_safe",
+      "path": "/logout",
+      "plain": "Outer-shell and locked-preview routes may stay reachable because they expose no Observatory data.",
+      "priority": 2,
+      "raw": {
+        "category": "public_safe",
+        "endpoint": "logout_page",
+        "match_type": "public_safe",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Deliberately public or harmless shell route.",
+          "public_allowed": true,
+          "route_key": "public_safe",
+          "sensitivity": "public_shell"
+        },
+        "route": "/logout"
+      },
+      "reason_code": "outer_shell_or_locked_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_public_safe",
+      "classification": "public_safe",
+      "path": "/no-access",
+      "plain": "Outer-shell and locked-preview routes may stay reachable because they expose no Observatory data.",
+      "priority": 2,
+      "raw": {
+        "category": "public_safe",
+        "endpoint": "_pack048_no_access_page",
+        "match_type": "public_safe",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Deliberately public or harmless shell route.",
+          "public_allowed": true,
+          "route_key": "public_safe",
+          "sensitivity": "public_shell"
+        },
+        "route": "/no-access"
+      },
+      "reason_code": "outer_shell_or_locked_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_public_safe",
+      "classification": "public_safe",
+      "path": "/observatory-private",
+      "plain": "Outer-shell and locked-preview routes may stay reachable because they expose no Observatory data.",
+      "priority": 2,
+      "raw": {
+        "category": "public_safe",
+        "endpoint": "pack079_observatory_private_polished_lock",
+        "match_type": "public_safe",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Deliberately public or harmless shell route.",
+          "public_allowed": true,
+          "route_key": "public_safe",
+          "sensitivity": "public_shell"
+        },
+        "route": "/observatory-private"
+      },
+      "reason_code": "outer_shell_or_locked_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_public_safe",
+      "classification": "public_safe",
+      "path": "/signup",
+      "plain": "Outer-shell and locked-preview routes may stay reachable because they expose no Observatory data.",
+      "priority": 2,
+      "raw": {
+        "category": "public_safe",
+        "endpoint": "signup_page",
+        "match_type": "public_safe",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Deliberately public or harmless shell route.",
+          "public_allowed": true,
+          "route_key": "public_safe",
+          "sensitivity": "public_shell"
+        },
+        "route": "/signup"
+      },
+      "reason_code": "outer_shell_or_locked_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/api/live-state",
+      "plain": "API routes need explicit route/action/object clearance policy.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "api_live_state",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/api/live-state"
+      },
+      "reason_code": "api_surface_needs_policy",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/my-positions/<position_id>",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "my_position_detail_page",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/my-positions/<position_id>"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/my-positions/analyze",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "analyze_my_trades_page",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/my-positions/analyze"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/my-positions/archived",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "my_positions_archived_page",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/my-positions/archived"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "dynamic_guarded",
+      "path": "/signals/<symbol>",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "dynamic_guarded",
+        "endpoint": "signal_symbol_page",
+        "match_type": "dynamic_symbol",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected per-symbol intelligence page.",
+          "public_allowed": false,
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "route": "/signals/<symbol>"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/symbol/<symbol>",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "signal_symbol_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/symbol/<symbol>"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/trade/<trade_id>",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "trade_detail_page",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/trade/<trade_id>"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/account",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "account_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/account"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/analytics/performance",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "analytics_performance_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/analytics/performance"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/analytics/risk",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "analytics_risk_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/analytics/risk"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/analytics/strategy",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "strategy_behavior_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/analytics/strategy"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/billing",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "billing_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/billing"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/bot-log",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "bot_log_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/bot-log"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/charts",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "charts_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/charts"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/equity",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "equity_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/equity"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/live-activity",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "live_activity_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/live-activity"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/market-map",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "market_map_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/market-map"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "my_plays_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays/<play_id>",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "my_play_detail_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays/<play_id>"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays/<play_id>/activate",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "activate_my_play",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays/<play_id>/activate"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays/<play_id>/archive",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "archive_my_play",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays/<play_id>/archive"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays/<play_id>/edit",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "edit_my_play",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays/<play_id>/edit"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays/add",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "add_my_play",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays/add"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-positions/<position_id>/close",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "close_my_position",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/my-positions/<position_id>/close"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-positions/<position_id>/edit",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "edit_my_position",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/my-positions/<position_id>/edit"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/notifications",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "notifications_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/notifications"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/position/<trade_id>",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "position_detail_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/position/<trade_id>"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/proof",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "proof_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/proof"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/reports",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "reports_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/reports"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/set-theme/<theme>",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "set_theme",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/set-theme/<theme>"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/simulation",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "simulation_dashboard",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/simulation"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/soulaana/checkin",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "soulaana_checkin",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/soulaana/checkin"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/soulaana/checkin/clear",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "soulaana_checkin_clear",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/soulaana/checkin/clear"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/soulaana/checkin/skip",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "soulaana_checkin_skip",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/soulaana/checkin/skip"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/spotlight",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "spotlight_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/spotlight"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/strategy-behavior",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "strategy_behavior_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/strategy-behavior"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/upgrade",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "upgrade_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/upgrade"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_public_safe",
+      "classification": "static_or_asset",
+      "path": "/static/<path:filename>",
+      "plain": "Static/health surfaces can remain harmless shell surfaces if they expose no protected data.",
+      "priority": 5,
+      "raw": {
+        "category": "static_or_asset",
+        "endpoint": "static",
+        "match_type": "static_or_asset",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "public_allowed": true
+        },
+        "route": "/static/<path:filename>"
+      },
+      "reason_code": "static_or_health_safe_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "guarded",
+      "path": "/my-portfolio",
+      "plain": "This surface needs owner review before mapping or retirement.",
+      "priority": 5,
+      "raw": {
+        "category": "guarded",
+        "endpoint": "my_portfolio_page",
+        "match_type": "exact",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "User portfolio data.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/my-portfolio"
+      },
+      "reason_code": "needs_owner_review",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "public_safe",
+      "path": "/no-access.json",
+      "plain": "This surface needs owner review before mapping or retirement.",
+      "priority": 5,
+      "raw": {
+        "category": "public_safe",
+        "endpoint": "_pack048_no_access_json",
+        "match_type": "public_safe",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Deliberately public or harmless shell route.",
+          "public_allowed": true,
+          "route_key": "public_safe",
+          "sensitivity": "public_shell"
+        },
+        "route": "/no-access.json"
+      },
+      "reason_code": "needs_owner_review",
+      "source": "ob_route_exposure_report"
+    }
+  ],
+  "later_review": [
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/account",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "account_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/account"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/analytics/performance",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "analytics_performance_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/analytics/performance"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/analytics/risk",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "analytics_risk_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/analytics/risk"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/analytics/strategy",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "strategy_behavior_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/analytics/strategy"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/billing",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "billing_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/billing"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/bot-log",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "bot_log_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/bot-log"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/charts",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "charts_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/charts"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/equity",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "equity_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/equity"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/live-activity",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "live_activity_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/live-activity"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/market-map",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "market_map_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/market-map"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "my_plays_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays/<play_id>",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "my_play_detail_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays/<play_id>"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays/<play_id>/activate",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "activate_my_play",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays/<play_id>/activate"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays/<play_id>/archive",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "archive_my_play",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays/<play_id>/archive"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays/<play_id>/edit",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "edit_my_play",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays/<play_id>/edit"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-plays/add",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "add_my_play",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/my-plays/add"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-positions/<position_id>/close",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "close_my_position",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/my-positions/<position_id>/close"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/my-positions/<position_id>/edit",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "edit_my_position",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/my-positions/<position_id>/edit"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/notifications",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "notifications_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/notifications"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/position/<trade_id>",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "position_detail_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/position/<trade_id>"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/proof",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "proof_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/proof"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/reports",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "reports_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/reports"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/set-theme/<theme>",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "set_theme",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/set-theme/<theme>"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/simulation",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "simulation_dashboard",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/simulation"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/soulaana/checkin",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "soulaana_checkin",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/soulaana/checkin"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/soulaana/checkin/clear",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "soulaana_checkin_clear",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/soulaana/checkin/clear"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/soulaana/checkin/skip",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "soulaana_checkin_skip",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "POST"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/soulaana/checkin/skip"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/spotlight",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "spotlight_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/spotlight"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/strategy-behavior",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "strategy_behavior_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/strategy-behavior"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "later_review",
+      "classification": "unmapped_default_deny",
+      "path": "/upgrade",
+      "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+      "priority": 4,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "upgrade_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/upgrade"
+      },
+      "reason_code": "unmapped_default_deny_review_needed",
+      "source": "ob_route_exposure_report"
+    }
+  ],
+  "ok": true,
+  "pack": "084",
+  "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_exposure_mapping_pass.json",
+  "priority_counts": {
+    "1": 28,
+    "2": 13,
+    "4": 30,
+    "5": 3
+  },
+  "readiness_label": "Exposure mapping pass ready",
+  "readiness_score": 100,
+  "reason_counts": {
+    "admin_debug_or_test_surface": 9,
+    "api_surface_needs_policy": 1,
+    "core_ob_private_surface": 10,
+    "dynamic_ob_object_surface": 6,
+    "needs_owner_review": 2,
+    "outer_shell_or_locked_surface": 6,
+    "static_or_health_safe_surface": 1,
+    "tower_owned_security_surface": 9,
+    "unmapped_default_deny_review_needed": 30
+  },
+  "retire_or_redirect": [
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_dashboard",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/diagnostics",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_diagnostics_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/diagnostics"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/intelligence",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_intelligence_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/intelligence"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/preview-tier/<tier>",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_preview_tier",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/preview-tier/<tier>"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/preview-tier/clear",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_clear_preview_tier",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/preview-tier/clear"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/product-analytics",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_product_analytics_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/product-analytics"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/product-monitoring",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_product_monitoring_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/product-monitoring"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/refresh-market-universe",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_refresh_market_universe",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/refresh-market-universe"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "retire_or_redirect",
+      "classification": "unmapped_default_deny",
+      "path": "/admin/refresh-news-cache",
+      "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "priority": 1,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "admin_refresh_news_cache",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/admin/refresh-news-cache"
+      },
+      "reason_code": "admin_debug_or_test_surface",
+      "source": "ob_route_exposure_report"
+    }
+  ],
+  "soulaana_translation": "Soulaana: The doors are sorted. Some stay locked, some get mapped next, some get retired, and the questionable ones wait for owner review.",
+  "top_next": [
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/api/live-state",
+      "plain": "API routes need explicit route/action/object clearance policy.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "api_live_state",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/api/live-state"
+      },
+      "reason_code": "api_surface_needs_policy",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/my-positions/<position_id>",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "my_position_detail_page",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/my-positions/<position_id>"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/my-positions/analyze",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "analyze_my_trades_page",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/my-positions/analyze"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/my-positions/archived",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "my_positions_archived_page",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/my-positions/archived"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "dynamic_guarded",
+      "path": "/signals/<symbol>",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "dynamic_guarded",
+        "endpoint": "signal_symbol_page",
+        "match_type": "dynamic_symbol",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected per-symbol intelligence page.",
+          "public_allowed": false,
+          "route_key": "symbol_detail",
+          "sensitivity": "confidential"
+        },
+        "route": "/signals/<symbol>"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/symbol/<symbol>",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "signal_symbol_page",
+        "match_type": "unmapped_default_deny",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "This route is not mapped yet. Default deny for private build.",
+          "public_allowed": false,
+          "route_key": "unmapped",
+          "sensitivity": "unknown"
+        },
+        "route": "/symbol/<symbol>"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "map_next",
+      "classification": "unmapped_default_deny",
+      "path": "/trade/<trade_id>",
+      "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+      "priority": 2,
+      "raw": {
+        "category": "unmapped_default_deny",
+        "endpoint": "trade_detail_page",
+        "match_type": "dynamic_position_or_trade",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "action": "view",
+          "plain": "Protected position/trade detail corridor.",
+          "public_allowed": false,
+          "route_key": "positions",
+          "sensitivity": "restricted"
+        },
+        "route": "/trade/<trade_id>"
+      },
+      "reason_code": "dynamic_ob_object_surface",
+      "source": "ob_route_exposure_report"
+    }
+  ],
+  "total": 74
+}

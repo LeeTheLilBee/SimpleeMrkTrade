@@ -1,0 +1,106 @@
+
+from __future__ import annotations
+
+import json
+import os
+import sys
+from pathlib import Path
+
+PROJECT_ROOT = Path("/content/SimpleeMrkTrade_REAL_CLONE")
+os.chdir(PROJECT_ROOT)
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+for name in list(sys.modules.keys()):
+    if name == "tower" or name.startswith("tower.") or name == "web.app":
+        sys.modules.pop(name, None)
+
+from tower.ob_privacy_wall_smoke import run_ob_privacy_wall_smoke
+from tower.ob_privacy_wall_checkpoint import build_ob_privacy_wall_checkpoint
+
+
+def _print(title, payload=None):
+    print()
+    print("=" * 80)
+    print(title)
+    print("=" * 80)
+    if payload is not None:
+        print(json.dumps(payload, indent=2, sort_keys=True, default=str))
+
+
+def run_tests():
+    smoke = run_ob_privacy_wall_smoke()
+    proof = smoke.get("checks", {}).get("deny_path_replacement_receipts_ready")
+
+    _print("PRIVACY WALL SMOKE WITH DENY-PATH RECEIPTS", {
+        "ok": smoke.get("ok"),
+        "failures": smoke.get("failures"),
+        "proof": proof,
+        "checks": sorted(list(smoke.get("checks", {}).keys())),
+    })
+
+    assert smoke.get("ok") is True
+    assert not smoke.get("failures")
+    assert isinstance(proof, dict)
+    assert proof.get("ok") is True
+
+    detail = proof.get("detail", {})
+    assert detail.get("receipt_status") == "verified"
+    assert detail.get("route_status") == 403
+    assert detail.get("proof", {}).get("has_tower") is True
+    assert detail.get("proof", {}).get("has_clearance_gate") is True
+    assert detail.get("proof", {}).get("old_shell_absent") is True
+    assert detail.get("proof", {}).get("no_keycard_query") is True
+    assert detail.get("proof", {}).get("no_test_secret") is True
+    assert detail.get("no_secret_leakage") is True
+
+    checkpoint = build_ob_privacy_wall_checkpoint()
+
+    _print("PRIVACY WALL CHECKPOINT WITH DENY-PATH RECEIPTS", {
+        "ok": checkpoint.get("ok"),
+        "readiness_score": checkpoint.get("readiness_score"),
+        "readiness_label": checkpoint.get("readiness_label"),
+        "deny_path_replacement_receipts_ready": checkpoint.get("deny_path_replacement_receipts_ready"),
+        "deny_path_replacement_summary": checkpoint.get("deny_path_replacement_summary"),
+        "next_steps": checkpoint.get("next_steps"),
+    })
+
+    assert checkpoint.get("ok") is True
+    assert checkpoint.get("readiness_score") == 100
+    assert checkpoint.get("readiness_label") == "Ready for exposure report mapping pass"
+    assert checkpoint.get("deny_path_replacement_receipts_ready", {}).get("ok") is True
+
+    summary = checkpoint.get("deny_path_replacement_summary", {})
+    assert summary.get("ok") is True
+    assert summary.get("total", 0) >= 1
+    assert summary.get("verified", 0) >= 1
+    assert summary.get("by_route", {}).get("/no-access", 0) >= 1
+    assert summary.get("by_replacement_type", {}).get("polished_tower_locked_page", 0) >= 1
+
+    built = json.dumps(checkpoint.get("built_packs", []), sort_keys=True)
+    for pack in ["081", "082", "083"]:
+        assert pack in built
+
+    next_steps = json.dumps(checkpoint.get("next_steps", []), sort_keys=True)
+    assert "Exposure report mapping pass" in next_steps
+
+    serialized = json.dumps([smoke, checkpoint], sort_keys=True, default=str)
+    assert "tower_keycard=" not in serialized
+    assert "SHOULD_NOT_SURVIVE" not in serialized
+    assert "raw_token=" not in serialized
+    assert '"raw_token":' not in serialized
+    assert "Bearer SHOULD_NOT_SURVIVE" not in serialized
+    assert "Soulaana:" in checkpoint.get("soulaana_translation", "")
+
+    final = {
+        "pack": "083",
+        "status": "passed",
+        "human_reason": "Privacy wall smoke/checkpoint now prove deny-path replacement receipts and /no-access polished lock.",
+    }
+    _print("PACK 083 RESULT", final)
+    return final
+
+
+if __name__ == "__main__":
+    run_tests()
