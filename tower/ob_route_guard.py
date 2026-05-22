@@ -123,6 +123,8 @@ OB_PUBLIC_SAFE_ROUTES = {
     '/tower/security-command',
     '/tower/security-command/regenerate',
     '/tower/status.json',
+    "/no-access",
+    "/no-access.json",
 }
 
 

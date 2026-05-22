@@ -2512,5 +2512,40 @@
     "source": "tower_web_bridge",
     "timestamp": "2026-05-22T14:07:57.931354Z",
     "user_id": "owner_solice"
+  },
+  {
+    "action": "view",
+    "allowed": false,
+    "app_name": "tower",
+    "capsule_id": "doorcap_5IyLZ3a_f6nXj6Eb0JthmSOj",
+    "decision": "deny",
+    "device_id": "",
+    "door_id": "/tower/security-command",
+    "door_type": "route",
+    "event_type": "tower_door_swipe",
+    "fingerprint": "2e6e768641d7ff1d3d143b0e",
+    "human_reason": "Clearance required.",
+    "ok": true,
+    "reason_code": "tower_keycard_required",
+    "request_context": {
+      "has_cookie_keycard": false,
+      "has_header_keycard": false,
+      "has_query_keycard": false,
+      "method": "GET",
+      "path": "/tower/security-command",
+      "remote_addr_present": true,
+      "user_agent_preview": "Werkzeug/3.1.8"
+    },
+    "required_actions": [
+      "present_valid_keycard_pass"
+    ],
+    "risk_score": 60,
+    "risk_state": "restricted",
+    "session_id": "",
+    "should_surface_in_inbox": true,
+    "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+    "source": "tower_web_bridge",
+    "timestamp": "2026-05-22T14:22:51.626096Z",
+    "user_id": "anonymous"
   }
 ]

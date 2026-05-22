@@ -8491,6 +8491,197 @@ def admin_product_analytics_page():
 
 # SECTION 13H — STARTUP SAFETY HOOK
 
+
+# ================================================================================
+# PACK 046 — OBSERVATORY / TOWER ROUTE GUARD WIRING
+# ================================================================================
+# Baby version:
+# Before Flask shows a protected Observatory page, it asks The Tower:
+# "Can this user see this corridor?"
+#
+# Public-safe shell routes stay open.
+# Static files stay open.
+# Tower's own protected routes stay under Tower's own keycard guard.
+# Everything else private/unmapped defaults locked through tower.ob_route_guard.
+# ================================================================================
+
+def _pack046_get_ob_request_identity():
+    try:
+        from flask import request, session
+
+        user_id = (
+            request.args.get("ob_user_id")
+            or request.args.get("tower_user_id")
+            or session.get("user_id")
+            or session.get("username")
+            or "anonymous"
+        )
+
+        role = (
+            request.args.get("ob_role")
+            or request.args.get("role")
+            or session.get("role")
+            or session.get("tier")
+            or ""
+        )
+
+        clearance = (
+            request.args.get("ob_clearance")
+            or request.args.get("clearance")
+            or session.get("clearance_level")
+            or ""
+        )
+
+        risk_score = (
+            request.args.get("ob_risk_score")
+            or request.args.get("risk_score")
+            or session.get("risk_score")
+            or 0
+        )
+
+        try:
+            risk_score = int(risk_score)
+        except Exception:
+            risk_score = 0
+
+        return {
+            "user_id": str(user_id or "anonymous"),
+            "role": str(role or ""),
+            "user_clearance_level": str(clearance or ""),
+            "current_risk_score": risk_score,
+        }
+    except Exception:
+        return {
+            "user_id": "anonymous",
+            "role": "",
+            "user_clearance_level": "",
+            "current_risk_score": 0,
+        }
+
+
+def _pack046_should_skip_ob_guard():
+    try:
+        from flask import request
+
+        path = str(getattr(request, "path", "") or "/")
+
+        # Static/assets must not be blocked by OB guard.
+        if path.startswith("/static/") or path.startswith("/assets/"):
+            return True
+
+        # Tower owns its own keycard/security behavior.
+        if path == "/tower" or path.startswith("/tower/"):
+            return True
+
+        # Browser basics.
+        if path in {"/favicon.ico", "/robots.txt"}:
+            return True
+
+        return False
+    except Exception:
+        return True
+
+
+def _pack046_register_ob_route_guard_once(_app):
+    try:
+        if getattr(_app, "_pack046_ob_route_guard_registered", False):
+            return True
+
+        from flask import request
+        from tower.ob_route_guard import build_locked_ob_response, should_block_ob_request
+
+        @_app.before_request
+        def _pack046_ob_route_guard_before_request():
+            if _pack046_should_skip_ob_guard():
+                return None
+
+            identity = _pack046_get_ob_request_identity()
+            path = str(getattr(request, "path", "") or "/")
+
+            decision = should_block_ob_request(
+                path=path,
+                user_id=identity.get("user_id", "anonymous"),
+                role=identity.get("role", ""),
+                user_clearance_level=identity.get("user_clearance_level", ""),
+                current_risk_score=identity.get("current_risk_score", 0),
+                metadata={
+                    "method": getattr(request, "method", "GET"),
+                    "endpoint": getattr(request, "endpoint", None),
+                    "pack": "046",
+                },
+            )
+
+            if decision.get("block"):
+                return build_locked_ob_response(
+                    reason_code=str(decision.get("reason_code", "ob_access_denied")),
+                    human_reason=str(decision.get("human_reason", "The Observatory is private.")),
+                    path=path,
+                    decision=decision,
+                )
+
+            return None
+
+        _app._pack046_ob_route_guard_registered = True
+        print("PACK 046: OB route guard registered.")
+        return True
+
+    except Exception as exc:
+        print("PACK 046: OB route guard registration failed:", type(exc).__name__, str(exc))
+        return False
+
+
+_pack046_register_ob_route_guard_once(app)
+
+
+# ================================================================================
+# PACK 048 — PRIVATE OUTER SHELL / NO-ACCESS ROUTE
+# ================================================================================
+# Harmless public-safe locked shell. This exposes no real Observatory data.
+# ================================================================================
+
+def _pack048_register_private_outer_shell_once(_app):
+    try:
+        if getattr(_app, "_pack048_private_outer_shell_registered", False):
+            return True
+
+        from tower.ob_private_shell import build_private_outer_shell, build_no_access_payload
+
+        @_app.route("/no-access")
+        def _pack048_no_access_page():
+            try:
+                from flask import request
+                path = request.args.get("path") or request.path
+            except Exception:
+                path = "/no-access"
+
+            return build_private_outer_shell(
+                reason_code="observatory_private_outer_shell",
+                message="This is a harmless outer shell. The real Observatory is private.",
+                path=path,
+                status_code=403,
+                show_waitlist_hint=True,
+            )
+
+        @_app.route("/no-access.json")
+        def _pack048_no_access_json():
+            try:
+                from flask import jsonify, request
+                return jsonify(build_no_access_payload(path=request.args.get("path") or request.path))
+            except Exception:
+                return {"ok": False, "reason_code": "no_access_payload_failed"}, 500
+
+        _app._pack048_private_outer_shell_registered = True
+        print("PACK 048: Private outer shell routes registered.")
+        return True
+
+    except Exception as exc:
+        print("PACK 048: Private outer shell route registration failed:", type(exc).__name__, str(exc))
+        return False
+
+
+_pack048_register_private_outer_shell_once(app)
+
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
