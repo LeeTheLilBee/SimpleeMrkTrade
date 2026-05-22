@@ -1,4 +1,5 @@
 from __future__ import annotations
+from datetime import datetime
 
 from copy import deepcopy
 from typing import Any, Dict, List, Optional
@@ -340,8 +341,68 @@ def validate_selected_trade_for_execution(
             )
 
     elif selected_vehicle == "STOCK":
-        shares = _safe_int(trade.get("shares", trade.get("size", 1)), 1)
-        price = _safe_float(trade.get("price", trade.get("entry", 0.0)), 0.0)
+        # OBSERVATORY_CANONICAL_STOCK_FALLBACK_GUARD_REPAIR_001_20260522
+        # Stock fallback candidates can arrive with valid prices under aliases
+        # other than "price" or "entry". Do not incorrectly block a valid
+        # fallback position just because the adapter called the field
+        # current_price, fill_price, underlying_price, stock_price, etc.
+        shares = _safe_int(
+            trade.get("shares")
+            or trade.get("quantity")
+            or trade.get("qty")
+            or trade.get("size")
+            or 1,
+            1,
+        )
+
+        price = _safe_float(
+            trade.get("price")
+            or trade.get("entry")
+            or trade.get("entry_price")
+            or trade.get("fill_price")
+            or trade.get("filled_price")
+            or trade.get("executed_price")
+            or trade.get("current_price")
+            or trade.get("current")
+            or trade.get("underlying_price")
+            or trade.get("current_underlying_price")
+            or trade.get("stock_price")
+            or trade.get("mark")
+            or trade.get("last")
+            or trade.get("close")
+            or trade.get("close_price")
+            or 0.0,
+            0.0,
+        )
+
+        if price <= 0 and shares > 0:
+            capital_required = _safe_float(
+                trade.get("capital_required")
+                or trade.get("actual_cost")
+                or trade.get("cost_basis")
+                or trade.get("minimum_trade_cost")
+                or trade.get("candidate_size_dollars")
+                or 0.0,
+                0.0,
+            )
+            if capital_required > 0:
+                price = round(capital_required / max(shares, 1), 4)
+                trade["stock_price_recovered_from_capital_required"] = True
+
+        if shares > 0 and price > 0:
+            trade["shares"] = shares
+            trade["quantity"] = shares
+            trade["size"] = shares
+            trade["price"] = price
+            trade["entry"] = trade.get("entry") or price
+            trade["entry_price"] = trade.get("entry_price") or price
+            trade["fill_price"] = trade.get("fill_price") or price
+            trade["current_price"] = trade.get("current_price") or price
+            trade["current"] = trade.get("current") or price
+            trade["underlying_price"] = trade.get("underlying_price") or price
+            trade["stock_payload_normalized_by"] = "canonical_execution_guard.py"
+            trade["stock_payload_normalized_at"] = datetime.now().isoformat()
+
         if shares <= 0 or price <= 0:
             return apply_mode_to_execution_guard(
                 _guard_payload(
@@ -349,7 +410,33 @@ def validate_selected_trade_for_execution(
                     reason="Invalid stock payload.",
                     reason_code="invalid_stock_payload",
                     status_label="BLOCKED",
-                    details={"symbol": symbol, "shares": shares, "price": price},
+                    details={
+                        "symbol": symbol,
+                        "shares": shares,
+                        "price": price,
+                        "price_aliases_checked": [
+                            "price",
+                            "entry",
+                            "entry_price",
+                            "fill_price",
+                            "filled_price",
+                            "executed_price",
+                            "current_price",
+                            "current",
+                            "underlying_price",
+                            "current_underlying_price",
+                            "stock_price",
+                            "mark",
+                            "last",
+                            "close",
+                            "close_price",
+                            "capital_required",
+                            "actual_cost",
+                            "cost_basis",
+                            "minimum_trade_cost",
+                            "candidate_size_dollars",
+                        ],
+                    },
                     mode_context=mode_context,
                 ),
                 trading_mode,
