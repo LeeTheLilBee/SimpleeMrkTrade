@@ -357,3 +357,45 @@ def get_tower_status():
 
     return payload
 
+
+
+# ================================================================================
+# PACK077_UI_ACTION_AUDIT_STATUS_WRAPPER
+# ================================================================================
+# Adds UI action audit receipt summary fields to Tower status.
+# ================================================================================
+
+try:
+    _pack077_original_get_tower_status
+except NameError:
+    _pack077_original_get_tower_status = get_tower_status
+
+
+def get_tower_status():
+    payload = _pack077_original_get_tower_status()
+    if not isinstance(payload, dict):
+        payload = {}
+
+    try:
+        from tower.ui_action_audit import summarize_ui_action_audit_receipts
+
+        summary = summarize_ui_action_audit_receipts(limit=8)
+
+        payload["ui_action_audit_ok"] = summary.get("ok") is True
+        payload["ui_action_audit_total"] = summary.get("total", 0)
+        payload["ui_action_audit_action_ok"] = summary.get("action_ok", 0)
+        payload["ui_action_audit_action_failed"] = summary.get("action_failed", 0)
+        payload["ui_action_audit_by_action"] = summary.get("by_action", {})
+        payload["ui_action_audit_by_reason"] = summary.get("by_reason", {})
+        payload["ui_action_audit_by_severity"] = summary.get("by_severity", {})
+        payload["ui_action_audit_by_status_code"] = summary.get("by_status_code", {})
+        payload["ui_action_audit_recent"] = summary.get("recent", [])
+        payload["ui_action_audit_human_reason"] = summary.get("human_reason")
+        payload["ui_action_audit_soulaana_translation"] = summary.get("soulaana_translation")
+
+    except Exception as exc:
+        payload["ui_action_audit_ok"] = False
+        payload["ui_action_audit_error"] = f"{type(exc).__name__}: {exc}"
+
+    return payload
+

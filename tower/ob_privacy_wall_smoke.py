@@ -961,3 +961,182 @@ def run_ob_privacy_wall_smoke():
 
     return result
 
+
+
+# ================================================================================
+# PACK078_AUDITED_FORMS_AND_RECEIPT_PANEL_SMOKE_WRAPPER
+# ================================================================================
+# Proves Security Command forms point to audited endpoint and receipt panel renders.
+# ================================================================================
+
+def _pack078_prove_audited_forms_and_receipt_panel():
+    try:
+        from pathlib import Path
+        from web.app import app
+        from tower.security_command_page import generate_security_command_dashboard
+        from tower.ob_object_guard import evaluate_ob_object_guard
+        from tower.ob_object_audit_capsules import list_open_ob_object_security_inbox
+        from tower.ui_action_audit import summarize_ui_action_audit_receipts
+
+        client = app.test_client()
+        before = summarize_ui_action_audit_receipts(limit=8)
+
+        # Create a fresh item and push one audited action so the receipt panel has current data.
+        decision = evaluate_ob_object_guard(
+            user_id="beta_001",
+            role="user",
+            object_kind="export",
+            object_id="export_078_panel",
+            action="download",
+            route_key="export",
+            current_risk_score=5,
+        )
+
+        open_items = list_open_ob_object_security_inbox(limit=260)
+        target = None
+        for item in reversed(open_items.get("items", [])):
+            if item.get("object_id") == "export_078_panel":
+                target = item
+                break
+
+        detail = {
+            "decision_reason": decision.get("reason_code"),
+            "target_found": bool(target),
+            "before_total": before.get("total"),
+        }
+
+        if not target:
+            return {
+                "ok": False,
+                "detail": detail,
+                "human_reason": "No object inbox target found for Pack 078 proof.",
+            }
+
+        target_id = target.get("inbox_item_id")
+
+        note_resp = client.post("/tower/security-command/object-inbox/action-audited", data={
+            "inbox_item_id": target_id,
+            "action_type": "note",
+            "note": "Pack 078 smoke: audited visible-form endpoint proof.",
+            "actor_user_id": "owner_solice",
+        })
+        note_json = note_resp.get_json() or {}
+
+        after = summarize_ui_action_audit_receipts(limit=12)
+        dashboard = generate_security_command_dashboard()
+
+        html_path = Path(dashboard.get("path", ""))
+        html = html_path.read_text(encoding="utf-8", errors="replace") if html_path.exists() else ""
+
+        has_audited_form_action = (
+            'action="/tower/security-command/object-inbox/action-audited"' in html
+            or "action='/tower/security-command/object-inbox/action-audited'" in html
+            or "/tower/security-command/object-inbox/action-audited" in html
+        )
+        has_old_form_action = (
+            'action="/tower/security-command/object-inbox/action"' in html
+            or "action='/tower/security-command/object-inbox/action'" in html
+        )
+
+        panel_ok = (
+            "UI ACTION AUDIT RECEIPTS" in html
+            and "Owner Button-Click Receipts" in html
+            and 'data-pack="077"' in html
+            and "Successful" in html
+            and "Failed / Blocked" in html
+            and "By Action" in html
+            and "By Reason" in html
+            and "By Status Code" in html
+        )
+
+        receipt_ok = (
+            note_resp.status_code == 200
+            and note_json.get("ok") is True
+            and bool(note_json.get("ui_action_audit_receipt_id"))
+            and after.get("total", 0) >= before.get("total", 0) + 1
+            and after.get("by_action", {}).get("note", 0) >= 1
+        )
+
+        detail.update({
+            "target_id": target_id,
+            "note_status": note_resp.status_code,
+            "note_ok": note_json.get("ok"),
+            "receipt_id_present": bool(note_json.get("ui_action_audit_receipt_id")),
+            "after_total": after.get("total"),
+            "after_by_action": after.get("by_action"),
+            "dashboard_ok": dashboard.get("ok"),
+            "dashboard_path": str(html_path),
+            "has_audited_form_action": has_audited_form_action,
+            "has_old_form_action": has_old_form_action,
+            "panel_ok": panel_ok,
+            "receipt_ok": receipt_ok,
+            "ui_action_audit_total": dashboard.get("ui_action_audit_total"),
+            "ui_action_audit_ok": dashboard.get("ui_action_audit_ok"),
+        })
+
+        serialized = str([detail, note_json, after, dashboard]) + html
+        no_leak = (
+            "tower_keycard=" not in serialized
+            and "SHOULD_NOT_SURVIVE" not in serialized
+            and "raw_token=" not in serialized
+            and '"raw_token":' not in serialized
+            and "Bearer SHOULD_NOT_SURVIVE" not in serialized
+        )
+        detail["no_secret_leakage"] = no_leak
+
+        ok = (
+            dashboard.get("ok") is True
+            and has_audited_form_action
+            and not has_old_form_action
+            and panel_ok
+            and receipt_ok
+            and no_leak
+        )
+
+        return {
+            "ok": ok,
+            "detail": detail,
+            "human_reason": "Audited forms and receipt panel proved." if ok else "Audited forms/receipt panel proof failed.",
+        }
+
+    except Exception as exc:
+        return {
+            "ok": False,
+            "detail": {"error": f"{type(exc).__name__}: {exc}"},
+            "human_reason": "Audited forms/receipt panel proof raised an exception.",
+        }
+
+
+try:
+    _pack078_original_run_ob_privacy_wall_smoke
+except NameError:
+    _pack078_original_run_ob_privacy_wall_smoke = run_ob_privacy_wall_smoke
+
+
+def run_ob_privacy_wall_smoke():
+    result = _pack078_original_run_ob_privacy_wall_smoke()
+    if not isinstance(result, dict):
+        result = {"ok": False, "checks": {}, "failures": ["invalid_smoke_result"]}
+
+    checks = result.setdefault("checks", {})
+    failures = result.setdefault("failures", [])
+
+    proof = _pack078_prove_audited_forms_and_receipt_panel()
+    checks["audited_forms_and_receipt_panel_ready"] = {
+        "ok": proof.get("ok") is True,
+        "detail": proof.get("detail"),
+    }
+
+    if proof.get("ok") is not True and "audited_forms_and_receipt_panel_ready" not in failures:
+        failures.append("audited_forms_and_receipt_panel_ready")
+
+    result["ok"] = not failures
+    result["pack"] = "078"
+    result["human_reason"] = (
+        "OB privacy wall smoke test passed with audited forms and receipt panel."
+        if result["ok"]
+        else "OB privacy wall smoke test found failures."
+    )
+
+    return result
+

@@ -577,3 +577,125 @@ def build_ob_privacy_wall_checkpoint():
 
     return checkpoint
 
+
+
+# ================================================================================
+# PACK078_AUDITED_FORMS_AND_RECEIPT_PANEL_CHECKPOINT_WRAPPER
+# ================================================================================
+# Adds audited forms + receipt panel proof to privacy wall checkpoint.
+# ================================================================================
+
+try:
+    _pack078_original_build_ob_privacy_wall_checkpoint
+except NameError:
+    _pack078_original_build_ob_privacy_wall_checkpoint = build_ob_privacy_wall_checkpoint
+
+
+def build_ob_privacy_wall_checkpoint():
+    checkpoint = _pack078_original_build_ob_privacy_wall_checkpoint()
+    if not isinstance(checkpoint, dict):
+        checkpoint = {"ok": False, "built_packs": [], "next_steps": []}
+
+    try:
+        from tower.ob_privacy_wall_smoke import run_ob_privacy_wall_smoke
+        from tower.ui_action_audit import summarize_ui_action_audit_receipts
+        from tower.tower_status import get_tower_status
+
+        smoke = run_ob_privacy_wall_smoke()
+        checks = smoke.get("checks", {}) if isinstance(smoke.get("checks"), dict) else {}
+        audited_forms = checks.get("audited_forms_and_receipt_panel_ready", {})
+        ui_audit = summarize_ui_action_audit_receipts(limit=10)
+        status = get_tower_status()
+
+        checkpoint["pack"] = "078"
+        checkpoint["ok"] = smoke.get("ok") is True
+        checkpoint["smoke_ok"] = smoke.get("ok")
+        checkpoint["smoke_failures"] = smoke.get("failures")
+        checkpoint["audited_forms_and_receipt_panel_ready"] = audited_forms
+        checkpoint["ui_action_audit_summary"] = {
+            "ok": ui_audit.get("ok"),
+            "total": ui_audit.get("total"),
+            "action_ok": ui_audit.get("action_ok"),
+            "action_failed": ui_audit.get("action_failed"),
+            "by_action": ui_audit.get("by_action"),
+            "by_reason": ui_audit.get("by_reason"),
+            "by_severity": ui_audit.get("by_severity"),
+            "by_status_code": ui_audit.get("by_status_code"),
+        }
+        checkpoint["tower_status_ui_action_audit"] = {
+            "ok": status.get("ui_action_audit_ok"),
+            "total": status.get("ui_action_audit_total"),
+            "action_ok": status.get("ui_action_audit_action_ok"),
+            "action_failed": status.get("ui_action_audit_action_failed"),
+            "by_action": status.get("ui_action_audit_by_action"),
+            "by_reason": status.get("ui_action_audit_by_reason"),
+        }
+
+        built_packs = checkpoint.setdefault("built_packs", [])
+        built_text = str(built_packs)
+        additions = [
+            {
+                "pack": "076",
+                "name": "Audited form endpoint wiring",
+                "plain": "Security Command object inbox forms submit to the audited endpoint by default.",
+            },
+            {
+                "pack": "077",
+                "name": "UI action receipt summary panel",
+                "plain": "Owner button-click receipts appear in Tower status and Security Command UI.",
+            },
+            {
+                "pack": "078",
+                "name": "Audited forms + receipt panel proof",
+                "plain": "Smoke/checkpoint prove visible audited forms and receipt panel.",
+            },
+        ]
+        for item in additions:
+            if item["pack"] not in built_text:
+                built_packs.append(item)
+
+        checkpoint["next_steps"] = [
+            {
+                "priority": 1,
+                "item": "Begin controlled deny-path replacement",
+                "plain": "Start replacing older locked shells with the polished Tower locked helper route-by-route.",
+            },
+            {
+                "priority": 2,
+                "item": "Add deny-path replacement audit receipts",
+                "plain": "When old shells are replaced, capture which route changed and what proof confirmed it.",
+            },
+            {
+                "priority": 3,
+                "item": "Update smoke/checkpoint for first deny-path replacements",
+                "plain": "Prove old locked responses now use the polished Tower template.",
+            },
+            {
+                "priority": 4,
+                "item": "Map or intentionally retire unmapped Observatory routes",
+                "plain": "Choose which default-deny routes become real corridors and which stay locked.",
+            },
+            {
+                "priority": 5,
+                "item": "Create Save/transition checkpoint",
+                "plain": "Close the audited form/receipt panel block cleanly.",
+            },
+        ]
+
+        checkpoint["readiness_score"] = 100 if smoke.get("ok") else 90
+        checkpoint["readiness_label"] = (
+            "Ready for controlled deny-path replacement"
+            if smoke.get("ok")
+            else "Needs repair before deny-path replacement"
+        )
+        checkpoint["soulaana_translation"] = (
+            "Soulaana: The visible owner forms now use the receipt-making path, and the receipt board is on the wall."
+        )
+        checkpoint["human_reason"] = "Privacy wall checkpoint now proves audited forms and UI action receipt panel."
+
+    except Exception as exc:
+        checkpoint["ok"] = False
+        checkpoint["pack078_error"] = f"{type(exc).__name__}: {exc}"
+
+    return checkpoint
+

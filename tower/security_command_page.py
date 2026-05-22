@@ -514,7 +514,7 @@ def _pack063_object_inbox_action_forms(item):
         <div class="tower-action-title">Owner Actions</div>
         <p class="tower-action-hint">Item: {object_type}:{object_id} · Status: {status}</p>
 
-        <form class="tower-action-form" method="post" action="/tower/security-command/object-inbox/action">
+        <form class="tower-action-form" method="post" action="/tower/security-command/object-inbox/action-audited">
           <input type="hidden" name="inbox_item_id" value="{inbox_item_id}">
           <input type="hidden" name="action_type" value="note">
           <label>Add note</label>
@@ -523,14 +523,14 @@ def _pack063_object_inbox_action_forms(item):
         </form>
 
         <div class="tower-action-row">
-          <form method="post" action="/tower/security-command/object-inbox/action">
+          <form method="post" action="/tower/security-command/object-inbox/action-audited">
             <input type="hidden" name="inbox_item_id" value="{inbox_item_id}">
             <input type="hidden" name="action_type" value="reviewing">
             <input type="hidden" name="note" value="Owner marked this object inbox item as reviewing from Tower UI.">
             <button type="submit">Mark Reviewing</button>
           </form>
 
-          <form method="post" action="/tower/security-command/object-inbox/action">
+          <form method="post" action="/tower/security-command/object-inbox/action-audited">
             <input type="hidden" name="inbox_item_id" value="{inbox_item_id}">
             <input type="hidden" name="action_type" value="resolve">
             <input type="hidden" name="resolution_reason" value="owner_resolved_from_tower_ui">
@@ -538,7 +538,7 @@ def _pack063_object_inbox_action_forms(item):
             <button type="submit">Resolve</button>
           </form>
 
-          <form method="post" action="/tower/security-command/object-inbox/action">
+          <form method="post" action="/tower/security-command/object-inbox/action-audited">
             <input type="hidden" name="inbox_item_id" value="{inbox_item_id}">
             <input type="hidden" name="action_type" value="ignore">
             <input type="hidden" name="resolution_reason" value="owner_ignored_from_tower_ui">
@@ -842,6 +842,189 @@ def generate_security_command_dashboard(*args, **kwargs):
     except Exception as exc:
         result["archive_vault_handoff_ok"] = False
         result["archive_vault_handoff_error"] = f"{type(exc).__name__}: {exc}"
+
+    return result
+
+
+
+# ================================================================================
+# PACK076_AUDITED_OBJECT_INBOX_FORM_ENDPOINT
+# ================================================================================
+# Security Command object inbox forms now submit to /action-audited by default.
+# This means visible owner button clicks create UI action audit receipts.
+# ================================================================================
+PACK076_OBJECT_INBOX_FORMS_USE_AUDITED_ENDPOINT = True
+PACK076_OBJECT_INBOX_AUDITED_ENDPOINT = "/tower/security-command/object-inbox/action-audited"
+
+
+
+# ================================================================================
+# PACK077_UI_ACTION_AUDIT_RECEIPT_PANEL
+# ================================================================================
+# Adds owner button-click receipt summary panel to Security Command dashboard.
+# ================================================================================
+
+def _pack077_escape_html(value):
+    text = "" if value is None else str(value)
+    return (
+        text.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&#x27;")
+    )
+
+
+def _pack077_ui_action_audit_panel_html():
+    try:
+        from tower.ui_action_audit import summarize_ui_action_audit_receipts
+
+        summary = summarize_ui_action_audit_receipts(limit=8)
+        total = summary.get("total", 0)
+        action_ok = summary.get("action_ok", 0)
+        action_failed = summary.get("action_failed", 0)
+        by_action = summary.get("by_action", {})
+        by_reason = summary.get("by_reason", {})
+        by_severity = summary.get("by_severity", {})
+        by_status_code = summary.get("by_status_code", {})
+        recent = summary.get("recent", [])
+
+        cards = []
+        for item in recent[-8:]:
+            action_type = _pack077_escape_html(item.get("action_type", "unknown"))
+            status_code = _pack077_escape_html(item.get("status_code", ""))
+            severity = _pack077_escape_html(item.get("severity", "unknown"))
+            reason_code = _pack077_escape_html(item.get("reason_code", "unknown"))
+            actor_user_id = _pack077_escape_html(item.get("actor_user_id", "unknown"))
+            inbox_item_id = _pack077_escape_html(item.get("inbox_item_id", ""))
+            human_reason = _pack077_escape_html(item.get("human_reason", "UI action receipt recorded."))
+            soulaana = _pack077_escape_html(item.get("soulaana_translation", "Soulaana: UI action receipt recorded."))
+            receipt_id = _pack077_escape_html(item.get("receipt_id", ""))
+
+            cards.append(f"""
+              <div class="tower-mini-card">
+                <div class="tower-mini-top">
+                  <span>{severity.upper()}</span>
+                  <span>{status_code}</span>
+                </div>
+                <strong>{action_type} · {reason_code}</strong>
+                <p>{human_reason}</p>
+                <p>{soulaana}</p>
+                <div class="tower-action-hint">Actor: {actor_user_id} · Inbox item: {inbox_item_id}</div>
+                <div class="tower-action-hint">Receipt: {receipt_id}</div>
+              </div>
+            """)
+
+        recent_html = "\n".join(cards) if cards else "<p>No UI action receipts yet.</p>"
+
+        return f"""
+        <section class="tower-panel" data-pack="077">
+          <div class="tower-panel-kicker">UI ACTION AUDIT RECEIPTS</div>
+          <h2>Owner Button-Click Receipts</h2>
+          <p>Every audited Security Command action creates a receipt here, including successful and failed attempts.</p>
+
+          <div class="tower-stat-grid">
+            <div class="tower-stat-card">
+              <span>Total</span>
+              <strong>{total}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>Successful</span>
+              <strong>{action_ok}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>Failed / Blocked</span>
+              <strong>{action_failed}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Action</span>
+              <strong>{_pack077_escape_html(by_action)}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Reason</span>
+              <strong>{_pack077_escape_html(by_reason)}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Severity</span>
+              <strong>{_pack077_escape_html(by_severity)}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Status Code</span>
+              <strong>{_pack077_escape_html(by_status_code)}</strong>
+            </div>
+          </div>
+
+          <div class="tower-mini-list">
+            {recent_html}
+          </div>
+        </section>
+        """
+    except Exception as exc:
+        return f"""
+        <section class="tower-panel" data-pack="077">
+          <div class="tower-panel-kicker">UI ACTION AUDIT RECEIPTS</div>
+          <h2>Owner Button-Click Receipts</h2>
+          <p>UI action audit panel could not load: {type(exc).__name__}: {_pack077_escape_html(exc)}</p>
+        </section>
+        """
+
+
+try:
+    _pack077_original_render_security_command_dashboard_html
+except NameError:
+    _pack077_original_render_security_command_dashboard_html = render_security_command_dashboard_html
+
+
+def render_security_command_dashboard_html(*args, **kwargs):
+    html = _pack077_original_render_security_command_dashboard_html(*args, **kwargs)
+    panel = _pack077_ui_action_audit_panel_html()
+
+    if "UI ACTION AUDIT RECEIPTS" in html:
+        return html
+
+    if "</body>" in html:
+        return html.replace("</body>", panel + "\n</body>")
+    return html + panel
+
+
+try:
+    _pack077_original_generate_security_command_dashboard
+except NameError:
+    _pack077_original_generate_security_command_dashboard = generate_security_command_dashboard
+
+
+def generate_security_command_dashboard(*args, **kwargs):
+    result = _pack077_original_generate_security_command_dashboard(*args, **kwargs)
+    if not isinstance(result, dict):
+        result = {"ok": False, "status": "invalid_dashboard_result"}
+
+    try:
+        from tower.ui_action_audit import summarize_ui_action_audit_receipts
+
+        summary = summarize_ui_action_audit_receipts(limit=8)
+        result["ui_action_audit_ok"] = summary.get("ok") is True
+        result["ui_action_audit_total"] = summary.get("total", 0)
+        result["ui_action_audit_action_ok"] = summary.get("action_ok", 0)
+        result["ui_action_audit_action_failed"] = summary.get("action_failed", 0)
+        result["ui_action_audit_by_action"] = summary.get("by_action", {})
+        result["ui_action_audit_by_reason"] = summary.get("by_reason", {})
+        result["ui_action_audit_by_severity"] = summary.get("by_severity", {})
+        result["ui_action_audit_by_status_code"] = summary.get("by_status_code", {})
+
+        path = result.get("path", "")
+        if path:
+            from pathlib import Path
+            html_path = Path(path)
+            if html_path.exists():
+                html = html_path.read_text(encoding="utf-8", errors="replace")
+                if "UI ACTION AUDIT RECEIPTS" not in html:
+                    html = html.replace("</body>", _pack077_ui_action_audit_panel_html() + "\n</body>") if "</body>" in html else html + _pack077_ui_action_audit_panel_html()
+                    html_path.write_text(html, encoding="utf-8")
+                    result["bytes"] = html_path.stat().st_size
+
+    except Exception as exc:
+        result["ui_action_audit_ok"] = False
+        result["ui_action_audit_error"] = f"{type(exc).__name__}: {exc}"
 
     return result
 

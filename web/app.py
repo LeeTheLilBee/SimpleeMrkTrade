@@ -9645,3 +9645,39 @@ if app is not None:
             except Exception:
                 return "Object inbox UI action failed.", 500
 
+
+
+# ================================================================================
+# PACK079_CONTROLLED_POLISHED_DENY_PATH_REPLACEMENT
+# ================================================================================
+# First controlled replacement route using polished Tower locked helper.
+# This does not replace every old deny shell yet.
+# ================================================================================
+
+try:
+    app
+except NameError:
+    app = None
+
+if app is not None:
+    @app.route("/observatory-private")
+    def pack079_observatory_private_polished_lock():
+        try:
+            path = request.path
+        except Exception:
+            path = "/observatory-private"
+
+        return _pack068_tower_locked_response(
+            lock_type="route",
+            path=path,
+            user_id="anonymous",
+            reason_code="observatory_private_outer_shell",
+            human_reason="The Observatory is private. Entry requires Tower clearance before any protected screen loads.",
+            required_actions=[
+                "return_to_tower_entry",
+                "request_observatory_clearance",
+                "keep_private_surface_closed",
+            ],
+            soulaana_translation="Soulaana: This is the private Observatory wall. No clearance, no corridor, no peek.",
+        )
+

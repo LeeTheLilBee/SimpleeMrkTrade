@@ -141,6 +141,10 @@ OB_PUBLIC_SAFE_ROUTES = {
     '/tower/status.json',
     "/no-access",
     "/no-access.json",
+
+    # PACK079B_CONTROLLED_POLISHED_DENY_PUBLIC_SAFE
+    # This route is safe to pass through the old shell because it still returns a 403 polished lock.
+    "/observatory-private",
 }
 
 
