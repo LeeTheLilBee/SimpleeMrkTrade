@@ -596,3 +596,167 @@ def run_ob_privacy_wall_smoke():
 
     return result
 
+
+
+# ================================================================================
+# PACK069_POLISHED_LOCKED_PAGES_SMOKE_WRAPPER
+# ================================================================================
+# Proves Tower-branded polished locked pages render for route/object/mode/export/unmapped.
+# ================================================================================
+
+def _pack069_prove_polished_locked_pages():
+    try:
+        from web.app import app, _pack068_tower_locked_response
+
+        detail = {}
+
+        def _safe_html_check(name, html):
+            checks = {
+                "has_tower": "The Tower" in html,
+                "has_clearance_gate": ("Clearance Gate" in html or "Clearance Required" in html),
+                "has_restricted": ("Restricted Zone" in html or "restricted" in html.lower()),
+                "has_soulaana": "Soulaana:" in html,
+                "no_keycard_query": "tower_keycard=" not in html,
+                "no_raw_token": "raw_token" not in html,
+                "no_test_secret": "SHOULD_NOT_SURVIVE" not in html,
+            }
+            detail[name] = checks
+            return all(checks.values())
+
+        route_html, route_status = _pack068_tower_locked_response(
+            lock_type="route",
+            path="/signals?tower_keycard=SHOULD_NOT_SURVIVE",
+            user_id="beta_001",
+            reason_code="ob_clearance_level_too_low",
+            human_reason="Signals needs confidential clearance.",
+            required_actions=["upgrade_clearance", "owner_review"],
+            soulaana_translation="Soulaana: This corridor is not public. The Tower held the line.",
+        )
+
+        object_html, object_status = _pack068_tower_locked_response(
+            lock_type="object",
+            path="/signals/AAPL",
+            object_type="symbol",
+            object_id="AAPL",
+            user_id="beta_001",
+            reason_code="parent_route_clearance_failed",
+            human_reason="The parent route was not cleared.",
+        )
+
+        mode_html, mode_status = _pack068_tower_locked_response(
+            lock_type="mode",
+            mode_name="live_automated",
+            user_id="owner_solice",
+            reason_code="ob_mode_automation_authorization_missing",
+            human_reason="Automated live mode needs explicit automation authorization.",
+            required_actions=["owner_automation_authorization", "kill_switch_check"],
+            soulaana_translation="Soulaana: Automated live trading is the locked vault, not the lobby.",
+        )
+
+        export_html, export_status = _pack068_tower_locked_response(
+            lock_type="export",
+            export_id="export_069",
+            path="/export",
+            user_id="beta_001",
+        )
+
+        unmapped_html, unmapped_status = _pack068_tower_locked_response(
+            lock_type="unmapped",
+            path="/new-secret-page",
+            object_type="mystery",
+            object_id="unknown_069",
+            user_id="owner_solice",
+            reason_code="unmapped_default_deny",
+            human_reason="This protected surface is not mapped yet, so The Tower blocks it by default.",
+        )
+
+        client = app.test_client()
+        preview = client.get("/tower/polished-locked-preview?path=/signals?tower_keycard=SHOULD_NOT_SURVIVE")
+        preview_html = preview.get_data(as_text=True)
+
+        status_ok = (
+            route_status == 403
+            and object_status == 403
+            and mode_status == 403
+            and export_status == 403
+            and unmapped_status == 403
+            and preview.status_code == 403
+        )
+
+        content_ok = (
+            "Observatory Corridor Locked" in route_html
+            and "Symbol Locked" in object_html
+            and "AAPL" in object_html
+            and "Live Automated Locked" in mode_html
+            and "owner_automation_authorization" in mode_html
+            and "Export Locked" in export_html
+            and "export_069" in export_html
+            and "Unmapped Corridor Locked" in unmapped_html
+            and "unknown_069" in unmapped_html
+        )
+
+        safe_ok = (
+            _safe_html_check("route", route_html)
+            and _safe_html_check("object", object_html)
+            and _safe_html_check("mode", mode_html)
+            and _safe_html_check("export", export_html)
+            and _safe_html_check("unmapped", unmapped_html)
+            and _safe_html_check("preview_route", preview_html)
+        )
+
+        detail.update({
+            "status_ok": status_ok,
+            "content_ok": content_ok,
+            "safe_ok": safe_ok,
+            "preview_status": preview.status_code,
+        })
+
+        return {
+            "ok": status_ok and content_ok and safe_ok,
+            "detail": detail,
+            "human_reason": "Polished locked pages render safely for route/object/mode/export/unmapped."
+            if status_ok and content_ok and safe_ok
+            else "Polished locked page proof failed.",
+        }
+
+    except Exception as exc:
+        return {
+            "ok": False,
+            "detail": {"error": f"{type(exc).__name__}: {exc}"},
+            "human_reason": "Polished locked page proof raised an exception.",
+        }
+
+
+try:
+    _pack069_original_run_ob_privacy_wall_smoke
+except NameError:
+    _pack069_original_run_ob_privacy_wall_smoke = run_ob_privacy_wall_smoke
+
+
+def run_ob_privacy_wall_smoke():
+    result = _pack069_original_run_ob_privacy_wall_smoke()
+    if not isinstance(result, dict):
+        result = {"ok": False, "checks": {}, "failures": ["invalid_smoke_result"]}
+
+    checks = result.setdefault("checks", {})
+    failures = result.setdefault("failures", [])
+
+    proof = _pack069_prove_polished_locked_pages()
+    checks["polished_locked_pages_ready"] = {
+        "ok": proof.get("ok") is True,
+        "detail": proof.get("detail"),
+    }
+
+    if proof.get("ok") is not True and "polished_locked_pages_ready" not in failures:
+        failures.append("polished_locked_pages_ready")
+
+    result["ok"] = not failures
+    result["pack"] = "069"
+    result["human_reason"] = (
+        "OB privacy wall smoke test passed with polished locked pages."
+        if result["ok"]
+        else "OB privacy wall smoke test found failures."
+    )
+
+    return result
+

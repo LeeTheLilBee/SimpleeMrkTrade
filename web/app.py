@@ -9149,3 +9149,196 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+
+
+# ================================================================================
+# PACK068_TOWER_BRANDED_LOCKED_RESPONSE_HELPER
+# ================================================================================
+# Central helper for polished Tower-branded locked responses.
+# ================================================================================
+
+def _pack068_tower_locked_response(
+    *,
+    lock_type="route",
+    decision=None,
+    path="",
+    object_type="",
+    object_id="",
+    mode_name="",
+    export_id="",
+    user_id="anonymous",
+    reason_code="clearance_required",
+    human_reason="Clearance is required before this area can open.",
+    risk_state="restricted",
+    risk_score=60,
+    required_actions=None,
+    soulaana_translation="",
+):
+    try:
+        from tower.locked_state_templates import (
+            render_decision_locked_response,
+            render_export_locked_response,
+            render_mode_locked_response,
+            render_object_locked_response,
+            render_route_locked_response,
+            render_unmapped_locked_response,
+        )
+
+        decision = decision if isinstance(decision, dict) else None
+
+        if decision:
+            html, status_code, payload = render_decision_locked_response(
+                decision=decision,
+                path=path,
+                object_type=object_type,
+                object_id=object_id or export_id,
+                mode_name=mode_name,
+                user_id=user_id,
+            )
+        elif lock_type == "mode":
+            html, status_code, payload = render_mode_locked_response(
+                mode_name=mode_name,
+                path=path,
+                reason_code=reason_code,
+                human_reason=human_reason,
+                user_id=user_id,
+                risk_state=risk_state,
+                risk_score=risk_score,
+                required_actions=required_actions,
+                soulaana_translation=soulaana_translation,
+            )
+        elif lock_type == "object":
+            html, status_code, payload = render_object_locked_response(
+                object_type=object_type,
+                object_id=object_id,
+                path=path,
+                reason_code=reason_code,
+                human_reason=human_reason,
+                user_id=user_id,
+                risk_state=risk_state,
+                risk_score=risk_score,
+                required_actions=required_actions,
+                soulaana_translation=soulaana_translation,
+            )
+        elif lock_type == "export":
+            html, status_code, payload = render_export_locked_response(
+                export_id=export_id or object_id,
+                path=path,
+                reason_code=reason_code,
+                human_reason=human_reason,
+                user_id=user_id,
+                risk_state=risk_state,
+                risk_score=risk_score,
+                required_actions=required_actions,
+                soulaana_translation=soulaana_translation,
+            )
+        elif lock_type == "unmapped":
+            html, status_code, payload = render_unmapped_locked_response(
+                path=path,
+                object_type=object_type,
+                object_id=object_id,
+                user_id=user_id,
+                reason_code=reason_code,
+                human_reason=human_reason,
+                soulaana_translation=soulaana_translation,
+            )
+        else:
+            html, status_code, payload = render_route_locked_response(
+                path=path,
+                reason_code=reason_code,
+                human_reason=human_reason,
+                user_id=user_id,
+                risk_state=risk_state,
+                risk_score=risk_score,
+                required_actions=required_actions,
+                soulaana_translation=soulaana_translation,
+            )
+
+        try:
+            # Flask may not be imported under the same name in older app states.
+            return html, status_code
+        except Exception:
+            return html, status_code
+
+    except Exception as exc:
+        safe_reason = str(exc).replace("<", "").replace(">", "")
+        fallback = f"""
+        <!doctype html>
+        <html>
+        <head><meta charset='utf-8'><title>Observatory Locked</title></head>
+        <body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#050706;color:#f4f7f5;font-family:sans-serif;">
+          <main style="max-width:760px;padding:32px;border:1px solid rgba(255,255,255,.18);border-radius:24px;background:rgba(255,255,255,.06);">
+            <p style="letter-spacing:.18em;text-transform:uppercase;color:#d8b875;">The Tower</p>
+            <h1>Clearance Required</h1>
+            <p>The Observatory is private. The protected corridor stayed closed.</p>
+            <p>Template fallback: {safe_reason}</p>
+          </main>
+        </body>
+        </html>
+        """
+        return fallback, 403
+
+
+
+# ================================================================================
+# PACK068_NO_ACCESS_ROUTE_PATCH
+# ================================================================================
+# A stable polished no-access route. If an older /no-access route exists above,
+# Flask may keep the first route, but tests can still call this helper directly.
+# ================================================================================
+
+try:
+    app
+except NameError:
+    app = None
+
+if app is not None:
+    @app.route("/tower-locked-preview")
+    def pack068_tower_locked_preview():
+        try:
+            path = request.args.get("path", "/signals")
+        except Exception:
+            path = "/signals"
+
+        return _pack068_tower_locked_response(
+            lock_type="route",
+            path=path,
+            user_id="anonymous",
+            reason_code="observatory_private_outer_shell",
+            human_reason="The Observatory public surface is only a harmless locked shell.",
+            required_actions=["return_to_tower_entry", "request_clearance"],
+            soulaana_translation="Soulaana: No clearance, no corridor. The real Observatory stays behind The Tower.",
+        )
+
+
+
+# ================================================================================
+# PACK068B_UNIQUE_POLISHED_LOCKED_PREVIEW_ROUTE
+# ================================================================================
+# Unique polished locked preview route that avoids older /tower-locked-preview route.
+# ================================================================================
+
+try:
+    app
+except NameError:
+    app = None
+
+if app is not None:
+    @app.route("/tower/polished-locked-preview")
+    def pack068b_polished_locked_preview():
+        try:
+            path = request.args.get("path", "/signals")
+        except Exception:
+            path = "/signals"
+
+        return _pack068_tower_locked_response(
+            lock_type="route",
+            path=path,
+            user_id="anonymous",
+            reason_code="observatory_private_outer_shell",
+            human_reason="The Observatory public surface is only a harmless locked shell.",
+            required_actions=["return_to_tower_entry", "request_clearance"],
+            soulaana_translation="Soulaana: No clearance, no corridor. The real Observatory stays behind The Tower.",
+        )
+

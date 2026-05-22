@@ -360,3 +360,108 @@ def build_ob_privacy_wall_checkpoint():
 
     return checkpoint
 
+
+
+# ================================================================================
+# PACK069_POLISHED_LOCKED_PAGES_CHECKPOINT_WRAPPER
+# ================================================================================
+# Adds polished locked-page proof to checkpoint.
+# ================================================================================
+
+try:
+    _pack069_original_build_ob_privacy_wall_checkpoint
+except NameError:
+    _pack069_original_build_ob_privacy_wall_checkpoint = build_ob_privacy_wall_checkpoint
+
+
+def build_ob_privacy_wall_checkpoint():
+    checkpoint = _pack069_original_build_ob_privacy_wall_checkpoint()
+    if not isinstance(checkpoint, dict):
+        checkpoint = {"ok": False, "built_packs": [], "next_steps": []}
+
+    try:
+        from tower.ob_privacy_wall_smoke import run_ob_privacy_wall_smoke
+
+        smoke = run_ob_privacy_wall_smoke()
+        checks = smoke.get("checks", {}) if isinstance(smoke.get("checks"), dict) else {}
+        polished = checks.get("polished_locked_pages_ready", {})
+
+        checkpoint["pack"] = "069"
+        checkpoint["ok"] = smoke.get("ok") is True
+        checkpoint["smoke_ok"] = smoke.get("ok")
+        checkpoint["smoke_failures"] = smoke.get("failures")
+        checkpoint["polished_locked_pages_ready"] = polished
+
+        built_packs = checkpoint.setdefault("built_packs", [])
+        built_text = str(built_packs)
+        additions = [
+            {
+                "pack": "066",
+                "name": "Polished locked-state template system",
+                "plain": "Tower-branded premium locked pages render safely.",
+            },
+            {
+                "pack": "067",
+                "name": "Locked-page variants",
+                "plain": "Route, object, mode, export, and unmapped lock variants exist.",
+            },
+            {
+                "pack": "068",
+                "name": "Flask locked-response helper",
+                "plain": "web/app.py can render Tower-branded locked responses.",
+            },
+            {
+                "pack": "069",
+                "name": "Polished locked-page proof",
+                "plain": "Smoke/checkpoint prove polished locked pages render safely.",
+            },
+        ]
+        for item in additions:
+            if item["pack"] not in built_text:
+                built_packs.append(item)
+
+        checkpoint["next_steps"] = [
+            {
+                "priority": 1,
+                "item": "Wire polished locked pages into the actual privacy wall deny paths",
+                "plain": "The helper works; now replace older deny shells route-by-route without breaking behavior.",
+            },
+            {
+                "priority": 2,
+                "item": "Wire the UI action endpoint",
+                "plain": "Object inbox forms render now; next the Flask POST route should call note/review/resolve/ignore backend actions.",
+            },
+            {
+                "priority": 3,
+                "item": "Surface Archive Vault handoff summary in Tower status/UI",
+                "plain": "The queue exists; now The Tower should show queued evidence handoffs.",
+            },
+            {
+                "priority": 4,
+                "item": "Map or intentionally retire unmapped Observatory routes",
+                "plain": "The exposure report shows default-deny routes; choose which become real corridors.",
+            },
+            {
+                "priority": 5,
+                "item": "Create action audit receipts for UI button clicks",
+                "plain": "Every owner action from the UI should leave its own admin action receipt.",
+            },
+        ]
+
+        checkpoint["readiness_score"] = 100 if smoke.get("ok") else 90
+        checkpoint["readiness_label"] = (
+            "Ready to wire polished locked pages into deny paths"
+            if smoke.get("ok")
+            else "Needs repair before deny-path wiring"
+        )
+        checkpoint["soulaana_translation"] = (
+            "Soulaana: The locked walls are no longer ugly. The Tower blocks with receipts, context, and expensive silence."
+        )
+        checkpoint["human_reason"] = "Privacy wall checkpoint now proves polished locked-state pages."
+
+    except Exception as exc:
+        checkpoint["ok"] = False
+        checkpoint["pack069_error"] = f"{type(exc).__name__}: {exc}"
+
+    return checkpoint
+
