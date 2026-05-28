@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The Tower · Fortress Readiness Checkpoint</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #080907;
+      color: #f5ead2;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 42px 22px;
+    }
+    .hero {
+      border: 1px solid rgba(220, 183, 94, .38);
+      border-radius: 30px;
+      padding: 30px;
+      background: linear-gradient(135deg, rgba(83, 52, 19, .78), rgba(10, 11, 9, .96));
+      box-shadow: 0 22px 90px rgba(0,0,0,.42);
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 36px;
+      letter-spacing: -.045em;
+    }
+    .hero p {
+      margin: 0;
+      max-width: 860px;
+      color: rgba(245,234,210,.78);
+      line-height: 1.55;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .stat {
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 20px;
+      padding: 16px;
+      background: rgba(255,255,255,.045);
+    }
+    .stat b {
+      display: block;
+      font-size: 24px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .card {
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 24px;
+      padding: 18px;
+      background: rgba(255,255,255,.045);
+    }
+    .card.pass {
+      border-color: rgba(143, 221, 158, .34);
+    }
+    .card.fail {
+      border-color: rgba(255, 128, 128, .46);
+    }
+    .eyebrow {
+      color: rgba(220, 183, 94, .84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    .card p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .score {
+      margin-top: 14px;
+      font-weight: 900;
+      color: #f2d58b;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <h1>The Tower · Fortress Readiness Checkpoint</h1>
+    <p>Tower fortress checkpoint passed. Core wall/security proof is ready before OB integration.</p>
+  </section>
+  <section class="stats">
+    <div class="stat"><b>100</b><span>Readiness</span></div>
+    <div class="stat"><b>YES</b><span>OB Gate Ready</span></div>
+    <div class="stat"><b>0</b><span>Review Domains</span></div>
+    <div class="stat"><b>YES</b><span>No Secret Leakage</span></div>
+  </section>
+  <section class="grid">
+    
+        <article class="card pass">
+          <div class="eyebrow">Packs 086–090 · PASS</div>
+          <h2>Visibility + route policy wall</h2>
+          <p>Visibility/policy artifacts checked. At least three wall artifacts should exist from Packs 086–090.</p>
+          <div class="score">100 / 100</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">Packs 091 · PASS</div>
+          <h2>Tamper-evident audit chain</h2>
+          <p>Tamper-evident audit chain file exists and contains chained records.</p>
+          <div class="score">100 / 100</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">Packs 092 · PASS</div>
+          <h2>Step-up authentication</h2>
+          <p>Step-up auth event store exists and contains verification/challenge events.</p>
+          <div class="score">100 / 100</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">Packs 093 · PASS</div>
+          <h2>Emergency lockdown</h2>
+          <p>Emergency lockdown state exists with blocked/recovery action structure.</p>
+          <div class="score">100 / 100</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">Packs 094 · PASS</div>
+          <h2>Quarantine mode</h2>
+          <p>Quarantine state exists with holding-room blocked/recovery action structure.</p>
+          <div class="score">100 / 100</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">Packs 095 · PASS</div>
+          <h2>Session/device/IP risk scoring</h2>
+          <p>Session/device/IP risk scoring has event store and profile store.</p>
+          <div class="score">100 / 100</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">Packs 096 · PASS</div>
+          <h2>Secrets Vault separation boundary</h2>
+          <p>Secrets boundary registry/events checked for reference-only behavior and no raw secret leakage.</p>
+          <div class="score">100 / 100</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">Packs 097 · PASS</div>
+          <h2>Redaction-by-default reveal</h2>
+          <p>Redaction reveal policy/receipts checked for summary-first and gated reveal behavior.</p>
+          <div class="score">100 / 100</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">Packs 098 · PASS</div>
+          <h2>Security rehearsal panel</h2>
+          <p>Security rehearsal report checked for all scenarios passing without secret leakage.</p>
+          <div class="score">100 / 100</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">Packs 099 · PASS</div>
+          <h2>Owner/admin action receipts</h2>
+          <p>Owner/admin receipts checked for full action coverage and no secret leakage.</p>
+          <div class="score">100 / 100</div>
+        </article>
+        
+  </section>
+</main>
+</body>
+</html>

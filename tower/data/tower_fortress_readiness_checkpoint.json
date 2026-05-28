@@ -1,0 +1,449 @@
+{
+  "actor_user_id": "owner_solice",
+  "checkpoint_fingerprint": "ae700a4e6b1771016fbbeade809c829a7209bfbff93a087a32b233fc00f27d49",
+  "checkpoint_id": "tower_fortress_checkpoint_owbZEF4D0dqjxC4vAwZ5RQaZ",
+  "created_at": "2026-05-28T22:16:46.449000Z",
+  "failed_domains": [],
+  "human_reason": "Tower fortress checkpoint passed. Core wall/security proof is ready before OB integration.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "module_status": {
+    "items": {
+      "emergency_lockdown": {
+        "exists": true,
+        "modified_at": "2026-05-28T20:28:32.807711Z",
+        "path": "tower/emergency_lockdown.py",
+        "size_bytes": 30996
+      },
+      "owner_admin_action_receipts": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:48:28.848682Z",
+        "path": "tower/owner_admin_action_receipts.py",
+        "size_bytes": 23308
+      },
+      "quarantine_mode": {
+        "exists": true,
+        "modified_at": "2026-05-28T20:34:28.263686Z",
+        "path": "tower/quarantine_mode.py",
+        "size_bytes": 31650
+      },
+      "redaction_reveal_system": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:24:13.402652Z",
+        "path": "tower/redaction_reveal_system.py",
+        "size_bytes": 24059
+      },
+      "secrets_vault_boundary": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:16:15.063271Z",
+        "path": "tower/secrets_vault_boundary.py",
+        "size_bytes": 45967
+      },
+      "security_rehearsal_panel": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:07.740059Z",
+        "path": "tower/security_rehearsal_panel.py",
+        "size_bytes": 30545
+      },
+      "session_risk_scoring": {
+        "exists": true,
+        "modified_at": "2026-05-28T20:49:07.804286Z",
+        "path": "tower/session_risk_scoring.py",
+        "size_bytes": 43708
+      },
+      "step_up_auth": {
+        "exists": true,
+        "modified_at": "2026-05-28T20:17:20.300322Z",
+        "path": "tower/step_up_auth.py",
+        "size_bytes": 24784
+      },
+      "tamper_evident_audit_chain": {
+        "exists": true,
+        "modified_at": "2026-05-28T20:12:08.984441Z",
+        "path": "tower/tamper_evident_audit_chain.py",
+        "size_bytes": 14697
+      }
+    },
+    "missing": [],
+    "ok": true,
+    "present_count": 9,
+    "total_count": 9
+  },
+  "no_secret_leakage": true,
+  "ob_integration_gate": {
+    "allowed_to_start_ob_adapter": true,
+    "next_adapter": "Adapter 001 / The Teller Integration Adapter or OB clearance bridge",
+    "required_before_live_public_access": [
+      "legal/compliance review",
+      "real Secrets Vault implementation",
+      "production identity provider",
+      "production database/security hardening",
+      "external security review before handling real sensitive public-user data"
+    ],
+    "safe_next_step": "Build the OB/Tower bridge so OB asks The Tower before protected screens, modes, objects, exports, and live actions load."
+  },
+  "ok": true,
+  "optional_visibility_status": {
+    "items": {
+      "deny_path_replacement_receipts": {
+        "exists": true,
+        "modified_at": "2026-05-28T20:06:18.734948Z",
+        "path": "tower/data/deny_path_replacement_audit_receipts.json",
+        "size_bytes": 50473
+      },
+      "exposure_mapping": {
+        "exists": true,
+        "modified_at": "2026-05-28T20:06:19.151987Z",
+        "path": "tower/data/ob_exposure_mapping_pass.json",
+        "size_bytes": 100462
+      },
+      "route_replacement_policy_list": {
+        "exists": true,
+        "modified_at": "2026-05-28T20:06:18.948968Z",
+        "path": "tower/data/route_replacement_policy_list.json",
+        "size_bytes": 126476
+      },
+      "security_command_dashboard": {
+        "exists": true,
+        "modified_at": "2026-05-28T20:06:19.152987Z",
+        "path": "tower/data/security_command_dashboard.html",
+        "size_bytes": 59859
+      },
+      "visibility_transition_checkpoint": {
+        "exists": true,
+        "modified_at": "2026-05-28T20:06:19.169989Z",
+        "path": "tower/data/visibility_policy_transition_checkpoint.json",
+        "size_bytes": 11924
+      }
+    },
+    "missing": [],
+    "ok": true,
+    "present_count": 5,
+    "total_count": 5
+  },
+  "pack": "100",
+  "readiness_items": {
+    "lockdown": {
+      "evidence": {
+        "blocked_action_count": 18,
+        "event_count": 0,
+        "lockdown_active": false,
+        "state_exists": true
+      },
+      "fingerprint": "ad56fca8baea1f4d07ea5f8a5a111f5a204ec6e0ee6c11386de72570e7263e0f",
+      "human_reason": "Emergency lockdown state exists with blocked/recovery action structure.",
+      "name": "lockdown",
+      "ok": true,
+      "score": 100
+    },
+    "owner_admin_receipts": {
+      "evidence": {
+        "archive_ready_count": 10,
+        "leakage_scan": {
+          "forbidden_hit_count": 0,
+          "had_forbidden_hits": false,
+          "ok": true
+        },
+        "missing_actions": [],
+        "receipt_count": 10,
+        "required_actions_present": [
+          "admin_override_recorded",
+          "archive_handoff_created",
+          "export_approved",
+          "lockdown_disabled",
+          "lockdown_enabled",
+          "mode_access_granted",
+          "note_added",
+          "route_policy_changed",
+          "security_item_resolved",
+          "user_clearance_changed"
+        ],
+        "step_up_missing_high_power_count": 0
+      },
+      "fingerprint": "6facf22c1deea67ec78a8d89658e65011f8ff723128242aaa68eec2ad33619dc",
+      "human_reason": "Owner/admin receipts checked for full action coverage and no secret leakage.",
+      "name": "owner_admin_receipts",
+      "ok": true,
+      "score": 100
+    },
+    "quarantine": {
+      "evidence": {
+        "active_case_count": 0,
+        "allowed_action_count": 10,
+        "blocked_action_count": 19,
+        "event_count": 0,
+        "state_exists": true
+      },
+      "fingerprint": "89d55654645e64d7c28adb249650922c5d3107feefd54da468f9fe6b45a02093",
+      "human_reason": "Quarantine state exists with holding-room blocked/recovery action structure.",
+      "name": "quarantine",
+      "ok": true,
+      "score": 100
+    },
+    "redaction_reveal": {
+      "evidence": {
+        "by_decision": {
+          "reveal_step_up_required": 1
+        },
+        "leakage_scan": {
+          "forbidden_hit_count": 0,
+          "had_forbidden_hits": false,
+          "ok": true
+        },
+        "receipt_count": 1
+      },
+      "fingerprint": "11a70655b386a0d781a335d2fe58c53e78525a66df0685f5f4cfa0fa66bff699",
+      "human_reason": "Redaction reveal policy/receipts checked for summary-first and gated reveal behavior.",
+      "name": "redaction_reveal",
+      "ok": true,
+      "score": 100
+    },
+    "risk_scoring": {
+      "evidence": {
+        "event_count": 6,
+        "profile_keys": [
+          "history",
+          "known_devices",
+          "known_ips",
+          "known_user_locations",
+          "ok",
+          "pack",
+          "profile_fingerprint",
+          "profiles",
+          "updated_at"
+        ],
+        "profiles_exist": true
+      },
+      "fingerprint": "9e1e274fbbf345fa2ce9a560a05c7a78ad2bab8830e34af80cc0530eecaeb1bb",
+      "human_reason": "Session/device/IP risk scoring has event store and profile store.",
+      "name": "risk_scoring",
+      "ok": true,
+      "score": 100
+    },
+    "secrets_boundary": {
+      "evidence": {
+        "event_count": 1,
+        "leakage_scan": {
+          "forbidden_hit_count": 0,
+          "had_forbidden_hits": false,
+          "ok": true
+        },
+        "secret_reference_count": 0,
+        "secrets_vault_is_source_of_truth": true,
+        "tower_may_store_raw_value": false
+      },
+      "fingerprint": "02d806610423d22224d8e0860e52777432456c6b940101ef873036ce99890f32",
+      "human_reason": "Secrets boundary registry/events checked for reference-only behavior and no raw secret leakage.",
+      "name": "secrets_boundary",
+      "ok": true,
+      "score": 100
+    },
+    "security_rehearsal": {
+      "evidence": {
+        "event_count": 9,
+        "fail_count": 0,
+        "leakage_scan": {
+          "forbidden_hit_count": 0,
+          "had_forbidden_hits": false,
+          "ok": true
+        },
+        "no_secret_leakage": true,
+        "pass_count": 9,
+        "readiness_score": 100,
+        "scenario_count": 9
+      },
+      "fingerprint": "53006bfb4ffa412e3eba65f39979c8428d5c7842f1470d04f86ebe904d22d214",
+      "human_reason": "Security rehearsal report checked for all scenarios passing without secret leakage.",
+      "name": "security_rehearsal",
+      "ok": true,
+      "score": 100
+    },
+    "step_up": {
+      "evidence": {
+        "event_count": 51,
+        "status": {
+          "exists": true,
+          "modified_at": "2026-05-28T21:38:09.211195Z",
+          "path": "tower/data/step_up_auth_events.json",
+          "size_bytes": 58547
+        }
+      },
+      "fingerprint": "3b475e71db28e4a80a28c2a2fe8716b668363c01ae16738511996fadc61e8e45",
+      "human_reason": "Step-up auth event store exists and contains verification/challenge events.",
+      "name": "step_up",
+      "ok": true,
+      "score": 100
+    },
+    "tamper_chain": {
+      "evidence": {
+        "record_count": 1,
+        "status": {
+          "exists": true,
+          "modified_at": "2026-05-28T21:48:31.284908Z",
+          "path": "tower/data/tamper_evident_audit_chain.json",
+          "size_bytes": 188439
+        }
+      },
+      "fingerprint": "f967ce87c3130920863efda1bbfc79b6969fc5139beb3763dab2bcddb38cb805",
+      "human_reason": "Tamper-evident audit chain file exists and contains chained records.",
+      "name": "tamper_chain",
+      "ok": true,
+      "score": 100
+    },
+    "visibility_policy": {
+      "evidence": {
+        "items": {
+          "deny_path_replacement_receipts": {
+            "exists": true,
+            "modified_at": "2026-05-28T20:06:18.734948Z",
+            "path": "tower/data/deny_path_replacement_audit_receipts.json",
+            "size_bytes": 50473
+          },
+          "exposure_mapping": {
+            "exists": true,
+            "modified_at": "2026-05-28T20:06:19.151987Z",
+            "path": "tower/data/ob_exposure_mapping_pass.json",
+            "size_bytes": 100462
+          },
+          "route_replacement_policy_list": {
+            "exists": true,
+            "modified_at": "2026-05-28T20:06:18.948968Z",
+            "path": "tower/data/route_replacement_policy_list.json",
+            "size_bytes": 126476
+          },
+          "security_command_dashboard": {
+            "exists": true,
+            "modified_at": "2026-05-28T20:06:19.152987Z",
+            "path": "tower/data/security_command_dashboard.html",
+            "size_bytes": 59859
+          },
+          "visibility_transition_checkpoint": {
+            "exists": true,
+            "modified_at": "2026-05-28T20:06:19.169989Z",
+            "path": "tower/data/visibility_policy_transition_checkpoint.json",
+            "size_bytes": 11924
+          }
+        },
+        "missing": [],
+        "ok": true,
+        "present_count": 5,
+        "total_count": 5
+      },
+      "fingerprint": "333601982d0a033d8399cda1cd88a4bcff4c2859fb3b64fa798fcb48357db39d",
+      "human_reason": "Visibility/policy artifacts checked. At least three wall artifacts should exist from Packs 086\u2013090.",
+      "name": "visibility_policy",
+      "ok": true,
+      "score": 100
+    }
+  },
+  "readiness_label": "Tower fortress ready for OB integration",
+  "readiness_score": 100,
+  "required_data_status": {
+    "items": {
+      "lockdown_events": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:08.852162Z",
+        "path": "tower/data/emergency_lockdown_events.json",
+        "size_bytes": 2
+      },
+      "lockdown_state": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:08.852162Z",
+        "path": "tower/data/emergency_lockdown_state.json",
+        "size_bytes": 1336
+      },
+      "owner_admin_receipts": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:48:31.255905Z",
+        "path": "tower/data/owner_admin_action_receipts.json",
+        "size_bytes": 14409
+      },
+      "owner_admin_summary": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:48:31.325912Z",
+        "path": "tower/data/owner_admin_action_receipt_summary.json",
+        "size_bytes": 16788
+      },
+      "quarantine_events": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:08.853162Z",
+        "path": "tower/data/quarantine_mode_events.json",
+        "size_bytes": 2
+      },
+      "quarantine_state": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:08.853162Z",
+        "path": "tower/data/quarantine_mode_state.json",
+        "size_bytes": 1124
+      },
+      "redaction_policy": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:08.856162Z",
+        "path": "tower/data/redaction_reveal_policy.json",
+        "size_bytes": 2350
+      },
+      "redaction_receipts": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:09.212195Z",
+        "path": "tower/data/redaction_reveal_receipts.json",
+        "size_bytes": 1375
+      },
+      "secrets_events": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:09.177192Z",
+        "path": "tower/data/secrets_vault_boundary_events.json",
+        "size_bytes": 870
+      },
+      "secrets_registry": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:08.855162Z",
+        "path": "tower/data/secrets_vault_boundary_registry.json",
+        "size_bytes": 796
+      },
+      "security_rehearsal_events": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:09.230197Z",
+        "path": "tower/data/security_rehearsal_events.json",
+        "size_bytes": 44434
+      },
+      "security_rehearsal_results": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:09.261200Z",
+        "path": "tower/data/security_rehearsal_results.json",
+        "size_bytes": 90240
+      },
+      "session_risk_events": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:09.130188Z",
+        "path": "tower/data/session_risk_events.json",
+        "size_bytes": 15680
+      },
+      "session_risk_profiles": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:08.854162Z",
+        "path": "tower/data/session_risk_profiles.json",
+        "size_bytes": 280
+      },
+      "step_up_events": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:38:09.211195Z",
+        "path": "tower/data/step_up_auth_events.json",
+        "size_bytes": 58547
+      },
+      "tamper_chain": {
+        "exists": true,
+        "modified_at": "2026-05-28T21:48:31.284908Z",
+        "path": "tower/data/tamper_evident_audit_chain.json",
+        "size_bytes": 188439
+      }
+    },
+    "missing": [],
+    "ok": true,
+    "present_count": 16,
+    "total_count": 16
+  },
+  "soulaana_translation": "Soulaana: The wall has receipts. OB can approach the gate next."
+}
