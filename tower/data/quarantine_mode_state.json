@@ -1,0 +1,80 @@
+{
+  "active_cases": [
+    {
+      "activated_at": "2026-05-28T20:49:08.798691Z",
+      "activated_by": "tower_risk_scoring",
+      "human_reason": "Session risk score triggered quarantine.",
+      "owner_notes": [],
+      "quarantine_id": "quarantine_jmMSppRbF4KmXpE4QbMm2URz",
+      "reason_code": "session_risk_score_quarantine",
+      "release_requested_at": "",
+      "release_requested_by": "",
+      "released_at": "",
+      "released_by": "",
+      "required_release_actions": [
+        "complete_step_up_auth",
+        "owner_reason"
+      ],
+      "scope": "session",
+      "severity": "restricted",
+      "soulaana_translation": "Soulaana: This subject is in the holding room. Recovery lane stays open; dangerous buttons stay frozen.",
+      "status": "active",
+      "target": {
+        "device_id": "unknown_auto_quar",
+        "ip_address": "198.51.100.50",
+        "session_id": "sess_auto_quar_095",
+        "user_id": "beta_auto_quar"
+      }
+    }
+  ],
+  "allowed_actions": [
+    "appeal_quarantine",
+    "create_quarantine_note",
+    "owner_read_only_review",
+    "request_quarantine_release",
+    "tamper_chain_verify",
+    "verify_quarantine_release_step_up",
+    "view_locked_page",
+    "view_quarantine_status",
+    "view_security_command",
+    "view_status"
+  ],
+  "blocked_actions": [
+    "admin_override",
+    "app_clearance_grant",
+    "archive_handoff_export",
+    "automated_mode_enable",
+    "broker_action",
+    "capital_movement",
+    "clearance_grant",
+    "delete_record",
+    "disable_security",
+    "download",
+    "export",
+    "live_mode_enable",
+    "object_reveal",
+    "payment_batch_release",
+    "raw_data_view",
+    "route_policy_change",
+    "security_policy_edit",
+    "sensitive_reveal",
+    "share"
+  ],
+  "history": [
+    {
+      "action": "activate_quarantine",
+      "actor_user_id": "tower_risk_scoring",
+      "at": "2026-05-28T20:49:08.798724Z",
+      "human_reason": "Session risk score triggered quarantine.",
+      "quarantine_id": "quarantine_jmMSppRbF4KmXpE4QbMm2URz",
+      "reason_code": "session_risk_score_quarantine",
+      "scope": "session"
+    }
+  ],
+  "human_reason": "One or more quarantine cases are active.",
+  "ok": true,
+  "pack": "094",
+  "soulaana_translation": "Soulaana: Quarantine is active for at least one subject.",
+  "state_fingerprint": "e93507ec60c1c886a1e1431305cf758857ad24583c9ffc0311ab03024e597de9",
+  "updated_at": "2026-05-28T20:49:08.798737Z"
+}

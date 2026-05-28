@@ -1,0 +1,1363 @@
+[
+  {
+    "action": "export",
+    "created_at": "2026-05-28T20:17:21.272379Z",
+    "decision": "deny",
+    "event_fingerprint": "69958e0e7154e95709848bbc700c1a98c0057903b2ae4cc59b6858c083168508",
+    "event_id": "stepup_evt_cHNFN1893mUFYOo04_o8HwD4",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "clearance_decision": {
+        "allowed": false,
+        "decision": "deny",
+        "required_actions": [
+          "upgrade_clearance"
+        ],
+        "risk_score": 70,
+        "risk_state": "restricted"
+      },
+      "policy": {
+        "action": "export",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Exports can move sensitive data outside the system.",
+        "reason_code": "step_up_required_for_export",
+        "required": true,
+        "risk_score": 72,
+        "risk_state": "restricted",
+        "ttl_minutes": 10
+      },
+      "risk_context": {}
+    },
+    "object_id": "export_092",
+    "object_type": "export",
+    "pack": "092",
+    "reason_code": "base_clearance_denied_before_step_up",
+    "route_path": "/export",
+    "session_id": "sess_denied",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "view_status",
+    "created_at": "2026-05-28T20:17:21.273616Z",
+    "decision": "allow",
+    "event_fingerprint": "ff7e47b71162b216f7f5afc7e1bee3a0994564aaafc5d6dad87ace93e90c9fd8",
+    "event_id": "stepup_evt_U6vEsilt82dGFk0EXS7pLU7T",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "view_status",
+        "known_action": true,
+        "methods": [],
+        "plain": "This low-risk action does not require fresh verification.",
+        "reason_code": "step_up_not_required_for_low_risk_action",
+        "required": false,
+        "risk_score": 5,
+        "risk_state": "clear",
+        "ttl_minutes": 0
+      },
+      "risk_context": {}
+    },
+    "object_id": "status",
+    "object_type": "tower_status",
+    "pack": "092",
+    "reason_code": "step_up_not_required_for_low_risk_action",
+    "route_path": "/tower/status.json",
+    "session_id": "sess_low",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "route_policy_change",
+    "created_at": "2026-05-28T20:17:21.274782Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "922ff946d204886c8b21af1e45a6825785e8a4694b0075f57a5062a904b82c03",
+    "event_id": "stepup_evt_hYpHXK714IKk91SGeVqG8akU",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "route_policy_change",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Route policy changes can alter which doors open, lock, retire, or redirect.",
+        "reason_code": "step_up_required_for_route_policy_change",
+        "required": true,
+        "risk_score": 78,
+        "risk_state": "restricted",
+        "ttl_minutes": 8
+      },
+      "risk_context": {
+        "device_known": true,
+        "ip_risk": "normal"
+      }
+    },
+    "object_id": "/admin",
+    "object_type": "route_policy",
+    "pack": "092",
+    "reason_code": "step_up_required_for_route_policy_change",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_092",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "route_policy_change",
+    "challenge_id": "stepup_chal_fqxX4Mo8VIBKnWRcOkansR1p",
+    "created_at": "2026-05-28T20:17:21.276396Z",
+    "decision": "challenge_created",
+    "event_fingerprint": "857d5aa66ce14115bdc0144a915744473c2239c68c25593f049b734bcfd4663b",
+    "event_id": "stepup_evt_iRulM14XIrzProgb4MCaDLnW",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:25:21.275885Z",
+      "method": "owner_pin"
+    },
+    "object_id": "/admin",
+    "object_type": "route_policy",
+    "pack": "092",
+    "reason_code": "step_up_required_for_route_policy_change",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_092",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "route_policy_change",
+    "challenge_id": "stepup_chal_fqxX4Mo8VIBKnWRcOkansR1p",
+    "created_at": "2026-05-28T20:17:21.277628Z",
+    "decision": "deny",
+    "event_fingerprint": "ebfcf80a6ba11a299c3a29d3309b7461a06050a7837ebf1760c42bcb5c145a8b",
+    "event_id": "stepup_evt_LVR8l6KQCZGs1reGPAnTfoNW",
+    "event_type": "tower_step_up_auth_event",
+    "pack": "092",
+    "reason_code": "step_up_wrong_user",
+    "user_id": "beta_001"
+  },
+  {
+    "action": "route_policy_change",
+    "challenge_id": "stepup_chal_fqxX4Mo8VIBKnWRcOkansR1p",
+    "created_at": "2026-05-28T20:17:21.279197Z",
+    "decision": "verified",
+    "event_fingerprint": "c64132c55d07f04954341315ca41f281cc999a82e7b20cc063766f1f20ea3a21",
+    "event_id": "stepup_evt_fYbkI-usvJrf8HqPdPwLMSYQ",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:25:21.275885Z",
+      "method": "owner_pin"
+    },
+    "object_id": "/admin",
+    "object_type": "route_policy",
+    "pack": "092",
+    "reason_code": "step_up_challenge_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_092",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "route_policy_change",
+    "created_at": "2026-05-28T20:17:21.280548Z",
+    "decision": "allow",
+    "event_fingerprint": "55bf8388f196d1c9f25c8c9af6f3ce4e32cff51c97783d8960ffe936b2599d5e",
+    "event_id": "stepup_evt_PG4U1vsSyf0pToIsSJR3Y2EO",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "route_policy_change",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Route policy changes can alter which doors open, lock, retire, or redirect.",
+        "reason_code": "step_up_required_for_route_policy_change",
+        "required": true,
+        "risk_score": 78,
+        "risk_state": "restricted",
+        "ttl_minutes": 8
+      },
+      "recent": {
+        "challenge_id": "stepup_chal_fqxX4Mo8VIBKnWRcOkansR1p",
+        "expires_at": "2026-05-28T20:25:21.275885Z",
+        "has_recent_step_up": true,
+        "human_reason": "Recent verified step-up challenge found.",
+        "method": "owner_pin",
+        "ok": true
+      },
+      "risk_context": {
+        "device_known": true,
+        "ip_risk": "normal"
+      }
+    },
+    "object_id": "/admin",
+    "object_type": "route_policy",
+    "pack": "092",
+    "reason_code": "recent_step_up_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_092",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "mystery_sensitive_action_092",
+    "created_at": "2026-05-28T20:17:21.281932Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "b61f70d0b78c56fae396472f2ece5c5b825f5bf71d3428d5385cb5173787dcb7",
+    "event_id": "stepup_evt_GqchyvnklRPTsEL-qKwt-ZpP",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "mystery_sensitive_action_092",
+        "known_action": false,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard"
+        ],
+        "plain": "Unknown actions default to step-up until explicitly classified.",
+        "reason_code": "step_up_required_for_unknown_sensitive_action",
+        "required": true,
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "ttl_minutes": 8
+      },
+      "risk_context": {}
+    },
+    "object_id": "mystery",
+    "object_type": "unknown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_unknown_sensitive_action",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_unknown",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:22:27.035895Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "da54178fa6f3d9a7402c5576641582c59e6e337565977d1ee09612eb76a94551",
+    "event_id": "stepup_evt_vhzK5QensRCDKbCLxFgcWKdS",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Trying to disable without fresh step-up should fail."
+      }
+    },
+    "object_id": "lockdown_qvaOgmdLjHePtYZFZXbkgev_",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:22:27.041381Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "4b155e2285c8437c7378c6015008a99eda126f34ca56127a5b50cb32f2bac050",
+    "event_id": "stepup_evt_eFvMsy3-gPwWm65xDkOrrnff",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 disable request should demand step-up."
+      }
+    },
+    "object_id": "lockdown_qvaOgmdLjHePtYZFZXbkgev_",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "challenge_id": "stepup_chal_HISkac2BdLBG3PuBcMwwE7U3",
+    "created_at": "2026-05-28T20:22:27.048467Z",
+    "decision": "challenge_created",
+    "event_fingerprint": "51aa0e5e45d8b004370503fb64e955f9579f72bf6ef4412d2a5efbb453d87ca7",
+    "event_id": "stepup_evt_hFwhKbtNfzOj1THsY_RST6Yd",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:26:27.047746Z",
+      "method": "owner_pin"
+    },
+    "object_id": "lockdown_qvaOgmdLjHePtYZFZXbkgev_",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "challenge_id": "stepup_chal_HISkac2BdLBG3PuBcMwwE7U3",
+    "created_at": "2026-05-28T20:22:27.050470Z",
+    "decision": "verified",
+    "event_fingerprint": "a6b7f17fb71dce87c2fdf036dd838e04d3f0e6985b4849eb49fa0048eb32485f",
+    "event_id": "stepup_evt_WmtBskgKQhQYpKnA7qUnA2wx",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:26:27.047746Z",
+      "method": "owner_pin"
+    },
+    "object_id": "lockdown_qvaOgmdLjHePtYZFZXbkgev_",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_challenge_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:22:27.052207Z",
+    "decision": "allow",
+    "event_fingerprint": "8b60f40be9a3a70783dbec4617da7d9c5960daa08af306ce1322883c56734ed7",
+    "event_id": "stepup_evt_HM5xlgj57omCg4Y_pYngw8pc",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "recent": {
+        "challenge_id": "stepup_chal_HISkac2BdLBG3PuBcMwwE7U3",
+        "expires_at": "2026-05-28T20:26:27.047746Z",
+        "has_recent_step_up": true,
+        "human_reason": "Recent verified step-up challenge found.",
+        "method": "owner_pin",
+        "ok": true
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 disable request after step-up should be allowed."
+      }
+    },
+    "object_id": "lockdown_qvaOgmdLjHePtYZFZXbkgev_",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "recent_step_up_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:22:27.059244Z",
+    "decision": "allow",
+    "event_fingerprint": "450b75f9064572d54845f406252e12d12ff7bc9f84ad94e111896544c2ba081f",
+    "event_id": "stepup_evt_DjrP1EXfTy_ve0YSovdcPxip",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "recent": {
+        "challenge_id": "stepup_chal_HISkac2BdLBG3PuBcMwwE7U3",
+        "expires_at": "2026-05-28T20:26:27.047746Z",
+        "has_recent_step_up": true,
+        "human_reason": "Recent verified step-up challenge found.",
+        "method": "owner_pin",
+        "ok": true
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 verified disable after step-up."
+      }
+    },
+    "object_id": "lockdown_qvaOgmdLjHePtYZFZXbkgev_",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "recent_step_up_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:25:25.009053Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "8600f8243fc9dc919265309cd99be5119822dfcfec44349f781fe51d507deeb6",
+    "event_id": "stepup_evt_zQ80LUAzMzt4951mk3on4Wwe",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Trying to disable without fresh step-up should fail."
+      }
+    },
+    "object_id": "lockdown_G53O-eaLkzmyZUJeMZU9c2sm",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:25:25.017270Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "ac0dc8eaf6ba64d2d7000fe266b7746e39dd24aba1a831d84680c129c3604a50",
+    "event_id": "stepup_evt_QbtLn5xuUyaTaiBGbfNGkMPj",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 disable request should demand step-up."
+      }
+    },
+    "object_id": "lockdown_G53O-eaLkzmyZUJeMZU9c2sm",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "challenge_id": "stepup_chal_PITEVUwSbTjDfgoOUVYVlDnj",
+    "created_at": "2026-05-28T20:25:25.027505Z",
+    "decision": "challenge_created",
+    "event_fingerprint": "3872b045d50b00e39dab26963a431a4013bf3875a107a477bc80e3474163b233",
+    "event_id": "stepup_evt_hXh1ljqBOkK3v7i8yGH-vGDy",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:29:25.026763Z",
+      "method": "owner_pin"
+    },
+    "object_id": "lockdown_G53O-eaLkzmyZUJeMZU9c2sm",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "challenge_id": "stepup_chal_PITEVUwSbTjDfgoOUVYVlDnj",
+    "created_at": "2026-05-28T20:25:25.029988Z",
+    "decision": "verified",
+    "event_fingerprint": "08103a3255a91e3e6a03923a3fe64deaf9c0ed0484d7d6b7fe3bbab7c90ae10a",
+    "event_id": "stepup_evt_ZPBun13tNlQNcmqLdFYgKaxq",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:29:25.026763Z",
+      "method": "owner_pin"
+    },
+    "object_id": "lockdown_G53O-eaLkzmyZUJeMZU9c2sm",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_challenge_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:25:25.032319Z",
+    "decision": "allow",
+    "event_fingerprint": "3831a1f5ce80f5987920c79f6a808a22b52e455656bc52ab0bc5b735a29e46e4",
+    "event_id": "stepup_evt_jLwM_MzH7uyI-vKc4B51MU18",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "recent": {
+        "challenge_id": "stepup_chal_PITEVUwSbTjDfgoOUVYVlDnj",
+        "expires_at": "2026-05-28T20:29:25.026763Z",
+        "has_recent_step_up": true,
+        "human_reason": "Recent verified step-up challenge found.",
+        "method": "owner_pin",
+        "ok": true
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 disable request after step-up should be allowed."
+      }
+    },
+    "object_id": "lockdown_G53O-eaLkzmyZUJeMZU9c2sm",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "recent_step_up_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:25:25.042253Z",
+    "decision": "allow",
+    "event_fingerprint": "93519a400095886273c8a8965ed14c0829bd62fb0f4d3827f81116f7c49cd884",
+    "event_id": "stepup_evt_LjJjko_bzj4ZpoQ8_6ECPaHh",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "recent": {
+        "challenge_id": "stepup_chal_PITEVUwSbTjDfgoOUVYVlDnj",
+        "expires_at": "2026-05-28T20:29:25.026763Z",
+        "has_recent_step_up": true,
+        "human_reason": "Recent verified step-up challenge found.",
+        "method": "owner_pin",
+        "ok": true
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 verified disable after step-up."
+      }
+    },
+    "object_id": "lockdown_G53O-eaLkzmyZUJeMZU9c2sm",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "recent_step_up_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:27:13.577035Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "b5c1b7396f73741b20a506a355a3725ce737aa414cc788762c111db4ab9d2494",
+    "event_id": "stepup_evt_Z0wYGh3WTLxjURD5JW88kVrl",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Trying to disable without fresh step-up should fail."
+      }
+    },
+    "object_id": "lockdown_UXq1PM95XRXz2ZOnZLUaX-zp",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:27:13.584917Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "365ab8455547edd37df0617cd89aa5553e1930c34e66a0339544821878abcb0a",
+    "event_id": "stepup_evt_2C3eOIPk-cyOzcJNWMM31yuk",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 disable request should demand step-up."
+      }
+    },
+    "object_id": "lockdown_UXq1PM95XRXz2ZOnZLUaX-zp",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "challenge_id": "stepup_chal_U55rCc1_rIcHbBMLp18J3XEn",
+    "created_at": "2026-05-28T20:27:13.595388Z",
+    "decision": "challenge_created",
+    "event_fingerprint": "8e95503721e059dca686e7d6762874d3b00f2ca2d858cd8da00ec848402ab39c",
+    "event_id": "stepup_evt_tWJJKKU691t9MbMnwVbfJFpH",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:31:13.594549Z",
+      "method": "owner_pin"
+    },
+    "object_id": "lockdown_UXq1PM95XRXz2ZOnZLUaX-zp",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "challenge_id": "stepup_chal_U55rCc1_rIcHbBMLp18J3XEn",
+    "created_at": "2026-05-28T20:27:13.598798Z",
+    "decision": "verified",
+    "event_fingerprint": "bb858515b13deaa6a5c8a6fcc666ba7418949ac4c30ff04dfce31df5effb9061",
+    "event_id": "stepup_evt_GjWrcQxx6RNjlbUURgS4U20R",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:31:13.594549Z",
+      "method": "owner_pin"
+    },
+    "object_id": "lockdown_UXq1PM95XRXz2ZOnZLUaX-zp",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_challenge_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:27:13.601550Z",
+    "decision": "allow",
+    "event_fingerprint": "2a54fbb0a1ce4cac220e3ad3b4a67f4a795f3f9f6367c987d574fbb67c6998d2",
+    "event_id": "stepup_evt_cmNwmNnVNVaMKvngXBQrOAMe",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "recent": {
+        "challenge_id": "stepup_chal_U55rCc1_rIcHbBMLp18J3XEn",
+        "expires_at": "2026-05-28T20:31:13.594549Z",
+        "has_recent_step_up": true,
+        "human_reason": "Recent verified step-up challenge found.",
+        "method": "owner_pin",
+        "ok": true
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 disable request after step-up should be allowed."
+      }
+    },
+    "object_id": "lockdown_UXq1PM95XRXz2ZOnZLUaX-zp",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "recent_step_up_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:27:13.610719Z",
+    "decision": "allow",
+    "event_fingerprint": "153633ff2d285f739c427c9ae297cc88bae8ba856e439103a538f5685163e599",
+    "event_id": "stepup_evt_B_LYRe97bvxpa21FtPcstC1j",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "recent": {
+        "challenge_id": "stepup_chal_U55rCc1_rIcHbBMLp18J3XEn",
+        "expires_at": "2026-05-28T20:31:13.594549Z",
+        "has_recent_step_up": true,
+        "human_reason": "Recent verified step-up challenge found.",
+        "method": "owner_pin",
+        "ok": true
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 verified disable after step-up."
+      }
+    },
+    "object_id": "lockdown_UXq1PM95XRXz2ZOnZLUaX-zp",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "recent_step_up_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:28:33.584836Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "0f1226ed5165cc6f92a087a2ec67b7915ca7ede42b9df126f016fab842984365",
+    "event_id": "stepup_evt_30kF8jRDrZw_l0f_BceTbEME",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Trying to disable without fresh step-up should fail."
+      }
+    },
+    "object_id": "lockdown_9buMOzBXIRWyk0WfAKIgUSLx",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:28:33.594334Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "ff7b7b7b09a3bb505d4bf7ee2371db639c933304b848e90914b9e0bc06e68c04",
+    "event_id": "stepup_evt_jlBKNB0yYXm7QbRoDAXTIYCl",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 disable request should demand step-up."
+      }
+    },
+    "object_id": "lockdown_9buMOzBXIRWyk0WfAKIgUSLx",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "challenge_id": "stepup_chal_-jB7tzi5BNuFD_Cr9F18J0el",
+    "created_at": "2026-05-28T20:28:33.605386Z",
+    "decision": "challenge_created",
+    "event_fingerprint": "52bcb2719e1a8cdfa016b9d0c9fc115ed06e5c74c646c1ac9079e85edf7463f8",
+    "event_id": "stepup_evt_gIMayJu-RwVJIkrtreR6FhtP",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:32:33.604618Z",
+      "method": "owner_pin"
+    },
+    "object_id": "lockdown_9buMOzBXIRWyk0WfAKIgUSLx",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_required_for_lockdown_disable",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "challenge_id": "stepup_chal_-jB7tzi5BNuFD_Cr9F18J0el",
+    "created_at": "2026-05-28T20:28:33.608708Z",
+    "decision": "verified",
+    "event_fingerprint": "7d2e01954a6e20da5d1c0298e4642ef7bae0920d63b6c26446a080d6c3c21737",
+    "event_id": "stepup_evt_eJqZZLICTR3WCeKiJYJfpgPO",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:32:33.604618Z",
+      "method": "owner_pin"
+    },
+    "object_id": "lockdown_9buMOzBXIRWyk0WfAKIgUSLx",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "step_up_challenge_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:28:33.612039Z",
+    "decision": "allow",
+    "event_fingerprint": "e853c499ddd7ef082b0cc89ee417e11c93e2ce584d45098eefca803bf8746e89",
+    "event_id": "stepup_evt_TPF6AcEAh3y87SX4--c1dTl3",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "recent": {
+        "challenge_id": "stepup_chal_-jB7tzi5BNuFD_Cr9F18J0el",
+        "expires_at": "2026-05-28T20:32:33.604618Z",
+        "has_recent_step_up": true,
+        "human_reason": "Recent verified step-up challenge found.",
+        "method": "owner_pin",
+        "ok": true
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 disable request after step-up should be allowed."
+      }
+    },
+    "object_id": "lockdown_9buMOzBXIRWyk0WfAKIgUSLx",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "recent_step_up_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "lockdown_disable",
+    "created_at": "2026-05-28T20:28:33.622276Z",
+    "decision": "allow",
+    "event_fingerprint": "cf6e27556fbb3dae5a0204c15adcee5b6a14b3ac954de3d7ceb48e7aeded3b78",
+    "event_id": "stepup_evt_Iv1-GGpXgh7hLnkM2dIRRyft",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "lockdown_disable",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Disabling lockdown reopens protected controls.",
+        "reason_code": "step_up_required_for_lockdown_disable",
+        "required": true,
+        "risk_score": 96,
+        "risk_state": "critical",
+        "ttl_minutes": 4
+      },
+      "recent": {
+        "challenge_id": "stepup_chal_-jB7tzi5BNuFD_Cr9F18J0el",
+        "expires_at": "2026-05-28T20:32:33.604618Z",
+        "has_recent_step_up": true,
+        "human_reason": "Recent verified step-up challenge found.",
+        "method": "owner_pin",
+        "ok": true
+      },
+      "risk_context": {
+        "lockdown_active": true,
+        "reason": "Pack 093 verified disable after step-up."
+      }
+    },
+    "object_id": "lockdown_9buMOzBXIRWyk0WfAKIgUSLx",
+    "object_type": "emergency_lockdown",
+    "pack": "092",
+    "reason_code": "recent_step_up_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_lock_093",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "admin_override",
+    "created_at": "2026-05-28T20:34:29.254930Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "5c3329ff7a7e103700e6a638e2d1253efe326424300a95b5c84e00403a9bdc2e",
+    "event_id": "stepup_evt_Za3RBLSIBJH3Ib7GLbW9ql3y",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "admin_override",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Admin override can bypass normal workflow gates.",
+        "reason_code": "step_up_required_for_admin_override",
+        "required": true,
+        "risk_score": 85,
+        "risk_state": "critical",
+        "ttl_minutes": 6
+      },
+      "risk_context": {
+        "quarantine_active": true,
+        "reason": "Trying to release without fresh step-up should fail."
+      }
+    },
+    "object_id": "quarantine_sZr-fCglf61wqQTLvD_UEocM",
+    "object_type": "quarantine_case",
+    "pack": "092",
+    "reason_code": "step_up_required_for_admin_override",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_quar_release_094",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "admin_override",
+    "created_at": "2026-05-28T20:34:29.275578Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "5102bd751dbf72d3a58ee71cd7b93aada9aae68c14ae35c58c9d9994dbf0cfdb",
+    "event_id": "stepup_evt_pOE6kPKcrLy1qK0DF1lc5i_9",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "admin_override",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Admin override can bypass normal workflow gates.",
+        "reason_code": "step_up_required_for_admin_override",
+        "required": true,
+        "risk_score": 85,
+        "risk_state": "critical",
+        "ttl_minutes": 6
+      },
+      "risk_context": {
+        "quarantine_active": true,
+        "reason": "Pack 094 release request should demand step-up."
+      }
+    },
+    "object_id": "quarantine_sZr-fCglf61wqQTLvD_UEocM",
+    "object_type": "quarantine_case",
+    "pack": "092",
+    "reason_code": "step_up_required_for_admin_override",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_quar_release_094",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "admin_override",
+    "challenge_id": "stepup_chal_C_dmHC1X645kxSZqkkp_PNMo",
+    "created_at": "2026-05-28T20:34:29.290884Z",
+    "decision": "challenge_created",
+    "event_fingerprint": "3a667f86151e548e26426e2e052de8bc5233959fcfa97ba1aa8e87e1d0b741a4",
+    "event_id": "stepup_evt_j2Fy_ayxUWMQPwo9HIPwZeXH",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:40:29.290189Z",
+      "method": "owner_pin"
+    },
+    "object_id": "quarantine_sZr-fCglf61wqQTLvD_UEocM",
+    "object_type": "quarantine_case",
+    "pack": "092",
+    "reason_code": "step_up_required_for_admin_override",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_quar_release_094",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "admin_override",
+    "challenge_id": "stepup_chal_C_dmHC1X645kxSZqkkp_PNMo",
+    "created_at": "2026-05-28T20:34:29.294572Z",
+    "decision": "verified",
+    "event_fingerprint": "1b62f9c936260015a2d9fc13ebb540d3bacb055b7bc632c657c5543300965ffc",
+    "event_id": "stepup_evt_2akBe2aNGUvTyQuTJb6vck6s",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T20:40:29.290189Z",
+      "method": "owner_pin"
+    },
+    "object_id": "quarantine_sZr-fCglf61wqQTLvD_UEocM",
+    "object_type": "quarantine_case",
+    "pack": "092",
+    "reason_code": "step_up_challenge_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_quar_release_094",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "admin_override",
+    "created_at": "2026-05-28T20:34:29.297937Z",
+    "decision": "allow",
+    "event_fingerprint": "e96b25a3e6afae634c85b89a834d612bc7b92ed7dfb9b64f06f4a94c2fcd393e",
+    "event_id": "stepup_evt_ns8ZiNJt-AuhEAA8Nv9Yi9Ea",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "admin_override",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Admin override can bypass normal workflow gates.",
+        "reason_code": "step_up_required_for_admin_override",
+        "required": true,
+        "risk_score": 85,
+        "risk_state": "critical",
+        "ttl_minutes": 6
+      },
+      "recent": {
+        "challenge_id": "stepup_chal_C_dmHC1X645kxSZqkkp_PNMo",
+        "expires_at": "2026-05-28T20:40:29.290189Z",
+        "has_recent_step_up": true,
+        "human_reason": "Recent verified step-up challenge found.",
+        "method": "owner_pin",
+        "ok": true
+      },
+      "risk_context": {
+        "quarantine_active": true,
+        "reason": "Pack 094 release request after step-up should be allowed."
+      }
+    },
+    "object_id": "quarantine_sZr-fCglf61wqQTLvD_UEocM",
+    "object_type": "quarantine_case",
+    "pack": "092",
+    "reason_code": "recent_step_up_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_quar_release_094",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "admin_override",
+    "created_at": "2026-05-28T20:34:29.309144Z",
+    "decision": "allow",
+    "event_fingerprint": "3227764e5170a880ad23942f9002f56cf8394f8e9e253d5f3321f290c83dba09",
+    "event_id": "stepup_evt_TOHOoZTBVT5hhJoM3RNfcPmU",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "admin_override",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Admin override can bypass normal workflow gates.",
+        "reason_code": "step_up_required_for_admin_override",
+        "required": true,
+        "risk_score": 85,
+        "risk_state": "critical",
+        "ttl_minutes": 6
+      },
+      "recent": {
+        "challenge_id": "stepup_chal_C_dmHC1X645kxSZqkkp_PNMo",
+        "expires_at": "2026-05-28T20:40:29.290189Z",
+        "has_recent_step_up": true,
+        "human_reason": "Recent verified step-up challenge found.",
+        "method": "owner_pin",
+        "ok": true
+      },
+      "risk_context": {
+        "quarantine_active": true,
+        "reason": "Pack 094 verified quarantine release after step-up."
+      }
+    },
+    "object_id": "quarantine_sZr-fCglf61wqQTLvD_UEocM",
+    "object_type": "quarantine_case",
+    "pack": "092",
+    "reason_code": "recent_step_up_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_quar_release_094",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "export",
+    "created_at": "2026-05-28T20:49:08.763843Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "47f3fb8ae0ca37640263741bd3c75f14df837ea21aa59175cca37113585d95fb",
+    "event_id": "stepup_evt_8rkKWcXD5bEc4mEhNJUIsPep",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "export",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard",
+          "owner_phrase"
+        ],
+        "plain": "Exports can move sensitive data outside the system.",
+        "reason_code": "step_up_required_for_export",
+        "required": true,
+        "risk_score": 72,
+        "risk_state": "restricted",
+        "ttl_minutes": 10
+      },
+      "risk_context": {
+        "action": "export",
+        "allowed": false,
+        "auto_apply_requested": true,
+        "auto_apply_result": {
+          "decision": "throttle_recommended",
+          "human_reason": "Throttle recommended. Route middleware should slow this subject.",
+          "ok": true,
+          "soulaana_translation": "Soulaana: Slow lane. No sprinting through security.",
+          "throttle_seconds": 60
+        },
+        "decision": "step_up",
+        "device_id": "known_device_001",
+        "event": {
+          "action": "export",
+          "allowed": false,
+          "auto_apply_requested": true,
+          "created_at": "2026-05-28T20:49:08.748905Z",
+          "decision": "step_up",
+          "device_id": "known_device_001",
+          "event_fingerprint": "1e13ed069e965710b312b44b49feab9dda38f3c0344f7ea270b31035936fe0cf",
+          "event_id": "risk_evt_7kXl4vSs2cYC5e4NCXbyNQqf",
+          "event_type": "tower_session_risk_event",
+          "human_reason": "Clean sensitive action requires fresh verification before continuing.",
+          "ip_address": "10.0.0.5",
+          "location_hint": "GA",
+          "metadata": {},
+          "method": "POST",
+          "ok": true,
+          "pack": "095",
+          "pack095b_override": "clean_sensitive_action_step_up_before_throttle",
+          "reason_count": 3,
+          "reasons": [
+            {
+              "plain": "Action 'export' carries base risk.",
+              "points": 24,
+              "reason_code": "action_risk_weight"
+            },
+            {
+              "plain": "Route '/export' carries route risk.",
+              "points": 24,
+              "reason_code": "route_risk_hint"
+            },
+            {
+              "plain": "State-changing HTTP method increases risk.",
+              "points": 8,
+              "reason_code": "state_changing_method"
+            }
+          ],
+          "required_actions": [
+            "complete_step_up_auth"
+          ],
+          "risk_score": 56,
+          "risk_state": "watch",
+          "route_path": "/export",
+          "session_id": "sess_auto_step_095",
+          "soulaana_translation": "Soulaana: This is sensitive, not spammy. Ask for a fresh owner check before it moves.",
+          "user_id": "owner_solice"
+        },
+        "human_reason": "Clean sensitive action requires fresh verification before continuing.",
+        "ip_address": "10.0.0.5",
+        "location_hint": "GA",
+        "method": "POST",
+        "ok": true,
+        "pack": "095",
+        "pack095b_override": "clean_sensitive_action_step_up_before_throttle",
+        "reason_count": 3,
+        "reasons": [
+          {
+            "plain": "Action 'export' carries base risk.",
+            "points": 24,
+            "reason_code": "action_risk_weight"
+          },
+          {
+            "plain": "Route '/export' carries route risk.",
+            "points": 24,
+            "reason_code": "route_risk_hint"
+          },
+          {
+            "plain": "State-changing HTTP method increases risk.",
+            "points": 8,
+            "reason_code": "state_changing_method"
+          }
+        ],
+        "required_actions": [
+          "complete_step_up_auth"
+        ],
+        "risk_score": 56,
+        "risk_state": "watch",
+        "route_path": "/export",
+        "session_id": "sess_auto_step_095",
+        "soulaana_translation": "Soulaana: This is sensitive, not spammy. Ask for a fresh owner check before it moves.",
+        "user_id": "owner_solice"
+      }
+    },
+    "object_id": "sess_auto_step_095",
+    "object_type": "session_risk",
+    "pack": "092",
+    "reason_code": "step_up_required_for_export",
+    "route_path": "/export",
+    "session_id": "sess_auto_step_095",
+    "user_id": "owner_solice"
+  }
+]
