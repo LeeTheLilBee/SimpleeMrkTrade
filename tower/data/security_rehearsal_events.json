@@ -1,0 +1,1200 @@
+[
+  {
+    "actor_user_id": "owner_solice",
+    "category": "identity",
+    "created_at": "2026-05-28T21:38:08.863499Z",
+    "decision": "rehearsal_passed",
+    "decision_family": "deny",
+    "event_fingerprint": "f91dabaa6fc9560601d7649f6cc1dcd63be72714d12bddfcc0f93350aebc474e",
+    "event_id": "rehearsal_evt_npefPHfgXz1erWKVniEUc-yZ",
+    "event_type": "tower_security_rehearsal_event",
+    "pack": "098",
+    "result": {
+      "category": "identity",
+      "decision_family": "deny",
+      "expected": [
+        "deny",
+        "step_up"
+      ],
+      "human_reason": "Scenario responded within expected safety family.",
+      "label": "Wrong keycard",
+      "ok": true,
+      "plain": "Simulates a bad keycard or wrong verification attempt.",
+      "response": {
+        "decision": "deny",
+        "human_reason": "Step-up challenge was not found.",
+        "ok": false,
+        "reason_code": "step_up_challenge_not_found",
+        "soulaana_translation": "Soulaana: I do not see that extra lock request."
+      },
+      "scenario_id": "wrong_keycard",
+      "soulaana_translation": "Soulaana: Rehearsal response stayed inside the expected safety lane."
+    },
+    "scenario_id": "wrong_keycard"
+  },
+  {
+    "actor_user_id": "owner_solice",
+    "category": "identity",
+    "created_at": "2026-05-28T21:38:08.882112Z",
+    "decision": "rehearsal_passed",
+    "decision_family": "step_up",
+    "event_fingerprint": "8d19284c1643d76848745712a7f70499230aadae3fa0d4b3340a40ca7f3a5a62",
+    "event_id": "rehearsal_evt_ozWTqXwn5s1oWvhkJdI625z7",
+    "event_type": "tower_security_rehearsal_event",
+    "pack": "098",
+    "result": {
+      "category": "identity",
+      "decision_family": "step_up",
+      "expected": [
+        "deny",
+        "step_up"
+      ],
+      "human_reason": "Scenario responded within expected safety family.",
+      "label": "Expired keycard",
+      "ok": true,
+      "plain": "Simulates an expired verification context.",
+      "response": {
+        "allowed_methods": [
+          "owner_pin",
+          "fresh_keycard"
+        ],
+        "decision": "step_up_required",
+        "human_reason": "Sensitive details should stay redacted until a fresh verification exists.",
+        "ok": true,
+        "reason_code": "step_up_required_for_sensitive_reveal",
+        "required_actions": [
+          "complete_step_up_auth"
+        ],
+        "risk_score": 62,
+        "risk_state": "restricted",
+        "soulaana_translation": "Soulaana: This button is powerful. Verify again before it moves.",
+        "step_up_required": true,
+        "ttl_minutes": 10
+      },
+      "scenario_id": "expired_keycard",
+      "soulaana_translation": "Soulaana: Rehearsal response stayed inside the expected safety lane."
+    },
+    "scenario_id": "expired_keycard"
+  },
+  {
+    "actor_user_id": "owner_solice",
+    "category": "data_movement",
+    "created_at": "2026-05-28T21:38:08.904327Z",
+    "decision": "rehearsal_passed",
+    "decision_family": "quarantine",
+    "event_fingerprint": "a9546f77fffe3f1ffe7a6ee81200238431f30619bc6c5c1239f999e93ae7fa0a",
+    "event_id": "rehearsal_evt_Yidfmx7KkhuJGyudLrssihlT",
+    "event_type": "tower_security_rehearsal_event",
+    "pack": "098",
+    "result": {
+      "category": "data_movement",
+      "decision_family": "quarantine",
+      "expected": [
+        "quarantine",
+        "step_up",
+        "throttle"
+      ],
+      "human_reason": "Scenario responded within expected safety family.",
+      "label": "Export attempt",
+      "ok": true,
+      "plain": "Simulates a sensitive export/download request.",
+      "response": {
+        "__redacted_sensitive_field_count__": 1,
+        "action": "export",
+        "allowed": false,
+        "auto_apply_requested": false,
+        "decision": "quarantine",
+        "device_id": "known_device_export_098",
+        "event": {
+          "action": "export",
+          "allowed": false,
+          "auto_apply_requested": false,
+          "created_at": "2026-05-28T21:38:08.893402Z",
+          "decision": "quarantine",
+          "device_id": "known_device_export_098",
+          "event_fingerprint": "4ea1b0d2a5779add4e3ed9bb9ebff04931362816a2ef4882d9835a2b750c264e",
+          "event_id": "risk_evt_3Sa-JJUs8A5Bsoae-hbS0JWM",
+          "event_type": "tower_session_risk_event",
+          "human_reason": "Risk is restricted-level. Contain this subject in quarantine for owner review.",
+          "ip_address": "10.0.0.5",
+          "location_hint": "GA",
+          "metadata": {},
+          "method": "POST",
+          "ok": true,
+          "pack": "095",
+          "reason_count": 5,
+          "reasons": [
+            {
+              "plain": "Action 'export' carries base risk.",
+              "points": 24,
+              "reason_code": "action_risk_weight"
+            },
+            {
+              "plain": "Route '/export' carries route risk.",
+              "points": 24,
+              "reason_code": "route_risk_hint"
+            },
+            {
+              "plain": "No known device baseline exists for this user.",
+              "points": 12,
+              "reason_code": "no_device_baseline"
+            },
+            {
+              "plain": "No known IP baseline exists for this user.",
+              "points": 8,
+              "reason_code": "no_ip_baseline"
+            },
+            {
+              "plain": "State-changing HTTP method increases risk.",
+              "points": 8,
+              "reason_code": "state_changing_method"
+            }
+          ],
+          "required_actions": [
+            "quarantine_subject",
+            "owner_review"
+          ],
+          "risk_score": 76,
+          "risk_state": "restricted",
+          "route_path": "/export",
+          "session_id": "rehearsal_export_098",
+          "soulaana_translation": "Soulaana: Put this subject in the holding room before it touches anything sharp.",
+          "user_id": "owner_solice"
+        },
+        "human_reason": "Risk is restricted-level. Contain this subject in quarantine for owner review.",
+        "ip_address": "10.0.0.5",
+        "location_hint": "GA",
+        "method": "POST",
+        "ok": true,
+        "pack": "095",
+        "reason_count": 5,
+        "reasons": [
+          {
+            "plain": "Action 'export' carries base risk.",
+            "points": 24,
+            "reason_code": "action_risk_weight"
+          },
+          {
+            "plain": "Route '/export' carries route risk.",
+            "points": 24,
+            "reason_code": "route_risk_hint"
+          },
+          {
+            "plain": "No known device baseline exists for this user.",
+            "points": 12,
+            "reason_code": "no_device_baseline"
+          },
+          {
+            "plain": "No known IP baseline exists for this user.",
+            "points": 8,
+            "reason_code": "no_ip_baseline"
+          },
+          {
+            "plain": "State-changing HTTP method increases risk.",
+            "points": 8,
+            "reason_code": "state_changing_method"
+          }
+        ],
+        "required_actions": [
+          "quarantine_subject",
+          "owner_review"
+        ],
+        "risk_score": 76,
+        "risk_state": "restricted",
+        "route_path": "/export",
+        "session_id": "rehearsal_export_098",
+        "soulaana_translation": "Soulaana: Put this subject in the holding room before it touches anything sharp.",
+        "user_id": "owner_solice"
+      },
+      "scenario_id": "export_attempt",
+      "soulaana_translation": "Soulaana: Rehearsal response stayed inside the expected safety lane."
+    },
+    "scenario_id": "export_attempt"
+  },
+  {
+    "actor_user_id": "owner_solice",
+    "category": "routing",
+    "created_at": "2026-05-28T21:38:08.941599Z",
+    "decision": "rehearsal_passed",
+    "decision_family": "deny",
+    "event_fingerprint": "b54d624ecfba17586ed94e689ea0ca162133365df4773f9b62dc923937aaa692",
+    "event_id": "rehearsal_evt_7QROVUR2ra0h_1kzjN_h5u0M",
+    "event_type": "tower_security_rehearsal_event",
+    "pack": "098",
+    "result": {
+      "category": "routing",
+      "decision_family": "deny",
+      "expected": [
+        "deny",
+        "quarantine"
+      ],
+      "human_reason": "Scenario responded within expected safety family.",
+      "label": "Unknown route",
+      "ok": true,
+      "plain": "Simulates probing an unmapped or unsupported route.",
+      "response": {
+        "__redacted_sensitive_field_count__": 1,
+        "action": "admin_override",
+        "allowed": false,
+        "auto_apply_requested": false,
+        "decision": "deny",
+        "device_id": "unknown_device_098",
+        "event": {
+          "action": "admin_override",
+          "allowed": false,
+          "auto_apply_requested": false,
+          "created_at": "2026-05-28T21:38:08.924949Z",
+          "decision": "deny",
+          "device_id": "unknown_device_098",
+          "event_fingerprint": "f76e90e395ccd0e88cdea64d93b073aba6bc16f984d5052f726d5ca875e162db",
+          "event_id": "risk_evt_aSrSrvmceNKEnwYEHOJSRnIT",
+          "event_type": "tower_session_risk_event",
+          "human_reason": "Risk is critical and request should be denied outright.",
+          "ip_address": "203.0.113.98",
+          "location_hint": "UNKNOWN",
+          "metadata": {},
+          "method": "POST",
+          "ok": true,
+          "pack": "095",
+          "reason_count": 7,
+          "reasons": [
+            {
+              "plain": "Action 'admin_override' carries base risk.",
+              "points": 34,
+              "reason_code": "action_risk_weight"
+            },
+            {
+              "plain": "Request volume is elevated.",
+              "points": 12,
+              "reason_code": "request_rate_elevated"
+            },
+            {
+              "plain": "Several denied route hits occurred recently.",
+              "points": 12,
+              "reason_code": "denied_route_cluster"
+            },
+            {
+              "plain": "A failed keycard attempt occurred.",
+              "points": 12,
+              "reason_code": "failed_keycard_attempt"
+            },
+            {
+              "plain": "A suspicious behavior pattern was detected.",
+              "points": 14,
+              "reason_code": "suspicious_pattern"
+            },
+            {
+              "plain": "State-changing HTTP method increases risk.",
+              "points": 8,
+              "reason_code": "state_changing_method"
+            },
+            {
+              "plain": "Anonymous/public user attempted a sensitive action.",
+              "points": 20,
+              "reason_code": "anonymous_sensitive_action"
+            }
+          ],
+          "required_actions": [
+            "deny_request",
+            "owner_security_review"
+          ],
+          "risk_score": 100,
+          "risk_state": "critical",
+          "route_path": "/unknown/private/probe/098",
+          "session_id": "unknown_route_098",
+          "soulaana_translation": "Soulaana: No. That request does not get a hallway.",
+          "user_id": "anonymous"
+        },
+        "human_reason": "Risk is critical and request should be denied outright.",
+        "ip_address": "203.0.113.98",
+        "location_hint": "UNKNOWN",
+        "method": "POST",
+        "ok": true,
+        "pack": "095",
+        "reason_count": 7,
+        "reasons": [
+          {
+            "plain": "Action 'admin_override' carries base risk.",
+            "points": 34,
+            "reason_code": "action_risk_weight"
+          },
+          {
+            "plain": "Request volume is elevated.",
+            "points": 12,
+            "reason_code": "request_rate_elevated"
+          },
+          {
+            "plain": "Several denied route hits occurred recently.",
+            "points": 12,
+            "reason_code": "denied_route_cluster"
+          },
+          {
+            "plain": "A failed keycard attempt occurred.",
+            "points": 12,
+            "reason_code": "failed_keycard_attempt"
+          },
+          {
+            "plain": "A suspicious behavior pattern was detected.",
+            "points": 14,
+            "reason_code": "suspicious_pattern"
+          },
+          {
+            "plain": "State-changing HTTP method increases risk.",
+            "points": 8,
+            "reason_code": "state_changing_method"
+          },
+          {
+            "plain": "Anonymous/public user attempted a sensitive action.",
+            "points": 20,
+            "reason_code": "anonymous_sensitive_action"
+          }
+        ],
+        "required_actions": [
+          "deny_request",
+          "owner_security_review"
+        ],
+        "risk_score": 100,
+        "risk_state": "critical",
+        "route_path": "/unknown/private/probe/098",
+        "session_id": "unknown_route_098",
+        "soulaana_translation": "Soulaana: No. That request does not get a hallway.",
+        "user_id": "anonymous"
+      },
+      "scenario_id": "unknown_route",
+      "soulaana_translation": "Soulaana: Rehearsal response stayed inside the expected safety lane."
+    },
+    "scenario_id": "unknown_route"
+  },
+  {
+    "actor_user_id": "owner_solice",
+    "category": "behavior",
+    "created_at": "2026-05-28T21:38:08.978579Z",
+    "decision": "rehearsal_passed",
+    "decision_family": "deny",
+    "event_fingerprint": "cfc922ec526a22d67b6fe984cac448a8086ad27591aa6b7d10860c0f27e123d6",
+    "event_id": "rehearsal_evt_Hu_AJ9ctEJEu-y7ILAAHHE18",
+    "event_type": "tower_security_rehearsal_event",
+    "pack": "098",
+    "result": {
+      "category": "behavior",
+      "decision_family": "deny",
+      "expected": [
+        "deny",
+        "lockdown"
+      ],
+      "human_reason": "Scenario responded within expected safety family.",
+      "label": "High-risk session",
+      "ok": true,
+      "plain": "Simulates rapid probing, failed keycards, and suspicious request behavior.",
+      "response": {
+        "__redacted_sensitive_field_count__": 1,
+        "action": "disable_security",
+        "allowed": false,
+        "auto_apply_requested": false,
+        "decision": "deny",
+        "device_id": "bad_device_098",
+        "event": {
+          "action": "disable_security",
+          "allowed": false,
+          "auto_apply_requested": false,
+          "created_at": "2026-05-28T21:38:08.957263Z",
+          "decision": "deny",
+          "device_id": "bad_device_098",
+          "event_fingerprint": "c070dad66bc4ace129e7092da404c09afbee791543a63a0055bd3964ce388297",
+          "event_id": "risk_evt_muVnDVWndJSwx1SnDGGxasmT",
+          "event_type": "tower_session_risk_event",
+          "human_reason": "Risk is critical and request should be denied outright.",
+          "ip_address": "203.0.113.200",
+          "location_hint": "UNKNOWN",
+          "metadata": {},
+          "method": "POST",
+          "ok": true,
+          "pack": "095",
+          "reason_count": 8,
+          "reasons": [
+            {
+              "plain": "Action 'disable_security' carries base risk.",
+              "points": 50,
+              "reason_code": "action_risk_weight"
+            },
+            {
+              "plain": "No known device baseline exists for this user.",
+              "points": 12,
+              "reason_code": "no_device_baseline"
+            },
+            {
+              "plain": "No known IP baseline exists for this user.",
+              "points": 8,
+              "reason_code": "no_ip_baseline"
+            },
+            {
+              "plain": "Very high request volume suggests scraping or automation abuse.",
+              "points": 42,
+              "reason_code": "scraping_behavior_extreme"
+            },
+            {
+              "plain": "Repeated denied route hits indicate probing.",
+              "points": 40,
+              "reason_code": "denied_route_burst_extreme"
+            },
+            {
+              "plain": "Repeated failed keycard attempts are critical.",
+              "points": 44,
+              "reason_code": "failed_keycard_burst_extreme"
+            },
+            {
+              "plain": "Multiple suspicious patterns combined.",
+              "points": 38,
+              "reason_code": "multiple_suspicious_patterns"
+            },
+            {
+              "plain": "State-changing HTTP method increases risk.",
+              "points": 8,
+              "reason_code": "state_changing_method"
+            }
+          ],
+          "required_actions": [
+            "deny_request",
+            "owner_security_review"
+          ],
+          "risk_score": 100,
+          "risk_state": "critical",
+          "route_path": "/disable-security",
+          "session_id": "high_risk_session_098",
+          "soulaana_translation": "Soulaana: No. That request does not get a hallway.",
+          "user_id": "beta_high_risk_098"
+        },
+        "human_reason": "Risk is critical and request should be denied outright.",
+        "ip_address": "203.0.113.200",
+        "location_hint": "UNKNOWN",
+        "method": "POST",
+        "ok": true,
+        "pack": "095",
+        "reason_count": 8,
+        "reasons": [
+          {
+            "plain": "Action 'disable_security' carries base risk.",
+            "points": 50,
+            "reason_code": "action_risk_weight"
+          },
+          {
+            "plain": "No known device baseline exists for this user.",
+            "points": 12,
+            "reason_code": "no_device_baseline"
+          },
+          {
+            "plain": "No known IP baseline exists for this user.",
+            "points": 8,
+            "reason_code": "no_ip_baseline"
+          },
+          {
+            "plain": "Very high request volume suggests scraping or automation abuse.",
+            "points": 42,
+            "reason_code": "scraping_behavior_extreme"
+          },
+          {
+            "plain": "Repeated denied route hits indicate probing.",
+            "points": 40,
+            "reason_code": "denied_route_burst_extreme"
+          },
+          {
+            "plain": "Repeated failed keycard attempts are critical.",
+            "points": 44,
+            "reason_code": "failed_keycard_burst_extreme"
+          },
+          {
+            "plain": "Multiple suspicious patterns combined.",
+            "points": 38,
+            "reason_code": "multiple_suspicious_patterns"
+          },
+          {
+            "plain": "State-changing HTTP method increases risk.",
+            "points": 8,
+            "reason_code": "state_changing_method"
+          }
+        ],
+        "required_actions": [
+          "deny_request",
+          "owner_security_review"
+        ],
+        "risk_score": 100,
+        "risk_state": "critical",
+        "route_path": "/disable-security",
+        "session_id": "high_risk_session_098",
+        "soulaana_translation": "Soulaana: No. That request does not get a hallway.",
+        "user_id": "beta_high_risk_098"
+      },
+      "scenario_id": "high_risk_session",
+      "soulaana_translation": "Soulaana: Rehearsal response stayed inside the expected safety lane."
+    },
+    "scenario_id": "high_risk_session"
+  },
+  {
+    "actor_user_id": "owner_solice",
+    "category": "broker_live",
+    "created_at": "2026-05-28T21:38:09.019937Z",
+    "decision": "rehearsal_passed",
+    "decision_family": "deny",
+    "event_fingerprint": "765781345e79c11b6f61f0a5a0bf45faa4575d9612eecffbf716f9007c58125f",
+    "event_id": "rehearsal_evt_m67H0VFPHMbFSE4HvjS0AfSr",
+    "event_type": "tower_security_rehearsal_event",
+    "pack": "098",
+    "result": {
+      "category": "broker_live",
+      "decision_family": "deny",
+      "expected": [
+        "deny",
+        "lockdown",
+        "quarantine",
+        "step_up"
+      ],
+      "human_reason": "Scenario responded within expected safety family.",
+      "label": "Live-mode request",
+      "ok": true,
+      "plain": "Simulates a live/broker mode request.",
+      "response": {
+        "__redacted_sensitive_field_count__": 1,
+        "action": "live_mode_enable",
+        "allowed": false,
+        "auto_apply_requested": false,
+        "decision": "deny",
+        "device_id": "known_device_live_098",
+        "event": {
+          "action": "live_mode_enable",
+          "allowed": false,
+          "auto_apply_requested": false,
+          "created_at": "2026-05-28T21:38:08.995197Z",
+          "decision": "deny",
+          "device_id": "known_device_live_098",
+          "event_fingerprint": "9d595fab22e9076e85dcbeb50e99cff2e0927e7c4e6229a0ff87a70e52dc28d3",
+          "event_id": "risk_evt_tfMJ7r2vc6BCaU3ugQmtPBBr",
+          "event_type": "tower_session_risk_event",
+          "human_reason": "Risk is critical and request should be denied outright.",
+          "ip_address": "10.0.0.5",
+          "location_hint": "GA",
+          "metadata": {},
+          "method": "POST",
+          "ok": true,
+          "pack": "095",
+          "reason_count": 6,
+          "reasons": [
+            {
+              "plain": "Action 'live_mode_enable' carries base risk.",
+              "points": 40,
+              "reason_code": "action_risk_weight"
+            },
+            {
+              "plain": "Route '/live/mode' carries route risk.",
+              "points": 40,
+              "reason_code": "route_risk_hint"
+            },
+            {
+              "plain": "No known device baseline exists for this user.",
+              "points": 12,
+              "reason_code": "no_device_baseline"
+            },
+            {
+              "plain": "No known IP baseline exists for this user.",
+              "points": 8,
+              "reason_code": "no_ip_baseline"
+            },
+            {
+              "plain": "A live/broker attempt occurred.",
+              "points": 20,
+              "reason_code": "live_broker_attempt"
+            },
+            {
+              "plain": "State-changing HTTP method increases risk.",
+              "points": 8,
+              "reason_code": "state_changing_method"
+            }
+          ],
+          "required_actions": [
+            "deny_request",
+            "owner_security_review"
+          ],
+          "risk_score": 100,
+          "risk_state": "critical",
+          "route_path": "/live/mode",
+          "session_id": "live_mode_request_098",
+          "soulaana_translation": "Soulaana: No. That request does not get a hallway.",
+          "user_id": "owner_solice"
+        },
+        "human_reason": "Risk is critical and request should be denied outright.",
+        "ip_address": "10.0.0.5",
+        "location_hint": "GA",
+        "method": "POST",
+        "ok": true,
+        "pack": "095",
+        "reason_count": 6,
+        "reasons": [
+          {
+            "plain": "Action 'live_mode_enable' carries base risk.",
+            "points": 40,
+            "reason_code": "action_risk_weight"
+          },
+          {
+            "plain": "Route '/live/mode' carries route risk.",
+            "points": 40,
+            "reason_code": "route_risk_hint"
+          },
+          {
+            "plain": "No known device baseline exists for this user.",
+            "points": 12,
+            "reason_code": "no_device_baseline"
+          },
+          {
+            "plain": "No known IP baseline exists for this user.",
+            "points": 8,
+            "reason_code": "no_ip_baseline"
+          },
+          {
+            "plain": "A live/broker attempt occurred.",
+            "points": 20,
+            "reason_code": "live_broker_attempt"
+          },
+          {
+            "plain": "State-changing HTTP method increases risk.",
+            "points": 8,
+            "reason_code": "state_changing_method"
+          }
+        ],
+        "required_actions": [
+          "deny_request",
+          "owner_security_review"
+        ],
+        "risk_score": 100,
+        "risk_state": "critical",
+        "route_path": "/live/mode",
+        "session_id": "live_mode_request_098",
+        "soulaana_translation": "Soulaana: No. That request does not get a hallway.",
+        "user_id": "owner_solice"
+      },
+      "scenario_id": "live_mode_request",
+      "soulaana_translation": "Soulaana: Rehearsal response stayed inside the expected safety lane."
+    },
+    "scenario_id": "live_mode_request"
+  },
+  {
+    "actor_user_id": "owner_solice",
+    "category": "admin",
+    "created_at": "2026-05-28T21:38:09.156149Z",
+    "decision": "rehearsal_passed",
+    "decision_family": "quarantine",
+    "event_fingerprint": "2cef013442a7671bb011c804f2fe2035532a8dbc1149d66b3003a685e6cf85b3",
+    "event_id": "rehearsal_evt_OiCj_s-_SOG77AYsFGvPUkzt",
+    "event_type": "tower_security_rehearsal_event",
+    "pack": "098",
+    "result": {
+      "category": "admin",
+      "decision_family": "quarantine",
+      "expected": [
+        "deny",
+        "quarantine",
+        "step_up"
+      ],
+      "human_reason": "Scenario responded within expected safety family.",
+      "label": "Admin attempt",
+      "ok": true,
+      "plain": "Simulates an admin override attempt.",
+      "response": {
+        "__redacted_sensitive_field_count__": 1,
+        "action": "admin_override",
+        "allowed": false,
+        "auto_apply_requested": false,
+        "correction_event": {
+          "action": "admin_override",
+          "allowed": false,
+          "auto_apply_requested": false,
+          "created_at": "2026-05-28T21:38:09.126360Z",
+          "decision": "quarantine",
+          "device_id": "unknown_admin_device_098",
+          "event": {
+            "action": "admin_override",
+            "allowed": false,
+            "auto_apply_requested": false,
+            "created_at": "2026-05-28T21:38:09.079155Z",
+            "decision": "quarantine",
+            "device_id": "unknown_admin_device_098",
+            "event_fingerprint": "06faef1c9599bd31c56369e5e1e329fe4a9a3609b2962ea116f7672457f20d17",
+            "event_id": "risk_evt_pl6ZJVkPCyyH7lE4uo5-5Vao",
+            "event_type": "tower_session_risk_event",
+            "human_reason": "Suspicious admin pattern detected. Contain the subject in quarantine before escalating to outright deny.",
+            "ip_address": "198.51.100.44",
+            "location_hint": "UNKNOWN",
+            "metadata": {},
+            "method": "POST",
+            "ok": true,
+            "pack": "095",
+            "pack095d_override": "admin_suspicion_quarantine_before_deny",
+            "reason_count": 9,
+            "reasons": [
+              {
+                "plain": "Action 'admin_override' carries base risk.",
+                "points": 34,
+                "reason_code": "action_risk_weight"
+              },
+              {
+                "plain": "Route '/admin' carries route risk.",
+                "points": 30,
+                "reason_code": "route_risk_hint"
+              },
+              {
+                "plain": "No known device baseline exists for this user.",
+                "points": 12,
+                "reason_code": "no_device_baseline"
+              },
+              {
+                "plain": "No known IP baseline exists for this user.",
+                "points": 8,
+                "reason_code": "no_ip_baseline"
+              },
+              {
+                "plain": "Request volume is elevated.",
+                "points": 12,
+                "reason_code": "request_rate_elevated"
+              },
+              {
+                "plain": "Several denied route hits occurred recently.",
+                "points": 12,
+                "reason_code": "denied_route_cluster"
+              },
+              {
+                "plain": "A failed keycard attempt occurred.",
+                "points": 12,
+                "reason_code": "failed_keycard_attempt"
+              },
+              {
+                "plain": "Multiple admin actions occurred recently.",
+                "points": 18,
+                "reason_code": "admin_action_cluster"
+              },
+              {
+                "plain": "State-changing HTTP method increases risk.",
+                "points": 8,
+                "reason_code": "state_changing_method"
+              }
+            ],
+            "required_actions": [
+              "quarantine_subject",
+              "owner_review"
+            ],
+            "risk_score": 100,
+            "risk_state": "restricted",
+            "route_path": "/admin",
+            "session_id": "admin_probe_098",
+            "soulaana_translation": "Soulaana: This is suspicious enough for the holding room, not yet a full no-hallway denial.",
+            "user_id": "beta_admin_probe_098"
+          },
+          "event_fingerprint": "b2ec27b0e483d3ecc1b5aad929933e5a07a910944d8947ccfdc52bc408b1d06d",
+          "event_id": "risk_evt_4isYrIF2f5OzgO7h5Bw-PFV5",
+          "event_type": "tower_session_risk_event",
+          "human_reason": "Suspicious admin pattern detected. Contain the subject in quarantine before escalating to outright deny.",
+          "ip_address": "198.51.100.44",
+          "location_hint": "UNKNOWN",
+          "metadata": {
+            "corrected_decision": "quarantine",
+            "original_decision": "deny",
+            "pack": "095D"
+          },
+          "method": "POST",
+          "ok": true,
+          "pack": "095",
+          "pack095d_override": "admin_suspicion_quarantine_before_deny",
+          "reason_code": "pack095d_admin_suspicion_quarantine_override",
+          "reason_count": 9,
+          "reasons": [
+            {
+              "plain": "Action 'admin_override' carries base risk.",
+              "points": 34,
+              "reason_code": "action_risk_weight"
+            },
+            {
+              "plain": "Route '/admin' carries route risk.",
+              "points": 30,
+              "reason_code": "route_risk_hint"
+            },
+            {
+              "plain": "No known device baseline exists for this user.",
+              "points": 12,
+              "reason_code": "no_device_baseline"
+            },
+            {
+              "plain": "No known IP baseline exists for this user.",
+              "points": 8,
+              "reason_code": "no_ip_baseline"
+            },
+            {
+              "plain": "Request volume is elevated.",
+              "points": 12,
+              "reason_code": "request_rate_elevated"
+            },
+            {
+              "plain": "Several denied route hits occurred recently.",
+              "points": 12,
+              "reason_code": "denied_route_cluster"
+            },
+            {
+              "plain": "A failed keycard attempt occurred.",
+              "points": 12,
+              "reason_code": "failed_keycard_attempt"
+            },
+            {
+              "plain": "Multiple admin actions occurred recently.",
+              "points": 18,
+              "reason_code": "admin_action_cluster"
+            },
+            {
+              "plain": "State-changing HTTP method increases risk.",
+              "points": 8,
+              "reason_code": "state_changing_method"
+            }
+          ],
+          "required_actions": [
+            "quarantine_subject",
+            "owner_review"
+          ],
+          "risk_score": 100,
+          "risk_state": "restricted",
+          "route_path": "/admin",
+          "session_id": "admin_probe_098",
+          "soulaana_translation": "Soulaana: This is suspicious enough for the holding room, not yet a full no-hallway denial.",
+          "user_id": "beta_admin_probe_098"
+        },
+        "decision": "quarantine",
+        "device_id": "unknown_admin_device_098",
+        "event": {
+          "action": "admin_override",
+          "allowed": false,
+          "auto_apply_requested": false,
+          "created_at": "2026-05-28T21:38:09.079155Z",
+          "decision": "quarantine",
+          "device_id": "unknown_admin_device_098",
+          "event_fingerprint": "06faef1c9599bd31c56369e5e1e329fe4a9a3609b2962ea116f7672457f20d17",
+          "event_id": "risk_evt_pl6ZJVkPCyyH7lE4uo5-5Vao",
+          "event_type": "tower_session_risk_event",
+          "human_reason": "Suspicious admin pattern detected. Contain the subject in quarantine before escalating to outright deny.",
+          "ip_address": "198.51.100.44",
+          "location_hint": "UNKNOWN",
+          "metadata": {},
+          "method": "POST",
+          "ok": true,
+          "pack": "095",
+          "pack095d_override": "admin_suspicion_quarantine_before_deny",
+          "reason_count": 9,
+          "reasons": [
+            {
+              "plain": "Action 'admin_override' carries base risk.",
+              "points": 34,
+              "reason_code": "action_risk_weight"
+            },
+            {
+              "plain": "Route '/admin' carries route risk.",
+              "points": 30,
+              "reason_code": "route_risk_hint"
+            },
+            {
+              "plain": "No known device baseline exists for this user.",
+              "points": 12,
+              "reason_code": "no_device_baseline"
+            },
+            {
+              "plain": "No known IP baseline exists for this user.",
+              "points": 8,
+              "reason_code": "no_ip_baseline"
+            },
+            {
+              "plain": "Request volume is elevated.",
+              "points": 12,
+              "reason_code": "request_rate_elevated"
+            },
+            {
+              "plain": "Several denied route hits occurred recently.",
+              "points": 12,
+              "reason_code": "denied_route_cluster"
+            },
+            {
+              "plain": "A failed keycard attempt occurred.",
+              "points": 12,
+              "reason_code": "failed_keycard_attempt"
+            },
+            {
+              "plain": "Multiple admin actions occurred recently.",
+              "points": 18,
+              "reason_code": "admin_action_cluster"
+            },
+            {
+              "plain": "State-changing HTTP method increases risk.",
+              "points": 8,
+              "reason_code": "state_changing_method"
+            }
+          ],
+          "required_actions": [
+            "quarantine_subject",
+            "owner_review"
+          ],
+          "risk_score": 100,
+          "risk_state": "restricted",
+          "route_path": "/admin",
+          "session_id": "admin_probe_098",
+          "soulaana_translation": "Soulaana: This is suspicious enough for the holding room, not yet a full no-hallway denial.",
+          "user_id": "beta_admin_probe_098"
+        },
+        "human_reason": "Suspicious admin pattern detected. Contain the subject in quarantine before escalating to outright deny.",
+        "ip_address": "198.51.100.44",
+        "location_hint": "UNKNOWN",
+        "method": "POST",
+        "ok": true,
+        "pack": "095",
+        "pack095d_override": "admin_suspicion_quarantine_before_deny",
+        "reason_count": 9,
+        "reasons": [
+          {
+            "plain": "Action 'admin_override' carries base risk.",
+            "points": 34,
+            "reason_code": "action_risk_weight"
+          },
+          {
+            "plain": "Route '/admin' carries route risk.",
+            "points": 30,
+            "reason_code": "route_risk_hint"
+          },
+          {
+            "plain": "No known device baseline exists for this user.",
+            "points": 12,
+            "reason_code": "no_device_baseline"
+          },
+          {
+            "plain": "No known IP baseline exists for this user.",
+            "points": 8,
+            "reason_code": "no_ip_baseline"
+          },
+          {
+            "plain": "Request volume is elevated.",
+            "points": 12,
+            "reason_code": "request_rate_elevated"
+          },
+          {
+            "plain": "Several denied route hits occurred recently.",
+            "points": 12,
+            "reason_code": "denied_route_cluster"
+          },
+          {
+            "plain": "A failed keycard attempt occurred.",
+            "points": 12,
+            "reason_code": "failed_keycard_attempt"
+          },
+          {
+            "plain": "Multiple admin actions occurred recently.",
+            "points": 18,
+            "reason_code": "admin_action_cluster"
+          },
+          {
+            "plain": "State-changing HTTP method increases risk.",
+            "points": 8,
+            "reason_code": "state_changing_method"
+          }
+        ],
+        "required_actions": [
+          "quarantine_subject",
+          "owner_review"
+        ],
+        "risk_score": 100,
+        "risk_state": "restricted",
+        "route_path": "/admin",
+        "session_id": "admin_probe_098",
+        "soulaana_translation": "Soulaana: This is suspicious enough for the holding room, not yet a full no-hallway denial.",
+        "user_id": "beta_admin_probe_098"
+      },
+      "scenario_id": "admin_attempt",
+      "soulaana_translation": "Soulaana: Rehearsal response stayed inside the expected safety lane."
+    },
+    "scenario_id": "admin_attempt"
+  },
+  {
+    "actor_user_id": "owner_solice",
+    "category": "secrets",
+    "created_at": "2026-05-28T21:38:09.188887Z",
+    "decision": "rehearsal_passed",
+    "decision_family": "reject_raw_secret",
+    "event_fingerprint": "a2663b77b40f17055334af803cf962ad3ce7ba83936151dd45787578426cb9f1",
+    "event_id": "rehearsal_evt_MgGTp-OFa1MdzY1L2AURt1dy",
+    "event_type": "tower_security_rehearsal_event",
+    "pack": "098",
+    "result": {
+      "category": "secrets",
+      "decision_family": "reject_raw_secret",
+      "expected": [
+        "deny",
+        "reject_raw_secret"
+      ],
+      "human_reason": "Scenario responded within expected safety family.",
+      "label": "Secret payload attempt",
+      "ok": true,
+      "plain": "Simulates a raw secret being pushed toward The Tower.",
+      "response": {
+        "decision": "reject_raw_secret",
+        "event": {
+          "__redacted_secret_field_count__": 1,
+          "actor_user_id": "owner_solice",
+          "alias": "rehearsal_bad_secret",
+          "app_id": "tower",
+          "created_at": "2026-05-28T21:38:09.176896Z",
+          "decision": "raw_secret_rejected",
+          "event_fingerprint": "f448e8de5ffcb7b2e425b2272a2a4d2e348fbfd5eb8ed90f34f927226fd50dc5",
+          "event_id": "secret_evt_XkLDhK35p3svTtgXewsAC6NC",
+          "event_type": "tower_secrets_boundary_event",
+          "human_reason": "Raw secret value was rejected. The Tower may only store a reference.",
+          "metadata": {
+            "provided_payload": "[REDACTED_SECRET_VALUE]",
+            "request_metadata": {
+              "pack": "098"
+            }
+          },
+          "pack": "096",
+          "reason_code": "tower_cannot_store_raw_secret_value",
+          "secret_type": "github_token",
+          "soulaana_translation": "Soulaana: Absolutely not. Raw secrets do not live in The Tower."
+        },
+        "human_reason": "Raw secret value rejected. Store the value in Secrets Vault, then register only the reference.",
+        "ok": false,
+        "reason_code": "tower_cannot_store_raw_secret_value",
+        "required_actions": [
+          "store_secret_in_external_vault",
+          "register_reference_only"
+        ],
+        "soulaana_translation": "Soulaana: The secret itself belongs in the Vault. The Tower only keeps the label and permission trail."
+      },
+      "scenario_id": "secret_payload_attempt",
+      "soulaana_translation": "Soulaana: Rehearsal response stayed inside the expected safety lane."
+    },
+    "scenario_id": "secret_payload_attempt"
+  },
+  {
+    "actor_user_id": "owner_solice",
+    "category": "privacy",
+    "created_at": "2026-05-28T21:38:09.227462Z",
+    "decision": "rehearsal_passed",
+    "decision_family": "step_up_required",
+    "event_fingerprint": "db2521f3781e63bba3489694fcf71e31c4578f47eb05d0db0746f5810cdd60dc",
+    "event_id": "rehearsal_evt_cyAHsb8PuZuOfAJ62D-BAPgh",
+    "event_type": "tower_security_rehearsal_event",
+    "pack": "098",
+    "result": {
+      "category": "privacy",
+      "decision_family": "step_up_required",
+      "expected": [
+        "step_up_required",
+        "summary_only"
+      ],
+      "human_reason": "Scenario responded within expected safety family.",
+      "label": "Sensitive reveal attempt",
+      "ok": true,
+      "plain": "Simulates a request for sensitive object detail without fresh step-up.",
+      "response": {
+        "decision": "step_up_required",
+        "human_reason": "Step-up verification is required before sensitive details can reveal.",
+        "ok": true,
+        "reason_code": "step_up_required_for_sensitive_reveal",
+        "receipt": {
+          "__redacted_sensitive_field_count__": 1,
+          "action": "reveal_payroll_detail",
+          "actor_user_id": "owner_solice",
+          "app_id": "teller",
+          "created_at": "2026-05-28T21:38:09.212283Z",
+          "decision": "reveal_step_up_required",
+          "event_type": "tower_redaction_reveal_receipt",
+          "metadata": {
+            "__redacted_sensitive_field_count__": 2,
+            "session_id": "[REDACTED_SENSITIVE]"
+          },
+          "object_id": "worker_rehearsal_098",
+          "object_type": "worker_profile",
+          "pack": "097",
+          "reason_code": "step_up_required_for_sensitive_reveal",
+          "receipt_fingerprint": "2d9ec8ad99b0ca2ee4577cbc585e8d3a1f6aaa7310c7aa3d4c55df22f1cc0ecc",
+          "receipt_id": "reveal_receipt_7635xTq10VicnVnwIKugSPah",
+          "route_path": "/tower/security-command",
+          "step_up": {
+            "allowed_methods": [
+              "owner_pin",
+              "fresh_keycard"
+            ],
+            "decision": "step_up_required",
+            "human_reason": "Sensitive details should stay redacted until a fresh verification exists.",
+            "ok": true,
+            "reason_code": "step_up_required_for_sensitive_reveal",
+            "required_actions": [
+              "complete_step_up_auth"
+            ],
+            "risk_score": 62,
+            "risk_state": "restricted",
+            "soulaana_translation": "Soulaana: This button is powerful. Verify again before it moves.",
+            "step_up_required": true,
+            "ttl_minutes": 10
+          }
+        },
+        "required_actions": [
+          "complete_step_up_auth"
+        ],
+        "reveal_allowed": false,
+        "soulaana_translation": "Soulaana: Summary stays visible. Details wait for a fresh owner check.",
+        "step_up": {
+          "allowed_methods": [
+            "owner_pin",
+            "fresh_keycard"
+          ],
+          "decision": "step_up_required",
+          "human_reason": "Sensitive details should stay redacted until a fresh verification exists.",
+          "ok": true,
+          "reason_code": "step_up_required_for_sensitive_reveal",
+          "required_actions": [
+            "complete_step_up_auth"
+          ],
+          "risk_score": 62,
+          "risk_state": "restricted",
+          "soulaana_translation": "Soulaana: This button is powerful. Verify again before it moves.",
+          "step_up_required": true,
+          "ttl_minutes": 10
+        },
+        "summary": {
+          "actor_user_id": "owner_solice",
+          "app_id": "teller",
+          "created_at": "2026-05-28T21:38:09.206693Z",
+          "decision": "summary_only",
+          "human_reason": "Redacted summary returned by default.",
+          "leakage_scan": {
+            "forbidden_hit_count": 0,
+            "had_forbidden_hits": false,
+            "ok": true
+          },
+          "mode": "redacted_summary",
+          "object_id": "worker_rehearsal_098",
+          "object_type": "worker_profile",
+          "ok": true,
+          "payload_fingerprint": "5823d2c0af11e231cbd7124af2941c1a8edc3ca7d8809ac4fc86f23b05910814",
+          "policy": {
+            "redaction_by_default": true,
+            "requires_reveal_request_for_sensitive_detail": true,
+            "secret_values_never_revealed": true
+          },
+          "reason": "reveal_request_default_summary",
+          "redacted_payload": {
+            "__redacted_sensitive_field_count__": 4,
+            "bank_account": "[REDACTED_SENSITIVE]",
+            "email": "[REDACTED_SENSITIVE]",
+            "object_id": "worker_rehearsal_098",
+            "object_type": "worker_profile",
+            "payroll_amount": "[REDACTED_NUMBER]",
+            "status": "active",
+            "title": "Worker rehearsal"
+          },
+          "soulaana_translation": "Soulaana: Summary only. Sensitive details stay behind the clearance glass."
+        }
+      },
+      "scenario_id": "sensitive_reveal_attempt",
+      "soulaana_translation": "Soulaana: Rehearsal response stayed inside the expected safety lane."
+    },
+    "scenario_id": "sensitive_reveal_attempt"
+  }
+]

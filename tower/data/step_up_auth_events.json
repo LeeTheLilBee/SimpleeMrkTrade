@@ -1359,5 +1359,347 @@
     "route_path": "/export",
     "session_id": "sess_auto_step_095",
     "user_id": "owner_solice"
+  },
+  {
+    "action": "sensitive_reveal",
+    "created_at": "2026-05-28T21:24:15.811687Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "ad137373eada84d9bfcb811bbbbe6a2cbf9e588a43eb60ea8926b37ffd1957fe",
+    "event_id": "stepup_evt_b7pF2RzFtZxSCCConUOCrqLA",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "sensitive_reveal",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard"
+        ],
+        "plain": "Sensitive details should stay redacted until a fresh verification exists.",
+        "reason_code": "step_up_required_for_sensitive_reveal",
+        "required": true,
+        "risk_score": 62,
+        "risk_state": "restricted",
+        "ttl_minutes": 10
+      },
+      "risk_context": {
+        "action": "reveal_payroll_detail",
+        "object_id": "worker_001",
+        "object_type": "worker_profile",
+        "reveal_fields": [
+          "email",
+          "payroll_amount",
+          "bank_account"
+        ]
+      }
+    },
+    "object_id": "worker_001",
+    "object_type": "worker_profile",
+    "pack": "092",
+    "reason_code": "step_up_required_for_sensitive_reveal",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_reveal_097",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "sensitive_reveal",
+    "challenge_id": "stepup_chal_KitELXg_64Ptbp_q_0gigAC7",
+    "created_at": "2026-05-28T21:24:15.864158Z",
+    "decision": "challenge_created",
+    "event_fingerprint": "13752fbc81cb3724a50ab21f4b6b342045ee9e0cc3a98ed8beafbd333ca55eb2",
+    "event_id": "stepup_evt_w4DkIgxh4fySHdxfYBHhDUM1",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T21:34:15.859286Z",
+      "method": "owner_pin"
+    },
+    "object_id": "worker_001",
+    "object_type": "worker_profile",
+    "pack": "092",
+    "reason_code": "step_up_required_for_sensitive_reveal",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_reveal_097",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "sensitive_reveal",
+    "challenge_id": "stepup_chal_KitELXg_64Ptbp_q_0gigAC7",
+    "created_at": "2026-05-28T21:24:15.880935Z",
+    "decision": "verified",
+    "event_fingerprint": "bc139a469c49762d0eef4ef4a4267637bae3ad76572692d7a07d5191d3933704",
+    "event_id": "stepup_evt_O_d4gyYhcM_PybH4BC9mnbEI",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "expires_at": "2026-05-28T21:34:15.859286Z",
+      "method": "owner_pin"
+    },
+    "object_id": "worker_001",
+    "object_type": "worker_profile",
+    "pack": "092",
+    "reason_code": "step_up_challenge_verified",
+    "route_path": "/tower/security-command",
+    "session_id": "sess_reveal_097",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "unknown",
+    "challenge_id": "missing_challenge_wrong_keycard_098",
+    "created_at": "2026-05-28T21:32:08.095716Z",
+    "decision": "deny",
+    "event_fingerprint": "0a3548a014d8a4b87ac3fda8595db65601574d5e910ff1cfc1bc70b4035ec161",
+    "event_id": "stepup_evt_Kh7YkoIfO3aXDUNT441kFZKQ",
+    "event_type": "tower_step_up_auth_event",
+    "pack": "092",
+    "reason_code": "step_up_challenge_not_found",
+    "user_id": "intruder_098"
+  },
+  {
+    "action": "sensitive_reveal",
+    "created_at": "2026-05-28T21:32:08.111771Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "cc72c1fa178f0e265db84d0fbbb63e309751229d0b50029b765e44970572c055",
+    "event_id": "stepup_evt_QhVM3VjsKswdxfaooXB_BV9j",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "sensitive_reveal",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard"
+        ],
+        "plain": "Sensitive details should stay redacted until a fresh verification exists.",
+        "reason_code": "step_up_required_for_sensitive_reveal",
+        "required": true,
+        "risk_score": 62,
+        "risk_state": "restricted",
+        "ttl_minutes": 10
+      },
+      "risk_context": {
+        "expired_keycard_simulation": true
+      }
+    },
+    "object_id": "expired_keycard_098",
+    "object_type": "worker_profile",
+    "pack": "092",
+    "reason_code": "step_up_required_for_sensitive_reveal",
+    "route_path": "/tower/security-command",
+    "session_id": "expired_sess_098",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "sensitive_reveal",
+    "created_at": "2026-05-28T21:32:08.301635Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "48b41c4262ceec722fb8a6773974273b37266756507984627912c8f3bceb3200",
+    "event_id": "stepup_evt_mEiNFpGHlIfzDz7e_hDT-06j",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "sensitive_reveal",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard"
+        ],
+        "plain": "Sensitive details should stay redacted until a fresh verification exists.",
+        "reason_code": "step_up_required_for_sensitive_reveal",
+        "required": true,
+        "risk_score": 62,
+        "risk_state": "restricted",
+        "ttl_minutes": 10
+      },
+      "risk_context": {
+        "action": "reveal_payroll_detail",
+        "object_id": "worker_rehearsal_098",
+        "object_type": "worker_profile",
+        "reveal_fields": [
+          "email",
+          "bank_account",
+          "payroll_amount"
+        ]
+      }
+    },
+    "object_id": "worker_rehearsal_098",
+    "object_type": "worker_profile",
+    "pack": "092",
+    "reason_code": "step_up_required_for_sensitive_reveal",
+    "route_path": "/tower/security-command",
+    "session_id": "sensitive_reveal_rehearsal_098",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "unknown",
+    "challenge_id": "missing_challenge_wrong_keycard_098",
+    "created_at": "2026-05-28T21:35:24.571771Z",
+    "decision": "deny",
+    "event_fingerprint": "2fea00dc335716366b5f90ef2d881c6ddbbdc453624a33afe0744db57daec626",
+    "event_id": "stepup_evt_NmE_S4oSlQKcSoLHIRr85kzB",
+    "event_type": "tower_step_up_auth_event",
+    "pack": "092",
+    "reason_code": "step_up_challenge_not_found",
+    "user_id": "intruder_098"
+  },
+  {
+    "action": "sensitive_reveal",
+    "created_at": "2026-05-28T21:35:24.588394Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "80ea2d73dbdd2693ed97c99405bf97dca18794759ddc28b29af10fee1783aae6",
+    "event_id": "stepup_evt_5ivM-hM-rMp5uZ1NSwC893f7",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "sensitive_reveal",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard"
+        ],
+        "plain": "Sensitive details should stay redacted until a fresh verification exists.",
+        "reason_code": "step_up_required_for_sensitive_reveal",
+        "required": true,
+        "risk_score": 62,
+        "risk_state": "restricted",
+        "ttl_minutes": 10
+      },
+      "risk_context": {
+        "expired_keycard_simulation": true
+      }
+    },
+    "object_id": "expired_keycard_098",
+    "object_type": "worker_profile",
+    "pack": "092",
+    "reason_code": "step_up_required_for_sensitive_reveal",
+    "route_path": "/tower/security-command",
+    "session_id": "expired_sess_098",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "sensitive_reveal",
+    "created_at": "2026-05-28T21:35:24.788827Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "d086e1e68e981287ce8f80c4d9410447dc927a81c13d5d807738cd3883edaa88",
+    "event_id": "stepup_evt_IgySOG92BClBjsXrz8R5kAoX",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "sensitive_reveal",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard"
+        ],
+        "plain": "Sensitive details should stay redacted until a fresh verification exists.",
+        "reason_code": "step_up_required_for_sensitive_reveal",
+        "required": true,
+        "risk_score": 62,
+        "risk_state": "restricted",
+        "ttl_minutes": 10
+      },
+      "risk_context": {
+        "action": "reveal_payroll_detail",
+        "object_id": "worker_rehearsal_098",
+        "object_type": "worker_profile",
+        "reveal_fields": [
+          "email",
+          "bank_account",
+          "payroll_amount"
+        ]
+      }
+    },
+    "object_id": "worker_rehearsal_098",
+    "object_type": "worker_profile",
+    "pack": "092",
+    "reason_code": "step_up_required_for_sensitive_reveal",
+    "route_path": "/tower/security-command",
+    "session_id": "sensitive_reveal_rehearsal_098",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "unknown",
+    "challenge_id": "missing_challenge_wrong_keycard_098",
+    "created_at": "2026-05-28T21:38:08.859048Z",
+    "decision": "deny",
+    "event_fingerprint": "8a3917892d648926c764a53f624f53601229cee9bc2953da7c3825f67913b534",
+    "event_id": "stepup_evt_JXXnNpKX7-9vSRcV9B43jGp0",
+    "event_type": "tower_step_up_auth_event",
+    "pack": "092",
+    "reason_code": "step_up_challenge_not_found",
+    "user_id": "intruder_098"
+  },
+  {
+    "action": "sensitive_reveal",
+    "created_at": "2026-05-28T21:38:08.876500Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "5d1c07ffc886e6b5b1258a34e64e18c143b7d1269a5104de3bc7d00b878a2c3d",
+    "event_id": "stepup_evt_Rcu9v-agOk6A1zjTyAqKL-2y",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "sensitive_reveal",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard"
+        ],
+        "plain": "Sensitive details should stay redacted until a fresh verification exists.",
+        "reason_code": "step_up_required_for_sensitive_reveal",
+        "required": true,
+        "risk_score": 62,
+        "risk_state": "restricted",
+        "ttl_minutes": 10
+      },
+      "risk_context": {
+        "expired_keycard_simulation": true
+      }
+    },
+    "object_id": "expired_keycard_098",
+    "object_type": "worker_profile",
+    "pack": "092",
+    "reason_code": "step_up_required_for_sensitive_reveal",
+    "route_path": "/tower/security-command",
+    "session_id": "expired_sess_098",
+    "user_id": "owner_solice"
+  },
+  {
+    "action": "sensitive_reveal",
+    "created_at": "2026-05-28T21:38:09.207069Z",
+    "decision": "step_up_required",
+    "event_fingerprint": "473e56d46839c23b2277ae4c2ac8253196db458ce1d9958f06d774f589229712",
+    "event_id": "stepup_evt_JS4o68iSn5YPzdciMeGkmTYY",
+    "event_type": "tower_step_up_auth_event",
+    "metadata": {
+      "policy": {
+        "action": "sensitive_reveal",
+        "known_action": true,
+        "methods": [
+          "owner_pin",
+          "fresh_keycard"
+        ],
+        "plain": "Sensitive details should stay redacted until a fresh verification exists.",
+        "reason_code": "step_up_required_for_sensitive_reveal",
+        "required": true,
+        "risk_score": 62,
+        "risk_state": "restricted",
+        "ttl_minutes": 10
+      },
+      "risk_context": {
+        "action": "reveal_payroll_detail",
+        "object_id": "worker_rehearsal_098",
+        "object_type": "worker_profile",
+        "reveal_fields": [
+          "email",
+          "bank_account",
+          "payroll_amount"
+        ]
+      }
+    },
+    "object_id": "worker_rehearsal_098",
+    "object_type": "worker_profile",
+    "pack": "092",
+    "reason_code": "step_up_required_for_sensitive_reveal",
+    "route_path": "/tower/security-command",
+    "session_id": "sensitive_reveal_rehearsal_098",
+    "user_id": "owner_solice"
   }
 ]

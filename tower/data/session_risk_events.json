@@ -1,397 +1,85 @@
 [
   {
     "__redacted_sensitive_field_count__": 1,
-    "actor_user_id": "owner_solice",
-    "created_at": "2026-05-28T20:49:08.638090Z",
-    "decision": "baseline_registered",
-    "device_id": "known_device_001",
-    "event_fingerprint": "a2f8a88fae4f65cf7cded9d0c4650ac051cb411ae8de39dcd741f230ac5487d9",
-    "event_id": "risk_evt_W6fAda6u5PgoZKtOgWjSK4ME",
-    "event_type": "tower_session_risk_event",
-    "ip_address": "10.0.0.5",
-    "location_hint": "GA",
-    "metadata": {
-      "pack": "095"
-    },
-    "pack": "095",
-    "reason_code": "known_session_baseline_registered",
-    "user_id": "owner_solice"
-  },
-  {
-    "__redacted_sensitive_field_count__": 1,
-    "action": "view_status",
-    "allowed": true,
-    "auto_apply_requested": false,
-    "created_at": "2026-05-28T20:49:08.647040Z",
-    "decision": "allow",
-    "device_id": "known_device_001",
-    "event_fingerprint": "7d61e3754b72edd772f4c6a58d8601d8ef92b81a26a52a3b2759465f2bf8810b",
-    "event_id": "risk_evt_3cJB0SMlw0Iavv_VCi0rF-mU",
-    "event_type": "tower_session_risk_event",
-    "human_reason": "Risk is low. Normal clearance rules can continue.",
-    "ip_address": "10.0.0.5",
-    "location_hint": "GA",
-    "metadata": {},
-    "method": "GET",
-    "ok": true,
-    "pack": "095",
-    "reason_count": 1,
-    "reasons": [
-      {
-        "plain": "Route '/tower/status.json' carries route risk.",
-        "points": 4,
-        "reason_code": "route_risk_hint"
-      }
-    ],
-    "required_actions": [],
-    "risk_score": 4,
-    "risk_state": "clear",
-    "route_path": "/tower/status.json",
-    "session_id": "sess_allow_095",
-    "soulaana_translation": "Soulaana: The threat meter is quiet. Let normal clearance decide.",
-    "user_id": "owner_solice"
-  },
-  {
     "action": "export",
     "allowed": false,
     "auto_apply_requested": false,
-    "created_at": "2026-05-28T20:49:08.654050Z",
-    "decision": "throttle",
-    "device_id": "known_device_001",
-    "event_fingerprint": "fc7f473f24cbf35f0d8fee1d8d64eb38aaadb1bfacffeafcb3416deeb984d35e",
-    "event_id": "risk_evt_WQt-63SUVOWjVHJBhBn7zMPQ",
-    "event_type": "tower_session_risk_event",
-    "human_reason": "Risk suggests possible automation or probing. Slow the request path.",
-    "ip_address": "10.0.0.5",
-    "location_hint": "GA",
-    "metadata": {},
-    "method": "POST",
-    "ok": true,
-    "pack": "095",
-    "reason_count": 3,
-    "reasons": [
-      {
-        "plain": "Action 'export' carries base risk.",
-        "points": 24,
-        "reason_code": "action_risk_weight"
-      },
-      {
-        "plain": "Route '/export' carries route risk.",
-        "points": 24,
-        "reason_code": "route_risk_hint"
-      },
-      {
-        "plain": "State-changing HTTP method increases risk.",
-        "points": 8,
-        "reason_code": "state_changing_method"
-      }
-    ],
-    "required_actions": [
-      "slow_request_rate",
-      "complete_step_up_auth_if_sensitive"
-    ],
-    "risk_score": 56,
-    "risk_state": "watch",
-    "route_path": "/export",
-    "session_id": "sess_step_095",
-    "soulaana_translation": "Soulaana: Slow this down. Fast hands do not get to rush the Tower.",
-    "user_id": "owner_solice"
-  },
-  {
-    "action": "export",
-    "allowed": false,
-    "auto_apply_requested": false,
-    "created_at": "2026-05-28T20:49:08.661727Z",
-    "decision": "step_up",
-    "device_id": "known_device_001",
-    "event": {
-      "action": "export",
-      "allowed": false,
-      "auto_apply_requested": false,
-      "created_at": "2026-05-28T20:49:08.654050Z",
-      "decision": "step_up",
-      "device_id": "known_device_001",
-      "event_fingerprint": "fc7f473f24cbf35f0d8fee1d8d64eb38aaadb1bfacffeafcb3416deeb984d35e",
-      "event_id": "risk_evt_WQt-63SUVOWjVHJBhBn7zMPQ",
-      "event_type": "tower_session_risk_event",
-      "human_reason": "Clean sensitive action requires fresh verification before continuing.",
-      "ip_address": "10.0.0.5",
-      "location_hint": "GA",
-      "metadata": {},
-      "method": "POST",
-      "ok": true,
-      "pack": "095",
-      "pack095b_override": "clean_sensitive_action_step_up_before_throttle",
-      "reason_count": 3,
-      "reasons": [
-        {
-          "plain": "Action 'export' carries base risk.",
-          "points": 24,
-          "reason_code": "action_risk_weight"
-        },
-        {
-          "plain": "Route '/export' carries route risk.",
-          "points": 24,
-          "reason_code": "route_risk_hint"
-        },
-        {
-          "plain": "State-changing HTTP method increases risk.",
-          "points": 8,
-          "reason_code": "state_changing_method"
-        }
-      ],
-      "required_actions": [
-        "complete_step_up_auth"
-      ],
-      "risk_score": 56,
-      "risk_state": "watch",
-      "route_path": "/export",
-      "session_id": "sess_step_095",
-      "soulaana_translation": "Soulaana: This is sensitive, not spammy. Ask for a fresh owner check before it moves.",
-      "user_id": "owner_solice"
-    },
-    "event_fingerprint": "8afac915a28c0dde9851b0ae8698a93b451c2b2990f86a49d18eb25f2a95e583",
-    "event_id": "risk_evt_3UoQDnemr10cVHgHl7Xwfjtq",
-    "event_type": "tower_session_risk_event",
-    "human_reason": "Clean sensitive action requires fresh verification before continuing.",
-    "ip_address": "10.0.0.5",
-    "location_hint": "GA",
-    "metadata": {
-      "corrected_decision": "step_up",
-      "original_decision": "throttle",
-      "pack": "095B"
-    },
-    "method": "POST",
-    "ok": true,
-    "pack": "095",
-    "pack095b_override": "clean_sensitive_action_step_up_before_throttle",
-    "reason_code": "pack095b_clean_sensitive_step_up_override",
-    "reason_count": 3,
-    "reasons": [
-      {
-        "plain": "Action 'export' carries base risk.",
-        "points": 24,
-        "reason_code": "action_risk_weight"
-      },
-      {
-        "plain": "Route '/export' carries route risk.",
-        "points": 24,
-        "reason_code": "route_risk_hint"
-      },
-      {
-        "plain": "State-changing HTTP method increases risk.",
-        "points": 8,
-        "reason_code": "state_changing_method"
-      }
-    ],
-    "required_actions": [
-      "complete_step_up_auth"
-    ],
-    "risk_score": 56,
-    "risk_state": "watch",
-    "route_path": "/export",
-    "session_id": "sess_step_095",
-    "soulaana_translation": "Soulaana: This is sensitive, not spammy. Ask for a fresh owner check before it moves.",
-    "user_id": "owner_solice"
-  },
-  {
-    "action": "view_summary",
-    "allowed": false,
-    "auto_apply_requested": false,
-    "created_at": "2026-05-28T20:49:08.670895Z",
+    "created_at": "2026-05-28T21:38:08.893402Z",
     "decision": "quarantine",
-    "device_id": "known_device_001",
-    "event_fingerprint": "89c7ceb1100f85c3ab6a0c817600760be6c9f023c9acdfe2be764a6f97385005",
-    "event_id": "risk_evt_Ei_TtBB6N8bDVVuB7VpCBjEb",
+    "device_id": "known_device_export_098",
+    "event_fingerprint": "4ea1b0d2a5779add4e3ed9bb9ebff04931362816a2ef4882d9835a2b750c264e",
+    "event_id": "risk_evt_3Sa-JJUs8A5Bsoae-hbS0JWM",
     "event_type": "tower_session_risk_event",
     "human_reason": "Risk is restricted-level. Contain this subject in quarantine for owner review.",
     "ip_address": "10.0.0.5",
     "location_hint": "GA",
     "metadata": {},
-    "method": "GET",
+    "method": "POST",
     "ok": true,
     "pack": "095",
-    "reason_count": 4,
+    "reason_count": 5,
     "reasons": [
       {
-        "plain": "Action 'view_summary' carries base risk.",
-        "points": 18,
+        "plain": "Action 'export' carries base risk.",
+        "points": 24,
         "reason_code": "action_risk_weight"
       },
       {
-        "plain": "Route '/signals' carries route risk.",
-        "points": 10,
+        "plain": "Route '/export' carries route risk.",
+        "points": 24,
         "reason_code": "route_risk_hint"
       },
       {
-        "plain": "High request volume suggests scraping or automation abuse.",
-        "points": 28,
-        "reason_code": "scraping_behavior_high"
+        "plain": "No known device baseline exists for this user.",
+        "points": 12,
+        "reason_code": "no_device_baseline"
       },
       {
-        "plain": "Several denied route hits occurred recently.",
-        "points": 12,
-        "reason_code": "denied_route_cluster"
+        "plain": "No known IP baseline exists for this user.",
+        "points": 8,
+        "reason_code": "no_ip_baseline"
+      },
+      {
+        "plain": "State-changing HTTP method increases risk.",
+        "points": 8,
+        "reason_code": "state_changing_method"
       }
     ],
     "required_actions": [
       "quarantine_subject",
       "owner_review"
     ],
-    "risk_score": 68,
+    "risk_score": 76,
     "risk_state": "restricted",
-    "route_path": "/signals",
-    "session_id": "sess_throttle_095",
+    "route_path": "/export",
+    "session_id": "rehearsal_export_098",
     "soulaana_translation": "Soulaana: Put this subject in the holding room before it touches anything sharp.",
     "user_id": "owner_solice"
   },
   {
-    "action": "view_summary",
-    "allowed": false,
-    "auto_apply_requested": false,
-    "created_at": "2026-05-28T20:49:08.679692Z",
-    "decision": "throttle",
-    "device_id": "known_device_001",
-    "event": {
-      "action": "view_summary",
-      "allowed": false,
-      "auto_apply_requested": false,
-      "created_at": "2026-05-28T20:49:08.670895Z",
-      "decision": "throttle",
-      "device_id": "known_device_001",
-      "event_fingerprint": "89c7ceb1100f85c3ab6a0c817600760be6c9f023c9acdfe2be764a6f97385005",
-      "event_id": "risk_evt_Ei_TtBB6N8bDVVuB7VpCBjEb",
-      "event_type": "tower_session_risk_event",
-      "human_reason": "Moderate request noise detected. Slow the subject before escalating to quarantine.",
-      "ip_address": "10.0.0.5",
-      "location_hint": "GA",
-      "metadata": {},
-      "method": "GET",
-      "ok": true,
-      "pack": "095",
-      "pack095c_override": "moderate_noise_throttle_before_quarantine",
-      "reason_count": 4,
-      "reasons": [
-        {
-          "plain": "Action 'view_summary' carries base risk.",
-          "points": 18,
-          "reason_code": "action_risk_weight"
-        },
-        {
-          "plain": "Route '/signals' carries route risk.",
-          "points": 10,
-          "reason_code": "route_risk_hint"
-        },
-        {
-          "plain": "High request volume suggests scraping or automation abuse.",
-          "points": 28,
-          "reason_code": "scraping_behavior_high"
-        },
-        {
-          "plain": "Several denied route hits occurred recently.",
-          "points": 12,
-          "reason_code": "denied_route_cluster"
-        }
-      ],
-      "required_actions": [
-        "slow_request_rate",
-        "complete_step_up_auth_if_sensitive"
-      ],
-      "risk_score": 68,
-      "risk_state": "watch",
-      "route_path": "/signals",
-      "session_id": "sess_throttle_095",
-      "soulaana_translation": "Soulaana: This looks noisy, not catastrophic. Slow it down before reaching for the holding room.",
-      "user_id": "owner_solice"
-    },
-    "event_fingerprint": "4f06cccc6ddd7d37749075a22fa77b9edd15574dcf0beb5365438a0cefce0e76",
-    "event_id": "risk_evt_nXukSBKrQ92dD29QU2k0nt-p",
-    "event_type": "tower_session_risk_event",
-    "human_reason": "Moderate request noise detected. Slow the subject before escalating to quarantine.",
-    "ip_address": "10.0.0.5",
-    "location_hint": "GA",
-    "metadata": {
-      "corrected_decision": "throttle",
-      "original_decision": "quarantine",
-      "pack": "095C"
-    },
-    "method": "GET",
-    "ok": true,
-    "pack": "095",
-    "pack095c_override": "moderate_noise_throttle_before_quarantine",
-    "reason_code": "pack095c_moderate_noise_throttle_override",
-    "reason_count": 4,
-    "reasons": [
-      {
-        "plain": "Action 'view_summary' carries base risk.",
-        "points": 18,
-        "reason_code": "action_risk_weight"
-      },
-      {
-        "plain": "Route '/signals' carries route risk.",
-        "points": 10,
-        "reason_code": "route_risk_hint"
-      },
-      {
-        "plain": "High request volume suggests scraping or automation abuse.",
-        "points": 28,
-        "reason_code": "scraping_behavior_high"
-      },
-      {
-        "plain": "Several denied route hits occurred recently.",
-        "points": 12,
-        "reason_code": "denied_route_cluster"
-      }
-    ],
-    "required_actions": [
-      "slow_request_rate",
-      "complete_step_up_auth_if_sensitive"
-    ],
-    "risk_score": 68,
-    "risk_state": "watch",
-    "route_path": "/signals",
-    "session_id": "sess_throttle_095",
-    "soulaana_translation": "Soulaana: This looks noisy, not catastrophic. Slow it down before reaching for the holding room.",
-    "user_id": "owner_solice"
-  },
-  {
+    "__redacted_sensitive_field_count__": 1,
     "action": "admin_override",
     "allowed": false,
     "auto_apply_requested": false,
-    "created_at": "2026-05-28T20:49:08.690311Z",
+    "created_at": "2026-05-28T21:38:08.924949Z",
     "decision": "deny",
-    "device_id": "unknown_device_095",
-    "event_fingerprint": "60c9ea561b092e37d1a55e1828deed4cf7e4b728010aa3555a24b99aca07f54c",
-    "event_id": "risk_evt_kt_DvenPxO57FvwNT1_M50HL",
+    "device_id": "unknown_device_098",
+    "event_fingerprint": "f76e90e395ccd0e88cdea64d93b073aba6bc16f984d5052f726d5ca875e162db",
+    "event_id": "risk_evt_aSrSrvmceNKEnwYEHOJSRnIT",
     "event_type": "tower_session_risk_event",
     "human_reason": "Risk is critical and request should be denied outright.",
-    "ip_address": "10.0.0.99",
-    "location_hint": "GA",
+    "ip_address": "203.0.113.98",
+    "location_hint": "UNKNOWN",
     "metadata": {},
     "method": "POST",
     "ok": true,
     "pack": "095",
-    "reason_count": 9,
+    "reason_count": 7,
     "reasons": [
       {
         "plain": "Action 'admin_override' carries base risk.",
         "points": 34,
         "reason_code": "action_risk_weight"
-      },
-      {
-        "plain": "Route '/admin' carries route risk.",
-        "points": 30,
-        "reason_code": "route_risk_hint"
-      },
-      {
-        "plain": "Device is not in known baseline for this user.",
-        "points": 22,
-        "reason_code": "unfamiliar_device"
-      },
-      {
-        "plain": "IP address differs from known baseline for this user.",
-        "points": 18,
-        "reason_code": "ip_shift"
       },
       {
         "plain": "Request volume is elevated.",
@@ -409,14 +97,19 @@
         "reason_code": "failed_keycard_attempt"
       },
       {
-        "plain": "Multiple admin actions occurred recently.",
-        "points": 18,
-        "reason_code": "admin_action_cluster"
+        "plain": "A suspicious behavior pattern was detected.",
+        "points": 14,
+        "reason_code": "suspicious_pattern"
       },
       {
         "plain": "State-changing HTTP method increases risk.",
         "points": 8,
         "reason_code": "state_changing_method"
+      },
+      {
+        "plain": "Anonymous/public user attempted a sensitive action.",
+        "points": 20,
+        "reason_code": "anonymous_sensitive_action"
       }
     ],
     "required_actions": [
@@ -425,213 +118,45 @@
     ],
     "risk_score": 100,
     "risk_state": "critical",
-    "route_path": "/admin",
-    "session_id": "sess_quarantine_095",
+    "route_path": "/unknown/private/probe/098",
+    "session_id": "unknown_route_098",
     "soulaana_translation": "Soulaana: No. That request does not get a hallway.",
-    "user_id": "owner_solice"
+    "user_id": "anonymous"
   },
   {
-    "action": "admin_override",
+    "__redacted_sensitive_field_count__": 1,
+    "action": "disable_security",
     "allowed": false,
     "auto_apply_requested": false,
-    "created_at": "2026-05-28T20:49:08.707279Z",
-    "decision": "quarantine",
-    "device_id": "unknown_device_095",
-    "event": {
-      "action": "admin_override",
-      "allowed": false,
-      "auto_apply_requested": false,
-      "created_at": "2026-05-28T20:49:08.690311Z",
-      "decision": "quarantine",
-      "device_id": "unknown_device_095",
-      "event_fingerprint": "60c9ea561b092e37d1a55e1828deed4cf7e4b728010aa3555a24b99aca07f54c",
-      "event_id": "risk_evt_kt_DvenPxO57FvwNT1_M50HL",
-      "event_type": "tower_session_risk_event",
-      "human_reason": "Suspicious admin pattern detected. Contain the subject in quarantine before escalating to outright deny.",
-      "ip_address": "10.0.0.99",
-      "location_hint": "GA",
-      "metadata": {},
-      "method": "POST",
-      "ok": true,
-      "pack": "095",
-      "pack095d_override": "admin_suspicion_quarantine_before_deny",
-      "reason_count": 9,
-      "reasons": [
-        {
-          "plain": "Action 'admin_override' carries base risk.",
-          "points": 34,
-          "reason_code": "action_risk_weight"
-        },
-        {
-          "plain": "Route '/admin' carries route risk.",
-          "points": 30,
-          "reason_code": "route_risk_hint"
-        },
-        {
-          "plain": "Device is not in known baseline for this user.",
-          "points": 22,
-          "reason_code": "unfamiliar_device"
-        },
-        {
-          "plain": "IP address differs from known baseline for this user.",
-          "points": 18,
-          "reason_code": "ip_shift"
-        },
-        {
-          "plain": "Request volume is elevated.",
-          "points": 12,
-          "reason_code": "request_rate_elevated"
-        },
-        {
-          "plain": "Several denied route hits occurred recently.",
-          "points": 12,
-          "reason_code": "denied_route_cluster"
-        },
-        {
-          "plain": "A failed keycard attempt occurred.",
-          "points": 12,
-          "reason_code": "failed_keycard_attempt"
-        },
-        {
-          "plain": "Multiple admin actions occurred recently.",
-          "points": 18,
-          "reason_code": "admin_action_cluster"
-        },
-        {
-          "plain": "State-changing HTTP method increases risk.",
-          "points": 8,
-          "reason_code": "state_changing_method"
-        }
-      ],
-      "required_actions": [
-        "quarantine_subject",
-        "owner_review"
-      ],
-      "risk_score": 100,
-      "risk_state": "restricted",
-      "route_path": "/admin",
-      "session_id": "sess_quarantine_095",
-      "soulaana_translation": "Soulaana: This is suspicious enough for the holding room, not yet a full no-hallway denial.",
-      "user_id": "owner_solice"
-    },
-    "event_fingerprint": "c53c1dac8928f6714882d80aa38a8f3ecba070bd4978ec906ee0505bc360c243",
-    "event_id": "risk_evt_gG3u8FjxsLWWI1Ytyu890LlN",
-    "event_type": "tower_session_risk_event",
-    "human_reason": "Suspicious admin pattern detected. Contain the subject in quarantine before escalating to outright deny.",
-    "ip_address": "10.0.0.99",
-    "location_hint": "GA",
-    "metadata": {
-      "corrected_decision": "quarantine",
-      "original_decision": "deny",
-      "pack": "095D"
-    },
-    "method": "POST",
-    "ok": true,
-    "pack": "095",
-    "pack095d_override": "admin_suspicion_quarantine_before_deny",
-    "reason_code": "pack095d_admin_suspicion_quarantine_override",
-    "reason_count": 9,
-    "reasons": [
-      {
-        "plain": "Action 'admin_override' carries base risk.",
-        "points": 34,
-        "reason_code": "action_risk_weight"
-      },
-      {
-        "plain": "Route '/admin' carries route risk.",
-        "points": 30,
-        "reason_code": "route_risk_hint"
-      },
-      {
-        "plain": "Device is not in known baseline for this user.",
-        "points": 22,
-        "reason_code": "unfamiliar_device"
-      },
-      {
-        "plain": "IP address differs from known baseline for this user.",
-        "points": 18,
-        "reason_code": "ip_shift"
-      },
-      {
-        "plain": "Request volume is elevated.",
-        "points": 12,
-        "reason_code": "request_rate_elevated"
-      },
-      {
-        "plain": "Several denied route hits occurred recently.",
-        "points": 12,
-        "reason_code": "denied_route_cluster"
-      },
-      {
-        "plain": "A failed keycard attempt occurred.",
-        "points": 12,
-        "reason_code": "failed_keycard_attempt"
-      },
-      {
-        "plain": "Multiple admin actions occurred recently.",
-        "points": 18,
-        "reason_code": "admin_action_cluster"
-      },
-      {
-        "plain": "State-changing HTTP method increases risk.",
-        "points": 8,
-        "reason_code": "state_changing_method"
-      }
-    ],
-    "required_actions": [
-      "quarantine_subject",
-      "owner_review"
-    ],
-    "risk_score": 100,
-    "risk_state": "restricted",
-    "route_path": "/admin",
-    "session_id": "sess_quarantine_095",
-    "soulaana_translation": "Soulaana: This is suspicious enough for the holding room, not yet a full no-hallway denial.",
-    "user_id": "owner_solice"
-  },
-  {
-    "action": "broker_action",
-    "allowed": false,
-    "auto_apply_requested": false,
-    "created_at": "2026-05-28T20:49:08.723981Z",
+    "created_at": "2026-05-28T21:38:08.957263Z",
     "decision": "deny",
-    "device_id": "unknown_device_lock_095",
-    "event_fingerprint": "fb91257a07b4724b00d9a061164e3a305de2c07fb315fca355eba79355d2f465",
-    "event_id": "risk_evt_av5D-3yvi-y6X7IVhB9VRp4Z",
+    "device_id": "bad_device_098",
+    "event_fingerprint": "c070dad66bc4ace129e7092da404c09afbee791543a63a0055bd3964ce388297",
+    "event_id": "risk_evt_muVnDVWndJSwx1SnDGGxasmT",
     "event_type": "tower_session_risk_event",
     "human_reason": "Risk is critical and request should be denied outright.",
-    "ip_address": "10.0.0.123",
+    "ip_address": "203.0.113.200",
     "location_hint": "UNKNOWN",
     "metadata": {},
     "method": "POST",
     "ok": true,
     "pack": "095",
-    "reason_count": 11,
+    "reason_count": 8,
     "reasons": [
       {
-        "plain": "Action 'broker_action' carries base risk.",
-        "points": 42,
+        "plain": "Action 'disable_security' carries base risk.",
+        "points": 50,
         "reason_code": "action_risk_weight"
       },
       {
-        "plain": "Route '/broker/live' carries route risk.",
-        "points": 40,
-        "reason_code": "route_risk_hint"
+        "plain": "No known device baseline exists for this user.",
+        "points": 12,
+        "reason_code": "no_device_baseline"
       },
       {
-        "plain": "Device is not in known baseline for this user.",
-        "points": 22,
-        "reason_code": "unfamiliar_device"
-      },
-      {
-        "plain": "IP address differs from known baseline for this user.",
-        "points": 18,
-        "reason_code": "ip_shift"
-      },
-      {
-        "plain": "Location hint differs from known baseline for this user.",
-        "points": 15,
-        "reason_code": "location_shift"
+        "plain": "No known IP baseline exists for this user.",
+        "points": 8,
+        "reason_code": "no_ip_baseline"
       },
       {
         "plain": "Very high request volume suggests scraping or automation abuse.",
@@ -647,11 +172,6 @@
         "plain": "Repeated failed keycard attempts are critical.",
         "points": 44,
         "reason_code": "failed_keycard_burst_extreme"
-      },
-      {
-        "plain": "Repeated live/broker attempts detected.",
-        "points": 36,
-        "reason_code": "live_broker_attempt_cluster"
       },
       {
         "plain": "Multiple suspicious patterns combined.",
@@ -670,38 +190,39 @@
     ],
     "risk_score": 100,
     "risk_state": "critical",
-    "route_path": "/broker/live",
-    "session_id": "sess_lockdown_095",
+    "route_path": "/disable-security",
+    "session_id": "high_risk_session_098",
     "soulaana_translation": "Soulaana: No. That request does not get a hallway.",
-    "user_id": "owner_solice"
+    "user_id": "beta_high_risk_098"
   },
   {
-    "action": "admin_override",
+    "__redacted_sensitive_field_count__": 1,
+    "action": "live_mode_enable",
     "allowed": false,
     "auto_apply_requested": false,
-    "created_at": "2026-05-28T20:49:08.736348Z",
+    "created_at": "2026-05-28T21:38:08.995197Z",
     "decision": "deny",
-    "device_id": "bad_device_095",
-    "event_fingerprint": "5040a3f62cf15c3e71cddf87cadc956cdd45e140d74b000d567ffdda41affcf9",
-    "event_id": "risk_evt_XnJQZ5yf4j16RjQsO2qxvmQ6",
+    "device_id": "known_device_live_098",
+    "event_fingerprint": "9d595fab22e9076e85dcbeb50e99cff2e0927e7c4e6229a0ff87a70e52dc28d3",
+    "event_id": "risk_evt_tfMJ7r2vc6BCaU3ugQmtPBBr",
     "event_type": "tower_session_risk_event",
     "human_reason": "Risk is critical and request should be denied outright.",
-    "ip_address": "203.0.113.99",
-    "location_hint": "UNKNOWN",
+    "ip_address": "10.0.0.5",
+    "location_hint": "GA",
     "metadata": {},
     "method": "POST",
     "ok": true,
     "pack": "095",
-    "reason_count": 9,
+    "reason_count": 6,
     "reasons": [
       {
-        "plain": "Action 'admin_override' carries base risk.",
-        "points": 34,
+        "plain": "Action 'live_mode_enable' carries base risk.",
+        "points": 40,
         "reason_code": "action_risk_weight"
       },
       {
-        "plain": "Route '/admin' carries route risk.",
-        "points": 30,
+        "plain": "Route '/live/mode' carries route risk.",
+        "points": 40,
         "reason_code": "route_risk_hint"
       },
       {
@@ -715,29 +236,14 @@
         "reason_code": "no_ip_baseline"
       },
       {
-        "plain": "Very high request volume suggests scraping or automation abuse.",
-        "points": 42,
-        "reason_code": "scraping_behavior_extreme"
-      },
-      {
-        "plain": "Multiple denied route hits indicate probing.",
-        "points": 26,
-        "reason_code": "denied_route_burst"
-      },
-      {
-        "plain": "Multiple failed keycard attempts occurred.",
-        "points": 30,
-        "reason_code": "failed_keycard_burst"
+        "plain": "A live/broker attempt occurred.",
+        "points": 20,
+        "reason_code": "live_broker_attempt"
       },
       {
         "plain": "State-changing HTTP method increases risk.",
         "points": 8,
         "reason_code": "state_changing_method"
-      },
-      {
-        "plain": "Base clearance already denied this request.",
-        "points": 35,
-        "reason_code": "base_clearance_denied"
       }
     ],
     "required_actions": [
@@ -746,191 +252,24 @@
     ],
     "risk_score": 100,
     "risk_state": "critical",
-    "route_path": "/admin",
-    "session_id": "sess_deny_095",
+    "route_path": "/live/mode",
+    "session_id": "live_mode_request_098",
     "soulaana_translation": "Soulaana: No. That request does not get a hallway.",
-    "user_id": "beta_001"
-  },
-  {
-    "action": "export",
-    "allowed": false,
-    "auto_apply_requested": true,
-    "created_at": "2026-05-28T20:49:08.748905Z",
-    "decision": "throttle",
-    "device_id": "known_device_001",
-    "event_fingerprint": "1e13ed069e965710b312b44b49feab9dda38f3c0344f7ea270b31035936fe0cf",
-    "event_id": "risk_evt_7kXl4vSs2cYC5e4NCXbyNQqf",
-    "event_type": "tower_session_risk_event",
-    "human_reason": "Risk suggests possible automation or probing. Slow the request path.",
-    "ip_address": "10.0.0.5",
-    "location_hint": "GA",
-    "metadata": {},
-    "method": "POST",
-    "ok": true,
-    "pack": "095",
-    "reason_count": 3,
-    "reasons": [
-      {
-        "plain": "Action 'export' carries base risk.",
-        "points": 24,
-        "reason_code": "action_risk_weight"
-      },
-      {
-        "plain": "Route '/export' carries route risk.",
-        "points": 24,
-        "reason_code": "route_risk_hint"
-      },
-      {
-        "plain": "State-changing HTTP method increases risk.",
-        "points": 8,
-        "reason_code": "state_changing_method"
-      }
-    ],
-    "required_actions": [
-      "slow_request_rate",
-      "complete_step_up_auth_if_sensitive"
-    ],
-    "risk_score": 56,
-    "risk_state": "watch",
-    "route_path": "/export",
-    "session_id": "sess_auto_step_095",
-    "soulaana_translation": "Soulaana: Slow this down. Fast hands do not get to rush the Tower.",
     "user_id": "owner_solice"
   },
   {
-    "action": "export",
-    "allowed": false,
-    "auto_apply_requested": true,
-    "auto_apply_result": {
-      "decision": "step_up_requested",
-      "human_reason": "Step-up requested from session risk decision.",
-      "ok": true,
-      "soulaana_translation": "Soulaana: Risk asked for a fresh check, so I asked.",
-      "step_up": {
-        "allowed_methods": [
-          "owner_pin",
-          "fresh_keycard",
-          "owner_phrase"
-        ],
-        "decision": "step_up_required",
-        "human_reason": "Exports can move sensitive data outside the system.",
-        "ok": true,
-        "reason_code": "step_up_required_for_export",
-        "required_actions": [
-          "complete_step_up_auth"
-        ],
-        "risk_score": 72,
-        "risk_state": "restricted",
-        "soulaana_translation": "Soulaana: This button is powerful. Verify again before it moves.",
-        "step_up_required": true,
-        "ttl_minutes": 10
-      }
-    },
-    "created_at": "2026-05-28T20:49:08.769176Z",
-    "decision": "step_up",
-    "device_id": "known_device_001",
-    "event": {
-      "action": "export",
-      "allowed": false,
-      "auto_apply_requested": true,
-      "created_at": "2026-05-28T20:49:08.748905Z",
-      "decision": "step_up",
-      "device_id": "known_device_001",
-      "event_fingerprint": "1e13ed069e965710b312b44b49feab9dda38f3c0344f7ea270b31035936fe0cf",
-      "event_id": "risk_evt_7kXl4vSs2cYC5e4NCXbyNQqf",
-      "event_type": "tower_session_risk_event",
-      "human_reason": "Clean sensitive action requires fresh verification before continuing.",
-      "ip_address": "10.0.0.5",
-      "location_hint": "GA",
-      "metadata": {},
-      "method": "POST",
-      "ok": true,
-      "pack": "095",
-      "pack095b_override": "clean_sensitive_action_step_up_before_throttle",
-      "reason_count": 3,
-      "reasons": [
-        {
-          "plain": "Action 'export' carries base risk.",
-          "points": 24,
-          "reason_code": "action_risk_weight"
-        },
-        {
-          "plain": "Route '/export' carries route risk.",
-          "points": 24,
-          "reason_code": "route_risk_hint"
-        },
-        {
-          "plain": "State-changing HTTP method increases risk.",
-          "points": 8,
-          "reason_code": "state_changing_method"
-        }
-      ],
-      "required_actions": [
-        "complete_step_up_auth"
-      ],
-      "risk_score": 56,
-      "risk_state": "watch",
-      "route_path": "/export",
-      "session_id": "sess_auto_step_095",
-      "soulaana_translation": "Soulaana: This is sensitive, not spammy. Ask for a fresh owner check before it moves.",
-      "user_id": "owner_solice"
-    },
-    "event_fingerprint": "19c1e66f0450e9e2463a5ce9f86a2841680ed6a8e7407f800b3ec50f7f1cf013",
-    "event_id": "risk_evt_FBFaqSpSDJJgB8xB7uOHG0Hk",
-    "event_type": "tower_session_risk_event",
-    "human_reason": "Clean sensitive action requires fresh verification before continuing.",
-    "ip_address": "10.0.0.5",
-    "location_hint": "GA",
-    "metadata": {
-      "corrected_decision": "step_up",
-      "original_decision": "throttle",
-      "pack": "095B"
-    },
-    "method": "POST",
-    "ok": true,
-    "pack": "095",
-    "pack095b_override": "clean_sensitive_action_step_up_before_throttle",
-    "reason_code": "pack095b_clean_sensitive_step_up_override",
-    "reason_count": 3,
-    "reasons": [
-      {
-        "plain": "Action 'export' carries base risk.",
-        "points": 24,
-        "reason_code": "action_risk_weight"
-      },
-      {
-        "plain": "Route '/export' carries route risk.",
-        "points": 24,
-        "reason_code": "route_risk_hint"
-      },
-      {
-        "plain": "State-changing HTTP method increases risk.",
-        "points": 8,
-        "reason_code": "state_changing_method"
-      }
-    ],
-    "required_actions": [
-      "complete_step_up_auth"
-    ],
-    "risk_score": 56,
-    "risk_state": "watch",
-    "route_path": "/export",
-    "session_id": "sess_auto_step_095",
-    "soulaana_translation": "Soulaana: This is sensitive, not spammy. Ask for a fresh owner check before it moves.",
-    "user_id": "owner_solice"
-  },
-  {
+    "__redacted_sensitive_field_count__": 1,
     "action": "admin_override",
     "allowed": false,
-    "auto_apply_requested": true,
-    "created_at": "2026-05-28T20:49:08.784047Z",
+    "auto_apply_requested": false,
+    "created_at": "2026-05-28T21:38:09.079155Z",
     "decision": "deny",
-    "device_id": "unknown_auto_quar",
-    "event_fingerprint": "42727b3c9eaf60f95cfe5e50c6245c4be01c0e93fd573e58c4108c62dcd75ee8",
-    "event_id": "risk_evt_J4J5lLc5WDhg2zndjVq3kgud",
+    "device_id": "unknown_admin_device_098",
+    "event_fingerprint": "06faef1c9599bd31c56369e5e1e329fe4a9a3609b2962ea116f7672457f20d17",
+    "event_id": "risk_evt_pl6ZJVkPCyyH7lE4uo5-5Vao",
     "event_type": "tower_session_risk_event",
     "human_reason": "Risk is critical and request should be denied outright.",
-    "ip_address": "198.51.100.50",
+    "ip_address": "198.51.100.44",
     "location_hint": "UNKNOWN",
     "metadata": {},
     "method": "POST",
@@ -991,179 +330,30 @@
     "risk_score": 100,
     "risk_state": "critical",
     "route_path": "/admin",
-    "session_id": "sess_auto_quar_095",
+    "session_id": "admin_probe_098",
     "soulaana_translation": "Soulaana: No. That request does not get a hallway.",
-    "user_id": "beta_auto_quar"
+    "user_id": "beta_admin_probe_098"
   },
   {
+    "__redacted_sensitive_field_count__": 1,
     "action": "admin_override",
     "allowed": false,
-    "auto_apply_requested": true,
-    "auto_apply_result": {
-      "decision": "quarantine_applied",
-      "human_reason": "Quarantine applied from session risk decision.",
-      "ok": true,
-      "quarantine": {
-        "case": {
-          "activated_at": "2026-05-28T20:49:08.798691Z",
-          "activated_by": "tower_risk_scoring",
-          "human_reason": "Session risk score triggered quarantine.",
-          "owner_notes": [],
-          "quarantine_id": "quarantine_jmMSppRbF4KmXpE4QbMm2URz",
-          "reason_code": "session_risk_score_quarantine",
-          "release_requested_at": "",
-          "release_requested_by": "",
-          "released_at": "",
-          "released_by": "",
-          "required_release_actions": [
-            "complete_step_up_auth",
-            "owner_reason"
-          ],
-          "scope": "session",
-          "severity": "restricted",
-          "soulaana_translation": "Soulaana: This subject is in the holding room. Recovery lane stays open; dangerous buttons stay frozen.",
-          "status": "active",
-          "target": {
-            "device_id": "unknown_auto_quar",
-            "ip_address": "198.51.100.50",
-            "session_id": "sess_auto_quar_095",
-            "user_id": "beta_auto_quar"
-          }
-        },
-        "decision": "quarantine_activated",
-        "event": {
-          "actor_user_id": "tower_risk_scoring",
-          "created_at": "2026-05-28T20:49:08.799791Z",
-          "decision": "quarantine_activated",
-          "event_fingerprint": "b935a43e2bef15238959146b15cba20c9b2684b117a767302f95f241d81d8362",
-          "event_id": "quar_evt_zcaJHGFj54u-Jg0h4TljjgcD",
-          "event_type": "tower_quarantine_event",
-          "human_reason": "Session risk score triggered quarantine.",
-          "metadata": {
-            "risk_score": 100,
-            "source": "session_risk_scoring"
-          },
-          "pack": "094",
-          "quarantine_id": "quarantine_jmMSppRbF4KmXpE4QbMm2URz",
-          "reason_code": "session_risk_score_quarantine",
-          "scope": "session",
-          "severity": "restricted",
-          "target": {
-            "device_id": "unknown_auto_quar",
-            "ip_address": "198.51.100.50",
-            "session_id": "sess_auto_quar_095",
-            "user_id": "beta_auto_quar"
-          }
-        },
-        "human_reason": "Session risk score triggered quarantine.",
-        "ok": true,
-        "quarantine_active": true,
-        "quarantine_id": "quarantine_jmMSppRbF4KmXpE4QbMm2URz",
-        "required_actions": [
-          "owner_review",
-          "limit_subject_to_recovery_lane"
-        ],
-        "risk_score": 82,
-        "risk_state": "restricted",
-        "soulaana_translation": "Soulaana: This subject is in the holding room. Recovery lane stays open; dangerous buttons stay frozen.",
-        "state": {
-          "active_cases": [
-            {
-              "activated_at": "2026-05-28T20:49:08.798691Z",
-              "activated_by": "tower_risk_scoring",
-              "human_reason": "Session risk score triggered quarantine.",
-              "owner_notes": [],
-              "quarantine_id": "quarantine_jmMSppRbF4KmXpE4QbMm2URz",
-              "reason_code": "session_risk_score_quarantine",
-              "release_requested_at": "",
-              "release_requested_by": "",
-              "released_at": "",
-              "released_by": "",
-              "required_release_actions": [
-                "complete_step_up_auth",
-                "owner_reason"
-              ],
-              "scope": "session",
-              "severity": "restricted",
-              "soulaana_translation": "Soulaana: This subject is in the holding room. Recovery lane stays open; dangerous buttons stay frozen.",
-              "status": "active",
-              "target": {
-                "device_id": "unknown_auto_quar",
-                "ip_address": "198.51.100.50",
-                "session_id": "sess_auto_quar_095",
-                "user_id": "beta_auto_quar"
-              }
-            }
-          ],
-          "allowed_actions": [
-            "appeal_quarantine",
-            "create_quarantine_note",
-            "owner_read_only_review",
-            "request_quarantine_release",
-            "tamper_chain_verify",
-            "verify_quarantine_release_step_up",
-            "view_locked_page",
-            "view_quarantine_status",
-            "view_security_command",
-            "view_status"
-          ],
-          "blocked_actions": [
-            "admin_override",
-            "app_clearance_grant",
-            "archive_handoff_export",
-            "automated_mode_enable",
-            "broker_action",
-            "capital_movement",
-            "clearance_grant",
-            "delete_record",
-            "disable_security",
-            "download",
-            "export",
-            "live_mode_enable",
-            "object_reveal",
-            "payment_batch_release",
-            "raw_data_view",
-            "route_policy_change",
-            "security_policy_edit",
-            "sensitive_reveal",
-            "share"
-          ],
-          "history": [
-            {
-              "action": "activate_quarantine",
-              "actor_user_id": "tower_risk_scoring",
-              "at": "2026-05-28T20:49:08.798724Z",
-              "human_reason": "Session risk score triggered quarantine.",
-              "quarantine_id": "quarantine_jmMSppRbF4KmXpE4QbMm2URz",
-              "reason_code": "session_risk_score_quarantine",
-              "scope": "session"
-            }
-          ],
-          "human_reason": "One or more quarantine cases are active.",
-          "ok": true,
-          "pack": "094",
-          "soulaana_translation": "Soulaana: Quarantine is active for at least one subject.",
-          "state_fingerprint": "e93507ec60c1c886a1e1431305cf758857ad24583c9ffc0311ab03024e597de9",
-          "updated_at": "2026-05-28T20:49:08.798737Z"
-        }
-      },
-      "soulaana_translation": "Soulaana: Risk meter sent this subject to the holding room."
-    },
-    "created_at": "2026-05-28T20:49:08.806371Z",
+    "auto_apply_requested": false,
+    "created_at": "2026-05-28T21:38:09.126360Z",
     "decision": "quarantine",
-    "device_id": "unknown_auto_quar",
+    "device_id": "unknown_admin_device_098",
     "event": {
       "action": "admin_override",
       "allowed": false,
-      "auto_apply_requested": true,
-      "created_at": "2026-05-28T20:49:08.784047Z",
+      "auto_apply_requested": false,
+      "created_at": "2026-05-28T21:38:09.079155Z",
       "decision": "quarantine",
-      "device_id": "unknown_auto_quar",
-      "event_fingerprint": "42727b3c9eaf60f95cfe5e50c6245c4be01c0e93fd573e58c4108c62dcd75ee8",
-      "event_id": "risk_evt_J4J5lLc5WDhg2zndjVq3kgud",
+      "device_id": "unknown_admin_device_098",
+      "event_fingerprint": "06faef1c9599bd31c56369e5e1e329fe4a9a3609b2962ea116f7672457f20d17",
+      "event_id": "risk_evt_pl6ZJVkPCyyH7lE4uo5-5Vao",
       "event_type": "tower_session_risk_event",
       "human_reason": "Suspicious admin pattern detected. Contain the subject in quarantine before escalating to outright deny.",
-      "ip_address": "198.51.100.50",
+      "ip_address": "198.51.100.44",
       "location_hint": "UNKNOWN",
       "metadata": {},
       "method": "POST",
@@ -1225,15 +415,15 @@
       "risk_score": 100,
       "risk_state": "restricted",
       "route_path": "/admin",
-      "session_id": "sess_auto_quar_095",
+      "session_id": "admin_probe_098",
       "soulaana_translation": "Soulaana: This is suspicious enough for the holding room, not yet a full no-hallway denial.",
-      "user_id": "beta_auto_quar"
+      "user_id": "beta_admin_probe_098"
     },
-    "event_fingerprint": "a58fa4f5bc107b0a5e042e49dd2223191fe945e2f5bddd148bff2a4d46caa888",
-    "event_id": "risk_evt_LyfxEQ0z8le47SrKrlD94tHj",
+    "event_fingerprint": "b2ec27b0e483d3ecc1b5aad929933e5a07a910944d8947ccfdc52bc408b1d06d",
+    "event_id": "risk_evt_4isYrIF2f5OzgO7h5Bw-PFV5",
     "event_type": "tower_session_risk_event",
     "human_reason": "Suspicious admin pattern detected. Contain the subject in quarantine before escalating to outright deny.",
-    "ip_address": "198.51.100.50",
+    "ip_address": "198.51.100.44",
     "location_hint": "UNKNOWN",
     "metadata": {
       "corrected_decision": "quarantine",
@@ -1300,79 +490,8 @@
     "risk_score": 100,
     "risk_state": "restricted",
     "route_path": "/admin",
-    "session_id": "sess_auto_quar_095",
+    "session_id": "admin_probe_098",
     "soulaana_translation": "Soulaana: This is suspicious enough for the holding room, not yet a full no-hallway denial.",
-    "user_id": "beta_auto_quar"
-  },
-  {
-    "action": "disable_security",
-    "allowed": false,
-    "auto_apply_requested": true,
-    "created_at": "2026-05-28T20:49:08.829473Z",
-    "decision": "deny",
-    "device_id": "bad_device_auto_lock",
-    "event_fingerprint": "824677e54771c6cf95af0226b3ac2c5e49f0a7ca47fe2e42397c172d12b2dbac",
-    "event_id": "risk_evt_pzgJR2_39dqmnzUq4aXl0vmo",
-    "event_type": "tower_session_risk_event",
-    "human_reason": "Risk is critical and request should be denied outright.",
-    "ip_address": "203.0.113.200",
-    "location_hint": "UNKNOWN",
-    "metadata": {},
-    "method": "POST",
-    "ok": true,
-    "pack": "095",
-    "reason_count": 8,
-    "reasons": [
-      {
-        "plain": "Action 'disable_security' carries base risk.",
-        "points": 50,
-        "reason_code": "action_risk_weight"
-      },
-      {
-        "plain": "No known device baseline exists for this user.",
-        "points": 12,
-        "reason_code": "no_device_baseline"
-      },
-      {
-        "plain": "No known IP baseline exists for this user.",
-        "points": 8,
-        "reason_code": "no_ip_baseline"
-      },
-      {
-        "plain": "Very high request volume suggests scraping or automation abuse.",
-        "points": 42,
-        "reason_code": "scraping_behavior_extreme"
-      },
-      {
-        "plain": "Repeated denied route hits indicate probing.",
-        "points": 40,
-        "reason_code": "denied_route_burst_extreme"
-      },
-      {
-        "plain": "Repeated failed keycard attempts are critical.",
-        "points": 44,
-        "reason_code": "failed_keycard_burst_extreme"
-      },
-      {
-        "plain": "Multiple suspicious patterns combined.",
-        "points": 38,
-        "reason_code": "multiple_suspicious_patterns"
-      },
-      {
-        "plain": "State-changing HTTP method increases risk.",
-        "points": 8,
-        "reason_code": "state_changing_method"
-      }
-    ],
-    "required_actions": [
-      "deny_request",
-      "owner_security_review"
-    ],
-    "risk_score": 100,
-    "risk_state": "critical",
-    "route_path": "/disable-security",
-    "session_id": "sess_auto_lock_095",
-    "soulaana_translation": "Soulaana: No. That request does not get a hallway.",
-    "user_id": "beta_auto_lock"
+    "user_id": "beta_admin_probe_098"
   }
 ]

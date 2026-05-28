@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The Tower · Security Rehearsal Panel</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #080907;
+      color: #f5ead2;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 42px 22px;
+    }
+    .hero {
+      border: 1px solid rgba(220, 183, 94, .35);
+      border-radius: 28px;
+      padding: 28px;
+      background: linear-gradient(135deg, rgba(78, 54, 22, .72), rgba(14, 15, 12, .94));
+      box-shadow: 0 20px 80px rgba(0,0,0,.35);
+    }
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      letter-spacing: -.04em;
+    }
+    .hero p {
+      margin: 0;
+      max-width: 780px;
+      color: rgba(245,234,210,.78);
+      line-height: 1.55;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .stat {
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 20px;
+      padding: 16px;
+      background: rgba(255,255,255,.04);
+    }
+    .stat b {
+      display: block;
+      font-size: 24px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .card {
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 24px;
+      padding: 18px;
+      background: rgba(255,255,255,.045);
+    }
+    .card.pass {
+      border-color: rgba(143, 221, 158, .34);
+    }
+    .card.fail {
+      border-color: rgba(255, 128, 128, .44);
+    }
+    .eyebrow {
+      color: rgba(220, 183, 94, .82);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    .card p, .reason {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .decision {
+      margin: 12px 0;
+      font-weight: 800;
+      color: #f2d58b;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <h1>The Tower · Security Rehearsal Panel</h1>
+    <p>Security rehearsal completed. All simulated scenarios stayed inside expected safety lanes.</p>
+  </section>
+  <section class="stats">
+    <div class="stat"><b>9</b><span>Scenarios</span></div>
+    <div class="stat"><b>9</b><span>Passed</span></div>
+    <div class="stat"><b>0</b><span>Review</span></div>
+    <div class="stat"><b>100</b><span>Readiness</span></div>
+  </section>
+  <section class="grid">
+    
+        <article class="card pass">
+          <div class="eyebrow">identity</div>
+          <h2>Wrong keycard</h2>
+          <p>Simulates a bad keycard or wrong verification attempt.</p>
+          <div class="decision">PASS · deny</div>
+          <div class="reason">Scenario responded within expected safety family.</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">identity</div>
+          <h2>Expired keycard</h2>
+          <p>Simulates an expired verification context.</p>
+          <div class="decision">PASS · step_up</div>
+          <div class="reason">Scenario responded within expected safety family.</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">data_movement</div>
+          <h2>Export attempt</h2>
+          <p>Simulates a sensitive export/download request.</p>
+          <div class="decision">PASS · quarantine</div>
+          <div class="reason">Scenario responded within expected safety family.</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">routing</div>
+          <h2>Unknown route</h2>
+          <p>Simulates probing an unmapped or unsupported route.</p>
+          <div class="decision">PASS · deny</div>
+          <div class="reason">Scenario responded within expected safety family.</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">behavior</div>
+          <h2>High-risk session</h2>
+          <p>Simulates rapid probing, failed keycards, and suspicious request behavior.</p>
+          <div class="decision">PASS · deny</div>
+          <div class="reason">Scenario responded within expected safety family.</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">broker_live</div>
+          <h2>Live-mode request</h2>
+          <p>Simulates a live/broker mode request.</p>
+          <div class="decision">PASS · deny</div>
+          <div class="reason">Scenario responded within expected safety family.</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">admin</div>
+          <h2>Admin attempt</h2>
+          <p>Simulates an admin override attempt.</p>
+          <div class="decision">PASS · quarantine</div>
+          <div class="reason">Scenario responded within expected safety family.</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">secrets</div>
+          <h2>Secret payload attempt</h2>
+          <p>Simulates a raw secret being pushed toward The Tower.</p>
+          <div class="decision">PASS · reject_raw_secret</div>
+          <div class="reason">Scenario responded within expected safety family.</div>
+        </article>
+        
+        <article class="card pass">
+          <div class="eyebrow">privacy</div>
+          <h2>Sensitive reveal attempt</h2>
+          <p>Simulates a request for sensitive object detail without fresh step-up.</p>
+          <div class="decision">PASS · step_up_required</div>
+          <div class="reason">Scenario responded within expected safety family.</div>
+        </article>
+        
+  </section>
+</main>
+</body>
+</html>

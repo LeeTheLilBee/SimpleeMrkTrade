@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The Tower · Owner/Admin Receipts</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #090907;
+      color: #f5ead2;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 42px 22px;
+    }
+    .hero {
+      border: 1px solid rgba(220, 183, 94, .35);
+      border-radius: 28px;
+      padding: 28px;
+      background: linear-gradient(135deg, rgba(75, 48, 18, .74), rgba(12, 13, 10, .96));
+      box-shadow: 0 20px 80px rgba(0,0,0,.38);
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      letter-spacing: -.04em;
+    }
+    .hero p {
+      margin: 0;
+      color: rgba(245,234,210,.76);
+      line-height: 1.55;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .stat {
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 20px;
+      padding: 16px;
+      background: rgba(255,255,255,.045);
+    }
+    .stat b {
+      display: block;
+      font-size: 24px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .receipt {
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 24px;
+      padding: 18px;
+      background: rgba(255,255,255,.045);
+    }
+    .receipt.high {
+      border-color: rgba(220, 183, 94, .46);
+      box-shadow: 0 0 0 1px rgba(220,183,94,.08) inset;
+    }
+    .eyebrow {
+      color: rgba(220, 183, 94, .82);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    .receipt p, .reason {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <h1>The Tower · Owner/Admin Receipts</h1>
+    <p>Owner/admin action receipt summary loaded.</p>
+  </section>
+  <section class="stats">
+    <div class="stat"><b>10</b><span>Receipts</span></div>
+    <div class="stat"><b>10</b><span>Archive-ready</span></div>
+    <div class="stat"><b>0</b><span>Step-up gaps</span></div>
+    <div class="stat"><b>100</b><span>Readiness</span></div>
+  </section>
+  <section class="grid">
+    
+        <article class="receipt normal">
+          <div class="eyebrow">normal power · step-up no</div>
+          <h2>note_added</h2>
+          <p>security_item · sec_note_099</p>
+          <div class="reason">Owner/admin note added.</div>
+        </article>
+        
+        <article class="receipt normal">
+          <div class="eyebrow">normal power · step-up no</div>
+          <h2>security_item_resolved</h2>
+          <p>security_item · sec_resolve_099</p>
+          <div class="reason">Security item resolved.</div>
+        </article>
+        
+        <article class="receipt high">
+          <div class="eyebrow">high power · step-up yes</div>
+          <h2>route_policy_changed</h2>
+          <p>route_policy · /tower/admin-sensitive</p>
+          <div class="reason">Pack 099 route policy test.</div>
+        </article>
+        
+        <article class="receipt high">
+          <div class="eyebrow">high power · step-up yes</div>
+          <h2>user_clearance_changed</h2>
+          <p>user_clearance · beta_user_099</p>
+          <div class="reason">Pack 099 user clearance test.</div>
+        </article>
+        
+        <article class="receipt high">
+          <div class="eyebrow">high power · step-up yes</div>
+          <h2>export_approved</h2>
+          <p>export · export_099</p>
+          <div class="reason">Pack 099 export approval test.</div>
+        </article>
+        
+        <article class="receipt high">
+          <div class="eyebrow">high power · step-up no</div>
+          <h2>lockdown_enabled</h2>
+          <p>emergency_lockdown · lockdown_099</p>
+          <div class="reason">Pack 099 lockdown enable test.</div>
+        </article>
+        
+        <article class="receipt high">
+          <div class="eyebrow">high power · step-up yes</div>
+          <h2>lockdown_disabled</h2>
+          <p>emergency_lockdown · lockdown_099</p>
+          <div class="reason">Pack 099 lockdown disable test.</div>
+        </article>
+        
+        <article class="receipt high">
+          <div class="eyebrow">high power · step-up yes</div>
+          <h2>mode_access_granted</h2>
+          <p>mode_access · beta_user_099:Paper Mode</p>
+          <div class="reason">Pack 099 mode access grant test.</div>
+        </article>
+        
+        <article class="receipt high">
+          <div class="eyebrow">high power · step-up yes</div>
+          <h2>archive_handoff_created</h2>
+          <p>archive_handoff · archive_handoff_099</p>
+          <div class="reason">Pack 099 archive handoff receipt test.</div>
+        </article>
+        
+        <article class="receipt high">
+          <div class="eyebrow">high power · step-up yes</div>
+          <h2>admin_override_recorded</h2>
+          <p>admin_override · override_099</p>
+          <div class="reason">Pack 099 admin override test.</div>
+        </article>
+        
+  </section>
+</main>
+</body>
+</html>

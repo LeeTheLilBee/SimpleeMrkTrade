@@ -1,0 +1,498 @@
+{
+  "archive_ready_count": 10,
+  "by_action": {
+    "admin_override_recorded": 1,
+    "archive_handoff_created": 1,
+    "export_approved": 1,
+    "lockdown_disabled": 1,
+    "lockdown_enabled": 1,
+    "mode_access_granted": 1,
+    "note_added": 1,
+    "route_policy_changed": 1,
+    "security_item_resolved": 1,
+    "user_clearance_changed": 1
+  },
+  "by_actor": {
+    "owner_solice": 10
+  },
+  "by_power": {
+    "high": 8,
+    "normal": 2
+  },
+  "by_target_type": {
+    "admin_override": 1,
+    "archive_handoff": 1,
+    "emergency_lockdown": 2,
+    "export": 1,
+    "mode_access": 1,
+    "route_policy": 1,
+    "security_item": 2,
+    "user_clearance": 1
+  },
+  "human_reason": "Owner/admin action receipt summary loaded.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "no_secret_leakage": true,
+  "ok": true,
+  "pack": "099",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_admin_action_receipts_panel.html",
+  "readiness_label": "Owner/admin action receipt coverage ready",
+  "readiness_score": 100,
+  "receipt_count": 10,
+  "receipts_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_admin_action_receipts.json",
+  "recent_receipts": [
+    {
+      "__redacted_owner_admin_field_count__": 1,
+      "action_power": "normal",
+      "action_type": "note_added",
+      "actor_user_id": "owner_solice",
+      "after_state": {
+        "note": "[REDACTED_OWNER_ADMIN_VALUE]"
+      },
+      "app_id": "tower",
+      "archive_handoff": {},
+      "before_state": {},
+      "created_at": "2026-05-28T21:48:30.993405Z",
+      "decision": "recorded",
+      "event_type": "tower_owner_admin_action_receipt",
+      "human_reason": "Owner/admin action receipt recorded.",
+      "metadata": {},
+      "object_permission": {},
+      "ok": true,
+      "pack": "099",
+      "reason": "Owner/admin note added.",
+      "receipt_fingerprint": "6ce3797f9481d36f171e6d1c2250aa28e197b13a06e79b5f0985ef9bb413217b",
+      "receipt_id": "owner_admin_receipt_BILbnzJg988vHsB0hJ1aYH9m",
+      "receipt_scope": {
+        "archive_ready": true,
+        "auditable": true,
+        "owner_review_ready": true,
+        "tamper_chain_ready": true
+      },
+      "route_path": "/tower/security-command",
+      "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+      "status": "completed",
+      "step_up": {},
+      "step_up_present": false,
+      "step_up_recommended": false,
+      "target_id": "sec_note_099",
+      "target_type": "security_item"
+    },
+    {
+      "__redacted_owner_admin_field_count__": 1,
+      "action_power": "normal",
+      "action_type": "security_item_resolved",
+      "actor_user_id": "owner_solice",
+      "after_state": {
+        "resolution": "Resolved after review.",
+        "resolved": true
+      },
+      "app_id": "tower",
+      "archive_handoff": {},
+      "before_state": {},
+      "created_at": "2026-05-28T21:48:31.025080Z",
+      "decision": "recorded",
+      "event_type": "tower_owner_admin_action_receipt",
+      "human_reason": "Owner/admin action receipt recorded.",
+      "metadata": {},
+      "object_permission": {},
+      "ok": true,
+      "pack": "099",
+      "reason": "Security item resolved.",
+      "receipt_fingerprint": "1c02d95f44fd9625c471593dea60367d0b2d1297080fe42f33de13a3d8d0b851",
+      "receipt_id": "owner_admin_receipt_HnK6lzSbx67N_oRUzeXFLdZd",
+      "receipt_scope": {
+        "archive_ready": true,
+        "auditable": true,
+        "owner_review_ready": true,
+        "tamper_chain_ready": true
+      },
+      "route_path": "/tower/security-command",
+      "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+      "status": "completed",
+      "step_up": {},
+      "step_up_present": false,
+      "step_up_recommended": false,
+      "target_id": "sec_resolve_099",
+      "target_type": "security_item"
+    },
+    {
+      "__redacted_owner_admin_field_count__": 1,
+      "action_power": "high",
+      "action_type": "route_policy_changed",
+      "actor_user_id": "owner_solice",
+      "after_state": {
+        "allowed_roles": [
+          "owner"
+        ],
+        "policy": "tower_only"
+      },
+      "app_id": "tower",
+      "archive_handoff": {},
+      "before_state": {
+        "policy": "needs_owner_review",
+        "private_notes": "[REDACTED_SENSITIVE]"
+      },
+      "created_at": "2026-05-28T21:48:31.054796Z",
+      "decision": "recorded",
+      "event_type": "tower_owner_admin_action_receipt",
+      "human_reason": "Owner/admin action receipt recorded.",
+      "metadata": {},
+      "object_permission": {},
+      "ok": true,
+      "pack": "099",
+      "reason": "Pack 099 route policy test.",
+      "receipt_fingerprint": "b8c23a35f0a1790a982267f9f4f3b93bdd1b70fd6b5ac0abe409f67a6faea296",
+      "receipt_id": "owner_admin_receipt_2wvPylEL65qyplF-gHDnFX4D",
+      "receipt_scope": {
+        "archive_ready": true,
+        "auditable": true,
+        "owner_review_ready": true,
+        "tamper_chain_ready": true
+      },
+      "route_path": "/tower/admin-sensitive",
+      "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+      "status": "completed",
+      "step_up": {
+        "challenge_id": "stepup_test_099",
+        "decision": "verified",
+        "method": "owner_pin",
+        "ok": true,
+        "recent_step_up_verified": true
+      },
+      "step_up_present": true,
+      "step_up_recommended": true,
+      "target_id": "/tower/admin-sensitive",
+      "target_type": "route_policy"
+    },
+    {
+      "action_power": "high",
+      "action_type": "user_clearance_changed",
+      "actor_user_id": "owner_solice",
+      "after_state": {
+        "apps": [
+          "teller"
+        ],
+        "level": "beta"
+      },
+      "app_id": "tower",
+      "archive_handoff": {},
+      "before_state": {
+        "level": "basic"
+      },
+      "created_at": "2026-05-28T21:48:31.078718Z",
+      "decision": "recorded",
+      "event_type": "tower_owner_admin_action_receipt",
+      "human_reason": "Owner/admin action receipt recorded.",
+      "metadata": {},
+      "object_permission": {
+        "allowed": true,
+        "decision": "allow"
+      },
+      "ok": true,
+      "pack": "099",
+      "reason": "Pack 099 user clearance test.",
+      "receipt_fingerprint": "5637709d14149cf530ea45e396d516bf870a92d5d6c5b30828a49977cab9bbe5",
+      "receipt_id": "owner_admin_receipt_stGbPu3q6lVNCgqElIQGiH8L",
+      "receipt_scope": {
+        "archive_ready": true,
+        "auditable": true,
+        "owner_review_ready": true,
+        "tamper_chain_ready": true
+      },
+      "route_path": "/tower/security-command",
+      "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+      "status": "completed",
+      "step_up": {
+        "challenge_id": "stepup_test_099",
+        "decision": "verified",
+        "method": "owner_pin",
+        "ok": true,
+        "recent_step_up_verified": true
+      },
+      "step_up_present": true,
+      "step_up_recommended": true,
+      "target_id": "beta_user_099",
+      "target_type": "user_clearance"
+    },
+    {
+      "__redacted_owner_admin_field_count__": 1,
+      "action_power": "high",
+      "action_type": "export_approved",
+      "actor_user_id": "owner_solice",
+      "after_state": {
+        "approved": true,
+        "export_scope": {
+          "category": "payroll_proof",
+          "contains_sensitive": true
+        }
+      },
+      "app_id": "tower",
+      "archive_handoff": {},
+      "before_state": {},
+      "created_at": "2026-05-28T21:48:31.106936Z",
+      "decision": "recorded",
+      "event_type": "tower_owner_admin_action_receipt",
+      "human_reason": "Owner/admin action receipt recorded.",
+      "metadata": {},
+      "object_permission": {},
+      "ok": true,
+      "pack": "099",
+      "reason": "Pack 099 export approval test.",
+      "receipt_fingerprint": "adb33dfae36ab8f86650585ac9b06e4973dcc5edce0fd85b3a71f6f4821a4a5b",
+      "receipt_id": "owner_admin_receipt_IjFx89N2OWc3O4Ezpoep1sTz",
+      "receipt_scope": {
+        "archive_ready": true,
+        "auditable": true,
+        "owner_review_ready": true,
+        "tamper_chain_ready": true
+      },
+      "route_path": "/tower/security-command",
+      "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+      "status": "completed",
+      "step_up": {
+        "challenge_id": "stepup_test_099",
+        "decision": "verified",
+        "method": "owner_pin",
+        "ok": true,
+        "recent_step_up_verified": true
+      },
+      "step_up_present": true,
+      "step_up_recommended": true,
+      "target_id": "export_099",
+      "target_type": "export"
+    },
+    {
+      "action_power": "high",
+      "action_type": "lockdown_enabled",
+      "actor_user_id": "owner_solice",
+      "after_state": {
+        "lockdown_active": true,
+        "reason_code": "test"
+      },
+      "app_id": "tower",
+      "archive_handoff": {},
+      "before_state": {
+        "lockdown_active": false
+      },
+      "created_at": "2026-05-28T21:48:31.132461Z",
+      "decision": "recorded",
+      "event_type": "tower_owner_admin_action_receipt",
+      "human_reason": "Owner/admin action receipt recorded.",
+      "metadata": {},
+      "object_permission": {},
+      "ok": true,
+      "pack": "099",
+      "reason": "Pack 099 lockdown enable test.",
+      "receipt_fingerprint": "6becc2eaa1799ef0d89e87c0a3a8b45ec7af66172048f2caad5823817e2dbe74",
+      "receipt_id": "owner_admin_receipt_GGOwERDF1zC8Nx3wwiFGuS-f",
+      "receipt_scope": {
+        "archive_ready": true,
+        "auditable": true,
+        "owner_review_ready": true,
+        "tamper_chain_ready": true
+      },
+      "route_path": "/tower/security-command",
+      "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+      "status": "completed",
+      "step_up": {},
+      "step_up_present": false,
+      "step_up_recommended": false,
+      "target_id": "lockdown_099",
+      "target_type": "emergency_lockdown"
+    },
+    {
+      "action_power": "high",
+      "action_type": "lockdown_disabled",
+      "actor_user_id": "owner_solice",
+      "after_state": {
+        "lockdown_active": false
+      },
+      "app_id": "tower",
+      "archive_handoff": {},
+      "before_state": {
+        "lockdown_active": true
+      },
+      "created_at": "2026-05-28T21:48:31.160101Z",
+      "decision": "recorded",
+      "event_type": "tower_owner_admin_action_receipt",
+      "human_reason": "Owner/admin action receipt recorded.",
+      "metadata": {},
+      "object_permission": {},
+      "ok": true,
+      "pack": "099",
+      "reason": "Pack 099 lockdown disable test.",
+      "receipt_fingerprint": "3f4f146d4de306c2609170d749a35b0813030d56db1287b10e114dd3fc4e2c3b",
+      "receipt_id": "owner_admin_receipt_kzakSVHUKsBhTIjL_H_ApFC1",
+      "receipt_scope": {
+        "archive_ready": true,
+        "auditable": true,
+        "owner_review_ready": true,
+        "tamper_chain_ready": true
+      },
+      "route_path": "/tower/security-command",
+      "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+      "status": "completed",
+      "step_up": {
+        "challenge_id": "stepup_test_099",
+        "decision": "verified",
+        "method": "owner_pin",
+        "ok": true,
+        "recent_step_up_verified": true
+      },
+      "step_up_present": true,
+      "step_up_recommended": true,
+      "target_id": "lockdown_099",
+      "target_type": "emergency_lockdown"
+    },
+    {
+      "action_power": "high",
+      "action_type": "mode_access_granted",
+      "actor_user_id": "owner_solice",
+      "after_state": {
+        "grant_scope": {
+          "app_id": "observatory",
+          "expires": "beta_end",
+          "mode": "paper"
+        },
+        "mode_name": "Paper Mode",
+        "user_id": "beta_user_099"
+      },
+      "app_id": "tower",
+      "archive_handoff": {},
+      "before_state": {},
+      "created_at": "2026-05-28T21:48:31.189945Z",
+      "decision": "recorded",
+      "event_type": "tower_owner_admin_action_receipt",
+      "human_reason": "Owner/admin action receipt recorded.",
+      "metadata": {},
+      "object_permission": {},
+      "ok": true,
+      "pack": "099",
+      "reason": "Pack 099 mode access grant test.",
+      "receipt_fingerprint": "734f95951f3daec005fa56a8ff6dce7896f756d800f0dc73614caa644e48a660",
+      "receipt_id": "owner_admin_receipt_4dF__-FopZU6b6-58uvoVRyZ",
+      "receipt_scope": {
+        "archive_ready": true,
+        "auditable": true,
+        "owner_review_ready": true,
+        "tamper_chain_ready": true
+      },
+      "route_path": "/tower/security-command",
+      "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+      "status": "completed",
+      "step_up": {
+        "challenge_id": "stepup_test_099",
+        "decision": "verified",
+        "method": "owner_pin",
+        "ok": true,
+        "recent_step_up_verified": true
+      },
+      "step_up_present": true,
+      "step_up_recommended": true,
+      "target_id": "beta_user_099:Paper Mode",
+      "target_type": "mode_access"
+    },
+    {
+      "__redacted_owner_admin_field_count__": 1,
+      "action_power": "high",
+      "action_type": "archive_handoff_created",
+      "actor_user_id": "owner_solice",
+      "after_state": {
+        "handoff_id": "archive_handoff_099",
+        "handoff_payload": {
+          "category": "tower_receipts",
+          "document_text": "[REDACTED_SENSITIVE]"
+        }
+      },
+      "app_id": "tower",
+      "archive_handoff": {
+        "created": true,
+        "handoff_id": "archive_handoff_099"
+      },
+      "before_state": {},
+      "created_at": "2026-05-28T21:48:31.218413Z",
+      "decision": "recorded",
+      "event_type": "tower_owner_admin_action_receipt",
+      "human_reason": "Owner/admin action receipt recorded.",
+      "metadata": {},
+      "object_permission": {},
+      "ok": true,
+      "pack": "099",
+      "reason": "Pack 099 archive handoff receipt test.",
+      "receipt_fingerprint": "7b12672edac3ca9d150d6ae741f125e5423029c414c02d751f4ca400d6dc2a3d",
+      "receipt_id": "owner_admin_receipt_WeyOKIw9uWHKIgBi7rDUpymv",
+      "receipt_scope": {
+        "archive_ready": true,
+        "auditable": true,
+        "owner_review_ready": true,
+        "tamper_chain_ready": true
+      },
+      "route_path": "/tower/security-command",
+      "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+      "status": "completed",
+      "step_up": {
+        "challenge_id": "stepup_test_099",
+        "decision": "verified",
+        "method": "owner_pin",
+        "ok": true,
+        "recent_step_up_verified": true
+      },
+      "step_up_present": true,
+      "step_up_recommended": true,
+      "target_id": "archive_handoff_099",
+      "target_type": "archive_handoff"
+    },
+    {
+      "__redacted_owner_admin_field_count__": 1,
+      "action_power": "high",
+      "action_type": "admin_override_recorded",
+      "actor_user_id": "owner_solice",
+      "after_state": {
+        "status": "approved"
+      },
+      "app_id": "tower",
+      "archive_handoff": {},
+      "before_state": {
+        "status": "blocked"
+      },
+      "created_at": "2026-05-28T21:48:31.253446Z",
+      "decision": "recorded",
+      "event_type": "tower_owner_admin_action_receipt",
+      "human_reason": "Owner/admin action receipt recorded.",
+      "metadata": {},
+      "object_permission": {},
+      "ok": true,
+      "pack": "099",
+      "reason": "Pack 099 admin override test.",
+      "receipt_fingerprint": "3efe0815447d1f33b76af6be64248d22f54c9e57072703e297e400c6a9993143",
+      "receipt_id": "owner_admin_receipt_k5NTiYc6bwqhi-UwD7Hq-DMQ",
+      "receipt_scope": {
+        "archive_ready": true,
+        "auditable": true,
+        "owner_review_ready": true,
+        "tamper_chain_ready": true
+      },
+      "route_path": "/tower/security-command",
+      "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+      "status": "completed",
+      "step_up": {
+        "challenge_id": "stepup_test_099",
+        "decision": "verified",
+        "method": "owner_pin",
+        "ok": true,
+        "recent_step_up_verified": true
+      },
+      "step_up_present": true,
+      "step_up_recommended": true,
+      "target_id": "override_099",
+      "target_type": "admin_override"
+    }
+  ],
+  "soulaana_translation": "Soulaana: Owner/admin moves have receipts. No silent powerful buttons.",
+  "step_up_missing_high_power_count": 0,
+  "summary_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_admin_action_receipt_summary.json"
+}

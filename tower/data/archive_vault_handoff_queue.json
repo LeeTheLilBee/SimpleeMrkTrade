@@ -5253,5 +5253,66 @@
     "summary": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
     "title": "Object security event: export:export_065",
     "user_id": "owner_solice"
+  },
+  {
+    "__redacted_owner_admin_field_count__": 1,
+    "actor_user_id": "owner_solice",
+    "archive_category": "tower_owner_admin_receipts",
+    "archive_ready": true,
+    "created_at": "2026-05-28T21:48:31.287295Z",
+    "handoff_id": "archive_handoff_x7G19jmlg9Xz4QqO_PY86_IR",
+    "human_reason": "Archive handoff created from owner/admin receipt.",
+    "ok": true,
+    "pack": "099",
+    "payload_fingerprint": "8b864def89541b68cdbc188821363d174e182d6caad54ae70ab86b2d7ab99178",
+    "redacted_payload": {
+      "action_power": "high",
+      "action_type": "admin_override_recorded",
+      "actor_user_id": "owner_solice",
+      "after_state": {
+        "status": "approved"
+      },
+      "app_id": "tower",
+      "archive_handoff": {},
+      "before_state": {
+        "status": "blocked"
+      },
+      "created_at": "2026-05-28T21:48:31.253446Z",
+      "decision": "recorded",
+      "event_type": "tower_owner_admin_action_receipt",
+      "human_reason": "Owner/admin action receipt recorded.",
+      "metadata": {},
+      "object_permission": {},
+      "ok": true,
+      "pack": "099",
+      "reason": "Pack 099 admin override test.",
+      "receipt_fingerprint": "3efe0815447d1f33b76af6be64248d22f54c9e57072703e297e400c6a9993143",
+      "receipt_id": "owner_admin_receipt_k5NTiYc6bwqhi-UwD7Hq-DMQ",
+      "receipt_scope": {
+        "archive_ready": true,
+        "auditable": true,
+        "owner_review_ready": true,
+        "tamper_chain_ready": true
+      },
+      "route_path": "/tower/security-command",
+      "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+      "status": "completed",
+      "step_up": {
+        "challenge_id": "stepup_test_099",
+        "decision": "verified",
+        "method": "owner_pin",
+        "ok": true,
+        "recent_step_up_verified": true
+      },
+      "step_up_present": true,
+      "step_up_recommended": true,
+      "target_id": "override_099",
+      "target_type": "admin_override"
+    },
+    "soulaana_translation": "Soulaana: Receipt bundled for the Archive Vault without exposing raw secrets.",
+    "source_action_type": "admin_override_recorded",
+    "source_receipt_id": "owner_admin_receipt_k5NTiYc6bwqhi-UwD7Hq-DMQ",
+    "source_target_id": "override_099",
+    "source_target_type": "admin_override"
   }
 ]

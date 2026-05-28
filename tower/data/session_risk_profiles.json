@@ -1,37 +1,11 @@
 {
-  "history": [
-    {
-      "__redacted_sensitive_field_count__": 1,
-      "action": "register_known_session_baseline",
-      "actor_user_id": "owner_solice",
-      "at": "2026-05-28T20:49:08.637313Z",
-      "device_id": "known_device_001",
-      "ip_address": "10.0.0.5",
-      "location_hint": "GA",
-      "metadata": {
-        "pack": "095"
-      },
-      "user_id": "owner_solice"
-    }
-  ],
-  "known_devices": {
-    "owner_solice": [
-      "known_device_001"
-    ]
-  },
-  "known_ips": {
-    "owner_solice": [
-      "10.0.0.5"
-    ]
-  },
-  "known_user_locations": {
-    "owner_solice": [
-      "GA"
-    ]
-  },
+  "history": [],
+  "known_devices": {},
+  "known_ips": {},
+  "known_user_locations": {},
   "ok": true,
   "pack": "095",
-  "profile_fingerprint": "98ae438d467cd7be3ddcc4e899e76f3425978811c9b5232d100862bc033b1c6b",
+  "profile_fingerprint": "1bb2fae416ad4c313cff8bb9d2a0d47d960628370b33662bf9fc480801476cee",
   "profiles": {},
-  "updated_at": "2026-05-28T20:49:08.637349Z"
+  "updated_at": "2026-05-28T21:38:08.855166Z"
 }
