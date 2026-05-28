@@ -1,41 +1,41 @@
 {
-  "bytes": 34846,
+  "bytes": 59859,
   "json_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_dashboard.json",
   "ob_object_security_inbox_by_object_type": {
     "analysis_record": 2,
-    "export": 248,
+    "export": 343,
     "mystery_drawer": 2,
-    "symbol": 64,
+    "symbol": 83,
     "unknown_drawer_058": 1,
-    "unknown_drawer_060": 64,
+    "unknown_drawer_060": 83,
     "unknown_drawer_061": 1,
-    "unknown_drawer_062": 60,
+    "unknown_drawer_062": 79,
     "unknown_drawer_071": 1
   },
   "ob_object_security_inbox_by_reason": {
     "manual_test_object_denied": 2,
-    "ob_object_unmapped_default_deny": 129,
-    "parent_route_clearance_failed": 312
+    "ob_object_unmapped_default_deny": 167,
+    "parent_route_clearance_failed": 426
   },
   "ob_object_security_inbox_by_severity": {
-    "high": 129,
-    "medium": 314
+    "high": 167,
+    "medium": 428
   },
   "ob_object_security_inbox_by_status": {
-    "ignored": 62,
-    "open": 283,
-    "resolved": 98
+    "ignored": 81,
+    "open": 378,
+    "resolved": 136
   },
   "ob_object_security_inbox_ok": true,
-  "ob_object_security_inbox_open": 283,
+  "ob_object_security_inbox_open": 378,
   "ob_object_security_inbox_recent": [
     {
       "action": "view",
       "allowed": false,
-      "created_at": "2026-05-22T17:57:26.205025Z",
+      "created_at": "2026-05-28T20:06:16.512191Z",
       "event_type": "ob_object_security_review",
       "history": [],
-      "inbox_item_id": "objinbox_q3GCOOUISrJcQkWxnbalMR0n",
+      "inbox_item_id": "objinbox_6rcAypHw_JkRvlWsclWfm7hs",
       "object_id": "AAPL",
       "object_kind": "symbol",
       "object_type": "symbol",
@@ -53,7 +53,7 @@
       },
       "severity": "medium",
       "soulaana_translation": "Soulaana: symbol:AAPL could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_AGqAQQ6Yq_BjN68WcjnXT53E",
+      "source_capsule_id": "objcaps_fK4hZqeIafkod8fFDWdao0Z1",
       "source_fingerprint": "67ca5750d45b52b308b8212489cc",
       "status": "open",
       "surface": "object_security_inbox",
@@ -64,10 +64,10 @@
     {
       "action": "download",
       "allowed": false,
-      "created_at": "2026-05-22T17:57:26.318613Z",
+      "created_at": "2026-05-28T20:06:16.760342Z",
       "event_type": "ob_object_security_review",
       "history": [],
-      "inbox_item_id": "objinbox_40fsl8FDMYFsAQtav8BpFt02",
+      "inbox_item_id": "objinbox_M66rMhLpSlbZU57edFPKhdwk",
       "object_id": "export_060",
       "object_kind": "export",
       "object_type": "export",
@@ -85,7 +85,7 @@
       },
       "severity": "medium",
       "soulaana_translation": "Soulaana: export:export_060 could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_Z34-B_cc03EH7YkFP2PNmsLK",
+      "source_capsule_id": "objcaps_gkQByZmQrL1-9YcI-kBKcuRw",
       "source_fingerprint": "f42eecdc467ab68fa0297c407dc5",
       "status": "open",
       "surface": "object_security_inbox",
@@ -96,10 +96,10 @@
     {
       "action": "view",
       "allowed": false,
-      "created_at": "2026-05-22T17:57:26.392974Z",
+      "created_at": "2026-05-28T20:06:16.898838Z",
       "event_type": "ob_object_security_review",
       "history": [],
-      "inbox_item_id": "objinbox_b_NXe8_5W4zxl4P9gGz_iWl3",
+      "inbox_item_id": "objinbox_oYyaMDUOxctCs48pxf_U2VeZ",
       "object_id": "secret_060",
       "object_kind": "unknown_drawer_060",
       "object_type": "unknown_drawer_060",
@@ -117,7 +117,7 @@
       },
       "severity": "high",
       "soulaana_translation": "Soulaana: unknown_drawer_060:secret_060 is not on the drawer map. I kept it locked and filed the receipt.",
-      "source_capsule_id": "objcaps_wR9a1vzTc-dvrG701TBy4Gxq",
+      "source_capsule_id": "objcaps_V-nsuQiZwlxgTWht6FULajok",
       "source_fingerprint": "cb76acac0f8dd895182c4ead9f8d",
       "status": "open",
       "surface": "object_security_inbox",
@@ -128,31 +128,31 @@
     {
       "action": "download",
       "allowed": false,
-      "created_at": "2026-05-22T17:57:26.541796Z",
+      "created_at": "2026-05-28T20:06:17.348397Z",
       "event_type": "ob_object_security_review",
       "history": [
         {
           "action": "note_added",
           "actor_user_id": "owner_solice",
           "note": "Pack 062 smoke: note before review.",
-          "timestamp": "2026-05-22T17:57:26.562045Z"
+          "timestamp": "2026-05-28T20:06:17.392953Z"
         },
         {
           "action": "status:open->reviewing",
           "actor_user_id": "owner_solice",
           "note": "Pack 062 smoke: reviewing object inbox workflow.",
           "resolution_reason": "",
-          "timestamp": "2026-05-22T17:57:26.577308Z"
+          "timestamp": "2026-05-28T20:06:17.426333Z"
         },
         {
           "action": "status:reviewing->resolved",
           "actor_user_id": "owner_solice",
           "note": "Pack 062 smoke: resolved object inbox workflow.",
           "resolution_reason": "smoke_test_expected_block",
-          "timestamp": "2026-05-22T17:57:26.592897Z"
+          "timestamp": "2026-05-28T20:06:17.459438Z"
         }
       ],
-      "inbox_item_id": "objinbox_0lvFiJRrLDSbq9SGyVCPvRmt",
+      "inbox_item_id": "objinbox_3xbp1YzZbzJYP4ZGM8JC7hji",
       "object_id": "export_062_workflow",
       "object_kind": "export",
       "object_type": "export",
@@ -162,24 +162,24 @@
         {
           "actor_user_id": "owner_solice",
           "note": "Pack 062 smoke: note before review.",
-          "timestamp": "2026-05-22T17:57:26.562045Z"
+          "timestamp": "2026-05-28T20:06:17.392953Z"
         },
         {
           "actor_user_id": "owner_solice",
           "note": "Pack 062 smoke: reviewing object inbox workflow.",
-          "timestamp": "2026-05-22T17:57:26.577308Z"
+          "timestamp": "2026-05-28T20:06:17.426333Z"
         },
         {
           "actor_user_id": "owner_solice",
           "note": "Pack 062 smoke: resolved object inbox workflow.",
-          "timestamp": "2026-05-22T17:57:26.592897Z"
+          "timestamp": "2026-05-28T20:06:17.459438Z"
         }
       ],
       "reason_code": "parent_route_clearance_failed",
       "resolution_reason": "smoke_test_expected_block",
-      "resolved_at": "2026-05-22T17:57:26.592897Z",
+      "resolved_at": "2026-05-28T20:06:17.459438Z",
       "resolved_by": "owner_solice",
-      "review_started_at": "2026-05-22T17:57:26.577308Z",
+      "review_started_at": "2026-05-28T20:06:17.426333Z",
       "review_started_by": "owner_solice",
       "risk_score": 70,
       "risk_state": "restricted",
@@ -191,19 +191,19 @@
       },
       "severity": "medium",
       "soulaana_translation": "Soulaana: export:export_062_workflow could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_EECoTWapBM9Uv8Aq_meVtvEb",
+      "source_capsule_id": "objcaps_zlDtZTFCEfuc-yHUIhqKiCVc",
       "source_fingerprint": "a839008e5b63a6d8988566abd3ef",
       "status": "resolved",
       "surface": "object_security_inbox",
       "title": "OB object review: parent_route_clearance_failed at export:export_062_workflow",
-      "updated_at": "2026-05-22T17:57:26.592897Z",
+      "updated_at": "2026-05-28T20:06:17.459438Z",
       "updated_by": "owner_solice",
       "user_id": "beta_001"
     },
     {
       "action": "view",
       "allowed": false,
-      "created_at": "2026-05-22T17:57:26.657934Z",
+      "created_at": "2026-05-28T20:06:17.599518Z",
       "event_type": "ob_object_security_review",
       "history": [
         {
@@ -211,12 +211,12 @@
           "actor_user_id": "owner_solice",
           "note": "Pack 062 smoke: ignored test-generated unmapped object.",
           "resolution_reason": "smoke_test_noise",
-          "timestamp": "2026-05-22T17:57:26.678916Z"
+          "timestamp": "2026-05-28T20:06:17.643761Z"
         }
       ],
-      "ignored_at": "2026-05-22T17:57:26.678916Z",
+      "ignored_at": "2026-05-28T20:06:17.643761Z",
       "ignored_by": "owner_solice",
-      "inbox_item_id": "objinbox_pMghxAHxcVwpZS-jKwlZsch9",
+      "inbox_item_id": "objinbox_vctdyW7K8u4AfJx-xfF5BwGy",
       "object_id": "secret_062_workflow",
       "object_kind": "unknown_drawer_062",
       "object_type": "unknown_drawer_062",
@@ -226,7 +226,7 @@
         {
           "actor_user_id": "owner_solice",
           "note": "Pack 062 smoke: ignored test-generated unmapped object.",
-          "timestamp": "2026-05-22T17:57:26.678916Z"
+          "timestamp": "2026-05-28T20:06:17.643761Z"
         }
       ],
       "reason_code": "ob_object_unmapped_default_deny",
@@ -241,29 +241,29 @@
       },
       "severity": "high",
       "soulaana_translation": "Soulaana: unknown_drawer_062:secret_062_workflow is not on the drawer map. I kept it locked and filed the receipt.",
-      "source_capsule_id": "objcaps_Qo2x0SAtueUF6rBPX6OgjbWQ",
+      "source_capsule_id": "objcaps_Go4Y03U82-9e6Uas1z4gmsMK",
       "source_fingerprint": "727ff69eef6dd05eb876d438c775",
       "status": "ignored",
       "surface": "object_security_inbox",
       "title": "OB object review: ob_object_unmapped_default_deny at unknown_drawer_062:secret_062_workflow",
-      "updated_at": "2026-05-22T17:57:26.678916Z",
+      "updated_at": "2026-05-28T20:06:17.643761Z",
       "updated_by": "owner_solice",
       "user_id": "owner_solice"
     },
     {
       "action": "download",
       "allowed": false,
-      "created_at": "2026-05-22T17:57:26.784454Z",
+      "created_at": "2026-05-28T20:06:17.907782Z",
       "event_type": "ob_object_security_review",
       "history": [
         {
           "action": "note_added",
           "actor_user_id": "owner_solice",
-          "note": "Archive Vault handoff queued: archivehandoff_QFraQhokWjqww-ZYHwmU51oY",
-          "timestamp": "2026-05-22T17:57:26.826346Z"
+          "note": "Archive Vault handoff queued: archivehandoff_KMjVyfQ6n6d0Ry9IQHoR6z-S",
+          "timestamp": "2026-05-28T20:06:17.974772Z"
         }
       ],
-      "inbox_item_id": "objinbox_ADlBvlhz77z0biNP8U0lPFDW",
+      "inbox_item_id": "objinbox_zWDFM-x1Khah2o4YgKgzWNyP",
       "object_id": "export_065",
       "object_kind": "export",
       "object_type": "export",
@@ -272,8 +272,8 @@
       "owner_notes": [
         {
           "actor_user_id": "owner_solice",
-          "note": "Archive Vault handoff queued: archivehandoff_QFraQhokWjqww-ZYHwmU51oY",
-          "timestamp": "2026-05-22T17:57:26.826346Z"
+          "note": "Archive Vault handoff queued: archivehandoff_KMjVyfQ6n6d0Ry9IQHoR6z-S",
+          "timestamp": "2026-05-28T20:06:17.974772Z"
         }
       ],
       "reason_code": "parent_route_clearance_failed",
@@ -287,43 +287,43 @@
       },
       "severity": "medium",
       "soulaana_translation": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_LIlzCm1fV8GMIpwpYGOx38C1",
+      "source_capsule_id": "objcaps_Jgetp8ivnCT-z0pYH6DEoGrT",
       "source_fingerprint": "0aa46e7f83dc0791fff14dfc24bc",
       "status": "open",
       "surface": "object_security_inbox",
       "title": "OB object review: parent_route_clearance_failed at export:export_065",
-      "updated_at": "2026-05-22T17:57:26.826346Z",
+      "updated_at": "2026-05-28T20:06:17.974772Z",
       "updated_by": "owner_solice",
       "user_id": "beta_001"
     },
     {
       "action": "download",
       "allowed": false,
-      "created_at": "2026-05-22T17:57:26.905384Z",
+      "created_at": "2026-05-28T20:06:18.136945Z",
       "event_type": "ob_object_security_review",
       "history": [
         {
           "action": "note_added",
           "actor_user_id": "owner_solice",
           "note": "Pack 073 smoke: audited endpoint note.",
-          "timestamp": "2026-05-22T17:57:26.928128Z"
+          "timestamp": "2026-05-28T20:06:18.187307Z"
         },
         {
           "action": "status:open->reviewing",
           "actor_user_id": "owner_solice",
           "note": "Pack 073 smoke: audited endpoint reviewing.",
           "resolution_reason": "",
-          "timestamp": "2026-05-22T17:57:26.957114Z"
+          "timestamp": "2026-05-28T20:06:18.247431Z"
         },
         {
           "action": "status:reviewing->resolved",
           "actor_user_id": "owner_solice",
           "note": "Pack 073 smoke: audited endpoint resolved.",
           "resolution_reason": "pack073_smoke_resolved",
-          "timestamp": "2026-05-22T17:57:26.985145Z"
+          "timestamp": "2026-05-28T20:06:18.303900Z"
         }
       ],
-      "inbox_item_id": "objinbox_Hii0tB39es3YDyabcaSTAHn4",
+      "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
       "object_id": "export_073_endpoint",
       "object_kind": "export",
       "object_type": "export",
@@ -333,24 +333,24 @@
         {
           "actor_user_id": "owner_solice",
           "note": "Pack 073 smoke: audited endpoint note.",
-          "timestamp": "2026-05-22T17:57:26.928128Z"
+          "timestamp": "2026-05-28T20:06:18.187307Z"
         },
         {
           "actor_user_id": "owner_solice",
           "note": "Pack 073 smoke: audited endpoint reviewing.",
-          "timestamp": "2026-05-22T17:57:26.957114Z"
+          "timestamp": "2026-05-28T20:06:18.247431Z"
         },
         {
           "actor_user_id": "owner_solice",
           "note": "Pack 073 smoke: audited endpoint resolved.",
-          "timestamp": "2026-05-22T17:57:26.985145Z"
+          "timestamp": "2026-05-28T20:06:18.303900Z"
         }
       ],
       "reason_code": "parent_route_clearance_failed",
       "resolution_reason": "pack073_smoke_resolved",
-      "resolved_at": "2026-05-22T17:57:26.985145Z",
+      "resolved_at": "2026-05-28T20:06:18.303900Z",
       "resolved_by": "owner_solice",
-      "review_started_at": "2026-05-22T17:57:26.957114Z",
+      "review_started_at": "2026-05-28T20:06:18.247431Z",
       "review_started_by": "owner_solice",
       "risk_score": 70,
       "risk_state": "restricted",
@@ -362,29 +362,29 @@
       },
       "severity": "medium",
       "soulaana_translation": "Soulaana: export:export_073_endpoint could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_j0Wprmqea3Fb6817m3Ga8Ee-",
+      "source_capsule_id": "objcaps_SgoV83sgq3BoPSh1RuZIlqmd",
       "source_fingerprint": "22564d1975e1ce7fe8b33a82df0c",
       "status": "resolved",
       "surface": "object_security_inbox",
       "title": "OB object review: parent_route_clearance_failed at export:export_073_endpoint",
-      "updated_at": "2026-05-22T17:57:26.985145Z",
+      "updated_at": "2026-05-28T20:06:18.303900Z",
       "updated_by": "owner_solice",
       "user_id": "beta_001"
     },
     {
       "action": "download",
       "allowed": false,
-      "created_at": "2026-05-22T17:57:27.082576Z",
+      "created_at": "2026-05-28T20:06:18.504167Z",
       "event_type": "ob_object_security_review",
       "history": [
         {
           "action": "note_added",
           "actor_user_id": "owner_solice",
           "note": "Pack 078 smoke: audited visible-form endpoint proof.",
-          "timestamp": "2026-05-22T17:57:27.105825Z"
+          "timestamp": "2026-05-28T20:06:18.550553Z"
         }
       ],
-      "inbox_item_id": "objinbox_b30D4pOSxr6fQmIbkC-zKEVQ",
+      "inbox_item_id": "objinbox_39jBm5ttUKmDRzwkg-UYXouo",
       "object_id": "export_078_panel",
       "object_kind": "export",
       "object_type": "export",
@@ -394,7 +394,7 @@
         {
           "actor_user_id": "owner_solice",
           "note": "Pack 078 smoke: audited visible-form endpoint proof.",
-          "timestamp": "2026-05-22T17:57:27.105825Z"
+          "timestamp": "2026-05-28T20:06:18.550553Z"
         }
       ],
       "reason_code": "parent_route_clearance_failed",
@@ -408,17 +408,17 @@
       },
       "severity": "medium",
       "soulaana_translation": "Soulaana: export:export_078_panel could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_tZx7F319kvUsjLtan0iIkGZM",
+      "source_capsule_id": "objcaps_fTAbFUtS2fVWdaCPG_Gedvp6",
       "source_fingerprint": "f3e7b17e1098988e7c1ede9c0ca1",
       "status": "open",
       "surface": "object_security_inbox",
       "title": "OB object review: parent_route_clearance_failed at export:export_078_panel",
-      "updated_at": "2026-05-22T17:57:27.105825Z",
+      "updated_at": "2026-05-28T20:06:18.550553Z",
       "updated_by": "owner_solice",
       "user_id": "beta_001"
     }
   ],
-  "ob_object_security_inbox_total": 443,
+  "ob_object_security_inbox_total": 595,
   "ok": true,
   "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_dashboard.html",
   "status": "saved",

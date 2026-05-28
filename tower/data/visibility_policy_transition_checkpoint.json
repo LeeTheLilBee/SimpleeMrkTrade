@@ -1,0 +1,329 @@
+{
+  "built_packs": [
+    {
+      "name": "Surface deny-path replacement receipts",
+      "pack": "086",
+      "plain": "Deny-path replacement receipt summary appears in Tower status and Security Command UI."
+    },
+    {
+      "name": "Surface exposure mapping pass",
+      "pack": "087",
+      "plain": "OB route exposure mapping appears in Tower status and Security Command UI."
+    },
+    {
+      "name": "Prove replacement and exposure panels",
+      "pack": "088",
+      "plain": "Privacy wall smoke/checkpoint prove both visibility panels render safely."
+    },
+    {
+      "name": "Route replacement policy list",
+      "pack": "089",
+      "plain": "Routes now have policy categories controlling replacement, review, protection, retirement, and ownership."
+    },
+    {
+      "name": "Visibility and policy transition checkpoint",
+      "pack": "090",
+      "plain": "Closes the visibility/policy block and prepares the audit-chain block."
+    }
+  ],
+  "current_boundary": {
+    "done": [
+      "Deny-path replacement receipts are visible in Tower status and Security Command UI.",
+      "Exposure mapping is visible in Tower status and Security Command UI.",
+      "Smoke/checkpoint prove both visibility panels.",
+      "Route replacement policy list exists and is generated from exposure mapping.",
+      "Known locked-shell routes can be approved_to_replace.",
+      "Core OB routes are OB_protected.",
+      "Tower routes are Tower_only.",
+      "Admin/debug/test routes are retire_or_redirect.",
+      "Dynamic object routes default to needs_owner_review until object-level mapping is explicit.",
+      "Unknown routes default to needs_owner_review."
+    ],
+    "not_done_yet": [
+      "Route policy decisions do not yet have owner action buttons in Security Command.",
+      "Policy changes are not yet chained with tamper-evident hashes.",
+      "Step-up authentication is not active yet.",
+      "Emergency lockdown and quarantine are upcoming.",
+      "Session/device/IP risk scoring is upcoming."
+    ],
+    "why": "The Tower now has visibility and a route policy sheet before deeper escalation controls are added."
+  },
+  "deny_path_replacement_summary": {
+    "by_replacement_type": {
+      "polished_tower_locked_page": 38
+    },
+    "by_route": {
+      "/future-deny-path": 1,
+      "/no-access": 36,
+      "/observatory-private": 1
+    },
+    "by_severity": {
+      "info": 37,
+      "medium": 1
+    },
+    "by_status": {
+      "needs_review": 1,
+      "verified": 37
+    },
+    "needs_review": 1,
+    "ok": true,
+    "total": 38,
+    "verified": 37
+  },
+  "exposure_mapping_summary": {
+    "counts": {
+      "keep_protected": 19,
+      "keep_public_safe": 7,
+      "later_review": 32,
+      "map_next": 7,
+      "retire_or_redirect": 9
+    },
+    "ok": true,
+    "priority_counts": {
+      "1": 28,
+      "2": 13,
+      "4": 30,
+      "5": 3
+    },
+    "readiness_label": "Exposure mapping pass ready",
+    "readiness_score": 100,
+    "reason_counts": {
+      "admin_debug_or_test_surface": 9,
+      "api_surface_needs_policy": 1,
+      "core_ob_private_surface": 10,
+      "dynamic_ob_object_surface": 6,
+      "needs_owner_review": 2,
+      "outer_shell_or_locked_surface": 6,
+      "static_or_health_safe_surface": 1,
+      "tower_owned_security_surface": 9,
+      "unmapped_default_deny_review_needed": 30
+    },
+    "total": 74
+  },
+  "generated_at": "2026-05-28T20:06:19.170230Z",
+  "human_reason": "Visibility and route replacement policy block is checkpointed.",
+  "next_block": [
+    {
+      "item": "Tamper-evident audit chain",
+      "pack": "091",
+      "plain": "Create chain hashes for critical receipts so silent edits are detectable."
+    },
+    {
+      "item": "Step-up authentication framework",
+      "pack": "092",
+      "plain": "Sensitive exports, policy changes, owner actions, live/automated mode, and lockdown disable require step-up."
+    },
+    {
+      "item": "Emergency lockdown system",
+      "pack": "093",
+      "plain": "Freeze sensitive app access/actions while keeping owner recovery path."
+    },
+    {
+      "item": "Quarantine mode",
+      "pack": "094",
+      "plain": "Suspicious sessions enter a restricted holding state without full ecosystem freeze."
+    },
+    {
+      "item": "Session/device/IP risk scoring foundation",
+      "pack": "095",
+      "plain": "Risk score requests and decide allow, step_up, throttle, quarantine, lockdown, or deny."
+    }
+  ],
+  "ok": true,
+  "pack": "090",
+  "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/visibility_policy_transition_checkpoint.json",
+  "policy_lookup_proof": {
+    "admin": {
+      "archive_handoff_required": true,
+      "generated_at": "2026-05-28T20:06:18.946600Z",
+      "last_owner_review_at": "",
+      "last_owner_review_by": "",
+      "match_type": "policy_match",
+      "ok": true,
+      "owner_notes": [],
+      "owner_review_required": true,
+      "policy_decision": "retire_or_redirect",
+      "policy_reason": "Admin/debug/test surfaces should be retired, redirected, or moved behind explicit Tower admin clearance.",
+      "policy_version": "pack089.v1",
+      "replacement_allowed": false,
+      "requested_route_path": "/admin",
+      "required_clearance_level": "critical",
+      "route_may_be_public": false,
+      "route_path": "/admin",
+      "source_category": "retire_or_redirect",
+      "source_classification": "unmapped_default_deny",
+      "source_priority": 1,
+      "source_reason_code": "admin_debug_or_test_surface",
+      "status": "active",
+      "step_up_required_later": true
+    },
+    "no_access": {
+      "archive_handoff_required": false,
+      "generated_at": "2026-05-28T20:06:18.946704Z",
+      "last_owner_review_at": "",
+      "last_owner_review_by": "",
+      "match_type": "policy_match",
+      "ok": true,
+      "owner_notes": [],
+      "owner_review_required": false,
+      "policy_decision": "approved_to_replace",
+      "policy_reason": "This route is only a locked/shell surface and may use polished Tower locked response.",
+      "policy_version": "pack089.v1",
+      "replacement_allowed": true,
+      "requested_route_path": "/no-access",
+      "required_clearance_level": "public_shell",
+      "route_may_be_public": false,
+      "route_path": "/no-access",
+      "source_category": "keep_public_safe",
+      "source_classification": "public_safe",
+      "source_priority": 2,
+      "source_reason_code": "outer_shell_or_locked_surface",
+      "status": "active",
+      "step_up_required_later": false
+    },
+    "observatory_private": {
+      "archive_handoff_required": false,
+      "generated_at": "2026-05-28T20:06:18.946712Z",
+      "last_owner_review_at": "",
+      "last_owner_review_by": "",
+      "match_type": "policy_match",
+      "ok": true,
+      "owner_notes": [],
+      "owner_review_required": false,
+      "policy_decision": "approved_to_replace",
+      "policy_reason": "This route is only a locked/shell surface and may use polished Tower locked response.",
+      "policy_version": "pack089.v1",
+      "replacement_allowed": true,
+      "requested_route_path": "/observatory-private",
+      "required_clearance_level": "public_shell",
+      "route_may_be_public": false,
+      "route_path": "/observatory-private",
+      "source_category": "keep_public_safe",
+      "source_classification": "public_safe",
+      "source_priority": 2,
+      "source_reason_code": "outer_shell_or_locked_surface",
+      "status": "active",
+      "step_up_required_later": false
+    },
+    "signals": {
+      "archive_handoff_required": false,
+      "generated_at": "2026-05-28T20:06:18.946490Z",
+      "last_owner_review_at": "",
+      "last_owner_review_by": "",
+      "match_type": "policy_match",
+      "ok": true,
+      "owner_notes": [],
+      "owner_review_required": true,
+      "policy_decision": "OB_protected",
+      "policy_reason": "Core Observatory surfaces stay protected behind Tower/OB clearance.",
+      "policy_version": "pack089.v1",
+      "replacement_allowed": false,
+      "requested_route_path": "/signals",
+      "required_clearance_level": "confidential",
+      "route_may_be_public": false,
+      "route_path": "/signals",
+      "source_category": "keep_protected",
+      "source_classification": "guarded",
+      "source_priority": 1,
+      "source_reason_code": "core_ob_private_surface",
+      "status": "active",
+      "step_up_required_later": false
+    },
+    "signals_symbol": {
+      "archive_handoff_required": false,
+      "generated_at": "2026-05-28T20:06:18.946768Z",
+      "last_owner_review_at": "",
+      "last_owner_review_by": "",
+      "match_type": "policy_match",
+      "ok": true,
+      "owner_notes": [],
+      "owner_review_required": true,
+      "policy_decision": "needs_owner_review",
+      "policy_reason": "Dynamic object routes need explicit object-level clearance mapping before route replacement.",
+      "policy_version": "pack089.v1",
+      "replacement_allowed": false,
+      "requested_route_path": "/signals/AAPL",
+      "required_clearance_level": "restricted",
+      "route_may_be_public": false,
+      "route_path": "/signals/<symbol>",
+      "source_category": "map_next",
+      "source_classification": "dynamic_guarded",
+      "source_priority": 2,
+      "source_reason_code": "dynamic_ob_object_surface",
+      "status": "active",
+      "step_up_required_later": false
+    },
+    "unknown": {
+      "match_type": "no_policy_match",
+      "ok": false,
+      "owner_review_required": true,
+      "policy_decision": "needs_owner_review",
+      "policy_reason": "No route replacement policy exists for this path. Default owner review required.",
+      "replacement_allowed": false,
+      "requested_route_path": "/brand-new-secret-door",
+      "required_clearance_level": "internal",
+      "route_may_be_public": false,
+      "soulaana_translation": "Soulaana: This door has no policy card yet. I am not moving it without owner review."
+    }
+  },
+  "proof": {
+    "dashboard_has_deny_panel": true,
+    "dashboard_has_exposure_panel": true,
+    "dashboard_ok": true,
+    "deny_summary_has_no_access": true,
+    "deny_summary_ok": true,
+    "exposure_readiness_ready": true,
+    "exposure_summary_ok": true,
+    "exposure_total_present": true,
+    "no_secret_leakage": true,
+    "policy_has_approved_to_replace": true,
+    "policy_has_needs_owner_review": true,
+    "policy_has_ob_protected": true,
+    "policy_has_retire_or_redirect": true,
+    "policy_has_tower_only": true,
+    "policy_lookup_admin_retire": true,
+    "policy_lookup_dynamic_symbol_review": true,
+    "policy_lookup_no_access_approved": true,
+    "policy_lookup_ob_private_approved": true,
+    "policy_lookup_signals_ob": true,
+    "policy_lookup_unknown_review": true,
+    "policy_ok": true,
+    "policy_summary_ok": true,
+    "policy_total_matches_exposure": true,
+    "privacy_checkpoint_ok": true,
+    "replacement_and_exposure_panels_ready": true,
+    "smoke_ok": true,
+    "tower_status_has_deny": true,
+    "tower_status_has_exposure": true
+  },
+  "readiness_label": "Ready for tamper-evident audit chain",
+  "readiness_score": 100,
+  "route_replacement_policy_summary": {
+    "archive_handoff_count": 21,
+    "clearance_counts": {
+      "confidential": 10,
+      "critical": 19,
+      "internal": 31,
+      "public_shell": 7,
+      "restricted": 7
+    },
+    "counts": {
+      "Archive_only": 2,
+      "OB_protected": 10,
+      "Tower_only": 9,
+      "approved_to_replace": 2,
+      "keep_old_for_now": 5,
+      "needs_owner_review": 37,
+      "retire_or_redirect": 9
+    },
+    "ok": true,
+    "owner_review_count": 67,
+    "public_allowed_count": 5,
+    "readiness_label": "Route replacement policy list ready",
+    "readiness_score": 100,
+    "replacement_allowed_count": 2,
+    "step_up_count": 21,
+    "total": 74
+  },
+  "soulaana_translation": "Soulaana: The Tower can now see the changed doors, see the route map, and read the policy sheet. Next we make the receipts harder to tamper with."
+}

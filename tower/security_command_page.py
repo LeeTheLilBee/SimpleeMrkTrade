@@ -1028,3 +1028,490 @@ def generate_security_command_dashboard(*args, **kwargs):
 
     return result
 
+
+
+# ================================================================================
+# PACK087_EXPOSURE_MAPPING_UI_PANEL
+# ================================================================================
+# Adds OB exposure mapping pass panel to Security Command dashboard.
+# ================================================================================
+
+def _pack087_escape_html(value):
+    text = "" if value is None else str(value)
+    return (
+        text.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&#x27;")
+    )
+
+
+def _pack087_render_mapping_cards(items, empty_text):
+    if not items:
+        return f"<p>{_pack087_escape_html(empty_text)}</p>"
+
+    cards = []
+    for item in items[:12]:
+        path = _pack087_escape_html(item.get("path", "unknown"))
+        category = _pack087_escape_html(item.get("category", "unknown"))
+        priority = _pack087_escape_html(item.get("priority", ""))
+        reason_code = _pack087_escape_html(item.get("reason_code", "unknown"))
+        plain = _pack087_escape_html(item.get("plain", "Needs review."))
+        classification = _pack087_escape_html(item.get("classification", "unknown"))
+
+        cards.append(f"""
+          <div class="tower-mini-card">
+            <div class="tower-mini-top">
+              <span>PRIORITY {priority}</span>
+              <span>{category}</span>
+            </div>
+            <strong>{path}</strong>
+            <p>{plain}</p>
+            <div class="tower-action-hint">Reason: {reason_code}</div>
+            <div class="tower-action-hint">Classification: {classification}</div>
+          </div>
+        """)
+
+    return "\n".join(cards)
+
+
+def _pack087_exposure_mapping_panel_html():
+    try:
+        from tower.ob_exposure_mapping import (
+            build_ob_exposure_mapping_pass,
+            summarize_ob_exposure_mapping_pass,
+        )
+
+        build_ob_exposure_mapping_pass()
+        summary = summarize_ob_exposure_mapping_pass(limit=12)
+
+        total = summary.get("total", 0)
+        counts = summary.get("counts", {})
+        reason_counts = summary.get("reason_counts", {})
+        priority_counts = summary.get("priority_counts", {})
+        top_next = summary.get("top_next", [])
+        retire_or_redirect = summary.get("retire_or_redirect", [])
+        later_review = summary.get("later_review", [])
+        readiness_label = _pack087_escape_html(summary.get("readiness_label", "Exposure mapping pass"))
+        readiness_score = _pack087_escape_html(summary.get("readiness_score", ""))
+
+        map_next_html = _pack087_render_mapping_cards(top_next, "No map-next routes found.")
+        retire_html = _pack087_render_mapping_cards(retire_or_redirect, "No retire/redirect routes found.")
+        review_html = _pack087_render_mapping_cards(later_review, "No later-review routes found.")
+
+        return f"""
+        <section class="tower-panel" data-pack="087">
+          <div class="tower-panel-kicker">OB EXPOSURE MAPPING PASS</div>
+          <h2>Route Exposure Door Map</h2>
+          <p>Routes are categorized as protected, public-safe, map-next, retire/redirect, or later-review before future changes.</p>
+
+          <div class="tower-stat-grid">
+            <div class="tower-stat-card">
+              <span>Total Routes</span>
+              <strong>{total}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>Readiness</span>
+              <strong>{readiness_score}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>Status</span>
+              <strong>{readiness_label}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Category</span>
+              <strong>{_pack087_escape_html(counts)}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Reason</span>
+              <strong>{_pack087_escape_html(reason_counts)}</strong>
+            </div>
+            <div class="tower-stat-card">
+              <span>By Priority</span>
+              <strong>{_pack087_escape_html(priority_counts)}</strong>
+            </div>
+          </div>
+
+          <div class="tower-subpanel">
+            <h3>Map Next</h3>
+            <div class="tower-mini-list">
+              {map_next_html}
+            </div>
+          </div>
+
+          <div class="tower-subpanel">
+            <h3>Retire or Redirect</h3>
+            <div class="tower-mini-list">
+              {retire_html}
+            </div>
+          </div>
+
+          <div class="tower-subpanel">
+            <h3>Later Review</h3>
+            <div class="tower-mini-list">
+              {review_html}
+            </div>
+          </div>
+        </section>
+        """
+    except Exception as exc:
+        return f"""
+        <section class="tower-panel" data-pack="087">
+          <div class="tower-panel-kicker">OB EXPOSURE MAPPING PASS</div>
+          <h2>Route Exposure Door Map</h2>
+          <p>Exposure mapping panel could not load: {type(exc).__name__}: {_pack087_escape_html(exc)}</p>
+        </section>
+        """
+
+
+try:
+    _pack087_original_render_security_command_dashboard_html
+except NameError:
+    _pack087_original_render_security_command_dashboard_html = render_security_command_dashboard_html
+
+
+def render_security_command_dashboard_html(*args, **kwargs):
+    html = _pack087_original_render_security_command_dashboard_html(*args, **kwargs)
+    panel = _pack087_exposure_mapping_panel_html()
+
+    if "OB EXPOSURE MAPPING PASS" in html:
+        return html
+
+    if "</body>" in html:
+        return html.replace("</body>", panel + "\n</body>")
+    return html + panel
+
+
+try:
+    _pack087_original_generate_security_command_dashboard
+except NameError:
+    _pack087_original_generate_security_command_dashboard = generate_security_command_dashboard
+
+
+def generate_security_command_dashboard(*args, **kwargs):
+    result = _pack087_original_generate_security_command_dashboard(*args, **kwargs)
+    if not isinstance(result, dict):
+        result = {"ok": False, "status": "invalid_dashboard_result"}
+
+    try:
+        from tower.ob_exposure_mapping import (
+            build_ob_exposure_mapping_pass,
+            summarize_ob_exposure_mapping_pass,
+        )
+
+        mapping = build_ob_exposure_mapping_pass()
+        summary = summarize_ob_exposure_mapping_pass(limit=12)
+
+        result["ob_exposure_mapping_ok"] = summary.get("ok") is True
+        result["ob_exposure_mapping_total"] = summary.get("total", 0)
+        result["ob_exposure_mapping_counts"] = summary.get("counts", {})
+        result["ob_exposure_mapping_reason_counts"] = summary.get("reason_counts", {})
+        result["ob_exposure_mapping_priority_counts"] = summary.get("priority_counts", {})
+        result["ob_exposure_mapping_top_next_count"] = len(summary.get("top_next", []))
+        result["ob_exposure_mapping_retire_or_redirect_count"] = len(summary.get("retire_or_redirect", []))
+        result["ob_exposure_mapping_later_review_count"] = len(summary.get("later_review", []))
+        result["ob_exposure_mapping_readiness_label"] = summary.get("readiness_label")
+        result["ob_exposure_mapping_readiness_score"] = summary.get("readiness_score")
+        result["ob_exposure_mapping_file_path"] = mapping.get("path")
+
+        path = result.get("path", "")
+        if path:
+            from pathlib import Path
+            html_path = Path(path)
+            if html_path.exists():
+                html = html_path.read_text(encoding="utf-8", errors="replace")
+                if "OB EXPOSURE MAPPING PASS" not in html:
+                    panel = _pack087_exposure_mapping_panel_html()
+                    html = html.replace("</body>", panel + "\n</body>") if "</body>" in html else html + panel
+                    html_path.write_text(html, encoding="utf-8")
+                    result["bytes"] = html_path.stat().st_size
+
+    except Exception as exc:
+        result["ob_exposure_mapping_ok"] = False
+        result["ob_exposure_mapping_error"] = f"{type(exc).__name__}: {exc}"
+
+    return result
+
+
+
+# ================================================================================
+# PACK088B_FINAL_REPLACEMENT_EXPOSURE_DASHBOARD_WRAPPER
+# ================================================================================
+# Guarantees final Security Command dashboard includes BOTH:
+# - DENY-PATH REPLACEMENT RECEIPTS panel
+# - OB EXPOSURE MAPPING PASS panel
+# regardless of earlier wrapper order.
+# ================================================================================
+
+def _pack088b_escape_html(value):
+    text = "" if value is None else str(value)
+    return (
+        text.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&#x27;")
+    )
+
+
+def _pack088b_deny_path_replacement_panel_html():
+    try:
+        from tower.deny_path_replacement_audit import summarize_deny_path_replacement_receipts
+
+        summary = summarize_deny_path_replacement_receipts(limit=8)
+        total = summary.get("total", 0)
+        verified = summary.get("verified", 0)
+        needs_review = summary.get("needs_review", 0)
+        by_status = summary.get("by_status", {})
+        by_route = summary.get("by_route", {})
+        by_type = summary.get("by_replacement_type", {})
+        by_severity = summary.get("by_severity", {})
+        recent = summary.get("recent", [])
+
+        cards = []
+        for item in recent[-8:]:
+            route_path = _pack088b_escape_html(item.get("route_path", "unknown"))
+            status = _pack088b_escape_html(item.get("status", "unknown"))
+            severity = _pack088b_escape_html(item.get("severity", "unknown"))
+            replacement_type = _pack088b_escape_html(item.get("replacement_type", "unknown"))
+            old_behavior = _pack088b_escape_html(item.get("old_behavior", "unknown"))
+            new_behavior = _pack088b_escape_html(item.get("new_behavior", "unknown"))
+            reason = _pack088b_escape_html(item.get("reason", "Deny-path replacement receipt recorded."))
+            soulaana = _pack088b_escape_html(item.get("soulaana_translation", "Soulaana: Replacement receipt filed."))
+            receipt_id = _pack088b_escape_html(item.get("receipt_id", ""))
+
+            cards.append(f"""
+              <div class="tower-mini-card">
+                <div class="tower-mini-top">
+                  <span>{severity.upper()}</span>
+                  <span>{status}</span>
+                </div>
+                <strong>{route_path}</strong>
+                <p>{reason}</p>
+                <p>{soulaana}</p>
+                <div class="tower-action-hint">Type: {replacement_type}</div>
+                <div class="tower-action-hint">Old: {old_behavior} → New: {new_behavior}</div>
+                <div class="tower-action-hint">Receipt: {receipt_id}</div>
+              </div>
+            """)
+
+        recent_html = "\n".join(cards) if cards else "<p>No deny-path replacement receipts yet.</p>"
+
+        return f"""
+        <section class="tower-panel" data-pack="086">
+          <div class="tower-panel-kicker">DENY-PATH REPLACEMENT RECEIPTS</div>
+          <h2>Locked Door Replacement Log</h2>
+          <p>Tracks old locked surfaces that were replaced with polished Tower clearance walls.</p>
+
+          <div class="tower-stat-grid">
+            <div class="tower-stat-card"><span>Total</span><strong>{total}</strong></div>
+            <div class="tower-stat-card"><span>Verified</span><strong>{verified}</strong></div>
+            <div class="tower-stat-card"><span>Needs Review</span><strong>{needs_review}</strong></div>
+            <div class="tower-stat-card"><span>By Status</span><strong>{_pack088b_escape_html(by_status)}</strong></div>
+            <div class="tower-stat-card"><span>By Route</span><strong>{_pack088b_escape_html(by_route)}</strong></div>
+            <div class="tower-stat-card"><span>By Type</span><strong>{_pack088b_escape_html(by_type)}</strong></div>
+            <div class="tower-stat-card"><span>By Severity</span><strong>{_pack088b_escape_html(by_severity)}</strong></div>
+          </div>
+
+          <div class="tower-mini-list">
+            {recent_html}
+          </div>
+        </section>
+        """
+    except Exception as exc:
+        return f"""
+        <section class="tower-panel" data-pack="086">
+          <div class="tower-panel-kicker">DENY-PATH REPLACEMENT RECEIPTS</div>
+          <h2>Locked Door Replacement Log</h2>
+          <p>Deny-path replacement panel could not load: {type(exc).__name__}: {_pack088b_escape_html(exc)}</p>
+        </section>
+        """
+
+
+def _pack088b_render_mapping_cards(items, empty_text):
+    if not items:
+        return f"<p>{_pack088b_escape_html(empty_text)}</p>"
+
+    cards = []
+    for item in items[:12]:
+        path = _pack088b_escape_html(item.get("path", "unknown"))
+        category = _pack088b_escape_html(item.get("category", "unknown"))
+        priority = _pack088b_escape_html(item.get("priority", ""))
+        reason_code = _pack088b_escape_html(item.get("reason_code", "unknown"))
+        plain = _pack088b_escape_html(item.get("plain", "Needs review."))
+        classification = _pack088b_escape_html(item.get("classification", "unknown"))
+
+        cards.append(f"""
+          <div class="tower-mini-card">
+            <div class="tower-mini-top">
+              <span>PRIORITY {priority}</span>
+              <span>{category}</span>
+            </div>
+            <strong>{path}</strong>
+            <p>{plain}</p>
+            <div class="tower-action-hint">Reason: {reason_code}</div>
+            <div class="tower-action-hint">Classification: {classification}</div>
+          </div>
+        """)
+    return "\n".join(cards)
+
+
+def _pack088b_exposure_mapping_panel_html():
+    try:
+        from tower.ob_exposure_mapping import (
+            build_ob_exposure_mapping_pass,
+            summarize_ob_exposure_mapping_pass,
+        )
+
+        build_ob_exposure_mapping_pass()
+        summary = summarize_ob_exposure_mapping_pass(limit=12)
+
+        total = summary.get("total", 0)
+        counts = summary.get("counts", {})
+        reason_counts = summary.get("reason_counts", {})
+        priority_counts = summary.get("priority_counts", {})
+        top_next = summary.get("top_next", [])
+        retire_or_redirect = summary.get("retire_or_redirect", [])
+        later_review = summary.get("later_review", [])
+        readiness_label = _pack088b_escape_html(summary.get("readiness_label", "Exposure mapping pass"))
+        readiness_score = _pack088b_escape_html(summary.get("readiness_score", ""))
+
+        return f"""
+        <section class="tower-panel" data-pack="087">
+          <div class="tower-panel-kicker">OB EXPOSURE MAPPING PASS</div>
+          <h2>Route Exposure Door Map</h2>
+          <p>Routes are categorized as protected, public-safe, map-next, retire/redirect, or later-review before future changes.</p>
+
+          <div class="tower-stat-grid">
+            <div class="tower-stat-card"><span>Total Routes</span><strong>{total}</strong></div>
+            <div class="tower-stat-card"><span>Readiness</span><strong>{readiness_score}</strong></div>
+            <div class="tower-stat-card"><span>Status</span><strong>{readiness_label}</strong></div>
+            <div class="tower-stat-card"><span>By Category</span><strong>{_pack088b_escape_html(counts)}</strong></div>
+            <div class="tower-stat-card"><span>By Reason</span><strong>{_pack088b_escape_html(reason_counts)}</strong></div>
+            <div class="tower-stat-card"><span>By Priority</span><strong>{_pack088b_escape_html(priority_counts)}</strong></div>
+          </div>
+
+          <div class="tower-subpanel">
+            <h3>Map Next</h3>
+            <div class="tower-mini-list">{_pack088b_render_mapping_cards(top_next, "No map-next routes found.")}</div>
+          </div>
+
+          <div class="tower-subpanel">
+            <h3>Retire or Redirect</h3>
+            <div class="tower-mini-list">{_pack088b_render_mapping_cards(retire_or_redirect, "No retire/redirect routes found.")}</div>
+          </div>
+
+          <div class="tower-subpanel">
+            <h3>Later Review</h3>
+            <div class="tower-mini-list">{_pack088b_render_mapping_cards(later_review, "No later-review routes found.")}</div>
+          </div>
+        </section>
+        """
+    except Exception as exc:
+        return f"""
+        <section class="tower-panel" data-pack="087">
+          <div class="tower-panel-kicker">OB EXPOSURE MAPPING PASS</div>
+          <h2>Route Exposure Door Map</h2>
+          <p>Exposure mapping panel could not load: {type(exc).__name__}: {_pack088b_escape_html(exc)}</p>
+        </section>
+        """
+
+
+def _pack088b_ensure_panel_before_body(html, marker, panel_html):
+    if marker in html:
+        return html
+    if "</body>" in html:
+        return html.replace("</body>", panel_html + "\n</body>")
+    return html + panel_html
+
+
+try:
+    _pack088b_original_render_security_command_dashboard_html
+except NameError:
+    _pack088b_original_render_security_command_dashboard_html = render_security_command_dashboard_html
+
+
+def render_security_command_dashboard_html(*args, **kwargs):
+    html = _pack088b_original_render_security_command_dashboard_html(*args, **kwargs)
+    html = _pack088b_ensure_panel_before_body(
+        html,
+        "DENY-PATH REPLACEMENT RECEIPTS",
+        _pack088b_deny_path_replacement_panel_html(),
+    )
+    html = _pack088b_ensure_panel_before_body(
+        html,
+        "OB EXPOSURE MAPPING PASS",
+        _pack088b_exposure_mapping_panel_html(),
+    )
+    return html
+
+
+try:
+    _pack088b_original_generate_security_command_dashboard
+except NameError:
+    _pack088b_original_generate_security_command_dashboard = generate_security_command_dashboard
+
+
+def generate_security_command_dashboard(*args, **kwargs):
+    result = _pack088b_original_generate_security_command_dashboard(*args, **kwargs)
+    if not isinstance(result, dict):
+        result = {"ok": False, "status": "invalid_dashboard_result"}
+
+    try:
+        from tower.deny_path_replacement_audit import summarize_deny_path_replacement_receipts
+        from tower.ob_exposure_mapping import (
+            build_ob_exposure_mapping_pass,
+            summarize_ob_exposure_mapping_pass,
+        )
+
+        deny_summary = summarize_deny_path_replacement_receipts(limit=8)
+        mapping = build_ob_exposure_mapping_pass()
+        exposure_summary = summarize_ob_exposure_mapping_pass(limit=12)
+
+        result["deny_path_replacement_ok"] = deny_summary.get("ok") is True
+        result["deny_path_replacement_total"] = deny_summary.get("total", 0)
+        result["deny_path_replacement_verified"] = deny_summary.get("verified", 0)
+        result["deny_path_replacement_needs_review"] = deny_summary.get("needs_review", 0)
+        result["deny_path_replacement_by_status"] = deny_summary.get("by_status", {})
+        result["deny_path_replacement_by_route"] = deny_summary.get("by_route", {})
+        result["deny_path_replacement_by_type"] = deny_summary.get("by_replacement_type", {})
+        result["deny_path_replacement_by_severity"] = deny_summary.get("by_severity", {})
+
+        result["ob_exposure_mapping_ok"] = exposure_summary.get("ok") is True
+        result["ob_exposure_mapping_total"] = exposure_summary.get("total", 0)
+        result["ob_exposure_mapping_counts"] = exposure_summary.get("counts", {})
+        result["ob_exposure_mapping_reason_counts"] = exposure_summary.get("reason_counts", {})
+        result["ob_exposure_mapping_priority_counts"] = exposure_summary.get("priority_counts", {})
+        result["ob_exposure_mapping_top_next_count"] = len(exposure_summary.get("top_next", []))
+        result["ob_exposure_mapping_retire_or_redirect_count"] = len(exposure_summary.get("retire_or_redirect", []))
+        result["ob_exposure_mapping_later_review_count"] = len(exposure_summary.get("later_review", []))
+        result["ob_exposure_mapping_readiness_label"] = exposure_summary.get("readiness_label")
+        result["ob_exposure_mapping_readiness_score"] = exposure_summary.get("readiness_score")
+        result["ob_exposure_mapping_file_path"] = mapping.get("path")
+
+        path = result.get("path", "")
+        if path:
+            from pathlib import Path
+            html_path = Path(path)
+            if html_path.exists():
+                html = html_path.read_text(encoding="utf-8", errors="replace")
+                html = _pack088b_ensure_panel_before_body(
+                    html,
+                    "DENY-PATH REPLACEMENT RECEIPTS",
+                    _pack088b_deny_path_replacement_panel_html(),
+                )
+                html = _pack088b_ensure_panel_before_body(
+                    html,
+                    "OB EXPOSURE MAPPING PASS",
+                    _pack088b_exposure_mapping_panel_html(),
+                )
+                html_path.write_text(html, encoding="utf-8")
+                result["bytes"] = html_path.stat().st_size
+
+    except Exception as exc:
+        result["replacement_exposure_panel_ok"] = False
+        result["replacement_exposure_panel_error"] = f"{type(exc).__name__}: {exc}"
+
+    return result
+

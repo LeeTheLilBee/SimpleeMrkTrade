@@ -811,3 +811,127 @@ def build_ob_privacy_wall_checkpoint():
 
     return checkpoint
 
+
+
+# ================================================================================
+# PACK088_REPLACEMENT_AND_EXPOSURE_UI_PANELS_CHECKPOINT_WRAPPER
+# ================================================================================
+# Adds replacement + exposure panel proof to privacy wall checkpoint.
+# ================================================================================
+
+try:
+    _pack088_original_build_ob_privacy_wall_checkpoint
+except NameError:
+    _pack088_original_build_ob_privacy_wall_checkpoint = build_ob_privacy_wall_checkpoint
+
+
+def build_ob_privacy_wall_checkpoint():
+    checkpoint = _pack088_original_build_ob_privacy_wall_checkpoint()
+    if not isinstance(checkpoint, dict):
+        checkpoint = {"ok": False, "built_packs": [], "next_steps": []}
+
+    try:
+        from tower.ob_privacy_wall_smoke import run_ob_privacy_wall_smoke
+        from tower.deny_path_replacement_audit import summarize_deny_path_replacement_receipts
+        from tower.ob_exposure_mapping import summarize_ob_exposure_mapping_pass
+
+        smoke = run_ob_privacy_wall_smoke()
+        checks = smoke.get("checks", {}) if isinstance(smoke.get("checks"), dict) else {}
+        panel_proof = checks.get("replacement_and_exposure_panels_ready", {})
+
+        deny_summary = summarize_deny_path_replacement_receipts(limit=10)
+        mapping_summary = summarize_ob_exposure_mapping_pass(limit=12)
+
+        checkpoint["pack"] = "088"
+        checkpoint["ok"] = smoke.get("ok") is True
+        checkpoint["smoke_ok"] = smoke.get("ok")
+        checkpoint["smoke_failures"] = smoke.get("failures")
+        checkpoint["replacement_and_exposure_panels_ready"] = panel_proof
+
+        checkpoint["deny_path_replacement_ui_summary"] = {
+            "ok": deny_summary.get("ok"),
+            "total": deny_summary.get("total"),
+            "verified": deny_summary.get("verified"),
+            "needs_review": deny_summary.get("needs_review"),
+            "by_status": deny_summary.get("by_status"),
+            "by_route": deny_summary.get("by_route"),
+            "by_replacement_type": deny_summary.get("by_replacement_type"),
+            "by_severity": deny_summary.get("by_severity"),
+        }
+
+        checkpoint["exposure_mapping_ui_summary"] = {
+            "ok": mapping_summary.get("ok"),
+            "total": mapping_summary.get("total"),
+            "counts": mapping_summary.get("counts"),
+            "reason_counts": mapping_summary.get("reason_counts"),
+            "priority_counts": mapping_summary.get("priority_counts"),
+            "top_next": mapping_summary.get("top_next"),
+            "retire_or_redirect": mapping_summary.get("retire_or_redirect"),
+            "later_review": mapping_summary.get("later_review"),
+            "readiness_label": mapping_summary.get("readiness_label"),
+            "readiness_score": mapping_summary.get("readiness_score"),
+        }
+
+        built_packs = checkpoint.setdefault("built_packs", [])
+        built_text = str(built_packs)
+        additions = [
+            {
+                "pack": "086",
+                "name": "Deny-path replacement receipts surfaced",
+                "plain": "Replacement receipts appear in Tower status and Security Command UI.",
+            },
+            {
+                "pack": "087",
+                "name": "Exposure mapping pass surfaced",
+                "plain": "Route exposure categories appear in Tower status and Security Command UI.",
+            },
+            {
+                "pack": "088",
+                "name": "Replacement + exposure panel proof",
+                "plain": "Smoke/checkpoint prove both panels render safely.",
+            },
+        ]
+        for item in additions:
+            if item["pack"] not in built_text:
+                built_packs.append(item)
+
+        checkpoint["next_steps"] = [
+            {
+                "priority": 1,
+                "item": "Create route replacement policy list",
+                "plain": "Define approved_to_replace, keep_old_for_now, needs_owner_review, retire_or_redirect, never_public, Tower_only, OB_protected, and Archive_only.",
+            },
+            {
+                "priority": 2,
+                "item": "Tie exposure mapping into route replacement policy",
+                "plain": "Map-next and retire/redirect categories should feed the policy list.",
+            },
+            {
+                "priority": 3,
+                "item": "Add owner review workflow for policy decisions",
+                "plain": "Route policy changes should require reason, receipt, and later step-up when available.",
+            },
+            {
+                "priority": 4,
+                "item": "Prepare visibility/policy transition checkpoint",
+                "plain": "Close the Pack 086–090 block after policy list is built.",
+            },
+        ]
+
+        checkpoint["readiness_score"] = 100 if smoke.get("ok") else 90
+        checkpoint["readiness_label"] = (
+            "Ready for route replacement policy list"
+            if smoke.get("ok")
+            else "Needs repair before route replacement policy"
+        )
+        checkpoint["soulaana_translation"] = (
+            "Soulaana: The locked-door receipts and route map are both on the Tower wall. Now we decide policy before touching more doors."
+        )
+        checkpoint["human_reason"] = "Privacy wall checkpoint now proves replacement and exposure panels."
+
+    except Exception as exc:
+        checkpoint["ok"] = False
+        checkpoint["pack088_error"] = f"{type(exc).__name__}: {exc}"
+
+    return checkpoint
+

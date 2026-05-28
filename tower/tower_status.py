@@ -399,3 +399,124 @@ def get_tower_status():
 
     return payload
 
+
+
+# ================================================================================
+# PACK087_EXPOSURE_MAPPING_STATUS_WRAPPER
+# ================================================================================
+# Adds OB exposure mapping pass summary fields to Tower status.
+# ================================================================================
+
+try:
+    _pack087_original_get_tower_status
+except NameError:
+    _pack087_original_get_tower_status = get_tower_status
+
+
+def get_tower_status():
+    payload = _pack087_original_get_tower_status()
+    if not isinstance(payload, dict):
+        payload = {}
+
+    try:
+        from tower.ob_exposure_mapping import (
+            build_ob_exposure_mapping_pass,
+            summarize_ob_exposure_mapping_pass,
+        )
+
+        # Rebuild before summarizing so the panel reflects current Flask/routes.
+        mapping = build_ob_exposure_mapping_pass()
+        summary = summarize_ob_exposure_mapping_pass(limit=12)
+
+        payload["ob_exposure_mapping_ok"] = summary.get("ok") is True
+        payload["ob_exposure_mapping_total"] = summary.get("total", 0)
+        payload["ob_exposure_mapping_counts"] = summary.get("counts", {})
+        payload["ob_exposure_mapping_reason_counts"] = summary.get("reason_counts", {})
+        payload["ob_exposure_mapping_priority_counts"] = summary.get("priority_counts", {})
+        payload["ob_exposure_mapping_top_next"] = summary.get("top_next", [])
+        payload["ob_exposure_mapping_retire_or_redirect"] = summary.get("retire_or_redirect", [])
+        payload["ob_exposure_mapping_later_review"] = summary.get("later_review", [])
+        payload["ob_exposure_mapping_readiness_label"] = summary.get("readiness_label")
+        payload["ob_exposure_mapping_readiness_score"] = summary.get("readiness_score")
+        payload["ob_exposure_mapping_human_reason"] = summary.get("human_reason")
+        payload["ob_exposure_mapping_soulaana_translation"] = summary.get("soulaana_translation")
+        payload["ob_exposure_mapping_file_path"] = mapping.get("path")
+
+    except Exception as exc:
+        payload["ob_exposure_mapping_ok"] = False
+        payload["ob_exposure_mapping_error"] = f"{type(exc).__name__}: {exc}"
+
+    return payload
+
+
+
+# ================================================================================
+# PACK088B_FINAL_REPLACEMENT_EXPOSURE_STATUS_WRAPPER
+# ================================================================================
+# Guarantees final Tower status includes BOTH:
+# - deny-path replacement receipt summary
+# - OB exposure mapping summary
+# regardless of earlier wrapper order.
+# ================================================================================
+
+try:
+    _pack088b_original_get_tower_status
+except NameError:
+    _pack088b_original_get_tower_status = get_tower_status
+
+
+def get_tower_status():
+    payload = _pack088b_original_get_tower_status()
+    if not isinstance(payload, dict):
+        payload = {}
+
+    # Deny-path replacement receipt fields.
+    try:
+        from tower.deny_path_replacement_audit import summarize_deny_path_replacement_receipts
+
+        deny_summary = summarize_deny_path_replacement_receipts(limit=8)
+
+        payload["deny_path_replacement_ok"] = deny_summary.get("ok") is True
+        payload["deny_path_replacement_total"] = deny_summary.get("total", 0)
+        payload["deny_path_replacement_verified"] = deny_summary.get("verified", 0)
+        payload["deny_path_replacement_needs_review"] = deny_summary.get("needs_review", 0)
+        payload["deny_path_replacement_by_status"] = deny_summary.get("by_status", {})
+        payload["deny_path_replacement_by_route"] = deny_summary.get("by_route", {})
+        payload["deny_path_replacement_by_type"] = deny_summary.get("by_replacement_type", {})
+        payload["deny_path_replacement_by_severity"] = deny_summary.get("by_severity", {})
+        payload["deny_path_replacement_recent"] = deny_summary.get("recent", [])
+        payload["deny_path_replacement_human_reason"] = deny_summary.get("human_reason")
+        payload["deny_path_replacement_soulaana_translation"] = deny_summary.get("soulaana_translation")
+    except Exception as exc:
+        payload["deny_path_replacement_ok"] = False
+        payload["deny_path_replacement_error"] = f"{type(exc).__name__}: {exc}"
+
+    # OB exposure mapping fields.
+    try:
+        from tower.ob_exposure_mapping import (
+            build_ob_exposure_mapping_pass,
+            summarize_ob_exposure_mapping_pass,
+        )
+
+        mapping = build_ob_exposure_mapping_pass()
+        exposure_summary = summarize_ob_exposure_mapping_pass(limit=12)
+
+        payload["ob_exposure_mapping_ok"] = exposure_summary.get("ok") is True
+        payload["ob_exposure_mapping_total"] = exposure_summary.get("total", 0)
+        payload["ob_exposure_mapping_counts"] = exposure_summary.get("counts", {})
+        payload["ob_exposure_mapping_reason_counts"] = exposure_summary.get("reason_counts", {})
+        payload["ob_exposure_mapping_priority_counts"] = exposure_summary.get("priority_counts", {})
+        payload["ob_exposure_mapping_top_next"] = exposure_summary.get("top_next", [])
+        payload["ob_exposure_mapping_retire_or_redirect"] = exposure_summary.get("retire_or_redirect", [])
+        payload["ob_exposure_mapping_later_review"] = exposure_summary.get("later_review", [])
+        payload["ob_exposure_mapping_readiness_label"] = exposure_summary.get("readiness_label")
+        payload["ob_exposure_mapping_readiness_score"] = exposure_summary.get("readiness_score")
+        payload["ob_exposure_mapping_human_reason"] = exposure_summary.get("human_reason")
+        payload["ob_exposure_mapping_soulaana_translation"] = exposure_summary.get("soulaana_translation")
+        payload["ob_exposure_mapping_file_path"] = mapping.get("path")
+    except Exception as exc:
+        payload["ob_exposure_mapping_ok"] = False
+        payload["ob_exposure_mapping_error"] = f"{type(exc).__name__}: {exc}"
+
+    return payload
+

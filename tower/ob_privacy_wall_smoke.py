@@ -1287,3 +1287,166 @@ def run_ob_privacy_wall_smoke():
 
     return result
 
+
+
+# ================================================================================
+# PACK088_REPLACEMENT_AND_EXPOSURE_UI_PANELS_SMOKE_WRAPPER
+# ================================================================================
+# Proves deny-path replacement receipts panel + exposure mapping panel render safely.
+# ================================================================================
+
+def _pack088_prove_replacement_and_exposure_panels():
+    try:
+        from pathlib import Path
+        from tower.deny_path_replacement_audit import summarize_deny_path_replacement_receipts
+        from tower.ob_exposure_mapping import (
+            build_ob_exposure_mapping_pass,
+            summarize_ob_exposure_mapping_pass,
+        )
+        from tower.tower_status import get_tower_status
+        from tower.security_command_page import generate_security_command_dashboard
+
+        deny_summary = summarize_deny_path_replacement_receipts(limit=10)
+        mapping = build_ob_exposure_mapping_pass()
+        mapping_summary = summarize_ob_exposure_mapping_pass(limit=12)
+        status = get_tower_status()
+        dashboard = generate_security_command_dashboard()
+
+        html_path = Path(dashboard.get("path", ""))
+        html = html_path.read_text(encoding="utf-8", errors="replace") if html_path.exists() else ""
+
+        deny_status_ok = (
+            status.get("deny_path_replacement_ok") is True
+            and status.get("deny_path_replacement_total", 0) >= 1
+            and status.get("deny_path_replacement_verified", 0) >= 1
+            and status.get("deny_path_replacement_by_route", {}).get("/no-access", 0) >= 1
+        )
+
+        exposure_status_ok = (
+            status.get("ob_exposure_mapping_ok") is True
+            and status.get("ob_exposure_mapping_total", 0) >= 1
+            and isinstance(status.get("ob_exposure_mapping_counts"), dict)
+            and status.get("ob_exposure_mapping_readiness_score") == 100
+            and status.get("ob_exposure_mapping_readiness_label") == "Exposure mapping pass ready"
+        )
+
+        deny_dashboard_ok = (
+            dashboard.get("deny_path_replacement_ok") is True
+            and dashboard.get("deny_path_replacement_total", 0) >= 1
+            and dashboard.get("deny_path_replacement_verified", 0) >= 1
+            and "DENY-PATH REPLACEMENT RECEIPTS" in html
+            and "Locked Door Replacement Log" in html
+            and 'data-pack="086"' in html
+            and "/no-access" in html
+            and "polished_tower_locked_page" in html
+        )
+
+        exposure_dashboard_ok = (
+            dashboard.get("ob_exposure_mapping_ok") is True
+            and dashboard.get("ob_exposure_mapping_total", 0) >= 1
+            and "OB EXPOSURE MAPPING PASS" in html
+            and "Route Exposure Door Map" in html
+            and 'data-pack="087"' in html
+            and "Total Routes" in html
+            and "By Category" in html
+            and "Map Next" in html
+            and "Retire or Redirect" in html
+            and "Later Review" in html
+        )
+
+        detail = {
+            "deny_summary_ok": deny_summary.get("ok"),
+            "deny_summary_total": deny_summary.get("total"),
+            "deny_summary_verified": deny_summary.get("verified"),
+            "deny_summary_by_route": deny_summary.get("by_route"),
+            "mapping_ok": mapping_summary.get("ok"),
+            "mapping_total": mapping_summary.get("total"),
+            "mapping_counts": mapping_summary.get("counts"),
+            "mapping_readiness_score": mapping_summary.get("readiness_score"),
+            "mapping_path": mapping.get("path"),
+            "tower_status_deny_ok": deny_status_ok,
+            "tower_status_exposure_ok": exposure_status_ok,
+            "dashboard_ok": dashboard.get("ok"),
+            "dashboard_path": str(html_path),
+            "dashboard_deny_panel_ok": deny_dashboard_ok,
+            "dashboard_exposure_panel_ok": exposure_dashboard_ok,
+            "dashboard_has_deny_panel": "DENY-PATH REPLACEMENT RECEIPTS" in html,
+            "dashboard_has_exposure_panel": "OB EXPOSURE MAPPING PASS" in html,
+            "dashboard_has_pack086": 'data-pack="086"' in html,
+            "dashboard_has_pack087": 'data-pack="087"' in html,
+        }
+
+        ok = (
+            deny_summary.get("ok") is True
+            and deny_summary.get("total", 0) >= 1
+            and deny_summary.get("verified", 0) >= 1
+            and mapping_summary.get("ok") is True
+            and mapping_summary.get("total", 0) >= 1
+            and deny_status_ok
+            and exposure_status_ok
+            and dashboard.get("ok") is True
+            and deny_dashboard_ok
+            and exposure_dashboard_ok
+        )
+
+        serialized = str([detail, deny_summary, mapping_summary, status, dashboard]) + html
+        no_leak = (
+            "tower_keycard=" not in serialized
+            and "SHOULD_NOT_SURVIVE" not in serialized
+            and "raw_token=" not in serialized
+            and '"raw_token":' not in serialized
+            and "Bearer SHOULD_NOT_SURVIVE" not in serialized
+        )
+        detail["no_secret_leakage"] = no_leak
+
+        return {
+            "ok": ok and no_leak,
+            "detail": detail,
+            "human_reason": (
+                "Deny-path replacement and exposure mapping UI panels proved."
+                if ok and no_leak
+                else "Replacement/exposure panel proof failed."
+            ),
+        }
+
+    except Exception as exc:
+        return {
+            "ok": False,
+            "detail": {"error": f"{type(exc).__name__}: {exc}"},
+            "human_reason": "Replacement/exposure panel proof raised an exception.",
+        }
+
+
+try:
+    _pack088_original_run_ob_privacy_wall_smoke
+except NameError:
+    _pack088_original_run_ob_privacy_wall_smoke = run_ob_privacy_wall_smoke
+
+
+def run_ob_privacy_wall_smoke():
+    result = _pack088_original_run_ob_privacy_wall_smoke()
+    if not isinstance(result, dict):
+        result = {"ok": False, "checks": {}, "failures": ["invalid_smoke_result"]}
+
+    checks = result.setdefault("checks", {})
+    failures = result.setdefault("failures", [])
+
+    proof = _pack088_prove_replacement_and_exposure_panels()
+    checks["replacement_and_exposure_panels_ready"] = {
+        "ok": proof.get("ok") is True,
+        "detail": proof.get("detail"),
+    }
+
+    if proof.get("ok") is not True and "replacement_and_exposure_panels_ready" not in failures:
+        failures.append("replacement_and_exposure_panels_ready")
+
+    result["ok"] = not failures
+    result["pack"] = "088"
+    result["human_reason"] = (
+        "OB privacy wall smoke test passed with replacement and exposure panels."
+        if result["ok"]
+        else "OB privacy wall smoke test found failures."
+    )
+
+    return result
+
