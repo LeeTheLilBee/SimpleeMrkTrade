@@ -10252,3 +10252,48 @@ except Exception:
 # END PACK105_TOWER_OB_GUARD_STATUS_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK114_SECURITY_COMMAND_COMPOSITION_SMOKE_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/security-command-smoke")
+    def tower_security_command_composition_smoke_pack114():
+        # PACK114B: Tower guard for Security Command smoke route.
+        _tower_guard_response = _tower_guard_ob_route_or_response(
+            route_path='/tower/security-command-smoke',
+            metadata={'source': 'pack114b_security_command_smoke_guard', 'route_function': 'tower_security_command_composition_smoke_pack114'},
+        )
+        if _tower_guard_response is not None:
+            return _tower_guard_response
+
+        try:
+            from tower.security_command_composition_smoke import (
+                build_security_command_composition_status,
+                render_security_command_composition_html,
+            )
+            status = build_security_command_composition_status(write_html=True)
+            return render_security_command_composition_html(status)
+        except Exception as exc:
+            return f"""
+            <!doctype html>
+            <html lang="en">
+            <head><meta charset="utf-8"><title>Tower Security Command Smoke Error</title></head>
+            <body style="font-family:system-ui;background:#090907;color:#f5ead2;padding:32px;">
+              <main style="max-width:720px;margin:auto;border:1px solid rgba(220,183,94,.4);border-radius:24px;padding:24px;">
+                <p style="letter-spacing:.12em;text-transform:uppercase;color:#dcb75e;">The Tower · Pack 114</p>
+                <h1>Security Command smoke unavailable</h1>
+                <p>{type(exc).__name__}</p>
+              </main>
+            </body>
+            </html>
+            """, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK114_SECURITY_COMMAND_COMPOSITION_SMOKE_ROUTE
+# ================================================================================
+
