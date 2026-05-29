@@ -31,7 +31,7 @@
   },
   "closed_count": 0,
   "contained_count": 0,
-  "created_at": "2026-05-29T21:34:06.493265Z",
+  "created_at": "2026-05-29T21:55:28.410449Z",
   "critical_count": 0,
   "escalation_ready_count": 40,
   "escalation_ready_items": [
@@ -187,7 +187,7 @@
     },
     {
       "assigned_to": "owner_solice",
-      "created_at": "2026-05-29T21:29:30.076503Z",
+      "created_at": "2026-05-29T21:49:43.941064Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -195,15 +195,15 @@
         "high_priority_score"
       ],
       "human_reason": "position_owner_mismatch",
-      "inbox_item_id": "security_inbox_4cbf714ba080a15af0",
-      "incident_id": "incident_582dc4a736af2a62d3",
+      "inbox_item_id": "security_inbox_8b89fe3691c69e2139",
+      "incident_id": "incident_6ad2db5159b1784b32",
       "incident_sort_score": 175,
       "incident_state_source": "saved_state",
       "incident_status": "triaged",
       "is_escalation_ready": true,
       "last_action": "new_to_triaged",
       "next_action": "investigate_or_contain",
-      "object_id": "pos_other_132",
+      "object_id": "pos_other_133",
       "object_type": "position",
       "owner_notes": "[REDACTED_INCIDENT_VALUE]",
       "priority_score": 160,
@@ -213,7 +213,7 @@
         "action": "view",
         "decision": "deny",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "pos_other_132",
+        "object_id": "pos_other_133",
         "object_type": "position",
         "pack": "108",
         "reason_code": "position_owner_mismatch"
@@ -221,12 +221,12 @@
       "security_decision": "deny",
       "severity": "high",
       "source": "object_permission_events",
-      "updated_at": "2026-05-29T21:29:48.233513Z",
+      "updated_at": "2026-05-29T21:50:04.535592Z",
       "updated_by": "owner_solice"
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:29:31.857621Z",
+      "created_at": "2026-05-29T21:49:45.918515Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -234,15 +234,15 @@
         "high_priority_score"
       ],
       "human_reason": "export_requires_step_up",
-      "inbox_item_id": "security_inbox_efb8dd11143f46510a",
-      "incident_id": "incident_560005539853bf13e5",
+      "inbox_item_id": "security_inbox_2c5efe695cb15ea533",
+      "incident_id": "incident_e5ed60dc64da51d4ca",
       "incident_sort_score": 174,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
       "last_action": "",
       "next_action": "triage",
-      "object_id": "export_132",
+      "object_id": "export_133",
       "object_type": "export",
       "owner_notes": "",
       "priority_score": 132,
@@ -252,7 +252,7 @@
         "action": "export",
         "decision": "step_up_required",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "export_132",
+        "object_id": "export_133",
         "object_type": "export",
         "pack": "108",
         "reason_code": "export_requires_step_up"
@@ -265,7 +265,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:29:30.929867Z",
+      "created_at": "2026-05-29T21:49:45.016588Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -273,15 +273,15 @@
         "high_priority_score"
       ],
       "human_reason": "position_mutation_requires_step_up",
-      "inbox_item_id": "security_inbox_576b3c769db5e5e206",
-      "incident_id": "incident_1a5ab0d4d064f0ccde",
+      "inbox_item_id": "security_inbox_cc86eb2c15f2f4ddd5",
+      "incident_id": "incident_d70ffc404454615743",
       "incident_sort_score": 174,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
       "last_action": "",
       "next_action": "triage",
-      "object_id": "pos_mine_132",
+      "object_id": "pos_mine_133",
       "object_type": "position",
       "owner_notes": "",
       "priority_score": 132,
@@ -291,7 +291,7 @@
         "action": "close",
         "decision": "step_up_required",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "pos_mine_132",
+        "object_id": "pos_mine_133",
         "object_type": "position",
         "pack": "108",
         "reason_code": "position_mutation_requires_step_up"
@@ -304,7 +304,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:34:02.122848Z",
+      "created_at": "2026-05-29T21:55:21.126856Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -312,8 +312,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_1cc7ec45ea1f185f34",
-      "incident_id": "incident_4f3b99e03d56ebf89d",
+      "inbox_item_id": "security_inbox_c8c80469ac66ccfb08",
+      "incident_id": "incident_3f346f1afda5150591",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -337,7 +337,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:34:01.693605Z",
+      "created_at": "2026-05-29T21:55:20.645546Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -345,8 +345,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_52d11a815a77f93c3b",
-      "incident_id": "incident_6179425804c509d38c",
+      "inbox_item_id": "security_inbox_84a4b59ecd5f2356e7",
+      "incident_id": "incident_6c9134b0bb980d75d2",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -370,7 +370,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:34:00.509078Z",
+      "created_at": "2026-05-29T21:55:19.715301Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -378,8 +378,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_b6c816d652248bfd77",
-      "incident_id": "incident_5bbfeac4afc2cd31b2",
+      "inbox_item_id": "security_inbox_de1933184c00a6c025",
+      "incident_id": "incident_dfaa6e752eefdf7330",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -403,7 +403,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:59.748394Z",
+      "created_at": "2026-05-29T21:55:19.243187Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -411,8 +411,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_f9446d0125d8bdae22",
-      "incident_id": "incident_0105a126e8fa4f6483",
+      "inbox_item_id": "security_inbox_9cc536a0808e06baaa",
+      "incident_id": "incident_2822ce6e0b3d2f4a19",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -436,7 +436,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:58.986840Z",
+      "created_at": "2026-05-29T21:55:18.778578Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -444,8 +444,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_466d0db3710c8c8b74",
-      "incident_id": "incident_0416d97843d8369516",
+      "inbox_item_id": "security_inbox_6461b725fe0ac0eeff",
+      "incident_id": "incident_a9501f30f2df566950",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -469,7 +469,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:57.344667Z",
+      "created_at": "2026-05-29T21:55:17.737754Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -477,8 +477,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_670da7d36bec8145a9",
-      "incident_id": "incident_325253e0303cb7024b",
+      "inbox_item_id": "security_inbox_79e21a9adf5293cebc",
+      "incident_id": "incident_d03639aaa6242e20ad",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -502,7 +502,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:56.837267Z",
+      "created_at": "2026-05-29T21:55:17.207778Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -510,8 +510,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_4a05989efe46c78ed1",
-      "incident_id": "incident_e5b86a472b7a948578",
+      "inbox_item_id": "security_inbox_d611f3b99a5cff862d",
+      "incident_id": "incident_b8cb7ac528665bd8f4",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -535,7 +535,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:56.412961Z",
+      "created_at": "2026-05-29T21:55:16.743954Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -543,8 +543,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_976a1eb42f2375d24f",
-      "incident_id": "incident_fb4d230564668a8e30",
+      "inbox_item_id": "security_inbox_a0c5b3032fda4a0642",
+      "incident_id": "incident_8276b9da43acff7474",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -568,7 +568,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:55.930325Z",
+      "created_at": "2026-05-29T21:55:16.162634Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -576,8 +576,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_a399a66264a62724b0",
-      "incident_id": "incident_9e856369faf1990f09",
+      "inbox_item_id": "security_inbox_7526a6540d1015437f",
+      "incident_id": "incident_1f22d7c4075d147e4e",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -601,7 +601,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:55.510592Z",
+      "created_at": "2026-05-29T21:55:15.390828Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -609,8 +609,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_fe9221c3eba15f1772",
-      "incident_id": "incident_c3db8cc4948760fa85",
+      "inbox_item_id": "security_inbox_cb972ad1396d1fa7f6",
+      "incident_id": "incident_b44005a613e38d09b7",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -634,7 +634,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:54.651306Z",
+      "created_at": "2026-05-29T21:55:13.699941Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -642,8 +642,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_294cb28ebe0b8d3c4a",
-      "incident_id": "incident_a27769cbe8327248e2",
+      "inbox_item_id": "security_inbox_84a4408c2d6e02ae0b",
+      "incident_id": "incident_35686c90916799bfeb",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -667,7 +667,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:54.239373Z",
+      "created_at": "2026-05-29T21:55:12.810425Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -675,8 +675,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_fdf4c81ebf4d86a81d",
-      "incident_id": "incident_d23b53c365e6e4e868",
+      "inbox_item_id": "security_inbox_bc2e72ee2a5dc504af",
+      "incident_id": "incident_976855aaab7abae397",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -700,7 +700,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:53.816325Z",
+      "created_at": "2026-05-29T21:55:12.165995Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -708,8 +708,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_9015eee362221fb511",
-      "incident_id": "incident_303d086858f0e07577",
+      "inbox_item_id": "security_inbox_f1f45c396e82920b02",
+      "incident_id": "incident_74629cde13881e9db5",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -733,7 +733,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:52.879983Z",
+      "created_at": "2026-05-29T21:55:11.167485Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -741,8 +741,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_cdab1ea4a98826d337",
-      "incident_id": "incident_72abd0a0e8d6b6b740",
+      "inbox_item_id": "security_inbox_3f25ad1040481a1f78",
+      "incident_id": "incident_0ad8e67f1d330c478f",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -766,7 +766,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:52.438614Z",
+      "created_at": "2026-05-29T21:55:10.715106Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -774,8 +774,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_0683f52b23187a8670",
-      "incident_id": "incident_5dc86adaab8340d87c",
+      "inbox_item_id": "security_inbox_bf9ce426f8517872c5",
+      "incident_id": "incident_6546ea2c130771b6ba",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -799,7 +799,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:52.015945Z",
+      "created_at": "2026-05-29T21:55:10.279867Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -807,8 +807,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_24c766fd9e05f13430",
-      "incident_id": "incident_8ad1bbfb9ddf5e719c",
+      "inbox_item_id": "security_inbox_af478cfdabb77675d7",
+      "incident_id": "incident_ec09910f9c8bfd360a",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -832,7 +832,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:51.595780Z",
+      "created_at": "2026-05-29T21:55:09.828049Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -840,8 +840,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_413644a18f46703c95",
-      "incident_id": "incident_00cb6f030757576bbb",
+      "inbox_item_id": "security_inbox_1ecfc8992e0ad3b6f5",
+      "incident_id": "incident_eed8e48f9630b8bd85",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -865,7 +865,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:48.997256Z",
+      "created_at": "2026-05-29T21:55:07.038108Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -873,8 +873,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_f10009d37192dbf420",
-      "incident_id": "incident_cceb8265101927ec49",
+      "inbox_item_id": "security_inbox_5e0615047a0da0bab3",
+      "incident_id": "incident_c9c422c240afa6c39d",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -898,7 +898,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:48.566198Z",
+      "created_at": "2026-05-29T21:55:06.581001Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -906,8 +906,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_de0b30cc09ebddd41c",
-      "incident_id": "incident_78fb6ac640666506ac",
+      "inbox_item_id": "security_inbox_c9401e693da56bb2d5",
+      "incident_id": "incident_fedf90ddc650807377",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -931,7 +931,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:47.762781Z",
+      "created_at": "2026-05-29T21:55:05.676290Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -939,8 +939,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_3dff26b437e3c6f684",
-      "incident_id": "incident_aa24e23baeaace26c8",
+      "inbox_item_id": "security_inbox_8b71e6adf99783a8e9",
+      "incident_id": "incident_e69e8dc40b9f150dda",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -964,7 +964,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:47.313519Z",
+      "created_at": "2026-05-29T21:55:05.225429Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -972,8 +972,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_58dde582699b625458",
-      "incident_id": "incident_6d88250bc484008c79",
+      "inbox_item_id": "security_inbox_601ee18efde927d9a3",
+      "incident_id": "incident_cfd2f8cb698ff50ee4",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -997,7 +997,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:46.595884Z",
+      "created_at": "2026-05-29T21:55:04.748577Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1005,8 +1005,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_2e5f0e28ff28d7c398",
-      "incident_id": "incident_c34f671038c6c3fbdb",
+      "inbox_item_id": "security_inbox_e55d562b84c7414b60",
+      "incident_id": "incident_37a9c587e8b176a42c",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1030,7 +1030,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:45.064501Z",
+      "created_at": "2026-05-29T21:55:03.779057Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1038,8 +1038,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_672a282cf3b63309b7",
-      "incident_id": "incident_177dcdbcb6c7db9be4",
+      "inbox_item_id": "security_inbox_d3fe66ee8eab2452c9",
+      "incident_id": "incident_4940fa8ba01c21ab51",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1063,7 +1063,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:44.306280Z",
+      "created_at": "2026-05-29T21:55:03.296258Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1071,8 +1071,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_21f0db0ccbdb53bab6",
-      "incident_id": "incident_6399919b1b3d2ca287",
+      "inbox_item_id": "security_inbox_1d602944095e2058eb",
+      "incident_id": "incident_bd568772017470a266",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1096,7 +1096,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:43.539969Z",
+      "created_at": "2026-05-29T21:55:02.858792Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1104,8 +1104,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_355b101e92e46ecaa1",
-      "incident_id": "incident_7dbae3036545181f24",
+      "inbox_item_id": "security_inbox_3bc3324eafb4b8de41",
+      "incident_id": "incident_9ab674b589685e10e9",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1129,7 +1129,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:43.009126Z",
+      "created_at": "2026-05-29T21:55:02.386753Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1137,8 +1137,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_bc7dcd1bf2f7ec850c",
-      "incident_id": "incident_61ffc464e14c95d677",
+      "inbox_item_id": "security_inbox_e535cf8397e6689eb1",
+      "incident_id": "incident_99ce37273fbcbb5663",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1162,7 +1162,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:42.609079Z",
+      "created_at": "2026-05-29T21:55:01.602475Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1170,8 +1170,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_7ecae5e9b927002886",
-      "incident_id": "incident_c369d4718892b771a3",
+      "inbox_item_id": "security_inbox_6ab6a6ae66441b1642",
+      "incident_id": "incident_6fe158105996c48055",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1195,7 +1195,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:41.699945Z",
+      "created_at": "2026-05-29T21:54:59.991620Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1203,8 +1203,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_ef70619066115be3bd",
-      "incident_id": "incident_9049c8409ab4d67edc",
+      "inbox_item_id": "security_inbox_9192e290776017890e",
+      "incident_id": "incident_d2ff97342a44be56a8",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1228,7 +1228,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:41.246056Z",
+      "created_at": "2026-05-29T21:54:59.194341Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1236,8 +1236,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_f1e2a371278b87733a",
-      "incident_id": "incident_6a2c933f4dce3c25e8",
+      "inbox_item_id": "security_inbox_bac72e54a0bdcdbaaf",
+      "incident_id": "incident_fd4886c290280563fc",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1261,7 +1261,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:40.809041Z",
+      "created_at": "2026-05-29T21:54:58.381014Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1269,8 +1269,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_def7f924a75671baba",
-      "incident_id": "incident_eadea15882935092d4",
+      "inbox_item_id": "security_inbox_dc0c53ab129f6ecb97",
+      "incident_id": "incident_1c2e0d9e2188e2be64",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1294,7 +1294,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:39.886865Z",
+      "created_at": "2026-05-29T21:54:57.408962Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1302,8 +1302,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_61f9b476e39b9c97ec",
-      "incident_id": "incident_9f878a03aecf75121a",
+      "inbox_item_id": "security_inbox_3fb35d9f4f225387b4",
+      "incident_id": "incident_ad238beee39709f90b",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1327,7 +1327,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:39.453998Z",
+      "created_at": "2026-05-29T21:54:56.950144Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1335,8 +1335,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_8541e92463b6f519a3",
-      "incident_id": "incident_0dec2c70d279021955",
+      "inbox_item_id": "security_inbox_6ff9350e251dc4946f",
+      "incident_id": "incident_c8565ed526eabc49ec",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1360,7 +1360,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:39.014123Z",
+      "created_at": "2026-05-29T21:54:56.519204Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1368,8 +1368,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_0a9f095e9b0714cc40",
-      "incident_id": "incident_ddb0d9692db8e0b8ea",
+      "inbox_item_id": "security_inbox_47e83141a9cb525289",
+      "incident_id": "incident_fafe82d02d953492e6",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1412,7 +1412,7 @@
   "resolved_count": 0,
   "soulaana_translation": "Soulaana: The Incident Desk can now show what needs owner attention first.",
   "status": "passed",
-  "status_fingerprint": "e82a89025bff752fef04b8e52d95d66344e73f854563937d73f6508863ad82ca",
+  "status_fingerprint": "fba11f070b3d39fdc435e7ca2d62b40794d2fc6d9aba1065f15d0f07c596ef6e",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_incident_filters_escalation_status.json",
   "top_incidents": [
     {
@@ -1567,7 +1567,7 @@
     },
     {
       "assigned_to": "owner_solice",
-      "created_at": "2026-05-29T21:29:30.076503Z",
+      "created_at": "2026-05-29T21:49:43.941064Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1575,15 +1575,15 @@
         "high_priority_score"
       ],
       "human_reason": "position_owner_mismatch",
-      "inbox_item_id": "security_inbox_4cbf714ba080a15af0",
-      "incident_id": "incident_582dc4a736af2a62d3",
+      "inbox_item_id": "security_inbox_8b89fe3691c69e2139",
+      "incident_id": "incident_6ad2db5159b1784b32",
       "incident_sort_score": 175,
       "incident_state_source": "saved_state",
       "incident_status": "triaged",
       "is_escalation_ready": true,
       "last_action": "new_to_triaged",
       "next_action": "investigate_or_contain",
-      "object_id": "pos_other_132",
+      "object_id": "pos_other_133",
       "object_type": "position",
       "owner_notes": "[REDACTED_INCIDENT_VALUE]",
       "priority_score": 160,
@@ -1593,7 +1593,7 @@
         "action": "view",
         "decision": "deny",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "pos_other_132",
+        "object_id": "pos_other_133",
         "object_type": "position",
         "pack": "108",
         "reason_code": "position_owner_mismatch"
@@ -1601,12 +1601,12 @@
       "security_decision": "deny",
       "severity": "high",
       "source": "object_permission_events",
-      "updated_at": "2026-05-29T21:29:48.233513Z",
+      "updated_at": "2026-05-29T21:50:04.535592Z",
       "updated_by": "owner_solice"
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:29:31.857621Z",
+      "created_at": "2026-05-29T21:49:45.918515Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1614,15 +1614,15 @@
         "high_priority_score"
       ],
       "human_reason": "export_requires_step_up",
-      "inbox_item_id": "security_inbox_efb8dd11143f46510a",
-      "incident_id": "incident_560005539853bf13e5",
+      "inbox_item_id": "security_inbox_2c5efe695cb15ea533",
+      "incident_id": "incident_e5ed60dc64da51d4ca",
       "incident_sort_score": 174,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
       "last_action": "",
       "next_action": "triage",
-      "object_id": "export_132",
+      "object_id": "export_133",
       "object_type": "export",
       "owner_notes": "",
       "priority_score": 132,
@@ -1632,7 +1632,7 @@
         "action": "export",
         "decision": "step_up_required",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "export_132",
+        "object_id": "export_133",
         "object_type": "export",
         "pack": "108",
         "reason_code": "export_requires_step_up"
@@ -1645,7 +1645,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:29:30.929867Z",
+      "created_at": "2026-05-29T21:49:45.016588Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1653,15 +1653,15 @@
         "high_priority_score"
       ],
       "human_reason": "position_mutation_requires_step_up",
-      "inbox_item_id": "security_inbox_576b3c769db5e5e206",
-      "incident_id": "incident_1a5ab0d4d064f0ccde",
+      "inbox_item_id": "security_inbox_cc86eb2c15f2f4ddd5",
+      "incident_id": "incident_d70ffc404454615743",
       "incident_sort_score": 174,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
       "last_action": "",
       "next_action": "triage",
-      "object_id": "pos_mine_132",
+      "object_id": "pos_mine_133",
       "object_type": "position",
       "owner_notes": "",
       "priority_score": 132,
@@ -1671,7 +1671,7 @@
         "action": "close",
         "decision": "step_up_required",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "pos_mine_132",
+        "object_id": "pos_mine_133",
         "object_type": "position",
         "pack": "108",
         "reason_code": "position_mutation_requires_step_up"
@@ -1684,7 +1684,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:34:02.122848Z",
+      "created_at": "2026-05-29T21:55:21.126856Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1692,8 +1692,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_1cc7ec45ea1f185f34",
-      "incident_id": "incident_4f3b99e03d56ebf89d",
+      "inbox_item_id": "security_inbox_c8c80469ac66ccfb08",
+      "incident_id": "incident_3f346f1afda5150591",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1717,7 +1717,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:34:01.693605Z",
+      "created_at": "2026-05-29T21:55:20.645546Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1725,8 +1725,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_52d11a815a77f93c3b",
-      "incident_id": "incident_6179425804c509d38c",
+      "inbox_item_id": "security_inbox_84a4b59ecd5f2356e7",
+      "incident_id": "incident_6c9134b0bb980d75d2",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1750,7 +1750,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:34:00.509078Z",
+      "created_at": "2026-05-29T21:55:19.715301Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1758,8 +1758,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_b6c816d652248bfd77",
-      "incident_id": "incident_5bbfeac4afc2cd31b2",
+      "inbox_item_id": "security_inbox_de1933184c00a6c025",
+      "incident_id": "incident_dfaa6e752eefdf7330",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1783,7 +1783,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:59.748394Z",
+      "created_at": "2026-05-29T21:55:19.243187Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1791,8 +1791,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_f9446d0125d8bdae22",
-      "incident_id": "incident_0105a126e8fa4f6483",
+      "inbox_item_id": "security_inbox_9cc536a0808e06baaa",
+      "incident_id": "incident_2822ce6e0b3d2f4a19",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1816,7 +1816,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:58.986840Z",
+      "created_at": "2026-05-29T21:55:18.778578Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1824,8 +1824,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_466d0db3710c8c8b74",
-      "incident_id": "incident_0416d97843d8369516",
+      "inbox_item_id": "security_inbox_6461b725fe0ac0eeff",
+      "incident_id": "incident_a9501f30f2df566950",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1849,7 +1849,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:57.344667Z",
+      "created_at": "2026-05-29T21:55:17.737754Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1857,8 +1857,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_670da7d36bec8145a9",
-      "incident_id": "incident_325253e0303cb7024b",
+      "inbox_item_id": "security_inbox_79e21a9adf5293cebc",
+      "incident_id": "incident_d03639aaa6242e20ad",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1882,7 +1882,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:56.837267Z",
+      "created_at": "2026-05-29T21:55:17.207778Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1890,8 +1890,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_4a05989efe46c78ed1",
-      "incident_id": "incident_e5b86a472b7a948578",
+      "inbox_item_id": "security_inbox_d611f3b99a5cff862d",
+      "incident_id": "incident_b8cb7ac528665bd8f4",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1915,7 +1915,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:56.412961Z",
+      "created_at": "2026-05-29T21:55:16.743954Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1923,8 +1923,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_976a1eb42f2375d24f",
-      "incident_id": "incident_fb4d230564668a8e30",
+      "inbox_item_id": "security_inbox_a0c5b3032fda4a0642",
+      "incident_id": "incident_8276b9da43acff7474",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1948,7 +1948,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:55.930325Z",
+      "created_at": "2026-05-29T21:55:16.162634Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1956,8 +1956,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_a399a66264a62724b0",
-      "incident_id": "incident_9e856369faf1990f09",
+      "inbox_item_id": "security_inbox_7526a6540d1015437f",
+      "incident_id": "incident_1f22d7c4075d147e4e",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1981,7 +1981,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:55.510592Z",
+      "created_at": "2026-05-29T21:55:15.390828Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1989,8 +1989,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_fe9221c3eba15f1772",
-      "incident_id": "incident_c3db8cc4948760fa85",
+      "inbox_item_id": "security_inbox_cb972ad1396d1fa7f6",
+      "incident_id": "incident_b44005a613e38d09b7",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2014,7 +2014,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:54.651306Z",
+      "created_at": "2026-05-29T21:55:13.699941Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2022,8 +2022,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_294cb28ebe0b8d3c4a",
-      "incident_id": "incident_a27769cbe8327248e2",
+      "inbox_item_id": "security_inbox_84a4408c2d6e02ae0b",
+      "incident_id": "incident_35686c90916799bfeb",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2047,7 +2047,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:54.239373Z",
+      "created_at": "2026-05-29T21:55:12.810425Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2055,8 +2055,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_fdf4c81ebf4d86a81d",
-      "incident_id": "incident_d23b53c365e6e4e868",
+      "inbox_item_id": "security_inbox_bc2e72ee2a5dc504af",
+      "incident_id": "incident_976855aaab7abae397",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2080,7 +2080,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:53.816325Z",
+      "created_at": "2026-05-29T21:55:12.165995Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2088,8 +2088,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_9015eee362221fb511",
-      "incident_id": "incident_303d086858f0e07577",
+      "inbox_item_id": "security_inbox_f1f45c396e82920b02",
+      "incident_id": "incident_74629cde13881e9db5",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2113,7 +2113,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:52.879983Z",
+      "created_at": "2026-05-29T21:55:11.167485Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2121,8 +2121,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_cdab1ea4a98826d337",
-      "incident_id": "incident_72abd0a0e8d6b6b740",
+      "inbox_item_id": "security_inbox_3f25ad1040481a1f78",
+      "incident_id": "incident_0ad8e67f1d330c478f",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2146,7 +2146,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:52.438614Z",
+      "created_at": "2026-05-29T21:55:10.715106Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2154,8 +2154,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_0683f52b23187a8670",
-      "incident_id": "incident_5dc86adaab8340d87c",
+      "inbox_item_id": "security_inbox_bf9ce426f8517872c5",
+      "incident_id": "incident_6546ea2c130771b6ba",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2179,7 +2179,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:52.015945Z",
+      "created_at": "2026-05-29T21:55:10.279867Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2187,8 +2187,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_24c766fd9e05f13430",
-      "incident_id": "incident_8ad1bbfb9ddf5e719c",
+      "inbox_item_id": "security_inbox_af478cfdabb77675d7",
+      "incident_id": "incident_ec09910f9c8bfd360a",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2212,7 +2212,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:51.595780Z",
+      "created_at": "2026-05-29T21:55:09.828049Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2220,8 +2220,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_413644a18f46703c95",
-      "incident_id": "incident_00cb6f030757576bbb",
+      "inbox_item_id": "security_inbox_1ecfc8992e0ad3b6f5",
+      "incident_id": "incident_eed8e48f9630b8bd85",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2245,7 +2245,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:48.997256Z",
+      "created_at": "2026-05-29T21:55:07.038108Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2253,8 +2253,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_f10009d37192dbf420",
-      "incident_id": "incident_cceb8265101927ec49",
+      "inbox_item_id": "security_inbox_5e0615047a0da0bab3",
+      "incident_id": "incident_c9c422c240afa6c39d",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2278,7 +2278,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:48.566198Z",
+      "created_at": "2026-05-29T21:55:06.581001Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2286,8 +2286,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_de0b30cc09ebddd41c",
-      "incident_id": "incident_78fb6ac640666506ac",
+      "inbox_item_id": "security_inbox_c9401e693da56bb2d5",
+      "incident_id": "incident_fedf90ddc650807377",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2311,7 +2311,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:47.762781Z",
+      "created_at": "2026-05-29T21:55:05.676290Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2319,8 +2319,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_3dff26b437e3c6f684",
-      "incident_id": "incident_aa24e23baeaace26c8",
+      "inbox_item_id": "security_inbox_8b71e6adf99783a8e9",
+      "incident_id": "incident_e69e8dc40b9f150dda",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2344,7 +2344,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:47.313519Z",
+      "created_at": "2026-05-29T21:55:05.225429Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2352,8 +2352,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_58dde582699b625458",
-      "incident_id": "incident_6d88250bc484008c79",
+      "inbox_item_id": "security_inbox_601ee18efde927d9a3",
+      "incident_id": "incident_cfd2f8cb698ff50ee4",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2377,7 +2377,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:46.595884Z",
+      "created_at": "2026-05-29T21:55:04.748577Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2385,8 +2385,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_2e5f0e28ff28d7c398",
-      "incident_id": "incident_c34f671038c6c3fbdb",
+      "inbox_item_id": "security_inbox_e55d562b84c7414b60",
+      "incident_id": "incident_37a9c587e8b176a42c",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2410,7 +2410,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:45.064501Z",
+      "created_at": "2026-05-29T21:55:03.779057Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2418,8 +2418,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_672a282cf3b63309b7",
-      "incident_id": "incident_177dcdbcb6c7db9be4",
+      "inbox_item_id": "security_inbox_d3fe66ee8eab2452c9",
+      "incident_id": "incident_4940fa8ba01c21ab51",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2443,7 +2443,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:44.306280Z",
+      "created_at": "2026-05-29T21:55:03.296258Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2451,8 +2451,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_21f0db0ccbdb53bab6",
-      "incident_id": "incident_6399919b1b3d2ca287",
+      "inbox_item_id": "security_inbox_1d602944095e2058eb",
+      "incident_id": "incident_bd568772017470a266",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2476,7 +2476,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:43.539969Z",
+      "created_at": "2026-05-29T21:55:02.858792Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2484,8 +2484,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_355b101e92e46ecaa1",
-      "incident_id": "incident_7dbae3036545181f24",
+      "inbox_item_id": "security_inbox_3bc3324eafb4b8de41",
+      "incident_id": "incident_9ab674b589685e10e9",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2509,7 +2509,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:43.009126Z",
+      "created_at": "2026-05-29T21:55:02.386753Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2517,8 +2517,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_bc7dcd1bf2f7ec850c",
-      "incident_id": "incident_61ffc464e14c95d677",
+      "inbox_item_id": "security_inbox_e535cf8397e6689eb1",
+      "incident_id": "incident_99ce37273fbcbb5663",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2542,7 +2542,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:42.609079Z",
+      "created_at": "2026-05-29T21:55:01.602475Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2550,8 +2550,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_7ecae5e9b927002886",
-      "incident_id": "incident_c369d4718892b771a3",
+      "inbox_item_id": "security_inbox_6ab6a6ae66441b1642",
+      "incident_id": "incident_6fe158105996c48055",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2575,7 +2575,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:41.699945Z",
+      "created_at": "2026-05-29T21:54:59.991620Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2583,8 +2583,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_ef70619066115be3bd",
-      "incident_id": "incident_9049c8409ab4d67edc",
+      "inbox_item_id": "security_inbox_9192e290776017890e",
+      "incident_id": "incident_d2ff97342a44be56a8",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2608,7 +2608,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:41.246056Z",
+      "created_at": "2026-05-29T21:54:59.194341Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2616,8 +2616,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_f1e2a371278b87733a",
-      "incident_id": "incident_6a2c933f4dce3c25e8",
+      "inbox_item_id": "security_inbox_bac72e54a0bdcdbaaf",
+      "incident_id": "incident_fd4886c290280563fc",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2641,7 +2641,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:40.809041Z",
+      "created_at": "2026-05-29T21:54:58.381014Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2649,8 +2649,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_def7f924a75671baba",
-      "incident_id": "incident_eadea15882935092d4",
+      "inbox_item_id": "security_inbox_dc0c53ab129f6ecb97",
+      "incident_id": "incident_1c2e0d9e2188e2be64",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2674,7 +2674,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:39.886865Z",
+      "created_at": "2026-05-29T21:54:57.408962Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2682,8 +2682,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_61f9b476e39b9c97ec",
-      "incident_id": "incident_9f878a03aecf75121a",
+      "inbox_item_id": "security_inbox_3fb35d9f4f225387b4",
+      "incident_id": "incident_ad238beee39709f90b",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2707,7 +2707,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:39.453998Z",
+      "created_at": "2026-05-29T21:54:56.950144Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2715,8 +2715,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_8541e92463b6f519a3",
-      "incident_id": "incident_0dec2c70d279021955",
+      "inbox_item_id": "security_inbox_6ff9350e251dc4946f",
+      "incident_id": "incident_c8565ed526eabc49ec",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2740,7 +2740,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T21:33:39.014123Z",
+      "created_at": "2026-05-29T21:54:56.519204Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2748,8 +2748,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_0a9f095e9b0714cc40",
-      "incident_id": "incident_ddb0d9692db8e0b8ea",
+      "inbox_item_id": "security_inbox_47e83141a9cb525289",
+      "incident_id": "incident_fafe82d02d953492e6",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",

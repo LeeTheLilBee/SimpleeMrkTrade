@@ -1,15 +1,15 @@
 {
-  "incident_582dc4a736af2a62d3": {
+  "incident_6ad2db5159b1784b32": {
     "__redacted_incident_field_count__": 1,
     "assigned_to": "owner_solice",
-    "inbox_item_id": "security_inbox_4cbf714ba080a15af0",
-    "incident_id": "incident_582dc4a736af2a62d3",
+    "inbox_item_id": "security_inbox_8b89fe3691c69e2139",
+    "incident_id": "incident_6ad2db5159b1784b32",
     "incident_status": "triaged",
     "last_action": "new_to_triaged",
     "metadata": {
-      "pack": "132"
+      "pack": "133"
     },
-    "object_id": "pos_other_132",
+    "object_id": "pos_other_133",
     "object_type": "position",
     "owner_notes": "[REDACTED_INCIDENT_VALUE]",
     "priority_score": 160,
@@ -17,7 +17,7 @@
     "security_decision": "deny",
     "severity": "high",
     "source": "object_permission_events",
-    "updated_at": "2026-05-29T21:29:48.233513Z",
+    "updated_at": "2026-05-29T21:50:04.535592Z",
     "updated_by": "owner_solice"
   }
 }

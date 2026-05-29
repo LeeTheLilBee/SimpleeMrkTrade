@@ -165,7 +165,7 @@
     "unified_health_ok": true,
     "unified_status_passed": true
   },
-  "created_at": "2026-05-29T21:34:38.332045Z",
+  "created_at": "2026-05-29T21:56:53.119273Z",
   "failed_checks": [],
   "human_reason": "Owner quick-action rail gives direct access to unified command, preferred destination, security links, object visibility, and route guard status.",
   "leakage_scan": {
@@ -188,8 +188,8 @@
   "readiness_score": 100,
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 40,
-    "needs_guard_count": 40,
+    "guarded_needed_count": 41,
+    "needs_guard_count": 41,
     "ok": true,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
@@ -197,7 +197,7 @@
   },
   "soulaana_translation": "Soulaana: The owner now has the important Tower buttons in one rail.",
   "status": "passed",
-  "status_fingerprint": "3245895fb6e900f21f7b54f55c09247016d22251e66d752a2209f73335e2fb37",
+  "status_fingerprint": "29c36b2df8bc7ee257fa6619bdf01e43b8c7862b90966e3436db61994cb28613",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_owner_quick_actions_status.json",
   "unified_health": {
     "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page.html",
