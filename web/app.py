@@ -9386,16 +9386,6 @@ _pack051_register_trade_position_object_guard_once(app)
 # ================================================================================
 
 def _pack052_extract_export_id_from_request():
-    # PACK109: Tower object-level permission check.
-    _tower_object_response = _tower_object_permission_response_109(
-        object_type='export',
-        object_id='_pack052_extract_export_id_from_request',
-        action='export',
-        metadata={"source": "pack109_object_route_guard", "route_function": '_pack052_extract_export_id_from_request'},
-    )
-    if _tower_object_response is not None:
-        return _tower_object_response
-
     try:
         from flask import request
         return (
@@ -9410,16 +9400,6 @@ def _pack052_extract_export_id_from_request():
 
 
 def _pack052_should_check_export_object(path):
-    # PACK109: Tower object-level permission check.
-    _tower_object_response = _tower_object_permission_response_109(
-        object_type='export',
-        object_id='_pack052_should_check_export_object',
-        action='export',
-        metadata={"source": "pack109_object_route_guard", "route_function": '_pack052_should_check_export_object'},
-    )
-    if _tower_object_response is not None:
-        return _tower_object_response
-
     try:
         path = str(path or "")
         return path == "/export" or path.startswith("/export/") or path == "/download" or path.startswith("/download/")
@@ -9428,16 +9408,6 @@ def _pack052_should_check_export_object(path):
 
 
 def _pack052_register_export_object_guard_once(_app):
-    # PACK109: Tower object-level permission check.
-    _tower_object_response = _tower_object_permission_response_109(
-        object_type='export',
-        object_id='_pack052_register_export_object_guard_once',
-        action='export',
-        metadata={"source": "pack109_object_route_guard", "route_function": '_pack052_register_export_object_guard_once'},
-    )
-    if _tower_object_response is not None:
-        return _tower_object_response
-
     try:
         if getattr(_app, "_pack052_export_object_guard_registered", False):
             return True
@@ -9447,16 +9417,6 @@ def _pack052_register_export_object_guard_once(_app):
 
         @_app.before_request
         def _pack052_export_object_guard_before_request():
-            # PACK109: Tower object-level permission check.
-            _tower_object_response = _tower_object_permission_response_109(
-                object_type='export',
-                object_id='_pack052_export_object_guard_before_request',
-                action='export',
-                metadata={"source": "pack109_object_route_guard", "route_function": '_pack052_export_object_guard_before_request'},
-            )
-            if _tower_object_response is not None:
-                return _tower_object_response
-
             path = str(getattr(request, "path", "") or "/")
             if not _pack052_should_check_export_object(path):
                 return None

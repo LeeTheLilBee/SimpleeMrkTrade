@@ -11422,14 +11422,190 @@
       "source_hash": "504bbd7313eefb42056fe057dcca13d41c34f0e0403138bd8c828c0b3796061d",
       "source_name": "ob_object_permission_integration_checkpoint",
       "source_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_integration_checkpoint.json"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "chain_version": "pack091.v1",
+      "created_at": "2026-05-29T14:03:48.127233Z",
+      "current_hash": "4b50b9a8697c7233b8969df0233e41f0ccb9caa02c9d613becf07aba7dee7c18",
+      "event_type": "tower_ob_object_permission_integration_checkpoint",
+      "metadata": {
+        "helper_wrapped_count": 4,
+        "object_guard_count": 14,
+        "pack": "110",
+        "route_coverage_pct": 100,
+        "status": "passed"
+      },
+      "ok": true,
+      "previous_hash": "75ec32c1fc7269285966783bd522a0cc5ea4bebef63d9bc78334e902dba89e92",
+      "reason": "Pack 110 OB route/object permission integration checkpoint.",
+      "record_count": 14,
+      "sequence": 548,
+      "source_hash": "f1dde99c933fb038d7c7beab703de1bea86bf2e2d6fa1eb95d007961d671378f",
+      "source_name": "ob_object_permission_integration_checkpoint",
+      "source_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_integration_checkpoint.json"
+    },
+    {
+      "actor_user_id": "public_user",
+      "chain_version": "pack091.v1",
+      "created_at": "2026-05-29T14:12:09.844859Z",
+      "current_hash": "68d3f91d959caca36911e056da26fb3eb1e95305a6099dd01475db68ecf2ddc6",
+      "event_type": "tower_ob_object_permission_event_snapshot",
+      "metadata": {
+        "decision": "allow",
+        "event_id": "ob_object_perm_evt_zKTrSJg3jcpzoeCwKG5Z3S9B",
+        "object_id": "NVDA",
+        "object_type": "symbol",
+        "pack": "108"
+      },
+      "ok": true,
+      "previous_hash": "4b50b9a8697c7233b8969df0233e41f0ccb9caa02c9d613becf07aba7dee7c18",
+      "reason": "Pack 108 chained OB object permission event allow.",
+      "record_count": 1,
+      "sequence": 549,
+      "source_hash": "14b1d14bf24ebb0eb75c33e53e0c5fb244f5f82181bb097ecb8b66394a72bbec",
+      "source_name": "ob_object_permission_events",
+      "source_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_events.json"
+    },
+    {
+      "actor_user_id": "beta_111",
+      "chain_version": "pack091.v1",
+      "created_at": "2026-05-29T14:12:09.909695Z",
+      "current_hash": "8f10e2e3d412292a380cd8badf915c3a82eae0415bb878c81feeecfa757bffa0",
+      "event_type": "tower_ob_object_permission_event_snapshot",
+      "metadata": {
+        "decision": "deny",
+        "event_id": "ob_object_perm_evt_W8NoRq2Uov9MA7Kjir5uH1F-",
+        "object_id": "pos_other_111",
+        "object_type": "position",
+        "pack": "108"
+      },
+      "ok": true,
+      "previous_hash": "68d3f91d959caca36911e056da26fb3eb1e95305a6099dd01475db68ecf2ddc6",
+      "reason": "Pack 108 chained OB object permission event deny.",
+      "record_count": 2,
+      "sequence": 550,
+      "source_hash": "cb11896ded431a8751158c50937842346e494dbee9dafcae3c33e9d052f3116f",
+      "source_name": "ob_object_permission_events",
+      "source_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_events.json"
+    },
+    {
+      "actor_user_id": "beta_111",
+      "chain_version": "pack091.v1",
+      "created_at": "2026-05-29T14:12:09.960729Z",
+      "current_hash": "26805f8859c3585071f09d4edec06bfe034ca198dfb1dd3e71f4ad418d39d624",
+      "event_type": "tower_ob_object_permission_event_snapshot",
+      "metadata": {
+        "decision": "step_up_required",
+        "event_id": "ob_object_perm_evt_shQuYi3EWnqAB7zdl8VqwEDF",
+        "object_id": "pos_mine_111",
+        "object_type": "position",
+        "pack": "108"
+      },
+      "ok": true,
+      "previous_hash": "8f10e2e3d412292a380cd8badf915c3a82eae0415bb878c81feeecfa757bffa0",
+      "reason": "Pack 108 chained OB object permission event step_up_required.",
+      "record_count": 3,
+      "sequence": 551,
+      "source_hash": "67c464e52f14c53adad6bfda999c18f22226644a91c3d979f55b0fba7ce49329",
+      "source_name": "ob_object_permission_events",
+      "source_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_events.json"
+    },
+    {
+      "actor_user_id": "beta_111",
+      "chain_version": "pack091.v1",
+      "created_at": "2026-05-29T14:12:10.012625Z",
+      "current_hash": "66a6d54ed2447ffa690a8a86ff54d1c7262e866f67342d60b5d54a906fe38148",
+      "event_type": "tower_ob_object_permission_event_snapshot",
+      "metadata": {
+        "decision": "deny",
+        "event_id": "ob_object_perm_evt_apWLOH26BjM0dh-QSO6oIs_g",
+        "object_id": "trade_other_111",
+        "object_type": "trade",
+        "pack": "108"
+      },
+      "ok": true,
+      "previous_hash": "26805f8859c3585071f09d4edec06bfe034ca198dfb1dd3e71f4ad418d39d624",
+      "reason": "Pack 108 chained OB object permission event deny.",
+      "record_count": 4,
+      "sequence": 552,
+      "source_hash": "c40510cd93cd3fbdb37eecf3663049d8d3cd1a9b302cef37f58db0fe7fa0e07d",
+      "source_name": "ob_object_permission_events",
+      "source_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_events.json"
+    },
+    {
+      "actor_user_id": "owner_solice",
+      "chain_version": "pack091.v1",
+      "created_at": "2026-05-29T14:12:10.049688Z",
+      "current_hash": "776c360b2c3b92916c2e75ad7dac20b95c8f3deb66d1797bc617d73ba46c1339",
+      "event_type": "tower_ob_object_permission_event_snapshot",
+      "metadata": {
+        "decision": "step_up_required",
+        "event_id": "ob_object_perm_evt_o6tjwjmLW-b5OkKkV8VangUE",
+        "object_id": "export_111",
+        "object_type": "export",
+        "pack": "108"
+      },
+      "ok": true,
+      "previous_hash": "66a6d54ed2447ffa690a8a86ff54d1c7262e866f67342d60b5d54a906fe38148",
+      "reason": "Pack 108 chained OB object permission event step_up_required.",
+      "record_count": 5,
+      "sequence": 553,
+      "source_hash": "e0a7c63ae73178a43e4788cedf61d6f092ff0f524a599c78f1ca7833f7c23f5c",
+      "source_name": "ob_object_permission_events",
+      "source_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_events.json"
+    },
+    {
+      "actor_user_id": "beta_111",
+      "chain_version": "pack091.v1",
+      "created_at": "2026-05-29T14:12:10.083484Z",
+      "current_hash": "794a66f8750268a85eafc31957d281b8c7b0addef27e4fb2d21698b5f579b20e",
+      "event_type": "tower_ob_object_permission_event_snapshot",
+      "metadata": {
+        "decision": "summary_only",
+        "event_id": "ob_object_perm_evt_IP6-pa8yzFhIb4NI5ed41aLI",
+        "object_id": "analysis_111",
+        "object_type": "analysis",
+        "pack": "108"
+      },
+      "ok": true,
+      "previous_hash": "776c360b2c3b92916c2e75ad7dac20b95c8f3deb66d1797bc617d73ba46c1339",
+      "reason": "Pack 108 chained OB object permission event summary_only.",
+      "record_count": 6,
+      "sequence": 554,
+      "source_hash": "969ac4b5cad6865fb2375ac4d0fa55e061ca421c17afbf270d7dde4dc559472f",
+      "source_name": "ob_object_permission_events",
+      "source_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_events.json"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "chain_version": "pack091.v1",
+      "created_at": "2026-05-29T14:12:10.161438Z",
+      "current_hash": "db3388ae29c9d09f44f0a1d3c4f1c9713dfed727322ad957dc375406dd114951",
+      "event_type": "tower_ob_object_permission_integration_checkpoint",
+      "metadata": {
+        "helper_wrapped_count": 0,
+        "object_guard_count": 10,
+        "pack": "110",
+        "route_coverage_pct": 100,
+        "status": "passed"
+      },
+      "ok": true,
+      "previous_hash": "794a66f8750268a85eafc31957d281b8c7b0addef27e4fb2d21698b5f579b20e",
+      "reason": "Pack 110 OB route/object permission integration checkpoint.",
+      "record_count": 10,
+      "sequence": 555,
+      "source_hash": "20da5696a684ea9ade0254e568dfb6ba0d379b916db9cc4bce4e2e11d4b4083d",
+      "source_name": "ob_object_permission_integration_checkpoint",
+      "source_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_integration_checkpoint.json"
     }
   ],
   "human_reason": "Tamper-evident audit chain updated.",
-  "latest_hash": "75ec32c1fc7269285966783bd522a0cc5ea4bebef63d9bc78334e902dba89e92",
+  "latest_hash": "db3388ae29c9d09f44f0a1d3c4f1c9713dfed727322ad957dc375406dd114951",
   "ok": true,
   "pack": "091",
   "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/tamper_evident_audit_chain.json",
   "soulaana_translation": "Soulaana: The receipt chain is linked. If someone edits the past, the chain will complain.",
-  "total_entries": 547,
-  "updated_at": "2026-05-29T01:41:30.888450Z"
+  "total_entries": 555,
+  "updated_at": "2026-05-29T14:12:10.161671Z"
 }

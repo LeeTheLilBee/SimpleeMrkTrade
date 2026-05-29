@@ -1,5 +1,5 @@
 {
-  "checkpoint_fingerprint": "4321687d7aec35e81e8894d777f0314a9c9a11e271ef2257922f42c67f18edc8",
+  "checkpoint_fingerprint": "4e5dff6536e32592132dc7e7f09d50281ca70fe7fce693c4eb55f8edb3d99a79",
   "checkpoint_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_integration_checkpoint.json",
   "checks": {
     "all_markers_present": true,
@@ -14,7 +14,7 @@
     "unguarded_needed_zero": true,
     "web_app_exists": true
   },
-  "created_at": "2026-05-29T01:41:30.880779Z",
+  "created_at": "2026-05-29T14:12:10.153983Z",
   "expected_missing": [],
   "expected_object_route_count": 8,
   "expected_present": {
@@ -29,49 +29,8 @@
   },
   "expected_wrong_type": [],
   "failed_checks": [],
-  "helper_wrapped_count": 4,
-  "helper_wrapped_functions": [
-    {
-      "action": "",
-      "expected_object_type": "",
-      "function_name": "_tower_object_guard_marker_109",
-      "guard_helper_call_present": true,
-      "guard_marker_present": false,
-      "is_expected_route_target": false,
-      "looks_like_helper_or_internal": true,
-      "object_type": ""
-    },
-    {
-      "action": "export",
-      "expected_object_type": "",
-      "function_name": "_pack052_extract_export_id_from_request",
-      "guard_helper_call_present": true,
-      "guard_marker_present": true,
-      "is_expected_route_target": false,
-      "looks_like_helper_or_internal": true,
-      "object_type": "export"
-    },
-    {
-      "action": "export",
-      "expected_object_type": "",
-      "function_name": "_pack052_should_check_export_object",
-      "guard_helper_call_present": true,
-      "guard_marker_present": true,
-      "is_expected_route_target": false,
-      "looks_like_helper_or_internal": true,
-      "object_type": "export"
-    },
-    {
-      "action": "export",
-      "expected_object_type": "",
-      "function_name": "_pack052_register_export_object_guard_once",
-      "guard_helper_call_present": true,
-      "guard_marker_present": true,
-      "is_expected_route_target": false,
-      "looks_like_helper_or_internal": true,
-      "object_type": "export"
-    }
-  ],
+  "helper_wrapped_count": 0,
+  "helper_wrapped_functions": [],
   "human_reason": "Pack 110 checkpoint verifies route coverage, object guard wiring, object permission readiness, and visibility.",
   "leakage_scan": {
     "forbidden_hit_count": 0,
@@ -87,7 +46,7 @@
     "pack109_object_marker_present": true
   },
   "no_secret_leakage": true,
-  "object_guard_count": 14,
+  "object_guard_count": 10,
   "object_guarded_functions": [
     {
       "action": "export",
@@ -108,16 +67,6 @@
       "is_expected_route_target": false,
       "looks_like_helper_or_internal": false,
       "object_type": "export"
-    },
-    {
-      "action": "",
-      "expected_object_type": "",
-      "function_name": "_tower_object_guard_marker_109",
-      "guard_helper_call_present": true,
-      "guard_marker_present": false,
-      "is_expected_route_target": false,
-      "looks_like_helper_or_internal": true,
-      "object_type": ""
     },
     {
       "action": "view",
@@ -198,36 +147,6 @@
       "is_expected_route_target": true,
       "looks_like_helper_or_internal": false,
       "object_type": "trade"
-    },
-    {
-      "action": "export",
-      "expected_object_type": "",
-      "function_name": "_pack052_extract_export_id_from_request",
-      "guard_helper_call_present": true,
-      "guard_marker_present": true,
-      "is_expected_route_target": false,
-      "looks_like_helper_or_internal": true,
-      "object_type": "export"
-    },
-    {
-      "action": "export",
-      "expected_object_type": "",
-      "function_name": "_pack052_should_check_export_object",
-      "guard_helper_call_present": true,
-      "guard_marker_present": true,
-      "is_expected_route_target": false,
-      "looks_like_helper_or_internal": true,
-      "object_type": "export"
-    },
-    {
-      "action": "export",
-      "expected_object_type": "",
-      "function_name": "_pack052_register_export_object_guard_once",
-      "guard_helper_call_present": true,
-      "guard_marker_present": true,
-      "is_expected_route_target": false,
-      "looks_like_helper_or_internal": true,
-      "object_type": "export"
     }
   ],
   "object_permission_summary": {
@@ -263,12 +182,6 @@
   },
   "soulaana_translation": "Soulaana: The hallway doors and object keys have a checkpoint board now.",
   "status": "passed",
-  "warnings": [
-    {
-      "count": 4,
-      "human_reason": "Some helper/internal functions contain object permission guards. They compiled and tests passed, but Pack 111 should review whether these are intentional or should be moved to route-level wrappers only.",
-      "warning_code": "helper_or_internal_functions_have_object_guards"
-    }
-  ],
+  "warnings": [],
   "web_app_path": "/content/SimpleeMrkTrade_REAL_CLONE/web/app.py"
 }

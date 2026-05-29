@@ -526,3 +526,81 @@ def reset_object_permission_integration_checkpoint_for_test() -> Dict[str, Any]:
         "decision": "object_permission_integration_checkpoint_reset",
         "soulaana_translation": "Soulaana: Integration checkpoint reset for a clean test lane.",
     }
+
+
+
+# ================================================================================
+# PACK111B_STRICT_OBJECT_GUARD_SCANNER
+# ================================================================================
+# Count only real Pack109 inserted guard blocks.
+# Do not count marker/helper functions that merely mention the helper name.
+# ================================================================================
+
+def parse_functions_with_object_guards(text: str | None = None) -> List[Dict[str, Any]]:
+    text = text if isinstance(text, str) else WEB_APP_PATH.read_text(encoding="utf-8", errors="replace")
+    lines = text.splitlines()
+
+    functions: List[Dict[str, Any]] = []
+
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.strip()
+
+        if stripped.startswith("def ") and stripped.endswith(":"):
+            function_name = stripped.split("def ", 1)[1].split("(", 1)[0].strip()
+            def_indent = _leading_spaces(line)
+
+            body_lines = []
+            j = i + 1
+            while j < len(lines):
+                next_line = lines[j]
+                next_stripped = next_line.strip()
+
+                if next_stripped and _leading_spaces(next_line) <= def_indent:
+                    if (
+                        next_stripped.startswith("@app.route(")
+                        or next_stripped.startswith("def ")
+                        or next_stripped.startswith("class ")
+                    ):
+                        break
+
+                body_lines.append(next_line)
+                j += 1
+
+            body = "\n".join(body_lines)
+
+            # Strict rule:
+            # A real Pack109 object guard has the actual marker comment.
+            # A helper/marker function may mention _tower_object_permission_response_109
+            # without being wrapped. Do not count that.
+            has_object_guard = PACK109_MARKER in body
+
+            if has_object_guard:
+                object_type = ""
+                action = ""
+                object_type_match = re.search(r"object_type\s*=\s*['\"]([^'\"]+)['\"]", body)
+                action_match = re.search(r"action\s*=\s*['\"]([^'\"]+)['\"]", body)
+                if object_type_match:
+                    object_type = object_type_match.group(1)
+                if action_match:
+                    action = action_match.group(1)
+
+                functions.append({
+                    "function_name": function_name,
+                    "object_type": object_type,
+                    "action": action,
+                    "is_expected_route_target": function_name in EXPECTED_OBJECT_ROUTE_FUNCTIONS,
+                    "expected_object_type": EXPECTED_OBJECT_ROUTE_FUNCTIONS.get(function_name, ""),
+                    "looks_like_helper_or_internal": function_name.startswith(HELPER_FUNCTION_PREFIXES),
+                    "guard_marker_present": PACK109_MARKER in body,
+                    "guard_helper_call_present": "_tower_object_permission_response_109" in body,
+                })
+
+            i = j
+            continue
+
+        i += 1
+
+    return functions
+
