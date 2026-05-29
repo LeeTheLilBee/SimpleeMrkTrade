@@ -2,26 +2,74 @@
   {
     "__redacted_incident_field_count__": 1,
     "actor_user_id": "owner_solice",
-    "created_at": "2026-05-29T19:26:56.677049Z",
+    "created_at": "2026-05-29T20:25:35.608327Z",
     "decision": "incident_action_applied",
     "event_type": "tower_security_incident_action",
-    "human_reason": "Pack 127 incident UI seed.",
-    "inbox_item_id": "security_inbox_0ff00f95e6e935bbb5",
-    "incident_id": "incident_6b8c741356590239a4",
+    "human_reason": "Pack 128 incident filter seed.",
+    "inbox_item_id": "security_inbox_9efe57b045803a494b",
+    "incident_id": "incident_bed4ece5ecef085701",
     "metadata": {
-      "pack": "127"
+      "pack": "128"
     },
     "new_incident_status": "triaged",
     "new_severity": "high",
-    "object_id": "pos_other_127",
+    "object_id": "pos_other_128",
     "object_type": "position",
     "pack": "126",
     "prior_incident_status": "new",
     "prior_severity": "critical",
     "priority_score": 160,
     "reason_code": "security_incident_state_updated",
-    "receipt_id": "security_incident_receipt_3b388550b70924a2a7",
+    "receipt_id": "security_incident_receipt_35f890d1e8f6fe3567",
     "route_path": "",
     "source": "object_permission_events"
+  },
+  {
+    "actor_user_id": "owner_solice",
+    "created_at": "2026-05-29T20:25:37.487680Z",
+    "decision": "incident_action_applied",
+    "event_type": "tower_security_incident_action",
+    "human_reason": "Pack 128 incident filter seed.",
+    "inbox_item_id": "security_inbox_5e65f035784b617bb2",
+    "incident_id": "incident_d0d63284269627fe8a",
+    "metadata": {
+      "pack": "128"
+    },
+    "new_incident_status": "investigating",
+    "new_severity": "high",
+    "object_id": "",
+    "object_type": "",
+    "pack": "126",
+    "prior_incident_status": "new",
+    "prior_severity": "high",
+    "priority_score": 145,
+    "reason_code": "security_incident_state_updated",
+    "receipt_id": "security_incident_receipt_1b65af839723a0e7d6",
+    "route_path": "/tower/security-command",
+    "source": "owner_admin_receipts"
+  },
+  {
+    "actor_user_id": "owner_solice",
+    "created_at": "2026-05-29T20:25:40.603235Z",
+    "decision": "incident_action_applied",
+    "event_type": "tower_security_incident_action",
+    "human_reason": "Pack 128 incident filter seed.",
+    "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
+    "incident_id": "incident_70279dc0dc9caba568",
+    "metadata": {
+      "pack": "128"
+    },
+    "new_incident_status": "contained",
+    "new_severity": "medium",
+    "object_id": "",
+    "object_type": "",
+    "pack": "126",
+    "prior_incident_status": "new",
+    "prior_severity": "high",
+    "priority_score": 145,
+    "reason_code": "security_incident_state_updated",
+    "receipt_id": "security_incident_receipt_a0b149f8d9cfad8b39",
+    "route_path": "",
+    "source": "secrets_boundary_events"
   }
 ]

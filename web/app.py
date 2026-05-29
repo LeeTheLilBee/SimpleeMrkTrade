@@ -10757,3 +10757,43 @@ except Exception:
 # END PACK126_SECURITY_INCIDENT_DESK_ROUTES
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK128_SECURITY_INCIDENT_FILTERS_ESCALATION_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/security-incident-filters.json")
+    def tower_security_incident_filters_escalation_json_pack128():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-incident-filters.json",
+                metadata={"source": "pack128_security_incident_filters_escalation_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_incident_filters_escalation import build_security_incident_filters_escalation_status
+
+            return jsonify(build_security_incident_filters_escalation_status(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "128",
+                    "reason_code": "security_incident_filters_escalation_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "128", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK128_SECURITY_INCIDENT_FILTERS_ESCALATION_ROUTE
+# ================================================================================
+
