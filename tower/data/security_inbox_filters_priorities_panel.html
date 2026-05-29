@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Security Inbox Filters</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+
+<!-- PACK124_SECURITY_INBOX_FILTERS_PRIORITIES_SECTION -->
+<section class="security-inbox-filters-priorities" data-pack="124">
+  <style>
+    .security-inbox-filters-priorities {
+      margin: 24px 0;
+      border: 1px solid rgba(220,183,94,.38);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(220,183,94,.15), transparent 34%),
+        linear-gradient(135deg, rgba(34,22,12,.78), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .security-inbox-filters-priorities__eyebrow {
+      color: rgba(220,183,94,.9);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .security-inbox-filters-priorities h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .security-inbox-filters-priorities p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .security-filter-stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .security-filter-stat {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+    }
+    .security-filter-stat b {
+      display: block;
+      font-size: 22px;
+    }
+    .security-filter-stat span {
+      color: rgba(245,234,210,.62);
+      font-size: 12px;
+    }
+    .security-filter-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .security-filter-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+    }
+    .security-filter-card--high {
+      border-color: rgba(255,128,128,.65);
+    }
+    .security-filter-card--medium {
+      border-color: rgba(220,183,94,.62);
+    }
+    .security-filter-card--watch {
+      border-color: rgba(168,175,255,.52);
+    }
+    .security-filter-card--info {
+      border-color: rgba(143,221,158,.34);
+    }
+    .security-filter-card__eyebrow {
+      color: rgba(220,183,94,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .security-filter-card h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+    }
+    .security-filter-card p {
+      margin: 0 0 8px;
+      color: rgba(245,234,210,.72);
+    }
+    .security-filter-card small {
+      color: rgba(245,234,210,.55);
+      word-break: break-word;
+    }
+    @media (max-width: 1000px) {
+      .security-filter-stats,
+      .security-filter-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="security-inbox-filters-priorities__eyebrow">PACK 124 · FILTERS + PRIORITY</div>
+  <h2>Security Inbox Filters & Priorities</h2>
+  <p>Security Inbox filters and priority scoring are ready so owner review can focus on the most important items first.</p>
+
+  <div class="security-filter-stats">
+    <div class="security-filter-stat"><b>80</b><span>Total</span></div>
+    <div class="security-filter-stat"><b>63</b><span>High Priority</span></div>
+    <div class="security-filter-stat"><b>62</b><span>Open Review</span></div>
+    <div class="security-filter-stat"><b>62</b><span>Unresolved</span></div>
+    <div class="security-filter-stat"><b>1</b><span>Resolved</span></div>
+  </div>
+
+  <div class="security-filter-grid">
+    
+        <article class="security-filter-card security-filter-card--high">
+          <div class="security-filter-card__eyebrow">P160 · high · new · object_permission_events</div>
+          <h3>deny</h3>
+          <p>position_owner_mismatch</p>
+          <small>security_inbox_01f909874c29bbcf86</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--high">
+          <div class="security-filter-card__eyebrow">P145 · high · investigating · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_5e65f035784b617bb2</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--high">
+          <div class="security-filter-card__eyebrow">P145 · high · acknowledged · secrets_boundary_events</div>
+          <h3>raw_secret_rejected</h3>
+          <p>Raw secret value was rejected. The Tower may only store a reference.</p>
+          <small>security_inbox_e0643d3b6a70b16d09</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P142 · medium · new · redaction_reveal_receipts</div>
+          <h3>reveal_step_up_required</h3>
+          <p>step_up_required_for_sensitive_reveal</p>
+          <small>security_inbox_d6d9fdb4808be20cc4</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P132 · medium · new · object_permission_events</div>
+          <h3>step_up_required</h3>
+          <p>export_requires_step_up</p>
+          <small>security_inbox_9344bc3313fdcc9000</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P132 · medium · new · object_permission_events</div>
+          <h3>step_up_required</h3>
+          <p>position_mutation_requires_step_up</p>
+          <small>security_inbox_ff88023ae236d0d4be</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_event_snapshot</h3>
+          <p>tower_ob_object_permission_event_snapshot</p>
+          <small>security_inbox_47dd37b2be606709d1</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_event_snapshot</h3>
+          <p>tower_ob_object_permission_event_snapshot</p>
+          <small>security_inbox_b6368532713a37e525</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_8f9ee7d5a266142682</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_30ea5a11860c1804ec</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_14e0563de4b9717c6f</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_c4b554a002f35983f0</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_7ab4f1ca0a8257efc3</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_478a75d5ccec66282e</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_6bc7db48aef3aab324</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_ab34a137ea13355b5e</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_3831cb63a8d259e7ff</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_2822b711eefe1c32ed</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_6b8023abe30cd81bca</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_85c93e0b37076788e5</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_a5ade5faf1a5035c7f</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_729577d09c2407443e</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_09e5d1be46e9311809</small>
+        </article>
+        
+        <article class="security-filter-card security-filter-card--medium">
+          <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_33f70cf85050ff63f1</small>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK124_SECURITY_INBOX_FILTERS_PRIORITIES_SECTION -->
+
+</main>
+</body>
+</html>

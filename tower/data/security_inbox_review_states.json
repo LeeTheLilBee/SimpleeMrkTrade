@@ -1,18 +1,54 @@
 {
+  "security_inbox_5e65f035784b617bb2": {
+    "decision": "recorded",
+    "inbox_item_id": "security_inbox_5e65f035784b617bb2",
+    "last_review_action": "new_to_investigating",
+    "metadata": {
+      "pack": "124"
+    },
+    "object_id": "",
+    "object_type": "",
+    "review_label": "Investigating",
+    "review_notes": "Pack 124 investigation.",
+    "review_state": "investigating",
+    "reviewed_at": "2026-05-29T18:45:34.574443Z",
+    "reviewed_by": "owner_solice",
+    "route_path": "/tower/security-command",
+    "severity": "high",
+    "source": "owner_admin_receipts"
+  },
+  "security_inbox_70c1dcbf270688fa4e": {
+    "decision": "recorded",
+    "inbox_item_id": "security_inbox_70c1dcbf270688fa4e",
+    "last_review_action": "new_to_resolved",
+    "metadata": {
+      "pack": "124"
+    },
+    "object_id": "",
+    "object_type": "",
+    "review_label": "Resolved",
+    "review_notes": "Pack 124 resolved.",
+    "review_state": "resolved",
+    "reviewed_at": "2026-05-29T18:45:35.914360Z",
+    "reviewed_by": "owner_solice",
+    "route_path": "/tower/security-command",
+    "severity": "high",
+    "source": "owner_admin_receipts"
+  },
   "security_inbox_e0643d3b6a70b16d09": {
     "__redacted_security_review_field_count__": 1,
     "decision": "raw_secret_rejected",
     "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
     "last_review_action": "new_to_acknowledged",
     "metadata": {
-      "pack": "123"
+      "pack": "124"
     },
     "object_id": "",
     "object_type": "",
     "review_label": "Acknowledged",
-    "review_notes": "Pack 123 UI integration test.",
+    "review_notes": "Pack 124 acknowledgement.",
     "review_state": "acknowledged",
-    "reviewed_at": "2026-05-29T18:24:41.311429Z",
+    "reviewed_at": "2026-05-29T18:45:32.855747Z",
     "reviewed_by": "owner_solice",
     "route_path": "",
     "severity": "high",

@@ -10627,3 +10627,43 @@ except Exception:
 # END PACK122_SECURITY_INBOX_REVIEW_ROUTES
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK124_SECURITY_INBOX_FILTERS_PRIORITIES_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/security-inbox-filters.json")
+    def tower_security_inbox_filters_priorities_json_pack124():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-inbox-filters.json",
+                metadata={"source": "pack124_security_inbox_filters_priorities_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_inbox_filters_priorities import build_security_inbox_filters_priorities_status
+
+            return jsonify(build_security_inbox_filters_priorities_status(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "124",
+                    "reason_code": "security_inbox_filters_priorities_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "124", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK124_SECURITY_INBOX_FILTERS_PRIORITIES_ROUTE
+# ================================================================================
+
