@@ -10297,3 +10297,42 @@ except Exception:
 # END PACK114_SECURITY_COMMAND_COMPOSITION_SMOKE_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK115_SECURITY_COMMAND_NAVIGATION_LINKS_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/security-command-links.json")
+    def tower_security_command_links_json_pack115():
+        try:
+            from flask import jsonify
+            from tower.security_command_navigation_links import build_security_command_navigation_links_status
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-command-links.json",
+                metadata={"source": "pack115_security_command_links_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            return jsonify(build_security_command_navigation_links_status(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "115",
+                    "reason_code": "security_command_links_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "115", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK115_SECURITY_COMMAND_NAVIGATION_LINKS_ROUTE
+# ================================================================================
+

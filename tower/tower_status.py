@@ -544,3 +544,27 @@ def pack112_object_permission_visibility_status_bridge():
 # END PACK112_OBJECT_PERMISSION_VISIBILITY_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK115_SECURITY_COMMAND_NAVIGATION_LINKS_STATUS_BRIDGE
+# ================================================================================
+
+def pack115_security_command_navigation_links_status_bridge():
+    try:
+        from tower.security_command_navigation_links import security_command_navigation_links_status_card
+        return security_command_navigation_links_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "115",
+            "title": "Security Command Links",
+            "reason_code": "security_command_navigation_links_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Security Command navigation links could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK115_SECURITY_COMMAND_NAVIGATION_LINKS_STATUS_BRIDGE
+# ================================================================================
+

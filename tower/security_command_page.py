@@ -1577,3 +1577,29 @@ def pack113_security_command_object_visibility_html_section():
 # END PACK113_SECURITY_COMMAND_OBJECT_VISIBILITY_HTML_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK115_SECURITY_COMMAND_NAVIGATION_LINKS_HTML_BRIDGE
+# ================================================================================
+
+def pack115_security_command_navigation_links_html_section():
+    try:
+        from tower.security_command_navigation_links import (
+            build_security_command_navigation_links_status,
+            render_security_command_navigation_links_section,
+        )
+        status = build_security_command_navigation_links_status(write_panel=True)
+        return render_security_command_navigation_links_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="tower-security-command-links" data-pack="115-error">
+          <h2>Security Command Links Unavailable</h2>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+# ================================================================================
+# END PACK115_SECURITY_COMMAND_NAVIGATION_LINKS_HTML_BRIDGE
+# ================================================================================
+
