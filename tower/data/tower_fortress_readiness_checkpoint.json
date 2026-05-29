@@ -1,8 +1,8 @@
 {
   "actor_user_id": "owner_solice",
-  "checkpoint_fingerprint": "ae700a4e6b1771016fbbeade809c829a7209bfbff93a087a32b233fc00f27d49",
-  "checkpoint_id": "tower_fortress_checkpoint_owbZEF4D0dqjxC4vAwZ5RQaZ",
-  "created_at": "2026-05-28T22:16:46.449000Z",
+  "checkpoint_fingerprint": "a39130a80a0d612e63ab118c89101338b89c42d80e36fca728ea77e642bcbf54",
+  "checkpoint_id": "tower_fortress_checkpoint_T2VIvSO-9F5E4PUxWmaBVq0G",
+  "created_at": "2026-05-29T00:54:33.309954Z",
   "failed_domains": [],
   "human_reason": "Tower fortress checkpoint passed. Core wall/security proof is ready before OB integration.",
   "leakage_scan": {
@@ -96,9 +96,9 @@
       },
       "exposure_mapping": {
         "exists": true,
-        "modified_at": "2026-05-28T20:06:19.151987Z",
+        "modified_at": "2026-05-29T00:54:14.618744Z",
         "path": "tower/data/ob_exposure_mapping_pass.json",
-        "size_bytes": 100462
+        "size_bytes": 101184
       },
       "route_replacement_policy_list": {
         "exists": true,
@@ -108,9 +108,9 @@
       },
       "security_command_dashboard": {
         "exists": true,
-        "modified_at": "2026-05-28T20:06:19.152987Z",
+        "modified_at": "2026-05-29T00:54:14.625744Z",
         "path": "tower/data/security_command_dashboard.html",
-        "size_bytes": 59859
+        "size_bytes": 46395
       },
       "visibility_transition_checkpoint": {
         "exists": true,
@@ -282,12 +282,12 @@
         "record_count": 1,
         "status": {
           "exists": true,
-          "modified_at": "2026-05-28T21:48:31.284908Z",
+          "modified_at": "2026-05-29T00:36:43.547223Z",
           "path": "tower/data/tamper_evident_audit_chain.json",
-          "size_bytes": 188439
+          "size_bytes": 375765
         }
       },
-      "fingerprint": "f967ce87c3130920863efda1bbfc79b6969fc5139beb3763dab2bcddb38cb805",
+      "fingerprint": "dc9cdc780b5d1fd87cf8b8881fcfe2ca01c8a1d92abd3f1c945d2590097315a3",
       "human_reason": "Tamper-evident audit chain file exists and contains chained records.",
       "name": "tamper_chain",
       "ok": true,
@@ -304,9 +304,9 @@
           },
           "exposure_mapping": {
             "exists": true,
-            "modified_at": "2026-05-28T20:06:19.151987Z",
+            "modified_at": "2026-05-29T00:54:14.618744Z",
             "path": "tower/data/ob_exposure_mapping_pass.json",
-            "size_bytes": 100462
+            "size_bytes": 101184
           },
           "route_replacement_policy_list": {
             "exists": true,
@@ -316,9 +316,9 @@
           },
           "security_command_dashboard": {
             "exists": true,
-            "modified_at": "2026-05-28T20:06:19.152987Z",
+            "modified_at": "2026-05-29T00:54:14.625744Z",
             "path": "tower/data/security_command_dashboard.html",
-            "size_bytes": 59859
+            "size_bytes": 46395
           },
           "visibility_transition_checkpoint": {
             "exists": true,
@@ -332,7 +332,7 @@
         "present_count": 5,
         "total_count": 5
       },
-      "fingerprint": "333601982d0a033d8399cda1cd88a4bcff4c2859fb3b64fa798fcb48357db39d",
+      "fingerprint": "7f96b58cb820fc006c140a782560a07d21abc118600ce796777a60e01329c5f0",
       "human_reason": "Visibility/policy artifacts checked. At least three wall artifacts should exist from Packs 086\u2013090.",
       "name": "visibility_policy",
       "ok": true,
@@ -345,13 +345,13 @@
     "items": {
       "lockdown_events": {
         "exists": true,
-        "modified_at": "2026-05-28T21:38:08.852162Z",
+        "modified_at": "2026-05-29T00:36:43.216192Z",
         "path": "tower/data/emergency_lockdown_events.json",
         "size_bytes": 2
       },
       "lockdown_state": {
         "exists": true,
-        "modified_at": "2026-05-28T21:38:08.852162Z",
+        "modified_at": "2026-05-29T00:36:43.216192Z",
         "path": "tower/data/emergency_lockdown_state.json",
         "size_bytes": 1336
       },
@@ -369,13 +369,13 @@
       },
       "quarantine_events": {
         "exists": true,
-        "modified_at": "2026-05-28T21:38:08.853162Z",
+        "modified_at": "2026-05-29T00:36:43.217193Z",
         "path": "tower/data/quarantine_mode_events.json",
         "size_bytes": 2
       },
       "quarantine_state": {
         "exists": true,
-        "modified_at": "2026-05-28T21:38:08.853162Z",
+        "modified_at": "2026-05-29T00:36:43.217193Z",
         "path": "tower/data/quarantine_mode_state.json",
         "size_bytes": 1124
       },
@@ -435,9 +435,9 @@
       },
       "tamper_chain": {
         "exists": true,
-        "modified_at": "2026-05-28T21:48:31.284908Z",
+        "modified_at": "2026-05-29T00:36:43.547223Z",
         "path": "tower/data/tamper_evident_audit_chain.json",
-        "size_bytes": 188439
+        "size_bytes": 375765
       }
     },
     "missing": [],

@@ -1043,6 +1043,16 @@ def classify_entry_quality(trade: Dict[str, Any]) -> str:
 
 
 def build_canonical_reporting_snapshot():
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='export',
+        object_id='build_canonical_reporting_snapshot',
+        action='export',
+        metadata={"source": "pack109_object_route_guard", "route_function": 'build_canonical_reporting_snapshot'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
     raw_trades = load_canonical_closed_trade_ledger()
 
     closed_trades = []
@@ -1183,6 +1193,16 @@ def build_canonical_reporting_snapshot():
 
 
 def write_canonical_reporting_snapshot():
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='export',
+        object_id='write_canonical_reporting_snapshot',
+        action='export',
+        metadata={"source": "pack109_object_route_guard", "route_function": 'write_canonical_reporting_snapshot'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
     snapshot = build_canonical_reporting_snapshot()
 
     try:
@@ -5157,6 +5177,203 @@ def build_product_monitoring_summary(plays, positions, analysis):
 from datetime import datetime
 
 
+
+
+# ================================================================================
+# PACK104_TOWER_OB_FLASK_GUARD_HELPERS
+# ================================================================================
+# Conservative Tower ↔ OB integration helper.
+# Real OB routes can call _tower_guard_ob_route_or_response(route_path=...)
+# before rendering protected content.
+# ================================================================================
+
+def _tower_current_user_context_104():
+    """Best-effort user context extraction without assuming the app's auth shape."""
+    try:
+        from flask import session
+    except Exception:
+        session = {}
+
+    session_data = dict(session or {}) if hasattr(session, "items") else {}
+
+    user_id = (
+        session_data.get("user_id")
+        or session_data.get("username")
+        or session_data.get("email")
+        or session_data.get("current_user")
+        or "anonymous"
+    )
+
+    role = (
+        session_data.get("role")
+        or session_data.get("designation")
+        or session_data.get("tier")
+        or session_data.get("access_role")
+        or ""
+    )
+
+    # Keep owner lane deterministic for this repo's current development flow.
+    if str(user_id).lower() in {"owner_solice", "solice", "solice_bowdre", "bowdre.solice@gmail.com"}:
+        return {"id": "owner_solice", "role": "owner"}
+
+    return {"id": user_id, "role": role}
+
+
+def _tower_guard_ob_route_or_response(route_path=None, metadata=None):
+    """Return None if route may render; otherwise return (html, status_code)."""
+    try:
+        from flask import request, session
+        from tower.ob_flask_guard_hook import (
+            guard_current_ob_flask_route,
+            render_locked_response_from_hook,
+        )
+
+        user_context = _tower_current_user_context_104()
+        hook = guard_current_ob_flask_route(
+            route_path=route_path or getattr(request, "path", "/"),
+            method=getattr(request, "method", "GET"),
+            user=user_context,
+            session_data=dict(session or {}),
+            request_obj=request,
+            metadata=metadata or {"source": "web_app_pack104"},
+        )
+
+        if hook.get("allowed") is True:
+            return None
+
+        return render_locked_response_from_hook(hook)
+
+    except Exception as exc:
+        # Fail closed for protected OB routes, but make the failure readable.
+        html = f"""<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Tower Guard Error</title></head>
+<body style="font-family:system-ui;background:#090907;color:#f5ead2;padding:32px;">
+  <main style="max-width:720px;margin:auto;border:1px solid rgba(220,183,94,.4);border-radius:24px;padding:24px;">
+    <p style="letter-spacing:.12em;text-transform:uppercase;color:#dcb75e;">The Tower · OB Guard</p>
+    <h1>Protected route paused</h1>
+    <p>The Tower guard could not complete its clearance check, so this protected Observatory route did not render.</p>
+    <p>Reason: {type(exc).__name__}</p>
+  </main>
+</body>
+</html>"""
+        return html, 503
+
+
+def _tower_ob_route_guard_marker_104():
+    return {
+        "ok": True,
+        "pack": "104",
+        "helper": "_tower_guard_ob_route_or_response",
+        "human_reason": "Tower OB Flask guard helper installed in web/app.py.",
+    }
+
+# ================================================================================
+# END PACK104_TOWER_OB_FLASK_GUARD_HELPERS
+
+
+
+# ================================================================================
+# PACK109_OBJECT_PERMISSION_ROUTE_HELPERS
+# ================================================================================
+# Object-level permission helper for selected Observatory routes.
+# Route guard checks the hallway. This checks the actual object behind the hallway.
+# ================================================================================
+
+def _tower_object_permission_response_109(
+    *,
+    object_type,
+    object_id,
+    action="view",
+    object_payload=None,
+    route_path=None,
+    metadata=None,
+):
+    try:
+        from flask import request, session
+        from tower.ob_flask_guard_hook import render_locked_response_from_hook
+        from tower.ob_object_permission_tightening import evaluate_ob_object_permission
+
+        try:
+            user_context = _tower_current_user_context_104()
+        except Exception:
+            user_context = {"id": "anonymous", "role": "public"}
+
+        user_id = str(user_context.get("id") or "anonymous")
+        role = str(user_context.get("role") or "public")
+
+        decision = evaluate_ob_object_permission(
+            user_id=user_id,
+            role=role,
+            object_type=object_type,
+            object_id=str(object_id or ""),
+            action=action,
+            object_payload=object_payload or {},
+            route_path=route_path or getattr(request, "path", ""),
+            metadata=metadata or {"source": "web_app_pack109"},
+        )
+
+        if decision.get("allowed") is True:
+            return None
+
+        # Build a route-guard-like locked payload so we can reuse the Tower locked renderer.
+        locked_kind = "denied"
+        if decision.get("decision") == "step_up_required":
+            locked_kind = "step_up"
+        elif decision.get("decision") == "summary_only":
+            locked_kind = "redacted_summary"
+
+        locked_payload = {
+            "decision": decision.get("decision"),
+            "locked_page_kind": locked_kind,
+            "route_path": route_path or getattr(request, "path", ""),
+            "human_reason": decision.get("human_reason", "Object permission blocked this request."),
+            "soulaana_translation": decision.get("soulaana_translation", "Soulaana: Object key did not clear."),
+            "required_actions": decision.get("required_actions", []),
+        }
+
+        html, status_code = render_locked_response_from_hook({
+            "decision": decision.get("decision"),
+            "guard": locked_payload,
+        })
+
+        # Object summary-only can render as a 200 locked/summary page.
+        if decision.get("decision") == "summary_only":
+            status_code = 200
+
+        return html, status_code
+
+    except Exception as exc:
+        html = f"""<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Tower Object Guard Error</title></head>
+<body style="font-family:system-ui;background:#090907;color:#f5ead2;padding:32px;">
+  <main style="max-width:720px;margin:auto;border:1px solid rgba(220,183,94,.4);border-radius:24px;padding:24px;">
+    <p style="letter-spacing:.12em;text-transform:uppercase;color:#dcb75e;">The Tower · Object Guard</p>
+    <h1>Object access paused</h1>
+    <p>The Tower object guard could not complete its permission check, so this protected object did not render.</p>
+    <p>Reason: {type(exc).__name__}</p>
+  </main>
+</body>
+</html>"""
+        return html, 503
+
+
+def _tower_object_guard_marker_109():
+    return {
+        "ok": True,
+        "pack": "109",
+        "helper": "_tower_object_permission_response_109",
+        "human_reason": "Tower object permission helper installed in web/app.py.",
+    }
+
+# ================================================================================
+# END PACK109_OBJECT_PERMISSION_ROUTE_HELPERS
+# ================================================================================
+
+# ================================================================================
+
+
 EVENT_LOG_FILE = "data/event_log.json"
 
 
@@ -6871,6 +7088,24 @@ def charts_page():
 @app.route("/signals/<symbol>")
 @app.route("/symbol/<symbol>")
 def signal_symbol_page(symbol: str):
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='symbol',
+        object_id=symbol,
+        action='view',
+        metadata={"source": "pack109_object_route_guard", "route_function": 'signal_symbol_page'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/signals/<symbol>' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'signal_symbol_page'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     symbol = str(symbol or "").upper().strip()
 
     maybe_track_page_view(f"/signals/{symbol}")
@@ -7233,6 +7468,14 @@ def market_map_page():
 
 @app.route("/admin/intelligence")
 def admin_intelligence_page():
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/admin/intelligence' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'admin_intelligence_page'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     maybe_track_page_view("/admin/intelligence")
 
     shared = build_admin_shared_context()
@@ -7369,6 +7612,14 @@ def positions_page():
 
 @app.route("/admin/product-monitoring")
 def admin_product_monitoring_page():
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/admin/product-monitoring' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'admin_product_monitoring_page'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     maybe_track_page_view("/admin/product-monitoring")
 
     shared = build_admin_shared_context()
@@ -7484,6 +7735,24 @@ def my_portfolio_page():
 
 @app.route("/my-positions/<position_id>")
 def my_position_detail_page(position_id):
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='position',
+        object_id=position_id,
+        action='view',
+        metadata={"source": "pack109_object_route_guard", "route_function": 'my_position_detail_page'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
+    # PACK107: Tower guard for remaining protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/my-positions/<position_id>',
+        metadata={"source": "pack107_remaining_protected_guard", "route_function": 'my_position_detail_page', "category": 'trade_position'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     maybe_track_page_view(f"/my-positions/{position_id}")
     position = get_user_position(position_id)
 
@@ -7499,6 +7768,24 @@ def my_position_detail_page(position_id):
 
 @app.route("/my-positions/<position_id>/edit", methods=["POST"])
 def edit_my_position(position_id):
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='position',
+        object_id=position_id,
+        action='edit',
+        metadata={"source": "pack109_object_route_guard", "route_function": 'edit_my_position'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
+    # PACK107: Tower guard for remaining protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/my-positions/<position_id>/edit',
+        metadata={"source": "pack107_remaining_protected_guard", "route_function": 'edit_my_position', "category": 'trade_position'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     stop = request.form.get("stop", "")
     target = request.form.get("target", "")
     conviction = request.form.get("conviction", "Medium")
@@ -7530,6 +7817,24 @@ def edit_my_position(position_id):
 
 @app.route("/my-positions/<position_id>/close", methods=["POST"])
 def close_my_position(position_id):
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='position',
+        object_id=position_id,
+        action='close',
+        metadata={"source": "pack109_object_route_guard", "route_function": 'close_my_position'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
+    # PACK107: Tower guard for remaining protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/my-positions/<position_id>/close',
+        metadata={"source": "pack107_remaining_protected_guard", "route_function": 'close_my_position', "category": 'trade_position'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     closed = close_user_position(position_id)
 
     if closed:
@@ -7552,6 +7857,24 @@ def close_my_position(position_id):
 
 @app.route("/my-positions/archived")
 def my_positions_archived_page():
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='position',
+        object_id='archived_positions',
+        action='view',
+        metadata={"source": "pack109_object_route_guard", "route_function": 'my_positions_archived_page'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
+    # PACK107: Tower guard for remaining protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/my-positions/archived',
+        metadata={"source": "pack107_remaining_protected_guard", "route_function": 'my_positions_archived_page', "category": 'trade_position'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     maybe_track_page_view("/my-positions/archived")
 
     positions = get_user_positions(include_closed=True)
@@ -7634,6 +7957,24 @@ def spotlight_page():
 
 @app.route("/my-positions/analyze")
 def analyze_my_trades_page():
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='analysis',
+        object_id='my_positions_analyze',
+        action='view',
+        metadata={"source": "pack109_object_route_guard", "route_function": 'analyze_my_trades_page'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
+    # PACK107: Tower guard for remaining protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/my-positions/analyze',
+        metadata={"source": "pack107_remaining_protected_guard", "route_function": 'analyze_my_trades_page', "category": 'trade_position'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     maybe_track_page_view("/my-positions/analyze")
     analysis = analyze_user_trades()
 
@@ -7648,11 +7989,27 @@ def analyze_my_trades_page():
 
 @app.route("/simulation")
 def simulation_dashboard():
+    # PACK107: Tower guard for remaining protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/simulation',
+        metadata={"source": "pack107_remaining_protected_guard", "route_function": 'simulation_dashboard', "category": 'ob_private'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     return redirect(url_for("dashboard_page"))
 
 
 @app.route("/api/live-state")
 def api_live_state():
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/api/live-state' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'api_live_state'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     positions = get_positions_with_intelligence()
     portfolio = evaluate_portfolio(positions)
     alerts = generate_alerts(positions)
@@ -8059,6 +8416,14 @@ def analytics_risk_page():
 
 @app.route("/live-activity")
 def live_activity_page():
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/live-activity' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'live_activity_page'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     return render_template_safe(
         "live_activity.html",
         **template_context({"activity": load_json("data/live_activity.json", [])}),
@@ -8075,6 +8440,16 @@ def equity_page():
 
 @app.route("/reports")
 def reports_page():
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='export',
+        object_id='reports_page',
+        action='export',
+        metadata={"source": "pack109_object_route_guard", "route_function": 'reports_page'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
     return render_template_safe(
         "reports.html",
         **template_context({"reports": load_json("data/recent_reports.json", [])}),
@@ -8091,6 +8466,24 @@ def bot_log_page():
 
 @app.route("/trade/<trade_id>")
 def trade_detail_page(trade_id):
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='trade',
+        object_id=trade_id,
+        action='view',
+        metadata={"source": "pack109_object_route_guard", "route_function": 'trade_detail_page'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
+    # PACK107: Tower guard for remaining protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/trade/<trade_id>',
+        metadata={"source": "pack107_remaining_protected_guard", "route_function": 'trade_detail_page', "category": 'trade_position'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     detail = build_trade_detail_payload(trade_id)
     if detail:
         track_trade_click(
@@ -8212,6 +8605,14 @@ def premium_analysis_page():
 
 @app.route("/admin")
 def admin_dashboard():
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/admin' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'admin_dashboard'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     if not is_master():
         return redirect(url_for("dashboard_page"))
 
@@ -8402,6 +8803,14 @@ def logout_page():
 
 @app.route("/admin/preview-tier/<tier>")
 def admin_preview_tier(tier: str):
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/admin/preview-tier/<tier>' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'admin_preview_tier'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     if not is_master():
         return redirect(url_for("dashboard_page"))
 
@@ -8416,6 +8825,14 @@ def admin_preview_tier(tier: str):
 
 @app.route("/admin/preview-tier/clear")
 def admin_clear_preview_tier():
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/admin/preview-tier/clear' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'admin_clear_preview_tier'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     if not is_master():
         return redirect(url_for("dashboard_page"))
 
@@ -8425,6 +8842,14 @@ def admin_clear_preview_tier():
 
 @app.route("/admin/diagnostics")
 def admin_diagnostics_page():
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/admin/diagnostics' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'admin_diagnostics_page'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     if not is_master():
         return redirect(url_for("dashboard_page"))
 
@@ -8442,6 +8867,14 @@ def admin_diagnostics_page():
 
 @app.route("/admin/refresh-market-universe")
 def admin_refresh_market_universe():
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/admin/refresh-market-universe' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'admin_refresh_market_universe'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     if not is_master():
         return redirect(url_for("dashboard_page"))
 
@@ -8459,6 +8892,14 @@ def admin_refresh_market_universe():
 
 @app.route("/admin/refresh-news-cache")
 def admin_refresh_news_cache():
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/admin/refresh-news-cache' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'admin_refresh_news_cache'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     if not is_master():
         return redirect(url_for("dashboard_page"))
 
@@ -8478,6 +8919,14 @@ def admin_refresh_news_cache():
 
 @app.route("/admin/product-analytics")
 def admin_product_analytics_page():
+    # PACK104: Tower guard for protected Observatory route.
+    _tower_guard_response = _tower_guard_ob_route_or_response(
+        route_path='/admin/product-analytics' or None,
+        metadata={"source": "pack104_route_guard", "route_function": 'admin_product_analytics_page'},
+    )
+    if _tower_guard_response is not None:
+        return _tower_guard_response
+
     maybe_track_page_view("/admin/product-analytics")
     analytics = build_product_analytics()
 
@@ -8937,6 +9386,16 @@ _pack051_register_trade_position_object_guard_once(app)
 # ================================================================================
 
 def _pack052_extract_export_id_from_request():
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='export',
+        object_id='_pack052_extract_export_id_from_request',
+        action='export',
+        metadata={"source": "pack109_object_route_guard", "route_function": '_pack052_extract_export_id_from_request'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
     try:
         from flask import request
         return (
@@ -8951,6 +9410,16 @@ def _pack052_extract_export_id_from_request():
 
 
 def _pack052_should_check_export_object(path):
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='export',
+        object_id='_pack052_should_check_export_object',
+        action='export',
+        metadata={"source": "pack109_object_route_guard", "route_function": '_pack052_should_check_export_object'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
     try:
         path = str(path or "")
         return path == "/export" or path.startswith("/export/") or path == "/download" or path.startswith("/download/")
@@ -8959,6 +9428,16 @@ def _pack052_should_check_export_object(path):
 
 
 def _pack052_register_export_object_guard_once(_app):
+    # PACK109: Tower object-level permission check.
+    _tower_object_response = _tower_object_permission_response_109(
+        object_type='export',
+        object_id='_pack052_register_export_object_guard_once',
+        action='export',
+        metadata={"source": "pack109_object_route_guard", "route_function": '_pack052_register_export_object_guard_once'},
+    )
+    if _tower_object_response is not None:
+        return _tower_object_response
+
     try:
         if getattr(_app, "_pack052_export_object_guard_registered", False):
             return True
@@ -8968,6 +9447,16 @@ def _pack052_register_export_object_guard_once(_app):
 
         @_app.before_request
         def _pack052_export_object_guard_before_request():
+            # PACK109: Tower object-level permission check.
+            _tower_object_response = _tower_object_permission_response_109(
+                object_type='export',
+                object_id='_pack052_export_object_guard_before_request',
+                action='export',
+                metadata={"source": "pack109_object_route_guard", "route_function": '_pack052_export_object_guard_before_request'},
+            )
+            if _tower_object_response is not None:
+                return _tower_object_response
+
             path = str(getattr(request, "path", "") or "/")
             if not _pack052_should_check_export_object(path):
                 return None
@@ -9296,6 +9785,14 @@ except NameError:
 if app is not None:
     @app.route("/tower-locked-preview")
     def pack068_tower_locked_preview():
+        # PACK106: Tower guard for high-risk Observatory route.
+        _tower_guard_response = _tower_guard_ob_route_or_response(
+            route_path='/tower-locked-preview',
+            metadata={"source": "pack106_high_risk_guard", "route_function": 'pack068_tower_locked_preview'},
+        )
+        if _tower_guard_response is not None:
+            return _tower_guard_response
+
         try:
             path = request.args.get("path", "/signals")
         except Exception:
@@ -9327,6 +9824,14 @@ except NameError:
 if app is not None:
     @app.route("/tower/polished-locked-preview")
     def pack068b_polished_locked_preview():
+        # PACK106: Tower guard for high-risk Observatory route.
+        _tower_guard_response = _tower_guard_ob_route_or_response(
+            route_path='/tower/polished-locked-preview',
+            metadata={"source": "pack106_high_risk_guard", "route_function": 'pack068b_polished_locked_preview'},
+        )
+        if _tower_guard_response is not None:
+            return _tower_guard_response
+
         try:
             path = request.args.get("path", "/signals")
         except Exception:
@@ -9358,6 +9863,14 @@ except NameError:
 if app is not None:
     @app.route("/tower/security-command/object-inbox/action", methods=["POST"])
     def pack071_object_inbox_action_endpoint():
+        # PACK106: Tower guard for high-risk Observatory route.
+        _tower_guard_response = _tower_guard_ob_route_or_response(
+            route_path='/tower/security-command/object-inbox/action',
+            metadata={"source": "pack106_high_risk_guard", "route_function": 'pack071_object_inbox_action_endpoint'},
+        )
+        if _tower_guard_response is not None:
+            return _tower_guard_response
+
         try:
             from flask import request, jsonify
             from tower.ob_object_audit_capsules import (
@@ -9470,6 +9983,14 @@ except NameError:
 if app is not None:
     @app.route("/tower/security-command/object-inbox/action-audited", methods=["POST"])
     def pack072_object_inbox_action_endpoint_audited():
+        # PACK106: Tower guard for high-risk Observatory route.
+        _tower_guard_response = _tower_guard_ob_route_or_response(
+            route_path='/tower/security-command/object-inbox/action-audited',
+            metadata={"source": "pack106_high_risk_guard", "route_function": 'pack072_object_inbox_action_endpoint_audited'},
+        )
+        if _tower_guard_response is not None:
+            return _tower_guard_response
+
         endpoint = "/tower/security-command/object-inbox/action-audited"
         action_type = ""
         inbox_item_id = ""
@@ -9662,6 +10183,14 @@ except NameError:
 if app is not None:
     @app.route("/observatory-private")
     def pack079_observatory_private_polished_lock():
+        # PACK104: Tower guard for protected Observatory route.
+        _tower_guard_response = _tower_guard_ob_route_or_response(
+            route_path='/observatory-private' or None,
+            metadata={"source": "pack104_route_guard", "route_function": 'pack079_observatory_private_polished_lock'},
+        )
+        if _tower_guard_response is not None:
+            return _tower_guard_response
+
         try:
             path = request.path
         except Exception:
@@ -9724,4 +10253,42 @@ if app is not None:
             ],
             soulaana_translation="Soulaana: The old no-access shell is retired here. The Tower wall is now holding this corridor.",
         )
+
+
+# ================================================================================
+# PACK105_TOWER_OB_GUARD_STATUS_ROUTE
+# ================================================================================
+try:
+    @app.route("/tower/ob-guard-status.json")
+    def tower_ob_guard_status_json_pack105():
+        # PACK106: Tower guard for high-risk Observatory route.
+        _tower_guard_response = _tower_guard_ob_route_or_response(
+            route_path='/tower/ob-guard-status.json',
+            metadata={"source": "pack106_high_risk_guard", "route_function": 'tower_ob_guard_status_json_pack105'},
+        )
+        if _tower_guard_response is not None:
+            return _tower_guard_response
+
+        try:
+            from flask import jsonify
+            from tower.ob_route_coverage_report import build_ob_route_coverage_report, load_ob_route_coverage_status
+            build_ob_route_coverage_report(write_panel=True)
+            return jsonify(load_ob_route_coverage_status())
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "105",
+                    "reason_code": "ob_guard_status_unavailable",
+                    "error_type": type(exc).__name__,
+                    "human_reason": "OB guard status could not be generated."
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "105", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+# ================================================================================
+# END PACK105_TOWER_OB_GUARD_STATUS_ROUTE
+# ================================================================================
 

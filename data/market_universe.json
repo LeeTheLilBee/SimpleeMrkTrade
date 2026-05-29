@@ -1,21 +1,6 @@
 {
   "rows": [
     {
-      "symbol": "GOOGL",
-      "company_name": "Alphabet Inc.",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta",
-        "candidate_log",
-        "trade_details"
-      ],
-      "priority_rank": 67,
-      "last_seen_at": "2026-05-20T19:04:15.014706"
-    },
-    {
       "symbol": "QCOM",
       "company_name": "QUALCOMM Incorporated",
       "asset_type": "equity",
@@ -26,14 +11,17 @@
         "symbol_meta",
         "candidate_log",
         "trade_details",
-        "closed_positions"
+        "positions",
+        "open_positions",
+        "closed_positions",
+        "user_positions"
       ],
-      "priority_rank": 66,
-      "last_seen_at": "2026-05-20T19:04:15.467687"
+      "priority_rank": 72,
+      "last_seen_at": "2026-05-28T19:47:07.340535"
     },
     {
-      "symbol": "AMZN",
-      "company_name": "Amazon.com, Inc.",
+      "symbol": "GOOGL",
+      "company_name": "Alphabet Inc.",
       "asset_type": "equity",
       "source_tags": [
         "equity_seed",
@@ -45,7 +33,7 @@
         "closed_positions"
       ],
       "priority_rank": 65,
-      "last_seen_at": "2026-05-20T19:04:15.467616"
+      "last_seen_at": "2026-05-28T19:47:07.158505"
     },
     {
       "symbol": "AAPL",
@@ -61,8 +49,43 @@
         "closed_positions",
         "my_plays"
       ],
-      "priority_rank": 63,
-      "last_seen_at": "2026-05-20T19:04:15.633414"
+      "priority_rank": 61,
+      "last_seen_at": "2026-05-28T19:47:07.348199"
+    },
+    {
+      "symbol": "AMZN",
+      "company_name": "Amazon.com, Inc.",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "candidate_log",
+        "trade_details",
+        "closed_positions"
+      ],
+      "priority_rank": 61,
+      "last_seen_at": "2026-05-28T19:47:07.158409"
+    },
+    {
+      "symbol": "SNOW",
+      "company_name": "Snowflake Inc.",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "candidate_log",
+        "trade_details",
+        "positions",
+        "open_positions",
+        "closed_positions",
+        "user_positions"
+      ],
+      "priority_rank": 61,
+      "last_seen_at": "2026-05-28T19:47:07.340540"
     },
     {
       "symbol": "XOM",
@@ -77,8 +100,8 @@
         "candidate_log",
         "trade_details"
       ],
-      "priority_rank": 59,
-      "last_seen_at": "2026-05-20T19:04:15.014739"
+      "priority_rank": 55,
+      "last_seen_at": "2026-05-28T19:47:06.728983"
     },
     {
       "symbol": "NVDA",
@@ -92,8 +115,8 @@
         "candidate_log",
         "trade_details"
       ],
-      "priority_rank": 58,
-      "last_seen_at": "2026-05-20T19:04:15.014713"
+      "priority_rank": 54,
+      "last_seen_at": "2026-05-28T19:47:06.728957"
     },
     {
       "symbol": "QQQ",
@@ -107,8 +130,24 @@
         "candidate_log",
         "trade_details"
       ],
-      "priority_rank": 58,
-      "last_seen_at": "2026-05-20T19:04:15.014726"
+      "priority_rank": 54,
+      "last_seen_at": "2026-05-28T19:47:06.728970"
+    },
+    {
+      "symbol": "SOXX",
+      "company_name": "iShares Semiconductor ETF",
+      "asset_type": "equity",
+      "source_tags": [
+        "diversity_seed",
+        "candidate_log",
+        "trade_details",
+        "positions",
+        "open_positions",
+        "closed_positions",
+        "user_positions"
+      ],
+      "priority_rank": 54,
+      "last_seen_at": "2026-05-28T19:47:07.340545"
     },
     {
       "symbol": "SPY",
@@ -122,97 +161,8 @@
         "candidate_log",
         "trade_details"
       ],
-      "priority_rank": 58,
-      "last_seen_at": "2026-05-20T19:04:15.014756"
-    },
-    {
-      "symbol": "TSLA",
-      "company_name": "Tesla, Inc.",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta",
-        "candidate_log",
-        "trade_details"
-      ],
-      "priority_rank": 57,
-      "last_seen_at": "2026-05-20T19:04:15.014716"
-    },
-    {
-      "symbol": "OXY",
-      "company_name": "Occidental Petroleum Corporation",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta",
-        "symbol_news",
-        "candidate_log",
-        "trade_details"
-      ],
-      "priority_rank": 56,
-      "last_seen_at": "2026-05-20T19:04:15.014772"
-    },
-    {
-      "symbol": "PANW",
-      "company_name": "Palo Alto Networks, Inc.",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "candidate_log",
-        "trade_details",
-        "closed_positions"
-      ],
-      "priority_rank": 56,
-      "last_seen_at": "2026-05-20T19:04:15.467683"
-    },
-    {
-      "symbol": "CVX",
-      "company_name": "Chevron Corporation",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta",
-        "candidate_log",
-        "trade_details"
-      ],
-      "priority_rank": 55,
-      "last_seen_at": "2026-05-20T19:04:15.014766"
-    },
-    {
-      "symbol": "XLE",
-      "company_name": "Energy Select Sector SPDR Fund",
-      "asset_type": "equity",
-      "source_tags": [
-        "diversity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta",
-        "candidate_log",
-        "trade_details"
-      ],
-      "priority_rank": 55,
-      "last_seen_at": "2026-05-20T19:04:15.014746"
-    },
-    {
-      "symbol": "XLK",
-      "company_name": "Technology Select Sector SPDR Fund",
-      "asset_type": "equity",
-      "source_tags": [
-        "diversity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta",
-        "candidate_log",
-        "trade_details"
-      ],
-      "priority_rank": 55,
-      "last_seen_at": "2026-05-20T19:04:15.014710"
+      "priority_rank": 54,
+      "last_seen_at": "2026-05-28T19:47:06.728999"
     },
     {
       "symbol": "XLV",
@@ -227,11 +177,11 @@
         "trade_details"
       ],
       "priority_rank": 54,
-      "last_seen_at": "2026-05-20T19:04:15.014785"
+      "last_seen_at": "2026-05-28T19:47:06.729028"
     },
     {
-      "symbol": "MPC",
-      "company_name": "Marathon Petroleum Corporation",
+      "symbol": "TSLA",
+      "company_name": "Tesla, Inc.",
       "asset_type": "equity",
       "source_tags": [
         "equity_seed",
@@ -242,71 +192,40 @@
         "trade_details"
       ],
       "priority_rank": 53,
-      "last_seen_at": "2026-05-20T19:04:15.014729"
+      "last_seen_at": "2026-05-28T19:47:06.728960"
     },
     {
-      "symbol": "PSX",
-      "company_name": "Phillips 66",
+      "symbol": "OXY",
+      "company_name": "Occidental Petroleum Corporation",
       "asset_type": "equity",
       "source_tags": [
         "equity_seed",
         "signals",
         "symbol_intelligence",
         "symbol_meta",
+        "symbol_news",
         "candidate_log",
         "trade_details"
       ],
-      "priority_rank": 53,
-      "last_seen_at": "2026-05-20T19:04:15.014749"
+      "priority_rank": 52,
+      "last_seen_at": "2026-05-28T19:47:06.729015"
     },
     {
-      "symbol": "SBUX",
-      "company_name": "Starbucks Corporation",
+      "symbol": "PANW",
+      "company_name": "Palo Alto Networks, Inc.",
       "asset_type": "equity",
       "source_tags": [
         "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta",
         "candidate_log",
-        "trade_details"
+        "trade_details",
+        "closed_positions"
       ],
-      "priority_rank": 53,
-      "last_seen_at": "2026-05-20T19:04:15.014736"
+      "priority_rank": 52,
+      "last_seen_at": "2026-05-28T19:47:07.158477"
     },
     {
-      "symbol": "SNOW",
-      "company_name": "Snowflake Inc.",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta",
-        "candidate_log",
-        "trade_details"
-      ],
-      "priority_rank": 53,
-      "last_seen_at": "2026-05-20T19:04:15.014723"
-    },
-    {
-      "symbol": "WMT",
-      "company_name": "Walmart Inc.",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta",
-        "candidate_log",
-        "trade_details"
-      ],
-      "priority_rank": 53,
-      "last_seen_at": "2026-05-20T19:04:15.014670"
-    },
-    {
-      "symbol": "EOG",
-      "company_name": "EOG Resources, Inc.",
+      "symbol": "CVX",
+      "company_name": "Chevron Corporation",
       "asset_type": "equity",
       "source_tags": [
         "equity_seed",
@@ -317,11 +236,11 @@
         "trade_details"
       ],
       "priority_rank": 51,
-      "last_seen_at": "2026-05-20T19:04:15.014697"
+      "last_seen_at": "2026-05-28T19:47:06.729008"
     },
     {
-      "symbol": "IWM",
-      "company_name": "iShares Russell 2000 ETF",
+      "symbol": "XLE",
+      "company_name": "Energy Select Sector SPDR Fund",
       "asset_type": "equity",
       "source_tags": [
         "diversity_seed",
@@ -332,7 +251,22 @@
         "trade_details"
       ],
       "priority_rank": 51,
-      "last_seen_at": "2026-05-20T19:04:15.014775"
+      "last_seen_at": "2026-05-28T19:47:06.728989"
+    },
+    {
+      "symbol": "XLK",
+      "company_name": "Technology Select Sector SPDR Fund",
+      "asset_type": "equity",
+      "source_tags": [
+        "diversity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "candidate_log",
+        "trade_details"
+      ],
+      "priority_rank": 51,
+      "last_seen_at": "2026-05-28T19:47:06.728954"
     },
     {
       "symbol": "INTC",
@@ -350,11 +284,11 @@
         "user_positions"
       ],
       "priority_rank": 49,
-      "last_seen_at": "2026-05-20T19:04:15.627518"
+      "last_seen_at": "2026-05-28T19:47:07.340499"
     },
     {
-      "symbol": "ORCL",
-      "company_name": "Oracle Corporation",
+      "symbol": "MPC",
+      "company_name": "Marathon Petroleum Corporation",
       "asset_type": "equity",
       "source_tags": [
         "equity_seed",
@@ -365,20 +299,67 @@
         "trade_details"
       ],
       "priority_rank": 49,
-      "last_seen_at": "2026-05-20T19:04:15.014743"
+      "last_seen_at": "2026-05-28T19:47:06.728973"
     },
     {
-      "symbol": "SOXX",
-      "company_name": "iShares Semiconductor ETF",
+      "symbol": "PSX",
+      "company_name": "Phillips 66",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "candidate_log",
+        "trade_details"
+      ],
+      "priority_rank": 49,
+      "last_seen_at": "2026-05-28T19:47:06.728992"
+    },
+    {
+      "symbol": "SBUX",
+      "company_name": "Starbucks Corporation",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "candidate_log",
+        "trade_details"
+      ],
+      "priority_rank": 49,
+      "last_seen_at": "2026-05-28T19:47:06.728979"
+    },
+    {
+      "symbol": "EOG",
+      "company_name": "EOG Resources, Inc.",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "candidate_log",
+        "trade_details"
+      ],
+      "priority_rank": 47,
+      "last_seen_at": "2026-05-28T19:47:06.728944"
+    },
+    {
+      "symbol": "IWM",
+      "company_name": "iShares Russell 2000 ETF",
       "asset_type": "equity",
       "source_tags": [
         "diversity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
         "candidate_log",
-        "trade_details",
-        "closed_positions"
+        "trade_details"
       ],
-      "priority_rank": 48,
-      "last_seen_at": "2026-05-20T19:04:15.467692"
+      "priority_rank": 47,
+      "last_seen_at": "2026-05-28T19:47:06.729018"
     },
     {
       "symbol": "AMD",
@@ -396,7 +377,7 @@
         "user_positions"
       ],
       "priority_rank": 45,
-      "last_seen_at": "2026-05-20T19:04:15.627548"
+      "last_seen_at": "2026-05-28T19:47:07.340530"
     },
     {
       "symbol": "CRM",
@@ -411,7 +392,36 @@
         "trade_details"
       ],
       "priority_rank": 45,
-      "last_seen_at": "2026-05-20T19:04:15.014769"
+      "last_seen_at": "2026-05-28T19:47:06.729012"
+    },
+    {
+      "symbol": "ORCL",
+      "company_name": "Oracle Corporation",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "candidate_log",
+        "trade_details"
+      ],
+      "priority_rank": 45,
+      "last_seen_at": "2026-05-28T19:47:06.728986"
+    },
+    {
+      "symbol": "WMT",
+      "company_name": "Walmart Inc.",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "trade_details"
+      ],
+      "priority_rank": 45,
+      "last_seen_at": "2026-05-28T19:47:06.728925"
     },
     {
       "symbol": "SMCI",
@@ -426,7 +436,7 @@
         "closed_positions"
       ],
       "priority_rank": 43,
-      "last_seen_at": "2026-05-20T19:04:15.467679"
+      "last_seen_at": "2026-05-28T19:47:07.158472"
     },
     {
       "symbol": "ADBE",
@@ -441,7 +451,7 @@
         "trade_details"
       ],
       "priority_rank": 42,
-      "last_seen_at": "2026-05-20T19:04:15.014800"
+      "last_seen_at": "2026-05-28T19:47:06.729038"
     },
     {
       "symbol": "MS",
@@ -456,19 +466,7 @@
         "trade_details"
       ],
       "priority_rank": 41,
-      "last_seen_at": "2026-05-20T19:04:15.014797"
-    },
-    {
-      "symbol": "VLO",
-      "company_name": "Valero Energy Corporation",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "candidate_log",
-        "trade_details"
-      ],
-      "priority_rank": 40,
-      "last_seen_at": "2026-05-20T19:04:15.014779"
+      "last_seen_at": "2026-05-28T19:47:06.729034"
     },
     {
       "symbol": "COST",
@@ -483,22 +481,7 @@
         "trade_details"
       ],
       "priority_rank": 37,
-      "last_seen_at": "2026-05-20T19:04:15.014589"
-    },
-    {
-      "symbol": "AVGO",
-      "company_name": "Broadcom Inc.",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta",
-        "candidate_log",
-        "trade_details"
-      ],
-      "priority_rank": 36,
-      "last_seen_at": "2026-05-20T19:04:15.014435"
+      "last_seen_at": "2026-05-28T19:47:06.728845"
     },
     {
       "symbol": "MU",
@@ -516,7 +499,19 @@
         "user_positions"
       ],
       "priority_rank": 36,
-      "last_seen_at": "2026-05-20T19:04:15.627542"
+      "last_seen_at": "2026-05-28T19:47:07.340523"
+    },
+    {
+      "symbol": "VLO",
+      "company_name": "Valero Energy Corporation",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "candidate_log",
+        "trade_details"
+      ],
+      "priority_rank": 36,
+      "last_seen_at": "2026-05-28T19:47:06.729021"
     },
     {
       "symbol": "DIS",
@@ -531,35 +526,11 @@
         "trade_details"
       ],
       "priority_rank": 35,
-      "last_seen_at": "2026-05-20T19:04:15.014803"
+      "last_seen_at": "2026-05-28T19:47:06.729041"
     },
     {
-      "symbol": "ROKU",
-      "company_name": "Roku, Inc.",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "candidate_log",
-        "trade_details",
-        "closed_positions"
-      ],
-      "priority_rank": 35,
-      "last_seen_at": "2026-05-20T19:04:15.467604"
-    },
-    {
-      "symbol": "ZM",
-      "company_name": "ZM",
-      "asset_type": "equity",
-      "source_tags": [
-        "candidate_log",
-        "trade_details"
-      ],
-      "priority_rank": 35,
-      "last_seen_at": "2026-05-20T19:04:15.014753"
-    },
-    {
-      "symbol": "COP",
-      "company_name": "ConocoPhillips",
+      "symbol": "AVGO",
+      "company_name": "Broadcom Inc.",
       "asset_type": "equity",
       "source_tags": [
         "equity_seed",
@@ -569,8 +540,8 @@
         "candidate_log",
         "trade_details"
       ],
-      "priority_rank": 33,
-      "last_seen_at": "2026-05-20T19:04:15.013956"
+      "priority_rank": 32,
+      "last_seen_at": "2026-05-28T19:47:06.728701"
     },
     {
       "symbol": "MSFT",
@@ -585,7 +556,46 @@
         "closed_positions"
       ],
       "priority_rank": 31,
-      "last_seen_at": "2026-05-20T19:04:15.467575"
+      "last_seen_at": "2026-05-28T19:47:07.158367"
+    },
+    {
+      "symbol": "ROKU",
+      "company_name": "Roku, Inc.",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "candidate_log",
+        "trade_details",
+        "closed_positions"
+      ],
+      "priority_rank": 31,
+      "last_seen_at": "2026-05-28T19:47:07.158397"
+    },
+    {
+      "symbol": "ZM",
+      "company_name": "ZM",
+      "asset_type": "equity",
+      "source_tags": [
+        "candidate_log",
+        "trade_details"
+      ],
+      "priority_rank": 31,
+      "last_seen_at": "2026-05-28T19:47:06.728996"
+    },
+    {
+      "symbol": "COP",
+      "company_name": "ConocoPhillips",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "candidate_log",
+        "trade_details"
+      ],
+      "priority_rank": 29,
+      "last_seen_at": "2026-05-28T19:47:06.728244"
     },
     {
       "symbol": "DAL",
@@ -597,7 +607,7 @@
         "trade_details"
       ],
       "priority_rank": 29,
-      "last_seen_at": "2026-05-20T19:04:15.014732"
+      "last_seen_at": "2026-05-28T19:47:06.728976"
     },
     {
       "symbol": "UAL",
@@ -609,7 +619,7 @@
         "trade_details"
       ],
       "priority_rank": 29,
-      "last_seen_at": "2026-05-20T19:04:15.014759"
+      "last_seen_at": "2026-05-28T19:47:06.729002"
     },
     {
       "symbol": "DIA",
@@ -623,7 +633,7 @@
         "candidate_log"
       ],
       "priority_rank": 26,
-      "last_seen_at": "2026-05-20T19:04:14.969382"
+      "last_seen_at": "2026-05-28T19:47:06.722012"
     },
     {
       "symbol": "JPM",
@@ -637,7 +647,7 @@
         "candidate_log"
       ],
       "priority_rank": 26,
-      "last_seen_at": "2026-05-20T19:04:14.969367"
+      "last_seen_at": "2026-05-28T19:47:06.721988"
     },
     {
       "symbol": "UBER",
@@ -652,7 +662,7 @@
         "trade_details"
       ],
       "priority_rank": 26,
-      "last_seen_at": "2026-05-20T19:04:15.014793"
+      "last_seen_at": "2026-05-28T19:47:06.729031"
     },
     {
       "symbol": "BAC",
@@ -666,21 +676,7 @@
         "candidate_log"
       ],
       "priority_rank": 24,
-      "last_seen_at": "2026-05-20T19:04:14.969377"
-    },
-    {
-      "symbol": "NFLX",
-      "company_name": "Netflix, Inc.",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta",
-        "candidate_log"
-      ],
-      "priority_rank": 24,
-      "last_seen_at": "2026-05-20T19:04:14.969392"
+      "last_seen_at": "2026-05-28T19:47:06.722034"
     },
     {
       "symbol": "XLF",
@@ -694,11 +690,11 @@
         "candidate_log"
       ],
       "priority_rank": 24,
-      "last_seen_at": "2026-05-20T19:04:14.969426"
+      "last_seen_at": "2026-05-28T19:47:06.722058"
     },
     {
-      "symbol": "AXP",
-      "company_name": "American Express Company",
+      "symbol": "C",
+      "company_name": "Citigroup Inc.",
       "asset_type": "equity",
       "source_tags": [
         "equity_seed",
@@ -708,7 +704,7 @@
         "candidate_log"
       ],
       "priority_rank": 23,
-      "last_seen_at": "2026-05-20T19:04:14.969358"
+      "last_seen_at": "2026-05-28T19:47:06.722008"
     },
     {
       "symbol": "GS",
@@ -722,7 +718,7 @@
         "candidate_log"
       ],
       "priority_rank": 23,
-      "last_seen_at": "2026-05-20T19:04:14.969373"
+      "last_seen_at": "2026-05-28T19:47:06.722030"
     },
     {
       "symbol": "META",
@@ -735,7 +731,35 @@
         "symbol_meta"
       ],
       "priority_rank": 23,
-      "last_seen_at": "2026-05-20T19:04:13.026134"
+      "last_seen_at": "2026-05-28T19:47:06.693234"
+    },
+    {
+      "symbol": "WFC",
+      "company_name": "Wells Fargo & Company",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "candidate_log"
+      ],
+      "priority_rank": 23,
+      "last_seen_at": "2026-05-28T19:47:06.721978"
+    },
+    {
+      "symbol": "ARKK",
+      "company_name": "ARK Innovation ETF",
+      "asset_type": "equity",
+      "source_tags": [
+        "diversity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "candidate_log"
+      ],
+      "priority_rank": 22,
+      "last_seen_at": "2026-05-28T19:47:06.722017"
     },
     {
       "symbol": "LLY",
@@ -748,7 +772,21 @@
         "symbol_meta"
       ],
       "priority_rank": 22,
-      "last_seen_at": "2026-05-20T19:04:13.026563"
+      "last_seen_at": "2026-05-28T19:47:06.693441"
+    },
+    {
+      "symbol": "NKE",
+      "company_name": "NIKE, Inc.",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "candidate_log"
+      ],
+      "priority_rank": 22,
+      "last_seen_at": "2026-05-28T19:47:06.722026"
     },
     {
       "symbol": "UNH",
@@ -761,7 +799,7 @@
         "symbol_meta"
       ],
       "priority_rank": 22,
-      "last_seen_at": "2026-05-20T19:04:13.026570"
+      "last_seen_at": "2026-05-28T19:47:06.693444"
     },
     {
       "symbol": "HD",
@@ -774,7 +812,7 @@
         "symbol_meta"
       ],
       "priority_rank": 21,
-      "last_seen_at": "2026-05-20T19:04:13.026511"
+      "last_seen_at": "2026-05-28T19:47:06.693415"
     },
     {
       "symbol": "JNJ",
@@ -787,7 +825,7 @@
         "symbol_meta"
       ],
       "priority_rank": 21,
-      "last_seen_at": "2026-05-20T19:04:13.026576"
+      "last_seen_at": "2026-05-28T19:47:06.693447"
     },
     {
       "symbol": "SMH",
@@ -800,7 +838,7 @@
         "symbol_meta"
       ],
       "priority_rank": 21,
-      "last_seen_at": "2026-05-20T19:04:13.026681"
+      "last_seen_at": "2026-05-28T19:47:06.693499"
     },
     {
       "symbol": "ABBV",
@@ -813,7 +851,7 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-05-20T19:04:13.026589"
+      "last_seen_at": "2026-05-28T19:47:06.693453"
     },
     {
       "symbol": "MRK",
@@ -826,7 +864,20 @@
         "symbol_meta"
       ],
       "priority_rank": 20,
-      "last_seen_at": "2026-05-20T19:04:13.026582"
+      "last_seen_at": "2026-05-28T19:47:06.693450"
+    },
+    {
+      "symbol": "NFLX",
+      "company_name": "Netflix, Inc.",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta"
+      ],
+      "priority_rank": 20,
+      "last_seen_at": "2026-05-28T19:47:06.693248"
     },
     {
       "symbol": "ARM",
@@ -839,7 +890,20 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026262"
+      "last_seen_at": "2026-05-28T19:47:06.693294"
+    },
+    {
+      "symbol": "AXP",
+      "company_name": "American Express Company",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta"
+      ],
+      "priority_rank": 19,
+      "last_seen_at": "2026-05-28T19:47:06.693361"
     },
     {
       "symbol": "BLK",
@@ -852,20 +916,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026386"
-    },
-    {
-      "symbol": "C",
-      "company_name": "Citigroup Inc.",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta"
-      ],
-      "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026406"
+      "last_seen_at": "2026-05-28T19:47:06.693358"
     },
     {
       "symbol": "CAT",
@@ -878,7 +929,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026419"
+      "last_seen_at": "2026-05-28T19:47:06.693375"
     },
     {
       "symbol": "DE",
@@ -891,7 +942,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026425"
+      "last_seen_at": "2026-05-28T19:47:06.693378"
     },
     {
       "symbol": "DHR",
@@ -904,7 +955,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026621"
+      "last_seen_at": "2026-05-28T19:47:06.693470"
     },
     {
       "symbol": "GE",
@@ -917,7 +968,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026432"
+      "last_seen_at": "2026-05-28T19:47:06.693382"
     },
     {
       "symbol": "ISRG",
@@ -930,7 +981,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026608"
+      "last_seen_at": "2026-05-28T19:47:06.693463"
     },
     {
       "symbol": "LMT",
@@ -943,7 +994,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026466"
+      "last_seen_at": "2026-05-28T19:47:06.693392"
     },
     {
       "symbol": "MCD",
@@ -956,7 +1007,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026518"
+      "last_seen_at": "2026-05-28T19:47:06.693418"
     },
     {
       "symbol": "MRVL",
@@ -969,7 +1020,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026255"
+      "last_seen_at": "2026-05-28T19:47:06.693291"
     },
     {
       "symbol": "PFE",
@@ -982,7 +1033,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026595"
+      "last_seen_at": "2026-05-28T19:47:06.693457"
     },
     {
       "symbol": "PLTR",
@@ -995,7 +1046,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026203"
+      "last_seen_at": "2026-05-28T19:47:06.693265"
     },
     {
       "symbol": "RTX",
@@ -1008,7 +1059,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026473"
+      "last_seen_at": "2026-05-28T19:47:06.693395"
     },
     {
       "symbol": "TMO",
@@ -1021,7 +1072,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026602"
+      "last_seen_at": "2026-05-28T19:47:06.693460"
     },
     {
       "symbol": "VRTX",
@@ -1034,33 +1085,7 @@
         "symbol_meta"
       ],
       "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026615"
-    },
-    {
-      "symbol": "WFC",
-      "company_name": "Wells Fargo & Company",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta"
-      ],
-      "priority_rank": 19,
-      "last_seen_at": "2026-05-20T19:04:13.026380"
-    },
-    {
-      "symbol": "ARKK",
-      "company_name": "ARK Innovation ETF",
-      "asset_type": "equity",
-      "source_tags": [
-        "diversity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta"
-      ],
-      "priority_rank": 18,
-      "last_seen_at": "2026-05-20T19:04:13.026687"
+      "last_seen_at": "2026-05-28T19:47:06.693467"
     },
     {
       "symbol": "BA",
@@ -1073,7 +1098,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-05-20T19:04:13.026460"
+      "last_seen_at": "2026-05-28T19:47:06.693389"
     },
     {
       "symbol": "COIN",
@@ -1086,7 +1111,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-05-20T19:04:13.026229"
+      "last_seen_at": "2026-05-28T19:47:06.693278"
     },
     {
       "symbol": "LOW",
@@ -1099,7 +1124,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-05-20T19:04:13.026543"
+      "last_seen_at": "2026-05-28T19:47:06.693431"
     },
     {
       "symbol": "MDB",
@@ -1112,20 +1137,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-05-20T19:04:13.026282"
-    },
-    {
-      "symbol": "NKE",
-      "company_name": "NIKE, Inc.",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "signals",
-        "symbol_intelligence",
-        "symbol_meta"
-      ],
-      "priority_rank": 18,
-      "last_seen_at": "2026-05-20T19:04:13.026531"
+      "last_seen_at": "2026-05-28T19:47:06.693305"
     },
     {
       "symbol": "PYPL",
@@ -1138,7 +1150,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-05-20T19:04:13.026412"
+      "last_seen_at": "2026-05-28T19:47:06.693372"
     },
     {
       "symbol": "SCHW",
@@ -1151,7 +1163,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-05-20T19:04:13.026399"
+      "last_seen_at": "2026-05-28T19:47:06.693365"
     },
     {
       "symbol": "SHOP",
@@ -1164,7 +1176,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-05-20T19:04:13.026216"
+      "last_seen_at": "2026-05-28T19:47:06.693271"
     },
     {
       "symbol": "SLB",
@@ -1177,7 +1189,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-05-20T19:04:13.026308"
+      "last_seen_at": "2026-05-28T19:47:06.693318"
     },
     {
       "symbol": "TGT",
@@ -1190,7 +1202,7 @@
         "symbol_meta"
       ],
       "priority_rank": 18,
-      "last_seen_at": "2026-05-20T19:04:13.026537"
+      "last_seen_at": "2026-05-28T19:47:06.693428"
     },
     {
       "symbol": "DVN",
@@ -1203,7 +1215,7 @@
         "symbol_news"
       ],
       "priority_rank": 16,
-      "last_seen_at": "2026-05-20T19:04:13.027109"
+      "last_seen_at": "2026-05-28T19:47:06.693710"
     },
     {
       "symbol": "HAL",
@@ -1216,7 +1228,7 @@
         "symbol_news"
       ],
       "priority_rank": 16,
-      "last_seen_at": "2026-05-20T19:04:13.027087"
+      "last_seen_at": "2026-05-28T19:47:06.693698"
     },
     {
       "symbol": "CMG",
@@ -1228,7 +1240,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-05-20T19:04:13.026556"
+      "last_seen_at": "2026-05-28T19:47:06.693437"
     },
     {
       "symbol": "ETN",
@@ -1240,7 +1252,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-05-20T19:04:13.026479"
+      "last_seen_at": "2026-05-28T19:47:06.693398"
     },
     {
       "symbol": "HON",
@@ -1252,7 +1264,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-05-20T19:04:13.026438"
+      "last_seen_at": "2026-05-28T19:47:06.693385"
     },
     {
       "symbol": "PH",
@@ -1264,7 +1276,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-05-20T19:04:13.026486"
+      "last_seen_at": "2026-05-28T19:47:06.693402"
     },
     {
       "symbol": "TSM",
@@ -1276,7 +1288,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-05-20T19:04:13.026275"
+      "last_seen_at": "2026-05-28T19:47:06.693301"
     },
     {
       "symbol": "UNP",
@@ -1288,18 +1300,7 @@
         "symbol_meta"
       ],
       "priority_rank": 13,
-      "last_seen_at": "2026-05-20T19:04:13.026492"
-    },
-    {
-      "symbol": "ABNB",
-      "company_name": "Airbnb, Inc.",
-      "asset_type": "equity",
-      "source_tags": [
-        "equity_seed",
-        "candidate_log"
-      ],
-      "priority_rank": 9,
-      "last_seen_at": "2026-05-20T19:04:14.969353"
+      "last_seen_at": "2026-05-28T19:47:06.693405"
     },
     {
       "symbol": "BRK-B",
@@ -1309,7 +1310,7 @@
         "equity_seed"
       ],
       "priority_rank": 9,
-      "last_seen_at": "2026-05-20T19:04:13.017236"
+      "last_seen_at": "2026-05-28T19:47:06.690187"
     },
     {
       "symbol": "IVV",
@@ -1319,7 +1320,7 @@
         "diversity_seed"
       ],
       "priority_rank": 9,
-      "last_seen_at": "2026-05-20T19:04:13.016884"
+      "last_seen_at": "2026-05-28T19:47:06.690010"
     },
     {
       "symbol": "VOO",
@@ -1329,7 +1330,7 @@
         "diversity_seed"
       ],
       "priority_rank": 9,
-      "last_seen_at": "2026-05-20T19:04:13.016873"
+      "last_seen_at": "2026-05-28T19:47:06.690004"
     },
     {
       "symbol": "VTI",
@@ -1339,7 +1340,7 @@
         "diversity_seed"
       ],
       "priority_rank": 9,
-      "last_seen_at": "2026-05-20T19:04:13.016861"
+      "last_seen_at": "2026-05-28T19:47:06.689998"
     },
     {
       "symbol": "ASML",
@@ -1349,7 +1350,7 @@
         "equity_seed"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-05-20T19:04:13.017538"
+      "last_seen_at": "2026-05-28T19:47:06.690337"
     },
     {
       "symbol": "MA",
@@ -1359,7 +1360,7 @@
         "equity_seed"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-05-20T19:04:13.017305"
+      "last_seen_at": "2026-05-28T19:47:06.690232"
     },
     {
       "symbol": "PG",
@@ -1369,7 +1370,7 @@
         "equity_seed"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-05-20T19:04:13.017349"
+      "last_seen_at": "2026-05-28T19:47:06.690256"
     },
     {
       "symbol": "RSP",
@@ -1379,7 +1380,7 @@
         "diversity_seed"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-05-20T19:04:13.016895"
+      "last_seen_at": "2026-05-28T19:47:06.690016"
     },
     {
       "symbol": "USO",
@@ -1390,7 +1391,7 @@
         "symbol_news"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-05-20T19:04:13.027101"
+      "last_seen_at": "2026-05-28T19:47:06.693705"
     },
     {
       "symbol": "V",
@@ -1400,7 +1401,7 @@
         "equity_seed"
       ],
       "priority_rank": 8,
-      "last_seen_at": "2026-05-20T19:04:13.017292"
+      "last_seen_at": "2026-05-28T19:47:06.690225"
     },
     {
       "symbol": "AMAT",
@@ -1410,7 +1411,7 @@
         "equity_seed"
       ],
       "priority_rank": 7,
-      "last_seen_at": "2026-05-20T19:04:13.017481"
+      "last_seen_at": "2026-05-28T19:47:06.690307"
     },
     {
       "symbol": "CRWD",
@@ -1420,7 +1421,7 @@
         "equity_seed"
       ],
       "priority_rank": 7,
-      "last_seen_at": "2026-05-20T19:04:13.017603"
+      "last_seen_at": "2026-05-28T19:47:06.690371"
     },
     {
       "symbol": "LRCX",
@@ -1430,7 +1431,7 @@
         "equity_seed"
       ],
       "priority_rank": 7,
-      "last_seen_at": "2026-05-20T19:04:13.017492"
+      "last_seen_at": "2026-05-28T19:47:06.690313"
     },
     {
       "symbol": "NOW",
@@ -1440,7 +1441,7 @@
         "equity_seed"
       ],
       "priority_rank": 7,
-      "last_seen_at": "2026-05-20T19:04:13.017581"
+      "last_seen_at": "2026-05-28T19:47:06.690359"
     },
     {
       "symbol": "TXN",
@@ -1450,7 +1451,7 @@
         "equity_seed"
       ],
       "priority_rank": 7,
-      "last_seen_at": "2026-05-20T19:04:13.017426"
+      "last_seen_at": "2026-05-28T19:47:06.690296"
     },
     {
       "symbol": "ADI",
@@ -1460,7 +1461,7 @@
         "equity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.017469"
+      "last_seen_at": "2026-05-28T19:47:06.690302"
     },
     {
       "symbol": "GLD",
@@ -1470,7 +1471,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.017081"
+      "last_seen_at": "2026-05-28T19:47:06.690109"
     },
     {
       "symbol": "KLAC",
@@ -1480,7 +1481,7 @@
         "equity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.017504"
+      "last_seen_at": "2026-05-28T19:47:06.690319"
     },
     {
       "symbol": "LIN",
@@ -1490,7 +1491,7 @@
         "equity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.018506"
+      "last_seen_at": "2026-05-28T19:47:06.690797"
     },
     {
       "symbol": "REGN",
@@ -1500,7 +1501,7 @@
         "equity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.018033"
+      "last_seen_at": "2026-05-28T19:47:06.690580"
     },
     {
       "symbol": "TLT",
@@ -1510,7 +1511,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.017115"
+      "last_seen_at": "2026-05-28T19:47:06.690127"
     },
     {
       "symbol": "TMUS",
@@ -1520,7 +1521,7 @@
         "equity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.018327"
+      "last_seen_at": "2026-05-28T19:47:06.690724"
     },
     {
       "symbol": "XBI",
@@ -1530,7 +1531,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.017048"
+      "last_seen_at": "2026-05-28T19:47:06.690090"
     },
     {
       "symbol": "XLB",
@@ -1540,7 +1541,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.017026"
+      "last_seen_at": "2026-05-28T19:47:06.690079"
     },
     {
       "symbol": "XLI",
@@ -1550,7 +1551,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.016981"
+      "last_seen_at": "2026-05-28T19:47:06.690056"
     },
     {
       "symbol": "XLP",
@@ -1560,7 +1561,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.016992"
+      "last_seen_at": "2026-05-28T19:47:06.690062"
     },
     {
       "symbol": "XLRE",
@@ -1570,7 +1571,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.017037"
+      "last_seen_at": "2026-05-28T19:47:06.690084"
     },
     {
       "symbol": "XLU",
@@ -1580,7 +1581,7 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.017015"
+      "last_seen_at": "2026-05-28T19:47:06.690073"
     },
     {
       "symbol": "XLY",
@@ -1590,7 +1591,17 @@
         "diversity_seed"
       ],
       "priority_rank": 6,
-      "last_seen_at": "2026-05-20T19:04:13.017004"
+      "last_seen_at": "2026-05-28T19:47:06.690068"
+    },
+    {
+      "symbol": "ABNB",
+      "company_name": "Airbnb, Inc.",
+      "asset_type": "equity",
+      "source_tags": [
+        "equity_seed"
+      ],
+      "priority_rank": 5,
+      "last_seen_at": "2026-05-28T19:47:06.690421"
     },
     {
       "symbol": "AMT",
@@ -1600,7 +1611,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018438"
+      "last_seen_at": "2026-05-28T19:47:06.690780"
     },
     {
       "symbol": "BKNG",
@@ -1610,7 +1621,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018294"
+      "last_seen_at": "2026-05-28T19:47:06.690707"
     },
     {
       "symbol": "CMCSA",
@@ -1620,7 +1631,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018366"
+      "last_seen_at": "2026-05-28T19:47:06.690741"
     },
     {
       "symbol": "COF",
@@ -1630,7 +1641,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.017807"
+      "last_seen_at": "2026-05-28T19:47:06.690472"
     },
     {
       "symbol": "DDOG",
@@ -1640,7 +1651,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.017647"
+      "last_seen_at": "2026-05-28T19:47:06.690393"
     },
     {
       "symbol": "EQIX",
@@ -1650,7 +1661,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018487"
+      "last_seen_at": "2026-05-28T19:47:06.690791"
     },
     {
       "symbol": "FCX",
@@ -1660,7 +1671,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018517"
+      "last_seen_at": "2026-05-28T19:47:06.690802"
     },
     {
       "symbol": "FDX",
@@ -1670,7 +1681,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018174"
+      "last_seen_at": "2026-05-28T19:47:06.690646"
     },
     {
       "symbol": "GD",
@@ -1680,7 +1691,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018148"
+      "last_seen_at": "2026-05-28T19:47:06.690635"
     },
     {
       "symbol": "GILD",
@@ -1690,7 +1701,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018055"
+      "last_seen_at": "2026-05-28T19:47:06.690591"
     },
     {
       "symbol": "HLT",
@@ -1700,7 +1711,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018315"
+      "last_seen_at": "2026-05-28T19:47:06.690718"
     },
     {
       "symbol": "HYG",
@@ -1710,7 +1721,7 @@
         "diversity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.017126"
+      "last_seen_at": "2026-05-28T19:47:06.690132"
     },
     {
       "symbol": "KRE",
@@ -1720,7 +1731,7 @@
         "diversity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.017059"
+      "last_seen_at": "2026-05-28T19:47:06.690096"
     },
     {
       "symbol": "LQD",
@@ -1730,7 +1741,7 @@
         "diversity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.017137"
+      "last_seen_at": "2026-05-28T19:47:06.690138"
     },
     {
       "symbol": "MAR",
@@ -1740,7 +1751,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018305"
+      "last_seen_at": "2026-05-28T19:47:06.690712"
     },
     {
       "symbol": "NEE",
@@ -1750,7 +1761,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018406"
+      "last_seen_at": "2026-05-28T19:47:06.690763"
     },
     {
       "symbol": "NET",
@@ -1760,7 +1771,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.017625"
+      "last_seen_at": "2026-05-28T19:47:06.690382"
     },
     {
       "symbol": "NOC",
@@ -1770,7 +1781,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018136"
+      "last_seen_at": "2026-05-28T19:47:06.690630"
     },
     {
       "symbol": "PLD",
@@ -1780,7 +1791,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018477"
+      "last_seen_at": "2026-05-28T19:47:06.690786"
     },
     {
       "symbol": "SLV",
@@ -1790,7 +1801,7 @@
         "diversity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.017092"
+      "last_seen_at": "2026-05-28T19:47:06.690115"
     },
     {
       "symbol": "SQ",
@@ -1800,7 +1811,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.017831"
+      "last_seen_at": "2026-05-28T19:47:06.690485"
     },
     {
       "symbol": "T",
@@ -1810,7 +1821,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018349"
+      "last_seen_at": "2026-05-28T19:47:06.690735"
     },
     {
       "symbol": "UPS",
@@ -1820,7 +1831,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018158"
+      "last_seen_at": "2026-05-28T19:47:06.690641"
     },
     {
       "symbol": "VZ",
@@ -1830,7 +1841,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.018337"
+      "last_seen_at": "2026-05-28T19:47:06.690729"
     },
     {
       "symbol": "ZS",
@@ -1840,7 +1851,7 @@
         "equity_seed"
       ],
       "priority_rank": 5,
-      "last_seen_at": "2026-05-20T19:04:13.017614"
+      "last_seen_at": "2026-05-28T19:47:06.690377"
     },
     {
       "symbol": "AAL",
@@ -1850,7 +1861,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018206"
+      "last_seen_at": "2026-05-28T19:47:06.690663"
     },
     {
       "symbol": "AFRM",
@@ -1860,7 +1871,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018560"
+      "last_seen_at": "2026-05-28T19:47:06.690874"
     },
     {
       "symbol": "BIIB",
@@ -1870,7 +1881,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018044"
+      "last_seen_at": "2026-05-28T19:47:06.690585"
     },
     {
       "symbol": "CHTR",
@@ -1880,7 +1891,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018376"
+      "last_seen_at": "2026-05-28T19:47:06.690746"
     },
     {
       "symbol": "DKNG",
@@ -1890,7 +1901,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018633"
+      "last_seen_at": "2026-05-28T19:47:06.690920"
     },
     {
       "symbol": "DUK",
@@ -1900,7 +1911,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018417"
+      "last_seen_at": "2026-05-28T19:47:06.690769"
     },
     {
       "symbol": "HOOD",
@@ -1910,7 +1921,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018623"
+      "last_seen_at": "2026-05-28T19:47:06.690914"
     },
     {
       "symbol": "LCID",
@@ -1920,7 +1931,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018549"
+      "last_seen_at": "2026-05-28T19:47:06.690865"
     },
     {
       "symbol": "NEM",
@@ -1930,7 +1941,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018528"
+      "last_seen_at": "2026-05-28T19:47:06.690846"
     },
     {
       "symbol": "PATH",
@@ -1940,7 +1951,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018612"
+      "last_seen_at": "2026-05-28T19:47:06.690909"
     },
     {
       "symbol": "RIVN",
@@ -1950,7 +1961,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018538"
+      "last_seen_at": "2026-05-28T19:47:06.690855"
     },
     {
       "symbol": "SO",
@@ -1960,7 +1971,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018427"
+      "last_seen_at": "2026-05-28T19:47:06.690775"
     },
     {
       "symbol": "SOFI",
@@ -1970,7 +1981,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.017842"
+      "last_seen_at": "2026-05-28T19:47:06.690491"
     },
     {
       "symbol": "SPOT",
@@ -1980,7 +1991,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018385"
+      "last_seen_at": "2026-05-28T19:47:06.690752"
     },
     {
       "symbol": "TESTCLOSE",
@@ -1990,7 +2001,17 @@
         "closed_positions"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:15.467671"
+      "last_seen_at": "2026-05-28T19:47:07.158463"
+    },
+    {
+      "symbol": "TESTCLOSEFN",
+      "company_name": "Controlled Close Function Option Test",
+      "asset_type": "equity",
+      "source_tags": [
+        "closed_positions"
+      ],
+      "priority_rank": 4,
+      "last_seen_at": "2026-05-28T19:47:07.158496"
     },
     {
       "symbol": "U",
@@ -2000,7 +2021,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018593"
+      "last_seen_at": "2026-05-28T19:47:06.690903"
     },
     {
       "symbol": "UPST",
@@ -2010,7 +2031,7 @@
         "equity_seed"
       ],
       "priority_rank": 4,
-      "last_seen_at": "2026-05-20T19:04:13.018571"
+      "last_seen_at": "2026-05-28T19:47:06.690889"
     },
     {
       "symbol": "TESTOPT",
@@ -2020,12 +2041,12 @@
         "closed_positions"
       ],
       "priority_rank": 2,
-      "last_seen_at": "2026-05-20T19:04:15.467660"
+      "last_seen_at": "2026-05-28T19:47:07.158452"
     }
   ],
   "meta": {
-    "saved_at": "2026-05-20T19:04:15.633566",
-    "count": 166,
+    "saved_at": "2026-05-28T19:47:07.348351",
+    "count": 167,
     "source_status": {
       "diversity_seed": {
         "ok": true,
@@ -2058,7 +2079,7 @@
       "candidate_log": {
         "ok": true,
         "rows_added_estimate": 1,
-        "source_rows": 78
+        "source_rows": 50
       },
       "trade_details": {
         "ok": true,
@@ -2068,22 +2089,22 @@
       "positions": {
         "ok": true,
         "rows_added_estimate": 0,
-        "source_rows": 3
+        "source_rows": 6
       },
       "open_positions": {
         "ok": true,
         "rows_added_estimate": 0,
-        "source_rows": 3
+        "source_rows": 6
       },
       "closed_positions": {
         "ok": true,
-        "rows_added_estimate": 2,
-        "source_rows": 30
+        "rows_added_estimate": 3,
+        "source_rows": 35
       },
       "user_positions": {
         "ok": true,
         "rows_added_estimate": 0,
-        "source_rows": 3
+        "source_rows": 6
       },
       "my_plays": {
         "ok": true,

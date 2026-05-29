@@ -1,9 +1,9 @@
 {
   "before_ob_integration_statement": "The Tower has a tested wall/security proof bundle covering policy visibility, tamper chain, step-up, lockdown, quarantine, risk scoring, secrets boundary, redaction reveal, security rehearsal, and owner/admin receipts.",
-  "bundle_fingerprint": "5559577f312f0794e055eef98d3488a3f60496ec37dd67dbe5f3c569bafd41a7",
-  "bundle_id": "tower_fortress_proof_bundle_RcpW3tVmp6Xp6n5ptYN8jvCc",
-  "checkpoint_id": "tower_fortress_checkpoint_owbZEF4D0dqjxC4vAwZ5RQaZ",
-  "created_at": "2026-05-28T22:16:46.453428Z",
+  "bundle_fingerprint": "a57fa353d6007516fe41511b0b2da96b8ef7f644f350f7b1b4e136bb7c5b9537",
+  "bundle_id": "tower_fortress_proof_bundle_8zIfDQznE65Rn5cwtBXBDnxO",
+  "checkpoint_id": "tower_fortress_checkpoint_T2VIvSO-9F5E4PUxWmaBVq0G",
+  "created_at": "2026-05-29T00:54:33.314421Z",
   "domain_evidence": {
     "lockdown": {
       "evidence": {
@@ -161,12 +161,12 @@
         "record_count": 1,
         "status": {
           "exists": true,
-          "modified_at": "2026-05-28T21:48:31.284908Z",
+          "modified_at": "2026-05-29T00:36:43.547223Z",
           "path": "tower/data/tamper_evident_audit_chain.json",
-          "size_bytes": 188439
+          "size_bytes": 375765
         }
       },
-      "fingerprint": "f967ce87c3130920863efda1bbfc79b6969fc5139beb3763dab2bcddb38cb805",
+      "fingerprint": "dc9cdc780b5d1fd87cf8b8881fcfe2ca01c8a1d92abd3f1c945d2590097315a3",
       "human_reason": "Tamper-evident audit chain file exists and contains chained records.",
       "name": "tamper_chain",
       "ok": true,
@@ -183,9 +183,9 @@
           },
           "exposure_mapping": {
             "exists": true,
-            "modified_at": "2026-05-28T20:06:19.151987Z",
+            "modified_at": "2026-05-29T00:54:14.618744Z",
             "path": "tower/data/ob_exposure_mapping_pass.json",
-            "size_bytes": 100462
+            "size_bytes": 101184
           },
           "route_replacement_policy_list": {
             "exists": true,
@@ -195,9 +195,9 @@
           },
           "security_command_dashboard": {
             "exists": true,
-            "modified_at": "2026-05-28T20:06:19.152987Z",
+            "modified_at": "2026-05-29T00:54:14.625744Z",
             "path": "tower/data/security_command_dashboard.html",
-            "size_bytes": 59859
+            "size_bytes": 46395
           },
           "visibility_transition_checkpoint": {
             "exists": true,
@@ -211,7 +211,7 @@
         "present_count": 5,
         "total_count": 5
       },
-      "fingerprint": "333601982d0a033d8399cda1cd88a4bcff4c2859fb3b64fa798fcb48357db39d",
+      "fingerprint": "7f96b58cb820fc006c140a782560a07d21abc118600ce796777a60e01329c5f0",
       "human_reason": "Visibility/policy artifacts checked. At least three wall artifacts should exist from Packs 086\u2013090.",
       "name": "visibility_policy",
       "ok": true,

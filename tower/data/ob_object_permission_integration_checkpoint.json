@@ -1,0 +1,274 @@
+{
+  "checkpoint_fingerprint": "4321687d7aec35e81e8894d777f0314a9c9a11e271ef2257922f42c67f18edc8",
+  "checkpoint_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_integration_checkpoint.json",
+  "checks": {
+    "all_markers_present": true,
+    "expected_object_route_targets_present": true,
+    "expected_object_types_match": true,
+    "object_permission_no_secret_leakage": true,
+    "object_permission_readiness_100": true,
+    "object_permission_status_ok": true,
+    "route_coverage_100": true,
+    "route_coverage_ok": true,
+    "unguarded_high_risk_zero": true,
+    "unguarded_needed_zero": true,
+    "web_app_exists": true
+  },
+  "created_at": "2026-05-29T01:41:30.880779Z",
+  "expected_missing": [],
+  "expected_object_route_count": 8,
+  "expected_present": {
+    "analyze_my_trades_page": true,
+    "close_my_position": true,
+    "edit_my_position": true,
+    "my_position_detail_page": true,
+    "my_positions_archived_page": true,
+    "reports_page": true,
+    "signal_symbol_page": true,
+    "trade_detail_page": true
+  },
+  "expected_wrong_type": [],
+  "failed_checks": [],
+  "helper_wrapped_count": 4,
+  "helper_wrapped_functions": [
+    {
+      "action": "",
+      "expected_object_type": "",
+      "function_name": "_tower_object_guard_marker_109",
+      "guard_helper_call_present": true,
+      "guard_marker_present": false,
+      "is_expected_route_target": false,
+      "looks_like_helper_or_internal": true,
+      "object_type": ""
+    },
+    {
+      "action": "export",
+      "expected_object_type": "",
+      "function_name": "_pack052_extract_export_id_from_request",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": false,
+      "looks_like_helper_or_internal": true,
+      "object_type": "export"
+    },
+    {
+      "action": "export",
+      "expected_object_type": "",
+      "function_name": "_pack052_should_check_export_object",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": false,
+      "looks_like_helper_or_internal": true,
+      "object_type": "export"
+    },
+    {
+      "action": "export",
+      "expected_object_type": "",
+      "function_name": "_pack052_register_export_object_guard_once",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": false,
+      "looks_like_helper_or_internal": true,
+      "object_type": "export"
+    }
+  ],
+  "human_reason": "Pack 110 checkpoint verifies route coverage, object guard wiring, object permission readiness, and visibility.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "marker_checks": {
+    "pack104_helper_present": true,
+    "pack105_status_present": true,
+    "pack106_high_risk_marker_present": true,
+    "pack107_remaining_marker_present": true,
+    "pack109_helper_present": true,
+    "pack109_object_marker_present": true
+  },
+  "no_secret_leakage": true,
+  "object_guard_count": 14,
+  "object_guarded_functions": [
+    {
+      "action": "export",
+      "expected_object_type": "",
+      "function_name": "build_canonical_reporting_snapshot",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": false,
+      "looks_like_helper_or_internal": false,
+      "object_type": "export"
+    },
+    {
+      "action": "export",
+      "expected_object_type": "",
+      "function_name": "write_canonical_reporting_snapshot",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": false,
+      "looks_like_helper_or_internal": false,
+      "object_type": "export"
+    },
+    {
+      "action": "",
+      "expected_object_type": "",
+      "function_name": "_tower_object_guard_marker_109",
+      "guard_helper_call_present": true,
+      "guard_marker_present": false,
+      "is_expected_route_target": false,
+      "looks_like_helper_or_internal": true,
+      "object_type": ""
+    },
+    {
+      "action": "view",
+      "expected_object_type": "symbol",
+      "function_name": "signal_symbol_page",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": true,
+      "looks_like_helper_or_internal": false,
+      "object_type": "symbol"
+    },
+    {
+      "action": "view",
+      "expected_object_type": "position",
+      "function_name": "my_position_detail_page",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": true,
+      "looks_like_helper_or_internal": false,
+      "object_type": "position"
+    },
+    {
+      "action": "edit",
+      "expected_object_type": "position",
+      "function_name": "edit_my_position",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": true,
+      "looks_like_helper_or_internal": false,
+      "object_type": "position"
+    },
+    {
+      "action": "close",
+      "expected_object_type": "position",
+      "function_name": "close_my_position",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": true,
+      "looks_like_helper_or_internal": false,
+      "object_type": "position"
+    },
+    {
+      "action": "view",
+      "expected_object_type": "position",
+      "function_name": "my_positions_archived_page",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": true,
+      "looks_like_helper_or_internal": false,
+      "object_type": "position"
+    },
+    {
+      "action": "view",
+      "expected_object_type": "analysis",
+      "function_name": "analyze_my_trades_page",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": true,
+      "looks_like_helper_or_internal": false,
+      "object_type": "analysis"
+    },
+    {
+      "action": "export",
+      "expected_object_type": "export",
+      "function_name": "reports_page",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": true,
+      "looks_like_helper_or_internal": false,
+      "object_type": "export"
+    },
+    {
+      "action": "view",
+      "expected_object_type": "trade",
+      "function_name": "trade_detail_page",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": true,
+      "looks_like_helper_or_internal": false,
+      "object_type": "trade"
+    },
+    {
+      "action": "export",
+      "expected_object_type": "",
+      "function_name": "_pack052_extract_export_id_from_request",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": false,
+      "looks_like_helper_or_internal": true,
+      "object_type": "export"
+    },
+    {
+      "action": "export",
+      "expected_object_type": "",
+      "function_name": "_pack052_should_check_export_object",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": false,
+      "looks_like_helper_or_internal": true,
+      "object_type": "export"
+    },
+    {
+      "action": "export",
+      "expected_object_type": "",
+      "function_name": "_pack052_register_export_object_guard_once",
+      "guard_helper_call_present": true,
+      "guard_marker_present": true,
+      "is_expected_route_target": false,
+      "looks_like_helper_or_internal": true,
+      "object_type": "export"
+    }
+  ],
+  "object_permission_summary": {
+    "by_decision": {
+      "allow": 1,
+      "deny": 2,
+      "step_up_required": 2,
+      "summary_only": 1
+    },
+    "by_object_type": {
+      "analysis": 1,
+      "export": 1,
+      "position": 2,
+      "symbol": 1,
+      "trade": 1
+    },
+    "event_count": 6,
+    "no_secret_leakage": true,
+    "readiness_score": 100
+  },
+  "ok": true,
+  "pack": "110",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_integration_checkpoint.html",
+  "readiness_label": "OB route and object permission integration checkpoint passed",
+  "readiness_score": 100,
+  "route_coverage_summary": {
+    "coverage_pct": 100,
+    "guarded_needed_count": 25,
+    "needs_guard_count": 25,
+    "readiness_score": 100,
+    "unguarded_high_risk_count": 0,
+    "unguarded_needed_count": 0
+  },
+  "soulaana_translation": "Soulaana: The hallway doors and object keys have a checkpoint board now.",
+  "status": "passed",
+  "warnings": [
+    {
+      "count": 4,
+      "human_reason": "Some helper/internal functions contain object permission guards. They compiled and tests passed, but Pack 111 should review whether these are intentional or should be moved to route-level wrappers only.",
+      "warning_code": "helper_or_internal_functions_have_object_guards"
+    }
+  ],
+  "web_app_path": "/content/SimpleeMrkTrade_REAL_CLONE/web/app.py"
+}

@@ -1,0 +1,41 @@
+{
+  "admin_policy": {
+    "owner_or_admin_only": true,
+    "requires_receipt": true,
+    "requires_step_up_for_mutation": true
+  },
+  "default_decision": "deny",
+  "export_policy": {
+    "owner_only": true,
+    "requires_archive_handoff": true,
+    "requires_receipt": true,
+    "requires_step_up": true
+  },
+  "human_reason": "OB object-level permissions are enforced after route guard approval.",
+  "live_mode_policy": {
+    "locked_until_compliance": true,
+    "owner_preview_allowed": false
+  },
+  "object_permissions_enabled": true,
+  "pack": "108",
+  "policy_fingerprint": "cc0e4788625d0d83ff7f35b8e9fb389b37a8645d3231a9daefc3fa25c006fe10",
+  "policy_id": "ob_object_permission_policy",
+  "position_policy": {
+    "beta_can_view_own_only": true,
+    "owner_can_view_all": true,
+    "requires_object_owner_match": true,
+    "requires_receipt_for_edit_close": true
+  },
+  "soulaana_translation": "Soulaana: The hallway can open, but the object still needs its own key.",
+  "symbol_policy": {
+    "blocked_symbols": [],
+    "public_symbols_allowed": true,
+    "symbol_must_be_normalized": true
+  },
+  "trade_policy": {
+    "beta_can_view_own_only": true,
+    "owner_can_view_all": true,
+    "requires_object_owner_match": true
+  },
+  "updated_at": "2026-05-29T01:41:30.876849Z"
+}

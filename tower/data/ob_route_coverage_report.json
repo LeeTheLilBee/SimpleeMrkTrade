@@ -1,0 +1,1328 @@
+{
+  "all_routes": [
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "soulaana_checkin",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/soulaana/checkin",
+      "routes": [
+        "/soulaana/checkin"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "soulaana_checkin_skip",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/soulaana/checkin/skip",
+      "routes": [
+        "/soulaana/checkin/skip"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "soulaana_checkin_clear",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/soulaana/checkin/clear",
+      "routes": [
+        "/soulaana/checkin/clear"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "landing_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/",
+      "routes": [
+        "/"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "dashboard_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/dashboard",
+      "routes": [
+        "/dashboard"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "archive_my_play",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/my-plays/<play_id>/archive",
+      "routes": [
+        "/my-plays/<play_id>/archive"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "signals_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/signals",
+      "routes": [
+        "/signals"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "all_symbols_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/all-symbols",
+      "routes": [
+        "/all-symbols"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "charts_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/charts",
+      "routes": [
+        "/charts"
+      ]
+    },
+    {
+      "category": "symbol_signal",
+      "decorator_count": 2,
+      "function_name": "signal_symbol_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/signals/<symbol>",
+      "routes": [
+        "/signals/<symbol>",
+        "/symbol/<symbol>"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "trade_review_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/trade-review",
+      "routes": [
+        "/trade-review"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "position_detail_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/position/<trade_id>",
+      "routes": [
+        "/position/<trade_id>"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "market_map_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/market-map",
+      "routes": [
+        "/market-map"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_intelligence_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/intelligence",
+      "routes": [
+        "/admin/intelligence"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "positions_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/positions",
+      "routes": [
+        "/positions"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_product_monitoring_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/product-monitoring",
+      "routes": [
+        "/admin/product-monitoring"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "my_portfolio_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/my-portfolio",
+      "routes": [
+        "/my-portfolio"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "my_position_detail_page",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/my-positions/<position_id>",
+      "routes": [
+        "/my-positions/<position_id>"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "edit_my_position",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/my-positions/<position_id>/edit",
+      "routes": [
+        "/my-positions/<position_id>/edit"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "close_my_position",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/my-positions/<position_id>/close",
+      "routes": [
+        "/my-positions/<position_id>/close"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "my_positions_archived_page",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/my-positions/archived",
+      "routes": [
+        "/my-positions/archived"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "spotlight_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/spotlight",
+      "routes": [
+        "/spotlight"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "analyze_my_trades_page",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/my-positions/analyze",
+      "routes": [
+        "/my-positions/analyze"
+      ]
+    },
+    {
+      "category": "ob_private",
+      "decorator_count": 1,
+      "function_name": "simulation_dashboard",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/simulation",
+      "routes": [
+        "/simulation"
+      ]
+    },
+    {
+      "category": "live_broker",
+      "decorator_count": 1,
+      "function_name": "api_live_state",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/api/live-state",
+      "routes": [
+        "/api/live-state"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "proof_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/proof",
+      "routes": [
+        "/proof"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "research_overview",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/research",
+      "routes": [
+        "/research"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "analytics_overview",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/analytics-overview",
+      "routes": [
+        "/analytics-overview"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "analytics_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/analytics",
+      "routes": [
+        "/analytics"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "analytics_performance_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/analytics/performance",
+      "routes": [
+        "/analytics/performance"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 2,
+      "function_name": "strategy_behavior_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/analytics/strategy",
+      "routes": [
+        "/analytics/strategy",
+        "/strategy-behavior"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "my_plays_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/my-plays",
+      "routes": [
+        "/my-plays"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "add_my_play",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/my-plays/add",
+      "routes": [
+        "/my-plays/add"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "my_play_detail_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/my-plays/<play_id>",
+      "routes": [
+        "/my-plays/<play_id>"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "edit_my_play",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/my-plays/<play_id>/edit",
+      "routes": [
+        "/my-plays/<play_id>/edit"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "activate_my_play",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/my-plays/<play_id>/activate",
+      "routes": [
+        "/my-plays/<play_id>/activate"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "analytics_risk_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/analytics/risk",
+      "routes": [
+        "/analytics/risk"
+      ]
+    },
+    {
+      "category": "live_broker",
+      "decorator_count": 1,
+      "function_name": "live_activity_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/live-activity",
+      "routes": [
+        "/live-activity"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "equity_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/equity",
+      "routes": [
+        "/equity"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "reports_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/reports",
+      "routes": [
+        "/reports"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "bot_log_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/bot-log",
+      "routes": [
+        "/bot-log"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "trade_detail_page",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/trade/<trade_id>",
+      "routes": [
+        "/trade/<trade_id>"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "why_this_trade_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/why-this-trade",
+      "routes": [
+        "/why-this-trade"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "premium_analysis_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/premium-analysis",
+      "routes": [
+        "/premium-analysis"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_dashboard",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin",
+      "routes": [
+        "/admin"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "account_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/account",
+      "routes": [
+        "/account"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "my_portfolio_page__tower_endpoint_fix_2",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/my-portfolio",
+      "routes": [
+        "/my-portfolio"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "billing_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/billing",
+      "routes": [
+        "/billing"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "notifications_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/notifications",
+      "routes": [
+        "/notifications"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "upgrade_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/upgrade",
+      "routes": [
+        "/upgrade"
+      ]
+    },
+    {
+      "category": "other",
+      "decorator_count": 1,
+      "function_name": "set_theme",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/set-theme/<theme>",
+      "routes": [
+        "/set-theme/<theme>"
+      ]
+    },
+    {
+      "category": "public_safe",
+      "decorator_count": 1,
+      "function_name": "login_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/login",
+      "routes": [
+        "/login"
+      ]
+    },
+    {
+      "category": "public_safe",
+      "decorator_count": 1,
+      "function_name": "signup_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/signup",
+      "routes": [
+        "/signup"
+      ]
+    },
+    {
+      "category": "public_safe",
+      "decorator_count": 1,
+      "function_name": "logout_page",
+      "guarded": false,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": false,
+      "high_risk": false,
+      "needs_guard": false,
+      "primary_route": "/logout",
+      "routes": [
+        "/logout"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_preview_tier",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/preview-tier/<tier>",
+      "routes": [
+        "/admin/preview-tier/<tier>"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_clear_preview_tier",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/preview-tier/clear",
+      "routes": [
+        "/admin/preview-tier/clear"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_diagnostics_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/diagnostics",
+      "routes": [
+        "/admin/diagnostics"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_refresh_market_universe",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/refresh-market-universe",
+      "routes": [
+        "/admin/refresh-market-universe"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_refresh_news_cache",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/refresh-news-cache",
+      "routes": [
+        "/admin/refresh-news-cache"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_product_analytics_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/product-analytics",
+      "routes": [
+        "/admin/product-analytics"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "pack068_tower_locked_preview",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower-locked-preview",
+      "routes": [
+        "/tower-locked-preview"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "pack068b_polished_locked_preview",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/polished-locked-preview",
+      "routes": [
+        "/tower/polished-locked-preview"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "pack071_object_inbox_action_endpoint",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/security-command/object-inbox/action",
+      "routes": [
+        "/tower/security-command/object-inbox/action"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "pack072_object_inbox_action_endpoint_audited",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/security-command/object-inbox/action-audited",
+      "routes": [
+        "/tower/security-command/object-inbox/action-audited"
+      ]
+    },
+    {
+      "category": "ob_private",
+      "decorator_count": 1,
+      "function_name": "pack079_observatory_private_polished_lock",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/observatory-private",
+      "routes": [
+        "/observatory-private"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "tower_ob_guard_status_json_pack105",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/ob-guard-status.json",
+      "routes": [
+        "/tower/ob-guard-status.json"
+      ]
+    }
+  ],
+  "by_category": {
+    "admin_tower": 14,
+    "live_broker": 2,
+    "ob_private": 2,
+    "other": 38,
+    "public_safe": 3,
+    "symbol_signal": 1,
+    "trade_position": 6
+  },
+  "coverage_pct": 100,
+  "created_at": "2026-05-29T01:41:30.869942Z",
+  "guarded_by_category": {
+    "admin_tower": 14,
+    "live_broker": 2,
+    "ob_private": 2,
+    "symbol_signal": 1,
+    "trade_position": 6
+  },
+  "guarded_needed_count": 25,
+  "guarded_routes": [
+    {
+      "category": "symbol_signal",
+      "decorator_count": 2,
+      "function_name": "signal_symbol_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/signals/<symbol>",
+      "routes": [
+        "/signals/<symbol>",
+        "/symbol/<symbol>"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_intelligence_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/intelligence",
+      "routes": [
+        "/admin/intelligence"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_product_monitoring_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/product-monitoring",
+      "routes": [
+        "/admin/product-monitoring"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "my_position_detail_page",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/my-positions/<position_id>",
+      "routes": [
+        "/my-positions/<position_id>"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "edit_my_position",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/my-positions/<position_id>/edit",
+      "routes": [
+        "/my-positions/<position_id>/edit"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "close_my_position",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/my-positions/<position_id>/close",
+      "routes": [
+        "/my-positions/<position_id>/close"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "my_positions_archived_page",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/my-positions/archived",
+      "routes": [
+        "/my-positions/archived"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "analyze_my_trades_page",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/my-positions/analyze",
+      "routes": [
+        "/my-positions/analyze"
+      ]
+    },
+    {
+      "category": "ob_private",
+      "decorator_count": 1,
+      "function_name": "simulation_dashboard",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/simulation",
+      "routes": [
+        "/simulation"
+      ]
+    },
+    {
+      "category": "live_broker",
+      "decorator_count": 1,
+      "function_name": "api_live_state",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/api/live-state",
+      "routes": [
+        "/api/live-state"
+      ]
+    },
+    {
+      "category": "live_broker",
+      "decorator_count": 1,
+      "function_name": "live_activity_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/live-activity",
+      "routes": [
+        "/live-activity"
+      ]
+    },
+    {
+      "category": "trade_position",
+      "decorator_count": 1,
+      "function_name": "trade_detail_page",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/trade/<trade_id>",
+      "routes": [
+        "/trade/<trade_id>"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_dashboard",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin",
+      "routes": [
+        "/admin"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_preview_tier",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/preview-tier/<tier>",
+      "routes": [
+        "/admin/preview-tier/<tier>"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_clear_preview_tier",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/preview-tier/clear",
+      "routes": [
+        "/admin/preview-tier/clear"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_diagnostics_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/diagnostics",
+      "routes": [
+        "/admin/diagnostics"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_refresh_market_universe",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/refresh-market-universe",
+      "routes": [
+        "/admin/refresh-market-universe"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_refresh_news_cache",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/refresh-news-cache",
+      "routes": [
+        "/admin/refresh-news-cache"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "admin_product_analytics_page",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/admin/product-analytics",
+      "routes": [
+        "/admin/product-analytics"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "pack068_tower_locked_preview",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower-locked-preview",
+      "routes": [
+        "/tower-locked-preview"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "pack068b_polished_locked_preview",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/polished-locked-preview",
+      "routes": [
+        "/tower/polished-locked-preview"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "pack071_object_inbox_action_endpoint",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/security-command/object-inbox/action",
+      "routes": [
+        "/tower/security-command/object-inbox/action"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "pack072_object_inbox_action_endpoint_audited",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/security-command/object-inbox/action-audited",
+      "routes": [
+        "/tower/security-command/object-inbox/action-audited"
+      ]
+    },
+    {
+      "category": "ob_private",
+      "decorator_count": 1,
+      "function_name": "pack079_observatory_private_polished_lock",
+      "guarded": true,
+      "has_pack104_guard": true,
+      "has_tower_guard_call": true,
+      "high_risk": false,
+      "needs_guard": true,
+      "primary_route": "/observatory-private",
+      "routes": [
+        "/observatory-private"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "tower_ob_guard_status_json_pack105",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/ob-guard-status.json",
+      "routes": [
+        "/tower/ob-guard-status.json"
+      ]
+    }
+  ],
+  "helper_installed": true,
+  "human_reason": "OB route coverage report generated from real web/app.py routes.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "needs_guard_count": 25,
+  "no_secret_leakage": true,
+  "ok": true,
+  "pack": "105",
+  "public_route_count": 3,
+  "readiness_label": "OB route guard coverage visible",
+  "readiness_score": 100,
+  "recommended_next_actions": [
+    "Patch high-risk unguarded routes first.",
+    "Patch remaining protected OB routes in small controlled batches.",
+    "Keep public routes public unless private data appears."
+  ],
+  "report_fingerprint": "4d952f56f96f2b9c977fa174fbba831cd4701b063ab8aba02772c23bbbb22a33",
+  "soulaana_translation": "Soulaana: Route board is up. We can see which OB doors have Tower guards.",
+  "total_route_functions": 66,
+  "unguarded_high_risk_count": 0,
+  "unguarded_high_risk_routes": [],
+  "unguarded_needed_count": 0,
+  "unguarded_needed_routes": []
+}

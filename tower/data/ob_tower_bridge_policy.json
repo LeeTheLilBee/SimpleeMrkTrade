@@ -1,0 +1,64 @@
+{
+  "adapter_id": "ob_tower_bridge_adapter",
+  "app_id": "observatory",
+  "beta_allowed_modes": [
+    "survey",
+    "paper"
+  ],
+  "blocked_without_step_up_actions": [
+    "export",
+    "download",
+    "reveal_sensitive",
+    "live_mode_enable",
+    "broker_action",
+    "automated_mode_enable",
+    "admin_override"
+  ],
+  "default_decision": "deny",
+  "human_reason": "OB must request Tower clearance before protected app, route, mode, object, export, reveal, live, broker, and admin actions.",
+  "live_locked_until_compliance": true,
+  "never_public_actions": [
+    "broker_action",
+    "live_mode_enable",
+    "automated_mode_enable",
+    "admin_override",
+    "raw_data_view",
+    "secret_status"
+  ],
+  "ob_must_request_clearance_before_protected_load": true,
+  "owner_allowed_modes": [
+    "survey",
+    "paper",
+    "live_manual",
+    "live_hybrid",
+    "live_automated"
+  ],
+  "pack": "101",
+  "policy_fingerprint": "f21dd34b352d6fcc332dab991198427b1431fdc8fdf4b115725b61f604d97af2",
+  "public_safe_routes": [
+    "/signals-spotlight",
+    "/public/signals-spotlight",
+    "/health"
+  ],
+  "requires_archive_handoff_for_actions": [
+    "export",
+    "download",
+    "trade_packet",
+    "proof_packet",
+    "admin_override",
+    "live_action"
+  ],
+  "requires_receipts_for_actions": [
+    "export",
+    "download",
+    "reveal_sensitive",
+    "mode_access_grant",
+    "live_mode_enable",
+    "broker_action",
+    "admin_override",
+    "archive_handoff"
+  ],
+  "soulaana_translation": "Soulaana: OB knocks. Tower decides. No Tower clearance, no Observatory hallway.",
+  "tower_is_outer_control_center": true,
+  "updated_at": "2026-05-29T00:55:20.412215Z"
+}

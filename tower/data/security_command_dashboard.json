@@ -1,427 +1,4299 @@
 {
-  "bytes": 59859,
-  "json_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_dashboard.json",
-  "ob_object_security_inbox_by_object_type": {
-    "analysis_record": 2,
-    "export": 343,
-    "mystery_drawer": 2,
-    "symbol": 83,
-    "unknown_drawer_058": 1,
-    "unknown_drawer_060": 83,
-    "unknown_drawer_061": 1,
-    "unknown_drawer_062": 79,
-    "unknown_drawer_071": 1
-  },
-  "ob_object_security_inbox_by_reason": {
-    "manual_test_object_denied": 2,
-    "ob_object_unmapped_default_deny": 167,
-    "parent_route_clearance_failed": 426
-  },
-  "ob_object_security_inbox_by_severity": {
-    "high": 167,
-    "medium": 428
-  },
-  "ob_object_security_inbox_by_status": {
-    "ignored": 81,
-    "open": 378,
-    "resolved": 136
-  },
-  "ob_object_security_inbox_ok": true,
-  "ob_object_security_inbox_open": 378,
-  "ob_object_security_inbox_recent": [
+  "attention_lanes": [
     {
-      "action": "view",
-      "allowed": false,
-      "created_at": "2026-05-28T20:06:16.512191Z",
-      "event_type": "ob_object_security_review",
-      "history": [],
-      "inbox_item_id": "objinbox_6rcAypHw_JkRvlWsclWfm7hs",
-      "object_id": "AAPL",
-      "object_kind": "symbol",
-      "object_type": "symbol",
-      "ok": true,
-      "owner_action": "Review blocked object access for symbol:AAPL; the parent route failed first.",
-      "owner_notes": [],
-      "reason_code": "parent_route_clearance_failed",
-      "risk_score": 70,
-      "risk_state": "restricted",
-      "route_key": "symbol_detail",
-      "routing": {
-        "queue": "ob_object_security_inbox",
-        "requires_step_up_review": false,
-        "surface": "watchlist"
-      },
-      "severity": "medium",
-      "soulaana_translation": "Soulaana: symbol:AAPL could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_fK4hZqeIafkod8fFDWdao0Z1",
-      "source_fingerprint": "67ca5750d45b52b308b8212489cc",
-      "status": "open",
-      "surface": "object_security_inbox",
-      "title": "OB object review: parent_route_clearance_failed at symbol:AAPL",
-      "updated_at": "",
-      "user_id": "beta_001"
+      "next": "Review access-risk group first.",
+      "plain": "Soulaana: Review risky sessions, new devices, failed attempts, and anything that smells like forced entry.",
+      "priority": "Priority 1",
+      "signal": "14 critical / 49 high",
+      "title": "Access risk"
     },
     {
-      "action": "download",
-      "allowed": false,
-      "created_at": "2026-05-28T20:06:16.760342Z",
-      "event_type": "ob_object_security_review",
-      "history": [],
-      "inbox_item_id": "objinbox_M66rMhLpSlbZU57edFPKhdwk",
-      "object_id": "export_060",
-      "object_kind": "export",
-      "object_type": "export",
-      "ok": true,
-      "owner_action": "Review attempted export/download export_060. Confirm whether this was authorized.",
-      "owner_notes": [],
-      "reason_code": "parent_route_clearance_failed",
-      "risk_score": 70,
-      "risk_state": "restricted",
-      "route_key": "export",
-      "routing": {
-        "queue": "ob_object_security_inbox",
-        "requires_step_up_review": false,
-        "surface": "watchlist"
-      },
-      "severity": "medium",
-      "soulaana_translation": "Soulaana: export:export_060 could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_gkQByZmQrL1-9YcI-kBKcuRw",
-      "source_fingerprint": "f42eecdc467ab68fa0297c407dc5",
-      "status": "open",
-      "surface": "object_security_inbox",
-      "title": "OB object review: parent_route_clearance_failed at export:export_060",
-      "updated_at": "",
-      "user_id": "beta_001"
+      "next": "Check export requests after access risk.",
+      "plain": "Soulaana: Exports are how information leaves the building. Approve only what belongs, redact what is too sensitive, and deny anything unclear.",
+      "priority": "Priority 2",
+      "signal": "4 waiting",
+      "title": "Protected exports"
     },
     {
-      "action": "view",
-      "allowed": false,
-      "created_at": "2026-05-28T20:06:16.898838Z",
-      "event_type": "ob_object_security_review",
-      "history": [],
-      "inbox_item_id": "objinbox_oYyaMDUOxctCs48pxf_U2VeZ",
-      "object_id": "secret_060",
-      "object_kind": "unknown_drawer_060",
-      "object_type": "unknown_drawer_060",
-      "ok": true,
-      "owner_action": "Review whether unknown_drawer_060:secret_060 should be mapped into the object guard policy.",
-      "owner_notes": [],
-      "reason_code": "ob_object_unmapped_default_deny",
-      "risk_score": 65,
-      "risk_state": "restricted",
-      "route_key": "",
-      "routing": {
-        "queue": "ob_object_security_inbox",
-        "requires_step_up_review": true,
-        "surface": "watchlist"
-      },
-      "severity": "high",
-      "soulaana_translation": "Soulaana: unknown_drawer_060:secret_060 is not on the drawer map. I kept it locked and filed the receipt.",
-      "source_capsule_id": "objcaps_V-nsuQiZwlxgTWht6FULajok",
-      "source_fingerprint": "cb76acac0f8dd895182c4ead9f8d",
-      "status": "open",
-      "surface": "object_security_inbox",
-      "title": "OB object review: ob_object_unmapped_default_deny at unknown_drawer_060:secret_060",
-      "updated_at": "",
-      "user_id": "owner_solice"
+      "next": "Review admin authority changes.",
+      "plain": "Soulaana: Admin changes decide who can touch doors later. Match actor, target, permission, and reason.",
+      "priority": "Priority 3",
+      "signal": "4 step-up",
+      "title": "Admin keys"
     },
     {
-      "action": "download",
-      "allowed": false,
-      "created_at": "2026-05-28T20:06:17.348397Z",
-      "event_type": "ob_object_security_review",
-      "history": [
-        {
-          "action": "note_added",
-          "actor_user_id": "owner_solice",
-          "note": "Pack 062 smoke: note before review.",
-          "timestamp": "2026-05-28T20:06:17.392953Z"
-        },
-        {
-          "action": "status:open->reviewing",
-          "actor_user_id": "owner_solice",
-          "note": "Pack 062 smoke: reviewing object inbox workflow.",
-          "resolution_reason": "",
-          "timestamp": "2026-05-28T20:06:17.426333Z"
-        },
-        {
-          "action": "status:reviewing->resolved",
-          "actor_user_id": "owner_solice",
-          "note": "Pack 062 smoke: resolved object inbox workflow.",
-          "resolution_reason": "smoke_test_expected_block",
-          "timestamp": "2026-05-28T20:06:17.459438Z"
-        }
-      ],
-      "inbox_item_id": "objinbox_3xbp1YzZbzJYP4ZGM8JC7hji",
-      "object_id": "export_062_workflow",
-      "object_kind": "export",
-      "object_type": "export",
-      "ok": true,
-      "owner_action": "Review attempted export/download export_062_workflow. Confirm whether this was authorized.",
-      "owner_notes": [
-        {
-          "actor_user_id": "owner_solice",
-          "note": "Pack 062 smoke: note before review.",
-          "timestamp": "2026-05-28T20:06:17.392953Z"
-        },
-        {
-          "actor_user_id": "owner_solice",
-          "note": "Pack 062 smoke: reviewing object inbox workflow.",
-          "timestamp": "2026-05-28T20:06:17.426333Z"
-        },
-        {
-          "actor_user_id": "owner_solice",
-          "note": "Pack 062 smoke: resolved object inbox workflow.",
-          "timestamp": "2026-05-28T20:06:17.459438Z"
-        }
-      ],
-      "reason_code": "parent_route_clearance_failed",
-      "resolution_reason": "smoke_test_expected_block",
-      "resolved_at": "2026-05-28T20:06:17.459438Z",
-      "resolved_by": "owner_solice",
-      "review_started_at": "2026-05-28T20:06:17.426333Z",
-      "review_started_by": "owner_solice",
-      "risk_score": 70,
-      "risk_state": "restricted",
-      "route_key": "export",
-      "routing": {
-        "queue": "ob_object_security_inbox",
-        "requires_step_up_review": false,
-        "surface": "resolved_archive"
-      },
-      "severity": "medium",
-      "soulaana_translation": "Soulaana: export:export_062_workflow could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_zlDtZTFCEfuc-yHUIhqKiCVc",
-      "source_fingerprint": "a839008e5b63a6d8988566abd3ef",
-      "status": "resolved",
-      "surface": "object_security_inbox",
-      "title": "OB object review: parent_route_clearance_failed at export:export_062_workflow",
-      "updated_at": "2026-05-28T20:06:17.459438Z",
-      "updated_by": "owner_solice",
-      "user_id": "beta_001"
+      "next": "Review open door access issues before deeper archive work.",
+      "plain": "Soulaana: These are the door swipes that rose above quiet receipts and became owner-review items. Start here if the count is not zero.",
+      "priority": "Priority 4",
+      "signal": "0 open",
+      "title": "Door access inbox"
     },
     {
-      "action": "view",
-      "allowed": false,
-      "created_at": "2026-05-28T20:06:17.599518Z",
-      "event_type": "ob_object_security_review",
-      "history": [
-        {
-          "action": "status:open->ignored",
-          "actor_user_id": "owner_solice",
-          "note": "Pack 062 smoke: ignored test-generated unmapped object.",
-          "resolution_reason": "smoke_test_noise",
-          "timestamp": "2026-05-28T20:06:17.643761Z"
-        }
-      ],
-      "ignored_at": "2026-05-28T20:06:17.643761Z",
-      "ignored_by": "owner_solice",
-      "inbox_item_id": "objinbox_vctdyW7K8u4AfJx-xfF5BwGy",
-      "object_id": "secret_062_workflow",
-      "object_kind": "unknown_drawer_062",
-      "object_type": "unknown_drawer_062",
-      "ok": true,
-      "owner_action": "Review whether unknown_drawer_062:secret_062_workflow should be mapped into the object guard policy.",
-      "owner_notes": [
-        {
-          "actor_user_id": "owner_solice",
-          "note": "Pack 062 smoke: ignored test-generated unmapped object.",
-          "timestamp": "2026-05-28T20:06:17.643761Z"
-        }
-      ],
-      "reason_code": "ob_object_unmapped_default_deny",
-      "resolution_reason": "smoke_test_noise",
-      "risk_score": 65,
-      "risk_state": "restricted",
-      "route_key": "",
-      "routing": {
-        "queue": "ob_object_security_inbox",
-        "requires_step_up_review": true,
-        "surface": "ignored_archive"
-      },
-      "severity": "high",
-      "soulaana_translation": "Soulaana: unknown_drawer_062:secret_062_workflow is not on the drawer map. I kept it locked and filed the receipt.",
-      "source_capsule_id": "objcaps_Go4Y03U82-9e6Uas1z4gmsMK",
-      "source_fingerprint": "727ff69eef6dd05eb876d438c775",
-      "status": "ignored",
-      "surface": "object_security_inbox",
-      "title": "OB object review: ob_object_unmapped_default_deny at unknown_drawer_062:secret_062_workflow",
-      "updated_at": "2026-05-28T20:06:17.643761Z",
-      "updated_by": "owner_solice",
-      "user_id": "owner_solice"
+      "next": "Review repeated denies or wrong-door attempts first.",
+      "plain": "Soulaana: Every Tower door swipe leaves a receipt now. Allowed, denied, wrong-door, and missing-key attempts are visible without exposing raw keycards.",
+      "priority": "Priority 5",
+      "signal": "53 denied / 54 allowed",
+      "title": "Door-swipe receipts"
     },
     {
-      "action": "download",
-      "allowed": false,
-      "created_at": "2026-05-28T20:06:17.907782Z",
-      "event_type": "ob_object_security_review",
-      "history": [
-        {
-          "action": "note_added",
-          "actor_user_id": "owner_solice",
-          "note": "Archive Vault handoff queued: archivehandoff_KMjVyfQ6n6d0Ry9IQHoR6z-S",
-          "timestamp": "2026-05-28T20:06:17.974772Z"
-        }
-      ],
-      "inbox_item_id": "objinbox_zWDFM-x1Khah2o4YgKgzWNyP",
-      "object_id": "export_065",
-      "object_kind": "export",
-      "object_type": "export",
-      "ok": true,
-      "owner_action": "Review attempted export/download export_065. Confirm whether this was authorized.",
-      "owner_notes": [
-        {
-          "actor_user_id": "owner_solice",
-          "note": "Archive Vault handoff queued: archivehandoff_KMjVyfQ6n6d0Ry9IQHoR6z-S",
-          "timestamp": "2026-05-28T20:06:17.974772Z"
-        }
-      ],
-      "reason_code": "parent_route_clearance_failed",
-      "risk_score": 70,
-      "risk_state": "restricted",
-      "route_key": "export",
-      "routing": {
-        "queue": "ob_object_security_inbox",
-        "requires_step_up_review": false,
-        "surface": "watchlist"
-      },
-      "severity": "medium",
-      "soulaana_translation": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_Jgetp8ivnCT-z0pYH6DEoGrT",
-      "source_fingerprint": "0aa46e7f83dc0791fff14dfc24bc",
-      "status": "open",
-      "surface": "object_security_inbox",
-      "title": "OB object review: parent_route_clearance_failed at export:export_065",
-      "updated_at": "2026-05-28T20:06:17.974772Z",
-      "updated_by": "owner_solice",
-      "user_id": "beta_001"
-    },
-    {
-      "action": "download",
-      "allowed": false,
-      "created_at": "2026-05-28T20:06:18.136945Z",
-      "event_type": "ob_object_security_review",
-      "history": [
-        {
-          "action": "note_added",
-          "actor_user_id": "owner_solice",
-          "note": "Pack 073 smoke: audited endpoint note.",
-          "timestamp": "2026-05-28T20:06:18.187307Z"
-        },
-        {
-          "action": "status:open->reviewing",
-          "actor_user_id": "owner_solice",
-          "note": "Pack 073 smoke: audited endpoint reviewing.",
-          "resolution_reason": "",
-          "timestamp": "2026-05-28T20:06:18.247431Z"
-        },
-        {
-          "action": "status:reviewing->resolved",
-          "actor_user_id": "owner_solice",
-          "note": "Pack 073 smoke: audited endpoint resolved.",
-          "resolution_reason": "pack073_smoke_resolved",
-          "timestamp": "2026-05-28T20:06:18.303900Z"
-        }
-      ],
-      "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
-      "object_id": "export_073_endpoint",
-      "object_kind": "export",
-      "object_type": "export",
-      "ok": true,
-      "owner_action": "Review attempted export/download export_073_endpoint. Confirm whether this was authorized.",
-      "owner_notes": [
-        {
-          "actor_user_id": "owner_solice",
-          "note": "Pack 073 smoke: audited endpoint note.",
-          "timestamp": "2026-05-28T20:06:18.187307Z"
-        },
-        {
-          "actor_user_id": "owner_solice",
-          "note": "Pack 073 smoke: audited endpoint reviewing.",
-          "timestamp": "2026-05-28T20:06:18.247431Z"
-        },
-        {
-          "actor_user_id": "owner_solice",
-          "note": "Pack 073 smoke: audited endpoint resolved.",
-          "timestamp": "2026-05-28T20:06:18.303900Z"
-        }
-      ],
-      "reason_code": "parent_route_clearance_failed",
-      "resolution_reason": "pack073_smoke_resolved",
-      "resolved_at": "2026-05-28T20:06:18.303900Z",
-      "resolved_by": "owner_solice",
-      "review_started_at": "2026-05-28T20:06:18.247431Z",
-      "review_started_by": "owner_solice",
-      "risk_score": 70,
-      "risk_state": "restricted",
-      "route_key": "export",
-      "routing": {
-        "queue": "ob_object_security_inbox",
-        "requires_step_up_review": false,
-        "surface": "resolved_archive"
-      },
-      "severity": "medium",
-      "soulaana_translation": "Soulaana: export:export_073_endpoint could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_SgoV83sgq3BoPSh1RuZIlqmd",
-      "source_fingerprint": "22564d1975e1ce7fe8b33a82df0c",
-      "status": "resolved",
-      "surface": "object_security_inbox",
-      "title": "OB object review: parent_route_clearance_failed at export:export_073_endpoint",
-      "updated_at": "2026-05-28T20:06:18.303900Z",
-      "updated_by": "owner_solice",
-      "user_id": "beta_001"
-    },
-    {
-      "action": "download",
-      "allowed": false,
-      "created_at": "2026-05-28T20:06:18.504167Z",
-      "event_type": "ob_object_security_review",
-      "history": [
-        {
-          "action": "note_added",
-          "actor_user_id": "owner_solice",
-          "note": "Pack 078 smoke: audited visible-form endpoint proof.",
-          "timestamp": "2026-05-28T20:06:18.550553Z"
-        }
-      ],
-      "inbox_item_id": "objinbox_39jBm5ttUKmDRzwkg-UYXouo",
-      "object_id": "export_078_panel",
-      "object_kind": "export",
-      "object_type": "export",
-      "ok": true,
-      "owner_action": "Review attempted export/download export_078_panel. Confirm whether this was authorized.",
-      "owner_notes": [
-        {
-          "actor_user_id": "owner_solice",
-          "note": "Pack 078 smoke: audited visible-form endpoint proof.",
-          "timestamp": "2026-05-28T20:06:18.550553Z"
-        }
-      ],
-      "reason_code": "parent_route_clearance_failed",
-      "risk_score": 70,
-      "risk_state": "restricted",
-      "route_key": "export",
-      "routing": {
-        "queue": "ob_object_security_inbox",
-        "requires_step_up_review": false,
-        "surface": "watchlist"
-      },
-      "severity": "medium",
-      "soulaana_translation": "Soulaana: export:export_078_panel could not open because the hallway failed first. Receipt filed.",
-      "source_capsule_id": "objcaps_fTAbFUtS2fVWdaCPG_Gedvp6",
-      "source_fingerprint": "f3e7b17e1098988e7c1ede9c0ca1",
-      "status": "open",
-      "surface": "object_security_inbox",
-      "title": "OB object review: parent_route_clearance_failed at export:export_078_panel",
-      "updated_at": "2026-05-28T20:06:18.550553Z",
-      "updated_by": "owner_solice",
-      "user_id": "beta_001"
+      "next": "Open only when you need the story behind a decision.",
+      "plain": "Soulaana: Evidence capsules preserve the why. They are the receipts.",
+      "priority": "Priority 5",
+      "signal": "22 open",
+      "title": "Evidence capsules"
     }
   ],
-  "ob_object_security_inbox_total": 595,
+  "command_stats": [
+    {
+      "label": "Owner attention",
+      "note": "urgent groups",
+      "value": "7"
+    },
+    {
+      "label": "Security inbox",
+      "note": "open signals",
+      "value": "77"
+    },
+    {
+      "label": "Access swipes",
+      "note": "denied receipts",
+      "value": "53"
+    },
+    {
+      "label": "Door inbox",
+      "note": "review items",
+      "value": "0"
+    },
+    {
+      "label": "Evidence chain",
+      "note": "audit integrity",
+      "value": "Clean"
+    },
+    {
+      "label": "Step-up gate",
+      "note": "pending keys",
+      "value": "14"
+    }
+  ],
+  "door_security_inbox": {
+    "by_severity": {
+      "medium": 26
+    },
+    "open": 0,
+    "recent": [
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-28T23:08:06.526995Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:07.526233Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:07.530210Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_oAZPMbOkOXF3uwioNW6fAQ",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:07.526205Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:07.530183Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-28T23:08:07.530196Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-28T23:08:07.526218Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_77haUa7sWkMH64QajtFkU_Cy",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-28T23:08:07.530144Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-28T23:08:08.513430Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:09.288645Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:09.292967Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_JExrcbtV7Vh_sLEDr7wWeQ",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:09.288618Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:09.292937Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-28T23:08:09.292950Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-28T23:08:09.288632Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_hUaz6ZcXtpQnOe_Qtn44WESN",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-28T23:08:09.292897Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-29T00:34:51.560648Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:52.355050Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:52.359626Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_m6yLX4xjBoLwrZXvy0hlTQ",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:52.355022Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:52.359594Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-29T00:34:52.359608Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-29T00:34:52.355035Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_xbhxx__RUJ59HXT8YIHRWt9n",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-29T00:34:52.359555Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-29T00:34:53.532370Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:54.467322Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:54.473974Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_TKWR48qsdtwNHdVKS5tpbQ",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:54.467297Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:54.473937Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-29T00:34:54.473950Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-29T00:34:54.467308Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_y90ApptC6wIK65_m1wm431D4",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-29T00:34:54.473889Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-29T00:54:02.468038Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:03.213271Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:03.217957Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_uVWd4J8DSkTtIUirqfgngg",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:03.213245Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:03.217929Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-29T00:54:03.217942Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-29T00:54:03.213257Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_G9mcfpa8FjGLR21hN0KerS_f",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-29T00:54:03.217891Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-29T00:54:04.247304Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:04.971292Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:04.976897Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_WgaQrkw3ShjDx3kn9jI4oQ",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:04.971263Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:04.976865Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-29T00:54:04.976879Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-29T00:54:04.971276Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_xuMbbnB5r6osGLIab8F4BTex",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-29T00:54:04.976793Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      }
+    ],
+    "total": 26
+  },
+  "generated_at": "2026-05-29T00:54:14.195167Z",
+  "health": {
+    "factors": [
+      {
+        "label": "Audit chain",
+        "value": "Clean"
+      },
+      {
+        "label": "Urgent groups",
+        "value": "7"
+      },
+      {
+        "label": "Open inbox",
+        "value": "77"
+      }
+    ],
+    "label": "Critical",
+    "posture": "Owner review should happen now.",
+    "score": 36,
+    "soulaana": "Soulaana: Start with access risk, then exports, then admin keys. Leave Live Automated sealed unless every gate is clean."
+  },
   "ok": true,
-  "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_dashboard.html",
-  "status": "saved",
+  "open_inbox": 77,
+  "primary_owner_tasks": 7,
+  "state": "attention_required",
+  "status": {
+    "account_type_counts": {
+      "beta_user": 2,
+      "owner": 1
+    },
+    "admin_action_approved": 1,
+    "admin_action_executed": 1,
+    "admin_action_revoked": 1,
+    "admin_action_step_up_required": 4,
+    "admin_action_total": 8,
+    "apps_seen_in_audit": {
+      "observatory": 8
+    },
+    "archive_vault_handoff_by_severity": {
+      "medium": 76,
+      "unknown": 1
+    },
+    "archive_vault_handoff_by_source_type": {
+      "manual_test": 1,
+      "ob_object_security_inbox": 74,
+      "pack074_test": 1,
+      "unknown": 1
+    },
+    "archive_vault_handoff_by_status": {
+      "queued": 77
+    },
+    "archive_vault_handoff_human_reason": "Archive Vault handoff summary loaded.",
+    "archive_vault_handoff_ok": true,
+    "archive_vault_handoff_queued": 77,
+    "archive_vault_handoff_recent": [
+      {
+        "created_at": "2026-05-28T20:06:00.592665Z",
+        "destination": "Archive Vault",
+        "event_type": "archive_vault_handoff_request",
+        "evidence_bundle_stub": {
+          "bundle_type": "tower_security_event",
+          "chain": [
+            "Tower",
+            "OB privacy wall",
+            "object audit capsule",
+            "object security inbox",
+            "Archive Vault handoff stub"
+          ],
+          "plain": "Archive Vault app is not wired yet. This record is a safe queued handoff stub.",
+          "ready_for_archive_vault": false
+        },
+        "handoff_id": "archivehandoff_ke1f8YIJ4HOWP_gyaG-_sH0c",
+        "human_reason": "Archive Vault handoff stub prepared.",
+        "ok": true,
+        "owner_note": "Pack 065 final checkpoint: queue object security event for Archive Vault.",
+        "related_object": {
+          "action": "download",
+          "object_id": "export_065",
+          "object_type": "export",
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.",
+        "source_id": "objinbox_AFjx-vMzpPn7Xa9T5bEiDWgT",
+        "source_payload": {
+          "action": "download",
+          "allowed": false,
+          "created_at": "2026-05-28T20:06:00.519347Z",
+          "event_type": "ob_object_security_review",
+          "history": [],
+          "inbox_item_id": "objinbox_AFjx-vMzpPn7Xa9T5bEiDWgT",
+          "object_id": "export_065",
+          "object_kind": "export",
+          "object_type": "export",
+          "ok": true,
+          "owner_action": "Review attempted export/download export_065. Confirm whether this was authorized.",
+          "owner_notes": [],
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export",
+          "routing": {
+            "queue": "ob_object_security_inbox",
+            "requires_step_up_review": false,
+            "surface": "watchlist"
+          },
+          "severity": "medium",
+          "soulaana_translation": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+          "source_capsule_id": "objcaps_wwqJvg_918jIJZ78Owsw18o3",
+          "source_fingerprint": "0aa46e7f83dc0791fff14dfc24bc",
+          "status": "open",
+          "surface": "object_security_inbox",
+          "title": "OB object review: parent_route_clearance_failed at export:export_065",
+          "updated_at": "",
+          "user_id": "beta_001"
+        },
+        "source_type": "ob_object_security_inbox",
+        "status": "queued",
+        "summary": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+        "title": "Object security event: export:export_065",
+        "user_id": "owner_solice"
+      },
+      {
+        "created_at": "2026-05-28T20:06:03.798206Z",
+        "destination": "Archive Vault",
+        "event_type": "archive_vault_handoff_request",
+        "evidence_bundle_stub": {
+          "bundle_type": "tower_security_event",
+          "chain": [
+            "Tower",
+            "OB privacy wall",
+            "object audit capsule",
+            "object security inbox",
+            "Archive Vault handoff stub"
+          ],
+          "plain": "Archive Vault app is not wired yet. This record is a safe queued handoff stub.",
+          "ready_for_archive_vault": false
+        },
+        "handoff_id": "archivehandoff_f2gH0AViiJS-f-ltcsdpcQ5E",
+        "human_reason": "Archive Vault handoff stub prepared.",
+        "ok": true,
+        "owner_note": "Pack 065 final checkpoint: queue object security event for Archive Vault.",
+        "related_object": {
+          "action": "download",
+          "object_id": "export_065",
+          "object_type": "export",
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.",
+        "source_id": "objinbox_0xOT2_7RdbWPNHyf6KpBOqk2",
+        "source_payload": {
+          "action": "download",
+          "allowed": false,
+          "created_at": "2026-05-28T20:06:03.756581Z",
+          "event_type": "ob_object_security_review",
+          "history": [],
+          "inbox_item_id": "objinbox_0xOT2_7RdbWPNHyf6KpBOqk2",
+          "object_id": "export_065",
+          "object_kind": "export",
+          "object_type": "export",
+          "ok": true,
+          "owner_action": "Review attempted export/download export_065. Confirm whether this was authorized.",
+          "owner_notes": [],
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export",
+          "routing": {
+            "queue": "ob_object_security_inbox",
+            "requires_step_up_review": false,
+            "surface": "watchlist"
+          },
+          "severity": "medium",
+          "soulaana_translation": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+          "source_capsule_id": "objcaps_GeQ7_29NWG_a3bq7QjL4IG_w",
+          "source_fingerprint": "0aa46e7f83dc0791fff14dfc24bc",
+          "status": "open",
+          "surface": "object_security_inbox",
+          "title": "OB object review: parent_route_clearance_failed at export:export_065",
+          "updated_at": "",
+          "user_id": "beta_001"
+        },
+        "source_type": "ob_object_security_inbox",
+        "status": "queued",
+        "summary": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+        "title": "Object security event: export:export_065",
+        "user_id": "owner_solice"
+      },
+      {
+        "created_at": "2026-05-28T20:06:06.348819Z",
+        "destination": "Archive Vault",
+        "event_type": "archive_vault_handoff_request",
+        "evidence_bundle_stub": {
+          "bundle_type": "tower_security_event",
+          "chain": [
+            "Tower",
+            "OB privacy wall",
+            "object audit capsule",
+            "object security inbox",
+            "Archive Vault handoff stub"
+          ],
+          "plain": "Archive Vault app is not wired yet. This record is a safe queued handoff stub.",
+          "ready_for_archive_vault": false
+        },
+        "handoff_id": "archivehandoff_ryiLz6Hssx06TPrakSH5tzZW",
+        "human_reason": "Archive Vault handoff stub prepared.",
+        "ok": true,
+        "owner_note": "Pack 065 final checkpoint: queue object security event for Archive Vault.",
+        "related_object": {
+          "action": "download",
+          "object_id": "export_065",
+          "object_type": "export",
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.",
+        "source_id": "objinbox_UCg882f7ztiuaazDvr4Rzd_d",
+        "source_payload": {
+          "action": "download",
+          "allowed": false,
+          "created_at": "2026-05-28T20:06:06.273992Z",
+          "event_type": "ob_object_security_review",
+          "history": [],
+          "inbox_item_id": "objinbox_UCg882f7ztiuaazDvr4Rzd_d",
+          "object_id": "export_065",
+          "object_kind": "export",
+          "object_type": "export",
+          "ok": true,
+          "owner_action": "Review attempted export/download export_065. Confirm whether this was authorized.",
+          "owner_notes": [],
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export",
+          "routing": {
+            "queue": "ob_object_security_inbox",
+            "requires_step_up_review": false,
+            "surface": "watchlist"
+          },
+          "severity": "medium",
+          "soulaana_translation": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+          "source_capsule_id": "objcaps_uCVmEeU5cd6I9_b1ExQsobTM",
+          "source_fingerprint": "0aa46e7f83dc0791fff14dfc24bc",
+          "status": "open",
+          "surface": "object_security_inbox",
+          "title": "OB object review: parent_route_clearance_failed at export:export_065",
+          "updated_at": "",
+          "user_id": "beta_001"
+        },
+        "source_type": "ob_object_security_inbox",
+        "status": "queued",
+        "summary": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+        "title": "Object security event: export:export_065",
+        "user_id": "owner_solice"
+      },
+      {
+        "created_at": "2026-05-28T20:06:10.125919Z",
+        "destination": "Archive Vault",
+        "event_type": "archive_vault_handoff_request",
+        "evidence_bundle_stub": {
+          "bundle_type": "tower_security_event",
+          "chain": [
+            "Tower",
+            "OB privacy wall",
+            "object audit capsule",
+            "object security inbox",
+            "Archive Vault handoff stub"
+          ],
+          "plain": "Archive Vault app is not wired yet. This record is a safe queued handoff stub.",
+          "ready_for_archive_vault": false
+        },
+        "handoff_id": "archivehandoff_iO4pMsGYGXeJG8-OHz_Eor-5",
+        "human_reason": "Archive Vault handoff stub prepared.",
+        "ok": true,
+        "owner_note": "Pack 065 final checkpoint: queue object security event for Archive Vault.",
+        "related_object": {
+          "action": "download",
+          "object_id": "export_065",
+          "object_type": "export",
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.",
+        "source_id": "objinbox_RsWly-X7nlVgj7N79Pf8Oiek",
+        "source_payload": {
+          "action": "download",
+          "allowed": false,
+          "created_at": "2026-05-28T20:06:10.083264Z",
+          "event_type": "ob_object_security_review",
+          "history": [],
+          "inbox_item_id": "objinbox_RsWly-X7nlVgj7N79Pf8Oiek",
+          "object_id": "export_065",
+          "object_kind": "export",
+          "object_type": "export",
+          "ok": true,
+          "owner_action": "Review attempted export/download export_065. Confirm whether this was authorized.",
+          "owner_notes": [],
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export",
+          "routing": {
+            "queue": "ob_object_security_inbox",
+            "requires_step_up_review": false,
+            "surface": "watchlist"
+          },
+          "severity": "medium",
+          "soulaana_translation": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+          "source_capsule_id": "objcaps_ajVR5CkV7JuhB5BYzs08Z7TN",
+          "source_fingerprint": "0aa46e7f83dc0791fff14dfc24bc",
+          "status": "open",
+          "surface": "object_security_inbox",
+          "title": "OB object review: parent_route_clearance_failed at export:export_065",
+          "updated_at": "",
+          "user_id": "beta_001"
+        },
+        "source_type": "ob_object_security_inbox",
+        "status": "queued",
+        "summary": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+        "title": "Object security event: export:export_065",
+        "user_id": "owner_solice"
+      },
+      {
+        "created_at": "2026-05-28T20:06:12.664943Z",
+        "destination": "Archive Vault",
+        "event_type": "archive_vault_handoff_request",
+        "evidence_bundle_stub": {
+          "bundle_type": "tower_security_event",
+          "chain": [
+            "Tower",
+            "OB privacy wall",
+            "object audit capsule",
+            "object security inbox",
+            "Archive Vault handoff stub"
+          ],
+          "plain": "Archive Vault app is not wired yet. This record is a safe queued handoff stub.",
+          "ready_for_archive_vault": false
+        },
+        "handoff_id": "archivehandoff_cPg7TJRml6ZymHvoXTn5bKwK",
+        "human_reason": "Archive Vault handoff stub prepared.",
+        "ok": true,
+        "owner_note": "Pack 065 final checkpoint: queue object security event for Archive Vault.",
+        "related_object": {
+          "action": "download",
+          "object_id": "export_065",
+          "object_type": "export",
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.",
+        "source_id": "objinbox_SDufQX6FjLozwuYdACGFr7vj",
+        "source_payload": {
+          "action": "download",
+          "allowed": false,
+          "created_at": "2026-05-28T20:06:12.620999Z",
+          "event_type": "ob_object_security_review",
+          "history": [],
+          "inbox_item_id": "objinbox_SDufQX6FjLozwuYdACGFr7vj",
+          "object_id": "export_065",
+          "object_kind": "export",
+          "object_type": "export",
+          "ok": true,
+          "owner_action": "Review attempted export/download export_065. Confirm whether this was authorized.",
+          "owner_notes": [],
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export",
+          "routing": {
+            "queue": "ob_object_security_inbox",
+            "requires_step_up_review": false,
+            "surface": "watchlist"
+          },
+          "severity": "medium",
+          "soulaana_translation": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+          "source_capsule_id": "objcaps_1OPfD3lflaONNGPg61Y-XEju",
+          "source_fingerprint": "0aa46e7f83dc0791fff14dfc24bc",
+          "status": "open",
+          "surface": "object_security_inbox",
+          "title": "OB object review: parent_route_clearance_failed at export:export_065",
+          "updated_at": "",
+          "user_id": "beta_001"
+        },
+        "source_type": "ob_object_security_inbox",
+        "status": "queued",
+        "summary": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+        "title": "Object security event: export:export_065",
+        "user_id": "owner_solice"
+      },
+      {
+        "created_at": "2026-05-28T20:06:15.339973Z",
+        "destination": "Archive Vault",
+        "event_type": "archive_vault_handoff_request",
+        "evidence_bundle_stub": {
+          "bundle_type": "tower_security_event",
+          "chain": [
+            "Tower",
+            "OB privacy wall",
+            "object audit capsule",
+            "object security inbox",
+            "Archive Vault handoff stub"
+          ],
+          "plain": "Archive Vault app is not wired yet. This record is a safe queued handoff stub.",
+          "ready_for_archive_vault": false
+        },
+        "handoff_id": "archivehandoff_XaAtsILttZZsgaysoV3eAUep",
+        "human_reason": "Archive Vault handoff stub prepared.",
+        "ok": true,
+        "owner_note": "Pack 065 final checkpoint: queue object security event for Archive Vault.",
+        "related_object": {
+          "action": "download",
+          "object_id": "export_065",
+          "object_type": "export",
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.",
+        "source_id": "objinbox_5JIQIWMUipurtTJLR-QvSsnC",
+        "source_payload": {
+          "action": "download",
+          "allowed": false,
+          "created_at": "2026-05-28T20:06:15.296427Z",
+          "event_type": "ob_object_security_review",
+          "history": [],
+          "inbox_item_id": "objinbox_5JIQIWMUipurtTJLR-QvSsnC",
+          "object_id": "export_065",
+          "object_kind": "export",
+          "object_type": "export",
+          "ok": true,
+          "owner_action": "Review attempted export/download export_065. Confirm whether this was authorized.",
+          "owner_notes": [],
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export",
+          "routing": {
+            "queue": "ob_object_security_inbox",
+            "requires_step_up_review": false,
+            "surface": "watchlist"
+          },
+          "severity": "medium",
+          "soulaana_translation": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+          "source_capsule_id": "objcaps_EgXZaVe-V9mx3AUuN3V403Na",
+          "source_fingerprint": "0aa46e7f83dc0791fff14dfc24bc",
+          "status": "open",
+          "surface": "object_security_inbox",
+          "title": "OB object review: parent_route_clearance_failed at export:export_065",
+          "updated_at": "",
+          "user_id": "beta_001"
+        },
+        "source_type": "ob_object_security_inbox",
+        "status": "queued",
+        "summary": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+        "title": "Object security event: export:export_065",
+        "user_id": "owner_solice"
+      },
+      {
+        "created_at": "2026-05-28T20:06:17.956961Z",
+        "destination": "Archive Vault",
+        "event_type": "archive_vault_handoff_request",
+        "evidence_bundle_stub": {
+          "bundle_type": "tower_security_event",
+          "chain": [
+            "Tower",
+            "OB privacy wall",
+            "object audit capsule",
+            "object security inbox",
+            "Archive Vault handoff stub"
+          ],
+          "plain": "Archive Vault app is not wired yet. This record is a safe queued handoff stub.",
+          "ready_for_archive_vault": false
+        },
+        "handoff_id": "archivehandoff_KMjVyfQ6n6d0Ry9IQHoR6z-S",
+        "human_reason": "Archive Vault handoff stub prepared.",
+        "ok": true,
+        "owner_note": "Pack 065 final checkpoint: queue object security event for Archive Vault.",
+        "related_object": {
+          "action": "download",
+          "object_id": "export_065",
+          "object_type": "export",
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: I packaged this security event for the future Archive Vault without exposing secrets.",
+        "source_id": "objinbox_zWDFM-x1Khah2o4YgKgzWNyP",
+        "source_payload": {
+          "action": "download",
+          "allowed": false,
+          "created_at": "2026-05-28T20:06:17.907782Z",
+          "event_type": "ob_object_security_review",
+          "history": [],
+          "inbox_item_id": "objinbox_zWDFM-x1Khah2o4YgKgzWNyP",
+          "object_id": "export_065",
+          "object_kind": "export",
+          "object_type": "export",
+          "ok": true,
+          "owner_action": "Review attempted export/download export_065. Confirm whether this was authorized.",
+          "owner_notes": [],
+          "reason_code": "parent_route_clearance_failed",
+          "risk_score": 70,
+          "risk_state": "restricted",
+          "route_key": "export",
+          "routing": {
+            "queue": "ob_object_security_inbox",
+            "requires_step_up_review": false,
+            "surface": "watchlist"
+          },
+          "severity": "medium",
+          "soulaana_translation": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+          "source_capsule_id": "objcaps_Jgetp8ivnCT-z0pYH6DEoGrT",
+          "source_fingerprint": "0aa46e7f83dc0791fff14dfc24bc",
+          "status": "open",
+          "surface": "object_security_inbox",
+          "title": "OB object review: parent_route_clearance_failed at export:export_065",
+          "updated_at": "",
+          "user_id": "beta_001"
+        },
+        "source_type": "ob_object_security_inbox",
+        "status": "queued",
+        "summary": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+        "title": "Object security event: export:export_065",
+        "user_id": "owner_solice"
+      },
+      {
+        "__redacted_owner_admin_field_count__": 1,
+        "actor_user_id": "owner_solice",
+        "archive_category": "tower_owner_admin_receipts",
+        "archive_ready": true,
+        "created_at": "2026-05-28T21:48:31.287295Z",
+        "handoff_id": "archive_handoff_x7G19jmlg9Xz4QqO_PY86_IR",
+        "human_reason": "Archive handoff created from owner/admin receipt.",
+        "ok": true,
+        "pack": "099",
+        "payload_fingerprint": "8b864def89541b68cdbc188821363d174e182d6caad54ae70ab86b2d7ab99178",
+        "redacted_payload": {
+          "action_power": "high",
+          "action_type": "admin_override_recorded",
+          "actor_user_id": "owner_solice",
+          "after_state": {
+            "status": "approved"
+          },
+          "app_id": "tower",
+          "archive_handoff": {},
+          "before_state": {
+            "status": "blocked"
+          },
+          "created_at": "2026-05-28T21:48:31.253446Z",
+          "decision": "recorded",
+          "event_type": "tower_owner_admin_action_receipt",
+          "human_reason": "Owner/admin action receipt recorded.",
+          "metadata": {},
+          "object_permission": {},
+          "ok": true,
+          "pack": "099",
+          "reason": "Pack 099 admin override test.",
+          "receipt_fingerprint": "3efe0815447d1f33b76af6be64248d22f54c9e57072703e297e400c6a9993143",
+          "receipt_id": "owner_admin_receipt_k5NTiYc6bwqhi-UwD7Hq-DMQ",
+          "receipt_scope": {
+            "archive_ready": true,
+            "auditable": true,
+            "owner_review_ready": true,
+            "tamper_chain_ready": true
+          },
+          "route_path": "/tower/security-command",
+          "soulaana_translation": "Soulaana: Powerful move recorded. The Tower does not do silent buttons.",
+          "status": "completed",
+          "step_up": {
+            "challenge_id": "stepup_test_099",
+            "decision": "verified",
+            "method": "owner_pin",
+            "ok": true,
+            "recent_step_up_verified": true
+          },
+          "step_up_present": true,
+          "step_up_recommended": true,
+          "target_id": "override_099",
+          "target_type": "admin_override"
+        },
+        "soulaana_translation": "Soulaana: Receipt bundled for the Archive Vault without exposing raw secrets.",
+        "source_action_type": "admin_override_recorded",
+        "source_receipt_id": "owner_admin_receipt_k5NTiYc6bwqhi-UwD7Hq-DMQ",
+        "source_target_id": "override_099",
+        "source_target_type": "admin_override"
+      }
+    ],
+    "archive_vault_handoff_soulaana_translation": "Soulaana: Future evidence bundles are queued safely. The Archive Vault room is not open yet.",
+    "archive_vault_handoff_total": 77,
+    "audit_chain_ok": true,
+    "audit_high_risk_events": 0,
+    "audit_total_events": 8,
+    "control_identity": "control_tower_security_command_center",
+    "deny_path_replacement_by_route": {
+      "/future-deny-path": 1,
+      "/no-access": 36,
+      "/observatory-private": 1
+    },
+    "deny_path_replacement_by_severity": {
+      "info": 37,
+      "medium": 1
+    },
+    "deny_path_replacement_by_status": {
+      "needs_review": 1,
+      "verified": 37
+    },
+    "deny_path_replacement_by_type": {
+      "polished_tower_locked_page": 38
+    },
+    "deny_path_replacement_human_reason": "Deny-path replacement audit receipt summary loaded.",
+    "deny_path_replacement_needs_review": 1,
+    "deny_path_replacement_ok": true,
+    "deny_path_replacement_recent": [
+      {
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:05:56.945941Z",
+        "event_type": "deny_path_replacement_audit_receipt",
+        "human_reason": "Deny-path replacement audit receipt recorded.",
+        "metadata": {
+          "__redacted_sensitive_field_count__": 2,
+          "audit_source": "privacy_wall_smoke",
+          "pack": "083"
+        },
+        "new_behavior": "tower_polished_locked_helper",
+        "ok": true,
+        "old_behavior": "legacy_no_access_shell",
+        "proof": {
+          "__redacted_sensitive_field_count__": 1,
+          "has_clearance_gate": true,
+          "has_polished_title": true,
+          "has_request_clearance": true,
+          "has_restricted_zone": true,
+          "has_soulaana": true,
+          "has_tower": true,
+          "no_keycard_query": true,
+          "ok": true,
+          "old_shell_absent": true,
+          "route_path": "/no-access",
+          "status_code": 403
+        },
+        "reason": "Pack 083 smoke proof confirmed /no-access replacement is polished and safe.",
+        "receipt_id": "denyreplace_83X6x2dd5KaIududAo23aYT4",
+        "replacement_type": "polished_tower_locked_page",
+        "risk_score": 10,
+        "risk_state": "clear",
+        "route_path": "/no-access",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Deny-path replacement receipt filed. The locked door changed, and the proof is attached.",
+        "status": "verified"
+      },
+      {
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:02.026637Z",
+        "event_type": "deny_path_replacement_audit_receipt",
+        "human_reason": "Deny-path replacement audit receipt recorded.",
+        "metadata": {
+          "__redacted_sensitive_field_count__": 2,
+          "audit_source": "privacy_wall_smoke",
+          "pack": "083"
+        },
+        "new_behavior": "tower_polished_locked_helper",
+        "ok": true,
+        "old_behavior": "legacy_no_access_shell",
+        "proof": {
+          "__redacted_sensitive_field_count__": 1,
+          "has_clearance_gate": true,
+          "has_polished_title": true,
+          "has_request_clearance": true,
+          "has_restricted_zone": true,
+          "has_soulaana": true,
+          "has_tower": true,
+          "no_keycard_query": true,
+          "ok": true,
+          "old_shell_absent": true,
+          "route_path": "/no-access",
+          "status_code": 403
+        },
+        "reason": "Pack 083 smoke proof confirmed /no-access replacement is polished and safe.",
+        "receipt_id": "denyreplace_ODbwyGwrTsnXLmd1iE1Tv4Qd",
+        "replacement_type": "polished_tower_locked_page",
+        "risk_score": 10,
+        "risk_state": "clear",
+        "route_path": "/no-access",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Deny-path replacement receipt filed. The locked door changed, and the proof is attached.",
+        "status": "verified"
+      },
+      {
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:04.513537Z",
+        "event_type": "deny_path_replacement_audit_receipt",
+        "human_reason": "Deny-path replacement audit receipt recorded.",
+        "metadata": {
+          "__redacted_sensitive_field_count__": 2,
+          "audit_source": "privacy_wall_smoke",
+          "pack": "083"
+        },
+        "new_behavior": "tower_polished_locked_helper",
+        "ok": true,
+        "old_behavior": "legacy_no_access_shell",
+        "proof": {
+          "__redacted_sensitive_field_count__": 1,
+          "has_clearance_gate": true,
+          "has_polished_title": true,
+          "has_request_clearance": true,
+          "has_restricted_zone": true,
+          "has_soulaana": true,
+          "has_tower": true,
+          "no_keycard_query": true,
+          "ok": true,
+          "old_shell_absent": true,
+          "route_path": "/no-access",
+          "status_code": 403
+        },
+        "reason": "Pack 083 smoke proof confirmed /no-access replacement is polished and safe.",
+        "receipt_id": "denyreplace_S8V0xQ6-tKPVGIxuQc5Idb6M",
+        "replacement_type": "polished_tower_locked_page",
+        "risk_score": 10,
+        "risk_state": "clear",
+        "route_path": "/no-access",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Deny-path replacement receipt filed. The locked door changed, and the proof is attached.",
+        "status": "verified"
+      },
+      {
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:07.636763Z",
+        "event_type": "deny_path_replacement_audit_receipt",
+        "human_reason": "Deny-path replacement audit receipt recorded.",
+        "metadata": {
+          "__redacted_sensitive_field_count__": 2,
+          "audit_source": "privacy_wall_smoke",
+          "pack": "083"
+        },
+        "new_behavior": "tower_polished_locked_helper",
+        "ok": true,
+        "old_behavior": "legacy_no_access_shell",
+        "proof": {
+          "__redacted_sensitive_field_count__": 1,
+          "has_clearance_gate": true,
+          "has_polished_title": true,
+          "has_request_clearance": true,
+          "has_restricted_zone": true,
+          "has_soulaana": true,
+          "has_tower": true,
+          "no_keycard_query": true,
+          "ok": true,
+          "old_shell_absent": true,
+          "route_path": "/no-access",
+          "status_code": 403
+        },
+        "reason": "Pack 083 smoke proof confirmed /no-access replacement is polished and safe.",
+        "receipt_id": "denyreplace_r3E10Dot0rtUwRKK8gVj7_hU",
+        "replacement_type": "polished_tower_locked_page",
+        "risk_score": 10,
+        "risk_state": "clear",
+        "route_path": "/no-access",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Deny-path replacement receipt filed. The locked door changed, and the proof is attached.",
+        "status": "verified"
+      },
+      {
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:10.867775Z",
+        "event_type": "deny_path_replacement_audit_receipt",
+        "human_reason": "Deny-path replacement audit receipt recorded.",
+        "metadata": {
+          "__redacted_sensitive_field_count__": 2,
+          "audit_source": "privacy_wall_smoke",
+          "pack": "083"
+        },
+        "new_behavior": "tower_polished_locked_helper",
+        "ok": true,
+        "old_behavior": "legacy_no_access_shell",
+        "proof": {
+          "__redacted_sensitive_field_count__": 1,
+          "has_clearance_gate": true,
+          "has_polished_title": true,
+          "has_request_clearance": true,
+          "has_restricted_zone": true,
+          "has_soulaana": true,
+          "has_tower": true,
+          "no_keycard_query": true,
+          "ok": true,
+          "old_shell_absent": true,
+          "route_path": "/no-access",
+          "status_code": 403
+        },
+        "reason": "Pack 083 smoke proof confirmed /no-access replacement is polished and safe.",
+        "receipt_id": "denyreplace_cYzFh5y5IvJLuqop-5r1GVSe",
+        "replacement_type": "polished_tower_locked_page",
+        "risk_score": 10,
+        "risk_state": "clear",
+        "route_path": "/no-access",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Deny-path replacement receipt filed. The locked door changed, and the proof is attached.",
+        "status": "verified"
+      },
+      {
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:13.443521Z",
+        "event_type": "deny_path_replacement_audit_receipt",
+        "human_reason": "Deny-path replacement audit receipt recorded.",
+        "metadata": {
+          "__redacted_sensitive_field_count__": 2,
+          "audit_source": "privacy_wall_smoke",
+          "pack": "083"
+        },
+        "new_behavior": "tower_polished_locked_helper",
+        "ok": true,
+        "old_behavior": "legacy_no_access_shell",
+        "proof": {
+          "__redacted_sensitive_field_count__": 1,
+          "has_clearance_gate": true,
+          "has_polished_title": true,
+          "has_request_clearance": true,
+          "has_restricted_zone": true,
+          "has_soulaana": true,
+          "has_tower": true,
+          "no_keycard_query": true,
+          "ok": true,
+          "old_shell_absent": true,
+          "route_path": "/no-access",
+          "status_code": 403
+        },
+        "reason": "Pack 083 smoke proof confirmed /no-access replacement is polished and safe.",
+        "receipt_id": "denyreplace_UOSl2rFkjpbfLXFX-VhlSoOW",
+        "replacement_type": "polished_tower_locked_page",
+        "risk_score": 10,
+        "risk_state": "clear",
+        "route_path": "/no-access",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Deny-path replacement receipt filed. The locked door changed, and the proof is attached.",
+        "status": "verified"
+      },
+      {
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:16.090712Z",
+        "event_type": "deny_path_replacement_audit_receipt",
+        "human_reason": "Deny-path replacement audit receipt recorded.",
+        "metadata": {
+          "__redacted_sensitive_field_count__": 2,
+          "audit_source": "privacy_wall_smoke",
+          "pack": "083"
+        },
+        "new_behavior": "tower_polished_locked_helper",
+        "ok": true,
+        "old_behavior": "legacy_no_access_shell",
+        "proof": {
+          "__redacted_sensitive_field_count__": 1,
+          "has_clearance_gate": true,
+          "has_polished_title": true,
+          "has_request_clearance": true,
+          "has_restricted_zone": true,
+          "has_soulaana": true,
+          "has_tower": true,
+          "no_keycard_query": true,
+          "ok": true,
+          "old_shell_absent": true,
+          "route_path": "/no-access",
+          "status_code": 403
+        },
+        "reason": "Pack 083 smoke proof confirmed /no-access replacement is polished and safe.",
+        "receipt_id": "denyreplace_LiuoSWKL4qiv7EPCfqKpTvt5",
+        "replacement_type": "polished_tower_locked_page",
+        "risk_score": 10,
+        "risk_state": "clear",
+        "route_path": "/no-access",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Deny-path replacement receipt filed. The locked door changed, and the proof is attached.",
+        "status": "verified"
+      },
+      {
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:18.734324Z",
+        "event_type": "deny_path_replacement_audit_receipt",
+        "human_reason": "Deny-path replacement audit receipt recorded.",
+        "metadata": {
+          "__redacted_sensitive_field_count__": 2,
+          "audit_source": "privacy_wall_smoke",
+          "pack": "083"
+        },
+        "new_behavior": "tower_polished_locked_helper",
+        "ok": true,
+        "old_behavior": "legacy_no_access_shell",
+        "proof": {
+          "__redacted_sensitive_field_count__": 1,
+          "has_clearance_gate": true,
+          "has_polished_title": true,
+          "has_request_clearance": true,
+          "has_restricted_zone": true,
+          "has_soulaana": true,
+          "has_tower": true,
+          "no_keycard_query": true,
+          "ok": true,
+          "old_shell_absent": true,
+          "route_path": "/no-access",
+          "status_code": 403
+        },
+        "reason": "Pack 083 smoke proof confirmed /no-access replacement is polished and safe.",
+        "receipt_id": "denyreplace_3M2KZZuaCesFedBUMQY_6_6U",
+        "replacement_type": "polished_tower_locked_page",
+        "risk_score": 10,
+        "risk_state": "clear",
+        "route_path": "/no-access",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Deny-path replacement receipt filed. The locked door changed, and the proof is attached.",
+        "status": "verified"
+      }
+    ],
+    "deny_path_replacement_soulaana_translation": "Soulaana: Replacement receipts are counted. Every changed locked door gets a paper trail.",
+    "deny_path_replacement_total": 38,
+    "deny_path_replacement_verified": 37,
+    "door_swipe_audit_allowed": 54,
+    "door_swipe_audit_by_door": {
+      "/tower/security-command": 80,
+      "/tower/security-command/regenerate": 1,
+      "/tower/status.json": 26
+    },
+    "door_swipe_audit_by_reason": {
+      "keycard_pass_allowed": 54,
+      "tower_keycard_required": 28,
+      "wrong_door": 25
+    },
+    "door_swipe_audit_denied": 53,
+    "door_swipe_audit_ok": true,
+    "door_swipe_audit_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/door_swipe_audit_capsules.json",
+    "door_swipe_audit_recent": [
+      {
+        "action": "view",
+        "allowed": true,
+        "app_name": "tower",
+        "capsule_id": "doorcap_dLrRJrLy_iAinvvT1xk14B7M",
+        "decision": "allow",
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/status.json",
+        "door_type": "route",
+        "event_type": "tower_door_swipe",
+        "fingerprint": "9be5bc6ae4bbe9573544950b",
+        "human_reason": "This scoped keycard pass opens this exact door.",
+        "ok": true,
+        "reason_code": "keycard_pass_allowed",
+        "request_context": {
+          "has_cookie_keycard": false,
+          "has_header_keycard": false,
+          "has_query_keycard": true,
+          "method": "GET",
+          "path": "/tower/status.json",
+          "remote_addr_present": true,
+          "user_agent_preview": "Werkzeug/3.1.8"
+        },
+        "required_actions": [],
+        "risk_score": 0,
+        "risk_state": "clear",
+        "session_id": "session_pack036_smoke",
+        "should_surface_in_inbox": false,
+        "soulaana_translation": "Soulaana: This door swipe was allowed for /tower/status.json. The pass matched the door and action view.",
+        "source": "tower_web_bridge",
+        "timestamp": "2026-05-29T00:54:02.867575Z",
+        "user_id": "owner_solice"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "app_name": "tower",
+        "capsule_id": "doorcap_wfL9DUukt_CiaJwl5U7liHd6",
+        "decision": "deny",
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/security-command",
+        "door_type": "route",
+        "event_type": "tower_door_swipe",
+        "fingerprint": "0a777ccb7882c5ade791a866",
+        "human_reason": "This pass does not open this specific door.",
+        "ok": true,
+        "reason_code": "wrong_door",
+        "request_context": {
+          "has_cookie_keycard": false,
+          "has_header_keycard": false,
+          "has_query_keycard": true,
+          "method": "GET",
+          "path": "/tower/security-command",
+          "remote_addr_present": true,
+          "user_agent_preview": "Werkzeug/3.1.8"
+        },
+        "required_actions": [
+          "request_correct_keycard_pass"
+        ],
+        "risk_score": 45,
+        "risk_state": "watch",
+        "session_id": "session_pack036_smoke",
+        "should_surface_in_inbox": false,
+        "soulaana_translation": "Soulaana: A keycard was presented, but it did not belong to /tower/security-command. Neighboring doors stayed sealed.",
+        "source": "tower_web_bridge",
+        "timestamp": "2026-05-29T00:54:03.192863Z",
+        "user_id": "owner_solice"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "app_name": "tower",
+        "capsule_id": "doorcap_xuMbbnB5r6osGLIab8F4BTex",
+        "decision": "deny",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "door_type": "route",
+        "event_type": "tower_door_swipe",
+        "fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "human_reason": "Clearance required.",
+        "ok": true,
+        "reason_code": "tower_keycard_required",
+        "request_context": {
+          "has_cookie_keycard": false,
+          "has_header_keycard": false,
+          "has_query_keycard": false,
+          "method": "GET",
+          "path": "/tower/security-command",
+          "remote_addr_present": true,
+          "user_agent_preview": "Werkzeug/3.1.8"
+        },
+        "required_actions": [
+          "present_valid_keycard_pass"
+        ],
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "session_id": "",
+        "should_surface_in_inbox": true,
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source": "tower_web_bridge",
+        "timestamp": "2026-05-29T00:54:04.236563Z",
+        "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": true,
+        "app_name": "tower",
+        "capsule_id": "doorcap_eWI6UdeIBUP6iH7jAVhQ1DXz",
+        "decision": "allow",
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/security-command",
+        "door_type": "route",
+        "event_type": "tower_door_swipe",
+        "fingerprint": "aa415687ae8ac0e5301202c9",
+        "human_reason": "This scoped keycard pass opens this exact door.",
+        "ok": true,
+        "reason_code": "keycard_pass_allowed",
+        "request_context": {
+          "has_cookie_keycard": false,
+          "has_header_keycard": false,
+          "has_query_keycard": true,
+          "method": "GET",
+          "path": "/tower/security-command",
+          "remote_addr_present": true,
+          "user_agent_preview": "Werkzeug/3.1.8"
+        },
+        "required_actions": [],
+        "risk_score": 0,
+        "risk_state": "clear",
+        "session_id": "session_pack036_smoke",
+        "should_surface_in_inbox": false,
+        "soulaana_translation": "Soulaana: This door swipe was allowed for /tower/security-command. The pass matched the door and action view.",
+        "source": "tower_web_bridge",
+        "timestamp": "2026-05-29T00:54:04.278666Z",
+        "user_id": "owner_solice"
+      },
+      {
+        "action": "view",
+        "allowed": true,
+        "app_name": "tower",
+        "capsule_id": "doorcap_dqQI7HefSbOJpghJQ07ARNEq",
+        "decision": "allow",
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/status.json",
+        "door_type": "route",
+        "event_type": "tower_door_swipe",
+        "fingerprint": "9be5bc6ae4bbe9573544950b",
+        "human_reason": "This scoped keycard pass opens this exact door.",
+        "ok": true,
+        "reason_code": "keycard_pass_allowed",
+        "request_context": {
+          "has_cookie_keycard": false,
+          "has_header_keycard": false,
+          "has_query_keycard": true,
+          "method": "GET",
+          "path": "/tower/status.json",
+          "remote_addr_present": true,
+          "user_agent_preview": "Werkzeug/3.1.8"
+        },
+        "required_actions": [],
+        "risk_score": 0,
+        "risk_state": "clear",
+        "session_id": "session_pack036_smoke",
+        "should_surface_in_inbox": false,
+        "soulaana_translation": "Soulaana: This door swipe was allowed for /tower/status.json. The pass matched the door and action view.",
+        "source": "tower_web_bridge",
+        "timestamp": "2026-05-29T00:54:04.722249Z",
+        "user_id": "owner_solice"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "app_name": "tower",
+        "capsule_id": "doorcap_tpTCuK76R7t8LCMq3fJkV1zM",
+        "decision": "deny",
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/security-command",
+        "door_type": "route",
+        "event_type": "tower_door_swipe",
+        "fingerprint": "0a777ccb7882c5ade791a866",
+        "human_reason": "This pass does not open this specific door.",
+        "ok": true,
+        "reason_code": "wrong_door",
+        "request_context": {
+          "has_cookie_keycard": false,
+          "has_header_keycard": false,
+          "has_query_keycard": true,
+          "method": "GET",
+          "path": "/tower/security-command",
+          "remote_addr_present": true,
+          "user_agent_preview": "Werkzeug/3.1.8"
+        },
+        "required_actions": [
+          "request_correct_keycard_pass"
+        ],
+        "risk_score": 45,
+        "risk_state": "watch",
+        "session_id": "session_pack036_smoke",
+        "should_surface_in_inbox": false,
+        "soulaana_translation": "Soulaana: A keycard was presented, but it did not belong to /tower/security-command. Neighboring doors stayed sealed.",
+        "source": "tower_web_bridge",
+        "timestamp": "2026-05-29T00:54:04.943297Z",
+        "user_id": "owner_solice"
+      }
+    ],
+    "door_swipe_audit_surfaced": 28,
+    "door_swipe_audit_total": 107,
+    "door_swipe_security_inbox_by_reason": {
+      "tower_keycard_required": 26
+    },
+    "door_swipe_security_inbox_by_severity": {
+      "medium": 26
+    },
+    "door_swipe_security_inbox_by_status": {
+      "ignored": 6,
+      "resolved": 20
+    },
+    "door_swipe_security_inbox_ok": true,
+    "door_swipe_security_inbox_open": 0,
+    "door_swipe_security_inbox_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/door_swipe_security_inbox.json",
+    "door_swipe_security_inbox_recent": [
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-28T23:08:06.526995Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:07.526233Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:07.530210Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_oAZPMbOkOXF3uwioNW6fAQ",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:07.526205Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:07.530183Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-28T23:08:07.530196Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-28T23:08:07.526218Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_77haUa7sWkMH64QajtFkU_Cy",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-28T23:08:07.530144Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-28T23:08:08.513430Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:09.288645Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:09.292967Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_JExrcbtV7Vh_sLEDr7wWeQ",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:09.288618Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-28T23:08:09.292937Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-28T23:08:09.292950Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-28T23:08:09.288632Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_hUaz6ZcXtpQnOe_Qtn44WESN",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-28T23:08:09.292897Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-29T00:34:51.560648Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:52.355050Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:52.359626Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_m6yLX4xjBoLwrZXvy0hlTQ",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:52.355022Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:52.359594Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-29T00:34:52.359608Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-29T00:34:52.355035Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_xbhxx__RUJ59HXT8YIHRWt9n",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-29T00:34:52.359555Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-29T00:34:53.532370Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:54.467322Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:54.473974Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_TKWR48qsdtwNHdVKS5tpbQ",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:54.467297Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:34:54.473937Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-29T00:34:54.473950Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-29T00:34:54.467308Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_y90ApptC6wIK65_m1wm431D4",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-29T00:34:54.473889Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-29T00:54:02.468038Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:03.213271Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:03.217957Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_uVWd4J8DSkTtIUirqfgngg",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:03.213245Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:03.217929Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-29T00:54:03.217942Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-29T00:54:03.213257Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_G9mcfpa8FjGLR21hN0KerS_f",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-29T00:54:03.217891Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-29T00:54:04.247304Z",
+        "device_id": "",
+        "door_id": "/tower/security-command",
+        "event_type": "tower_door_swipe_security_review",
+        "history": [
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:04.971292Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:04.976897Z"
+          }
+        ],
+        "inbox_item_id": "doorinbox_WgaQrkw3ShjDx3kn9jI4oQ",
+        "ok": true,
+        "owner_action": "Check whether this was you opening a protected route without a fresh owner launch link.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: reviewing generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:04.971263Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 038 smoke test: resolved generated door-swipe inbox item.",
+            "timestamp": "2026-05-29T00:54:04.976865Z"
+          }
+        ],
+        "reason_code": "tower_keycard_required",
+        "resolved_at": "2026-05-29T00:54:04.976879Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-29T00:54:04.971276Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 60,
+        "risk_state": "restricted",
+        "routing": {
+          "queue": "tower_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "session_id": "",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: Someone reached /tower/security-command without a keycard. The Tower stayed quiet and showed only the locked wall.",
+        "source_capsule_id": "doorcap_xuMbbnB5r6osGLIab8F4BTex",
+        "source_fingerprint": "2e6e768641d7ff1d3d143b0e",
+        "status": "resolved",
+        "title": "Tower door swipe review: tower_keycard_required at /tower/security-command",
+        "updated_at": "2026-05-29T00:54:04.976793Z",
+        "updated_by": "owner_solice",
+        "user_id": "anonymous"
+      }
+    ],
+    "door_swipe_security_inbox_total": 26,
+    "evidence_closed_capsules": 1,
+    "evidence_open_capsules": 22,
+    "evidence_total_capsules": 23,
+    "export_approved": 4,
+    "export_denied": 3,
+    "export_revoked": 1,
+    "export_step_up_required": 4,
+    "export_total_exports": 12,
+    "ob_exposure_mapping_counts": {
+      "keep_protected": 20,
+      "keep_public_safe": 7,
+      "later_review": 32,
+      "map_next": 7,
+      "retire_or_redirect": 9
+    },
+    "ob_exposure_mapping_file_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_exposure_mapping_pass.json",
+    "ob_exposure_mapping_human_reason": "OB exposure report mapping pass created.",
+    "ob_exposure_mapping_later_review": [
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/account",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "account_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/account"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/analytics/performance",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "analytics_performance_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/analytics/performance"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/analytics/risk",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "analytics_risk_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/analytics/risk"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/analytics/strategy",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "strategy_behavior_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/analytics/strategy"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/billing",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "billing_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/billing"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/bot-log",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "bot_log_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/bot-log"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/charts",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "charts_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/charts"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/equity",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "equity_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/equity"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/live-activity",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "live_activity_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/live-activity"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/market-map",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "market_map_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/market-map"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/my-plays",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "my_plays_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/my-plays"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "later_review",
+        "classification": "unmapped_default_deny",
+        "path": "/my-plays/<play_id>",
+        "plain": "Unmapped routes stay default-denied until owner maps, retires, or redirects them.",
+        "priority": 4,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "my_play_detail_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/my-plays/<play_id>"
+        },
+        "reason_code": "unmapped_default_deny_review_needed",
+        "source": "ob_route_exposure_report"
+      }
+    ],
+    "ob_exposure_mapping_ok": true,
+    "ob_exposure_mapping_priority_counts": {
+      "1": 29,
+      "2": 13,
+      "4": 30,
+      "5": 3
+    },
+    "ob_exposure_mapping_readiness_label": "Exposure mapping pass ready",
+    "ob_exposure_mapping_readiness_score": 100,
+    "ob_exposure_mapping_reason_counts": {
+      "admin_debug_or_test_surface": 9,
+      "api_surface_needs_policy": 1,
+      "core_ob_private_surface": 10,
+      "dynamic_ob_object_surface": 6,
+      "needs_owner_review": 2,
+      "outer_shell_or_locked_surface": 6,
+      "static_or_health_safe_surface": 1,
+      "tower_owned_security_surface": 10,
+      "unmapped_default_deny_review_needed": 30
+    },
+    "ob_exposure_mapping_retire_or_redirect": [
+      {
+        "category": "retire_or_redirect",
+        "classification": "unmapped_default_deny",
+        "path": "/admin",
+        "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+        "priority": 1,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "admin_dashboard",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/admin"
+        },
+        "reason_code": "admin_debug_or_test_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "retire_or_redirect",
+        "classification": "unmapped_default_deny",
+        "path": "/admin/diagnostics",
+        "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+        "priority": 1,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "admin_diagnostics_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/admin/diagnostics"
+        },
+        "reason_code": "admin_debug_or_test_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "retire_or_redirect",
+        "classification": "unmapped_default_deny",
+        "path": "/admin/intelligence",
+        "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+        "priority": 1,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "admin_intelligence_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/admin/intelligence"
+        },
+        "reason_code": "admin_debug_or_test_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "retire_or_redirect",
+        "classification": "unmapped_default_deny",
+        "path": "/admin/preview-tier/<tier>",
+        "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+        "priority": 1,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "admin_preview_tier",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/admin/preview-tier/<tier>"
+        },
+        "reason_code": "admin_debug_or_test_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "retire_or_redirect",
+        "classification": "unmapped_default_deny",
+        "path": "/admin/preview-tier/clear",
+        "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+        "priority": 1,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "admin_clear_preview_tier",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/admin/preview-tier/clear"
+        },
+        "reason_code": "admin_debug_or_test_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "retire_or_redirect",
+        "classification": "unmapped_default_deny",
+        "path": "/admin/product-analytics",
+        "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+        "priority": 1,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "admin_product_analytics_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/admin/product-analytics"
+        },
+        "reason_code": "admin_debug_or_test_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "retire_or_redirect",
+        "classification": "unmapped_default_deny",
+        "path": "/admin/product-monitoring",
+        "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+        "priority": 1,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "admin_product_monitoring_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/admin/product-monitoring"
+        },
+        "reason_code": "admin_debug_or_test_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "retire_or_redirect",
+        "classification": "unmapped_default_deny",
+        "path": "/admin/refresh-market-universe",
+        "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+        "priority": 1,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "admin_refresh_market_universe",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/admin/refresh-market-universe"
+        },
+        "reason_code": "admin_debug_or_test_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "retire_or_redirect",
+        "classification": "unmapped_default_deny",
+        "path": "/admin/refresh-news-cache",
+        "plain": "Admin/debug/test routes should be retired, redirected, or moved behind explicit Tower admin clearance.",
+        "priority": 1,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "admin_refresh_news_cache",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/admin/refresh-news-cache"
+        },
+        "reason_code": "admin_debug_or_test_surface",
+        "source": "ob_route_exposure_report"
+      }
+    ],
+    "ob_exposure_mapping_soulaana_translation": "Soulaana: The doors are sorted. Some stay locked, some get mapped next, some get retired, and the questionable ones wait for owner review.",
+    "ob_exposure_mapping_top_next": [
+      {
+        "category": "map_next",
+        "classification": "unmapped_default_deny",
+        "path": "/api/live-state",
+        "plain": "API routes need explicit route/action/object clearance policy.",
+        "priority": 2,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "api_live_state",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/api/live-state"
+        },
+        "reason_code": "api_surface_needs_policy",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "map_next",
+        "classification": "unmapped_default_deny",
+        "path": "/my-positions/<position_id>",
+        "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+        "priority": 2,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "my_position_detail_page",
+          "match_type": "dynamic_position_or_trade",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "Protected position/trade detail corridor.",
+            "public_allowed": false,
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          },
+          "route": "/my-positions/<position_id>"
+        },
+        "reason_code": "dynamic_ob_object_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "map_next",
+        "classification": "unmapped_default_deny",
+        "path": "/my-positions/analyze",
+        "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+        "priority": 2,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "analyze_my_trades_page",
+          "match_type": "dynamic_position_or_trade",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "Protected position/trade detail corridor.",
+            "public_allowed": false,
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          },
+          "route": "/my-positions/analyze"
+        },
+        "reason_code": "dynamic_ob_object_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "map_next",
+        "classification": "unmapped_default_deny",
+        "path": "/my-positions/archived",
+        "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+        "priority": 2,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "my_positions_archived_page",
+          "match_type": "dynamic_position_or_trade",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "Protected position/trade detail corridor.",
+            "public_allowed": false,
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          },
+          "route": "/my-positions/archived"
+        },
+        "reason_code": "dynamic_ob_object_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "map_next",
+        "classification": "dynamic_guarded",
+        "path": "/signals/<symbol>",
+        "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+        "priority": 2,
+        "raw": {
+          "category": "dynamic_guarded",
+          "endpoint": "signal_symbol_page",
+          "match_type": "dynamic_symbol",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "Protected per-symbol intelligence page.",
+            "public_allowed": false,
+            "route_key": "symbol_detail",
+            "sensitivity": "confidential"
+          },
+          "route": "/signals/<symbol>"
+        },
+        "reason_code": "dynamic_ob_object_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "map_next",
+        "classification": "unmapped_default_deny",
+        "path": "/symbol/<symbol>",
+        "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+        "priority": 2,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "signal_symbol_page",
+          "match_type": "unmapped_default_deny",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "This route is not mapped yet. Default deny for private build.",
+            "public_allowed": false,
+            "route_key": "unmapped",
+            "sensitivity": "unknown"
+          },
+          "route": "/symbol/<symbol>"
+        },
+        "reason_code": "dynamic_ob_object_surface",
+        "source": "ob_route_exposure_report"
+      },
+      {
+        "category": "map_next",
+        "classification": "unmapped_default_deny",
+        "path": "/trade/<trade_id>",
+        "plain": "Dynamic OB object routes should be explicitly mapped to object-level clearance policies.",
+        "priority": 2,
+        "raw": {
+          "category": "unmapped_default_deny",
+          "endpoint": "trade_detail_page",
+          "match_type": "dynamic_position_or_trade",
+          "methods": [
+            "GET"
+          ],
+          "policy": {
+            "action": "view",
+            "plain": "Protected position/trade detail corridor.",
+            "public_allowed": false,
+            "route_key": "positions",
+            "sensitivity": "restricted"
+          },
+          "route": "/trade/<trade_id>"
+        },
+        "reason_code": "dynamic_ob_object_surface",
+        "source": "ob_route_exposure_report"
+      }
+    ],
+    "ob_exposure_mapping_total": 75,
+    "ob_object_audit_allowed": 169,
+    "ob_object_audit_by_object_type": {
+      "analysis_record": 2,
+      "export": 343,
+      "mystery_drawer": 2,
+      "symbol": 169,
+      "trade": 83,
+      "unknown_drawer_058": 1,
+      "unknown_drawer_060": 83,
+      "unknown_drawer_061": 1,
+      "unknown_drawer_062": 79,
+      "unknown_drawer_071": 1
+    },
+    "ob_object_audit_by_reason": {
+      "manual_test_object_denied": 2,
+      "ob_object_clearance_allowed": 169,
+      "ob_object_unmapped_default_deny": 167,
+      "parent_route_clearance_failed": 426
+    },
+    "ob_object_audit_by_severity": {
+      "high": 167,
+      "info": 169,
+      "medium": 428
+    },
+    "ob_object_audit_denied": 595,
+    "ob_object_audit_human_reason": "OB object audit capsule summary loaded.",
+    "ob_object_audit_ok": true,
+    "ob_object_audit_recent": [
+      {
+        "action": "view",
+        "allowed": true,
+        "capsule_id": "objcaps_1u-expNf7gvj1LCSE6pL8Zb0",
+        "created_at": "2026-05-28T20:06:16.540476Z",
+        "decision": "allow",
+        "event_type": "ob_object_guard_audit_capsule",
+        "human_reason": "The Tower allowed this OB object action.",
+        "metadata": {
+          "decision_metadata": {
+            "account_id": "",
+            "action": "view",
+            "evaluated_at": "2026-05-28T20:06:16.540436Z",
+            "metadata": {
+              "guard_object_kind": "trade",
+              "guard_policy": {
+                "default_action": "view",
+                "object_type": "trade",
+                "plain": "Specific trade, position, or lifecycle record.",
+                "route_key": "positions",
+                "sensitivity": "restricted"
+              }
+            },
+            "object_guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "trade_060",
+              "object_kind": "trade",
+              "ok": true,
+              "policy": {
+                "default_action": "view",
+                "object_type": "trade",
+                "plain": "Specific trade, position, or lifecycle record.",
+                "route_key": "positions",
+                "sensitivity": "restricted"
+              }
+            },
+            "object_guard_policy": {
+              "default_action": "view",
+              "object_type": "trade",
+              "plain": "Specific trade, position, or lifecycle record.",
+              "route_key": "positions",
+              "sensitivity": "restricted"
+            },
+            "object_id": "trade_060",
+            "object_type": "trade",
+            "owner_user_id": "owner_solice",
+            "required_clearance_level": "restricted",
+            "role": "owner",
+            "route_key": "positions",
+            "user_clearance_level": "critical",
+            "user_id": "owner_solice"
+          },
+          "guard_metadata": {
+            "audit_source": "object_guard_decision",
+            "guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "trade_060",
+              "object_kind": "trade",
+              "ok": true,
+              "policy": {
+                "default_action": "view",
+                "object_type": "trade",
+                "plain": "Specific trade, position, or lifecycle record.",
+                "route_key": "positions",
+                "sensitivity": "restricted"
+              }
+            },
+            "guard_policy": {
+              "default_action": "view",
+              "object_type": "trade",
+              "plain": "Specific trade, position, or lifecycle record.",
+              "route_key": "positions",
+              "sensitivity": "restricted"
+            }
+          },
+          "pack": "056"
+        },
+        "object_id": "trade_060",
+        "object_kind": "trade",
+        "object_type": "trade",
+        "ok": true,
+        "reason_code": "ob_object_clearance_allowed",
+        "required_actions": [],
+        "risk_score": 0,
+        "risk_state": "clear",
+        "route_key": "positions",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: trade:trade_060 was opened for view. The drawer cleared, and the receipt is filed.",
+        "source_fingerprint": "cf12865bbb222f88d16bf19ec46b",
+        "user_id": "owner_solice"
+      },
+      {
+        "action": "download",
+        "allowed": false,
+        "capsule_id": "objcaps_gkQByZmQrL1-9YcI-kBKcuRw",
+        "created_at": "2026-05-28T20:06:16.646989Z",
+        "decision": "deny",
+        "event_type": "ob_object_guard_audit_capsule",
+        "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+        "metadata": {
+          "decision_metadata": {
+            "object_guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "export_060",
+              "object_kind": "export",
+              "ok": true,
+              "policy": {
+                "default_action": "download",
+                "object_type": "export",
+                "plain": "Specific export/download/share request leaving OB.",
+                "route_key": "export",
+                "sensitivity": "critical"
+              }
+            },
+            "object_guard_policy": {
+              "default_action": "download",
+              "object_type": "export",
+              "plain": "Specific export/download/share request leaving OB.",
+              "route_key": "export",
+              "sensitivity": "critical"
+            },
+            "object_id": "export_060",
+            "object_type": "export",
+            "parent_route_decision": {
+              "allowed": false,
+              "decision": "deny",
+              "human_reason": "User clearance is not high enough for this OB route/action.",
+              "metadata": {
+                "action": "download",
+                "required_clearance_level": "critical",
+                "route_id": "action:export",
+                "route_key": "export",
+                "user_clearance_level": "internal",
+                "user_id": "beta_001"
+              },
+              "ok": true,
+              "reason_code": "ob_clearance_level_too_low",
+              "required_actions": [
+                "upgrade_clearance",
+                "owner_review"
+              ],
+              "risk_score": 70,
+              "risk_state": "restricted",
+              "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+            },
+            "route_key": "export",
+            "user_id": "beta_001"
+          },
+          "guard_metadata": {
+            "audit_source": "object_guard_decision",
+            "guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "export_060",
+              "object_kind": "export",
+              "ok": true,
+              "policy": {
+                "default_action": "download",
+                "object_type": "export",
+                "plain": "Specific export/download/share request leaving OB.",
+                "route_key": "export",
+                "sensitivity": "critical"
+              }
+            },
+            "guard_policy": {
+              "default_action": "download",
+              "object_type": "export",
+              "plain": "Specific export/download/share request leaving OB.",
+              "route_key": "export",
+              "sensitivity": "critical"
+            }
+          },
+          "pack": "056"
+        },
+        "object_id": "export_060",
+        "object_kind": "export",
+        "object_type": "export",
+        "ok": true,
+        "reason_code": "parent_route_clearance_failed",
+        "required_actions": [
+          "upgrade_clearance",
+          "owner_review"
+        ],
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "route_key": "export",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: export:export_060 could not open because the hallway failed first. Receipt filed.",
+        "source_fingerprint": "f42eecdc467ab68fa0297c407dc5",
+        "user_id": "beta_001"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "capsule_id": "objcaps_V-nsuQiZwlxgTWht6FULajok",
+        "created_at": "2026-05-28T20:06:16.788076Z",
+        "decision": "deny",
+        "event_type": "ob_object_guard_audit_capsule",
+        "human_reason": "This OB object kind is not mapped yet, so the private build blocks it by default.",
+        "metadata": {
+          "decision_metadata": {
+            "evaluated_at": "2026-05-28T20:06:16.788010Z",
+            "match": {
+              "match_type": "unmapped_object_default_deny",
+              "matched": false,
+              "object_id": "secret_060",
+              "object_kind": "unknown_drawer_060",
+              "ok": true,
+              "policy": {
+                "default_action": "view",
+                "object_type": "unknown_drawer_060",
+                "plain": "This object kind is not mapped yet. Default deny for private build.",
+                "route_key": "",
+                "sensitivity": "unknown"
+              }
+            },
+            "object_id": "secret_060",
+            "object_kind": "unknown_drawer_060",
+            "user_id": "owner_solice"
+          },
+          "guard_metadata": {
+            "audit_source": "unmapped_object_default_deny",
+            "guard_match": {
+              "match_type": "unmapped_object_default_deny",
+              "matched": false,
+              "object_id": "secret_060",
+              "object_kind": "unknown_drawer_060",
+              "ok": true,
+              "policy": {
+                "default_action": "view",
+                "object_type": "unknown_drawer_060",
+                "plain": "This object kind is not mapped yet. Default deny for private build.",
+                "route_key": "",
+                "sensitivity": "unknown"
+              }
+            }
+          },
+          "pack": "056"
+        },
+        "object_id": "secret_060",
+        "object_kind": "unknown_drawer_060",
+        "object_type": "unknown_drawer_060",
+        "ok": true,
+        "reason_code": "ob_object_unmapped_default_deny",
+        "required_actions": [
+          "map_object_policy",
+          "owner_review"
+        ],
+        "risk_score": 65,
+        "risk_state": "restricted",
+        "route_key": "",
+        "severity": "high",
+        "soulaana_translation": "Soulaana: unknown_drawer_060:secret_060 is not on the drawer map. I kept it locked and filed the receipt.",
+        "source_fingerprint": "cb76acac0f8dd895182c4ead9f8d",
+        "user_id": "owner_solice"
+      },
+      {
+        "action": "download",
+        "allowed": false,
+        "capsule_id": "objcaps_zlDtZTFCEfuc-yHUIhqKiCVc",
+        "created_at": "2026-05-28T20:06:17.175233Z",
+        "decision": "deny",
+        "event_type": "ob_object_guard_audit_capsule",
+        "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+        "metadata": {
+          "decision_metadata": {
+            "object_guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "export_062_workflow",
+              "object_kind": "export",
+              "ok": true,
+              "policy": {
+                "default_action": "download",
+                "object_type": "export",
+                "plain": "Specific export/download/share request leaving OB.",
+                "route_key": "export",
+                "sensitivity": "critical"
+              }
+            },
+            "object_guard_policy": {
+              "default_action": "download",
+              "object_type": "export",
+              "plain": "Specific export/download/share request leaving OB.",
+              "route_key": "export",
+              "sensitivity": "critical"
+            },
+            "object_id": "export_062_workflow",
+            "object_type": "export",
+            "parent_route_decision": {
+              "allowed": false,
+              "decision": "deny",
+              "human_reason": "User clearance is not high enough for this OB route/action.",
+              "metadata": {
+                "action": "download",
+                "required_clearance_level": "critical",
+                "route_id": "action:export",
+                "route_key": "export",
+                "user_clearance_level": "internal",
+                "user_id": "beta_001"
+              },
+              "ok": true,
+              "reason_code": "ob_clearance_level_too_low",
+              "required_actions": [
+                "upgrade_clearance",
+                "owner_review"
+              ],
+              "risk_score": 70,
+              "risk_state": "restricted",
+              "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+            },
+            "route_key": "export",
+            "user_id": "beta_001"
+          },
+          "guard_metadata": {
+            "audit_source": "object_guard_decision",
+            "guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "export_062_workflow",
+              "object_kind": "export",
+              "ok": true,
+              "policy": {
+                "default_action": "download",
+                "object_type": "export",
+                "plain": "Specific export/download/share request leaving OB.",
+                "route_key": "export",
+                "sensitivity": "critical"
+              }
+            },
+            "guard_policy": {
+              "default_action": "download",
+              "object_type": "export",
+              "plain": "Specific export/download/share request leaving OB.",
+              "route_key": "export",
+              "sensitivity": "critical"
+            }
+          },
+          "pack": "056"
+        },
+        "object_id": "export_062_workflow",
+        "object_kind": "export",
+        "object_type": "export",
+        "ok": true,
+        "reason_code": "parent_route_clearance_failed",
+        "required_actions": [
+          "upgrade_clearance",
+          "owner_review"
+        ],
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "route_key": "export",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: export:export_062_workflow could not open because the hallway failed first. Receipt filed.",
+        "source_fingerprint": "a839008e5b63a6d8988566abd3ef",
+        "user_id": "beta_001"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "capsule_id": "objcaps_Go4Y03U82-9e6Uas1z4gmsMK",
+        "created_at": "2026-05-28T20:06:17.484922Z",
+        "decision": "deny",
+        "event_type": "ob_object_guard_audit_capsule",
+        "human_reason": "This OB object kind is not mapped yet, so the private build blocks it by default.",
+        "metadata": {
+          "decision_metadata": {
+            "evaluated_at": "2026-05-28T20:06:17.484799Z",
+            "match": {
+              "match_type": "unmapped_object_default_deny",
+              "matched": false,
+              "object_id": "secret_062_workflow",
+              "object_kind": "unknown_drawer_062",
+              "ok": true,
+              "policy": {
+                "default_action": "view",
+                "object_type": "unknown_drawer_062",
+                "plain": "This object kind is not mapped yet. Default deny for private build.",
+                "route_key": "",
+                "sensitivity": "unknown"
+              }
+            },
+            "object_id": "secret_062_workflow",
+            "object_kind": "unknown_drawer_062",
+            "user_id": "owner_solice"
+          },
+          "guard_metadata": {
+            "audit_source": "unmapped_object_default_deny",
+            "guard_match": {
+              "match_type": "unmapped_object_default_deny",
+              "matched": false,
+              "object_id": "secret_062_workflow",
+              "object_kind": "unknown_drawer_062",
+              "ok": true,
+              "policy": {
+                "default_action": "view",
+                "object_type": "unknown_drawer_062",
+                "plain": "This object kind is not mapped yet. Default deny for private build.",
+                "route_key": "",
+                "sensitivity": "unknown"
+              }
+            }
+          },
+          "pack": "056"
+        },
+        "object_id": "secret_062_workflow",
+        "object_kind": "unknown_drawer_062",
+        "object_type": "unknown_drawer_062",
+        "ok": true,
+        "reason_code": "ob_object_unmapped_default_deny",
+        "required_actions": [
+          "map_object_policy",
+          "owner_review"
+        ],
+        "risk_score": 65,
+        "risk_state": "restricted",
+        "route_key": "",
+        "severity": "high",
+        "soulaana_translation": "Soulaana: unknown_drawer_062:secret_062_workflow is not on the drawer map. I kept it locked and filed the receipt.",
+        "source_fingerprint": "727ff69eef6dd05eb876d438c775",
+        "user_id": "owner_solice"
+      },
+      {
+        "action": "download",
+        "allowed": false,
+        "capsule_id": "objcaps_Jgetp8ivnCT-z0pYH6DEoGrT",
+        "created_at": "2026-05-28T20:06:17.792849Z",
+        "decision": "deny",
+        "event_type": "ob_object_guard_audit_capsule",
+        "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+        "metadata": {
+          "decision_metadata": {
+            "object_guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "export_065",
+              "object_kind": "export",
+              "ok": true,
+              "policy": {
+                "default_action": "download",
+                "object_type": "export",
+                "plain": "Specific export/download/share request leaving OB.",
+                "route_key": "export",
+                "sensitivity": "critical"
+              }
+            },
+            "object_guard_policy": {
+              "default_action": "download",
+              "object_type": "export",
+              "plain": "Specific export/download/share request leaving OB.",
+              "route_key": "export",
+              "sensitivity": "critical"
+            },
+            "object_id": "export_065",
+            "object_type": "export",
+            "parent_route_decision": {
+              "allowed": false,
+              "decision": "deny",
+              "human_reason": "User clearance is not high enough for this OB route/action.",
+              "metadata": {
+                "action": "download",
+                "required_clearance_level": "critical",
+                "route_id": "action:export",
+                "route_key": "export",
+                "user_clearance_level": "internal",
+                "user_id": "beta_001"
+              },
+              "ok": true,
+              "reason_code": "ob_clearance_level_too_low",
+              "required_actions": [
+                "upgrade_clearance",
+                "owner_review"
+              ],
+              "risk_score": 70,
+              "risk_state": "restricted",
+              "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+            },
+            "route_key": "export",
+            "user_id": "beta_001"
+          },
+          "guard_metadata": {
+            "audit_source": "object_guard_decision",
+            "guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "export_065",
+              "object_kind": "export",
+              "ok": true,
+              "policy": {
+                "default_action": "download",
+                "object_type": "export",
+                "plain": "Specific export/download/share request leaving OB.",
+                "route_key": "export",
+                "sensitivity": "critical"
+              }
+            },
+            "guard_policy": {
+              "default_action": "download",
+              "object_type": "export",
+              "plain": "Specific export/download/share request leaving OB.",
+              "route_key": "export",
+              "sensitivity": "critical"
+            }
+          },
+          "pack": "056"
+        },
+        "object_id": "export_065",
+        "object_kind": "export",
+        "object_type": "export",
+        "ok": true,
+        "reason_code": "parent_route_clearance_failed",
+        "required_actions": [
+          "upgrade_clearance",
+          "owner_review"
+        ],
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "route_key": "export",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+        "source_fingerprint": "0aa46e7f83dc0791fff14dfc24bc",
+        "user_id": "beta_001"
+      },
+      {
+        "action": "download",
+        "allowed": false,
+        "capsule_id": "objcaps_SgoV83sgq3BoPSh1RuZIlqmd",
+        "created_at": "2026-05-28T20:06:18.011131Z",
+        "decision": "deny",
+        "event_type": "ob_object_guard_audit_capsule",
+        "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+        "metadata": {
+          "decision_metadata": {
+            "object_guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "export_073_endpoint",
+              "object_kind": "export",
+              "ok": true,
+              "policy": {
+                "default_action": "download",
+                "object_type": "export",
+                "plain": "Specific export/download/share request leaving OB.",
+                "route_key": "export",
+                "sensitivity": "critical"
+              }
+            },
+            "object_guard_policy": {
+              "default_action": "download",
+              "object_type": "export",
+              "plain": "Specific export/download/share request leaving OB.",
+              "route_key": "export",
+              "sensitivity": "critical"
+            },
+            "object_id": "export_073_endpoint",
+            "object_type": "export",
+            "parent_route_decision": {
+              "allowed": false,
+              "decision": "deny",
+              "human_reason": "User clearance is not high enough for this OB route/action.",
+              "metadata": {
+                "action": "download",
+                "required_clearance_level": "critical",
+                "route_id": "action:export",
+                "route_key": "export",
+                "user_clearance_level": "internal",
+                "user_id": "beta_001"
+              },
+              "ok": true,
+              "reason_code": "ob_clearance_level_too_low",
+              "required_actions": [
+                "upgrade_clearance",
+                "owner_review"
+              ],
+              "risk_score": 70,
+              "risk_state": "restricted",
+              "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+            },
+            "route_key": "export",
+            "user_id": "beta_001"
+          },
+          "guard_metadata": {
+            "audit_source": "object_guard_decision",
+            "guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "export_073_endpoint",
+              "object_kind": "export",
+              "ok": true,
+              "policy": {
+                "default_action": "download",
+                "object_type": "export",
+                "plain": "Specific export/download/share request leaving OB.",
+                "route_key": "export",
+                "sensitivity": "critical"
+              }
+            },
+            "guard_policy": {
+              "default_action": "download",
+              "object_type": "export",
+              "plain": "Specific export/download/share request leaving OB.",
+              "route_key": "export",
+              "sensitivity": "critical"
+            }
+          },
+          "pack": "056"
+        },
+        "object_id": "export_073_endpoint",
+        "object_kind": "export",
+        "object_type": "export",
+        "ok": true,
+        "reason_code": "parent_route_clearance_failed",
+        "required_actions": [
+          "upgrade_clearance",
+          "owner_review"
+        ],
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "route_key": "export",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: export:export_073_endpoint could not open because the hallway failed first. Receipt filed.",
+        "source_fingerprint": "22564d1975e1ce7fe8b33a82df0c",
+        "user_id": "beta_001"
+      },
+      {
+        "action": "download",
+        "allowed": false,
+        "capsule_id": "objcaps_fTAbFUtS2fVWdaCPG_Gedvp6",
+        "created_at": "2026-05-28T20:06:18.388106Z",
+        "decision": "deny",
+        "event_type": "ob_object_guard_audit_capsule",
+        "human_reason": "The parent OB route was not cleared, so the object cannot be revealed.",
+        "metadata": {
+          "decision_metadata": {
+            "object_guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "export_078_panel",
+              "object_kind": "export",
+              "ok": true,
+              "policy": {
+                "default_action": "download",
+                "object_type": "export",
+                "plain": "Specific export/download/share request leaving OB.",
+                "route_key": "export",
+                "sensitivity": "critical"
+              }
+            },
+            "object_guard_policy": {
+              "default_action": "download",
+              "object_type": "export",
+              "plain": "Specific export/download/share request leaving OB.",
+              "route_key": "export",
+              "sensitivity": "critical"
+            },
+            "object_id": "export_078_panel",
+            "object_type": "export",
+            "parent_route_decision": {
+              "allowed": false,
+              "decision": "deny",
+              "human_reason": "User clearance is not high enough for this OB route/action.",
+              "metadata": {
+                "action": "download",
+                "required_clearance_level": "critical",
+                "route_id": "action:export",
+                "route_key": "export",
+                "user_clearance_level": "internal",
+                "user_id": "beta_001"
+              },
+              "ok": true,
+              "reason_code": "ob_clearance_level_too_low",
+              "required_actions": [
+                "upgrade_clearance",
+                "owner_review"
+              ],
+              "risk_score": 70,
+              "risk_state": "restricted",
+              "soulaana_translation": "Soulaana: Export / Download needs critical clearance. This user only has internal."
+            },
+            "route_key": "export",
+            "user_id": "beta_001"
+          },
+          "guard_metadata": {
+            "audit_source": "object_guard_decision",
+            "guard_match": {
+              "match_type": "object_policy",
+              "matched": true,
+              "object_id": "export_078_panel",
+              "object_kind": "export",
+              "ok": true,
+              "policy": {
+                "default_action": "download",
+                "object_type": "export",
+                "plain": "Specific export/download/share request leaving OB.",
+                "route_key": "export",
+                "sensitivity": "critical"
+              }
+            },
+            "guard_policy": {
+              "default_action": "download",
+              "object_type": "export",
+              "plain": "Specific export/download/share request leaving OB.",
+              "route_key": "export",
+              "sensitivity": "critical"
+            }
+          },
+          "pack": "056"
+        },
+        "object_id": "export_078_panel",
+        "object_kind": "export",
+        "object_type": "export",
+        "ok": true,
+        "reason_code": "parent_route_clearance_failed",
+        "required_actions": [
+          "upgrade_clearance",
+          "owner_review"
+        ],
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "route_key": "export",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: export:export_078_panel could not open because the hallway failed first. Receipt filed.",
+        "source_fingerprint": "f3e7b17e1098988e7c1ede9c0ca1",
+        "user_id": "beta_001"
+      }
+    ],
+    "ob_object_audit_soulaana": "Soulaana: The drawer receipts are counted. Every object touch has a paper trail.",
+    "ob_object_audit_total": 764,
+    "ob_object_security_inbox_by_object_type": {
+      "analysis_record": 2,
+      "export": 343,
+      "mystery_drawer": 2,
+      "symbol": 83,
+      "unknown_drawer_058": 1,
+      "unknown_drawer_060": 83,
+      "unknown_drawer_061": 1,
+      "unknown_drawer_062": 79,
+      "unknown_drawer_071": 1
+    },
+    "ob_object_security_inbox_by_reason": {
+      "manual_test_object_denied": 2,
+      "ob_object_unmapped_default_deny": 167,
+      "parent_route_clearance_failed": 426
+    },
+    "ob_object_security_inbox_by_severity": {
+      "high": 167,
+      "medium": 428
+    },
+    "ob_object_security_inbox_by_status": {
+      "ignored": 81,
+      "open": 378,
+      "resolved": 136
+    },
+    "ob_object_security_inbox_human_reason": "OB object security inbox summary loaded.",
+    "ob_object_security_inbox_ok": true,
+    "ob_object_security_inbox_open": 378,
+    "ob_object_security_inbox_recent": [
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-28T20:06:16.512191Z",
+        "event_type": "ob_object_security_review",
+        "history": [],
+        "inbox_item_id": "objinbox_6rcAypHw_JkRvlWsclWfm7hs",
+        "object_id": "AAPL",
+        "object_kind": "symbol",
+        "object_type": "symbol",
+        "ok": true,
+        "owner_action": "Review blocked object access for symbol:AAPL; the parent route failed first.",
+        "owner_notes": [],
+        "reason_code": "parent_route_clearance_failed",
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "route_key": "symbol_detail",
+        "routing": {
+          "queue": "ob_object_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "watchlist"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: symbol:AAPL could not open because the hallway failed first. Receipt filed.",
+        "source_capsule_id": "objcaps_fK4hZqeIafkod8fFDWdao0Z1",
+        "source_fingerprint": "67ca5750d45b52b308b8212489cc",
+        "status": "open",
+        "surface": "object_security_inbox",
+        "title": "OB object review: parent_route_clearance_failed at symbol:AAPL",
+        "updated_at": "",
+        "user_id": "beta_001"
+      },
+      {
+        "action": "download",
+        "allowed": false,
+        "created_at": "2026-05-28T20:06:16.760342Z",
+        "event_type": "ob_object_security_review",
+        "history": [],
+        "inbox_item_id": "objinbox_M66rMhLpSlbZU57edFPKhdwk",
+        "object_id": "export_060",
+        "object_kind": "export",
+        "object_type": "export",
+        "ok": true,
+        "owner_action": "Review attempted export/download export_060. Confirm whether this was authorized.",
+        "owner_notes": [],
+        "reason_code": "parent_route_clearance_failed",
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "route_key": "export",
+        "routing": {
+          "queue": "ob_object_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "watchlist"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: export:export_060 could not open because the hallway failed first. Receipt filed.",
+        "source_capsule_id": "objcaps_gkQByZmQrL1-9YcI-kBKcuRw",
+        "source_fingerprint": "f42eecdc467ab68fa0297c407dc5",
+        "status": "open",
+        "surface": "object_security_inbox",
+        "title": "OB object review: parent_route_clearance_failed at export:export_060",
+        "updated_at": "",
+        "user_id": "beta_001"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-28T20:06:16.898838Z",
+        "event_type": "ob_object_security_review",
+        "history": [],
+        "inbox_item_id": "objinbox_oYyaMDUOxctCs48pxf_U2VeZ",
+        "object_id": "secret_060",
+        "object_kind": "unknown_drawer_060",
+        "object_type": "unknown_drawer_060",
+        "ok": true,
+        "owner_action": "Review whether unknown_drawer_060:secret_060 should be mapped into the object guard policy.",
+        "owner_notes": [],
+        "reason_code": "ob_object_unmapped_default_deny",
+        "risk_score": 65,
+        "risk_state": "restricted",
+        "route_key": "",
+        "routing": {
+          "queue": "ob_object_security_inbox",
+          "requires_step_up_review": true,
+          "surface": "watchlist"
+        },
+        "severity": "high",
+        "soulaana_translation": "Soulaana: unknown_drawer_060:secret_060 is not on the drawer map. I kept it locked and filed the receipt.",
+        "source_capsule_id": "objcaps_V-nsuQiZwlxgTWht6FULajok",
+        "source_fingerprint": "cb76acac0f8dd895182c4ead9f8d",
+        "status": "open",
+        "surface": "object_security_inbox",
+        "title": "OB object review: ob_object_unmapped_default_deny at unknown_drawer_060:secret_060",
+        "updated_at": "",
+        "user_id": "owner_solice"
+      },
+      {
+        "action": "download",
+        "allowed": false,
+        "created_at": "2026-05-28T20:06:17.348397Z",
+        "event_type": "ob_object_security_review",
+        "history": [
+          {
+            "action": "note_added",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 062 smoke: note before review.",
+            "timestamp": "2026-05-28T20:06:17.392953Z"
+          },
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 062 smoke: reviewing object inbox workflow.",
+            "resolution_reason": "",
+            "timestamp": "2026-05-28T20:06:17.426333Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 062 smoke: resolved object inbox workflow.",
+            "resolution_reason": "smoke_test_expected_block",
+            "timestamp": "2026-05-28T20:06:17.459438Z"
+          }
+        ],
+        "inbox_item_id": "objinbox_3xbp1YzZbzJYP4ZGM8JC7hji",
+        "object_id": "export_062_workflow",
+        "object_kind": "export",
+        "object_type": "export",
+        "ok": true,
+        "owner_action": "Review attempted export/download export_062_workflow. Confirm whether this was authorized.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 062 smoke: note before review.",
+            "timestamp": "2026-05-28T20:06:17.392953Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 062 smoke: reviewing object inbox workflow.",
+            "timestamp": "2026-05-28T20:06:17.426333Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 062 smoke: resolved object inbox workflow.",
+            "timestamp": "2026-05-28T20:06:17.459438Z"
+          }
+        ],
+        "reason_code": "parent_route_clearance_failed",
+        "resolution_reason": "smoke_test_expected_block",
+        "resolved_at": "2026-05-28T20:06:17.459438Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-28T20:06:17.426333Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "route_key": "export",
+        "routing": {
+          "queue": "ob_object_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: export:export_062_workflow could not open because the hallway failed first. Receipt filed.",
+        "source_capsule_id": "objcaps_zlDtZTFCEfuc-yHUIhqKiCVc",
+        "source_fingerprint": "a839008e5b63a6d8988566abd3ef",
+        "status": "resolved",
+        "surface": "object_security_inbox",
+        "title": "OB object review: parent_route_clearance_failed at export:export_062_workflow",
+        "updated_at": "2026-05-28T20:06:17.459438Z",
+        "updated_by": "owner_solice",
+        "user_id": "beta_001"
+      },
+      {
+        "action": "view",
+        "allowed": false,
+        "created_at": "2026-05-28T20:06:17.599518Z",
+        "event_type": "ob_object_security_review",
+        "history": [
+          {
+            "action": "status:open->ignored",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 062 smoke: ignored test-generated unmapped object.",
+            "resolution_reason": "smoke_test_noise",
+            "timestamp": "2026-05-28T20:06:17.643761Z"
+          }
+        ],
+        "ignored_at": "2026-05-28T20:06:17.643761Z",
+        "ignored_by": "owner_solice",
+        "inbox_item_id": "objinbox_vctdyW7K8u4AfJx-xfF5BwGy",
+        "object_id": "secret_062_workflow",
+        "object_kind": "unknown_drawer_062",
+        "object_type": "unknown_drawer_062",
+        "ok": true,
+        "owner_action": "Review whether unknown_drawer_062:secret_062_workflow should be mapped into the object guard policy.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 062 smoke: ignored test-generated unmapped object.",
+            "timestamp": "2026-05-28T20:06:17.643761Z"
+          }
+        ],
+        "reason_code": "ob_object_unmapped_default_deny",
+        "resolution_reason": "smoke_test_noise",
+        "risk_score": 65,
+        "risk_state": "restricted",
+        "route_key": "",
+        "routing": {
+          "queue": "ob_object_security_inbox",
+          "requires_step_up_review": true,
+          "surface": "ignored_archive"
+        },
+        "severity": "high",
+        "soulaana_translation": "Soulaana: unknown_drawer_062:secret_062_workflow is not on the drawer map. I kept it locked and filed the receipt.",
+        "source_capsule_id": "objcaps_Go4Y03U82-9e6Uas1z4gmsMK",
+        "source_fingerprint": "727ff69eef6dd05eb876d438c775",
+        "status": "ignored",
+        "surface": "object_security_inbox",
+        "title": "OB object review: ob_object_unmapped_default_deny at unknown_drawer_062:secret_062_workflow",
+        "updated_at": "2026-05-28T20:06:17.643761Z",
+        "updated_by": "owner_solice",
+        "user_id": "owner_solice"
+      },
+      {
+        "action": "download",
+        "allowed": false,
+        "created_at": "2026-05-28T20:06:17.907782Z",
+        "event_type": "ob_object_security_review",
+        "history": [
+          {
+            "action": "note_added",
+            "actor_user_id": "owner_solice",
+            "note": "Archive Vault handoff queued: archivehandoff_KMjVyfQ6n6d0Ry9IQHoR6z-S",
+            "timestamp": "2026-05-28T20:06:17.974772Z"
+          }
+        ],
+        "inbox_item_id": "objinbox_zWDFM-x1Khah2o4YgKgzWNyP",
+        "object_id": "export_065",
+        "object_kind": "export",
+        "object_type": "export",
+        "ok": true,
+        "owner_action": "Review attempted export/download export_065. Confirm whether this was authorized.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Archive Vault handoff queued: archivehandoff_KMjVyfQ6n6d0Ry9IQHoR6z-S",
+            "timestamp": "2026-05-28T20:06:17.974772Z"
+          }
+        ],
+        "reason_code": "parent_route_clearance_failed",
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "route_key": "export",
+        "routing": {
+          "queue": "ob_object_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "watchlist"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: export:export_065 could not open because the hallway failed first. Receipt filed.",
+        "source_capsule_id": "objcaps_Jgetp8ivnCT-z0pYH6DEoGrT",
+        "source_fingerprint": "0aa46e7f83dc0791fff14dfc24bc",
+        "status": "open",
+        "surface": "object_security_inbox",
+        "title": "OB object review: parent_route_clearance_failed at export:export_065",
+        "updated_at": "2026-05-28T20:06:17.974772Z",
+        "updated_by": "owner_solice",
+        "user_id": "beta_001"
+      },
+      {
+        "action": "download",
+        "allowed": false,
+        "created_at": "2026-05-28T20:06:18.136945Z",
+        "event_type": "ob_object_security_review",
+        "history": [
+          {
+            "action": "note_added",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 073 smoke: audited endpoint note.",
+            "timestamp": "2026-05-28T20:06:18.187307Z"
+          },
+          {
+            "action": "status:open->reviewing",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 073 smoke: audited endpoint reviewing.",
+            "resolution_reason": "",
+            "timestamp": "2026-05-28T20:06:18.247431Z"
+          },
+          {
+            "action": "status:reviewing->resolved",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 073 smoke: audited endpoint resolved.",
+            "resolution_reason": "pack073_smoke_resolved",
+            "timestamp": "2026-05-28T20:06:18.303900Z"
+          }
+        ],
+        "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+        "object_id": "export_073_endpoint",
+        "object_kind": "export",
+        "object_type": "export",
+        "ok": true,
+        "owner_action": "Review attempted export/download export_073_endpoint. Confirm whether this was authorized.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 073 smoke: audited endpoint note.",
+            "timestamp": "2026-05-28T20:06:18.187307Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 073 smoke: audited endpoint reviewing.",
+            "timestamp": "2026-05-28T20:06:18.247431Z"
+          },
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 073 smoke: audited endpoint resolved.",
+            "timestamp": "2026-05-28T20:06:18.303900Z"
+          }
+        ],
+        "reason_code": "parent_route_clearance_failed",
+        "resolution_reason": "pack073_smoke_resolved",
+        "resolved_at": "2026-05-28T20:06:18.303900Z",
+        "resolved_by": "owner_solice",
+        "review_started_at": "2026-05-28T20:06:18.247431Z",
+        "review_started_by": "owner_solice",
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "route_key": "export",
+        "routing": {
+          "queue": "ob_object_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "resolved_archive"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: export:export_073_endpoint could not open because the hallway failed first. Receipt filed.",
+        "source_capsule_id": "objcaps_SgoV83sgq3BoPSh1RuZIlqmd",
+        "source_fingerprint": "22564d1975e1ce7fe8b33a82df0c",
+        "status": "resolved",
+        "surface": "object_security_inbox",
+        "title": "OB object review: parent_route_clearance_failed at export:export_073_endpoint",
+        "updated_at": "2026-05-28T20:06:18.303900Z",
+        "updated_by": "owner_solice",
+        "user_id": "beta_001"
+      },
+      {
+        "action": "download",
+        "allowed": false,
+        "created_at": "2026-05-28T20:06:18.504167Z",
+        "event_type": "ob_object_security_review",
+        "history": [
+          {
+            "action": "note_added",
+            "actor_user_id": "owner_solice",
+            "note": "Pack 078 smoke: audited visible-form endpoint proof.",
+            "timestamp": "2026-05-28T20:06:18.550553Z"
+          }
+        ],
+        "inbox_item_id": "objinbox_39jBm5ttUKmDRzwkg-UYXouo",
+        "object_id": "export_078_panel",
+        "object_kind": "export",
+        "object_type": "export",
+        "ok": true,
+        "owner_action": "Review attempted export/download export_078_panel. Confirm whether this was authorized.",
+        "owner_notes": [
+          {
+            "actor_user_id": "owner_solice",
+            "note": "Pack 078 smoke: audited visible-form endpoint proof.",
+            "timestamp": "2026-05-28T20:06:18.550553Z"
+          }
+        ],
+        "reason_code": "parent_route_clearance_failed",
+        "risk_score": 70,
+        "risk_state": "restricted",
+        "route_key": "export",
+        "routing": {
+          "queue": "ob_object_security_inbox",
+          "requires_step_up_review": false,
+          "surface": "watchlist"
+        },
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: export:export_078_panel could not open because the hallway failed first. Receipt filed.",
+        "source_capsule_id": "objcaps_fTAbFUtS2fVWdaCPG_Gedvp6",
+        "source_fingerprint": "f3e7b17e1098988e7c1ede9c0ca1",
+        "status": "open",
+        "surface": "object_security_inbox",
+        "title": "OB object review: parent_route_clearance_failed at export:export_078_panel",
+        "updated_at": "2026-05-28T20:06:18.550553Z",
+        "updated_by": "owner_solice",
+        "user_id": "beta_001"
+      }
+    ],
+    "ob_object_security_inbox_soulaana": "Soulaana: Review-worthy drawer events are now in the owner's queue.",
+    "ob_object_security_inbox_total": 595,
+    "ok": true,
+    "risk_states_seen_in_audit": {
+      "restricted": 8
+    },
+    "role_counts": {
+      "owner": 1,
+      "user": 2
+    },
+    "security_critical_events": 0,
+    "security_high_events": 0,
+    "security_inbox_critical": 14,
+    "security_inbox_escalated": 0,
+    "security_inbox_high": 49,
+    "security_inbox_items_with_notes": 17,
+    "security_inbox_open": 77,
+    "security_inbox_quarantine_requested": 0,
+    "security_inbox_resolved": 6,
+    "security_inbox_reviewing": 0,
+    "security_inbox_step_up_requested": 12,
+    "security_inbox_total": 126,
+    "security_open_events": 0,
+    "security_review_groups": 32,
+    "security_review_high_groups": 10,
+    "security_review_largest_group": 10,
+    "security_review_urgent_groups": 7,
+    "security_total_events": 0,
+    "step_up_approved": 0,
+    "step_up_expired": 10,
+    "step_up_pending": 14,
+    "step_up_total": 25,
+    "step_up_used": 1,
+    "total_users": 3,
+    "tower_name": "The Tower",
+    "ui_action_audit_action_failed": 110,
+    "ui_action_audit_action_ok": 210,
+    "ui_action_audit_by_action": {
+      "explode": 55,
+      "manual_test": 1,
+      "note": 154,
+      "resolve": 55,
+      "reviewing": 55
+    },
+    "ui_action_audit_by_reason": {
+      "invalid_object_inbox_action_type": 55,
+      "manual_test_ok": 1,
+      "object_inbox_item_id_required": 55,
+      "object_inbox_ui_action_processed": 209
+    },
+    "ui_action_audit_by_severity": {
+      "info": 210,
+      "medium": 110
+    },
+    "ui_action_audit_by_status_code": {
+      "200": 210,
+      "400": 110
+    },
+    "ui_action_audit_human_reason": "Tower UI action audit receipt summary loaded.",
+    "ui_action_audit_ok": true,
+    "ui_action_audit_recent": [
+      {
+        "action_ok": false,
+        "action_type": "note",
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:15.719186Z",
+        "endpoint": "/tower/security-command/object-inbox/action-audited",
+        "event_type": "tower_ui_action_audit_receipt",
+        "human_reason": "Object inbox item id is required.",
+        "inbox_item_id": "",
+        "ok": true,
+        "reason_code": "object_inbox_item_id_required",
+        "receipt_id": "uiaudit_yK2nIbtxWF4Z2r0-NGlCFJG8",
+        "request_payload": {
+          "action_type": "note",
+          "actor_user_id": "owner_solice",
+          "inbox_item_id": "",
+          "note_present": true,
+          "resolution_reason": ""
+        },
+        "result_payload": {
+          "human_reason": "Object inbox item id is required.",
+          "ok": false,
+          "reason_code": "object_inbox_item_id_required",
+          "status": "missing_inbox_item_id"
+        },
+        "risk_score": 55,
+        "risk_state": "watch",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: UI action did not clear cleanly. I recorded the attempt.",
+        "status_code": 400
+      },
+      {
+        "action_ok": true,
+        "action_type": "note",
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:15.929329Z",
+        "endpoint": "/tower/security-command/object-inbox/action-audited",
+        "event_type": "tower_ui_action_audit_receipt",
+        "human_reason": "Object inbox UI action processed.",
+        "inbox_item_id": "objinbox_1oJ8VO0mCSIQDix5YxI5qmJR",
+        "ok": true,
+        "reason_code": "object_inbox_ui_action_processed",
+        "receipt_id": "uiaudit_9bICTLHoiSZk0v6HwnKNmvZI",
+        "request_payload": {
+          "action_type": "note",
+          "actor_user_id": "owner_solice",
+          "inbox_item_id": "objinbox_1oJ8VO0mCSIQDix5YxI5qmJR",
+          "note_present": true,
+          "resolution_reason": ""
+        },
+        "result_payload": {
+          "action_type": "note",
+          "inbox_item_id": "objinbox_1oJ8VO0mCSIQDix5YxI5qmJR",
+          "new_status": "open",
+          "reason_code": null,
+          "status": "updated"
+        },
+        "risk_score": 10,
+        "risk_state": "clear",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Owner UI action recorded. The button click has a receipt.",
+        "status_code": 200
+      },
+      {
+        "action_ok": true,
+        "action_type": "note",
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:18.222212Z",
+        "endpoint": "/tower/security-command/object-inbox/action-audited",
+        "event_type": "tower_ui_action_audit_receipt",
+        "human_reason": "Object inbox UI action processed.",
+        "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+        "ok": true,
+        "reason_code": "object_inbox_ui_action_processed",
+        "receipt_id": "uiaudit_e3t0KUYxHT7GJNYniCQav9KA",
+        "request_payload": {
+          "action_type": "note",
+          "actor_user_id": "owner_solice",
+          "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+          "note_present": true,
+          "resolution_reason": ""
+        },
+        "result_payload": {
+          "action_type": "note",
+          "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+          "new_status": "open",
+          "reason_code": null,
+          "status": "updated"
+        },
+        "risk_score": 10,
+        "risk_state": "clear",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Owner UI action recorded. The button click has a receipt.",
+        "status_code": 200
+      },
+      {
+        "action_ok": true,
+        "action_type": "reviewing",
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:18.281850Z",
+        "endpoint": "/tower/security-command/object-inbox/action-audited",
+        "event_type": "tower_ui_action_audit_receipt",
+        "human_reason": "Object inbox UI action processed.",
+        "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+        "ok": true,
+        "reason_code": "object_inbox_ui_action_processed",
+        "receipt_id": "uiaudit_P7YGvjyyEnsqjWhkBHoyLD6c",
+        "request_payload": {
+          "action_type": "reviewing",
+          "actor_user_id": "owner_solice",
+          "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+          "note_present": true,
+          "resolution_reason": ""
+        },
+        "result_payload": {
+          "action_type": "reviewing",
+          "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+          "new_status": "reviewing",
+          "reason_code": null,
+          "status": "updated"
+        },
+        "risk_score": 10,
+        "risk_state": "clear",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Owner UI action recorded. The button click has a receipt.",
+        "status_code": 200
+      },
+      {
+        "action_ok": true,
+        "action_type": "resolve",
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:18.338786Z",
+        "endpoint": "/tower/security-command/object-inbox/action-audited",
+        "event_type": "tower_ui_action_audit_receipt",
+        "human_reason": "Object inbox UI action processed.",
+        "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+        "ok": true,
+        "reason_code": "object_inbox_ui_action_processed",
+        "receipt_id": "uiaudit_qVczmntHCsFEwwTKZqzJY_bQ",
+        "request_payload": {
+          "action_type": "resolve",
+          "actor_user_id": "owner_solice",
+          "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+          "note_present": true,
+          "resolution_reason": "pack073_smoke_resolved"
+        },
+        "result_payload": {
+          "action_type": "resolve",
+          "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+          "new_status": "resolved",
+          "reason_code": null,
+          "status": "updated"
+        },
+        "risk_score": 10,
+        "risk_state": "clear",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Owner UI action recorded. The button click has a receipt.",
+        "status_code": 200
+      },
+      {
+        "action_ok": false,
+        "action_type": "explode",
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:18.353321Z",
+        "endpoint": "/tower/security-command/object-inbox/action-audited",
+        "event_type": "tower_ui_action_audit_receipt",
+        "human_reason": "Requested object inbox action type is not allowed.",
+        "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+        "ok": true,
+        "reason_code": "invalid_object_inbox_action_type",
+        "receipt_id": "uiaudit_ngWST-84C2z_XxLHV-zLeHkg",
+        "request_payload": {
+          "action_type": "explode",
+          "actor_user_id": "owner_solice",
+          "inbox_item_id": "objinbox_cEqaUuSD73vh0tmkpePH6SyF",
+          "note_present": false,
+          "resolution_reason": ""
+        },
+        "result_payload": {
+          "allowed_action_types": [
+            "note",
+            "reviewing",
+            "resolve",
+            "ignore"
+          ],
+          "human_reason": "Requested object inbox action type is not allowed.",
+          "ok": false,
+          "reason_code": "invalid_object_inbox_action_type",
+          "requested_action_type": "explode",
+          "status": "invalid_action_type"
+        },
+        "risk_score": 55,
+        "risk_state": "watch",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: UI action did not clear cleanly. I recorded the attempt.",
+        "status_code": 400
+      },
+      {
+        "action_ok": false,
+        "action_type": "note",
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:18.367949Z",
+        "endpoint": "/tower/security-command/object-inbox/action-audited",
+        "event_type": "tower_ui_action_audit_receipt",
+        "human_reason": "Object inbox item id is required.",
+        "inbox_item_id": "",
+        "ok": true,
+        "reason_code": "object_inbox_item_id_required",
+        "receipt_id": "uiaudit_rfQCkuwg_lxYTOqLJoBcfTp_",
+        "request_payload": {
+          "action_type": "note",
+          "actor_user_id": "owner_solice",
+          "inbox_item_id": "",
+          "note_present": true,
+          "resolution_reason": ""
+        },
+        "result_payload": {
+          "human_reason": "Object inbox item id is required.",
+          "ok": false,
+          "reason_code": "object_inbox_item_id_required",
+          "status": "missing_inbox_item_id"
+        },
+        "risk_score": 55,
+        "risk_state": "watch",
+        "severity": "medium",
+        "soulaana_translation": "Soulaana: UI action did not clear cleanly. I recorded the attempt.",
+        "status_code": 400
+      },
+      {
+        "action_ok": true,
+        "action_type": "note",
+        "actor_user_id": "owner_solice",
+        "created_at": "2026-05-28T20:06:18.587321Z",
+        "endpoint": "/tower/security-command/object-inbox/action-audited",
+        "event_type": "tower_ui_action_audit_receipt",
+        "human_reason": "Object inbox UI action processed.",
+        "inbox_item_id": "objinbox_39jBm5ttUKmDRzwkg-UYXouo",
+        "ok": true,
+        "reason_code": "object_inbox_ui_action_processed",
+        "receipt_id": "uiaudit_-bkoSu6D3M2-2_0qvcxyPSfm",
+        "request_payload": {
+          "action_type": "note",
+          "actor_user_id": "owner_solice",
+          "inbox_item_id": "objinbox_39jBm5ttUKmDRzwkg-UYXouo",
+          "note_present": true,
+          "resolution_reason": ""
+        },
+        "result_payload": {
+          "action_type": "note",
+          "inbox_item_id": "objinbox_39jBm5ttUKmDRzwkg-UYXouo",
+          "new_status": "open",
+          "reason_code": null,
+          "status": "updated"
+        },
+        "risk_score": 10,
+        "risk_state": "clear",
+        "severity": "info",
+        "soulaana_translation": "Soulaana: Owner UI action recorded. The button click has a receipt.",
+        "status_code": 200
+      }
+    ],
+    "ui_action_audit_soulaana_translation": "Soulaana: The owner button clicks are counted. Every action leaves a receipt.",
+    "ui_action_audit_total": 320,
+    "user_status_counts": {
+      "active": 2,
+      "locked": 1
+    }
+  },
+  "system_panels": [
+    {
+      "code": "ID",
+      "detail": "known users",
+      "label": "Identity Root",
+      "value": "3"
+    },
+    {
+      "code": "TW",
+      "detail": "Owner review should happen now.",
+      "label": "Threat Weather",
+      "value": "Critical"
+    },
+    {
+      "code": "ER",
+      "detail": "open capsules",
+      "label": "Evidence Rings",
+      "value": "22"
+    },
+    {
+      "code": "OB",
+      "detail": "protected route active",
+      "label": "OB Bridge",
+      "value": "Live"
+    },
+    {
+      "code": "SG",
+      "detail": "pending approvals",
+      "label": "Step-up Gate",
+      "value": "14"
+    },
+    {
+      "code": "MS",
+      "detail": "Live automation remains sealed",
+      "label": "Mode Seal",
+      "value": "Closed"
+    },
+    {
+      "code": "DR",
+      "detail": "door-swipe audit capsules",
+      "label": "Door Receipts",
+      "value": "107"
+    },
+    {
+      "code": "DI",
+      "detail": "review-worthy door swipes",
+      "label": "Door Inbox",
+      "value": "0"
+    }
+  ],
+  "tower_user_id": "owner_solice",
   "view_name": "The Tower Security Command View",
-  "view_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_dashboard_view.json"
+  "workflow": [
+    {
+      "action": "Review devices, failed attempts, rapid denials, and session risk.",
+      "lane": "Access risk",
+      "priority": "Priority 1",
+      "title": "Verify the gate",
+      "why": "Unsafe sessions can touch everything else if they get through."
+    },
+    {
+      "action": "Approve, deny, or redact export requests.",
+      "lane": "Protected exports",
+      "priority": "Priority 2",
+      "title": "Protect the vault",
+      "why": "Exports can leak sensitive OB records."
+    },
+    {
+      "action": "Match actor, target, permission, reason, and risk.",
+      "lane": "Admin authority",
+      "priority": "Priority 3",
+      "title": "Check admin keys",
+      "why": "Permission changes decide who can touch the system later."
+    },
+    {
+      "action": "Make sure Live Automated remains locked unless every gate is clean.",
+      "lane": "Live Automated lock",
+      "priority": "Priority 4",
+      "title": "Confirm sealed modes",
+      "why": "This is a final confirmation step."
+    }
+  ]
 }

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The Tower · OB Object Integration Checkpoint</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #080907;
+      color: #f5ead2;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 42px 22px;
+    }
+    .hero {
+      border: 1px solid rgba(220,183,94,.36);
+      border-radius: 30px;
+      padding: 30px;
+      background: linear-gradient(135deg, rgba(75,48,18,.74), rgba(12,13,10,.96));
+      box-shadow: 0 22px 90px rgba(0,0,0,.42);
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      letter-spacing: -.04em;
+    }
+    .hero p {
+      margin: 0;
+      color: rgba(245,234,210,.76);
+      line-height: 1.55;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .stat {
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 20px;
+      padding: 16px;
+      background: rgba(255,255,255,.045);
+    }
+    .stat b {
+      display: block;
+      font-size: 24px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .card {
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 24px;
+      padding: 18px;
+      background: rgba(255,255,255,.045);
+    }
+    .card.good {
+      border-color: rgba(143,221,158,.34);
+    }
+    .card.review, .card.warning {
+      border-color: rgba(220,183,94,.45);
+    }
+    .eyebrow {
+      color: rgba(220,183,94,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    .card p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <h1>The Tower · OB Object Integration Checkpoint</h1>
+    <p>Pack 110 checkpoint verifies route coverage, object guard wiring, object permission readiness, and visibility.</p>
+  </section>
+  <section class="stats">
+    <div class="stat"><b>100</b><span>Readiness</span></div>
+    <div class="stat"><b>14</b><span>Object Guards</span></div>
+    <div class="stat"><b>100%</b><span>Route Coverage</span></div>
+    <div class="stat"><b>4</b><span>Helper Reviews</span></div>
+  </section>
+  <section class="grid">
+        <article class="card warning">
+          <div class="eyebrow">WARNING · helper_or_internal_functions_have_object_guards</div>
+          <h2>4</h2>
+          <p>Some helper/internal functions contain object permission guards. They compiled and tests passed, but Pack 111 should review whether these are intentional or should be moved to route-level wrappers only.</p>
+        </article>
+        
+        <article class="card review">
+          <div class="eyebrow">EXTRA · export · export</div>
+          <h2>build_canonical_reporting_snapshot</h2>
+          <p>Expected: </p>
+        </article>
+        
+        <article class="card review">
+          <div class="eyebrow">EXTRA · export · export</div>
+          <h2>write_canonical_reporting_snapshot</h2>
+          <p>Expected: </p>
+        </article>
+        
+        <article class="card review">
+          <div class="eyebrow">HELPER REVIEW ·  · </div>
+          <h2>_tower_object_guard_marker_109</h2>
+          <p>Expected: </p>
+        </article>
+        
+        <article class="card good">
+          <div class="eyebrow">EXPECTED · symbol · view</div>
+          <h2>signal_symbol_page</h2>
+          <p>Expected: symbol</p>
+        </article>
+        
+        <article class="card good">
+          <div class="eyebrow">EXPECTED · position · view</div>
+          <h2>my_position_detail_page</h2>
+          <p>Expected: position</p>
+        </article>
+        
+        <article class="card good">
+          <div class="eyebrow">EXPECTED · position · edit</div>
+          <h2>edit_my_position</h2>
+          <p>Expected: position</p>
+        </article>
+        
+        <article class="card good">
+          <div class="eyebrow">EXPECTED · position · close</div>
+          <h2>close_my_position</h2>
+          <p>Expected: position</p>
+        </article>
+        
+        <article class="card good">
+          <div class="eyebrow">EXPECTED · position · view</div>
+          <h2>my_positions_archived_page</h2>
+          <p>Expected: position</p>
+        </article>
+        
+        <article class="card good">
+          <div class="eyebrow">EXPECTED · analysis · view</div>
+          <h2>analyze_my_trades_page</h2>
+          <p>Expected: analysis</p>
+        </article>
+        
+        <article class="card good">
+          <div class="eyebrow">EXPECTED · export · export</div>
+          <h2>reports_page</h2>
+          <p>Expected: export</p>
+        </article>
+        
+        <article class="card good">
+          <div class="eyebrow">EXPECTED · trade · view</div>
+          <h2>trade_detail_page</h2>
+          <p>Expected: trade</p>
+        </article>
+        
+        <article class="card review">
+          <div class="eyebrow">HELPER REVIEW · export · export</div>
+          <h2>_pack052_extract_export_id_from_request</h2>
+          <p>Expected: </p>
+        </article>
+        
+        <article class="card review">
+          <div class="eyebrow">HELPER REVIEW · export · export</div>
+          <h2>_pack052_should_check_export_object</h2>
+          <p>Expected: </p>
+        </article>
+        
+        <article class="card review">
+          <div class="eyebrow">HELPER REVIEW · export · export</div>
+          <h2>_pack052_register_export_object_guard_once</h2>
+          <p>Expected: </p>
+        </article>
+        </section>
+</main>
+</body>
+</html>
