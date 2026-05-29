@@ -575,3 +575,32 @@ except Exception:
 # END PACK127_OWNER_QUICK_ACTIONS_INCIDENT_DESK_EXTENSION
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK129_OWNER_QUICK_ACTIONS_INCIDENT_FILTERS_EXTENSION
+# ================================================================================
+
+try:
+    _pack129_existing_action_ids = {
+        action.get("action_id")
+        for action in OWNER_QUICK_ACTIONS
+        if isinstance(action, dict)
+    }
+
+    if "review_incident_filters_escalation" not in _pack129_existing_action_ids:
+        OWNER_QUICK_ACTIONS.append({
+            "action_id": "review_incident_filters_escalation",
+            "title": "Review Incident Filters",
+            "href": "/tower/security-incident-filters.json",
+            "kind": "status_json",
+            "pack": "128",
+            "human_reason": "Review Incident Desk filters, escalation readiness, high severity items, and next-action counts.",
+        })
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK129_OWNER_QUICK_ACTIONS_INCIDENT_FILTERS_EXTENSION
+# ================================================================================
+

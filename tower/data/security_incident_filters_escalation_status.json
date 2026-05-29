@@ -2,25 +2,21 @@
   "by_next_action": {
     "contain_or_resolve": 1,
     "investigate_or_contain": 1,
-    "monitor_or_resolve": 1,
-    "triage": 37
+    "triage": 38
   },
   "by_severity": {
-    "high": 39,
-    "medium": 1
+    "high": 40
   },
   "by_source": {
-    "object_permission_events": 4,
-    "owner_admin_receipts": 5,
-    "owner_ui_checkpoint_status": 1,
+    "object_permission_events": 3,
+    "owner_admin_receipts": 2,
     "redaction_reveal_receipts": 1,
     "secrets_boundary_events": 1,
-    "tamper_audit_chain": 28
+    "tamper_audit_chain": 33
   },
   "by_status": {
-    "contained": 1,
     "investigating": 1,
-    "new": 37,
+    "new": 38,
     "triaged": 1
   },
   "checks": {
@@ -36,8 +32,8 @@
     "view_counts_ready": true
   },
   "closed_count": 0,
-  "contained_count": 1,
-  "created_at": "2026-05-29T20:25:44.569963Z",
+  "contained_count": 0,
+  "created_at": "2026-05-29T20:39:16.168690Z",
   "critical_count": 0,
   "escalation_ready_count": 40,
   "escalation_ready_items": [
@@ -61,7 +57,7 @@
       "next_action": "contain_or_resolve",
       "object_id": "",
       "object_type": "",
-      "owner_notes": "Pack 128 incident investigating seed.",
+      "owner_notes": "Pack 129 investigating seed.",
       "priority_score": 145,
       "review_state": "investigating",
       "route_path": "/tower/security-command",
@@ -75,8 +71,44 @@
       "security_decision": "recorded",
       "severity": "high",
       "source": "owner_admin_receipts",
-      "updated_at": "2026-05-29T20:25:37.487680Z",
+      "updated_at": "2026-05-29T20:38:31.884970Z",
       "updated_by": "owner_solice"
+    },
+    {
+      "assigned_to": "",
+      "created_at": "2026-05-28T21:38:09.176896Z",
+      "escalation_label": "Escalation Ready",
+      "escalation_reasons": [
+        "high_severity",
+        "needs_owner_triage",
+        "high_priority_score"
+      ],
+      "human_reason": "Raw secret value was rejected. The Tower may only store a reference.",
+      "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
+      "incident_id": "incident_70279dc0dc9caba568",
+      "incident_sort_score": 178,
+      "incident_state_source": "candidate",
+      "incident_status": "new",
+      "is_escalation_ready": true,
+      "last_action": "",
+      "next_action": "triage",
+      "object_id": "",
+      "object_type": "",
+      "owner_notes": "",
+      "priority_score": 145,
+      "review_state": "acknowledged",
+      "route_path": "",
+      "safe_summary": {
+        "decision": "raw_secret_rejected",
+        "event_type": "tower_secrets_boundary_event",
+        "pack": "096",
+        "reason_code": "tower_cannot_store_raw_secret_value"
+      },
+      "security_decision": "raw_secret_rejected",
+      "severity": "high",
+      "source": "secrets_boundary_events",
+      "updated_at": "",
+      "updated_by": ""
     },
     {
       "assigned_to": "",
@@ -157,7 +189,7 @@
     },
     {
       "assigned_to": "owner_solice",
-      "created_at": "2026-05-29T20:25:21.637073Z",
+      "created_at": "2026-05-29T20:38:21.104075Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -165,15 +197,15 @@
         "high_priority_score"
       ],
       "human_reason": "position_owner_mismatch",
-      "inbox_item_id": "security_inbox_9efe57b045803a494b",
-      "incident_id": "incident_bed4ece5ecef085701",
+      "inbox_item_id": "security_inbox_6bdfc4465c1a6d1bb0",
+      "incident_id": "incident_5a61dfd1c2968a0247",
       "incident_sort_score": 175,
       "incident_state_source": "saved_state",
       "incident_status": "triaged",
       "is_escalation_ready": true,
       "last_action": "new_to_triaged",
       "next_action": "investigate_or_contain",
-      "object_id": "pos_other_128",
+      "object_id": "pos_other_129",
       "object_type": "position",
       "owner_notes": "[REDACTED_INCIDENT_VALUE]",
       "priority_score": 160,
@@ -183,7 +215,7 @@
         "action": "view",
         "decision": "deny",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "pos_other_128",
+        "object_id": "pos_other_129",
         "object_type": "position",
         "pack": "108",
         "reason_code": "position_owner_mismatch"
@@ -191,12 +223,12 @@
       "security_decision": "deny",
       "severity": "high",
       "source": "object_permission_events",
-      "updated_at": "2026-05-29T20:25:35.608327Z",
+      "updated_at": "2026-05-29T20:38:29.987693Z",
       "updated_by": "owner_solice"
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T20:25:23.213004Z",
+      "created_at": "2026-05-29T20:38:22.367168Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -204,15 +236,15 @@
         "high_priority_score"
       ],
       "human_reason": "export_requires_step_up",
-      "inbox_item_id": "security_inbox_c985f59f311c3c6cc0",
-      "incident_id": "incident_e2d08b9a55e0f288f3",
+      "inbox_item_id": "security_inbox_65cce8d51d34899e93",
+      "incident_id": "incident_e2745301756ee83a83",
       "incident_sort_score": 174,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
       "last_action": "",
       "next_action": "triage",
-      "object_id": "export_128",
+      "object_id": "export_129",
       "object_type": "export",
       "owner_notes": "",
       "priority_score": 132,
@@ -222,7 +254,7 @@
         "action": "export",
         "decision": "step_up_required",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "export_128",
+        "object_id": "export_129",
         "object_type": "export",
         "pack": "108",
         "reason_code": "export_requires_step_up"
@@ -235,7 +267,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T20:25:22.502532Z",
+      "created_at": "2026-05-29T20:38:21.745960Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -243,15 +275,15 @@
         "high_priority_score"
       ],
       "human_reason": "position_mutation_requires_step_up",
-      "inbox_item_id": "security_inbox_a93cef85783ff98d4f",
-      "incident_id": "incident_98b65a813a599c5013",
+      "inbox_item_id": "security_inbox_1f597d3ed97a3101e8",
+      "incident_id": "incident_bc08f1888d0ada3099",
       "incident_sort_score": 174,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
       "last_action": "",
       "next_action": "triage",
-      "object_id": "pos_mine_128",
+      "object_id": "pos_mine_129",
       "object_type": "position",
       "owner_notes": "",
       "priority_score": 132,
@@ -261,7 +293,7 @@
         "action": "close",
         "decision": "step_up_required",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "pos_mine_128",
+        "object_id": "pos_mine_129",
         "object_type": "position",
         "pack": "108",
         "reason_code": "position_mutation_requires_step_up"
@@ -274,73 +306,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T20:25:23.467157Z",
-      "escalation_label": "Escalation Ready",
-      "escalation_reasons": [
-        "high_severity",
-        "needs_owner_triage",
-        "high_priority_score"
-      ],
-      "human_reason": "tower_ob_object_permission_event_snapshot",
-      "inbox_item_id": "security_inbox_3b27e2d4d2f41d8778",
-      "incident_id": "incident_6c14c539bdc5d6e680",
-      "incident_sort_score": 172,
-      "incident_state_source": "candidate",
-      "incident_status": "new",
-      "is_escalation_ready": true,
-      "last_action": "",
-      "next_action": "triage",
-      "object_id": "",
-      "object_type": "",
-      "owner_notes": "",
-      "priority_score": 128,
-      "review_state": "new",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_event_snapshot"
-      },
-      "security_decision": "tower_ob_object_permission_event_snapshot",
-      "severity": "high",
-      "source": "tamper_audit_chain",
-      "updated_at": "",
-      "updated_by": ""
-    },
-    {
-      "assigned_to": "",
-      "created_at": "2026-05-29T20:25:22.716709Z",
-      "escalation_label": "Escalation Ready",
-      "escalation_reasons": [
-        "high_severity",
-        "needs_owner_triage",
-        "high_priority_score"
-      ],
-      "human_reason": "tower_ob_object_permission_event_snapshot",
-      "inbox_item_id": "security_inbox_b22797b40d782db782",
-      "incident_id": "incident_1743f6dd4ee3a9ebcb",
-      "incident_sort_score": 172,
-      "incident_state_source": "candidate",
-      "incident_status": "new",
-      "is_escalation_ready": true,
-      "last_action": "",
-      "next_action": "triage",
-      "object_id": "",
-      "object_type": "",
-      "owner_notes": "",
-      "priority_score": 128,
-      "review_state": "new",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_event_snapshot"
-      },
-      "security_decision": "tower_ob_object_permission_event_snapshot",
-      "severity": "high",
-      "source": "tamper_audit_chain",
-      "updated_at": "",
-      "updated_by": ""
-    },
-    {
-      "assigned_to": "",
-      "created_at": "2026-05-29T19:27:31.693501Z",
+      "created_at": "2026-05-29T20:39:12.710881Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -348,8 +314,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_1c4b5e8b6e06396674",
-      "incident_id": "incident_f0eb58e1a5ccde5b91",
+      "inbox_item_id": "security_inbox_b6b111a7014a8cdda3",
+      "incident_id": "incident_97b328625c8af38df3",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -373,7 +339,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:31.351649Z",
+      "created_at": "2026-05-29T20:39:12.357729Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -381,8 +347,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_e26823f0389cb00f31",
-      "incident_id": "incident_ca5c2a5ad22f4e9dc3",
+      "inbox_item_id": "security_inbox_7a2c68e7be210800ba",
+      "incident_id": "incident_06be18d470891024e4",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -406,7 +372,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:30.633004Z",
+      "created_at": "2026-05-29T20:39:11.573202Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -414,8 +380,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_6182060da6f520fc55",
-      "incident_id": "incident_1755146839c878ff1c",
+      "inbox_item_id": "security_inbox_d9f28336e814c90031",
+      "incident_id": "incident_c2d181ecc9f96f8337",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -439,7 +405,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:30.296173Z",
+      "created_at": "2026-05-29T20:39:11.213575Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -447,8 +413,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_06986e3beda9e4f733",
-      "incident_id": "incident_588a351474d157116c",
+      "inbox_item_id": "security_inbox_fa7166df1e86617e00",
+      "incident_id": "incident_0151efcc656de543d2",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -472,7 +438,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:29.936891Z",
+      "created_at": "2026-05-29T20:39:10.777231Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -480,8 +446,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_40ee2e154ac6b4b683",
-      "incident_id": "incident_dc2a9ef3663b3bf833",
+      "inbox_item_id": "security_inbox_069bfd65568fe87773",
+      "incident_id": "incident_aacaeba75382fede8b",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -505,7 +471,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:29.215936Z",
+      "created_at": "2026-05-29T20:39:10.003878Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -513,8 +479,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_ac1541b2be6c6605bd",
-      "incident_id": "incident_fc5deae32c6eebbb15",
+      "inbox_item_id": "security_inbox_256c96cce3fa72c4e6",
+      "incident_id": "incident_56bd5458fbd9f3d973",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -538,7 +504,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:28.839027Z",
+      "created_at": "2026-05-29T20:39:09.628186Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -546,8 +512,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_9f9d3cb6599952b668",
-      "incident_id": "incident_f5e1675bed4d112ca6",
+      "inbox_item_id": "security_inbox_0d1c3d00c45806bcee",
+      "incident_id": "incident_804ae0a818e09b3755",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -571,7 +537,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:28.501784Z",
+      "created_at": "2026-05-29T20:39:09.274683Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -579,8 +545,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_63297e6ed13965b596",
-      "incident_id": "incident_0574997bfd21aa1c14",
+      "inbox_item_id": "security_inbox_52a03e86a984146032",
+      "incident_id": "incident_4cdc135fb46f67664c",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -604,7 +570,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:28.153552Z",
+      "created_at": "2026-05-29T20:39:08.905916Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -612,8 +578,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_730137290aa8c0eeaa",
-      "incident_id": "incident_6799ba865f68bfec86",
+      "inbox_item_id": "security_inbox_60ac012af7c08e2e09",
+      "incident_id": "incident_3d9e80ceacee9f9963",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -637,7 +603,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:27.813269Z",
+      "created_at": "2026-05-29T20:39:08.529473Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -645,8 +611,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_22a0e94d716bb69965",
-      "incident_id": "incident_25acd6bcedf653be1b",
+      "inbox_item_id": "security_inbox_5f1eac22c158cba987",
+      "incident_id": "incident_aeeb222999b825e841",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -670,7 +636,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:27.151770Z",
+      "created_at": "2026-05-29T20:39:07.825642Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -678,8 +644,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_734b97b8e7694973a0",
-      "incident_id": "incident_13077d4aabcc787a4a",
+      "inbox_item_id": "security_inbox_ebb8ffb1c280f578bc",
+      "incident_id": "incident_dfe74f2b6acc381d4e",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -703,7 +669,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:26.807712Z",
+      "created_at": "2026-05-29T20:39:07.445123Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -711,8 +677,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_c3d4423c032eea73f4",
-      "incident_id": "incident_fc2e18a4b55ef6c8c1",
+      "inbox_item_id": "security_inbox_bc3f474103e7f0ab19",
+      "incident_id": "incident_e5277db9af2cbd0818",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -736,7 +702,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:26.479613Z",
+      "created_at": "2026-05-29T20:39:07.094626Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -744,8 +710,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_f719de1024baf0f0c3",
-      "incident_id": "incident_260ab681d4c1a5e57d",
+      "inbox_item_id": "security_inbox_cb8ce6477322347e3d",
+      "incident_id": "incident_c5a5ed3e956ebc5b03",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -769,7 +735,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:25.761155Z",
+      "created_at": "2026-05-29T20:39:06.341125Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -777,8 +743,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_c38b027513182fcb0b",
-      "incident_id": "incident_a0a224061cddbd133f",
+      "inbox_item_id": "security_inbox_1c46eaecfbe97a2fd4",
+      "incident_id": "incident_f252adc503e09ee261",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -802,7 +768,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:25.434909Z",
+      "created_at": "2026-05-29T20:39:05.971816Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -810,8 +776,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_c3f69fee0950ad1742",
-      "incident_id": "incident_3741fa686f3b9415af",
+      "inbox_item_id": "security_inbox_46510362682146ac25",
+      "incident_id": "incident_8ae161d7076baf9631",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -835,7 +801,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:25.111862Z",
+      "created_at": "2026-05-29T20:39:05.562175Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -843,8 +809,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_35ceb1e3ac3db5b2bd",
-      "incident_id": "incident_8e8298730672863df1",
+      "inbox_item_id": "security_inbox_23d99bd483ccf5bbc7",
+      "incident_id": "incident_9d417e8ac7d1b4eacc",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -868,7 +834,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:24.730710Z",
+      "created_at": "2026-05-29T20:39:04.975516Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -876,8 +842,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_39a88b879218131b66",
-      "incident_id": "incident_8068f5deb3a895bd00",
+      "inbox_item_id": "security_inbox_c9eb073cf42235a4c3",
+      "incident_id": "incident_236777dfe8e2f122e6",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -901,7 +867,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:21.890537Z",
+      "created_at": "2026-05-29T20:39:01.176847Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -909,8 +875,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_4ee3bc3a66af79efa5",
-      "incident_id": "incident_b47d15911c81283464",
+      "inbox_item_id": "security_inbox_f5ce57f41de0d49fd0",
+      "incident_id": "incident_ad0b02260fc3341577",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -934,7 +900,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:21.258808Z",
+      "created_at": "2026-05-29T20:39:00.819127Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -942,8 +908,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_4fc20cef50be332897",
-      "incident_id": "incident_8fbf91d72807632a02",
+      "inbox_item_id": "security_inbox_055c3f200d9bea3337",
+      "incident_id": "incident_d3c40883d9a847701e",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -967,7 +933,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:20.004795Z",
+      "created_at": "2026-05-29T20:39:00.020955Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -975,8 +941,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_cb44b89e79c70ef0ee",
-      "incident_id": "incident_d9fd8ce6f5a8b85cd1",
+      "inbox_item_id": "security_inbox_72a165f6a87f820856",
+      "incident_id": "incident_de2474d1c5f537f235",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1000,7 +966,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:19.604467Z",
+      "created_at": "2026-05-29T20:38:59.643041Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1008,8 +974,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_7c071b8d9790bdd808",
-      "incident_id": "incident_fbd171c9603b6ba451",
+      "inbox_item_id": "security_inbox_2b9224ad39b553e60a",
+      "incident_id": "incident_de9424d8ef59f8569d",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1033,7 +999,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:19.256032Z",
+      "created_at": "2026-05-29T20:38:59.268667Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1041,8 +1007,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_5043275de5bc23297e",
-      "incident_id": "incident_fe54e373d6f62506f1",
+      "inbox_item_id": "security_inbox_713a7d39b89f225b53",
+      "incident_id": "incident_80c0eeac12fa6946fe",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1066,7 +1032,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:18.570660Z",
+      "created_at": "2026-05-29T20:38:58.508892Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1074,8 +1040,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_fe583b2cf448f73411",
-      "incident_id": "incident_f1d564c7d3a8c36a23",
+      "inbox_item_id": "security_inbox_057a051a4c49f6026f",
+      "incident_id": "incident_bf49e4a1c6f7516f12",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1099,7 +1065,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:18.200991Z",
+      "created_at": "2026-05-29T20:38:58.132050Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1107,8 +1073,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_d643ff452814f07b75",
-      "incident_id": "incident_b24828d482eb998e13",
+      "inbox_item_id": "security_inbox_fcd911740f3c4a0cbd",
+      "incident_id": "incident_1807e4b68dafc4f499",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1132,7 +1098,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:17.845387Z",
+      "created_at": "2026-05-29T20:38:57.769835Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1140,8 +1106,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_4622cf17f43e16b30d",
-      "incident_id": "incident_e3159ec1b308a1441d",
+      "inbox_item_id": "security_inbox_5c433408bab44abb30",
+      "incident_id": "incident_eab4484f02cc46aed7",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1165,7 +1131,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:17.476609Z",
+      "created_at": "2026-05-29T20:38:57.351946Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1173,8 +1139,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_ec8513e7b5e5cd7185",
-      "incident_id": "incident_f7589e2a46a1ebab9e",
+      "inbox_item_id": "security_inbox_eb83180d09d7cc1794",
+      "incident_id": "incident_ef331f3d62be6aa793",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1198,56 +1164,50 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T20:25:24.361694Z",
+      "created_at": "2026-05-29T20:38:56.969406Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
         "needs_owner_triage",
         "high_priority_score"
       ],
-      "human_reason": "analysis_summary_first",
-      "inbox_item_id": "security_inbox_790b313717e9f2275f",
-      "incident_id": "incident_3b7fd7c81c9f8d2645",
-      "incident_sort_score": 170,
+      "human_reason": "tower_ob_object_permission_visibility_status",
+      "inbox_item_id": "security_inbox_cce56b1f46f0829151",
+      "incident_id": "incident_73518f4d3e0fae894c",
+      "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
       "last_action": "",
       "next_action": "triage",
-      "object_id": "analysis_128",
-      "object_type": "analysis",
+      "object_id": "",
+      "object_type": "",
       "owner_notes": "",
-      "priority_score": 120,
+      "priority_score": 128,
       "review_state": "new",
       "route_path": "",
       "safe_summary": {
-        "action": "view",
-        "decision": "summary_only",
-        "event_type": "tower_ob_object_permission_event",
-        "object_id": "analysis_128",
-        "object_type": "analysis",
-        "pack": "108",
-        "reason_code": "analysis_summary_first"
+        "event_type": "tower_ob_object_permission_visibility_status"
       },
-      "security_decision": "summary_only",
+      "security_decision": "tower_ob_object_permission_visibility_status",
       "severity": "high",
-      "source": "object_permission_events",
+      "source": "tamper_audit_chain",
       "updated_at": "",
       "updated_by": ""
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T16:59:46.287653Z",
+      "created_at": "2026-05-29T20:38:56.261738Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
         "needs_owner_triage",
         "high_priority_score"
       ],
-      "human_reason": "Security Command owner UI block is healthy: preferred destination, unified page, quick actions, visibility, coverage, and checkpoints are all passing.",
-      "inbox_item_id": "security_inbox_fc144348543f38ab6f",
-      "incident_id": "incident_d2c5da604ee6437300",
-      "incident_sort_score": 170,
+      "human_reason": "tower_security_command_object_visibility_status",
+      "inbox_item_id": "security_inbox_3a67441832c9da3989",
+      "incident_id": "incident_8e171fd5c9212fb425",
+      "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
@@ -1256,33 +1216,31 @@
       "object_id": "",
       "object_type": "",
       "owner_notes": "",
-      "priority_score": 120,
+      "priority_score": 128,
       "review_state": "new",
       "route_path": "",
       "safe_summary": {
-        "pack": "120",
-        "readiness_score": 100,
-        "status": "passed"
+        "event_type": "tower_security_command_object_visibility_status"
       },
-      "security_decision": "passed",
+      "security_decision": "tower_security_command_object_visibility_status",
       "severity": "high",
-      "source": "owner_ui_checkpoint_status",
+      "source": "tamper_audit_chain",
       "updated_at": "",
       "updated_by": ""
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-28T21:48:31.253446Z",
+      "created_at": "2026-05-29T20:38:55.908456Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
         "needs_owner_triage",
         "high_priority_score"
       ],
-      "human_reason": "Owner/admin action receipt recorded.",
-      "inbox_item_id": "security_inbox_f49653e9cefb5f7940",
-      "incident_id": "incident_873311920abf68b603",
-      "incident_sort_score": 170,
+      "human_reason": "tower_ob_object_permission_visibility_status",
+      "inbox_item_id": "security_inbox_764c6b4318e4abf6e7",
+      "incident_id": "incident_e10a9c1ade3d9086f9",
+      "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
@@ -1291,133 +1249,153 @@
       "object_id": "",
       "object_type": "",
       "owner_notes": "",
-      "priority_score": 120,
+      "priority_score": 128,
       "review_state": "new",
-      "route_path": "/tower/security-command",
-      "safe_summary": {
-        "decision": "recorded",
-        "event_type": "tower_owner_admin_action_receipt",
-        "pack": "099",
-        "route_path": "/tower/security-command",
-        "status": "completed"
-      },
-      "security_decision": "recorded",
-      "severity": "high",
-      "source": "owner_admin_receipts",
-      "updated_at": "",
-      "updated_by": ""
-    },
-    {
-      "assigned_to": "",
-      "created_at": "2026-05-28T21:48:31.218413Z",
-      "escalation_label": "Escalation Ready",
-      "escalation_reasons": [
-        "high_severity",
-        "needs_owner_triage",
-        "high_priority_score"
-      ],
-      "human_reason": "Owner/admin action receipt recorded.",
-      "inbox_item_id": "security_inbox_290af4e93994fc6b1d",
-      "incident_id": "incident_be2770f20db3bfe53b",
-      "incident_sort_score": 170,
-      "incident_state_source": "candidate",
-      "incident_status": "new",
-      "is_escalation_ready": true,
-      "last_action": "",
-      "next_action": "triage",
-      "object_id": "",
-      "object_type": "",
-      "owner_notes": "",
-      "priority_score": 120,
-      "review_state": "new",
-      "route_path": "/tower/security-command",
-      "safe_summary": {
-        "decision": "recorded",
-        "event_type": "tower_owner_admin_action_receipt",
-        "pack": "099",
-        "route_path": "/tower/security-command",
-        "status": "completed"
-      },
-      "security_decision": "recorded",
-      "severity": "high",
-      "source": "owner_admin_receipts",
-      "updated_at": "",
-      "updated_by": ""
-    },
-    {
-      "assigned_to": "",
-      "created_at": "2026-05-28T21:48:31.189945Z",
-      "escalation_label": "Escalation Ready",
-      "escalation_reasons": [
-        "high_severity",
-        "needs_owner_triage",
-        "high_priority_score"
-      ],
-      "human_reason": "Owner/admin action receipt recorded.",
-      "inbox_item_id": "security_inbox_d3674b6ffd84905395",
-      "incident_id": "incident_27e2f5ea098d2b0b89",
-      "incident_sort_score": 170,
-      "incident_state_source": "candidate",
-      "incident_status": "new",
-      "is_escalation_ready": true,
-      "last_action": "",
-      "next_action": "triage",
-      "object_id": "",
-      "object_type": "",
-      "owner_notes": "",
-      "priority_score": 120,
-      "review_state": "new",
-      "route_path": "/tower/security-command",
-      "safe_summary": {
-        "decision": "recorded",
-        "event_type": "tower_owner_admin_action_receipt",
-        "pack": "099",
-        "route_path": "/tower/security-command",
-        "status": "completed"
-      },
-      "security_decision": "recorded",
-      "severity": "high",
-      "source": "owner_admin_receipts",
-      "updated_at": "",
-      "updated_by": ""
-    },
-    {
-      "assigned_to": "owner_solice",
-      "created_at": "2026-05-28T21:38:09.176896Z",
-      "escalation_label": "Escalation Ready",
-      "escalation_reasons": [
-        "containment_needs_resolution_or_monitoring"
-      ],
-      "human_reason": "Raw secret value was rejected. The Tower may only store a reference.",
-      "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
-      "incident_id": "incident_70279dc0dc9caba568",
-      "incident_sort_score": 146,
-      "incident_state_source": "saved_state",
-      "incident_status": "contained",
-      "is_escalation_ready": true,
-      "last_action": "new_to_contained",
-      "next_action": "monitor_or_resolve",
-      "object_id": "",
-      "object_type": "",
-      "owner_notes": "Pack 128 contained seed.",
-      "priority_score": 145,
-      "review_state": "acknowledged",
       "route_path": "",
       "safe_summary": {
-        "decision": "raw_secret_rejected",
-        "event_type": "tower_secrets_boundary_event",
-        "pack": "096",
-        "reason_code": "tower_cannot_store_raw_secret_value"
+        "event_type": "tower_ob_object_permission_visibility_status"
       },
-      "security_decision": "raw_secret_rejected",
-      "severity": "medium",
-      "source": "secrets_boundary_events",
-      "updated_at": "2026-05-29T20:25:40.603235Z",
-      "updated_by": "owner_solice"
+      "security_decision": "tower_ob_object_permission_visibility_status",
+      "severity": "high",
+      "source": "tamper_audit_chain",
+      "updated_at": "",
+      "updated_by": ""
+    },
+    {
+      "assigned_to": "",
+      "created_at": "2026-05-29T20:38:55.543601Z",
+      "escalation_label": "Escalation Ready",
+      "escalation_reasons": [
+        "high_severity",
+        "needs_owner_triage",
+        "high_priority_score"
+      ],
+      "human_reason": "tower_ob_object_permission_visibility_status",
+      "inbox_item_id": "security_inbox_3457f283a1efab9256",
+      "incident_id": "incident_85536de59e21566c57",
+      "incident_sort_score": 172,
+      "incident_state_source": "candidate",
+      "incident_status": "new",
+      "is_escalation_ready": true,
+      "last_action": "",
+      "next_action": "triage",
+      "object_id": "",
+      "object_type": "",
+      "owner_notes": "",
+      "priority_score": 128,
+      "review_state": "new",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_visibility_status"
+      },
+      "security_decision": "tower_ob_object_permission_visibility_status",
+      "severity": "high",
+      "source": "tamper_audit_chain",
+      "updated_at": "",
+      "updated_by": ""
+    },
+    {
+      "assigned_to": "",
+      "created_at": "2026-05-29T20:38:54.780528Z",
+      "escalation_label": "Escalation Ready",
+      "escalation_reasons": [
+        "high_severity",
+        "needs_owner_triage",
+        "high_priority_score"
+      ],
+      "human_reason": "tower_ob_object_permission_visibility_status",
+      "inbox_item_id": "security_inbox_45077efe9f78e55114",
+      "incident_id": "incident_61eae2443807e40032",
+      "incident_sort_score": 172,
+      "incident_state_source": "candidate",
+      "incident_status": "new",
+      "is_escalation_ready": true,
+      "last_action": "",
+      "next_action": "triage",
+      "object_id": "",
+      "object_type": "",
+      "owner_notes": "",
+      "priority_score": 128,
+      "review_state": "new",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_visibility_status"
+      },
+      "security_decision": "tower_ob_object_permission_visibility_status",
+      "severity": "high",
+      "source": "tamper_audit_chain",
+      "updated_at": "",
+      "updated_by": ""
+    },
+    {
+      "assigned_to": "",
+      "created_at": "2026-05-29T20:38:54.406649Z",
+      "escalation_label": "Escalation Ready",
+      "escalation_reasons": [
+        "high_severity",
+        "needs_owner_triage",
+        "high_priority_score"
+      ],
+      "human_reason": "tower_security_command_object_visibility_status",
+      "inbox_item_id": "security_inbox_e54e79b57cfb5b57d8",
+      "incident_id": "incident_e9ac371a0e8529d97d",
+      "incident_sort_score": 172,
+      "incident_state_source": "candidate",
+      "incident_status": "new",
+      "is_escalation_ready": true,
+      "last_action": "",
+      "next_action": "triage",
+      "object_id": "",
+      "object_type": "",
+      "owner_notes": "",
+      "priority_score": 128,
+      "review_state": "new",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_command_object_visibility_status"
+      },
+      "security_decision": "tower_security_command_object_visibility_status",
+      "severity": "high",
+      "source": "tamper_audit_chain",
+      "updated_at": "",
+      "updated_by": ""
+    },
+    {
+      "assigned_to": "",
+      "created_at": "2026-05-29T20:38:54.035493Z",
+      "escalation_label": "Escalation Ready",
+      "escalation_reasons": [
+        "high_severity",
+        "needs_owner_triage",
+        "high_priority_score"
+      ],
+      "human_reason": "tower_ob_object_permission_visibility_status",
+      "inbox_item_id": "security_inbox_f813a5304110dd37e0",
+      "incident_id": "incident_9309b5ccb9d334476c",
+      "incident_sort_score": 172,
+      "incident_state_source": "candidate",
+      "incident_status": "new",
+      "is_escalation_ready": true,
+      "last_action": "",
+      "next_action": "triage",
+      "object_id": "",
+      "object_type": "",
+      "owner_notes": "",
+      "priority_score": 128,
+      "review_state": "new",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_visibility_status"
+      },
+      "security_decision": "tower_ob_object_permission_visibility_status",
+      "severity": "high",
+      "source": "tamper_audit_chain",
+      "updated_at": "",
+      "updated_by": ""
     }
   ],
   "failed_checks": [],
-  "high_count": 39,
+  "high_count": 40,
   "human_reason": "Incident Desk filters and escalation readiness are ready so serious incidents rise above routine security noise.",
   "incident_count": 40,
   "investigating_count": 1,
@@ -1436,7 +1414,7 @@
   "resolved_count": 0,
   "soulaana_translation": "Soulaana: The Incident Desk can now show what needs owner attention first.",
   "status": "passed",
-  "status_fingerprint": "d8fc36fd9f753cf39da315afc549068a5314a086fa7d16ba9baa055e91de9b5d",
+  "status_fingerprint": "3a43d47e306bdcd2306fa16497175a4fc5034f0183c9ce55630f62a0204777cc",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_incident_filters_escalation_status.json",
   "top_incidents": [
     {
@@ -1459,7 +1437,7 @@
       "next_action": "contain_or_resolve",
       "object_id": "",
       "object_type": "",
-      "owner_notes": "Pack 128 incident investigating seed.",
+      "owner_notes": "Pack 129 investigating seed.",
       "priority_score": 145,
       "review_state": "investigating",
       "route_path": "/tower/security-command",
@@ -1473,8 +1451,44 @@
       "security_decision": "recorded",
       "severity": "high",
       "source": "owner_admin_receipts",
-      "updated_at": "2026-05-29T20:25:37.487680Z",
+      "updated_at": "2026-05-29T20:38:31.884970Z",
       "updated_by": "owner_solice"
+    },
+    {
+      "assigned_to": "",
+      "created_at": "2026-05-28T21:38:09.176896Z",
+      "escalation_label": "Escalation Ready",
+      "escalation_reasons": [
+        "high_severity",
+        "needs_owner_triage",
+        "high_priority_score"
+      ],
+      "human_reason": "Raw secret value was rejected. The Tower may only store a reference.",
+      "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
+      "incident_id": "incident_70279dc0dc9caba568",
+      "incident_sort_score": 178,
+      "incident_state_source": "candidate",
+      "incident_status": "new",
+      "is_escalation_ready": true,
+      "last_action": "",
+      "next_action": "triage",
+      "object_id": "",
+      "object_type": "",
+      "owner_notes": "",
+      "priority_score": 145,
+      "review_state": "acknowledged",
+      "route_path": "",
+      "safe_summary": {
+        "decision": "raw_secret_rejected",
+        "event_type": "tower_secrets_boundary_event",
+        "pack": "096",
+        "reason_code": "tower_cannot_store_raw_secret_value"
+      },
+      "security_decision": "raw_secret_rejected",
+      "severity": "high",
+      "source": "secrets_boundary_events",
+      "updated_at": "",
+      "updated_by": ""
     },
     {
       "assigned_to": "",
@@ -1555,7 +1569,7 @@
     },
     {
       "assigned_to": "owner_solice",
-      "created_at": "2026-05-29T20:25:21.637073Z",
+      "created_at": "2026-05-29T20:38:21.104075Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1563,15 +1577,15 @@
         "high_priority_score"
       ],
       "human_reason": "position_owner_mismatch",
-      "inbox_item_id": "security_inbox_9efe57b045803a494b",
-      "incident_id": "incident_bed4ece5ecef085701",
+      "inbox_item_id": "security_inbox_6bdfc4465c1a6d1bb0",
+      "incident_id": "incident_5a61dfd1c2968a0247",
       "incident_sort_score": 175,
       "incident_state_source": "saved_state",
       "incident_status": "triaged",
       "is_escalation_ready": true,
       "last_action": "new_to_triaged",
       "next_action": "investigate_or_contain",
-      "object_id": "pos_other_128",
+      "object_id": "pos_other_129",
       "object_type": "position",
       "owner_notes": "[REDACTED_INCIDENT_VALUE]",
       "priority_score": 160,
@@ -1581,7 +1595,7 @@
         "action": "view",
         "decision": "deny",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "pos_other_128",
+        "object_id": "pos_other_129",
         "object_type": "position",
         "pack": "108",
         "reason_code": "position_owner_mismatch"
@@ -1589,12 +1603,12 @@
       "security_decision": "deny",
       "severity": "high",
       "source": "object_permission_events",
-      "updated_at": "2026-05-29T20:25:35.608327Z",
+      "updated_at": "2026-05-29T20:38:29.987693Z",
       "updated_by": "owner_solice"
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T20:25:23.213004Z",
+      "created_at": "2026-05-29T20:38:22.367168Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1602,15 +1616,15 @@
         "high_priority_score"
       ],
       "human_reason": "export_requires_step_up",
-      "inbox_item_id": "security_inbox_c985f59f311c3c6cc0",
-      "incident_id": "incident_e2d08b9a55e0f288f3",
+      "inbox_item_id": "security_inbox_65cce8d51d34899e93",
+      "incident_id": "incident_e2745301756ee83a83",
       "incident_sort_score": 174,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
       "last_action": "",
       "next_action": "triage",
-      "object_id": "export_128",
+      "object_id": "export_129",
       "object_type": "export",
       "owner_notes": "",
       "priority_score": 132,
@@ -1620,7 +1634,7 @@
         "action": "export",
         "decision": "step_up_required",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "export_128",
+        "object_id": "export_129",
         "object_type": "export",
         "pack": "108",
         "reason_code": "export_requires_step_up"
@@ -1633,7 +1647,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T20:25:22.502532Z",
+      "created_at": "2026-05-29T20:38:21.745960Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1641,15 +1655,15 @@
         "high_priority_score"
       ],
       "human_reason": "position_mutation_requires_step_up",
-      "inbox_item_id": "security_inbox_a93cef85783ff98d4f",
-      "incident_id": "incident_98b65a813a599c5013",
+      "inbox_item_id": "security_inbox_1f597d3ed97a3101e8",
+      "incident_id": "incident_bc08f1888d0ada3099",
       "incident_sort_score": 174,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
       "last_action": "",
       "next_action": "triage",
-      "object_id": "pos_mine_128",
+      "object_id": "pos_mine_129",
       "object_type": "position",
       "owner_notes": "",
       "priority_score": 132,
@@ -1659,7 +1673,7 @@
         "action": "close",
         "decision": "step_up_required",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "pos_mine_128",
+        "object_id": "pos_mine_129",
         "object_type": "position",
         "pack": "108",
         "reason_code": "position_mutation_requires_step_up"
@@ -1672,73 +1686,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T20:25:23.467157Z",
-      "escalation_label": "Escalation Ready",
-      "escalation_reasons": [
-        "high_severity",
-        "needs_owner_triage",
-        "high_priority_score"
-      ],
-      "human_reason": "tower_ob_object_permission_event_snapshot",
-      "inbox_item_id": "security_inbox_3b27e2d4d2f41d8778",
-      "incident_id": "incident_6c14c539bdc5d6e680",
-      "incident_sort_score": 172,
-      "incident_state_source": "candidate",
-      "incident_status": "new",
-      "is_escalation_ready": true,
-      "last_action": "",
-      "next_action": "triage",
-      "object_id": "",
-      "object_type": "",
-      "owner_notes": "",
-      "priority_score": 128,
-      "review_state": "new",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_event_snapshot"
-      },
-      "security_decision": "tower_ob_object_permission_event_snapshot",
-      "severity": "high",
-      "source": "tamper_audit_chain",
-      "updated_at": "",
-      "updated_by": ""
-    },
-    {
-      "assigned_to": "",
-      "created_at": "2026-05-29T20:25:22.716709Z",
-      "escalation_label": "Escalation Ready",
-      "escalation_reasons": [
-        "high_severity",
-        "needs_owner_triage",
-        "high_priority_score"
-      ],
-      "human_reason": "tower_ob_object_permission_event_snapshot",
-      "inbox_item_id": "security_inbox_b22797b40d782db782",
-      "incident_id": "incident_1743f6dd4ee3a9ebcb",
-      "incident_sort_score": 172,
-      "incident_state_source": "candidate",
-      "incident_status": "new",
-      "is_escalation_ready": true,
-      "last_action": "",
-      "next_action": "triage",
-      "object_id": "",
-      "object_type": "",
-      "owner_notes": "",
-      "priority_score": 128,
-      "review_state": "new",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_event_snapshot"
-      },
-      "security_decision": "tower_ob_object_permission_event_snapshot",
-      "severity": "high",
-      "source": "tamper_audit_chain",
-      "updated_at": "",
-      "updated_by": ""
-    },
-    {
-      "assigned_to": "",
-      "created_at": "2026-05-29T19:27:31.693501Z",
+      "created_at": "2026-05-29T20:39:12.710881Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1746,8 +1694,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_1c4b5e8b6e06396674",
-      "incident_id": "incident_f0eb58e1a5ccde5b91",
+      "inbox_item_id": "security_inbox_b6b111a7014a8cdda3",
+      "incident_id": "incident_97b328625c8af38df3",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1771,7 +1719,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:31.351649Z",
+      "created_at": "2026-05-29T20:39:12.357729Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1779,8 +1727,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_e26823f0389cb00f31",
-      "incident_id": "incident_ca5c2a5ad22f4e9dc3",
+      "inbox_item_id": "security_inbox_7a2c68e7be210800ba",
+      "incident_id": "incident_06be18d470891024e4",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1804,7 +1752,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:30.633004Z",
+      "created_at": "2026-05-29T20:39:11.573202Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1812,8 +1760,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_6182060da6f520fc55",
-      "incident_id": "incident_1755146839c878ff1c",
+      "inbox_item_id": "security_inbox_d9f28336e814c90031",
+      "incident_id": "incident_c2d181ecc9f96f8337",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1837,7 +1785,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:30.296173Z",
+      "created_at": "2026-05-29T20:39:11.213575Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1845,8 +1793,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_06986e3beda9e4f733",
-      "incident_id": "incident_588a351474d157116c",
+      "inbox_item_id": "security_inbox_fa7166df1e86617e00",
+      "incident_id": "incident_0151efcc656de543d2",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1870,7 +1818,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:29.936891Z",
+      "created_at": "2026-05-29T20:39:10.777231Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1878,8 +1826,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_40ee2e154ac6b4b683",
-      "incident_id": "incident_dc2a9ef3663b3bf833",
+      "inbox_item_id": "security_inbox_069bfd65568fe87773",
+      "incident_id": "incident_aacaeba75382fede8b",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1903,7 +1851,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:29.215936Z",
+      "created_at": "2026-05-29T20:39:10.003878Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1911,8 +1859,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_ac1541b2be6c6605bd",
-      "incident_id": "incident_fc5deae32c6eebbb15",
+      "inbox_item_id": "security_inbox_256c96cce3fa72c4e6",
+      "incident_id": "incident_56bd5458fbd9f3d973",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1936,7 +1884,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:28.839027Z",
+      "created_at": "2026-05-29T20:39:09.628186Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1944,8 +1892,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_9f9d3cb6599952b668",
-      "incident_id": "incident_f5e1675bed4d112ca6",
+      "inbox_item_id": "security_inbox_0d1c3d00c45806bcee",
+      "incident_id": "incident_804ae0a818e09b3755",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -1969,7 +1917,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:28.501784Z",
+      "created_at": "2026-05-29T20:39:09.274683Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -1977,8 +1925,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_63297e6ed13965b596",
-      "incident_id": "incident_0574997bfd21aa1c14",
+      "inbox_item_id": "security_inbox_52a03e86a984146032",
+      "incident_id": "incident_4cdc135fb46f67664c",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2002,7 +1950,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:28.153552Z",
+      "created_at": "2026-05-29T20:39:08.905916Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2010,8 +1958,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_730137290aa8c0eeaa",
-      "incident_id": "incident_6799ba865f68bfec86",
+      "inbox_item_id": "security_inbox_60ac012af7c08e2e09",
+      "incident_id": "incident_3d9e80ceacee9f9963",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2035,7 +1983,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:27.813269Z",
+      "created_at": "2026-05-29T20:39:08.529473Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2043,8 +1991,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_22a0e94d716bb69965",
-      "incident_id": "incident_25acd6bcedf653be1b",
+      "inbox_item_id": "security_inbox_5f1eac22c158cba987",
+      "incident_id": "incident_aeeb222999b825e841",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2068,7 +2016,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:27.151770Z",
+      "created_at": "2026-05-29T20:39:07.825642Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2076,8 +2024,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_734b97b8e7694973a0",
-      "incident_id": "incident_13077d4aabcc787a4a",
+      "inbox_item_id": "security_inbox_ebb8ffb1c280f578bc",
+      "incident_id": "incident_dfe74f2b6acc381d4e",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2101,7 +2049,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:26.807712Z",
+      "created_at": "2026-05-29T20:39:07.445123Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2109,8 +2057,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_c3d4423c032eea73f4",
-      "incident_id": "incident_fc2e18a4b55ef6c8c1",
+      "inbox_item_id": "security_inbox_bc3f474103e7f0ab19",
+      "incident_id": "incident_e5277db9af2cbd0818",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2134,7 +2082,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:26.479613Z",
+      "created_at": "2026-05-29T20:39:07.094626Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2142,8 +2090,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_f719de1024baf0f0c3",
-      "incident_id": "incident_260ab681d4c1a5e57d",
+      "inbox_item_id": "security_inbox_cb8ce6477322347e3d",
+      "incident_id": "incident_c5a5ed3e956ebc5b03",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2167,7 +2115,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:25.761155Z",
+      "created_at": "2026-05-29T20:39:06.341125Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2175,8 +2123,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_c38b027513182fcb0b",
-      "incident_id": "incident_a0a224061cddbd133f",
+      "inbox_item_id": "security_inbox_1c46eaecfbe97a2fd4",
+      "incident_id": "incident_f252adc503e09ee261",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2200,7 +2148,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:25.434909Z",
+      "created_at": "2026-05-29T20:39:05.971816Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2208,8 +2156,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_c3f69fee0950ad1742",
-      "incident_id": "incident_3741fa686f3b9415af",
+      "inbox_item_id": "security_inbox_46510362682146ac25",
+      "incident_id": "incident_8ae161d7076baf9631",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2233,7 +2181,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:25.111862Z",
+      "created_at": "2026-05-29T20:39:05.562175Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2241,8 +2189,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_35ceb1e3ac3db5b2bd",
-      "incident_id": "incident_8e8298730672863df1",
+      "inbox_item_id": "security_inbox_23d99bd483ccf5bbc7",
+      "incident_id": "incident_9d417e8ac7d1b4eacc",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2266,7 +2214,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:24.730710Z",
+      "created_at": "2026-05-29T20:39:04.975516Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2274,8 +2222,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_39a88b879218131b66",
-      "incident_id": "incident_8068f5deb3a895bd00",
+      "inbox_item_id": "security_inbox_c9eb073cf42235a4c3",
+      "incident_id": "incident_236777dfe8e2f122e6",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2299,7 +2247,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:21.890537Z",
+      "created_at": "2026-05-29T20:39:01.176847Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2307,8 +2255,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_4ee3bc3a66af79efa5",
-      "incident_id": "incident_b47d15911c81283464",
+      "inbox_item_id": "security_inbox_f5ce57f41de0d49fd0",
+      "incident_id": "incident_ad0b02260fc3341577",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2332,7 +2280,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:21.258808Z",
+      "created_at": "2026-05-29T20:39:00.819127Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2340,8 +2288,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_4fc20cef50be332897",
-      "incident_id": "incident_8fbf91d72807632a02",
+      "inbox_item_id": "security_inbox_055c3f200d9bea3337",
+      "incident_id": "incident_d3c40883d9a847701e",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2365,7 +2313,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:20.004795Z",
+      "created_at": "2026-05-29T20:39:00.020955Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2373,8 +2321,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_cb44b89e79c70ef0ee",
-      "incident_id": "incident_d9fd8ce6f5a8b85cd1",
+      "inbox_item_id": "security_inbox_72a165f6a87f820856",
+      "incident_id": "incident_de2474d1c5f537f235",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2398,7 +2346,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:19.604467Z",
+      "created_at": "2026-05-29T20:38:59.643041Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2406,8 +2354,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_7c071b8d9790bdd808",
-      "incident_id": "incident_fbd171c9603b6ba451",
+      "inbox_item_id": "security_inbox_2b9224ad39b553e60a",
+      "incident_id": "incident_de9424d8ef59f8569d",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2431,7 +2379,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:19.256032Z",
+      "created_at": "2026-05-29T20:38:59.268667Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2439,8 +2387,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_5043275de5bc23297e",
-      "incident_id": "incident_fe54e373d6f62506f1",
+      "inbox_item_id": "security_inbox_713a7d39b89f225b53",
+      "incident_id": "incident_80c0eeac12fa6946fe",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2464,7 +2412,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:18.570660Z",
+      "created_at": "2026-05-29T20:38:58.508892Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2472,8 +2420,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_fe583b2cf448f73411",
-      "incident_id": "incident_f1d564c7d3a8c36a23",
+      "inbox_item_id": "security_inbox_057a051a4c49f6026f",
+      "incident_id": "incident_bf49e4a1c6f7516f12",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2497,7 +2445,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:18.200991Z",
+      "created_at": "2026-05-29T20:38:58.132050Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2505,8 +2453,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_d643ff452814f07b75",
-      "incident_id": "incident_b24828d482eb998e13",
+      "inbox_item_id": "security_inbox_fcd911740f3c4a0cbd",
+      "incident_id": "incident_1807e4b68dafc4f499",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2530,7 +2478,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:17.845387Z",
+      "created_at": "2026-05-29T20:38:57.769835Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2538,8 +2486,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_4622cf17f43e16b30d",
-      "incident_id": "incident_e3159ec1b308a1441d",
+      "inbox_item_id": "security_inbox_5c433408bab44abb30",
+      "incident_id": "incident_eab4484f02cc46aed7",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2563,7 +2511,7 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T19:27:17.476609Z",
+      "created_at": "2026-05-29T20:38:57.351946Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
@@ -2571,8 +2519,8 @@
         "high_priority_score"
       ],
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_ec8513e7b5e5cd7185",
-      "incident_id": "incident_f7589e2a46a1ebab9e",
+      "inbox_item_id": "security_inbox_eb83180d09d7cc1794",
+      "incident_id": "incident_ef331f3d62be6aa793",
       "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
@@ -2596,56 +2544,50 @@
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T20:25:24.361694Z",
+      "created_at": "2026-05-29T20:38:56.969406Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
         "needs_owner_triage",
         "high_priority_score"
       ],
-      "human_reason": "analysis_summary_first",
-      "inbox_item_id": "security_inbox_790b313717e9f2275f",
-      "incident_id": "incident_3b7fd7c81c9f8d2645",
-      "incident_sort_score": 170,
+      "human_reason": "tower_ob_object_permission_visibility_status",
+      "inbox_item_id": "security_inbox_cce56b1f46f0829151",
+      "incident_id": "incident_73518f4d3e0fae894c",
+      "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
       "last_action": "",
       "next_action": "triage",
-      "object_id": "analysis_128",
-      "object_type": "analysis",
+      "object_id": "",
+      "object_type": "",
       "owner_notes": "",
-      "priority_score": 120,
+      "priority_score": 128,
       "review_state": "new",
       "route_path": "",
       "safe_summary": {
-        "action": "view",
-        "decision": "summary_only",
-        "event_type": "tower_ob_object_permission_event",
-        "object_id": "analysis_128",
-        "object_type": "analysis",
-        "pack": "108",
-        "reason_code": "analysis_summary_first"
+        "event_type": "tower_ob_object_permission_visibility_status"
       },
-      "security_decision": "summary_only",
+      "security_decision": "tower_ob_object_permission_visibility_status",
       "severity": "high",
-      "source": "object_permission_events",
+      "source": "tamper_audit_chain",
       "updated_at": "",
       "updated_by": ""
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-29T16:59:46.287653Z",
+      "created_at": "2026-05-29T20:38:56.261738Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
         "needs_owner_triage",
         "high_priority_score"
       ],
-      "human_reason": "Security Command owner UI block is healthy: preferred destination, unified page, quick actions, visibility, coverage, and checkpoints are all passing.",
-      "inbox_item_id": "security_inbox_fc144348543f38ab6f",
-      "incident_id": "incident_d2c5da604ee6437300",
-      "incident_sort_score": 170,
+      "human_reason": "tower_security_command_object_visibility_status",
+      "inbox_item_id": "security_inbox_3a67441832c9da3989",
+      "incident_id": "incident_8e171fd5c9212fb425",
+      "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
@@ -2654,33 +2596,31 @@
       "object_id": "",
       "object_type": "",
       "owner_notes": "",
-      "priority_score": 120,
+      "priority_score": 128,
       "review_state": "new",
       "route_path": "",
       "safe_summary": {
-        "pack": "120",
-        "readiness_score": 100,
-        "status": "passed"
+        "event_type": "tower_security_command_object_visibility_status"
       },
-      "security_decision": "passed",
+      "security_decision": "tower_security_command_object_visibility_status",
       "severity": "high",
-      "source": "owner_ui_checkpoint_status",
+      "source": "tamper_audit_chain",
       "updated_at": "",
       "updated_by": ""
     },
     {
       "assigned_to": "",
-      "created_at": "2026-05-28T21:48:31.253446Z",
+      "created_at": "2026-05-29T20:38:55.908456Z",
       "escalation_label": "Escalation Ready",
       "escalation_reasons": [
         "high_severity",
         "needs_owner_triage",
         "high_priority_score"
       ],
-      "human_reason": "Owner/admin action receipt recorded.",
-      "inbox_item_id": "security_inbox_f49653e9cefb5f7940",
-      "incident_id": "incident_873311920abf68b603",
-      "incident_sort_score": 170,
+      "human_reason": "tower_ob_object_permission_visibility_status",
+      "inbox_item_id": "security_inbox_764c6b4318e4abf6e7",
+      "incident_id": "incident_e10a9c1ade3d9086f9",
+      "incident_sort_score": 172,
       "incident_state_source": "candidate",
       "incident_status": "new",
       "is_escalation_ready": true,
@@ -2689,139 +2629,159 @@
       "object_id": "",
       "object_type": "",
       "owner_notes": "",
-      "priority_score": 120,
+      "priority_score": 128,
       "review_state": "new",
-      "route_path": "/tower/security-command",
-      "safe_summary": {
-        "decision": "recorded",
-        "event_type": "tower_owner_admin_action_receipt",
-        "pack": "099",
-        "route_path": "/tower/security-command",
-        "status": "completed"
-      },
-      "security_decision": "recorded",
-      "severity": "high",
-      "source": "owner_admin_receipts",
-      "updated_at": "",
-      "updated_by": ""
-    },
-    {
-      "assigned_to": "",
-      "created_at": "2026-05-28T21:48:31.218413Z",
-      "escalation_label": "Escalation Ready",
-      "escalation_reasons": [
-        "high_severity",
-        "needs_owner_triage",
-        "high_priority_score"
-      ],
-      "human_reason": "Owner/admin action receipt recorded.",
-      "inbox_item_id": "security_inbox_290af4e93994fc6b1d",
-      "incident_id": "incident_be2770f20db3bfe53b",
-      "incident_sort_score": 170,
-      "incident_state_source": "candidate",
-      "incident_status": "new",
-      "is_escalation_ready": true,
-      "last_action": "",
-      "next_action": "triage",
-      "object_id": "",
-      "object_type": "",
-      "owner_notes": "",
-      "priority_score": 120,
-      "review_state": "new",
-      "route_path": "/tower/security-command",
-      "safe_summary": {
-        "decision": "recorded",
-        "event_type": "tower_owner_admin_action_receipt",
-        "pack": "099",
-        "route_path": "/tower/security-command",
-        "status": "completed"
-      },
-      "security_decision": "recorded",
-      "severity": "high",
-      "source": "owner_admin_receipts",
-      "updated_at": "",
-      "updated_by": ""
-    },
-    {
-      "assigned_to": "",
-      "created_at": "2026-05-28T21:48:31.189945Z",
-      "escalation_label": "Escalation Ready",
-      "escalation_reasons": [
-        "high_severity",
-        "needs_owner_triage",
-        "high_priority_score"
-      ],
-      "human_reason": "Owner/admin action receipt recorded.",
-      "inbox_item_id": "security_inbox_d3674b6ffd84905395",
-      "incident_id": "incident_27e2f5ea098d2b0b89",
-      "incident_sort_score": 170,
-      "incident_state_source": "candidate",
-      "incident_status": "new",
-      "is_escalation_ready": true,
-      "last_action": "",
-      "next_action": "triage",
-      "object_id": "",
-      "object_type": "",
-      "owner_notes": "",
-      "priority_score": 120,
-      "review_state": "new",
-      "route_path": "/tower/security-command",
-      "safe_summary": {
-        "decision": "recorded",
-        "event_type": "tower_owner_admin_action_receipt",
-        "pack": "099",
-        "route_path": "/tower/security-command",
-        "status": "completed"
-      },
-      "security_decision": "recorded",
-      "severity": "high",
-      "source": "owner_admin_receipts",
-      "updated_at": "",
-      "updated_by": ""
-    },
-    {
-      "assigned_to": "owner_solice",
-      "created_at": "2026-05-28T21:38:09.176896Z",
-      "escalation_label": "Escalation Ready",
-      "escalation_reasons": [
-        "containment_needs_resolution_or_monitoring"
-      ],
-      "human_reason": "Raw secret value was rejected. The Tower may only store a reference.",
-      "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
-      "incident_id": "incident_70279dc0dc9caba568",
-      "incident_sort_score": 146,
-      "incident_state_source": "saved_state",
-      "incident_status": "contained",
-      "is_escalation_ready": true,
-      "last_action": "new_to_contained",
-      "next_action": "monitor_or_resolve",
-      "object_id": "",
-      "object_type": "",
-      "owner_notes": "Pack 128 contained seed.",
-      "priority_score": 145,
-      "review_state": "acknowledged",
       "route_path": "",
       "safe_summary": {
-        "decision": "raw_secret_rejected",
-        "event_type": "tower_secrets_boundary_event",
-        "pack": "096",
-        "reason_code": "tower_cannot_store_raw_secret_value"
+        "event_type": "tower_ob_object_permission_visibility_status"
       },
-      "security_decision": "raw_secret_rejected",
-      "severity": "medium",
-      "source": "secrets_boundary_events",
-      "updated_at": "2026-05-29T20:25:40.603235Z",
-      "updated_by": "owner_solice"
+      "security_decision": "tower_ob_object_permission_visibility_status",
+      "severity": "high",
+      "source": "tamper_audit_chain",
+      "updated_at": "",
+      "updated_by": ""
+    },
+    {
+      "assigned_to": "",
+      "created_at": "2026-05-29T20:38:55.543601Z",
+      "escalation_label": "Escalation Ready",
+      "escalation_reasons": [
+        "high_severity",
+        "needs_owner_triage",
+        "high_priority_score"
+      ],
+      "human_reason": "tower_ob_object_permission_visibility_status",
+      "inbox_item_id": "security_inbox_3457f283a1efab9256",
+      "incident_id": "incident_85536de59e21566c57",
+      "incident_sort_score": 172,
+      "incident_state_source": "candidate",
+      "incident_status": "new",
+      "is_escalation_ready": true,
+      "last_action": "",
+      "next_action": "triage",
+      "object_id": "",
+      "object_type": "",
+      "owner_notes": "",
+      "priority_score": 128,
+      "review_state": "new",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_visibility_status"
+      },
+      "security_decision": "tower_ob_object_permission_visibility_status",
+      "severity": "high",
+      "source": "tamper_audit_chain",
+      "updated_at": "",
+      "updated_by": ""
+    },
+    {
+      "assigned_to": "",
+      "created_at": "2026-05-29T20:38:54.780528Z",
+      "escalation_label": "Escalation Ready",
+      "escalation_reasons": [
+        "high_severity",
+        "needs_owner_triage",
+        "high_priority_score"
+      ],
+      "human_reason": "tower_ob_object_permission_visibility_status",
+      "inbox_item_id": "security_inbox_45077efe9f78e55114",
+      "incident_id": "incident_61eae2443807e40032",
+      "incident_sort_score": 172,
+      "incident_state_source": "candidate",
+      "incident_status": "new",
+      "is_escalation_ready": true,
+      "last_action": "",
+      "next_action": "triage",
+      "object_id": "",
+      "object_type": "",
+      "owner_notes": "",
+      "priority_score": 128,
+      "review_state": "new",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_visibility_status"
+      },
+      "security_decision": "tower_ob_object_permission_visibility_status",
+      "severity": "high",
+      "source": "tamper_audit_chain",
+      "updated_at": "",
+      "updated_by": ""
+    },
+    {
+      "assigned_to": "",
+      "created_at": "2026-05-29T20:38:54.406649Z",
+      "escalation_label": "Escalation Ready",
+      "escalation_reasons": [
+        "high_severity",
+        "needs_owner_triage",
+        "high_priority_score"
+      ],
+      "human_reason": "tower_security_command_object_visibility_status",
+      "inbox_item_id": "security_inbox_e54e79b57cfb5b57d8",
+      "incident_id": "incident_e9ac371a0e8529d97d",
+      "incident_sort_score": 172,
+      "incident_state_source": "candidate",
+      "incident_status": "new",
+      "is_escalation_ready": true,
+      "last_action": "",
+      "next_action": "triage",
+      "object_id": "",
+      "object_type": "",
+      "owner_notes": "",
+      "priority_score": 128,
+      "review_state": "new",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_command_object_visibility_status"
+      },
+      "security_decision": "tower_security_command_object_visibility_status",
+      "severity": "high",
+      "source": "tamper_audit_chain",
+      "updated_at": "",
+      "updated_by": ""
+    },
+    {
+      "assigned_to": "",
+      "created_at": "2026-05-29T20:38:54.035493Z",
+      "escalation_label": "Escalation Ready",
+      "escalation_reasons": [
+        "high_severity",
+        "needs_owner_triage",
+        "high_priority_score"
+      ],
+      "human_reason": "tower_ob_object_permission_visibility_status",
+      "inbox_item_id": "security_inbox_f813a5304110dd37e0",
+      "incident_id": "incident_9309b5ccb9d334476c",
+      "incident_sort_score": 172,
+      "incident_state_source": "candidate",
+      "incident_status": "new",
+      "is_escalation_ready": true,
+      "last_action": "",
+      "next_action": "triage",
+      "object_id": "",
+      "object_type": "",
+      "owner_notes": "",
+      "priority_score": 128,
+      "review_state": "new",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_visibility_status"
+      },
+      "security_decision": "tower_ob_object_permission_visibility_status",
+      "severity": "high",
+      "source": "tamper_audit_chain",
+      "updated_at": "",
+      "updated_by": ""
     }
   ],
   "triaged_count": 1,
   "view_counts": {
     "all": 40,
     "closed": 0,
-    "contained": 1,
+    "contained": 0,
     "critical": 0,
     "escalation_ready": 40,
-    "high": 39,
+    "high": 40,
     "investigating": 1,
     "open": 40,
     "resolved": 0,

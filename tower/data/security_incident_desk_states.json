@@ -1,35 +1,15 @@
 {
-  "incident_70279dc0dc9caba568": {
-    "assigned_to": "owner_solice",
-    "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
-    "incident_id": "incident_70279dc0dc9caba568",
-    "incident_status": "contained",
-    "last_action": "new_to_contained",
-    "metadata": {
-      "pack": "128"
-    },
-    "object_id": "",
-    "object_type": "",
-    "owner_notes": "Pack 128 contained seed.",
-    "priority_score": 145,
-    "route_path": "",
-    "security_decision": "raw_secret_rejected",
-    "severity": "medium",
-    "source": "secrets_boundary_events",
-    "updated_at": "2026-05-29T20:25:40.603235Z",
-    "updated_by": "owner_solice"
-  },
-  "incident_bed4ece5ecef085701": {
+  "incident_5a61dfd1c2968a0247": {
     "__redacted_incident_field_count__": 1,
     "assigned_to": "owner_solice",
-    "inbox_item_id": "security_inbox_9efe57b045803a494b",
-    "incident_id": "incident_bed4ece5ecef085701",
+    "inbox_item_id": "security_inbox_6bdfc4465c1a6d1bb0",
+    "incident_id": "incident_5a61dfd1c2968a0247",
     "incident_status": "triaged",
     "last_action": "new_to_triaged",
     "metadata": {
-      "pack": "128"
+      "pack": "129"
     },
-    "object_id": "pos_other_128",
+    "object_id": "pos_other_129",
     "object_type": "position",
     "owner_notes": "[REDACTED_INCIDENT_VALUE]",
     "priority_score": 160,
@@ -37,7 +17,7 @@
     "security_decision": "deny",
     "severity": "high",
     "source": "object_permission_events",
-    "updated_at": "2026-05-29T20:25:35.608327Z",
+    "updated_at": "2026-05-29T20:38:29.987693Z",
     "updated_by": "owner_solice"
   },
   "incident_d0d63284269627fe8a": {
@@ -47,17 +27,17 @@
     "incident_status": "investigating",
     "last_action": "new_to_investigating",
     "metadata": {
-      "pack": "128"
+      "pack": "129"
     },
     "object_id": "",
     "object_type": "",
-    "owner_notes": "Pack 128 incident investigating seed.",
+    "owner_notes": "Pack 129 investigating seed.",
     "priority_score": 145,
     "route_path": "/tower/security-command",
     "security_decision": "recorded",
     "severity": "high",
     "source": "owner_admin_receipts",
-    "updated_at": "2026-05-29T20:25:37.487680Z",
+    "updated_at": "2026-05-29T20:38:31.884970Z",
     "updated_by": "owner_solice"
   }
 }

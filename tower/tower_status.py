@@ -703,3 +703,27 @@ def pack127_security_incident_desk_status_bridge():
 # END PACK127_SECURITY_INCIDENT_DESK_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK129_SECURITY_INCIDENT_FILTERS_STATUS_BRIDGE
+# ================================================================================
+
+def pack129_security_incident_filters_escalation_status_bridge():
+    try:
+        from tower.security_incident_filters_escalation import security_incident_filters_escalation_status_card
+        return security_incident_filters_escalation_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "129",
+            "title": "Incident Filters & Escalation",
+            "reason_code": "security_incident_filters_escalation_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Incident filters/escalation status could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK129_SECURITY_INCIDENT_FILTERS_STATUS_BRIDGE
+# ================================================================================
+

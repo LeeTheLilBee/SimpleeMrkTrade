@@ -1750,3 +1750,29 @@ def pack127_security_incident_desk_html_section():
 # END PACK127_SECURITY_INCIDENT_DESK_HTML_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK129_SECURITY_INCIDENT_FILTERS_HTML_BRIDGE
+# ================================================================================
+
+def pack129_security_incident_filters_escalation_html_section():
+    try:
+        from tower.security_incident_filters_escalation import (
+            build_security_incident_filters_escalation_status,
+            render_security_incident_filters_escalation_section,
+        )
+        status = build_security_incident_filters_escalation_status(write_panel=True)
+        return render_security_incident_filters_escalation_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="security-incident-filters-escalation" data-pack="129-incident-filters-error">
+          <h2>Incident Filters & Escalation Unavailable</h2>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+# ================================================================================
+# END PACK129_SECURITY_INCIDENT_FILTERS_HTML_BRIDGE
+# ================================================================================
+
