@@ -507,3 +507,32 @@ except Exception:
 # END PACK123_OWNER_QUICK_ACTIONS_SECURITY_INBOX_EXTENSION
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK125_OWNER_QUICK_ACTIONS_FILTERS_EXTENSION
+# ================================================================================
+
+try:
+    _pack125_existing_action_ids = {
+        action.get("action_id")
+        for action in OWNER_QUICK_ACTIONS
+        if isinstance(action, dict)
+    }
+
+    if "review_security_inbox_filters" not in _pack125_existing_action_ids:
+        OWNER_QUICK_ACTIONS.append({
+            "action_id": "review_security_inbox_filters",
+            "title": "Review Inbox Filters",
+            "href": "/tower/security-inbox-filters.json",
+            "kind": "status_json",
+            "pack": "124",
+            "human_reason": "Review Security Inbox filters, priorities, high-risk counts, and open-review views.",
+        })
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK125_OWNER_QUICK_ACTIONS_FILTERS_EXTENSION
+# ================================================================================
+

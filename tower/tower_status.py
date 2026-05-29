@@ -655,3 +655,27 @@ def pack123_security_inbox_review_status_bridge():
 # END PACK123_SECURITY_INBOX_UI_STATUS_BRIDGES
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK125_SECURITY_INBOX_FILTERS_STATUS_BRIDGE
+# ================================================================================
+
+def pack125_security_inbox_filters_priorities_status_bridge():
+    try:
+        from tower.security_inbox_filters_priorities import security_inbox_filters_priorities_status_card
+        return security_inbox_filters_priorities_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "125",
+            "title": "Security Inbox Filters & Priorities",
+            "reason_code": "security_inbox_filters_priorities_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Security Inbox filters/priorities could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK125_SECURITY_INBOX_FILTERS_STATUS_BRIDGE
+# ================================================================================
+

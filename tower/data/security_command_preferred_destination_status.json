@@ -17,7 +17,7 @@
     "unified_ready": true,
     "unified_status_passed": true
   },
-  "created_at": "2026-05-29T18:25:02.958775Z",
+  "created_at": "2026-05-29T19:00:26.730403Z",
   "failed_checks": [],
   "hrefs": [
     "/tower/security-command-unified",
@@ -160,8 +160,8 @@
   "readiness_score": 100,
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 34,
-    "needs_guard_count": 34,
+    "guarded_needed_count": 35,
+    "needs_guard_count": 35,
     "ok": true,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
@@ -169,7 +169,7 @@
   },
   "soulaana_translation": "Soulaana: The main sign now points to the real command room.",
   "status": "passed",
-  "status_fingerprint": "f552266829a285063011b8307c18dad56d018ed4b7c1ec3d63be8ba61645aa8b",
+  "status_fingerprint": "7aa9db07a5f328286258bd30d51dc23f920f9a0e9c3b154e0b5f66c98780a01c",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_preferred_destination_status.json",
   "unified_health": {
     "failed_checks": [],

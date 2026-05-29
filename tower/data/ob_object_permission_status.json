@@ -37,19 +37,19 @@
   "recent_events": [
     {
       "action": "view",
-      "created_at": "2026-05-29T18:45:30.181331Z",
+      "created_at": "2026-05-29T18:59:58.902212Z",
       "decision": "deny",
-      "event_fingerprint": "a58d6a0d217a24340604a465a0b5c37a8abce12dea1c66f8e36247419e37e9dd",
-      "event_id": "ob_object_perm_evt_xqUucrxdd6VkTyhWQVK3eLvr",
+      "event_fingerprint": "e3036fdaf30aa0bb913aa01e2a7f59323a12dbe351009146ef465123c6821973",
+      "event_id": "ob_object_perm_evt_KuvNDOSDhT6GpzKcoLeP4WGn",
       "event_type": "tower_ob_object_permission_event",
-      "object_id": "pos_other_124",
+      "object_id": "pos_other_125",
       "object_type": "position",
       "pack": "108",
       "reason_code": "position_owner_mismatch",
       "response": {
         "action": "view",
         "allowed": false,
-        "created_at": "2026-05-29T18:45:30.181051Z",
+        "created_at": "2026-05-29T18:59:58.901778Z",
         "decision": "deny",
         "human_reason": "User cannot access another user's position object.",
         "leakage_scan": {
@@ -60,8 +60,8 @@
         "metadata": {},
         "no_secret_leakage": true,
         "object": {
-          "object_fingerprint": "5272863ef1cf6ced43cc7e9e5c7aadedb7f0fbbd9b872f6f72c189d013c211f3",
-          "object_id": "pos_other_124",
+          "object_fingerprint": "6649f41d0551715fe1fd7891541d8965e77984f50c4c1270840b6f2a0467f232",
+          "object_id": "pos_other_125",
           "object_payload": {
             "owner_user_id": "other_user"
           },
@@ -72,8 +72,8 @@
           "status": "",
           "vehicle": ""
         },
-        "object_id": "pos_other_124",
-        "object_permission_id": "ob_object_perm_bR1OBYzfOmcvlZaGEWddc5ef",
+        "object_id": "pos_other_125",
+        "object_permission_id": "ob_object_perm_6ooKOC8MjJew9k6lIfXV0IKC",
         "object_type": "position",
         "ok": false,
         "pack": "108",
@@ -85,32 +85,32 @@
         "requires_receipt": false,
         "requires_step_up": false,
         "requires_summary_only": false,
-        "response_fingerprint": "6a7797f054448a28de78c6a7869710cae28f8d9ed0102b4abeea20ad4064ffea",
+        "response_fingerprint": "87d7cff2110b1c4f9b06d5fda146a7a60fb97b349b96d8dc6b1fc628738898b3",
         "role": "beta",
         "role_family": "beta",
         "route_path": "",
         "soulaana_translation": "Soulaana: Wrong object lane. Door stays shut.",
-        "user_id": "beta_124"
+        "user_id": "beta_125"
       },
       "role": "beta",
       "role_family": "beta",
-      "user_id": "beta_124"
+      "user_id": "beta_125"
     },
     {
       "action": "close",
-      "created_at": "2026-05-29T18:45:30.543913Z",
+      "created_at": "2026-05-29T19:00:00.544131Z",
       "decision": "step_up_required",
-      "event_fingerprint": "efa3a167c92fd1ab4bac780f11710c149e16773ed6691d5dfb71f9f818b7d16e",
-      "event_id": "ob_object_perm_evt_6N4BT9kPCXShclom2k_3EhTk",
+      "event_fingerprint": "bd3313ea60ae9211278789a76b4d298f77e32669b90bc5d7ad72e26ed5f726e1",
+      "event_id": "ob_object_perm_evt_9BE2quRR4K12H8MW5JgMEvJj",
       "event_type": "tower_ob_object_permission_event",
-      "object_id": "pos_mine_124",
+      "object_id": "pos_mine_125",
       "object_type": "position",
       "pack": "108",
       "reason_code": "position_mutation_requires_step_up",
       "response": {
         "action": "close",
         "allowed": false,
-        "created_at": "2026-05-29T18:45:30.543589Z",
+        "created_at": "2026-05-29T19:00:00.543617Z",
         "decision": "step_up_required",
         "human_reason": "Position mutation requires step-up.",
         "leakage_scan": {
@@ -121,20 +121,20 @@
         "metadata": {},
         "no_secret_leakage": true,
         "object": {
-          "object_fingerprint": "df292df9fd0ddb7c6f980132f82737c7bffec97ff7f0e4e7a652edf5f459d136",
-          "object_id": "pos_mine_124",
+          "object_fingerprint": "d3a08768587e57a328d72188177cdf7d5cfdad2e7271f58f97ff110352952d16",
+          "object_id": "pos_mine_125",
           "object_payload": {
-            "owner_user_id": "beta_124"
+            "owner_user_id": "beta_125"
           },
           "object_type": "position",
           "ok": true,
-          "owner_user_id": "beta_124",
+          "owner_user_id": "beta_125",
           "pack": "108",
           "status": "",
           "vehicle": ""
         },
-        "object_id": "pos_mine_124",
-        "object_permission_id": "ob_object_perm_3ItJ8OEkmHWsYH8DslrpjAxF",
+        "object_id": "pos_mine_125",
+        "object_permission_id": "ob_object_perm_e8XQk5cn8U4wyuHCGP1wzaar",
         "object_type": "position",
         "ok": true,
         "pack": "108",
@@ -147,32 +147,32 @@
         "requires_receipt": true,
         "requires_step_up": true,
         "requires_summary_only": false,
-        "response_fingerprint": "1b109234e204889fa7c42b689c2da65b010704769820d86b040bc43609bfe6ac",
+        "response_fingerprint": "b5147d014206524d6babdc3cd096be7f2bc8575d37de06c3fc73d73d4ec89586",
         "role": "beta",
         "role_family": "beta",
         "route_path": "",
         "soulaana_translation": "Soulaana: You can touch your object, but this move needs a second key.",
-        "user_id": "beta_124"
+        "user_id": "beta_125"
       },
       "role": "beta",
       "role_family": "beta",
-      "user_id": "beta_124"
+      "user_id": "beta_125"
     },
     {
       "action": "export",
-      "created_at": "2026-05-29T18:45:30.895102Z",
+      "created_at": "2026-05-29T19:00:01.417238Z",
       "decision": "step_up_required",
-      "event_fingerprint": "bf079089b45883efafeac8c19c35e9b3a62234093dc7532879f968adda473acc",
-      "event_id": "ob_object_perm_evt_emui6HUk534ttt2yHnqb-gl4",
+      "event_fingerprint": "edd2749440274178780a417eb41e59c2391d13e1f978c7f8b1d07001fdd28d63",
+      "event_id": "ob_object_perm_evt_7vu4ar89AbFTXGWh7EkmfDQf",
       "event_type": "tower_ob_object_permission_event",
-      "object_id": "export_124",
+      "object_id": "export_125",
       "object_type": "export",
       "pack": "108",
       "reason_code": "export_requires_step_up",
       "response": {
         "action": "export",
         "allowed": false,
-        "created_at": "2026-05-29T18:45:30.894753Z",
+        "created_at": "2026-05-29T19:00:01.414644Z",
         "decision": "step_up_required",
         "human_reason": "Export/report object requires Tower step-up before access.",
         "leakage_scan": {
@@ -183,8 +183,8 @@
         "metadata": {},
         "no_secret_leakage": true,
         "object": {
-          "object_fingerprint": "f2d10b89e2468972ff710818e903aadf870b25a8bdc54cd790c78fa5a84f61d2",
-          "object_id": "export_124",
+          "object_fingerprint": "2628c4f19f72adf4a1e5cc7bb2cab726e5f43902da4c7c72a8c5144bd674278d",
+          "object_id": "export_125",
           "object_payload": {},
           "object_type": "export",
           "ok": true,
@@ -193,8 +193,8 @@
           "status": "",
           "vehicle": ""
         },
-        "object_id": "export_124",
-        "object_permission_id": "ob_object_perm_gPpcVPiOYqKrtr6Z-l6KtBM5",
+        "object_id": "export_125",
+        "object_permission_id": "ob_object_perm_X1cb9zwpgrDh2q2DCjjdNv_U",
         "object_type": "export",
         "ok": true,
         "pack": "108",
@@ -208,7 +208,7 @@
         "requires_receipt": true,
         "requires_step_up": true,
         "requires_summary_only": false,
-        "response_fingerprint": "81b71e111ca5bc2b8e80df5158bb3a47b2b89509767cd108004432a09bb88575",
+        "response_fingerprint": "e1d9281007c3253a5909da5b7c819c40d17968b81f531c7a88d385fc81bda897",
         "role": "owner",
         "role_family": "owner",
         "route_path": "",
@@ -221,19 +221,19 @@
     },
     {
       "action": "view",
-      "created_at": "2026-05-29T18:45:31.227797Z",
+      "created_at": "2026-05-29T19:00:02.164864Z",
       "decision": "summary_only",
-      "event_fingerprint": "cf1c18d601ba0ecc2b71f2eeef38194b5bcdcfaafe4209a2fb112ed18045839f",
-      "event_id": "ob_object_perm_evt_4K3vu8L1OYmOur6vtFuOdR7G",
+      "event_fingerprint": "6ba5fbaaac7cc24f68f2f741b4fb7a4259a5052c22fa44f09f230ad146748daf",
+      "event_id": "ob_object_perm_evt_bfoVRuDkYZ64wADGykSzeCd_",
       "event_type": "tower_ob_object_permission_event",
-      "object_id": "analysis_124",
+      "object_id": "analysis_125",
       "object_type": "analysis",
       "pack": "108",
       "reason_code": "analysis_summary_first",
       "response": {
         "action": "view",
         "allowed": false,
-        "created_at": "2026-05-29T18:45:31.227506Z",
+        "created_at": "2026-05-29T19:00:02.162333Z",
         "decision": "summary_only",
         "human_reason": "Analysis object starts in summary-only mode.",
         "leakage_scan": {
@@ -244,8 +244,8 @@
         "metadata": {},
         "no_secret_leakage": true,
         "object": {
-          "object_fingerprint": "b6f8bef8e6a0b72f571540306ba8e09c5c48cebe2f19e0ced58fc742013e8d71",
-          "object_id": "analysis_124",
+          "object_fingerprint": "048f5af4ae4849424acc495ac6087bc9becb21accdee3dbf17ea824d11f8ee3e",
+          "object_id": "analysis_125",
           "object_payload": {},
           "object_type": "analysis",
           "ok": true,
@@ -254,8 +254,8 @@
           "status": "",
           "vehicle": ""
         },
-        "object_id": "analysis_124",
-        "object_permission_id": "ob_object_perm_Zl-TTH7xuLowsg9QKY1S_HDh",
+        "object_id": "analysis_125",
+        "object_permission_id": "ob_object_perm_-UtR9x9XyEyhamk3tDDGyX3q",
         "object_type": "analysis",
         "ok": true,
         "pack": "108",
@@ -268,19 +268,19 @@
         "requires_receipt": false,
         "requires_step_up": false,
         "requires_summary_only": true,
-        "response_fingerprint": "ba001f4268bfef0f29bf6692fcfb7a7a1899c0814dc994863ef41f0666baa8ee",
+        "response_fingerprint": "fdd5a3c539814d04aab2fe313ef95f26303560f59619463ceb61dc94921f649f",
         "role": "beta",
         "role_family": "beta",
         "route_path": "",
         "soulaana_translation": "Soulaana: Summary glass first. Details need another key.",
-        "user_id": "beta_124"
+        "user_id": "beta_125"
       },
       "role": "beta",
       "role_family": "beta",
-      "user_id": "beta_124"
+      "user_id": "beta_125"
     }
   ],
   "soulaana_translation": "Soulaana: Object keys are active behind the route doors.",
-  "status_fingerprint": "1ff5446e29fe576389aee07ae26bfb6cfed7f7210978704f0064485b04d8505b",
+  "status_fingerprint": "5f051f8cde48c57e595eec3d8d01e4765938f3e75006125efe70973118d4b398",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_status.json"
 }

@@ -1,5 +1,5 @@
 {
-  "action_count": 9,
+  "action_count": 10,
   "actions": [
     {
       "action_id": "open_unified_security_command",
@@ -90,6 +90,16 @@
       "pack": "122",
       "readiness_score": 100,
       "title": "Apply Inbox Review Action"
+    },
+    {
+      "action_id": "review_security_inbox_filters",
+      "available": true,
+      "href": "/tower/security-inbox-filters.json",
+      "human_reason": "Review Security Inbox filters, priorities, high-risk counts, and open-review views.",
+      "kind": "status_json",
+      "pack": "124",
+      "readiness_score": 100,
+      "title": "Review Inbox Filters"
     }
   ],
   "checks": {
@@ -105,7 +115,7 @@
     "unified_health_ok": true,
     "unified_status_passed": true
   },
-  "created_at": "2026-05-29T18:25:12.063033Z",
+  "created_at": "2026-05-29T19:00:36.327005Z",
   "failed_checks": [],
   "human_reason": "Owner quick-action rail gives direct access to unified command, preferred destination, security links, object visibility, and route guard status.",
   "leakage_scan": {
@@ -128,8 +138,8 @@
   "readiness_score": 100,
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 34,
-    "needs_guard_count": 34,
+    "guarded_needed_count": 35,
+    "needs_guard_count": 35,
     "ok": true,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
@@ -137,7 +147,7 @@
   },
   "soulaana_translation": "Soulaana: The owner now has the important Tower buttons in one rail.",
   "status": "passed",
-  "status_fingerprint": "2aefdda217ec3e3a44995653ea5accdc3ecae301c55dcff94c7cf84731510f56",
+  "status_fingerprint": "322fbf76421cd8bcbff05d10c500e51be439714294448cedf9b61622dc37fa14",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_owner_quick_actions_status.json",
   "unified_health": {
     "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page.html",

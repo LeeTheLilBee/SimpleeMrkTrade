@@ -4,32 +4,14 @@
     "inbox_item_id": "security_inbox_5e65f035784b617bb2",
     "last_review_action": "new_to_investigating",
     "metadata": {
-      "pack": "124"
+      "pack": "125"
     },
     "object_id": "",
     "object_type": "",
     "review_label": "Investigating",
-    "review_notes": "Pack 124 investigation.",
+    "review_notes": "Pack 125 investigation seed.",
     "review_state": "investigating",
-    "reviewed_at": "2026-05-29T18:45:34.574443Z",
-    "reviewed_by": "owner_solice",
-    "route_path": "/tower/security-command",
-    "severity": "high",
-    "source": "owner_admin_receipts"
-  },
-  "security_inbox_70c1dcbf270688fa4e": {
-    "decision": "recorded",
-    "inbox_item_id": "security_inbox_70c1dcbf270688fa4e",
-    "last_review_action": "new_to_resolved",
-    "metadata": {
-      "pack": "124"
-    },
-    "object_id": "",
-    "object_type": "",
-    "review_label": "Resolved",
-    "review_notes": "Pack 124 resolved.",
-    "review_state": "resolved",
-    "reviewed_at": "2026-05-29T18:45:35.914360Z",
+    "reviewed_at": "2026-05-29T19:00:06.322264Z",
     "reviewed_by": "owner_solice",
     "route_path": "/tower/security-command",
     "severity": "high",
@@ -41,14 +23,14 @@
     "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
     "last_review_action": "new_to_acknowledged",
     "metadata": {
-      "pack": "124"
+      "pack": "125"
     },
     "object_id": "",
     "object_type": "",
     "review_label": "Acknowledged",
-    "review_notes": "Pack 124 acknowledgement.",
+    "review_notes": "Pack 125 quick action/filter test.",
     "review_state": "acknowledged",
-    "reviewed_at": "2026-05-29T18:45:32.855747Z",
+    "reviewed_at": "2026-05-29T19:00:04.689811Z",
     "reviewed_by": "owner_solice",
     "route_path": "",
     "severity": "high",

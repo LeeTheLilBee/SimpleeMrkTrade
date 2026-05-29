@@ -1698,3 +1698,29 @@ def pack123_security_inbox_review_html_section():
 # END PACK123_SECURITY_INBOX_UI_HTML_BRIDGES
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK125_SECURITY_INBOX_FILTERS_HTML_BRIDGE
+# ================================================================================
+
+def pack125_security_inbox_filters_priorities_html_section():
+    try:
+        from tower.security_inbox_filters_priorities import (
+            build_security_inbox_filters_priorities_status,
+            render_security_inbox_filters_priorities_section,
+        )
+        status = build_security_inbox_filters_priorities_status(write_panel=True)
+        return render_security_inbox_filters_priorities_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="security-inbox-filters-priorities" data-pack="125-filters-error">
+          <h2>Security Inbox Filters Unavailable</h2>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+# ================================================================================
+# END PACK125_SECURITY_INBOX_FILTERS_HTML_BRIDGE
+# ================================================================================
+
