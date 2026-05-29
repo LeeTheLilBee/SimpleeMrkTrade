@@ -1603,3 +1603,55 @@ def pack115_security_command_navigation_links_html_section():
 # END PACK115_SECURITY_COMMAND_NAVIGATION_LINKS_HTML_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK117_SECURITY_COMMAND_PREFERRED_DESTINATION_HTML_BRIDGE
+# ================================================================================
+
+def pack117_security_command_preferred_destination_html_section():
+    try:
+        from tower.security_command_preferred_destination import (
+            build_security_command_preferred_destination_status,
+            render_security_command_preferred_destination_section,
+        )
+        status = build_security_command_preferred_destination_status(write_panel=True)
+        return render_security_command_preferred_destination_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="preferred-command-destination" data-pack="117-error">
+          <h2>Preferred Security Command Destination Unavailable</h2>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+# ================================================================================
+# END PACK117_SECURITY_COMMAND_PREFERRED_DESTINATION_HTML_BRIDGE
+# ================================================================================
+
+
+
+# ================================================================================
+# PACK119_OWNER_QUICK_ACTIONS_HTML_BRIDGE
+# ================================================================================
+
+def pack119_owner_quick_actions_html_section():
+    try:
+        from tower.security_command_owner_quick_actions import (
+            build_owner_quick_actions_status,
+            render_owner_quick_actions_section,
+        )
+        status = build_owner_quick_actions_status(write_panel=True)
+        return render_owner_quick_actions_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="owner-quick-action-rail" data-pack="119-error">
+          <h2>Owner Quick Actions Unavailable</h2>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+# ================================================================================
+# END PACK119_OWNER_QUICK_ACTIONS_HTML_BRIDGE
+# ================================================================================
+

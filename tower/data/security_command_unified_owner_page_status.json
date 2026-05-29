@@ -1,0 +1,138 @@
+{
+  "checks": {
+    "composition_call_ok": true,
+    "composition_ok": true,
+    "composition_passed": true,
+    "composition_ready": true,
+    "helper_wrapped_zero": true,
+    "navigation_call_ok": true,
+    "navigation_ok": true,
+    "navigation_passed": true,
+    "navigation_ready": true,
+    "object_checkpoint_call_ok": true,
+    "object_checkpoint_ok": true,
+    "object_checkpoint_passed": true,
+    "object_visibility_call_ok": true,
+    "object_visibility_ok": true,
+    "object_visibility_ready": true,
+    "route_coverage_100": true,
+    "route_coverage_ok": true,
+    "route_health_call_ok": true,
+    "unguarded_high_risk_zero": true,
+    "unguarded_needed_zero": true
+  },
+  "composition": {
+    "bridge_status": {
+      "errors": [],
+      "object_html_length": 5910,
+      "object_visibility_bridge_ok": true,
+      "object_visibility_html_ok": true,
+      "security_command_bridge_ok": true,
+      "tower_status_bridge_ok": true
+    },
+    "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_composition_smoke.html",
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "created_at": "2026-05-29T16:48:20.047966Z",
+  "failed_checks": [],
+  "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page.html",
+  "human_reason": "Unified owner Security Command page composes navigation, object visibility, route coverage, object checkpoint, and composition smoke into one control-room page.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "navigation": {
+    "link_count": 5,
+    "links": [
+      {
+        "available": true,
+        "href": "/tower/security-command-unified",
+        "human_reason": "Preferred owner Security Command destination. Combines links, object visibility, route health, and checkpoint health.",
+        "kind": "preferred",
+        "link_id": "tower_security_command_unified_preferred",
+        "pack": "116+117",
+        "readiness_score": 100,
+        "title": "Unified Security Command"
+      },
+      {
+        "available": true,
+        "href": "/tower/security-command",
+        "human_reason": "Original Security Command route kept as a fallback.",
+        "kind": "legacy",
+        "link_id": "tower_security_command_legacy",
+        "pack": "022E+",
+        "readiness_score": 100,
+        "title": "Legacy Security Command"
+      },
+      {
+        "available": true,
+        "href": "/tower/security-command-smoke",
+        "human_reason": "Pack 114 smoke page proving Security Command composition renders with object visibility attached.",
+        "kind": "smoke",
+        "link_id": "tower_security_command_smoke",
+        "pack": "114",
+        "readiness_score": 100,
+        "title": "Security Command Composition Smoke"
+      },
+      {
+        "available": true,
+        "href": "/tower/security-command-links.json",
+        "human_reason": "Pack 115 guarded JSON endpoint for Security Command navigation/status links.",
+        "kind": "status_json",
+        "link_id": "tower_security_command_links_json",
+        "pack": "115",
+        "readiness_score": 100,
+        "title": "Security Command Links JSON"
+      },
+      {
+        "available": true,
+        "href": "/tower/ob-guard-status.json",
+        "human_reason": "OB route guard coverage status endpoint.",
+        "kind": "status_json",
+        "link_id": "tower_ob_guard_status_json",
+        "pack": "105",
+        "readiness_score": 100,
+        "title": "OB Guard Status JSON"
+      }
+    ],
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "no_secret_leakage": true,
+  "object_checkpoint": {
+    "helper_wrapped_count": 0,
+    "object_guard_count": 10,
+    "readiness_score": 100,
+    "status": "passed",
+    "warnings": []
+  },
+  "object_visibility": {
+    "admin_event_count": 1,
+    "deny_count": 2,
+    "event_count": 7,
+    "export_event_count": 1,
+    "live_mode_event_count": 0,
+    "no_secret_leakage": true,
+    "readiness_score": 100,
+    "step_up_required_count": 3,
+    "summary_only_count": 1
+  },
+  "ok": true,
+  "pack": "116",
+  "readiness_label": "Unified owner Security Command page ready",
+  "readiness_score": 100,
+  "route_health": {
+    "coverage_pct": 100,
+    "guarded_needed_count": 30,
+    "needs_guard_count": 30,
+    "readiness_score": 100,
+    "unguarded_high_risk_count": 0,
+    "unguarded_needed_count": 0
+  },
+  "soulaana_translation": "Soulaana: The Tower room is becoming one command center instead of scattered panels.",
+  "status": "passed",
+  "status_fingerprint": "03023ed1e8314000bc774b9212ca5c092fc33b8d599e535f58ee9b737019ddca",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page_status.json"
+}

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Preferred Security Command</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+
+<!-- PACK117_SECURITY_COMMAND_PREFERRED_DESTINATION_SECTION -->
+<section class="preferred-command-destination" data-pack="117">
+  <style>
+    .preferred-command-destination {
+      margin: 24px 0;
+      border: 1px solid rgba(220,183,94,.34);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top left, rgba(220,183,94,.16), transparent 34%),
+        linear-gradient(135deg, rgba(75,48,18,.58), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .preferred-command-destination__eyebrow {
+      color: rgba(220,183,94,.86);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .preferred-command-destination h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .preferred-command-destination p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .preferred-command-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .preferred-command-card {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+      transition: transform .18s ease, border-color .18s ease;
+    }
+    .preferred-command-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(220,183,94,.7);
+    }
+    .preferred-command-card--preferred {
+      border-color: rgba(143,221,158,.45);
+      background: rgba(143,221,158,.06);
+    }
+    .preferred-command-card__eyebrow {
+      color: rgba(220,183,94,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .preferred-command-card h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+    }
+    .preferred-command-card p {
+      margin: 0 0 8px;
+      color: rgba(245,234,210,.72);
+    }
+    .preferred-command-card small {
+      color: rgba(245,234,210,.55);
+    }
+    @media (max-width: 900px) {
+      .preferred-command-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="preferred-command-destination__eyebrow">PACK 117 · PREFERRED DESTINATION</div>
+  <h2>Preferred Security Command Destination</h2>
+  <p>Unified Security Command is now the preferred Tower Security Command destination while legacy and smoke routes remain available.</p>
+
+  <div class="preferred-command-grid">
+    
+        <a class="preferred-command-card preferred-command-card--preferred" href="/tower/security-command-unified">
+          <div class="preferred-command-card__eyebrow">preferred · 116+117</div>
+          <h3>Unified Security Command</h3>
+          <p>Preferred owner Security Command destination. Combines links, object visibility, route health, and checkpoint health.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="preferred-command-card preferred-command-card--normal" href="/tower/security-command">
+          <div class="preferred-command-card__eyebrow">legacy · 022E+</div>
+          <h3>Legacy Security Command</h3>
+          <p>Original Security Command route kept as a fallback.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="preferred-command-card preferred-command-card--normal" href="/tower/security-command-smoke">
+          <div class="preferred-command-card__eyebrow">smoke · 114</div>
+          <h3>Security Command Composition Smoke</h3>
+          <p>Pack 114 smoke page proving Security Command composition renders with object visibility attached.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="preferred-command-card preferred-command-card--normal" href="/tower/security-command-links.json">
+          <div class="preferred-command-card__eyebrow">status_json · 115</div>
+          <h3>Security Command Links JSON</h3>
+          <p>Pack 115 guarded JSON endpoint for Security Command navigation/status links.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="preferred-command-card preferred-command-card--normal" href="/tower/ob-guard-status.json">
+          <div class="preferred-command-card__eyebrow">status_json · 105</div>
+          <h3>OB Guard Status JSON</h3>
+          <p>OB route guard coverage status endpoint.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+  </div>
+</section>
+<!-- END PACK117_SECURITY_COMMAND_PREFERRED_DESTINATION_SECTION -->
+
+</main>
+</body>
+</html>

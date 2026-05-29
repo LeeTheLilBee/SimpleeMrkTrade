@@ -18,7 +18,7 @@
     "readiness_score": 100,
     "status": "passed"
   },
-  "created_at": "2026-05-29T15:16:32.422223Z",
+  "created_at": "2026-05-29T16:48:19.728247Z",
   "failed_checks": [],
   "human_reason": "Security Command smoke and status routes are discoverable through Tower navigation/status links.",
   "leakage_scan": {
@@ -26,17 +26,27 @@
     "had_forbidden_hits": false,
     "ok": true
   },
-  "link_count": 3,
+  "link_count": 5,
   "links": [
     {
       "available": true,
+      "href": "/tower/security-command-unified",
+      "human_reason": "Preferred owner Security Command destination. Combines links, object visibility, route health, and checkpoint health.",
+      "kind": "preferred",
+      "link_id": "tower_security_command_unified_preferred",
+      "pack": "116+117",
+      "readiness_score": 100,
+      "title": "Unified Security Command"
+    },
+    {
+      "available": true,
       "href": "/tower/security-command",
-      "human_reason": "Main Tower Security Command page.",
-      "kind": "primary",
-      "link_id": "tower_security_command_main",
+      "human_reason": "Original Security Command route kept as a fallback.",
+      "kind": "legacy",
+      "link_id": "tower_security_command_legacy",
       "pack": "022E+",
       "readiness_score": 100,
-      "title": "Security Command"
+      "title": "Legacy Security Command"
     },
     {
       "available": true,
@@ -47,6 +57,16 @@
       "pack": "114",
       "readiness_score": 100,
       "title": "Security Command Composition Smoke"
+    },
+    {
+      "available": true,
+      "href": "/tower/security-command-links.json",
+      "human_reason": "Pack 115 guarded JSON endpoint for Security Command navigation/status links.",
+      "kind": "status_json",
+      "link_id": "tower_security_command_links_json",
+      "pack": "115",
+      "readiness_score": 100,
+      "title": "Security Command Links JSON"
     },
     {
       "available": true,
@@ -74,8 +94,8 @@
   "readiness_score": 100,
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 27,
-    "needs_guard_count": 27,
+    "guarded_needed_count": 30,
+    "needs_guard_count": 30,
     "ok": true,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
@@ -83,6 +103,6 @@
   },
   "soulaana_translation": "Soulaana: The door is no longer hidden. Security Command has its route signs.",
   "status": "passed",
-  "status_fingerprint": "1ce631292b880a19af6c4c993e5e08337bd1659a0ae556a466881eb8d6da59c2",
+  "status_fingerprint": "dd782226c81a53dcff5e1ea96b47eea038d7d2a32926db530ef238687e8a9f5c",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_navigation_links_status.json"
 }

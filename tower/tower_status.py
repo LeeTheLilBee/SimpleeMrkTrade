@@ -568,3 +568,51 @@ def pack115_security_command_navigation_links_status_bridge():
 # END PACK115_SECURITY_COMMAND_NAVIGATION_LINKS_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK117_SECURITY_COMMAND_PREFERRED_DESTINATION_STATUS_BRIDGE
+# ================================================================================
+
+def pack117_security_command_preferred_destination_status_bridge():
+    try:
+        from tower.security_command_preferred_destination import security_command_preferred_destination_status_card
+        return security_command_preferred_destination_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "117",
+            "title": "Preferred Security Command",
+            "reason_code": "preferred_security_command_destination_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Preferred Security Command destination status could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK117_SECURITY_COMMAND_PREFERRED_DESTINATION_STATUS_BRIDGE
+# ================================================================================
+
+
+
+# ================================================================================
+# PACK119_OWNER_QUICK_ACTIONS_STATUS_BRIDGE
+# ================================================================================
+
+def pack119_owner_quick_actions_status_bridge():
+    try:
+        from tower.security_command_owner_quick_actions import owner_quick_actions_status_card
+        return owner_quick_actions_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "119",
+            "title": "Owner Quick Actions",
+            "reason_code": "owner_quick_actions_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Owner quick actions could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK119_OWNER_QUICK_ACTIONS_STATUS_BRIDGE
+# ================================================================================
+

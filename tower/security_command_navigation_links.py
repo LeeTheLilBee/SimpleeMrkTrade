@@ -467,3 +467,20 @@ def reset_security_command_navigation_links_for_test() -> Dict[str, Any]:
         "decision": "security_command_navigation_links_reset_for_test",
         "soulaana_translation": "Soulaana: Security Command links reset for a clean test lane.",
     }
+
+
+
+# ================================================================================
+# PACK117_PREFERRED_SECURITY_COMMAND_LINKS_OVERRIDE
+# ================================================================================
+# Make the unified owner command page the preferred/main Security Command destination.
+try:
+    from tower.security_command_preferred_destination import preferred_security_command_links
+    CORE_SECURITY_COMMAND_LINKS = preferred_security_command_links()
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK117_PREFERRED_SECURITY_COMMAND_LINKS_OVERRIDE
+# ================================================================================
+

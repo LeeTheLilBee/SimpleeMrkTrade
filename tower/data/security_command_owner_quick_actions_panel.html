@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Owner Quick Actions</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+
+<!-- PACK119_OWNER_QUICK_ACTION_RAIL_SECTION -->
+<section class="owner-quick-action-rail" data-pack="119">
+  <style>
+    .owner-quick-action-rail {
+      margin: 24px 0;
+      border: 1px solid rgba(220,183,94,.34);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(220,183,94,.16), transparent 34%),
+        linear-gradient(135deg, rgba(20,18,30,.76), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .owner-quick-action-rail__eyebrow {
+      color: rgba(220,183,94,.86);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .owner-quick-action-rail h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .owner-quick-action-rail p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .owner-quick-action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .owner-action-card {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+      transition: transform .18s ease, border-color .18s ease;
+    }
+    .owner-action-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(220,183,94,.7);
+    }
+    .owner-action-card--primary {
+      border-color: rgba(143,221,158,.45);
+      background: rgba(143,221,158,.06);
+    }
+    .owner-action-card__eyebrow {
+      color: rgba(220,183,94,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .owner-action-card h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+    }
+    .owner-action-card p {
+      margin: 0 0 8px;
+      color: rgba(245,234,210,.72);
+    }
+    .owner-action-card small {
+      color: rgba(245,234,210,.55);
+    }
+    @media (max-width: 900px) {
+      .owner-quick-action-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="owner-quick-action-rail__eyebrow">PACK 119 · OWNER QUICK ACTIONS</div>
+  <h2>Owner Quick Actions</h2>
+  <p>Owner quick-action rail gives direct access to unified command, preferred destination, security links, object visibility, and route guard status.</p>
+
+  <div class="owner-quick-action-grid">
+    
+        <a class="owner-action-card owner-action-card--primary" href="/tower/security-command-unified">
+          <div class="owner-action-card__eyebrow">primary · 116+118B</div>
+          <h3>Open Unified Security Command</h3>
+          <p>Go to the preferred owner command room.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/security-command-preferred.json">
+          <div class="owner-action-card__eyebrow">status_json · 117</div>
+          <h3>Review Preferred Destination</h3>
+          <p>Confirm the preferred Security Command route and fallback routes.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/security-command-links.json">
+          <div class="owner-action-card__eyebrow">status_json · 115</div>
+          <h3>Review Security Links</h3>
+          <p>Review Security Command navigation/status links.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/security-command-smoke">
+          <div class="owner-action-card__eyebrow">smoke · 112-114</div>
+          <h3>Review Object Visibility</h3>
+          <p>Review object permission visibility in the composed Security Command smoke page.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/ob-guard-status.json">
+          <div class="owner-action-card__eyebrow">status_json · 105+</div>
+          <h3>Review Route Guard Status</h3>
+          <p>Review protected route coverage and high-risk gaps.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/security-command">
+          <div class="owner-action-card__eyebrow">legacy · 022E+</div>
+          <h3>Review Legacy Security Command</h3>
+          <p>Open the older Security Command route kept as fallback.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+  </div>
+</section>
+<!-- END PACK119_OWNER_QUICK_ACTION_RAIL_SECTION -->
+
+</main>
+</body>
+</html>

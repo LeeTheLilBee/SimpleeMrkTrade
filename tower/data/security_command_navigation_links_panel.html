@@ -111,17 +111,24 @@
   <p>Security Command smoke and status routes are discoverable through Tower navigation/status links.</p>
 
   <div class="tower-security-command-links__stats">
-    <div class="tower-nav-stat"><b>3</b><span>Links</span></div>
+    <div class="tower-nav-stat"><b>5</b><span>Links</span></div>
     <div class="tower-nav-stat"><b>100%</b><span>Route Coverage</span></div>
     <div class="tower-nav-stat"><b>100</b><span>Readiness</span></div>
   </div>
 
   <div class="tower-security-command-links__grid">
     
+        <a class="tower-nav-card tower-nav-card--ready" href="/tower/security-command-unified">
+          <div class="tower-nav-card__eyebrow">AVAILABLE · preferred · 116+117</div>
+          <h3>Unified Security Command</h3>
+          <p>Preferred owner Security Command destination. Combines links, object visibility, route health, and checkpoint health.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
         <a class="tower-nav-card tower-nav-card--ready" href="/tower/security-command">
-          <div class="tower-nav-card__eyebrow">AVAILABLE · primary · 022E+</div>
-          <h3>Security Command</h3>
-          <p>Main Tower Security Command page.</p>
+          <div class="tower-nav-card__eyebrow">AVAILABLE · legacy · 022E+</div>
+          <h3>Legacy Security Command</h3>
+          <p>Original Security Command route kept as a fallback.</p>
           <small>Readiness: 100</small>
         </a>
         
@@ -129,6 +136,13 @@
           <div class="tower-nav-card__eyebrow">AVAILABLE · smoke · 114</div>
           <h3>Security Command Composition Smoke</h3>
           <p>Pack 114 smoke page proving Security Command composition renders with object visibility attached.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="tower-nav-card tower-nav-card--ready" href="/tower/security-command-links.json">
+          <div class="tower-nav-card__eyebrow">AVAILABLE · status_json · 115</div>
+          <h3>Security Command Links JSON</h3>
+          <p>Pack 115 guarded JSON endpoint for Security Command navigation/status links.</p>
           <small>Readiness: 100</small>
         </a>
         

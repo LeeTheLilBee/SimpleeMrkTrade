@@ -10336,3 +10336,128 @@ except Exception:
 # END PACK115_SECURITY_COMMAND_NAVIGATION_LINKS_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK116_UNIFIED_OWNER_SECURITY_COMMAND_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/security-command-unified")
+    def tower_security_command_unified_owner_pack116():
+        try:
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-command-unified",
+                metadata={"source": "pack116_unified_owner_security_command_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_command_unified_owner_page import (
+                build_unified_owner_security_command_status,
+                render_unified_owner_security_command_html,
+            )
+
+            status = build_unified_owner_security_command_status(write_html=True)
+            return render_unified_owner_security_command_html(status)
+        except Exception as exc:
+            return f"""
+            <!doctype html>
+            <html lang="en">
+            <head><meta charset="utf-8"><title>Tower Unified Security Command Error</title></head>
+            <body style="font-family:system-ui;background:#090907;color:#f5ead2;padding:32px;">
+              <main style="max-width:720px;margin:auto;border:1px solid rgba(220,183,94,.4);border-radius:24px;padding:24px;">
+                <p style="letter-spacing:.12em;text-transform:uppercase;color:#dcb75e;">The Tower · Pack 116</p>
+                <h1>Unified Security Command unavailable</h1>
+                <p>{type(exc).__name__}</p>
+              </main>
+            </body>
+            </html>
+            """, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK116_UNIFIED_OWNER_SECURITY_COMMAND_ROUTE
+# ================================================================================
+
+
+
+# ================================================================================
+# PACK117_SECURITY_COMMAND_PREFERRED_DESTINATION_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/security-command-preferred.json")
+    def tower_security_command_preferred_json_pack117():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-command-preferred.json",
+                metadata={"source": "pack117_preferred_security_command_destination_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_command_preferred_destination import build_security_command_preferred_destination_status
+
+            return jsonify(build_security_command_preferred_destination_status(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "117",
+                    "reason_code": "preferred_security_command_destination_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "117", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK117_SECURITY_COMMAND_PREFERRED_DESTINATION_ROUTE
+# ================================================================================
+
+
+
+# ================================================================================
+# PACK119_OWNER_QUICK_ACTIONS_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/security-command-quick-actions.json")
+    def tower_security_command_quick_actions_json_pack119():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-command-quick-actions.json",
+                metadata={"source": "pack119_owner_quick_actions_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_command_owner_quick_actions import build_owner_quick_actions_status
+
+            return jsonify(build_owner_quick_actions_status(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "119",
+                    "reason_code": "owner_quick_actions_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "119", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK119_OWNER_QUICK_ACTIONS_ROUTE
+# ================================================================================
+
