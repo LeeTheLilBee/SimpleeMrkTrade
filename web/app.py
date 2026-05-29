@@ -10501,3 +10501,43 @@ except Exception:
 # END PACK120_SECURITY_COMMAND_OWNER_UI_CHECKPOINT_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK121_SECURITY_INBOX_OWNER_QUEUE_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/security-inbox.json")
+    def tower_security_inbox_owner_queue_json_pack121():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-inbox.json",
+                metadata={"source": "pack121_security_inbox_owner_queue_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_inbox_owner_queue import build_security_inbox_owner_queue
+
+            return jsonify(build_security_inbox_owner_queue(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "121",
+                    "reason_code": "security_inbox_owner_queue_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "121", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK121_SECURITY_INBOX_OWNER_QUEUE_ROUTE
+# ================================================================================
+
