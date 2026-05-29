@@ -34,7 +34,7 @@
     "readiness_score": 100,
     "status": "passed"
   },
-  "created_at": "2026-05-29T20:51:41.693310Z",
+  "created_at": "2026-05-29T21:06:44.351904Z",
   "failed_checks": [],
   "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page.html",
   "human_reason": "Unified owner Security Command page composes navigation, object visibility, route coverage, object checkpoint, and composition smoke into one control-room page.",
@@ -125,14 +125,14 @@
   "readiness_score": 100,
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 39,
-    "needs_guard_count": 39,
+    "guarded_needed_count": 40,
+    "needs_guard_count": 40,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
     "unguarded_needed_count": 0
   },
   "soulaana_translation": "Soulaana: The Tower room is becoming one command center instead of scattered panels.",
   "status": "passed",
-  "status_fingerprint": "70941221bc6c8dec5634d0cc31e4e92e1aa63b4cc5a32fdd37136ea1bdd8b7ff",
+  "status_fingerprint": "616f91bc50b984c9af4a81dd748a34d345b279fe131b1f2607143ac703af74cc",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page_status.json"
 }

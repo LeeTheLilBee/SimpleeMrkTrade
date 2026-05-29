@@ -1,0 +1,109 @@
+{
+  "checks": {
+    "helper_wrapped_zero": true,
+    "inbox_filters_call_ok": true,
+    "inbox_filters_passed": true,
+    "incident_checkpoint_call_ok": true,
+    "incident_checkpoint_passed": true,
+    "incident_checkpoint_readiness_100": true,
+    "incident_filters_call_ok": true,
+    "incident_filters_passed": true,
+    "incident_filters_readiness_100": true,
+    "object_checkpoint_call_ok": true,
+    "object_checkpoint_passed": true,
+    "quick_call_ok": true,
+    "quick_passed": true,
+    "route_call_ok": true,
+    "route_coverage_100": true,
+    "route_high_risk_zero": true,
+    "route_unguarded_zero": true,
+    "unified_call_ok": true,
+    "unified_passed": true
+  },
+  "command_room": {
+    "quick_action_count": 13,
+    "quick_status": "passed",
+    "unified_readiness_score": 100,
+    "unified_status": "passed"
+  },
+  "created_at": "2026-05-29T21:06:44.755722Z",
+  "failed_checks": [],
+  "human_reason": "Security Watch summarizes Tower posture across route guards, inbox items, incidents, escalation readiness, quick actions, and unified command health.",
+  "inbox_watch": {
+    "high_priority_count": 69,
+    "inbox_count": 80,
+    "open_review_count": 69,
+    "readiness_score": 100,
+    "status": "passed",
+    "unresolved_count": 69
+  },
+  "incident_watch": {
+    "by_next_action": {
+      "investigate_or_contain": 1,
+      "triage": 39
+    },
+    "by_status": {
+      "new": 39,
+      "triaged": 1
+    },
+    "checkpoint_readiness_score": 100,
+    "checkpoint_status": "passed",
+    "critical_count": 0,
+    "escalation_ready_count": 40,
+    "high_count": 40,
+    "incident_count": 40,
+    "open_incident_count": 40
+  },
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "no_secret_leakage": true,
+  "object_checkpoint": {
+    "helper_wrapped_count": 0,
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "ok": true,
+  "pack": "131",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_watch_owner_posture_panel.html",
+  "posture": {
+    "critical_incident_count": 0,
+    "escalation_ready_count": 40,
+    "helper_wrapped_count": 0,
+    "high_incident_count": 40,
+    "high_priority_inbox_count": 69,
+    "open_incident_count": 40,
+    "open_review_count": 69,
+    "owner_message": "Security Watch is stable, but there are open items that need owner attention.",
+    "posture": "watch",
+    "posture_label": "Active Security Watch",
+    "recommended_first_action": "review_incident_escalation",
+    "risk_points": 63,
+    "risk_reasons": [
+      "high_incidents_open",
+      "escalation_ready_incidents",
+      "high_priority_inbox_items",
+      "open_security_reviews"
+    ],
+    "route_coverage_pct": 100,
+    "unguarded_high_risk_count": 0,
+    "unguarded_needed_count": 0,
+    "wall_state": "sealed"
+  },
+  "readiness_label": "Security Watch owner posture ready",
+  "readiness_score": 100,
+  "route_health": {
+    "coverage_pct": 100,
+    "guarded_needed_count": 40,
+    "needs_guard_count": 40,
+    "readiness_score": 100,
+    "unguarded_high_risk_count": 0,
+    "unguarded_needed_count": 0
+  },
+  "soulaana_translation": "Soulaana: Security Watch is online. The owner can see the Tower posture without digging through every room.",
+  "status": "passed",
+  "status_fingerprint": "25ac93791488f546a74a3f6cbbd3a74f8e5867113ad049c2a87546cf3c9fa9d3",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_watch_owner_posture_status.json"
+}

@@ -10837,3 +10837,43 @@ except Exception:
 # END PACK130_SECURITY_INCIDENT_CHECKPOINT_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK131_SECURITY_WATCH_OWNER_POSTURE_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/security-watch.json")
+    def tower_security_watch_owner_posture_json_pack131():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-watch.json",
+                metadata={"source": "pack131_security_watch_owner_posture_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_watch_owner_posture import build_security_watch_owner_posture
+
+            return jsonify(build_security_watch_owner_posture(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "131",
+                    "reason_code": "security_watch_owner_posture_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "131", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK131_SECURITY_WATCH_OWNER_POSTURE_ROUTE
+# ================================================================================
+

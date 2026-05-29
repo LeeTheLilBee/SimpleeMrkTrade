@@ -2,25 +2,25 @@
   {
     "__redacted_incident_field_count__": 1,
     "actor_user_id": "owner_solice",
-    "created_at": "2026-05-29T20:50:09.105339Z",
+    "created_at": "2026-05-29T21:03:44.380465Z",
     "decision": "incident_action_applied",
     "event_type": "tower_security_incident_action",
-    "human_reason": "Pack 130 incident checkpoint seed.",
-    "inbox_item_id": "security_inbox_04397affa5ea296493",
-    "incident_id": "incident_60aa47315460d7ebcf",
+    "human_reason": "Pack 131 Security Watch seed.",
+    "inbox_item_id": "security_inbox_aa850ed2df06e5f185",
+    "incident_id": "incident_9410a5d69f64568632",
     "metadata": {
-      "pack": "130"
+      "pack": "131"
     },
     "new_incident_status": "triaged",
     "new_severity": "high",
-    "object_id": "pos_other_130",
+    "object_id": "pos_other_131",
     "object_type": "position",
     "pack": "126",
     "prior_incident_status": "new",
     "prior_severity": "critical",
     "priority_score": 160,
     "reason_code": "security_incident_state_updated",
-    "receipt_id": "security_incident_receipt_cbdc3829f2fce36161",
+    "receipt_id": "security_incident_receipt_5d220461a2762d3a17",
     "route_path": "",
     "source": "object_permission_events"
   }

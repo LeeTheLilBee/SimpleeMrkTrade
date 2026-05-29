@@ -4,14 +4,14 @@
     "inbox_item_id": "security_inbox_5e65f035784b617bb2",
     "last_review_action": "new_to_investigating",
     "metadata": {
-      "pack": "130"
+      "pack": "131"
     },
     "object_id": "",
     "object_type": "",
     "review_label": "Investigating",
-    "review_notes": "Pack 130 investigation seed.",
+    "review_notes": "Pack 131 investigation seed.",
     "review_state": "investigating",
-    "reviewed_at": "2026-05-29T20:50:04.258254Z",
+    "reviewed_at": "2026-05-29T21:03:38.055020Z",
     "reviewed_by": "owner_solice",
     "route_path": "/tower/security-command",
     "severity": "high",
@@ -23,14 +23,14 @@
     "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
     "last_review_action": "new_to_acknowledged",
     "metadata": {
-      "pack": "130"
+      "pack": "131"
     },
     "object_id": "",
     "object_type": "",
     "review_label": "Acknowledged",
-    "review_notes": "Pack 130 checkpoint seed.",
+    "review_notes": "Pack 131 Security Watch seed.",
     "review_state": "acknowledged",
-    "reviewed_at": "2026-05-29T20:50:03.446410Z",
+    "reviewed_at": "2026-05-29T21:03:36.910178Z",
     "reviewed_by": "owner_solice",
     "route_path": "",
     "severity": "high",
