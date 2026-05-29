@@ -520,3 +520,27 @@ def get_tower_status():
 
     return payload
 
+
+
+# ================================================================================
+# PACK112_OBJECT_PERMISSION_VISIBILITY_STATUS_BRIDGE
+# ================================================================================
+
+def pack112_object_permission_visibility_status_bridge():
+    try:
+        from tower.ob_object_permission_visibility import object_permission_visibility_status_card
+        return object_permission_visibility_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "112",
+            "title": "OB Object Permissions",
+            "reason_code": "object_permission_visibility_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Object permission visibility status could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK112_OBJECT_PERMISSION_VISIBILITY_STATUS_BRIDGE
+# ================================================================================
+

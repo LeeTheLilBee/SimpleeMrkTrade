@@ -1515,3 +1515,38 @@ def generate_security_command_dashboard(*args, **kwargs):
 
     return result
 
+
+
+# ================================================================================
+# PACK112_OBJECT_PERMISSION_VISIBILITY_COMMAND_BRIDGE
+# ================================================================================
+
+def pack112_object_permission_visibility_command_panel():
+    try:
+        from tower.ob_object_permission_visibility import build_object_permission_visibility_status
+        status = build_object_permission_visibility_status(write_panel=True)
+        return {
+            "ok": True,
+            "pack": "112",
+            "panel_title": "OB Object Permission Visibility",
+            "event_count": status.get("event_count", 0),
+            "deny_count": status.get("deny_count", 0),
+            "step_up_required_count": status.get("step_up_required_count", 0),
+            "export_event_count": status.get("export_event_count", 0),
+            "summary_only_count": status.get("summary_only_count", 0),
+            "panel_path": status.get("panel_path"),
+            "human_reason": "OB object permission visibility command panel loaded.",
+        }
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "112",
+            "reason_code": "object_permission_command_panel_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "OB object permission visibility command panel could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK112_OBJECT_PERMISSION_VISIBILITY_COMMAND_BRIDGE
+# ================================================================================
+
