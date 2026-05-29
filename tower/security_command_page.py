@@ -1550,3 +1550,30 @@ def pack112_object_permission_visibility_command_panel():
 # END PACK112_OBJECT_PERMISSION_VISIBILITY_COMMAND_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK113_SECURITY_COMMAND_OBJECT_VISIBILITY_HTML_BRIDGE
+# ================================================================================
+
+def pack113_security_command_object_visibility_html_section():
+    try:
+        from tower.security_command_object_visibility_integration import (
+            build_security_command_object_visibility_status,
+            render_security_command_object_visibility_section,
+        )
+        status = build_security_command_object_visibility_status(write_fragment=True)
+        return render_security_command_object_visibility_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="tower-object-visibility-panel" data-pack="113-error">
+          <h2>Object Permission Visibility Unavailable</h2>
+          <p>Security Command could not load object visibility.</p>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+# ================================================================================
+# END PACK113_SECURITY_COMMAND_OBJECT_VISIBILITY_HTML_BRIDGE
+# ================================================================================
+

@@ -1,0 +1,178 @@
+
+<!-- PACK113_SECURITY_COMMAND_OBJECT_VISIBILITY_SECTION -->
+<section class="tower-object-visibility-panel" data-pack="113">
+  <style>
+    .tower-object-visibility-panel {
+      margin: 24px 0;
+      border: 1px solid rgba(220,183,94,.34);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top left, rgba(220,183,94,.15), transparent 34%),
+        linear-gradient(135deg, rgba(75,48,18,.58), rgba(8,9,7,.92));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .tower-object-visibility-panel__head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .tower-object-visibility-panel__eyebrow {
+      color: rgba(220,183,94,.86);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .tower-object-visibility-panel h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .tower-object-visibility-panel p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .tower-object-visibility-panel__stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .tower-object-stat {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+    }
+    .tower-object-stat b {
+      display: block;
+      font-size: 22px;
+    }
+    .tower-object-stat span {
+      color: rgba(245,234,210,.62);
+      font-size: 12px;
+    }
+    .tower-object-visibility-panel__grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .tower-object-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+    }
+    .tower-object-card--allow {
+      border-color: rgba(143,221,158,.34);
+    }
+    .tower-object-card--deny {
+      border-color: rgba(255,128,128,.55);
+    }
+    .tower-object-card--step {
+      border-color: rgba(220,183,94,.58);
+    }
+    .tower-object-card--summary {
+      border-color: rgba(168,175,255,.46);
+    }
+    .tower-object-card__eyebrow {
+      color: rgba(220,183,94,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .tower-object-card h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+    }
+    .tower-object-card p {
+      margin: 0 0 8px;
+      color: rgba(245,234,210,.72);
+    }
+    .tower-object-card small {
+      color: rgba(245,234,210,.55);
+    }
+    @media (max-width: 900px) {
+      .tower-object-visibility-panel__stats,
+      .tower-object-visibility-panel__grid {
+        grid-template-columns: 1fr;
+      }
+      .tower-object-visibility-panel__head {
+        display: block;
+      }
+    }
+  </style>
+
+  <div class="tower-object-visibility-panel__head">
+    <div>
+      <div class="tower-object-visibility-panel__eyebrow">PACK 112 + 113 · OB OBJECT PERMISSIONS</div>
+      <h2>Object Permission Visibility</h2>
+      <p>OB object permission visibility is available inside Security Command.</p>
+    </div>
+    <div class="tower-object-stat">
+      <b>100</b>
+      <span>Readiness</span>
+    </div>
+  </div>
+
+  <div class="tower-object-visibility-panel__stats">
+    <div class="tower-object-stat"><b>7</b><span>Events</span></div>
+    <div class="tower-object-stat"><b>2</b><span>Denied</span></div>
+    <div class="tower-object-stat"><b>3</b><span>Step-up</span></div>
+    <div class="tower-object-stat"><b>1</b><span>Exports</span></div>
+    <div class="tower-object-stat"><b>1</b><span>Summary-only</span></div>
+  </div>
+
+  <div class="tower-object-visibility-panel__grid">
+    
+        <article class="tower-object-card tower-object-card--deny">
+          <div class="tower-object-card__eyebrow">deny · position · beta</div>
+          <h3>pos_other_113</h3>
+          <p>position_owner_mismatch</p>
+          <small>deny_object_access</small>
+        </article>
+        
+        <article class="tower-object-card tower-object-card--step">
+          <div class="tower-object-card__eyebrow">step_up_required · position · beta</div>
+          <h3>pos_mine_113</h3>
+          <p>position_mutation_requires_step_up</p>
+          <small>complete_tower_step_up, retry_object_action</small>
+        </article>
+        
+        <article class="tower-object-card tower-object-card--deny">
+          <div class="tower-object-card__eyebrow">deny · trade · beta</div>
+          <h3>trade_other_113</h3>
+          <p>trade_owner_mismatch</p>
+          <small>deny_object_access</small>
+        </article>
+        
+        <article class="tower-object-card tower-object-card--step">
+          <div class="tower-object-card__eyebrow">step_up_required · export · owner</div>
+          <h3>export_113</h3>
+          <p>export_requires_step_up</p>
+          <small>complete_tower_step_up, record_export_receipt, create_archive_handoff</small>
+        </article>
+        
+        <article class="tower-object-card tower-object-card--summary">
+          <div class="tower-object-card__eyebrow">summary_only · analysis · beta</div>
+          <h3>analysis_113</h3>
+          <p>analysis_summary_first</p>
+          <small>show_redacted_summary, request_reveal_if_needed</small>
+        </article>
+        
+        <article class="tower-object-card tower-object-card--step">
+          <div class="tower-object-card__eyebrow">step_up_required · admin_panel · owner</div>
+          <h3>tower_admin_panel_113</h3>
+          <p>admin_object_requires_step_up</p>
+          <small>complete_tower_step_up, record_admin_receipt</small>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK113_SECURITY_COMMAND_OBJECT_VISIBILITY_SECTION -->
