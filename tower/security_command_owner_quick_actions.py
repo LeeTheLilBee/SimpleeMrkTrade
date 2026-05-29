@@ -671,3 +671,41 @@ except Exception:
 # END PACK132B_OWNER_QUICK_ACTIONS_INCIDENT_CHECKPOINT_EXTENSION
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK134_OWNER_QUICK_ACTIONS_SECURITY_WATCH_CHECKPOINT_EXTENSION
+# ================================================================================
+
+try:
+    _pack134_existing_action_ids = {
+        action.get("action_id")
+        for action in OWNER_QUICK_ACTIONS
+        if isinstance(action, dict)
+    }
+
+    _pack134_existing_hrefs = {
+        action.get("href")
+        for action in OWNER_QUICK_ACTIONS
+        if isinstance(action, dict)
+    }
+
+    if (
+        "review_security_watch_checkpoint" not in _pack134_existing_action_ids
+        and "/tower/security-watch-checkpoint.json" not in _pack134_existing_hrefs
+    ):
+        OWNER_QUICK_ACTIONS.append({
+            "action_id": "review_security_watch_checkpoint",
+            "title": "Review Security Watch Checkpoint",
+            "href": "/tower/security-watch-checkpoint.json",
+            "kind": "status_json",
+            "pack": "133",
+            "human_reason": "Review Security Watch readiness across owner posture, unified UI, quick actions, incident checkpoint, route guards, and object checkpoint.",
+        })
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK134_OWNER_QUICK_ACTIONS_SECURITY_WATCH_CHECKPOINT_EXTENSION
+# ================================================================================
+

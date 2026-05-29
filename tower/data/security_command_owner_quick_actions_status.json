@@ -1,5 +1,5 @@
 {
-  "action_count": 15,
+  "action_count": 16,
   "actions": [
     {
       "action_id": "open_security_watch",
@@ -150,6 +150,16 @@
       "pack": "130",
       "readiness_score": 100,
       "title": "Review Incident Checkpoint"
+    },
+    {
+      "action_id": "review_security_watch_checkpoint",
+      "available": true,
+      "href": "/tower/security-watch-checkpoint.json",
+      "human_reason": "Review Security Watch readiness across owner posture, unified UI, quick actions, incident checkpoint, route guards, and object checkpoint.",
+      "kind": "status_json",
+      "pack": "133",
+      "readiness_score": 100,
+      "title": "Review Security Watch Checkpoint"
     }
   ],
   "checks": {
@@ -165,7 +175,7 @@
     "unified_health_ok": true,
     "unified_status_passed": true
   },
-  "created_at": "2026-05-29T21:56:53.119273Z",
+  "created_at": "2026-05-29T22:24:17.369999Z",
   "failed_checks": [],
   "human_reason": "Owner quick-action rail gives direct access to unified command, preferred destination, security links, object visibility, and route guard status.",
   "leakage_scan": {
@@ -197,7 +207,7 @@
   },
   "soulaana_translation": "Soulaana: The owner now has the important Tower buttons in one rail.",
   "status": "passed",
-  "status_fingerprint": "29c36b2df8bc7ee257fa6619bdf01e43b8c7862b90966e3436db61994cb28613",
+  "status_fingerprint": "c0386f4dba725aa712d16b8f0afea2d127ee89236355568b93d7b9367d8e2bc7",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_owner_quick_actions_status.json",
   "unified_health": {
     "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page.html",

@@ -68,8 +68,9 @@
   <!-- PACK127_UNIFIED_OWNER_PAGE_INCLUDES_INCIDENT_DESK -->
   <!-- PACK129_UNIFIED_OWNER_PAGE_INCLUDES_INCIDENT_FILTERS_ESCALATION -->
   <!-- PACK132_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH -->
-  <section class="tower-owner-hero" data-pack="116-132">
-    <div class="tower-owner-hero__eyebrow">PACK 116 + 132 · UNIFIED OWNER COMMAND</div>
+  <!-- PACK134_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH_CHECKPOINT -->
+  <section class="tower-owner-hero" data-pack="116-134">
+    <div class="tower-owner-hero__eyebrow">PACK 116 + 134 · UNIFIED OWNER COMMAND</div>
     <h1>The Tower Security Command</h1>
     <p>Unified owner Security Command page composes navigation, object visibility, route coverage, object checkpoint, and composition smoke into one control-room page.</p>
     <div class="tower-owner-health-grid">
@@ -224,7 +225,7 @@
         
         <article class="security-watch-card">
           <div class="security-watch-card__eyebrow">Owner Rail</div>
-          <h3>15</h3>
+          <h3>16</h3>
           <p>Quick Actions</p>
         </article>
         
@@ -236,6 +237,138 @@
   </div>
 </section>
 <!-- END PACK131_SECURITY_WATCH_OWNER_POSTURE_SECTION -->
+</section>
+  <section class="tower-owner-section">
+<!-- PACK133_SECURITY_WATCH_CHECKPOINT_SECTION -->
+<section class="security-watch-checkpoint" data-pack="133">
+  <style>
+    .security-watch-checkpoint {
+      margin: 24px 0;
+      border: 1px solid rgba(143,221,158,.42);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(143,221,158,.13), transparent 34%),
+        linear-gradient(135deg, rgba(10,34,25,.86), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .security-watch-checkpoint__eyebrow {
+      color: rgba(143,221,158,.92);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .security-watch-checkpoint h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .security-watch-checkpoint p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .security-watch-checkpoint-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .security-watch-checkpoint-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+    }
+    .security-watch-checkpoint-card__eyebrow {
+      color: rgba(143,221,158,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .security-watch-checkpoint-card h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      word-break: break-word;
+    }
+    .security-watch-checkpoint-card p {
+      margin: 0;
+      color: rgba(245,234,210,.62);
+      font-size: 12px;
+    }
+    .security-watch-checkpoint__note {
+      margin-top: 14px;
+      border: 1px solid rgba(143,221,158,.22);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.035);
+      color: rgba(245,234,210,.72);
+    }
+    @media (max-width: 1100px) {
+      .security-watch-checkpoint-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="security-watch-checkpoint__eyebrow">PACK 133 · SECURITY WATCH CHECKPOINT</div>
+  <h2>Security Watch Readiness Checkpoint</h2>
+  <p>Security Watch checkpoint proves owner posture, unified UI, quick actions, incident checkpoint, route guards, and object checkpoint are healthy.</p>
+
+  <div class="security-watch-checkpoint-grid">
+    
+        <article class="security-watch-checkpoint-card">
+          <div class="security-watch-checkpoint-card__eyebrow">Owner View</div>
+          <h3>Active Security Watch</h3>
+          <p>Posture</p>
+        </article>
+        
+        <article class="security-watch-checkpoint-card">
+          <div class="security-watch-checkpoint-card__eyebrow">Signal</div>
+          <h3>63</h3>
+          <p>Risk Points</p>
+        </article>
+        
+        <article class="security-watch-checkpoint-card">
+          <div class="security-watch-checkpoint-card__eyebrow">Guard Wall</div>
+          <h3>100%</h3>
+          <p>Route Coverage</p>
+        </article>
+        
+        <article class="security-watch-checkpoint-card">
+          <div class="security-watch-checkpoint-card__eyebrow">Incident Desk</div>
+          <h3>40</h3>
+          <p>Open Incidents</p>
+        </article>
+        
+        <article class="security-watch-checkpoint-card">
+          <div class="security-watch-checkpoint-card__eyebrow">Inbox</div>
+          <h3>68</h3>
+          <p>High Priority Inbox</p>
+        </article>
+        
+        <article class="security-watch-checkpoint-card">
+          <div class="security-watch-checkpoint-card__eyebrow">Owner Rail</div>
+          <h3>16</h3>
+          <p>Quick Actions</p>
+        </article>
+        
+        <article class="security-watch-checkpoint-card">
+          <div class="security-watch-checkpoint-card__eyebrow">Clean</div>
+          <h3>0</h3>
+          <p>Helper Wraps</p>
+        </article>
+        
+  </div>
+
+  <div class="security-watch-checkpoint__note">
+    <strong>Recommended first action:</strong> review_incident_escalation<br>
+    <strong>Wall state:</strong> sealed
+  </div>
+</section>
+<!-- END PACK133_SECURITY_WATCH_CHECKPOINT_SECTION -->
 </section>
   <section class="tower-owner-section">
 <!-- PACK119_OWNER_QUICK_ACTION_RAIL_SECTION -->
@@ -425,6 +558,13 @@
           <div class="owner-action-card__eyebrow">status_json · 130</div>
           <h3>Review Incident Checkpoint</h3>
           <p>Review the Incident Desk readiness checkpoint across incidents, escalation, unified UI, quick actions, and route guards.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/security-watch-checkpoint.json">
+          <div class="owner-action-card__eyebrow">status_json · 133</div>
+          <h3>Review Security Watch Checkpoint</h3>
+          <p>Review Security Watch readiness across owner posture, unified UI, quick actions, incident checkpoint, route guards, and object checkpoint.</p>
           <small>Readiness: 100</small>
         </a>
         
@@ -696,7 +836,7 @@
           <div class="security-inbox-card__eyebrow">REVIEW · high · object_permission_events</div>
           <h3>deny</h3>
           <p>position_owner_mismatch</p>
-          <small>pos_other_133</small>
+          <small>pos_other_134</small>
         </article>
         
         <article class="security-inbox-card security-inbox-card--medium">
@@ -773,21 +913,21 @@
           <div class="security-inbox-card__eyebrow">REVIEW · medium · object_permission_events</div>
           <h3>step_up_required</h3>
           <p>position_mutation_requires_step_up</p>
-          <small>pos_mine_133</small>
+          <small>pos_mine_134</small>
         </article>
         
         <article class="security-inbox-card security-inbox-card--medium">
           <div class="security-inbox-card__eyebrow">REVIEW · medium · object_permission_events</div>
           <h3>step_up_required</h3>
           <p>export_requires_step_up</p>
-          <small>export_133</small>
+          <small>export_134</small>
         </article>
         
         <article class="security-inbox-card security-inbox-card--medium">
           <div class="security-inbox-card__eyebrow">REVIEW · medium · object_permission_events</div>
           <h3>summary_only</h3>
           <p>analysis_summary_first</p>
-          <small>analysis_133</small>
+          <small>analysis_134</small>
         </article>
         
         <article class="security-inbox-card security-inbox-card--medium">
@@ -991,7 +1131,7 @@
           <div class="security-review-card__eyebrow">New · high · object_permission_events</div>
           <h3>deny</h3>
           <p>position_owner_mismatch</p>
-          <small>security_inbox_8b89fe3691c69e2139</small>
+          <small>security_inbox_c6c663367b80ee019a</small>
         </article>
         
         <article class="security-review-card security-review-card--new">
@@ -1068,70 +1208,70 @@
           <div class="security-review-card__eyebrow">New · medium · object_permission_events</div>
           <h3>step_up_required</h3>
           <p>position_mutation_requires_step_up</p>
-          <small>security_inbox_cc86eb2c15f2f4ddd5</small>
+          <small>security_inbox_27a07f36d1ed604bdb</small>
         </article>
         
         <article class="security-review-card security-review-card--new">
           <div class="security-review-card__eyebrow">New · medium · object_permission_events</div>
           <h3>step_up_required</h3>
           <p>export_requires_step_up</p>
-          <small>security_inbox_2c5efe695cb15ea533</small>
+          <small>security_inbox_0c0b502c9240ce71dc</small>
         </article>
         
         <article class="security-review-card security-review-card--new">
           <div class="security-review-card__eyebrow">New · medium · object_permission_events</div>
           <h3>summary_only</h3>
           <p>analysis_summary_first</p>
-          <small>security_inbox_f0ead3500ee1935881</small>
+          <small>security_inbox_94f7dea03106e4b2c7</small>
         </article>
         
         <article class="security-review-card security-review-card--new">
           <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_e82da6adabadda7e15</small>
+          <small>security_inbox_3cda225d9b3fe72aee</small>
         </article>
         
         <article class="security-review-card security-review-card--new">
           <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_defc38c2893fa5b203</small>
+          <small>security_inbox_3ddebd0a29690e4c67</small>
         </article>
         
         <article class="security-review-card security-review-card--new">
           <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_a17b5f70777984987a</small>
+          <small>security_inbox_adbc6a836acb3623c7</small>
         </article>
         
         <article class="security-review-card security-review-card--new">
           <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
           <h3>tower_security_command_object_visibility_status</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_bc87adcaca811d285c</small>
+          <small>security_inbox_2059d4278c47684dd9</small>
         </article>
         
         <article class="security-review-card security-review-card--new">
           <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_b2fa18bff03eb7cdf6</small>
+          <small>security_inbox_a9945677175cb78a62</small>
         </article>
         
         <article class="security-review-card security-review-card--new">
           <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
           <h3>tower_security_command_object_visibility_status</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_2c93e541b7dbc00d37</small>
+          <small>security_inbox_b7fa9123f12a0dacbd</small>
         </article>
         
         <article class="security-review-card security-review-card--new">
           <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_2ea36f1ca5fedc9ec6</small>
+          <small>security_inbox_2025f3c935939c52da</small>
         </article>
         
   </div>
@@ -1258,7 +1398,7 @@
           <div class="security-filter-card__eyebrow">P160 · high · new · object_permission_events</div>
           <h3>deny</h3>
           <p>position_owner_mismatch</p>
-          <small>security_inbox_8b89fe3691c69e2139</small>
+          <small>security_inbox_c6c663367b80ee019a</small>
         </article>
         
         <article class="security-filter-card security-filter-card--high">
@@ -1293,133 +1433,133 @@
           <div class="security-filter-card__eyebrow">P132 · medium · new · object_permission_events</div>
           <h3>step_up_required</h3>
           <p>export_requires_step_up</p>
-          <small>security_inbox_2c5efe695cb15ea533</small>
+          <small>security_inbox_0c0b502c9240ce71dc</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P132 · medium · new · object_permission_events</div>
           <h3>step_up_required</h3>
           <p>position_mutation_requires_step_up</p>
-          <small>security_inbox_cc86eb2c15f2f4ddd5</small>
+          <small>security_inbox_27a07f36d1ed604bdb</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_security_command_object_visibility_status</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_c8c80469ac66ccfb08</small>
+          <small>security_inbox_e9c5dcfdc9365e43e3</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_84a4b59ecd5f2356e7</small>
+          <small>security_inbox_d1e56dcdca01d0b78b</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_security_command_object_visibility_status</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_de1933184c00a6c025</small>
+          <small>security_inbox_3426685bd5c916288c</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_9cc536a0808e06baaa</small>
+          <small>security_inbox_490fb84620f7faf682</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_6461b725fe0ac0eeff</small>
+          <small>security_inbox_f4c45df14c660061c4</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_79e21a9adf5293cebc</small>
+          <small>security_inbox_1b8b996fac0d4f92ff</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_security_command_object_visibility_status</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_d611f3b99a5cff862d</small>
+          <small>security_inbox_6f8dd5c31bc4d23d9b</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_a0c5b3032fda4a0642</small>
+          <small>security_inbox_59850b700e1bce2efc</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_security_command_object_visibility_status</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_7526a6540d1015437f</small>
+          <small>security_inbox_7ec3b8dd9d7174e7da</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_cb972ad1396d1fa7f6</small>
+          <small>security_inbox_5e71959b578cf7dc0f</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_security_command_object_visibility_status</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_84a4408c2d6e02ae0b</small>
+          <small>security_inbox_4171ff82fcbff94dbc</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_bc2e72ee2a5dc504af</small>
+          <small>security_inbox_c5d773e8e6e3e620ac</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_f1f45c396e82920b02</small>
+          <small>security_inbox_eec3969c4cbee0cc38</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_3f25ad1040481a1f78</small>
+          <small>security_inbox_d1ea849282d44b06c2</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_security_command_object_visibility_status</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_bf9ce426f8517872c5</small>
+          <small>security_inbox_54ec85595728725e35</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_af478cfdabb77675d7</small>
+          <small>security_inbox_528c6adb96913ce8fd</small>
         </article>
         
         <article class="security-filter-card security-filter-card--medium">
           <div class="security-filter-card__eyebrow">P128 · medium · new · tamper_audit_chain</div>
           <h3>tower_ob_object_permission_visibility_status</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_1ecfc8992e0ad3b6f5</small>
+          <small>security_inbox_00a1d87a0699a1c5b9</small>
         </article>
         
   </div>
@@ -1548,9 +1688,9 @@
     
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P160 · high · triaged · object_permission_events</div>
-          <h3>incident_6ad2db5159b1784b32</h3>
+          <h3>incident_e947645cf5e939caeb</h3>
           <p>position_owner_mismatch</p>
-          <small>security_inbox_8b89fe3691c69e2139</small>
+          <small>security_inbox_c6c663367b80ee019a</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
@@ -1583,135 +1723,135 @@
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P132 · high · new · object_permission_events</div>
-          <h3>incident_e5ed60dc64da51d4ca</h3>
+          <h3>incident_603cac0e5ab4d918ec</h3>
           <p>export_requires_step_up</p>
-          <small>security_inbox_2c5efe695cb15ea533</small>
+          <small>security_inbox_0c0b502c9240ce71dc</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P132 · high · new · object_permission_events</div>
-          <h3>incident_d70ffc404454615743</h3>
+          <h3>incident_6c95f068189f146e8e</h3>
           <p>position_mutation_requires_step_up</p>
-          <small>security_inbox_cc86eb2c15f2f4ddd5</small>
+          <small>security_inbox_27a07f36d1ed604bdb</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_3f346f1afda5150591</h3>
+          <h3>incident_7fc3be9d9b441f7657</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_c8c80469ac66ccfb08</small>
+          <small>security_inbox_e9c5dcfdc9365e43e3</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_6c9134b0bb980d75d2</h3>
+          <h3>incident_ec4108da64b7037ef8</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_84a4b59ecd5f2356e7</small>
+          <small>security_inbox_d1e56dcdca01d0b78b</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_dfaa6e752eefdf7330</h3>
+          <h3>incident_319614b80ae32f8624</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_de1933184c00a6c025</small>
+          <small>security_inbox_3426685bd5c916288c</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_2822ce6e0b3d2f4a19</h3>
+          <h3>incident_c8811570eee04883a7</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_9cc536a0808e06baaa</small>
+          <small>security_inbox_490fb84620f7faf682</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_a9501f30f2df566950</h3>
+          <h3>incident_f9e9bf6bc6929d2e04</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_6461b725fe0ac0eeff</small>
+          <small>security_inbox_f4c45df14c660061c4</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_d03639aaa6242e20ad</h3>
+          <h3>incident_5925d231ffbdbcc334</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_79e21a9adf5293cebc</small>
+          <small>security_inbox_1b8b996fac0d4f92ff</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_b8cb7ac528665bd8f4</h3>
+          <h3>incident_4c63dc19fc5dc3fc05</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_d611f3b99a5cff862d</small>
+          <small>security_inbox_6f8dd5c31bc4d23d9b</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_8276b9da43acff7474</h3>
+          <h3>incident_2f83abb85a7a529a7b</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_a0c5b3032fda4a0642</small>
+          <small>security_inbox_59850b700e1bce2efc</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_1f22d7c4075d147e4e</h3>
+          <h3>incident_f5fd3f6c79b5214b97</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_7526a6540d1015437f</small>
+          <small>security_inbox_7ec3b8dd9d7174e7da</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_b44005a613e38d09b7</h3>
+          <h3>incident_7b82e1d375ed339477</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_cb972ad1396d1fa7f6</small>
+          <small>security_inbox_5e71959b578cf7dc0f</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_35686c90916799bfeb</h3>
+          <h3>incident_321b5e4c3e2036bc6d</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_84a4408c2d6e02ae0b</small>
+          <small>security_inbox_4171ff82fcbff94dbc</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_976855aaab7abae397</h3>
+          <h3>incident_89bff85285ad2bfd93</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_bc2e72ee2a5dc504af</small>
+          <small>security_inbox_c5d773e8e6e3e620ac</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_74629cde13881e9db5</h3>
+          <h3>incident_979ce5399f9f9756aa</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_f1f45c396e82920b02</small>
+          <small>security_inbox_eec3969c4cbee0cc38</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_0ad8e67f1d330c478f</h3>
+          <h3>incident_ee1104e6b5e07d457a</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_3f25ad1040481a1f78</small>
+          <small>security_inbox_d1ea849282d44b06c2</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_6546ea2c130771b6ba</h3>
+          <h3>incident_ac3fd28747d2fdfa7d</h3>
           <p>tower_security_command_object_visibility_status</p>
-          <small>security_inbox_bf9ce426f8517872c5</small>
+          <small>security_inbox_54ec85595728725e35</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_ec09910f9c8bfd360a</h3>
+          <h3>incident_0c7e40c637fe7b2f73</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_af478cfdabb77675d7</small>
+          <small>security_inbox_528c6adb96913ce8fd</small>
         </article>
         
         <article class="incident-desk-card incident-desk-card--high">
           <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
-          <h3>incident_eed8e48f9630b8bd85</h3>
+          <h3>incident_e3571c4deb31facafc</h3>
           <p>tower_ob_object_permission_visibility_status</p>
-          <small>security_inbox_1ecfc8992e0ad3b6f5</small>
+          <small>security_inbox_00a1d87a0699a1c5b9</small>
         </article>
         
   </div>
@@ -1868,140 +2008,140 @@
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P175 · high · triaged</div>
-          <h3>incident_6ad2db5159b1784b32</h3>
+          <h3>incident_e947645cf5e939caeb</h3>
           <p>position_owner_mismatch</p>
           <small>Next: investigate_or_contain</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P174 · high · new</div>
-          <h3>incident_e5ed60dc64da51d4ca</h3>
+          <h3>incident_603cac0e5ab4d918ec</h3>
           <p>export_requires_step_up</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P174 · high · new</div>
-          <h3>incident_d70ffc404454615743</h3>
+          <h3>incident_6c95f068189f146e8e</h3>
           <p>position_mutation_requires_step_up</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_3f346f1afda5150591</h3>
+          <h3>incident_7fc3be9d9b441f7657</h3>
           <p>tower_security_command_object_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_6c9134b0bb980d75d2</h3>
+          <h3>incident_ec4108da64b7037ef8</h3>
           <p>tower_ob_object_permission_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_dfaa6e752eefdf7330</h3>
+          <h3>incident_319614b80ae32f8624</h3>
           <p>tower_security_command_object_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_2822ce6e0b3d2f4a19</h3>
+          <h3>incident_c8811570eee04883a7</h3>
           <p>tower_ob_object_permission_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_a9501f30f2df566950</h3>
+          <h3>incident_f9e9bf6bc6929d2e04</h3>
           <p>tower_ob_object_permission_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_d03639aaa6242e20ad</h3>
+          <h3>incident_5925d231ffbdbcc334</h3>
           <p>tower_ob_object_permission_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_b8cb7ac528665bd8f4</h3>
+          <h3>incident_4c63dc19fc5dc3fc05</h3>
           <p>tower_security_command_object_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_8276b9da43acff7474</h3>
+          <h3>incident_2f83abb85a7a529a7b</h3>
           <p>tower_ob_object_permission_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_1f22d7c4075d147e4e</h3>
+          <h3>incident_f5fd3f6c79b5214b97</h3>
           <p>tower_security_command_object_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_b44005a613e38d09b7</h3>
+          <h3>incident_7b82e1d375ed339477</h3>
           <p>tower_ob_object_permission_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_35686c90916799bfeb</h3>
+          <h3>incident_321b5e4c3e2036bc6d</h3>
           <p>tower_security_command_object_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_976855aaab7abae397</h3>
+          <h3>incident_89bff85285ad2bfd93</h3>
           <p>tower_ob_object_permission_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_74629cde13881e9db5</h3>
+          <h3>incident_979ce5399f9f9756aa</h3>
           <p>tower_ob_object_permission_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_0ad8e67f1d330c478f</h3>
+          <h3>incident_ee1104e6b5e07d457a</h3>
           <p>tower_ob_object_permission_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_6546ea2c130771b6ba</h3>
+          <h3>incident_ac3fd28747d2fdfa7d</h3>
           <p>tower_security_command_object_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_ec09910f9c8bfd360a</h3>
+          <h3>incident_0c7e40c637fe7b2f73</h3>
           <p>tower_ob_object_permission_visibility_status</p>
           <small>Next: triage</small>
         </article>
         
         <article class="incident-filter-card incident-filter-card--high">
           <div class="incident-filter-card__eyebrow">ESCALATE · P172 · high · new</div>
-          <h3>incident_eed8e48f9630b8bd85</h3>
+          <h3>incident_e3571c4deb31facafc</h3>
           <p>tower_ob_object_permission_visibility_status</p>
           <small>Next: triage</small>
         </article>
@@ -2299,28 +2439,28 @@
     
         <article class="tower-object-card tower-object-card--deny">
           <div class="tower-object-card__eyebrow">deny · position · beta</div>
-          <h3>pos_other_133</h3>
+          <h3>pos_other_134</h3>
           <p>position_owner_mismatch</p>
           <small>deny_object_access</small>
         </article>
         
         <article class="tower-object-card tower-object-card--step">
           <div class="tower-object-card__eyebrow">step_up_required · position · beta</div>
-          <h3>pos_mine_133</h3>
+          <h3>pos_mine_134</h3>
           <p>position_mutation_requires_step_up</p>
           <small>complete_tower_step_up, retry_object_action</small>
         </article>
         
         <article class="tower-object-card tower-object-card--step">
           <div class="tower-object-card__eyebrow">step_up_required · export · owner</div>
-          <h3>export_133</h3>
+          <h3>export_134</h3>
           <p>export_requires_step_up</p>
           <small>complete_tower_step_up, record_export_receipt, create_archive_handoff</small>
         </article>
         
         <article class="tower-object-card tower-object-card--summary">
           <div class="tower-object-card__eyebrow">summary_only · analysis · beta</div>
-          <h3>analysis_133</h3>
+          <h3>analysis_134</h3>
           <p>analysis_summary_first</p>
           <small>show_redacted_summary, request_reveal_if_needed</small>
         </article>
@@ -2329,6 +2469,7 @@
 </section>
 <!-- END PACK113_SECURITY_COMMAND_OBJECT_VISIBILITY_SECTION -->
 </section>
+  <!-- END PACK134_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH_CHECKPOINT -->
   <!-- END PACK132_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH -->
   <!-- END PACK129_UNIFIED_OWNER_PAGE_INCLUDES_INCIDENT_FILTERS_ESCALATION -->
   <!-- END PACK127_UNIFIED_OWNER_PAGE_INCLUDES_INCIDENT_DESK -->

@@ -1802,3 +1802,29 @@ def pack132_security_watch_owner_posture_html_section():
 # END PACK132_SECURITY_WATCH_HTML_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK134_SECURITY_WATCH_CHECKPOINT_HTML_BRIDGE
+# ================================================================================
+
+def pack134_security_watch_checkpoint_html_section():
+    try:
+        from tower.security_watch_checkpoint import (
+            build_security_watch_checkpoint,
+            render_security_watch_checkpoint_section,
+        )
+        status = build_security_watch_checkpoint(write_panel=True)
+        return render_security_watch_checkpoint_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="security-watch-checkpoint" data-pack="134-security-watch-checkpoint-error">
+          <h2>Security Watch Checkpoint Unavailable</h2>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+# ================================================================================
+# END PACK134_SECURITY_WATCH_CHECKPOINT_HTML_BRIDGE
+# ================================================================================
+

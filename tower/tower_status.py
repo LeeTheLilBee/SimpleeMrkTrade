@@ -751,3 +751,27 @@ def pack132_security_watch_owner_posture_status_bridge():
 # END PACK132_SECURITY_WATCH_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK134_SECURITY_WATCH_CHECKPOINT_STATUS_BRIDGE
+# ================================================================================
+
+def pack134_security_watch_checkpoint_status_bridge():
+    try:
+        from tower.security_watch_checkpoint import security_watch_checkpoint_status_card
+        return security_watch_checkpoint_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "134",
+            "title": "Security Watch Checkpoint",
+            "reason_code": "security_watch_checkpoint_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Security Watch checkpoint could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK134_SECURITY_WATCH_CHECKPOINT_STATUS_BRIDGE
+# ================================================================================
+
