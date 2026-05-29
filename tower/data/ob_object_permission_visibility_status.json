@@ -20,7 +20,7 @@
     "beta": 3,
     "owner": 1
   },
-  "created_at": "2026-05-29T20:39:12.280686Z",
+  "created_at": "2026-05-29T20:51:40.191356Z",
   "deny_count": 1,
   "event_count": 4,
   "events_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_events.json",
@@ -42,11 +42,11 @@
   "recent_denied_events": [
     {
       "action": "view",
-      "created_at": "2026-05-29T20:38:21.104075Z",
+      "created_at": "2026-05-29T20:49:59.061681Z",
       "decision": "deny",
-      "event_id": "ob_object_perm_evt_Xou5P17bwO2WD-Qta-ZMpDsk",
+      "event_id": "ob_object_perm_evt_aXJpskUOTo1AS-r-_g_VCbQY",
       "human_reason": "User cannot access another user's position object.",
-      "object_id": "pos_other_129",
+      "object_id": "pos_other_130",
       "object_type": "position",
       "reason_code": "position_owner_mismatch",
       "required_actions": [
@@ -59,17 +59,17 @@
       "role": "beta",
       "role_family": "beta",
       "soulaana_translation": "Soulaana: Wrong object lane. Door stays shut.",
-      "user_id": "beta_129"
+      "user_id": "beta_130"
     }
   ],
   "recent_events": [
     {
       "action": "view",
-      "created_at": "2026-05-29T20:38:21.104075Z",
+      "created_at": "2026-05-29T20:49:59.061681Z",
       "decision": "deny",
-      "event_id": "ob_object_perm_evt_Xou5P17bwO2WD-Qta-ZMpDsk",
+      "event_id": "ob_object_perm_evt_aXJpskUOTo1AS-r-_g_VCbQY",
       "human_reason": "User cannot access another user's position object.",
-      "object_id": "pos_other_129",
+      "object_id": "pos_other_130",
       "object_type": "position",
       "reason_code": "position_owner_mismatch",
       "required_actions": [
@@ -82,15 +82,15 @@
       "role": "beta",
       "role_family": "beta",
       "soulaana_translation": "Soulaana: Wrong object lane. Door stays shut.",
-      "user_id": "beta_129"
+      "user_id": "beta_130"
     },
     {
       "action": "close",
-      "created_at": "2026-05-29T20:38:21.745960Z",
+      "created_at": "2026-05-29T20:50:00.033388Z",
       "decision": "step_up_required",
-      "event_id": "ob_object_perm_evt_Ft-U9Js34BFhuWooPi3dLZl9",
+      "event_id": "ob_object_perm_evt_g3ChVng8GRZnEsDVM8zpK-4G",
       "human_reason": "Position mutation requires step-up.",
-      "object_id": "pos_mine_129",
+      "object_id": "pos_mine_130",
       "object_type": "position",
       "reason_code": "position_mutation_requires_step_up",
       "required_actions": [
@@ -104,15 +104,15 @@
       "role": "beta",
       "role_family": "beta",
       "soulaana_translation": "Soulaana: You can touch your object, but this move needs a second key.",
-      "user_id": "beta_129"
+      "user_id": "beta_130"
     },
     {
       "action": "export",
-      "created_at": "2026-05-29T20:38:22.367168Z",
+      "created_at": "2026-05-29T20:50:01.546676Z",
       "decision": "step_up_required",
-      "event_id": "ob_object_perm_evt_y2fD33VDtEWMIZHiy0aN8KfG",
+      "event_id": "ob_object_perm_evt_ym-c2KiPDw7UCfToZMW46Fm_",
       "human_reason": "Export/report object requires Tower step-up before access.",
-      "object_id": "export_129",
+      "object_id": "export_130",
       "object_type": "export",
       "reason_code": "export_requires_step_up",
       "required_actions": [
@@ -131,11 +131,11 @@
     },
     {
       "action": "view",
-      "created_at": "2026-05-29T20:38:22.976399Z",
+      "created_at": "2026-05-29T20:50:02.151725Z",
       "decision": "summary_only",
-      "event_id": "ob_object_perm_evt_wpFhKpWZZ_mgDqBVupHXLg0A",
+      "event_id": "ob_object_perm_evt_tKjCZXIk451B_BpjWT3OMa1o",
       "human_reason": "Analysis object starts in summary-only mode.",
-      "object_id": "analysis_129",
+      "object_id": "analysis_130",
       "object_type": "analysis",
       "reason_code": "analysis_summary_first",
       "required_actions": [
@@ -149,17 +149,17 @@
       "role": "beta",
       "role_family": "beta",
       "soulaana_translation": "Soulaana: Summary glass first. Details need another key.",
-      "user_id": "beta_129"
+      "user_id": "beta_130"
     }
   ],
   "recent_export_events": [
     {
       "action": "export",
-      "created_at": "2026-05-29T20:38:22.367168Z",
+      "created_at": "2026-05-29T20:50:01.546676Z",
       "decision": "step_up_required",
-      "event_id": "ob_object_perm_evt_y2fD33VDtEWMIZHiy0aN8KfG",
+      "event_id": "ob_object_perm_evt_ym-c2KiPDw7UCfToZMW46Fm_",
       "human_reason": "Export/report object requires Tower step-up before access.",
-      "object_id": "export_129",
+      "object_id": "export_130",
       "object_type": "export",
       "reason_code": "export_requires_step_up",
       "required_actions": [
@@ -180,11 +180,11 @@
   "recent_important_events": [
     {
       "action": "view",
-      "created_at": "2026-05-29T20:38:21.104075Z",
+      "created_at": "2026-05-29T20:49:59.061681Z",
       "decision": "deny",
-      "event_id": "ob_object_perm_evt_Xou5P17bwO2WD-Qta-ZMpDsk",
+      "event_id": "ob_object_perm_evt_aXJpskUOTo1AS-r-_g_VCbQY",
       "human_reason": "User cannot access another user's position object.",
-      "object_id": "pos_other_129",
+      "object_id": "pos_other_130",
       "object_type": "position",
       "reason_code": "position_owner_mismatch",
       "required_actions": [
@@ -197,15 +197,15 @@
       "role": "beta",
       "role_family": "beta",
       "soulaana_translation": "Soulaana: Wrong object lane. Door stays shut.",
-      "user_id": "beta_129"
+      "user_id": "beta_130"
     },
     {
       "action": "close",
-      "created_at": "2026-05-29T20:38:21.745960Z",
+      "created_at": "2026-05-29T20:50:00.033388Z",
       "decision": "step_up_required",
-      "event_id": "ob_object_perm_evt_Ft-U9Js34BFhuWooPi3dLZl9",
+      "event_id": "ob_object_perm_evt_g3ChVng8GRZnEsDVM8zpK-4G",
       "human_reason": "Position mutation requires step-up.",
-      "object_id": "pos_mine_129",
+      "object_id": "pos_mine_130",
       "object_type": "position",
       "reason_code": "position_mutation_requires_step_up",
       "required_actions": [
@@ -219,15 +219,15 @@
       "role": "beta",
       "role_family": "beta",
       "soulaana_translation": "Soulaana: You can touch your object, but this move needs a second key.",
-      "user_id": "beta_129"
+      "user_id": "beta_130"
     },
     {
       "action": "export",
-      "created_at": "2026-05-29T20:38:22.367168Z",
+      "created_at": "2026-05-29T20:50:01.546676Z",
       "decision": "step_up_required",
-      "event_id": "ob_object_perm_evt_y2fD33VDtEWMIZHiy0aN8KfG",
+      "event_id": "ob_object_perm_evt_ym-c2KiPDw7UCfToZMW46Fm_",
       "human_reason": "Export/report object requires Tower step-up before access.",
-      "object_id": "export_129",
+      "object_id": "export_130",
       "object_type": "export",
       "reason_code": "export_requires_step_up",
       "required_actions": [
@@ -246,11 +246,11 @@
     },
     {
       "action": "view",
-      "created_at": "2026-05-29T20:38:22.976399Z",
+      "created_at": "2026-05-29T20:50:02.151725Z",
       "decision": "summary_only",
-      "event_id": "ob_object_perm_evt_wpFhKpWZZ_mgDqBVupHXLg0A",
+      "event_id": "ob_object_perm_evt_tKjCZXIk451B_BpjWT3OMa1o",
       "human_reason": "Analysis object starts in summary-only mode.",
-      "object_id": "analysis_129",
+      "object_id": "analysis_130",
       "object_type": "analysis",
       "reason_code": "analysis_summary_first",
       "required_actions": [
@@ -264,18 +264,18 @@
       "role": "beta",
       "role_family": "beta",
       "soulaana_translation": "Soulaana: Summary glass first. Details need another key.",
-      "user_id": "beta_129"
+      "user_id": "beta_130"
     }
   ],
   "recent_live_mode_events": [],
   "recent_step_up_events": [
     {
       "action": "close",
-      "created_at": "2026-05-29T20:38:21.745960Z",
+      "created_at": "2026-05-29T20:50:00.033388Z",
       "decision": "step_up_required",
-      "event_id": "ob_object_perm_evt_Ft-U9Js34BFhuWooPi3dLZl9",
+      "event_id": "ob_object_perm_evt_g3ChVng8GRZnEsDVM8zpK-4G",
       "human_reason": "Position mutation requires step-up.",
-      "object_id": "pos_mine_129",
+      "object_id": "pos_mine_130",
       "object_type": "position",
       "reason_code": "position_mutation_requires_step_up",
       "required_actions": [
@@ -289,15 +289,15 @@
       "role": "beta",
       "role_family": "beta",
       "soulaana_translation": "Soulaana: You can touch your object, but this move needs a second key.",
-      "user_id": "beta_129"
+      "user_id": "beta_130"
     },
     {
       "action": "export",
-      "created_at": "2026-05-29T20:38:22.367168Z",
+      "created_at": "2026-05-29T20:50:01.546676Z",
       "decision": "step_up_required",
-      "event_id": "ob_object_perm_evt_y2fD33VDtEWMIZHiy0aN8KfG",
+      "event_id": "ob_object_perm_evt_ym-c2KiPDw7UCfToZMW46Fm_",
       "human_reason": "Export/report object requires Tower step-up before access.",
-      "object_id": "export_129",
+      "object_id": "export_130",
       "object_type": "export",
       "reason_code": "export_requires_step_up",
       "required_actions": [
@@ -318,11 +318,11 @@
   "recent_summary_only_events": [
     {
       "action": "view",
-      "created_at": "2026-05-29T20:38:22.976399Z",
+      "created_at": "2026-05-29T20:50:02.151725Z",
       "decision": "summary_only",
-      "event_id": "ob_object_perm_evt_wpFhKpWZZ_mgDqBVupHXLg0A",
+      "event_id": "ob_object_perm_evt_tKjCZXIk451B_BpjWT3OMa1o",
       "human_reason": "Analysis object starts in summary-only mode.",
-      "object_id": "analysis_129",
+      "object_id": "analysis_130",
       "object_type": "analysis",
       "reason_code": "analysis_summary_first",
       "required_actions": [
@@ -336,11 +336,11 @@
       "role": "beta",
       "role_family": "beta",
       "soulaana_translation": "Soulaana: Summary glass first. Details need another key.",
-      "user_id": "beta_129"
+      "user_id": "beta_130"
     }
   ],
   "soulaana_translation": "Soulaana: Object decisions are no longer hidden in the walls. The Tower can see them.",
-  "status_fingerprint": "5b53fdcb78a826e85abe0abd5c0d20198c59d67b66269fce38ac9329f40e90aa",
+  "status_fingerprint": "41e8c914bce618145c75efcaa64fcffa7607a4c139a91a9a4d3410f702ba9184",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_visibility_status.json",
   "step_up_required_count": 2,
   "summary_only_count": 1,

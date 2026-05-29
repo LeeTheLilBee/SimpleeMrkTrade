@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Incident Checkpoint</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+
+<!-- PACK130_SECURITY_INCIDENT_CHECKPOINT_SECTION -->
+<section class="security-incident-checkpoint" data-pack="130">
+  <style>
+    .security-incident-checkpoint {
+      margin: 24px 0;
+      border: 1px solid rgba(143,221,158,.38);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(143,221,158,.13), transparent 34%),
+        linear-gradient(135deg, rgba(16,32,22,.84), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .security-incident-checkpoint__eyebrow {
+      color: rgba(143,221,158,.9);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .security-incident-checkpoint h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .security-incident-checkpoint p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .incident-checkpoint-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .incident-checkpoint-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+    }
+    .incident-checkpoint-card__eyebrow {
+      color: rgba(143,221,158,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .incident-checkpoint-card h3 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+    .incident-checkpoint-card p {
+      margin: 0;
+      color: rgba(245,234,210,.62);
+      font-size: 12px;
+    }
+    @media (max-width: 1000px) {
+      .incident-checkpoint-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="security-incident-checkpoint__eyebrow">PACK 130 · INCIDENT CHECKPOINT</div>
+  <h2>Incident Desk Readiness Checkpoint</h2>
+  <p>Incident Desk layer is healthy: incidents, filters, escalation readiness, unified UI, quick actions, and route guards are all passing.</p>
+
+  <div class="incident-checkpoint-grid">
+    
+        <article class="incident-checkpoint-card">
+          <div class="incident-checkpoint-card__eyebrow">Desk</div>
+          <h3>40</h3>
+          <p>Incidents</p>
+        </article>
+        
+        <article class="incident-checkpoint-card">
+          <div class="incident-checkpoint-card__eyebrow">Active</div>
+          <h3>40</h3>
+          <p>Open Incidents</p>
+        </article>
+        
+        <article class="incident-checkpoint-card">
+          <div class="incident-checkpoint-card__eyebrow">Priority</div>
+          <h3>40</h3>
+          <p>Escalation Ready</p>
+        </article>
+        
+        <article class="incident-checkpoint-card">
+          <div class="incident-checkpoint-card__eyebrow">Owner Rail</div>
+          <h3>13</h3>
+          <p>Quick Actions</p>
+        </article>
+        
+        <article class="incident-checkpoint-card">
+          <div class="incident-checkpoint-card__eyebrow">Guard Wall</div>
+          <h3>100%</h3>
+          <p>Route Coverage</p>
+        </article>
+        
+        <article class="incident-checkpoint-card">
+          <div class="incident-checkpoint-card__eyebrow">Clean</div>
+          <h3>0</h3>
+          <p>Helper Wraps</p>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK130_SECURITY_INCIDENT_CHECKPOINT_SECTION -->
+
+</main>
+</body>
+</html>

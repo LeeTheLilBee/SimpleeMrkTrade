@@ -1,0 +1,119 @@
+{
+  "checks": {
+    "escalation_ready_present": true,
+    "filters_call_ok": true,
+    "filters_ok": true,
+    "filters_readiness_100": true,
+    "filters_status_passed": true,
+    "helper_wrapped_zero": true,
+    "incident_call_ok": true,
+    "incident_count_present": true,
+    "incident_ok": true,
+    "incident_readiness_100": true,
+    "incident_status_passed": true,
+    "object_checkpoint_call_ok": true,
+    "object_checkpoint_passed": true,
+    "quick_call_ok": true,
+    "quick_has_incident_action_link": true,
+    "quick_has_incident_desk_link": true,
+    "quick_has_incident_filters_link": true,
+    "quick_ok": true,
+    "quick_readiness_100": true,
+    "quick_status_passed": true,
+    "route_call_ok": true,
+    "route_coverage_100": true,
+    "unguarded_high_risk_zero": true,
+    "unguarded_needed_zero": true,
+    "unified_call_ok": true,
+    "unified_has_pack126": true,
+    "unified_has_pack128": true,
+    "unified_has_pack129": true,
+    "unified_ok": true,
+    "unified_readiness_100": true,
+    "unified_status_passed": true
+  },
+  "created_at": "2026-05-29T20:51:42.480104Z",
+  "failed_checks": [],
+  "human_reason": "Incident Desk layer is healthy: incidents, filters, escalation readiness, unified UI, quick actions, and route guards are all passing.",
+  "incident_desk": {
+    "by_severity": {
+      "high": 40
+    },
+    "by_status": {
+      "new": 39,
+      "triaged": 1
+    },
+    "critical_incident_count": 0,
+    "incident_count": 40,
+    "open_incident_count": 40,
+    "readiness_score": 100,
+    "receipt_count": 1,
+    "status": "passed",
+    "tracked_incident_count": 1
+  },
+  "incident_filters": {
+    "by_next_action": {
+      "investigate_or_contain": 1,
+      "triage": 39
+    },
+    "by_severity": {
+      "high": 40
+    },
+    "by_status": {
+      "new": 39,
+      "triaged": 1
+    },
+    "critical_count": 0,
+    "escalation_ready_count": 40,
+    "high_count": 40,
+    "incident_count": 40,
+    "open_incident_count": 40,
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "no_secret_leakage": true,
+  "object_checkpoint": {
+    "helper_wrapped_count": 0,
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "ok": true,
+  "pack": "130",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_incident_checkpoint_panel.html",
+  "quick_actions": {
+    "action_count": 13,
+    "incident_links_present": {
+      "action": true,
+      "desk": true,
+      "filters": true
+    },
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "readiness_label": "Incident Desk checkpoint passed",
+  "readiness_score": 100,
+  "route_health": {
+    "coverage_pct": 100,
+    "guarded_needed_count": 39,
+    "needs_guard_count": 39,
+    "readiness_score": 100,
+    "unguarded_high_risk_count": 0,
+    "unguarded_needed_count": 0
+  },
+  "soulaana_translation": "Soulaana: Incident Desk is locked in. Serious events can be found, sorted, escalated, and reviewed from the owner command room.",
+  "status": "passed",
+  "status_fingerprint": "ba9defc43be9c550ff1f7a0712942329f13e7dcd924f72bca384d6064124051f",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_incident_checkpoint_status.json",
+  "unified_security_command": {
+    "has_incident_desk_section": true,
+    "has_incident_filters_section": true,
+    "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page.html",
+    "readiness_score": 100,
+    "status": "passed"
+  }
+}

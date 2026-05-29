@@ -2,50 +2,26 @@
   {
     "__redacted_incident_field_count__": 1,
     "actor_user_id": "owner_solice",
-    "created_at": "2026-05-29T20:38:29.987693Z",
+    "created_at": "2026-05-29T20:50:09.105339Z",
     "decision": "incident_action_applied",
     "event_type": "tower_security_incident_action",
-    "human_reason": "Pack 129 incident filter UI seed.",
-    "inbox_item_id": "security_inbox_6bdfc4465c1a6d1bb0",
-    "incident_id": "incident_5a61dfd1c2968a0247",
+    "human_reason": "Pack 130 incident checkpoint seed.",
+    "inbox_item_id": "security_inbox_04397affa5ea296493",
+    "incident_id": "incident_60aa47315460d7ebcf",
     "metadata": {
-      "pack": "129"
+      "pack": "130"
     },
     "new_incident_status": "triaged",
     "new_severity": "high",
-    "object_id": "pos_other_129",
+    "object_id": "pos_other_130",
     "object_type": "position",
     "pack": "126",
     "prior_incident_status": "new",
     "prior_severity": "critical",
     "priority_score": 160,
     "reason_code": "security_incident_state_updated",
-    "receipt_id": "security_incident_receipt_184d331871a2413cf1",
+    "receipt_id": "security_incident_receipt_cbdc3829f2fce36161",
     "route_path": "",
     "source": "object_permission_events"
-  },
-  {
-    "actor_user_id": "owner_solice",
-    "created_at": "2026-05-29T20:38:31.884970Z",
-    "decision": "incident_action_applied",
-    "event_type": "tower_security_incident_action",
-    "human_reason": "Pack 129 incident filter UI seed.",
-    "inbox_item_id": "security_inbox_5e65f035784b617bb2",
-    "incident_id": "incident_d0d63284269627fe8a",
-    "metadata": {
-      "pack": "129"
-    },
-    "new_incident_status": "investigating",
-    "new_severity": "high",
-    "object_id": "",
-    "object_type": "",
-    "pack": "126",
-    "prior_incident_status": "new",
-    "prior_severity": "high",
-    "priority_score": 145,
-    "reason_code": "security_incident_state_updated",
-    "receipt_id": "security_incident_receipt_d0d493cefafc7816f6",
-    "route_path": "/tower/security-command",
-    "source": "owner_admin_receipts"
   }
 ]
