@@ -4,14 +4,14 @@
     "inbox_item_id": "security_inbox_5e65f035784b617bb2",
     "last_review_action": "new_to_investigating",
     "metadata": {
-      "pack": "125"
+      "pack": "126"
     },
     "object_id": "",
     "object_type": "",
     "review_label": "Investigating",
-    "review_notes": "Pack 125 investigation seed.",
+    "review_notes": "Pack 126 investigation seed.",
     "review_state": "investigating",
-    "reviewed_at": "2026-05-29T19:00:06.322264Z",
+    "reviewed_at": "2026-05-29T19:14:28.171100Z",
     "reviewed_by": "owner_solice",
     "route_path": "/tower/security-command",
     "severity": "high",
@@ -23,14 +23,14 @@
     "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
     "last_review_action": "new_to_acknowledged",
     "metadata": {
-      "pack": "125"
+      "pack": "126"
     },
     "object_id": "",
     "object_type": "",
     "review_label": "Acknowledged",
-    "review_notes": "Pack 125 quick action/filter test.",
+    "review_notes": "Pack 126 incident desk seed.",
     "review_state": "acknowledged",
-    "reviewed_at": "2026-05-29T19:00:04.689811Z",
+    "reviewed_at": "2026-05-29T19:14:25.340201Z",
     "reviewed_by": "owner_solice",
     "route_path": "",
     "severity": "high",

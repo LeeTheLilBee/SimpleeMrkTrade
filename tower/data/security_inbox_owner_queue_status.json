@@ -7,19 +7,26 @@
     "reveal_step_up_required": 1,
     "step_up_required": 2,
     "summary_only": 1,
-    "tower_ob_object_permission_integration_checkpoint": 12,
-    "tower_ob_object_permission_visibility_status": 33,
-    "tower_security_command_composition_smoke": 7,
-    "tower_security_command_navigation_links_status": 4,
-    "tower_security_command_object_visibility_status": 19,
+    "tower_ob_object_permission_event_snapshot": 4,
+    "tower_ob_object_permission_integration_checkpoint": 7,
+    "tower_ob_object_permission_visibility_status": 17,
+    "tower_security_command_composition_smoke": 4,
+    "tower_security_command_navigation_links_status": 2,
+    "tower_security_command_object_visibility_status": 11,
     "tower_security_command_owner_quick_actions_status": 1,
-    "tower_security_command_preferred_destination_status": 1,
-    "tower_unified_owner_security_command_status": 3
+    "tower_security_inbox_filters_priorities": 6,
+    "tower_security_inbox_owner_queue": 10,
+    "tower_security_inbox_review_action": 2,
+    "tower_security_inbox_review_status": 7,
+    "tower_security_incident_action": 3,
+    "tower_security_incident_desk_status": 4,
+    "tower_unified_owner_security_command_status": 2
   },
   "by_severity": {
     "high": 4,
-    "info": 28,
-    "medium": 65
+    "info": 44,
+    "medium": 43,
+    "watch": 6
   },
   "by_source": {
     "object_permission_events": 4,
@@ -36,7 +43,7 @@
     "sources_collected": true,
     "status_path_ready": true
   },
-  "created_at": "2026-05-29T19:00:47.131918Z",
+  "created_at": "2026-05-29T19:14:42.894639Z",
   "failed_checks": [],
   "human_reason": "Tower Security Inbox collects important security events into one owner review queue without exposing secrets.",
   "inbox_count": 97,
@@ -47,7 +54,7 @@
   },
   "no_secret_leakage": true,
   "ok": true,
-  "owner_review_count": 69,
+  "owner_review_count": 52,
   "pack": "121",
   "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_inbox_owner_queue_panel.html",
   "readiness_label": "Tower Security Inbox owner queue ready",
@@ -116,21 +123,21 @@
       "source": "owner_admin_receipts"
     },
     {
-      "actor_user_id": "beta_125",
-      "created_at": "2026-05-29T18:59:58.902212Z",
+      "actor_user_id": "beta_126",
+      "created_at": "2026-05-29T19:14:20.137289Z",
       "decision": "deny",
       "event_type": "tower_ob_object_permission_event",
       "human_reason": "position_owner_mismatch",
-      "inbox_item_id": "security_inbox_8dc1e8f3d67150338b",
+      "inbox_item_id": "security_inbox_c864a9812f03cfdbac",
       "needs_owner_review": true,
-      "object_id": "pos_other_125",
+      "object_id": "pos_other_126",
       "object_type": "position",
       "route_path": "",
       "safe_summary": {
         "action": "view",
         "decision": "deny",
         "event_type": "tower_ob_object_permission_event",
-        "object_id": "pos_other_125",
+        "object_id": "pos_other_126",
         "object_type": "position",
         "pack": "108",
         "reason_code": "position_owner_mismatch"
@@ -350,489 +357,12 @@
       "source": "owner_ui_checkpoint_status"
     },
     {
-      "actor_user_id": "beta_125",
-      "created_at": "2026-05-29T19:00:00.544131Z",
-      "decision": "step_up_required",
-      "event_type": "tower_ob_object_permission_event",
-      "human_reason": "position_mutation_requires_step_up",
-      "inbox_item_id": "security_inbox_a2cdd791a9e4fd6db3",
-      "needs_owner_review": true,
-      "object_id": "pos_mine_125",
-      "object_type": "position",
-      "route_path": "",
-      "safe_summary": {
-        "action": "close",
-        "decision": "step_up_required",
-        "event_type": "tower_ob_object_permission_event",
-        "object_id": "pos_mine_125",
-        "object_type": "position",
-        "pack": "108",
-        "reason_code": "position_mutation_requires_step_up"
-      },
-      "severity": "medium",
-      "source": "object_permission_events"
-    },
-    {
-      "actor_user_id": "owner_solice",
-      "created_at": "2026-05-29T19:00:01.417238Z",
-      "decision": "step_up_required",
-      "event_type": "tower_ob_object_permission_event",
-      "human_reason": "export_requires_step_up",
-      "inbox_item_id": "security_inbox_2e7b75e990e4f0f602",
-      "needs_owner_review": true,
-      "object_id": "export_125",
-      "object_type": "export",
-      "route_path": "",
-      "safe_summary": {
-        "action": "export",
-        "decision": "step_up_required",
-        "event_type": "tower_ob_object_permission_event",
-        "object_id": "export_125",
-        "object_type": "export",
-        "pack": "108",
-        "reason_code": "export_requires_step_up"
-      },
-      "severity": "medium",
-      "source": "object_permission_events"
-    },
-    {
-      "actor_user_id": "beta_125",
-      "created_at": "2026-05-29T19:00:02.164864Z",
-      "decision": "summary_only",
-      "event_type": "tower_ob_object_permission_event",
-      "human_reason": "analysis_summary_first",
-      "inbox_item_id": "security_inbox_b58450e77d77114dbb",
-      "needs_owner_review": true,
-      "object_id": "analysis_125",
-      "object_type": "analysis",
-      "route_path": "",
-      "safe_summary": {
-        "action": "view",
-        "decision": "summary_only",
-        "event_type": "tower_ob_object_permission_event",
-        "object_id": "analysis_125",
-        "object_type": "analysis",
-        "pack": "108",
-        "reason_code": "analysis_summary_first"
-      },
-      "severity": "medium",
-      "source": "object_permission_events"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:16.278627Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_ece3d64bf4d2170882",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:16.623643Z",
-      "decision": "tower_security_command_object_visibility_status",
-      "event_type": "tower_security_command_object_visibility_status",
-      "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_35c6b67be013063a94",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_security_command_object_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:16.967948Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_d96fc01ff2b863130b",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:17.301146Z",
-      "decision": "tower_security_command_object_visibility_status",
-      "event_type": "tower_security_command_object_visibility_status",
-      "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_c16b66a319a6b54a4d",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_security_command_object_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:17.655682Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_45e3b80c461aa57bf3",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:18.336329Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_36b23414e2e968a9c9",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:18.675892Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_d2398d89e569151a64",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:19.002405Z",
-      "decision": "tower_security_command_object_visibility_status",
-      "event_type": "tower_security_command_object_visibility_status",
-      "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_1a7b63245477677749",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_security_command_object_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:19.677546Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_5985d9c0c0f6bee69f",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:20.005533Z",
-      "decision": "tower_security_command_object_visibility_status",
-      "event_type": "tower_security_command_object_visibility_status",
-      "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_f47e9b5f9f1d0f893f",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_security_command_object_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:21.460887Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_941de1a5ba1b450ca0",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:21.835658Z",
-      "decision": "tower_security_command_object_visibility_status",
-      "event_type": "tower_security_command_object_visibility_status",
-      "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_44c36c2c4462868b08",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_security_command_object_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:22.183714Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_181b67a280e27f2ffc",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:22.928798Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_ba3049bdd10f77ab8b",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:23.262277Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_0b86320c2aac8c695d",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:23.619669Z",
-      "decision": "tower_security_command_object_visibility_status",
-      "event_type": "tower_security_command_object_visibility_status",
-      "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_58d21738b923a0e915",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_security_command_object_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:24.297726Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_de37870b2f356737e5",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:24.896192Z",
-      "decision": "tower_security_command_object_visibility_status",
-      "event_type": "tower_security_command_object_visibility_status",
-      "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_cd6e546623296b9f9e",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_security_command_object_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:28.111520Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_8301135465acae6aca",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:28.479583Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_edd64dcafb07bd8898",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:28.807383Z",
-      "decision": "tower_security_command_object_visibility_status",
-      "event_type": "tower_security_command_object_visibility_status",
-      "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_a24fbff4f35e983f39",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_security_command_object_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:29.144901Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_a2b3a342707446dc0b",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:29.823531Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_9440c2b4f8e5266908",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:30.165076Z",
-      "decision": "tower_ob_object_permission_visibility_status",
-      "event_type": "tower_ob_object_permission_visibility_status",
-      "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_f37db647d5d7321a42",
-      "needs_owner_review": true,
-      "object_id": "",
-      "object_type": "",
-      "route_path": "",
-      "safe_summary": {
-        "event_type": "tower_ob_object_permission_visibility_status"
-      },
-      "severity": "medium",
-      "source": "tamper_audit_chain"
-    },
-    {
       "actor_user_id": "tower_system",
       "created_at": "2026-05-29T19:00:30.484982Z",
       "decision": "tower_security_command_object_visibility_status",
       "event_type": "tower_security_command_object_visibility_status",
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_fa733e4a50d6eff729",
+      "inbox_item_id": "security_inbox_628494bf402fa48427",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -849,7 +379,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_d00cfc52599971b2f8",
+      "inbox_item_id": "security_inbox_e3719a1fd9f366e5bc",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -866,7 +396,7 @@
       "decision": "tower_security_command_object_visibility_status",
       "event_type": "tower_security_command_object_visibility_status",
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_058ceb38d06bcf042c",
+      "inbox_item_id": "security_inbox_350f406fe4119b3417",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -883,7 +413,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_bc6d1e0a2b50a4dd18",
+      "inbox_item_id": "security_inbox_2e995d3de72d0678c6",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -900,7 +430,7 @@
       "decision": "tower_security_command_object_visibility_status",
       "event_type": "tower_security_command_object_visibility_status",
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_d1a00657e882789d28",
+      "inbox_item_id": "security_inbox_ec6ca445d8319d6af0",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -917,7 +447,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_ef00a997063cf57032",
+      "inbox_item_id": "security_inbox_1dcb644041272a87a7",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -934,7 +464,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_56e28828fe58783731",
+      "inbox_item_id": "security_inbox_af5d68f34607cbda3f",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -951,7 +481,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_200091368d7d409879",
+      "inbox_item_id": "security_inbox_b00f6976a603684803",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -968,7 +498,7 @@
       "decision": "tower_security_command_object_visibility_status",
       "event_type": "tower_security_command_object_visibility_status",
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_146a418bb93ad58771",
+      "inbox_item_id": "security_inbox_6333a21f28b695385d",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -985,7 +515,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_58805dc15573d9073f",
+      "inbox_item_id": "security_inbox_769747dd93f8bb16c6",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1002,7 +532,7 @@
       "decision": "tower_security_command_object_visibility_status",
       "event_type": "tower_security_command_object_visibility_status",
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_a27219446f2eaa76de",
+      "inbox_item_id": "security_inbox_ff24f630d26b16bad4",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1019,7 +549,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_bb875f1252e7010f77",
+      "inbox_item_id": "security_inbox_0d0c9dcc2b50b3987a",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1036,7 +566,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_293e5f850492ec14d9",
+      "inbox_item_id": "security_inbox_f7432cca8facf8e3f3",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1053,7 +583,7 @@
       "decision": "tower_security_command_object_visibility_status",
       "event_type": "tower_security_command_object_visibility_status",
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_b7047e2e8424a1ef8a",
+      "inbox_item_id": "security_inbox_51c087065d3dd595a5",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1070,7 +600,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_7cc409f12a4f721064",
+      "inbox_item_id": "security_inbox_213acf34fe89c946e9",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1087,7 +617,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_2f528703bf9fc32d83",
+      "inbox_item_id": "security_inbox_87fa543729280e586d",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1104,7 +634,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_ebe0347257cfedaac0",
+      "inbox_item_id": "security_inbox_4801e19952efa41da8",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1121,7 +651,7 @@
       "decision": "tower_security_command_object_visibility_status",
       "event_type": "tower_security_command_object_visibility_status",
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_0b70bcb67c4bcb6c62",
+      "inbox_item_id": "security_inbox_34e7fa8c0b0e066930",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1138,7 +668,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_359f98e0d4059f359b",
+      "inbox_item_id": "security_inbox_d4e70038a70d9ae1cc",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1155,7 +685,7 @@
       "decision": "tower_security_command_object_visibility_status",
       "event_type": "tower_security_command_object_visibility_status",
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_114912dac636667c1a",
+      "inbox_item_id": "security_inbox_d6f0a424e662938fed",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1172,7 +702,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_a76ec22ed33754fe1d",
+      "inbox_item_id": "security_inbox_bda9a02bc550be70a1",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1189,7 +719,7 @@
       "decision": "tower_security_command_object_visibility_status",
       "event_type": "tower_security_command_object_visibility_status",
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_7b5c1b48e9e124514d",
+      "inbox_item_id": "security_inbox_0d15a276e723a4c84c",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1206,7 +736,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_25f137abb923a260a6",
+      "inbox_item_id": "security_inbox_6afddc756c29dd850c",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1223,7 +753,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_f4322e9fa98594d155",
+      "inbox_item_id": "security_inbox_0cc9d38ba682470fb0",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1240,7 +770,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_0eb865079142d1108d",
+      "inbox_item_id": "security_inbox_0c5c76d543306850ea",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1257,7 +787,7 @@
       "decision": "tower_security_command_object_visibility_status",
       "event_type": "tower_security_command_object_visibility_status",
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_d754981ab3a3202cff",
+      "inbox_item_id": "security_inbox_7e61dac9b5d6e2024c",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1274,7 +804,7 @@
       "decision": "tower_ob_object_permission_visibility_status",
       "event_type": "tower_ob_object_permission_visibility_status",
       "human_reason": "tower_ob_object_permission_visibility_status",
-      "inbox_item_id": "security_inbox_dc5f3366e1fcc61020",
+      "inbox_item_id": "security_inbox_9b3339cfaf098f0cd4",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1291,7 +821,7 @@
       "decision": "tower_security_command_object_visibility_status",
       "event_type": "tower_security_command_object_visibility_status",
       "human_reason": "tower_security_command_object_visibility_status",
-      "inbox_item_id": "security_inbox_bfe8c9bf43649e1474",
+      "inbox_item_id": "security_inbox_694e68a2e77ba077a1",
       "needs_owner_review": true,
       "object_id": "",
       "object_type": "",
@@ -1303,12 +833,217 @@
       "source": "tamper_audit_chain"
     },
     {
+      "actor_user_id": "beta_126",
+      "created_at": "2026-05-29T19:14:20.845515Z",
+      "decision": "step_up_required",
+      "event_type": "tower_ob_object_permission_event",
+      "human_reason": "position_mutation_requires_step_up",
+      "inbox_item_id": "security_inbox_0f4b3489d3ea519595",
+      "needs_owner_review": true,
+      "object_id": "pos_mine_126",
+      "object_type": "position",
+      "route_path": "",
+      "safe_summary": {
+        "action": "close",
+        "decision": "step_up_required",
+        "event_type": "tower_ob_object_permission_event",
+        "object_id": "pos_mine_126",
+        "object_type": "position",
+        "pack": "108",
+        "reason_code": "position_mutation_requires_step_up"
+      },
+      "severity": "medium",
+      "source": "object_permission_events"
+    },
+    {
+      "actor_user_id": "beta_126",
+      "created_at": "2026-05-29T19:14:20.990207Z",
+      "decision": "tower_ob_object_permission_event_snapshot",
+      "event_type": "tower_ob_object_permission_event_snapshot",
+      "human_reason": "tower_ob_object_permission_event_snapshot",
+      "inbox_item_id": "security_inbox_3a8c3aa1ccbb973da2",
+      "needs_owner_review": true,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_event_snapshot"
+      },
+      "severity": "medium",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-29T19:14:21.739677Z",
+      "decision": "step_up_required",
+      "event_type": "tower_ob_object_permission_event",
+      "human_reason": "export_requires_step_up",
+      "inbox_item_id": "security_inbox_0eefebc11350a2765e",
+      "needs_owner_review": true,
+      "object_id": "export_126",
+      "object_type": "export",
+      "route_path": "",
+      "safe_summary": {
+        "action": "export",
+        "decision": "step_up_required",
+        "event_type": "tower_ob_object_permission_event",
+        "object_id": "export_126",
+        "object_type": "export",
+        "pack": "108",
+        "reason_code": "export_requires_step_up"
+      },
+      "severity": "medium",
+      "source": "object_permission_events"
+    },
+    {
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-29T19:14:21.908840Z",
+      "decision": "tower_ob_object_permission_event_snapshot",
+      "event_type": "tower_ob_object_permission_event_snapshot",
+      "human_reason": "tower_ob_object_permission_event_snapshot",
+      "inbox_item_id": "security_inbox_d368bad42b36fef812",
+      "needs_owner_review": true,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_event_snapshot"
+      },
+      "severity": "medium",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "beta_126",
+      "created_at": "2026-05-29T19:14:22.608326Z",
+      "decision": "summary_only",
+      "event_type": "tower_ob_object_permission_event",
+      "human_reason": "analysis_summary_first",
+      "inbox_item_id": "security_inbox_c2048eaaa4d43735fd",
+      "needs_owner_review": true,
+      "object_id": "analysis_126",
+      "object_type": "analysis",
+      "route_path": "",
+      "safe_summary": {
+        "action": "view",
+        "decision": "summary_only",
+        "event_type": "tower_ob_object_permission_event",
+        "object_id": "analysis_126",
+        "object_type": "analysis",
+        "pack": "108",
+        "reason_code": "analysis_summary_first"
+      },
+      "severity": "medium",
+      "source": "object_permission_events"
+    },
+    {
+      "actor_user_id": "beta_126",
+      "created_at": "2026-05-29T19:14:22.817913Z",
+      "decision": "tower_ob_object_permission_event_snapshot",
+      "event_type": "tower_ob_object_permission_event_snapshot",
+      "human_reason": "tower_ob_object_permission_event_snapshot",
+      "inbox_item_id": "security_inbox_9640de225132b3fe2b",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_event_snapshot"
+      },
+      "severity": "watch",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-29T19:14:25.565683Z",
+      "decision": "tower_security_inbox_review_action",
+      "event_type": "tower_security_inbox_review_action",
+      "human_reason": "tower_security_inbox_review_action",
+      "inbox_item_id": "security_inbox_8507ed85d7ea1acfab",
+      "needs_owner_review": true,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_review_action"
+      },
+      "severity": "watch",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-29T19:14:28.373790Z",
+      "decision": "tower_security_inbox_review_action",
+      "event_type": "tower_security_inbox_review_action",
+      "human_reason": "tower_security_inbox_review_action",
+      "inbox_item_id": "security_inbox_722bf99ca287a82223",
+      "needs_owner_review": true,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_review_action"
+      },
+      "severity": "watch",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-29T19:14:37.238024Z",
+      "decision": "tower_security_incident_action",
+      "event_type": "tower_security_incident_action",
+      "human_reason": "tower_security_incident_action",
+      "inbox_item_id": "security_inbox_dae0039c7340984ef9",
+      "needs_owner_review": true,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_incident_action"
+      },
+      "severity": "watch",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-29T19:14:39.206433Z",
+      "decision": "tower_security_incident_action",
+      "event_type": "tower_security_incident_action",
+      "human_reason": "tower_security_incident_action",
+      "inbox_item_id": "security_inbox_11aab4ecb9ab51f4b8",
+      "needs_owner_review": true,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_incident_action"
+      },
+      "severity": "watch",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-29T19:14:42.496459Z",
+      "decision": "tower_security_incident_action",
+      "event_type": "tower_security_incident_action",
+      "human_reason": "tower_security_incident_action",
+      "inbox_item_id": "security_inbox_0b8d05e49ae070c5e3",
+      "needs_owner_review": true,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_incident_action"
+      },
+      "severity": "watch",
+      "source": "tamper_audit_chain"
+    },
+    {
       "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:15.953721Z",
+      "created_at": "2026-05-29T19:00:30.813636Z",
       "decision": "tower_security_command_composition_smoke",
       "event_type": "tower_security_command_composition_smoke",
       "human_reason": "tower_security_command_composition_smoke",
-      "inbox_item_id": "security_inbox_3c3663323b5e043db9",
+      "inbox_item_id": "security_inbox_c48174b27fe468afff",
       "needs_owner_review": false,
       "object_id": "",
       "object_type": "",
@@ -1321,11 +1056,11 @@
     },
     {
       "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:18.015531Z",
+      "created_at": "2026-05-29T19:00:32.943381Z",
       "decision": "tower_ob_object_permission_integration_checkpoint",
       "event_type": "tower_ob_object_permission_integration_checkpoint",
       "human_reason": "tower_ob_object_permission_integration_checkpoint",
-      "inbox_item_id": "security_inbox_3694d4d02e7e0c1422",
+      "inbox_item_id": "security_inbox_f9fec53265af25fb8f",
       "needs_owner_review": false,
       "object_id": "",
       "object_type": "",
@@ -1338,11 +1073,11 @@
     },
     {
       "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:19.325681Z",
+      "created_at": "2026-05-29T19:00:34.335675Z",
       "decision": "tower_security_command_composition_smoke",
       "event_type": "tower_security_command_composition_smoke",
       "human_reason": "tower_security_command_composition_smoke",
-      "inbox_item_id": "security_inbox_31cb1e98c484ec8ee2",
+      "inbox_item_id": "security_inbox_9ef47642dd2cd8b86a",
       "needs_owner_review": false,
       "object_id": "",
       "object_type": "",
@@ -1355,11 +1090,11 @@
     },
     {
       "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:20.365096Z",
+      "created_at": "2026-05-29T19:00:35.379785Z",
       "decision": "tower_ob_object_permission_integration_checkpoint",
       "event_type": "tower_ob_object_permission_integration_checkpoint",
       "human_reason": "tower_ob_object_permission_integration_checkpoint",
-      "inbox_item_id": "security_inbox_1ec615125f7835dbc9",
+      "inbox_item_id": "security_inbox_8a8d33178cdb182044",
       "needs_owner_review": false,
       "object_id": "",
       "object_type": "",
@@ -1372,11 +1107,11 @@
     },
     {
       "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:20.738487Z",
+      "created_at": "2026-05-29T19:00:35.711084Z",
       "decision": "tower_security_command_navigation_links_status",
       "event_type": "tower_security_command_navigation_links_status",
       "human_reason": "tower_security_command_navigation_links_status",
-      "inbox_item_id": "security_inbox_3314f8b451c9182ea5",
+      "inbox_item_id": "security_inbox_c10fc4e36c7d0dabed",
       "needs_owner_review": false,
       "object_id": "",
       "object_type": "",
@@ -1389,11 +1124,11 @@
     },
     {
       "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:21.106912Z",
+      "created_at": "2026-05-29T19:00:36.043414Z",
       "decision": "tower_unified_owner_security_command_status",
       "event_type": "tower_unified_owner_security_command_status",
       "human_reason": "tower_unified_owner_security_command_status",
-      "inbox_item_id": "security_inbox_1902527de5a486b1f6",
+      "inbox_item_id": "security_inbox_15c3c7c0ad6a2c094d",
       "needs_owner_review": false,
       "object_id": "",
       "object_type": "",
@@ -1406,11 +1141,28 @@
     },
     {
       "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:22.574487Z",
+      "created_at": "2026-05-29T19:00:36.397731Z",
+      "decision": "tower_security_command_owner_quick_actions_status",
+      "event_type": "tower_security_command_owner_quick_actions_status",
+      "human_reason": "tower_security_command_owner_quick_actions_status",
+      "inbox_item_id": "security_inbox_2474ae3027536e6470",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_command_owner_quick_actions_status"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:00:36.767797Z",
       "decision": "tower_ob_object_permission_integration_checkpoint",
       "event_type": "tower_ob_object_permission_integration_checkpoint",
       "human_reason": "tower_ob_object_permission_integration_checkpoint",
-      "inbox_item_id": "security_inbox_f9aa212e9685ed0de5",
+      "inbox_item_id": "security_inbox_4e244dc34a808cdeed",
       "needs_owner_review": false,
       "object_id": "",
       "object_type": "",
@@ -1423,11 +1175,28 @@
     },
     {
       "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:23.963561Z",
+      "created_at": "2026-05-29T19:00:38.901689Z",
+      "decision": "tower_ob_object_permission_integration_checkpoint",
+      "event_type": "tower_ob_object_permission_integration_checkpoint",
+      "human_reason": "tower_ob_object_permission_integration_checkpoint",
+      "inbox_item_id": "security_inbox_5ae27de702615d37c2",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_integration_checkpoint"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:00:41.318875Z",
       "decision": "tower_security_command_composition_smoke",
       "event_type": "tower_security_command_composition_smoke",
       "human_reason": "tower_security_command_composition_smoke",
-      "inbox_item_id": "security_inbox_9781dfb02ae9a72fa4",
+      "inbox_item_id": "security_inbox_8739503d58fbf8c373",
       "needs_owner_review": false,
       "object_id": "",
       "object_type": "",
@@ -1440,11 +1209,11 @@
     },
     {
       "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:25.577244Z",
+      "created_at": "2026-05-29T19:00:43.697069Z",
       "decision": "tower_ob_object_permission_integration_checkpoint",
       "event_type": "tower_ob_object_permission_integration_checkpoint",
       "human_reason": "tower_ob_object_permission_integration_checkpoint",
-      "inbox_item_id": "security_inbox_1793c652344987eda1",
+      "inbox_item_id": "security_inbox_c554db10796cabb775",
       "needs_owner_review": false,
       "object_id": "",
       "object_type": "",
@@ -1457,11 +1226,45 @@
     },
     {
       "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:26.217493Z",
+      "created_at": "2026-05-29T19:00:45.052665Z",
+      "decision": "tower_security_command_composition_smoke",
+      "event_type": "tower_security_command_composition_smoke",
+      "human_reason": "tower_security_command_composition_smoke",
+      "inbox_item_id": "security_inbox_8a5b5659ca9bbf6438",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_command_composition_smoke"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:00:46.077489Z",
+      "decision": "tower_ob_object_permission_integration_checkpoint",
+      "event_type": "tower_ob_object_permission_integration_checkpoint",
+      "human_reason": "tower_ob_object_permission_integration_checkpoint",
+      "inbox_item_id": "security_inbox_135bdc777286862803",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_integration_checkpoint"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:00:46.403745Z",
       "decision": "tower_security_command_navigation_links_status",
       "event_type": "tower_security_command_navigation_links_status",
       "human_reason": "tower_security_command_navigation_links_status",
-      "inbox_item_id": "security_inbox_81dcd5a88c9718a900",
+      "inbox_item_id": "security_inbox_ecd229dd2050f9a555",
       "needs_owner_review": false,
       "object_id": "",
       "object_type": "",
@@ -1474,17 +1277,221 @@
     },
     {
       "actor_user_id": "tower_system",
-      "created_at": "2026-05-29T19:00:26.891658Z",
-      "decision": "tower_security_command_preferred_destination_status",
-      "event_type": "tower_security_command_preferred_destination_status",
-      "human_reason": "tower_security_command_preferred_destination_status",
-      "inbox_item_id": "security_inbox_68787f7da3bc67fa51",
+      "created_at": "2026-05-29T19:00:46.725389Z",
+      "decision": "tower_unified_owner_security_command_status",
+      "event_type": "tower_unified_owner_security_command_status",
+      "human_reason": "tower_unified_owner_security_command_status",
+      "inbox_item_id": "security_inbox_2d0425140c9bc795a4",
       "needs_owner_review": false,
       "object_id": "",
       "object_type": "",
       "route_path": "",
       "safe_summary": {
-        "event_type": "tower_security_command_preferred_destination_status"
+        "event_type": "tower_unified_owner_security_command_status"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:00:47.211977Z",
+      "decision": "tower_security_inbox_owner_queue",
+      "event_type": "tower_security_inbox_owner_queue",
+      "human_reason": "tower_security_inbox_owner_queue",
+      "inbox_item_id": "security_inbox_0341f5801173d78084",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_owner_queue"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:00:47.555428Z",
+      "decision": "tower_security_inbox_review_status",
+      "event_type": "tower_security_inbox_review_status",
+      "human_reason": "tower_security_inbox_review_status",
+      "inbox_item_id": "security_inbox_6a3faeaf4fb3efbade",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_review_status"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:00:47.927343Z",
+      "decision": "tower_security_inbox_filters_priorities",
+      "event_type": "tower_security_inbox_filters_priorities",
+      "human_reason": "tower_security_inbox_filters_priorities",
+      "inbox_item_id": "security_inbox_9ba4299df51462e811",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_filters_priorities"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:00:48.296726Z",
+      "decision": "tower_ob_object_permission_integration_checkpoint",
+      "event_type": "tower_ob_object_permission_integration_checkpoint",
+      "human_reason": "tower_ob_object_permission_integration_checkpoint",
+      "inbox_item_id": "security_inbox_2a15da09bb2c4547c3",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_integration_checkpoint"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "beta_126",
+      "created_at": "2026-05-29T19:14:20.289897Z",
+      "decision": "tower_ob_object_permission_event_snapshot",
+      "event_type": "tower_ob_object_permission_event_snapshot",
+      "human_reason": "tower_ob_object_permission_event_snapshot",
+      "inbox_item_id": "security_inbox_ae046569815f7a2acd",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_ob_object_permission_event_snapshot"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:14:23.808260Z",
+      "decision": "tower_security_inbox_owner_queue",
+      "event_type": "tower_security_inbox_owner_queue",
+      "human_reason": "tower_security_inbox_owner_queue",
+      "inbox_item_id": "security_inbox_84d3e23b4e3957dace",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_owner_queue"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:14:24.679548Z",
+      "decision": "tower_security_inbox_owner_queue",
+      "event_type": "tower_security_inbox_owner_queue",
+      "human_reason": "tower_security_inbox_owner_queue",
+      "inbox_item_id": "security_inbox_95ba751e6f091ff0c4",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_owner_queue"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:14:27.388951Z",
+      "decision": "tower_security_inbox_owner_queue",
+      "event_type": "tower_security_inbox_owner_queue",
+      "human_reason": "tower_security_inbox_owner_queue",
+      "inbox_item_id": "security_inbox_1d3a77c284355171c1",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_owner_queue"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:14:29.546460Z",
+      "decision": "tower_security_inbox_owner_queue",
+      "event_type": "tower_security_inbox_owner_queue",
+      "human_reason": "tower_security_inbox_owner_queue",
+      "inbox_item_id": "security_inbox_da04e2014889303d5b",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_owner_queue"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:14:30.242620Z",
+      "decision": "tower_security_inbox_review_status",
+      "event_type": "tower_security_inbox_review_status",
+      "human_reason": "tower_security_inbox_review_status",
+      "inbox_item_id": "security_inbox_33d38084c80223be31",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_review_status"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:14:31.155179Z",
+      "decision": "tower_security_inbox_owner_queue",
+      "event_type": "tower_security_inbox_owner_queue",
+      "human_reason": "tower_security_inbox_owner_queue",
+      "inbox_item_id": "security_inbox_662273d44bf1995349",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_owner_queue"
+      },
+      "severity": "info",
+      "source": "tamper_audit_chain"
+    },
+    {
+      "actor_user_id": "tower_system",
+      "created_at": "2026-05-29T19:14:31.867725Z",
+      "decision": "tower_security_inbox_review_status",
+      "event_type": "tower_security_inbox_review_status",
+      "human_reason": "tower_security_inbox_review_status",
+      "inbox_item_id": "security_inbox_28e5aea50f18ddf195",
+      "needs_owner_review": false,
+      "object_id": "",
+      "object_type": "",
+      "route_path": "",
+      "safe_summary": {
+        "event_type": "tower_security_inbox_review_status"
       },
       "severity": "info",
       "source": "tamper_audit_chain"
@@ -1525,7 +1532,7 @@
       "collected_count": 80,
       "exists": true,
       "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/tamper_evident_audit_chain.json",
-      "raw_count": 10518,
+      "raw_count": 10555,
       "source": "tamper_audit_chain"
     },
     {
@@ -1544,6 +1551,6 @@
     }
   ],
   "status": "passed",
-  "status_fingerprint": "d043328792ea8d4db671c59fef6ab5dd382fa910b45831df7a6b357b7c2e2dcb",
+  "status_fingerprint": "aadbdd5f13b68723f786debe6412b52eec57149b6112fcb1a0fe5ac88580799d",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_inbox_owner_queue_status.json"
 }

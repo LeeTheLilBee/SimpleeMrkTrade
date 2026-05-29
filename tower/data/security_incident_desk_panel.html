@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Incident Desk</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+
+<!-- PACK126_SECURITY_INCIDENT_DESK_SECTION -->
+<section class="security-incident-desk" data-pack="126">
+  <style>
+    .security-incident-desk {
+      margin: 24px 0;
+      border: 1px solid rgba(255,128,128,.38);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(255,128,128,.15), transparent 34%),
+        linear-gradient(135deg, rgba(38,14,14,.82), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .security-incident-desk__eyebrow {
+      color: rgba(255,168,128,.9);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .security-incident-desk h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .security-incident-desk p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .incident-desk-stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .incident-desk-stat {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+    }
+    .incident-desk-stat b {
+      display: block;
+      font-size: 22px;
+    }
+    .incident-desk-stat span {
+      color: rgba(245,234,210,.62);
+      font-size: 12px;
+    }
+    .incident-desk-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .incident-desk-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+    }
+    .incident-desk-card--critical {
+      border-color: rgba(255,80,80,.8);
+    }
+    .incident-desk-card--high {
+      border-color: rgba(255,128,128,.65);
+    }
+    .incident-desk-card--medium {
+      border-color: rgba(220,183,94,.62);
+    }
+    .incident-desk-card--low {
+      border-color: rgba(168,175,255,.52);
+    }
+    .incident-desk-card--info {
+      border-color: rgba(143,221,158,.34);
+    }
+    .incident-desk-card__eyebrow {
+      color: rgba(220,183,94,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .incident-desk-card h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+      word-break: break-word;
+    }
+    .incident-desk-card p {
+      margin: 0 0 8px;
+      color: rgba(245,234,210,.72);
+    }
+    .incident-desk-card small {
+      color: rgba(245,234,210,.55);
+      word-break: break-word;
+    }
+    @media (max-width: 1000px) {
+      .incident-desk-stats,
+      .incident-desk-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="security-incident-desk__eyebrow">PACK 126 · INCIDENT DESK</div>
+  <h2>Tower Incident Desk</h2>
+  <p>Tower Incident Desk is ready to track high-priority security events as formal incidents without mutating original logs.</p>
+
+  <div class="incident-desk-stats">
+    <div class="incident-desk-stat"><b>40</b><span>Incidents</span></div>
+    <div class="incident-desk-stat"><b>40</b><span>Open</span></div>
+    <div class="incident-desk-stat"><b>0</b><span>Critical</span></div>
+    <div class="incident-desk-stat"><b>1</b><span>Tracked</span></div>
+    <div class="incident-desk-stat"><b>3</b><span>Receipts</span></div>
+  </div>
+
+  <div class="incident-desk-grid">
+    
+        <article class="incident-desk-card incident-desk-card--medium">
+          <div class="incident-desk-card__eyebrow">P160 · medium · contained · object_permission_events</div>
+          <h3>incident_0e9f0c42fbfc028e14</h3>
+          <p>position_owner_mismatch</p>
+          <small>security_inbox_c864a9812f03cfdbac</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P145 · high · new · owner_admin_receipts</div>
+          <h3>incident_d0d63284269627fe8a</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_5e65f035784b617bb2</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P145 · high · new · secrets_boundary_events</div>
+          <h3>incident_70279dc0dc9caba568</h3>
+          <p>Raw secret value was rejected. The Tower may only store a reference.</p>
+          <small>security_inbox_e0643d3b6a70b16d09</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P142 · high · new · redaction_reveal_receipts</div>
+          <h3>incident_211718a13da29f905f</h3>
+          <p>step_up_required_for_sensitive_reveal</p>
+          <small>security_inbox_d6d9fdb4808be20cc4</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P140 · high · new · owner_admin_receipts</div>
+          <h3>incident_768a10dd5eb73e42af</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_70c1dcbf270688fa4e</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P132 · high · new · object_permission_events</div>
+          <h3>incident_c4db5d39ea10d817db</h3>
+          <p>export_requires_step_up</p>
+          <small>security_inbox_0eefebc11350a2765e</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P132 · high · new · object_permission_events</div>
+          <h3>incident_3d226b9c03ff2726c9</h3>
+          <p>position_mutation_requires_step_up</p>
+          <small>security_inbox_0f4b3489d3ea519595</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_b9effe405e47a6394b</h3>
+          <p>tower_ob_object_permission_event_snapshot</p>
+          <small>security_inbox_d368bad42b36fef812</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_c441d35decb491f68f</h3>
+          <p>tower_ob_object_permission_event_snapshot</p>
+          <small>security_inbox_3a8c3aa1ccbb973da2</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_55bbb580a39f2d4c21</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_694e68a2e77ba077a1</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_f23e36ae5151089a59</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_9b3339cfaf098f0cd4</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_3c2c1afff01ac3d0b4</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_7e61dac9b5d6e2024c</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_4f9f4c49edeb5f6d31</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_0c5c76d543306850ea</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_b2f56b9e117f7a2e56</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_0cc9d38ba682470fb0</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_56a5f1dde0faba9292</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_6afddc756c29dd850c</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_b891851cf2b0210c5a</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_0d15a276e723a4c84c</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_ebbb81d0015c8aa58d</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_bda9a02bc550be70a1</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_5eed63e172ff397845</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_d6f0a424e662938fed</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_4d0c2715627cbad3d8</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_d4e70038a70d9ae1cc</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_bc0437980726cd1a97</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_34e7fa8c0b0e066930</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_f24da7f1cfcaf02f8d</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_4801e19952efa41da8</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_5743bd26288b7ff779</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_87fa543729280e586d</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_a53c422847ad61c1d6</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_213acf34fe89c946e9</small>
+        </article>
+        
+        <article class="incident-desk-card incident-desk-card--high">
+          <div class="incident-desk-card__eyebrow">P128 · high · new · tamper_audit_chain</div>
+          <h3>incident_fa9b5641f858609678</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_51c087065d3dd595a5</small>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK126_SECURITY_INCIDENT_DESK_SECTION -->
+
+</main>
+</body>
+</html>

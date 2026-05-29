@@ -10667,3 +10667,93 @@ except Exception:
 # END PACK124_SECURITY_INBOX_FILTERS_PRIORITIES_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK126_SECURITY_INCIDENT_DESK_ROUTES
+# ================================================================================
+
+try:
+    @app.route("/tower/security-incident-desk.json")
+    def tower_security_incident_desk_json_pack126():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-incident-desk.json",
+                metadata={"source": "pack126_security_incident_desk_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_incident_desk import build_security_incident_desk_status
+
+            return jsonify(build_security_incident_desk_status(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "126",
+                    "reason_code": "security_incident_desk_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "126", "error_type": type(exc).__name__}, 500
+
+    @app.route("/tower/security-incident-action.json")
+    def tower_security_incident_action_json_pack126():
+        try:
+            from flask import jsonify, request
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-incident-action.json",
+                metadata={"source": "pack126_security_incident_action_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_incident_desk import apply_security_incident_action
+
+            payload = {}
+            try:
+                payload = request.get_json(silent=True) or {}
+            except Exception:
+                payload = {}
+
+            incident_id = payload.get("incident_id") or request.args.get("incident_id", "")
+            incident_status = payload.get("incident_status") or request.args.get("incident_status", "")
+            severity = payload.get("severity") or request.args.get("severity", "")
+            note = payload.get("note") or request.args.get("note", "")
+            assigned_to = payload.get("assigned_to") or request.args.get("assigned_to", "")
+            reason = payload.get("reason") or request.args.get("reason", "")
+            actor_user_id = payload.get("actor_user_id") or request.args.get("actor_user_id", "owner_solice")
+
+            return jsonify(apply_security_incident_action(
+                incident_id=incident_id,
+                incident_status=incident_status,
+                severity=severity,
+                actor_user_id=actor_user_id,
+                note=note,
+                assigned_to=assigned_to,
+                reason=reason,
+                metadata={"source": "pack126_route"},
+            ))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "126",
+                    "reason_code": "security_incident_action_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "126", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK126_SECURITY_INCIDENT_DESK_ROUTES
+# ================================================================================
+

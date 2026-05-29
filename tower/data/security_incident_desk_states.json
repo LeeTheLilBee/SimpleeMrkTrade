@@ -1,0 +1,22 @@
+{
+  "incident_0e9f0c42fbfc028e14": {
+    "assigned_to": "owner_solice",
+    "inbox_item_id": "security_inbox_c864a9812f03cfdbac",
+    "incident_id": "incident_0e9f0c42fbfc028e14",
+    "incident_status": "contained",
+    "last_action": "investigating_to_contained",
+    "metadata": {
+      "pack": "126"
+    },
+    "object_id": "pos_other_126",
+    "object_type": "position",
+    "owner_notes": "Contained in Pack 126.",
+    "priority_score": 160,
+    "route_path": "",
+    "security_decision": "deny",
+    "severity": "medium",
+    "source": "object_permission_events",
+    "updated_at": "2026-05-29T19:14:42.352535Z",
+    "updated_by": "owner_solice"
+  }
+}

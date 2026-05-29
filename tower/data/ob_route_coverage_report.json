@@ -1065,10 +1065,38 @@
       "routes": [
         "/tower/security-inbox-filters.json"
       ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "tower_security_incident_desk_json_pack126",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/security-incident-desk.json",
+      "routes": [
+        "/tower/security-incident-desk.json"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "tower_security_incident_action_json_pack126",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/security-incident-action.json",
+      "routes": [
+        "/tower/security-incident-action.json"
+      ]
     }
   ],
   "by_category": {
-    "admin_tower": 24,
+    "admin_tower": 26,
     "live_broker": 2,
     "ob_private": 2,
     "other": 38,
@@ -1077,15 +1105,15 @@
     "trade_position": 6
   },
   "coverage_pct": 100,
-  "created_at": "2026-05-29T19:00:48.216348Z",
+  "created_at": "2026-05-29T19:14:44.287060Z",
   "guarded_by_category": {
-    "admin_tower": 24,
+    "admin_tower": 26,
     "live_broker": 2,
     "ob_private": 2,
     "symbol_signal": 1,
     "trade_position": 6
   },
-  "guarded_needed_count": 35,
+  "guarded_needed_count": 37,
   "guarded_routes": [
     {
       "category": "symbol_signal",
@@ -1577,6 +1605,34 @@
       "routes": [
         "/tower/security-inbox-filters.json"
       ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "tower_security_incident_desk_json_pack126",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/security-incident-desk.json",
+      "routes": [
+        "/tower/security-incident-desk.json"
+      ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "tower_security_incident_action_json_pack126",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/security-incident-action.json",
+      "routes": [
+        "/tower/security-incident-action.json"
+      ]
     }
   ],
   "helper_installed": true,
@@ -1586,7 +1642,7 @@
     "had_forbidden_hits": false,
     "ok": true
   },
-  "needs_guard_count": 35,
+  "needs_guard_count": 37,
   "no_secret_leakage": true,
   "ok": true,
   "pack": "105",
@@ -1598,9 +1654,9 @@
     "Patch remaining protected OB routes in small controlled batches.",
     "Keep public routes public unless private data appears."
   ],
-  "report_fingerprint": "4ba27df0890368bb062bed0a011655276355a8079bfd21cd475159450c5979cf",
+  "report_fingerprint": "896ea1c05d708452218d97c870c877668d194a448a92ae7594f60fcfbbea6ba7",
   "soulaana_translation": "Soulaana: Route board is up. We can see which OB doors have Tower guards.",
-  "total_route_functions": 76,
+  "total_route_functions": 78,
   "unguarded_high_risk_count": 0,
   "unguarded_high_risk_routes": [],
   "unguarded_needed_count": 0,
