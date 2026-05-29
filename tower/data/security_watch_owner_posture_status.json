@@ -21,12 +21,12 @@
     "unified_passed": true
   },
   "command_room": {
-    "quick_action_count": 13,
+    "quick_action_count": 15,
     "quick_status": "passed",
     "unified_readiness_score": 100,
     "unified_status": "passed"
   },
-  "created_at": "2026-05-29T21:06:44.755722Z",
+  "created_at": "2026-05-29T21:34:51.442181Z",
   "failed_checks": [],
   "human_reason": "Security Watch summarizes Tower posture across route guards, inbox items, incidents, escalation readiness, quick actions, and unified command health.",
   "inbox_watch": {
@@ -104,6 +104,6 @@
   },
   "soulaana_translation": "Soulaana: Security Watch is online. The owner can see the Tower posture without digging through every room.",
   "status": "passed",
-  "status_fingerprint": "25ac93791488f546a74a3f6cbbd3a74f8e5867113ad049c2a87546cf3c9fa9d3",
+  "status_fingerprint": "88c1246b45cd481a72d07700f7bca5a839eb48dd89bcaf70bad8310b9a2f853e",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_watch_owner_posture_status.json"
 }

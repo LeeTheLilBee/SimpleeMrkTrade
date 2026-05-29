@@ -1776,3 +1776,29 @@ def pack129_security_incident_filters_escalation_html_section():
 # END PACK129_SECURITY_INCIDENT_FILTERS_HTML_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK132_SECURITY_WATCH_HTML_BRIDGE
+# ================================================================================
+
+def pack132_security_watch_owner_posture_html_section():
+    try:
+        from tower.security_watch_owner_posture import (
+            build_security_watch_owner_posture,
+            render_security_watch_owner_posture_section,
+        )
+        status = build_security_watch_owner_posture(write_panel=True)
+        return render_security_watch_owner_posture_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="security-watch-owner-posture" data-pack="132-security-watch-error">
+          <h2>Tower Security Watch Unavailable</h2>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+# ================================================================================
+# END PACK132_SECURITY_WATCH_HTML_BRIDGE
+# ================================================================================
+

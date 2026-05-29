@@ -1,6 +1,16 @@
 {
-  "action_count": 13,
+  "action_count": 15,
   "actions": [
+    {
+      "action_id": "open_security_watch",
+      "available": true,
+      "href": "/tower/security-watch.json",
+      "human_reason": "Review the owner posture summary across guards, inbox, incidents, escalation, and command health.",
+      "kind": "status_json",
+      "pack": "131",
+      "readiness_score": 100,
+      "title": "Open Security Watch"
+    },
     {
       "action_id": "open_unified_security_command",
       "available": true,
@@ -130,6 +140,16 @@
       "pack": "128",
       "readiness_score": 100,
       "title": "Review Incident Filters"
+    },
+    {
+      "action_id": "review_incident_checkpoint",
+      "available": true,
+      "href": "/tower/security-incident-checkpoint.json",
+      "human_reason": "Review the Incident Desk readiness checkpoint across incidents, escalation, unified UI, quick actions, and route guards.",
+      "kind": "status_json",
+      "pack": "130",
+      "readiness_score": 100,
+      "title": "Review Incident Checkpoint"
     }
   ],
   "checks": {
@@ -145,7 +165,7 @@
     "unified_health_ok": true,
     "unified_status_passed": true
   },
-  "created_at": "2026-05-29T21:06:32.750728Z",
+  "created_at": "2026-05-29T21:34:38.332045Z",
   "failed_checks": [],
   "human_reason": "Owner quick-action rail gives direct access to unified command, preferred destination, security links, object visibility, and route guard status.",
   "leakage_scan": {
@@ -177,7 +197,7 @@
   },
   "soulaana_translation": "Soulaana: The owner now has the important Tower buttons in one rail.",
   "status": "passed",
-  "status_fingerprint": "8deb7850b33f8b0e97e3985a946af0b9c828bfa549d75e3648c3683128fc8ace",
+  "status_fingerprint": "3245895fb6e900f21f7b54f55c09247016d22251e66d752a2209f73335e2fb37",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_owner_quick_actions_status.json",
   "unified_health": {
     "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page.html",

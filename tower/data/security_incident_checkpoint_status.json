@@ -32,7 +32,7 @@
     "unified_readiness_100": true,
     "unified_status_passed": true
   },
-  "created_at": "2026-05-29T21:06:01.834736Z",
+  "created_at": "2026-05-29T21:34:04.274998Z",
   "failed_checks": [],
   "human_reason": "Incident Desk layer is healthy: incidents, filters, escalation readiness, unified UI, quick actions, and route guards are all passing.",
   "incident_desk": {
@@ -86,7 +86,7 @@
   "pack": "130",
   "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_incident_checkpoint_panel.html",
   "quick_actions": {
-    "action_count": 13,
+    "action_count": 15,
     "incident_links_present": {
       "action": true,
       "desk": true,
@@ -107,7 +107,7 @@
   },
   "soulaana_translation": "Soulaana: Incident Desk is locked in. Serious events can be found, sorted, escalated, and reviewed from the owner command room.",
   "status": "passed",
-  "status_fingerprint": "15f598614759e0a9b70dfbc9c8836fb9ae123b1e2f68538ab2121a1f1e45d227",
+  "status_fingerprint": "109b6d718d03535697528ec9a2afd8b0be0fbf31a6550cabf80a9b727fcb8507",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_incident_checkpoint_status.json",
   "unified_security_command": {
     "has_incident_desk_section": true,

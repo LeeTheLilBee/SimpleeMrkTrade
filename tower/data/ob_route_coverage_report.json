@@ -1147,7 +1147,7 @@
     "trade_position": 6
   },
   "coverage_pct": 100,
-  "created_at": "2026-05-29T21:06:45.247447Z",
+  "created_at": "2026-05-29T21:34:51.902588Z",
   "guarded_by_category": {
     "admin_tower": 29,
     "live_broker": 2,
@@ -1738,7 +1738,7 @@
     "Patch remaining protected OB routes in small controlled batches.",
     "Keep public routes public unless private data appears."
   ],
-  "report_fingerprint": "4a290dc84282ef12717106521b1ab30366ae89c3621ce853477422f914a672bd",
+  "report_fingerprint": "b7f986aeb4442053115933bf32bf6e86d9e1d39cbdb5f01dcf0752e8ec57e0bf",
   "soulaana_translation": "Soulaana: Route board is up. We can see which OB doors have Tower guards.",
   "total_route_functions": 81,
   "unguarded_high_risk_count": 0,

@@ -604,3 +604,70 @@ except Exception:
 # END PACK129_OWNER_QUICK_ACTIONS_INCIDENT_FILTERS_EXTENSION
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK132_OWNER_QUICK_ACTIONS_SECURITY_WATCH_EXTENSION
+# ================================================================================
+
+try:
+    _pack132_existing_action_ids = {
+        action.get("action_id")
+        for action in OWNER_QUICK_ACTIONS
+        if isinstance(action, dict)
+    }
+
+    if "open_security_watch" not in _pack132_existing_action_ids:
+        OWNER_QUICK_ACTIONS.insert(0, {
+            "action_id": "open_security_watch",
+            "title": "Open Security Watch",
+            "href": "/tower/security-watch.json",
+            "kind": "status_json",
+            "pack": "131",
+            "human_reason": "Review the owner posture summary across guards, inbox, incidents, escalation, and command health.",
+        })
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK132_OWNER_QUICK_ACTIONS_SECURITY_WATCH_EXTENSION
+# ================================================================================
+
+
+
+# ================================================================================
+# PACK132B_OWNER_QUICK_ACTIONS_INCIDENT_CHECKPOINT_EXTENSION
+# ================================================================================
+
+try:
+    _pack132b_existing_action_ids = {
+        action.get("action_id")
+        for action in OWNER_QUICK_ACTIONS
+        if isinstance(action, dict)
+    }
+
+    _pack132b_existing_hrefs = {
+        action.get("href")
+        for action in OWNER_QUICK_ACTIONS
+        if isinstance(action, dict)
+    }
+
+    if (
+        "review_incident_checkpoint" not in _pack132b_existing_action_ids
+        and "/tower/security-incident-checkpoint.json" not in _pack132b_existing_hrefs
+    ):
+        OWNER_QUICK_ACTIONS.append({
+            "action_id": "review_incident_checkpoint",
+            "title": "Review Incident Checkpoint",
+            "href": "/tower/security-incident-checkpoint.json",
+            "kind": "status_json",
+            "pack": "130",
+            "human_reason": "Review the Incident Desk readiness checkpoint across incidents, escalation, unified UI, quick actions, and route guards.",
+        })
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK132B_OWNER_QUICK_ACTIONS_INCIDENT_CHECKPOINT_EXTENSION
+# ================================================================================
+

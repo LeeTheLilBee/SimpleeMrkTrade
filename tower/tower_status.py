@@ -727,3 +727,27 @@ def pack129_security_incident_filters_escalation_status_bridge():
 # END PACK129_SECURITY_INCIDENT_FILTERS_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK132_SECURITY_WATCH_STATUS_BRIDGE
+# ================================================================================
+
+def pack132_security_watch_owner_posture_status_bridge():
+    try:
+        from tower.security_watch_owner_posture import security_watch_owner_posture_status_card
+        return security_watch_owner_posture_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "132",
+            "title": "Tower Security Watch",
+            "reason_code": "security_watch_owner_posture_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Tower Security Watch could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK132_SECURITY_WATCH_STATUS_BRIDGE
+# ================================================================================
+
