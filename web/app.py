@@ -10541,3 +10541,89 @@ except Exception:
 # END PACK121_SECURITY_INBOX_OWNER_QUEUE_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK122_SECURITY_INBOX_REVIEW_ROUTES
+# ================================================================================
+
+try:
+    @app.route("/tower/security-inbox-review-status.json")
+    def tower_security_inbox_review_status_json_pack122():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-inbox-review-status.json",
+                metadata={"source": "pack122_security_inbox_review_status_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_inbox_review_actions import build_security_inbox_review_status
+
+            return jsonify(build_security_inbox_review_status(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "122",
+                    "reason_code": "security_inbox_review_status_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "122", "error_type": type(exc).__name__}, 500
+
+    @app.route("/tower/security-inbox-review-action.json")
+    def tower_security_inbox_review_action_json_pack122():
+        try:
+            from flask import jsonify, request
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-inbox-review-action.json",
+                metadata={"source": "pack122_security_inbox_review_action_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_inbox_review_actions import apply_security_inbox_review_action
+
+            payload = {}
+            try:
+                payload = request.get_json(silent=True) or {}
+            except Exception:
+                payload = {}
+
+            inbox_item_id = payload.get("inbox_item_id") or request.args.get("inbox_item_id", "")
+            review_state = payload.get("review_state") or request.args.get("review_state", "")
+            note = payload.get("note") or request.args.get("note", "")
+            reason = payload.get("reason") or request.args.get("reason", "")
+            actor_user_id = payload.get("actor_user_id") or request.args.get("actor_user_id", "owner_solice")
+
+            return jsonify(apply_security_inbox_review_action(
+                inbox_item_id=inbox_item_id,
+                review_state=review_state,
+                actor_user_id=actor_user_id,
+                note=note,
+                reason=reason,
+                metadata={"source": "pack122_route"},
+            ))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "122",
+                    "reason_code": "security_inbox_review_action_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "122", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK122_SECURITY_INBOX_REVIEW_ROUTES
+# ================================================================================
+

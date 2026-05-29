@@ -1,0 +1,20 @@
+{
+  "security_inbox_e0643d3b6a70b16d09": {
+    "decision": "raw_secret_rejected",
+    "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
+    "last_review_action": "investigating_to_resolved",
+    "metadata": {
+      "pack": "122"
+    },
+    "object_id": "",
+    "object_type": "",
+    "review_label": "Resolved",
+    "review_notes": "Resolved after review.",
+    "review_state": "resolved",
+    "reviewed_at": "2026-05-29T18:13:18.174935Z",
+    "reviewed_by": "owner_solice",
+    "route_path": "",
+    "severity": "high",
+    "source": "secrets_boundary_events"
+  }
+}
