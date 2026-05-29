@@ -1,0 +1,104 @@
+{
+  "checks": {
+    "composition_call_ok": true,
+    "composition_ok": true,
+    "composition_passed": true,
+    "composition_ready": true,
+    "helper_wrapped_zero": true,
+    "navigation_call_ok": true,
+    "navigation_ok": true,
+    "navigation_passed": true,
+    "navigation_ready": true,
+    "object_checkpoint_call_ok": true,
+    "object_checkpoint_ok": true,
+    "object_checkpoint_passed": true,
+    "object_visibility_call_ok": true,
+    "object_visibility_ok": true,
+    "object_visibility_ready": true,
+    "preferred_call_ok": true,
+    "preferred_ok": true,
+    "preferred_passed": true,
+    "preferred_route_unified": true,
+    "quick_actions_call_ok": true,
+    "quick_actions_ok": true,
+    "quick_actions_passed": true,
+    "quick_actions_ready": true,
+    "route_call_ok": true,
+    "route_coverage_100": true,
+    "route_coverage_ok": true,
+    "unguarded_high_risk_zero": true,
+    "unguarded_needed_zero": true,
+    "unified_call_ok": true,
+    "unified_ok": true,
+    "unified_passed": true,
+    "unified_ready": true
+  },
+  "composition": {
+    "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_composition_smoke.html",
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "created_at": "2026-05-29T16:59:46.287653Z",
+  "failed_checks": [],
+  "human_reason": "Security Command owner UI block is healthy: preferred destination, unified page, quick actions, visibility, coverage, and checkpoints are all passing.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "navigation": {
+    "link_count": 5,
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "no_secret_leakage": true,
+  "object_checkpoint": {
+    "helper_wrapped_count": 0,
+    "object_guard_count": 10,
+    "readiness_score": 100,
+    "status": "passed",
+    "warnings": []
+  },
+  "object_visibility": {
+    "deny_count": 2,
+    "event_count": 7,
+    "export_event_count": 1,
+    "readiness_score": 100,
+    "step_up_required_count": 3,
+    "summary_only_count": 1
+  },
+  "ok": true,
+  "pack": "120",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_owner_ui_checkpoint_panel.html",
+  "preferred": {
+    "legacy_route": "/tower/security-command",
+    "link_count": 5,
+    "preferred_route": "/tower/security-command-unified",
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "quick_actions": {
+    "action_count": 6,
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "readiness_label": "Security Command owner UI checkpoint passed",
+  "readiness_score": 100,
+  "route_health": {
+    "coverage_pct": 100,
+    "guarded_needed_count": 31,
+    "needs_guard_count": 31,
+    "readiness_score": 100,
+    "unguarded_high_risk_count": 0,
+    "unguarded_needed_count": 0
+  },
+  "soulaana_translation": "Soulaana: The owner command room is lit, guarded, linked, and readable.",
+  "status": "passed",
+  "status_fingerprint": "75549c9a7ba1f4b0699044c5f14914468a47820f8c4366cf39f0368e965f5f20",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_owner_ui_checkpoint_status.json",
+  "unified": {
+    "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page.html",
+    "readiness_score": 100,
+    "status": "passed"
+  }
+}

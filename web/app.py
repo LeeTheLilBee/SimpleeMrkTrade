@@ -10461,3 +10461,43 @@ except Exception:
 # END PACK119_OWNER_QUICK_ACTIONS_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK120_SECURITY_COMMAND_OWNER_UI_CHECKPOINT_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/security-command-ui-checkpoint.json")
+    def tower_security_command_owner_ui_checkpoint_json_pack120():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/security-command-ui-checkpoint.json",
+                metadata={"source": "pack120_security_command_owner_ui_checkpoint_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.security_command_owner_ui_checkpoint import build_security_command_owner_ui_checkpoint
+
+            return jsonify(build_security_command_owner_ui_checkpoint(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "120",
+                    "reason_code": "security_command_owner_ui_checkpoint_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "120", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK120_SECURITY_COMMAND_OWNER_UI_CHECKPOINT_ROUTE
+# ================================================================================
+
