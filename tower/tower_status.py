@@ -679,3 +679,27 @@ def pack125_security_inbox_filters_priorities_status_bridge():
 # END PACK125_SECURITY_INBOX_FILTERS_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK127_SECURITY_INCIDENT_DESK_STATUS_BRIDGE
+# ================================================================================
+
+def pack127_security_incident_desk_status_bridge():
+    try:
+        from tower.security_incident_desk import security_incident_desk_status_card
+        return security_incident_desk_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "127",
+            "title": "Tower Incident Desk",
+            "reason_code": "security_incident_desk_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Tower Incident Desk could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK127_SECURITY_INCIDENT_DESK_STATUS_BRIDGE
+# ================================================================================
+

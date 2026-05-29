@@ -1,22 +1,23 @@
 {
-  "incident_0e9f0c42fbfc028e14": {
+  "incident_6b8c741356590239a4": {
+    "__redacted_incident_field_count__": 1,
     "assigned_to": "owner_solice",
-    "inbox_item_id": "security_inbox_c864a9812f03cfdbac",
-    "incident_id": "incident_0e9f0c42fbfc028e14",
-    "incident_status": "contained",
-    "last_action": "investigating_to_contained",
+    "inbox_item_id": "security_inbox_0ff00f95e6e935bbb5",
+    "incident_id": "incident_6b8c741356590239a4",
+    "incident_status": "triaged",
+    "last_action": "new_to_triaged",
     "metadata": {
-      "pack": "126"
+      "pack": "127"
     },
-    "object_id": "pos_other_126",
+    "object_id": "pos_other_127",
     "object_type": "position",
-    "owner_notes": "Contained in Pack 126.",
+    "owner_notes": "[REDACTED_INCIDENT_VALUE]",
     "priority_score": 160,
     "route_path": "",
     "security_decision": "deny",
-    "severity": "medium",
+    "severity": "high",
     "source": "object_permission_events",
-    "updated_at": "2026-05-29T19:14:42.352535Z",
+    "updated_at": "2026-05-29T19:26:56.677049Z",
     "updated_by": "owner_solice"
   }
 }

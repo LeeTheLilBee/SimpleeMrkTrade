@@ -1,5 +1,5 @@
 {
-  "action_count": 10,
+  "action_count": 12,
   "actions": [
     {
       "action_id": "open_unified_security_command",
@@ -100,6 +100,26 @@
       "pack": "124",
       "readiness_score": 100,
       "title": "Review Inbox Filters"
+    },
+    {
+      "action_id": "open_incident_desk",
+      "available": true,
+      "href": "/tower/security-incident-desk.json",
+      "human_reason": "Review formal Tower security incidents, severity, status, and receipts.",
+      "kind": "status_json",
+      "pack": "126",
+      "readiness_score": 100,
+      "title": "Open Incident Desk"
+    },
+    {
+      "action_id": "apply_incident_action",
+      "available": true,
+      "href": "/tower/security-incident-action.json",
+      "human_reason": "Apply a safe incident status/severity update to a formal Tower incident.",
+      "kind": "action_json",
+      "pack": "126",
+      "readiness_score": 100,
+      "title": "Apply Incident Action"
     }
   ],
   "checks": {
@@ -115,7 +135,7 @@
     "unified_health_ok": true,
     "unified_status_passed": true
   },
-  "created_at": "2026-05-29T19:00:36.327005Z",
+  "created_at": "2026-05-29T19:27:23.977970Z",
   "failed_checks": [],
   "human_reason": "Owner quick-action rail gives direct access to unified command, preferred destination, security links, object visibility, and route guard status.",
   "leakage_scan": {
@@ -138,8 +158,8 @@
   "readiness_score": 100,
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 35,
-    "needs_guard_count": 35,
+    "guarded_needed_count": 37,
+    "needs_guard_count": 37,
     "ok": true,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
@@ -147,7 +167,7 @@
   },
   "soulaana_translation": "Soulaana: The owner now has the important Tower buttons in one rail.",
   "status": "passed",
-  "status_fingerprint": "322fbf76421cd8bcbff05d10c500e51be439714294448cedf9b61622dc37fa14",
+  "status_fingerprint": "96c0da35665a83be453e117633eb22d389a5878a2fc410cbb38843b134a88121",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_owner_quick_actions_status.json",
   "unified_health": {
     "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page.html",

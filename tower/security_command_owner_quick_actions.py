@@ -536,3 +536,42 @@ except Exception:
 # END PACK125_OWNER_QUICK_ACTIONS_FILTERS_EXTENSION
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK127_OWNER_QUICK_ACTIONS_INCIDENT_DESK_EXTENSION
+# ================================================================================
+
+try:
+    _pack127_existing_action_ids = {
+        action.get("action_id")
+        for action in OWNER_QUICK_ACTIONS
+        if isinstance(action, dict)
+    }
+
+    if "open_incident_desk" not in _pack127_existing_action_ids:
+        OWNER_QUICK_ACTIONS.append({
+            "action_id": "open_incident_desk",
+            "title": "Open Incident Desk",
+            "href": "/tower/security-incident-desk.json",
+            "kind": "status_json",
+            "pack": "126",
+            "human_reason": "Review formal Tower security incidents, severity, status, and receipts.",
+        })
+
+    if "apply_incident_action" not in _pack127_existing_action_ids:
+        OWNER_QUICK_ACTIONS.append({
+            "action_id": "apply_incident_action",
+            "title": "Apply Incident Action",
+            "href": "/tower/security-incident-action.json",
+            "kind": "action_json",
+            "pack": "126",
+            "human_reason": "Apply a safe incident status/severity update to a formal Tower incident.",
+        })
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK127_OWNER_QUICK_ACTIONS_INCIDENT_DESK_EXTENSION
+# ================================================================================
+

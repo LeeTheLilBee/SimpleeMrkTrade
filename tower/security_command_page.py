@@ -1724,3 +1724,29 @@ def pack125_security_inbox_filters_priorities_html_section():
 # END PACK125_SECURITY_INBOX_FILTERS_HTML_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK127_SECURITY_INCIDENT_DESK_HTML_BRIDGE
+# ================================================================================
+
+def pack127_security_incident_desk_html_section():
+    try:
+        from tower.security_incident_desk import (
+            build_security_incident_desk_status,
+            render_security_incident_desk_section,
+        )
+        status = build_security_incident_desk_status(write_panel=True)
+        return render_security_incident_desk_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="security-incident-desk" data-pack="127-incident-error">
+          <h2>Tower Incident Desk Unavailable</h2>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+# ================================================================================
+# END PACK127_SECURITY_INCIDENT_DESK_HTML_BRIDGE
+# ================================================================================
+

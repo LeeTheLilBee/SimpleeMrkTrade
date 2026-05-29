@@ -1,6 +1,6 @@
 {
   "admin_event_count": 0,
-  "created_at": "2026-05-29T19:00:45.622153Z",
+  "created_at": "2026-05-29T19:27:31.619254Z",
   "deny_count": 1,
   "event_count": 4,
   "export_event_count": 1,
@@ -20,7 +20,7 @@
     {
       "action": "view",
       "decision": "deny",
-      "object_id": "pos_other_125",
+      "object_id": "pos_other_127",
       "object_type": "position",
       "reason_code": "position_owner_mismatch",
       "required_actions": [
@@ -34,7 +34,7 @@
     {
       "action": "close",
       "decision": "step_up_required",
-      "object_id": "pos_mine_125",
+      "object_id": "pos_mine_127",
       "object_type": "position",
       "reason_code": "position_mutation_requires_step_up",
       "required_actions": [
@@ -49,7 +49,7 @@
     {
       "action": "export",
       "decision": "step_up_required",
-      "object_id": "export_125",
+      "object_id": "export_127",
       "object_type": "export",
       "reason_code": "export_requires_step_up",
       "required_actions": [
@@ -65,7 +65,7 @@
     {
       "action": "view",
       "decision": "summary_only",
-      "object_id": "analysis_125",
+      "object_id": "analysis_127",
       "object_type": "analysis",
       "reason_code": "analysis_summary_first",
       "required_actions": [
@@ -81,7 +81,7 @@
   "security_command_fragment_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_object_visibility_fragment.html",
   "security_command_status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_object_visibility_status.json",
   "soulaana_translation": "Soulaana: Security Command can now see object denials, step-ups, exports, and summary-only locks.",
-  "status_fingerprint": "8f5295831f501f97fd9b1dfa011fe6d4f662bf448999ed5f8e0529669d847626",
+  "status_fingerprint": "d554665dd918b372f2a3e8c4c0a58ad4c4fa625327cb7a10aa59e309f65c9193",
   "step_up_required_count": 2,
   "summary_only_count": 1,
   "visibility_status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_visibility_status.json"
