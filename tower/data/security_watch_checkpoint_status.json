@@ -1,37 +1,15 @@
 {
   "checks": {
+    "cached_checkpoint_builder_active": true,
     "helper_wrapped_zero": true,
-    "incident_checkpoint_call_ok": true,
-    "incident_checkpoint_ok": true,
-    "incident_checkpoint_passed": true,
-    "incident_checkpoint_readiness_100": true,
-    "object_checkpoint_call_ok": true,
-    "object_checkpoint_passed": true,
-    "quick_call_ok": true,
-    "quick_has_incident_checkpoint_link": true,
-    "quick_has_incident_filters_link": true,
-    "quick_has_security_watch_link": true,
-    "quick_ok": true,
-    "quick_passed": true,
-    "quick_readiness_100": true,
-    "route_call_ok": true,
+    "no_live_builder_calls": true,
     "route_coverage_100": true,
     "unguarded_high_risk_zero": true,
     "unguarded_needed_zero": true,
-    "unified_call_ok": true,
-    "unified_has_pack131": true,
-    "unified_has_pack132": true,
-    "unified_has_watch_link": true,
-    "unified_ok": true,
-    "unified_passed": true,
-    "unified_readiness_100": true,
-    "watch_call_ok": true,
+    "watch_cached_ok": true,
+    "watch_cached_passed": true,
     "watch_has_posture": true,
-    "watch_has_recommended_first_action": true,
-    "watch_no_secret_leakage": true,
-    "watch_ok": true,
-    "watch_readiness_100": true,
-    "watch_status_passed": true
+    "watch_has_recommended_first_action": true
   },
   "command_room": {
     "incident_checkpoint_link_present": true,
@@ -39,23 +17,17 @@
     "quick_action_count": 16,
     "quick_status": "passed",
     "unified_readiness_score": 100,
-    "unified_status": "passed",
+    "unified_status": "cached_html_checked_no_live_builder",
     "watch_link_present": true
   },
-  "created_at": "2026-05-29T22:24:32.892963Z",
+  "created_at": "2026-05-29T23:50:00.123669Z",
   "failed_checks": [],
-  "human_reason": "Security Watch checkpoint proves owner posture, unified UI, quick actions, incident checkpoint, route guards, and object checkpoint are healthy.",
+  "human_reason": "Security Watch checkpoint uses cached Tower posture and avoids recursive live builder calls.",
   "inbox_watch": {
-    "high_priority_count": 69,
+    "high_priority_count": 64,
     "inbox_count": 80,
-    "open_review_count": 69,
-    "unresolved_count": 69
-  },
-  "incident_checkpoint": {
-    "escalation_ready_count": 40,
-    "incident_count": 40,
-    "readiness_score": 100,
-    "status": "passed"
+    "open_review_count": 64,
+    "unresolved_count": 64
   },
   "incident_watch": {
     "by_next_action": {
@@ -84,14 +56,14 @@
     "status": "passed"
   },
   "ok": true,
-  "pack": "133",
+  "pack": "133+135D",
   "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_watch_checkpoint_panel.html",
   "readiness_label": "Security Watch checkpoint passed",
   "readiness_score": 100,
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 41,
-    "needs_guard_count": 41,
+    "guarded_needed_count": 42,
+    "needs_guard_count": 42,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
     "unguarded_needed_count": 0
@@ -112,8 +84,8 @@
     "status": "passed",
     "wall_state": "sealed"
   },
-  "soulaana_translation": "Soulaana: Security Watch is locked in. The owner can read the Tower\u2019s posture from the command room.",
+  "soulaana_translation": "Soulaana: Security Watch checkpoint is locked from cached Tower state.",
   "status": "passed",
-  "status_fingerprint": "bbe4a1da55c41370933ea377c1a2c6ab6af733c8ad16d34b4e3857d536bf5786",
+  "status_fingerprint": "d2d887d60e07eddfa1e501dc4df27998bcf286fd58827da43bd00cffed75ed4b",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_watch_checkpoint_status.json"
 }

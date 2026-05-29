@@ -1,12 +1,12 @@
 {
   "counts": {
-    "keep_protected": 32,
+    "keep_protected": 36,
     "keep_public_safe": 7,
     "later_review": 32,
     "map_next": 7,
     "retire_or_redirect": 9
   },
-  "generated_at": "2026-05-29T20:22:58.439988Z",
+  "generated_at": "2026-05-29T23:03:22.316687Z",
   "human_reason": "OB exposure report mapping pass created.",
   "items": [
     {
@@ -656,6 +656,28 @@
     {
       "category": "keep_protected",
       "classification": "tower_owned",
+      "path": "/tower/security-incident-checkpoint.json",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_security_incident_checkpoint_json_pack130",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/security-incident-checkpoint.json"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
       "path": "/tower/security-incident-desk.json",
       "plain": "Tower security/admin surfaces stay protected and should not become public.",
       "priority": 1,
@@ -671,6 +693,72 @@
           "public_allowed": false
         },
         "route": "/tower/security-incident-desk.json"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/security-incident-filters.json",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_security_incident_filters_escalation_json_pack128",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/security-incident-filters.json"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/security-watch-checkpoint.json",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_security_watch_checkpoint_json_pack133",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/security-watch-checkpoint.json"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/security-watch.json",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_security_watch_owner_posture_json_pack131",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/security-watch.json"
       },
       "reason_code": "tower_owned_security_surface",
       "source": "ob_route_exposure_report"
@@ -2877,7 +2965,7 @@
   "pack": "084",
   "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_exposure_mapping_pass.json",
   "priority_counts": {
-    "1": 41,
+    "1": 45,
     "2": 13,
     "4": 30,
     "5": 3
@@ -2892,7 +2980,7 @@
     "needs_owner_review": 2,
     "outer_shell_or_locked_surface": 6,
     "static_or_health_safe_surface": 1,
-    "tower_owned_security_surface": 22,
+    "tower_owned_security_surface": 26,
     "unmapped_default_deny_review_needed": 30
   },
   "retire_or_redirect": [
@@ -3300,5 +3388,5 @@
       "source": "ob_route_exposure_report"
     }
   ],
-  "total": 87
+  "total": 91
 }

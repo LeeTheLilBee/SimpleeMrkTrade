@@ -10917,3 +10917,43 @@ except Exception:
 # END PACK133_SECURITY_WATCH_CHECKPOINT_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK135_OWNER_ACTION_CENTER_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/owner-action-center.json")
+    def tower_owner_action_center_json_pack135():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/owner-action-center.json",
+                metadata={"source": "pack135_owner_action_center_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.owner_action_center import build_owner_action_center_status
+
+            return jsonify(build_owner_action_center_status(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "135",
+                    "reason_code": "owner_action_center_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "135", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK135_OWNER_ACTION_CENTER_ROUTE
+# ================================================================================
+

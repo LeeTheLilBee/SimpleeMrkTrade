@@ -1,41 +1,32 @@
 {
   "checks": {
+    "cached_builder_active": true,
     "helper_wrapped_zero": true,
-    "inbox_filters_call_ok": true,
-    "inbox_filters_passed": true,
-    "incident_checkpoint_call_ok": true,
-    "incident_checkpoint_passed": true,
-    "incident_checkpoint_readiness_100": true,
-    "incident_filters_call_ok": true,
-    "incident_filters_passed": true,
-    "incident_filters_readiness_100": true,
-    "object_checkpoint_call_ok": true,
-    "object_checkpoint_passed": true,
-    "quick_call_ok": true,
+    "no_live_builder_calls": true,
     "quick_passed": true,
-    "route_call_ok": true,
     "route_coverage_100": true,
     "route_high_risk_zero": true,
-    "route_unguarded_zero": true,
-    "unified_call_ok": true,
-    "unified_passed": true
+    "route_unguarded_zero": true
   },
   "command_room": {
     "quick_action_count": 16,
     "quick_status": "passed",
+    "unified_html_exists": true,
+    "unified_html_has_security_watch": true,
+    "unified_html_has_security_watch_checkpoint": true,
     "unified_readiness_score": 100,
-    "unified_status": "passed"
+    "unified_status": "cached_html_checked_no_live_builder"
   },
-  "created_at": "2026-05-29T22:22:31.854223Z",
+  "created_at": "2026-05-29T23:50:00.122027Z",
   "failed_checks": [],
-  "human_reason": "Security Watch summarizes Tower posture across route guards, inbox items, incidents, escalation readiness, quick actions, and unified command health.",
+  "human_reason": "Security Watch summarizes cached Tower posture without calling live builders.",
   "inbox_watch": {
-    "high_priority_count": 69,
+    "high_priority_count": 64,
     "inbox_count": 80,
-    "open_review_count": 69,
+    "open_review_count": 64,
     "readiness_score": 100,
     "status": "passed",
-    "unresolved_count": 69
+    "unresolved_count": 64
   },
   "incident_watch": {
     "by_next_action": {
@@ -46,8 +37,8 @@
       "new": 39,
       "triaged": 1
     },
-    "checkpoint_readiness_score": 100,
-    "checkpoint_status": "passed",
+    "checkpoint_readiness_score": null,
+    "checkpoint_status": "not_called_by_pack135c_cached_builder",
     "critical_count": 0,
     "escalation_ready_count": 40,
     "high_count": 40,
@@ -66,16 +57,16 @@
     "status": "passed"
   },
   "ok": true,
-  "pack": "131",
+  "pack": "131+135C",
   "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_watch_owner_posture_panel.html",
   "posture": {
     "critical_incident_count": 0,
     "escalation_ready_count": 40,
     "helper_wrapped_count": 0,
     "high_incident_count": 40,
-    "high_priority_inbox_count": 69,
+    "high_priority_inbox_count": 64,
     "open_incident_count": 40,
-    "open_review_count": 69,
+    "open_review_count": 64,
     "owner_message": "Security Watch is stable, but there are open items that need owner attention.",
     "posture": "watch",
     "posture_label": "Active Security Watch",
@@ -96,14 +87,14 @@
   "readiness_score": 100,
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 41,
-    "needs_guard_count": 41,
+    "guarded_needed_count": 42,
+    "needs_guard_count": 42,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
     "unguarded_needed_count": 0
   },
-  "soulaana_translation": "Soulaana: Security Watch is online. The owner can see the Tower posture without digging through every room.",
+  "soulaana_translation": "Soulaana: Security Watch is online from cached Tower state, with no recursion.",
   "status": "passed",
-  "status_fingerprint": "43fccf367ec03e13de50c56972d85f324de6e32907f3216220ba20ea73c302f4",
+  "status_fingerprint": "9df6fa4bf7b2f5b92242e81c1ab032f53f2bb4971d699bf4b4302e81ac3a59b7",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_watch_owner_posture_status.json"
 }
