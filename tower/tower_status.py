@@ -616,3 +616,42 @@ def pack119_owner_quick_actions_status_bridge():
 # END PACK119_OWNER_QUICK_ACTIONS_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK123_SECURITY_INBOX_UI_STATUS_BRIDGES
+# ================================================================================
+
+def pack123_security_inbox_owner_queue_status_bridge():
+    try:
+        from tower.security_inbox_owner_queue import security_inbox_owner_queue_status_card
+        return security_inbox_owner_queue_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "123",
+            "title": "Tower Security Inbox",
+            "reason_code": "security_inbox_owner_queue_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Tower Security Inbox could not be loaded.",
+        }
+
+
+def pack123_security_inbox_review_status_bridge():
+    try:
+        from tower.security_inbox_review_actions import security_inbox_review_status_card
+        return security_inbox_review_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "123",
+            "title": "Security Inbox Review",
+            "reason_code": "security_inbox_review_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Security Inbox review status could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK123_SECURITY_INBOX_UI_STATUS_BRIDGES
+# ================================================================================
+

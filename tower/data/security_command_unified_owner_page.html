@@ -63,8 +63,9 @@
   <!-- PACK116_UNIFIED_OWNER_SECURITY_COMMAND_PAGE -->
   <!-- PACK118B_SAFE_NON_RECURSIVE_RENDERER -->
   <!-- PACK119_UNIFIED_OWNER_PAGE_INCLUDES_QUICK_ACTION_RAIL -->
-  <section class="tower-owner-hero" data-pack="116-119">
-    <div class="tower-owner-hero__eyebrow">PACK 116 + 119 · UNIFIED OWNER COMMAND</div>
+  <!-- PACK123_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_INBOX_AND_REVIEW -->
+  <section class="tower-owner-hero" data-pack="116-123">
+    <div class="tower-owner-hero__eyebrow">PACK 116 + 123 · UNIFIED OWNER COMMAND</div>
     <h1>The Tower Security Command</h1>
     <p>Unified owner Security Command page composes navigation, object visibility, route coverage, object checkpoint, and composition smoke into one control-room page.</p>
     <div class="tower-owner-health-grid">
@@ -76,7 +77,7 @@
     
     <article class="tower-owner-health-card tower-owner-health-card--ready">
       <div class="tower-owner-health-card__eyebrow">GUARDS</div>
-      <h3>30 / 30</h3>
+      <h3>34 / 34</h3>
       <p>Guarded Protected Routes</p>
     </article>
     
@@ -88,7 +89,7 @@
     
     <article class="tower-owner-health-card tower-owner-health-card--ready">
       <div class="tower-owner-health-card__eyebrow">OBJECT VISIBILITY</div>
-      <h3>7</h3>
+      <h3>4</h3>
       <p>Object Events</p>
     </article>
     
@@ -234,6 +235,27 @@
           <small>Readiness: 100</small>
         </a>
         
+        <a class="owner-action-card owner-action-card--normal" href="/tower/security-inbox.json">
+          <div class="owner-action-card__eyebrow">status_json · 121</div>
+          <h3>Open Security Inbox</h3>
+          <p>Review the owner security inbox queue.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/security-inbox-review-status.json">
+          <div class="owner-action-card__eyebrow">status_json · 122</div>
+          <h3>Review Inbox States</h3>
+          <p>Review inbox item states, receipts, and open review counts.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/security-inbox-review-action.json">
+          <div class="owner-action-card__eyebrow">action_json · 122</div>
+          <h3>Apply Inbox Review Action</h3>
+          <p>Apply a safe owner review state to an inbox item.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
   </div>
 </section>
 <!-- END PACK119_OWNER_QUICK_ACTION_RAIL_SECTION -->
@@ -362,6 +384,587 @@
   </div>
 </section>
 <!-- END PACK117_SECURITY_COMMAND_PREFERRED_DESTINATION_SECTION -->
+</section>
+  <section class="tower-owner-section">
+<!-- PACK121_SECURITY_INBOX_OWNER_QUEUE_SECTION -->
+<section class="security-inbox-owner-queue" data-pack="121">
+  <style>
+    .security-inbox-owner-queue {
+      margin: 24px 0;
+      border: 1px solid rgba(220,183,94,.34);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top left, rgba(220,183,94,.13), transparent 34%),
+        linear-gradient(135deg, rgba(23,20,13,.78), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .security-inbox-owner-queue__eyebrow {
+      color: rgba(220,183,94,.86);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .security-inbox-owner-queue h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .security-inbox-owner-queue p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .security-inbox-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .security-inbox-stat {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+    }
+    .security-inbox-stat b {
+      display: block;
+      font-size: 22px;
+    }
+    .security-inbox-stat span {
+      color: rgba(245,234,210,.62);
+      font-size: 12px;
+    }
+    .security-inbox-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .security-inbox-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+    }
+    .security-inbox-card--high {
+      border-color: rgba(255,128,128,.58);
+    }
+    .security-inbox-card--medium {
+      border-color: rgba(220,183,94,.58);
+    }
+    .security-inbox-card--watch {
+      border-color: rgba(168,175,255,.48);
+    }
+    .security-inbox-card--info {
+      border-color: rgba(143,221,158,.32);
+    }
+    .security-inbox-card__eyebrow {
+      color: rgba(220,183,94,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .security-inbox-card h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+    }
+    .security-inbox-card p {
+      margin: 0 0 8px;
+      color: rgba(245,234,210,.72);
+    }
+    .security-inbox-card small {
+      color: rgba(245,234,210,.55);
+    }
+    @media (max-width: 900px) {
+      .security-inbox-stats,
+      .security-inbox-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="security-inbox-owner-queue__eyebrow">PACK 121 · SECURITY INBOX</div>
+  <h2>Tower Security Inbox</h2>
+  <p>Tower Security Inbox collects important security events into one owner review queue without exposing secrets.</p>
+
+  <div class="security-inbox-stats">
+    <div class="security-inbox-stat"><b>97</b><span>Inbox Items</span></div>
+    <div class="security-inbox-stat"><b>57</b><span>Owner Review</span></div>
+    <div class="security-inbox-stat"><b>7</b><span>Sources</span></div>
+    <div class="security-inbox-stat"><b>100</b><span>Readiness</span></div>
+  </div>
+
+  <div class="security-inbox-grid">
+    
+        <article class="security-inbox-card security-inbox-card--high">
+          <div class="security-inbox-card__eyebrow">REVIEW · high · secrets_boundary_events</div>
+          <h3>raw_secret_rejected</h3>
+          <p>Raw secret value was rejected. The Tower may only store a reference.</p>
+          <small>tower_secrets_boundary_event</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--high">
+          <div class="security-inbox-card__eyebrow">REVIEW · high · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>/tower/security-command</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--high">
+          <div class="security-inbox-card__eyebrow">REVIEW · high · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>/tower/security-command</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--high">
+          <div class="security-inbox-card__eyebrow">REVIEW · high · object_permission_events</div>
+          <h3>deny</h3>
+          <p>position_owner_mismatch</p>
+          <small>pos_other_123</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · redaction_reveal_receipts</div>
+          <h3>reveal_step_up_required</h3>
+          <p>step_up_required_for_sensitive_reveal</p>
+          <small>worker_rehearsal_098</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>/tower/security-command</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>/tower/security-command</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>/tower/admin-sensitive</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>/tower/security-command</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>/tower/security-command</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>/tower/security-command</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>/tower/security-command</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>/tower/security-command</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>tower_security_command_object_visibility_status</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>tower_ob_object_permission_visibility_status</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>tower_security_command_object_visibility_status</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>tower_ob_object_permission_visibility_status</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>tower_security_command_object_visibility_status</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>tower_ob_object_permission_visibility_status</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>tower_ob_object_permission_visibility_status</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>tower_ob_object_permission_visibility_status</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>tower_security_command_object_visibility_status</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>tower_ob_object_permission_visibility_status</small>
+        </article>
+        
+        <article class="security-inbox-card security-inbox-card--medium">
+          <div class="security-inbox-card__eyebrow">REVIEW · medium · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>tower_security_command_object_visibility_status</small>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK121_SECURITY_INBOX_OWNER_QUEUE_SECTION -->
+</section>
+  <section class="tower-owner-section">
+<!-- PACK122_SECURITY_INBOX_REVIEW_ACTIONS_SECTION -->
+<section class="security-inbox-review-actions" data-pack="122">
+  <style>
+    .security-inbox-review-actions {
+      margin: 24px 0;
+      border: 1px solid rgba(168,175,255,.38);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(168,175,255,.14), transparent 34%),
+        linear-gradient(135deg, rgba(18,20,38,.78), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .security-inbox-review-actions__eyebrow {
+      color: rgba(168,175,255,.9);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .security-inbox-review-actions h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .security-inbox-review-actions p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .security-review-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .security-review-stat {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+    }
+    .security-review-stat b {
+      display: block;
+      font-size: 22px;
+    }
+    .security-review-stat span {
+      color: rgba(245,234,210,.62);
+      font-size: 12px;
+    }
+    .security-review-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .security-review-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+    }
+    .security-review-card--new {
+      border-color: rgba(220,183,94,.5);
+    }
+    .security-review-card--acknowledged {
+      border-color: rgba(168,175,255,.5);
+    }
+    .security-review-card--investigating {
+      border-color: rgba(220,183,94,.7);
+    }
+    .security-review-card--resolved {
+      border-color: rgba(143,221,158,.5);
+    }
+    .security-review-card--escalated {
+      border-color: rgba(255,128,128,.65);
+    }
+    .security-review-card--false_alarm,
+    .security-review-card--archived {
+      border-color: rgba(245,234,210,.18);
+      opacity: .82;
+    }
+    .security-review-card__eyebrow {
+      color: rgba(220,183,94,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .security-review-card h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+    }
+    .security-review-card p {
+      margin: 0 0 8px;
+      color: rgba(245,234,210,.72);
+    }
+    .security-review-card small {
+      color: rgba(245,234,210,.55);
+      word-break: break-word;
+    }
+    @media (max-width: 900px) {
+      .security-review-stats,
+      .security-review-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="security-inbox-review-actions__eyebrow">PACK 122 · OWNER REVIEW STATES</div>
+  <h2>Security Inbox Review Actions</h2>
+  <p>Security Inbox review states/actions are ready and tracked separately from original event logs.</p>
+
+  <div class="security-review-stats">
+    <div class="security-review-stat"><b>80</b><span>Inbox Items</span></div>
+    <div class="security-review-stat"><b>57</b><span>Open Review</span></div>
+    <div class="security-review-stat"><b>1</b><span>Tracked States</span></div>
+    <div class="security-review-stat"><b>1</b><span>Review Receipts</span></div>
+  </div>
+
+  <div class="security-review-grid">
+    
+        <article class="security-review-card security-review-card--acknowledged">
+          <div class="security-review-card__eyebrow">Acknowledged · high · secrets_boundary_events</div>
+          <h3>raw_secret_rejected</h3>
+          <p>Raw secret value was rejected. The Tower may only store a reference.</p>
+          <small>security_inbox_e0643d3b6a70b16d09</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · high · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_5e65f035784b617bb2</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · high · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_70c1dcbf270688fa4e</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · high · object_permission_events</div>
+          <h3>deny</h3>
+          <p>position_owner_mismatch</p>
+          <small>security_inbox_c325d4df12b187d9bc</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · redaction_reveal_receipts</div>
+          <h3>reveal_step_up_required</h3>
+          <p>step_up_required_for_sensitive_reveal</p>
+          <small>security_inbox_d6d9fdb4808be20cc4</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_de245c467d1b306034</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_24c878c061b40a57fc</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_63a519a1b11a7b94a5</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_40acda72d44bf5fd03</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_50be1ee804977f3fbb</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_d3674b6ffd84905395</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_290af4e93994fc6b1d</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · owner_admin_receipts</div>
+          <h3>recorded</h3>
+          <p>Owner/admin action receipt recorded.</p>
+          <small>security_inbox_f49653e9cefb5f7940</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_784eafce73a849f955</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_1fb543fe04d0cdad69</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_5db246f54f86af7e63</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_a3790cda5fd8862b49</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_b65567d6fa4fcc36cf</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_4a4c9f90d86f55a533</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_8849c950f3127cdce4</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_e4fd49f272c2a84438</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_d59b294382cc9aab0e</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
+          <h3>tower_ob_object_permission_visibility_status</h3>
+          <p>tower_ob_object_permission_visibility_status</p>
+          <small>security_inbox_e7727e34d5427956a7</small>
+        </article>
+        
+        <article class="security-review-card security-review-card--new">
+          <div class="security-review-card__eyebrow">New · medium · tamper_audit_chain</div>
+          <h3>tower_security_command_object_visibility_status</h3>
+          <p>tower_security_command_object_visibility_status</p>
+          <small>security_inbox_e0110a0d0d49174c4b</small>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK122_SECURITY_INBOX_REVIEW_ACTIONS_SECTION -->
 </section>
   <section class="tower-owner-section">
 <!-- PACK115_SECURITY_COMMAND_NAVIGATION_LINKS_SECTION -->
@@ -641,9 +1244,9 @@
   </div>
 
   <div class="tower-object-visibility-panel__stats">
-    <div class="tower-object-stat"><b>7</b><span>Events</span></div>
-    <div class="tower-object-stat"><b>2</b><span>Denied</span></div>
-    <div class="tower-object-stat"><b>3</b><span>Step-up</span></div>
+    <div class="tower-object-stat"><b>4</b><span>Events</span></div>
+    <div class="tower-object-stat"><b>1</b><span>Denied</span></div>
+    <div class="tower-object-stat"><b>2</b><span>Step-up</span></div>
     <div class="tower-object-stat"><b>1</b><span>Exports</span></div>
     <div class="tower-object-stat"><b>1</b><span>Summary-only</span></div>
   </div>
@@ -652,50 +1255,37 @@
     
         <article class="tower-object-card tower-object-card--deny">
           <div class="tower-object-card__eyebrow">deny · position · beta</div>
-          <h3>pos_other_119</h3>
+          <h3>pos_other_123</h3>
           <p>position_owner_mismatch</p>
           <small>deny_object_access</small>
         </article>
         
         <article class="tower-object-card tower-object-card--step">
           <div class="tower-object-card__eyebrow">step_up_required · position · beta</div>
-          <h3>pos_mine_119</h3>
+          <h3>pos_mine_123</h3>
           <p>position_mutation_requires_step_up</p>
           <small>complete_tower_step_up, retry_object_action</small>
         </article>
         
-        <article class="tower-object-card tower-object-card--deny">
-          <div class="tower-object-card__eyebrow">deny · trade · beta</div>
-          <h3>trade_other_119</h3>
-          <p>trade_owner_mismatch</p>
-          <small>deny_object_access</small>
-        </article>
-        
         <article class="tower-object-card tower-object-card--step">
           <div class="tower-object-card__eyebrow">step_up_required · export · owner</div>
-          <h3>export_119</h3>
+          <h3>export_123</h3>
           <p>export_requires_step_up</p>
           <small>complete_tower_step_up, record_export_receipt, create_archive_handoff</small>
         </article>
         
         <article class="tower-object-card tower-object-card--summary">
           <div class="tower-object-card__eyebrow">summary_only · analysis · beta</div>
-          <h3>analysis_119</h3>
+          <h3>analysis_123</h3>
           <p>analysis_summary_first</p>
           <small>show_redacted_summary, request_reveal_if_needed</small>
-        </article>
-        
-        <article class="tower-object-card tower-object-card--step">
-          <div class="tower-object-card__eyebrow">step_up_required · admin_panel · owner</div>
-          <h3>tower_admin_panel_119</h3>
-          <p>admin_object_requires_step_up</p>
-          <small>complete_tower_step_up, record_admin_receipt</small>
         </article>
         
   </div>
 </section>
 <!-- END PACK113_SECURITY_COMMAND_OBJECT_VISIBILITY_SECTION -->
 </section>
+  <!-- END PACK123_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_INBOX_AND_REVIEW -->
   <!-- END PACK119_UNIFIED_OWNER_PAGE_INCLUDES_QUICK_ACTION_RAIL -->
   <!-- END PACK118B_SAFE_NON_RECURSIVE_RENDERER -->
   <!-- END PACK116_UNIFIED_OWNER_SECURITY_COMMAND_PAGE -->

@@ -1,5 +1,5 @@
 {
-  "checkpoint_fingerprint": "2eae0cb8e7b4d5fba6015327f6055ed2e8d79ca2227bbde80ab27cee443c7aa1",
+  "checkpoint_fingerprint": "58abd36c1c3ed1872e92bdd1ee46c3e84979c51a1035960f19e2e0084231150e",
   "checkpoint_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_integration_checkpoint.json",
   "checks": {
     "all_markers_present": true,
@@ -14,7 +14,7 @@
     "unguarded_needed_zero": true,
     "web_app_exists": true
   },
-  "created_at": "2026-05-29T18:13:19.273390Z",
+  "created_at": "2026-05-29T18:25:23.768719Z",
   "expected_missing": [],
   "expected_object_route_count": 8,
   "expected_present": {

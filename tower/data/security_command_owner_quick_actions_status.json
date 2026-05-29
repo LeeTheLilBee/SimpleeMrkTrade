@@ -1,5 +1,5 @@
 {
-  "action_count": 6,
+  "action_count": 9,
   "actions": [
     {
       "action_id": "open_unified_security_command",
@@ -60,6 +60,36 @@
       "pack": "022E+",
       "readiness_score": 100,
       "title": "Review Legacy Security Command"
+    },
+    {
+      "action_id": "open_security_inbox",
+      "available": true,
+      "href": "/tower/security-inbox.json",
+      "human_reason": "Review the owner security inbox queue.",
+      "kind": "status_json",
+      "pack": "121",
+      "readiness_score": 100,
+      "title": "Open Security Inbox"
+    },
+    {
+      "action_id": "review_security_inbox_states",
+      "available": true,
+      "href": "/tower/security-inbox-review-status.json",
+      "human_reason": "Review inbox item states, receipts, and open review counts.",
+      "kind": "status_json",
+      "pack": "122",
+      "readiness_score": 100,
+      "title": "Review Inbox States"
+    },
+    {
+      "action_id": "apply_security_inbox_review_action",
+      "available": true,
+      "href": "/tower/security-inbox-review-action.json",
+      "human_reason": "Apply a safe owner review state to an inbox item.",
+      "kind": "action_json",
+      "pack": "122",
+      "readiness_score": 100,
+      "title": "Apply Inbox Review Action"
     }
   ],
   "checks": {
@@ -75,7 +105,7 @@
     "unified_health_ok": true,
     "unified_status_passed": true
   },
-  "created_at": "2026-05-29T16:48:11.473106Z",
+  "created_at": "2026-05-29T18:25:12.063033Z",
   "failed_checks": [],
   "human_reason": "Owner quick-action rail gives direct access to unified command, preferred destination, security links, object visibility, and route guard status.",
   "leakage_scan": {
@@ -98,8 +128,8 @@
   "readiness_score": 100,
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 30,
-    "needs_guard_count": 30,
+    "guarded_needed_count": 34,
+    "needs_guard_count": 34,
     "ok": true,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
@@ -107,7 +137,7 @@
   },
   "soulaana_translation": "Soulaana: The owner now has the important Tower buttons in one rail.",
   "status": "passed",
-  "status_fingerprint": "48c5b969641ef1d6890b8071ac03deaa15b88e5f8d578bb0c03fbccb95b9b6b5",
+  "status_fingerprint": "2aefdda217ec3e3a44995653ea5accdc3ecae301c55dcff94c7cf84731510f56",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_owner_quick_actions_status.json",
   "unified_health": {
     "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page.html",

@@ -1,11 +1,11 @@
 {
-  "admin_event_count": 1,
-  "created_at": "2026-05-29T16:48:19.042150Z",
-  "deny_count": 2,
-  "event_count": 7,
+  "admin_event_count": 0,
+  "created_at": "2026-05-29T18:25:21.101246Z",
+  "deny_count": 1,
+  "event_count": 4,
   "export_event_count": 1,
   "human_reason": "OB object permission visibility is available inside Security Command.",
-  "important_event_count": 6,
+  "important_event_count": 4,
   "leakage_scan": {
     "forbidden_hit_count": 0,
     "had_forbidden_hits": false,
@@ -20,7 +20,7 @@
     {
       "action": "view",
       "decision": "deny",
-      "object_id": "pos_other_119",
+      "object_id": "pos_other_123",
       "object_type": "position",
       "reason_code": "position_owner_mismatch",
       "required_actions": [
@@ -34,7 +34,7 @@
     {
       "action": "close",
       "decision": "step_up_required",
-      "object_id": "pos_mine_119",
+      "object_id": "pos_mine_123",
       "object_type": "position",
       "reason_code": "position_mutation_requires_step_up",
       "required_actions": [
@@ -47,23 +47,9 @@
       "role_family": "beta"
     },
     {
-      "action": "view",
-      "decision": "deny",
-      "object_id": "trade_other_119",
-      "object_type": "trade",
-      "reason_code": "trade_owner_mismatch",
-      "required_actions": [
-        "deny_object_access"
-      ],
-      "requires_archive_handoff": false,
-      "requires_step_up": false,
-      "requires_summary_only": false,
-      "role_family": "beta"
-    },
-    {
       "action": "export",
       "decision": "step_up_required",
-      "object_id": "export_119",
+      "object_id": "export_123",
       "object_type": "export",
       "reason_code": "export_requires_step_up",
       "required_actions": [
@@ -79,7 +65,7 @@
     {
       "action": "view",
       "decision": "summary_only",
-      "object_id": "analysis_119",
+      "object_id": "analysis_123",
       "object_type": "analysis",
       "reason_code": "analysis_summary_first",
       "required_actions": [
@@ -90,28 +76,13 @@
       "requires_step_up": false,
       "requires_summary_only": true,
       "role_family": "beta"
-    },
-    {
-      "action": "view",
-      "decision": "step_up_required",
-      "object_id": "tower_admin_panel_119",
-      "object_type": "admin_panel",
-      "reason_code": "admin_object_requires_step_up",
-      "required_actions": [
-        "complete_tower_step_up",
-        "record_admin_receipt"
-      ],
-      "requires_archive_handoff": false,
-      "requires_step_up": true,
-      "requires_summary_only": false,
-      "role_family": "owner"
     }
   ],
   "security_command_fragment_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_object_visibility_fragment.html",
   "security_command_status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_object_visibility_status.json",
   "soulaana_translation": "Soulaana: Security Command can now see object denials, step-ups, exports, and summary-only locks.",
-  "status_fingerprint": "21ca8ae77ad65ee651eede01c810bf5cd76cbaed4040b05c9ba033907426d0d0",
-  "step_up_required_count": 3,
+  "status_fingerprint": "f40e0deba5d8dc87a6a087e9581a78fa16ba22a01c35f9a0def1c08e3560a693",
+  "step_up_required_count": 2,
   "summary_only_count": 1,
   "visibility_status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_visibility_status.json"
 }

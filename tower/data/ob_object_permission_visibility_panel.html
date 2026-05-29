@@ -100,53 +100,39 @@
     <p>Object permission denies, step-up requests, exports, summaries, and live-mode locks are visible to The Tower.</p>
   </section>
   <section class="stats">
-    <div class="stat"><b>7</b><span>Events</span></div>
-    <div class="stat"><b>2</b><span>Denied</span></div>
-    <div class="stat"><b>3</b><span>Step-up</span></div>
+    <div class="stat"><b>4</b><span>Events</span></div>
+    <div class="stat"><b>1</b><span>Denied</span></div>
+    <div class="stat"><b>2</b><span>Step-up</span></div>
     <div class="stat"><b>1</b><span>Exports</span></div>
     <div class="stat"><b>1</b><span>Summary-only</span></div>
   </section>
   <section class="grid">
         <article class="card deny">
           <div class="eyebrow">deny · position · beta</div>
-          <h2>pos_other_119</h2>
+          <h2>pos_other_123</h2>
           <p>position_owner_mismatch</p>
           <small>deny_object_access</small>
         </article>
         
         <article class="card step">
           <div class="eyebrow">step_up_required · position · beta</div>
-          <h2>pos_mine_119</h2>
+          <h2>pos_mine_123</h2>
           <p>position_mutation_requires_step_up</p>
           <small>complete_tower_step_up, retry_object_action</small>
         </article>
         
-        <article class="card deny">
-          <div class="eyebrow">deny · trade · beta</div>
-          <h2>trade_other_119</h2>
-          <p>trade_owner_mismatch</p>
-          <small>deny_object_access</small>
-        </article>
-        
         <article class="card step">
           <div class="eyebrow">step_up_required · export · owner</div>
-          <h2>export_119</h2>
+          <h2>export_123</h2>
           <p>export_requires_step_up</p>
           <small>complete_tower_step_up, record_export_receipt, create_archive_handoff</small>
         </article>
         
         <article class="card summary">
           <div class="eyebrow">summary_only · analysis · beta</div>
-          <h2>analysis_119</h2>
+          <h2>analysis_123</h2>
           <p>analysis_summary_first</p>
           <small>show_redacted_summary, request_reveal_if_needed</small>
-        </article>
-        
-        <article class="card step">
-          <div class="eyebrow">step_up_required · admin_panel · owner</div>
-          <h2>tower_admin_panel_119</h2>
-          <p>admin_object_requires_step_up</p>
-          <small>complete_tower_step_up, record_admin_receipt</small>
         </article>
         </section>
 </main>

@@ -2,13 +2,13 @@
   {
     "__redacted_security_review_field_count__": 1,
     "actor_user_id": "owner_solice",
-    "created_at": "2026-05-29T18:13:16.359500Z",
+    "created_at": "2026-05-29T18:24:41.311429Z",
     "decision": "review_action_applied",
     "event_type": "tower_security_inbox_review_action",
-    "human_reason": "Pack 122 test acknowledgement.",
+    "human_reason": "Pack 123 review action seed.",
     "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
     "metadata": {
-      "pack": "122"
+      "pack": "123"
     },
     "new_review_state": "acknowledged",
     "object_id": "",
@@ -16,49 +16,7 @@
     "pack": "122",
     "prior_review_state": "new",
     "reason_code": "security_inbox_review_state_updated",
-    "receipt_id": "security_review_receipt_d50f71ec1da7f1217f",
-    "route_path": "",
-    "severity": "high",
-    "source": "secrets_boundary_events"
-  },
-  {
-    "actor_user_id": "owner_solice",
-    "created_at": "2026-05-29T18:13:17.276460Z",
-    "decision": "review_action_applied",
-    "event_type": "tower_security_inbox_review_action",
-    "human_reason": "Pack 122 test investigation.",
-    "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
-    "metadata": {
-      "pack": "122"
-    },
-    "new_review_state": "investigating",
-    "object_id": "",
-    "object_type": "",
-    "pack": "122",
-    "prior_review_state": "acknowledged",
-    "reason_code": "security_inbox_review_state_updated",
-    "receipt_id": "security_review_receipt_114900ae19f937fe38",
-    "route_path": "",
-    "severity": "high",
-    "source": "secrets_boundary_events"
-  },
-  {
-    "actor_user_id": "owner_solice",
-    "created_at": "2026-05-29T18:13:18.174935Z",
-    "decision": "review_action_applied",
-    "event_type": "tower_security_inbox_review_action",
-    "human_reason": "Pack 122 test resolved.",
-    "inbox_item_id": "security_inbox_e0643d3b6a70b16d09",
-    "metadata": {
-      "pack": "122"
-    },
-    "new_review_state": "resolved",
-    "object_id": "",
-    "object_type": "",
-    "pack": "122",
-    "prior_review_state": "investigating",
-    "reason_code": "security_inbox_review_state_updated",
-    "receipt_id": "security_review_receipt_ed728cd863cc3d5f23",
+    "receipt_id": "security_review_receipt_a58efe65189ce4259f",
     "route_path": "",
     "severity": "high",
     "source": "secrets_boundary_events"

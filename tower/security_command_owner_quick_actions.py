@@ -457,3 +457,53 @@ def reset_owner_quick_actions_for_test() -> Dict[str, Any]:
         "decision": "owner_quick_actions_reset_for_test",
         "soulaana_translation": "Soulaana: Owner quick actions reset for a clean test lane.",
     }
+
+
+
+# ================================================================================
+# PACK123_OWNER_QUICK_ACTIONS_SECURITY_INBOX_EXTENSION
+# ================================================================================
+
+try:
+    _pack123_existing_action_ids = {
+        action.get("action_id")
+        for action in OWNER_QUICK_ACTIONS
+        if isinstance(action, dict)
+    }
+
+    if "open_security_inbox" not in _pack123_existing_action_ids:
+        OWNER_QUICK_ACTIONS.append({
+            "action_id": "open_security_inbox",
+            "title": "Open Security Inbox",
+            "href": "/tower/security-inbox.json",
+            "kind": "status_json",
+            "pack": "121",
+            "human_reason": "Review the owner security inbox queue.",
+        })
+
+    if "review_security_inbox_states" not in _pack123_existing_action_ids:
+        OWNER_QUICK_ACTIONS.append({
+            "action_id": "review_security_inbox_states",
+            "title": "Review Inbox States",
+            "href": "/tower/security-inbox-review-status.json",
+            "kind": "status_json",
+            "pack": "122",
+            "human_reason": "Review inbox item states, receipts, and open review counts.",
+        })
+
+    if "apply_security_inbox_review_action" not in _pack123_existing_action_ids:
+        OWNER_QUICK_ACTIONS.append({
+            "action_id": "apply_security_inbox_review_action",
+            "title": "Apply Inbox Review Action",
+            "href": "/tower/security-inbox-review-action.json",
+            "kind": "action_json",
+            "pack": "122",
+            "human_reason": "Apply a safe owner review state to an inbox item.",
+        })
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK123_OWNER_QUICK_ACTIONS_SECURITY_INBOX_EXTENSION
+# ================================================================================
+

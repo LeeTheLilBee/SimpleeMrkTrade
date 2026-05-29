@@ -1655,3 +1655,46 @@ def pack119_owner_quick_actions_html_section():
 # END PACK119_OWNER_QUICK_ACTIONS_HTML_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK123_SECURITY_INBOX_UI_HTML_BRIDGES
+# ================================================================================
+
+def pack123_security_inbox_owner_queue_html_section():
+    try:
+        from tower.security_inbox_owner_queue import (
+            build_security_inbox_owner_queue,
+            render_security_inbox_owner_queue_section,
+        )
+        status = build_security_inbox_owner_queue(write_panel=True)
+        return render_security_inbox_owner_queue_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="security-inbox-owner-queue" data-pack="123-inbox-error">
+          <h2>Tower Security Inbox Unavailable</h2>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+
+def pack123_security_inbox_review_html_section():
+    try:
+        from tower.security_inbox_review_actions import (
+            build_security_inbox_review_status,
+            render_security_inbox_review_section,
+        )
+        status = build_security_inbox_review_status(write_panel=True)
+        return render_security_inbox_review_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="security-inbox-review-actions" data-pack="123-review-error">
+          <h2>Security Inbox Review Unavailable</h2>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+# ================================================================================
+# END PACK123_SECURITY_INBOX_UI_HTML_BRIDGES
+# ================================================================================
+
