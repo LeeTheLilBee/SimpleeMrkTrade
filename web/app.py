@@ -11609,3 +11609,43 @@ except Exception:
 # END PACK150_OWNER_ACTION_REVIEW_READINESS_CHECKPOINT_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK151_POLICY_AS_CODE_ENGINE_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/policy-as-code-engine.json")
+    def tower_policy_as_code_engine_json_pack151():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/policy-as-code-engine.json",
+                metadata={"source": "pack151_policy_as_code_engine_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.policy_as_code_engine import build_policy_as_code_engine_status
+
+            return jsonify(build_policy_as_code_engine_status(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "151",
+                    "reason_code": "policy_as_code_engine_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "151", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK151_POLICY_AS_CODE_ENGINE_ROUTE
+# ================================================================================
+

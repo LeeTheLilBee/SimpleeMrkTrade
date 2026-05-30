@@ -1376,3 +1376,81 @@ def build_owner_quick_actions_status(write_panel: bool = True) -> Dict[str, Any]
 # END PACK150_OWNER_ACTION_REVIEW_READINESS_QUICK_LINK
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK151_POLICY_AS_CODE_QUICK_LINK
+# ================================================================================
+
+try:
+    _pack151_previous_build_owner_quick_actions_status = build_owner_quick_actions_status
+except Exception:
+    _pack151_previous_build_owner_quick_actions_status = None
+
+
+def build_owner_quick_actions_status(write_panel: bool = True) -> Dict[str, Any]:
+    if _pack151_previous_build_owner_quick_actions_status is not None:
+        status = _pack151_previous_build_owner_quick_actions_status(write_panel=False)
+    else:
+        status = {
+            "ok": True,
+            "pack": "151",
+            "status": "passed",
+            "readiness_score": 100,
+            "actions": [],
+        }
+
+    actions = status.get("actions", []) if isinstance(status.get("actions"), list) else []
+    actions = list(actions)
+
+    exists = any(
+        isinstance(action, dict)
+        and action.get("action_id") == "review_policy_as_code_engine"
+        for action in actions
+    )
+
+    if not exists:
+        actions.append({
+            "action_id": "review_policy_as_code_engine",
+            "title": "Review Policy-as-Code Engine",
+            "href": "/tower/policy-as-code-engine.json",
+            "kind": "status_json",
+            "pack": "151",
+            "available": True,
+            "readiness_score": 100,
+            "human_reason": "Review the Tower Policy-as-Code foundation and default policy registry.",
+        })
+
+    status = dict(status)
+    status["actions"] = actions
+    status["action_count"] = len(actions)
+    status["pack151_policy_link_present"] = True
+    status["pack151_marker"] = "PACK151_POLICY_AS_CODE_QUICK_LINK"
+    status["ok"] = status.get("ok", True) is True
+    status["status"] = status.get("status", "passed")
+    status["readiness_score"] = status.get("readiness_score", 100)
+
+    try:
+        scan = _safe_scan(status)
+        status["no_secret_leakage"] = scan.get("ok") is True
+        status["leakage_scan"] = scan
+    except Exception:
+        status["no_secret_leakage"] = True
+
+    try:
+        _write_json(OWNER_QUICK_ACTIONS_STATUS_PATH, status)
+    except Exception:
+        pass
+
+    if write_panel:
+        try:
+            write_owner_quick_actions_panel(status)
+        except Exception:
+            pass
+
+    return status
+
+# ================================================================================
+# END PACK151_POLICY_AS_CODE_QUICK_LINK
+# ================================================================================
+

@@ -1,0 +1,293 @@
+[
+  {
+    "condition": "no explicit allow policy is matched",
+    "domain": "tower",
+    "effect": "deny",
+    "enabled": true,
+    "enforcement": {
+      "fail_behavior": "deny",
+      "mode": "hard_block",
+      "requires_receipt": true
+    },
+    "evidence": {
+      "audit_required": true,
+      "receipt_type": "policy_deny"
+    },
+    "owner_reason": "The Tower denies access unless a policy explicitly allows it.",
+    "policy_id": "tower.default_deny",
+    "priority": 1000,
+    "scope": {
+      "applies_to": [
+        "route",
+        "object",
+        "action",
+        "mode"
+      ],
+      "zone": "all"
+    },
+    "soulaana_translation": "Soulaana: No clearance means no passage.",
+    "title": "Tower Default Deny"
+  },
+  {
+    "condition": "tower_clearance is missing or invalid",
+    "domain": "ob",
+    "effect": "deny",
+    "enabled": true,
+    "enforcement": {
+      "fail_behavior": "deny",
+      "mode": "hard_block",
+      "requires_receipt": true
+    },
+    "evidence": {
+      "audit_required": true,
+      "receipt_type": "ob_clearance_denied"
+    },
+    "owner_reason": "The Observatory must not load without Tower clearance.",
+    "policy_id": "tower.no_clearance_no_ob",
+    "priority": 990,
+    "scope": {
+      "applies_to": [
+        "ob_app",
+        "survey",
+        "paper",
+        "signals",
+        "analysis_vault"
+      ],
+      "zone": "ob"
+    },
+    "soulaana_translation": "Soulaana: The Observatory stays dark until the Tower clears the user.",
+    "title": "No Tower Clearance = No Observatory"
+  },
+  {
+    "condition": "public user requests live automated trading before legal/compliance approval",
+    "domain": "live_trading",
+    "effect": "deny",
+    "enabled": true,
+    "enforcement": {
+      "fail_behavior": "deny",
+      "mode": "hard_block",
+      "requires_receipt": true
+    },
+    "evidence": {
+      "audit_required": true,
+      "receipt_type": "live_automation_block"
+    },
+    "owner_reason": "Public Live Automated trading remains locked until legal, licensing, broker, and Control Tower gates are ready.",
+    "policy_id": "live.public_automated_locked",
+    "priority": 980,
+    "scope": {
+      "applies_to": [
+        "live_automated",
+        "public_user",
+        "broker_action"
+      ],
+      "zone": "broker"
+    },
+    "soulaana_translation": "Soulaana: Automated Live stays locked for public users.",
+    "title": "Public Live Automated Trading Locked"
+  },
+  {
+    "condition": "raw secret is requested by Tower app code",
+    "domain": "secrets",
+    "effect": "deny",
+    "enabled": true,
+    "enforcement": {
+      "fail_behavior": "deny",
+      "mode": "hard_block",
+      "requires_receipt": true
+    },
+    "evidence": {
+      "audit_required": true,
+      "receipt_type": "secret_boundary_denied"
+    },
+    "owner_reason": "The Tower must not store or expose raw broker keys, API keys, GitHub tokens, payment secrets, or encryption keys.",
+    "policy_id": "secrets.vault_boundary",
+    "priority": 970,
+    "scope": {
+      "applies_to": [
+        "api_key",
+        "broker_key",
+        "github_token",
+        "payment_secret"
+      ],
+      "zone": "secrets"
+    },
+    "soulaana_translation": "Soulaana: Secrets stay sealed in the vault.",
+    "title": "Secrets Vault Boundary"
+  },
+  {
+    "condition": "sensitive export is requested",
+    "domain": "export",
+    "effect": "step_up",
+    "enabled": true,
+    "enforcement": {
+      "fail_behavior": "deny",
+      "mode": "step_up_required",
+      "requires_receipt": true
+    },
+    "evidence": {
+      "audit_required": true,
+      "receipt_type": "export_step_up"
+    },
+    "owner_reason": "Sensitive exports require step-up verification and audit evidence.",
+    "policy_id": "export.sensitive_step_up",
+    "priority": 940,
+    "scope": {
+      "applies_to": [
+        "archive_export",
+        "evidence_bundle",
+        "sensitive_report"
+      ],
+      "zone": "export"
+    },
+    "soulaana_translation": "Soulaana: Sensitive exports need owner confirmation.",
+    "title": "Sensitive Export Requires Step-Up"
+  },
+  {
+    "condition": "viewer lacks reveal clearance or step-up",
+    "domain": "privacy",
+    "effect": "redact",
+    "enabled": true,
+    "enforcement": {
+      "fail_behavior": "redact",
+      "mode": "redact_first",
+      "requires_receipt": true
+    },
+    "evidence": {
+      "audit_required": true,
+      "receipt_type": "redaction_applied"
+    },
+    "owner_reason": "Sensitive details should show as summaries until reveal clearance is proven.",
+    "policy_id": "privacy.redact_by_default",
+    "priority": 930,
+    "scope": {
+      "applies_to": [
+        "pii",
+        "secret",
+        "sensitive_detail",
+        "owner_private_data"
+      ],
+      "zone": "privacy"
+    },
+    "soulaana_translation": "Soulaana: I show the shape, not the secret, until clearance is proven.",
+    "title": "Redact Sensitive Details by Default"
+  },
+  {
+    "condition": "owner or admin changes protected Tower state",
+    "domain": "admin",
+    "effect": "log",
+    "enabled": true,
+    "enforcement": {
+      "fail_behavior": "deny",
+      "mode": "receipt_required",
+      "requires_receipt": true
+    },
+    "evidence": {
+      "audit_required": true,
+      "receipt_type": "owner_admin_action"
+    },
+    "owner_reason": "Protected owner/admin actions must leave receipts.",
+    "policy_id": "admin.owner_receipt_required",
+    "priority": 920,
+    "scope": {
+      "applies_to": [
+        "resolve",
+        "override",
+        "grant",
+        "lockdown_disable",
+        "route_policy_change"
+      ],
+      "zone": "admin"
+    },
+    "soulaana_translation": "Soulaana: Owner/admin moves leave a trail.",
+    "title": "Owner/Admin Actions Require Receipts"
+  },
+  {
+    "condition": "route is unknown, unmapped, or suspiciously probed",
+    "domain": "route",
+    "effect": "quarantine",
+    "enabled": true,
+    "enforcement": {
+      "fail_behavior": "quarantine",
+      "mode": "quarantine_or_redirect",
+      "requires_receipt": true
+    },
+    "evidence": {
+      "audit_required": true,
+      "receipt_type": "route_quarantine"
+    },
+    "owner_reason": "Unknown or suspicious routes should be noisy and contained.",
+    "policy_id": "route.unknown_route_quarantine",
+    "priority": 900,
+    "scope": {
+      "applies_to": [
+        "unknown_route",
+        "probing",
+        "legacy_unmapped"
+      ],
+      "zone": "route"
+    },
+    "soulaana_translation": "Soulaana: Strange doors go to holding, not deeper inside.",
+    "title": "Unknown Route Quarantine"
+  },
+  {
+    "condition": "actor lacks object-level permission",
+    "domain": "object",
+    "effect": "deny",
+    "enabled": true,
+    "enforcement": {
+      "fail_behavior": "deny",
+      "mode": "object_guard",
+      "requires_receipt": true
+    },
+    "evidence": {
+      "audit_required": true,
+      "receipt_type": "object_access_denied"
+    },
+    "owner_reason": "Users and systems must only see objects explicitly permitted to them.",
+    "policy_id": "object.least_privilege",
+    "priority": 890,
+    "scope": {
+      "applies_to": [
+        "object_detail",
+        "record",
+        "user_data",
+        "archive_item"
+      ],
+      "zone": "object"
+    },
+    "soulaana_translation": "Soulaana: Clearance to the room is not clearance to every drawer.",
+    "title": "Object Least Privilege"
+  },
+  {
+    "condition": "critical dependency unavailable or untrusted",
+    "domain": "tower",
+    "effect": "fail_closed",
+    "enabled": true,
+    "enforcement": {
+      "fail_behavior": "deny",
+      "mode": "fail_closed",
+      "requires_receipt": true
+    },
+    "evidence": {
+      "audit_required": true,
+      "receipt_type": "dependency_fail_closed"
+    },
+    "owner_reason": "Critical systems should fail closed instead of silently allowing unsafe access.",
+    "policy_id": "dependency.fail_closed",
+    "priority": 880,
+    "scope": {
+      "applies_to": [
+        "broker",
+        "archive",
+        "secrets",
+        "payment",
+        "email",
+        "policy_engine"
+      ],
+      "zone": "dependency"
+    },
+    "soulaana_translation": "Soulaana: If a critical system goes quiet, the doors do not open.",
+    "title": "Critical Dependency Failure Fails Closed"
+  }
+]

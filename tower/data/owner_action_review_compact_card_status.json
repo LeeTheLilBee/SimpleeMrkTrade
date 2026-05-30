@@ -11,7 +11,7 @@
   },
   "compact_label": "Owner Review Ready",
   "compact_status": "ready",
-  "created_at": "2026-05-30T17:00:07.855876Z",
+  "created_at": "2026-05-30T20:09:45.477629Z",
   "failed_checks": [],
   "human_reason": "Compact Owner Action review command card is ready from cached dashboard/checkpoint state.",
   "leakage_scan": {
@@ -58,6 +58,6 @@
   "recommended_action": "review_dashboard_cards",
   "soulaana_translation": "Soulaana: Owner Action review is now condensed into one command card.",
   "status": "passed",
-  "status_fingerprint": "c5f4bb5e1961881c4ce7f2005408457845e1c8ec35d11da73c06b18ffcfb2917",
+  "status_fingerprint": "78562e8e540611d2a514d7b259977535ad6defccef31dc33fa71e47794126e47",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_compact_card_status.json"
 }

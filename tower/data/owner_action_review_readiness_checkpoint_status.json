@@ -49,7 +49,7 @@
     "unified_has_review_checkpoint": true,
     "unified_html_exists": true
   },
-  "created_at": "2026-05-30T17:00:08.457143Z",
+  "created_at": "2026-05-30T20:09:46.070062Z",
   "failed_checks": [],
   "final_summary": {
     "compact_status": "ready",
@@ -57,7 +57,7 @@
     "focus_lane_count": 9,
     "helper_wrapped_count": 0,
     "owner_action_block_complete": true,
-    "quick_action_count": 18,
+    "quick_action_count": 19,
     "review_depth_score": 100,
     "route_coverage_pct": 100
   },
@@ -104,7 +104,7 @@
       "status": "passed"
     },
     "146_quick_unified": {
-      "quick_action_count": 18,
+      "quick_action_count": 19,
       "readiness_score": 100,
       "unified_sections_present": true
     },
@@ -129,7 +129,7 @@
   },
   "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_readiness_checkpoint_panel.html",
   "quick_actions": {
-    "action_count": 18,
+    "action_count": 19,
     "has_compact_card": true,
     "has_compact_card_href": true,
     "has_dashboard_cards": true,
@@ -143,14 +143,14 @@
   "readiness_score": 100,
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 55,
-    "needs_guard_count": 55,
+    "guarded_needed_count": 56,
+    "needs_guard_count": 56,
     "unguarded_high_risk_count": 0,
     "unguarded_needed_count": 0
   },
   "soulaana_translation": "Soulaana: Owner Action review is sealed. State, receipts, notes, assignments, dashboard cards, compact card, focus lanes, quick actions, and unified UI are ready.",
   "status": "passed",
-  "status_fingerprint": "ea298ed7e711de01df875c6b3a18cceb637b97ce3ede5dd1b0efb21f543d708c",
+  "status_fingerprint": "ce732d4aee7ab97beb2fb654d0b54192d7d021b179b11788d8d321161db8bfe9",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_readiness_checkpoint_status.json",
   "unified_ui": {
     "has_compact_card_section": true,
@@ -158,6 +158,6 @@
     "has_focus_lanes_section": true,
     "has_review_checkpoint_section": true,
     "html_exists": true,
-    "html_length": 127247
+    "html_length": 140961
   }
 }

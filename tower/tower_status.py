@@ -978,3 +978,27 @@ def pack150_owner_action_review_readiness_status_bridge():
 # END PACK150_OWNER_ACTION_REVIEW_READINESS_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK151_POLICY_AS_CODE_STATUS_BRIDGE
+# ================================================================================
+
+def pack151_policy_as_code_engine_status_bridge():
+    try:
+        from tower.policy_as_code_engine import policy_as_code_engine_status_card
+        return policy_as_code_engine_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "151",
+            "title": "Policy-as-Code Engine",
+            "reason_code": "policy_as_code_engine_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Policy-as-Code Engine status card could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK151_POLICY_AS_CODE_STATUS_BRIDGE
+# ================================================================================
+

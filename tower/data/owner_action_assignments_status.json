@@ -46,7 +46,7 @@
     "completed",
     "declined"
   ],
-  "created_at": "2026-05-30T17:00:06.705512Z",
+  "created_at": "2026-05-30T20:09:44.332776Z",
   "filter_options": {
     "action_type": {
       "review_incident_escalation": 1
@@ -76,7 +76,7 @@
   "receipt_count": 1,
   "soulaana_translation": "Soulaana: Owner commands can now be assigned and tracked by responsible person or role.",
   "status": "passed",
-  "status_fingerprint": "86ba658dd6ad5b20b98d79a68fcaba07f4dfab6f94ebad52a3ec861f0b8a81e0",
+  "status_fingerprint": "0e4cca44e38a9449ccbacd278ab653200d17ab81c5f070f399c1f881970fcca0",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_assignments_status.json",
   "top_assignment": {
     "action_id": "owner_action_e2e83fea613407d66b",
