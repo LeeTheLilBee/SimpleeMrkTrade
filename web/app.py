@@ -11146,3 +11146,66 @@ except Exception:
 # END PACK141_OWNER_ACTION_STATE_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK142_OWNER_ACTION_STATE_RECEIPTS_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/owner-action-state-receipts.json")
+    def tower_owner_action_state_receipts_json_pack142():
+        try:
+            from flask import jsonify, request
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/owner-action-state-receipts.json",
+                metadata={"source": "pack142_owner_action_state_receipts_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.owner_action_state_receipts import (
+                build_owner_action_state_receipt_detail,
+                build_owner_action_state_receipts_status,
+            )
+
+            detail_value = str(request.args.get("detail", "") or "").strip().lower()
+            if detail_value in {"1", "true", "yes", "y"}:
+                return jsonify(build_owner_action_state_receipt_detail(
+                    receipt_id=request.args.get("receipt_id", ""),
+                    write_panel=True,
+                ))
+
+            top_only_value = str(request.args.get("top_only", "") or "").strip().lower()
+            top_only = top_only_value in {"1", "true", "yes", "y"}
+
+            return jsonify(build_owner_action_state_receipts_status(
+                receipt_id=request.args.get("receipt_id", ""),
+                action_id=request.args.get("action_id", ""),
+                new_state=request.args.get("new_state", ""),
+                prior_state=request.args.get("prior_state", ""),
+                actor_user_id=request.args.get("actor_user_id", ""),
+                event_type=request.args.get("event_type", ""),
+                top_only=top_only,
+                limit=request.args.get("limit", 80),
+                write_panel=True,
+            ))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "142",
+                    "reason_code": "owner_action_state_receipts_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "142", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK142_OWNER_ACTION_STATE_RECEIPTS_ROUTE
+# ================================================================================
+

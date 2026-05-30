@@ -1,0 +1,106 @@
+{
+  "active_filters": {
+    "action_id": "",
+    "actor_user_id": "",
+    "event_type": "",
+    "limit": 80,
+    "new_state": "",
+    "prior_state": "",
+    "receipt_id": "",
+    "top_only": true
+  },
+  "base_receipt_count": 3,
+  "created_at": "2026-05-30T09:00:03.706718Z",
+  "filter_options": {
+    "action_type": {
+      "review_incident_escalation": 3
+    },
+    "actor_user_id": {
+      "owner_solice": 3
+    },
+    "event_type": {
+      "owner_action_state_change": 3
+    },
+    "new_state": {
+      "acknowledged": 1,
+      "investigating": 1,
+      "resolved": 1
+    },
+    "prior_state": {
+      "acknowledged": 1,
+      "investigating": 1,
+      "open": 1
+    }
+  },
+  "filtered_receipt_count": 1,
+  "human_reason": "Owner Action state receipt layer is ready.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "no_secret_leakage": true,
+  "ok": true,
+  "pack": "142",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_state_receipts_panel.html",
+  "readiness_score": 100,
+  "receipts": [
+    {
+      "action_id": "owner_action_e2e83fea613407d66b",
+      "action_type": "review_incident_escalation",
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-30T09:00:03.488317Z",
+      "event_type": "owner_action_state_change",
+      "metadata": {
+        "pack": "142"
+      },
+      "new_state": "resolved",
+      "no_secret_leakage": true,
+      "note": "Receipt seed three.",
+      "pack": "141",
+      "prior_state": "investigating",
+      "reason": "Pack 142 resolved receipt seed.",
+      "receipt_fingerprint": "ae166cf320daf2766f106d832957d23f657c278e176db5d344e69993c448492a",
+      "receipt_id": "owner_action_state_bced2a1c112c6b6988",
+      "title": "Review Incident Escalation"
+    }
+  ],
+  "soulaana_translation": "Soulaana: Owner command state changes now have a receipt review layer.",
+  "state_summary": {
+    "action_count": 6,
+    "by_state": {
+      "acknowledged": 0,
+      "archived": 0,
+      "false_alarm": 0,
+      "investigating": 0,
+      "open": 5,
+      "resolved": 1
+    },
+    "closed_action_count": 1,
+    "open_action_count": 5,
+    "receipt_count": 3,
+    "tracked_action_count": 1
+  },
+  "status": "passed",
+  "status_fingerprint": "87be7c6ff37253e4ffc6734dd0ee8cdc9883358e4c8c1eef216a8c9e0012960d",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_state_receipts_status.json",
+  "top_receipt": {
+    "action_id": "owner_action_e2e83fea613407d66b",
+    "action_type": "review_incident_escalation",
+    "actor_user_id": "owner_solice",
+    "created_at": "2026-05-30T09:00:03.488317Z",
+    "event_type": "owner_action_state_change",
+    "metadata": {
+      "pack": "142"
+    },
+    "new_state": "resolved",
+    "no_secret_leakage": true,
+    "note": "Receipt seed three.",
+    "pack": "141",
+    "prior_state": "investigating",
+    "reason": "Pack 142 resolved receipt seed.",
+    "receipt_fingerprint": "ae166cf320daf2766f106d832957d23f657c278e176db5d344e69993c448492a",
+    "receipt_id": "owner_action_state_bced2a1c112c6b6988",
+    "title": "Review Incident Escalation"
+  }
+}

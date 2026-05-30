@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Owner Action State Receipts</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+
+<!-- PACK142_OWNER_ACTION_STATE_RECEIPTS_SECTION -->
+<section class="owner-action-receipts" data-pack="142">
+  <style>
+    .owner-action-receipts {
+      margin: 24px 0;
+      border: 1px solid rgba(168,175,255,.42);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(168,175,255,.14), transparent 34%),
+        linear-gradient(135deg, rgba(22,20,48,.86), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .owner-action-receipts__eyebrow {
+      color: rgba(168,175,255,.92);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .owner-action-receipts h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .owner-action-receipts p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .owner-action-receipts-active {
+      margin-top: 12px;
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+      color: rgba(245,234,210,.72);
+      font-size: 12px;
+    }
+    .owner-action-receipt-options,
+    .owner-action-receipt-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .owner-action-receipt-option,
+    .owner-action-receipt-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+    }
+    .owner-action-receipt-option h3,
+    .owner-action-receipt-card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .owner-action-receipt-option span {
+      display: inline-flex;
+      margin: 3px;
+      border: 1px solid rgba(168,175,255,.22);
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: rgba(245,234,210,.70);
+      font-size: 11px;
+    }
+    .owner-action-receipt-card__eyebrow {
+      color: rgba(168,175,255,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .owner-action-receipt-card small,
+    .owner-action-receipt-card code {
+      display: block;
+      color: rgba(245,234,210,.55);
+      margin-top: 8px;
+      word-break: break-word;
+    }
+    .owner-action-receipt-card code {
+      font-size: 11px;
+      color: rgba(168,175,255,.88);
+    }
+    @media (max-width: 1000px) {
+      .owner-action-receipt-options,
+      .owner-action-receipt-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="owner-action-receipts__eyebrow">PACK 142 · OWNER ACTION STATE RECEIPTS</div>
+  <h2>Owner Action State Receipts</h2>
+  <p>Owner Action state receipt layer is ready.</p>
+
+  <div class="owner-action-receipts-active">
+    <strong>Base receipts:</strong> 3<br>
+    <strong>Filtered receipts:</strong> 3<br>
+    <strong>Active filters:</strong> {&#x27;receipt_id&#x27;: &#x27;&#x27;, &#x27;action_id&#x27;: &#x27;&#x27;, &#x27;new_state&#x27;: &#x27;&#x27;, &#x27;prior_state&#x27;: &#x27;&#x27;, &#x27;actor_user_id&#x27;: &#x27;&#x27;, &#x27;event_type&#x27;: &#x27;&#x27;, &#x27;top_only&#x27;: False, &#x27;limit&#x27;: 80}
+  </div>
+
+  <div class="owner-action-receipt-options">
+    
+        <article class="owner-action-receipt-option">
+          <h3>new_state</h3>
+          <div><span>acknowledged · 1</span><span>investigating · 1</span><span>resolved · 1</span></div>
+        </article>
+        
+        <article class="owner-action-receipt-option">
+          <h3>prior_state</h3>
+          <div><span>acknowledged · 1</span><span>investigating · 1</span><span>open · 1</span></div>
+        </article>
+        
+        <article class="owner-action-receipt-option">
+          <h3>actor_user_id</h3>
+          <div><span>owner_solice · 3</span></div>
+        </article>
+        
+        <article class="owner-action-receipt-option">
+          <h3>event_type</h3>
+          <div><span>owner_action_state_change · 3</span></div>
+        </article>
+        
+        <article class="owner-action-receipt-option">
+          <h3>action_type</h3>
+          <div><span>review_incident_escalation · 3</span></div>
+        </article>
+        
+  </div>
+
+  <div class="owner-action-receipt-grid">
+    
+        <article class="owner-action-receipt-card">
+          <div class="owner-action-receipt-card__eyebrow">owner_action_state_change</div>
+          <h3>resolved</h3>
+          <p>Review Incident Escalation</p>
+          <small>investigating → resolved</small>
+          <code>owner_action_state_bced2a1c112c6b6988</code>
+        </article>
+        
+        <article class="owner-action-receipt-card">
+          <div class="owner-action-receipt-card__eyebrow">owner_action_state_change</div>
+          <h3>investigating</h3>
+          <p>Review Incident Escalation</p>
+          <small>acknowledged → investigating</small>
+          <code>owner_action_state_7c966d3f85f057f906</code>
+        </article>
+        
+        <article class="owner-action-receipt-card">
+          <div class="owner-action-receipt-card__eyebrow">owner_action_state_change</div>
+          <h3>acknowledged</h3>
+          <p>Review Incident Escalation</p>
+          <small>open → acknowledged</small>
+          <code>owner_action_state_d53256056b4eac3cc0</code>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK142_OWNER_ACTION_STATE_RECEIPTS_SECTION -->
+
+</main>
+</body>
+</html>
