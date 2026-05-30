@@ -1315,3 +1315,213 @@ def build_owner_action_center_status(write_panel: bool = True) -> Dict[str, Any]
 # END PACK135D_CACHED_OWNER_ACTION_CENTER_BUILDER
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK137_OWNER_ACTION_CENTER_STATUS_POLISH
+# ================================================================================
+# Adds owner-friendly lane summaries and quick-action metadata without introducing
+# any recursive live builder calls.
+# ================================================================================
+
+OWNER_ACTION_LANE_ORDER = [
+    "incident",
+    "inbox",
+    "route",
+    "watch",
+    "monitor",
+    "command",
+]
+
+
+def _pack137_action_lane(action: Dict[str, Any]) -> str:
+    action_type = str(action.get("action_type", "") or "").lower()
+    source = str(action.get("source", "") or "").lower()
+    href = str(action.get("href", "") or "").lower()
+
+    if "incident" in action_type or "incident" in source or "incident" in href:
+        return "incident"
+    if "inbox" in action_type or "inbox" in source or "inbox" in href or "review" in action_type:
+        return "inbox"
+    if "route" in action_type or "route" in source or "guard" in href:
+        return "route"
+    if "watch" in action_type or "watch" in source or "watch" in href:
+        return "watch"
+    if "monitor" in action_type or "monitor" in str(action.get("recommended_action", "")).lower():
+        return "monitor"
+    return "command"
+
+
+def _pack137_action_lane_label(lane: str) -> str:
+    return {
+        "incident": "Incident Lane",
+        "inbox": "Inbox Lane",
+        "route": "Route Wall Lane",
+        "watch": "Security Watch Lane",
+        "monitor": "Monitor Lane",
+        "command": "Command Lane",
+    }.get(str(lane), "Command Lane")
+
+
+def build_owner_action_center_lane_summary(status: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    status = status if isinstance(status, dict) else load_owner_action_center_status()
+    actions = status.get("actions", []) if isinstance(status.get("actions"), list) else []
+
+    lane_map: Dict[str, Dict[str, Any]] = {}
+
+    for lane in OWNER_ACTION_LANE_ORDER:
+        lane_map[lane] = {
+            "lane": lane,
+            "label": _pack137_action_lane_label(lane),
+            "action_count": 0,
+            "open_action_count": 0,
+            "highest_severity": "info",
+            "highest_priority_score": 0,
+            "top_action_type": "",
+            "top_action_title": "",
+            "top_action_href": "",
+            "top_recommended_action": "",
+        }
+
+    severity_rank = {
+        "critical": 5,
+        "high": 4,
+        "medium": 3,
+        "low": 2,
+        "info": 1,
+    }
+
+    for action in actions:
+        if not isinstance(action, dict):
+            continue
+
+        lane = _pack137_action_lane(action)
+        if lane not in lane_map:
+            lane_map[lane] = {
+                "lane": lane,
+                "label": _pack137_action_lane_label(lane),
+                "action_count": 0,
+                "open_action_count": 0,
+                "highest_severity": "info",
+                "highest_priority_score": 0,
+                "top_action_type": "",
+                "top_action_title": "",
+                "top_action_href": "",
+                "top_recommended_action": "",
+            }
+
+        lane_item = lane_map[lane]
+        lane_item["action_count"] = int(lane_item.get("action_count", 0) or 0) + 1
+
+        if str(action.get("status", "open")) == "open":
+            lane_item["open_action_count"] = int(lane_item.get("open_action_count", 0) or 0) + 1
+
+        severity = str(action.get("severity", "info") or "info").lower()
+        current_severity = str(lane_item.get("highest_severity", "info") or "info").lower()
+
+        if severity_rank.get(severity, 0) > severity_rank.get(current_severity, 0):
+            lane_item["highest_severity"] = severity
+
+        priority = _num(action.get("priority_score"), 0)
+        if priority > _num(lane_item.get("highest_priority_score"), 0):
+            lane_item["highest_priority_score"] = priority
+            lane_item["top_action_type"] = action.get("action_type", "")
+            lane_item["top_action_title"] = action.get("title", "")
+            lane_item["top_action_href"] = action.get("href", "")
+            lane_item["top_recommended_action"] = action.get("recommended_action", "")
+
+    lanes = [lane_map[lane] for lane in OWNER_ACTION_LANE_ORDER if lane in lane_map]
+    lanes = sorted(
+        lanes,
+        key=lambda item: (
+            int(item.get("open_action_count", 0) or 0),
+            int(item.get("highest_priority_score", 0) or 0),
+        ),
+        reverse=True,
+    )
+
+    active_lanes = [lane for lane in lanes if int(lane.get("action_count", 0) or 0) > 0]
+    top_lane = active_lanes[0] if active_lanes else {}
+
+    return {
+        "ok": True,
+        "pack": "137",
+        "status": "passed",
+        "lane_count": len(active_lanes),
+        "lanes": active_lanes,
+        "top_lane": top_lane,
+        "human_reason": "Owner Action Center lane summary loaded.",
+        "soulaana_translation": "Soulaana: Owner actions are grouped into command lanes.",
+    }
+
+
+def build_owner_action_center_quick_metadata(status: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    status = status if isinstance(status, dict) else load_owner_action_center_status()
+    lane_summary = build_owner_action_center_lane_summary(status)
+
+    top_action = status.get("top_action", {}) if isinstance(status.get("top_action"), dict) else {}
+    top_lane = lane_summary.get("top_lane", {}) if isinstance(lane_summary.get("top_lane"), dict) else {}
+
+    metadata = {
+        "ok": status.get("ok") is True,
+        "pack": "137",
+        "status": "passed" if status.get("ok") is True else "needs_review",
+        "action_count": status.get("action_count", 0),
+        "open_action_count": status.get("open_action_count", 0),
+        "top_action_type": top_action.get("action_type", ""),
+        "top_action_title": top_action.get("title", ""),
+        "top_action_href": top_action.get("href", ""),
+        "top_recommended_action": top_action.get("recommended_action", ""),
+        "top_lane": top_lane.get("lane", ""),
+        "top_lane_label": top_lane.get("label", ""),
+        "lane_count": lane_summary.get("lane_count", 0),
+        "readiness_score": status.get("readiness_score", 0),
+        "no_secret_leakage": status.get("no_secret_leakage") is True,
+        "human_reason": "Owner Action Center quick metadata loaded.",
+        "soulaana_translation": "Soulaana: Owner Action Center now has a cleaner quick summary.",
+    }
+
+    scan = _safe_scan(metadata)
+    metadata["no_secret_leakage"] = scan.get("ok") is True
+    metadata["leakage_scan"] = scan
+    return metadata
+
+
+def owner_action_center_status_card() -> Dict[str, Any]:
+    status = load_owner_action_center_status()
+    top_action = status.get("top_action", {}) if isinstance(status.get("top_action"), dict) else {}
+    watch = status.get("security_watch_summary", {}) if isinstance(status.get("security_watch_summary"), dict) else {}
+    lane_summary = build_owner_action_center_lane_summary(status)
+    top_lane = lane_summary.get("top_lane", {}) if isinstance(lane_summary.get("top_lane"), dict) else {}
+
+    card = {
+        "ok": status.get("ok") is True,
+        "pack": "135+137",
+        "title": "Owner Action Center",
+        "readiness_score": status.get("readiness_score", 0),
+        "action_count": status.get("action_count", 0),
+        "open_action_count": status.get("open_action_count", 0),
+        "top_action_type": top_action.get("action_type"),
+        "top_action_title": top_action.get("title"),
+        "top_recommended_action": top_action.get("recommended_action"),
+        "top_action_href": top_action.get("href"),
+        "top_lane": top_lane.get("lane"),
+        "top_lane_label": top_lane.get("label"),
+        "lane_count": lane_summary.get("lane_count", 0),
+        "posture": watch.get("posture"),
+        "risk_points": watch.get("risk_points"),
+        "panel_path": status.get("panel_path", str(OWNER_ACTION_CENTER_PANEL_PATH)),
+        "status_path": status.get("status_path", str(OWNER_ACTION_CENTER_STATUS_PATH)),
+        "human_reason": "Owner Action Center status card loaded with lane summary.",
+        "soulaana_translation": "Soulaana: Owner Action Center is visible with command lanes.",
+    }
+
+    scan = _safe_scan(card)
+    card["no_secret_leakage"] = scan.get("ok") is True
+    card["leakage_scan"] = scan
+    return card
+
+# ================================================================================
+# END PACK137_OWNER_ACTION_CENTER_STATUS_POLISH
+# ================================================================================
+

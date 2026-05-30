@@ -747,3 +747,26 @@ except Exception:
 # END PACK136_OWNER_QUICK_ACTIONS_OWNER_ACTION_CENTER_EXTENSION
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK137_OWNER_QUICK_ACTIONS_ACTION_CENTER_METADATA
+# ================================================================================
+
+try:
+    for _pack137_action in OWNER_QUICK_ACTIONS:
+        if not isinstance(_pack137_action, dict):
+            continue
+
+        if _pack137_action.get("href") == "/tower/owner-action-center.json":
+            _pack137_action.setdefault("badge", "Command Queue")
+            _pack137_action.setdefault("lane", "owner_action_center")
+            _pack137_action.setdefault("priority_hint", "top_owner_command")
+            _pack137_action.setdefault("soulaana_translation", "Soulaana: Start with the owner command queue.")
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK137_OWNER_QUICK_ACTIONS_ACTION_CENTER_METADATA
+# ================================================================================
+

@@ -18,7 +18,7 @@
   },
   "object_permissions_enabled": true,
   "pack": "108",
-  "policy_fingerprint": "3745d222b99bacb7a2e2c82d54fdf5bf08571ad62f09062e9f4b3b7953bc7318",
+  "policy_fingerprint": "b234f5be9807e85f8fb0c2a99d76d7c62778eb9bf8425d3cbb9f3df69a81a546",
   "policy_id": "ob_object_permission_policy",
   "position_policy": {
     "beta_can_view_own_only": true,
@@ -37,5 +37,5 @@
     "owner_can_view_all": true,
     "requires_object_owner_match": true
   },
-  "updated_at": "2026-05-30T07:12:33.108601Z"
+  "updated_at": "2026-05-30T07:22:36.948541Z"
 }

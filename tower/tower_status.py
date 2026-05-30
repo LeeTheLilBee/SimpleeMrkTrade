@@ -799,3 +799,38 @@ def pack136_owner_action_center_status_bridge():
 # END PACK136_OWNER_ACTION_CENTER_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK137_OWNER_ACTION_CENTER_LANE_STATUS_BRIDGE
+# ================================================================================
+
+def pack137_owner_action_center_lane_status_bridge():
+    try:
+        from tower.owner_action_center import (
+            build_owner_action_center_quick_metadata,
+            build_owner_action_center_lane_summary,
+            load_owner_action_center_status,
+        )
+        status = load_owner_action_center_status()
+        return {
+            "ok": True,
+            "pack": "137",
+            "quick_metadata": build_owner_action_center_quick_metadata(status),
+            "lane_summary": build_owner_action_center_lane_summary(status),
+            "human_reason": "Owner Action Center lane status bridge loaded.",
+        }
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "137",
+            "title": "Owner Action Center Lane Summary",
+            "reason_code": "owner_action_center_lane_summary_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Owner Action Center lane summary could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK137_OWNER_ACTION_CENTER_LANE_STATUS_BRIDGE
+# ================================================================================
+

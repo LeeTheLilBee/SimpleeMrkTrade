@@ -1,6 +1,6 @@
 {
   "admin_event_count": 0,
-  "created_at": "2026-05-30T07:12:30.899877Z",
+  "created_at": "2026-05-30T07:22:33.525689Z",
   "deny_count": 1,
   "event_count": 4,
   "export_event_count": 1,
@@ -81,7 +81,7 @@
   "security_command_fragment_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_object_visibility_fragment.html",
   "security_command_status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_object_visibility_status.json",
   "soulaana_translation": "Soulaana: Security Command can now see object denials, step-ups, exports, and summary-only locks.",
-  "status_fingerprint": "153a65d4bf3c2c003b959b87e50d7586f482cbf0c3bbee97a81c44933d687dc1",
+  "status_fingerprint": "785904971963a4c7b82c6a1f0fefddf8f30ee0ea3794a8a8600e8d6681aeee19",
   "step_up_required_count": 2,
   "summary_only_count": 1,
   "visibility_status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_visibility_status.json"
