@@ -46,7 +46,7 @@
     "state_receipts_readiness_100": true,
     "tracked_actions_present": true
   },
-  "created_at": "2026-05-30T14:59:44.562516Z",
+  "created_at": "2026-05-30T15:30:21.158711Z",
   "failed_checks": [],
   "human_reason": "Owner Action review-state checkpoint proves state tracking, receipts, notes, assignments, route guards, and object checkpoint are healthy.",
   "leakage_scan": {
@@ -90,8 +90,8 @@
   },
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 50,
-    "needs_guard_count": 50,
+    "guarded_needed_count": 51,
+    "needs_guard_count": 51,
     "unguarded_high_risk_count": 0,
     "unguarded_needed_count": 0
   },
@@ -121,6 +121,6 @@
     "tracked_action_count": 1
   },
   "status": "passed",
-  "status_fingerprint": "21c57b57a0a55c480f2d758d690223fa2a42970873be29b0dbcce19b04ada153",
+  "status_fingerprint": "631fe1d0cf23011add3d7d38745c51ddafdd726a40951f30945840761103eaa9",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_checkpoint_status.json"
 }

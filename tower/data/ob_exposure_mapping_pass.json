@@ -1,12 +1,12 @@
 {
   "counts": {
-    "keep_protected": 43,
+    "keep_protected": 46,
     "keep_public_safe": 7,
     "later_review": 32,
     "map_next": 7,
     "retire_or_redirect": 9
   },
-  "generated_at": "2026-05-30T14:39:13.144713Z",
+  "generated_at": "2026-05-30T15:23:52.287698Z",
   "human_reason": "OB exposure report mapping pass created.",
   "items": [
     {
@@ -303,6 +303,29 @@
     {
       "category": "keep_protected",
       "classification": "tower_owned",
+      "path": "/tower/owner-action-assignments.json",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_owner_action_assignments_json_pack144",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/owner-action-assignments.json"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
       "path": "/tower/owner-action-center.json",
       "plain": "Tower security/admin surfaces stay protected and should not become public.",
       "priority": 1,
@@ -407,6 +430,50 @@
           "public_allowed": false
         },
         "route": "/tower/owner-action-notes.json"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/owner-action-review-checkpoint-card.json",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_owner_action_review_checkpoint_card_json_pack146",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/owner-action-review-checkpoint-card.json"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/owner-action-review-checkpoint.json",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_owner_action_review_checkpoint_json_pack145",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/owner-action-review-checkpoint.json"
       },
       "reason_code": "tower_owned_security_surface",
       "source": "ob_route_exposure_report"
@@ -3121,7 +3188,7 @@
   "pack": "084",
   "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_exposure_mapping_pass.json",
   "priority_counts": {
-    "1": 52,
+    "1": 55,
     "2": 13,
     "4": 30,
     "5": 3
@@ -3136,7 +3203,7 @@
     "needs_owner_review": 2,
     "outer_shell_or_locked_surface": 6,
     "static_or_health_safe_surface": 1,
-    "tower_owned_security_surface": 33,
+    "tower_owned_security_surface": 36,
     "unmapped_default_deny_review_needed": 30
   },
   "retire_or_redirect": [
@@ -3544,5 +3611,5 @@
       "source": "ob_route_exposure_report"
     }
   ],
-  "total": 98
+  "total": 101
 }

@@ -882,3 +882,27 @@ def pack139_owner_action_detail_status_bridge(action_id: str = ""):
 # END PACK139_OWNER_ACTION_DETAIL_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK146_OWNER_ACTION_REVIEW_CHECKPOINT_STATUS_BRIDGE
+# ================================================================================
+
+def pack146_owner_action_review_checkpoint_status_bridge():
+    try:
+        from tower.owner_action_review_checkpoint import owner_action_review_checkpoint_status_card
+        return owner_action_review_checkpoint_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "146",
+            "title": "Owner Action Review Checkpoint",
+            "reason_code": "owner_action_review_checkpoint_card_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Owner Action Review Checkpoint status card could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK146_OWNER_ACTION_REVIEW_CHECKPOINT_STATUS_BRIDGE
+# ================================================================================
+

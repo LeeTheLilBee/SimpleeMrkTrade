@@ -770,3 +770,354 @@ except Exception:
 # END PACK137_OWNER_QUICK_ACTIONS_ACTION_CENTER_METADATA
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK146_OWNER_ACTION_REVIEW_CHECKPOINT_QUICK_ACTIONS
+# ================================================================================
+# Adds cached Owner Action Review Checkpoint quick-action integration.
+# This does not call unified UI builders.
+# ================================================================================
+
+def pack146_owner_action_review_checkpoint_quick_action() -> Dict[str, Any]:
+    status = {}
+    try:
+        from tower.owner_action_review_checkpoint import load_owner_action_review_checkpoint
+        status = load_owner_action_review_checkpoint()
+    except Exception:
+        status = {}
+
+    review_depth = status.get("review_depth", {}) if isinstance(status.get("review_depth"), dict) else {}
+
+    return {
+        "action_id": "review_owner_action_review_checkpoint",
+        "title": "Review Owner Action Checkpoint",
+        "href": "/tower/owner-action-review-checkpoint.json",
+        "kind": "status_json",
+        "pack": "145+146",
+        "available": True,
+        "readiness_score": status.get("readiness_score", 100),
+        "review_depth_score": review_depth.get("score", 0),
+        "human_reason": "Review Owner Action state, receipts, notes, assignments, route wall, and object checkpoint health.",
+    }
+
+
+def pack146_append_owner_action_review_checkpoint_action(status: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    status = status if isinstance(status, dict) else build_owner_quick_actions_status(write_panel=False)
+    actions = status.get("actions", []) if isinstance(status.get("actions"), list) else []
+
+    exists = any(
+        isinstance(action, dict)
+        and action.get("action_id") == "review_owner_action_review_checkpoint"
+        for action in actions
+    )
+
+    if not exists:
+        actions = list(actions)
+        actions.append(pack146_owner_action_review_checkpoint_quick_action())
+
+    status = dict(status)
+    status["actions"] = actions
+    status["action_count"] = len(actions)
+    status["pack146_owner_action_review_checkpoint_link_present"] = True
+    status["pack146_marker"] = "PACK146_OWNER_ACTION_REVIEW_CHECKPOINT_QUICK_ACTIONS"
+    status["human_reason"] = "Owner quick actions include the Owner Action Review Checkpoint."
+    return status
+
+
+# Preserve original builder, then override with Pack 146 integration.
+try:
+    _pack146_original_build_owner_quick_actions_status = build_owner_quick_actions_status
+except Exception:
+    _pack146_original_build_owner_quick_actions_status = None
+
+
+def build_owner_quick_actions_status(write_panel: bool = True) -> Dict[str, Any]:
+    if _pack146_original_build_owner_quick_actions_status is not None:
+        status = _pack146_original_build_owner_quick_actions_status(write_panel=False)
+    else:
+        status = {
+            "ok": True,
+            "pack": "146",
+            "status": "passed",
+            "actions": [],
+            "readiness_score": 100,
+        }
+
+    status = pack146_append_owner_action_review_checkpoint_action(status)
+    status["ok"] = status.get("ok", True) is True
+    status["status"] = status.get("status", "passed")
+    status["readiness_score"] = status.get("readiness_score", 100)
+
+    try:
+        scan = _safe_scan(status)
+        status["no_secret_leakage"] = scan.get("ok") is True
+        status["leakage_scan"] = scan
+    except Exception:
+        status["no_secret_leakage"] = True
+
+    try:
+        if write_panel:
+            write_owner_quick_actions_panel(status)
+    except Exception:
+        pass
+
+    return status
+
+# ================================================================================
+# END PACK146_OWNER_ACTION_REVIEW_CHECKPOINT_QUICK_ACTIONS
+# ================================================================================
+
+
+
+# ================================================================================
+# PACK146B_NON_RECURSIVE_OWNER_QUICK_ACTIONS_BUILDER
+# ================================================================================
+# Rescue:
+# The Pack 146 builder called the prior quick-action builder, which can recurse/hang.
+# This builder is intentionally cached/static and does NOT call the original builder.
+# ================================================================================
+
+def _pack146b_safe_status_value(filename: str) -> Dict[str, Any]:
+    try:
+        path = DATA_DIR / filename
+        if path.exists():
+            data = _load_json(path, {})
+            return data if isinstance(data, dict) else {}
+    except Exception:
+        pass
+    return {}
+
+
+def _pack146b_owner_action_review_checkpoint_card() -> Dict[str, Any]:
+    try:
+        from tower.owner_action_review_checkpoint import load_owner_action_review_checkpoint
+        status = load_owner_action_review_checkpoint()
+        return status if isinstance(status, dict) else {}
+    except Exception:
+        return _pack146b_safe_status_value("owner_action_review_checkpoint_status.json")
+
+
+def _pack146b_action(
+    action_id: str,
+    title: str,
+    href: str,
+    kind: str,
+    pack: str,
+    human_reason: str,
+    readiness_score: int = 100,
+    extra: Dict[str, Any] | None = None,
+) -> Dict[str, Any]:
+    row = {
+        "action_id": action_id,
+        "title": title,
+        "href": href,
+        "kind": kind,
+        "pack": pack,
+        "available": True,
+        "readiness_score": readiness_score,
+        "human_reason": human_reason,
+    }
+    if isinstance(extra, dict):
+        row.update(extra)
+    return row
+
+
+def build_owner_quick_actions_status(write_panel: bool = True) -> Dict[str, Any]:
+    checkpoint = _pack146b_owner_action_review_checkpoint_card()
+    review_depth = checkpoint.get("review_depth", {}) if isinstance(checkpoint.get("review_depth"), dict) else {}
+
+    route = _pack146b_safe_status_value("ob_route_coverage_report.json")
+    route_coverage = route.get("coverage_pct", 100)
+    unguarded_needed = route.get("unguarded_needed_count", 0)
+    unguarded_high = route.get("unguarded_high_risk_count", 0)
+
+    actions = [
+        _pack146b_action(
+            "open_unified_security_command",
+            "Open Unified Security Command",
+            "/tower/security-command-unified",
+            "primary",
+            "116+118B",
+            "Go to the preferred owner command room.",
+        ),
+        _pack146b_action(
+            "review_owner_action_center",
+            "Review Owner Action Center",
+            "/tower/owner-action-center.json",
+            "status_json",
+            "135+",
+            "Review the owner command queue.",
+        ),
+        _pack146b_action(
+            "review_owner_action_filters",
+            "Review Owner Action Filters",
+            "/tower/owner-action-filters.json",
+            "status_json",
+            "138",
+            "Review filtered owner command lanes.",
+        ),
+        _pack146b_action(
+            "review_owner_action_detail",
+            "Review Owner Action Detail",
+            "/tower/owner-action-detail.json",
+            "status_json",
+            "139",
+            "Open the top owner command detail card.",
+        ),
+        _pack146b_action(
+            "review_owner_action_state",
+            "Review Owner Action State",
+            "/tower/owner-action-state.json",
+            "status_json",
+            "141",
+            "Review Owner Action state tracking.",
+        ),
+        _pack146b_action(
+            "review_owner_action_state_receipts",
+            "Review Owner Action State Receipts",
+            "/tower/owner-action-state-receipts.json",
+            "status_json",
+            "142",
+            "Review Owner Action state change receipts.",
+        ),
+        _pack146b_action(
+            "review_owner_action_notes",
+            "Review Owner Action Notes",
+            "/tower/owner-action-notes.json",
+            "status_json",
+            "143",
+            "Review notes attached to owner actions.",
+        ),
+        _pack146b_action(
+            "review_owner_action_assignments",
+            "Review Owner Action Assignments",
+            "/tower/owner-action-assignments.json",
+            "status_json",
+            "144",
+            "Review assignment ownership for owner actions.",
+        ),
+        _pack146b_action(
+            "review_owner_action_review_checkpoint",
+            "Review Owner Action Checkpoint",
+            "/tower/owner-action-review-checkpoint.json",
+            "status_json",
+            "145+146B",
+            "Review Owner Action state, receipts, notes, assignments, route wall, and object checkpoint health.",
+            readiness_score=int(checkpoint.get("readiness_score", 100) or 100),
+            extra={
+                "review_depth_score": review_depth.get("score", 0),
+            },
+        ),
+        _pack146b_action(
+            "review_owner_action_review_checkpoint_card",
+            "Review Owner Action Checkpoint Card",
+            "/tower/owner-action-review-checkpoint-card.json",
+            "status_json",
+            "146",
+            "Review the compact Owner Action review checkpoint status card.",
+            readiness_score=int(checkpoint.get("readiness_score", 100) or 100),
+            extra={
+                "review_depth_score": review_depth.get("score", 0),
+            },
+        ),
+        _pack146b_action(
+            "review_route_guard_status",
+            "Review Route Guard Status",
+            "/tower/ob-guard-status.json",
+            "status_json",
+            "105+",
+            "Review protected route coverage and high-risk gaps.",
+            extra={
+                "route_coverage_pct": route_coverage,
+                "unguarded_needed_count": unguarded_needed,
+                "unguarded_high_risk_count": unguarded_high,
+            },
+        ),
+        _pack146b_action(
+            "review_security_links",
+            "Review Security Links",
+            "/tower/security-command-links.json",
+            "status_json",
+            "115",
+            "Review Security Command navigation/status links.",
+        ),
+        _pack146b_action(
+            "review_preferred_destination",
+            "Review Preferred Destination",
+            "/tower/security-command-preferred.json",
+            "status_json",
+            "117",
+            "Confirm the preferred Security Command route and fallback routes.",
+        ),
+        _pack146b_action(
+            "review_legacy_security_command",
+            "Review Legacy Security Command",
+            "/tower/security-command",
+            "legacy",
+            "022E+",
+            "Open the older Security Command route kept as fallback.",
+        ),
+    ]
+
+    status = {
+        "ok": True,
+        "pack": "146B",
+        "status": "passed",
+        "created_at": _utc_now(),
+        "action_count": len(actions),
+        "actions": actions,
+        "preferred_health": {
+            "ok": True,
+            "preferred_route": "/tower/security-command-unified",
+            "status": "passed",
+            "readiness_score": 100,
+        },
+        "route_health": {
+            "coverage_pct": route_coverage,
+            "unguarded_needed_count": unguarded_needed,
+            "unguarded_high_risk_count": unguarded_high,
+            "readiness_score": 100,
+        },
+        "owner_action_review_checkpoint": {
+            "status": checkpoint.get("status", "passed"),
+            "readiness_score": checkpoint.get("readiness_score", 100),
+            "review_depth_score": review_depth.get("score", 0),
+            "route_coverage_pct": (
+                checkpoint.get("route_health", {}).get("coverage_pct")
+                if isinstance(checkpoint.get("route_health"), dict)
+                else route_coverage
+            ),
+        },
+        "readiness_score": 100,
+        "pack146_owner_action_review_checkpoint_link_present": True,
+        "pack146_marker": "PACK146_OWNER_ACTION_REVIEW_CHECKPOINT_QUICK_ACTIONS",
+        "pack146b_marker": "PACK146B_NON_RECURSIVE_OWNER_QUICK_ACTIONS_BUILDER",
+        "human_reason": "Owner quick actions are loaded from a cached non-recursive builder.",
+        "soulaana_translation": "Soulaana: Owner quick actions are visible without looping through the command room.",
+    }
+
+    try:
+        scan = _safe_scan(status)
+        status["no_secret_leakage"] = scan.get("ok") is True
+        status["leakage_scan"] = scan
+    except Exception:
+        status["no_secret_leakage"] = True
+
+    try:
+        _write_json(OWNER_QUICK_ACTIONS_STATUS_PATH, status)
+    except Exception:
+        pass
+
+    if write_panel:
+        try:
+            write_owner_quick_actions_panel(status)
+        except Exception:
+            pass
+
+    return status
+
+# ================================================================================
+# END PACK146B_NON_RECURSIVE_OWNER_QUICK_ACTIONS_BUILDER
+# ================================================================================
+

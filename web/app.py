@@ -11398,3 +11398,43 @@ except Exception:
 # END PACK145_OWNER_ACTION_REVIEW_CHECKPOINT_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK146_OWNER_ACTION_REVIEW_CHECKPOINT_CARD_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/owner-action-review-checkpoint-card.json")
+    def tower_owner_action_review_checkpoint_card_json_pack146():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/owner-action-review-checkpoint-card.json",
+                metadata={"source": "pack146_owner_action_review_checkpoint_card_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.owner_action_review_checkpoint import owner_action_review_checkpoint_status_card
+
+            return jsonify(owner_action_review_checkpoint_status_card())
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "146",
+                    "reason_code": "owner_action_review_checkpoint_card_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "146", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK146_OWNER_ACTION_REVIEW_CHECKPOINT_CARD_ROUTE
+# ================================================================================
+

@@ -23,7 +23,7 @@
     "unguarded_high_risk_zero": true,
     "unguarded_needed_zero": true
   },
-  "created_at": "2026-05-30T08:19:16.463329Z",
+  "created_at": "2026-05-30T15:15:21.861370Z",
   "failed_checks": [],
   "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_composition_smoke.html",
   "human_reason": "Security Command composition can render object visibility while route/object readiness remains healthy.",
@@ -55,8 +55,8 @@
   "readiness_score": 100,
   "route_coverage_summary": {
     "coverage_pct": 100,
-    "guarded_needed_count": 45,
-    "needs_guard_count": 45,
+    "guarded_needed_count": 51,
+    "needs_guard_count": 51,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
     "unguarded_needed_count": 0
@@ -73,6 +73,6 @@
   },
   "soulaana_translation": "Soulaana: The Security Command room loads with the object visibility board attached.",
   "status": "passed",
-  "status_fingerprint": "3cda6a9b94de756537d1e956749728693b0cf7e337390fc78bf081eeef9f44dd",
+  "status_fingerprint": "f6ae1cb39421c31b7bb9f5c905694f49ed493e804d525a8dc21b6043d64d5a5d",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_composition_smoke_status.json"
 }

@@ -85,24 +85,10 @@
 
   <div class="owner-quick-action-rail__eyebrow">PACK 119 · OWNER QUICK ACTIONS</div>
   <h2>Owner Quick Actions</h2>
-  <p>Owner quick-action rail gives direct access to unified command, preferred destination, security links, object visibility, and route guard status.</p>
+  <p>Owner quick actions are loaded from a cached non-recursive builder.</p>
 
   <div class="owner-quick-action-grid">
     
-        <a class="owner-action-card owner-action-card--normal" href="/tower/owner-action-center.json">
-          <div class="owner-action-card__eyebrow">status_json · 135</div>
-          <h3>Open Owner Action Center</h3>
-          <p>Open the prioritized owner command queue generated from Tower posture, incidents, inbox items, route health, and checkpoint health.</p>
-          <small>Readiness: 100</small>
-        </a>
-        
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-watch.json">
-          <div class="owner-action-card__eyebrow">status_json · 131</div>
-          <h3>Open Security Watch</h3>
-          <p>Review the owner posture summary across guards, inbox, incidents, escalation, and command health.</p>
-          <small>Readiness: 100</small>
-        </a>
-        
         <a class="owner-action-card owner-action-card--primary" href="/tower/security-command-unified">
           <div class="owner-action-card__eyebrow">primary · 116+118B</div>
           <h3>Open Unified Security Command</h3>
@@ -110,24 +96,66 @@
           <small>Readiness: 100</small>
         </a>
         
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-command-preferred.json">
-          <div class="owner-action-card__eyebrow">status_json · 117</div>
-          <h3>Review Preferred Destination</h3>
-          <p>Confirm the preferred Security Command route and fallback routes.</p>
+        <a class="owner-action-card owner-action-card--normal" href="/tower/owner-action-center.json">
+          <div class="owner-action-card__eyebrow">status_json · 135+</div>
+          <h3>Review Owner Action Center</h3>
+          <p>Review the owner command queue.</p>
           <small>Readiness: 100</small>
         </a>
         
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-command-links.json">
-          <div class="owner-action-card__eyebrow">status_json · 115</div>
-          <h3>Review Security Links</h3>
-          <p>Review Security Command navigation/status links.</p>
+        <a class="owner-action-card owner-action-card--normal" href="/tower/owner-action-filters.json">
+          <div class="owner-action-card__eyebrow">status_json · 138</div>
+          <h3>Review Owner Action Filters</h3>
+          <p>Review filtered owner command lanes.</p>
           <small>Readiness: 100</small>
         </a>
         
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-command-smoke">
-          <div class="owner-action-card__eyebrow">smoke · 112-114</div>
-          <h3>Review Object Visibility</h3>
-          <p>Review object permission visibility in the composed Security Command smoke page.</p>
+        <a class="owner-action-card owner-action-card--normal" href="/tower/owner-action-detail.json">
+          <div class="owner-action-card__eyebrow">status_json · 139</div>
+          <h3>Review Owner Action Detail</h3>
+          <p>Open the top owner command detail card.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/owner-action-state.json">
+          <div class="owner-action-card__eyebrow">status_json · 141</div>
+          <h3>Review Owner Action State</h3>
+          <p>Review Owner Action state tracking.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/owner-action-state-receipts.json">
+          <div class="owner-action-card__eyebrow">status_json · 142</div>
+          <h3>Review Owner Action State Receipts</h3>
+          <p>Review Owner Action state change receipts.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/owner-action-notes.json">
+          <div class="owner-action-card__eyebrow">status_json · 143</div>
+          <h3>Review Owner Action Notes</h3>
+          <p>Review notes attached to owner actions.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/owner-action-assignments.json">
+          <div class="owner-action-card__eyebrow">status_json · 144</div>
+          <h3>Review Owner Action Assignments</h3>
+          <p>Review assignment ownership for owner actions.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/owner-action-review-checkpoint.json">
+          <div class="owner-action-card__eyebrow">status_json · 145+146B</div>
+          <h3>Review Owner Action Checkpoint</h3>
+          <p>Review Owner Action state, receipts, notes, assignments, route wall, and object checkpoint health.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/owner-action-review-checkpoint-card.json">
+          <div class="owner-action-card__eyebrow">status_json · 146</div>
+          <h3>Review Owner Action Checkpoint Card</h3>
+          <p>Review the compact Owner Action review checkpoint status card.</p>
           <small>Readiness: 100</small>
         </a>
         
@@ -138,73 +166,24 @@
           <small>Readiness: 100</small>
         </a>
         
+        <a class="owner-action-card owner-action-card--normal" href="/tower/security-command-links.json">
+          <div class="owner-action-card__eyebrow">status_json · 115</div>
+          <h3>Review Security Links</h3>
+          <p>Review Security Command navigation/status links.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
+        <a class="owner-action-card owner-action-card--normal" href="/tower/security-command-preferred.json">
+          <div class="owner-action-card__eyebrow">status_json · 117</div>
+          <h3>Review Preferred Destination</h3>
+          <p>Confirm the preferred Security Command route and fallback routes.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
         <a class="owner-action-card owner-action-card--normal" href="/tower/security-command">
           <div class="owner-action-card__eyebrow">legacy · 022E+</div>
           <h3>Review Legacy Security Command</h3>
           <p>Open the older Security Command route kept as fallback.</p>
-          <small>Readiness: 100</small>
-        </a>
-        
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-inbox.json">
-          <div class="owner-action-card__eyebrow">status_json · 121</div>
-          <h3>Open Security Inbox</h3>
-          <p>Review the owner security inbox queue.</p>
-          <small>Readiness: 100</small>
-        </a>
-        
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-inbox-review-status.json">
-          <div class="owner-action-card__eyebrow">status_json · 122</div>
-          <h3>Review Inbox States</h3>
-          <p>Review inbox item states, receipts, and open review counts.</p>
-          <small>Readiness: 100</small>
-        </a>
-        
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-inbox-review-action.json">
-          <div class="owner-action-card__eyebrow">action_json · 122</div>
-          <h3>Apply Inbox Review Action</h3>
-          <p>Apply a safe owner review state to an inbox item.</p>
-          <small>Readiness: 100</small>
-        </a>
-        
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-inbox-filters.json">
-          <div class="owner-action-card__eyebrow">status_json · 124</div>
-          <h3>Review Inbox Filters</h3>
-          <p>Review Security Inbox filters, priorities, high-risk counts, and open-review views.</p>
-          <small>Readiness: 100</small>
-        </a>
-        
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-incident-desk.json">
-          <div class="owner-action-card__eyebrow">status_json · 126</div>
-          <h3>Open Incident Desk</h3>
-          <p>Review formal Tower security incidents, severity, status, and receipts.</p>
-          <small>Readiness: 100</small>
-        </a>
-        
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-incident-action.json">
-          <div class="owner-action-card__eyebrow">action_json · 126</div>
-          <h3>Apply Incident Action</h3>
-          <p>Apply a safe incident status/severity update to a formal Tower incident.</p>
-          <small>Readiness: 100</small>
-        </a>
-        
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-incident-filters.json">
-          <div class="owner-action-card__eyebrow">status_json · 128</div>
-          <h3>Review Incident Filters</h3>
-          <p>Review Incident Desk filters, escalation readiness, high severity items, and next-action counts.</p>
-          <small>Readiness: 100</small>
-        </a>
-        
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-incident-checkpoint.json">
-          <div class="owner-action-card__eyebrow">status_json · 130</div>
-          <h3>Review Incident Checkpoint</h3>
-          <p>Review the Incident Desk readiness checkpoint across incidents, escalation, unified UI, quick actions, and route guards.</p>
-          <small>Readiness: 100</small>
-        </a>
-        
-        <a class="owner-action-card owner-action-card--normal" href="/tower/security-watch-checkpoint.json">
-          <div class="owner-action-card__eyebrow">status_json · 133</div>
-          <h3>Review Security Watch Checkpoint</h3>
-          <p>Review Security Watch readiness across owner posture, unified UI, quick actions, incident checkpoint, route guards, and object checkpoint.</p>
           <small>Readiness: 100</small>
         </a>
         

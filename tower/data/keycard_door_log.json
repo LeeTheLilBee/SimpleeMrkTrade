@@ -7643,7 +7643,379 @@
       "timestamp": "2026-05-30T14:39:13.216595Z",
       "token_preview": "eyJhY3Rp...IQ2kMeMQ",
       "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower",
+      "door_type": "route",
+      "event_id": "door_mceGK1_PJr0E6alIgh2niCUa",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_4VM-Ii0fiXvs3mNA0FhLdcfg",
+      "reason": "Owner launch cell requested temporary Tower access URLs. Door: entry.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:43.861973Z",
+      "token_preview": "eyJhY3Rp...QIhSo2eE",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower/security-command",
+      "door_type": "route",
+      "event_id": "door_oI35Xz6GYwY5MfEGnsx3adOA",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_3UT9UFiFUFZc_ZjYL0FdCu86",
+      "reason": "Owner launch cell requested temporary Tower access URLs. Door: command.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:43.899578Z",
+      "token_preview": "eyJhY3Rp...L8bBalOw",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower/status.json",
+      "door_type": "route",
+      "event_id": "door_tXY1XsYVvETCC6dK-TCJF6pq",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_JhPRCD0cNHD5VljFXpSYc3x7",
+      "reason": "Owner launch cell requested temporary Tower access URLs. Door: status.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:43.938242Z",
+      "token_preview": "eyJhY3Rp...rDaQxFCg",
+      "user_id": "owner_solice"
+    },
+    {
+      "allowed": true,
+      "decision": "allow",
+      "event_id": "door_oShYe2aAofdDlEVcLtT6ONkE",
+      "event_type": "keycard_pass_validated",
+      "human_reason": "This scoped keycard pass opens this exact door.",
+      "pass_id": "kcp_3UT9UFiFUFZc_ZjYL0FdCu86",
+      "reason_code": "keycard_pass_allowed",
+      "requested": {
+        "action": "view",
+        "app_name": "tower",
+        "current_risk_score": 0,
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/security-command",
+        "door_type": "route",
+        "max_allowed_risk_score": 85,
+        "required_clearance_level": "restricted",
+        "required_consent_id": null,
+        "session_id": "session_pack036_smoke",
+        "user_id": "owner_solice"
+      },
+      "risk_score": 0,
+      "risk_state": "clear",
+      "timestamp": "2026-05-30T15:23:44.005236Z",
+      "token_preview": "eyJhY3Rp...L8bBalOw"
+    },
+    {
+      "allowed": true,
+      "decision": "allow",
+      "event_id": "door_3Yp4rIDVRNrOZdByKBzV5ONM",
+      "event_type": "keycard_pass_validated",
+      "human_reason": "This scoped keycard pass opens this exact door.",
+      "pass_id": "kcp_JhPRCD0cNHD5VljFXpSYc3x7",
+      "reason_code": "keycard_pass_allowed",
+      "requested": {
+        "action": "view",
+        "app_name": "tower",
+        "current_risk_score": 0,
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/status.json",
+        "door_type": "route",
+        "max_allowed_risk_score": 85,
+        "required_clearance_level": "restricted",
+        "required_consent_id": null,
+        "session_id": "session_pack036_smoke",
+        "user_id": "owner_solice"
+      },
+      "risk_score": 0,
+      "risk_state": "clear",
+      "timestamp": "2026-05-30T15:23:44.344758Z",
+      "token_preview": "eyJhY3Rp...rDaQxFCg"
+    },
+    {
+      "allowed": false,
+      "decision": "deny",
+      "event_id": "door_KB99MR7YN5CLrsmhgfX9VjoW",
+      "event_type": "keycard_pass_validated",
+      "human_reason": "This pass does not open this specific door.",
+      "pass_id": "kcp_JhPRCD0cNHD5VljFXpSYc3x7",
+      "reason_code": "wrong_door",
+      "requested": {
+        "action": "view",
+        "app_name": "tower",
+        "current_risk_score": 0,
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/security-command",
+        "door_type": "route",
+        "max_allowed_risk_score": 85,
+        "required_clearance_level": "restricted",
+        "required_consent_id": null,
+        "session_id": "session_pack036_smoke",
+        "user_id": "owner_solice"
+      },
+      "risk_score": 45,
+      "risk_state": "watch",
+      "timestamp": "2026-05-30T15:23:44.511688Z",
+      "token_preview": "eyJhY3Rp...rDaQxFCg"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower",
+      "door_type": "route",
+      "event_id": "door_yj4XAG6g7n7sKOlHqgr2KexW",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_eBnYBGuCyjOAbfIQVs8Nh8je",
+      "reason": "Owner launch cell requested temporary Tower access URLs. Door: entry.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:45.339325Z",
+      "token_preview": "eyJhY3Rp...dUOpjKcc",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower/security-command",
+      "door_type": "route",
+      "event_id": "door_M2_yxJnqxdBjne3xteOzt5c_",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_xLkEcUsys_s9G26ZMSl5wFKb",
+      "reason": "Owner launch cell requested temporary Tower access URLs. Door: command.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:45.392286Z",
+      "token_preview": "eyJhY3Rp...o_BDXkx4",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower/status.json",
+      "door_type": "route",
+      "event_id": "door_r8SNDnZ2hij9vYR1MzZtVUl2",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_vPYTPBRjjpuqdJIS9bRZzDct",
+      "reason": "Owner launch cell requested temporary Tower access URLs. Door: status.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:45.431736Z",
+      "token_preview": "eyJhY3Rp...FzwRDpHI",
+      "user_id": "owner_solice"
+    },
+    {
+      "allowed": true,
+      "decision": "allow",
+      "event_id": "door_gDHrcP5oi3aQgH_hpC-wJyH5",
+      "event_type": "keycard_pass_validated",
+      "human_reason": "This scoped keycard pass opens this exact door.",
+      "pass_id": "kcp_xLkEcUsys_s9G26ZMSl5wFKb",
+      "reason_code": "keycard_pass_allowed",
+      "requested": {
+        "action": "view",
+        "app_name": "tower",
+        "current_risk_score": 0,
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/security-command",
+        "door_type": "route",
+        "max_allowed_risk_score": 85,
+        "required_clearance_level": "restricted",
+        "required_consent_id": null,
+        "session_id": "session_pack036_smoke",
+        "user_id": "owner_solice"
+      },
+      "risk_score": 0,
+      "risk_state": "clear",
+      "timestamp": "2026-05-30T15:23:45.509602Z",
+      "token_preview": "eyJhY3Rp...o_BDXkx4"
+    },
+    {
+      "allowed": true,
+      "decision": "allow",
+      "event_id": "door_5HB44aDCSgNE2iDv8aI_-TEd",
+      "event_type": "keycard_pass_validated",
+      "human_reason": "This scoped keycard pass opens this exact door.",
+      "pass_id": "kcp_vPYTPBRjjpuqdJIS9bRZzDct",
+      "reason_code": "keycard_pass_allowed",
+      "requested": {
+        "action": "view",
+        "app_name": "tower",
+        "current_risk_score": 0,
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/status.json",
+        "door_type": "route",
+        "max_allowed_risk_score": 85,
+        "required_clearance_level": "restricted",
+        "required_consent_id": null,
+        "session_id": "session_pack036_smoke",
+        "user_id": "owner_solice"
+      },
+      "risk_score": 0,
+      "risk_state": "clear",
+      "timestamp": "2026-05-30T15:23:45.873672Z",
+      "token_preview": "eyJhY3Rp...FzwRDpHI"
+    },
+    {
+      "allowed": false,
+      "decision": "deny",
+      "event_id": "door_gPYioNw6GKWWmw6scGeCpNV8",
+      "event_type": "keycard_pass_validated",
+      "human_reason": "This pass does not open this specific door.",
+      "pass_id": "kcp_vPYTPBRjjpuqdJIS9bRZzDct",
+      "reason_code": "wrong_door",
+      "requested": {
+        "action": "view",
+        "app_name": "tower",
+        "current_risk_score": 0,
+        "device_id": "device_pack036_smoke",
+        "door_id": "/tower/security-command",
+        "door_type": "route",
+        "max_allowed_risk_score": 85,
+        "required_clearance_level": "restricted",
+        "required_consent_id": null,
+        "session_id": "session_pack036_smoke",
+        "user_id": "owner_solice"
+      },
+      "risk_score": 45,
+      "risk_state": "watch",
+      "timestamp": "2026-05-30T15:23:46.135268Z",
+      "token_preview": "eyJhY3Rp...FzwRDpHI"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower",
+      "door_type": "route",
+      "event_id": "door_NyYqPc3CgDLx39kLC3HWuUn8",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_yasKnLwXCsaU7fq_bO_3cmUY",
+      "reason": "Owner launched The Tower from notebook helper. Door: entry.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:48.690472Z",
+      "token_preview": "eyJhY3Rp...sSchkivE",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower/security-command",
+      "door_type": "route",
+      "event_id": "door_CIKUPZt3ZGOfwGQjxRGQGhY1",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_1PhfhDuXsveZyE49pHlLF032",
+      "reason": "Owner launched The Tower from notebook helper. Door: command.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:48.714399Z",
+      "token_preview": "eyJhY3Rp...vSHhRxOs",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower/status.json",
+      "door_type": "route",
+      "event_id": "door_CS_YpWcBeSJiQ07e4tMPYgr3",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_Mfz5tkw-what70MgtBOjQVLb",
+      "reason": "Owner launched The Tower from notebook helper. Door: status.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:48.737961Z",
+      "token_preview": "eyJhY3Rp...Sh82Pa74",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower",
+      "door_type": "route",
+      "event_id": "door_yr3oThkBqU0EFTQePkzsg91I",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_uTji9Ls5bsc3WxBYotKkPvjM",
+      "reason": "Owner launched The Tower from notebook helper. Door: entry.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:52.314102Z",
+      "token_preview": "eyJhY3Rp...3b6FZloY",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower/security-command",
+      "door_type": "route",
+      "event_id": "door_aNXlQXb-HJEGXjixy-BE2Si9",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_Q-urrD8wZMAXsglLGuaJOyI4",
+      "reason": "Owner launched The Tower from notebook helper. Door: command.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:52.337286Z",
+      "token_preview": "eyJhY3Rp...aqXd4Ym0",
+      "user_id": "owner_solice"
+    },
+    {
+      "actions": [
+        "view"
+      ],
+      "app_name": "tower",
+      "clearance_level": "restricted",
+      "door_id": "/tower/status.json",
+      "door_type": "route",
+      "event_id": "door_GvhMHNExqwkzSaoag4RW_8ZZ",
+      "event_type": "keycard_pass_issued",
+      "issuer_user_id": "owner_solice",
+      "pass_id": "kcp_LRl9ELNEvj78NHGLvLPVyyN2",
+      "reason": "Owner launched The Tower from notebook helper. Door: status.",
+      "risk_score": 0,
+      "timestamp": "2026-05-30T15:23:52.367320Z",
+      "token_preview": "eyJhY3Rp...8P4kYSp4",
+      "user_id": "owner_solice"
     }
   ],
-  "updated_at": "2026-05-30T14:39:13.216633Z"
+  "updated_at": "2026-05-30T15:23:52.367377Z"
 }
