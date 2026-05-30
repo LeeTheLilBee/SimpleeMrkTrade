@@ -3640,3 +3640,72 @@ def write_unified_owner_security_command_html(*args, **kwargs) -> Dict[str, Any]
 # END PACK151_UNIFIED_OWNER_PAGE_INCLUDES_POLICY_AS_CODE_ENGINE
 # ================================================================================
 
+
+
+# === PACK 152 POLICY SIMULATION UNIFIED SECTION START ===
+def build_pack_152_policy_simulation_unified_section():
+    """
+    Pack 152 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_simulation_mode
+    - does not call quick actions
+    - does not call the full unified page builder
+    """
+    try:
+        from tower.policy_simulation_mode import build_policy_simulation_unified_owner_section
+        return build_policy_simulation_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_simulation_mode",
+            "title": "Policy Simulation Mode",
+            "subtitle": "Simulation section needs review.",
+            "status": "review",
+            "href": "/tower/policy-simulation-mode.json",
+            "cards": [],
+            "simulated_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_152_policy_simulation_html_section():
+    try:
+        from tower.policy_simulation_mode import build_policy_simulation_mode_html_section
+        return build_policy_simulation_mode_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-simulation-mode-section" id="policy-simulation-mode">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 152</p>
+                <h2>Policy Simulation Mode</h2>
+                <p>Simulation section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-simulation-mode.json">Open simulation JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_152_policy_simulation_section(sections):
+    """
+    Append Pack 152 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_simulation_mode" not in existing_ids:
+            sections.append(build_pack_152_policy_simulation_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 152 POLICY SIMULATION UNIFIED SECTION END ===
+

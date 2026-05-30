@@ -1454,3 +1454,54 @@ def build_owner_quick_actions_status(write_panel: bool = True) -> Dict[str, Any]
 # END PACK151_POLICY_AS_CODE_QUICK_LINK
 # ================================================================================
 
+
+
+# === PACK 152 POLICY SIMULATION QUICK ACTION START ===
+def build_pack_152_policy_simulation_quick_action():
+    """
+    Pack 152 quick action.
+
+    This stays tiny and non-recursive. It does not call the unified owner page.
+    """
+    try:
+        from tower.policy_simulation_mode import build_policy_simulation_quick_action
+        return build_policy_simulation_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_simulation_mode",
+            "label": "Policy Simulation Mode",
+            "title": "Policy Simulation Mode",
+            "href": "/tower/policy-simulation-mode.json",
+            "endpoint": "/tower/policy-simulation-mode.json",
+            "description": "Practice Tower policy decisions without enforcing them yet.",
+            "status": "review",
+            "pack": "Pack 152",
+            "category": "policy",
+            "simulated_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_152_policy_simulation_quick_action(actions):
+    """
+    Append Pack 152 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_simulation_mode" not in existing_ids:
+            actions.append(build_pack_152_policy_simulation_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 152 POLICY SIMULATION QUICK ACTION END ===
+

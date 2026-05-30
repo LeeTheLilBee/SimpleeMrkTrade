@@ -1002,3 +1002,37 @@ def pack151_policy_as_code_engine_status_bridge():
 # END PACK151_POLICY_AS_CODE_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# === PACK 152 POLICY SIMULATION STATUS BRIDGE START ===
+def build_pack_152_policy_simulation_status_bridge():
+    """
+    Pack 152 status bridge.
+
+    Kept separate and non-recursive on purpose:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads the Pack 152 simulation payload
+    """
+    try:
+        from tower.policy_simulation_mode import build_policy_simulation_mode_status_bridge
+        return build_policy_simulation_mode_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_152",
+            "pack_number": 152,
+            "status": "review",
+            "endpoint": "/tower/policy-simulation-mode.json",
+            "readiness_score": 0,
+            "readiness_label": "Policy simulation bridge error",
+            "simulated_only": True,
+            "real_enforcement_executed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_152_policy_simulation_status_bridge():
+    return build_pack_152_policy_simulation_status_bridge()
+# === PACK 152 POLICY SIMULATION STATUS BRIDGE END ===
+

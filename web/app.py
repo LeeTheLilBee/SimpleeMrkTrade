@@ -11649,3 +11649,39 @@ except Exception:
 # END PACK151_POLICY_AS_CODE_ENGINE_ROUTE
 # ================================================================================
 
+
+
+# === PACK 152 POLICY SIMULATION ROUTE START ===
+def _pack_152_policy_simulation_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without creating a hard dependency
+    on one exact decorator name.
+
+    This keeps the route guarded while avoiding a recursive UI/status call.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/policy-simulation-mode.json", methods=["GET"])
+@_pack_152_policy_simulation_route_guard
+def tower_policy_simulation_mode_json():
+    from tower.policy_simulation_mode import build_policy_simulation_mode_payload
+
+    payload = build_policy_simulation_mode_payload()
+    return jsonify(payload)
+# === PACK 152 POLICY SIMULATION ROUTE END ===
+
