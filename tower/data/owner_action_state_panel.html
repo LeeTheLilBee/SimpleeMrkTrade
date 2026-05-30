@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Owner Action State Tracking</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+
+<!-- PACK141_OWNER_ACTION_STATE_SECTION -->
+<section class="owner-action-state" data-pack="141">
+  <style>
+    .owner-action-state {
+      margin: 24px 0;
+      border: 1px solid rgba(220,183,94,.42);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(220,183,94,.14), transparent 34%),
+        linear-gradient(135deg, rgba(54,35,11,.88), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .owner-action-state__eyebrow {
+      color: rgba(220,183,94,.92);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .owner-action-state h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .owner-action-state p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .owner-action-state-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .owner-action-state-card,
+    .owner-action-state-row {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+    }
+    .owner-action-state-card__eyebrow {
+      color: rgba(220,183,94,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .owner-action-state-card h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      word-break: break-word;
+    }
+    .owner-action-state-card p {
+      margin: 0;
+      color: rgba(245,234,210,.62);
+      font-size: 12px;
+    }
+    .owner-action-state-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .owner-action-state-row span {
+      display: inline-flex;
+      border: 1px solid rgba(220,183,94,.28);
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: rgba(220,183,94,.88);
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .owner-action-state-row b,
+    .owner-action-state-row small {
+      display: block;
+      word-break: break-word;
+    }
+    .owner-action-state-row small {
+      color: rgba(245,234,210,.58);
+      margin-top: 4px;
+    }
+    @media (max-width: 1000px) {
+      .owner-action-state-grid,
+      .owner-action-state-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="owner-action-state__eyebrow">PACK 141 · OWNER ACTION STATE TRACKING</div>
+  <h2>Owner Action State Tracking</h2>
+  <p>Owner Action Center state tracking is ready.</p>
+
+  <div class="owner-action-state-grid">
+    
+        <article class="owner-action-state-card">
+          <div class="owner-action-state-card__eyebrow">acknowledged</div>
+          <h3>0</h3>
+          <p>Actions</p>
+        </article>
+        
+        <article class="owner-action-state-card">
+          <div class="owner-action-state-card__eyebrow">archived</div>
+          <h3>0</h3>
+          <p>Actions</p>
+        </article>
+        
+        <article class="owner-action-state-card">
+          <div class="owner-action-state-card__eyebrow">false_alarm</div>
+          <h3>0</h3>
+          <p>Actions</p>
+        </article>
+        
+        <article class="owner-action-state-card">
+          <div class="owner-action-state-card__eyebrow">investigating</div>
+          <h3>0</h3>
+          <p>Actions</p>
+        </article>
+        
+        <article class="owner-action-state-card">
+          <div class="owner-action-state-card__eyebrow">open</div>
+          <h3>5</h3>
+          <p>Actions</p>
+        </article>
+        
+        <article class="owner-action-state-card">
+          <div class="owner-action-state-card__eyebrow">resolved</div>
+          <h3>1</h3>
+          <p>Actions</p>
+        </article>
+        
+  </div>
+
+  <div class="owner-action-state-list">
+    
+        <article class="owner-action-state-row">
+          <span>resolved</span>
+          <b>Review Incident Escalation</b>
+          <small>review_incident_escalation</small>
+        </article>
+        
+        <article class="owner-action-state-row">
+          <span>open</span>
+          <b>Review High-Priority Security Inbox</b>
+          <small>review_high_priority_inbox</small>
+        </article>
+        
+        <article class="owner-action-state-row">
+          <span>open</span>
+          <b>Do Recommended First Action</b>
+          <small>recommended_first_action</small>
+        </article>
+        
+        <article class="owner-action-state-row">
+          <span>open</span>
+          <b>Continue Security Inbox Review</b>
+          <small>continue_security_review</small>
+        </article>
+        
+        <article class="owner-action-state-row">
+          <span>open</span>
+          <b>Monitor Sealed Route Wall</b>
+          <small>monitor_route_health</small>
+        </article>
+        
+        <article class="owner-action-state-row">
+          <span>open</span>
+          <b>Monitor Security Watch Checkpoint</b>
+          <small>monitor_security_watch_checkpoint</small>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK141_OWNER_ACTION_STATE_SECTION -->
+
+</main>
+</body>
+</html>

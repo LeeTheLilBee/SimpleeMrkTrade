@@ -11092,3 +11092,57 @@ except Exception:
 # END PACK140_OWNER_ACTION_CENTER_CHECKPOINT_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK141_OWNER_ACTION_STATE_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/owner-action-state.json", methods=["GET", "POST"])
+    def tower_owner_action_state_json_pack141():
+        try:
+            from flask import jsonify, request
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/owner-action-state.json",
+                metadata={"source": "pack141_owner_action_state_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.owner_action_state_tracking import (
+                apply_owner_action_state,
+                build_owner_action_state_status,
+            )
+
+            if request.method == "POST":
+                payload = request.get_json(silent=True) or {}
+                return jsonify(apply_owner_action_state(
+                    action_id=payload.get("action_id", ""),
+                    new_state=payload.get("new_state", payload.get("state", "")),
+                    actor_user_id=payload.get("actor_user_id", "owner_solice"),
+                    reason=payload.get("reason", ""),
+                    note=payload.get("note", ""),
+                    metadata=payload.get("metadata", {}),
+                ))
+
+            return jsonify(build_owner_action_state_status(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "141",
+                    "reason_code": "owner_action_state_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "141", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK141_OWNER_ACTION_STATE_ROUTE
+# ================================================================================
+

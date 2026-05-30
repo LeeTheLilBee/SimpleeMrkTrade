@@ -1,0 +1,166 @@
+{
+  "action_count": 6,
+  "actions": [
+    {
+      "action_id": "owner_action_e2e83fea613407d66b",
+      "action_type": "review_incident_escalation",
+      "href": "/tower/security-incident-filters.json",
+      "is_closed": true,
+      "priority_score": 125,
+      "severity": "high",
+      "state": "resolved",
+      "title": "Review Incident Escalation"
+    },
+    {
+      "action_id": "owner_action_2bb07a17aabf3b33d9",
+      "action_type": "review_high_priority_inbox",
+      "href": "/tower/security-inbox-filters.json",
+      "is_closed": false,
+      "priority_score": 90,
+      "severity": "medium",
+      "state": "open",
+      "title": "Review High-Priority Security Inbox"
+    },
+    {
+      "action_id": "owner_action_2836557b9e26492be7",
+      "action_type": "recommended_first_action",
+      "href": "/tower/security-watch.json",
+      "is_closed": false,
+      "priority_score": 80,
+      "severity": "high",
+      "state": "open",
+      "title": "Do Recommended First Action"
+    },
+    {
+      "action_id": "owner_action_a79b4be005aae7cfd3",
+      "action_type": "continue_security_review",
+      "href": "/tower/security-inbox-review-status.json",
+      "is_closed": false,
+      "priority_score": 80,
+      "severity": "medium",
+      "state": "open",
+      "title": "Continue Security Inbox Review"
+    },
+    {
+      "action_id": "owner_action_a6dae223c49cb72155",
+      "action_type": "monitor_route_health",
+      "href": "/tower/ob-guard-status.json",
+      "is_closed": false,
+      "priority_score": 10,
+      "severity": "info",
+      "state": "open",
+      "title": "Monitor Sealed Route Wall"
+    },
+    {
+      "action_id": "owner_action_8addc423cb17667751",
+      "action_type": "monitor_security_watch_checkpoint",
+      "href": "/tower/security-watch-checkpoint.json",
+      "is_closed": false,
+      "priority_score": 10,
+      "severity": "info",
+      "state": "open",
+      "title": "Monitor Security Watch Checkpoint"
+    }
+  ],
+  "allowed_states": [
+    "acknowledged",
+    "archived",
+    "false_alarm",
+    "investigating",
+    "open",
+    "resolved"
+  ],
+  "by_state": {
+    "acknowledged": 0,
+    "archived": 0,
+    "false_alarm": 0,
+    "investigating": 0,
+    "open": 5,
+    "resolved": 1
+  },
+  "closed_action_count": 1,
+  "closed_states": [
+    "archived",
+    "false_alarm",
+    "resolved"
+  ],
+  "created_at": "2026-05-30T08:35:14.616986Z",
+  "human_reason": "Owner Action Center state tracking is ready.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "no_secret_leakage": true,
+  "ok": true,
+  "open_action_count": 5,
+  "pack": "141",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_state_panel.html",
+  "readiness_score": 100,
+  "receipt_count": 3,
+  "recent_receipts": [
+    {
+      "__redacted_owner_action_state_field_count__": 1,
+      "action_id": "owner_action_e2e83fea613407d66b",
+      "action_type": "review_incident_escalation",
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-30T08:35:14.595573Z",
+      "event_type": "owner_action_state_change",
+      "metadata": {
+        "pack": "141"
+      },
+      "new_state": "acknowledged",
+      "no_secret_leakage": true,
+      "note": "[REDACTED_OWNER_ACTION_STATE_VALUE]",
+      "pack": "141",
+      "prior_state": "open",
+      "reason": "Pack 141 acknowledge test.",
+      "receipt_fingerprint": "8aa4731b31cac97b7cac45f250abe70e4cdbbc9b6fb1f8284f03b7f47ca9794f",
+      "receipt_id": "owner_action_state_b4009e979e57c09904",
+      "title": "Review Incident Escalation"
+    },
+    {
+      "action_id": "owner_action_e2e83fea613407d66b",
+      "action_type": "review_incident_escalation",
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-30T08:35:14.599109Z",
+      "event_type": "owner_action_state_change",
+      "metadata": {
+        "pack": "141"
+      },
+      "new_state": "investigating",
+      "no_secret_leakage": true,
+      "note": "Move into investigation.",
+      "pack": "141",
+      "prior_state": "acknowledged",
+      "reason": "Pack 141 investigate test.",
+      "receipt_fingerprint": "f9d669cc170e2ebb77bb1af7e84920d9f2efd5038feae07c769966f7117e7c37",
+      "receipt_id": "owner_action_state_a6f17a370c258981a7",
+      "title": "Review Incident Escalation"
+    },
+    {
+      "action_id": "owner_action_e2e83fea613407d66b",
+      "action_type": "review_incident_escalation",
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-30T08:35:14.603933Z",
+      "event_type": "owner_action_state_change",
+      "metadata": {
+        "pack": "141"
+      },
+      "new_state": "resolved",
+      "no_secret_leakage": true,
+      "note": "Close this owner command.",
+      "pack": "141",
+      "prior_state": "investigating",
+      "reason": "Pack 141 resolved test.",
+      "receipt_fingerprint": "1d1e7bb431d70aeca29ab750ff50da4d67bdb7de1a68659ad118e216d3c417d1",
+      "receipt_id": "owner_action_state_10be7b894ddea8bfed",
+      "title": "Review Incident Escalation"
+    }
+  ],
+  "soulaana_translation": "Soulaana: Owner commands can now move through review states.",
+  "status": "passed",
+  "status_fingerprint": "40bd8c801c7821632e26e8a2c379cd17f2b8e4dc98a2b2b7473ec9a5a8bd1be9",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_state_status.json",
+  "tracked_action_count": 1
+}
