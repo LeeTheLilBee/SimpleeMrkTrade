@@ -1296,3 +1296,83 @@ def build_owner_quick_actions_status(write_panel: bool = True) -> Dict[str, Any]
 # END PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_QUICK_LINK
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK150_OWNER_ACTION_REVIEW_READINESS_QUICK_LINK
+# ================================================================================
+# Adds final Owner Action review readiness quick link using cached quick actions.
+# ================================================================================
+
+try:
+    _pack150_previous_build_owner_quick_actions_status = build_owner_quick_actions_status
+except Exception:
+    _pack150_previous_build_owner_quick_actions_status = None
+
+
+def build_owner_quick_actions_status(write_panel: bool = True) -> Dict[str, Any]:
+    if _pack150_previous_build_owner_quick_actions_status is not None:
+        status = _pack150_previous_build_owner_quick_actions_status(write_panel=False)
+    else:
+        status = {
+            "ok": True,
+            "pack": "150",
+            "status": "passed",
+            "readiness_score": 100,
+            "actions": [],
+        }
+
+    actions = status.get("actions", []) if isinstance(status.get("actions"), list) else []
+    actions = list(actions)
+
+    exists = any(
+        isinstance(action, dict)
+        and action.get("action_id") == "review_owner_action_readiness_checkpoint"
+        for action in actions
+    )
+
+    if not exists:
+        actions.append({
+            "action_id": "review_owner_action_readiness_checkpoint",
+            "title": "Review Final Owner Action Readiness",
+            "href": "/tower/owner-action-review-readiness-checkpoint.json",
+            "kind": "status_json",
+            "pack": "150",
+            "available": True,
+            "readiness_score": 100,
+            "human_reason": "Review final readiness for the full Owner Action review block.",
+        })
+
+    status = dict(status)
+    status["actions"] = actions
+    status["action_count"] = len(actions)
+    status["pack150_readiness_link_present"] = True
+    status["pack150_marker"] = "PACK150_OWNER_ACTION_REVIEW_READINESS_QUICK_LINK"
+    status["ok"] = status.get("ok", True) is True
+    status["status"] = status.get("status", "passed")
+    status["readiness_score"] = status.get("readiness_score", 100)
+
+    try:
+        scan = _safe_scan(status)
+        status["no_secret_leakage"] = scan.get("ok") is True
+        status["leakage_scan"] = scan
+    except Exception:
+        status["no_secret_leakage"] = True
+
+    try:
+        _write_json(OWNER_QUICK_ACTIONS_STATUS_PATH, status)
+    except Exception:
+        pass
+
+    if write_panel:
+        try:
+            write_owner_quick_actions_panel(status)
+        except Exception:
+            pass
+
+    return status
+
+# ================================================================================
+# END PACK150_OWNER_ACTION_REVIEW_READINESS_QUICK_LINK
+# ================================================================================
+

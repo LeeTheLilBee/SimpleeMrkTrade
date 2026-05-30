@@ -954,3 +954,27 @@ def pack149_owner_action_review_focus_lanes_status_bridge():
 # END PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK150_OWNER_ACTION_REVIEW_READINESS_STATUS_BRIDGE
+# ================================================================================
+
+def pack150_owner_action_review_readiness_status_bridge():
+    try:
+        from tower.owner_action_review_readiness_checkpoint import owner_action_review_readiness_status_card
+        return owner_action_review_readiness_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "150",
+            "title": "Final Owner Action Review Readiness",
+            "reason_code": "owner_action_review_readiness_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Final Owner Action Review Readiness status card could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK150_OWNER_ACTION_REVIEW_READINESS_STATUS_BRIDGE
+# ================================================================================
+

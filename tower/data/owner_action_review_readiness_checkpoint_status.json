@@ -1,0 +1,163 @@
+{
+  "checks": {
+    "action_call_ok": true,
+    "action_center_passed": true,
+    "action_count_present": true,
+    "assignments_call_ok": true,
+    "assignments_passed": true,
+    "assignments_present": true,
+    "compact_call_ok": true,
+    "compact_card_count_7": true,
+    "compact_passed": true,
+    "compact_ready": true,
+    "dashboard_call_ok": true,
+    "dashboard_card_count_7": true,
+    "dashboard_passed": true,
+    "focus_available_lanes_9": true,
+    "focus_base_card_count_7": true,
+    "focus_call_ok": true,
+    "focus_filtered_card_count_7": true,
+    "focus_passed": true,
+    "helper_wrapped_zero": true,
+    "notes_call_ok": true,
+    "notes_passed": true,
+    "notes_present": true,
+    "object_call_ok": true,
+    "object_checkpoint_passed": true,
+    "quick_call_ok": true,
+    "quick_has_compact_card": true,
+    "quick_has_dashboard_cards": true,
+    "quick_has_focus_lanes": true,
+    "quick_has_review_checkpoint": true,
+    "quick_passed": true,
+    "receipts_call_ok": true,
+    "receipts_passed": true,
+    "review_checkpoint_call_ok": true,
+    "review_checkpoint_passed": true,
+    "review_depth_100": true,
+    "route_call_ok": true,
+    "route_coverage_100": true,
+    "route_high_risk_zero": true,
+    "route_unguarded_zero": true,
+    "state_call_ok": true,
+    "state_passed": true,
+    "state_receipts_present": true,
+    "tracked_action_present": true,
+    "unified_has_compact_card": true,
+    "unified_has_dashboard_cards": true,
+    "unified_has_focus_lanes": true,
+    "unified_has_review_checkpoint": true,
+    "unified_html_exists": true
+  },
+  "created_at": "2026-05-30T17:00:08.457143Z",
+  "failed_checks": [],
+  "final_summary": {
+    "compact_status": "ready",
+    "dashboard_card_count": 7,
+    "focus_lane_count": 9,
+    "helper_wrapped_count": 0,
+    "owner_action_block_complete": true,
+    "quick_action_count": 18,
+    "review_depth_score": 100,
+    "route_coverage_pct": 100
+  },
+  "human_reason": "Final Owner Action review readiness checkpoint proves Packs 141 through 149 are connected, visible, guarded, non-recursive, and healthy.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "no_secret_leakage": true,
+  "object_checkpoint": {
+    "helper_wrapped_count": 0,
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "ok": true,
+  "pack": "150",
+  "pack_statuses": {
+    "141_state_tracking": {
+      "readiness_score": 100,
+      "status": "passed",
+      "tracked_action_count": 1
+    },
+    "142_state_receipts": {
+      "base_receipt_count": 3,
+      "readiness_score": 100,
+      "status": "passed"
+    },
+    "143_notes": {
+      "base_note_count": 1,
+      "readiness_score": 100,
+      "receipt_count": 1,
+      "status": "passed"
+    },
+    "144_assignments": {
+      "base_assignment_count": 1,
+      "readiness_score": 100,
+      "receipt_count": 1,
+      "status": "passed"
+    },
+    "145_review_checkpoint": {
+      "readiness_score": 100,
+      "review_depth_score": 100,
+      "status": "passed"
+    },
+    "146_quick_unified": {
+      "quick_action_count": 18,
+      "readiness_score": 100,
+      "unified_sections_present": true
+    },
+    "147_dashboard_cards": {
+      "card_count": 7,
+      "readiness_score": 100,
+      "status": "passed"
+    },
+    "148_compact_card": {
+      "compact_label": "Owner Review Ready",
+      "compact_status": "ready",
+      "readiness_score": 100,
+      "status": "passed"
+    },
+    "149_focus_lanes": {
+      "available_lane_count": 9,
+      "base_card_count": 7,
+      "filtered_card_count": 7,
+      "readiness_score": 100,
+      "status": "passed"
+    }
+  },
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_readiness_checkpoint_panel.html",
+  "quick_actions": {
+    "action_count": 18,
+    "has_compact_card": true,
+    "has_compact_card_href": true,
+    "has_dashboard_cards": true,
+    "has_dashboard_cards_href": true,
+    "has_focus_lanes": true,
+    "has_focus_lanes_href": true,
+    "has_review_checkpoint": true,
+    "has_review_checkpoint_href": true
+  },
+  "readiness_label": "Owner Action review block complete",
+  "readiness_score": 100,
+  "route_health": {
+    "coverage_pct": 100,
+    "guarded_needed_count": 55,
+    "needs_guard_count": 55,
+    "unguarded_high_risk_count": 0,
+    "unguarded_needed_count": 0
+  },
+  "soulaana_translation": "Soulaana: Owner Action review is sealed. State, receipts, notes, assignments, dashboard cards, compact card, focus lanes, quick actions, and unified UI are ready.",
+  "status": "passed",
+  "status_fingerprint": "ea298ed7e711de01df875c6b3a18cceb637b97ce3ede5dd1b0efb21f543d708c",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_readiness_checkpoint_status.json",
+  "unified_ui": {
+    "has_compact_card_section": true,
+    "has_dashboard_cards_section": true,
+    "has_focus_lanes_section": true,
+    "has_review_checkpoint_section": true,
+    "html_exists": true,
+    "html_length": 127247
+  }
+}

@@ -146,8 +146,8 @@
       "card_id": "route_wall",
       "details": {
         "coverage_pct": 100,
-        "guarded_needed_count": 54,
-        "needs_guard_count": 54,
+        "guarded_needed_count": 55,
+        "needs_guard_count": 55,
         "unguarded_high_risk_count": 0,
         "unguarded_needed_count": 0
       },
@@ -185,7 +185,7 @@
     "lane_valid": true,
     "route_coverage_100": true
   },
-  "created_at": "2026-05-30T16:38:05.745866Z",
+  "created_at": "2026-05-30T17:00:07.856937Z",
   "failed_checks": [],
   "filter_options": {
     "card_id": {
@@ -235,7 +235,7 @@
   "readiness_score": 100,
   "soulaana_translation": "Soulaana: Owner Action review cards can now be narrowed into focus lanes.",
   "status": "passed",
-  "status_fingerprint": "21d9dd95b0bbd2ce8620052a68ed488b539507e5cf667a0c628f21a257747661",
+  "status_fingerprint": "eac511726bca76c86da3fc511c711c105ecd9211d3566ee2ef22297f0ee0bf37",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_focus_lanes_status.json",
   "summary": {
     "attention_count": 0,
