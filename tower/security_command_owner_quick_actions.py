@@ -1661,3 +1661,55 @@ def append_pack_155_policy_expiration_rules_quick_action(actions):
         return actions
 # === PACK 155 POLICY EXPIRATION RULES QUICK ACTION END ===
 
+
+
+# === PACK 156 POLICY RENEWAL RECHECK QUEUE QUICK ACTION START ===
+def build_pack_156_policy_renewal_recheck_queue_quick_action():
+    """
+    Pack 156 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_renewal_recheck_queue import build_policy_renewal_recheck_queue_quick_action
+        return build_policy_renewal_recheck_queue_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_renewal_recheck_queue",
+            "label": "Policy Renewal / Recheck Queue",
+            "title": "Policy Renewal / Recheck Queue",
+            "href": "/tower/policy-renewal-recheck-queue.json",
+            "endpoint": "/tower/policy-renewal-recheck-queue.json",
+            "description": "Preview renewal and recheck work generated from policy expiration rules.",
+            "status": "review",
+            "pack": "Pack 156",
+            "category": "policy",
+            "simulated_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_156_policy_renewal_recheck_queue_quick_action(actions):
+    """
+    Append Pack 156 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_renewal_recheck_queue" not in existing_ids:
+            actions.append(build_pack_156_policy_renewal_recheck_queue_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 156 POLICY RENEWAL RECHECK QUEUE QUICK ACTION END ===
+

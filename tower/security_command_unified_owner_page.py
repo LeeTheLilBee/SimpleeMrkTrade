@@ -3916,3 +3916,72 @@ def append_pack_155_policy_expiration_rules_section(sections):
         return sections
 # === PACK 155 POLICY EXPIRATION RULES UNIFIED SECTION END ===
 
+
+
+# === PACK 156 POLICY RENEWAL RECHECK QUEUE UNIFIED SECTION START ===
+def build_pack_156_policy_renewal_recheck_queue_unified_section():
+    """
+    Pack 156 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_renewal_recheck_queue
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_renewal_recheck_queue import build_policy_renewal_recheck_queue_unified_owner_section
+        return build_policy_renewal_recheck_queue_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_renewal_recheck_queue",
+            "title": "Policy Renewal / Recheck Queue",
+            "subtitle": "Renewal/recheck queue section needs review.",
+            "status": "review",
+            "href": "/tower/policy-renewal-recheck-queue.json",
+            "cards": [],
+            "simulated_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_156_policy_renewal_recheck_queue_html_section():
+    try:
+        from tower.policy_renewal_recheck_queue import build_policy_renewal_recheck_queue_html_section
+        return build_policy_renewal_recheck_queue_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-renewal-recheck-queue-section" id="policy-renewal-recheck-queue">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 156</p>
+                <h2>Policy Renewal / Recheck Queue</h2>
+                <p>Renewal/recheck queue section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-renewal-recheck-queue.json">Open renewal/recheck queue JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_156_policy_renewal_recheck_queue_section(sections):
+    """
+    Append Pack 156 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_renewal_recheck_queue" not in existing_ids:
+            sections.append(build_pack_156_policy_renewal_recheck_queue_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 156 POLICY RENEWAL RECHECK QUEUE UNIFIED SECTION END ===
+

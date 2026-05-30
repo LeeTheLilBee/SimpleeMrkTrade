@@ -1148,3 +1148,43 @@ def get_pack_155_policy_expiration_rules_status_bridge():
     return build_pack_155_policy_expiration_rules_status_bridge()
 # === PACK 155 POLICY EXPIRATION RULES STATUS BRIDGE END ===
 
+
+
+# === PACK 156 POLICY RENEWAL RECHECK QUEUE STATUS BRIDGE START ===
+def build_pack_156_policy_renewal_recheck_queue_status_bridge():
+    """
+    Pack 156 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 156 renewal/recheck queue payload
+    """
+    try:
+        from tower.policy_renewal_recheck_queue import build_policy_renewal_recheck_queue_status_bridge
+        return build_policy_renewal_recheck_queue_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_156",
+            "pack_number": 156,
+            "status": "review",
+            "endpoint": "/tower/policy-renewal-recheck-queue.json",
+            "source_endpoint": "/tower/policy-expiration-rules.json",
+            "readiness_score": 0,
+            "readiness_label": "Policy renewal/recheck queue bridge error",
+            "simulated_only": True,
+            "real_renewal_executed": False,
+            "real_recheck_executed": False,
+            "real_expiration_enforced": False,
+            "real_enforcement_executed": False,
+            "real_audit_written": False,
+            "real_receipt_written": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_156_policy_renewal_recheck_queue_status_bridge():
+    return build_pack_156_policy_renewal_recheck_queue_status_bridge()
+# === PACK 156 POLICY RENEWAL RECHECK QUEUE STATUS BRIDGE END ===
+
