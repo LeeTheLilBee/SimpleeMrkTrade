@@ -10,7 +10,7 @@
         "high_count": 40,
         "open_incident_count": 40
       },
-      "created_at": "2026-05-30T07:59:20.077920Z",
+      "created_at": "2026-05-30T08:18:32.216579Z",
       "href": "/tower/security-incident-filters.json",
       "human_reason": "Cached incident filters show escalation-ready incidents.",
       "priority_score": 125,
@@ -27,7 +27,7 @@
         "count": 64,
         "open_review_count": 64
       },
-      "created_at": "2026-05-30T07:59:20.077958Z",
+      "created_at": "2026-05-30T08:18:32.217694Z",
       "href": "/tower/security-inbox-filters.json",
       "human_reason": "Cached Security Inbox filters show high-priority items.",
       "priority_score": 90,
@@ -45,7 +45,7 @@
         "recommended_first_action": "review_incident_escalation",
         "risk_points": 63
       },
-      "created_at": "2026-05-30T07:59:20.077844Z",
+      "created_at": "2026-05-30T08:18:32.216485Z",
       "href": "/tower/security-watch.json",
       "human_reason": "Security Watch recommends: review_incident_escalation.",
       "priority_score": 80,
@@ -62,7 +62,7 @@
         "count": 64,
         "high_priority_count": 64
       },
-      "created_at": "2026-05-30T07:59:20.077989Z",
+      "created_at": "2026-05-30T08:18:32.217753Z",
       "href": "/tower/security-inbox-review-status.json",
       "human_reason": "Cached Security Inbox has open owner review items.",
       "priority_score": 80,
@@ -80,7 +80,7 @@
         "unguarded_high_risk_count": 0,
         "unguarded_needed_count": 0
       },
-      "created_at": "2026-05-30T07:59:20.078021Z",
+      "created_at": "2026-05-30T08:18:32.217799Z",
       "href": "/tower/ob-guard-status.json",
       "human_reason": "Cached route wall is sealed.",
       "priority_score": 10,
@@ -97,7 +97,7 @@
         "checkpoint_readiness_score": 100,
         "checkpoint_status": "passed"
       },
-      "created_at": "2026-05-30T07:59:20.078051Z",
+      "created_at": "2026-05-30T08:18:32.217847Z",
       "href": "/tower/security-watch-checkpoint.json",
       "human_reason": "Cached Security Watch checkpoint is healthy and visible.",
       "priority_score": 10,
@@ -146,7 +146,7 @@
     "unified_readiness_score": 100,
     "unified_status": "cached_no_live_builder"
   },
-  "created_at": "2026-05-30T07:59:20.078089Z",
+  "created_at": "2026-05-30T08:18:32.217892Z",
   "failed_checks": [],
   "human_reason": "Owner Action Center is ready from cached Tower posture and produces a prioritized owner command queue.",
   "inbox_summary": {
@@ -195,7 +195,7 @@
   },
   "soulaana_translation": "Soulaana: The Tower gives the owner a command queue from cached posture, with no recursive calls.",
   "status": "passed",
-  "status_fingerprint": "e2fac47e76f95b188b31cfd969566145df3e475fb266295a5e94f76b075109dd",
+  "status_fingerprint": "60372f8a4525ada65112f4ccbffcb46f6d5eb9c1732921a957816b41069448cb",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_center_status.json",
   "top_action": {
     "action_id": "owner_action_e2e83fea613407d66b",
@@ -206,7 +206,7 @@
       "high_count": 40,
       "open_incident_count": 40
     },
-    "created_at": "2026-05-30T07:59:20.077920Z",
+    "created_at": "2026-05-30T08:18:32.216579Z",
     "href": "/tower/security-incident-filters.json",
     "human_reason": "Cached incident filters show escalation-ready incidents.",
     "priority_score": 125,

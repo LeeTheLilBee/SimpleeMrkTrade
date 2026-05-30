@@ -18,7 +18,7 @@
     "readiness_score": 100,
     "status": "passed"
   },
-  "created_at": "2026-05-30T07:22:34.991000Z",
+  "created_at": "2026-05-30T08:19:18.730465Z",
   "failed_checks": [],
   "human_reason": "Security Command smoke and status routes are discoverable through Tower navigation/status links.",
   "leakage_scan": {
@@ -94,8 +94,8 @@
   "readiness_score": 100,
   "route_health": {
     "coverage_pct": 100,
-    "guarded_needed_count": 42,
-    "needs_guard_count": 42,
+    "guarded_needed_count": 45,
+    "needs_guard_count": 45,
     "ok": true,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
@@ -103,6 +103,6 @@
   },
   "soulaana_translation": "Soulaana: The door is no longer hidden. Security Command has its route signs.",
   "status": "passed",
-  "status_fingerprint": "a4e3d0db4d8305ed67297f24da49d9c8a949dbb19a771601fbe649dbe479dee1",
+  "status_fingerprint": "0206460ae5d6c3a2ec23e154652eea5e71182d6e130a6ccfa917747bbe42d68e",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_navigation_links_status.json"
 }

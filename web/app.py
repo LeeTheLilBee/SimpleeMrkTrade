@@ -11052,3 +11052,43 @@ except Exception:
 # END PACK139_OWNER_ACTION_DETAIL_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK140_OWNER_ACTION_CENTER_CHECKPOINT_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/owner-action-checkpoint.json")
+    def tower_owner_action_checkpoint_json_pack140():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/owner-action-checkpoint.json",
+                metadata={"source": "pack140_owner_action_center_checkpoint_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.owner_action_center_checkpoint import build_owner_action_center_checkpoint
+
+            return jsonify(build_owner_action_center_checkpoint(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "140",
+                    "reason_code": "owner_action_center_checkpoint_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "140", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK140_OWNER_ACTION_CENTER_CHECKPOINT_ROUTE
+# ================================================================================
+

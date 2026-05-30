@@ -1,5 +1,5 @@
 {
-  "checkpoint_fingerprint": "77bead04db019d43483d28264c9cc7ae70463758734819e394c1eb3fbb77a44c",
+  "checkpoint_fingerprint": "459bea7b464d41a6674ec50ffeb2063de065d999025c9498b06b44522b1e0710",
   "checkpoint_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_object_permission_integration_checkpoint.json",
   "checks": {
     "all_markers_present": true,
@@ -14,7 +14,7 @@
     "unguarded_needed_zero": true,
     "web_app_exists": true
   },
-  "created_at": "2026-05-30T07:59:20.149255Z",
+  "created_at": "2026-05-30T08:19:20.421811Z",
   "expected_missing": [],
   "expected_object_route_count": 8,
   "expected_present": {
@@ -171,8 +171,8 @@
   "readiness_score": 100,
   "route_coverage_summary": {
     "coverage_pct": 100,
-    "guarded_needed_count": 44,
-    "needs_guard_count": 44,
+    "guarded_needed_count": 45,
+    "needs_guard_count": 45,
     "readiness_score": 100,
     "unguarded_high_risk_count": 0,
     "unguarded_needed_count": 0

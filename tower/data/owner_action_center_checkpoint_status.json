@@ -1,0 +1,110 @@
+{
+  "checks": {
+    "action_center_ok": true,
+    "action_center_passed": true,
+    "action_center_readiness_100": true,
+    "actions_present": true,
+    "cached_checkpoint_builder_active": true,
+    "detail_has_action": true,
+    "detail_ok": true,
+    "detail_pack_139": true,
+    "detail_passed": true,
+    "filtered_actions_present": true,
+    "filters_ok": true,
+    "filters_pack_138": true,
+    "filters_passed": true,
+    "helper_wrapped_zero": true,
+    "lane_summary_ok": true,
+    "lanes_present": true,
+    "no_live_builder_calls": true,
+    "object_checkpoint_passed": true,
+    "open_actions_present": true,
+    "quick_has_owner_action_center": true,
+    "quick_metadata_ok": true,
+    "quick_metadata_pack_137": true,
+    "quick_passed": true,
+    "route_coverage_100": true,
+    "route_high_risk_zero": true,
+    "route_unguarded_zero": true,
+    "top_action_present": true,
+    "top_only_count_one": true,
+    "unified_has_owner_action_center": true,
+    "unified_has_pack136_marker": true
+  },
+  "created_at": "2026-05-30T08:19:20.383093Z",
+  "detail": {
+    "detail_action_type": "review_incident_escalation",
+    "detail_lane": "incident",
+    "detail_source_label": "Incident Filters",
+    "found_action_id": "owner_action_e2e83fea613407d66b",
+    "status": "passed"
+  },
+  "failed_checks": [],
+  "filters": {
+    "filter_options": {},
+    "filtered_action_count": 6,
+    "status": "passed",
+    "top_only_count": 1
+  },
+  "human_reason": "Owner Action Center checkpoint proves command queue, lanes, filters, detail cards, quick actions, unified UI, route guards, and object checkpoint are healthy from cached Tower state.",
+  "lane_summary": {
+    "lane_count": 4,
+    "status": "passed",
+    "top_lane": "incident",
+    "top_lane_label": "Incident Lane"
+  },
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "no_secret_leakage": true,
+  "object_checkpoint": {
+    "helper_wrapped_count": 0,
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "ok": true,
+  "owner_action_center": {
+    "action_count": 6,
+    "open_action_count": 6,
+    "readiness_score": 100,
+    "status": "passed",
+    "top_action_href": "/tower/security-incident-filters.json",
+    "top_action_title": "Review Incident Escalation",
+    "top_action_type": "review_incident_escalation",
+    "top_recommended_action": "open_incident_filters_and_review_escalation_ready"
+  },
+  "pack": "140",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_center_checkpoint_panel.html",
+  "quick_actions": {
+    "action_count": 17,
+    "has_owner_action_center": true,
+    "status": "passed"
+  },
+  "quick_metadata": {
+    "lane_count": 4,
+    "status": "passed",
+    "top_action_type": "review_incident_escalation",
+    "top_lane": "incident"
+  },
+  "readiness_label": "Owner Action Center checkpoint passed",
+  "readiness_score": 100,
+  "rescue_marker": "PACK140B_CACHED_CHECKPOINT_BUILDER_ACTIVE",
+  "route_health": {
+    "coverage_pct": 100,
+    "guarded_needed_count": 45,
+    "needs_guard_count": 45,
+    "unguarded_high_risk_count": 0,
+    "unguarded_needed_count": 0
+  },
+  "soulaana_translation": "Soulaana: Owner Action Center checkpoint is locked from cached state with no recursion.",
+  "status": "passed",
+  "status_fingerprint": "56d0c357c6144a163e8921a0989698e91f67eecd925dcb769ede8f9bb6a4557e",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_center_checkpoint_status.json",
+  "unified_command": {
+    "has_owner_action_center_section": true,
+    "has_pack136_marker": true,
+    "html_exists": true
+  }
+}
