@@ -91,8 +91,8 @@
       "card_id": "route_wall",
       "details": {
         "coverage_pct": 100,
-        "guarded_needed_count": 52,
-        "needs_guard_count": 52,
+        "guarded_needed_count": 53,
+        "needs_guard_count": 53,
         "unguarded_high_risk_count": 0,
         "unguarded_needed_count": 0
       },
@@ -132,7 +132,7 @@
     "route_wall_sealed": true,
     "state_card_present": true
   },
-  "created_at": "2026-05-30T15:49:48.789044Z",
+  "created_at": "2026-05-30T16:06:41.284496Z",
   "failed_checks": [],
   "human_reason": "Owner Action review dashboard cards are ready from cached checkpoint state.",
   "leakage_scan": {
@@ -147,7 +147,7 @@
   "readiness_score": 100,
   "soulaana_translation": "Soulaana: Owner Action review is now readable as dashboard cards.",
   "status": "passed",
-  "status_fingerprint": "0bcb8548cea021b15098b407070c464c5a657bd97415f511376eb70a3ed788db",
+  "status_fingerprint": "007b6179ea5d372080b82dcaf7223a5572d260177818475da86a495a50122204",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_dashboard_cards_status.json",
   "summary": {
     "action_count": 6,

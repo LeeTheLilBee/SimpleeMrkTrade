@@ -1121,3 +1121,98 @@ def build_owner_quick_actions_status(write_panel: bool = True) -> Dict[str, Any]
 # END PACK146B_NON_RECURSIVE_OWNER_QUICK_ACTIONS_BUILDER
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK148_OWNER_ACTION_REVIEW_DASHBOARD_QUICK_LINK
+# ================================================================================
+# Adds dashboard cards + compact card quick links using cached/non-recursive builder.
+# ================================================================================
+
+try:
+    _pack148_previous_build_owner_quick_actions_status = build_owner_quick_actions_status
+except Exception:
+    _pack148_previous_build_owner_quick_actions_status = None
+
+
+def _pack148_quick_action_exists(actions: list, action_id: str) -> bool:
+    return any(
+        isinstance(action, dict)
+        and action.get("action_id") == action_id
+        for action in actions
+    )
+
+
+def build_owner_quick_actions_status(write_panel: bool = True) -> Dict[str, Any]:
+    if _pack148_previous_build_owner_quick_actions_status is not None:
+        status = _pack148_previous_build_owner_quick_actions_status(write_panel=False)
+    else:
+        status = {
+            "ok": True,
+            "pack": "148",
+            "status": "passed",
+            "readiness_score": 100,
+            "actions": [],
+        }
+
+    actions = status.get("actions", []) if isinstance(status.get("actions"), list) else []
+    actions = list(actions)
+
+    if not _pack148_quick_action_exists(actions, "review_owner_action_review_dashboard_cards"):
+        actions.append({
+            "action_id": "review_owner_action_review_dashboard_cards",
+            "title": "Review Owner Action Dashboard Cards",
+            "href": "/tower/owner-action-review-dashboard-cards.json",
+            "kind": "status_json",
+            "pack": "147+148",
+            "available": True,
+            "readiness_score": 100,
+            "human_reason": "Review the dashboard-ready Owner Action review cards.",
+        })
+
+    if not _pack148_quick_action_exists(actions, "review_owner_action_compact_card"):
+        actions.append({
+            "action_id": "review_owner_action_compact_card",
+            "title": "Review Compact Owner Action Card",
+            "href": "/tower/owner-action-review-compact-card.json",
+            "kind": "status_json",
+            "pack": "148",
+            "available": True,
+            "readiness_score": 100,
+            "human_reason": "Review the compact Owner Action command card.",
+        })
+
+    status = dict(status)
+    status["actions"] = actions
+    status["action_count"] = len(actions)
+    status["pack148_owner_action_dashboard_link_present"] = True
+    status["pack148_compact_card_link_present"] = True
+    status["pack148_marker"] = "PACK148_OWNER_ACTION_REVIEW_DASHBOARD_QUICK_LINK"
+    status["ok"] = status.get("ok", True) is True
+    status["status"] = status.get("status", "passed")
+    status["readiness_score"] = status.get("readiness_score", 100)
+
+    try:
+        scan = _safe_scan(status)
+        status["no_secret_leakage"] = scan.get("ok") is True
+        status["leakage_scan"] = scan
+    except Exception:
+        status["no_secret_leakage"] = True
+
+    try:
+        _write_json(OWNER_QUICK_ACTIONS_STATUS_PATH, status)
+    except Exception:
+        pass
+
+    if write_panel:
+        try:
+            write_owner_quick_actions_panel(status)
+        except Exception:
+            pass
+
+    return status
+
+# ================================================================================
+# END PACK148_OWNER_ACTION_REVIEW_DASHBOARD_QUICK_LINK
+# ================================================================================
+

@@ -1,0 +1,63 @@
+{
+  "checks": {
+    "checkpoint_loaded": true,
+    "checkpoint_passed": true,
+    "dashboard_card_count_7": true,
+    "dashboard_loaded": true,
+    "dashboard_passed": true,
+    "helper_wrapped_zero": true,
+    "review_depth_100": true,
+    "route_wall_sealed": true
+  },
+  "compact_label": "Owner Review Ready",
+  "compact_status": "ready",
+  "created_at": "2026-05-30T16:06:41.286211Z",
+  "failed_checks": [],
+  "human_reason": "Compact Owner Action review command card is ready from cached dashboard/checkpoint state.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "metrics": {
+    "action_count": 6,
+    "assignment_count": 1,
+    "card_count": 7,
+    "helper_wrapped_count": 0,
+    "note_count": 1,
+    "review_depth_score": 100,
+    "route_coverage_pct": 100,
+    "state_receipt_count": 3,
+    "tracked_action_count": 1,
+    "unguarded_high_risk_count": 0,
+    "unguarded_needed_count": 0
+  },
+  "no_secret_leakage": true,
+  "ok": true,
+  "owner_message": "Owner Action review is organized, dashboard cards are visible, and the route wall is sealed.",
+  "pack": "148",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_compact_card_panel.html",
+  "quick_links": [
+    {
+      "href": "/tower/owner-action-review-dashboard-cards.json",
+      "kind": "status_json",
+      "title": "Dashboard Cards"
+    },
+    {
+      "href": "/tower/owner-action-review-checkpoint.json",
+      "kind": "status_json",
+      "title": "Review Checkpoint"
+    },
+    {
+      "href": "/tower/owner-action-center.json",
+      "kind": "status_json",
+      "title": "Owner Action Center"
+    }
+  ],
+  "readiness_score": 100,
+  "recommended_action": "review_dashboard_cards",
+  "soulaana_translation": "Soulaana: Owner Action review is now condensed into one command card.",
+  "status": "passed",
+  "status_fingerprint": "00f3f474ac28923f7a4967cce2465fb8498b82d6a3df1115f7fe9b3365a0075e",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_compact_card_status.json"
+}
