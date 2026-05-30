@@ -1110,3 +1110,41 @@ def get_pack_154_policy_receipt_vault_preview_status_bridge():
     return build_pack_154_policy_receipt_vault_preview_status_bridge()
 # === PACK 154 POLICY RECEIPT VAULT PREVIEW STATUS BRIDGE END ===
 
+
+
+# === PACK 155 POLICY EXPIRATION RULES STATUS BRIDGE START ===
+def build_pack_155_policy_expiration_rules_status_bridge():
+    """
+    Pack 155 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 155 expiration rules payload
+    """
+    try:
+        from tower.policy_expiration_rules import build_policy_expiration_rules_status_bridge
+        return build_policy_expiration_rules_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_155",
+            "pack_number": 155,
+            "status": "review",
+            "endpoint": "/tower/policy-expiration-rules.json",
+            "source_endpoint": "/tower/policy-receipt-vault-preview.json",
+            "readiness_score": 0,
+            "readiness_label": "Policy expiration rules bridge error",
+            "simulated_only": True,
+            "real_expiration_enforced": False,
+            "real_enforcement_executed": False,
+            "real_audit_written": False,
+            "real_receipt_written": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_155_policy_expiration_rules_status_bridge():
+    return build_pack_155_policy_expiration_rules_status_bridge()
+# === PACK 155 POLICY EXPIRATION RULES STATUS BRIDGE END ===
+

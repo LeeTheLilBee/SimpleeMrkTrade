@@ -1609,3 +1609,55 @@ def append_pack_154_policy_receipt_vault_preview_quick_action(actions):
         return actions
 # === PACK 154 POLICY RECEIPT VAULT PREVIEW QUICK ACTION END ===
 
+
+
+# === PACK 155 POLICY EXPIRATION RULES QUICK ACTION START ===
+def build_pack_155_policy_expiration_rules_quick_action():
+    """
+    Pack 155 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_expiration_rules import build_policy_expiration_rules_quick_action
+        return build_policy_expiration_rules_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_expiration_rules",
+            "label": "Policy Expiration Rules",
+            "title": "Policy Expiration Rules",
+            "href": "/tower/policy-expiration-rules.json",
+            "endpoint": "/tower/policy-expiration-rules.json",
+            "description": "Preview when policy receipt entries become stale or need owner review.",
+            "status": "review",
+            "pack": "Pack 155",
+            "category": "policy",
+            "simulated_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_155_policy_expiration_rules_quick_action(actions):
+    """
+    Append Pack 155 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_expiration_rules" not in existing_ids:
+            actions.append(build_pack_155_policy_expiration_rules_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 155 POLICY EXPIRATION RULES QUICK ACTION END ===
+

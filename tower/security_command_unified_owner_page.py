@@ -3847,3 +3847,72 @@ def append_pack_154_policy_receipt_vault_preview_section(sections):
         return sections
 # === PACK 154 POLICY RECEIPT VAULT PREVIEW UNIFIED SECTION END ===
 
+
+
+# === PACK 155 POLICY EXPIRATION RULES UNIFIED SECTION START ===
+def build_pack_155_policy_expiration_rules_unified_section():
+    """
+    Pack 155 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_expiration_rules
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_expiration_rules import build_policy_expiration_rules_unified_owner_section
+        return build_policy_expiration_rules_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_expiration_rules",
+            "title": "Policy Expiration Rules",
+            "subtitle": "Expiration rules section needs review.",
+            "status": "review",
+            "href": "/tower/policy-expiration-rules.json",
+            "cards": [],
+            "simulated_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_155_policy_expiration_rules_html_section():
+    try:
+        from tower.policy_expiration_rules import build_policy_expiration_rules_html_section
+        return build_policy_expiration_rules_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-expiration-rules-section" id="policy-expiration-rules">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 155</p>
+                <h2>Policy Expiration Rules</h2>
+                <p>Expiration rules section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-expiration-rules.json">Open expiration rules JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_155_policy_expiration_rules_section(sections):
+    """
+    Append Pack 155 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_expiration_rules" not in existing_ids:
+            sections.append(build_pack_155_policy_expiration_rules_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 155 POLICY EXPIRATION RULES UNIFIED SECTION END ===
+

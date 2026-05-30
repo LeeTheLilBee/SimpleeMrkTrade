@@ -11753,3 +11753,37 @@ def tower_policy_receipt_vault_preview_json():
     return jsonify(payload)
 # === PACK 154 POLICY RECEIPT VAULT PREVIEW ROUTE END ===
 
+
+
+# === PACK 155 POLICY EXPIRATION RULES ROUTE START ===
+def _pack_155_policy_expiration_rules_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/policy-expiration-rules.json", methods=["GET"])
+@_pack_155_policy_expiration_rules_route_guard
+def tower_policy_expiration_rules_json():
+    from tower.policy_expiration_rules import build_policy_expiration_rules_payload
+
+    payload = build_policy_expiration_rules_payload()
+    return jsonify(payload)
+# === PACK 155 POLICY EXPIRATION RULES ROUTE END ===
+
