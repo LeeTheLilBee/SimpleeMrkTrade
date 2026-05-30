@@ -1,75 +1,26 @@
 [
   {
-    "__redacted_owner_action_assignment_field_count__": 2,
     "action_id": "owner_action_e2e83fea613407d66b",
     "action_type": "review_incident_escalation",
     "actor_user_id": "owner_solice",
-    "assigned_role": "owner",
-    "assigned_to": "owner_solice",
-    "assignment_fingerprint": "a30d0383b40f011a2813ef601113f8a0d044df2e9e0eb15cede3ffd5745c7f2b",
-    "assignment_id": "owner_action_assignment_1e07369ff07e3613c1",
-    "assignment_reason": "[REDACTED_OWNER_ACTION_ASSIGNMENT_VALUE]",
-    "assignment_status": "assigned",
-    "created_at": "2026-05-30T14:46:40.770856Z",
+    "assigned_role": "future_admin",
+    "assigned_to": "admin_review",
+    "assignment_fingerprint": "653779d60e6408198c6fa89c67759d5cba33a4faac9f3b4e5b802b6c7795df0e",
+    "assignment_id": "owner_action_assignment_18a3073f9d044a8292",
+    "assignment_reason": "Pack 145 checkpoint assignment.",
+    "assignment_status": "completed",
+    "created_at": "2026-05-30T14:59:39.401261Z",
     "event_type": "owner_action_assignment_updated",
     "metadata": {
-      "pack": "144"
+      "pack": "145"
     },
     "no_secret_leakage": true,
     "pack": "144",
     "prior_assigned_role": "",
     "prior_assigned_to": "",
     "prior_assignment_status": "unassigned",
-    "receipt_fingerprint": "2bfacb367ee422c5e831772993151925295d5ffa5b5798bb69ba43fe4685ded8",
-    "receipt_id": "owner_action_assignment_receipt_6697173df089d4f810",
-    "title": "Review Incident Escalation"
-  },
-  {
-    "action_id": "owner_action_e2e83fea613407d66b",
-    "action_type": "review_incident_escalation",
-    "actor_user_id": "owner_solice",
-    "assigned_role": "system_monitor",
-    "assigned_to": "tower_system",
-    "assignment_fingerprint": "3dd89691b2b774a0d36b606ac50530d5262d4e04d9b3429971b0a8449351c339",
-    "assignment_id": "owner_action_assignment_1e07369ff07e3613c1",
-    "assignment_reason": "Move monitoring work into Tower system lane.",
-    "assignment_status": "in_progress",
-    "created_at": "2026-05-30T14:46:40.777157Z",
-    "event_type": "owner_action_assignment_updated",
-    "metadata": {
-      "pack": "144"
-    },
-    "no_secret_leakage": true,
-    "pack": "144",
-    "prior_assigned_role": "owner",
-    "prior_assigned_to": "owner_solice",
-    "prior_assignment_status": "assigned",
-    "receipt_fingerprint": "51be3a8f77453891137530fcb170f2ecdc09bf74d36773aac1c21b964f4f132a",
-    "receipt_id": "owner_action_assignment_receipt_35e8cf8504d81ea5b2",
-    "title": "Review Incident Escalation"
-  },
-  {
-    "action_id": "owner_action_e2e83fea613407d66b",
-    "action_type": "review_incident_escalation",
-    "actor_user_id": "owner_solice",
-    "assigned_role": "future_admin",
-    "assigned_to": "admin_review",
-    "assignment_fingerprint": "50765c468a9146de019b7e52a42fda2e998f46bd131e1e607773dd2627b3b9b1",
-    "assignment_id": "owner_action_assignment_1e07369ff07e3613c1",
-    "assignment_reason": "Completed assignment handoff for test.",
-    "assignment_status": "completed",
-    "created_at": "2026-05-30T14:46:40.782220Z",
-    "event_type": "owner_action_assignment_updated",
-    "metadata": {
-      "pack": "144"
-    },
-    "no_secret_leakage": true,
-    "pack": "144",
-    "prior_assigned_role": "system_monitor",
-    "prior_assigned_to": "tower_system",
-    "prior_assignment_status": "in_progress",
-    "receipt_fingerprint": "d0e1f740c6f0ba404effbccbba4fc0b5d73791af6fff68110cfb80e223f32ba6",
-    "receipt_id": "owner_action_assignment_receipt_87543ca7363c51a7c9",
+    "receipt_fingerprint": "3e8a05ecbb42804f588cd3860fd8da443ae9a0cb8629fd81766a51fba0ec3aee",
+    "receipt_id": "owner_action_assignment_receipt_394fa42715b901e68e",
     "title": "Review Incident Escalation"
   }
 ]

@@ -1,0 +1,126 @@
+{
+  "assignments": {
+    "base_assignment_count": 1,
+    "filtered_assignment_count": 1,
+    "readiness_score": 100,
+    "receipt_count": 1,
+    "status": "passed",
+    "top_assigned_to": "admin_review",
+    "top_assignment_status": "completed",
+    "unassigned_action_count": 5
+  },
+  "checks": {
+    "action_call_ok": true,
+    "action_center_passed": true,
+    "action_center_readiness_100": true,
+    "actions_present": true,
+    "assignment_receipts_present": true,
+    "assignments_call_ok": true,
+    "assignments_pack_144": true,
+    "assignments_passed": true,
+    "assignments_present": true,
+    "assignments_readiness_100": true,
+    "helper_wrapped_zero": true,
+    "note_receipts_present": true,
+    "notes_call_ok": true,
+    "notes_pack_143": true,
+    "notes_passed": true,
+    "notes_present": true,
+    "notes_readiness_100": true,
+    "object_call_ok": true,
+    "object_checkpoint_passed": true,
+    "object_checkpoint_readiness_100": true,
+    "route_call_ok": true,
+    "route_coverage_100": true,
+    "route_high_risk_zero": true,
+    "route_unguarded_zero": true,
+    "state_call_ok": true,
+    "state_pack_141": true,
+    "state_passed": true,
+    "state_readiness_100": true,
+    "state_receipt_filters_present": true,
+    "state_receipts_call_ok": true,
+    "state_receipts_pack_142": true,
+    "state_receipts_passed": true,
+    "state_receipts_present": true,
+    "state_receipts_readiness_100": true,
+    "tracked_actions_present": true
+  },
+  "created_at": "2026-05-30T14:59:44.562516Z",
+  "failed_checks": [],
+  "human_reason": "Owner Action review-state checkpoint proves state tracking, receipts, notes, assignments, route guards, and object checkpoint are healthy.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "no_secret_leakage": true,
+  "notes": {
+    "base_note_count": 1,
+    "filtered_note_count": 1,
+    "readiness_score": 100,
+    "receipt_count": 1,
+    "status": "passed",
+    "top_note_type": "resolution"
+  },
+  "object_checkpoint": {
+    "helper_wrapped_count": 0,
+    "readiness_score": 100,
+    "status": "passed"
+  },
+  "ok": true,
+  "owner_action_center": {
+    "action_count": 6,
+    "open_action_count": 6,
+    "readiness_score": 100,
+    "status": "passed",
+    "top_action_type": "review_incident_escalation"
+  },
+  "pack": "145",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_checkpoint_panel.html",
+  "readiness_label": "Owner Action review-state checkpoint passed",
+  "readiness_score": 100,
+  "review_depth": {
+    "has_assignments": true,
+    "has_notes": true,
+    "has_receipts": true,
+    "has_state": true,
+    "score": 100,
+    "total_review_records": 6
+  },
+  "route_health": {
+    "coverage_pct": 100,
+    "guarded_needed_count": 50,
+    "needs_guard_count": 50,
+    "unguarded_high_risk_count": 0,
+    "unguarded_needed_count": 0
+  },
+  "soulaana_translation": "Soulaana: Owner Action review stack is connected. The Tower can track action state, receipts, notes, and assignment ownership.",
+  "state_receipts": {
+    "base_receipt_count": 3,
+    "filtered_receipt_count": 3,
+    "readiness_score": 100,
+    "status": "passed",
+    "top_new_state": "resolved"
+  },
+  "state_tracking": {
+    "action_count": 6,
+    "by_state": {
+      "acknowledged": 0,
+      "archived": 0,
+      "false_alarm": 0,
+      "investigating": 0,
+      "open": 5,
+      "resolved": 1
+    },
+    "closed_action_count": 1,
+    "open_action_count": 5,
+    "readiness_score": 100,
+    "receipt_count": 3,
+    "status": "passed",
+    "tracked_action_count": 1
+  },
+  "status": "passed",
+  "status_fingerprint": "21c57b57a0a55c480f2d758d690223fa2a42970873be29b0dbcce19b04ada153",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_checkpoint_status.json"
+}

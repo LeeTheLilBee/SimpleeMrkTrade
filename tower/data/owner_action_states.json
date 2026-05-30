@@ -2,15 +2,15 @@
   "owner_action_e2e83fea613407d66b": {
     "action_id": "owner_action_e2e83fea613407d66b",
     "action_type": "review_incident_escalation",
-    "created_at": "2026-05-30T09:00:03.482965Z",
+    "created_at": "2026-05-30T14:59:39.395177Z",
     "current_state": "resolved",
     "href": "/tower/security-incident-filters.json",
     "is_closed": true,
     "last_actor_user_id": "owner_solice",
-    "last_note": "Receipt seed three.",
-    "last_reason": "Pack 142 resolved receipt seed.",
+    "last_note": "Checkpoint state seed three.",
+    "last_reason": "Pack 145 checkpoint seed resolved.",
     "prior_state": "investigating",
     "title": "Review Incident Escalation",
-    "updated_at": "2026-05-30T09:00:03.488317Z"
+    "updated_at": "2026-05-30T14:59:39.398111Z"
   }
 }

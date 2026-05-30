@@ -6,7 +6,7 @@
     "assigned_to": "",
     "assignment_status": "",
     "limit": 80,
-    "top_only": true
+    "top_only": false
   },
   "allowed_assignment_statuses": [
     "accepted",
@@ -24,20 +24,20 @@
       "action_type": "review_incident_escalation",
       "assigned_role": "future_admin",
       "assigned_to": "admin_review",
-      "assignment_fingerprint": "50765c468a9146de019b7e52a42fda2e998f46bd131e1e607773dd2627b3b9b1",
-      "assignment_id": "owner_action_assignment_1e07369ff07e3613c1",
-      "assignment_reason": "Completed assignment handoff for test.",
+      "assignment_fingerprint": "653779d60e6408198c6fa89c67759d5cba33a4faac9f3b4e5b802b6c7795df0e",
+      "assignment_id": "owner_action_assignment_18a3073f9d044a8292",
+      "assignment_reason": "Pack 145 checkpoint assignment.",
       "assignment_status": "completed",
-      "created_at": "2026-05-30T14:46:40.770856Z",
+      "created_at": "2026-05-30T14:59:39.401261Z",
       "href": "/tower/security-incident-filters.json",
       "is_closed": true,
       "metadata": {
-        "pack": "144"
+        "pack": "145"
       },
       "no_secret_leakage": true,
       "pack": "144",
       "title": "Review Incident Escalation",
-      "updated_at": "2026-05-30T14:46:40.782220Z",
+      "updated_at": "2026-05-30T14:59:39.401261Z",
       "updated_by": "owner_solice"
     }
   ],
@@ -46,7 +46,7 @@
     "completed",
     "declined"
   ],
-  "created_at": "2026-05-30T14:46:40.889941Z",
+  "created_at": "2026-05-30T14:59:42.049012Z",
   "filter_options": {
     "action_type": {
       "review_incident_escalation": 1
@@ -73,30 +73,30 @@
   "pack": "144",
   "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_assignments_panel.html",
   "readiness_score": 100,
-  "receipt_count": 3,
+  "receipt_count": 1,
   "soulaana_translation": "Soulaana: Owner commands can now be assigned and tracked by responsible person or role.",
   "status": "passed",
-  "status_fingerprint": "315aac3f28526134be617195c8279b0d9431fdd430badbdbee49d5abe99d56d4",
+  "status_fingerprint": "471f57b0e3e1d82b3500d2df470f340df9dcab331cf95c6f1362adc4b9439407",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_assignments_status.json",
   "top_assignment": {
     "action_id": "owner_action_e2e83fea613407d66b",
     "action_type": "review_incident_escalation",
     "assigned_role": "future_admin",
     "assigned_to": "admin_review",
-    "assignment_fingerprint": "50765c468a9146de019b7e52a42fda2e998f46bd131e1e607773dd2627b3b9b1",
-    "assignment_id": "owner_action_assignment_1e07369ff07e3613c1",
-    "assignment_reason": "Completed assignment handoff for test.",
+    "assignment_fingerprint": "653779d60e6408198c6fa89c67759d5cba33a4faac9f3b4e5b802b6c7795df0e",
+    "assignment_id": "owner_action_assignment_18a3073f9d044a8292",
+    "assignment_reason": "Pack 145 checkpoint assignment.",
     "assignment_status": "completed",
-    "created_at": "2026-05-30T14:46:40.770856Z",
+    "created_at": "2026-05-30T14:59:39.401261Z",
     "href": "/tower/security-incident-filters.json",
     "is_closed": true,
     "metadata": {
-      "pack": "144"
+      "pack": "145"
     },
     "no_secret_leakage": true,
     "pack": "144",
     "title": "Review Incident Escalation",
-    "updated_at": "2026-05-30T14:46:40.782220Z",
+    "updated_at": "2026-05-30T14:59:39.401261Z",
     "updated_by": "owner_solice"
   },
   "unassigned_action_count": 5

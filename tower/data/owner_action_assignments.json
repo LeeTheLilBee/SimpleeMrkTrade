@@ -4,20 +4,20 @@
     "action_type": "review_incident_escalation",
     "assigned_role": "future_admin",
     "assigned_to": "admin_review",
-    "assignment_fingerprint": "50765c468a9146de019b7e52a42fda2e998f46bd131e1e607773dd2627b3b9b1",
-    "assignment_id": "owner_action_assignment_1e07369ff07e3613c1",
-    "assignment_reason": "Completed assignment handoff for test.",
+    "assignment_fingerprint": "653779d60e6408198c6fa89c67759d5cba33a4faac9f3b4e5b802b6c7795df0e",
+    "assignment_id": "owner_action_assignment_18a3073f9d044a8292",
+    "assignment_reason": "Pack 145 checkpoint assignment.",
     "assignment_status": "completed",
-    "created_at": "2026-05-30T14:46:40.770856Z",
+    "created_at": "2026-05-30T14:59:39.401261Z",
     "href": "/tower/security-incident-filters.json",
     "is_closed": true,
     "metadata": {
-      "pack": "144"
+      "pack": "145"
     },
     "no_secret_leakage": true,
     "pack": "144",
     "title": "Review Incident Escalation",
-    "updated_at": "2026-05-30T14:46:40.782220Z",
+    "updated_at": "2026-05-30T14:59:39.401261Z",
     "updated_by": "owner_solice"
   }
 }

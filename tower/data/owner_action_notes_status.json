@@ -1,11 +1,12 @@
 {
+  "__redacted_owner_action_note_field_count__": 1,
   "active_filters": {
     "action_id": "",
     "actor_user_id": "",
     "limit": 80,
     "note_id": "",
     "note_type": "",
-    "top_only": true,
+    "top_only": false,
     "visibility": ""
   },
   "allowed_note_types": [
@@ -22,25 +23,20 @@
     "owner_only",
     "system_internal"
   ],
-  "base_note_count": 3,
-  "created_at": "2026-05-30T09:34:41.024201Z",
+  "base_note_count": 1,
+  "created_at": "2026-05-30T14:59:42.044752Z",
   "filter_options": {
     "action_type": {
-      "review_incident_escalation": 3
+      "review_incident_escalation": 1
     },
     "actor_user_id": {
-      "owner_solice": 2,
-      "tower_system": 1
+      "owner_solice": 1
     },
     "note_type": {
-      "follow_up": 1,
-      "investigation": 1,
       "resolution": 1
     },
     "visibility": {
-      "admin_visible": 1,
-      "owner_only": 1,
-      "system_internal": 1
+      "owner_only": 1
     }
   },
   "filtered_note_count": 1,
@@ -53,53 +49,54 @@
   "no_secret_leakage": true,
   "notes": [
     {
+      "__redacted_owner_action_note_field_count__": 1,
       "action_id": "owner_action_e2e83fea613407d66b",
       "action_type": "review_incident_escalation",
-      "actor_user_id": "tower_system",
-      "created_at": "2026-05-30T09:34:40.911873Z",
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-30T14:59:39.399392Z",
       "href": "/tower/security-incident-filters.json",
       "is_deleted": false,
       "metadata": {
-        "pack": "143"
+        "pack": "145"
       },
       "no_secret_leakage": true,
-      "note_body": "Follow up later if related incidents reappear.",
-      "note_fingerprint": "c32c9bd78ed66f932b2438fc2b46c06ba24b6c6239c08d8d91b5d74d31f1ba70",
-      "note_id": "owner_action_note_0ce5a08e9494efe686",
-      "note_type": "follow_up",
+      "note_body": "[REDACTED_OWNER_ACTION_NOTE_VALUE]",
+      "note_fingerprint": "8de6dd64567c4b8d56104fcc8cf8cee20c814ff4377d8a1dc53dcf3cd2d4ca3a",
+      "note_id": "owner_action_note_b14d35fbed657c698e",
+      "note_type": "resolution",
       "pack": "143",
       "title": "Review Incident Escalation",
-      "updated_at": "2026-05-30T09:34:40.911873Z",
-      "visibility": "system_internal"
+      "updated_at": "2026-05-30T14:59:39.399392Z",
+      "visibility": "owner_only"
     }
   ],
   "ok": true,
   "pack": "143",
   "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_notes_panel.html",
   "readiness_score": 100,
-  "receipt_count": 3,
+  "receipt_count": 1,
   "soulaana_translation": "Soulaana: Owner command notes are saved with redaction and receipts.",
   "status": "passed",
-  "status_fingerprint": "84a4ece95c484c585c8f3a2cb4d69b7aaee6acbdb29e081984263732d1ee0594",
+  "status_fingerprint": "d1f54950956cbe7dd05c930e9cb03ab3b1969567a0c705366b1f98051981c6ab",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_notes_status.json",
   "top_note": {
     "action_id": "owner_action_e2e83fea613407d66b",
     "action_type": "review_incident_escalation",
-    "actor_user_id": "tower_system",
-    "created_at": "2026-05-30T09:34:40.911873Z",
+    "actor_user_id": "owner_solice",
+    "created_at": "2026-05-30T14:59:39.399392Z",
     "href": "/tower/security-incident-filters.json",
     "is_deleted": false,
     "metadata": {
-      "pack": "143"
+      "pack": "145"
     },
     "no_secret_leakage": true,
-    "note_body": "Follow up later if related incidents reappear.",
-    "note_fingerprint": "c32c9bd78ed66f932b2438fc2b46c06ba24b6c6239c08d8d91b5d74d31f1ba70",
-    "note_id": "owner_action_note_0ce5a08e9494efe686",
-    "note_type": "follow_up",
+    "note_body": "[REDACTED_OWNER_ACTION_NOTE_VALUE]",
+    "note_fingerprint": "8de6dd64567c4b8d56104fcc8cf8cee20c814ff4377d8a1dc53dcf3cd2d4ca3a",
+    "note_id": "owner_action_note_b14d35fbed657c698e",
+    "note_type": "resolution",
     "pack": "143",
     "title": "Review Incident Escalation",
-    "updated_at": "2026-05-30T09:34:40.911873Z",
-    "visibility": "system_internal"
+    "updated_at": "2026-05-30T14:59:39.399392Z",
+    "visibility": "owner_only"
   }
 }

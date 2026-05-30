@@ -4,57 +4,19 @@
     "action_id": "owner_action_e2e83fea613407d66b",
     "action_type": "review_incident_escalation",
     "actor_user_id": "owner_solice",
-    "created_at": "2026-05-30T09:34:40.907512Z",
+    "created_at": "2026-05-30T14:59:39.399392Z",
     "event_type": "owner_action_note_created",
     "metadata": {
-      "pack": "143"
+      "pack": "145"
     },
     "no_secret_leakage": true,
-    "note_fingerprint": "48e82d06b2acd5fb4b3597956ff04e9522c1ae19a6bc5afc427d20d5662f5255",
-    "note_id": "owner_action_note_f6d142b3c84d675ada",
-    "note_type": "investigation",
-    "pack": "143",
-    "receipt_fingerprint": "68f4d85dd390e94918ba40dfce5aaf3e5827ae558963f1cc5eb64e1b5e869854",
-    "receipt_id": "owner_action_note_receipt_f2f271a5ca370e2983",
-    "title": "Review Incident Escalation",
-    "visibility": "owner_only"
-  },
-  {
-    "action_id": "owner_action_e2e83fea613407d66b",
-    "action_type": "review_incident_escalation",
-    "actor_user_id": "owner_solice",
-    "created_at": "2026-05-30T09:34:40.909575Z",
-    "event_type": "owner_action_note_created",
-    "metadata": {
-      "pack": "143"
-    },
-    "no_secret_leakage": true,
-    "note_fingerprint": "1732e819ed54c2b46f52e052cb0f6911acd4fc44621b097badf70de78c303f86",
-    "note_id": "owner_action_note_e0918d4187240e89a6",
+    "note_fingerprint": "8de6dd64567c4b8d56104fcc8cf8cee20c814ff4377d8a1dc53dcf3cd2d4ca3a",
+    "note_id": "owner_action_note_b14d35fbed657c698e",
     "note_type": "resolution",
     "pack": "143",
-    "receipt_fingerprint": "5444a3c3eebdf2bc6bb402c75afbd2aa0785aa33434f40cca22e02566471f719",
-    "receipt_id": "owner_action_note_receipt_975f2e5588cdcc082b",
+    "receipt_fingerprint": "e0071ebba37fdcba6a4aaef5d3f2b1ec05be6d5c19347c25637603497326cb68",
+    "receipt_id": "owner_action_note_receipt_f2ffc64391e09c898c",
     "title": "Review Incident Escalation",
-    "visibility": "admin_visible"
-  },
-  {
-    "action_id": "owner_action_e2e83fea613407d66b",
-    "action_type": "review_incident_escalation",
-    "actor_user_id": "tower_system",
-    "created_at": "2026-05-30T09:34:40.911873Z",
-    "event_type": "owner_action_note_created",
-    "metadata": {
-      "pack": "143"
-    },
-    "no_secret_leakage": true,
-    "note_fingerprint": "c32c9bd78ed66f932b2438fc2b46c06ba24b6c6239c08d8d91b5d74d31f1ba70",
-    "note_id": "owner_action_note_0ce5a08e9494efe686",
-    "note_type": "follow_up",
-    "pack": "143",
-    "receipt_fingerprint": "be3b316849a56fc2b5ed94eacf1fd330a9c81dede36ff520cac99f6d6431016f",
-    "receipt_id": "owner_action_note_receipt_472dc5717cd593142c",
-    "title": "Review Incident Escalation",
-    "visibility": "system_internal"
+    "visibility": "owner_only"
   }
 ]

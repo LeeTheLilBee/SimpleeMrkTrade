@@ -7,10 +7,10 @@
     "new_state": "",
     "prior_state": "",
     "receipt_id": "",
-    "top_only": true
+    "top_only": false
   },
   "base_receipt_count": 3,
-  "created_at": "2026-05-30T09:00:03.706718Z",
+  "created_at": "2026-05-30T14:59:42.041441Z",
   "filter_options": {
     "action_type": {
       "review_incident_escalation": 3
@@ -32,7 +32,7 @@
       "open": 1
     }
   },
-  "filtered_receipt_count": 1,
+  "filtered_receipt_count": 3,
   "human_reason": "Owner Action state receipt layer is ready.",
   "leakage_scan": {
     "forbidden_hit_count": 0,
@@ -49,19 +49,57 @@
       "action_id": "owner_action_e2e83fea613407d66b",
       "action_type": "review_incident_escalation",
       "actor_user_id": "owner_solice",
-      "created_at": "2026-05-30T09:00:03.488317Z",
+      "created_at": "2026-05-30T14:59:39.398111Z",
       "event_type": "owner_action_state_change",
       "metadata": {
-        "pack": "142"
+        "pack": "145"
       },
       "new_state": "resolved",
       "no_secret_leakage": true,
-      "note": "Receipt seed three.",
+      "note": "Checkpoint state seed three.",
       "pack": "141",
       "prior_state": "investigating",
-      "reason": "Pack 142 resolved receipt seed.",
-      "receipt_fingerprint": "ae166cf320daf2766f106d832957d23f657c278e176db5d344e69993c448492a",
-      "receipt_id": "owner_action_state_bced2a1c112c6b6988",
+      "reason": "Pack 145 checkpoint seed resolved.",
+      "receipt_fingerprint": "9386f4d27e6b246d8049e7bb55fa82a46cf7ef28dcf02a94d93428657c7e940d",
+      "receipt_id": "owner_action_state_5f8bb07bb45d1f2090",
+      "title": "Review Incident Escalation"
+    },
+    {
+      "action_id": "owner_action_e2e83fea613407d66b",
+      "action_type": "review_incident_escalation",
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-30T14:59:39.396685Z",
+      "event_type": "owner_action_state_change",
+      "metadata": {
+        "pack": "145"
+      },
+      "new_state": "investigating",
+      "no_secret_leakage": true,
+      "note": "Checkpoint state seed two.",
+      "pack": "141",
+      "prior_state": "acknowledged",
+      "reason": "Pack 145 checkpoint seed investigating.",
+      "receipt_fingerprint": "ef383bf8aeb519c74ff606b87a740ccaba0ea1b79139d679f6940dd24fd39a35",
+      "receipt_id": "owner_action_state_0d12cc45e09c794059",
+      "title": "Review Incident Escalation"
+    },
+    {
+      "action_id": "owner_action_e2e83fea613407d66b",
+      "action_type": "review_incident_escalation",
+      "actor_user_id": "owner_solice",
+      "created_at": "2026-05-30T14:59:39.395205Z",
+      "event_type": "owner_action_state_change",
+      "metadata": {
+        "pack": "145"
+      },
+      "new_state": "acknowledged",
+      "no_secret_leakage": true,
+      "note": "Checkpoint state seed.",
+      "pack": "141",
+      "prior_state": "open",
+      "reason": "Pack 145 checkpoint seed acknowledge.",
+      "receipt_fingerprint": "c0d161057e822d728cb10762ccabb94ec12a22f7165fe38a949b6f0cdb32c762",
+      "receipt_id": "owner_action_state_9235ac5ce69c0f6410",
       "title": "Review Incident Escalation"
     }
   ],
@@ -82,25 +120,25 @@
     "tracked_action_count": 1
   },
   "status": "passed",
-  "status_fingerprint": "87be7c6ff37253e4ffc6734dd0ee8cdc9883358e4c8c1eef216a8c9e0012960d",
+  "status_fingerprint": "14efc11d3d07fe94ca335740efbbb3584c76fa65b40c53c246287d207ed524b0",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_state_receipts_status.json",
   "top_receipt": {
     "action_id": "owner_action_e2e83fea613407d66b",
     "action_type": "review_incident_escalation",
     "actor_user_id": "owner_solice",
-    "created_at": "2026-05-30T09:00:03.488317Z",
+    "created_at": "2026-05-30T14:59:39.398111Z",
     "event_type": "owner_action_state_change",
     "metadata": {
-      "pack": "142"
+      "pack": "145"
     },
     "new_state": "resolved",
     "no_secret_leakage": true,
-    "note": "Receipt seed three.",
+    "note": "Checkpoint state seed three.",
     "pack": "141",
     "prior_state": "investigating",
-    "reason": "Pack 142 resolved receipt seed.",
-    "receipt_fingerprint": "ae166cf320daf2766f106d832957d23f657c278e176db5d344e69993c448492a",
-    "receipt_id": "owner_action_state_bced2a1c112c6b6988",
+    "reason": "Pack 145 checkpoint seed resolved.",
+    "receipt_fingerprint": "9386f4d27e6b246d8049e7bb55fa82a46cf7ef28dcf02a94d93428657c7e940d",
+    "receipt_id": "owner_action_state_5f8bb07bb45d1f2090",
     "title": "Review Incident Escalation"
   }
 }

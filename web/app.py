@@ -11358,3 +11358,43 @@ except Exception:
 # END PACK144_OWNER_ACTION_ASSIGNMENTS_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK145_OWNER_ACTION_REVIEW_CHECKPOINT_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/owner-action-review-checkpoint.json")
+    def tower_owner_action_review_checkpoint_json_pack145():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/owner-action-review-checkpoint.json",
+                metadata={"source": "pack145_owner_action_review_checkpoint_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.owner_action_review_checkpoint import build_owner_action_review_checkpoint
+
+            return jsonify(build_owner_action_review_checkpoint(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "145",
+                    "reason_code": "owner_action_review_checkpoint_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "145", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK145_OWNER_ACTION_REVIEW_CHECKPOINT_ROUTE
+# ================================================================================
+
