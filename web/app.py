@@ -11283,3 +11283,78 @@ except Exception:
 # END PACK143_OWNER_ACTION_NOTES_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK144_OWNER_ACTION_ASSIGNMENTS_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/owner-action-assignments.json", methods=["GET", "POST"])
+    def tower_owner_action_assignments_json_pack144():
+        try:
+            from flask import jsonify, request
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/owner-action-assignments.json",
+                metadata={"source": "pack144_owner_action_assignments_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.owner_action_assignments import (
+                assign_owner_action,
+                build_owner_action_assignment_detail,
+                build_owner_action_assignments_status,
+            )
+
+            if request.method == "POST":
+                payload = request.get_json(silent=True) or {}
+                return jsonify(assign_owner_action(
+                    action_id=payload.get("action_id", ""),
+                    assigned_to=payload.get("assigned_to", ""),
+                    assigned_role=payload.get("assigned_role", "owner"),
+                    assignment_status=payload.get("assignment_status", "assigned"),
+                    actor_user_id=payload.get("actor_user_id", "owner_solice"),
+                    assignment_reason=payload.get("assignment_reason", payload.get("reason", "")),
+                    metadata=payload.get("metadata", {}),
+                ))
+
+            detail_value = str(request.args.get("detail", "") or "").strip().lower()
+            if detail_value in {"1", "true", "yes", "y"}:
+                return jsonify(build_owner_action_assignment_detail(
+                    action_id=request.args.get("action_id", ""),
+                    assignment_id=request.args.get("assignment_id", ""),
+                    write_panel=True,
+                ))
+
+            top_only_value = str(request.args.get("top_only", "") or "").strip().lower()
+            top_only = top_only_value in {"1", "true", "yes", "y"}
+
+            return jsonify(build_owner_action_assignments_status(
+                action_id=request.args.get("action_id", ""),
+                assigned_to=request.args.get("assigned_to", ""),
+                assigned_role=request.args.get("assigned_role", ""),
+                assignment_status=request.args.get("assignment_status", ""),
+                top_only=top_only,
+                limit=request.args.get("limit", 80),
+                write_panel=True,
+            ))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "144",
+                    "reason_code": "owner_action_assignments_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "144", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK144_OWNER_ACTION_ASSIGNMENTS_ROUTE
+# ================================================================================
+
