@@ -834,3 +834,27 @@ def pack137_owner_action_center_lane_status_bridge():
 # END PACK137_OWNER_ACTION_CENTER_LANE_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK138_OWNER_ACTION_FILTERS_STATUS_BRIDGE
+# ================================================================================
+
+def pack138_owner_action_filters_status_bridge():
+    try:
+        from tower.owner_action_center import build_owner_action_filters_status
+        return build_owner_action_filters_status(write_panel=True)
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "138",
+            "title": "Owner Action Filters",
+            "reason_code": "owner_action_filters_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Owner Action Filters could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK138_OWNER_ACTION_FILTERS_STATUS_BRIDGE
+# ================================================================================
+

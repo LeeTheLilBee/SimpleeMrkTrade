@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Owner Action Filters</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+
+<!-- PACK138_OWNER_ACTION_FILTERS_SECTION -->
+<section class="owner-action-filters" data-pack="138">
+  <style>
+    .owner-action-filters {
+      margin: 24px 0;
+      border: 1px solid rgba(168,175,255,.40);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(168,175,255,.13), transparent 34%),
+        linear-gradient(135deg, rgba(22,20,48,.88), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .owner-action-filters__eyebrow {
+      color: rgba(168,175,255,.92);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .owner-action-filters h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .owner-action-filters p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .owner-action-filter-active {
+      margin-top: 12px;
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+      color: rgba(245,234,210,.72);
+      font-size: 12px;
+    }
+    .owner-action-filter-options,
+    .owner-action-filter-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .owner-action-filter-option,
+    .owner-action-filter-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+    }
+    .owner-action-filter-option h3,
+    .owner-action-filter-card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .owner-action-filter-option span {
+      display: inline-flex;
+      margin: 3px;
+      border: 1px solid rgba(168,175,255,.22);
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: rgba(245,234,210,.70);
+      font-size: 11px;
+    }
+    .owner-action-filter-card__eyebrow {
+      color: rgba(168,175,255,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .owner-action-filter-card small {
+      display: block;
+      color: rgba(245,234,210,.55);
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+    .owner-action-filter-card a {
+      display: inline-flex;
+      text-decoration: none;
+      border: 1px solid rgba(168,175,255,.45);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #f5ead2;
+      background: rgba(168,175,255,.08);
+      font-size: 12px;
+    }
+    @media (max-width: 1000px) {
+      .owner-action-filter-options,
+      .owner-action-filter-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="owner-action-filters__eyebrow">PACK 138 · OWNER ACTION FILTERS</div>
+  <h2>Owner Action Filters</h2>
+  <p>Owner Action Center filters loaded from cached command queue.</p>
+
+  <div class="owner-action-filter-active">
+    <strong>Filtered actions:</strong> 6<br>
+    <strong>Active filters:</strong> {&#x27;severity&#x27;: &#x27;&#x27;, &#x27;lane&#x27;: &#x27;&#x27;, &#x27;source&#x27;: &#x27;&#x27;, &#x27;status&#x27;: &#x27;&#x27;, &#x27;action_type&#x27;: &#x27;&#x27;, &#x27;top_only&#x27;: False, &#x27;limit&#x27;: 80}
+  </div>
+
+  <div class="owner-action-filter-options">
+    
+        <article class="owner-action-filter-option">
+          <h3>severity</h3>
+          <div><span>high · 2</span><span>info · 2</span><span>medium · 2</span></div>
+        </article>
+        
+        <article class="owner-action-filter-option">
+          <h3>lane</h3>
+          <div><span>inbox · 2</span><span>incident · 1</span><span>route · 1</span><span>watch · 2</span></div>
+        </article>
+        
+        <article class="owner-action-filter-option">
+          <h3>status</h3>
+          <div><span>open · 6</span></div>
+        </article>
+        
+        <article class="owner-action-filter-option">
+          <h3>source</h3>
+          <div><span>incident_filters_cached · 1</span><span>route_health_cached · 1</span><span>security_inbox_cached · 2</span><span>security_watch_cached · 1</span><span>security_watch_checkpoint_cached · 1</span></div>
+        </article>
+        
+        <article class="owner-action-filter-option">
+          <h3>action_type</h3>
+          <div><span>continue_security_review · 1</span><span>monitor_route_health · 1</span><span>monitor_security_watch_checkpoint · 1</span><span>recommended_first_action · 1</span><span>review_high_priority_inbox · 1</span><span>review_incident_escalation · 1</span></div>
+        </article>
+        
+  </div>
+
+  <div class="owner-action-filter-grid">
+    
+        <article class="owner-action-filter-card">
+          <div class="owner-action-filter-card__eyebrow">high · incident</div>
+          <h3>Review Incident Escalation</h3>
+          <p>Cached incident filters show escalation-ready incidents.</p>
+          <small>open_incident_filters_and_review_escalation_ready</small>
+          <a href="/tower/security-incident-filters.json">Open source</a>
+        </article>
+        
+        <article class="owner-action-filter-card">
+          <div class="owner-action-filter-card__eyebrow">medium · inbox</div>
+          <h3>Review High-Priority Security Inbox</h3>
+          <p>Cached Security Inbox filters show high-priority items.</p>
+          <small>open_security_inbox_filters_and_review_high_priority</small>
+          <a href="/tower/security-inbox-filters.json">Open source</a>
+        </article>
+        
+        <article class="owner-action-filter-card">
+          <div class="owner-action-filter-card__eyebrow">high · watch</div>
+          <h3>Do Recommended First Action</h3>
+          <p>Security Watch recommends: review_incident_escalation.</p>
+          <small>review_incident_escalation</small>
+          <a href="/tower/security-watch.json">Open source</a>
+        </article>
+        
+        <article class="owner-action-filter-card">
+          <div class="owner-action-filter-card__eyebrow">medium · inbox</div>
+          <h3>Continue Security Inbox Review</h3>
+          <p>Cached Security Inbox has open owner review items.</p>
+          <small>open_security_inbox_review_status</small>
+          <a href="/tower/security-inbox-review-status.json">Open source</a>
+        </article>
+        
+        <article class="owner-action-filter-card">
+          <div class="owner-action-filter-card__eyebrow">info · route</div>
+          <h3>Monitor Sealed Route Wall</h3>
+          <p>Cached route wall is sealed.</p>
+          <small>monitor_route_guard_status</small>
+          <a href="/tower/ob-guard-status.json">Open source</a>
+        </article>
+        
+        <article class="owner-action-filter-card">
+          <div class="owner-action-filter-card__eyebrow">info · watch</div>
+          <h3>Monitor Security Watch Checkpoint</h3>
+          <p>Cached Security Watch checkpoint is healthy and visible.</p>
+          <small>monitor_security_watch_checkpoint</small>
+          <a href="/tower/security-watch-checkpoint.json">Open source</a>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK138_OWNER_ACTION_FILTERS_SECTION -->
+
+</main>
+</body>
+</html>

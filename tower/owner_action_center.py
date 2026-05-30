@@ -1525,3 +1525,375 @@ def owner_action_center_status_card() -> Dict[str, Any]:
 # END PACK137_OWNER_ACTION_CENTER_STATUS_POLISH
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK138_OWNER_ACTION_CENTER_FILTERS
+# ================================================================================
+# Adds cached action filtering for owner command queue.
+# This layer reads the already-built Owner Action Center status and does not call
+# live recursive builders.
+# ================================================================================
+
+OWNER_ACTION_ALLOWED_FILTERS = {
+    "severity",
+    "lane",
+    "source",
+    "status",
+    "action_type",
+    "top_only",
+}
+
+
+def _pack138_normalize_filter_value(value: Any) -> str:
+    return str(value or "").strip().lower()
+
+
+def _pack138_action_matches(
+    action: Dict[str, Any],
+    *,
+    severity: str = "",
+    lane: str = "",
+    source: str = "",
+    status: str = "",
+    action_type: str = "",
+) -> bool:
+    if not isinstance(action, dict):
+        return False
+
+    if severity and _pack138_normalize_filter_value(action.get("severity")) != severity:
+        return False
+
+    action_lane = _pack137_action_lane(action)
+    if lane and _pack138_normalize_filter_value(action_lane) != lane:
+        return False
+
+    if source and _pack138_normalize_filter_value(action.get("source")) != source:
+        return False
+
+    if status and _pack138_normalize_filter_value(action.get("status")) != status:
+        return False
+
+    if action_type and _pack138_normalize_filter_value(action.get("action_type")) != action_type:
+        return False
+
+    return True
+
+
+def build_owner_action_filters_status(
+    *,
+    severity: str = "",
+    lane: str = "",
+    source: str = "",
+    status_filter: str = "",
+    action_type: str = "",
+    top_only: bool = False,
+    limit: int = 80,
+    write_panel: bool = True,
+) -> Dict[str, Any]:
+    base_status = load_owner_action_center_status()
+    actions = base_status.get("actions", []) if isinstance(base_status.get("actions"), list) else []
+
+    severity_norm = _pack138_normalize_filter_value(severity)
+    lane_norm = _pack138_normalize_filter_value(lane)
+    source_norm = _pack138_normalize_filter_value(source)
+    status_norm = _pack138_normalize_filter_value(status_filter)
+    action_type_norm = _pack138_normalize_filter_value(action_type)
+
+    try:
+        limit_int = int(limit)
+    except Exception:
+        limit_int = 80
+    limit_int = max(1, min(limit_int, 250))
+
+    filtered = [
+        action for action in actions
+        if _pack138_action_matches(
+            action,
+            severity=severity_norm,
+            lane=lane_norm,
+            source=source_norm,
+            status=status_norm,
+            action_type=action_type_norm,
+        )
+    ]
+
+    filtered = sorted(
+        filtered,
+        key=lambda item: (
+            _num(item.get("priority_score"), 0),
+            ACTION_PRIORITY_ORDER.get(str(item.get("severity", "info")).lower(), 0),
+        ),
+        reverse=True,
+    )
+
+    if top_only:
+        filtered = filtered[:1]
+
+    filtered = filtered[:limit_int]
+
+    by_severity: Dict[str, int] = {}
+    by_lane: Dict[str, int] = {}
+    by_status: Dict[str, int] = {}
+    by_source: Dict[str, int] = {}
+    by_type: Dict[str, int] = {}
+
+    for action in actions:
+        if not isinstance(action, dict):
+            continue
+
+        sev = _pack138_normalize_filter_value(action.get("severity")) or "info"
+        ln = _pack137_action_lane(action)
+        st = _pack138_normalize_filter_value(action.get("status")) or "open"
+        src = _pack138_normalize_filter_value(action.get("source")) or "unknown"
+        typ = _pack138_normalize_filter_value(action.get("action_type")) or "unknown"
+
+        by_severity[sev] = by_severity.get(sev, 0) + 1
+        by_lane[ln] = by_lane.get(ln, 0) + 1
+        by_status[st] = by_status.get(st, 0) + 1
+        by_source[src] = by_source.get(src, 0) + 1
+        by_type[typ] = by_type.get(typ, 0) + 1
+
+    lane_summary = build_owner_action_center_lane_summary(base_status)
+    top_action = filtered[0] if filtered else {}
+
+    active_filters = {
+        "severity": severity_norm,
+        "lane": lane_norm,
+        "source": source_norm,
+        "status": status_norm,
+        "action_type": action_type_norm,
+        "top_only": bool(top_only),
+        "limit": limit_int,
+    }
+
+    status_payload = {
+        "ok": True,
+        "pack": "138",
+        "status": "passed",
+        "base_status": base_status.get("status", "unknown"),
+        "base_pack": base_status.get("pack", ""),
+        "base_action_count": base_status.get("action_count", 0),
+        "filtered_action_count": len(filtered),
+        "active_filters": active_filters,
+        "actions": filtered,
+        "top_action": top_action,
+        "filter_options": {
+            "severity": by_severity,
+            "lane": by_lane,
+            "status": by_status,
+            "source": by_source,
+            "action_type": by_type,
+        },
+        "lane_summary": {
+            "lane_count": lane_summary.get("lane_count", 0),
+            "top_lane": lane_summary.get("top_lane", {}),
+        },
+        "readiness_score": 100,
+        "human_reason": "Owner Action Center filters loaded from cached command queue.",
+        "soulaana_translation": "Soulaana: Owner commands can now be filtered by lane, severity, source, status, and action type.",
+    }
+
+    scan = _safe_scan(status_payload)
+    status_payload["no_secret_leakage"] = scan.get("ok") is True
+    status_payload["leakage_scan"] = scan
+    status_payload["status_fingerprint"] = _fingerprint(status_payload)
+
+    if write_panel:
+        write_owner_action_filters_panel(status_payload)
+
+    return status_payload
+
+
+def render_owner_action_filters_section(status: Dict[str, Any] | None = None) -> str:
+    status = status if isinstance(status, dict) else build_owner_action_filters_status(write_panel=False)
+    actions = status.get("actions", []) if isinstance(status.get("actions"), list) else []
+    options = status.get("filter_options", {}) if isinstance(status.get("filter_options"), dict) else {}
+    active = status.get("active_filters", {}) if isinstance(status.get("active_filters"), dict) else {}
+
+    option_cards = []
+    for label, mapping in options.items():
+        if not isinstance(mapping, dict):
+            continue
+        pieces = []
+        for key, count in sorted(mapping.items(), key=lambda item: str(item[0])):
+            pieces.append(f"<span>{_html_escape(key)} · {_html_escape(count)}</span>")
+        option_cards.append(f"""
+        <article class="owner-action-filter-option">
+          <h3>{_html_escape(label)}</h3>
+          <div>{''.join(pieces)}</div>
+        </article>
+        """)
+
+    action_cards = []
+    for action in actions[:20]:
+        if not isinstance(action, dict):
+            continue
+        lane = _pack137_action_lane(action)
+        action_cards.append(f"""
+        <article class="owner-action-filter-card">
+          <div class="owner-action-filter-card__eyebrow">{_html_escape(action.get('severity', 'info'))} · {_html_escape(lane)}</div>
+          <h3>{_html_escape(action.get('title', 'Owner Action'))}</h3>
+          <p>{_html_escape(action.get('human_reason', 'Owner action.'))}</p>
+          <small>{_html_escape(action.get('recommended_action', 'review'))}</small>
+          <a href="{_html_escape(action.get('href', '#'))}">Open source</a>
+        </article>
+        """)
+
+    if not action_cards:
+        action_cards.append("""
+        <article class="owner-action-filter-card">
+          <div class="owner-action-filter-card__eyebrow">empty</div>
+          <h3>No actions match this filter</h3>
+          <p>Try another lane, severity, source, status, or action type.</p>
+        </article>
+        """)
+
+    html = f"""
+<!-- PACK138_OWNER_ACTION_FILTERS_SECTION -->
+<section class="owner-action-filters" data-pack="138">
+  <style>
+    .owner-action-filters {{
+      margin: 24px 0;
+      border: 1px solid rgba(168,175,255,.40);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(168,175,255,.13), transparent 34%),
+        linear-gradient(135deg, rgba(22,20,48,.88), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }}
+    .owner-action-filters__eyebrow {{
+      color: rgba(168,175,255,.92);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }}
+    .owner-action-filters h2 {{
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }}
+    .owner-action-filters p {{
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }}
+    .owner-action-filter-active {{
+      margin-top: 12px;
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+      color: rgba(245,234,210,.72);
+      font-size: 12px;
+    }}
+    .owner-action-filter-options,
+    .owner-action-filter-grid {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }}
+    .owner-action-filter-option,
+    .owner-action-filter-card {{
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+    }}
+    .owner-action-filter-option h3,
+    .owner-action-filter-card h3 {{
+      margin: 0 0 8px;
+      font-size: 16px;
+    }}
+    .owner-action-filter-option span {{
+      display: inline-flex;
+      margin: 3px;
+      border: 1px solid rgba(168,175,255,.22);
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: rgba(245,234,210,.70);
+      font-size: 11px;
+    }}
+    .owner-action-filter-card__eyebrow {{
+      color: rgba(168,175,255,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }}
+    .owner-action-filter-card small {{
+      display: block;
+      color: rgba(245,234,210,.55);
+      margin-bottom: 10px;
+      word-break: break-word;
+    }}
+    .owner-action-filter-card a {{
+      display: inline-flex;
+      text-decoration: none;
+      border: 1px solid rgba(168,175,255,.45);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #f5ead2;
+      background: rgba(168,175,255,.08);
+      font-size: 12px;
+    }}
+    @media (max-width: 1000px) {{
+      .owner-action-filter-options,
+      .owner-action-filter-grid {{
+        grid-template-columns: 1fr;
+      }}
+    }}
+  </style>
+
+  <div class="owner-action-filters__eyebrow">PACK 138 · OWNER ACTION FILTERS</div>
+  <h2>Owner Action Filters</h2>
+  <p>{_html_escape(status.get('human_reason', 'Owner Action filters loaded.'))}</p>
+
+  <div class="owner-action-filter-active">
+    <strong>Filtered actions:</strong> {_html_escape(status.get('filtered_action_count', 0))}<br>
+    <strong>Active filters:</strong> {_html_escape(active)}
+  </div>
+
+  <div class="owner-action-filter-options">
+    {''.join(option_cards)}
+  </div>
+
+  <div class="owner-action-filter-grid">
+    {''.join(action_cards)}
+  </div>
+</section>
+<!-- END PACK138_OWNER_ACTION_FILTERS_SECTION -->
+"""
+    return html
+
+
+def write_owner_action_filters_panel(status: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    status = status if isinstance(status, dict) else build_owner_action_filters_status(write_panel=False)
+    path = DATA_DIR / "owner_action_filters_panel.html"
+    html = f"""<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Owner Action Filters</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+{render_owner_action_filters_section(status)}
+</main>
+</body>
+</html>
+"""
+    _write_text(path, html)
+    return {
+        "ok": True,
+        "pack": "138",
+        "decision": "owner_action_filters_panel_written",
+        "path": str(path),
+        "human_reason": "Owner Action Filters panel written.",
+        "soulaana_translation": "Soulaana: Owner command filters posted.",
+    }
+
+# ================================================================================
+# END PACK138_OWNER_ACTION_CENTER_FILTERS
+# ================================================================================
+
