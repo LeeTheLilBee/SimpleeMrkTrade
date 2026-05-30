@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Owner Action Notes</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+
+<!-- PACK143_OWNER_ACTION_NOTES_SECTION -->
+<section class="owner-action-notes" data-pack="143">
+  <style>
+    .owner-action-notes {
+      margin: 24px 0;
+      border: 1px solid rgba(220,183,94,.42);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(220,183,94,.14), transparent 34%),
+        linear-gradient(135deg, rgba(54,35,11,.88), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .owner-action-notes__eyebrow {
+      color: rgba(220,183,94,.92);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .owner-action-notes h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .owner-action-notes p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .owner-action-notes-active {
+      margin-top: 12px;
+      border: 1px solid rgba(245,234,210,.14);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+      color: rgba(245,234,210,.72);
+      font-size: 12px;
+    }
+    .owner-action-note-options,
+    .owner-action-note-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .owner-action-note-option,
+    .owner-action-note-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+    }
+    .owner-action-note-option h3,
+    .owner-action-note-card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .owner-action-note-option span {
+      display: inline-flex;
+      margin: 3px;
+      border: 1px solid rgba(220,183,94,.22);
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: rgba(245,234,210,.70);
+      font-size: 11px;
+    }
+    .owner-action-note-card__eyebrow {
+      color: rgba(220,183,94,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .owner-action-note-card small,
+    .owner-action-note-card code {
+      display: block;
+      color: rgba(245,234,210,.55);
+      margin-top: 8px;
+      word-break: break-word;
+    }
+    .owner-action-note-card code {
+      font-size: 11px;
+      color: rgba(220,183,94,.88);
+    }
+    @media (max-width: 1000px) {
+      .owner-action-note-options,
+      .owner-action-note-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="owner-action-notes__eyebrow">PACK 143 · OWNER ACTION NOTES</div>
+  <h2>Owner Action Notes</h2>
+  <p>Owner Action note system is ready.</p>
+
+  <div class="owner-action-notes-active">
+    <strong>Base notes:</strong> 3<br>
+    <strong>Filtered notes:</strong> 3<br>
+    <strong>Note receipts:</strong> 3<br>
+    <strong>Active filters:</strong> {&#x27;note_id&#x27;: &#x27;&#x27;, &#x27;action_id&#x27;: &#x27;&#x27;, &#x27;actor_user_id&#x27;: &#x27;&#x27;, &#x27;note_type&#x27;: &#x27;&#x27;, &#x27;visibility&#x27;: &#x27;&#x27;, &#x27;top_only&#x27;: False, &#x27;limit&#x27;: 80}
+  </div>
+
+  <div class="owner-action-note-options">
+    
+        <article class="owner-action-note-option">
+          <h3>note_type</h3>
+          <div><span>follow_up · 1</span><span>investigation · 1</span><span>resolution · 1</span></div>
+        </article>
+        
+        <article class="owner-action-note-option">
+          <h3>visibility</h3>
+          <div><span>admin_visible · 1</span><span>owner_only · 1</span><span>system_internal · 1</span></div>
+        </article>
+        
+        <article class="owner-action-note-option">
+          <h3>actor_user_id</h3>
+          <div><span>owner_solice · 2</span><span>tower_system · 1</span></div>
+        </article>
+        
+        <article class="owner-action-note-option">
+          <h3>action_type</h3>
+          <div><span>review_incident_escalation · 3</span></div>
+        </article>
+        
+  </div>
+
+  <div class="owner-action-note-grid">
+    
+        <article class="owner-action-note-card">
+          <div class="owner-action-note-card__eyebrow">follow_up · system_internal</div>
+          <h3>Review Incident Escalation</h3>
+          <p>Follow up later if related incidents reappear.</p>
+          <small>2026-05-30T09:34:40.911873Z</small>
+          <code>owner_action_note_0ce5a08e9494efe686</code>
+        </article>
+        
+        <article class="owner-action-note-card">
+          <div class="owner-action-note-card__eyebrow">resolution · admin_visible</div>
+          <h3>Review Incident Escalation</h3>
+          <p>Resolved after confirming the action path.</p>
+          <small>2026-05-30T09:34:40.909575Z</small>
+          <code>owner_action_note_e0918d4187240e89a6</code>
+        </article>
+        
+        <article class="owner-action-note-card">
+          <div class="owner-action-note-card__eyebrow">investigation · owner_only</div>
+          <h3>Review Incident Escalation</h3>
+          <p>[REDACTED_OWNER_ACTION_NOTE_VALUE]</p>
+          <small>2026-05-30T09:34:40.907512Z</small>
+          <code>owner_action_note_f6d142b3c84d675ada</code>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK143_OWNER_ACTION_NOTES_SECTION -->
+
+</main>
+</body>
+</html>

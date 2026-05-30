@@ -1233,10 +1233,24 @@
       "routes": [
         "/tower/owner-action-state-receipts.json"
       ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "tower_owner_action_notes_json_pack143",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/owner-action-notes.json",
+      "routes": [
+        "/tower/owner-action-notes.json"
+      ]
     }
   ],
   "by_category": {
-    "admin_tower": 36,
+    "admin_tower": 37,
     "live_broker": 2,
     "ob_private": 2,
     "other": 38,
@@ -1245,15 +1259,15 @@
     "trade_position": 6
   },
   "coverage_pct": 100,
-  "created_at": "2026-05-30T09:00:03.819007Z",
+  "created_at": "2026-05-30T09:34:41.101295Z",
   "guarded_by_category": {
-    "admin_tower": 36,
+    "admin_tower": 37,
     "live_broker": 2,
     "ob_private": 2,
     "symbol_signal": 1,
     "trade_position": 6
   },
-  "guarded_needed_count": 47,
+  "guarded_needed_count": 48,
   "guarded_routes": [
     {
       "category": "symbol_signal",
@@ -1913,6 +1927,20 @@
       "routes": [
         "/tower/owner-action-state-receipts.json"
       ]
+    },
+    {
+      "category": "admin_tower",
+      "decorator_count": 1,
+      "function_name": "tower_owner_action_notes_json_pack143",
+      "guarded": true,
+      "has_pack104_guard": false,
+      "has_tower_guard_call": true,
+      "high_risk": true,
+      "needs_guard": true,
+      "primary_route": "/tower/owner-action-notes.json",
+      "routes": [
+        "/tower/owner-action-notes.json"
+      ]
     }
   ],
   "helper_installed": true,
@@ -1922,7 +1950,7 @@
     "had_forbidden_hits": false,
     "ok": true
   },
-  "needs_guard_count": 47,
+  "needs_guard_count": 48,
   "no_secret_leakage": true,
   "ok": true,
   "pack": "105",
@@ -1934,9 +1962,9 @@
     "Patch remaining protected OB routes in small controlled batches.",
     "Keep public routes public unless private data appears."
   ],
-  "report_fingerprint": "177c16a1cae5f9d6fded1f714640d1dc991fbbc63f4dd5a0d2a9d94c46593200",
+  "report_fingerprint": "e1fe2d690fdc092de7fc574a70284e612b4b15066202ab78b7f3d1a705e633e5",
   "soulaana_translation": "Soulaana: Route board is up. We can see which OB doors have Tower guards.",
-  "total_route_functions": 88,
+  "total_route_functions": 89,
   "unguarded_high_risk_count": 0,
   "unguarded_high_risk_routes": [],
   "unguarded_needed_count": 0,

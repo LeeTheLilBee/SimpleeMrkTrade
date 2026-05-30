@@ -11209,3 +11209,77 @@ except Exception:
 # END PACK142_OWNER_ACTION_STATE_RECEIPTS_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK143_OWNER_ACTION_NOTES_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/owner-action-notes.json", methods=["GET", "POST"])
+    def tower_owner_action_notes_json_pack143():
+        try:
+            from flask import jsonify, request
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/owner-action-notes.json",
+                metadata={"source": "pack143_owner_action_notes_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.owner_action_notes import (
+                build_owner_action_note_detail,
+                build_owner_action_notes_status,
+                create_owner_action_note,
+            )
+
+            if request.method == "POST":
+                payload = request.get_json(silent=True) or {}
+                return jsonify(create_owner_action_note(
+                    action_id=payload.get("action_id", ""),
+                    note_body=payload.get("note_body", payload.get("note", "")),
+                    actor_user_id=payload.get("actor_user_id", "owner_solice"),
+                    note_type=payload.get("note_type", "general"),
+                    visibility=payload.get("visibility", "owner_only"),
+                    metadata=payload.get("metadata", {}),
+                ))
+
+            detail_value = str(request.args.get("detail", "") or "").strip().lower()
+            if detail_value in {"1", "true", "yes", "y"}:
+                return jsonify(build_owner_action_note_detail(
+                    note_id=request.args.get("note_id", ""),
+                    write_panel=True,
+                ))
+
+            top_only_value = str(request.args.get("top_only", "") or "").strip().lower()
+            top_only = top_only_value in {"1", "true", "yes", "y"}
+
+            return jsonify(build_owner_action_notes_status(
+                note_id=request.args.get("note_id", ""),
+                action_id=request.args.get("action_id", ""),
+                actor_user_id=request.args.get("actor_user_id", ""),
+                note_type=request.args.get("note_type", ""),
+                visibility=request.args.get("visibility", ""),
+                top_only=top_only,
+                limit=request.args.get("limit", 80),
+                write_panel=True,
+            ))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "143",
+                    "reason_code": "owner_action_notes_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "143", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK143_OWNER_ACTION_NOTES_ROUTE
+# ================================================================================
+
