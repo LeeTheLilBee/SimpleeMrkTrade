@@ -3131,3 +3131,106 @@ def write_unified_owner_security_command_html(*args, **kwargs) -> Dict[str, Any]
 # END PACK146_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_REVIEW_CHECKPOINT
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK147_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_REVIEW_DASHBOARD_CARDS
+# ================================================================================
+# Adds cached Pack 147 dashboard cards to unified owner command page.
+# ================================================================================
+
+def _pack147_render_owner_action_review_dashboard_cards_for_unified() -> str:
+    try:
+        from tower.owner_action_review_dashboard_cards import (
+            build_owner_action_review_dashboard_cards,
+            render_owner_action_review_dashboard_cards_section,
+        )
+
+        status = build_owner_action_review_dashboard_cards(write_panel=False)
+        return render_owner_action_review_dashboard_cards_section(status)
+    except Exception as exc:
+        error_type = type(exc).__name__
+        return f"""
+<!-- PACK147_OWNER_ACTION_REVIEW_DASHBOARD_CARDS_FALLBACK_SECTION -->
+<section class="owner-action-dashboard-cards" data-pack="147-fallback"
+  style="margin:24px 0;border:1px solid rgba(220,183,94,.35);border-radius:24px;padding:20px;background:#14110b;color:#f5ead2;">
+  <div style="color:#dcb75e;text-transform:uppercase;letter-spacing:.14em;font-size:11px;">PACK 147 · OWNER ACTION REVIEW DASHBOARD</div>
+  <h2 style="margin:8px 0 0;">Owner Action Review Dashboard Cards</h2>
+  <p style="color:rgba(245,234,210,.72);">Dashboard card section could not render in the unified page.</p>
+  <p style="color:rgba(245,234,210,.58);font-size:12px;">Error type: {error_type}</p>
+</section>
+<!-- END PACK147_OWNER_ACTION_REVIEW_DASHBOARD_CARDS_FALLBACK_SECTION -->
+"""
+
+
+try:
+    _pack147_previous_render_unified_owner_security_command_html = render_unified_owner_security_command_html
+except Exception:
+    _pack147_previous_render_unified_owner_security_command_html = None
+
+
+def render_unified_owner_security_command_html(*args, **kwargs) -> str:
+    base_html = ""
+    if _pack147_previous_render_unified_owner_security_command_html is not None:
+        base_html = _pack147_previous_render_unified_owner_security_command_html(*args, **kwargs)
+    else:
+        base_html = """<!doctype html><html><body><main><h1>Unified Security Command</h1></main></body></html>"""
+
+    marker = "PACK147_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_REVIEW_DASHBOARD_CARDS"
+    if marker in base_html or "PACK147_OWNER_ACTION_REVIEW_DASHBOARD_CARDS_SECTION" in base_html:
+        return base_html
+
+    section = _pack147_render_owner_action_review_dashboard_cards_for_unified()
+    injection = f"""
+<!-- PACK147_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_REVIEW_DASHBOARD_CARDS -->
+{section}
+<!-- END PACK147_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_REVIEW_DASHBOARD_CARDS -->
+"""
+
+    if "PACK145_OWNER_ACTION_REVIEW_CHECKPOINT_SECTION" in base_html:
+        # Place dashboard cards before the checkpoint section when possible.
+        return base_html.replace("<!-- PACK145_OWNER_ACTION_REVIEW_CHECKPOINT_SECTION -->", injection + "\n<!-- PACK145_OWNER_ACTION_REVIEW_CHECKPOINT_SECTION -->", 1)
+
+    if "</main>" in base_html:
+        return base_html.replace("</main>", injection + "\n</main>", 1)
+
+    if "</body>" in base_html:
+        return base_html.replace("</body>", injection + "\n</body>", 1)
+
+    return base_html + injection
+
+
+try:
+    _pack147_previous_write_unified_owner_security_command_html = write_unified_owner_security_command_html
+except Exception:
+    _pack147_previous_write_unified_owner_security_command_html = None
+
+
+def write_unified_owner_security_command_html(*args, **kwargs) -> Dict[str, Any]:
+    html = render_unified_owner_security_command_html()
+
+    try:
+        path = DATA_DIR / "security_command_unified_owner_page.html"
+    except Exception:
+        path = Path(__file__).resolve().parents[1] / "tower" / "data" / "security_command_unified_owner_page.html"
+
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(html, encoding="utf-8")
+    except Exception:
+        pass
+
+    return {
+        "ok": True,
+        "pack": "147",
+        "decision": "unified_owner_security_command_html_written",
+        "path": str(path),
+        "html_length": len(html),
+        "human_reason": "Unified owner Security Command HTML written with Owner Action Review Dashboard Cards.",
+        "soulaana_translation": "Soulaana: Unified command page now includes Owner Action review dashboard cards.",
+    }
+
+# ================================================================================
+# END PACK147_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_REVIEW_DASHBOARD_CARDS
+# ================================================================================
+

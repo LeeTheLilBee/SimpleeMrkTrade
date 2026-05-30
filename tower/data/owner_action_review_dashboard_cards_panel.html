@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Owner Action Review Dashboard Cards</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1280px;margin:auto;">
+
+<!-- PACK147_OWNER_ACTION_REVIEW_DASHBOARD_CARDS_SECTION -->
+<section class="owner-action-dashboard-cards" data-pack="147">
+  <style>
+    .owner-action-dashboard-cards {
+      margin: 24px 0;
+      border: 1px solid rgba(168,175,255,.42);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(168,175,255,.14), transparent 34%),
+        linear-gradient(135deg, rgba(22,20,48,.86), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .owner-action-dashboard-cards__eyebrow {
+      color: rgba(168,175,255,.92);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .owner-action-dashboard-cards h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .owner-action-dashboard-cards p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .owner-action-dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .owner-action-dashboard-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+      min-height: 160px;
+    }
+    .owner-action-dashboard-card__eyebrow {
+      color: rgba(168,175,255,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 8px;
+    }
+    .owner-action-dashboard-card h3 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      line-height: 1;
+    }
+    .owner-action-dashboard-card h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: #f5ead2;
+    }
+    .owner-action-dashboard-card p {
+      margin: 0;
+      color: rgba(245,234,210,.62);
+      font-size: 12px;
+    }
+    .owner-action-dashboard-card a {
+      display: inline-flex;
+      margin-top: 12px;
+      color: rgba(168,175,255,.95);
+      font-size: 12px;
+      text-decoration: none;
+    }
+    @media (max-width: 1200px) {
+      .owner-action-dashboard-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 760px) {
+      .owner-action-dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="owner-action-dashboard-cards__eyebrow">PACK 147 · OWNER ACTION REVIEW DASHBOARD</div>
+  <h2>Owner Action Review Dashboard Cards</h2>
+  <p>Owner Action review dashboard cards are ready from cached checkpoint state.</p>
+
+  <div class="owner-action-dashboard-grid">
+    
+        <article class="owner-action-dashboard-card" style="border-color:rgba(143,221,158,.42);">
+          <div class="owner-action-dashboard-card__eyebrow">ready</div>
+          <h3>100%</h3>
+          <h4>Review Health</h4>
+          <p>State, receipts, notes, and assignments connected</p>
+          <a href="/tower/owner-action-review-checkpoint.json">Open source</a>
+        </article>
+        
+        <article class="owner-action-dashboard-card" style="border-color:rgba(143,221,158,.42);">
+          <div class="owner-action-dashboard-card__eyebrow">tracked</div>
+          <h3>1/6</h3>
+          <h4>Action State</h4>
+          <p>1 closed · 6 open</p>
+          <a href="/tower/owner-action-state.json">Open source</a>
+        </article>
+        
+        <article class="owner-action-dashboard-card" style="border-color:rgba(143,221,158,.42);">
+          <div class="owner-action-dashboard-card__eyebrow">ready</div>
+          <h3>3</h3>
+          <h4>State Receipts</h4>
+          <p>Top state: resolved</p>
+          <a href="/tower/owner-action-state-receipts.json">Open source</a>
+        </article>
+        
+        <article class="owner-action-dashboard-card" style="border-color:rgba(143,221,158,.42);">
+          <div class="owner-action-dashboard-card__eyebrow">ready</div>
+          <h3>1</h3>
+          <h4>Notes</h4>
+          <p>1 note receipts · top: resolution</p>
+          <a href="/tower/owner-action-notes.json">Open source</a>
+        </article>
+        
+        <article class="owner-action-dashboard-card" style="border-color:rgba(143,221,158,.42);">
+          <div class="owner-action-dashboard-card__eyebrow">ready</div>
+          <h3>1</h3>
+          <h4>Assignments</h4>
+          <p>5 unassigned · top: completed</p>
+          <a href="/tower/owner-action-assignments.json">Open source</a>
+        </article>
+        
+        <article class="owner-action-dashboard-card" style="border-color:rgba(143,221,158,.42);">
+          <div class="owner-action-dashboard-card__eyebrow">sealed</div>
+          <h3>100%</h3>
+          <h4>Route Wall</h4>
+          <p>0 unguarded · 0 high-risk</p>
+          <a href="/tower/ob-guard-status.json">Open source</a>
+        </article>
+        
+        <article class="owner-action-dashboard-card" style="border-color:rgba(143,221,158,.42);">
+          <div class="owner-action-dashboard-card__eyebrow">clean</div>
+          <h3>0</h3>
+          <h4>Object Checkpoint</h4>
+          <p>helper_wrapped_count</p>
+          <a href="/tower/object-permission-checkpoint.json">Open source</a>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK147_OWNER_ACTION_REVIEW_DASHBOARD_CARDS_SECTION -->
+
+</main>
+</body>
+</html>

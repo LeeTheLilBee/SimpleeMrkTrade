@@ -1,0 +1,162 @@
+{
+  "card_count": 7,
+  "cards": [
+    {
+      "card_id": "review_health",
+      "details": {
+        "checkpoint_readiness": 100,
+        "checkpoint_status": "passed",
+        "review_depth_score": 100,
+        "total_review_records": 6
+      },
+      "href": "/tower/owner-action-review-checkpoint.json",
+      "pack": "145+147",
+      "severity": "success",
+      "status": "ready",
+      "subtitle": "State, receipts, notes, and assignments connected",
+      "title": "Review Health",
+      "value": "100%"
+    },
+    {
+      "card_id": "action_state",
+      "details": {
+        "action_count": 6,
+        "by_state": {
+          "acknowledged": 0,
+          "archived": 0,
+          "false_alarm": 0,
+          "investigating": 0,
+          "open": 5,
+          "resolved": 1
+        },
+        "closed_action_count": 1,
+        "tracked_action_count": 1
+      },
+      "href": "/tower/owner-action-state.json",
+      "pack": "141+147",
+      "severity": "success",
+      "status": "tracked",
+      "subtitle": "1 closed \u00b7 6 open",
+      "title": "Action State",
+      "value": "1/6"
+    },
+    {
+      "card_id": "state_receipts",
+      "details": {
+        "base_receipt_count": 3,
+        "filtered_receipt_count": 3,
+        "top_new_state": "resolved"
+      },
+      "href": "/tower/owner-action-state-receipts.json",
+      "pack": "142+147",
+      "severity": "success",
+      "status": "ready",
+      "subtitle": "Top state: resolved",
+      "title": "State Receipts",
+      "value": 3
+    },
+    {
+      "card_id": "notes",
+      "details": {
+        "base_note_count": 1,
+        "receipt_count": 1,
+        "top_note_type": "resolution"
+      },
+      "href": "/tower/owner-action-notes.json",
+      "pack": "143+147",
+      "severity": "success",
+      "status": "ready",
+      "subtitle": "1 note receipts \u00b7 top: resolution",
+      "title": "Notes",
+      "value": 1
+    },
+    {
+      "card_id": "assignments",
+      "details": {
+        "base_assignment_count": 1,
+        "receipt_count": 1,
+        "top_assigned_to": "admin_review",
+        "top_assignment_status": "completed",
+        "unassigned_action_count": 5
+      },
+      "href": "/tower/owner-action-assignments.json",
+      "pack": "144+147",
+      "severity": "success",
+      "status": "ready",
+      "subtitle": "5 unassigned \u00b7 top: completed",
+      "title": "Assignments",
+      "value": 1
+    },
+    {
+      "card_id": "route_wall",
+      "details": {
+        "coverage_pct": 100,
+        "guarded_needed_count": 52,
+        "needs_guard_count": 52,
+        "unguarded_high_risk_count": 0,
+        "unguarded_needed_count": 0
+      },
+      "href": "/tower/ob-guard-status.json",
+      "pack": "105+147",
+      "severity": "success",
+      "status": "sealed",
+      "subtitle": "0 unguarded \u00b7 0 high-risk",
+      "title": "Route Wall",
+      "value": "100%"
+    },
+    {
+      "card_id": "object_checkpoint",
+      "details": {
+        "helper_wrapped_count": 0,
+        "readiness_score": 100,
+        "status": "passed"
+      },
+      "href": "/tower/object-permission-checkpoint.json",
+      "pack": "114+147",
+      "severity": "success",
+      "status": "clean",
+      "subtitle": "helper_wrapped_count",
+      "title": "Object Checkpoint",
+      "value": 0
+    }
+  ],
+  "checks": {
+    "assignments_card_present": true,
+    "cards_present": true,
+    "checkpoint_loaded": true,
+    "checkpoint_passed": true,
+    "helper_wrapped_zero": true,
+    "notes_card_present": true,
+    "receipt_card_present": true,
+    "review_depth_100": true,
+    "route_wall_sealed": true,
+    "state_card_present": true
+  },
+  "created_at": "2026-05-30T15:49:48.789044Z",
+  "failed_checks": [],
+  "human_reason": "Owner Action review dashboard cards are ready from cached checkpoint state.",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "no_secret_leakage": true,
+  "ok": true,
+  "pack": "147",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_dashboard_cards_panel.html",
+  "readiness_score": 100,
+  "soulaana_translation": "Soulaana: Owner Action review is now readable as dashboard cards.",
+  "status": "passed",
+  "status_fingerprint": "0bcb8548cea021b15098b407070c464c5a657bd97415f511376eb70a3ed788db",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_dashboard_cards_status.json",
+  "summary": {
+    "action_count": 6,
+    "assignment_count": 1,
+    "helper_wrapped_count": 0,
+    "note_count": 1,
+    "review_depth_score": 100,
+    "route_coverage_pct": 100,
+    "state_receipt_count": 3,
+    "tracked_action_count": 1
+  }
+}

@@ -11438,3 +11438,43 @@ except Exception:
 # END PACK146_OWNER_ACTION_REVIEW_CHECKPOINT_CARD_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK147_OWNER_ACTION_REVIEW_DASHBOARD_CARDS_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/owner-action-review-dashboard-cards.json")
+    def tower_owner_action_review_dashboard_cards_json_pack147():
+        try:
+            from flask import jsonify
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/owner-action-review-dashboard-cards.json",
+                metadata={"source": "pack147_owner_action_review_dashboard_cards_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.owner_action_review_dashboard_cards import build_owner_action_review_dashboard_cards
+
+            return jsonify(build_owner_action_review_dashboard_cards(write_panel=True))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "147",
+                    "reason_code": "owner_action_review_dashboard_cards_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "147", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK147_OWNER_ACTION_REVIEW_DASHBOARD_CARDS_ROUTE
+# ================================================================================
+

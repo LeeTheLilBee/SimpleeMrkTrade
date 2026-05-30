@@ -10,7 +10,7 @@
     "top_only": false
   },
   "base_receipt_count": 3,
-  "created_at": "2026-05-30T15:30:18.870608Z",
+  "created_at": "2026-05-30T15:49:46.761163Z",
   "filter_options": {
     "action_type": {
       "review_incident_escalation": 3
@@ -120,7 +120,7 @@
     "tracked_action_count": 1
   },
   "status": "passed",
-  "status_fingerprint": "b3deb010b7c54270803decb45037dd728c5c162621478243891a7132db42f33f",
+  "status_fingerprint": "f70c4f66ecd6d25d160b6d478944e07ff4f80be1b36328f0e45ee2363a9761b7",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_state_receipts_status.json",
   "top_receipt": {
     "action_id": "owner_action_e2e83fea613407d66b",
