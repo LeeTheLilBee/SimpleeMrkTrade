@@ -1897,3 +1897,478 @@ def write_owner_action_filters_panel(status: Dict[str, Any] | None = None) -> Di
 # END PACK138_OWNER_ACTION_CENTER_FILTERS
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK139_OWNER_ACTION_DETAIL_CARDS
+# ================================================================================
+# Adds safe cached detail cards for individual Owner Action Center commands.
+# This reads cached Owner Action Center status only and does not call live builders.
+# ================================================================================
+
+def _pack139_find_action_by_id(action_id: str, status: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    action_id = str(action_id or "").strip()
+    status = status if isinstance(status, dict) else load_owner_action_center_status()
+    actions = status.get("actions", []) if isinstance(status.get("actions"), list) else []
+
+    if action_id:
+        for action in actions:
+            if isinstance(action, dict) and str(action.get("action_id", "")) == action_id:
+                return action
+
+    top_action = status.get("top_action", {}) if isinstance(status.get("top_action"), dict) else {}
+    if isinstance(top_action, dict) and top_action.get("action_id"):
+        return top_action
+
+    for action in actions:
+        if isinstance(action, dict):
+            return action
+
+    return {}
+
+
+def _pack139_source_label(action: Dict[str, Any]) -> str:
+    source = str(action.get("source", "") or "").strip()
+    return {
+        "incident_filters_cached": "Incident Filters",
+        "security_inbox_cached": "Security Inbox",
+        "security_watch_cached": "Security Watch",
+        "route_health_cached": "Route Wall",
+        "security_watch_checkpoint_cached": "Security Watch Checkpoint",
+    }.get(source, source.replace("_", " ").title() if source else "Tower")
+
+
+def _pack139_context_items(context: Dict[str, Any]) -> List[Dict[str, Any]]:
+    if not isinstance(context, dict):
+        return []
+
+    items = []
+    for key, value in context.items():
+        key_text = str(key or "").strip()
+        if not key_text:
+            continue
+        items.append({
+            "key": key_text,
+            "label": key_text.replace("_", " ").title(),
+            "value": value,
+        })
+    return items
+
+
+def build_owner_action_detail_status(
+    *,
+    action_id: str = "",
+    write_panel: bool = True,
+) -> Dict[str, Any]:
+    base_status = load_owner_action_center_status()
+    action = _pack139_find_action_by_id(action_id, base_status)
+
+    found = bool(action)
+    lane = _pack137_action_lane(action) if found else ""
+    context = action.get("context", {}) if isinstance(action.get("context"), dict) else {}
+    context_items = _pack139_context_items(context)
+
+    detail = {
+        "ok": found,
+        "pack": "139",
+        "status": "passed" if found else "not_found",
+        "base_status": base_status.get("status", "unknown"),
+        "base_pack": base_status.get("pack", ""),
+        "requested_action_id": str(action_id or ""),
+        "found_action_id": action.get("action_id", "") if found else "",
+        "action": action if found else {},
+        "detail": {
+            "action_id": action.get("action_id", "") if found else "",
+            "title": action.get("title", "Owner Action") if found else "Owner Action Not Found",
+            "action_type": action.get("action_type", "") if found else "",
+            "lane": lane,
+            "lane_label": _pack137_action_lane_label(lane) if lane else "",
+            "severity": action.get("severity", "") if found else "",
+            "status": action.get("status", "") if found else "",
+            "source": action.get("source", "") if found else "",
+            "source_label": _pack139_source_label(action) if found else "",
+            "priority_score": action.get("priority_score", 0) if found else 0,
+            "recommended_action": action.get("recommended_action", "") if found else "",
+            "href": action.get("href", "") if found else "",
+            "human_reason": action.get("human_reason", "") if found else "No matching owner action was found.",
+            "created_at": action.get("created_at", "") if found else "",
+            "context_items": context_items,
+        },
+        "readiness_score": 100 if found else 80,
+        "human_reason": (
+            "Owner Action detail card loaded from cached command queue."
+            if found
+            else "Owner Action detail could not find the requested action."
+        ),
+        "soulaana_translation": (
+            "Soulaana: This command card shows the owner what to do and where it came from."
+            if found
+            else "Soulaana: I could not find that command card."
+        ),
+    }
+
+    detail = _redact(detail)
+    scan = _safe_scan(detail)
+    detail["no_secret_leakage"] = scan.get("ok") is True
+    detail["leakage_scan"] = scan
+    detail["status_fingerprint"] = _fingerprint(detail)
+
+    if write_panel:
+        write_owner_action_detail_panel(detail)
+
+    return detail
+
+
+def render_owner_action_detail_section(status: Dict[str, Any] | None = None) -> str:
+    status = status if isinstance(status, dict) else build_owner_action_detail_status(write_panel=False)
+    detail = status.get("detail", {}) if isinstance(status.get("detail"), dict) else {}
+    context_items = detail.get("context_items", []) if isinstance(detail.get("context_items"), list) else []
+
+    context_html = []
+    for item in context_items:
+        if not isinstance(item, dict):
+            continue
+        context_html.append(f"""
+        <article class="owner-action-detail-context-item">
+          <span>{_html_escape(item.get('label', 'Context'))}</span>
+          <b>{_html_escape(item.get('value', ''))}</b>
+        </article>
+        """)
+
+    if not context_html:
+        context_html.append("""
+        <article class="owner-action-detail-context-item">
+          <span>Context</span>
+          <b>No extra context</b>
+        </article>
+        """)
+
+    html = f"""
+<!-- PACK139_OWNER_ACTION_DETAIL_SECTION -->
+<section class="owner-action-detail" data-pack="139">
+  <style>
+    .owner-action-detail {{
+      margin: 24px 0;
+      border: 1px solid rgba(220,183,94,.42);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(220,183,94,.14), transparent 34%),
+        linear-gradient(135deg, rgba(54,35,11,.88), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }}
+    .owner-action-detail__eyebrow {{
+      color: rgba(220,183,94,.92);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }}
+    .owner-action-detail h2 {{
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }}
+    .owner-action-detail p {{
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }}
+    .owner-action-detail-summary {{
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }}
+    .owner-action-detail-stat,
+    .owner-action-detail-context-item {{
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+    }}
+    .owner-action-detail-stat span,
+    .owner-action-detail-context-item span {{
+      display: block;
+      color: rgba(220,183,94,.72);
+      text-transform: uppercase;
+      letter-spacing: .11em;
+      font-size: 10px;
+      margin-bottom: 6px;
+    }}
+    .owner-action-detail-stat b,
+    .owner-action-detail-context-item b {{
+      display: block;
+      color: #f5ead2;
+      font-size: 14px;
+      word-break: break-word;
+    }}
+    .owner-action-detail-context {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }}
+    .owner-action-detail-next {{
+      margin-top: 14px;
+      border: 1px solid rgba(220,183,94,.25);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(220,183,94,.06);
+    }}
+    .owner-action-detail-next a {{
+      display: inline-flex;
+      text-decoration: none;
+      border: 1px solid rgba(220,183,94,.45);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #f5ead2;
+      background: rgba(220,183,94,.08);
+      font-size: 12px;
+      margin-top: 8px;
+    }}
+    @media (max-width: 1000px) {{
+      .owner-action-detail-summary,
+      .owner-action-detail-context {{
+        grid-template-columns: 1fr;
+      }}
+    }}
+  </style>
+
+  <div class="owner-action-detail__eyebrow">PACK 139 · OWNER ACTION DETAIL</div>
+  <h2>{_html_escape(detail.get('title', 'Owner Action Detail'))}</h2>
+  <p>{_html_escape(detail.get('human_reason', status.get('human_reason', 'Owner action detail loaded.')))}</p>
+
+  <div class="owner-action-detail-summary">
+    <article class="owner-action-detail-stat"><span>Lane</span><b>{_html_escape(detail.get('lane_label', ''))}</b></article>
+    <article class="owner-action-detail-stat"><span>Severity</span><b>{_html_escape(detail.get('severity', ''))}</b></article>
+    <article class="owner-action-detail-stat"><span>Priority</span><b>{_html_escape(detail.get('priority_score', 0))}</b></article>
+    <article class="owner-action-detail-stat"><span>Source</span><b>{_html_escape(detail.get('source_label', ''))}</b></article>
+    <article class="owner-action-detail-stat"><span>Status</span><b>{_html_escape(detail.get('status', ''))}</b></article>
+  </div>
+
+  <div class="owner-action-detail-context">
+    {''.join(context_html)}
+  </div>
+
+  <div class="owner-action-detail-next">
+    <strong>Recommended move:</strong> {_html_escape(detail.get('recommended_action', 'review'))}<br>
+    <strong>Action type:</strong> {_html_escape(detail.get('action_type', ''))}<br>
+    <a href="{_html_escape(detail.get('href', '#'))}">Open source</a>
+  </div>
+</section>
+<!-- END PACK139_OWNER_ACTION_DETAIL_SECTION -->
+"""
+    return html
+
+
+def write_owner_action_detail_panel(status: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    status = status if isinstance(status, dict) else build_owner_action_detail_status(write_panel=False)
+    path = DATA_DIR / "owner_action_detail_panel.html"
+    html = f"""<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Owner Action Detail</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+{render_owner_action_detail_section(status)}
+</main>
+</body>
+</html>
+"""
+    _write_text(path, html)
+    return {
+        "ok": True,
+        "pack": "139",
+        "decision": "owner_action_detail_panel_written",
+        "path": str(path),
+        "human_reason": "Owner Action Detail panel written.",
+        "soulaana_translation": "Soulaana: Owner command detail card posted.",
+    }
+
+# ================================================================================
+# END PACK139_OWNER_ACTION_DETAIL_CARDS
+# ================================================================================
+
+
+
+# ================================================================================
+# PACK139B_OWNER_ACTION_DETAIL_MISSING_LOOKUP_FIX
+# ================================================================================
+# Fix:
+# If a specific action_id is requested and missing, do NOT fallback to top action.
+# Only blank action_id can fallback to top/first action.
+# ================================================================================
+
+def _pack139_find_action_by_id(action_id: str, status: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    action_id = str(action_id or "").strip()
+    status = status if isinstance(status, dict) else load_owner_action_center_status()
+    actions = status.get("actions", []) if isinstance(status.get("actions"), list) else []
+
+    if action_id:
+        for action in actions:
+            if isinstance(action, dict) and str(action.get("action_id", "")) == action_id:
+                return action
+
+        top_action = status.get("top_action", {}) if isinstance(status.get("top_action"), dict) else {}
+        if isinstance(top_action, dict) and str(top_action.get("action_id", "")) == action_id:
+            return top_action
+
+        return {}
+
+    top_action = status.get("top_action", {}) if isinstance(status.get("top_action"), dict) else {}
+    if isinstance(top_action, dict) and top_action.get("action_id"):
+        return top_action
+
+    for action in actions:
+        if isinstance(action, dict):
+            return action
+
+    return {}
+
+
+def build_owner_action_detail_status(
+    *,
+    action_id: str = "",
+    write_panel: bool = True,
+) -> Dict[str, Any]:
+    requested_action_id = str(action_id or "").strip()
+    base_status = load_owner_action_center_status()
+    action = _pack139_find_action_by_id(requested_action_id, base_status)
+
+    found = bool(action)
+    lane = _pack137_action_lane(action) if found else ""
+    context = action.get("context", {}) if isinstance(action.get("context"), dict) else {}
+    context_items = _pack139_context_items(context)
+
+    detail = {
+        "ok": found,
+        "pack": "139+139B",
+        "status": "passed" if found else "not_found",
+        "base_status": base_status.get("status", "unknown"),
+        "base_pack": base_status.get("pack", ""),
+        "requested_action_id": requested_action_id,
+        "found_action_id": action.get("action_id", "") if found else "",
+        "action": action if found else {},
+        "detail": {
+            "action_id": action.get("action_id", "") if found else "",
+            "title": action.get("title", "Owner Action") if found else "Owner Action Not Found",
+            "action_type": action.get("action_type", "") if found else "",
+            "lane": lane,
+            "lane_label": _pack137_action_lane_label(lane) if lane else "",
+            "severity": action.get("severity", "") if found else "",
+            "status": action.get("status", "") if found else "",
+            "source": action.get("source", "") if found else "",
+            "source_label": _pack139_source_label(action) if found else "",
+            "priority_score": action.get("priority_score", 0) if found else 0,
+            "recommended_action": action.get("recommended_action", "") if found else "",
+            "href": action.get("href", "") if found else "",
+            "human_reason": action.get("human_reason", "") if found else "No matching owner action was found.",
+            "created_at": action.get("created_at", "") if found else "",
+            "context_items": context_items,
+        },
+        "readiness_score": 100 if found else 80,
+        "human_reason": (
+            "Owner Action detail card loaded from cached command queue."
+            if found
+            else "Owner Action detail could not find the requested action."
+        ),
+        "soulaana_translation": (
+            "Soulaana: This command card shows the owner what to do and where it came from."
+            if found
+            else "Soulaana: I could not find that command card."
+        ),
+    }
+
+    detail = _redact(detail)
+    scan = _safe_scan(detail)
+    detail["no_secret_leakage"] = scan.get("ok") is True
+    detail["leakage_scan"] = scan
+    detail["status_fingerprint"] = _fingerprint(detail)
+
+    if write_panel:
+        write_owner_action_detail_panel(detail)
+
+    return detail
+
+# ================================================================================
+# END PACK139B_OWNER_ACTION_DETAIL_MISSING_LOOKUP_FIX
+# ================================================================================
+
+
+
+# ================================================================================
+# PACK139C_OWNER_ACTION_DETAIL_PACK_LABEL_COMPATIBILITY
+# ================================================================================
+# Keeps Pack 139B missing-action fix, but reports pack="139" for the existing
+# Pack 139 test expectations.
+# ================================================================================
+
+def build_owner_action_detail_status(
+    *,
+    action_id: str = "",
+    write_panel: bool = True,
+) -> Dict[str, Any]:
+    requested_action_id = str(action_id or "").strip()
+    base_status = load_owner_action_center_status()
+    action = _pack139_find_action_by_id(requested_action_id, base_status)
+
+    found = bool(action)
+    lane = _pack137_action_lane(action) if found else ""
+    context = action.get("context", {}) if isinstance(action.get("context"), dict) else {}
+    context_items = _pack139_context_items(context)
+
+    detail = {
+        "ok": found,
+        "pack": "139",
+        "rescue_marker": "PACK139C_COMPATIBLE_MISSING_LOOKUP_FIX_ACTIVE",
+        "status": "passed" if found else "not_found",
+        "base_status": base_status.get("status", "unknown"),
+        "base_pack": base_status.get("pack", ""),
+        "requested_action_id": requested_action_id,
+        "found_action_id": action.get("action_id", "") if found else "",
+        "action": action if found else {},
+        "detail": {
+            "action_id": action.get("action_id", "") if found else "",
+            "title": action.get("title", "Owner Action") if found else "Owner Action Not Found",
+            "action_type": action.get("action_type", "") if found else "",
+            "lane": lane,
+            "lane_label": _pack137_action_lane_label(lane) if lane else "",
+            "severity": action.get("severity", "") if found else "",
+            "status": action.get("status", "") if found else "",
+            "source": action.get("source", "") if found else "",
+            "source_label": _pack139_source_label(action) if found else "",
+            "priority_score": action.get("priority_score", 0) if found else 0,
+            "recommended_action": action.get("recommended_action", "") if found else "",
+            "href": action.get("href", "") if found else "",
+            "human_reason": action.get("human_reason", "") if found else "No matching owner action was found.",
+            "created_at": action.get("created_at", "") if found else "",
+            "context_items": context_items,
+        },
+        "readiness_score": 100 if found else 80,
+        "human_reason": (
+            "Owner Action detail card loaded from cached command queue."
+            if found
+            else "Owner Action detail could not find the requested action."
+        ),
+        "soulaana_translation": (
+            "Soulaana: This command card shows the owner what to do and where it came from."
+            if found
+            else "Soulaana: I could not find that command card."
+        ),
+    }
+
+    detail = _redact(detail)
+    scan = _safe_scan(detail)
+    detail["no_secret_leakage"] = scan.get("ok") is True
+    detail["leakage_scan"] = scan
+    detail["status_fingerprint"] = _fingerprint(detail)
+
+    if write_panel:
+        write_owner_action_detail_panel(detail)
+
+    return detail
+
+# ================================================================================
+# END PACK139C_OWNER_ACTION_DETAIL_PACK_LABEL_COMPATIBILITY
+# ================================================================================
+

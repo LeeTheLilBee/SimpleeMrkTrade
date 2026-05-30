@@ -858,3 +858,27 @@ def pack138_owner_action_filters_status_bridge():
 # END PACK138_OWNER_ACTION_FILTERS_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK139_OWNER_ACTION_DETAIL_STATUS_BRIDGE
+# ================================================================================
+
+def pack139_owner_action_detail_status_bridge(action_id: str = ""):
+    try:
+        from tower.owner_action_center import build_owner_action_detail_status
+        return build_owner_action_detail_status(action_id=action_id, write_panel=True)
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "139",
+            "title": "Owner Action Detail",
+            "reason_code": "owner_action_detail_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Owner Action Detail could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK139_OWNER_ACTION_DETAIL_STATUS_BRIDGE
+# ================================================================================
+

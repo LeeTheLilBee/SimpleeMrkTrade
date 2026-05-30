@@ -11009,3 +11009,46 @@ except Exception:
 # END PACK138_OWNER_ACTION_FILTERS_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK139_OWNER_ACTION_DETAIL_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/owner-action-detail.json")
+    def tower_owner_action_detail_json_pack139():
+        try:
+            from flask import jsonify, request
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/owner-action-detail.json",
+                metadata={"source": "pack139_owner_action_detail_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.owner_action_center import build_owner_action_detail_status
+
+            return jsonify(build_owner_action_detail_status(
+                action_id=request.args.get("action_id", ""),
+                write_panel=True,
+            ))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "139",
+                    "reason_code": "owner_action_detail_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "139", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK139_OWNER_ACTION_DETAIL_ROUTE
+# ================================================================================
+

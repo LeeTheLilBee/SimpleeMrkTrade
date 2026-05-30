@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>The Tower · Owner Action Detail</title></head>
+<body style="margin:0;background:#080907;color:#f5ead2;font-family:system-ui;padding:32px;">
+<main style="max-width:1180px;margin:auto;">
+
+<!-- PACK139_OWNER_ACTION_DETAIL_SECTION -->
+<section class="owner-action-detail" data-pack="139">
+  <style>
+    .owner-action-detail {
+      margin: 24px 0;
+      border: 1px solid rgba(220,183,94,.42);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(220,183,94,.14), transparent 34%),
+        linear-gradient(135deg, rgba(54,35,11,.88), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .owner-action-detail__eyebrow {
+      color: rgba(220,183,94,.92);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .owner-action-detail h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .owner-action-detail p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .owner-action-detail-summary {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .owner-action-detail-stat,
+    .owner-action-detail-context-item {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+    }
+    .owner-action-detail-stat span,
+    .owner-action-detail-context-item span {
+      display: block;
+      color: rgba(220,183,94,.72);
+      text-transform: uppercase;
+      letter-spacing: .11em;
+      font-size: 10px;
+      margin-bottom: 6px;
+    }
+    .owner-action-detail-stat b,
+    .owner-action-detail-context-item b {
+      display: block;
+      color: #f5ead2;
+      font-size: 14px;
+      word-break: break-word;
+    }
+    .owner-action-detail-context {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .owner-action-detail-next {
+      margin-top: 14px;
+      border: 1px solid rgba(220,183,94,.25);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(220,183,94,.06);
+    }
+    .owner-action-detail-next a {
+      display: inline-flex;
+      text-decoration: none;
+      border: 1px solid rgba(220,183,94,.45);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #f5ead2;
+      background: rgba(220,183,94,.08);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+    @media (max-width: 1000px) {
+      .owner-action-detail-summary,
+      .owner-action-detail-context {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="owner-action-detail__eyebrow">PACK 139 · OWNER ACTION DETAIL</div>
+  <h2>Review Incident Escalation</h2>
+  <p>Cached incident filters show escalation-ready incidents.</p>
+
+  <div class="owner-action-detail-summary">
+    <article class="owner-action-detail-stat"><span>Lane</span><b>Incident Lane</b></article>
+    <article class="owner-action-detail-stat"><span>Severity</span><b>high</b></article>
+    <article class="owner-action-detail-stat"><span>Priority</span><b>125</b></article>
+    <article class="owner-action-detail-stat"><span>Source</span><b>Incident Filters</b></article>
+    <article class="owner-action-detail-stat"><span>Status</span><b>open</b></article>
+  </div>
+
+  <div class="owner-action-detail-context">
+    
+        <article class="owner-action-detail-context-item">
+          <span>Count</span>
+          <b>40</b>
+        </article>
+        
+        <article class="owner-action-detail-context-item">
+          <span>Critical Count</span>
+          <b>0</b>
+        </article>
+        
+        <article class="owner-action-detail-context-item">
+          <span>High Count</span>
+          <b>40</b>
+        </article>
+        
+        <article class="owner-action-detail-context-item">
+          <span>Open Incident Count</span>
+          <b>40</b>
+        </article>
+        
+  </div>
+
+  <div class="owner-action-detail-next">
+    <strong>Recommended move:</strong> open_incident_filters_and_review_escalation_ready<br>
+    <strong>Action type:</strong> review_incident_escalation<br>
+    <a href="/tower/security-incident-filters.json">Open source</a>
+  </div>
+</section>
+<!-- END PACK139_OWNER_ACTION_DETAIL_SECTION -->
+
+</main>
+</body>
+</html>
