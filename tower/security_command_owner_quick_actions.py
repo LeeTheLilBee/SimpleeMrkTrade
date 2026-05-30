@@ -1557,3 +1557,55 @@ def append_pack_153_policy_decision_trace_preview_quick_action(actions):
         return actions
 # === PACK 153 POLICY DECISION TRACE PREVIEW QUICK ACTION END ===
 
+
+
+# === PACK 154 POLICY RECEIPT VAULT PREVIEW QUICK ACTION START ===
+def build_pack_154_policy_receipt_vault_preview_quick_action():
+    """
+    Pack 154 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_receipt_vault_preview import build_policy_receipt_vault_preview_quick_action
+        return build_policy_receipt_vault_preview_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_receipt_vault_preview",
+            "label": "Policy Receipt Vault Preview",
+            "title": "Policy Receipt Vault Preview",
+            "href": "/tower/policy-receipt-vault-preview.json",
+            "endpoint": "/tower/policy-receipt-vault-preview.json",
+            "description": "View the simulated vault index for future policy receipts.",
+            "status": "review",
+            "pack": "Pack 154",
+            "category": "policy",
+            "simulated_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_154_policy_receipt_vault_preview_quick_action(actions):
+    """
+    Append Pack 154 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_receipt_vault_preview" not in existing_ids:
+            actions.append(build_pack_154_policy_receipt_vault_preview_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 154 POLICY RECEIPT VAULT PREVIEW QUICK ACTION END ===
+

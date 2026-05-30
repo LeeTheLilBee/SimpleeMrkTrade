@@ -3778,3 +3778,72 @@ def append_pack_153_policy_decision_trace_preview_section(sections):
         return sections
 # === PACK 153 POLICY DECISION TRACE PREVIEW UNIFIED SECTION END ===
 
+
+
+# === PACK 154 POLICY RECEIPT VAULT PREVIEW UNIFIED SECTION START ===
+def build_pack_154_policy_receipt_vault_preview_unified_section():
+    """
+    Pack 154 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_receipt_vault_preview
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_receipt_vault_preview import build_policy_receipt_vault_preview_unified_owner_section
+        return build_policy_receipt_vault_preview_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_receipt_vault_preview",
+            "title": "Policy Receipt Vault Preview",
+            "subtitle": "Vault preview section needs review.",
+            "status": "review",
+            "href": "/tower/policy-receipt-vault-preview.json",
+            "cards": [],
+            "simulated_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_154_policy_receipt_vault_preview_html_section():
+    try:
+        from tower.policy_receipt_vault_preview import build_policy_receipt_vault_preview_html_section
+        return build_policy_receipt_vault_preview_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-receipt-vault-preview-section" id="policy-receipt-vault-preview">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 154</p>
+                <h2>Policy Receipt Vault Preview</h2>
+                <p>Vault preview section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-receipt-vault-preview.json">Open vault preview JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_154_policy_receipt_vault_preview_section(sections):
+    """
+    Append Pack 154 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_receipt_vault_preview" not in existing_ids:
+            sections.append(build_pack_154_policy_receipt_vault_preview_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 154 POLICY RECEIPT VAULT PREVIEW UNIFIED SECTION END ===
+

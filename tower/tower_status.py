@@ -1073,3 +1073,40 @@ def get_pack_153_policy_decision_trace_preview_status_bridge():
     return build_pack_153_policy_decision_trace_preview_status_bridge()
 # === PACK 153 POLICY DECISION TRACE PREVIEW STATUS BRIDGE END ===
 
+
+
+# === PACK 154 POLICY RECEIPT VAULT PREVIEW STATUS BRIDGE START ===
+def build_pack_154_policy_receipt_vault_preview_status_bridge():
+    """
+    Pack 154 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 154 vault preview payload
+    """
+    try:
+        from tower.policy_receipt_vault_preview import build_policy_receipt_vault_preview_status_bridge
+        return build_policy_receipt_vault_preview_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_154",
+            "pack_number": 154,
+            "status": "review",
+            "endpoint": "/tower/policy-receipt-vault-preview.json",
+            "source_endpoint": "/tower/policy-decision-trace-preview.json",
+            "readiness_score": 0,
+            "readiness_label": "Policy receipt vault preview bridge error",
+            "simulated_only": True,
+            "real_enforcement_executed": False,
+            "real_audit_written": False,
+            "real_receipt_written": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_154_policy_receipt_vault_preview_status_bridge():
+    return build_pack_154_policy_receipt_vault_preview_status_bridge()
+# === PACK 154 POLICY RECEIPT VAULT PREVIEW STATUS BRIDGE END ===
+
