@@ -3336,3 +3336,105 @@ def write_unified_owner_security_command_html(*args, **kwargs) -> Dict[str, Any]
 # END PACK148_UNIFIED_OWNER_PAGE_INCLUDES_COMPACT_OWNER_ACTION_REVIEW_CARD
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK149_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_REVIEW_FOCUS_LANES
+# ================================================================================
+# Adds cached Pack 149 focus lanes to unified owner command page.
+# ================================================================================
+
+def _pack149_render_owner_action_review_focus_lanes_for_unified() -> str:
+    try:
+        from tower.owner_action_review_focus_lanes import (
+            build_owner_action_review_focus_lanes,
+            render_owner_action_review_focus_lanes_section,
+        )
+
+        status = build_owner_action_review_focus_lanes(lane="all", write_panel=False)
+        return render_owner_action_review_focus_lanes_section(status)
+    except Exception as exc:
+        error_type = type(exc).__name__
+        return f"""
+<!-- PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_FALLBACK_SECTION -->
+<section class="owner-action-focus-lanes" data-pack="149-fallback"
+  style="margin:24px 0;border:1px solid rgba(220,183,94,.35);border-radius:24px;padding:20px;background:#14110b;color:#f5ead2;">
+  <div style="color:#dcb75e;text-transform:uppercase;letter-spacing:.14em;font-size:11px;">PACK 149 · OWNER ACTION REVIEW FOCUS LANES</div>
+  <h2 style="margin:8px 0 0;">Owner Action Review Focus Lanes</h2>
+  <p style="color:rgba(245,234,210,.72);">Focus lane section could not render in the unified page.</p>
+  <p style="color:rgba(245,234,210,.58);font-size:12px;">Error type: {error_type}</p>
+</section>
+<!-- END PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_FALLBACK_SECTION -->
+"""
+
+
+try:
+    _pack149_previous_render_unified_owner_security_command_html = render_unified_owner_security_command_html
+except Exception:
+    _pack149_previous_render_unified_owner_security_command_html = None
+
+
+def render_unified_owner_security_command_html(*args, **kwargs) -> str:
+    base_html = ""
+    if _pack149_previous_render_unified_owner_security_command_html is not None:
+        base_html = _pack149_previous_render_unified_owner_security_command_html(*args, **kwargs)
+    else:
+        base_html = """<!doctype html><html><body><main><h1>Unified Security Command</h1></main></body></html>"""
+
+    marker = "PACK149_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_REVIEW_FOCUS_LANES"
+    if marker in base_html or "PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_SECTION" in base_html:
+        return base_html
+
+    section = _pack149_render_owner_action_review_focus_lanes_for_unified()
+    injection = f"""
+<!-- PACK149_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_REVIEW_FOCUS_LANES -->
+{section}
+<!-- END PACK149_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_REVIEW_FOCUS_LANES -->
+"""
+
+    if "PACK148_OWNER_ACTION_REVIEW_COMPACT_CARD_SECTION" in base_html:
+        return base_html.replace("<!-- PACK148_OWNER_ACTION_REVIEW_COMPACT_CARD_SECTION -->", injection + "\n<!-- PACK148_OWNER_ACTION_REVIEW_COMPACT_CARD_SECTION -->", 1)
+
+    if "</main>" in base_html:
+        return base_html.replace("</main>", injection + "\n</main>", 1)
+
+    if "</body>" in base_html:
+        return base_html.replace("</body>", injection + "\n</body>", 1)
+
+    return base_html + injection
+
+
+try:
+    _pack149_previous_write_unified_owner_security_command_html = write_unified_owner_security_command_html
+except Exception:
+    _pack149_previous_write_unified_owner_security_command_html = None
+
+
+def write_unified_owner_security_command_html(*args, **kwargs) -> Dict[str, Any]:
+    html = render_unified_owner_security_command_html()
+
+    try:
+        path = DATA_DIR / "security_command_unified_owner_page.html"
+    except Exception:
+        path = Path(__file__).resolve().parents[1] / "tower" / "data" / "security_command_unified_owner_page.html"
+
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(html, encoding="utf-8")
+    except Exception:
+        pass
+
+    return {
+        "ok": True,
+        "pack": "149",
+        "decision": "unified_owner_security_command_html_written",
+        "path": str(path),
+        "html_length": len(html),
+        "human_reason": "Unified owner Security Command HTML written with Owner Action Review Focus Lanes.",
+        "soulaana_translation": "Soulaana: Unified command page now includes Owner Action review focus lanes.",
+    }
+
+# ================================================================================
+# END PACK149_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_REVIEW_FOCUS_LANES
+# ================================================================================
+

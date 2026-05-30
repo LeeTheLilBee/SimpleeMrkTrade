@@ -930,3 +930,27 @@ def pack148_owner_action_review_compact_card_status_bridge():
 # END PACK148_OWNER_ACTION_REVIEW_COMPACT_CARD_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_STATUS_BRIDGE
+# ================================================================================
+
+def pack149_owner_action_review_focus_lanes_status_bridge():
+    try:
+        from tower.owner_action_review_focus_lanes import owner_action_review_focus_lanes_status_card
+        return owner_action_review_focus_lanes_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "149",
+            "title": "Owner Action Review Focus Lanes",
+            "reason_code": "owner_action_review_focus_lanes_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Owner Action Review Focus Lanes status card could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_STATUS_BRIDGE
+# ================================================================================
+

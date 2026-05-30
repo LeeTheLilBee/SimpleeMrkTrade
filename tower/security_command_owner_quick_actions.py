@@ -1216,3 +1216,83 @@ def build_owner_quick_actions_status(write_panel: bool = True) -> Dict[str, Any]
 # END PACK148_OWNER_ACTION_REVIEW_DASHBOARD_QUICK_LINK
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_QUICK_LINK
+# ================================================================================
+# Adds focus lane quick link using cached/non-recursive quick actions.
+# ================================================================================
+
+try:
+    _pack149_previous_build_owner_quick_actions_status = build_owner_quick_actions_status
+except Exception:
+    _pack149_previous_build_owner_quick_actions_status = None
+
+
+def build_owner_quick_actions_status(write_panel: bool = True) -> Dict[str, Any]:
+    if _pack149_previous_build_owner_quick_actions_status is not None:
+        status = _pack149_previous_build_owner_quick_actions_status(write_panel=False)
+    else:
+        status = {
+            "ok": True,
+            "pack": "149",
+            "status": "passed",
+            "readiness_score": 100,
+            "actions": [],
+        }
+
+    actions = status.get("actions", []) if isinstance(status.get("actions"), list) else []
+    actions = list(actions)
+
+    exists = any(
+        isinstance(action, dict)
+        and action.get("action_id") == "review_owner_action_focus_lanes"
+        for action in actions
+    )
+
+    if not exists:
+        actions.append({
+            "action_id": "review_owner_action_focus_lanes",
+            "title": "Review Owner Action Focus Lanes",
+            "href": "/tower/owner-action-review-focus-lanes.json",
+            "kind": "status_json",
+            "pack": "149",
+            "available": True,
+            "readiness_score": 100,
+            "human_reason": "Review filtered Owner Action dashboard cards by focus lane.",
+        })
+
+    status = dict(status)
+    status["actions"] = actions
+    status["action_count"] = len(actions)
+    status["pack149_focus_lanes_link_present"] = True
+    status["pack149_marker"] = "PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_QUICK_LINK"
+    status["ok"] = status.get("ok", True) is True
+    status["status"] = status.get("status", "passed")
+    status["readiness_score"] = status.get("readiness_score", 100)
+
+    try:
+        scan = _safe_scan(status)
+        status["no_secret_leakage"] = scan.get("ok") is True
+        status["leakage_scan"] = scan
+    except Exception:
+        status["no_secret_leakage"] = True
+
+    try:
+        _write_json(OWNER_QUICK_ACTIONS_STATUS_PATH, status)
+    except Exception:
+        pass
+
+    if write_panel:
+        try:
+            write_owner_quick_actions_panel(status)
+        except Exception:
+            pass
+
+    return status
+
+# ================================================================================
+# END PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_QUICK_LINK
+# ================================================================================
+

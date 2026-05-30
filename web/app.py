@@ -11518,3 +11518,54 @@ except Exception:
 # END PACK148_OWNER_ACTION_REVIEW_COMPACT_CARD_ROUTE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_ROUTE
+# ================================================================================
+
+try:
+    @app.route("/tower/owner-action-review-focus-lanes.json")
+    def tower_owner_action_review_focus_lanes_json_pack149():
+        try:
+            from flask import jsonify, request
+
+            _tower_guard_response = _tower_guard_ob_route_or_response(
+                route_path="/tower/owner-action-review-focus-lanes.json",
+                metadata={"source": "pack149_owner_action_review_focus_lanes_route"},
+            )
+            if _tower_guard_response is not None:
+                return _tower_guard_response
+
+            from tower.owner_action_review_focus_lanes import build_owner_action_review_focus_lanes
+
+            top_only_value = str(request.args.get("top_only", "") or "").strip().lower()
+            top_only = top_only_value in {"1", "true", "yes", "y"}
+
+            return jsonify(build_owner_action_review_focus_lanes(
+                card_id=request.args.get("card_id", ""),
+                lane=request.args.get("lane", "all"),
+                severity=request.args.get("severity", ""),
+                status=request.args.get("status", ""),
+                top_only=top_only,
+                limit=request.args.get("limit", 24),
+                write_panel=True,
+            ))
+        except Exception as exc:
+            try:
+                from flask import jsonify
+                return jsonify({
+                    "ok": False,
+                    "pack": "149",
+                    "reason_code": "owner_action_review_focus_lanes_unavailable",
+                    "error_type": type(exc).__name__,
+                }), 500
+            except Exception:
+                return {"ok": False, "pack": "149", "error_type": type(exc).__name__}, 500
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK149_OWNER_ACTION_REVIEW_FOCUS_LANES_ROUTE
+# ================================================================================
+

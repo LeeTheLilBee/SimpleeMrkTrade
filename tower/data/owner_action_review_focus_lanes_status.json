@@ -1,0 +1,247 @@
+{
+  "active_filters": {
+    "card_id": "",
+    "lane": "all",
+    "limit": 24,
+    "severity": "",
+    "status": "",
+    "top_only": false
+  },
+  "available_lanes": {
+    "all": {
+      "count": 7,
+      "human_reason": "Show every Owner Action review dashboard card.",
+      "title": "All Review Cards"
+    },
+    "assignments": {
+      "count": 1,
+      "human_reason": "Focus on Owner Action assignment ownership.",
+      "title": "Assignments"
+    },
+    "attention": {
+      "count": 0,
+      "human_reason": "Show any cards that are not success/ready/sealed/clean/tracked.",
+      "title": "Attention Lane"
+    },
+    "notes": {
+      "count": 1,
+      "human_reason": "Focus on Owner Action notes.",
+      "title": "Notes"
+    },
+    "object": {
+      "count": 1,
+      "human_reason": "Focus on object checkpoint / helper wrapping health.",
+      "title": "Object Checkpoint"
+    },
+    "receipts": {
+      "count": 1,
+      "human_reason": "Focus on Owner Action state receipts.",
+      "title": "Receipts"
+    },
+    "review_health": {
+      "count": 1,
+      "human_reason": "Focus on overall review readiness.",
+      "title": "Review Health"
+    },
+    "route": {
+      "count": 1,
+      "human_reason": "Focus on route wall coverage and gaps.",
+      "title": "Route Wall"
+    },
+    "state": {
+      "count": 1,
+      "human_reason": "Focus on Owner Action state tracking.",
+      "title": "State"
+    }
+  },
+  "base_card_count": 7,
+  "cards": [
+    {
+      "card_id": "review_health",
+      "details": {
+        "checkpoint_readiness": 100,
+        "checkpoint_status": "passed",
+        "review_depth_score": 100,
+        "total_review_records": 6
+      },
+      "href": "/tower/owner-action-review-checkpoint.json",
+      "pack": "145+147",
+      "severity": "success",
+      "status": "ready",
+      "subtitle": "State, receipts, notes, and assignments connected",
+      "title": "Review Health",
+      "value": "100%"
+    },
+    {
+      "card_id": "action_state",
+      "details": {
+        "action_count": 6,
+        "by_state": {
+          "acknowledged": 0,
+          "archived": 0,
+          "false_alarm": 0,
+          "investigating": 0,
+          "open": 5,
+          "resolved": 1
+        },
+        "closed_action_count": 1,
+        "tracked_action_count": 1
+      },
+      "href": "/tower/owner-action-state.json",
+      "pack": "141+147",
+      "severity": "success",
+      "status": "tracked",
+      "subtitle": "1 closed \u00b7 6 open",
+      "title": "Action State",
+      "value": "1/6"
+    },
+    {
+      "card_id": "state_receipts",
+      "details": {
+        "base_receipt_count": 3,
+        "filtered_receipt_count": 3,
+        "top_new_state": "resolved"
+      },
+      "href": "/tower/owner-action-state-receipts.json",
+      "pack": "142+147",
+      "severity": "success",
+      "status": "ready",
+      "subtitle": "Top state: resolved",
+      "title": "State Receipts",
+      "value": 3
+    },
+    {
+      "card_id": "notes",
+      "details": {
+        "base_note_count": 1,
+        "receipt_count": 1,
+        "top_note_type": "resolution"
+      },
+      "href": "/tower/owner-action-notes.json",
+      "pack": "143+147",
+      "severity": "success",
+      "status": "ready",
+      "subtitle": "1 note receipts \u00b7 top: resolution",
+      "title": "Notes",
+      "value": 1
+    },
+    {
+      "card_id": "assignments",
+      "details": {
+        "base_assignment_count": 1,
+        "receipt_count": 1,
+        "top_assigned_to": "admin_review",
+        "top_assignment_status": "completed",
+        "unassigned_action_count": 5
+      },
+      "href": "/tower/owner-action-assignments.json",
+      "pack": "144+147",
+      "severity": "success",
+      "status": "ready",
+      "subtitle": "5 unassigned \u00b7 top: completed",
+      "title": "Assignments",
+      "value": 1
+    },
+    {
+      "card_id": "route_wall",
+      "details": {
+        "coverage_pct": 100,
+        "guarded_needed_count": 54,
+        "needs_guard_count": 54,
+        "unguarded_high_risk_count": 0,
+        "unguarded_needed_count": 0
+      },
+      "href": "/tower/ob-guard-status.json",
+      "pack": "105+147",
+      "severity": "success",
+      "status": "sealed",
+      "subtitle": "0 unguarded \u00b7 0 high-risk",
+      "title": "Route Wall",
+      "value": "100%"
+    },
+    {
+      "card_id": "object_checkpoint",
+      "details": {
+        "helper_wrapped_count": 0,
+        "readiness_score": 100,
+        "status": "passed"
+      },
+      "href": "/tower/object-permission-checkpoint.json",
+      "pack": "114+147",
+      "severity": "success",
+      "status": "clean",
+      "subtitle": "helper_wrapped_count",
+      "title": "Object Checkpoint",
+      "value": 0
+    }
+  ],
+  "checks": {
+    "cards_available": true,
+    "dashboard_card_count_7": true,
+    "dashboard_loaded": true,
+    "dashboard_passed": true,
+    "filtered_cards_non_empty_for_non_attention": true,
+    "helper_wrapped_zero": true,
+    "lane_valid": true,
+    "route_coverage_100": true
+  },
+  "created_at": "2026-05-30T16:38:05.745866Z",
+  "failed_checks": [],
+  "filter_options": {
+    "card_id": {
+      "action_state": 1,
+      "assignments": 1,
+      "notes": 1,
+      "object_checkpoint": 1,
+      "review_health": 1,
+      "route_wall": 1,
+      "state_receipts": 1
+    },
+    "lane": {
+      "all": 7,
+      "assignments": 1,
+      "attention": 0,
+      "notes": 1,
+      "object": 1,
+      "receipts": 1,
+      "review_health": 1,
+      "route": 1,
+      "state": 1
+    },
+    "severity": {
+      "success": 7
+    },
+    "status": {
+      "clean": 1,
+      "ready": 4,
+      "sealed": 1,
+      "tracked": 1
+    }
+  },
+  "filtered_card_count": 7,
+  "human_reason": "Owner Action review focus lanes are ready from cached dashboard cards.",
+  "lane": "all",
+  "lane_human_reason": "Show every Owner Action review dashboard card.",
+  "lane_title": "All Review Cards",
+  "leakage_scan": {
+    "forbidden_hit_count": 0,
+    "had_forbidden_hits": false,
+    "ok": true
+  },
+  "no_secret_leakage": true,
+  "ok": true,
+  "pack": "149",
+  "panel_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_focus_lanes_panel.html",
+  "readiness_score": 100,
+  "soulaana_translation": "Soulaana: Owner Action review cards can now be narrowed into focus lanes.",
+  "status": "passed",
+  "status_fingerprint": "21d9dd95b0bbd2ce8620052a68ed488b539507e5cf667a0c628f21a257747661",
+  "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/owner_action_review_focus_lanes_status.json",
+  "summary": {
+    "attention_count": 0,
+    "dashboard_card_count": 7,
+    "helper_wrapped_count": 0,
+    "review_depth_score": 100,
+    "route_coverage_pct": 100
+  }
+}
