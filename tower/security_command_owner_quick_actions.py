@@ -1505,3 +1505,55 @@ def append_pack_152_policy_simulation_quick_action(actions):
         return actions
 # === PACK 152 POLICY SIMULATION QUICK ACTION END ===
 
+
+
+# === PACK 153 POLICY DECISION TRACE PREVIEW QUICK ACTION START ===
+def build_pack_153_policy_decision_trace_preview_quick_action():
+    """
+    Pack 153 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_decision_trace_receipt_preview import build_policy_decision_trace_preview_quick_action
+        return build_policy_decision_trace_preview_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_decision_trace_preview",
+            "label": "Policy Decision Trace Preview",
+            "title": "Policy Decision Trace Preview",
+            "href": "/tower/policy-decision-trace-preview.json",
+            "endpoint": "/tower/policy-decision-trace-preview.json",
+            "description": "Preview what receipt trail The Tower would create for simulated policy decisions.",
+            "status": "review",
+            "pack": "Pack 153",
+            "category": "policy",
+            "simulated_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_153_policy_decision_trace_preview_quick_action(actions):
+    """
+    Append Pack 153 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_decision_trace_preview" not in existing_ids:
+            actions.append(build_pack_153_policy_decision_trace_preview_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 153 POLICY DECISION TRACE PREVIEW QUICK ACTION END ===
+
