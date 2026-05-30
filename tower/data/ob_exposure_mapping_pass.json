@@ -1,12 +1,12 @@
 {
   "counts": {
-    "keep_protected": 37,
+    "keep_protected": 39,
     "keep_public_safe": 7,
     "later_review": 32,
     "map_next": 7,
     "retire_or_redirect": 9
   },
-  "generated_at": "2026-05-30T07:11:19.873015Z",
+  "generated_at": "2026-05-30T07:58:31.221889Z",
   "human_reason": "OB exposure report mapping pass created.",
   "items": [
     {
@@ -318,6 +318,50 @@
           "public_allowed": false
         },
         "route": "/tower/owner-action-center.json"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/owner-action-detail.json",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_owner_action_detail_json_pack139",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/owner-action-detail.json"
+      },
+      "reason_code": "tower_owned_security_surface",
+      "source": "ob_route_exposure_report"
+    },
+    {
+      "category": "keep_protected",
+      "classification": "tower_owned",
+      "path": "/tower/owner-action-filters.json",
+      "plain": "Tower security/admin surfaces stay protected and should not become public.",
+      "priority": 1,
+      "raw": {
+        "category": "tower_owned",
+        "endpoint": "tower_owner_action_filters_json_pack138",
+        "match_type": "tower_owned",
+        "methods": [
+          "GET"
+        ],
+        "policy": {
+          "plain": "Tower owns this route with keycard rules.",
+          "public_allowed": false
+        },
+        "route": "/tower/owner-action-filters.json"
       },
       "reason_code": "tower_owned_security_surface",
       "source": "ob_route_exposure_report"
@@ -2987,7 +3031,7 @@
   "pack": "084",
   "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/ob_exposure_mapping_pass.json",
   "priority_counts": {
-    "1": 46,
+    "1": 48,
     "2": 13,
     "4": 30,
     "5": 3
@@ -3002,7 +3046,7 @@
     "needs_owner_review": 2,
     "outer_shell_or_locked_surface": 6,
     "static_or_health_safe_surface": 1,
-    "tower_owned_security_surface": 27,
+    "tower_owned_security_surface": 29,
     "unmapped_default_deny_review_needed": 30
   },
   "retire_or_redirect": [
@@ -3410,5 +3454,5 @@
       "source": "ob_route_exposure_report"
     }
   ],
-  "total": 92
+  "total": 94
 }
