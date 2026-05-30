@@ -709,3 +709,41 @@ except Exception:
 # END PACK134_OWNER_QUICK_ACTIONS_SECURITY_WATCH_CHECKPOINT_EXTENSION
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK136_OWNER_QUICK_ACTIONS_OWNER_ACTION_CENTER_EXTENSION
+# ================================================================================
+
+try:
+    _pack136_existing_action_ids = {
+        action.get("action_id")
+        for action in OWNER_QUICK_ACTIONS
+        if isinstance(action, dict)
+    }
+
+    _pack136_existing_hrefs = {
+        action.get("href")
+        for action in OWNER_QUICK_ACTIONS
+        if isinstance(action, dict)
+    }
+
+    if (
+        "open_owner_action_center" not in _pack136_existing_action_ids
+        and "/tower/owner-action-center.json" not in _pack136_existing_hrefs
+    ):
+        OWNER_QUICK_ACTIONS.insert(0, {
+            "action_id": "open_owner_action_center",
+            "title": "Open Owner Action Center",
+            "href": "/tower/owner-action-center.json",
+            "kind": "status_json",
+            "pack": "135",
+            "human_reason": "Open the prioritized owner command queue generated from Tower posture, incidents, inbox items, route health, and checkpoint health.",
+        })
+except Exception:
+    pass
+
+# ================================================================================
+# END PACK136_OWNER_QUICK_ACTIONS_OWNER_ACTION_CENTER_EXTENSION
+# ================================================================================
+

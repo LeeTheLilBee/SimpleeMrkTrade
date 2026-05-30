@@ -1,6 +1,16 @@
 {
-  "action_count": 16,
+  "action_count": 17,
   "actions": [
+    {
+      "action_id": "open_owner_action_center",
+      "available": true,
+      "href": "/tower/owner-action-center.json",
+      "human_reason": "Open the prioritized owner command queue generated from Tower posture, incidents, inbox items, route health, and checkpoint health.",
+      "kind": "status_json",
+      "pack": "135",
+      "readiness_score": 100,
+      "title": "Open Owner Action Center"
+    },
     {
       "action_id": "open_security_watch",
       "available": true,
@@ -175,7 +185,7 @@
     "unified_health_ok": true,
     "unified_status_passed": true
   },
-  "created_at": "2026-05-29T23:38:23.795193Z",
+  "created_at": "2026-05-30T07:12:17.422542Z",
   "failed_checks": [],
   "human_reason": "Owner quick-action rail gives direct access to unified command, preferred destination, security links, object visibility, and route guard status.",
   "leakage_scan": {
@@ -207,7 +217,7 @@
   },
   "soulaana_translation": "Soulaana: The owner now has the important Tower buttons in one rail.",
   "status": "passed",
-  "status_fingerprint": "0061070eca6b548330ee6979457144435556dc5002914c31f8ce1abc3d7286c6",
+  "status_fingerprint": "d4d9cf32707232c2cb97250a3518c6fc3b7f958d6fa2c88f9efb8e8bfaf249d0",
   "status_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_owner_quick_actions_status.json",
   "unified_health": {
     "html_path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/data/security_command_unified_owner_page.html",

@@ -2686,3 +2686,348 @@ def render_unified_owner_security_command_html(status: Dict[str, Any] | None = N
 # END PACK134_UNIFIED_OWNER_PAGE_WITH_SECURITY_WATCH_CHECKPOINT
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK136_UNIFIED_OWNER_PAGE_WITH_OWNER_ACTION_CENTER
+# ================================================================================
+# Override renderer to include Owner Action Center near the top of unified Security
+# Command, above Security Watch / checkpoints.
+# ================================================================================
+
+def render_unified_owner_security_command_html(status: Dict[str, Any] | None = None) -> str:
+    if not isinstance(status, dict):
+        status = {
+            "human_reason": "Unified Security Command loaded in safe render mode.",
+            "readiness_score": 100,
+            "route_health": {"coverage_pct": 100, "guarded_needed_count": "ready", "needs_guard_count": "ready"},
+            "object_checkpoint": {"helper_wrapped_count": 0},
+            "object_visibility": {"event_count": "ready"},
+            "navigation": {"link_count": "ready"},
+        }
+
+    owner_action_center_section = ""
+    security_watch_section = ""
+    security_watch_checkpoint_section = ""
+    quick_actions_section = ""
+    preferred_section = ""
+    inbox_section = ""
+    review_section = ""
+    filters_section = ""
+    incident_section = ""
+    incident_filters_section = ""
+    nav_section = ""
+    object_section = ""
+
+    try:
+        from tower.owner_action_center import (
+            load_owner_action_center_status,
+            render_owner_action_center_section,
+        )
+        owner_action_center_section = render_owner_action_center_section(
+            load_owner_action_center_status()
+        )
+    except Exception as exc:
+        owner_action_center_section = f"""
+        <section class="owner-action-center" data-pack="136-action-center-error">
+          <h2>Owner Action Center Unavailable</h2>
+          <p>{_html_escape(type(exc).__name__)}</p>
+        </section>
+        """
+
+    try:
+        from tower.security_watch_owner_posture import (
+            load_security_watch_owner_posture,
+            render_security_watch_owner_posture_section,
+        )
+        security_watch_section = render_security_watch_owner_posture_section(
+            load_security_watch_owner_posture()
+        )
+    except Exception as exc:
+        security_watch_section = f"""
+        <section class="security-watch-owner-posture" data-pack="136-watch-error">
+          <h2>Tower Security Watch Unavailable</h2>
+          <p>{_html_escape(type(exc).__name__)}</p>
+        </section>
+        """
+
+    try:
+        from tower.security_watch_checkpoint import (
+            load_security_watch_checkpoint,
+            render_security_watch_checkpoint_section,
+        )
+        security_watch_checkpoint_section = render_security_watch_checkpoint_section(
+            load_security_watch_checkpoint()
+        )
+    except Exception as exc:
+        security_watch_checkpoint_section = f"""
+        <section class="security-watch-checkpoint" data-pack="136-watch-checkpoint-error">
+          <h2>Security Watch Checkpoint Unavailable</h2>
+          <p>{_html_escape(type(exc).__name__)}</p>
+        </section>
+        """
+
+    try:
+        from tower.security_command_owner_quick_actions import (
+            load_owner_quick_actions_status,
+            render_owner_quick_actions_section,
+        )
+        quick_actions_section = render_owner_quick_actions_section(load_owner_quick_actions_status())
+    except Exception as exc:
+        quick_actions_section = f"""
+        <section class="owner-quick-action-rail" data-pack="136-quick-error">
+          <h2>Owner Quick Actions Unavailable</h2>
+          <p>{_html_escape(type(exc).__name__)}</p>
+        </section>
+        """
+
+    try:
+        from tower.security_command_preferred_destination import (
+            load_security_command_preferred_destination_status,
+            render_security_command_preferred_destination_section,
+        )
+        preferred_section = render_security_command_preferred_destination_section(
+            load_security_command_preferred_destination_status()
+        )
+    except Exception as exc:
+        preferred_section = f"""
+        <section class="preferred-command-destination" data-pack="136-preferred-error">
+          <h2>Preferred Security Command Destination Unavailable</h2>
+          <p>{_html_escape(type(exc).__name__)}</p>
+        </section>
+        """
+
+    try:
+        from tower.security_inbox_owner_queue import (
+            load_security_inbox_owner_queue,
+            render_security_inbox_owner_queue_section,
+        )
+        inbox_section = render_security_inbox_owner_queue_section(load_security_inbox_owner_queue())
+    except Exception as exc:
+        inbox_section = f"""
+        <section class="security-inbox-owner-queue" data-pack="136-inbox-error">
+          <h2>Tower Security Inbox Unavailable</h2>
+          <p>{_html_escape(type(exc).__name__)}</p>
+        </section>
+        """
+
+    try:
+        from tower.security_inbox_review_actions import (
+            load_security_inbox_review_status,
+            render_security_inbox_review_section,
+        )
+        review_section = render_security_inbox_review_section(load_security_inbox_review_status())
+    except Exception as exc:
+        review_section = f"""
+        <section class="security-inbox-review-actions" data-pack="136-review-error">
+          <h2>Security Inbox Review Actions Unavailable</h2>
+          <p>{_html_escape(type(exc).__name__)}</p>
+        </section>
+        """
+
+    try:
+        from tower.security_inbox_filters_priorities import (
+            load_security_inbox_filters_priorities_status,
+            render_security_inbox_filters_priorities_section,
+        )
+        filters_section = render_security_inbox_filters_priorities_section(
+            load_security_inbox_filters_priorities_status()
+        )
+    except Exception as exc:
+        filters_section = f"""
+        <section class="security-inbox-filters-priorities" data-pack="136-filters-error">
+          <h2>Security Inbox Filters & Priorities Unavailable</h2>
+          <p>{_html_escape(type(exc).__name__)}</p>
+        </section>
+        """
+
+    try:
+        from tower.security_incident_desk import (
+            load_security_incident_desk_status,
+            render_security_incident_desk_section,
+        )
+        incident_section = render_security_incident_desk_section(load_security_incident_desk_status())
+    except Exception as exc:
+        incident_section = f"""
+        <section class="security-incident-desk" data-pack="136-incident-error">
+          <h2>Tower Incident Desk Unavailable</h2>
+          <p>{_html_escape(type(exc).__name__)}</p>
+        </section>
+        """
+
+    try:
+        from tower.security_incident_filters_escalation import (
+            load_security_incident_filters_escalation_status,
+            render_security_incident_filters_escalation_section,
+        )
+        incident_filters_section = render_security_incident_filters_escalation_section(
+            load_security_incident_filters_escalation_status()
+        )
+    except Exception as exc:
+        incident_filters_section = f"""
+        <section class="security-incident-filters-escalation" data-pack="136-incident-filters-error">
+          <h2>Incident Filters & Escalation Unavailable</h2>
+          <p>{_html_escape(type(exc).__name__)}</p>
+        </section>
+        """
+
+    try:
+        from tower.security_command_navigation_links import (
+            load_security_command_navigation_links_status,
+            render_security_command_navigation_links_section,
+        )
+        nav_section = render_security_command_navigation_links_section(
+            load_security_command_navigation_links_status()
+        )
+    except Exception as exc:
+        nav_section = f"""
+        <section class="tower-security-command-links" data-pack="136-nav-error">
+          <h2>Security Command Links Unavailable</h2>
+          <p>{_html_escape(type(exc).__name__)}</p>
+        </section>
+        """
+
+    try:
+        from tower.security_command_object_visibility_integration import (
+            load_security_command_object_visibility_status,
+            render_security_command_object_visibility_section,
+        )
+        object_section = render_security_command_object_visibility_section(
+            load_security_command_object_visibility_status()
+        )
+    except Exception:
+        try:
+            from tower.security_command_page import pack113_security_command_object_visibility_html_section
+            object_section = pack113_security_command_object_visibility_html_section()
+        except Exception as exc:
+            object_section = f"""
+            <section class="tower-object-visibility-panel" data-pack="136-object-error">
+              <h2>Object Visibility Unavailable</h2>
+              <p>{_html_escape(type(exc).__name__)}</p>
+            </section>
+            """
+
+    route_health = status.get("route_health", {}) if isinstance(status.get("route_health"), dict) else {}
+    object_checkpoint = status.get("object_checkpoint", {}) if isinstance(status.get("object_checkpoint"), dict) else {}
+    object_visibility = status.get("object_visibility", {}) if isinstance(status.get("object_visibility"), dict) else {}
+    navigation = status.get("navigation", {}) if isinstance(status.get("navigation"), dict) else {}
+
+    health_cards = "".join([
+        _build_health_card("Route Coverage", f"{route_health.get('coverage_pct', 0)}%", "ROUTE WALL"),
+        _build_health_card("Guarded Protected Routes", f"{route_health.get('guarded_needed_count', 0)} / {route_health.get('needs_guard_count', 0)}", "GUARDS"),
+        _build_health_card("Helper Wraps", object_checkpoint.get("helper_wrapped_count", 0), "OBJECT CLEANUP"),
+        _build_health_card("Object Events", object_visibility.get("event_count", 0), "OBJECT VISIBILITY"),
+        _build_health_card("Security Links", navigation.get("link_count", 0), "NAVIGATION"),
+        _build_health_card("Readiness", status.get("readiness_score", 0), "OWNER COMMAND"),
+    ])
+
+    html = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>The Tower · Unified Owner Security Command</title>
+  <style>
+    body {{
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(220,183,94,.13), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(168,175,255,.10), transparent 35%),
+        #080907;
+      color: #f5ead2;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }}
+    main {{ max-width: 1220px; margin: 0 auto; padding: 42px 22px 70px; }}
+    .tower-owner-hero {{
+      border: 1px solid rgba(220,183,94,.38);
+      border-radius: 34px;
+      padding: 32px;
+      background: linear-gradient(135deg, rgba(75,48,18,.76), rgba(8,9,7,.94));
+      box-shadow: 0 24px 90px rgba(0,0,0,.44);
+      margin-bottom: 22px;
+    }}
+    .tower-owner-hero__eyebrow {{
+      color: rgba(220,183,94,.88);
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: 11px;
+      margin-bottom: 10px;
+    }}
+    .tower-owner-hero h1 {{ margin: 0 0 10px; font-size: 38px; letter-spacing: -.045em; }}
+    .tower-owner-hero p {{ margin: 0; color: rgba(245,234,210,.76); line-height: 1.55; max-width: 880px; }}
+    .tower-owner-health-grid {{
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0 0;
+    }}
+    .tower-owner-health-card {{
+      border: 1px solid rgba(143,221,158,.26);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.045);
+    }}
+    .tower-owner-health-card__eyebrow {{
+      color: rgba(220,183,94,.8);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }}
+    .tower-owner-health-card h3 {{ margin: 0 0 6px; font-size: 22px; }}
+    .tower-owner-health-card p {{ margin: 0; color: rgba(245,234,210,.63); font-size: 12px; }}
+    .tower-owner-section {{ margin-top: 22px; }}
+    @media (max-width: 1050px) {{ .tower-owner-health-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }} }}
+    @media (max-width: 720px) {{ .tower-owner-health-grid {{ grid-template-columns: 1fr; }} .tower-owner-hero h1 {{ font-size: 30px; }} }}
+  </style>
+</head>
+<body>
+<main>
+  <!-- PACK116_UNIFIED_OWNER_SECURITY_COMMAND_PAGE -->
+  <!-- PACK118B_SAFE_NON_RECURSIVE_RENDERER -->
+  <!-- PACK119_UNIFIED_OWNER_PAGE_INCLUDES_QUICK_ACTION_RAIL -->
+  <!-- PACK123_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_INBOX_AND_REVIEW -->
+  <!-- PACK125_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_INBOX_FILTERS -->
+  <!-- PACK127_UNIFIED_OWNER_PAGE_INCLUDES_INCIDENT_DESK -->
+  <!-- PACK129_UNIFIED_OWNER_PAGE_INCLUDES_INCIDENT_FILTERS_ESCALATION -->
+  <!-- PACK132_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH -->
+  <!-- PACK134_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH_CHECKPOINT -->
+  <!-- PACK136_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_CENTER -->
+  <section class="tower-owner-hero" data-pack="116-136">
+    <div class="tower-owner-hero__eyebrow">PACK 116 + 136 · UNIFIED OWNER COMMAND</div>
+    <h1>The Tower Security Command</h1>
+    <p>{_html_escape(status.get('human_reason', 'Unified Security Command loaded.'))}</p>
+    <div class="tower-owner-health-grid">{health_cards}</div>
+  </section>
+
+  <section class="tower-owner-section">{owner_action_center_section}</section>
+  <section class="tower-owner-section">{security_watch_section}</section>
+  <section class="tower-owner-section">{security_watch_checkpoint_section}</section>
+  <section class="tower-owner-section">{quick_actions_section}</section>
+  <section class="tower-owner-section">{preferred_section}</section>
+  <section class="tower-owner-section">{inbox_section}</section>
+  <section class="tower-owner-section">{review_section}</section>
+  <section class="tower-owner-section">{filters_section}</section>
+  <section class="tower-owner-section">{incident_section}</section>
+  <section class="tower-owner-section">{incident_filters_section}</section>
+  <section class="tower-owner-section">{nav_section}</section>
+  <section class="tower-owner-section">{object_section}</section>
+  <!-- END PACK136_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_CENTER -->
+  <!-- END PACK134_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH_CHECKPOINT -->
+  <!-- END PACK132_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH -->
+  <!-- END PACK129_UNIFIED_OWNER_PAGE_INCLUDES_INCIDENT_FILTERS_ESCALATION -->
+  <!-- END PACK127_UNIFIED_OWNER_PAGE_INCLUDES_INCIDENT_DESK -->
+  <!-- END PACK125_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_INBOX_FILTERS -->
+  <!-- END PACK123_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_INBOX_AND_REVIEW -->
+  <!-- END PACK119_UNIFIED_OWNER_PAGE_INCLUDES_QUICK_ACTION_RAIL -->
+  <!-- END PACK118B_SAFE_NON_RECURSIVE_RENDERER -->
+  <!-- END PACK116_UNIFIED_OWNER_SECURITY_COMMAND_PAGE -->
+</main>
+</body>
+</html>"""
+    return html
+
+# ================================================================================
+# END PACK136_UNIFIED_OWNER_PAGE_WITH_OWNER_ACTION_CENTER
+# ================================================================================
+

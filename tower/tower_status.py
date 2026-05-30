@@ -775,3 +775,27 @@ def pack134_security_watch_checkpoint_status_bridge():
 # END PACK134_SECURITY_WATCH_CHECKPOINT_STATUS_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK136_OWNER_ACTION_CENTER_STATUS_BRIDGE
+# ================================================================================
+
+def pack136_owner_action_center_status_bridge():
+    try:
+        from tower.owner_action_center import owner_action_center_status_card
+        return owner_action_center_status_card()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "pack": "136",
+            "title": "Owner Action Center",
+            "reason_code": "owner_action_center_unavailable",
+            "error_type": type(exc).__name__,
+            "human_reason": "Owner Action Center could not be loaded.",
+        }
+
+# ================================================================================
+# END PACK136_OWNER_ACTION_CENTER_STATUS_BRIDGE
+# ================================================================================
+

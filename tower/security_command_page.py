@@ -1828,3 +1828,29 @@ def pack134_security_watch_checkpoint_html_section():
 # END PACK134_SECURITY_WATCH_CHECKPOINT_HTML_BRIDGE
 # ================================================================================
 
+
+
+# ================================================================================
+# PACK136_OWNER_ACTION_CENTER_HTML_BRIDGE
+# ================================================================================
+
+def pack136_owner_action_center_html_section():
+    try:
+        from tower.owner_action_center import (
+            build_owner_action_center_status,
+            render_owner_action_center_section,
+        )
+        status = build_owner_action_center_status(write_panel=True)
+        return render_owner_action_center_section(status)
+    except Exception as exc:
+        return f"""
+        <section class="owner-action-center" data-pack="136-owner-action-center-error">
+          <h2>Owner Action Center Unavailable</h2>
+          <p>{type(exc).__name__}</p>
+        </section>
+        """
+
+# ================================================================================
+# END PACK136_OWNER_ACTION_CENTER_HTML_BRIDGE
+# ================================================================================
+

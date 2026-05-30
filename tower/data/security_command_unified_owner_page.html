@@ -69,8 +69,9 @@
   <!-- PACK129_UNIFIED_OWNER_PAGE_INCLUDES_INCIDENT_FILTERS_ESCALATION -->
   <!-- PACK132_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH -->
   <!-- PACK134_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH_CHECKPOINT -->
-  <section class="tower-owner-hero" data-pack="116-134">
-    <div class="tower-owner-hero__eyebrow">PACK 116 + 134 · UNIFIED OWNER COMMAND</div>
+  <!-- PACK136_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_CENTER -->
+  <section class="tower-owner-hero" data-pack="116-136">
+    <div class="tower-owner-hero__eyebrow">PACK 116 + 136 · UNIFIED OWNER COMMAND</div>
     <h1>The Tower Security Command</h1>
     <p>Unified owner Security Command page composes navigation, object visibility, route coverage, object checkpoint, and composition smoke into one control-room page.</p>
     <div class="tower-owner-health-grid">
@@ -112,6 +113,181 @@
     </div>
   </section>
 
+  <section class="tower-owner-section">
+<!-- PACK135_OWNER_ACTION_CENTER_SECTION -->
+<section class="owner-action-center" data-pack="135">
+  <style>
+    .owner-action-center {
+      margin: 24px 0;
+      border: 1px solid rgba(220,183,94,.42);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(220,183,94,.15), transparent 34%),
+        linear-gradient(135deg, rgba(45,32,10,.88), rgba(8,9,7,.94));
+      color: #f5ead2;
+      box-shadow: 0 18px 70px rgba(0,0,0,.32);
+    }
+    .owner-action-center__eyebrow {
+      color: rgba(220,183,94,.92);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .owner-action-center h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+    .owner-action-center p {
+      color: rgba(245,234,210,.72);
+      line-height: 1.45;
+    }
+    .owner-action-summary {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .owner-action-stat {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.04);
+    }
+    .owner-action-stat b {
+      display: block;
+      font-size: 20px;
+      word-break: break-word;
+    }
+    .owner-action-stat span {
+      color: rgba(245,234,210,.62);
+      font-size: 12px;
+    }
+    .owner-action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .owner-action-card {
+      border: 1px solid rgba(245,234,210,.13);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+    }
+    .owner-action-card--critical { border-color: rgba(255,80,80,.82); }
+    .owner-action-card--high { border-color: rgba(255,128,128,.65); }
+    .owner-action-card--medium { border-color: rgba(220,183,94,.62); }
+    .owner-action-card--low { border-color: rgba(168,175,255,.52); }
+    .owner-action-card--info { border-color: rgba(143,221,158,.34); }
+    .owner-action-card__eyebrow {
+      color: rgba(220,183,94,.84);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 10px;
+      margin-bottom: 7px;
+    }
+    .owner-action-card h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+      word-break: break-word;
+    }
+    .owner-action-card p {
+      margin: 0 0 8px;
+      color: rgba(245,234,210,.72);
+    }
+    .owner-action-card small {
+      display: block;
+      color: rgba(245,234,210,.55);
+      word-break: break-word;
+      margin-bottom: 10px;
+    }
+    .owner-action-card a {
+      display: inline-flex;
+      text-decoration: none;
+      border: 1px solid rgba(220,183,94,.45);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #f5ead2;
+      background: rgba(220,183,94,.08);
+      font-size: 12px;
+    }
+    @media (max-width: 1000px) {
+      .owner-action-summary,
+      .owner-action-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="owner-action-center__eyebrow">PACK 135 · OWNER ACTION CENTER</div>
+  <h2>Owner Action Center</h2>
+  <p>Owner Action Center is ready from cached Tower posture and produces a prioritized owner command queue.</p>
+
+  <div class="owner-action-summary">
+    <div class="owner-action-stat"><b>6</b><span>Total Actions</span></div>
+    <div class="owner-action-stat"><b>6</b><span>Open Actions</span></div>
+    <div class="owner-action-stat"><b>watch</b><span>Posture</span></div>
+    <div class="owner-action-stat"><b>63</b><span>Risk Points</span></div>
+    <div class="owner-action-stat"><b>open_incident_filters_and_review_escalation_ready</b><span>Top Next Step</span></div>
+  </div>
+
+  <div class="owner-action-grid">
+    
+        <article class="owner-action-card owner-action-card--high">
+          <div class="owner-action-card__eyebrow">high · P125</div>
+          <h3>Review Incident Escalation</h3>
+          <p>Cached incident filters show escalation-ready incidents.</p>
+          <small>Next: open_incident_filters_and_review_escalation_ready</small>
+          <a href="/tower/security-incident-filters.json">Open action</a>
+        </article>
+        
+        <article class="owner-action-card owner-action-card--medium">
+          <div class="owner-action-card__eyebrow">medium · P90</div>
+          <h3>Review High-Priority Security Inbox</h3>
+          <p>Cached Security Inbox filters show high-priority items.</p>
+          <small>Next: open_security_inbox_filters_and_review_high_priority</small>
+          <a href="/tower/security-inbox-filters.json">Open action</a>
+        </article>
+        
+        <article class="owner-action-card owner-action-card--high">
+          <div class="owner-action-card__eyebrow">high · P80</div>
+          <h3>Do Recommended First Action</h3>
+          <p>Security Watch recommends: review_incident_escalation.</p>
+          <small>Next: review_incident_escalation</small>
+          <a href="/tower/security-watch.json">Open action</a>
+        </article>
+        
+        <article class="owner-action-card owner-action-card--medium">
+          <div class="owner-action-card__eyebrow">medium · P80</div>
+          <h3>Continue Security Inbox Review</h3>
+          <p>Cached Security Inbox has open owner review items.</p>
+          <small>Next: open_security_inbox_review_status</small>
+          <a href="/tower/security-inbox-review-status.json">Open action</a>
+        </article>
+        
+        <article class="owner-action-card owner-action-card--info">
+          <div class="owner-action-card__eyebrow">info · P10</div>
+          <h3>Monitor Sealed Route Wall</h3>
+          <p>Cached route wall is sealed.</p>
+          <small>Next: monitor_route_guard_status</small>
+          <a href="/tower/ob-guard-status.json">Open action</a>
+        </article>
+        
+        <article class="owner-action-card owner-action-card--info">
+          <div class="owner-action-card__eyebrow">info · P10</div>
+          <h3>Monitor Security Watch Checkpoint</h3>
+          <p>Cached Security Watch checkpoint is healthy and visible.</p>
+          <small>Next: monitor_security_watch_checkpoint</small>
+          <a href="/tower/security-watch-checkpoint.json">Open action</a>
+        </article>
+        
+  </div>
+</section>
+<!-- END PACK135_OWNER_ACTION_CENTER_SECTION -->
+</section>
   <section class="tower-owner-section">
 <!-- PACK131_SECURITY_WATCH_OWNER_POSTURE_SECTION -->
 <section class="security-watch-owner-posture" data-pack="131">
@@ -219,7 +395,7 @@
         
         <article class="security-watch-card">
           <div class="security-watch-card__eyebrow">Inbox</div>
-          <h3>51</h3>
+          <h3>64</h3>
           <p>High Priority Inbox</p>
         </article>
         
@@ -315,43 +491,43 @@
 
   <div class="security-watch-checkpoint__eyebrow">PACK 133 · SECURITY WATCH CHECKPOINT</div>
   <h2>Security Watch Readiness Checkpoint</h2>
-  <p>Security Watch checkpoint reset for test.</p>
+  <p>Security Watch checkpoint uses cached Tower posture and avoids recursive live builder calls.</p>
 
   <div class="security-watch-checkpoint-grid">
     
         <article class="security-watch-checkpoint-card">
           <div class="security-watch-checkpoint-card__eyebrow">Owner View</div>
-          <h3>Watch</h3>
+          <h3>Active Security Watch</h3>
           <p>Posture</p>
         </article>
         
         <article class="security-watch-checkpoint-card">
           <div class="security-watch-checkpoint-card__eyebrow">Signal</div>
-          <h3>0</h3>
+          <h3>63</h3>
           <p>Risk Points</p>
         </article>
         
         <article class="security-watch-checkpoint-card">
           <div class="security-watch-checkpoint-card__eyebrow">Guard Wall</div>
-          <h3>0%</h3>
+          <h3>100%</h3>
           <p>Route Coverage</p>
         </article>
         
         <article class="security-watch-checkpoint-card">
           <div class="security-watch-checkpoint-card__eyebrow">Incident Desk</div>
-          <h3>0</h3>
+          <h3>40</h3>
           <p>Open Incidents</p>
         </article>
         
         <article class="security-watch-checkpoint-card">
           <div class="security-watch-checkpoint-card__eyebrow">Inbox</div>
-          <h3>0</h3>
+          <h3>64</h3>
           <p>High Priority Inbox</p>
         </article>
         
         <article class="security-watch-checkpoint-card">
           <div class="security-watch-checkpoint-card__eyebrow">Owner Rail</div>
-          <h3>0</h3>
+          <h3>16</h3>
           <p>Quick Actions</p>
         </article>
         
@@ -364,8 +540,8 @@
   </div>
 
   <div class="security-watch-checkpoint__note">
-    <strong>Recommended first action:</strong> monitor<br>
-    <strong>Wall state:</strong> unknown
+    <strong>Recommended first action:</strong> review_incident_escalation<br>
+    <strong>Wall state:</strong> sealed
   </div>
 </section>
 <!-- END PACK133_SECURITY_WATCH_CHECKPOINT_SECTION -->
@@ -456,6 +632,13 @@
 
   <div class="owner-quick-action-grid">
     
+        <a class="owner-action-card owner-action-card--normal" href="/tower/owner-action-center.json">
+          <div class="owner-action-card__eyebrow">status_json · 135</div>
+          <h3>Open Owner Action Center</h3>
+          <p>Open the prioritized owner command queue generated from Tower posture, incidents, inbox items, route health, and checkpoint health.</p>
+          <small>Readiness: 100</small>
+        </a>
+        
         <a class="owner-action-card owner-action-card--normal" href="/tower/security-watch.json">
           <div class="owner-action-card__eyebrow">status_json · 131</div>
           <h3>Open Security Watch</h3>
@@ -2469,6 +2652,7 @@
 </section>
 <!-- END PACK113_SECURITY_COMMAND_OBJECT_VISIBILITY_SECTION -->
 </section>
+  <!-- END PACK136_UNIFIED_OWNER_PAGE_INCLUDES_OWNER_ACTION_CENTER -->
   <!-- END PACK134_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH_CHECKPOINT -->
   <!-- END PACK132_UNIFIED_OWNER_PAGE_INCLUDES_SECURITY_WATCH -->
   <!-- END PACK129_UNIFIED_OWNER_PAGE_INCLUDES_INCIDENT_FILTERS_ESCALATION -->
