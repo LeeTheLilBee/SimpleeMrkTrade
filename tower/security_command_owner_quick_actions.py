@@ -2107,3 +2107,65 @@ def append_pack_163_policy_change_approval_receipt_renewal_recheck_queue_quick_a
         return actions
 # === PACK 163 POLICY CHANGE APPROVAL RECEIPT RENEWAL RECHECK QUEUE QUICK ACTION END ===
 
+
+
+# === PACK 164 POLICY CHANGE APPROVAL RECEIPT OWNER REVIEW QUEUE QUICK ACTION START ===
+def build_pack_164_policy_change_approval_receipt_owner_review_queue_quick_action():
+    """
+    Pack 164 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_review_queue import build_policy_change_approval_receipt_owner_review_queue_quick_action
+        return build_policy_change_approval_receipt_owner_review_queue_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_change_approval_receipt_owner_review_queue",
+            "label": "Approval Receipt Owner Review",
+            "title": "Approval Receipt Owner Review Queue",
+            "href": "/tower/policy-change-approval-receipt-owner-review-queue.json",
+            "endpoint": "/tower/policy-change-approval-receipt-owner-review-queue.json",
+            "description": "Preview owner-review lanes for approval receipt renewal/recheck items.",
+            "status": "review",
+            "pack": "Pack 164",
+            "category": "policy",
+            "simulated_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_164_policy_change_approval_receipt_owner_review_queue_quick_action(actions):
+    """
+    Append Pack 164 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_review_queue" not in existing_ids:
+            actions.append(build_pack_164_policy_change_approval_receipt_owner_review_queue_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 164 POLICY CHANGE APPROVAL RECEIPT OWNER REVIEW QUEUE QUICK ACTION END ===
+

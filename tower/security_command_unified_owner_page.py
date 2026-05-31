@@ -4498,3 +4498,82 @@ def append_pack_163_policy_change_approval_receipt_renewal_recheck_queue_section
         return sections
 # === PACK 163 POLICY CHANGE APPROVAL RECEIPT RENEWAL RECHECK QUEUE UNIFIED SECTION END ===
 
+
+
+# === PACK 164 POLICY CHANGE APPROVAL RECEIPT OWNER REVIEW QUEUE UNIFIED SECTION START ===
+def build_pack_164_policy_change_approval_receipt_owner_review_queue_unified_section():
+    """
+    Pack 164 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_approval_receipt_owner_review_queue
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_review_queue import build_policy_change_approval_receipt_owner_review_queue_unified_owner_section
+        return build_policy_change_approval_receipt_owner_review_queue_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_owner_review_queue",
+            "title": "Approval Receipt Owner Review",
+            "subtitle": "Approval receipt owner review queue section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-owner-review-queue.json",
+            "cards": [],
+            "simulated_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_164_policy_change_approval_receipt_owner_review_queue_html_section():
+    try:
+        from tower.policy_change_approval_receipt_owner_review_queue import build_policy_change_approval_receipt_owner_review_queue_html_section
+        return build_policy_change_approval_receipt_owner_review_queue_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-approval-receipt-owner-review-section" id="policy-change-approval-receipt-owner-review-queue">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 164</p>
+                <h2>Approval Receipt Owner Review</h2>
+                <p>Approval receipt owner review queue section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-approval-receipt-owner-review-queue.json">Open approval receipt owner review JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_164_policy_change_approval_receipt_owner_review_queue_section(sections):
+    """
+    Append Pack 164 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_review_queue" not in existing_ids:
+            sections.append(build_pack_164_policy_change_approval_receipt_owner_review_queue_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 164 POLICY CHANGE APPROVAL RECEIPT OWNER REVIEW QUEUE UNIFIED SECTION END ===
+

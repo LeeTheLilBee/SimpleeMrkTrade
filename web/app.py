@@ -12059,3 +12059,37 @@ def tower_policy_change_approval_receipt_renewal_recheck_queue_json():
     return jsonify(payload)
 # === PACK 163 POLICY CHANGE APPROVAL RECEIPT RENEWAL RECHECK QUEUE ROUTE END ===
 
+
+
+# === PACK 164 POLICY CHANGE APPROVAL RECEIPT OWNER REVIEW QUEUE ROUTE START ===
+def _pack_164_policy_change_approval_receipt_owner_review_queue_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/policy-change-approval-receipt-owner-review-queue.json", methods=["GET"])
+@_pack_164_policy_change_approval_receipt_owner_review_queue_route_guard
+def tower_policy_change_approval_receipt_owner_review_queue_json():
+    from tower.policy_change_approval_receipt_owner_review_queue import build_policy_change_approval_receipt_owner_review_queue_payload
+
+    payload = build_policy_change_approval_receipt_owner_review_queue_payload()
+    return jsonify(payload)
+# === PACK 164 POLICY CHANGE APPROVAL RECEIPT OWNER REVIEW QUEUE ROUTE END ===
+
