@@ -1986,3 +1986,63 @@ def append_pack_161_policy_change_approval_receipt_vault_index_quick_action(acti
         return actions
 # === PACK 161 POLICY CHANGE APPROVAL RECEIPT VAULT INDEX QUICK ACTION END ===
 
+
+
+# === PACK 162 POLICY CHANGE APPROVAL RECEIPT EXPIRATION RULES QUICK ACTION START ===
+def build_pack_162_policy_change_approval_receipt_expiration_rules_quick_action():
+    """
+    Pack 162 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_change_approval_receipt_expiration_rules import build_policy_change_approval_receipt_expiration_rules_quick_action
+        return build_policy_change_approval_receipt_expiration_rules_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_change_approval_receipt_expiration_rules",
+            "label": "Approval Receipt Expiration Rules",
+            "title": "Approval Receipt Expiration Rules",
+            "href": "/tower/policy-change-approval-receipt-expiration-rules.json",
+            "endpoint": "/tower/policy-change-approval-receipt-expiration-rules.json",
+            "description": "Preview expiration, renewal, and recheck windows for approval receipt evidence.",
+            "status": "review",
+            "pack": "Pack 162",
+            "category": "policy",
+            "simulated_only": True,
+            "expiration_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_162_policy_change_approval_receipt_expiration_rules_quick_action(actions):
+    """
+    Append Pack 162 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_expiration_rules" not in existing_ids:
+            actions.append(build_pack_162_policy_change_approval_receipt_expiration_rules_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 162 POLICY CHANGE APPROVAL RECEIPT EXPIRATION RULES QUICK ACTION END ===
+
