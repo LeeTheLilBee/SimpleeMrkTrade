@@ -1462,3 +1462,59 @@ def get_pack_162_policy_change_approval_receipt_expiration_rules_status_bridge()
     return build_pack_162_policy_change_approval_receipt_expiration_rules_status_bridge()
 # === PACK 162 POLICY CHANGE APPROVAL RECEIPT EXPIRATION RULES STATUS BRIDGE END ===
 
+
+
+# === PACK 163 POLICY CHANGE APPROVAL RECEIPT RENEWAL RECHECK QUEUE STATUS BRIDGE START ===
+def build_pack_163_policy_change_approval_receipt_renewal_recheck_queue_status_bridge():
+    """
+    Pack 163 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 163 approval receipt renewal/recheck queue payload
+    """
+    try:
+        from tower.policy_change_approval_receipt_renewal_recheck_queue import build_policy_change_approval_receipt_renewal_recheck_queue_status_bridge
+        return build_policy_change_approval_receipt_renewal_recheck_queue_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_163",
+            "pack_number": 163,
+            "status": "review",
+            "endpoint": "/tower/policy-change-approval-receipt-renewal-recheck-queue.json",
+            "source_endpoint": "/tower/policy-change-approval-receipt-expiration-rules.json",
+            "readiness_score": 0,
+            "readiness_label": "Approval receipt renewal/recheck queue bridge error",
+            "simulated_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "real_approval_executed": False,
+            "real_policy_change_executed": False,
+            "real_permission_change_executed": False,
+            "real_access_granted": False,
+            "real_enforcement_executed": False,
+            "real_audit_written": False,
+            "real_receipt_written": False,
+            "real_archive_written": False,
+            "real_vault_written": False,
+            "real_expiration_enforced": False,
+            "real_recheck_executed": False,
+            "real_renewal_executed": False,
+            "real_queue_action_executed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_163_policy_change_approval_receipt_renewal_recheck_queue_status_bridge():
+    return build_pack_163_policy_change_approval_receipt_renewal_recheck_queue_status_bridge()
+# === PACK 163 POLICY CHANGE APPROVAL RECEIPT RENEWAL RECHECK QUEUE STATUS BRIDGE END ===
+

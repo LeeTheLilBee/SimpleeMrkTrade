@@ -325,13 +325,14 @@ def parse_web_app_routes(text: str | None = None) -> List[Dict[str, Any]]:
 
 
 
+
 # === PACK 156 POLICY ROUTE GUARD RECOGNITION START ===
-# Updated in Pack 162B-5:
-# Pack 152-162 policy JSON endpoints are guarded in web/app.py by compatibility
+# Updated in Pack 163B-5:
+# Pack 152-163 policy JSON endpoints are guarded in web/app.py by compatibility
 # wrappers named _pack_###..._route_guard. This post-processor teaches the route
 # coverage scanner to treat only those known endpoints as guarded.
-PACK_156_POLICY_ROUTE_GUARD_NAMES = ['_pack_152_policy_simulation_route_guard', '_pack_153_policy_decision_trace_preview_route_guard', '_pack_154_policy_receipt_vault_preview_route_guard', '_pack_155_policy_expiration_rules_route_guard', '_pack_156_policy_renewal_recheck_queue_route_guard', '_pack_157_least_privilege_recommendation_route_guard', '_pack_158_policy_change_risk_score_route_guard', '_pack_159_policy_change_approval_gate_route_guard', '_pack_160_policy_change_approval_receipt_preview_route_guard', '_pack_161_policy_change_approval_receipt_vault_index_route_guard', '_pack_162_policy_change_approval_receipt_expiration_rules_route_guard']
-PACK_156_POLICY_GUARDED_ENDPOINTS = ['/tower/policy-simulation-mode.json', '/tower/policy-decision-trace-preview.json', '/tower/policy-receipt-vault-preview.json', '/tower/policy-expiration-rules.json', '/tower/policy-renewal-recheck-queue.json', '/tower/least-privilege-recommendations.json', '/tower/policy-change-risk-score.json', '/tower/policy-change-approval-gate.json', '/tower/policy-change-approval-receipt-preview.json', '/tower/policy-change-approval-receipt-vault-index.json', '/tower/policy-change-approval-receipt-expiration-rules.json']
+PACK_156_POLICY_ROUTE_GUARD_NAMES = ['_pack_152_policy_simulation_route_guard', '_pack_153_policy_decision_trace_preview_route_guard', '_pack_154_policy_receipt_vault_preview_route_guard', '_pack_155_policy_expiration_rules_route_guard', '_pack_156_policy_renewal_recheck_queue_route_guard', '_pack_157_least_privilege_recommendation_route_guard', '_pack_158_policy_change_risk_score_route_guard', '_pack_159_policy_change_approval_gate_route_guard', '_pack_160_policy_change_approval_receipt_preview_route_guard', '_pack_161_policy_change_approval_receipt_vault_index_route_guard', '_pack_162_policy_change_approval_receipt_expiration_rules_route_guard', '_pack_163_policy_change_approval_receipt_renewal_recheck_queue_route_guard']
+PACK_156_POLICY_GUARDED_ENDPOINTS = ['/tower/policy-simulation-mode.json', '/tower/policy-decision-trace-preview.json', '/tower/policy-receipt-vault-preview.json', '/tower/policy-expiration-rules.json', '/tower/policy-renewal-recheck-queue.json', '/tower/least-privilege-recommendations.json', '/tower/policy-change-risk-score.json', '/tower/policy-change-approval-gate.json', '/tower/policy-change-approval-receipt-preview.json', '/tower/policy-change-approval-receipt-vault-index.json', '/tower/policy-change-approval-receipt-expiration-rules.json', '/tower/policy-change-approval-receipt-renewal-recheck-queue.json']
 
 
 def pack_156_is_policy_route_guard_name(name):
@@ -351,7 +352,7 @@ def pack_156_patch_route_coverage_payload(payload):
     """
     Conservative route-wall post-processor.
 
-    It only affects the known Pack 152-162 policy JSON endpoints.
+    It only affects the known Pack 152-163 policy JSON endpoints.
     If those endpoints appear in unguarded lists/counts, they are removed from
     unguarded findings because web/app.py protects them through route guard wrappers.
     """
@@ -434,7 +435,7 @@ def pack_156_patch_route_coverage_payload(payload):
                         item["needs_guard"] = False
                         item["unguarded"] = False
                         item["is_guarded"] = True
-                        item["guard_source"] = "pack_162_policy_route_guard_wrapper"
+                        item["guard_source"] = "pack_163_policy_route_guard_wrapper"
 
         policy_count = len(policy_endpoints)
 
@@ -462,7 +463,7 @@ def pack_156_patch_route_coverage_payload(payload):
             "recognized_endpoints": PACK_156_POLICY_GUARDED_ENDPOINTS,
             "removed_by_key": removed_by_key,
             "marked_guarded": marked_guarded,
-            "note": "Known Pack 152-162 policy JSON endpoints use compatibility wrapper guards in web/app.py.",
+            "note": "Known Pack 152-163 policy JSON endpoints use compatibility wrapper guards in web/app.py.",
         }
 
         return payload
@@ -496,6 +497,7 @@ for _pack_156_name in [
         _pack_156_wrapped._pack_156_policy_wrapped = True
         globals()[_pack_156_name] = _pack_156_wrapped
 # === PACK 156 POLICY ROUTE GUARD RECOGNITION END ===
+
 
 
 
