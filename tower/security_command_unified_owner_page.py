@@ -4197,3 +4197,75 @@ def append_pack_159_policy_change_approval_gate_section(sections):
         return sections
 # === PACK 159 POLICY CHANGE APPROVAL GATE UNIFIED SECTION END ===
 
+
+
+# === PACK 160 POLICY CHANGE APPROVAL RECEIPT PREVIEW UNIFIED SECTION START ===
+def build_pack_160_policy_change_approval_receipt_preview_unified_section():
+    """
+    Pack 160 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_approval_receipt_preview
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_preview import build_policy_change_approval_receipt_preview_unified_owner_section
+        return build_policy_change_approval_receipt_preview_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_preview",
+            "title": "Policy Change Approval Receipts",
+            "subtitle": "Policy change approval receipt preview section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-preview.json",
+            "cards": [],
+            "simulated_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_160_policy_change_approval_receipt_preview_html_section():
+    try:
+        from tower.policy_change_approval_receipt_preview import build_policy_change_approval_receipt_preview_html_section
+        return build_policy_change_approval_receipt_preview_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-approval-receipt-section" id="policy-change-approval-receipt-preview">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 160</p>
+                <h2>Policy Change Approval Receipts</h2>
+                <p>Policy change approval receipt preview section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-approval-receipt-preview.json">Open policy change approval receipt preview JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_160_policy_change_approval_receipt_preview_section(sections):
+    """
+    Append Pack 160 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_preview" not in existing_ids:
+            sections.append(build_pack_160_policy_change_approval_receipt_preview_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 160 POLICY CHANGE APPROVAL RECEIPT PREVIEW UNIFIED SECTION END ===
+
