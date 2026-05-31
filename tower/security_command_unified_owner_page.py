@@ -4055,3 +4055,74 @@ def append_pack_157_least_privilege_recommendation_section(sections):
         return sections
 # === PACK 157 LEAST PRIVILEGE RECOMMENDATION UNIFIED SECTION END ===
 
+
+
+# === PACK 158 POLICY CHANGE RISK SCORE UNIFIED SECTION START ===
+def build_pack_158_policy_change_risk_score_unified_section():
+    """
+    Pack 158 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_risk_score
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_risk_score import build_policy_change_risk_score_unified_owner_section
+        return build_policy_change_risk_score_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_risk_score",
+            "title": "Policy Change Risk Score",
+            "subtitle": "Policy change risk score section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-risk-score.json",
+            "cards": [],
+            "simulated_only": True,
+            "scoring_only": True,
+            "recommendation_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_158_policy_change_risk_score_html_section():
+    try:
+        from tower.policy_change_risk_score import build_policy_change_risk_score_html_section
+        return build_policy_change_risk_score_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-risk-score-section" id="policy-change-risk-score">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 158</p>
+                <h2>Policy Change Risk Score</h2>
+                <p>Policy change risk score section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-risk-score.json">Open policy change risk score JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_158_policy_change_risk_score_section(sections):
+    """
+    Append Pack 158 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_risk_score" not in existing_ids:
+            sections.append(build_pack_158_policy_change_risk_score_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 158 POLICY CHANGE RISK SCORE UNIFIED SECTION END ===
+

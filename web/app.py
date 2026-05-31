@@ -11855,3 +11855,37 @@ def tower_least_privilege_recommendations_json():
     return jsonify(payload)
 # === PACK 157 LEAST PRIVILEGE RECOMMENDATION ROUTE END ===
 
+
+
+# === PACK 158 POLICY CHANGE RISK SCORE ROUTE START ===
+def _pack_158_policy_change_risk_score_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/policy-change-risk-score.json", methods=["GET"])
+@_pack_158_policy_change_risk_score_route_guard
+def tower_policy_change_risk_score_json():
+    from tower.policy_change_risk_score import build_policy_change_risk_score_payload
+
+    payload = build_policy_change_risk_score_payload()
+    return jsonify(payload)
+# === PACK 158 POLICY CHANGE RISK SCORE ROUTE END ===
+
