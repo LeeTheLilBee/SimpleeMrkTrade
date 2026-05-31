@@ -3985,3 +3985,73 @@ def append_pack_156_policy_renewal_recheck_queue_section(sections):
         return sections
 # === PACK 156 POLICY RENEWAL RECHECK QUEUE UNIFIED SECTION END ===
 
+
+
+# === PACK 157 LEAST PRIVILEGE RECOMMENDATION UNIFIED SECTION START ===
+def build_pack_157_least_privilege_recommendation_unified_section():
+    """
+    Pack 157 unified owner section.
+
+    Safe/non-recursive:
+    - reads only least_privilege_recommendation_engine
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.least_privilege_recommendation_engine import build_least_privilege_recommendation_unified_owner_section
+        return build_least_privilege_recommendation_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "least_privilege_recommendations",
+            "title": "Least-Privilege Recommendations",
+            "subtitle": "Least-privilege recommendation section needs review.",
+            "status": "review",
+            "href": "/tower/least-privilege-recommendations.json",
+            "cards": [],
+            "simulated_only": True,
+            "recommendation_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_157_least_privilege_recommendation_html_section():
+    try:
+        from tower.least_privilege_recommendation_engine import build_least_privilege_recommendation_html_section
+        return build_least_privilege_recommendation_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section least-privilege-recommendation-section" id="least-privilege-recommendations">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 157</p>
+                <h2>Least-Privilege Recommendations</h2>
+                <p>Least-privilege recommendation section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/least-privilege-recommendations.json">Open least-privilege recommendations JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_157_least_privilege_recommendation_section(sections):
+    """
+    Append Pack 157 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "least_privilege_recommendations" not in existing_ids:
+            sections.append(build_pack_157_least_privilege_recommendation_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 157 LEAST PRIVILEGE RECOMMENDATION UNIFIED SECTION END ===
+

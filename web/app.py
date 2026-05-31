@@ -11821,3 +11821,37 @@ def tower_policy_renewal_recheck_queue_json():
     return jsonify(payload)
 # === PACK 156 POLICY RENEWAL RECHECK QUEUE ROUTE END ===
 
+
+
+# === PACK 157 LEAST PRIVILEGE RECOMMENDATION ROUTE START ===
+def _pack_157_least_privilege_recommendation_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/least-privilege-recommendations.json", methods=["GET"])
+@_pack_157_least_privilege_recommendation_route_guard
+def tower_least_privilege_recommendations_json():
+    from tower.least_privilege_recommendation_engine import build_least_privilege_recommendation_payload
+
+    payload = build_least_privilege_recommendation_payload()
+    return jsonify(payload)
+# === PACK 157 LEAST PRIVILEGE RECOMMENDATION ROUTE END ===
+

@@ -1188,3 +1188,46 @@ def get_pack_156_policy_renewal_recheck_queue_status_bridge():
     return build_pack_156_policy_renewal_recheck_queue_status_bridge()
 # === PACK 156 POLICY RENEWAL RECHECK QUEUE STATUS BRIDGE END ===
 
+
+
+# === PACK 157 LEAST PRIVILEGE RECOMMENDATION STATUS BRIDGE START ===
+def build_pack_157_least_privilege_recommendation_status_bridge():
+    """
+    Pack 157 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 157 least-privilege recommendation payload
+    """
+    try:
+        from tower.least_privilege_recommendation_engine import build_least_privilege_recommendation_status_bridge
+        return build_least_privilege_recommendation_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_157",
+            "pack_number": 157,
+            "status": "review",
+            "endpoint": "/tower/least-privilege-recommendations.json",
+            "source_endpoint": "/tower/policy-renewal-recheck-queue.json",
+            "readiness_score": 0,
+            "readiness_label": "Least-privilege recommendation bridge error",
+            "simulated_only": True,
+            "recommendation_only": True,
+            "real_permission_change_executed": False,
+            "real_access_granted": False,
+            "real_renewal_executed": False,
+            "real_recheck_executed": False,
+            "real_expiration_enforced": False,
+            "real_enforcement_executed": False,
+            "real_audit_written": False,
+            "real_receipt_written": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_157_least_privilege_recommendation_status_bridge():
+    return build_pack_157_least_privilege_recommendation_status_bridge()
+# === PACK 157 LEAST PRIVILEGE RECOMMENDATION STATUS BRIDGE END ===
+

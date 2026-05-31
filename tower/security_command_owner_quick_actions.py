@@ -1713,3 +1713,56 @@ def append_pack_156_policy_renewal_recheck_queue_quick_action(actions):
         return actions
 # === PACK 156 POLICY RENEWAL RECHECK QUEUE QUICK ACTION END ===
 
+
+
+# === PACK 157 LEAST PRIVILEGE RECOMMENDATION QUICK ACTION START ===
+def build_pack_157_least_privilege_recommendation_quick_action():
+    """
+    Pack 157 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.least_privilege_recommendation_engine import build_least_privilege_recommendation_quick_action
+        return build_least_privilege_recommendation_quick_action()
+    except Exception as exc:
+        return {
+            "id": "least_privilege_recommendations",
+            "label": "Least-Privilege Recommendations",
+            "title": "Least-Privilege Recommendations",
+            "href": "/tower/least-privilege-recommendations.json",
+            "endpoint": "/tower/least-privilege-recommendations.json",
+            "description": "Preview the smallest safe action/access path for each policy queue item.",
+            "status": "review",
+            "pack": "Pack 157",
+            "category": "policy",
+            "simulated_only": True,
+            "recommendation_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_157_least_privilege_recommendation_quick_action(actions):
+    """
+    Append Pack 157 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "least_privilege_recommendations" not in existing_ids:
+            actions.append(build_pack_157_least_privilege_recommendation_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 157 LEAST PRIVILEGE RECOMMENDATION QUICK ACTION END ===
+
