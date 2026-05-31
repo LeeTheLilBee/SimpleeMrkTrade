@@ -1273,3 +1273,45 @@ def get_pack_158_policy_change_risk_score_status_bridge():
     return build_pack_158_policy_change_risk_score_status_bridge()
 # === PACK 158 POLICY CHANGE RISK SCORE STATUS BRIDGE END ===
 
+
+
+# === PACK 159 POLICY CHANGE APPROVAL GATE STATUS BRIDGE START ===
+def build_pack_159_policy_change_approval_gate_status_bridge():
+    """
+    Pack 159 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 159 policy change approval gate payload
+    """
+    try:
+        from tower.policy_change_approval_gate import build_policy_change_approval_gate_status_bridge
+        return build_policy_change_approval_gate_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_159",
+            "pack_number": 159,
+            "status": "review",
+            "endpoint": "/tower/policy-change-approval-gate.json",
+            "source_endpoint": "/tower/policy-change-risk-score.json",
+            "readiness_score": 0,
+            "readiness_label": "Policy change approval gate bridge error",
+            "simulated_only": True,
+            "approval_preview_only": True,
+            "gate_preview_only": True,
+            "real_policy_change_executed": False,
+            "real_permission_change_executed": False,
+            "real_access_granted": False,
+            "real_enforcement_executed": False,
+            "real_audit_written": False,
+            "real_receipt_written": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_159_policy_change_approval_gate_status_bridge():
+    return build_pack_159_policy_change_approval_gate_status_bridge()
+# === PACK 159 POLICY CHANGE APPROVAL GATE STATUS BRIDGE END ===
+

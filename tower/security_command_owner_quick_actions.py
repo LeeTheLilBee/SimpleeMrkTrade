@@ -1820,3 +1820,57 @@ def append_pack_158_policy_change_risk_score_quick_action(actions):
         return actions
 # === PACK 158 POLICY CHANGE RISK SCORE QUICK ACTION END ===
 
+
+
+# === PACK 159 POLICY CHANGE APPROVAL GATE QUICK ACTION START ===
+def build_pack_159_policy_change_approval_gate_quick_action():
+    """
+    Pack 159 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_change_approval_gate import build_policy_change_approval_gate_quick_action
+        return build_policy_change_approval_gate_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_change_approval_gate",
+            "label": "Policy Change Approval Gate",
+            "title": "Policy Change Approval Gate",
+            "href": "/tower/policy-change-approval-gate.json",
+            "endpoint": "/tower/policy-change-approval-gate.json",
+            "description": "Preview which approval path a future policy change would require.",
+            "status": "review",
+            "pack": "Pack 159",
+            "category": "policy",
+            "simulated_only": True,
+            "approval_preview_only": True,
+            "gate_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_159_policy_change_approval_gate_quick_action(actions):
+    """
+    Append Pack 159 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_gate" not in existing_ids:
+            actions.append(build_pack_159_policy_change_approval_gate_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 159 POLICY CHANGE APPROVAL GATE QUICK ACTION END ===
+

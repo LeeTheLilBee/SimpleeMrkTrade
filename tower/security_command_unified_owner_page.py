@@ -4126,3 +4126,74 @@ def append_pack_158_policy_change_risk_score_section(sections):
         return sections
 # === PACK 158 POLICY CHANGE RISK SCORE UNIFIED SECTION END ===
 
+
+
+# === PACK 159 POLICY CHANGE APPROVAL GATE UNIFIED SECTION START ===
+def build_pack_159_policy_change_approval_gate_unified_section():
+    """
+    Pack 159 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_approval_gate
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_gate import build_policy_change_approval_gate_unified_owner_section
+        return build_policy_change_approval_gate_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_gate",
+            "title": "Policy Change Approval Gate",
+            "subtitle": "Policy change approval gate section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-gate.json",
+            "cards": [],
+            "simulated_only": True,
+            "approval_preview_only": True,
+            "gate_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_159_policy_change_approval_gate_html_section():
+    try:
+        from tower.policy_change_approval_gate import build_policy_change_approval_gate_html_section
+        return build_policy_change_approval_gate_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-approval-gate-section" id="policy-change-approval-gate">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 159</p>
+                <h2>Policy Change Approval Gate</h2>
+                <p>Policy change approval gate section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-approval-gate.json">Open policy change approval gate JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_159_policy_change_approval_gate_section(sections):
+    """
+    Append Pack 159 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_gate" not in existing_ids:
+            sections.append(build_pack_159_policy_change_approval_gate_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 159 POLICY CHANGE APPROVAL GATE UNIFIED SECTION END ===
+
