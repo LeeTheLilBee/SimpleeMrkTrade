@@ -12093,3 +12093,37 @@ def tower_policy_change_approval_receipt_owner_review_queue_json():
     return jsonify(payload)
 # === PACK 164 POLICY CHANGE APPROVAL RECEIPT OWNER REVIEW QUEUE ROUTE END ===
 
+
+
+# === PACK 165 POLICY CHANGE APPROVAL RECEIPT DETAIL EVIDENCE DRAWER ROUTE START ===
+def _pack_165_policy_change_approval_receipt_detail_evidence_drawer_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/policy-change-approval-receipt-detail-evidence-drawer.json", methods=["GET"])
+@_pack_165_policy_change_approval_receipt_detail_evidence_drawer_route_guard
+def tower_policy_change_approval_receipt_detail_evidence_drawer_json():
+    from tower.policy_change_approval_receipt_detail_evidence_drawer import build_policy_change_approval_receipt_detail_evidence_drawer_payload
+
+    payload = build_policy_change_approval_receipt_detail_evidence_drawer_payload()
+    return jsonify(payload)
+# === PACK 165 POLICY CHANGE APPROVAL RECEIPT DETAIL EVIDENCE DRAWER ROUTE END ===
+

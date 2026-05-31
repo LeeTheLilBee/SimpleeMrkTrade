@@ -4577,3 +4577,84 @@ def append_pack_164_policy_change_approval_receipt_owner_review_queue_section(se
         return sections
 # === PACK 164 POLICY CHANGE APPROVAL RECEIPT OWNER REVIEW QUEUE UNIFIED SECTION END ===
 
+
+
+# === PACK 165 POLICY CHANGE APPROVAL RECEIPT DETAIL EVIDENCE DRAWER UNIFIED SECTION START ===
+def build_pack_165_policy_change_approval_receipt_detail_evidence_drawer_unified_section():
+    """
+    Pack 165 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_approval_receipt_detail_evidence_drawer
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_detail_evidence_drawer import build_policy_change_approval_receipt_detail_evidence_drawer_unified_owner_section
+        return build_policy_change_approval_receipt_detail_evidence_drawer_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_detail_evidence_drawer",
+            "title": "Approval Receipt Evidence Drawer",
+            "subtitle": "Approval receipt evidence drawer section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-detail-evidence-drawer.json",
+            "cards": [],
+            "simulated_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_165_policy_change_approval_receipt_detail_evidence_drawer_html_section():
+    try:
+        from tower.policy_change_approval_receipt_detail_evidence_drawer import build_policy_change_approval_receipt_detail_evidence_drawer_html_section
+        return build_policy_change_approval_receipt_detail_evidence_drawer_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-approval-receipt-detail-section" id="policy-change-approval-receipt-detail-evidence-drawer">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 165</p>
+                <h2>Approval Receipt Evidence Drawer</h2>
+                <p>Approval receipt detail/evidence drawer section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-approval-receipt-detail-evidence-drawer.json">Open approval receipt evidence drawer JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_165_policy_change_approval_receipt_detail_evidence_drawer_section(sections):
+    """
+    Append Pack 165 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_detail_evidence_drawer" not in existing_ids:
+            sections.append(build_pack_165_policy_change_approval_receipt_detail_evidence_drawer_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 165 POLICY CHANGE APPROVAL RECEIPT DETAIL EVIDENCE DRAWER UNIFIED SECTION END ===
+

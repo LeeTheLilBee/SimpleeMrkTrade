@@ -2169,3 +2169,67 @@ def append_pack_164_policy_change_approval_receipt_owner_review_queue_quick_acti
         return actions
 # === PACK 164 POLICY CHANGE APPROVAL RECEIPT OWNER REVIEW QUEUE QUICK ACTION END ===
 
+
+
+# === PACK 165 POLICY CHANGE APPROVAL RECEIPT DETAIL EVIDENCE DRAWER QUICK ACTION START ===
+def build_pack_165_policy_change_approval_receipt_detail_evidence_drawer_quick_action():
+    """
+    Pack 165 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_change_approval_receipt_detail_evidence_drawer import build_policy_change_approval_receipt_detail_evidence_drawer_quick_action
+        return build_policy_change_approval_receipt_detail_evidence_drawer_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_change_approval_receipt_detail_evidence_drawer",
+            "label": "Approval Receipt Evidence Drawer",
+            "title": "Approval Receipt Detail Preview / Evidence Drawer",
+            "href": "/tower/policy-change-approval-receipt-detail-evidence-drawer.json",
+            "endpoint": "/tower/policy-change-approval-receipt-detail-evidence-drawer.json",
+            "description": "Preview receipt story, source chain, lineage, evidence summary, and safety flags.",
+            "status": "review",
+            "pack": "Pack 165",
+            "category": "policy",
+            "simulated_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_165_policy_change_approval_receipt_detail_evidence_drawer_quick_action(actions):
+    """
+    Append Pack 165 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_detail_evidence_drawer" not in existing_ids:
+            actions.append(build_pack_165_policy_change_approval_receipt_detail_evidence_drawer_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 165 POLICY CHANGE APPROVAL RECEIPT DETAIL EVIDENCE DRAWER QUICK ACTION END ===
+

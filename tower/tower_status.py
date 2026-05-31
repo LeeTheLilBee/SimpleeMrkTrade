@@ -1579,3 +1579,67 @@ def get_pack_164_policy_change_approval_receipt_owner_review_queue_status_bridge
     return build_pack_164_policy_change_approval_receipt_owner_review_queue_status_bridge()
 # === PACK 164 POLICY CHANGE APPROVAL RECEIPT OWNER REVIEW QUEUE STATUS BRIDGE END ===
 
+
+
+# === PACK 165 POLICY CHANGE APPROVAL RECEIPT DETAIL EVIDENCE DRAWER STATUS BRIDGE START ===
+def build_pack_165_policy_change_approval_receipt_detail_evidence_drawer_status_bridge():
+    """
+    Pack 165 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 165 approval receipt detail/evidence drawer payload
+    """
+    try:
+        from tower.policy_change_approval_receipt_detail_evidence_drawer import build_policy_change_approval_receipt_detail_evidence_drawer_status_bridge
+        return build_policy_change_approval_receipt_detail_evidence_drawer_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_165",
+            "pack_number": 165,
+            "status": "review",
+            "endpoint": "/tower/policy-change-approval-receipt-detail-evidence-drawer.json",
+            "source_endpoint": "/tower/policy-change-approval-receipt-owner-review-queue.json",
+            "readiness_score": 0,
+            "readiness_label": "Approval receipt detail/evidence drawer bridge error",
+            "simulated_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "real_approval_executed": False,
+            "real_policy_change_executed": False,
+            "real_permission_change_executed": False,
+            "real_access_granted": False,
+            "real_enforcement_executed": False,
+            "real_audit_written": False,
+            "real_receipt_written": False,
+            "real_archive_written": False,
+            "real_vault_written": False,
+            "real_expiration_enforced": False,
+            "real_recheck_executed": False,
+            "real_renewal_executed": False,
+            "real_queue_action_executed": False,
+            "real_owner_review_completed": False,
+            "real_owner_approval_executed": False,
+            "real_owner_rejection_executed": False,
+            "real_owner_acknowledgement_executed": False,
+            "real_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_165_policy_change_approval_receipt_detail_evidence_drawer_status_bridge():
+    return build_pack_165_policy_change_approval_receipt_detail_evidence_drawer_status_bridge()
+# === PACK 165 POLICY CHANGE APPROVAL RECEIPT DETAIL EVIDENCE DRAWER STATUS BRIDGE END ===
+
