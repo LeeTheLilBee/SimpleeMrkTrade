@@ -4269,3 +4269,77 @@ def append_pack_160_policy_change_approval_receipt_preview_section(sections):
         return sections
 # === PACK 160 POLICY CHANGE APPROVAL RECEIPT PREVIEW UNIFIED SECTION END ===
 
+
+
+# === PACK 161 POLICY CHANGE APPROVAL RECEIPT VAULT INDEX UNIFIED SECTION START ===
+def build_pack_161_policy_change_approval_receipt_vault_index_unified_section():
+    """
+    Pack 161 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_approval_receipt_vault_index
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_vault_index import build_policy_change_approval_receipt_vault_index_unified_owner_section
+        return build_policy_change_approval_receipt_vault_index_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_vault_index",
+            "title": "Approval Receipt Vault Index",
+            "subtitle": "Approval receipt vault/index section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-vault-index.json",
+            "cards": [],
+            "simulated_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_161_policy_change_approval_receipt_vault_index_html_section():
+    try:
+        from tower.policy_change_approval_receipt_vault_index import build_policy_change_approval_receipt_vault_index_html_section
+        return build_policy_change_approval_receipt_vault_index_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-approval-receipt-vault-section" id="policy-change-approval-receipt-vault-index">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 161</p>
+                <h2>Approval Receipt Vault Index</h2>
+                <p>Approval receipt vault/index section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-approval-receipt-vault-index.json">Open approval receipt vault index JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_161_policy_change_approval_receipt_vault_index_section(sections):
+    """
+    Append Pack 161 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_vault_index" not in existing_ids:
+            sections.append(build_pack_161_policy_change_approval_receipt_vault_index_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 161 POLICY CHANGE APPROVAL RECEIPT VAULT INDEX UNIFIED SECTION END ===
+
