@@ -2538,3 +2538,50 @@ def get_pack_179_policy_change_approval_receipt_owner_note_saved_view_preset_ver
     return build_pack_179_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_navigation_saved_view_filter_preset_status_bridge()
 # === PACK 179 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION COMPARE NAVIGATION SAVED VIEW FILTER PRESET STATUS BRIDGE END ===
 
+
+
+# === PACK 180 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET SAVED VIEW FILTER PRESET DETAIL EDIT PREVIEW STATUS BRIDGE START ===
+def build_pack_180_policy_change_approval_receipt_owner_note_saved_view_preset_saved_view_filter_preset_detail_edit_preview_status_bridge():
+    """
+    Pack 180 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 180 saved view/filter preset detail edit payload
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_saved_view_filter_preset_detail_edit_preview import build_policy_change_approval_receipt_owner_note_saved_view_preset_saved_view_filter_preset_detail_edit_preview_status_bridge
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_saved_view_filter_preset_detail_edit_preview_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_180",
+            "pack_number": 180,
+            "status": "review",
+            "endpoint": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-saved-view-filter-preset-detail-edit-preview.json",
+            "source_endpoint": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-compare-navigation-saved-view-filter-preset.json",
+            "readiness_score": 0,
+            "readiness_label": "Owner note saved view/filter preset detail edit bridge error",
+            "simulated_only": True,
+            "detail_edit_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "saved_navigation_preview_only": True,
+            "saved_filter_preset_preview_only": True,
+            "real_saved_view_written": False,
+            "real_user_preference_written": False,
+            "real_filter_preference_saved": False,
+            "real_navigation_state_persisted": False,
+            "real_drawer_selection_saved": False,
+            "real_edit_persisted": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_180_policy_change_approval_receipt_owner_note_saved_view_preset_saved_view_filter_preset_detail_edit_preview_status_bridge():
+    return build_pack_180_policy_change_approval_receipt_owner_note_saved_view_preset_saved_view_filter_preset_detail_edit_preview_status_bridge()
+# === PACK 180 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET SAVED VIEW FILTER PRESET DETAIL EDIT PREVIEW STATUS BRIDGE END ===
+
