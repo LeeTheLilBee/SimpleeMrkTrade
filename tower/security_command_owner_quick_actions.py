@@ -3466,3 +3466,62 @@ def append_pack_185_policy_change_approval_receipt_owner_note_saved_view_preset_
         return actions
 # === PACK 185 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE SAVED VIEW FILTER PRESET DETAIL EDIT PREVIEW QUICK ACTION END ===
 
+
+
+# === PACK 186 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE SAVED VIEW FILTER PRESET DETAIL EDIT HISTORY VERSION PREVIEW QUICK ACTION START ===
+def build_pack_186_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_preview_quick_action():
+    """
+    Pack 186 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_preview import build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_preview_quick_action
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_preview_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_preview",
+            "label": "Owner Note Version Compare Saved View History",
+            "title": "Owner Note Saved View Preset Detail Edit History Version Compare Saved View / Filter Preset Detail Edit History / Version Preview",
+            "href": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-history-version-compare-saved-view-filter-preset-detail-edit-history-version-preview.json",
+            "endpoint": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-history-version-compare-saved-view-filter-preset-detail-edit-history-version-preview.json",
+            "description": "Preview edit history timelines, version cards, field change events, and rollback/restore metadata for version compare saved view/filter preset detail edits.",
+            "status": "review",
+            "pack": "Pack 186",
+            "category": "policy",
+            "simulated_only": True,
+            "edit_history_preview_only": True,
+            "version_preview_only": True,
+            "rollback_preview_only": True,
+            "restore_preview_only": True,
+            "detail_edit_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_186_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_preview_quick_action(actions):
+    """
+    Append Pack 186 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_preview" not in existing_ids:
+            actions.append(build_pack_186_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_preview_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 186 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE SAVED VIEW FILTER PRESET DETAIL EDIT HISTORY VERSION PREVIEW QUICK ACTION END ===
+
