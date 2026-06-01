@@ -2365,3 +2365,72 @@ def append_pack_167_policy_change_approval_receipt_filter_lanes_search_facets_qu
         return actions
 # === PACK 167 POLICY CHANGE APPROVAL RECEIPT FILTER LANES SEARCH FACETS QUICK ACTION END ===
 
+
+
+# === PACK 168 POLICY CHANGE APPROVAL RECEIPT SAVED VIEWS FILTER PRESETS QUICK ACTION START ===
+def build_pack_168_policy_change_approval_receipt_saved_views_filter_presets_quick_action():
+    """
+    Pack 168 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_change_approval_receipt_saved_views_filter_presets import build_policy_change_approval_receipt_saved_views_filter_presets_quick_action
+        return build_policy_change_approval_receipt_saved_views_filter_presets_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_change_approval_receipt_saved_views_filter_presets",
+            "label": "Evidence Drawer Saved Views",
+            "title": "Evidence Drawer Saved Views / Filter Presets",
+            "href": "/tower/policy-change-approval-receipt-saved-views-filter-presets.json",
+            "endpoint": "/tower/policy-change-approval-receipt-saved-views-filter-presets.json",
+            "description": "Preview saved views and filter presets for approval receipt evidence drawers.",
+            "status": "review",
+            "pack": "Pack 168",
+            "category": "policy",
+            "simulated_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "lookup_preview_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_168_policy_change_approval_receipt_saved_views_filter_presets_quick_action(actions):
+    """
+    Append Pack 168 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_saved_views_filter_presets" not in existing_ids:
+            actions.append(build_pack_168_policy_change_approval_receipt_saved_views_filter_presets_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 168 POLICY CHANGE APPROVAL RECEIPT SAVED VIEWS FILTER PRESETS QUICK ACTION END ===
+
