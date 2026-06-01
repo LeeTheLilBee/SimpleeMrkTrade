@@ -5451,3 +5451,80 @@ def append_pack_174_policy_change_approval_receipt_owner_note_compare_navigation
         return sections
 # === PACK 174 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE COMPARE NAVIGATION SAVED VIEW FILTER PRESET UNIFIED SECTION END ===
 
+
+
+# === PACK 175 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT PREVIEW UNIFIED SECTION START ===
+def build_pack_175_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview_unified_section():
+    """
+    Pack 175 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview import build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview_unified_owner_section
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview",
+            "title": "Owner Note Preset Edit Preview",
+            "subtitle": "Owner note saved view preset detail/edit section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-preview.json",
+            "cards": [],
+            "simulated_only": True,
+            "saved_view_preset_detail_preview_only": True,
+            "saved_view_preset_edit_preview_only": True,
+            "saved_navigation_preview_only": True,
+            "saved_filter_preset_preview_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_175_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview_html_section():
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview import build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview_html_section
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-approval-receipt-owner-note-preset-edit-section" id="policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-preview">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 175</p>
+                <h2>Owner Note Preset Edit Preview</h2>
+                <p>Owner note saved view preset detail/edit section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-preview.json">Open owner note preset edit preview JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_175_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview_section(sections):
+    """
+    Append Pack 175 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview" not in existing_ids:
+            sections.append(build_pack_175_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_preview_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 175 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT PREVIEW UNIFIED SECTION END ===
+
