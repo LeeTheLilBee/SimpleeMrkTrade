@@ -2505,3 +2505,76 @@ def append_pack_169_policy_change_approval_receipt_owner_notes_review_drafts_qui
         return actions
 # === PACK 169 POLICY CHANGE APPROVAL RECEIPT OWNER NOTES REVIEW DRAFTS QUICK ACTION END ===
 
+
+
+# === PACK 170 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT DETAIL EDIT PREVIEW QUICK ACTION START ===
+def build_pack_170_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_quick_action():
+    """
+    Pack 170 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_draft_detail_edit_preview import build_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_quick_action
+        return build_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_change_approval_receipt_owner_note_draft_detail_edit_preview",
+            "label": "Owner Note Draft Edit Preview",
+            "title": "Owner Note Draft Detail Drawer / Edit Preview",
+            "href": "/tower/policy-change-approval-receipt-owner-note-draft-detail-edit-preview.json",
+            "endpoint": "/tower/policy-change-approval-receipt-owner-note-draft-detail-edit-preview.json",
+            "description": "Preview owner note draft detail drawers, editable fields, validation, and blocked save/submit behavior.",
+            "status": "review",
+            "pack": "Pack 170",
+            "category": "policy",
+            "simulated_only": True,
+            "edit_preview_only": True,
+            "detail_drawer_preview_only": True,
+            "owner_note_preview_only": True,
+            "review_draft_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "lookup_preview_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_170_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_quick_action(actions):
+    """
+    Append Pack 170 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_draft_detail_edit_preview" not in existing_ids:
+            actions.append(build_pack_170_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 170 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT DETAIL EDIT PREVIEW QUICK ACTION END ===
+

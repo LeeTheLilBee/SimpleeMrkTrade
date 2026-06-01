@@ -4998,3 +4998,93 @@ def append_pack_169_policy_change_approval_receipt_owner_notes_review_drafts_sec
         return sections
 # === PACK 169 POLICY CHANGE APPROVAL RECEIPT OWNER NOTES REVIEW DRAFTS UNIFIED SECTION END ===
 
+
+
+# === PACK 170 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT DETAIL EDIT PREVIEW UNIFIED SECTION START ===
+def build_pack_170_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_unified_section():
+    """
+    Pack 170 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_approval_receipt_owner_note_draft_detail_edit_preview
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_draft_detail_edit_preview import build_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_unified_owner_section
+        return build_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_owner_note_draft_detail_edit_preview",
+            "title": "Owner Note Draft Edit Preview",
+            "subtitle": "Owner note draft detail/edit preview section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-owner-note-draft-detail-edit-preview.json",
+            "cards": [],
+            "simulated_only": True,
+            "edit_preview_only": True,
+            "detail_drawer_preview_only": True,
+            "owner_note_preview_only": True,
+            "review_draft_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "lookup_preview_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_170_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_html_section():
+    try:
+        from tower.policy_change_approval_receipt_owner_note_draft_detail_edit_preview import build_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_html_section
+        return build_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-approval-receipt-owner-note-edit-section" id="policy-change-approval-receipt-owner-note-draft-detail-edit-preview">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 170</p>
+                <h2>Owner Note Draft Edit Preview</h2>
+                <p>Owner note draft detail/edit preview section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-approval-receipt-owner-note-draft-detail-edit-preview.json">Open owner note draft edit preview JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_170_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_section(sections):
+    """
+    Append Pack 170 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_draft_detail_edit_preview" not in existing_ids:
+            sections.append(build_pack_170_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 170 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT DETAIL EDIT PREVIEW UNIFIED SECTION END ===
+
