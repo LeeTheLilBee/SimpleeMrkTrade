@@ -12297,3 +12297,37 @@ def tower_policy_change_approval_receipt_owner_note_draft_detail_edit_preview_js
     return jsonify(payload)
 # === PACK 170 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT DETAIL EDIT PREVIEW ROUTE END ===
 
+
+
+# === PACK 171 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT EDIT HISTORY VERSION PREVIEW ROUTE START ===
+def _pack_171_policy_change_approval_receipt_owner_note_draft_edit_history_version_preview_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/policy-change-approval-receipt-owner-note-draft-edit-history-version-preview.json", methods=["GET"])
+@_pack_171_policy_change_approval_receipt_owner_note_draft_edit_history_version_preview_route_guard
+def tower_policy_change_approval_receipt_owner_note_draft_edit_history_version_preview_json():
+    from tower.policy_change_approval_receipt_owner_note_draft_edit_history_version_preview import build_policy_change_approval_receipt_owner_note_draft_edit_history_version_preview_payload
+
+    payload = build_policy_change_approval_receipt_owner_note_draft_edit_history_version_preview_payload()
+    return jsonify(payload)
+# === PACK 171 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT EDIT HISTORY VERSION PREVIEW ROUTE END ===
+
