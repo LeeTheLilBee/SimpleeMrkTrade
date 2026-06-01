@@ -5864,3 +5864,173 @@ def append_pack_181_policy_change_approval_receipt_owner_note_saved_view_preset_
         return sections
 # === PACK 181 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION PREVIEW UNIFIED SECTION END ===
 
+
+
+# === PACK 182 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION DETAIL COMPARE VIEW UNIFIED SECTION START ===
+def build_pack_182_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_detail_compare_view_unified_section():
+    """
+    Pack 182 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 182 version detail/compare payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_detail_compare_view import build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_detail_compare_view_unified_owner_section
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_detail_compare_view_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_detail_compare_view",
+            "title": "Owner Note Saved View Version Compare",
+            "subtitle": "Owner note saved view preset detail edit history version detail/compare section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-history-version-detail-compare-view.json",
+            "cards": [],
+            "simulated_only": True,
+            "version_detail_preview_only": True,
+            "compare_view_preview_only": True,
+            "edit_history_preview_only": True,
+            "version_preview_only": True,
+            "rollback_preview_only": True,
+            "restore_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_182_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_detail_compare_view_section(sections):
+    """
+    Append Pack 182 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_detail_compare_view" not in existing_ids:
+            sections.append(build_pack_182_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_detail_compare_view_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 182 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION DETAIL COMPARE VIEW UNIFIED SECTION END ===
+
+
+
+# === PACK 183 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE FILTER NAVIGATION UNIFIED SECTION START ===
+def build_pack_183_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_filter_navigation_unified_section():
+    """
+    Pack 183 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 183 compare filter/navigation payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_filter_navigation import build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_filter_navigation_unified_owner_section
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_filter_navigation_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_filter_navigation",
+            "title": "Owner Note Version Compare Navigation",
+            "subtitle": "Owner note saved view preset version compare navigation section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-history-version-compare-filter-navigation.json",
+            "cards": [],
+            "simulated_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "version_detail_preview_only": True,
+            "compare_view_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_183_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_filter_navigation_section(sections):
+    """
+    Append Pack 183 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_filter_navigation" not in existing_ids:
+            sections.append(build_pack_183_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_filter_navigation_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 183 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE FILTER NAVIGATION UNIFIED SECTION END ===
+
+
+
+# === PACK 184 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE NAVIGATION SAVED VIEW FILTER PRESET UNIFIED SECTION START ===
+def build_pack_184_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset_unified_section():
+    """
+    Pack 184 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 184 saved view/filter preset payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset import build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset_unified_owner_section
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset",
+            "title": "Owner Note Version Compare Saved Views",
+            "subtitle": "Owner note version compare saved view/filter preset section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-history-version-compare-navigation-saved-view-filter-preset.json",
+            "cards": [],
+            "simulated_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_184_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset_section(sections):
+    """
+    Append Pack 184 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset" not in existing_ids:
+            sections.append(build_pack_184_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 184 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE NAVIGATION SAVED VIEW FILTER PRESET UNIFIED SECTION END ===
+
