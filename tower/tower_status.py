@@ -2174,3 +2174,97 @@ def get_pack_172_policy_change_approval_receipt_owner_note_draft_version_detail_
     return build_pack_172_policy_change_approval_receipt_owner_note_draft_version_detail_compare_view_status_bridge()
 # === PACK 172 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT VERSION DETAIL COMPARE VIEW STATUS BRIDGE END ===
 
+
+
+# === PACK 173 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT VERSION COMPARE FILTER NAVIGATION STATUS BRIDGE START ===
+def build_pack_173_policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation_status_bridge():
+    """
+    Pack 173 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 173 owner note compare filter/navigation payload
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation import build_policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation_status_bridge
+        return build_policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_173",
+            "pack_number": 173,
+            "status": "review",
+            "endpoint": "/tower/policy-change-approval-receipt-owner-note-draft-version-compare-filter-navigation.json",
+            "source_endpoint": "/tower/policy-change-approval-receipt-owner-note-draft-version-detail-compare-view.json",
+            "readiness_score": 0,
+            "readiness_label": "Owner note version compare filter/navigation bridge error",
+            "simulated_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "version_detail_preview_only": True,
+            "compare_view_preview_only": True,
+            "version_preview_only": True,
+            "edit_history_preview_only": True,
+            "rollback_preview_only": True,
+            "compare_preview_only": True,
+            "edit_preview_only": True,
+            "detail_drawer_preview_only": True,
+            "owner_note_preview_only": True,
+            "review_draft_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "lookup_preview_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "real_navigation_state_persisted": False,
+            "real_filter_preference_saved": False,
+            "real_drawer_selection_saved": False,
+            "real_history_written": False,
+            "real_version_written": False,
+            "real_version_saved": False,
+            "real_rollback_executed": False,
+            "real_restore_executed": False,
+            "real_edit_persisted": False,
+            "real_note_written": False,
+            "real_draft_saved": False,
+            "real_approval_executed": False,
+            "real_policy_change_executed": False,
+            "real_permission_change_executed": False,
+            "real_access_granted": False,
+            "real_enforcement_executed": False,
+            "real_audit_written": False,
+            "real_receipt_written": False,
+            "real_archive_written": False,
+            "real_vault_written": False,
+            "real_expiration_enforced": False,
+            "real_recheck_executed": False,
+            "real_renewal_executed": False,
+            "real_queue_action_executed": False,
+            "real_owner_review_completed": False,
+            "real_owner_approval_executed": False,
+            "real_owner_rejection_executed": False,
+            "real_owner_acknowledgement_executed": False,
+            "real_evidence_revealed": False,
+            "real_saved_view_written": False,
+            "real_user_preference_written": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_173_policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation_status_bridge():
+    return build_pack_173_policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation_status_bridge()
+# === PACK 173 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT VERSION COMPARE FILTER NAVIGATION STATUS BRIDGE END ===
+

@@ -2734,3 +2734,84 @@ def append_pack_172_policy_change_approval_receipt_owner_note_draft_version_deta
         return actions
 # === PACK 172 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT VERSION DETAIL COMPARE VIEW QUICK ACTION END ===
 
+
+
+# === PACK 173 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT VERSION COMPARE FILTER NAVIGATION QUICK ACTION START ===
+def build_pack_173_policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation_quick_action():
+    """
+    Pack 173 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation import build_policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation_quick_action
+        return build_policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation",
+            "label": "Owner Note Compare Navigation",
+            "title": "Owner Note Draft Version Compare Filter / Drawer Navigation Preview",
+            "href": "/tower/policy-change-approval-receipt-owner-note-draft-version-compare-filter-navigation.json",
+            "endpoint": "/tower/policy-change-approval-receipt-owner-note-draft-version-compare-filter-navigation.json",
+            "description": "Preview compare drawer navigation, filter lanes, quick filters, selected drawer preview, and blocked navigation persistence.",
+            "status": "review",
+            "pack": "Pack 173",
+            "category": "policy",
+            "simulated_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "version_detail_preview_only": True,
+            "compare_view_preview_only": True,
+            "version_preview_only": True,
+            "edit_history_preview_only": True,
+            "rollback_preview_only": True,
+            "compare_preview_only": True,
+            "edit_preview_only": True,
+            "detail_drawer_preview_only": True,
+            "owner_note_preview_only": True,
+            "review_draft_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "lookup_preview_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_173_policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation_quick_action(actions):
+    """
+    Append Pack 173 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation" not in existing_ids:
+            actions.append(build_pack_173_policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 173 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT VERSION COMPARE FILTER NAVIGATION QUICK ACTION END ===
+
