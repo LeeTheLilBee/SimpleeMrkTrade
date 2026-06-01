@@ -6664,6 +6664,92 @@ def get_all_symbol_rows() -> List[Dict[str, Any]]:
 # ROUTES
 # ============================================================
 
+# ============================================================================== 
+# OBSERVATORY_READINESS_REPORT_DASHBOARD_PANEL_001_HELPERS
+# ============================================================================== 
+# Read-only dashboard helper for polished readiness_report.json.
+# Does not mutate engine state, active books, or selection behavior.
+# ============================================================================== 
+
+def load_observatory_readiness_report_for_dashboard() -> Dict[str, Any]:
+    try:
+        report = load_json('data/readiness_report.json', {})
+        if not isinstance(report, dict):
+            report = {}
+
+        summary = report.get('summary') if isinstance(report.get('summary'), dict) else {}
+        execution_pause = report.get('execution_pause') if isinstance(report.get('execution_pause'), dict) else {}
+        active_book = report.get('active_book') if isinstance(report.get('active_book'), dict) else {}
+        buckets = report.get('buckets') if isinstance(report.get('buckets'), dict) else {}
+
+        ui_cards = report.get('ui_cards')
+        if not isinstance(ui_cards, list):
+            ui_cards = []
+
+        top_blockers = report.get('top_blockers')
+        if not isinstance(top_blockers, list):
+            top_blockers = []
+
+        next_actions = report.get('next_eligible_actions')
+        if not isinstance(next_actions, list):
+            next_actions = []
+
+        bucket_counts = {}
+        for key, value in buckets.items():
+            bucket_counts[key] = len(value) if isinstance(value, list) else 0
+
+        unknown_count = 0
+        for item in top_blockers:
+            if isinstance(item, dict) and str(item.get('reason') or '').strip().lower() == 'unknown':
+                try:
+                    unknown_count += int(item.get('count') or 0)
+                except Exception:
+                    unknown_count += 1
+
+        status_label = 'READY'
+        if execution_pause.get('paused') is True:
+            status_label = 'PAUSED'
+        elif summary.get('ready_count', 0):
+            status_label = 'READY'
+        elif summary.get('blocked_count', 0):
+            status_label = 'SCANNING'
+
+        return {
+            'available': bool(report),
+            'status_label': status_label,
+            'report_meta': report.get('report_meta') if isinstance(report.get('report_meta'), dict) else {},
+            'summary': summary,
+            'execution_pause': execution_pause,
+            'active_book': active_book,
+            'ui_cards': ui_cards[:8],
+            'top_blockers': top_blockers[:10],
+            'next_eligible_actions': next_actions[:8],
+            'bucket_counts': bucket_counts,
+            'unknown_top_blocker_count': unknown_count,
+            'stock_fallback_preview': (buckets.get('stock_fallback_candidates') or [])[:6] if isinstance(buckets.get('stock_fallback_candidates'), list) else [],
+            'observed_only_preview': (buckets.get('observed_only_options') or [])[:6] if isinstance(buckets.get('observed_only_options'), list) else [],
+            'reentry_blocked_preview': (buckets.get('reentry_blocked_candidates') or [])[:6] if isinstance(buckets.get('reentry_blocked_candidates'), list) else [],
+        }
+
+    except Exception as exc:
+        return {
+            'available': False,
+            'status_label': 'ERROR',
+            'error': str(exc),
+            'summary': {},
+            'execution_pause': {},
+            'active_book': {},
+            'ui_cards': [],
+            'top_blockers': [],
+            'next_eligible_actions': [],
+            'bucket_counts': {},
+            'unknown_top_blocker_count': 0,
+            'stock_fallback_preview': [],
+            'observed_only_preview': [],
+            'reentry_blocked_preview': [],
+        }
+
+
 @app.route("/soulaana/checkin", methods=["POST"])
 def soulaana_checkin():
     emotional_state = str(request.form.get("emotional_state", "")).strip().lower()
@@ -6838,6 +6924,11 @@ def dashboard_page():
     soulaana_checkin_note = session.get("soulaana_checkin_note", "")
     show_soulaana_popup = not bool(soulaana_state) and not bool(session.get("soulaana_checkin_skipped"))
 
+    readiness_report = safe_run(
+        'load_observatory_readiness_report_for_dashboard',
+        load_observatory_readiness_report_for_dashboard,
+        {},
+    )
     return render_template_safe(
         "dashboard.html",
         **template_context(
@@ -6868,6 +6959,7 @@ def dashboard_page():
                 "soulaana_checkin_tone": soulaana_checkin_tone,
                 "soulaana_checkin_note": soulaana_checkin_note,
                 "show_soulaana_popup": show_soulaana_popup,
+                "readiness_report": readiness_report,
             }
         ),
     )

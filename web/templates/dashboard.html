@@ -1,5 +1,90 @@
 {% extends "base.html" %}
 {% block content %}
+
+<!-- OBSERVATORY_READINESS_REPORT_DASHBOARD_PANEL_001 -->
+{% if readiness_report and readiness_report.available %}
+<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h3 style="margin-bottom:8px;">Observatory Execution Control</h3>
+            <p class="muted-line" style="margin:0;">Clean readiness report from the engine: execution pause, blockers, fallback evidence, and next actions.</p>
+        </div>
+        <span class="signal-stat-chip">{{ readiness_report.status_label }}</span>
+    </div>
+
+    {% if readiness_report.execution_pause %}
+    <div class="passage-frame" style="margin-top:14px;">
+        <p style="margin:0;"><strong>{{ readiness_report.execution_pause.headline or "Execution status" }}</strong></p>
+        <p style="margin:8px 0 0 0;">{{ readiness_report.execution_pause.summary or "No execution pause summary available." }}</p>
+    </div>
+    {% endif %}
+
+    {% if readiness_report.ui_cards %}
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-top:14px;">
+        {% for card in readiness_report.ui_cards %}
+        <div class="card" style="margin:0;">
+            <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start;">
+                <h4 style="margin:0 0 8px 0;">{{ card.title }}</h4>
+                <span class="signal-stat-chip">{{ card.status }}</span>
+            </div>
+            <p class="muted-line" style="margin:0;">{{ card.body }}</p>
+            {% if card.metric %}
+            <p style="margin:10px 0 0 0;"><strong>{{ card.metric.value }}</strong> <span class="muted-line">{{ card.metric.label }}</span></p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;">
+            <h4>Top Blockers</h4>
+            {% if readiness_report.top_blockers %}
+                {% for blocker in readiness_report.top_blockers[:7] %}
+                <div class="passage-frame" style="margin-top:8px;">
+                    <p style="margin:0;"><strong>{{ blocker.count }}</strong> — {{ blocker.reason }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="muted-line">No blockers reported.</p>
+            {% endif %}
+        </div>
+
+        <div class="card" style="margin:0;">
+            <h4>Next Eligible Actions</h4>
+            {% if readiness_report.next_eligible_actions %}
+                {% for action in readiness_report.next_eligible_actions[:6] %}
+                <div class="passage-frame" style="margin-top:8px;">
+                    <p style="margin:0;"><strong>{{ action.action }}</strong></p>
+                    <p style="margin:6px 0 0 0;">{{ action.detail }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="muted-line">No next actions reported.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap:12px; margin-top:14px;">
+        <div class="card" style="margin:0;"><h4>Observed-Only Options</h4><p><strong>{{ readiness_report.summary.observed_only_count or 0 }}</strong></p><p class="muted-line">Research-worthy, not executable right now.</p></div>
+        <div class="card" style="margin:0;"><h4>Stock Fallback</h4><p><strong>{{ readiness_report.summary.stock_fallback_count or 0 }}</strong></p><p class="muted-line">Fallback candidates or current fallback evidence.</p></div>
+        <div class="card" style="margin:0;"><h4>Re-entry Blocks</h4><p><strong>{{ readiness_report.summary.reentry_blocked_count or 0 }}</strong></p><p class="muted-line">Cooldown or improvement rules protecting discipline.</p></div>
+        <div class="card" style="margin:0;"><h4>Unknown Blockers</h4><p><strong>{{ readiness_report.unknown_top_blocker_count or 0 }}</strong></p><p class="muted-line">Should stay at zero after reason cleanup.</p></div>
+    </div>
+
+    {% if readiness_report.report_meta %}
+    <p class="muted-line" style="margin:14px 0 0 0;">Report source: {{ readiness_report.report_meta.source }} · Generated: {{ readiness_report.report_meta.generated_at }}</p>
+    {% endif %}
+</div>
+{% elif readiness_report %}
+<div class="card premium-card" style="margin-bottom:18px;">
+    <h3>Observatory Execution Control</h3>
+    <div class="passage-frame">
+        <p style="margin:0;">Readiness report is not available yet. {% if readiness_report.error %}{{ readiness_report.error }}{% endif %}</p>
+    </div>
+</div>
+{% endif %}
+
 {% set dash = final_dashboard_context if final_dashboard_context else {} %}
 {% set cards = final_spotlight_cards if final_spotlight_cards else [] %}
 {% set soulaana_greeting = soulaana_bundle.get("greeting", {}) if soulaana_bundle else {} %}
