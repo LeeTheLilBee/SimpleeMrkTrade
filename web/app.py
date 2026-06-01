@@ -6803,8 +6803,9 @@ def soulaana_checkin_clear():
 def landing_page():
     maybe_track_page_view("/")
     if is_logged_in():
-        if is_master():
-            return redirect(url_for("admin_dashboard"))
+        # OBSERVATORY_LOGIN_REDIRECT_MASTER_TO_DASHBOARD_001
+        # /admin is intentionally Tower-mapped as high-risk/default-denied right now.
+        # During OB dashboard work, send master users to /dashboard instead.
         return redirect(url_for("dashboard_page"))
 
     return render_template_safe("landing.html", **template_context({}))
