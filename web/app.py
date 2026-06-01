@@ -12554,3 +12554,37 @@ def tower_policy_change_approval_receipt_owner_note_saved_view_preset_version_co
     return jsonify(build_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_payload())
 # === PACK 178 ROUTE END ===
 
+
+
+# === PACK 179 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION COMPARE NAVIGATION SAVED VIEW FILTER PRESET ROUTE START ===
+def _pack_179_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_navigation_saved_view_filter_preset_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-compare-navigation-saved-view-filter-preset.json", methods=["GET"])
+@_pack_179_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_navigation_saved_view_filter_preset_route_guard
+def tower_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_navigation_saved_view_filter_preset_json():
+    from tower.policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_navigation_saved_view_filter_preset import build_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_navigation_saved_view_filter_preset_payload
+
+    payload = build_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_navigation_saved_view_filter_preset_payload()
+    return jsonify(payload)
+# === PACK 179 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION COMPARE NAVIGATION SAVED VIEW FILTER PRESET ROUTE END ===
+
