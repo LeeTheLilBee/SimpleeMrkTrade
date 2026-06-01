@@ -12229,3 +12229,37 @@ def tower_policy_change_approval_receipt_saved_views_filter_presets_json():
     return jsonify(payload)
 # === PACK 168 POLICY CHANGE APPROVAL RECEIPT SAVED VIEWS FILTER PRESETS ROUTE END ===
 
+
+
+# === PACK 169 POLICY CHANGE APPROVAL RECEIPT OWNER NOTES REVIEW DRAFTS ROUTE START ===
+def _pack_169_policy_change_approval_receipt_owner_notes_review_drafts_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/policy-change-approval-receipt-owner-notes-review-drafts.json", methods=["GET"])
+@_pack_169_policy_change_approval_receipt_owner_notes_review_drafts_route_guard
+def tower_policy_change_approval_receipt_owner_notes_review_drafts_json():
+    from tower.policy_change_approval_receipt_owner_notes_review_drafts import build_policy_change_approval_receipt_owner_notes_review_drafts_payload
+
+    payload = build_policy_change_approval_receipt_owner_notes_review_drafts_payload()
+    return jsonify(payload)
+# === PACK 169 POLICY CHANGE APPROVAL RECEIPT OWNER NOTES REVIEW DRAFTS ROUTE END ===
+

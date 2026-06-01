@@ -2434,3 +2434,74 @@ def append_pack_168_policy_change_approval_receipt_saved_views_filter_presets_qu
         return actions
 # === PACK 168 POLICY CHANGE APPROVAL RECEIPT SAVED VIEWS FILTER PRESETS QUICK ACTION END ===
 
+
+
+# === PACK 169 POLICY CHANGE APPROVAL RECEIPT OWNER NOTES REVIEW DRAFTS QUICK ACTION START ===
+def build_pack_169_policy_change_approval_receipt_owner_notes_review_drafts_quick_action():
+    """
+    Pack 169 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_notes_review_drafts import build_policy_change_approval_receipt_owner_notes_review_drafts_quick_action
+        return build_policy_change_approval_receipt_owner_notes_review_drafts_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_change_approval_receipt_owner_notes_review_drafts",
+            "label": "Evidence Drawer Owner Notes",
+            "title": "Evidence Drawer Owner Notes / Review Drafts",
+            "href": "/tower/policy-change-approval-receipt-owner-notes-review-drafts.json",
+            "endpoint": "/tower/policy-change-approval-receipt-owner-notes-review-drafts.json",
+            "description": "Preview owner note and review draft language for approval receipt evidence drawers.",
+            "status": "review",
+            "pack": "Pack 169",
+            "category": "policy",
+            "simulated_only": True,
+            "owner_note_preview_only": True,
+            "review_draft_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "lookup_preview_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_169_policy_change_approval_receipt_owner_notes_review_drafts_quick_action(actions):
+    """
+    Append Pack 169 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_notes_review_drafts" not in existing_ids:
+            actions.append(build_pack_169_policy_change_approval_receipt_owner_notes_review_drafts_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 169 POLICY CHANGE APPROVAL RECEIPT OWNER NOTES REVIEW DRAFTS QUICK ACTION END ===
+

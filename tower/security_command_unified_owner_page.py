@@ -4910,3 +4910,91 @@ def append_pack_168_policy_change_approval_receipt_saved_views_filter_presets_se
         return sections
 # === PACK 168 POLICY CHANGE APPROVAL RECEIPT SAVED VIEWS FILTER PRESETS UNIFIED SECTION END ===
 
+
+
+# === PACK 169 POLICY CHANGE APPROVAL RECEIPT OWNER NOTES REVIEW DRAFTS UNIFIED SECTION START ===
+def build_pack_169_policy_change_approval_receipt_owner_notes_review_drafts_unified_section():
+    """
+    Pack 169 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_approval_receipt_owner_notes_review_drafts
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_notes_review_drafts import build_policy_change_approval_receipt_owner_notes_review_drafts_unified_owner_section
+        return build_policy_change_approval_receipt_owner_notes_review_drafts_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_owner_notes_review_drafts",
+            "title": "Evidence Drawer Owner Notes",
+            "subtitle": "Evidence drawer owner notes/review drafts section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-owner-notes-review-drafts.json",
+            "cards": [],
+            "simulated_only": True,
+            "owner_note_preview_only": True,
+            "review_draft_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "lookup_preview_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_169_policy_change_approval_receipt_owner_notes_review_drafts_html_section():
+    try:
+        from tower.policy_change_approval_receipt_owner_notes_review_drafts import build_policy_change_approval_receipt_owner_notes_review_drafts_html_section
+        return build_policy_change_approval_receipt_owner_notes_review_drafts_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-approval-receipt-owner-note-section" id="policy-change-approval-receipt-owner-notes-review-drafts">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 169</p>
+                <h2>Evidence Drawer Owner Notes</h2>
+                <p>Evidence drawer owner notes/review drafts section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-approval-receipt-owner-notes-review-drafts.json">Open evidence drawer owner notes JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_169_policy_change_approval_receipt_owner_notes_review_drafts_section(sections):
+    """
+    Append Pack 169 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_notes_review_drafts" not in existing_ids:
+            sections.append(build_pack_169_policy_change_approval_receipt_owner_notes_review_drafts_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 169 POLICY CHANGE APPROVAL RECEIPT OWNER NOTES REVIEW DRAFTS UNIFIED SECTION END ===
+
