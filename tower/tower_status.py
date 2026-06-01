@@ -2421,3 +2421,61 @@ def get_pack_176_policy_change_approval_receipt_owner_note_saved_view_preset_edi
     return build_pack_176_policy_change_approval_receipt_owner_note_saved_view_preset_edit_history_version_preview_status_bridge()
 # === PACK 176 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET EDIT HISTORY VERSION PREVIEW STATUS BRIDGE END ===
 
+
+
+# === PACK 177 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION DETAIL COMPARE VIEW STATUS BRIDGE START ===
+def build_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_status_bridge():
+    """
+    Pack 177 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 177 saved view preset version detail/compare payload
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view import build_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_status_bridge
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_177",
+            "pack_number": 177,
+            "status": "review",
+            "endpoint": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-detail-compare-view.json",
+            "source_endpoint": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-edit-history-version-preview.json",
+            "readiness_score": 0,
+            "readiness_label": "Owner note saved view preset version detail/compare bridge error",
+            "simulated_only": True,
+            "version_detail_preview_only": True,
+            "compare_view_preview_only": True,
+            "edit_history_preview_only": True,
+            "version_preview_only": True,
+            "rollback_preview_only": True,
+            "saved_view_preset_detail_preview_only": True,
+            "saved_view_preset_edit_preview_only": True,
+            "saved_navigation_preview_only": True,
+            "saved_filter_preset_preview_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "real_history_written": False,
+            "real_version_written": False,
+            "real_version_saved": False,
+            "real_rollback_executed": False,
+            "real_restore_executed": False,
+            "real_edit_persisted": False,
+            "real_saved_view_written": False,
+            "real_user_preference_written": False,
+            "real_filter_preference_saved": False,
+            "real_navigation_state_persisted": False,
+            "real_drawer_selection_saved": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_status_bridge():
+    return build_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_status_bridge()
+# === PACK 177 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION DETAIL COMPARE VIEW STATUS BRIDGE END ===
+

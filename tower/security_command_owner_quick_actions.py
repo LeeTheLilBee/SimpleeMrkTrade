@@ -2992,3 +2992,62 @@ def append_pack_176_policy_change_approval_receipt_owner_note_saved_view_preset_
         return actions
 # === PACK 176 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET EDIT HISTORY VERSION PREVIEW QUICK ACTION END ===
 
+
+
+# === PACK 177 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION DETAIL COMPARE VIEW QUICK ACTION START ===
+def build_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_quick_action():
+    """
+    Pack 177 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view import build_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_quick_action
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_quick_action()
+    except Exception as exc:
+        return {
+            "id": "policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view",
+            "label": "Owner Note Preset Version Compare",
+            "title": "Owner Note Saved View Preset Version Detail / Compare View",
+            "href": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-detail-compare-view.json",
+            "endpoint": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-detail-compare-view.json",
+            "description": "Preview saved view preset version detail drawers, compare rows, changed fields, and blocked rollback/restore.",
+            "status": "review",
+            "pack": "Pack 177",
+            "category": "policy",
+            "simulated_only": True,
+            "version_detail_preview_only": True,
+            "compare_view_preview_only": True,
+            "edit_history_preview_only": True,
+            "version_preview_only": True,
+            "rollback_preview_only": True,
+            "saved_view_preset_detail_preview_only": True,
+            "saved_view_preset_edit_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_quick_action(actions):
+    """
+    Append Pack 177 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view" not in existing_ids:
+            actions.append(build_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 177 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION DETAIL COMPARE VIEW QUICK ACTION END ===
+

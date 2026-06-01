@@ -5604,3 +5604,79 @@ def append_pack_176_policy_change_approval_receipt_owner_note_saved_view_preset_
         return sections
 # === PACK 176 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET EDIT HISTORY VERSION PREVIEW UNIFIED SECTION END ===
 
+
+
+# === PACK 177 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION DETAIL COMPARE VIEW UNIFIED SECTION START ===
+def build_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_unified_section():
+    """
+    Pack 177 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view import build_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_unified_owner_section
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view",
+            "title": "Owner Note Preset Version Compare",
+            "subtitle": "Owner note saved view preset version detail/compare section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-detail-compare-view.json",
+            "cards": [],
+            "simulated_only": True,
+            "version_detail_preview_only": True,
+            "compare_view_preview_only": True,
+            "edit_history_preview_only": True,
+            "version_preview_only": True,
+            "rollback_preview_only": True,
+            "saved_view_preset_detail_preview_only": True,
+            "saved_view_preset_edit_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_html_section():
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view import build_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_html_section
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-approval-receipt-owner-note-preset-version-compare-section" id="policy-change-approval-receipt-owner-note-saved-view-preset-version-detail-compare-view">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 177</p>
+                <h2>Owner Note Preset Version Compare</h2>
+                <p>Owner note saved view preset version detail/compare section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-detail-compare-view.json">Open owner note preset version compare JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_section(sections):
+    """
+    Append Pack 177 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view" not in existing_ids:
+            sections.append(build_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 177 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION DETAIL COMPARE VIEW UNIFIED SECTION END ===
+
