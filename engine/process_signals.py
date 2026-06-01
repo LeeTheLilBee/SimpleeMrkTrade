@@ -4040,3 +4040,209 @@ if _OBSERVATORY_ORIGINAL_PROCESS_SIGNALS_BEFORE_REPORT_ELEGANCE_20260522 is not 
             print("OBSERVATORY READINESS REPORT ELEGANCE ERROR:", exc)
 
         return result
+
+
+# ============================================================================== 
+# OBSERVATORY_READINESS_REPORT_REASON_CLEANUP_001
+# ============================================================================== 
+# Report-only reason inference layer.
+# This does not alter selection, execution, active positions, candidate ranking,
+# or trading behavior. It only improves readiness_report/dashboard labels.
+# ============================================================================== 
+
+def _observatory_rr_reason_is_unknown_20260527(value):
+    text = _observatory_rr_str_20260522(value).strip().lower()
+    return text in {'', 'unknown', 'none', 'null', 'n/a'}
+
+
+def _observatory_rr_infer_clean_reason_20260527(row):
+    row = row if isinstance(row, dict) else {}
+
+    explicit = (
+        row.get('final_reason')
+        or row.get('reason')
+        or row.get('reason_code')
+        or row.get('execution_reason')
+        or row.get('decision_reason')
+        or row.get('blocked_at')
+        or row.get('readiness_status')
+    )
+
+    if not _observatory_rr_reason_is_unknown_20260527(explicit):
+        return _observatory_rr_str_20260522(explicit)
+
+    symbol = _observatory_rr_upper_20260522(row.get('symbol'))
+    strategy = _observatory_rr_upper_20260522(
+        row.get('final_strategy')
+        or row.get('chosen_strategy')
+        or row.get('strategy')
+        or row.get('starting_strategy')
+    )
+    vehicle = _observatory_rr_upper_20260522(
+        row.get('vehicle')
+        or row.get('vehicle_selected')
+        or row.get('selected_vehicle')
+        or row.get('asset_type')
+    )
+    confidence = _observatory_rr_upper_20260522(row.get('confidence'))
+    status = _observatory_rr_upper_20260522(row.get('readiness_status'))
+    score = _observatory_rr_float_20260522(row.get('score'), 0.0)
+
+    research_approved = _observatory_rr_bool_20260522(row.get('research_approved'), False)
+    execution_ready = _observatory_rr_bool_20260522(row.get('execution_ready'), False)
+    selected = _observatory_rr_bool_20260522(row.get('selected_for_execution'), False)
+
+    has_trade_id = bool(_observatory_rr_str_20260522(row.get('trade_id')))
+    has_symbol = bool(symbol)
+    has_strategy = bool(strategy)
+    has_score = score > 0
+    has_confidence = bool(confidence)
+    has_vehicle = bool(vehicle)
+
+    option_obj = row.get('option') if isinstance(row.get('option'), dict) else {}
+    contract_obj = row.get('contract') if isinstance(row.get('contract'), dict) else {}
+
+    option_category = _observatory_rr_upper_20260522(
+        row.get('option_execution_category')
+        or row.get('execution_category')
+        or option_obj.get('execution_category')
+        or contract_obj.get('execution_category')
+    )
+
+    reason_blob = ' '.join(
+        _observatory_rr_str_20260522(row.get(k))
+        for k in (
+            'final_reason',
+            'reason',
+            'reason_code',
+            'execution_reason',
+            'decision_reason',
+            'blocked_at',
+            'readiness_status',
+            'reentry_discipline_reason',
+            'option_reason',
+            'bad_option_reason',
+            'option_fallback_reason',
+            'execution_category',
+            'option_execution_category',
+        )
+    ).lower()
+
+    if selected:
+        return 'selected_for_execution'
+    if execution_ready:
+        return 'execution_ready_but_not_selected'
+    if research_approved and not execution_ready:
+        return 'research_approved_not_execution_ready'
+    if 'already_open' in reason_blob or 'duplicate' in reason_blob:
+        return 'already_open_position'
+    if 'reentry' in reason_blob or 'cooldown' in reason_blob:
+        return 'reentry_discipline_blocked'
+    if 'observed_only' in reason_blob or option_category == 'OBSERVED_ONLY':
+        return 'observed_only_option'
+    if row.get('stock_fallback_from_option_research') or row.get('option_fallback_used') or 'stock_fallback' in reason_blob:
+        return 'stock_fallback_candidate'
+    if 'strategy_router' in reason_blob or 'no_trade' in reason_blob:
+        return 'strategy_router_no_trade'
+    if 'score' in reason_blob or 'threshold' in reason_blob:
+        return 'score_not_ready'
+    if 'capital' in reason_blob or 'cost' in reason_blob:
+        return 'missing_or_invalid_capital'
+    if status:
+        return f'readiness_status_{status.lower()}'
+
+    # Main cleanup path found by unknown reason inspection:
+    # old research/premium rows have symbol, strategy, score, confidence, trade_id,
+    # but no vehicle/readiness/blocker context.
+    if has_symbol and has_strategy and has_score and has_confidence and has_trade_id and not has_vehicle:
+        return 'research_candidate_missing_execution_context'
+    if has_symbol and has_strategy and has_score and has_confidence:
+        return 'research_candidate_not_promoted'
+    if has_symbol and has_score:
+        return 'research_score_only_candidate'
+    if has_symbol:
+        return 'research_symbol_only_candidate'
+    return 'unknown_report_source_missing_context'
+
+
+def _observatory_rr_reason_detail_20260527(row, clean_reason):
+    row = row if isinstance(row, dict) else {}
+    symbol = _observatory_rr_upper_20260522(row.get('symbol')) or 'This candidate'
+    score = _observatory_rr_float_20260522(row.get('score'), 0.0)
+    confidence = _observatory_rr_str_20260522(row.get('confidence'))
+
+    existing = _observatory_rr_str_20260522(row.get('final_reason_detail'))
+    if existing and existing.lower() not in {'unknown', 'none', 'null'}:
+        return existing
+
+    if clean_reason == 'research_candidate_missing_execution_context':
+        return (
+            f'{symbol} appears in research data with score {score:g}'
+            + (f' and {confidence} confidence' if confidence else '')
+            + ', but the row does not carry enough execution/readiness context to promote it.'
+        )
+    if clean_reason == 'research_candidate_not_promoted':
+        return f'{symbol} is research-visible, but it was not promoted into execution readiness in this cycle.'
+    if clean_reason == 'research_score_only_candidate':
+        return f'{symbol} has a research score, but not enough readiness fields to classify as execution-ready.'
+    if clean_reason == 'execution_ready_but_not_selected':
+        return f'{symbol} cleared readiness, but was not selected for execution, usually due to ranking or capacity.'
+    if clean_reason == 'research_approved_not_execution_ready':
+        return f'{symbol} cleared research review but did not clear execution readiness.'
+    return _observatory_rr_next_action_20260522(row)
+
+
+def _observatory_rr_next_action_20260527(row, clean_reason=None):
+    row = row if isinstance(row, dict) else {}
+    reason = clean_reason or _observatory_rr_infer_clean_reason_20260527(row)
+
+    if reason == 'research_candidate_missing_execution_context':
+        return 'Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.'
+    if reason == 'research_candidate_not_promoted':
+        return 'Keep researching; this candidate was not promoted into execution readiness.'
+    if reason == 'research_score_only_candidate':
+        return 'Do not execute from score alone. Require full readiness, vehicle, and risk context.'
+    if reason == 'unknown_report_source_missing_context':
+        return 'Improve upstream report source fields so this row can be classified.'
+    return _observatory_rr_next_action_20260522(row)
+
+
+_OBSERVATORY_ORIGINAL_RR_COMPACT_CANDIDATE_BEFORE_REASON_CLEANUP_20260527 = _observatory_rr_compact_candidate_20260522
+
+
+def _observatory_rr_compact_candidate_20260522(row):
+    compact = _OBSERVATORY_ORIGINAL_RR_COMPACT_CANDIDATE_BEFORE_REASON_CLEANUP_20260527(row)
+    row = row if isinstance(row, dict) else {}
+    raw_reason = (
+        row.get('final_reason')
+        or row.get('reason')
+        or row.get('reason_code')
+        or row.get('execution_reason')
+        or row.get('decision_reason')
+        or row.get('blocked_at')
+        or row.get('readiness_status')
+    )
+    clean_reason = _observatory_rr_infer_clean_reason_20260527(row)
+    compact['final_reason'] = clean_reason
+    compact['final_reason_detail'] = _observatory_rr_reason_detail_20260527(row, clean_reason)
+    compact['reason_inferred_for_report'] = _observatory_rr_reason_is_unknown_20260527(raw_reason)
+    compact['report_reason_source'] = 'readiness_report_reason_cleanup_001'
+    compact['next_action'] = _observatory_rr_next_action_20260527(row, clean_reason)
+    return compact
+
+
+_OBSERVATORY_ORIGINAL_RR_TOP_BLOCKERS_BEFORE_REASON_CLEANUP_20260527 = _observatory_rr_top_blockers_20260522
+
+
+def _observatory_rr_top_blockers_20260522(rows):
+    counts = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        reason = _observatory_rr_infer_clean_reason_20260527(row)
+        counts[reason] = counts.get(reason, 0) + 1
+    return [
+        {'reason': reason, 'count': count}
+        for reason, count in sorted(counts.items(), key=lambda item: item[1], reverse=True)[:15]
+    ]
+

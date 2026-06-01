@@ -1,6 +1,6 @@
 {
   "report_meta": {
-    "generated_at": "2026-05-22T18:12:44.010321+00:00",
+    "generated_at": "2026-06-01T14:19:18.531221+00:00",
     "source": "process_signals.readiness_report_elegance",
     "compatibility_preserving": true,
     "selection_mutated": false,
@@ -71,7 +71,9 @@
         "option_fallback_used": false,
         "price_review_basis": "STOCK_PRICE",
         "monitoring_price_type": "UNDERLYING",
-        "next_action": "Track as a stock fallback position and keep option context as rejected research evidence."
+        "next_action": "Track as a stock fallback position and keep option context as rejected research evidence.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SNOW",
@@ -98,7 +100,9 @@
         "option_fallback_used": false,
         "price_review_basis": "STOCK_PRICE",
         "monitoring_price_type": "UNDERLYING",
-        "next_action": "Track as a stock fallback position and keep option context as rejected research evidence."
+        "next_action": "Track as a stock fallback position and keep option context as rejected research evidence.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SOXX",
@@ -125,7 +129,9 @@
         "option_fallback_used": false,
         "price_review_basis": "STOCK_PRICE",
         "monitoring_price_type": "UNDERLYING",
-        "next_action": "Track as a stock fallback position and keep option context as rejected research evidence."
+        "next_action": "Track as a stock fallback position and keep option context as rejected research evidence.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       }
     ],
     "option_positions": [
@@ -142,7 +148,7 @@
         "selected_for_execution": true,
         "blocked_at": "",
         "final_reason": "Position entered.",
-        "final_reason_detail": "",
+        "final_reason_detail": "Candidate is execution-ready if capacity and governor allow it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -154,7 +160,9 @@
         "option_fallback_used": false,
         "price_review_basis": "OPTION_PREMIUM_ONLY",
         "monitoring_price_type": "OPTION_PREMIUM",
-        "next_action": "Candidate is execution-ready if capacity and governor allow it."
+        "next_action": "Candidate is execution-ready if capacity and governor allow it.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MU",
@@ -169,7 +177,7 @@
         "selected_for_execution": true,
         "blocked_at": "",
         "final_reason": "Position entered.",
-        "final_reason_detail": "",
+        "final_reason_detail": "Candidate is execution-ready if capacity and governor allow it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -181,7 +189,9 @@
         "option_fallback_used": false,
         "price_review_basis": "OPTION_PREMIUM_ONLY",
         "monitoring_price_type": "OPTION_PREMIUM",
-        "next_action": "Candidate is execution-ready if capacity and governor allow it."
+        "next_action": "Candidate is execution-ready if capacity and governor allow it.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AMD",
@@ -196,7 +206,7 @@
         "selected_for_execution": true,
         "blocked_at": "",
         "final_reason": "Position entered.",
-        "final_reason_detail": "",
+        "final_reason_detail": "Candidate is execution-ready if capacity and governor allow it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -208,7 +218,9 @@
         "option_fallback_used": false,
         "price_review_basis": "OPTION_PREMIUM_ONLY",
         "monitoring_price_type": "OPTION_PREMIUM",
-        "next_action": "Candidate is execution-ready if capacity and governor allow it."
+        "next_action": "Candidate is execution-ready if capacity and governor allow it.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       }
     ]
   },
@@ -241,7 +253,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "WFC",
@@ -268,7 +282,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "COST",
@@ -295,7 +311,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "JPM",
@@ -322,7 +340,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ADBE",
@@ -349,7 +369,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "VLO",
@@ -376,7 +398,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "COP",
@@ -403,7 +427,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "C",
@@ -430,7 +456,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DIA",
@@ -457,7 +485,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ARKK",
@@ -484,7 +514,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MSFT",
@@ -511,7 +543,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "NKE",
@@ -538,7 +572,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "GS",
@@ -565,7 +601,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "BAC",
@@ -592,7 +630,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AVGO",
@@ -619,7 +659,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "EOG",
@@ -646,7 +688,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "NVDA",
@@ -673,7 +717,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DIS",
@@ -700,7 +746,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "CRM",
@@ -727,7 +775,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLF",
@@ -754,7 +804,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PSX",
@@ -781,7 +833,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MS",
@@ -808,7 +862,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "OXY",
@@ -835,7 +891,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AMZN",
@@ -862,7 +920,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "IWM",
@@ -889,7 +949,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ROKU",
@@ -916,7 +978,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SBUX",
@@ -943,7 +1007,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLV",
@@ -970,7 +1036,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "CVX",
@@ -997,7 +1065,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SPY",
@@ -1024,7 +1094,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLE",
@@ -1051,7 +1123,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "UAL",
@@ -1078,7 +1152,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MPC",
@@ -1105,7 +1181,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XOM",
@@ -1132,7 +1210,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QQQ",
@@ -1159,7 +1239,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DAL",
@@ -1186,7 +1268,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "GOOGL",
@@ -1213,7 +1297,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for cooldown, stronger score, stronger confidence, or a fresh catalyst."
+        "next_action": "Wait for cooldown, stronger score, stronger confidence, or a fresh catalyst.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ORCL",
@@ -1240,7 +1326,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLK",
@@ -1267,7 +1355,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "TSLA",
@@ -1294,7 +1384,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ZM",
@@ -1321,7 +1413,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AAPL",
@@ -1348,7 +1442,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SNOW",
@@ -1375,7 +1471,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SOXX",
@@ -1402,7 +1500,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SMCI",
@@ -1429,7 +1529,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PANW",
@@ -1456,7 +1558,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AMD",
@@ -1483,7 +1587,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "INTC",
@@ -1510,7 +1616,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MU",
@@ -1537,7 +1645,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QCOM",
@@ -1564,7 +1674,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PANW",
@@ -1591,7 +1703,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SMCI",
@@ -1618,7 +1732,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AAPL",
@@ -1645,7 +1761,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ZM",
@@ -1672,7 +1790,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "TSLA",
@@ -1699,7 +1819,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLK",
@@ -1726,7 +1848,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ORCL",
@@ -1753,7 +1877,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "GOOGL",
@@ -1780,7 +1906,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DAL",
@@ -1807,7 +1935,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QQQ",
@@ -1834,7 +1964,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLE",
@@ -1848,8 +1980,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XLE appears in research data with score 184.63 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -1861,7 +1993,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SBUX",
@@ -1875,8 +2009,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SBUX appears in research data with score 177.26 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -1888,7 +2022,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "OXY",
@@ -1902,8 +2038,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "OXY appears in research data with score 166.39 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -1915,7 +2051,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "TSLA",
@@ -1929,8 +2067,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "TSLA appears in research data with score 162.43 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -1942,7 +2080,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AMZN",
@@ -1956,8 +2096,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "AMZN appears in research data with score 159.7 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -1969,7 +2109,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PSX",
@@ -1983,8 +2125,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "PSX appears in research data with score 151.23 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -1996,7 +2138,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SPY",
@@ -2010,8 +2154,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SPY appears in research data with score 144.63 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2023,7 +2167,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "CVX",
@@ -2037,8 +2183,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "CVX appears in research data with score 143.51 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2050,7 +2196,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SNOW",
@@ -2064,8 +2212,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SNOW appears in research data with score 142.11 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2077,7 +2225,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "VLO",
@@ -2091,8 +2241,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "VLO appears in research data with score 141.77 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2104,7 +2254,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AVGO",
@@ -2118,8 +2270,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "AVGO appears in research data with score 138.71 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2131,7 +2283,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ZM",
@@ -2145,8 +2299,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ZM appears in research data with score 134.55 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2158,7 +2312,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ROKU",
@@ -2172,8 +2328,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ROKU appears in research data with score 128.01 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2185,7 +2341,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "COP",
@@ -2199,8 +2357,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "COP appears in research data with score 126.03 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2212,7 +2370,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "WMT",
@@ -2226,8 +2386,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "WMT appears in research data with score 122.47 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2239,7 +2399,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "EOG",
@@ -2253,8 +2415,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "EOG appears in research data with score 119.92 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2266,7 +2428,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ORCL",
@@ -2280,8 +2444,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ORCL appears in research data with score 119.35 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2293,7 +2457,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "IWM",
@@ -2307,8 +2473,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "IWM appears in research data with score 103.37 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2320,7 +2486,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QCOM",
@@ -2334,8 +2502,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "QCOM appears in research data with score 560.17 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2347,7 +2515,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PANW",
@@ -2361,8 +2531,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "PANW appears in research data with score 485.08 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2374,7 +2544,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "GOOGL",
@@ -2388,8 +2560,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "GOOGL appears in research data with score 306.54 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2401,7 +2573,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SOXX",
@@ -2415,8 +2589,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SOXX appears in research data with score 248.93 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2428,7 +2602,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLK",
@@ -2442,8 +2618,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XLK appears in research data with score 217.72 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2455,7 +2631,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AAPL",
@@ -2469,8 +2647,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "AAPL appears in research data with score 210.56 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2482,7 +2660,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "NVDA",
@@ -2496,8 +2676,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "NVDA appears in research data with score 203.36 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2509,7 +2689,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MPC",
@@ -2523,8 +2705,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "MPC appears in research data with score 199.24 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2536,7 +2718,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XOM",
@@ -2550,8 +2734,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XOM appears in research data with score 192.56 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2563,7 +2747,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QQQ",
@@ -2577,8 +2763,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "QQQ appears in research data with score 188.65 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2590,7 +2776,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLE",
@@ -2604,8 +2792,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XLE appears in research data with score 184.75 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2617,7 +2805,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SBUX",
@@ -2631,8 +2821,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SBUX appears in research data with score 176.46 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2644,7 +2834,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "OXY",
@@ -2658,8 +2850,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "OXY appears in research data with score 165.95 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2671,7 +2863,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "TSLA",
@@ -2685,8 +2879,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "TSLA appears in research data with score 161.24 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2698,7 +2892,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AMZN",
@@ -2712,8 +2908,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "AMZN appears in research data with score 157.98 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2725,7 +2921,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PSX",
@@ -2739,8 +2937,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "PSX appears in research data with score 150.45 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2752,7 +2950,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SPY",
@@ -2766,8 +2966,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SPY appears in research data with score 144.51 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2779,7 +2979,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "CVX",
@@ -2793,8 +2995,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "CVX appears in research data with score 143.43 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2806,7 +3008,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SNOW",
@@ -2820,8 +3024,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SNOW appears in research data with score 142.73 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2833,7 +3037,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "VLO",
@@ -2847,8 +3053,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "VLO appears in research data with score 141.47 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2860,7 +3066,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AVGO",
@@ -2874,8 +3082,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "AVGO appears in research data with score 139 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2887,7 +3095,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ZM",
@@ -2901,8 +3111,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ZM appears in research data with score 136.6 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2914,7 +3124,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ROKU",
@@ -2928,8 +3140,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ROKU appears in research data with score 127.32 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2941,7 +3153,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "COP",
@@ -2955,8 +3169,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "COP appears in research data with score 126.43 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2968,7 +3182,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "WMT",
@@ -2982,8 +3198,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "WMT appears in research data with score 122.32 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -2995,7 +3211,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "EOG",
@@ -3009,8 +3227,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "EOG appears in research data with score 119.25 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3022,7 +3240,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ORCL",
@@ -3036,8 +3256,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ORCL appears in research data with score 118.41 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3049,7 +3269,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "IWM",
@@ -3063,8 +3285,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "IWM appears in research data with score 103.46 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3076,7 +3298,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PANW",
@@ -3090,8 +3314,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "PANW appears in research data with score 488.7 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3103,7 +3327,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SMCI",
@@ -3117,8 +3343,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SMCI appears in research data with score 385.45 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3130,7 +3356,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AAPL",
@@ -3144,8 +3372,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "AAPL appears in research data with score 258.05 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3157,7 +3385,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ZM",
@@ -3171,8 +3401,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ZM appears in research data with score 234.52 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3184,7 +3414,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "TSLA",
@@ -3198,8 +3430,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "TSLA appears in research data with score 233.47 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3211,7 +3443,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLK",
@@ -3225,8 +3459,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XLK appears in research data with score 230.22 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3238,7 +3472,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ORCL",
@@ -3252,8 +3488,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ORCL appears in research data with score 213.78 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3265,7 +3501,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "GOOGL",
@@ -3279,8 +3517,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "GOOGL appears in research data with score 201.09 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3292,7 +3530,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DAL",
@@ -3306,8 +3546,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "DAL appears in research data with score 199.6 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3319,7 +3559,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QQQ",
@@ -3333,8 +3575,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "QQQ appears in research data with score 185.77 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3346,7 +3588,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "UAL",
@@ -3360,8 +3604,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "UAL appears in research data with score 149.82 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3373,7 +3617,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SPY",
@@ -3387,8 +3633,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SPY appears in research data with score 145.98 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3400,7 +3646,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MPC",
@@ -3414,8 +3662,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "MPC appears in research data with score 145.03 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3427,7 +3675,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XOM",
@@ -3441,8 +3691,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XOM appears in research data with score 144.46 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3454,7 +3704,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLE",
@@ -3468,8 +3720,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XLE appears in research data with score 141.66 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3481,7 +3733,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLV",
@@ -3495,8 +3749,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XLV appears in research data with score 139.26 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3508,7 +3762,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "CVX",
@@ -3522,8 +3778,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "CVX appears in research data with score 139.12 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3535,7 +3791,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ROKU",
@@ -3549,8 +3807,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ROKU appears in research data with score 136.47 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3562,7 +3820,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SBUX",
@@ -3576,8 +3836,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SBUX appears in research data with score 135.31 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3589,7 +3849,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "IWM",
@@ -3603,8 +3865,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "IWM appears in research data with score 131.75 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3616,7 +3878,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AMZN",
@@ -3630,8 +3894,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "AMZN appears in research data with score 129.53 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3643,7 +3907,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MS",
@@ -3657,8 +3923,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "MS appears in research data with score 121.55 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3670,7 +3936,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "OXY",
@@ -3684,8 +3952,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "OXY appears in research data with score 120.12 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3697,7 +3965,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "NVDA",
@@ -3711,8 +3981,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "NVDA appears in research data with score 107.43 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3724,7 +3994,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PSX",
@@ -3738,8 +4010,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "PSX appears in research data with score 107.42 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3751,7 +4023,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLF",
@@ -3765,8 +4039,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XLF appears in research data with score 104.73 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3778,7 +4052,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DIS",
@@ -3792,8 +4068,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "DIS appears in research data with score 98.26 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3805,7 +4081,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PANW",
@@ -3819,8 +4097,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "PANW appears in research data with score 494.49 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3832,7 +4110,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SMCI",
@@ -3846,8 +4126,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SMCI appears in research data with score 374.33 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3859,7 +4139,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AAPL",
@@ -3873,8 +4155,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "AAPL appears in research data with score 257.15 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3886,7 +4168,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ZM",
@@ -3900,8 +4184,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ZM appears in research data with score 234.95 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3913,7 +4197,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "TSLA",
@@ -3927,8 +4213,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "TSLA appears in research data with score 229.27 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3940,7 +4226,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLK",
@@ -3954,8 +4242,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XLK appears in research data with score 228.79 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3967,7 +4255,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ORCL",
@@ -3981,8 +4271,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ORCL appears in research data with score 213.64 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -3994,7 +4284,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "GOOGL",
@@ -4008,8 +4300,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "GOOGL appears in research data with score 198.45 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4021,7 +4313,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DAL",
@@ -4035,8 +4329,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "DAL appears in research data with score 197.66 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4048,7 +4342,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QQQ",
@@ -4062,8 +4358,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "QQQ appears in research data with score 184.88 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4075,7 +4371,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XOM",
@@ -4089,8 +4387,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XOM appears in research data with score 152.54 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4102,7 +4400,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MPC",
@@ -4116,8 +4416,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "MPC appears in research data with score 149.37 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4129,7 +4429,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "UAL",
@@ -4143,8 +4445,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "UAL appears in research data with score 148.34 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4156,7 +4458,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLE",
@@ -4170,8 +4474,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XLE appears in research data with score 147.47 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4183,7 +4487,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SPY",
@@ -4197,8 +4503,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SPY appears in research data with score 145.33 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4210,7 +4516,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "CVX",
@@ -4224,8 +4532,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "CVX appears in research data with score 142.48 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4237,7 +4545,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLV",
@@ -4251,8 +4561,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XLV appears in research data with score 141.18 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4264,7 +4574,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SBUX",
@@ -4278,8 +4590,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "SBUX appears in research data with score 134.46 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4291,7 +4603,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ROKU",
@@ -4305,8 +4619,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "ROKU appears in research data with score 130.38 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4318,7 +4632,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "IWM",
@@ -4332,8 +4648,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "IWM appears in research data with score 130.35 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4345,7 +4661,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AMZN",
@@ -4359,8 +4677,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "AMZN appears in research data with score 126.27 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4372,7 +4690,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "OXY",
@@ -4386,8 +4706,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "OXY appears in research data with score 124.97 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4399,7 +4719,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MS",
@@ -4413,8 +4735,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "MS appears in research data with score 121.04 and HIGH confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4426,7 +4748,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PSX",
@@ -4440,8 +4764,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "PSX appears in research data with score 114.32 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4453,7 +4777,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLF",
@@ -4467,8 +4793,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "XLF appears in research data with score 104.68 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4480,7 +4806,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DIS",
@@ -4494,8 +4822,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "DIS appears in research data with score 98.18 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4507,7 +4835,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "EOG",
@@ -4521,8 +4851,8 @@
         "execution_ready": false,
         "selected_for_execution": false,
         "blocked_at": "",
-        "final_reason": "unknown",
-        "final_reason_detail": "",
+        "final_reason": "research_candidate_missing_execution_context",
+        "final_reason_detail": "EOG appears in research data with score 91.99 and MEDIUM confidence, but the row does not carry enough execution/readiness context to promote it.",
         "reentry_discipline_status": "",
         "reentry_discipline_reason": "",
         "reentry_discipline_hours_since_close": null,
@@ -4534,7 +4864,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep as research-only until the candidate carries vehicle, readiness, capital, and execution context.",
+        "reason_inferred_for_report": true,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       }
     ],
     "duplicate_candidates": [
@@ -4563,7 +4895,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SOXX",
@@ -4590,7 +4924,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AMD",
@@ -4617,7 +4953,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "INTC",
@@ -4644,7 +4982,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MU",
@@ -4671,7 +5011,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QCOM",
@@ -4698,7 +5040,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       }
     ],
     "reentry_blocked_candidates": [
@@ -4727,7 +5071,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for cooldown, stronger score, stronger confidence, or a fresh catalyst."
+        "next_action": "Wait for cooldown, stronger score, stronger confidence, or a fresh catalyst.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       }
     ],
     "observed_only_options": [
@@ -4756,7 +5102,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "WFC",
@@ -4783,7 +5131,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "COST",
@@ -4810,7 +5160,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "JPM",
@@ -4837,7 +5189,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ADBE",
@@ -4864,7 +5218,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "VLO",
@@ -4891,7 +5247,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "COP",
@@ -4918,7 +5276,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "C",
@@ -4945,7 +5305,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DIA",
@@ -4972,7 +5334,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ARKK",
@@ -4999,7 +5363,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MSFT",
@@ -5026,7 +5392,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "NKE",
@@ -5053,7 +5421,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "GS",
@@ -5080,7 +5450,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "BAC",
@@ -5107,7 +5479,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AVGO",
@@ -5134,7 +5508,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "NVDA",
@@ -5161,7 +5537,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "CRM",
@@ -5188,7 +5566,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Keep in research/watch until readiness improves."
+        "next_action": "Keep in research/watch until readiness improves.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SNOW",
@@ -5215,7 +5595,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SOXX",
@@ -5242,7 +5624,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AMD",
@@ -5269,7 +5653,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "INTC",
@@ -5296,7 +5682,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MU",
@@ -5323,7 +5711,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QCOM",
@@ -5350,7 +5740,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead."
+        "next_action": "Do not re-enter while this symbol is already open. Monitor the active position instead.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       }
     ],
     "stock_fallback_candidates": [
@@ -5379,7 +5771,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SMCI",
@@ -5406,7 +5800,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AAPL",
@@ -5433,7 +5829,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ZM",
@@ -5460,7 +5858,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "TSLA",
@@ -5487,7 +5887,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLK",
@@ -5514,7 +5916,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ORCL",
@@ -5541,7 +5945,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "GOOGL",
@@ -5568,7 +5974,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DAL",
@@ -5595,7 +6003,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QQQ",
@@ -5622,7 +6032,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       }
     ],
     "governor_blocked_candidates": [
@@ -5651,7 +6063,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DIS",
@@ -5678,7 +6092,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLF",
@@ -5705,7 +6121,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PSX",
@@ -5732,7 +6150,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MS",
@@ -5759,7 +6179,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "OXY",
@@ -5786,7 +6208,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AMZN",
@@ -5813,7 +6237,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "IWM",
@@ -5840,7 +6266,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ROKU",
@@ -5867,7 +6295,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SBUX",
@@ -5894,7 +6324,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLV",
@@ -5921,7 +6353,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "CVX",
@@ -5948,7 +6382,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SPY",
@@ -5975,7 +6411,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLE",
@@ -6002,7 +6440,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "UAL",
@@ -6029,7 +6469,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "MPC",
@@ -6056,7 +6498,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XOM",
@@ -6083,7 +6527,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QQQ",
@@ -6110,7 +6556,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DAL",
@@ -6137,7 +6585,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ORCL",
@@ -6164,7 +6614,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLK",
@@ -6191,7 +6643,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "TSLA",
@@ -6218,7 +6672,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ZM",
@@ -6245,7 +6701,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AAPL",
@@ -6272,7 +6730,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SMCI",
@@ -6299,7 +6759,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PANW",
@@ -6326,7 +6788,9 @@
         "option_fallback_used": false,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "PANW",
@@ -6353,7 +6817,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "SMCI",
@@ -6380,7 +6846,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "AAPL",
@@ -6407,7 +6875,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ZM",
@@ -6434,7 +6904,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "TSLA",
@@ -6461,7 +6933,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "XLK",
@@ -6488,7 +6962,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "ORCL",
@@ -6515,7 +6991,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "GOOGL",
@@ -6542,7 +7020,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "DAL",
@@ -6569,7 +7049,9 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       },
       {
         "symbol": "QQQ",
@@ -6596,13 +7078,15 @@
         "option_fallback_used": true,
         "price_review_basis": "",
         "monitoring_price_type": "",
-        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally."
+        "next_action": "Wait for a position to close or raise the max-open-position limit intentionally.",
+        "reason_inferred_for_report": false,
+        "report_reason_source": "readiness_report_reason_cleanup_001"
       }
     ]
   },
   "top_blockers": [
     {
-      "reason": "unknown",
+      "reason": "research_candidate_missing_execution_context",
       "count": 100
     },
     {
