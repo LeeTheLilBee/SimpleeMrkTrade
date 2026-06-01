@@ -2479,3 +2479,15 @@ def get_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_ver
     return build_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_version_detail_compare_view_status_bridge()
 # === PACK 177 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION DETAIL COMPARE VIEW STATUS BRIDGE END ===
 
+
+# === PACK 178 STATUS START ===
+def build_pack_178_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_status_bridge():
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation import build_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_status_bridge
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_status_bridge()
+    except Exception as exc:
+        return {"pack_id":"PACK_178","pack_number":178,"status":"review","endpoint":"/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-compare-filter-navigation.json","readiness_score":0,"error":str(exc),"cached_non_recursive":True}
+def get_pack_178_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_status_bridge():
+    return build_pack_178_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_status_bridge()
+# === PACK 178 STATUS END ===
+

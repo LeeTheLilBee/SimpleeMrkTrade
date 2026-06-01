@@ -5680,3 +5680,17 @@ def append_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_
         return sections
 # === PACK 177 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION DETAIL COMPARE VIEW UNIFIED SECTION END ===
 
+
+# === PACK 178 UNIFIED SECTION START ===
+def build_pack_178_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_unified_section():
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation import build_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_unified_owner_section
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_unified_owner_section()
+    except Exception as exc:
+        return {"section_id":"policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation","title":"Owner Note Preset Compare Navigation","status":"review","href":"/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-compare-filter-navigation.json","cards":[],"error":str(exc)}
+def append_pack_178_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_section(sections):
+    if isinstance(sections, list) and not any(isinstance(x, dict) and x.get("section_id") == "policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation" for x in sections):
+        sections.append(build_pack_178_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_unified_section())
+    return sections
+# === PACK 178 UNIFIED SECTION END ===
+

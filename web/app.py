@@ -12535,3 +12535,22 @@ def tower_policy_change_approval_receipt_owner_note_saved_view_preset_version_de
     return jsonify(payload)
 # === PACK 177 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION DETAIL COMPARE VIEW ROUTE END ===
 
+
+# === PACK 178 ROUTE START ===
+def _pack_178_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_route_guard(fn):
+    for guard_name in ("tower_owner_required","tower_admin_required","owner_required","admin_required","tower_clearance_required","login_required"):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+@app.route("/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-compare-filter-navigation.json", methods=["GET"])
+@_pack_178_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_route_guard
+def tower_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_json():
+    from tower.policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation import build_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_payload
+    return jsonify(build_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_payload())
+# === PACK 178 ROUTE END ===
+

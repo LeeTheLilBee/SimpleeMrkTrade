@@ -3051,3 +3051,17 @@ def append_pack_177_policy_change_approval_receipt_owner_note_saved_view_preset_
         return actions
 # === PACK 177 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET VERSION DETAIL COMPARE VIEW QUICK ACTION END ===
 
+
+# === PACK 178 QUICK ACTION START ===
+def build_pack_178_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_quick_action():
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation import build_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_quick_action
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_quick_action()
+    except Exception as exc:
+        return {"id":"policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation","label":"Owner Note Preset Compare Navigation","href":"/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-compare-filter-navigation.json","endpoint":"/tower/policy-change-approval-receipt-owner-note-saved-view-preset-version-compare-filter-navigation.json","status":"review","error":str(exc)}
+def append_pack_178_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_quick_action(actions):
+    if isinstance(actions, list) and not any(isinstance(x, dict) and x.get("id") == "policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation" for x in actions):
+        actions.append(build_pack_178_policy_change_approval_receipt_owner_note_saved_view_preset_version_compare_filter_navigation_quick_action())
+    return actions
+# === PACK 178 QUICK ACTION END ===
+
