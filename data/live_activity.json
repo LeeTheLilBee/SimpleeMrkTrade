@@ -1,74 +1,5 @@
 [
   {
-    "timestamp": "2026-05-02T01:41:47.201369",
-    "event_type": "QUEUE",
-    "message": "Approved 39 research trades; selected 0 execution trades in market mode NEUTRAL / trading mode Paper Mode",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T01:43:29.629764",
-    "event_type": "SYSTEM",
-    "message": "Bot run completed in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:01:11.259529",
-    "event_type": "SYSTEM",
-    "message": "Bot run started in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:01:13.074600",
-    "event_type": "MARKET",
-    "message": "Market regime identified as NEUTRAL",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:01:22.566619",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:01:57.918296",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 50 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:01:57.924065",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 5 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:02:08.439535",
-    "event_type": "QUEUE",
-    "message": "Approved 39 research trades; selected 2 execution trades in market mode NEUTRAL / trading mode Paper Mode",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:03:37.147345",
-    "event_type": "SIGNAL",
-    "message": "INTC approved as CALL with score 1061.8",
-    "symbol": "INTC",
-    "meta": {
-      "trade_id": "INTC-CALL-20260502020208",
-      "strategy": "CALL",
-      "score": 1061.8,
-      "confidence": "HIGH",
-      "trading_mode": "paper"
-    }
-  },
-  {
     "timestamp": "2026-05-02T02:03:37.213286",
     "event_type": "SIGNAL",
     "message": "QCOM approved as CALL with score 507.86",
@@ -2262,6 +2193,69 @@
   },
   {
     "timestamp": "2026-06-01T14:33:55.417215",
+    "event_type": "RISK",
+    "message": "Blocked by governor in paper mode: max_open_positions",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T14:46:27.243372",
+    "event_type": "SYSTEM",
+    "message": "Bot run started in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T14:47:50.505818",
+    "event_type": "MARKET",
+    "message": "Market regime identified as NEUTRAL",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T14:48:00.477545",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 50 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T14:48:48.671646",
+    "event_type": "EXECUTION",
+    "message": "Aggressive execution universe rebuilt with 50 candidates",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T14:48:48.673842",
+    "event_type": "SPOTLIGHT",
+    "message": "Top spotlight contains 5 names",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T14:49:03.693852",
+    "event_type": "QUEUE",
+    "message": "Approved 25 research trades; selected 0 execution trades in market mode NEUTRAL / trading mode Paper Mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T14:49:08.519430",
+    "event_type": "RISK",
+    "message": "Correlation risk warning in paper mode: Too many positions concentrated in one sector.",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T14:49:08.527937",
+    "event_type": "RISK",
+    "message": "Sector concentration warning in paper mode; continuing because this is not live mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T14:49:08.537459",
     "event_type": "RISK",
     "message": "Blocked by governor in paper mode: max_open_positions",
     "symbol": null,

@@ -1,518 +1,5 @@
 [
   {
-    "timestamp": "2026-05-20T16:12:53.030991",
-    "symbol": "AAPL",
-    "strategy": "CALL",
-    "score": 195.75,
-    "confidence": "HIGH",
-    "entry": 299.4,
-    "stop": 296.4,
-    "target": 303.4,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:13:15.301079",
-    "symbol": "QQQ",
-    "strategy": "CALL",
-    "score": 191.91,
-    "confidence": "HIGH",
-    "entry": 711.38,
-    "stop": 708.38,
-    "target": 715.38,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:13:37.011163",
-    "symbol": "MPC",
-    "strategy": "CALL",
-    "score": 191.09,
-    "confidence": "HIGH",
-    "entry": 257.81,
-    "stop": 254.81,
-    "target": 261.81,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:14:00.099786",
-    "symbol": "XOM",
-    "strategy": "CALL",
-    "score": 161.63,
-    "confidence": "HIGH",
-    "entry": 158.6,
-    "stop": 155.6,
-    "target": 162.6,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:14:22.967365",
-    "symbol": "SBUX",
-    "strategy": "CALL",
-    "score": 160.92,
-    "confidence": "HIGH",
-    "entry": 107.21,
-    "stop": 104.21,
-    "target": 111.21,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:14:45.580660",
-    "symbol": "XLE",
-    "strategy": "CALL",
-    "score": 158.44,
-    "confidence": "HIGH",
-    "entry": 60.27,
-    "stop": 57.27,
-    "target": 64.27,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:15:08.170559",
-    "symbol": "PSX",
-    "strategy": "CALL",
-    "score": 157.41,
-    "confidence": "HIGH",
-    "entry": 179.15,
-    "stop": 176.15,
-    "target": 183.15,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Strong setup with multiple confirmations.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:15:31.150626",
-    "symbol": "DAL",
-    "strategy": "CALL",
-    "score": 146.61,
-    "confidence": "HIGH",
-    "entry": 73.41,
-    "stop": 70.41,
-    "target": 77.41,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:15:55.564984",
-    "symbol": "SPY",
-    "strategy": "CALL",
-    "score": 145.25,
-    "confidence": "HIGH",
-    "entry": 740.4,
-    "stop": 737.4,
-    "target": 744.4,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:16:17.646466",
-    "symbol": "ORCL",
-    "strategy": "CALL",
-    "score": 144.82,
-    "confidence": "HIGH",
-    "entry": 184.1,
-    "stop": 181.1,
-    "target": 188.1,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:16:41.198516",
-    "symbol": "ZM",
-    "strategy": "CALL",
-    "score": 140.84,
-    "confidence": "HIGH",
-    "entry": 98.28,
-    "stop": 95.28,
-    "target": 102.28,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:17:04.906479",
-    "symbol": "AMZN",
-    "strategy": "CALL",
-    "score": 137.99,
-    "confidence": "HIGH",
-    "entry": 264.69,
-    "stop": 261.69,
-    "target": 268.69,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:17:29.311514",
-    "symbol": "CVX",
-    "strategy": "CALL",
-    "score": 136.86,
-    "confidence": "HIGH",
-    "entry": 193.49,
-    "stop": 190.49,
-    "target": 197.49,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:17:53.174999",
-    "symbol": "OXY",
-    "strategy": "CALL",
-    "score": 129.4,
-    "confidence": "HIGH",
-    "entry": 59.49,
-    "stop": 56.49,
-    "target": 63.49,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:18:19.814589",
-    "symbol": "CRM",
-    "strategy": "CALL",
-    "score": 125.45,
-    "confidence": "HIGH",
-    "entry": 177.68,
-    "stop": 174.68,
-    "target": 181.68,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:18:43.945744",
-    "symbol": "VLO",
-    "strategy": "CALL",
-    "score": 123.5,
-    "confidence": "HIGH",
-    "entry": 255.38,
-    "stop": 252.38,
-    "target": 259.38,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:19:09.648687",
-    "symbol": "UAL",
-    "strategy": "CALL",
-    "score": 120.39,
-    "confidence": "HIGH",
-    "entry": 97.08,
-    "stop": 94.08,
-    "target": 101.08,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Developing setup with partial alignment.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:42:27.599635",
-    "symbol": "QCOM",
-    "strategy": "CALL",
-    "score": 597.91,
-    "confidence": "HIGH",
-    "entry": 200.31,
-    "stop": 197.31,
-    "target": 204.31,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
-    "timestamp": "2026-05-20T16:42:54.191223",
-    "symbol": "GOOGL",
-    "strategy": "CALL",
-    "score": 234.91,
-    "confidence": "HIGH",
-    "entry": 384.81,
-    "stop": 381.81,
-    "target": 388.81,
-    "source": "research",
-    "market_context": [
-      "Market regime: NEUTRAL",
-      "Volatility state: NORMAL",
-      "Market breadth: BULLISH",
-      "Mode: NEUTRAL",
-      "Trading mode: paper",
-      "Trading mode label: Paper Mode",
-      "Mode shell: Solar System",
-      "Theme family: solar_system"
-    ],
-    "why_selected": [
-      "Extremely strong setup with multiple aligned factors.",
-      "High conviction based on strong confirmation signals.",
-      "Market regime: Neutral.",
-      "Trend context: Uptrend."
-    ]
-  },
-  {
     "timestamp": "2026-05-20T16:43:21.266651",
     "symbol": "XLK",
     "strategy": "CALL",
@@ -4031,6 +3518,519 @@
     "entry": 286.91,
     "stop": 283.91,
     "target": 290.91,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Developing setup with partial alignment.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:03.912561",
+    "symbol": "SMCI",
+    "strategy": "CALL",
+    "score": 787.68,
+    "confidence": "HIGH",
+    "entry": 47.29,
+    "stop": 44.29,
+    "target": 51.29,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:04.152639",
+    "symbol": "PANW",
+    "strategy": "CALL",
+    "score": 652.9,
+    "confidence": "HIGH",
+    "entry": 289.58,
+    "stop": 286.58,
+    "target": 293.58,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:04.393107",
+    "symbol": "ORCL",
+    "strategy": "CALL",
+    "score": 406.56,
+    "confidence": "HIGH",
+    "entry": 235.92,
+    "stop": 232.92,
+    "target": 239.92,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:04.651554",
+    "symbol": "XLK",
+    "strategy": "CALL",
+    "score": 295.8,
+    "confidence": "HIGH",
+    "entry": 193.98,
+    "stop": 190.98,
+    "target": 197.98,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:04.815955",
+    "symbol": "UAL",
+    "strategy": "CALL",
+    "score": 273.22,
+    "confidence": "HIGH",
+    "entry": 109.58,
+    "stop": 106.58,
+    "target": 113.58,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:04.969254",
+    "symbol": "DAL",
+    "strategy": "CALL",
+    "score": 238.86,
+    "confidence": "HIGH",
+    "entry": 79.6,
+    "stop": 76.6,
+    "target": 83.6,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:05.129522",
+    "symbol": "CRM",
+    "strategy": "CALL",
+    "score": 228.53,
+    "confidence": "HIGH",
+    "entry": 209.77,
+    "stop": 206.77,
+    "target": 213.77,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:05.298735",
+    "symbol": "MSFT",
+    "strategy": "CALL",
+    "score": 218.93,
+    "confidence": "HIGH",
+    "entry": 462.45,
+    "stop": 459.45,
+    "target": 466.45,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:05.469265",
+    "symbol": "NVDA",
+    "strategy": "CALL",
+    "score": 211.01,
+    "confidence": "HIGH",
+    "entry": 220.7,
+    "stop": 217.7,
+    "target": 224.7,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:05.653905",
+    "symbol": "AAPL",
+    "strategy": "CALL",
+    "score": 209.78,
+    "confidence": "HIGH",
+    "entry": 307.13,
+    "stop": 304.13,
+    "target": 311.13,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Extremely strong setup with multiple aligned factors.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:05.819902",
+    "symbol": "QQQ",
+    "strategy": "CALL",
+    "score": 198.07,
+    "confidence": "HIGH",
+    "entry": 739.38,
+    "stop": 736.38,
+    "target": 743.38,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:05.988153",
+    "symbol": "AVGO",
+    "strategy": "CALL",
+    "score": 196.33,
+    "confidence": "HIGH",
+    "entry": 456.94,
+    "stop": 453.94,
+    "target": 460.94,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:06.162498",
+    "symbol": "PLTR",
+    "strategy": "CALL",
+    "score": 183.48,
+    "confidence": "HIGH",
+    "entry": 158.44,
+    "stop": 155.44,
+    "target": 162.44,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:06.341751",
+    "symbol": "TSLA",
+    "strategy": "CALL",
+    "score": 174.62,
+    "confidence": "HIGH",
+    "entry": 421.89,
+    "stop": 418.89,
+    "target": 425.89,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:06.525433",
+    "symbol": "MS",
+    "strategy": "CALL",
+    "score": 162.0,
+    "confidence": "HIGH",
+    "entry": 208.29,
+    "stop": 205.29,
+    "target": 212.29,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:06.724380",
+    "symbol": "NKE",
+    "strategy": "CALL",
+    "score": 160.45,
+    "confidence": "HIGH",
+    "entry": 45.66,
+    "stop": 42.66,
+    "target": 49.66,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:06.919725",
+    "symbol": "GS",
+    "strategy": "CALL",
+    "score": 154.22,
+    "confidence": "HIGH",
+    "entry": 1023.77,
+    "stop": 1020.77,
+    "target": 1027.77,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:07.122429",
+    "symbol": "SPY",
+    "strategy": "CALL",
+    "score": 152.28,
+    "confidence": "HIGH",
+    "entry": 755.81,
+    "stop": 752.81,
+    "target": 759.81,
+    "source": "research",
+    "market_context": [
+      "Market regime: NEUTRAL",
+      "Volatility state: NORMAL",
+      "Market breadth: BULLISH",
+      "Mode: NEUTRAL",
+      "Trading mode: paper",
+      "Trading mode label: Paper Mode",
+      "Mode shell: Solar System",
+      "Theme family: solar_system"
+    ],
+    "why_selected": [
+      "Strong setup with multiple confirmations.",
+      "High conviction based on strong confirmation signals.",
+      "Market regime: Neutral.",
+      "Trend context: Uptrend."
+    ]
+  },
+  {
+    "timestamp": "2026-06-01T14:49:07.320339",
+    "symbol": "IWM",
+    "strategy": "CALL",
+    "score": 130.55,
+    "confidence": "HIGH",
+    "entry": 286.56,
+    "stop": 283.56,
+    "target": 290.56,
     "source": "research",
     "market_context": [
       "Market regime: NEUTRAL",
