@@ -6262,3 +6262,59 @@ def append_pack_188_policy_change_approval_receipt_owner_note_saved_view_preset_
         return sections
 # === PACK 188 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE SAVED VIEW FILTER PRESET DETAIL EDIT HISTORY VERSION COMPARE FILTER NAVIGATION UNIFIED SECTION END ===
 
+
+
+# === PACK 189 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE SAVED VIEW FILTER PRESET DETAIL EDIT HISTORY VERSION COMPARE NAVIGATION SAVED VIEW FILTER PRESET UNIFIED SECTION START ===
+def build_pack_189_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset_unified_section():
+    """
+    Pack 189 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 189 saved view/filter preset payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset import build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset_unified_owner_section
+        return build_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset",
+            "title": "Owner Note Version Compare Saved Views",
+            "subtitle": "Owner note version compare navigation saved view/filter preset section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-history-version-compare-saved-view-filter-preset-detail-edit-history-version-compare-navigation-saved-view-filter-preset.json",
+            "cards": [],
+            "simulated_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_189_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset_section(sections):
+    """
+    Append Pack 189 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset" not in existing_ids:
+            sections.append(build_pack_189_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edit_history_version_compare_saved_view_filter_preset_detail_edit_history_version_compare_navigation_saved_view_filter_preset_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 189 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE SAVED VIEW FILTER PRESET DETAIL EDIT HISTORY VERSION COMPARE NAVIGATION SAVED VIEW FILTER PRESET UNIFIED SECTION END ===
+
