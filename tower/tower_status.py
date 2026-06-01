@@ -2268,3 +2268,48 @@ def get_pack_173_policy_change_approval_receipt_owner_note_draft_version_compare
     return build_pack_173_policy_change_approval_receipt_owner_note_draft_version_compare_filter_navigation_status_bridge()
 # === PACK 173 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT VERSION COMPARE FILTER NAVIGATION STATUS BRIDGE END ===
 
+
+
+# === PACK 174 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE COMPARE NAVIGATION SAVED VIEW FILTER PRESET STATUS BRIDGE START ===
+def build_pack_174_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_status_bridge():
+    """
+    Pack 174 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 174 saved view/filter preset payload
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset import build_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_status_bridge
+        return build_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_174",
+            "pack_number": 174,
+            "status": "review",
+            "endpoint": "/tower/policy-change-approval-receipt-owner-note-compare-navigation-saved-view-filter-preset.json",
+            "source_endpoint": "/tower/policy-change-approval-receipt-owner-note-draft-version-compare-filter-navigation.json",
+            "readiness_score": 0,
+            "readiness_label": "Owner note compare navigation saved view/filter preset bridge error",
+            "simulated_only": True,
+            "saved_navigation_preview_only": True,
+            "saved_filter_preset_preview_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "real_saved_view_written": False,
+            "real_user_preference_written": False,
+            "real_filter_preference_saved": False,
+            "real_navigation_state_persisted": False,
+            "real_drawer_selection_saved": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_174_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_status_bridge():
+    return build_pack_174_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_status_bridge()
+# === PACK 174 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE COMPARE NAVIGATION SAVED VIEW FILTER PRESET STATUS BRIDGE END ===
+

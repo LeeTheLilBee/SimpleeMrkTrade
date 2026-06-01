@@ -5376,3 +5376,78 @@ def append_pack_173_policy_change_approval_receipt_owner_note_draft_version_comp
         return sections
 # === PACK 173 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE DRAFT VERSION COMPARE FILTER NAVIGATION UNIFIED SECTION END ===
 
+
+
+# === PACK 174 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE COMPARE NAVIGATION SAVED VIEW FILTER PRESET UNIFIED SECTION START ===
+def build_pack_174_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_unified_section():
+    """
+    Pack 174 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset import build_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_unified_owner_section
+        return build_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset",
+            "title": "Owner Note Saved Compare Views",
+            "subtitle": "Owner note compare navigation saved view/filter preset section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-owner-note-compare-navigation-saved-view-filter-preset.json",
+            "cards": [],
+            "simulated_only": True,
+            "saved_navigation_preview_only": True,
+            "saved_filter_preset_preview_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_174_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_html_section():
+    try:
+        from tower.policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset import build_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_html_section
+        return build_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-approval-receipt-owner-note-saved-view-section" id="policy-change-approval-receipt-owner-note-compare-navigation-saved-view-filter-preset">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 174</p>
+                <h2>Owner Note Saved Compare Views</h2>
+                <p>Owner note compare navigation saved view/filter preset section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-approval-receipt-owner-note-compare-navigation-saved-view-filter-preset.json">Open owner note saved compare views JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_174_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_section(sections):
+    """
+    Append Pack 174 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset" not in existing_ids:
+            sections.append(build_pack_174_policy_change_approval_receipt_owner_note_compare_navigation_saved_view_filter_preset_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 174 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE COMPARE NAVIGATION SAVED VIEW FILTER PRESET UNIFIED SECTION END ===
+
