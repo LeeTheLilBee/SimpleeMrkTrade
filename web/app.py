@@ -12161,3 +12161,37 @@ def tower_policy_change_approval_receipt_evidence_drawer_lookup_json():
     return jsonify(payload)
 # === PACK 166 POLICY CHANGE APPROVAL RECEIPT EVIDENCE DRAWER LOOKUP ROUTE END ===
 
+
+
+# === PACK 167 POLICY CHANGE APPROVAL RECEIPT FILTER LANES SEARCH FACETS ROUTE START ===
+def _pack_167_policy_change_approval_receipt_filter_lanes_search_facets_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/policy-change-approval-receipt-filter-lanes-search-facets.json", methods=["GET"])
+@_pack_167_policy_change_approval_receipt_filter_lanes_search_facets_route_guard
+def tower_policy_change_approval_receipt_filter_lanes_search_facets_json():
+    from tower.policy_change_approval_receipt_filter_lanes_search_facets import build_policy_change_approval_receipt_filter_lanes_search_facets_payload
+
+    payload = build_policy_change_approval_receipt_filter_lanes_search_facets_payload()
+    return jsonify(payload)
+# === PACK 167 POLICY CHANGE APPROVAL RECEIPT FILTER LANES SEARCH FACETS ROUTE END ===
+

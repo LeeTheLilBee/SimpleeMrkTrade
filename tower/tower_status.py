@@ -1708,3 +1708,70 @@ def get_pack_166_policy_change_approval_receipt_evidence_drawer_lookup_status_br
     return build_pack_166_policy_change_approval_receipt_evidence_drawer_lookup_status_bridge()
 # === PACK 166 POLICY CHANGE APPROVAL RECEIPT EVIDENCE DRAWER LOOKUP STATUS BRIDGE END ===
 
+
+
+# === PACK 167 POLICY CHANGE APPROVAL RECEIPT FILTER LANES SEARCH FACETS STATUS BRIDGE START ===
+def build_pack_167_policy_change_approval_receipt_filter_lanes_search_facets_status_bridge():
+    """
+    Pack 167 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 167 filter lanes/search facets payload
+    """
+    try:
+        from tower.policy_change_approval_receipt_filter_lanes_search_facets import build_policy_change_approval_receipt_filter_lanes_search_facets_status_bridge
+        return build_policy_change_approval_receipt_filter_lanes_search_facets_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_167",
+            "pack_number": 167,
+            "status": "review",
+            "endpoint": "/tower/policy-change-approval-receipt-filter-lanes-search-facets.json",
+            "source_endpoint": "/tower/policy-change-approval-receipt-evidence-drawer-lookup.json",
+            "readiness_score": 0,
+            "readiness_label": "Evidence drawer filter lanes/search facets bridge error",
+            "simulated_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "lookup_preview_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "real_approval_executed": False,
+            "real_policy_change_executed": False,
+            "real_permission_change_executed": False,
+            "real_access_granted": False,
+            "real_enforcement_executed": False,
+            "real_audit_written": False,
+            "real_receipt_written": False,
+            "real_archive_written": False,
+            "real_vault_written": False,
+            "real_expiration_enforced": False,
+            "real_recheck_executed": False,
+            "real_renewal_executed": False,
+            "real_queue_action_executed": False,
+            "real_owner_review_completed": False,
+            "real_owner_approval_executed": False,
+            "real_owner_rejection_executed": False,
+            "real_owner_acknowledgement_executed": False,
+            "real_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_167_policy_change_approval_receipt_filter_lanes_search_facets_status_bridge():
+    return build_pack_167_policy_change_approval_receipt_filter_lanes_search_facets_status_bridge()
+# === PACK 167 POLICY CHANGE APPROVAL RECEIPT FILTER LANES SEARCH FACETS STATUS BRIDGE END ===
+

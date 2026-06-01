@@ -4740,3 +4740,87 @@ def append_pack_166_policy_change_approval_receipt_evidence_drawer_lookup_sectio
         return sections
 # === PACK 166 POLICY CHANGE APPROVAL RECEIPT EVIDENCE DRAWER LOOKUP UNIFIED SECTION END ===
 
+
+
+# === PACK 167 POLICY CHANGE APPROVAL RECEIPT FILTER LANES SEARCH FACETS UNIFIED SECTION START ===
+def build_pack_167_policy_change_approval_receipt_filter_lanes_search_facets_unified_section():
+    """
+    Pack 167 unified owner section.
+
+    Safe/non-recursive:
+    - reads only policy_change_approval_receipt_filter_lanes_search_facets
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.policy_change_approval_receipt_filter_lanes_search_facets import build_policy_change_approval_receipt_filter_lanes_search_facets_unified_owner_section
+        return build_policy_change_approval_receipt_filter_lanes_search_facets_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "policy_change_approval_receipt_filter_lanes_search_facets",
+            "title": "Evidence Drawer Filters",
+            "subtitle": "Evidence drawer filter/search facets section needs review.",
+            "status": "review",
+            "href": "/tower/policy-change-approval-receipt-filter-lanes-search-facets.json",
+            "cards": [],
+            "simulated_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "lookup_preview_only": True,
+            "detail_preview_only": True,
+            "evidence_drawer_preview_only": True,
+            "owner_review_preview_only": True,
+            "queue_preview_only": True,
+            "renewal_preview_only": True,
+            "recheck_preview_only": True,
+            "expiration_preview_only": True,
+            "vault_preview_only": True,
+            "index_preview_only": True,
+            "receipt_preview_only": True,
+            "approval_preview_only": True,
+            "evidence_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def build_pack_167_policy_change_approval_receipt_filter_lanes_search_facets_html_section():
+    try:
+        from tower.policy_change_approval_receipt_filter_lanes_search_facets import build_policy_change_approval_receipt_filter_lanes_search_facets_html_section
+        return build_policy_change_approval_receipt_filter_lanes_search_facets_html_section()
+    except Exception as exc:
+        return f"""
+        <section class="tower-section policy-change-approval-receipt-filter-section" id="policy-change-approval-receipt-filter-lanes-search-facets">
+            <div class="tower-section-heading">
+                <p class="tower-kicker">Pack 167</p>
+                <h2>Evidence Drawer Filters</h2>
+                <p>Evidence drawer filter/search facets section needs review: {exc}</p>
+                <a class="tower-link-pill" href="/tower/policy-change-approval-receipt-filter-lanes-search-facets.json">Open evidence drawer filters JSON</a>
+            </div>
+        </section>
+        """
+
+
+def append_pack_167_policy_change_approval_receipt_filter_lanes_search_facets_section(sections):
+    """
+    Append Pack 167 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "policy_change_approval_receipt_filter_lanes_search_facets" not in existing_ids:
+            sections.append(build_pack_167_policy_change_approval_receipt_filter_lanes_search_facets_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 167 POLICY CHANGE APPROVAL RECEIPT FILTER LANES SEARCH FACETS UNIFIED SECTION END ===
+
