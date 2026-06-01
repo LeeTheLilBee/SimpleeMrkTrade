@@ -1,80 +1,5 @@
 [
   {
-    "timestamp": "2026-05-02T02:03:37.213286",
-    "event_type": "SIGNAL",
-    "message": "QCOM approved as CALL with score 507.86",
-    "symbol": "QCOM",
-    "meta": {
-      "trade_id": "QCOM-CALL-20260502020216",
-      "strategy": "CALL",
-      "score": 507.86,
-      "confidence": "HIGH",
-      "trading_mode": "paper"
-    }
-  },
-  {
-    "timestamp": "2026-05-02T02:04:01.418046",
-    "event_type": "SYSTEM",
-    "message": "Bot run completed in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:19:58.833865",
-    "event_type": "SYSTEM",
-    "message": "Bot run started in Paper Mode (paper)",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:20:01.675652",
-    "event_type": "MARKET",
-    "message": "Market regime identified as NEUTRAL",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:20:10.953668",
-    "event_type": "WATCHLIST",
-    "message": "Watchlist built with 50 symbols",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:20:46.933818",
-    "event_type": "EXECUTION",
-    "message": "Aggressive execution universe rebuilt with 50 candidates",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:20:46.936870",
-    "event_type": "SPOTLIGHT",
-    "message": "Top spotlight contains 5 names",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:20:57.945214",
-    "event_type": "QUEUE",
-    "message": "Approved 39 research trades; selected 3 execution trades in market mode NEUTRAL / trading mode Paper Mode",
-    "symbol": null,
-    "meta": {}
-  },
-  {
-    "timestamp": "2026-05-02T02:22:31.030815",
-    "event_type": "SIGNAL",
-    "message": "INTC approved as CALL with score 1061.8",
-    "symbol": "INTC",
-    "meta": {
-      "trade_id": "INTC-CALL-20260502022057",
-      "strategy": "CALL",
-      "score": 1061.8,
-      "confidence": "HIGH",
-      "trading_mode": "paper"
-    }
-  },
-  {
     "timestamp": "2026-05-02T02:22:31.091436",
     "event_type": "SIGNAL",
     "message": "AMD approved as CALL with score 737.48",
@@ -2256,6 +2181,69 @@
   },
   {
     "timestamp": "2026-06-01T14:49:08.537459",
+    "event_type": "RISK",
+    "message": "Blocked by governor in paper mode: max_open_positions",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T16:45:27.355906",
+    "event_type": "SYSTEM",
+    "message": "Bot run started in Paper Mode (paper)",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T16:46:27.730190",
+    "event_type": "MARKET",
+    "message": "Market regime identified as NEUTRAL",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T16:46:42.533179",
+    "event_type": "WATCHLIST",
+    "message": "Watchlist built with 50 symbols",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T16:47:26.620015",
+    "event_type": "EXECUTION",
+    "message": "Aggressive execution universe rebuilt with 50 candidates",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T16:47:26.622118",
+    "event_type": "SPOTLIGHT",
+    "message": "Top spotlight contains 5 names",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T16:47:39.192114",
+    "event_type": "QUEUE",
+    "message": "Approved 27 research trades; selected 0 execution trades in market mode NEUTRAL / trading mode Paper Mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T16:47:42.179413",
+    "event_type": "RISK",
+    "message": "Correlation risk warning in paper mode: Too many positions concentrated in one sector.",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T16:47:42.187888",
+    "event_type": "RISK",
+    "message": "Sector concentration warning in paper mode; continuing because this is not live mode",
+    "symbol": null,
+    "meta": {}
+  },
+  {
+    "timestamp": "2026-06-01T16:47:42.195718",
     "event_type": "RISK",
     "message": "Blocked by governor in paper mode: max_open_positions",
     "symbol": null,
