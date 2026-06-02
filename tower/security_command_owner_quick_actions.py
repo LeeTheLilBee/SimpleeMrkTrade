@@ -3928,3 +3928,60 @@ def append_pack_193_owner_note_vc_nav_compare_filter_v193_quick_action(actions):
         return actions
 # === PACK 193 OWNER NOTE VC NAV COMPARE FILTER QUICK ACTION END ===
 
+
+
+# === PACK 194 OWNER NOTE VC NAV FILTER NAV QUICK ACTION START ===
+def build_pack_194_owner_note_vc_nav_filter_nav_v194_quick_action():
+    """
+    Pack 194 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.owner_note_vc_nav_filter_nav_v194 import build_owner_note_vc_nav_filter_nav_v194_quick_action
+        return build_owner_note_vc_nav_filter_nav_v194_quick_action()
+    except Exception as exc:
+        return {
+            "id": "owner_note_vc_nav_filter_nav_v194",
+            "label": "Owner Note Compare Filter Navigation",
+            "title": "Owner Note Version Compare Navigation Compare Filter Navigation / Drawer Selection Preview",
+            "href": "/tower/owner-note-vc-nav-filter-nav-v194.json",
+            "endpoint": "/tower/owner-note-vc-nav-filter-nav-v194.json",
+            "description": "Preview navigation items, drawer selection previews, and groups for version compare filter lanes.",
+            "status": "review",
+            "pack": "Pack 194",
+            "category": "policy",
+            "simulated_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "drawer_selection_preview_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_194_owner_note_vc_nav_filter_nav_v194_quick_action(actions):
+    """
+    Append Pack 194 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_filter_nav_v194" not in existing_ids:
+            actions.append(build_pack_194_owner_note_vc_nav_filter_nav_v194_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 194 OWNER NOTE VC NAV FILTER NAV QUICK ACTION END ===
+

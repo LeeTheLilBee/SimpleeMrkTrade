@@ -3182,3 +3182,46 @@ def get_pack_193_owner_note_vc_nav_compare_filter_v193_status_bridge():
     return build_pack_193_owner_note_vc_nav_compare_filter_v193_status_bridge()
 # === PACK 193 OWNER NOTE VC NAV COMPARE FILTER STATUS BRIDGE END ===
 
+
+
+# === PACK 194 OWNER NOTE VC NAV FILTER NAV STATUS BRIDGE START ===
+def build_pack_194_owner_note_vc_nav_filter_nav_v194_status_bridge():
+    """
+    Pack 194 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 194 short-module filter navigation payload
+    """
+    try:
+        from tower.owner_note_vc_nav_filter_nav_v194 import build_owner_note_vc_nav_filter_nav_v194_status_bridge
+        return build_owner_note_vc_nav_filter_nav_v194_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_194",
+            "pack_number": 194,
+            "status": "review",
+            "endpoint": "/tower/owner-note-vc-nav-filter-nav-v194.json",
+            "source_endpoint": "/tower/owner-note-vc-nav-compare-filter-v193.json",
+            "readiness_score": 0,
+            "readiness_label": "Owner note version compare filter navigation bridge error",
+            "simulated_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "drawer_selection_preview_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "real_filter_preference_saved": False,
+            "real_navigation_state_persisted": False,
+            "real_drawer_selection_saved": False,
+            "real_raw_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_194_owner_note_vc_nav_filter_nav_v194_status_bridge():
+    return build_pack_194_owner_note_vc_nav_filter_nav_v194_status_bridge()
+# === PACK 194 OWNER NOTE VC NAV FILTER NAV STATUS BRIDGE END ===
+
