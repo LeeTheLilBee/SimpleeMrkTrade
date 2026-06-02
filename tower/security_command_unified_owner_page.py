@@ -6663,3 +6663,286 @@ def append_pack_195_owner_note_vc_nav_drawer_focus_v195_section(sections):
         return sections
 # === PACK 195 OWNER NOTE VC NAV DRAWER FOCUS UNIFIED SECTION END ===
 
+
+
+# === PACK 196 OWNER NOTE VC NAV FOCUS ACTION RECEIPTS UNIFIED SECTION START ===
+def build_pack_196_owner_note_vc_nav_focus_action_receipts_v196_unified_section():
+    """
+    Pack 196 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 196 short-module focus action receipt payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.owner_note_vc_nav_focus_action_receipts_v196 import build_owner_note_vc_nav_focus_action_receipts_v196_unified_owner_section
+        return build_owner_note_vc_nav_focus_action_receipts_v196_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "owner_note_vc_nav_focus_action_receipts_v196",
+            "title": "Owner Note Focus Action Receipts",
+            "subtitle": "Owner note focus action receipts section needs review.",
+            "status": "review",
+            "href": "/tower/owner-note-vc-nav-focus-action-receipts-v196.json",
+            "cards": [],
+            "simulated_only": True,
+            "action_receipt_preview_only": True,
+            "blocked_action_receipt_preview_only": True,
+            "preview_action_receipt_preview_only": True,
+            "drawer_action_preview_only": True,
+            "selected_drawer_preview_only": True,
+            "compare_row_focus_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_196_owner_note_vc_nav_focus_action_receipts_v196_section(sections):
+    """
+    Append Pack 196 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_focus_action_receipts_v196" not in existing_ids:
+            sections.append(build_pack_196_owner_note_vc_nav_focus_action_receipts_v196_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 196 OWNER NOTE VC NAV FOCUS ACTION RECEIPTS UNIFIED SECTION END ===
+
+
+
+# === PACK 197 OWNER NOTE VC NAV ACTION RECEIPT FILTER UNIFIED SECTION START ===
+def build_pack_197_owner_note_vc_nav_action_receipt_filter_v197_unified_section():
+    """
+    Pack 197 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 197 short-module action receipt filter payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.owner_note_vc_nav_action_receipt_filter_v197 import build_owner_note_vc_nav_action_receipt_filter_v197_unified_owner_section
+        return build_owner_note_vc_nav_action_receipt_filter_v197_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "owner_note_vc_nav_action_receipt_filter_v197",
+            "title": "Owner Note Action Receipt Filters",
+            "subtitle": "Owner note action receipt filter/search section needs review.",
+            "status": "review",
+            "href": "/tower/owner-note-vc-nav-action-receipt-filter-v197.json",
+            "cards": [],
+            "simulated_only": True,
+            "action_receipt_filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "filter_preview_only": True,
+            "action_receipt_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_197_owner_note_vc_nav_action_receipt_filter_v197_section(sections):
+    """
+    Append Pack 197 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_action_receipt_filter_v197" not in existing_ids:
+            sections.append(build_pack_197_owner_note_vc_nav_action_receipt_filter_v197_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 197 OWNER NOTE VC NAV ACTION RECEIPT FILTER UNIFIED SECTION END ===
+
+
+
+# === PACK 198 OWNER NOTE VC NAV ACTION RECEIPT FILTER NAV UNIFIED SECTION START ===
+def build_pack_198_owner_note_vc_nav_action_receipt_filter_nav_v198_unified_section():
+    """
+    Pack 198 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 198 short-module action receipt filter navigation payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.owner_note_vc_nav_action_receipt_filter_nav_v198 import build_owner_note_vc_nav_action_receipt_filter_nav_v198_unified_owner_section
+        return build_owner_note_vc_nav_action_receipt_filter_nav_v198_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "owner_note_vc_nav_action_receipt_filter_nav_v198",
+            "title": "Owner Note Action Receipt Navigation",
+            "subtitle": "Owner note action receipt filter navigation section needs review.",
+            "status": "review",
+            "href": "/tower/owner-note-vc-nav-action-receipt-filter-nav-v198.json",
+            "cards": [],
+            "simulated_only": True,
+            "action_receipt_navigation_preview_only": True,
+            "receipt_selection_preview_only": True,
+            "action_receipt_filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "filter_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_198_owner_note_vc_nav_action_receipt_filter_nav_v198_section(sections):
+    """
+    Append Pack 198 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_action_receipt_filter_nav_v198" not in existing_ids:
+            sections.append(build_pack_198_owner_note_vc_nav_action_receipt_filter_nav_v198_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 198 OWNER NOTE VC NAV ACTION RECEIPT FILTER NAV UNIFIED SECTION END ===
+
+
+
+# === PACK 199 OWNER NOTE VC NAV RECEIPT DETAIL FOCUS UNIFIED SECTION START ===
+def build_pack_199_owner_note_vc_nav_receipt_detail_focus_v199_unified_section():
+    """
+    Pack 199 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 199 short-module receipt detail focus payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.owner_note_vc_nav_receipt_detail_focus_v199 import build_owner_note_vc_nav_receipt_detail_focus_v199_unified_owner_section
+        return build_owner_note_vc_nav_receipt_detail_focus_v199_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "owner_note_vc_nav_receipt_detail_focus_v199",
+            "title": "Owner Note Receipt Detail Focus",
+            "subtitle": "Owner note receipt detail focus section needs review.",
+            "status": "review",
+            "href": "/tower/owner-note-vc-nav-receipt-detail-focus-v199.json",
+            "cards": [],
+            "simulated_only": True,
+            "receipt_detail_focus_preview_only": True,
+            "receipt_safety_detail_preview_only": True,
+            "receipt_action_panel_preview_only": True,
+            "receipt_breadcrumb_preview_only": True,
+            "action_receipt_navigation_preview_only": True,
+            "receipt_selection_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_199_owner_note_vc_nav_receipt_detail_focus_v199_section(sections):
+    """
+    Append Pack 199 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_receipt_detail_focus_v199" not in existing_ids:
+            sections.append(build_pack_199_owner_note_vc_nav_receipt_detail_focus_v199_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 199 OWNER NOTE VC NAV RECEIPT DETAIL FOCUS UNIFIED SECTION END ===
+
+
+
+# === PACK 200 OWNER NOTE VC NAV RECEIPT CHAIN CHECKPOINT UNIFIED SECTION START ===
+def build_pack_200_owner_note_vc_nav_receipt_chain_checkpoint_v200_unified_section():
+    """
+    Pack 200 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 200 short-module receipt chain checkpoint payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.owner_note_vc_nav_receipt_chain_checkpoint_v200 import build_owner_note_vc_nav_receipt_chain_checkpoint_v200_unified_owner_section
+        return build_owner_note_vc_nav_receipt_chain_checkpoint_v200_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "owner_note_vc_nav_receipt_chain_checkpoint_v200",
+            "title": "Owner Note Receipt Chain Checkpoint",
+            "subtitle": "Owner note receipt chain checkpoint section needs review.",
+            "status": "review",
+            "href": "/tower/owner-note-vc-nav-receipt-chain-checkpoint-v200.json",
+            "cards": [],
+            "simulated_only": True,
+            "checkpoint_preview_only": True,
+            "receipt_chain_checkpoint_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_200_owner_note_vc_nav_receipt_chain_checkpoint_v200_section(sections):
+    """
+    Append Pack 200 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_receipt_chain_checkpoint_v200" not in existing_ids:
+            sections.append(build_pack_200_owner_note_vc_nav_receipt_chain_checkpoint_v200_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 200 OWNER NOTE VC NAV RECEIPT CHAIN CHECKPOINT UNIFIED SECTION END ===
+
