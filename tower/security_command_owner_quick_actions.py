@@ -4673,3 +4673,60 @@ def append_pack_206_receipt_chain_post_batch_ops_v206_quick_action(actions):
         return actions
 # === PACK 206 RECEIPT CHAIN POST BATCH OPS QUICK ACTION END ===
 
+
+
+# === PACK 207 RECEIPT CHAIN CONTAINMENT LANE QUICK ACTION START ===
+def build_pack_207_receipt_chain_containment_lane_v207_quick_action():
+    """
+    Pack 207 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_containment_lane_v207 import build_receipt_chain_containment_lane_v207_quick_action
+        return build_receipt_chain_containment_lane_v207_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_containment_lane_v207",
+            "label": "Receipt Chain Containment Lane",
+            "title": "Receipt Chain Containment Lane Preview",
+            "href": "/tower/receipt-chain-containment-lane-v207.json",
+            "endpoint": "/tower/receipt-chain-containment-lane-v207.json",
+            "description": "Preview containment triggers, scope maps, and blocked containment actions.",
+            "status": "review",
+            "pack": "Pack 207",
+            "category": "policy",
+            "simulated_only": True,
+            "containment_lane_preview_only": True,
+            "containment_trigger_preview_only": True,
+            "containment_scope_map_preview_only": True,
+            "containment_action_menu_preview_only": True,
+            "owner_containment_review_queue_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_207_receipt_chain_containment_lane_v207_quick_action(actions):
+    """
+    Append Pack 207 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_containment_lane_v207" not in existing_ids:
+            actions.append(build_pack_207_receipt_chain_containment_lane_v207_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 207 RECEIPT CHAIN CONTAINMENT LANE QUICK ACTION END ===
+

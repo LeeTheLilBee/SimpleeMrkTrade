@@ -7292,3 +7292,60 @@ def append_pack_206_receipt_chain_post_batch_ops_v206_section(sections):
         return sections
 # === PACK 206 RECEIPT CHAIN POST BATCH OPS UNIFIED SECTION END ===
 
+
+
+# === PACK 207 RECEIPT CHAIN CONTAINMENT LANE UNIFIED SECTION START ===
+def build_pack_207_receipt_chain_containment_lane_v207_unified_section():
+    """
+    Pack 207 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 207 short-module containment lane payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.receipt_chain_containment_lane_v207 import build_receipt_chain_containment_lane_v207_unified_owner_section
+        return build_receipt_chain_containment_lane_v207_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "receipt_chain_containment_lane_v207",
+            "title": "Receipt Chain Containment Lane",
+            "subtitle": "Receipt chain containment lane section needs review.",
+            "status": "review",
+            "href": "/tower/receipt-chain-containment-lane-v207.json",
+            "cards": [],
+            "simulated_only": True,
+            "containment_lane_preview_only": True,
+            "containment_trigger_preview_only": True,
+            "containment_scope_map_preview_only": True,
+            "containment_action_menu_preview_only": True,
+            "owner_containment_review_queue_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_207_receipt_chain_containment_lane_v207_section(sections):
+    """
+    Append Pack 207 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_containment_lane_v207" not in existing_ids:
+            sections.append(build_pack_207_receipt_chain_containment_lane_v207_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 207 RECEIPT CHAIN CONTAINMENT LANE UNIFIED SECTION END ===
+

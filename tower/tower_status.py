@@ -3778,3 +3778,52 @@ def get_pack_206_receipt_chain_post_batch_ops_v206_status_bridge():
     return build_pack_206_receipt_chain_post_batch_ops_v206_status_bridge()
 # === PACK 206 RECEIPT CHAIN POST BATCH OPS STATUS BRIDGE END ===
 
+
+
+# === PACK 207 RECEIPT CHAIN CONTAINMENT LANE STATUS BRIDGE START ===
+def build_pack_207_receipt_chain_containment_lane_v207_status_bridge():
+    """
+    Pack 207 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 207 short-module containment lane payload
+    """
+    try:
+        from tower.receipt_chain_containment_lane_v207 import build_receipt_chain_containment_lane_v207_status_bridge
+        return build_receipt_chain_containment_lane_v207_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_207",
+            "pack_number": 207,
+            "status": "review",
+            "endpoint": "/tower/receipt-chain-containment-lane-v207.json",
+            "source_endpoint": "/tower/receipt-chain-post-batch-ops-v206.json",
+            "readiness_score": 0,
+            "readiness_label": "Receipt chain containment lane bridge error",
+            "simulated_only": True,
+            "containment_lane_preview_only": True,
+            "containment_trigger_preview_only": True,
+            "containment_scope_map_preview_only": True,
+            "containment_action_menu_preview_only": True,
+            "owner_containment_review_queue_preview_only": True,
+            "real_containment_executed": False,
+            "real_containment_triggered": False,
+            "real_containment_scope_applied": False,
+            "real_containment_action_executed": False,
+            "real_owner_containment_review_executed": False,
+            "real_incident_action_executed": False,
+            "real_archive_written": False,
+            "real_gateway_access_granted": False,
+            "real_evidence_exported": False,
+            "real_raw_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_207_receipt_chain_containment_lane_v207_status_bridge():
+    return build_pack_207_receipt_chain_containment_lane_v207_status_bridge()
+# === PACK 207 RECEIPT CHAIN CONTAINMENT LANE STATUS BRIDGE END ===
+

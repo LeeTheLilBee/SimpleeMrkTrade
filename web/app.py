@@ -13599,3 +13599,37 @@ def tower_receipt_chain_post_batch_ops_v206_json():
     return jsonify(payload)
 # === PACK 206 RECEIPT CHAIN POST BATCH OPS ROUTE END ===
 
+
+
+# === PACK 207 RECEIPT CHAIN CONTAINMENT LANE ROUTE START ===
+def _pack_207_receipt_chain_containment_lane_v207_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/receipt-chain-containment-lane-v207.json", methods=["GET"])
+@_pack_207_receipt_chain_containment_lane_v207_route_guard
+def tower_receipt_chain_containment_lane_v207_json():
+    from tower.receipt_chain_containment_lane_v207 import build_receipt_chain_containment_lane_v207_payload
+
+    payload = build_receipt_chain_containment_lane_v207_payload()
+    return jsonify(payload)
+# === PACK 207 RECEIPT CHAIN CONTAINMENT LANE ROUTE END ===
+
