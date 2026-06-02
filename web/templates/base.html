@@ -788,9 +788,273 @@
   }
 }
 
+
+
+        /* OBSERVATORY_GLOBAL_SETTINGS_THEMES_TRANSLATION_001_STYLES */
+
+        body[data-ob-theme="observatory"] {
+            --theme-accent: rgba(140, 106, 255, 0.96);
+            --theme-accent-soft: rgba(140, 106, 255, 0.18);
+            --theme-accent-line: rgba(140, 106, 255, 0.30);
+            --theme-secondary: rgba(112, 195, 255, 0.16);
+            --theme-gold-soft: rgba(255, 211, 132, 0.18);
+        }
+
+        body[data-ob-theme="nebula"] {
+            --theme-accent: rgba(255, 118, 204, 0.94);
+            --theme-accent-soft: rgba(255, 118, 204, 0.16);
+            --theme-accent-line: rgba(255, 118, 204, 0.28);
+            --theme-secondary: rgba(140, 106, 255, 0.20);
+            --theme-gold-soft: rgba(255, 211, 132, 0.14);
+        }
+
+        body[data-ob-theme="eclipse"] {
+            --theme-accent: rgba(112, 195, 255, 0.94);
+            --theme-accent-soft: rgba(112, 195, 255, 0.14);
+            --theme-accent-line: rgba(112, 195, 255, 0.26);
+            --theme-secondary: rgba(197, 208, 230, 0.12);
+            --theme-gold-soft: rgba(255, 211, 132, 0.10);
+        }
+
+        body[data-ob-theme="aurora"] {
+            --theme-accent: rgba(123, 224, 195, 0.94);
+            --theme-accent-soft: rgba(123, 224, 195, 0.15);
+            --theme-accent-line: rgba(123, 224, 195, 0.26);
+            --theme-secondary: rgba(112, 195, 255, 0.15);
+            --theme-gold-soft: rgba(255, 211, 132, 0.12);
+        }
+
+        body[data-ob-theme="starlight"] {
+            --theme-accent: rgba(255, 211, 132, 0.96);
+            --theme-accent-soft: rgba(255, 211, 132, 0.15);
+            --theme-accent-line: rgba(255, 211, 132, 0.28);
+            --theme-secondary: rgba(255, 238, 196, 0.12);
+            --theme-gold-soft: rgba(255, 211, 132, 0.20);
+        }
+
+        body[data-ob-theme="nightvision"] {
+            --theme-accent: rgba(123, 255, 178, 0.95);
+            --theme-accent-soft: rgba(123, 255, 178, 0.13);
+            --theme-accent-line: rgba(123, 255, 178, 0.25);
+            --theme-secondary: rgba(88, 180, 122, 0.12);
+            --theme-gold-soft: rgba(123, 255, 178, 0.10);
+        }
+
+        body[data-ob-theme] {
+            background:
+                radial-gradient(circle at 12% 14%, var(--theme-accent-soft), transparent 22%),
+                radial-gradient(circle at 82% 16%, var(--theme-secondary), transparent 20%),
+                radial-gradient(circle at 62% 72%, rgba(112,195,255,0.09), transparent 20%),
+                radial-gradient(circle at 50% 120%, var(--theme-gold-soft), transparent 25%),
+                linear-gradient(180deg, var(--obs-bg-0) 0%, var(--obs-bg-1) 22%, var(--obs-bg-2) 58%, var(--obs-bg-3) 100%);
+        }
+
+        .ob-settings-floating {
+            position: fixed;
+            right: 20px;
+            top: 18px;
+            z-index: 6000;
+            display: grid;
+            gap: 10px;
+            justify-items: end;
+            pointer-events: none;
+        }
+
+        .ob-settings-toggle {
+            pointer-events: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            min-height: 42px;
+            padding: 10px 13px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background:
+                radial-gradient(circle at top left, rgba(140,106,255,0.16), transparent 34%),
+                linear-gradient(135deg, rgba(10,14,28,0.90), rgba(8,11,22,0.92));
+            color: var(--obs-text);
+            box-shadow: 0 14px 34px rgba(0,0,0,0.28);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .ob-settings-toggle span {
+            color: var(--obs-text-soft);
+            font-size: .82rem;
+        }
+
+        .ob-settings-panel {
+            pointer-events: auto;
+            width: min(360px, calc(100vw - 32px));
+            display: none;
+            border-radius: 24px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.10);
+            background:
+                radial-gradient(circle at top left, rgba(140,106,255,0.16), transparent 34%),
+                linear-gradient(135deg, rgba(7,10,22,0.97), rgba(4,7,16,0.98));
+            box-shadow: 0 22px 70px rgba(0,0,0,0.42);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .ob-settings-panel.is-open {
+            display: grid;
+            gap: 14px;
+        }
+
+        .ob-settings-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .ob-settings-kicker {
+            color: var(--obs-text-faint);
+            font-size: .68rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .ob-settings-title {
+            font-weight: 950;
+            font-size: 1.05rem;
+        }
+
+        .ob-settings-close {
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(255,255,255,0.05);
+            color: var(--obs-text-soft);
+            border-radius: 10px;
+            min-width: 34px;
+            height: 34px;
+            cursor: pointer;
+        }
+
+        .ob-settings-section {
+            display: grid;
+            gap: 8px;
+        }
+
+        .ob-settings-label {
+            color: var(--obs-text-faint);
+            font-size: .70rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            font-weight: 850;
+        }
+
+        .ob-settings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 8px;
+        }
+
+        .ob-settings-choice {
+            min-height: 42px;
+            border-radius: 12px;
+            padding: 9px 10px;
+            border: 1px solid rgba(255,255,255,0.095);
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.058), rgba(255,255,255,0.022));
+            color: var(--obs-text-soft);
+            font-weight: 850;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .ob-settings-choice:hover,
+        .ob-settings-choice.is-active {
+            color: var(--obs-text);
+            border-color: var(--theme-accent-line, rgba(140,106,255,0.30));
+            background:
+                linear-gradient(135deg, var(--theme-accent-soft, rgba(140,106,255,0.16)), rgba(255,255,255,0.030));
+        }
+
+        .ob-settings-choice small {
+            display: block;
+            margin-top: 3px;
+            color: var(--obs-text-faint);
+            font-weight: 700;
+        }
+
+        .ob-settings-note {
+            margin: 0;
+            color: var(--obs-text-faint);
+            line-height: 1.4;
+            font-size: .82rem;
+        }
+
+        body[data-ob-lang="es"] .ob-settings-lang-en {
+            display: none;
+        }
+
+        body:not([data-ob-lang="es"]) .ob-settings-lang-es {
+            display: none;
+        }
+
+        @media (max-width: 1180px) {
+            .ob-settings-floating {
+                right: 14px;
+                top: 12px;
+            }
+
+            .ob-settings-toggle span {
+                display: none;
+            }
+        }
+
 </style>
 </head>
 <body class="{{ current_theme }}">
+
+<!-- OBSERVATORY_GLOBAL_SETTINGS_THEMES_TRANSLATION_001_PANEL -->
+<div class="ob-settings-floating" id="obSettingsRoot">
+    <button class="ob-settings-toggle" id="obSettingsToggle" type="button" aria-expanded="false">
+        ⚙ <span data-ob-i18n="Settings">Settings</span>
+    </button>
+
+    <section class="ob-settings-panel" id="obSettingsPanel" aria-label="Observatory Settings">
+        <div class="ob-settings-head">
+            <div>
+                <div class="ob-settings-kicker" data-ob-i18n="Observatory Controls">Observatory Controls</div>
+                <div class="ob-settings-title" data-ob-i18n="Settings">Settings</div>
+            </div>
+            <button class="ob-settings-close" id="obSettingsClose" type="button">×</button>
+        </div>
+
+        <div class="ob-settings-section">
+            <div class="ob-settings-label" data-ob-i18n="Theme">Theme</div>
+            <div class="ob-settings-grid">
+                <button class="ob-settings-choice" type="button" data-ob-theme-choice="observatory">Observatory <small>Default sky</small></button>
+                <button class="ob-settings-choice" type="button" data-ob-theme-choice="nebula">Nebula <small>Pink/violet space</small></button>
+                <button class="ob-settings-choice" type="button" data-ob-theme-choice="eclipse">Eclipse <small>Cool blue command</small></button>
+                <button class="ob-settings-choice" type="button" data-ob-theme-choice="aurora">Aurora <small>Green/blue glow</small></button>
+                <button class="ob-settings-choice" type="button" data-ob-theme-choice="starlight">Starlight <small>Gold glass</small></button>
+                <button class="ob-settings-choice" type="button" data-ob-theme-choice="nightvision">Night Vision <small>Deep green field</small></button>
+            </div>
+        </div>
+
+        <div class="ob-settings-section">
+            <div class="ob-settings-label" data-ob-i18n="Language">Language</div>
+            <div class="ob-settings-grid">
+                <button class="ob-settings-choice" type="button" data-ob-lang-choice="en">English <small>Original UI</small></button>
+                <button class="ob-settings-choice" type="button" data-ob-lang-choice="es">Español <small>Spanish UI labels</small></button>
+            </div>
+        </div>
+
+        <p class="ob-settings-note">
+            <span class="ob-settings-lang-en">Theme and language save in this browser.</span>
+            <span class="ob-settings-lang-es">El tema y el idioma se guardan en este navegador.</span>
+        </p>
+    </section>
+</div>
+
 <div class="observatory-shell">
     <aside class="observatory-rail" id="observatoryRail">
         <div class="rail-brand">
@@ -1083,6 +1347,183 @@ function toggleObservatoryRail() {
   <span class="tower-command-main">Private Entry</span>
 </a>
 
+
+<script>
+/* OBSERVATORY_GLOBAL_SETTINGS_THEMES_TRANSLATION_001_SCRIPT */
+(function () {
+    const THEME_KEY = "observatory_theme";
+    const LANG_KEY = "observatory_language";
+
+    const translations = {
+        "Settings": "Configuración",
+        "Observatory Controls": "Controles del Observatorio",
+        "Theme": "Tema",
+        "Language": "Idioma",
+        "Dashboard": "Panel",
+        "Home": "Inicio",
+        "Simulation": "Simulación",
+        "Signals": "Señales",
+        "Symbols": "Símbolos",
+        "Performance & Risk": "Rendimiento y Riesgo",
+        "Account": "Cuenta",
+        "Open Positions": "Posiciones Abiertas",
+        "Positions": "Posiciones",
+        "Research": "Investigación",
+        "Analysis": "Análisis",
+        "Market Map": "Mapa del Mercado",
+        "Reports": "Informes",
+        "Proof": "Prueba",
+        "Live Activity": "Actividad en Vivo",
+        "Bot Log": "Registro del Bot",
+        "Signals Spotlight": "Foco de Señales",
+        "All Symbols": "Todos los Símbolos",
+        "Account Health": "Salud de la Cuenta",
+        "Buying Power": "Poder de Compra",
+        "Execution": "Ejecución",
+        "Paused": "Pausado",
+        "Stable": "Estable",
+        "Waiting": "Esperando",
+        "Watching": "Observando",
+        "Book Full": "Libro Lleno",
+        "Command Deck": "Cubierta de Comando",
+        "System Status": "Estado del Sistema",
+        "Engine Details": "Detalles del Motor",
+        "Back to Positions": "Volver a Posiciones",
+        "Why This Trade": "Por Qué Esta Operación",
+        "Entry": "Entrada",
+        "Current": "Actual",
+        "Stop": "Límite de Pérdida",
+        "Target": "Objetivo",
+        "Position Timeline Preview": "Vista de Línea de Tiempo",
+        "How OB Is Judging This": "Cómo OB Evalúa Esto",
+        "Soulaana’s Plain-English Read": "Lectura Clara de Soulaana",
+        "Option Premium Mode": "Modo de Prima de Opción",
+        "Stock Fallback Mode": "Modo Alternativo de Acción",
+        "All Systems Operational": "Todos los sistemas operativos",
+        "Signals Command Center": "Centro de Comando de Señales",
+        "Top Signal Board": "Tablero Principal de Señales",
+        "Most Watched Symbols": "Símbolos Más Observados",
+        "Extended Watchlist": "Lista Extendida de Observación"
+    };
+
+    const originalText = new WeakMap();
+
+    function normalizeText(value) {
+        return String(value || "").replace(/\s+/g, " ").trim();
+    }
+
+    function translateTextNode(node, lang) {
+        if (!node || node.nodeType !== Node.TEXT_NODE) return;
+        const raw = node.nodeValue;
+        const normalized = normalizeText(raw);
+        if (!normalized) return;
+
+        if (!originalText.has(node)) originalText.set(node, raw);
+
+        if (lang !== "es") {
+            node.nodeValue = originalText.get(node);
+            return;
+        }
+
+        if (translations[normalized]) {
+            const leading = raw.match(/^\s*/)?.[0] || "";
+            const trailing = raw.match(/\s*$/)?.[0] || "";
+            node.nodeValue = leading + translations[normalized] + trailing;
+        }
+    }
+
+    function walkAndTranslate(lang) {
+        document.documentElement.lang = lang === "es" ? "es" : "en";
+        document.body.dataset.obLang = lang;
+
+        document.querySelectorAll("[data-ob-i18n]").forEach(function (el) {
+            const key = el.getAttribute("data-ob-i18n");
+            if (!el.dataset.originalText) el.dataset.originalText = el.textContent;
+            const original = el.dataset.originalText;
+            el.textContent = lang === "es" && translations[original] ? translations[original] : original;
+        });
+
+        const skipTags = new Set(["SCRIPT", "STYLE", "TEXTAREA", "INPUT", "SELECT", "OPTION"]);
+        const walker = document.createTreeWalker(
+            document.body,
+            NodeFilter.SHOW_TEXT,
+            {
+                acceptNode: function (node) {
+                    const parent = node.parentElement;
+                    if (!parent || skipTags.has(parent.tagName)) return NodeFilter.FILTER_REJECT;
+                    if (parent.closest("#obSettingsPanel")) return NodeFilter.FILTER_SKIP;
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            }
+        );
+
+        const nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        nodes.forEach(function (node) { translateTextNode(node, lang); });
+    }
+
+    function setTheme(theme) {
+        const clean = theme || "observatory";
+        document.body.dataset.obTheme = clean;
+        localStorage.setItem(THEME_KEY, clean);
+
+        document.querySelectorAll("[data-ob-theme-choice]").forEach(function (btn) {
+            btn.classList.toggle("is-active", btn.getAttribute("data-ob-theme-choice") === clean);
+        });
+    }
+
+    function setLang(lang) {
+        const clean = lang === "es" ? "es" : "en";
+        localStorage.setItem(LANG_KEY, clean);
+        walkAndTranslate(clean);
+
+        document.querySelectorAll("[data-ob-lang-choice]").forEach(function (btn) {
+            btn.classList.toggle("is-active", btn.getAttribute("data-ob-lang-choice") === clean);
+        });
+    }
+
+    function initSettings() {
+        const panel = document.getElementById("obSettingsPanel");
+        const toggle = document.getElementById("obSettingsToggle");
+        const close = document.getElementById("obSettingsClose");
+
+        if (toggle && panel) {
+            toggle.addEventListener("click", function () {
+                const open = panel.classList.toggle("is-open");
+                toggle.setAttribute("aria-expanded", open ? "true" : "false");
+            });
+        }
+
+        if (close && panel && toggle) {
+            close.addEventListener("click", function () {
+                panel.classList.remove("is-open");
+                toggle.setAttribute("aria-expanded", "false");
+            });
+        }
+
+        document.querySelectorAll("[data-ob-theme-choice]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                setTheme(btn.getAttribute("data-ob-theme-choice"));
+            });
+        });
+
+        document.querySelectorAll("[data-ob-lang-choice]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                setLang(btn.getAttribute("data-ob-lang-choice"));
+            });
+        });
+
+        setTheme(localStorage.getItem(THEME_KEY) || "observatory");
+        setLang(localStorage.getItem(LANG_KEY) || "en");
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initSettings);
+    } else {
+        initSettings();
+    }
+})();
+</script>
+
 </body>
 </html>
-:::

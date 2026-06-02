@@ -1,233 +1,735 @@
 {% extends "base.html" %}
 {% block content %}
+{% set visible_signals = visible_signals if visible_signals is defined and visible_signals else [] %}
+{% set hidden_signals = hidden_signals if hidden_signals is defined and hidden_signals else [] %}
+{% set hidden_count = hidden_count if hidden_count is defined else 0 %}
+{% set top_five = top_five if top_five is defined and top_five else [] %}
+{% set next_twenty = next_twenty if next_twenty is defined and next_twenty else [] %}
+{% set most_viewed_symbols = most_viewed_symbols if most_viewed_symbols is defined and most_viewed_symbols else [] %}
+{% set engaged_spotlight = engaged_spotlight if engaged_spotlight is defined else none %}
+{% set tier = tier if tier is defined and tier else "Guest" %}
+{% set hidden_remaining = hidden_remaining if hidden_remaining is defined else hidden_count %}
+{% set can_access_all_symbols = can_access_all_symbols if can_access_all_symbols is defined else false %}
+{% set signal_count = visible_signals|length %}
+{% set top_count = top_five|length %}
+{% set watch_count = next_twenty|length %}
+{% set hot_count = most_viewed_symbols|length %}
 
-<div class="page-hero card premium-hero gold-accent-card">
-    <h2>Signal Spotlight</h2>
-    <div class="passage-frame">
-        <p>
-            Ranked opportunities based on current engine conditions, organized so each tier feels broader and more useful than the last.
-        </p>
-    </div>
-</div>
+<style>
+/* OBSERVATORY_SIGNALS_COMMAND_CENTER_REFRESH_001_STYLES */
 
-{% if engaged_spotlight %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3 style="margin-bottom:6px;">Engaged Spotlight</h3>
-    <p class="muted-line" style="margin-top:0;">The symbol drawing the strongest user attention right now.</p>
-    <a href="/signals/{{ engaged_spotlight.symbol }}" style="text-decoration:none; color:inherit;">
-        <div class="card" style="margin:0;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
-                <div>
-                    <h2 style="margin:0 0 6px 0;">{{ engaged_spotlight.symbol }}</h2>
-                    <p class="muted-line" style="margin:0;">Tracked interactions: {{ engaged_spotlight.count }}</p>
+.signals-command-shell {
+    display: grid;
+    gap: 18px;
+}
+
+.signals-command-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 28px;
+    border: 1px solid rgba(112,195,255,0.16);
+    background:
+        radial-gradient(circle at 16% 12%, rgba(140,106,255,.22), transparent 30%),
+        radial-gradient(circle at 88% 16%, rgba(255,118,204,.12), transparent 22%),
+        radial-gradient(circle at 70% 82%, rgba(112,195,255,.11), transparent 24%),
+        linear-gradient(135deg,rgba(9,13,28,.96),rgba(4,7,16,.98));
+    box-shadow: 0 20px 70px rgba(0,0,0,.34);
+}
+
+.signals-command-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(116deg, transparent 0 24%, rgba(255,255,255,.04) 24.2%, transparent 24.8% 62%, rgba(255,218,151,.05) 62.2%, transparent 62.9%);
+    opacity: .62;
+    pointer-events: none;
+}
+
+.signals-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 20px;
+    align-items: center;
+}
+
+.signals-kickers {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.signals-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    padding: 7px 10px;
+    font-size: .68rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    border: 1px solid rgba(255,255,255,.105);
+    background: linear-gradient(135deg, rgba(255,255,255,.060), rgba(255,255,255,.022));
+    color: rgba(247,248,255,.76);
+}
+
+.signals-pill.blue {
+    color: rgba(203,235,255,.92);
+    background: linear-gradient(135deg, rgba(112,195,255,.13), rgba(255,255,255,.020));
+    border-color: rgba(112,195,255,.22);
+}
+
+.signals-pill.gold {
+    color: rgba(255,225,165,.94);
+    background: linear-gradient(135deg, rgba(255,211,132,.13), rgba(255,255,255,.020));
+    border-color: rgba(255,211,132,.22);
+}
+
+.signals-pill.violet {
+    color: rgba(225,217,255,.92);
+    background: linear-gradient(135deg, rgba(140,106,255,.16), rgba(255,255,255,.020));
+    border-color: rgba(140,106,255,.26);
+}
+
+.signals-title {
+    margin: 0 0 10px;
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
+    line-height: .95;
+    letter-spacing: -.06em;
+}
+
+.signals-hero-copy {
+    margin: 0;
+    max-width: 760px;
+    color: rgba(247,248,255,.82);
+    line-height: 1.58;
+    font-size: 1.05rem;
+}
+
+.signals-orbit-zone {
+    position: relative;
+    min-height: 220px;
+    display: grid;
+    place-items: center;
+}
+
+.signals-orbit-lines {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+        repeating-radial-gradient(ellipse at center, transparent 0 20px, rgba(140,106,255,.18) 21px, transparent 22px),
+        radial-gradient(circle at center, rgba(112,195,255,.11), transparent 56%);
+    transform: rotate(-18deg);
+    opacity: .76;
+}
+
+.signals-orbit-core {
+    position: relative;
+    width: 158px;
+    height: 158px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background:
+        radial-gradient(circle at center, rgba(255,255,255,.08), transparent 48%),
+        conic-gradient(rgba(140,106,255,.96) 72%, rgba(112,195,255,.42), rgba(255,211,132,.30), rgba(255,255,255,.09));
+    box-shadow: 0 0 34px rgba(140,106,255,.26), inset 0 0 20px rgba(255,255,255,.014);
+}
+
+.signals-orbit-core::before {
+    content: "";
+    position: absolute;
+    inset: 17px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#11162b,#050814);
+    border: 1px solid rgba(255,255,255,.10);
+}
+
+.signals-orbit-text {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.signals-orbit-text strong {
+    font-size: 2.15rem;
+    line-height: 1;
+}
+
+.signals-orbit-text span {
+    display: block;
+    margin-top: 5px;
+    color: rgba(225,217,255,.90);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: .72rem;
+}
+
+.signals-grid-4,
+.signals-grid-3,
+.signals-grid-2 {
+    display: grid;
+    gap: 14px;
+}
+
+.signals-grid-4 {
+    grid-template-columns: repeat(4, minmax(0,1fr));
+}
+
+.signals-grid-3 {
+    grid-template-columns: repeat(3, minmax(0,1fr));
+}
+
+.signals-grid-2 {
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+}
+
+.signals-card,
+.signals-panel,
+.signal-card,
+.signals-drawer {
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at top left, rgba(140,106,255,.10), transparent 34%),
+        linear-gradient(135deg,rgba(13,17,34,.94),rgba(7,10,21,.96));
+    box-shadow: 0 14px 34px rgba(0,0,0,.24);
+}
+
+.signals-card,
+.signals-panel {
+    padding: 18px;
+}
+
+.signals-card.gold { border-color: rgba(255,218,151,.24); }
+.signals-card.blue { border-color: rgba(112,195,255,.20); }
+.signals-card.violet { border-color: rgba(140,106,255,.24); }
+.signals-card.hot { border-color: rgba(255,118,204,.22); }
+
+.signals-label {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--obs-text-faint);
+    margin-bottom: 9px;
+}
+
+.signals-value {
+    font-size: 1.35rem;
+    font-weight: 950;
+    margin-bottom: 8px;
+}
+
+.signals-sub {
+    color: var(--obs-text-soft);
+    font-size: .9rem;
+    line-height: 1.42;
+}
+
+.signals-panel-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.signals-panel h2,
+.signals-panel h3 {
+    margin: 0 0 6px;
+    font-size: 1.18rem;
+}
+
+.signals-panel-copy {
+    margin: 0;
+    color: var(--obs-text-soft);
+    line-height: 1.45;
+}
+
+.signals-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.signals-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 12px;
+    padding: 10px 13px;
+    color: rgba(247,248,255,.82);
+    background: linear-gradient(135deg, rgba(255,255,255,.060), rgba(255,255,255,.024));
+    border: 1px solid rgba(255,255,255,.105);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.040), 0 10px 24px rgba(0,0,0,.16);
+    font-size: .86rem;
+    font-weight: 850;
+    letter-spacing: .015em;
+}
+
+.signals-btn:hover {
+    transform: translateY(-1px);
+    color: rgba(247,248,255,.96);
+    border-color: rgba(140,106,255,.30);
+    background: linear-gradient(135deg, rgba(140,106,255,.18), rgba(255,255,255,.030));
+}
+
+.signals-btn.gold {
+    color: rgba(255,230,180,.94);
+    background: linear-gradient(135deg, rgba(255,211,132,.13), rgba(255,255,255,.024));
+    border-color: rgba(255,211,132,.22);
+}
+
+.signal-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.signal-card {
+    display: grid;
+    gap: 13px;
+    padding: 17px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .16s ease, border-color .16s ease, background .16s ease;
+}
+
+.signal-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,218,151,.22);
+}
+
+.signal-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.signal-symbol {
+    font-size: 1.35rem;
+    font-weight: 950;
+    margin-bottom: 4px;
+}
+
+.signal-company {
+    color: var(--obs-text-soft);
+    font-size: .88rem;
+}
+
+.signal-chip-row {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.signal-chip {
+    display: inline-flex;
+    border-radius: 10px;
+    padding: 6px 8px;
+    background: linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.020));
+    border: 1px solid rgba(255,255,255,.095);
+    color: rgba(247,248,255,.76);
+    font-size: .68rem;
+    font-weight: 850;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.signal-chip.gold {
+    color: rgba(255,225,165,.94);
+    background: linear-gradient(135deg, rgba(255,211,132,.13), rgba(255,255,255,.020));
+    border-color: rgba(255,211,132,.22);
+}
+
+.signal-chip.blue {
+    color: rgba(203,235,255,.92);
+    background: linear-gradient(135deg, rgba(112,195,255,.12), rgba(255,255,255,.020));
+    border-color: rgba(112,195,255,.22);
+}
+
+.signal-score-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 8px;
+}
+
+.signal-mini-stat {
+    border-radius: 14px;
+    padding: 10px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.06);
+}
+
+.signal-mini-stat span {
+    display: block;
+    color: var(--obs-text-faint);
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .10em;
+    margin-bottom: 5px;
+}
+
+.signal-mini-stat strong {
+    font-size: .94rem;
+}
+
+.signal-card-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    color: var(--obs-text-soft);
+}
+
+.signal-detail-link {
+    color: rgba(255,211,132,.94);
+    font-weight: 900;
+}
+
+.signals-drawer {
+    padding: 0;
+    overflow: hidden;
+}
+
+.signals-drawer summary {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 16px 18px;
+    font-weight: 950;
+}
+
+.signals-drawer summary span:last-child {
+    color: var(--obs-text-faint);
+    font-weight: 800;
+}
+
+.signals-drawer-body {
+    padding: 0 18px 18px 18px;
+    color: var(--obs-text-soft);
+    line-height: 1.45;
+}
+
+@media (max-width: 1080px) {
+    .signals-hero-inner,
+    .signals-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .signals-grid-4,
+    .signals-grid-3 {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+}
+
+@media (max-width: 680px) {
+    .signals-grid-4,
+    .signals-grid-3,
+    .signal-score-row {
+        grid-template-columns: 1fr;
+    }
+
+    .signals-command-hero {
+        padding: 20px;
+    }
+}
+</style>
+
+<div class="signals-command-shell">
+    <section class="signals-command-hero">
+        <div class="signals-hero-inner">
+            <div>
+                <div class="signals-kickers">
+                    <span class="signals-pill blue">Signals</span>
+                    <span class="signals-pill gold">{{ tier }}</span>
+                    <span class="signals-pill violet">{{ signal_count }} visible</span>
+                    {% if hidden_count %}
+                    <span class="signals-pill">{{ hidden_count }} locked</span>
+                    {% endif %}
                 </div>
-                <span class="signal-stat-chip">Spotlight</span>
+
+                <h1 class="signals-title">Signals Command Center</h1>
+                <p class="signals-hero-copy">
+                    This room turns the signal board into a cleaner watch floor: strongest symbols first,
+                    user attention second, and deeper symbol intelligence one click away.
+                </p>
+            </div>
+
+            <div class="signals-orbit-zone">
+                <div class="signals-orbit-lines"></div>
+                <div class="signals-orbit-core">
+                    <div class="signals-orbit-text">
+                        <strong>{{ signal_count }}</strong>
+                        <span>Visible</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </a>
-</div>
-{% endif %}
+    </section>
 
-{% if most_viewed_symbols %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3 style="margin-bottom:6px;">Most Viewed Right Now</h3>
-    <p class="muted-line" style="margin-top:0;">The symbols drawing the most user attention across the platform.</p>
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px;">
-        {% for item in most_viewed_symbols %}
-        <a href="/signals/{{ item.symbol }}" style="text-decoration:none; color:inherit;">
-            <div class="card" style="margin:0; height:100%;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
-                    <div>
-                        <h4 style="margin:0 0 4px 0;">{{ item.symbol }}</h4>
-                        <p class="muted-line" style="margin:0;">Views: {{ item.count }}</p>
+    <section class="signals-grid-4">
+        <div class="signals-card gold">
+            <div class="signals-label">Visible Signals</div>
+            <div class="signals-value">{{ signal_count }}</div>
+            <div class="signals-sub">Symbols available under the current tier lens.</div>
+        </div>
+
+        <div class="signals-card blue">
+            <div class="signals-label">Top Spotlight</div>
+            <div class="signals-value">{{ top_count }}</div>
+            <div class="signals-sub">Highest-ranked symbols shown first.</div>
+        </div>
+
+        <div class="signals-card violet">
+            <div class="signals-label">Watchlist Queue</div>
+            <div class="signals-value">{{ watch_count }}</div>
+            <div class="signals-sub">Extended signal board after the first spotlight row.</div>
+        </div>
+
+        <div class="signals-card hot">
+            <div class="signals-label">Locked / Hidden</div>
+            <div class="signals-value">{{ hidden_count }}</div>
+            <div class="signals-sub">
+                {% if can_access_all_symbols %}All symbols access is open.{% else %}Upgrade or tier rules decide what stays hidden.{% endif %}
+            </div>
+        </div>
+    </section>
+
+    {% if engaged_spotlight %}
+    <section class="signals-panel">
+        <div class="signals-panel-top">
+            <div>
+                <h2>Engagement Spotlight</h2>
+                <p class="signals-panel-copy">The symbol drawing the strongest user attention right now.</p>
+            </div>
+            <a href="/signals/{{ engaged_spotlight.symbol }}" class="signals-btn gold">Open Symbol →</a>
+        </div>
+
+        <a href="/signals/{{ engaged_spotlight.symbol }}" class="signal-card" style="box-shadow:none;">
+            <div class="signal-top">
+                <div>
+                    <div class="signal-symbol">{{ engaged_spotlight.symbol }}</div>
+                    <div class="signal-company">
+                        Views: {{ engaged_spotlight.views if engaged_spotlight.views is defined else engaged_spotlight.count if engaged_spotlight.count is defined else "active" }}
                     </div>
-                    <span class="signal-stat-chip">Hot</span>
                 </div>
+                <div class="signal-chip-row">
+                    <span class="signal-chip gold">Spotlight</span>
+                    <span class="signal-chip blue">User Attention</span>
+                </div>
+            </div>
+            <div class="signal-card-footer">
+                <span>Open symbol intelligence.</span>
+                <span class="signal-detail-link">Detail →</span>
             </div>
         </a>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-<div class="signals-top-actions">
-    {% if can_access_all_symbols %}
-    <a href="/all-symbols" class="cta-btn secondary">All Symbols</a>
-    {% else %}
-    <a href="/upgrade" class="cta-btn secondary">Unlock All Symbols</a>
+    </section>
     {% endif %}
 
-    {% if show_upgrade and not can_access_all_symbols %}
-    <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade</a>
-    {% endif %}
-</div>
-
-<div class="card gold-accent-card">
-    <div class="section-head-row">
-        <div>
-            <h3>{{ tier }} Access</h3>
-            <p class="muted-line">
-                {% if tier == "Guest" %}
-                Guest preview keeps the page simple with only a few top-ranked symbols.
-                {% elif tier == "Free" %}
-                Free shows your 3 strongest live opportunities.
-                {% elif tier == "Starter" %}
-                Starter expands spotlight coverage to 5 ranked symbols.
-                {% elif tier == "Pro" %}
-                Pro adds an extended watchlist and unlocks All Symbols.
-                {% elif tier == "Elite" %}
-                Elite keeps the spotlight clean while opening the widest symbol visibility.
-                {% else %}
-                Ranked access based on your current tier.
-                {% endif %}
-            </p>
-        </div>
-        <div class="signal-stat-chip">
-            {{ visible_signals|length }} visible
-        </div>
-    </div>
-</div>
-
-<div class="spotlight-header-row">
-    <div>
-        <h3>Top Ranked Now</h3>
-        <p class="muted-line">
-            {% if tier == "Guest" %}
-            Two strongest symbols to give a clean preview.
-            {% elif tier == "Free" %}
-            Three strongest symbols for your front page.
-            {% elif tier == "Starter" %}
-            Five ranked symbols with a fuller spotlight.
-            {% elif tier == "Pro" %}
-            Five top-ranked symbols before the extended watchlist.
-            {% elif tier == "Elite" %}
-            Five leaders at the top, with broader expansion below.
-            {% else %}
-            Current top-ranked active symbols.
-            {% endif %}
-        </p>
-    </div>
-</div>
-
-{% if top_five and top_five|length > 0 %}
-<div class="symbol-card-grid spotlight-grid">
-    {% for board in top_five %}
-    <a href="/signals/{{ board.symbol }}" class="symbol-card-link">
-        <div class="card premium-card symbol-card top-rank-card">
-            <div class="rank-badge">#{{ loop.index }}</div>
-            <div class="symbol-card-top">
-                <div>
-                    <h3 class="symbol-card-ticker">{{ board.symbol }}</h3>
-                    <p class="symbol-card-company">{{ board.company_name }}</p>
-                </div>
-                <div class="symbol-card-badges">
-                    <span class="signal-stat-chip">Score {{ board.latest_score }}</span>
-                    <span class="signal-stat-chip">{{ board.latest_confidence }}</span>
-                </div>
+    {% if most_viewed_symbols %}
+    <section class="signals-panel">
+        <div class="signals-panel-top">
+            <div>
+                <h2>Most Watched Symbols</h2>
+                <p class="signals-panel-copy">User attention is separated from engine ranking so the page stays easy to read.</p>
             </div>
-            <div class="passage-frame">
-                <p><b>Opinion:</b> {{ board.opinion }}</p>
-                <p class="muted-line">
-                    Updated
-                    {% if board.latest_timestamp %}
-                        {{ board.latest_timestamp[:16].replace("T", " ") }}
+        </div>
+
+        <div class="signal-card-grid">
+            {% for item in most_viewed_symbols %}
+            <a href="/signals/{{ item.symbol }}" class="signal-card">
+                <div class="signal-top">
+                    <div>
+                        <div class="signal-symbol">{{ item.symbol }}</div>
+                        <div class="signal-company">Engagement count: {{ item.count if item.count is defined else item.views if item.views is defined else "active" }}</div>
+                    </div>
+                    <div class="signal-chip-row">
+                        <span class="signal-chip gold">Hot</span>
+                    </div>
+                </div>
+                <div class="signal-card-footer">
+                    <span>Attention signal</span>
+                    <span class="signal-detail-link">Detail →</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="signals-panel">
+        <div class="signals-panel-top">
+            <div>
+                <h2>Top Signal Board</h2>
+                <p class="signals-panel-copy">
+                    {% if tier|lower == "guest" %}
+                    Guest preview keeps the page simple with a few ranked symbols.
+                    {% elif tier|lower == "starter" %}
+                    Starter expands spotlight coverage into a stronger ranked board.
+                    {% elif tier|lower == "pro" %}
+                    Pro opens the watchlist queue and deeper symbol coverage.
                     {% else %}
-                        Recently
+                    Elite keeps the spotlight clean while opening the widest visibility.
                     {% endif %}
                 </p>
             </div>
-        </div>
-    </a>
-    {% endfor %}
-</div>
-{% else %}
-<div class="card">
-    <div class="passage-frame">
-        <p>No spotlight symbols are available right now.</p>
-    </div>
-</div>
-{% endif %}
-
-{% if next_twenty and next_twenty|length > 0 %}
-<div class="spotlight-header-row" style="margin-top:10px;">
-    <div>
-        <h3>Extended Watchlist</h3>
-        <p class="muted-line">
-            {% if tier == "Pro" %}
-            Pro unlocks 5 additional symbols beyond the top-ranked spotlight.
-            {% elif tier == "Elite" %}
-            Elite extends beyond the leaders into a much broader live watchlist.
-            {% else %}
-            Additional live symbol coverage.
-            {% endif %}
-        </p>
-    </div>
-</div>
-
-<div class="symbol-card-grid extended-grid">
-    {% for board in next_twenty %}
-    <a href="/signals/{{ board.symbol }}" class="symbol-card-link">
-        <div class="card symbol-card compact-symbol-card">
-            <div class="symbol-card-top">
-                <div>
-                    <h3 class="symbol-card-ticker">{{ board.symbol }}</h3>
-                    <p class="symbol-card-company">{{ board.company_name }}</p>
-                </div>
-                <div class="symbol-card-badges">
-                    <span class="signal-stat-chip">{{ board.latest_score }}</span>
-                </div>
-            </div>
-            <div class="passage-frame">
-                <p><b>Opinion:</b> {{ board.opinion }}</p>
+            <div class="signals-actions">
+                {% if can_access_all_symbols %}
+                <a href="/all-symbols" class="signals-btn gold">All Symbols</a>
+                {% else %}
+                <a href="/upgrade" class="signals-btn gold">Unlock All Symbols</a>
+                {% endif %}
+                <a href="/market-map" class="signals-btn">Market Map</a>
+                <a href="/research" class="signals-btn">Research</a>
             </div>
         </div>
-    </a>
-    {% endfor %}
-</div>
-{% endif %}
 
-{% if hidden_remaining > 0 %}
-<div class="card gold-accent-card all-symbols-cta-card">
-    <h3>More Opportunities</h3>
-    <div class="passage-frame">
-        <p>
-            {{ hidden_remaining }} additional symbols are available beyond this tier’s current view.
-        </p>
-    </div>
-    <div class="dashboard-subnav">
-        {% if can_access_all_symbols %}
-        <a href="/all-symbols" class="cta-btn">Open All Symbols</a>
+        {% if not top_five and not visible_signals %}
+        <div class="signals-card">
+            <h3>No Signals Loaded</h3>
+            <p class="signals-sub">When the signal board loads, this page will show ranked symbols, attention signals, and deeper detail links.</p>
+        </div>
         {% else %}
-        <a href="/upgrade" class="cta-btn premium-gold-btn">Unlock More Signals</a>
+        <div class="signal-card-grid">
+            {% set primary_signals = top_five if top_five else visible_signals[:5] %}
+            {% for s in primary_signals %}
+            {% set symbol = s.symbol if s.symbol is defined else s.get("symbol", "UNKNOWN") if s is mapping else "UNKNOWN" %}
+            {% set company = s.company_name if s.company_name is defined else s.get("company_name", symbol) if s is mapping else symbol %}
+            {% set score = s.score if s.score is defined else s.latest_score if s.latest_score is defined else s.get("score", s.get("latest_score", "—")) if s is mapping else "—" %}
+            {% set confidence = s.confidence if s.confidence is defined else s.latest_confidence if s.latest_confidence is defined else s.get("confidence", s.get("latest_confidence", "—")) if s is mapping else "—" %}
+            {% set direction = s.direction if s.direction is defined else s.strategy if s.strategy is defined else s.get("direction", s.get("strategy", "Watch")) if s is mapping else "Watch" %}
+            {% set opinion = s.opinion if s.opinion is defined else s.summary if s.summary is defined else s.get("opinion", s.get("summary", "Open symbol intelligence for the full read.")) if s is mapping else "Open symbol intelligence for the full read." %}
+
+            <a href="/signals/{{ symbol }}" class="signal-card">
+                <div class="signal-top">
+                    <div>
+                        <div class="signal-symbol">{{ symbol }}</div>
+                        <div class="signal-company">{{ company }}</div>
+                    </div>
+                    <div class="signal-chip-row">
+                        <span class="signal-chip blue">{{ direction }}</span>
+                        <span class="signal-chip gold">Ranked</span>
+                    </div>
+                </div>
+
+                <div class="signal-score-row">
+                    <div class="signal-mini-stat">
+                        <span>Score</span>
+                        <strong>{{ score }}</strong>
+                    </div>
+                    <div class="signal-mini-stat">
+                        <span>Confidence</span>
+                        <strong>{{ confidence }}</strong>
+                    </div>
+                    <div class="signal-mini-stat">
+                        <span>Tier</span>
+                        <strong>{{ tier }}</strong>
+                    </div>
+                </div>
+
+                <p class="signals-sub" style="margin:0;">{{ opinion }}</p>
+
+                <div class="signal-card-footer">
+                    <span>Open symbol intelligence.</span>
+                    <span class="signal-detail-link">Detail →</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
         {% endif %}
-    </div>
-</div>
-{% endif %}
+    </section>
 
-<div class="card">
-    <h3>Tier Visibility Guide</h3>
-    <div class="grid">
-        <div class="card">
-            <p><b>Guest</b></p>
-            <p class="muted-line">2 spotlight symbols</p>
+    {% if next_twenty %}
+    <section class="signals-panel">
+        <div class="signals-panel-top">
+            <div>
+                <h2>Extended Watchlist</h2>
+                <p class="signals-panel-copy">More symbols worth watching without forcing the top board to get crowded.</p>
+            </div>
         </div>
-        <div class="card">
-            <p><b>Free</b></p>
-            <p class="muted-line">3 spotlight symbols</p>
-        </div>
-        <div class="card">
-            <p><b>Starter</b></p>
-            <p class="muted-line">5 spotlight symbols</p>
-        </div>
-        <div class="card">
-            <p><b>Pro</b></p>
-            <p class="muted-line">5 top + 5 extended + All Symbols</p>
-        </div>
-        <div class="card">
-            <p><b>Elite</b></p>
-            <p class="muted-line">5 top + 20 extended + All Symbols</p>
-        </div>
-    </div>
-</div>
 
+        <div class="signal-card-grid">
+            {% for s in next_twenty %}
+            {% set symbol = s.symbol if s.symbol is defined else s.get("symbol", "UNKNOWN") if s is mapping else "UNKNOWN" %}
+            {% set company = s.company_name if s.company_name is defined else s.get("company_name", symbol) if s is mapping else symbol %}
+            {% set score = s.score if s.score is defined else s.latest_score if s.latest_score is defined else s.get("score", s.get("latest_score", "—")) if s is mapping else "—" %}
+            {% set confidence = s.confidence if s.confidence is defined else s.latest_confidence if s.latest_confidence is defined else s.get("confidence", s.get("latest_confidence", "—")) if s is mapping else "—" %}
+
+            <a href="/signals/{{ symbol }}" class="signal-card">
+                <div class="signal-top">
+                    <div>
+                        <div class="signal-symbol">{{ symbol }}</div>
+                        <div class="signal-company">{{ company }}</div>
+                    </div>
+                    <div class="signal-chip-row">
+                        <span class="signal-chip">Watch</span>
+                    </div>
+                </div>
+
+                <div class="signal-score-row">
+                    <div class="signal-mini-stat">
+                        <span>Score</span>
+                        <strong>{{ score }}</strong>
+                    </div>
+                    <div class="signal-mini-stat">
+                        <span>Confidence</span>
+                        <strong>{{ confidence }}</strong>
+                    </div>
+                    <div class="signal-mini-stat">
+                        <span>Path</span>
+                        <strong>Detail</strong>
+                    </div>
+                </div>
+
+                <div class="signal-card-footer">
+                    <span>Open deeper symbol read.</span>
+                    <span class="signal-detail-link">Detail →</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <details class="signals-drawer">
+        <summary>
+            <span>Access + Engine Details</span>
+            <span>Preserved, not cluttered</span>
+        </summary>
+        <div class="signals-drawer-body">
+            <p>
+                Current tier: {{ tier }}.
+                Visible signals: {{ signal_count }}.
+                Hidden signals: {{ hidden_count }}.
+                Hidden remaining: {{ hidden_remaining }}.
+                All Symbols access: {{ "yes" if can_access_all_symbols else "no" }}.
+            </p>
+
+            {% if hidden_signals %}
+            <div class="signals-grid-3">
+                {% for s in hidden_signals[:6] %}
+                {% set symbol = s.symbol if s.symbol is defined else s.get("symbol", "UNKNOWN") if s is mapping else "UNKNOWN" %}
+                <div class="signals-card" style="box-shadow:none;">
+                    <div class="signals-label">Locked</div>
+                    <div class="signals-value">{{ symbol }}</div>
+                    <div class="signals-sub">Hidden by current tier/access rules.</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </details>
+</div>
 {% endblock %}
