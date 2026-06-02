@@ -7120,3 +7120,115 @@ def append_pack_203_receipt_chain_evidence_packet_v203_section(sections):
         return sections
 # === PACK 203 RECEIPT CHAIN EVIDENCE PACKET UNIFIED SECTION END ===
 
+
+
+# === PACK 204 RECEIPT CHAIN RECHECK EXPIRATION HANDOFF UNIFIED SECTION START ===
+def build_pack_204_receipt_chain_recheck_expiration_handoff_v204_unified_section():
+    """
+    Pack 204 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 204 short-module recheck/expiration handoff payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.receipt_chain_recheck_expiration_handoff_v204 import build_receipt_chain_recheck_expiration_handoff_v204_unified_owner_section
+        return build_receipt_chain_recheck_expiration_handoff_v204_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "receipt_chain_recheck_expiration_handoff_v204",
+            "title": "Receipt Chain Recheck Handoff",
+            "subtitle": "Receipt chain recheck/expiration handoff section needs review.",
+            "status": "review",
+            "href": "/tower/receipt-chain-recheck-expiration-handoff-v204.json",
+            "cards": [],
+            "simulated_only": True,
+            "recheck_expiration_handoff_preview_only": True,
+            "recheck_hook_preview_only": True,
+            "expiration_trigger_preview_only": True,
+            "renewal_trigger_preview_only": True,
+            "freshness_lane_preview_only": True,
+            "owner_followup_queue_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_204_receipt_chain_recheck_expiration_handoff_v204_section(sections):
+    """
+    Append Pack 204 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_recheck_expiration_handoff_v204" not in existing_ids:
+            sections.append(build_pack_204_receipt_chain_recheck_expiration_handoff_v204_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 204 RECEIPT CHAIN RECHECK EXPIRATION HANDOFF UNIFIED SECTION END ===
+
+
+
+# === PACK 205 RECEIPT CHAIN OPERATIONAL BATCH CHECKPOINT UNIFIED SECTION START ===
+def build_pack_205_receipt_chain_operational_batch_checkpoint_v205_unified_section():
+    """
+    Pack 205 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 205 short-module operational batch checkpoint payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.receipt_chain_operational_batch_checkpoint_v205 import build_receipt_chain_operational_batch_checkpoint_v205_unified_owner_section
+        return build_receipt_chain_operational_batch_checkpoint_v205_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "receipt_chain_operational_batch_checkpoint_v205",
+            "title": "Receipt Chain Batch Checkpoint",
+            "subtitle": "Receipt chain operational batch checkpoint section needs review.",
+            "status": "review",
+            "href": "/tower/receipt-chain-operational-batch-checkpoint-v205.json",
+            "cards": [],
+            "simulated_only": True,
+            "batch_checkpoint_preview_only": True,
+            "operational_batch_checkpoint_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_205_receipt_chain_operational_batch_checkpoint_v205_section(sections):
+    """
+    Append Pack 205 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_operational_batch_checkpoint_v205" not in existing_ids:
+            sections.append(build_pack_205_receipt_chain_operational_batch_checkpoint_v205_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 205 RECEIPT CHAIN OPERATIONAL BATCH CHECKPOINT UNIFIED SECTION END ===
+

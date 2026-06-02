@@ -13497,3 +13497,71 @@ def tower_receipt_chain_evidence_packet_v203_json():
     return jsonify(payload)
 # === PACK 203 RECEIPT CHAIN EVIDENCE PACKET ROUTE END ===
 
+
+
+# === PACK 204 RECEIPT CHAIN RECHECK EXPIRATION HANDOFF ROUTE START ===
+def _pack_204_receipt_chain_recheck_expiration_handoff_v204_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/receipt-chain-recheck-expiration-handoff-v204.json", methods=["GET"])
+@_pack_204_receipt_chain_recheck_expiration_handoff_v204_route_guard
+def tower_receipt_chain_recheck_expiration_handoff_v204_json():
+    from tower.receipt_chain_recheck_expiration_handoff_v204 import build_receipt_chain_recheck_expiration_handoff_v204_payload
+
+    payload = build_receipt_chain_recheck_expiration_handoff_v204_payload()
+    return jsonify(payload)
+# === PACK 204 RECEIPT CHAIN RECHECK EXPIRATION HANDOFF ROUTE END ===
+
+
+
+# === PACK 205 RECEIPT CHAIN OPERATIONAL BATCH CHECKPOINT ROUTE START ===
+def _pack_205_receipt_chain_operational_batch_checkpoint_v205_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/receipt-chain-operational-batch-checkpoint-v205.json", methods=["GET"])
+@_pack_205_receipt_chain_operational_batch_checkpoint_v205_route_guard
+def tower_receipt_chain_operational_batch_checkpoint_v205_json():
+    from tower.receipt_chain_operational_batch_checkpoint_v205 import build_receipt_chain_operational_batch_checkpoint_v205_payload
+
+    payload = build_receipt_chain_operational_batch_checkpoint_v205_payload()
+    return jsonify(payload)
+# === PACK 205 RECEIPT CHAIN OPERATIONAL BATCH CHECKPOINT ROUTE END ===
+

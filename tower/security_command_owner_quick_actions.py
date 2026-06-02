@@ -4501,3 +4501,115 @@ def append_pack_203_receipt_chain_evidence_packet_v203_quick_action(actions):
         return actions
 # === PACK 203 RECEIPT CHAIN EVIDENCE PACKET QUICK ACTION END ===
 
+
+
+# === PACK 204 RECEIPT CHAIN RECHECK EXPIRATION HANDOFF QUICK ACTION START ===
+def build_pack_204_receipt_chain_recheck_expiration_handoff_v204_quick_action():
+    """
+    Pack 204 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_recheck_expiration_handoff_v204 import build_receipt_chain_recheck_expiration_handoff_v204_quick_action
+        return build_receipt_chain_recheck_expiration_handoff_v204_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_recheck_expiration_handoff_v204",
+            "label": "Receipt Chain Recheck Handoff",
+            "title": "Receipt Chain Recheck / Expiration Handoff Preview",
+            "href": "/tower/receipt-chain-recheck-expiration-handoff-v204.json",
+            "endpoint": "/tower/receipt-chain-recheck-expiration-handoff-v204.json",
+            "description": "Preview recheck, expiration, renewal, and owner follow-up handoff hooks with real enforcement blocked.",
+            "status": "review",
+            "pack": "Pack 204",
+            "category": "policy",
+            "simulated_only": True,
+            "recheck_expiration_handoff_preview_only": True,
+            "recheck_hook_preview_only": True,
+            "expiration_trigger_preview_only": True,
+            "renewal_trigger_preview_only": True,
+            "freshness_lane_preview_only": True,
+            "owner_followup_queue_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_204_receipt_chain_recheck_expiration_handoff_v204_quick_action(actions):
+    """
+    Append Pack 204 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_recheck_expiration_handoff_v204" not in existing_ids:
+            actions.append(build_pack_204_receipt_chain_recheck_expiration_handoff_v204_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 204 RECEIPT CHAIN RECHECK EXPIRATION HANDOFF QUICK ACTION END ===
+
+
+
+# === PACK 205 RECEIPT CHAIN OPERATIONAL BATCH CHECKPOINT QUICK ACTION START ===
+def build_pack_205_receipt_chain_operational_batch_checkpoint_v205_quick_action():
+    """
+    Pack 205 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_operational_batch_checkpoint_v205 import build_receipt_chain_operational_batch_checkpoint_v205_quick_action
+        return build_receipt_chain_operational_batch_checkpoint_v205_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_operational_batch_checkpoint_v205",
+            "label": "Receipt Chain Batch Checkpoint",
+            "title": "Receipt Chain Operational Batch Checkpoint",
+            "href": "/tower/receipt-chain-operational-batch-checkpoint-v205.json",
+            "endpoint": "/tower/receipt-chain-operational-batch-checkpoint-v205.json",
+            "description": "Final checkpoint proving Packs 201-205 operational handoff/evidence/recheck previews are safe together.",
+            "status": "review",
+            "pack": "Pack 205",
+            "category": "policy",
+            "simulated_only": True,
+            "batch_checkpoint_preview_only": True,
+            "operational_batch_checkpoint_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_205_receipt_chain_operational_batch_checkpoint_v205_quick_action(actions):
+    """
+    Append Pack 205 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_operational_batch_checkpoint_v205" not in existing_ids:
+            actions.append(build_pack_205_receipt_chain_operational_batch_checkpoint_v205_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 205 RECEIPT CHAIN OPERATIONAL BATCH CHECKPOINT QUICK ACTION END ===
+

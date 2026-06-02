@@ -3633,3 +3633,96 @@ def get_pack_203_receipt_chain_evidence_packet_v203_status_bridge():
     return build_pack_203_receipt_chain_evidence_packet_v203_status_bridge()
 # === PACK 203 RECEIPT CHAIN EVIDENCE PACKET STATUS BRIDGE END ===
 
+
+
+# === PACK 204 RECEIPT CHAIN RECHECK EXPIRATION HANDOFF STATUS BRIDGE START ===
+def build_pack_204_receipt_chain_recheck_expiration_handoff_v204_status_bridge():
+    """
+    Pack 204 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 204 short-module recheck/expiration handoff payload
+    """
+    try:
+        from tower.receipt_chain_recheck_expiration_handoff_v204 import build_receipt_chain_recheck_expiration_handoff_v204_status_bridge
+        return build_receipt_chain_recheck_expiration_handoff_v204_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_204",
+            "pack_number": 204,
+            "status": "review",
+            "endpoint": "/tower/receipt-chain-recheck-expiration-handoff-v204.json",
+            "source_endpoint": "/tower/receipt-chain-evidence-packet-v203.json",
+            "readiness_score": 0,
+            "readiness_label": "Receipt chain recheck/expiration handoff bridge error",
+            "simulated_only": True,
+            "recheck_expiration_handoff_preview_only": True,
+            "recheck_hook_preview_only": True,
+            "expiration_trigger_preview_only": True,
+            "renewal_trigger_preview_only": True,
+            "freshness_lane_preview_only": True,
+            "owner_followup_queue_preview_only": True,
+            "real_recheck_executed": False,
+            "real_renewal_executed": False,
+            "real_expiration_enforced": False,
+            "real_owner_followup_executed": False,
+            "real_evidence_exported": False,
+            "real_raw_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_204_receipt_chain_recheck_expiration_handoff_v204_status_bridge():
+    return build_pack_204_receipt_chain_recheck_expiration_handoff_v204_status_bridge()
+# === PACK 204 RECEIPT CHAIN RECHECK EXPIRATION HANDOFF STATUS BRIDGE END ===
+
+
+
+# === PACK 205 RECEIPT CHAIN OPERATIONAL BATCH CHECKPOINT STATUS BRIDGE START ===
+def build_pack_205_receipt_chain_operational_batch_checkpoint_v205_status_bridge():
+    """
+    Pack 205 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 205 short-module operational batch checkpoint payload
+    """
+    try:
+        from tower.receipt_chain_operational_batch_checkpoint_v205 import build_receipt_chain_operational_batch_checkpoint_v205_status_bridge
+        return build_receipt_chain_operational_batch_checkpoint_v205_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_205",
+            "pack_number": 205,
+            "status": "review",
+            "endpoint": "/tower/receipt-chain-operational-batch-checkpoint-v205.json",
+            "readiness_score": 0,
+            "readiness_label": "Receipt chain operational batch checkpoint bridge error",
+            "simulated_only": True,
+            "batch_checkpoint_preview_only": True,
+            "operational_batch_checkpoint_preview_only": True,
+            "real_action_executed": False,
+            "real_handoff_executed": False,
+            "real_owner_action_executed": False,
+            "real_evidence_exported": False,
+            "real_export_request_created": False,
+            "real_packet_written": False,
+            "real_packet_sealed": False,
+            "real_recheck_executed": False,
+            "real_renewal_executed": False,
+            "real_expiration_enforced": False,
+            "real_owner_followup_executed": False,
+            "real_raw_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_205_receipt_chain_operational_batch_checkpoint_v205_status_bridge():
+    return build_pack_205_receipt_chain_operational_batch_checkpoint_v205_status_bridge()
+# === PACK 205 RECEIPT CHAIN OPERATIONAL BATCH CHECKPOINT STATUS BRIDGE END ===
+
