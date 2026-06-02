@@ -3756,3 +3756,62 @@ def append_pack_190_policy_change_approval_receipt_owner_note_saved_view_preset_
         return actions
 # === PACK 190 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE SAVED VIEW FILTER PRESET DETAIL EDIT HISTORY VERSION COMPARE NAVIGATION SAVED VIEW FILTER PRESET DETAIL EDIT PREVIEW QUICK ACTION END ===
 
+
+
+# === PACK 191 OWNER NOTE VC NAV DETAIL HISTORY QUICK ACTION START ===
+def build_pack_191_owner_note_vc_nav_detail_history_v191_quick_action():
+    """
+    Pack 191 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.owner_note_vc_nav_detail_history_v191 import build_owner_note_vc_nav_detail_history_v191_quick_action
+        return build_owner_note_vc_nav_detail_history_v191_quick_action()
+    except Exception as exc:
+        return {
+            "id": "owner_note_vc_nav_detail_history_v191",
+            "label": "Owner Note Version Compare Saved View History",
+            "title": "Owner Note Saved View Preset Detail Edit History Version Compare Navigation Saved View / Filter Preset Detail Edit History / Version Preview",
+            "href": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-history-version-compare-saved-view-filter-preset-detail-edit-history-version-compare-navigation-saved-view-filter-preset-detail-edit-history-version-preview.json",
+            "endpoint": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-history-version-compare-saved-view-filter-preset-detail-edit-history-version-compare-navigation-saved-view-filter-preset-detail-edit-history-version-preview.json",
+            "description": "Preview edit history timelines, version cards, field change events, and rollback/restore metadata for navigation saved view/filter preset detail edits.",
+            "status": "review",
+            "pack": "Pack 191",
+            "category": "policy",
+            "simulated_only": True,
+            "edit_history_preview_only": True,
+            "version_preview_only": True,
+            "rollback_preview_only": True,
+            "restore_preview_only": True,
+            "detail_edit_preview_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_191_owner_note_vc_nav_detail_history_v191_quick_action(actions):
+    """
+    Append Pack 191 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_detail_history_v191" not in existing_ids:
+            actions.append(build_pack_191_owner_note_vc_nav_detail_history_v191_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 191 OWNER NOTE VC NAV DETAIL HISTORY QUICK ACTION END ===
+

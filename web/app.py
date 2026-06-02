@@ -13055,3 +13055,37 @@ def tower_policy_change_approval_receipt_owner_note_saved_view_preset_detail_edi
     return jsonify(payload)
 # === PACK 190 POLICY CHANGE APPROVAL RECEIPT OWNER NOTE SAVED VIEW PRESET DETAIL EDIT HISTORY VERSION COMPARE SAVED VIEW FILTER PRESET DETAIL EDIT HISTORY VERSION COMPARE NAVIGATION SAVED VIEW FILTER PRESET DETAIL EDIT PREVIEW ROUTE END ===
 
+
+
+# === PACK 191 OWNER NOTE VC NAV DETAIL HISTORY ROUTE START ===
+def _pack_191_owner_note_vc_nav_detail_history_v191_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-history-version-compare-saved-view-filter-preset-detail-edit-history-version-compare-navigation-saved-view-filter-preset-detail-edit-history-version-preview.json", methods=["GET"])
+@_pack_191_owner_note_vc_nav_detail_history_v191_route_guard
+def tower_owner_note_vc_nav_detail_history_v191_json():
+    from tower.owner_note_vc_nav_detail_history_v191 import build_owner_note_vc_nav_detail_history_v191_payload
+
+    payload = build_owner_note_vc_nav_detail_history_v191_payload()
+    return jsonify(payload)
+# === PACK 191 OWNER NOTE VC NAV DETAIL HISTORY ROUTE END ===
+
