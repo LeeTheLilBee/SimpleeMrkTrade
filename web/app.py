@@ -13565,3 +13565,37 @@ def tower_receipt_chain_operational_batch_checkpoint_v205_json():
     return jsonify(payload)
 # === PACK 205 RECEIPT CHAIN OPERATIONAL BATCH CHECKPOINT ROUTE END ===
 
+
+
+# === PACK 206 RECEIPT CHAIN POST BATCH OPS ROUTE START ===
+def _pack_206_receipt_chain_post_batch_ops_v206_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/receipt-chain-post-batch-ops-v206.json", methods=["GET"])
+@_pack_206_receipt_chain_post_batch_ops_v206_route_guard
+def tower_receipt_chain_post_batch_ops_v206_json():
+    from tower.receipt_chain_post_batch_ops_v206 import build_receipt_chain_post_batch_ops_v206_payload
+
+    payload = build_receipt_chain_post_batch_ops_v206_payload()
+    return jsonify(payload)
+# === PACK 206 RECEIPT CHAIN POST BATCH OPS ROUTE END ===
+

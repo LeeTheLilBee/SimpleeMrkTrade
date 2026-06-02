@@ -3726,3 +3726,55 @@ def get_pack_205_receipt_chain_operational_batch_checkpoint_v205_status_bridge()
     return build_pack_205_receipt_chain_operational_batch_checkpoint_v205_status_bridge()
 # === PACK 205 RECEIPT CHAIN OPERATIONAL BATCH CHECKPOINT STATUS BRIDGE END ===
 
+
+
+# === PACK 206 RECEIPT CHAIN POST BATCH OPS STATUS BRIDGE START ===
+def build_pack_206_receipt_chain_post_batch_ops_v206_status_bridge():
+    """
+    Pack 206 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 206 short-module post-batch ops payload
+    """
+    try:
+        from tower.receipt_chain_post_batch_ops_v206 import build_receipt_chain_post_batch_ops_v206_status_bridge
+        return build_receipt_chain_post_batch_ops_v206_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_206",
+            "pack_number": 206,
+            "status": "review",
+            "endpoint": "/tower/receipt-chain-post-batch-ops-v206.json",
+            "source_endpoint": "/tower/receipt-chain-operational-batch-checkpoint-v205.json",
+            "readiness_score": 0,
+            "readiness_label": "Receipt chain post-batch ops bridge error",
+            "simulated_only": True,
+            "post_batch_ops_preview_only": True,
+            "operational_readiness_preview_only": True,
+            "containment_lane_preview_only": True,
+            "incident_lane_preview_only": True,
+            "archive_lane_preview_only": True,
+            "gateway_lane_preview_only": True,
+            "owner_next_action_preview_only": True,
+            "next_batch_board_preview_only": True,
+            "real_action_executed": False,
+            "real_handoff_executed": False,
+            "real_owner_action_executed": False,
+            "real_containment_executed": False,
+            "real_incident_action_executed": False,
+            "real_archive_written": False,
+            "real_gateway_access_granted": False,
+            "real_owner_next_action_executed": False,
+            "real_evidence_exported": False,
+            "real_raw_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_206_receipt_chain_post_batch_ops_v206_status_bridge():
+    return build_pack_206_receipt_chain_post_batch_ops_v206_status_bridge()
+# === PACK 206 RECEIPT CHAIN POST BATCH OPS STATUS BRIDGE END ===
+

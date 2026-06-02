@@ -4613,3 +4613,63 @@ def append_pack_205_receipt_chain_operational_batch_checkpoint_v205_quick_action
         return actions
 # === PACK 205 RECEIPT CHAIN OPERATIONAL BATCH CHECKPOINT QUICK ACTION END ===
 
+
+
+# === PACK 206 RECEIPT CHAIN POST BATCH OPS QUICK ACTION START ===
+def build_pack_206_receipt_chain_post_batch_ops_v206_quick_action():
+    """
+    Pack 206 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_post_batch_ops_v206 import build_receipt_chain_post_batch_ops_v206_quick_action
+        return build_receipt_chain_post_batch_ops_v206_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_post_batch_ops_v206",
+            "label": "Receipt Chain Post-Batch Ops",
+            "title": "Receipt Chain Post-Batch Operational Readiness Preview",
+            "href": "/tower/receipt-chain-post-batch-ops-v206.json",
+            "endpoint": "/tower/receipt-chain-post-batch-ops-v206.json",
+            "description": "Preview post-Pack-205 operational readiness and the Pack 206-210 batch path.",
+            "status": "review",
+            "pack": "Pack 206",
+            "category": "policy",
+            "simulated_only": True,
+            "post_batch_ops_preview_only": True,
+            "operational_readiness_preview_only": True,
+            "containment_lane_preview_only": True,
+            "incident_lane_preview_only": True,
+            "archive_lane_preview_only": True,
+            "gateway_lane_preview_only": True,
+            "owner_next_action_preview_only": True,
+            "next_batch_board_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_206_receipt_chain_post_batch_ops_v206_quick_action(actions):
+    """
+    Append Pack 206 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_post_batch_ops_v206" not in existing_ids:
+            actions.append(build_pack_206_receipt_chain_post_batch_ops_v206_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 206 RECEIPT CHAIN POST BATCH OPS QUICK ACTION END ===
+
