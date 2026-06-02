@@ -3985,3 +3985,62 @@ def append_pack_194_owner_note_vc_nav_filter_nav_v194_quick_action(actions):
         return actions
 # === PACK 194 OWNER NOTE VC NAV FILTER NAV QUICK ACTION END ===
 
+
+
+# === PACK 195 OWNER NOTE VC NAV DRAWER FOCUS QUICK ACTION START ===
+def build_pack_195_owner_note_vc_nav_drawer_focus_v195_quick_action():
+    """
+    Pack 195 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.owner_note_vc_nav_drawer_focus_v195 import build_owner_note_vc_nav_drawer_focus_v195_quick_action
+        return build_owner_note_vc_nav_drawer_focus_v195_quick_action()
+    except Exception as exc:
+        return {
+            "id": "owner_note_vc_nav_drawer_focus_v195",
+            "label": "Owner Note Drawer Focus",
+            "title": "Owner Note Version Compare Navigation Selected Drawer Detail / Compare Row Focus Preview",
+            "href": "/tower/owner-note-vc-nav-drawer-focus-v195.json",
+            "endpoint": "/tower/owner-note-vc-nav-drawer-focus-v195.json",
+            "description": "Preview selected drawer focus, compare row focus cards, breadcrumbs, and blocked action panel.",
+            "status": "review",
+            "pack": "Pack 195",
+            "category": "policy",
+            "simulated_only": True,
+            "selected_drawer_preview_only": True,
+            "compare_row_focus_preview_only": True,
+            "drawer_action_preview_only": True,
+            "breadcrumb_preview_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "drawer_selection_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_195_owner_note_vc_nav_drawer_focus_v195_quick_action(actions):
+    """
+    Append Pack 195 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_drawer_focus_v195" not in existing_ids:
+            actions.append(build_pack_195_owner_note_vc_nav_drawer_focus_v195_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 195 OWNER NOTE VC NAV DRAWER FOCUS QUICK ACTION END ===
+

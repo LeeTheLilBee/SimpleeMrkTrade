@@ -3225,3 +3225,48 @@ def get_pack_194_owner_note_vc_nav_filter_nav_v194_status_bridge():
     return build_pack_194_owner_note_vc_nav_filter_nav_v194_status_bridge()
 # === PACK 194 OWNER NOTE VC NAV FILTER NAV STATUS BRIDGE END ===
 
+
+
+# === PACK 195 OWNER NOTE VC NAV DRAWER FOCUS STATUS BRIDGE START ===
+def build_pack_195_owner_note_vc_nav_drawer_focus_v195_status_bridge():
+    """
+    Pack 195 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 195 short-module selected drawer focus payload
+    """
+    try:
+        from tower.owner_note_vc_nav_drawer_focus_v195 import build_owner_note_vc_nav_drawer_focus_v195_status_bridge
+        return build_owner_note_vc_nav_drawer_focus_v195_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_195",
+            "pack_number": 195,
+            "status": "review",
+            "endpoint": "/tower/owner-note-vc-nav-drawer-focus-v195.json",
+            "source_endpoint": "/tower/owner-note-vc-nav-filter-nav-v194.json",
+            "readiness_score": 0,
+            "readiness_label": "Owner note selected drawer focus bridge error",
+            "simulated_only": True,
+            "selected_drawer_preview_only": True,
+            "compare_row_focus_preview_only": True,
+            "drawer_action_preview_only": True,
+            "breadcrumb_preview_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "drawer_selection_preview_only": True,
+            "real_filter_preference_saved": False,
+            "real_navigation_state_persisted": False,
+            "real_drawer_selection_saved": False,
+            "real_raw_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_195_owner_note_vc_nav_drawer_focus_v195_status_bridge():
+    return build_pack_195_owner_note_vc_nav_drawer_focus_v195_status_bridge()
+# === PACK 195 OWNER NOTE VC NAV DRAWER FOCUS STATUS BRIDGE END ===
+

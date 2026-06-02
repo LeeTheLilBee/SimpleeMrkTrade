@@ -6604,3 +6604,62 @@ def append_pack_194_owner_note_vc_nav_filter_nav_v194_section(sections):
         return sections
 # === PACK 194 OWNER NOTE VC NAV FILTER NAV UNIFIED SECTION END ===
 
+
+
+# === PACK 195 OWNER NOTE VC NAV DRAWER FOCUS UNIFIED SECTION START ===
+def build_pack_195_owner_note_vc_nav_drawer_focus_v195_unified_section():
+    """
+    Pack 195 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 195 short-module selected drawer focus payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.owner_note_vc_nav_drawer_focus_v195 import build_owner_note_vc_nav_drawer_focus_v195_unified_owner_section
+        return build_owner_note_vc_nav_drawer_focus_v195_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "owner_note_vc_nav_drawer_focus_v195",
+            "title": "Owner Note Drawer Focus",
+            "subtitle": "Owner note selected drawer focus section needs review.",
+            "status": "review",
+            "href": "/tower/owner-note-vc-nav-drawer-focus-v195.json",
+            "cards": [],
+            "simulated_only": True,
+            "selected_drawer_preview_only": True,
+            "compare_row_focus_preview_only": True,
+            "drawer_action_preview_only": True,
+            "breadcrumb_preview_only": True,
+            "navigation_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "drawer_selection_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_195_owner_note_vc_nav_drawer_focus_v195_section(sections):
+    """
+    Append Pack 195 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_drawer_focus_v195" not in existing_ids:
+            sections.append(build_pack_195_owner_note_vc_nav_drawer_focus_v195_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 195 OWNER NOTE VC NAV DRAWER FOCUS UNIFIED SECTION END ===
+
