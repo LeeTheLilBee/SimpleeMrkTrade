@@ -1,188 +1,733 @@
 {% extends "base.html" %}
 {% block content %}
+{% set positions = positions if positions is defined and positions else [] %}
+{% set portfolio = portfolio if portfolio is defined and portfolio else {} %}
+{% set alerts = alerts if alerts is defined and alerts else [] %}
+{% set brain = brain if brain is defined and brain else {} %}
+{% set open_count = positions|length %}
+{% set avg_health = portfolio.avg_health if portfolio and portfolio.avg_health is defined else 0 %}
+{% set portfolio_health = portfolio.health if portfolio and portfolio.health is defined else "No active positions" %}
+{% set portfolio_risk = portfolio.risk if portfolio and portfolio.risk is defined else "Stable" %}
+{% set weak_positions = portfolio.weak_positions if portfolio and portfolio.weak_positions is defined else 0 %}
+{% set brain_summary = brain.summary if brain and brain.summary is defined else "No active positions." %}
+{% set brain_tone = brain.tone if brain and brain.tone is defined else "watching" %}
+{% set focus = brain.focus if brain and brain.focus is defined else {} %}
+{% set focus_symbol = focus.symbol if focus and focus.symbol is defined else "" %}
+{% set focus_message = focus.message if focus and focus.message is defined else "Monitoring all positions." %}
 
-<div class="page-hero card premium-hero gold-accent-card">
-    <h2>Positions Command Center</h2>
-    <div class="passage-frame">
-        <p>Live intelligence, structural health, and evolving trade context.</p>
-    </div>
-</div>
+<style>
+/* OBSERVATORY_POSITIONS_COMMAND_CENTER_REFRESH_001_STYLES */
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 18px;">
-    <div class="card premium-card">
-        <h4>System Tone</h4>
-        <p id="brain-summary">{{ brain.summary if brain and brain.summary else "No active positions." }}</p>
-    </div>
+.positions-command-shell {
+    display: grid;
+    gap: 18px;
+}
 
-    <div class="card premium-card">
-        <h4>Primary Focus</h4>
-        <p id="brain-focus">
-            {% if brain and brain.focus %}
-                {{ brain.focus.symbol }} → {{ brain.focus.message }}
-            {% else %}
-                Monitoring all positions...
-            {% endif %}
-        </p>
-    </div>
+.positions-command-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 28px;
+    border: 1px solid rgba(112,195,255,0.16);
+    background:
+        radial-gradient(circle at 16% 12%, rgba(140,106,255,.22), transparent 30%),
+        radial-gradient(circle at 88% 16%, rgba(255,118,204,.12), transparent 22%),
+        radial-gradient(circle at 70% 82%, rgba(112,195,255,.11), transparent 24%),
+        linear-gradient(135deg,rgba(9,13,28,.96),rgba(4,7,16,.98));
+    box-shadow: 0 20px 70px rgba(0,0,0,.34);
+}
 
-    <div class="card premium-card">
-        <h4>Portfolio Health</h4>
-        <p><strong>{{ portfolio.health if portfolio and portfolio.health else "No positions" }}</strong></p>
-        <p class="muted-line">Avg score: {{ portfolio.avg_health if portfolio and portfolio.avg_health is not none else 0 }}</p>
-    </div>
+.positions-command-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(116deg, transparent 0 24%, rgba(255,255,255,.04) 24.2%, transparent 24.8% 62%, rgba(255,218,151,.05) 62.2%, transparent 62.9%);
+    opacity: .62;
+    pointer-events: none;
+}
 
-    <div class="card premium-card">
-        <h4>Risk State</h4>
-        <p><strong>{{ portfolio.risk if portfolio and portfolio.risk else "None" }}</strong></p>
-        <p class="muted-line">Open positions: {{ positions|length }}</p>
-    </div>
-</div>
+.positions-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 20px;
+    align-items: center;
+}
 
-{% if alerts %}
-<div class="card premium-card" style="margin-bottom: 18px;">
-    <h3>System Alerts</h3>
-    <div id="alerts-container" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px;">
-        {% for a in alerts %}
-        <div class="card" style="margin:0;">
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-                <strong>{{ a.symbol }}</strong>
-                <span class="severity-badge {{ a.severity }}">{{ a.severity|upper }}</span>
-            </div>
-            <p style="margin-top:8px;">{{ a.message }}</p>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
+.positions-kickers {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
 
-{% if not positions %}
-<div class="card premium-card">
-    <h3>No Open Positions</h3>
-    <div class="passage-frame">
-        <p>The command center is ready. When positions are active, this page will show health, risk, action bias, and live intelligence.</p>
-    </div>
-</div>
-{% endif %}
+.positions-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    padding: 7px 10px;
+    font-size: .68rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    border: 1px solid rgba(255,255,255,.105);
+    background: linear-gradient(135deg, rgba(255,255,255,.060), rgba(255,255,255,.022));
+    color: rgba(247,248,255,.76);
+}
 
-<div style="display:grid; gap:18px;">
-{% for p in positions %}
-<div class="card premium-card">
+.positions-pill.blue {
+    color: rgba(203,235,255,.92);
+    background: linear-gradient(135deg, rgba(112,195,255,.13), rgba(255,255,255,.020));
+    border-color: rgba(112,195,255,.22);
+}
 
-    <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+.positions-pill.gold {
+    color: rgba(255,225,165,.94);
+    background: linear-gradient(135deg, rgba(255,211,132,.13), rgba(255,255,255,.020));
+    border-color: rgba(255,211,132,.22);
+}
+
+.positions-pill.violet {
+    color: rgba(225,217,255,.92);
+    background: linear-gradient(135deg, rgba(140,106,255,.16), rgba(255,255,255,.020));
+    border-color: rgba(140,106,255,.26);
+}
+
+.positions-title {
+    margin: 0 0 10px;
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
+    line-height: .95;
+    letter-spacing: -.06em;
+}
+
+.positions-hero-copy {
+    margin: 0;
+    max-width: 760px;
+    color: rgba(247,248,255,.82);
+    line-height: 1.58;
+    font-size: 1.05rem;
+}
+
+.positions-orbit-zone {
+    position: relative;
+    min-height: 220px;
+    display: grid;
+    place-items: center;
+}
+
+.positions-orbit-lines {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+        repeating-radial-gradient(ellipse at center, transparent 0 20px, rgba(140,106,255,.18) 21px, transparent 22px),
+        radial-gradient(circle at center, rgba(112,195,255,.11), transparent 56%);
+    transform: rotate(-18deg);
+    opacity: .76;
+}
+
+.positions-health-ring {
+    position: relative;
+    width: 158px;
+    height: 158px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: conic-gradient(rgba(140,106,255,.96) var(--score, 79%), rgba(255,255,255,.09) 0);
+    box-shadow: 0 0 34px rgba(140,106,255,.26), inset 0 0 20px rgba(255,255,255,.014);
+}
+
+.positions-health-ring::before {
+    content: "";
+    position: absolute;
+    inset: 17px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#11162b,#050814);
+    border: 1px solid rgba(255,255,255,.10);
+}
+
+.positions-health-core {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.positions-health-core strong {
+    font-size: 2.15rem;
+    line-height: 1;
+}
+
+.positions-health-core span {
+    display: block;
+    margin-top: 5px;
+    color: rgba(225,217,255,.90);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: .72rem;
+}
+
+.positions-grid-4,
+.positions-grid-3,
+.positions-grid-2 {
+    display: grid;
+    gap: 14px;
+}
+
+.positions-grid-4 {
+    grid-template-columns: repeat(4, minmax(0,1fr));
+}
+
+.positions-grid-3 {
+    grid-template-columns: repeat(3, minmax(0,1fr));
+}
+
+.positions-grid-2 {
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+}
+
+.positions-card,
+.positions-panel,
+.position-book-card,
+.positions-alert-card,
+.positions-engine-drawer {
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at top left, rgba(140,106,255,.10), transparent 34%),
+        linear-gradient(135deg,rgba(13,17,34,.94),rgba(7,10,21,.96));
+    box-shadow: 0 14px 34px rgba(0,0,0,.24);
+}
+
+.positions-card,
+.positions-panel {
+    padding: 18px;
+}
+
+.positions-card.gold {
+    border-color: rgba(255,218,151,.24);
+}
+
+.positions-card.blue {
+    border-color: rgba(112,195,255,.20);
+}
+
+.positions-card.violet {
+    border-color: rgba(140,106,255,.24);
+}
+
+.positions-card.alert {
+    border-color: rgba(255,118,204,.22);
+}
+
+.positions-label {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--obs-text-faint);
+    margin-bottom: 9px;
+}
+
+.positions-value {
+    font-size: 1.35rem;
+    font-weight: 950;
+    margin-bottom: 8px;
+}
+
+.positions-sub {
+    color: var(--obs-text-soft);
+    font-size: .9rem;
+    line-height: 1.42;
+}
+
+.positions-panel-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.positions-panel h2,
+.positions-panel h3 {
+    margin: 0 0 6px;
+    font-size: 1.18rem;
+}
+
+.positions-panel-copy {
+    margin: 0;
+    color: var(--obs-text-soft);
+    line-height: 1.45;
+}
+
+.positions-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.positions-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 12px;
+    padding: 10px 13px;
+    color: rgba(247,248,255,.82);
+    background: linear-gradient(135deg, rgba(255,255,255,.060), rgba(255,255,255,.024));
+    border: 1px solid rgba(255,255,255,.105);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.040), 0 10px 24px rgba(0,0,0,.16);
+    font-size: .86rem;
+    font-weight: 850;
+    letter-spacing: .015em;
+}
+
+.positions-btn:hover {
+    transform: translateY(-1px);
+    color: rgba(247,248,255,.96);
+    border-color: rgba(140,106,255,.30);
+    background: linear-gradient(135deg, rgba(140,106,255,.18), rgba(255,255,255,.030));
+}
+
+.positions-btn.gold {
+    color: rgba(255,230,180,.94);
+    background: linear-gradient(135deg, rgba(255,211,132,.13), rgba(255,255,255,.024));
+    border-color: rgba(255,211,132,.22);
+}
+
+.positions-book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.position-book-card {
+    display: grid;
+    gap: 14px;
+    padding: 17px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .16s ease, border-color .16s ease, background .16s ease;
+}
+
+.position-book-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,218,151,.22);
+}
+
+.position-book-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.position-symbol {
+    font-size: 1.35rem;
+    font-weight: 950;
+    margin-bottom: 4px;
+}
+
+.position-company {
+    color: var(--obs-text-soft);
+    font-size: .88rem;
+}
+
+.position-chip-row {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.position-chip {
+    display: inline-flex;
+    border-radius: 10px;
+    padding: 6px 8px;
+    background: linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.020));
+    border: 1px solid rgba(255,255,255,.095);
+    color: rgba(247,248,255,.76);
+    font-size: .68rem;
+    font-weight: 850;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.position-chip.option {
+    color: rgba(225,217,255,.92);
+    background: linear-gradient(135deg, rgba(140,106,255,.14), rgba(255,255,255,.020));
+    border-color: rgba(140,106,255,.22);
+}
+
+.position-chip.fallback {
+    color: rgba(203,235,255,.92);
+    background: linear-gradient(135deg, rgba(112,195,255,.12), rgba(255,255,255,.020));
+    border-color: rgba(112,195,255,.22);
+}
+
+.position-health-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.07);
+    overflow: hidden;
+}
+
+.position-health-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgba(112,195,255,.88), rgba(140,106,255,.94), rgba(255,211,132,.80));
+    box-shadow: 0 0 18px rgba(140,106,255,.24);
+}
+
+.position-book-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 8px;
+}
+
+.position-mini-stat {
+    border-radius: 14px;
+    padding: 10px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.06);
+}
+
+.position-mini-stat span {
+    display: block;
+    color: var(--obs-text-faint);
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .10em;
+    margin-bottom: 5px;
+}
+
+.position-mini-stat strong {
+    font-size: .94rem;
+}
+
+.position-book-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    color: var(--obs-text-soft);
+}
+
+.position-detail-link {
+    color: rgba(255,211,132,.94);
+    font-weight: 900;
+}
+
+.positions-alert-list {
+    display: grid;
+    gap: 10px;
+}
+
+.positions-alert-card {
+    padding: 14px;
+}
+
+.positions-alert-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+}
+
+.positions-alert-severity {
+    border-radius: 10px;
+    padding: 6px 8px;
+    background: rgba(255,118,204,.14);
+    border: 1px solid rgba(255,118,204,.20);
+    color: rgba(255,200,230,.95);
+    font-size: .70rem;
+    font-weight: 900;
+}
+
+.positions-engine-drawer {
+    padding: 0;
+    overflow: hidden;
+}
+
+.positions-engine-drawer summary {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 16px 18px;
+    font-weight: 950;
+}
+
+.positions-engine-drawer summary span:last-child {
+    color: var(--obs-text-faint);
+    font-weight: 800;
+}
+
+.positions-engine-body {
+    padding: 0 18px 18px 18px;
+    color: var(--obs-text-soft);
+    line-height: 1.45;
+}
+
+@media (max-width: 1080px) {
+    .positions-hero-inner,
+    .positions-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .positions-grid-4,
+    .positions-grid-3 {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+}
+
+@media (max-width: 680px) {
+    .positions-grid-4,
+    .positions-grid-3,
+    .position-book-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .positions-command-hero {
+        padding: 20px;
+    }
+}
+</style>
+
+<div class="positions-command-shell">
+    <section class="positions-command-hero">
+        <div class="positions-hero-inner">
             <div>
-                <h3 style="margin-bottom:4px;">{{ p.symbol }}</h3>
-                <p class="muted-line" style="margin:0;">
-                    {{ p.company_name if p.company_name is defined else "Live monitored position" }}
+                <div class="positions-kickers">
+                    <span class="positions-pill blue">Active Book</span>
+                    <span class="positions-pill gold">{{ portfolio_risk }}</span>
+                    <span class="positions-pill violet">{{ brain_tone }}</span>
+                    {% if open_count >= 6 %}
+                    <span class="positions-pill">Book Full</span>
+                    {% endif %}
+                </div>
+
+                <h1 class="positions-title">Positions Command Center</h1>
+                <p class="positions-hero-copy">
+                    {{ brain_summary }}
+                    This room shows the full active book without raw clutter: position health, premium safety, stock fallback context, current bias, and the detail path for every open position.
                 </p>
             </div>
 
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <span class="signal-stat-chip">{{ p.health.label }}</span>
-                {% if p.action_bias is defined %}<span class="signal-stat-chip">{{ p.action_bias }}</span>{% endif %}
-                {% if p.risk_state is defined %}<span class="signal-stat-chip">{{ p.risk_state }}</span>{% endif %}
-            </div>
-        </div>
-    </a>
-
-    <div style="margin-top:14px;">
-        <div class="health-bar">
-            <div id="health-{{ p.symbol }}" class="health-fill" style="width: {{ p.health.score }}%;"></div>
-        </div>
-    </div>
-
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 14px;">
-        <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
-            <div class="card" style="margin:0;">
-                <h4>Status</h4>
-                <p><strong>Health:</strong> <span id="score-{{ p.symbol }}">{{ p.health.score }}</span></p>
-                <p><strong>Direction:</strong> {{ p.health.direction }}</p>
-                <p><strong>Action:</strong> {{ p.health.action }}</p>
-            </div>
-        </a>
-
-        <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
-            <div class="card" style="margin:0;">
-                <h4>Trade Frame</h4>
-                <p><strong>Entry:</strong> {{ p.entry if p.entry is defined else p.price }}</p>
-                <p><strong>Current:</strong> {{ p.current_price if p.current_price is defined else "N/A" }}</p>
-                <p><strong>Target:</strong> {{ p.target if p.target is defined else "N/A" }}</p>
-                <p><strong>Stop:</strong> {{ p.stop if p.stop is defined else "N/A" }}</p>
-            </div>
-        </a>
-
-        <a href="/position/{{ p.trade_id }}" style="text-decoration:none; color:inherit;">
-            <div class="card" style="margin:0;">
-                <h4>Position State</h4>
-                <p><strong>Days Open:</strong> {{ p.days_open if p.days_open is defined else "N/A" }}</p>
-                <p><strong>Progress:</strong> {{ p.position_progress if p.position_progress is defined else "N/A" }}</p>
-                <p><strong>Bias:</strong> {{ p.action_bias if p.action_bias is defined else "HOLD" }}</p>
-            </div>
-        </a>
-    </div>
-
-</div>
-{% endfor %}
-</div>
-
-<script>
-async function fetchLiveState() {
-    try {
-        const res = await fetch("/api/live-state");
-        const data = await res.json();
-
-        const summary = document.getElementById("brain-summary");
-        if (summary && data.brain) {
-            summary.innerText = data.brain.summary || "No active positions.";
-        }
-
-        const focus = document.getElementById("brain-focus");
-        if (focus) {
-            if (data.brain && data.brain.focus) {
-                focus.innerText = data.brain.focus.symbol + " → " + data.brain.focus.message;
-            } else {
-                focus.innerText = "Monitoring all positions...";
-            }
-        }
-
-        const alertsContainer = document.getElementById("alerts-container");
-        if (alertsContainer && data.alerts) {
-            alertsContainer.innerHTML = "";
-
-            data.alerts.forEach(a => {
-                const row = document.createElement("div");
-                row.className = "card";
-                row.style.margin = "0";
-                row.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-                        <strong>${a.symbol}</strong>
-                        <span class="severity-badge ${a.severity}">${a.severity.toUpperCase()}</span>
+            <div class="positions-orbit-zone">
+                <div class="positions-orbit-lines"></div>
+                <div class="positions-health-ring" style="--score: {{ avg_health }}%;">
+                    <div class="positions-health-core">
+                        <strong>{{ avg_health }}</strong>
+                        <span>Avg Health</span>
                     </div>
-                    <p style="margin-top:8px;">${a.message}</p>
-                `;
-                alertsContainer.appendChild(row);
-            });
-        }
+                </div>
+            </div>
+        </div>
+    </section>
 
-        if (data.positions) {
-            data.positions.forEach(p => {
-                const bar = document.getElementById("health-" + p.symbol);
-                if (bar && p.health) {
-                    bar.style.width = p.health.score + "%";
-                }
+    <section class="positions-grid-4">
+        <div class="positions-card gold">
+            <div class="positions-label">Open Positions</div>
+            <div class="positions-value">{{ open_count }}</div>
+            <div class="positions-sub">Active positions currently inside Soulaana’s book.</div>
+        </div>
 
-                const score = document.getElementById("score-" + p.symbol);
-                if (score && p.health) {
-                    score.innerText = p.health.score;
-                }
-            });
-        }
-    } catch (err) {
-        console.log("Live update error:", err);
-    }
-}
-setInterval(fetchLiveState, 4000);
-fetchLiveState();
-</script>
+        <div class="positions-card blue">
+            <div class="positions-label">Portfolio Health</div>
+            <div class="positions-value">{{ portfolio_health }}</div>
+            <div class="positions-sub">Average health: {{ avg_health }}.</div>
+        </div>
 
+        <div class="positions-card">
+            <div class="positions-label">Risk State</div>
+            <div class="positions-value">{{ portfolio_risk }}</div>
+            <div class="positions-sub">{{ weak_positions }} weak position(s) detected.</div>
+        </div>
+
+        <div class="positions-card alert">
+            <div class="positions-label">Alerts</div>
+            <div class="positions-value">{{ alerts|length }}</div>
+            <div class="positions-sub">
+                {% if alerts %}Review alerts before adding exposure.{% else %}No active alerts in this scan.{% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="positions-grid-2">
+        <div class="positions-panel">
+            <div class="positions-panel-top">
+                <div>
+                    <h2>Soulaana’s Book Read</h2>
+                    <p class="positions-panel-copy">Plain-English interpretation of the whole active book.</p>
+                </div>
+            </div>
+
+            <div class="positions-card" style="box-shadow:none; margin:0;">
+                <div class="positions-label">System Tone</div>
+                <div class="positions-value">{{ brain_tone|title }}</div>
+                <div class="positions-sub">{{ brain_summary }}</div>
+            </div>
+        </div>
+
+        <div class="positions-panel">
+            <div class="positions-panel-top">
+                <div>
+                    <h2>Primary Focus</h2>
+                    <p class="positions-panel-copy">The position OB thinks deserves the most attention right now.</p>
+                </div>
+            </div>
+
+            <div class="positions-card" style="box-shadow:none; margin:0;">
+                <div class="positions-label">{% if focus_symbol %}{{ focus_symbol }}{% else %}No Focus Symbol{% endif %}</div>
+                <div class="positions-value">{% if focus_symbol %}Watch Focus{% else %}Monitoring{% endif %}</div>
+                <div class="positions-sub">{{ focus_message }}</div>
+            </div>
+        </div>
+    </section>
+
+    {% if alerts %}
+    <section class="positions-panel">
+        <div class="positions-panel-top">
+            <div>
+                <h2>System Alerts</h2>
+                <p class="positions-panel-copy">Alerts stay visible, but separated from the active book so the page does not feel cluttered.</p>
+            </div>
+        </div>
+
+        <div class="positions-alert-list">
+            {% for a in alerts %}
+            <div class="positions-alert-card">
+                <div class="positions-alert-head">
+                    <strong>{{ a.symbol }}</strong>
+                    <span class="positions-alert-severity">{{ a.severity|upper }}</span>
+                </div>
+                <p class="positions-sub" style="margin:8px 0 0;">{{ a.message }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="positions-panel">
+        <div class="positions-panel-top">
+            <div>
+                <h2>Active Book</h2>
+                <p class="positions-panel-copy">Each position shows the bare essentials first. Open detail for the full explanation.</p>
+            </div>
+            <div class="positions-actions">
+                <a href="/dashboard" class="positions-btn">Dashboard</a>
+                <a href="/market-map" class="positions-btn">Market Map</a>
+                <a href="/why-this-trade" class="positions-btn gold">Why This Trade</a>
+            </div>
+        </div>
+
+        {% if not positions %}
+        <div class="positions-card">
+            <h3>No Open Positions</h3>
+            <p class="positions-sub">The command center is ready. When positions are active, this page will show health, risk, action bias, premium mode, and stock fallback context.</p>
+        </div>
+        {% else %}
+        <div class="positions-book-grid">
+            {% for p in positions %}
+            {% set h = p.health if p.health is defined and p.health else {} %}
+            {% set score = h.score if h and h.score is defined else p.health_score if p.health_score is defined else 0 %}
+            {% set label = h.label if h and h.label is defined else "Health" %}
+            {% set action = h.action if h and h.action is defined else p.action_bias if p.action_bias is defined else "Holding" %}
+            {% set vehicle = p.vehicle if p.vehicle is defined else p.vehicle_selected if p.vehicle_selected is defined else p.asset_type if p.asset_type is defined else "Position" %}
+            {% set vehicle_lower = vehicle|string|lower %}
+            {% set is_option = "option" in vehicle_lower or p.contractSymbol is defined or p.contract_symbol is defined %}
+            {% set is_fallback = "fallback" in p.reason|string|lower or "fallback" in vehicle_lower or p.stock_fallback is defined %}
+            {% set entry = p.entry if p.entry is defined else p.entry_price if p.entry_price is defined else p.price if p.price is defined else "N/A" %}
+            {% set current = p.current_price if p.current_price is defined else p.current if p.current is defined else p.mark if p.mark is defined else "N/A" %}
+            {% set pnl = p.unrealized_pnl if p.unrealized_pnl is defined else p.pnl if p.pnl is defined else "N/A" %}
+
+            <a class="position-book-card" href="/position/{{ p.trade_id }}">
+                <div class="position-book-top">
+                    <div>
+                        <div class="position-symbol">{{ p.symbol }}</div>
+                        <div class="position-company">{{ p.company_name if p.company_name is defined else "Live monitored position" }}</div>
+                    </div>
+
+                    <div class="position-chip-row">
+                        <span class="position-chip {% if is_option %}option{% endif %}">{{ vehicle }}</span>
+                        {% if is_option %}
+                        <span class="position-chip option">Premium Safe</span>
+                        {% endif %}
+                        {% if is_fallback %}
+                        <span class="position-chip fallback">Stock Fallback</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    <div class="position-health-bar">
+                        <div class="position-health-fill" style="width: {{ score }}%;"></div>
+                    </div>
+                    <div class="positions-sub" style="margin-top:7px;">{{ label }} · {{ score }}/100</div>
+                </div>
+
+                <div class="position-book-stats">
+                    <div class="position-mini-stat">
+                        <span>Entry</span>
+                        <strong>{{ entry }}</strong>
+                    </div>
+                    <div class="position-mini-stat">
+                        <span>Current</span>
+                        <strong>{{ current }}</strong>
+                    </div>
+                    <div class="position-mini-stat">
+                        <span>P/L</span>
+                        <strong>{{ pnl }}</strong>
+                    </div>
+                </div>
+
+                <div class="position-book-footer">
+                    <span>{{ action }}</span>
+                    <span class="position-detail-link">Detail →</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </section>
+
+    <details class="positions-engine-drawer">
+        <summary>
+            <span>Engine Details</span>
+            <span>Preserved, not hidden forever</span>
+        </summary>
+        <div class="positions-engine-body">
+            <p>
+                This drawer keeps the deeper book logic available without making the main page feel crowded.
+                Current portfolio health is {{ portfolio_health }}, risk is {{ portfolio_risk }}, average health is {{ avg_health }},
+                and weak position count is {{ weak_positions }}.
+            </p>
+
+            <div class="positions-grid-4">
+                <div class="positions-card" style="box-shadow:none;">
+                    <div class="positions-label">Brain Summary</div>
+                    <div class="positions-sub">{{ brain_summary }}</div>
+                </div>
+                <div class="positions-card" style="box-shadow:none;">
+                    <div class="positions-label">Primary Focus</div>
+                    <div class="positions-sub">{% if focus_symbol %}{{ focus_symbol }} → {% endif %}{{ focus_message }}</div>
+                </div>
+                <div class="positions-card" style="box-shadow:none;">
+                    <div class="positions-label">Alerts</div>
+                    <div class="positions-value">{{ alerts|length }}</div>
+                    <div class="positions-sub">Generated from current book state.</div>
+                </div>
+                <div class="positions-card" style="box-shadow:none;">
+                    <div class="positions-label">Book Size</div>
+                    <div class="positions-value">{{ open_count }}</div>
+                    <div class="positions-sub">Active rows rendered from get_positions_with_intelligence().</div>
+                </div>
+            </div>
+        </div>
+    </details>
+</div>
 {% endblock %}
