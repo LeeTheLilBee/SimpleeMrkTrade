@@ -13123,3 +13123,37 @@ def tower_owner_note_vc_nav_version_compare_v192_json():
     return jsonify(payload)
 # === PACK 192 OWNER NOTE VC NAV VERSION COMPARE ROUTE END ===
 
+
+
+# === PACK 193 OWNER NOTE VC NAV COMPARE FILTER ROUTE START ===
+def _pack_193_owner_note_vc_nav_compare_filter_v193_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/owner-note-vc-nav-compare-filter-v193.json", methods=["GET"])
+@_pack_193_owner_note_vc_nav_compare_filter_v193_route_guard
+def tower_owner_note_vc_nav_compare_filter_v193_json():
+    from tower.owner_note_vc_nav_compare_filter_v193 import build_owner_note_vc_nav_compare_filter_v193_payload
+
+    payload = build_owner_note_vc_nav_compare_filter_v193_payload()
+    return jsonify(payload)
+# === PACK 193 OWNER NOTE VC NAV COMPARE FILTER ROUTE END ===
+

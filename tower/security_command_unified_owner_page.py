@@ -6490,3 +6490,60 @@ def append_pack_192_owner_note_vc_nav_version_compare_v192_section(sections):
         return sections
 # === PACK 192 OWNER NOTE VC NAV VERSION COMPARE UNIFIED SECTION END ===
 
+
+
+# === PACK 193 OWNER NOTE VC NAV COMPARE FILTER UNIFIED SECTION START ===
+def build_pack_193_owner_note_vc_nav_compare_filter_v193_unified_section():
+    """
+    Pack 193 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 193 short-module compare filter payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.owner_note_vc_nav_compare_filter_v193 import build_owner_note_vc_nav_compare_filter_v193_unified_owner_section
+        return build_owner_note_vc_nav_compare_filter_v193_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "owner_note_vc_nav_compare_filter_v193",
+            "title": "Owner Note Compare Filters",
+            "subtitle": "Owner note version compare filter/search section needs review.",
+            "status": "review",
+            "href": "/tower/owner-note-vc-nav-compare-filter-v193.json",
+            "cards": [],
+            "simulated_only": True,
+            "filter_preview_only": True,
+            "search_facet_preview_only": True,
+            "filter_navigation_preview_only": True,
+            "version_detail_preview_only": True,
+            "compare_view_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_193_owner_note_vc_nav_compare_filter_v193_section(sections):
+    """
+    Append Pack 193 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_compare_filter_v193" not in existing_ids:
+            sections.append(build_pack_193_owner_note_vc_nav_compare_filter_v193_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 193 OWNER NOTE VC NAV COMPARE FILTER UNIFIED SECTION END ===
+
