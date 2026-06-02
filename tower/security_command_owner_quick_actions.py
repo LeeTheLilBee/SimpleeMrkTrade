@@ -4327,3 +4327,177 @@ def append_pack_200_owner_note_vc_nav_receipt_chain_checkpoint_v200_quick_action
         return actions
 # === PACK 200 OWNER NOTE VC NAV RECEIPT CHAIN CHECKPOINT QUICK ACTION END ===
 
+
+
+# === PACK 201 RECEIPT CHAIN OPERATIONAL HANDOFF QUICK ACTION START ===
+def build_pack_201_receipt_chain_operational_handoff_v201_quick_action():
+    """
+    Pack 201 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_operational_handoff_v201 import build_receipt_chain_operational_handoff_v201_quick_action
+        return build_receipt_chain_operational_handoff_v201_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_operational_handoff_v201",
+            "label": "Receipt Chain Operational Handoff",
+            "title": "Receipt Chain Operational Handoff Preview",
+            "href": "/tower/receipt-chain-operational-handoff-v201.json",
+            "endpoint": "/tower/receipt-chain-operational-handoff-v201.json",
+            "description": "Preview the post-Pack-200 operational handoff and next five-pack batch path.",
+            "status": "review",
+            "pack": "Pack 201",
+            "category": "policy",
+            "simulated_only": True,
+            "operational_handoff_preview_only": True,
+            "receipt_chain_handoff_preview_only": True,
+            "checkpoint_preview_only": True,
+            "receipt_chain_checkpoint_preview_only": True,
+            "owner_action_menu_preview_only": True,
+            "evidence_map_preview_only": True,
+            "routing_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_201_receipt_chain_operational_handoff_v201_quick_action(actions):
+    """
+    Append Pack 201 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_operational_handoff_v201" not in existing_ids:
+            actions.append(build_pack_201_receipt_chain_operational_handoff_v201_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 201 RECEIPT CHAIN OPERATIONAL HANDOFF QUICK ACTION END ===
+
+
+
+# === PACK 202 RECEIPT CHAIN HANDOFF SAVED VIEWS QUICK ACTION START ===
+def build_pack_202_receipt_chain_handoff_saved_views_v202_quick_action():
+    """
+    Pack 202 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_handoff_saved_views_v202 import build_receipt_chain_handoff_saved_views_v202_quick_action
+        return build_receipt_chain_handoff_saved_views_v202_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_handoff_saved_views_v202",
+            "label": "Receipt Chain Handoff Saved Views",
+            "title": "Receipt Chain Operational Handoff Saved Views / Filter Presets Preview",
+            "href": "/tower/receipt-chain-handoff-saved-views-v202.json",
+            "endpoint": "/tower/receipt-chain-handoff-saved-views-v202.json",
+            "description": "Preview saved views and filter presets for the receipt-chain operational handoff.",
+            "status": "review",
+            "pack": "Pack 202",
+            "category": "policy",
+            "simulated_only": True,
+            "saved_view_preview_only": True,
+            "filter_preset_preview_only": True,
+            "selected_saved_view_preview_only": True,
+            "operational_handoff_preview_only": True,
+            "receipt_chain_handoff_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_202_receipt_chain_handoff_saved_views_v202_quick_action(actions):
+    """
+    Append Pack 202 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_handoff_saved_views_v202" not in existing_ids:
+            actions.append(build_pack_202_receipt_chain_handoff_saved_views_v202_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 202 RECEIPT CHAIN HANDOFF SAVED VIEWS QUICK ACTION END ===
+
+
+
+# === PACK 203 RECEIPT CHAIN EVIDENCE PACKET QUICK ACTION START ===
+def build_pack_203_receipt_chain_evidence_packet_v203_quick_action():
+    """
+    Pack 203 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_evidence_packet_v203 import build_receipt_chain_evidence_packet_v203_quick_action
+        return build_receipt_chain_evidence_packet_v203_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_evidence_packet_v203",
+            "label": "Receipt Chain Evidence Packet",
+            "title": "Receipt Chain Evidence Bundle Packet Preview",
+            "href": "/tower/receipt-chain-evidence-packet-v203.json",
+            "endpoint": "/tower/receipt-chain-evidence-packet-v203.json",
+            "description": "Preview redacted evidence packets and blocked export requests for the handoff chain.",
+            "status": "review",
+            "pack": "Pack 203",
+            "category": "policy",
+            "simulated_only": True,
+            "evidence_packet_preview_only": True,
+            "evidence_bundle_preview_only": True,
+            "packet_section_preview_only": True,
+            "export_request_preview_only": True,
+            "export_blocked": True,
+            "raw_evidence_redacted": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_203_receipt_chain_evidence_packet_v203_quick_action(actions):
+    """
+    Append Pack 203 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_evidence_packet_v203" not in existing_ids:
+            actions.append(build_pack_203_receipt_chain_evidence_packet_v203_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 203 RECEIPT CHAIN EVIDENCE PACKET QUICK ACTION END ===
+
