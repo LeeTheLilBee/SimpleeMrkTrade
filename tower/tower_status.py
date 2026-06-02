@@ -3094,3 +3094,48 @@ def get_pack_191_owner_note_vc_nav_detail_history_v191_status_bridge():
     return build_pack_191_owner_note_vc_nav_detail_history_v191_status_bridge()
 # === PACK 191 OWNER NOTE VC NAV DETAIL HISTORY STATUS BRIDGE END ===
 
+
+
+# === PACK 192 OWNER NOTE VC NAV VERSION COMPARE STATUS BRIDGE START ===
+def build_pack_192_owner_note_vc_nav_version_compare_v192_status_bridge():
+    """
+    Pack 192 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 192 short-module version compare payload
+    """
+    try:
+        from tower.owner_note_vc_nav_version_compare_v192 import build_owner_note_vc_nav_version_compare_v192_status_bridge
+        return build_owner_note_vc_nav_version_compare_v192_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_192",
+            "pack_number": 192,
+            "status": "review",
+            "endpoint": "/tower/owner-note-vc-nav-version-compare-v192.json",
+            "source_endpoint": "/tower/policy-change-approval-receipt-owner-note-saved-view-preset-detail-edit-history-version-compare-saved-view-filter-preset-detail-edit-history-version-compare-navigation-saved-view-filter-preset-detail-edit-history-version-preview.json",
+            "readiness_score": 0,
+            "readiness_label": "Owner note version compare navigation detail compare bridge error",
+            "simulated_only": True,
+            "version_detail_preview_only": True,
+            "compare_view_preview_only": True,
+            "version_preview_only": True,
+            "edit_history_preview_only": True,
+            "real_history_written": False,
+            "real_version_written": False,
+            "real_version_saved": False,
+            "real_rollback_executed": False,
+            "real_restore_executed": False,
+            "real_edit_persisted": False,
+            "real_raw_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_192_owner_note_vc_nav_version_compare_v192_status_bridge():
+    return build_pack_192_owner_note_vc_nav_version_compare_v192_status_bridge()
+# === PACK 192 OWNER NOTE VC NAV VERSION COMPARE STATUS BRIDGE END ===
+

@@ -3815,3 +3815,59 @@ def append_pack_191_owner_note_vc_nav_detail_history_v191_quick_action(actions):
         return actions
 # === PACK 191 OWNER NOTE VC NAV DETAIL HISTORY QUICK ACTION END ===
 
+
+
+# === PACK 192 OWNER NOTE VC NAV VERSION COMPARE QUICK ACTION START ===
+def build_pack_192_owner_note_vc_nav_version_compare_v192_quick_action():
+    """
+    Pack 192 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.owner_note_vc_nav_version_compare_v192 import build_owner_note_vc_nav_version_compare_v192_quick_action
+        return build_owner_note_vc_nav_version_compare_v192_quick_action()
+    except Exception as exc:
+        return {
+            "id": "owner_note_vc_nav_version_compare_v192",
+            "label": "Owner Note Version Compare Detail View",
+            "title": "Owner Note Version Compare Navigation Saved View / Filter Preset Version Detail Compare View Preview",
+            "href": "/tower/owner-note-vc-nav-version-compare-v192.json",
+            "endpoint": "/tower/owner-note-vc-nav-version-compare-v192.json",
+            "description": "Preview version detail drawers and compare rows for saved view/filter preset detail edit history timelines.",
+            "status": "review",
+            "pack": "Pack 192",
+            "category": "policy",
+            "simulated_only": True,
+            "version_detail_preview_only": True,
+            "compare_view_preview_only": True,
+            "version_preview_only": True,
+            "edit_history_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_192_owner_note_vc_nav_version_compare_v192_quick_action(actions):
+    """
+    Append Pack 192 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_version_compare_v192" not in existing_ids:
+            actions.append(build_pack_192_owner_note_vc_nav_version_compare_v192_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 192 OWNER NOTE VC NAV VERSION COMPARE QUICK ACTION END ===
+

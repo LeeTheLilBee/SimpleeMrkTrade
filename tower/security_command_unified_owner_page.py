@@ -6434,3 +6434,59 @@ def append_pack_191_owner_note_vc_nav_detail_history_v191_section(sections):
         return sections
 # === PACK 191 OWNER NOTE VC NAV DETAIL HISTORY UNIFIED SECTION END ===
 
+
+
+# === PACK 192 OWNER NOTE VC NAV VERSION COMPARE UNIFIED SECTION START ===
+def build_pack_192_owner_note_vc_nav_version_compare_v192_unified_section():
+    """
+    Pack 192 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 192 short-module version compare payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.owner_note_vc_nav_version_compare_v192 import build_owner_note_vc_nav_version_compare_v192_unified_owner_section
+        return build_owner_note_vc_nav_version_compare_v192_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "owner_note_vc_nav_version_compare_v192",
+            "title": "Owner Note Version Compare Detail View",
+            "subtitle": "Owner note version compare detail view section needs review.",
+            "status": "review",
+            "href": "/tower/owner-note-vc-nav-version-compare-v192.json",
+            "cards": [],
+            "simulated_only": True,
+            "version_detail_preview_only": True,
+            "compare_view_preview_only": True,
+            "version_preview_only": True,
+            "edit_history_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_192_owner_note_vc_nav_version_compare_v192_section(sections):
+    """
+    Append Pack 192 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "owner_note_vc_nav_version_compare_v192" not in existing_ids:
+            sections.append(build_pack_192_owner_note_vc_nav_version_compare_v192_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 192 OWNER NOTE VC NAV VERSION COMPARE UNIFIED SECTION END ===
+
