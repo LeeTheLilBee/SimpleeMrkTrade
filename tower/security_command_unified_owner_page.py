@@ -7612,3 +7612,178 @@ def append_pack_215_receipt_chain_batch_211_215_checkpoint_v215_section(sections
         return sections
 # === PACK 215 RECEIPT CHAIN BATCH 211 215 CHECKPOINT UNIFIED SECTION END ===
 
+
+
+# === PACK 216 RECEIPT CHAIN SAVED VIEW PRESETS UNIFIED SECTION START ===
+def build_pack_216_receipt_chain_saved_view_presets_v216_unified_section():
+    """
+    Pack 216 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 216 short-module saved view preset payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.receipt_chain_saved_view_presets_v216 import build_receipt_chain_saved_view_presets_v216_unified_owner_section
+        return build_receipt_chain_saved_view_presets_v216_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "receipt_chain_saved_view_presets_v216",
+            "title": "Receipt Chain Saved View Presets",
+            "subtitle": "Receipt chain saved view preset section needs review.",
+            "status": "review",
+            "href": "/tower/receipt-chain-saved-view-presets-v216.json",
+            "cards": [],
+            "simulated_only": True,
+            "saved_view_preset_preview_only": True,
+            "saved_view_filter_map_preview_only": True,
+            "saved_view_scope_card_preview_only": True,
+            "saved_view_action_menu_preview_only": True,
+            "owner_saved_view_review_queue_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_216_receipt_chain_saved_view_presets_v216_section(sections):
+    """
+    Append Pack 216 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_saved_view_presets_v216" not in existing_ids:
+            sections.append(build_pack_216_receipt_chain_saved_view_presets_v216_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 216 RECEIPT CHAIN SAVED VIEW PRESETS UNIFIED SECTION END ===
+
+
+
+# === PACK 217 RECEIPT CHAIN SAVED VIEW DETAIL UNIFIED SECTION START ===
+def build_pack_217_receipt_chain_saved_view_detail_v217_unified_section():
+    """
+    Pack 217 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 217 short-module saved view detail payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.receipt_chain_saved_view_detail_v217 import build_receipt_chain_saved_view_detail_v217_unified_owner_section
+        return build_receipt_chain_saved_view_detail_v217_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "receipt_chain_saved_view_detail_v217",
+            "title": "Receipt Chain Saved View Detail",
+            "subtitle": "Receipt chain saved view detail section needs review.",
+            "status": "review",
+            "href": "/tower/receipt-chain-saved-view-detail-v217.json",
+            "cards": [],
+            "simulated_only": True,
+            "saved_view_detail_preview_only": True,
+            "selected_preset_detail_preview_only": True,
+            "preset_field_detail_preview_only": True,
+            "linked_filter_detail_preview_only": True,
+            "linked_scope_detail_preview_only": True,
+            "saved_view_detail_action_menu_preview_only": True,
+            "owner_saved_view_detail_queue_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_217_receipt_chain_saved_view_detail_v217_section(sections):
+    """
+    Append Pack 217 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_saved_view_detail_v217" not in existing_ids:
+            sections.append(build_pack_217_receipt_chain_saved_view_detail_v217_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 217 RECEIPT CHAIN SAVED VIEW DETAIL UNIFIED SECTION END ===
+
+
+
+# === PACK 218 RECEIPT CHAIN SAVED VIEW EDIT UNIFIED SECTION START ===
+def build_pack_218_receipt_chain_saved_view_edit_v218_unified_section():
+    """
+    Pack 218 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 218 short-module saved view edit payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.receipt_chain_saved_view_edit_v218 import build_receipt_chain_saved_view_edit_v218_unified_owner_section
+        return build_receipt_chain_saved_view_edit_v218_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "receipt_chain_saved_view_edit_v218",
+            "title": "Receipt Chain Saved View Edit",
+            "subtitle": "Receipt chain saved view edit section needs review.",
+            "status": "review",
+            "href": "/tower/receipt-chain-saved-view-edit-v218.json",
+            "cards": [],
+            "simulated_only": True,
+            "saved_view_edit_preview_only": True,
+            "editable_field_preview_only": True,
+            "edit_validation_rule_preview_only": True,
+            "edit_diff_preview_only": True,
+            "edit_conflict_preview_only": True,
+            "saved_view_edit_action_menu_preview_only": True,
+            "owner_saved_view_edit_queue_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_218_receipt_chain_saved_view_edit_v218_section(sections):
+    """
+    Append Pack 218 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_saved_view_edit_v218" not in existing_ids:
+            sections.append(build_pack_218_receipt_chain_saved_view_edit_v218_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 218 RECEIPT CHAIN SAVED VIEW EDIT UNIFIED SECTION END ===
+

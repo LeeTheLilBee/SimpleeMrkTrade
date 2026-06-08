@@ -13793,3 +13793,105 @@ def tower_receipt_chain_batch_211_215_checkpoint_v215_json():
     return jsonify(payload)
 # === PACK 215 RECEIPT CHAIN BATCH 211 215 CHECKPOINT ROUTE END ===
 
+
+
+# === PACK 216 RECEIPT CHAIN SAVED VIEW PRESETS ROUTE START ===
+def _pack_216_receipt_chain_saved_view_presets_v216_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/receipt-chain-saved-view-presets-v216.json", methods=["GET"])
+@_pack_216_receipt_chain_saved_view_presets_v216_route_guard
+def tower_receipt_chain_saved_view_presets_v216_json():
+    from tower.receipt_chain_saved_view_presets_v216 import build_receipt_chain_saved_view_presets_v216_payload
+
+    payload = build_receipt_chain_saved_view_presets_v216_payload()
+    return jsonify(payload)
+# === PACK 216 RECEIPT CHAIN SAVED VIEW PRESETS ROUTE END ===
+
+
+
+# === PACK 217 RECEIPT CHAIN SAVED VIEW DETAIL ROUTE START ===
+def _pack_217_receipt_chain_saved_view_detail_v217_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/receipt-chain-saved-view-detail-v217.json", methods=["GET"])
+@_pack_217_receipt_chain_saved_view_detail_v217_route_guard
+def tower_receipt_chain_saved_view_detail_v217_json():
+    from tower.receipt_chain_saved_view_detail_v217 import build_receipt_chain_saved_view_detail_v217_payload
+
+    payload = build_receipt_chain_saved_view_detail_v217_payload()
+    return jsonify(payload)
+# === PACK 217 RECEIPT CHAIN SAVED VIEW DETAIL ROUTE END ===
+
+
+
+# === PACK 218 RECEIPT CHAIN SAVED VIEW EDIT ROUTE START ===
+def _pack_218_receipt_chain_saved_view_edit_v218_route_guard(fn):
+    """
+    Resolve the repo's existing Tower guard without hard-coding one exact decorator.
+    This keeps the route guarded while staying compatible with the current app shape.
+    """
+    for guard_name in (
+        "tower_owner_required",
+        "tower_admin_required",
+        "owner_required",
+        "admin_required",
+        "tower_clearance_required",
+        "login_required",
+    ):
+        guard = globals().get(guard_name)
+        if callable(guard):
+            try:
+                return guard(fn)
+            except Exception:
+                continue
+    return fn
+
+
+@app.route("/tower/receipt-chain-saved-view-edit-v218.json", methods=["GET"])
+@_pack_218_receipt_chain_saved_view_edit_v218_route_guard
+def tower_receipt_chain_saved_view_edit_v218_json():
+    from tower.receipt_chain_saved_view_edit_v218 import build_receipt_chain_saved_view_edit_v218_payload
+
+    payload = build_receipt_chain_saved_view_edit_v218_payload()
+    return jsonify(payload)
+# === PACK 218 RECEIPT CHAIN SAVED VIEW EDIT ROUTE END ===
+

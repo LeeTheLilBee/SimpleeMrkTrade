@@ -4993,3 +4993,178 @@ def append_pack_215_receipt_chain_batch_211_215_checkpoint_v215_quick_action(act
         return actions
 # === PACK 215 RECEIPT CHAIN BATCH 211 215 CHECKPOINT QUICK ACTION END ===
 
+
+
+# === PACK 216 RECEIPT CHAIN SAVED VIEW PRESETS QUICK ACTION START ===
+def build_pack_216_receipt_chain_saved_view_presets_v216_quick_action():
+    """
+    Pack 216 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_saved_view_presets_v216 import build_receipt_chain_saved_view_presets_v216_quick_action
+        return build_receipt_chain_saved_view_presets_v216_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_saved_view_presets_v216",
+            "label": "Receipt Chain Saved View Presets",
+            "title": "Receipt Chain Saved View Presets Preview",
+            "href": "/tower/receipt-chain-saved-view-presets-v216.json",
+            "endpoint": "/tower/receipt-chain-saved-view-presets-v216.json",
+            "description": "Preview saved view presets, filter maps, scope cards, and blocked saved-view actions.",
+            "status": "review",
+            "pack": "Pack 216",
+            "category": "policy",
+            "simulated_only": True,
+            "saved_view_preset_preview_only": True,
+            "saved_view_filter_map_preview_only": True,
+            "saved_view_scope_card_preview_only": True,
+            "saved_view_action_menu_preview_only": True,
+            "owner_saved_view_review_queue_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_216_receipt_chain_saved_view_presets_v216_quick_action(actions):
+    """
+    Append Pack 216 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_saved_view_presets_v216" not in existing_ids:
+            actions.append(build_pack_216_receipt_chain_saved_view_presets_v216_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 216 RECEIPT CHAIN SAVED VIEW PRESETS QUICK ACTION END ===
+
+
+
+# === PACK 217 RECEIPT CHAIN SAVED VIEW DETAIL QUICK ACTION START ===
+def build_pack_217_receipt_chain_saved_view_detail_v217_quick_action():
+    """
+    Pack 217 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_saved_view_detail_v217 import build_receipt_chain_saved_view_detail_v217_quick_action
+        return build_receipt_chain_saved_view_detail_v217_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_saved_view_detail_v217",
+            "label": "Receipt Chain Saved View Detail",
+            "title": "Receipt Chain Saved View Detail Preview",
+            "href": "/tower/receipt-chain-saved-view-detail-v217.json",
+            "endpoint": "/tower/receipt-chain-saved-view-detail-v217.json",
+            "description": "Preview selected preset details, field rows, linked filters, linked scopes, and blocked detail actions.",
+            "status": "review",
+            "pack": "Pack 217",
+            "category": "policy",
+            "simulated_only": True,
+            "saved_view_detail_preview_only": True,
+            "selected_preset_detail_preview_only": True,
+            "preset_field_detail_preview_only": True,
+            "linked_filter_detail_preview_only": True,
+            "linked_scope_detail_preview_only": True,
+            "saved_view_detail_action_menu_preview_only": True,
+            "owner_saved_view_detail_queue_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_217_receipt_chain_saved_view_detail_v217_quick_action(actions):
+    """
+    Append Pack 217 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_saved_view_detail_v217" not in existing_ids:
+            actions.append(build_pack_217_receipt_chain_saved_view_detail_v217_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 217 RECEIPT CHAIN SAVED VIEW DETAIL QUICK ACTION END ===
+
+
+
+# === PACK 218 RECEIPT CHAIN SAVED VIEW EDIT QUICK ACTION START ===
+def build_pack_218_receipt_chain_saved_view_edit_v218_quick_action():
+    """
+    Pack 218 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_saved_view_edit_v218 import build_receipt_chain_saved_view_edit_v218_quick_action
+        return build_receipt_chain_saved_view_edit_v218_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_saved_view_edit_v218",
+            "label": "Receipt Chain Saved View Edit",
+            "title": "Receipt Chain Saved View Edit Preview",
+            "href": "/tower/receipt-chain-saved-view-edit-v218.json",
+            "endpoint": "/tower/receipt-chain-saved-view-edit-v218.json",
+            "description": "Preview editable fields, validation rules, diffs, conflicts, and blocked edit actions.",
+            "status": "review",
+            "pack": "Pack 218",
+            "category": "policy",
+            "simulated_only": True,
+            "saved_view_edit_preview_only": True,
+            "editable_field_preview_only": True,
+            "edit_validation_rule_preview_only": True,
+            "edit_diff_preview_only": True,
+            "edit_conflict_preview_only": True,
+            "saved_view_edit_action_menu_preview_only": True,
+            "owner_saved_view_edit_queue_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_218_receipt_chain_saved_view_edit_v218_quick_action(actions):
+    """
+    Append Pack 218 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_saved_view_edit_v218" not in existing_ids:
+            actions.append(build_pack_218_receipt_chain_saved_view_edit_v218_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 218 RECEIPT CHAIN SAVED VIEW EDIT QUICK ACTION END ===
+
