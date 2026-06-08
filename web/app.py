@@ -13895,3 +13895,39 @@ def tower_receipt_chain_saved_view_edit_v218_json():
     return jsonify(payload)
 # === PACK 218 RECEIPT CHAIN SAVED VIEW EDIT ROUTE END ===
 
+# --- SEARCHABLE LABEL: TOWER_PACK_219A_RECEIPT_CHAIN_SAVED_VIEW_HISTORY_PREVIEW_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-history-v219a.json", methods=["GET"])
+@_pack_218_receipt_chain_saved_view_edit_v218_route_guard
+def tower_receipt_chain_saved_view_history_v219a_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_history_v219a import build_receipt_chain_saved_view_history_preview
+
+    return jsonify(build_receipt_chain_saved_view_history_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_219B_RECEIPT_CHAIN_SAVED_VIEW_VERSION_COMPARE_PREVIEW_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-version-compare-v219b.json", methods=["GET"])
+@_pack_218_receipt_chain_saved_view_edit_v218_route_guard
+def tower_receipt_chain_saved_view_version_compare_v219b_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_version_compare_v219b import build_receipt_chain_saved_view_version_compare_preview
+
+    return jsonify(build_receipt_chain_saved_view_version_compare_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_219C_RECEIPT_CHAIN_SAVED_VIEW_COMPARE_FILTER_NAVIGATION_PREVIEW_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-compare-filter-navigation-v219c.json", methods=["GET"])
+@_pack_218_receipt_chain_saved_view_edit_v218_route_guard
+def tower_receipt_chain_saved_view_compare_filter_navigation_v219c_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_compare_filter_navigation_v219c import build_receipt_chain_saved_view_compare_filter_navigation_preview
+
+    return jsonify(build_receipt_chain_saved_view_compare_filter_navigation_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_220_RECEIPT_CHAIN_SAVED_VIEW_BATCH_CLOSE_READINESS_PREVIEW_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-batch-close-readiness-v220.json", methods=["GET"])
+@_pack_218_receipt_chain_saved_view_edit_v218_route_guard
+def tower_receipt_chain_saved_view_batch_close_readiness_v220_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_batch_close_readiness_v220 import build_receipt_chain_saved_view_batch_close_readiness_preview
+
+    return jsonify(build_receipt_chain_saved_view_batch_close_readiness_preview())
+
