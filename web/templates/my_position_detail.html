@@ -1,154 +1,784 @@
 {% extends "base.html" %}
-{% from "_ui_macros.html" import summary_card, stat_grid, key_value_list, note_card, reason_list %}
+
+{% block title %}
+  {% if position %}{{ position.symbol }} · My Position Detail · The Observatory{% else %}My Position Detail · The Observatory{% endif %}
+{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_POSITIONS_PORTFOLIO_SESSION_004D_MY_POSITION_DETAIL_DARK_REWRITE -->
 
-<div style="margin-bottom:14px; display:flex; gap:8px; flex-wrap:wrap;">
-    <a href="/my-positions" class="signal-stat-chip" style="text-decoration:none;">← Back to My Positions</a>
-    <a href="/my-positions/analyze" class="signal-stat-chip" style="text-decoration:none;">Analyze My Trades</a>
-</div>
+{% set p = position if position is defined and position else none %}
+{% set summary = page_summary if page_summary is defined and page_summary else {} %}
+{% set pos_id = p.position_id if p and p.position_id is defined else p.get("position_id", "") if p else "" %}
+{% set symbol = p.symbol if p and p.symbol is defined else p.get("symbol", "UNKNOWN") if p else "UNKNOWN" %}
+{% set direction = p.direction if p and p.direction is defined else p.get("direction", "N/A") if p else "N/A" %}
+{% set health = p.health if p and p.health is defined else p.get("health", {}) if p else {} %}
+{% set agreement = p.system_agreement if p and p.system_agreement is defined else p.get("system_agreement", {}) if p else {} %}
+{% set health_score = health.score if health.score is defined else health.get("score", 0) if health else 0 %}
+{% set health_label = health.label if health.label is defined else health.get("label", "Health") if health else "Health" %}
+{% set health_status = health.status if health.status is defined else health.get("status", "N/A") if health else "N/A" %}
+{% set health_note = health.note if health.note is defined else health.get("note", "No health note attached.") if health else "No health note attached." %}
+{% set agreement_score = agreement.score if agreement.score is defined else agreement.get("score", 0) if agreement else 0 %}
+{% set agreement_label = agreement.label if agreement.label is defined else agreement.get("label", "Agreement") if agreement else "Agreement" %}
+{% set agreement_reasons = agreement.reasons if agreement.reasons is defined else agreement.get("reasons", []) if agreement else [] %}
+{% set feedback = p.system_feedback if p and p.system_feedback is defined else p.get("system_feedback", []) if p else [] %}
+{% set context = p.context if p and p.context is defined else p.get("context", []) if p else [] %}
 
-{% if error %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div class="passage-frame"><p style="margin:0;">{{ error }}</p></div>
-</div>
-{% endif %}
+<style>
+  /* OBSERVATORY_POSITIONS_PORTFOLIO_SESSION_004D_MY_POSITION_DETAIL_DARK_REWRITE_STYLES */
 
-{% if not position %}
-<div class="card premium-card">
-    <div class="passage-frame"><p style="margin:0;">Position not found.</p></div>
-</div>
-{% else %}
+  html body .position-detail-shell,
+  html body .position-detail-shell * {
+    box-sizing: border-box;
+  }
 
-<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
-    <h2>{{ position.symbol }} — My Position</h2>
-    <div class="passage-frame">
-        <p>
-            A live user-managed position reviewed through health, agreement, context, and discipline rather than just raw price movement.
+  html body .position-detail-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .position-detail-shell a {
+    color: inherit;
+  }
+
+  html body .pd-hero,
+  html body .pd-panel,
+  html body .pd-card,
+  html body .pd-chip,
+  html body .pd-stat,
+  html body .pd-empty,
+  html body .pd-metric,
+  html body .pd-drawer,
+  html body .pd-form-field {
+    color-scheme: dark;
+  }
+
+  html body .pd-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .pd-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .pd-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .pd-kicker,
+  html body .pd-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .pd-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .pd-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .pd-copy,
+  html body .pd-muted,
+  html body .pd-card p,
+  html body .pd-empty p,
+  html body .pd-list li,
+  html body .pd-drawer-body,
+  html body .pd-form-field label {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .pd-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .pd-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .pd-btn,
+  html body .pd-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .pd-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .pd-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .pd-btn.danger {
+    border-color: rgba(248, 113, 113, 0.48);
+    color: #fecaca;
+  }
+
+  html body .pd-btn.danger:hover {
+    border-color: rgba(248, 113, 113, 0.80);
+    color: #ffffff;
+  }
+
+  html body .pd-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .pd-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .pd-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .pd-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .pd-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .pd-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .pd-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .pd-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .pd-stat,
+  html body .pd-metric {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .pd-stat span,
+  html body .pd-metric span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .pd-stat strong,
+  html body .pd-metric strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .pd-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .pd-stack {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .pd-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .pd-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .pd-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .pd-panel h2,
+  html body .pd-panel h3,
+  html body .pd-card h3,
+  html body .pd-card h4,
+  html body .pd-empty h3,
+  html body .pd-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .pd-panel h2,
+  html body .pd-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .pd-card-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  html body .pd-card,
+  html body .pd-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .pd-card h3,
+  html body .pd-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .pd-card p {
+    margin: 0;
+  }
+
+  html body .pd-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+    gap: 12px;
+  }
+
+  html body .pd-note {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(2, 6, 23, 0.92));
+  }
+
+  html body .pd-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  html body .pd-list li + li {
+    margin-top: 8px;
+  }
+
+  html body .pd-form-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  html body .pd-form-field {
+    display: grid;
+    gap: 6px;
+  }
+
+  html body .pd-form-field label {
+    font-size: 0.78rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  html body .pd-form-field input,
+  html body .pd-form-field select,
+  html body .pd-form-field textarea {
+    width: 100%;
+    border-radius: 14px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    background: rgba(2, 6, 23, 0.72);
+    color: #e5e7eb;
+    padding: 10px 12px;
+    outline: none;
+  }
+
+  html body .pd-form-field textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  html body .pd-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .pd-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .pd-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .pd-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 1040px) {
+    html body .pd-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 940px) {
+    html body .pd-hero-inner,
+    html body .pd-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .position-detail-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .pd-hero-inner {
+      padding: 20px;
+    }
+
+    html body .pd-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="position-detail-shell">
+
+  {% if error %}
+  <section class="pd-panel" style="margin-bottom:18px;">
+    <div class="pd-empty">
+      <h3 style="margin:0 0 8px;">Position warning</h3>
+      <p style="margin:0;">{{ error }}</p>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if not p %}
+  <section class="pd-panel">
+    <div class="pd-empty">
+      <h3 style="margin:0 0 8px;">Position not found</h3>
+      <p style="margin:0;">No position detail is available for this record.</p>
+      <div class="pd-actions" style="margin-top:14px;">
+        <a class="pd-btn primary" href="/my-positions">Back to My Positions</a>
+      </div>
+    </div>
+  </section>
+
+  {% else %}
+
+  <section class="pd-hero">
+    <div class="pd-hero-inner">
+
+      <div>
+        <span class="pd-kicker">My Position Detail Desk</span>
+
+        <h1 class="pd-title">{{ symbol }}</h1>
+
+        <p class="pd-copy">
+          <strong style="color:#f8fafc;">{{ direction }}</strong>
+          — a user-managed live position reviewed through health, agreement,
+          discipline, thesis, notes, and current trade posture.
         </p>
-    </div>
-</div>
 
-{{ summary_card(page_summary.headline, page_summary.summary, page_summary.chip) }}
-
-{{ stat_grid([
-    {"title": "Direction", "value": position.direction},
-    {"title": "Health Score", "value": position.health.score},
-    {"title": "Agreement Score", "value": position.system_agreement.score},
-    {"title": "Conviction", "value": position.conviction},
-    {"title": "Status", "value": position.status},
-]) }}
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    {{ key_value_list("Position Setup", [
-        {"label": "Entry", "value": position.entry},
-        {"label": "Stop", "value": position.stop},
-        {"label": "Target", "value": position.target},
-        {"label": "Current Price", "value": position.current_price},
-    ]) }}
-
-    {{ key_value_list("Health Read", [
-        {"label": "Label", "value": position.health.label},
-        {"label": "Status", "value": position.health.status},
-        {"label": "Note", "value": position.health.note},
-    ]) }}
-
-    <div class="card premium-card">
-        <h3>System Agreement</h3>
-        <div style="display:grid; gap:8px; margin-top:12px;">
-            <div class="passage-frame"><p style="margin:0;"><strong>{{ position.system_agreement.label }}</strong></p></div>
-            {% for line in position.system_agreement.reasons %}
-            <div class="passage-frame"><p style="margin:0;">{{ line }}</p></div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <h3>Live Position Read</h3>
-    <div style="display:grid; gap:8px; margin-top:12px;">
-        {% if position.health.score >= 75 and position.system_agreement.score >= 75 %}
-        <div class="passage-frame"><p style="margin:0;">This position still has real support. The trade is behaving like something the system can justify.</p></div>
-        <div class="passage-frame"><p style="margin:0;">Current posture: do not ruin a good state with anxious over-management.</p></div>
-        {% elif position.health.score < 35 and position.system_agreement.score < 55 %}
-        <div class="passage-frame"><p style="margin:0;">This position is weak in both idea quality and live behavior.</p></div>
-        <div class="passage-frame"><p style="margin:0;">Current posture: capital protection matters more than narrative right now.</p></div>
-        {% elif position.health.score < 35 %}
-        <div class="passage-frame"><p style="margin:0;">The position is under real pressure. Passive management becomes its own mistake here.</p></div>
-        <div class="passage-frame"><p style="margin:0;">Current posture: tighten discipline and decide instead of drifting.</p></div>
-        {% elif position.system_agreement.score < 55 %}
-        <div class="passage-frame"><p style="margin:0;">The trade is still alive, but the system is not giving it strong contextual backing.</p></div>
-        <div class="passage-frame"><p style="margin:0;">Current posture: be cautious about forcing confidence where support is weak.</p></div>
-        {% else %}
-        <div class="passage-frame"><p style="margin:0;">The position is still developing. The evidence is not clean enough yet to call it a clean win or failure.</p></div>
-        <div class="passage-frame"><p style="margin:0;">Current posture: stay attentive and let the evidence build.</p></div>
-        {% endif %}
-    </div>
-</div>
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    {{ reason_list("System Feedback", position.system_feedback) }}
-
-    {{ key_value_list("Market Context", [
-        {"label": "Mode", "value": position.market_context.mode},
-        {"label": "Breadth", "value": position.market_context.breadth},
-        {"label": "Regime", "value": position.market_context.regime},
-        {"label": "Volatility", "value": position.market_context.volatility_state},
-    ]) }}
-</div>
-
-{% if position.engine_candidate %}
-{{ note_card("Engine View on This Symbol", "Score " ~ position.engine_candidate.score ~ " | " ~ position.engine_candidate.confidence ~ " | " ~ position.engine_candidate.strategy) }}
-{% endif %}
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    {{ note_card("Original Thesis", position.thesis or "No thesis added yet.") }}
-    {{ note_card("Your Notes", position.notes or "No notes added yet.") }}
-</div>
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Edit Position</h3>
-    <form method="POST" action="/my-positions/{{ position.position_id }}/edit" style="margin-top:14px;">
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
-            <div><label>Stop</label><input type="number" step="0.01" name="stop" class="input" value="{{ position.stop }}"></div>
-            <div><label>Target</label><input type="number" step="0.01" name="target" class="input" value="{{ position.target }}"></div>
-            <div>
-                <label>Conviction</label>
-                <select name="conviction" class="input">
-                    <option {% if position.conviction == "Low" %}selected{% endif %}>Low</option>
-                    <option {% if position.conviction == "Medium" %}selected{% endif %}>Medium</option>
-                    <option {% if position.conviction == "High" %}selected{% endif %}>High</option>
-                </select>
-            </div>
-            <div>
-                <label>Status</label>
-                <select name="status" class="input">
-                    <option {% if position.status == "Open" %}selected{% endif %}>Open</option>
-                    <option {% if position.status == "Closed" %}selected{% endif %}>Closed</option>
-                </select>
-            </div>
+        <div class="pd-actions">
+          <a class="pd-btn primary" href="/my-positions">Back to My Positions</a>
+          <a class="pd-btn" href="/my-positions/analyze">Analyze My Trades</a>
+          <a class="pd-btn" href="/my-positions/archived">Archived Positions</a>
+          <a class="pd-btn" href="/live-activity">Live Activity</a>
         </div>
 
-        <div style="margin-top:12px;">
-            <label>Notes</label>
-            <textarea name="notes" class="input" rows="4">{{ position.notes }}</textarea>
-        </div>
+        <div class="pd-stats-grid">
+          <div class="pd-stat">
+            <span>Direction</span>
+            <strong>{{ direction }}</strong>
+          </div>
 
-        <div style="margin-top:14px;">
-            <button type="submit" class="cta-btn premium-gold-btn">Save Changes</button>
-        </div>
-    </form>
-</div>
+          <div class="pd-stat">
+            <span>Health</span>
+            <strong>{{ health_score }}</strong>
+          </div>
 
-<div class="card premium-card gold-accent-card">
-    <h3>Close Position</h3>
-    <div class="passage-frame" style="margin-top:12px;">
-        <p style="margin:0;">Archive this live position and move it into your trade review layer.</p>
+          <div class="pd-stat">
+            <span>Agreement</span>
+            <strong>{{ agreement_score }}</strong>
+          </div>
+
+          <div class="pd-stat">
+            <span>Conviction</span>
+            <strong>{{ p.conviction }}</strong>
+          </div>
+
+          <div class="pd-stat">
+            <span>Status</span>
+            <strong>{{ p.status }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="pd-read-card">
+        <div class="pd-orb" aria-hidden="true"></div>
+        <h2>Soulaana position read</h2>
+        <p>
+          Check health and agreement first. If both are strong, manage with discipline.
+          If either is weak, decide instead of drifting.
+        </p>
+      </aside>
+
     </div>
+  </section>
 
-    <form method="POST" action="/my-positions/{{ position.position_id }}/close" style="margin-top:14px;">
-        <button type="submit" class="cta-btn secondary">Close Position</button>
-    </form>
+  <div class="pd-grid">
+
+    <main class="pd-stack">
+
+      <section class="pd-panel">
+        <div class="pd-panel-head">
+          <div>
+            <p class="pd-eyebrow">Position summary</p>
+            <h2>{{ summary.headline if summary.headline is defined else summary.get("headline", "Position read") }}</h2>
+            <p class="pd-muted" style="margin:8px 0 0;">
+              {{ summary.summary if summary.summary is defined else summary.get("summary", "Review this position through health, agreement, and discipline.") }}
+            </p>
+          </div>
+          <span class="pd-chip {% if health_score >= 75 and agreement_score >= 75 %}gold{% elif health_score < 35 or agreement_score < 55 %}red{% else %}blue{% endif %}">
+            {{ summary.chip if summary.chip is defined else summary.get("chip", health_label) }}
+          </span>
+        </div>
+
+        <div class="pd-metric-grid">
+          <div class="pd-metric">
+            <span>Entry</span>
+            <strong>{{ p.entry }}</strong>
+          </div>
+
+          <div class="pd-metric">
+            <span>Stop</span>
+            <strong>{{ p.stop }}</strong>
+          </div>
+
+          <div class="pd-metric">
+            <span>Target</span>
+            <strong>{{ p.target }}</strong>
+          </div>
+
+          <div class="pd-metric">
+            <span>Current Price</span>
+            <strong>{{ p.current_price }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="pd-panel">
+        <div class="pd-panel-head">
+          <div>
+            <p class="pd-eyebrow">Live position read</p>
+            <h2>Current posture</h2>
+          </div>
+          <span class="pd-chip {% if health_score >= 75 and agreement_score >= 75 %}gold{% elif health_score < 35 or agreement_score < 55 %}red{% else %}blue{% endif %}">
+            {{ health_label }}
+          </span>
+        </div>
+
+        <div class="pd-card-grid">
+          <article class="pd-card">
+            <h3>Position behavior</h3>
+            <p>
+              {% if health_score >= 75 and agreement_score >= 75 %}
+                This position still has real support. The trade is behaving like something the system can justify.
+              {% elif health_score < 35 and agreement_score < 55 %}
+                This position is weak in both idea quality and live behavior. Capital protection matters more than narrative right now.
+              {% elif health_score < 35 %}
+                The position is under real pressure. Passive management becomes its own mistake here.
+              {% elif agreement_score < 55 %}
+                The trade is still alive, but the system is not giving it strong contextual backing.
+              {% else %}
+                The position is still developing. The evidence is not clean enough yet to call it a clean win or failure.
+              {% endif %}
+            </p>
+          </article>
+
+          <article class="pd-card">
+            <h3>Health read</h3>
+            <p><strong style="color:#f8fafc;">{{ health_status }}</strong></p>
+            <p style="margin-top:8px;">{{ health_note }}</p>
+          </article>
+
+          <article class="pd-card">
+            <h3>System agreement</h3>
+            <p><strong style="color:#f8fafc;">{{ agreement_label }}</strong></p>
+            {% if agreement_reasons %}
+            <ul class="pd-list" style="margin-top:8px;">
+              {% for line in agreement_reasons[:5] %}
+              <li>{{ line }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </article>
+        </div>
+      </section>
+
+      <section class="pd-panel">
+        <div class="pd-panel-head">
+          <div>
+            <p class="pd-eyebrow">Feedback and thesis</p>
+            <h2>Decision support</h2>
+          </div>
+        </div>
+
+        <div class="pd-card-grid">
+          {% if feedback %}
+          <article class="pd-card">
+            <h3>System Feedback</h3>
+            <ul class="pd-list">
+              {% for line in feedback[:6] %}
+              <li>{{ line }}</li>
+              {% endfor %}
+            </ul>
+          </article>
+          {% endif %}
+
+          <article class="pd-card">
+            <h3>Original Thesis</h3>
+            <p>{{ p.thesis or "No thesis added yet." }}</p>
+          </article>
+
+          {% if context %}
+          <article class="pd-card">
+            <h3>Context</h3>
+            <ul class="pd-list">
+              {% for line in context[:6] %}
+              <li>{{ line }}</li>
+              {% endfor %}
+            </ul>
+          </article>
+          {% endif %}
+        </div>
+      </section>
+
+    </main>
+
+    <aside class="pd-stack">
+
+      <section class="pd-panel">
+        <div class="pd-panel-head">
+          <div>
+            <p class="pd-eyebrow">Update position</p>
+            <h2>Management notes</h2>
+          </div>
+        </div>
+
+        <form action="/my-positions/{{ pos_id }}/edit" method="POST" class="pd-form-grid">
+          <div class="pd-form-field">
+            <label for="stop">Stop</label>
+            <input id="stop" name="stop" value="{{ p.stop }}">
+          </div>
+
+          <div class="pd-form-field">
+            <label for="target">Target</label>
+            <input id="target" name="target" value="{{ p.target }}">
+          </div>
+
+          <div class="pd-form-field">
+            <label for="conviction">Conviction</label>
+            <select id="conviction" name="conviction">
+              {% for option in ["Low", "Medium", "High"] %}
+              <option value="{{ option }}" {% if p.conviction == option %}selected{% endif %}>{{ option }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="pd-form-field">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+              {% for option in ["Open", "Watching", "Needs Review", "Closed"] %}
+              <option value="{{ option }}" {% if p.status == option %}selected{% endif %}>{{ option }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="pd-form-field">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes">{{ p.notes or "" }}</textarea>
+          </div>
+
+          <button type="submit" class="pd-btn primary" style="width:fit-content;">Save Position</button>
+        </form>
+      </section>
+
+      <section class="pd-panel">
+        <div class="pd-panel-head">
+          <div>
+            <p class="pd-eyebrow">Close action</p>
+            <h2>Finish this position</h2>
+          </div>
+        </div>
+
+        <article class="pd-card">
+          <p>
+            Closing this position moves it out of the active layer and into the archived/review flow.
+            Use this when the position no longer belongs in active management.
+          </p>
+        </article>
+
+        <form action="/my-positions/{{ pos_id }}/close" method="POST" style="margin-top:14px;">
+          <button type="submit" class="pd-btn danger">Close Position</button>
+        </form>
+      </section>
+
+      <section class="pd-panel">
+        <div class="pd-panel-head">
+          <div>
+            <p class="pd-eyebrow">Connected rooms</p>
+            <h2>Follow-up</h2>
+          </div>
+        </div>
+
+        <div class="pd-card-grid">
+          <a class="pd-card" href="/my-positions" style="text-decoration:none;">
+            <h3>My Positions</h3>
+            <p>Return to the live user position desk.</p>
+          </a>
+
+          <a class="pd-card" href="/my-positions/analyze" style="text-decoration:none;">
+            <h3>Trade Review Desk</h3>
+            <p>Review trade behavior and decision quality.</p>
+          </a>
+
+          <a class="pd-card" href="/my-positions/archived" style="text-decoration:none;">
+            <h3>Archived Positions</h3>
+            <p>Review closed positions and past outcomes.</p>
+          </a>
+        </div>
+      </section>
+
+      <details class="pd-drawer">
+        <summary>Preserved position payload</summary>
+        <div class="pd-drawer-body">
+          <pre>{{ p }}</pre>
+        </div>
+      </details>
+
+    </aside>
+
+  </div>
+
+  {% endif %}
 </div>
-
-{% endif %}
 {% endblock %}

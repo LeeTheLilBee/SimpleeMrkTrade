@@ -1,104 +1,697 @@
 {% extends "base.html" %}
-{% from "_ui_macros.html" import summary_card, stat_grid, simple_cta_card, note_card, reason_list %}
+
+{% block title %}My Positions Desk · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_POSITIONS_PORTFOLIO_SESSION_004B_MY_POSITIONS_DARK_REWRITE -->
 
-<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
-    <h2>My Positions</h2>
-    <div class="passage-frame">
-        <p>
-            Your active user-owned positions, tracked separately from the system account and reviewed like a live decision desk instead of a basic list.
+{% set rows = positions if positions is defined and positions else [] %}
+{% set summary = page_summary if page_summary is defined and page_summary else {} %}
+{% set shown_count = rows|length %}
+{% set strong_count = namespace(value=0) %}
+{% set weak_count = namespace(value=0) %}
+{% set pressure_count = namespace(value=0) %}
+{% for pos in rows %}
+  {% set health_score = pos.health.score if pos.health is defined and pos.health.score is defined else pos.get("health", {}).get("score", 0) if pos.get is defined else 0 %}
+  {% set agreement_score = pos.system_agreement.score if pos.system_agreement is defined and pos.system_agreement.score is defined else pos.get("system_agreement", {}).get("score", 0) if pos.get is defined else 0 %}
+  {% if health_score >= 75 and agreement_score >= 75 %}
+    {% set strong_count.value = strong_count.value + 1 %}
+  {% endif %}
+  {% if health_score < 35 or agreement_score < 55 %}
+    {% set weak_count.value = weak_count.value + 1 %}
+  {% endif %}
+  {% if health_score < 45 %}
+    {% set pressure_count.value = pressure_count.value + 1 %}
+  {% endif %}
+{% endfor %}
+
+<style>
+  /* OBSERVATORY_POSITIONS_PORTFOLIO_SESSION_004B_MY_POSITIONS_DARK_REWRITE_STYLES */
+
+  html body .my-positions-shell,
+  html body .my-positions-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .my-positions-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .my-positions-shell a {
+    color: inherit;
+  }
+
+  html body .mp-hero,
+  html body .mp-panel,
+  html body .mp-card,
+  html body .mp-chip,
+  html body .mp-stat,
+  html body .mp-empty,
+  html body .mp-metric,
+  html body .mp-drawer {
+    color-scheme: dark;
+  }
+
+  html body .mp-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .mp-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .mp-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .mp-kicker,
+  html body .mp-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .mp-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .mp-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .mp-copy,
+  html body .mp-muted,
+  html body .mp-card p,
+  html body .mp-empty p,
+  html body .mp-list li,
+  html body .mp-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .mp-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .mp-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .mp-btn,
+  html body .mp-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .mp-btn:hover,
+  html body .mp-position-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .mp-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .mp-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .mp-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .mp-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .mp-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .mp-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .mp-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .mp-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .mp-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .mp-stat,
+  html body .mp-metric {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .mp-stat span,
+  html body .mp-metric span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .mp-stat strong,
+  html body .mp-metric strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .mp-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .mp-stack {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .mp-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .mp-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .mp-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .mp-panel h2,
+  html body .mp-panel h3,
+  html body .mp-card h3,
+  html body .mp-card h4,
+  html body .mp-empty h3,
+  html body .mp-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .mp-panel h2,
+  html body .mp-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .mp-card-grid,
+  html body .mp-position-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  html body .mp-position-grid {
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  }
+
+  html body .mp-card,
+  html body .mp-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .mp-position-card {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  html body .mp-card h3,
+  html body .mp-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .mp-card p {
+    margin: 0;
+  }
+
+  html body .mp-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  html body .mp-note {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(2, 6, 23, 0.92));
+  }
+
+  html body .mp-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  html body .mp-list li + li {
+    margin-top: 8px;
+  }
+
+  html body .mp-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  html body .mp-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .mp-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .mp-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .mp-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .mp-hero-inner,
+    html body .mp-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .mp-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .my-positions-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .mp-hero-inner {
+      padding: 20px;
+    }
+
+    html body .mp-stats-grid,
+    html body .mp-metric-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="my-positions-shell">
+
+  <section class="mp-hero">
+    <div class="mp-hero-inner">
+
+      <div>
+        <span class="mp-kicker">My Positions Desk</span>
+
+        <h1 class="mp-title">Your live position layer.</h1>
+
+        <p class="mp-copy">
+          This room tracks user-owned positions separately from the system account.
+          It is a live decision desk for health, agreement, pressure, conviction, thesis,
+          and discipline — not a basic list.
         </p>
-    </div>
-</div>
 
-{{ summary_card(page_summary.headline, page_summary.summary, page_summary.chip) }}
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">{{ filter_title or "All Open Positions" }}</h3>
-            <p class="muted-line" style="margin:0;">{{ filter_note or "Showing your full live position layer." }}</p>
+        <div class="mp-actions">
+          <a class="mp-btn primary" href="/my-positions">All Positions</a>
+          <a class="mp-btn" href="/my-positions/archived">Archived Positions</a>
+          <a class="mp-btn" href="/my-positions/analyze">Trade Review Desk</a>
+          <a class="mp-btn" href="/live-activity">Live Activity</a>
         </div>
-        <span class="signal-stat-chip">{{ positions|length }} shown</span>
-    </div>
 
-    <div class="dashboard-subnav" style="margin-top:14px;">
-        <a href="/my-positions" class="cta-btn secondary">All</a>
-        <a href="/my-positions?filter=strong" class="cta-btn secondary">Strong</a>
-        <a href="/my-positions?filter=weak" class="cta-btn secondary">Weak</a>
-        <a href="/my-positions?filter=high_agreement" class="cta-btn secondary">High Agreement</a>
-        <a href="/my-positions?filter=under_pressure" class="cta-btn secondary">Under Pressure</a>
-    </div>
-</div>
+        <div class="mp-stats-grid">
+          <div class="mp-stat">
+            <span>Shown</span>
+            <strong>{{ shown_count }}</strong>
+          </div>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    {{ simple_cta_card("Archived Positions", "Review your past trades and decisions to improve future performance.", "/my-positions/archived", "View Archived Positions →") }}
-    {{ simple_cta_card("Trade Review Desk", "Study archived decision quality, pattern behavior, alignment, conviction, and behavior flags through your coaching layer.", "/my-positions/analyze", "Analyze My Trades →", True) }}
-</div>
+          <div class="mp-stat">
+            <span>Strong</span>
+            <strong>{{ strong_count.value }}</strong>
+          </div>
 
-{% if positions %}
-<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap:18px;">
-    {% for pos in positions %}
-    <a href="/my-positions/{{ pos.position_id }}" style="text-decoration:none; color:inherit;">
-        <div class="card premium-card" style="height:100%;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-                <div>
-                    <h3 style="margin:0 0 6px 0;">{{ pos.symbol }}</h3>
-                    <p class="muted-line" style="margin:0;">{{ pos.direction }} | Entry {{ pos.entry }} | Current {{ pos.current_price }}</p>
-                </div>
-                <span class="signal-stat-chip">{{ pos.system_agreement.label }}</span>
-            </div>
+          <div class="mp-stat">
+            <span>Weak / Mixed</span>
+            <strong>{{ weak_count.value }}</strong>
+          </div>
 
-            <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
-                <div class="card" style="margin:0;"><h4>Health Score</h4><div class="passage-frame"><p style="margin:0;"><strong>{{ pos.health.score }}</strong></p></div></div>
-                <div class="card" style="margin:0;"><h4>Agreement Score</h4><div class="passage-frame"><p style="margin:0;"><strong>{{ pos.system_agreement.score }}</strong></p></div></div>
-                <div class="card" style="margin:0;"><h4>Conviction</h4><div class="passage-frame"><p style="margin:0;"><strong>{{ pos.conviction }}</strong></p></div></div>
-                <div class="card" style="margin:0;"><h4>Status</h4><div class="passage-frame"><p style="margin:0;"><strong>{{ pos.status }}</strong></p></div></div>
-            </div>
-
-            {{ note_card("Live Position Read", pos.health.status ~ ". " ~ pos.health.note) }}
-
-            <div class="card" style="margin-top:14px;">
-                <h4>Decision Posture</h4>
-                <div style="display:grid; gap:8px;">
-                    {% if pos.health.score >= 75 and pos.system_agreement.score >= 75 %}
-                    <div class="passage-frame"><p style="margin:0;">This position is behaving like something the system can justify. The idea still has real support.</p></div>
-                    <div class="passage-frame"><p style="margin:0;">Current posture: stay disciplined and avoid over-managing a position that is still working.</p></div>
-                    {% elif pos.health.score < 35 and pos.system_agreement.score < 55 %}
-                    <div class="passage-frame"><p style="margin:0;">This position is weak both internally and contextually. It is not just uncomfortable — it is poorly supported right now.</p></div>
-                    <div class="passage-frame"><p style="margin:0;">Current posture: protect capital first and stop pretending the environment is helping.</p></div>
-                    {% elif pos.health.score < 35 %}
-                    <div class="passage-frame"><p style="margin:0;">The idea may not be fully broken, but the position itself is under real pressure and needs attention now.</p></div>
-                    <div class="passage-frame"><p style="margin:0;">Current posture: review management quality, tighten discipline, and decide quickly instead of letting it drift.</p></div>
-                    {% elif pos.system_agreement.score < 55 %}
-                    <div class="passage-frame"><p style="margin:0;">This position is still alive, but the surrounding conditions are not giving it strong support.</p></div>
-                    <div class="passage-frame"><p style="margin:0;">Current posture: be cautious about forcing confidence where the system is still mixed or unsupportive.</p></div>
-                    {% else %}
-                    <div class="passage-frame"><p style="margin:0;">This position is still developing. Nothing here screams perfect or broken yet.</p></div>
-                    <div class="passage-frame"><p style="margin:0;">Current posture: stay attentive, let the evidence build, and do not confuse patience with passivity.</p></div>
-                    {% endif %}
-                </div>
-            </div>
-
-            {{ reason_list("System Feedback", pos.system_feedback, 3) }}
-
-            {% if pos.system_agreement.reasons %}
-            {{ reason_list("Why the System Sees It This Way", pos.system_agreement.reasons, 3) }}
-            {% endif %}
-
-            {{ note_card("Original Thesis", pos.thesis or "No thesis added yet.") }}
-
-            {% if pos.notes %}
-            {{ note_card("Your Notes", pos.notes) }}
-            {% endif %}
+          <div class="mp-stat">
+            <span>Under pressure</span>
+            <strong>{{ pressure_count.value }}</strong>
+          </div>
         </div>
-    </a>
-    {% endfor %}
-</div>
-{% else %}
-<div class="card premium-card">
-    <div class="passage-frame"><p style="margin:0;">No positions found for this filter.</p></div>
-</div>
-{% endif %}
+      </div>
 
+      <aside class="mp-read-card">
+        <div class="mp-orb" aria-hidden="true"></div>
+        <h2>Soulaana position read</h2>
+        <p>
+          Start with weak and under-pressure positions. Strong positions need discipline;
+          weak positions need decisions. Do not confuse monitoring with drifting.
+        </p>
+      </aside>
+
+    </div>
+  </section>
+
+  <div class="mp-grid">
+
+    <main class="mp-stack">
+
+      <section class="mp-panel">
+        <div class="mp-panel-head">
+          <div>
+            <p class="mp-eyebrow">Current filter</p>
+            <h2>{{ filter_title or "All Open Positions" }}</h2>
+            <p class="mp-muted" style="margin:8px 0 0;">{{ filter_note or "Showing your full live position layer." }}</p>
+          </div>
+          <span class="mp-chip blue">{{ shown_count }} shown</span>
+        </div>
+
+        <div class="mp-filter-row">
+          <a href="/my-positions" class="mp-btn">All</a>
+          <a href="/my-positions?filter=strong" class="mp-btn">Strong</a>
+          <a href="/my-positions?filter=weak" class="mp-btn">Weak</a>
+          <a href="/my-positions?filter=high_agreement" class="mp-btn">High Agreement</a>
+          <a href="/my-positions?filter=under_pressure" class="mp-btn">Under Pressure</a>
+        </div>
+      </section>
+
+      {% if rows %}
+      <section class="mp-position-grid">
+        {% for pos in rows %}
+        {% set pos_id = pos.position_id if pos.position_id is defined else pos.get("position_id", "") %}
+        {% set health = pos.health if pos.health is defined else pos.get("health", {}) %}
+        {% set agreement = pos.system_agreement if pos.system_agreement is defined else pos.get("system_agreement", {}) %}
+        {% set health_score = health.score if health.score is defined else health.get("score", 0) %}
+        {% set agreement_score = agreement.score if agreement.score is defined else agreement.get("score", 0) %}
+        {% set agreement_label = agreement.label if agreement.label is defined else agreement.get("label", "Agreement") %}
+
+        <a href="/my-positions/{{ pos_id }}" class="mp-card mp-position-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+            <div>
+              <p class="mp-eyebrow">Position</p>
+              <h3>{{ pos.symbol }}</h3>
+              <p class="mp-muted">
+                {{ pos.direction }} · Entry {{ pos.entry }} · Current {{ pos.current_price }}
+              </p>
+            </div>
+
+            <span class="mp-chip {% if health_score >= 75 and agreement_score >= 75 %}gold{% elif health_score < 35 or agreement_score < 55 %}red{% else %}blue{% endif %}">
+              {{ agreement_label }}
+            </span>
+          </div>
+
+          <div class="mp-metric-grid">
+            <div class="mp-metric">
+              <span>Health</span>
+              <strong>{{ health_score }}</strong>
+            </div>
+
+            <div class="mp-metric">
+              <span>Agreement</span>
+              <strong>{{ agreement_score }}</strong>
+            </div>
+
+            <div class="mp-metric">
+              <span>Conviction</span>
+              <strong>{{ pos.conviction }}</strong>
+            </div>
+
+            <div class="mp-metric">
+              <span>Status</span>
+              <strong>{{ pos.status }}</strong>
+            </div>
+          </div>
+
+          <div class="mp-note">
+            <h4>Live Position Read</h4>
+            <p>
+              {% if health_score >= 75 and agreement_score >= 75 %}
+                This position is behaving like something the system can justify. Stay disciplined and avoid over-managing a state that is still working.
+              {% elif health_score < 35 and agreement_score < 55 %}
+                This position is weak both internally and contextually. Protect capital first and stop pretending the environment is helping.
+              {% elif health_score < 35 %}
+                The idea may not be fully broken, but the position itself is under real pressure and needs attention now.
+              {% elif agreement_score < 55 %}
+                This position is still alive, but the surrounding conditions are not giving it strong support.
+              {% else %}
+                This position is still developing. Stay attentive, let evidence build, and do not confuse patience with passivity.
+              {% endif %}
+            </p>
+          </div>
+
+          {% if pos.system_feedback %}
+          <div class="mp-note">
+            <h4>System Feedback</h4>
+            <ul class="mp-list">
+              {% for line in pos.system_feedback[:3] %}
+              <li>{{ line }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
+          {% if agreement.reasons %}
+          <div class="mp-note">
+            <h4>Why the System Sees It This Way</h4>
+            <ul class="mp-list">
+              {% for line in agreement.reasons[:3] %}
+              <li>{{ line }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
+          <div class="mp-note">
+            <h4>Original Thesis</h4>
+            <p>{{ pos.thesis or "No thesis added yet." }}</p>
+          </div>
+        </a>
+        {% endfor %}
+      </section>
+      {% else %}
+      <section class="mp-panel">
+        <div class="mp-empty">
+          <h3 style="margin:0 0 8px;">No active user positions loaded</h3>
+          <p style="margin:0;">
+            The My Positions route is active, but no user-owned live positions are currently available for this filter.
+          </p>
+        </div>
+      </section>
+      {% endif %}
+
+    </main>
+
+    <aside class="mp-stack">
+
+      <section class="mp-panel">
+        <div class="mp-panel-head">
+          <div>
+            <p class="mp-eyebrow">Position rooms</p>
+            <h2>Next actions</h2>
+          </div>
+        </div>
+
+        <div class="mp-card-grid">
+          <a class="mp-card" href="/my-positions/archived" style="text-decoration:none;">
+            <h3>Archived Positions</h3>
+            <p>Review past trades and decisions to improve future performance.</p>
+          </a>
+
+          <a class="mp-card" href="/my-positions/analyze" style="text-decoration:none;">
+            <h3>Trade Review Desk</h3>
+            <p>Study archived decision quality, behavior flags, alignment, conviction, and patterns.</p>
+          </a>
+
+          <a class="mp-card" href="/live-activity" style="text-decoration:none;">
+            <h3>Live Activity</h3>
+            <p>Watch the live system heartbeat for risk responses, closes, errors, and approvals.</p>
+          </a>
+
+          <a class="mp-card" href="/analytics-overview" style="text-decoration:none;">
+            <h3>Analytics Overview</h3>
+            <p>Connect position behavior to the bigger proof and performance picture.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="mp-panel">
+        <div class="mp-panel-head">
+          <div>
+            <p class="mp-eyebrow">Reading rule</p>
+            <h2>Health is not emotion</h2>
+          </div>
+        </div>
+
+        <div class="mp-card-grid">
+          <article class="mp-card">
+            <h3>Strong positions</h3>
+            <p>Do not ruin a good state with anxious over-management.</p>
+          </article>
+
+          <article class="mp-card">
+            <h3>Weak positions</h3>
+            <p>Capital protection matters more than narrative when health and agreement are poor.</p>
+          </article>
+
+          <article class="mp-card">
+            <h3>Mixed positions</h3>
+            <p>Stay attentive and let evidence build, but do not drift without a plan.</p>
+          </article>
+        </div>
+      </section>
+
+      <details class="mp-drawer">
+        <summary>Preserved route payload summary</summary>
+        <div class="mp-drawer-body">
+          <p>
+            This page preserves the existing route variables and links while replacing old shared-card clutter
+            with a dedicated dark My Positions Desk layout.
+          </p>
+          <pre>{{ rows }}</pre>
+        </div>
+      </details>
+
+    </aside>
+
+  </div>
+</div>
 {% endblock %}
