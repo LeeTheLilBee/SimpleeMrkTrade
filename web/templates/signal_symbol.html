@@ -1,864 +1,735 @@
 {% extends "base.html" %}
+
+{% block title %}
+  {{ detail.symbol if detail and detail.symbol is defined else board.symbol if board and board.symbol is defined else "Symbol" }} · Symbol Intelligence · The Observatory
+{% endblock %}
+
 {% block content %}
-{% set ctx = final_symbol_context if final_symbol_context else {} %}
-{% set hero = v2_symbol_hero.get("hero", {}) if v2_symbol_hero else {} %}
-{% set deep = v2_symbol_deep_dive if v2_symbol_deep_dive else {} %}
+<!-- OBSERVATORY_PACK_SYMBOL_INTELLIGENCE_ROOM_002B_CLEAN_DARK_REWRITE -->
+
+{% set d = detail if detail is defined and detail else {} %}
+{% set c = company if company is defined and company else d.get("company", {}) %}
+{% set b = board if board is defined and board else d.get("board", {}) %}
+{% set pi = primary_intelligence if primary_intelligence is defined and primary_intelligence else d.get("primary_intelligence", {}) %}
+{% set signals = symbol_signals if symbol_signals is defined and symbol_signals else d.get("signals", []) %}
+{% set news = news_items if news_items is defined and news_items else d.get("news_items", []) %}
+{% set ctx = final_symbol_context if final_symbol_context is defined and final_symbol_context else {} %}
+{% set hero_pack = v2_symbol_hero if v2_symbol_hero is defined and v2_symbol_hero else {} %}
+{% set hero = hero_pack.get("hero", {}) if hero_pack else {} %}
+{% set deep = v2_symbol_deep_dive if v2_symbol_deep_dive is defined and v2_symbol_deep_dive else {} %}
+{% set expl = symbol_explainability if symbol_explainability is defined and symbol_explainability else {} %}
+{% set news_impact = symbol_news_impact if symbol_news_impact is defined and symbol_news_impact else d.get("news_impact", {}) %}
+{% set panels = deep.get("panels", []) if deep else [] %}
 {% set reasons = ctx.get("hero_reasons", []) if ctx else [] %}
-{% set board_conf = board.get("latest_confidence") if board else "" %}
-{% set board_score = board.get("latest_score") if board else none %}
-{% set expl = symbol_explainability if symbol_explainability else {} %}
-{% set news_impact = symbol_news_impact if symbol_news_impact is defined and symbol_news_impact else (detail.news_impact if detail and detail.news_impact is defined else {}) %}
+
+{% set symbol = d.symbol if d.symbol is defined else d.get("symbol", b.get("symbol", "UNKNOWN")) %}
+{% set company_name = c.name if c.name is defined else c.get("name", b.get("company_name", symbol)) %}
+{% set company_blurb = c.blurb if c.blurb is defined else c.get("blurb", "Symbol detail is temporarily unavailable.") %}
+{% set latest_score = b.latest_score if b.latest_score is defined else b.get("latest_score", d.get("score", "N/A")) %}
+{% set latest_confidence = b.latest_confidence if b.latest_confidence is defined else b.get("latest_confidence", d.get("confidence", "N/A")) %}
+{% set opinion = b.opinion if b.opinion is defined else b.get("opinion", "No active opinion available.") %}
+{% set direction = hero.direction if hero.direction is defined else hero.get("direction", pi.get("direction", "Research")) %}
+{% set setup_type = hero.setup_type if hero.setup_type is defined else hero.get("setup_type", pi.get("setup_type", "Symbol intelligence")) %}
 
 <style>
-.symbol-shell {
-    display: grid;
-    gap: 20px;
-}
+  /* OBSERVATORY_PACK_SYMBOL_INTELLIGENCE_ROOM_002B_CLEAN_DARK_REWRITE_STYLES */
 
-.symbol-hero {
+  html body .symbol-room-shell,
+  html body .symbol-room-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .symbol-room-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .symbol-room-shell a {
+    color: inherit;
+  }
+
+  html body .symbol-hero,
+  html body .symbol-panel,
+  html body .symbol-card,
+  html body .symbol-stat,
+  html body .symbol-chip,
+  html body .symbol-news-card,
+  html body .symbol-drawer,
+  html body .symbol-empty,
+  html body .symbol-scan-card {
+    color-scheme: dark;
+  }
+
+  html body .symbol-hero {
     position: relative;
     overflow: hidden;
-    border-radius: 28px;
-    padding: 24px;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
     background:
-        radial-gradient(circle at top left, rgba(92, 98, 255, 0.18), transparent 30%),
-        radial-gradient(circle at 78% 20%, rgba(130, 180, 255, 0.10), transparent 24%),
-        linear-gradient(135deg, rgba(7, 11, 22, 0.98), rgba(3, 7, 16, 0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 22px 48px rgba(0,0,0,0.36);
-}
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 82% 14%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 72% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
 
-.symbol-hero::before {
+  html body .symbol-hero::before {
     content: "";
     position: absolute;
-    right: 44px;
-    top: 28px;
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(170,205,255,0.52) 18%, rgba(92,98,255,0.18) 44%, transparent 74%);
-    filter: blur(10px);
-    opacity: 0.92;
+    inset: 0;
     pointer-events: none;
-}
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
 
-.symbol-topbar {
+  html body .symbol-hero-inner {
     position: relative;
     z-index: 1;
+    padding: 28px;
+  }
+
+  html body .symbol-topbar {
     display: flex;
     justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
     align-items: flex-start;
-}
-
-.symbol-kicker {
-    display: flex;
-    gap: 8px;
+    gap: 18px;
     flex-wrap: wrap;
-    margin-bottom: 10px;
-}
+  }
 
-.symbol-pill,
-.info-chip,
-.intel-chip {
+  html body .symbol-kicker-row,
+  html body .symbol-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  html body .symbol-chip,
+  html body .symbol-action,
+  html body .symbol-score-pill {
     display: inline-flex;
     align-items: center;
-    padding: 6px 10px;
+    justify-content: center;
+    min-height: 32px;
+    padding: 7px 11px;
     border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.10);
-    backdrop-filter: blur(6px);
-}
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    font-size: 0.78rem;
+    font-weight: 850;
+    text-decoration: none;
+  }
 
-.symbol-title {
-    margin: 0 0 8px 0;
-    font-size: 1.85rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-}
+  html body .symbol-chip.gold {
+    border-color: rgba(250, 204, 21, 0.36);
+    color: #fde68a;
+  }
 
-.symbol-sub {
-    margin: 0;
+  html body .symbol-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .symbol-action:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .symbol-action.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .symbol-title {
+    margin: 18px 0 8px;
+    color: #f8fafc;
+    font-size: clamp(2.45rem, 6vw, 5.35rem);
+    line-height: 0.88;
+    letter-spacing: -0.08em;
+  }
+
+  html body .symbol-subtitle {
     max-width: 860px;
-    opacity: 0.90;
-    line-height: 1.5;
-    font-size: 0.98rem;
-}
+    margin: 0;
+    color: #cbd5e1;
+    line-height: 1.7;
+    font-size: 1.02rem;
+  }
 
-.symbol-meta-grid {
+  html body .symbol-meta-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
-    margin-top: 18px;
-    position: relative;
-    z-index: 1;
-}
+    margin-top: 22px;
+  }
 
-.symbol-stat {
+  html body .symbol-stat {
+    min-height: 96px;
     padding: 14px;
     border-radius: 18px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-}
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
 
-.symbol-stat-label {
+  html body .symbol-stat-label {
+    display: block;
+    color: #94a3b8;
     font-size: 0.72rem;
+    font-weight: 850;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    opacity: 0.68;
-    margin-bottom: 6px;
-}
+    margin-bottom: 7px;
+  }
 
-.symbol-stat-value {
-    font-size: 1rem;
-    font-weight: 800;
-}
+  html body .symbol-stat-value {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
 
-.section-grid {
+  html body .symbol-room-grid {
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
     gap: 18px;
-}
+    margin-top: 20px;
+  }
 
-.panel-stack {
+  html body .symbol-stack {
     display: grid;
     gap: 18px;
-}
+  }
 
-.deep-panel,
-.observatory-panel {
-    border-radius: 24px;
-    padding: 18px;
+  html body .symbol-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
     background:
-        radial-gradient(circle at top left, rgba(92, 98, 255, 0.10), transparent 34%),
-        linear-gradient(135deg, rgba(8, 12, 23, 0.98), rgba(4, 8, 18, 0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 14px 32px rgba(0,0,0,0.28);
-}
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
 
-.panel-head {
+  html body .symbol-panel-head {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 14px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-}
+    margin-bottom: 16px;
+  }
 
-.panel-kicker {
-    font-size: 0.72rem;
-    text-transform: uppercase;
+  html body .symbol-eyebrow {
+    margin: 0 0 5px;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
     letter-spacing: 0.08em;
-    color: rgba(247,248,255,0.64);
-    margin-bottom: 6px;
-}
+    text-transform: uppercase;
+  }
 
-.panel-copy,
-.deep-panel p {
+  html body .symbol-panel h2,
+  html body .symbol-panel h3,
+  html body .symbol-panel h4,
+  html body .symbol-card h3,
+  html body .symbol-card h4,
+  html body .symbol-news-card h4,
+  html body .symbol-empty h3,
+  html body .symbol-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .symbol-panel h2,
+  html body .symbol-panel h3 {
     margin: 0;
-    line-height: 1.46;
-}
+    letter-spacing: -0.035em;
+  }
 
-.reason-list {
+  html body .symbol-copy,
+  html body .symbol-muted,
+  html body .symbol-card p,
+  html body .symbol-news-card p,
+  html body .symbol-empty p,
+  html body .symbol-drawer-body,
+  html body .symbol-drawer-body p,
+  html body .symbol-list li {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .symbol-copy {
+    margin: 0;
+  }
+
+  html body .symbol-card-grid {
     display: grid;
-    gap: 10px;
-    margin-top: 14px;
-}
-
-.reason-item {
-    padding: 12px 13px;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.06);
-    line-height: 1.42;
-}
-
-.hero-strip {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(220px, 280px);
     gap: 12px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-}
+  }
 
-.hero-strip-card {
+  html body .symbol-card,
+  html body .symbol-news-card,
+  html body .symbol-scan-card,
+  html body .symbol-empty {
+    padding: 15px;
     border-radius: 20px;
-    padding: 16px;
-    background:
-        radial-gradient(circle at top left, rgba(92, 98, 255, 0.16), transparent 34%),
-        linear-gradient(135deg, rgba(8, 12, 23, 0.98), rgba(4, 8, 18, 0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    text-decoration: none;
-    color: white;
-}
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
 
-.hero-strip-card h4 {
-    margin: 0 0 8px 0;
-}
+  html body .symbol-card h3,
+  html body .symbol-card h4,
+  html body .symbol-news-card h4 {
+    margin: 0 0 8px;
+  }
 
-.hero-strip-card p {
+  html body .symbol-card p,
+  html body .symbol-news-card p {
     margin: 0;
-    opacity: 0.86;
-    line-height: 1.4;
-}
+  }
 
-.fusion-warning {
-    border-left: 3px solid rgba(255, 140, 174, 0.8);
-}
-
-.intel-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-}
-
-.intel-card {
-    border-radius: 18px;
-    padding: 14px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-}
-
-.intel-card h4 {
-    margin: 0 0 8px 0;
-    font-size: 0.92rem;
-}
-
-.intel-card p {
-    margin: 0;
-}
-
-.news-impact-panel {
-    background:
-        radial-gradient(circle at top left, rgba(108, 118, 255, 0.14), transparent 34%),
-        linear-gradient(135deg, rgba(9, 13, 24, 0.98), rgba(4, 8, 18, 0.98));
-}
-
-.news-impact-summary {
-    padding: 14px;
-    border-radius: 18px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    margin-top: 12px;
-}
-
-.news-impact-summary strong {
-    display: block;
-    margin-bottom: 8px;
-}
-
-.news-impact-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    margin-top: 14px;
-}
-
-.news-impact-card {
-    padding: 14px;
-    border-radius: 18px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-}
-
-.news-impact-card h4 {
-    margin: 0 0 8px 0;
-    font-size: 0.92rem;
-}
-
-.news-impact-card ul {
+  html body .symbol-list {
     margin: 0;
     padding-left: 18px;
-}
+  }
 
-.news-impact-card li {
-    margin-bottom: 8px;
-    line-height: 1.42;
-}
+  html body .symbol-list li + li {
+    margin-top: 8px;
+  }
 
-.news-title-list {
+  html body .symbol-signal-row {
     display: grid;
-    gap: 10px;
-}
+    grid-template-columns: minmax(72px, 0.25fr) minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+  }
 
-.news-title-item {
-    padding: 12px 13px;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.06);
-    line-height: 1.42;
-}
+  html body .symbol-score-pill {
+    min-width: 62px;
+    text-decoration: none;
+  }
 
-@media (max-width: 980px) {
-    .section-grid {
-        grid-template-columns: 1fr;
+  html body .symbol-news-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  html body .symbol-news-card a {
+    color: #bae6fd;
+    text-decoration: none;
+    font-weight: 850;
+  }
+
+  html body .symbol-news-card a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+
+  html body .symbol-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .symbol-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .symbol-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .symbol-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .symbol-room-grid,
+    html body .symbol-hero-inner {
+      grid-template-columns: 1fr;
     }
 
-    .symbol-meta-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    html body .symbol-meta-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .symbol-room-shell {
+      padding: 18px 12px 38px;
     }
 
-    .news-impact-grid {
-        grid-template-columns: 1fr;
+    html body .symbol-hero-inner {
+      padding: 20px;
     }
-}
+
+    html body .symbol-meta-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .symbol-signal-row {
+      grid-template-columns: 1fr;
+    }
+
+    html body .symbol-score-pill {
+      width: fit-content;
+    }
+  }
 </style>
 
-<div class="symbol-shell">
-    <div class="symbol-hero">
-        <div class="symbol-topbar">
+<div class="symbol-room-shell">
+
+  <section class="symbol-hero">
+    <div class="symbol-hero-inner">
+
+      <div class="symbol-topbar">
+        <div class="symbol-kicker-row">
+          <span class="symbol-chip">Symbol Intelligence</span>
+          <span class="symbol-chip blue">{{ direction }}</span>
+          <span class="symbol-chip gold">{{ latest_confidence }}</span>
+        </div>
+
+        <div class="symbol-actions">
+          <a class="symbol-action" href="/signals">Back to Signals</a>
+          <a class="symbol-action" href="/research">Research Room</a>
+          <a class="symbol-action primary" href="/why-this-trade">Decision Library</a>
+        </div>
+      </div>
+
+      <h1 class="symbol-title">{{ symbol }}</h1>
+
+      <p class="symbol-subtitle">
+        <strong>{{ company_name }}</strong>
+        — {{ company_blurb }}
+      </p>
+
+      <div class="symbol-meta-grid">
+        <div class="symbol-stat">
+          <span class="symbol-stat-label">Latest score</span>
+          <span class="symbol-stat-value">{{ latest_score }}</span>
+        </div>
+
+        <div class="symbol-stat">
+          <span class="symbol-stat-label">Confidence</span>
+          <span class="symbol-stat-value">{{ latest_confidence }}</span>
+        </div>
+
+        <div class="symbol-stat">
+          <span class="symbol-stat-label">Setup type</span>
+          <span class="symbol-stat-value">{{ setup_type }}</span>
+        </div>
+
+        <div class="symbol-stat">
+          <span class="symbol-stat-label">Last update</span>
+          <span class="symbol-stat-value">
+            {{ b.latest_timestamp if b.latest_timestamp is defined else b.get("latest_timestamp", "N/A") }}
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="symbol-room-grid">
+
+    <main class="symbol-stack">
+
+      <section class="symbol-panel">
+        <div class="symbol-panel-head">
+          <div>
+            <p class="symbol-eyebrow">Soulaana plain-English read</p>
+            <h2>Current symbol read</h2>
+          </div>
+          <span class="symbol-chip">{{ symbol }}</span>
+        </div>
+
+        <p class="symbol-copy">
+          {{ opinion }}
+        </p>
+
+        {% if reasons %}
+        <div class="symbol-card-grid" style="margin-top: 14px;">
+          {% for reason in reasons[:4] %}
+          <article class="symbol-card">
+            <p>{{ reason }}</p>
+          </article>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="symbol-panel">
+        <div class="symbol-panel-head">
+          <div>
+            <p class="symbol-eyebrow">Primary intelligence</p>
+            <h2>Setup and structure</h2>
+          </div>
+          <span class="symbol-chip blue">{{ direction }}</span>
+        </div>
+
+        <div class="symbol-card-grid">
+          <article class="symbol-card">
+            <h3>Direction</h3>
+            <p>{{ pi.get("direction", direction) if pi else direction }}</p>
+          </article>
+
+          <article class="symbol-card">
+            <h3>Setup type</h3>
+            <p>{{ pi.get("setup_type", setup_type) if pi else setup_type }}</p>
+          </article>
+
+          <article class="symbol-card">
+            <h3>Primary note</h3>
+            <p>
+              {{ pi.get("summary", pi.get("note", pi.get("thesis", "No additional primary intelligence note is attached yet."))) if pi else "No additional primary intelligence note is attached yet." }}
+            </p>
+          </article>
+        </div>
+
+        <details class="symbol-drawer">
+          <summary>Preserved primary intelligence details</summary>
+          <div class="symbol-drawer-body">
+            <pre>{{ pi }}</pre>
+          </div>
+        </details>
+      </section>
+
+      <section class="symbol-panel">
+        <div class="symbol-panel-head">
+          <div>
+            <p class="symbol-eyebrow">Signal stream</p>
+            <h2>Recent signal cards</h2>
+          </div>
+          <span class="symbol-chip">{{ signals|length }} rows</span>
+        </div>
+
+        {% if signals %}
+        <div class="symbol-card-grid">
+          {% for row in signals[:8] %}
+          <article class="symbol-card symbol-signal-row">
             <div>
-                <div class="symbol-kicker">
-                    <span class="symbol-pill">{{ symbol }}</span>
-                    <span class="symbol-pill">{{ ctx.get("hero_action", "wait") }}</span>
-                    <span class="symbol-pill">{{ ctx.get("hero_confidence", "low") }}</span>
-                    {% if ctx.get("hard_reject") %}
-                    <span class="symbol-pill">hard reject</span>
-                    {% endif %}
-                    {% if tier %}
-                    <span class="symbol-pill">{{ tier }}</span>
-                    {% endif %}
-                </div>
-                <h1 class="symbol-title">{{ company.get("name", symbol) }}</h1>
-                <p class="symbol-sub">{{ ctx.get("hero_subtitle", "No final insight available.") }}</p>
+              <strong>{{ row.get("symbol", symbol) }}</strong>
             </div>
-        </div>
 
-        <div class="symbol-meta-grid">
-            <div class="symbol-stat">
-                <div class="symbol-stat-label">Final Verdict</div>
-                <div class="symbol-stat-value">{{ ctx.get("hero_title", "No verdict") }}</div>
-            </div>
-            <div class="symbol-stat">
-                <div class="symbol-stat-label">Action</div>
-                <div class="symbol-stat-value">{{ ctx.get("hero_action", "wait") }}</div>
-            </div>
-            <div class="symbol-stat">
-                <div class="symbol-stat-label">Confidence</div>
-                <div class="symbol-stat-value">{{ ctx.get("hero_confidence", "low") }}</div>
-            </div>
-            <div class="symbol-stat">
-                <div class="symbol-stat-label">Coaching</div>
-                <div class="symbol-stat-value">{{ ctx.get("coaching_tone", "neutral") }}</div>
-            </div>
-        </div>
-    </div>
-
-    {% if v2_horizontal_hero and v2_horizontal_hero.get("cards") %}
-    <div class="observatory-panel">
-        <div class="panel-head">
             <div>
-                <div class="panel-kicker">Nearby Field</div>
-                <h3 style="margin:0;">Nearby Stars</h3>
+              <h4>
+                {{ row.get("strategy", row.get("setup_type", row.get("direction", "Signal"))) }}
+              </h4>
+              <p>
+                {{ row.get("summary", row.get("opinion", row.get("reason", "Signal details are preserved for this symbol."))) }}
+              </p>
             </div>
+
+            <span class="symbol-score-pill">
+              {{ row.get("score", row.get("confidence", "View")) }}
+            </span>
+          </article>
+          {% endfor %}
         </div>
-        <div class="hero-strip">
-            {% for card in v2_horizontal_hero.get("cards", []) %}
-            <a href="{{ card.get('destination', '/signals') }}" class="hero-strip-card">
-                <h4>{{ card.get("symbol", "") }}</h4>
-                <p>{{ card.get("headline", "") }}</p>
-                <div class="info-row">
-                    {% if card.get("lane") %}
-                    <span class="info-chip">{{ card.get("lane") }}</span>
-                    {% endif %}
-                    {% if card.get("pressure_level") %}
-                    <span class="info-chip">{{ card.get("pressure_level") }}</span>
-                    {% endif %}
-                </div>
-            </a>
-            {% endfor %}
+        {% else %}
+        <div class="symbol-empty">
+          <h3 style="margin:0 0 8px;">No signal rows attached</h3>
+          <p style="margin:0;">
+            This symbol page is active, but the current detail payload did not attach signal rows.
+          </p>
         </div>
-    </div>
-    {% endif %}
+        {% endif %}
+      </section>
 
-    <div class="section-grid">
-        <div class="panel-stack">
-            <div class="observatory-panel">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-kicker">Symbol Story</div>
-                        <h3 style="margin:0 0 8px 0;">Final Brain Story</h3>
-                    </div>
-                </div>
-                <p class="panel-copy">{{ ctx.get("hero_story", ctx.get("hero_subtitle", "")) }}</p>
+      {% if panels %}
+      <section class="symbol-panel">
+        <div class="symbol-panel-head">
+          <div>
+            <p class="symbol-eyebrow">Deep dive</p>
+            <h2>Analysis panels</h2>
+          </div>
+          <span class="symbol-chip">{{ panels|length }} panels</span>
+        </div>
 
-                {% if reasons %}
-                <div class="reason-list">
-                    {% for item in reasons %}
-                    <div class="reason-item">{{ item }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
+        <div class="symbol-card-grid">
+          {% for panel in panels[:6] %}
+          <article class="symbol-card">
+            <h3>{{ panel.get("title", panel.get("name", "Deep analysis panel")) }}</h3>
+            <p>
+              {{ panel.get("summary", panel.get("description", "This deep-dive panel is preserved from the symbol intelligence payload.")) }}
+            </p>
 
-            <div class="observatory-panel">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-kicker">Trade Logic</div>
-                        <h3 style="margin:0 0 8px 0;">Trade Thesis</h3>
-                    </div>
-                </div>
-                <p class="panel-copy">{{ hero.get("headline", board.get("opinion", "Active setup.")) }}</p>
-                <div class="info-row" style="margin-top:12px;">
-                    {% if board_conf %}
-                    <span class="info-chip">{{ board_conf }}</span>
-                    {% endif %}
-                    {% if board_score is not none %}
-                    <span class="info-chip">Score {{ board_score }}</span>
-                    {% endif %}
-                    {% if hero.get("direction") %}
-                    <span class="info-chip">{{ hero.get("direction") }}</span>
-                    {% endif %}
-                    {% if hero.get("setup_type") %}
-                    <span class="info-chip">{{ hero.get("setup_type") }}</span>
-                    {% endif %}
-                </div>
-            </div>
-
-            {% if expl %}
-            <div class="observatory-panel">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-kicker">Decision Clarity</div>
-                        <h3 style="margin:0 0 8px 0;">Why This Decision</h3>
-                    </div>
-                </div>
-
-                <p><strong>{{ expl.get("explainability_headline", "") }}</strong></p>
-                <p style="opacity:0.85; margin-top:8px;">{{ expl.get("explainability_subheadline", "") }}</p>
-
-                <div class="info-row" style="margin-top:12px;">
-                    <span class="info-chip">{{ expl.get("explainability_tone", "neutral") }}</span>
-                    <span class="info-chip">{{ expl.get("pressure_badge", "Mixed Pressure") }}</span>
-                    <span class="info-chip">Override: {{ expl.get("override_severity", "none") }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-chip">+{{ expl.get("support_count", 0) }} support</span>
-                    <span class="info-chip">-{{ expl.get("restriction_count", 0) }} pressure</span>
-                </div>
-
-                {% if expl.get("explainability_story") %}
-                <div class="reason-list" style="margin-top:12px;">
-                    <div class="reason-item">{{ expl.get("explainability_story", "") }}</div>
-                </div>
-                {% endif %}
-
-                {% if expl.get("supportive_pressures") %}
-                <div class="reason-list" style="margin-top:14px;">
-                    {% for item in expl.get("supportive_pressures", []) %}
-                    <div class="reason-item">{{ item }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-                {% if expl.get("restrictive_pressures") %}
-                <div class="reason-list" style="margin-top:14px;">
-                    {% for item in expl.get("restrictive_pressures", []) %}
-                    <div class="reason-item fusion-warning">{{ item }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-                {% if expl.get("override_line") %}
-                <div class="reason-list" style="margin-top:14px;">
-                    <div class="reason-item fusion-warning">{{ expl.get("override_line", "") }}</div>
-                </div>
-                {% endif %}
-
-                {% if expl.get("memory_takeaway") %}
-                <div class="reason-list" style="margin-top:14px;">
-                    <div class="reason-item">{{ expl.get("memory_takeaway", "") }}</div>
-                </div>
-                {% endif %}
-            </div>
+            {% if panel.get("content") %}
+            <details class="symbol-drawer">
+              <summary>Panel details</summary>
+              <div class="symbol-drawer-body">
+                <pre>{{ panel.get("content") }}</pre>
+              </div>
+            </details>
             {% endif %}
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
 
-            {% for panel in deep.get("panels", []) %}
-            <div class="observatory-panel">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-kicker">Deep Dive</div>
-                        <h3 style="margin:0 0 8px 0;">{{ panel.get("title", "Panel") }}</h3>
-                    </div>
-                </div>
+    </main>
 
-                <p class="panel-copy">{{ panel.get("summary", "") }}</p>
+    <aside class="symbol-stack">
 
-                {% set content = panel.get("content", {}) %}
-                {% set scanner = content.get("scanner", {}) %}
-                {% set state = content.get("state", {}) %}
-                {% set reasoning = content.get("reasoning", {}) %}
-                {% set options_plan = content.get("options_plan", {}) %}
+      <section class="symbol-panel">
+        <div class="symbol-panel-head">
+          <div>
+            <p class="symbol-eyebrow">Decision support</p>
+            <h2>What to check next</h2>
+          </div>
+        </div>
 
-                <div class="info-row" style="margin-top:12px;">
-                    {% if scanner.get("confidence") %}
-                    <span class="info-chip">{{ scanner.get("confidence") }}</span>
-                    {% endif %}
-                    {% if scanner.get("grade") %}
-                    <span class="info-chip">Grade {{ scanner.get("grade") }}</span>
-                    {% endif %}
-                    {% if state.get("status_label") %}
-                    <span class="info-chip">{{ state.get("status_label") }}</span>
-                    {% endif %}
-                    {% if scanner.get("trend") %}
-                    <span class="info-chip">{{ scanner.get("trend") }}</span>
-                    {% endif %}
-                    {% if scanner.get("direction") %}
-                    <span class="info-chip">{{ scanner.get("direction") }}</span>
-                    {% endif %}
-                </div>
+        <div class="symbol-card-grid">
+          <a class="symbol-card" href="/why-this-trade" style="text-decoration:none;">
+            <h3>Decision Library</h3>
+            <p>See why the system acted, skipped, rejected, or preserved trade ideas.</p>
+          </a>
 
-                {% if options_plan %}
-                <div class="info-row">
-                    {% if options_plan.get("strategy_type") %}
-                    <span class="info-chip">{{ options_plan.get("strategy_type") }}</span>
-                    {% endif %}
-                    {% if options_plan.get("target_dte") %}
-                    <span class="info-chip">DTE {{ options_plan.get("target_dte") }}</span>
-                    {% endif %}
-                    {% if options_plan.get("iv_context") %}
-                    <span class="info-chip">{{ options_plan.get("iv_context") }}</span>
-                    {% endif %}
-                </div>
-                {% endif %}
+          <a class="symbol-card" href="/premium-analysis" style="text-decoration:none;">
+            <h3>Premium Analysis</h3>
+            <p>Open the deeper analysis stream before treating this setup as serious.</p>
+          </a>
 
-                {% set why_symbol = reasoning.get("why_symbol", []) %}
-                {% set why_this_structure = reasoning.get("why_this_structure", []) %}
-                {% set why_not_single_leg = reasoning.get("why_not_single_leg", []) %}
-                {% set why_not = reasoning.get("why_not", []) %}
+          <a class="symbol-card" href="/analytics-overview" style="text-decoration:none;">
+            <h3>Analytics Overview</h3>
+            <p>Compare this symbol against performance and proof context.</p>
+          </a>
 
-                {% if why_symbol or why_this_structure or why_not_single_leg or why_not %}
-                <div class="reason-list">
-                    {% for item in why_symbol %}
-                    <div class="reason-item">{{ item }}</div>
-                    {% endfor %}
-                    {% for item in why_this_structure %}
-                    <div class="reason-item">{{ item }}</div>
-                    {% endfor %}
-                    {% for item in why_not_single_leg %}
-                    <div class="reason-item">{{ item }}</div>
-                    {% endfor %}
-                    {% for item in why_not %}
-                    <div class="reason-item">{{ item }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
+          <a class="symbol-card" href="/market-map" style="text-decoration:none;">
+            <h3>Market Map</h3>
+            <p>Check the broader market layout before focusing only on one ticker.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="symbol-panel">
+        <div class="symbol-panel-head">
+          <div>
+            <p class="symbol-eyebrow">Explainability</p>
+            <h2>Why this symbol matters</h2>
+          </div>
+        </div>
+
+        {% if expl %}
+        <div class="symbol-card-grid">
+          <article class="symbol-card">
+            <h3>Engine explanation</h3>
+            <p>
+              {{ expl.get("summary", expl.get("headline", "Explainability data is attached for this symbol.")) }}
+            </p>
+          </article>
+
+          {% if expl.get("reasons") %}
+          <article class="symbol-card">
+            <h3>Reasons</h3>
+            <ul class="symbol-list">
+              {% for item in expl.get("reasons", [])[:5] %}
+              <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </article>
+          {% endif %}
+
+          <details class="symbol-drawer">
+            <summary>Preserved explainability payload</summary>
+            <div class="symbol-drawer-body">
+              <pre>{{ expl }}</pre>
             </div>
-            {% endfor %}
+          </details>
+        </div>
+        {% else %}
+        <div class="symbol-empty">
+          <h3 style="margin:0 0 8px;">No explainability packet attached</h3>
+          <p style="margin:0;">
+            The symbol room is ready, but the explainability payload is empty for this snapshot.
+          </p>
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="symbol-panel">
+        <div class="symbol-panel-head">
+          <div>
+            <p class="symbol-eyebrow">News and impact</p>
+            <h2>Recent context</h2>
+          </div>
+          <span class="symbol-chip">{{ news|length }} items</span>
         </div>
 
-        <div class="panel-stack">
-            <div class="observatory-panel">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-kicker">Soulanna Voice</div>
-                        <h3 style="margin:0 0 8px 0;">Coaching</h3>
-                    </div>
-                </div>
-                <p class="panel-copy">{{ ctx.get("coaching_message", "Stay disciplined and follow the system.") }}</p>
-                <div class="info-row" style="margin-top:12px;">
-                    <span class="info-chip">{{ ctx.get("coaching_tone", "neutral") }}</span>
-                    <span class="info-chip">{{ ctx.get("hero_action", "wait") }}</span>
-                    <span class="info-chip">{{ ctx.get("hero_confidence", "low") }}</span>
-                </div>
-            </div>
+        {% if news_impact %}
+        <article class="symbol-card" style="margin-bottom: 12px;">
+          <h3>News impact read</h3>
+          <p>
+            {{ news_impact.get("summary", news_impact.get("headline", "News impact context is attached for this symbol.")) }}
+          </p>
+        </article>
+        {% endif %}
 
+        {% if news %}
+        <div class="symbol-news-list">
+          {% for item in news[:6] %}
+          <article class="symbol-news-card">
+            <h4>{{ item.get("title", item.get("headline", "News item")) }}</h4>
+            <p>
+              {{ item.get("summary", item.get("description", item.get("source", "News context preserved."))) }}
+            </p>
 
-{% set behavior_layer = final_symbol_context.get("behavior_layer", {}) if final_symbol_context else {} %}
-{% if behavior_layer %}
-<div class="observatory-panel">
-    <div class="panel-head">
-        <div>
-            <div class="panel-kicker">Behavior Layer</div>
-            <h3 style="margin:0 0 8px 0;">Soulanna Risk Posture</h3>
-        </div>
-        <span class="intel-chip">{{ behavior_layer.get("risk_level", "low") }}</span>
-    </div>
-
-    <div class="info-row">
-        <span class="info-chip">{{ behavior_layer.get("emotional_state", "unknown") }}</span>
-        <span class="info-chip">{{ behavior_layer.get("state_family", "stable") }}</span>
-        <span class="info-chip">{{ behavior_layer.get("tone_mode", "steady") }}</span>
-        <span class="info-chip">{{ behavior_layer.get("warning_level", "normal") }}</span>
-    </div>
-
-    <div class="reason-list" style="margin-top:14px;">
-        <div class="reason-item">
-            <strong>Raw Action:</strong> {{ behavior_layer.get("raw_action", "wait")|upper }}
-        </div>
-        <div class="reason-item">
-            <strong>Adjusted Action:</strong> {{ behavior_layer.get("adjusted_action", "wait")|upper }}
-        </div>
-        <div class="reason-item">
-            <strong>Adjusted Confidence:</strong> {{ behavior_layer.get("adjusted_confidence", "low")|upper }}
-        </div>
-    </div>
-
-    {% if behavior_layer.get("intervention_active") %}
-    <div class="reason-list" style="margin-top:14px;">
-        {% for item in behavior_layer.get("intervention_reasons", []) %}
-        <div class="reason-item fusion-warning">{{ item }}</div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="reason-list" style="margin-top:14px;">
-        <div class="reason-item">Soulanna did not need to intervene on this setup.</div>
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-
-            {% if ctx.get("hard_reject") %}
-            <div class="observatory-panel">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-kicker">Risk Protection</div>
-                        <h3 style="margin:0 0 8px 0;">Hard Rejection</h3>
-                    </div>
-                </div>
-                <div class="reason-list">
-                    <div class="reason-item fusion-warning">
-                        {{ ctx.get("hard_reject_reason", "Final brain rejected this setup.") }}
-                    </div>
-                </div>
-            </div>
+            {% if item.get("url") %}
+            <p style="margin-top: 10px;">
+              <a href="{{ item.get('url') }}" target="_blank" rel="noopener">Open source</a>
+            </p>
             {% endif %}
-
-            <div class="observatory-panel">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-kicker">Live Lens</div>
-                        <h3 style="margin:0 0 8px 0;">Live Opinion</h3>
-                    </div>
-                </div>
-                <p class="panel-copy">{{ opinion }}</p>
-                <div class="info-row" style="margin-top:12px;">
-                    {% if board_conf %}
-                    <span class="info-chip">{{ board_conf }}</span>
-                    {% endif %}
-                    {% if board_score is not none %}
-                    <span class="info-chip">Score {{ board_score }}</span>
-                    {% endif %}
-                </div>
-            </div>
-
-            {% if detail.soulanna %}
-            <div class="observatory-panel">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-kicker">Soulanna Read</div>
-                        <h3 style="margin:0 0 8px 0;">Soulanna</h3>
-                    </div>
-                    <span class="intel-chip">{{ detail.soulanna.verdict }}</span>
-                </div>
-
-                <div class="reason-list">
-                    <div class="reason-item"><strong>Assessment:</strong> {{ detail.soulanna.assessment }}</div>
-                    <div class="reason-item"><strong>Why:</strong> {{ detail.soulanna.why }}</div>
-                    {% if detail.soulanna.risk %}
-                    <div class="reason-item fusion-warning"><strong>Risk:</strong> {{ detail.soulanna.risk }}</div>
-                    {% endif %}
-                    <div class="reason-item"><strong>Next Action:</strong> {{ detail.soulanna.next_action }}</div>
-                </div>
-            </div>
-            {% endif %}
-
-            <div class="observatory-panel news-impact-panel">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-kicker">News Interpretation</div>
-                        <h3 style="margin:0 0 8px 0;">Soulanna News Impact</h3>
-                    </div>
-                    {% if news_impact.get("stance") %}
-                    <span class="intel-chip">{{ news_impact.get("stance") }}</span>
-                    {% endif %}
-                </div>
-
-                {% if news_impact %}
-                <div class="info-row">
-                    {% if news_impact.get("symbol_impact") %}
-                    <span class="info-chip">{{ news_impact.get("symbol_impact") }}</span>
-                    {% endif %}
-                    {% if news_impact.get("market_scope") %}
-                    <span class="info-chip">{{ news_impact.get("market_scope") }}</span>
-                    {% endif %}
-                    {% if news_impact.get("confidence") %}
-                    <span class="info-chip">{{ news_impact.get("confidence") }}</span>
-                    {% endif %}
-                </div>
-
-                <div class="news-impact-summary">
-                    <strong>{{ news_impact.get("headline", "Soulanna is reading the current news field for this symbol.") }}</strong>
-                    <p>{{ news_impact.get("summary", "No detailed symbol-level news interpretation has been wired yet.") }}</p>
-                    {% if news_impact.get("takeaway") %}
-                    <p style="margin-top:10px;"><strong>Takeaway:</strong> {{ news_impact.get("takeaway") }}</p>
-                    {% endif %}
-                </div>
-
-                <div class="news-impact-grid">
-                    {% if news_impact.get("symbol_drivers") %}
-                    <div class="news-impact-card">
-                        <h4>What it means for {{ symbol }}</h4>
-                        <ul>
-                            {% for item in news_impact.get("symbol_drivers", []) %}
-                            <li>{{ item }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-
-                    {% if news_impact.get("market_drivers") %}
-                    <div class="news-impact-card">
-                        <h4>How it hits the market</h4>
-                        <ul>
-                            {% for item in news_impact.get("market_drivers", []) %}
-                            <li>{{ item }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-
-                    {% if news_impact.get("watch_items") %}
-                    <div class="news-impact-card">
-                        <h4>What to watch next</h4>
-                        <ul>
-                            {% for item in news_impact.get("watch_items", []) %}
-                            <li>{{ item }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-
-                    {% if news_impact.get("thesis_shift") %}
-                    <div class="news-impact-card">
-                        <h4>Thesis shift</h4>
-                        <p>{{ news_impact.get("thesis_shift") }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-                {% else %}
-                <p class="panel-copy">
-                    This is where Soulanna’s symbol-by-symbol news breakdown should live. Once wired, she should explain whether current news is bullish, bearish, mixed, or mostly noise for {{ symbol }}, and whether the impact is company-specific, sector-wide, or broader market pressure.
-                </p>
-                {% endif %}
-            </div>
-
-            {% if detail.engine_intelligence %}
-            <div class="observatory-panel">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-kicker">System Pressure</div>
-                        <h3 style="margin:0 0 8px 0;">Engine Intelligence</h3>
-                    </div>
-                    <span class="intel-chip">Live Brain</span>
-                </div>
-
-                <div class="intel-grid">
-                    <div class="intel-card">
-                        <h4>Readiness</h4>
-                        <p><strong>{{ detail.engine_intelligence.readiness_score }}</strong></p>
-                    </div>
-                    <div class="intel-card">
-                        <h4>Promotion</h4>
-                        <p><strong>{{ detail.engine_intelligence.promotion_score }}</strong></p>
-                    </div>
-                    <div class="intel-card">
-                        <h4>Rebuild</h4>
-                        <p><strong>{{ detail.engine_intelligence.rebuild_pressure }}</strong></p>
-                    </div>
-                    <div class="intel-card">
-                        <h4>Execution</h4>
-                        <p><strong>{{ detail.engine_intelligence.execution_quality }}</strong></p>
-                    </div>
-                    <div class="intel-card">
-                        <h4>Setup Family</h4>
-                        <p><strong>{{ detail.engine_intelligence.setup_family }}</strong></p>
-                    </div>
-                    <div class="intel-card">
-                        <h4>Entry Quality</h4>
-                        <p><strong>{{ detail.engine_intelligence.entry_quality }}</strong></p>
-                    </div>
-                    <div class="intel-card">
-                        <h4>Eligible</h4>
-                        <p><strong>{{ detail.engine_intelligence.eligible }}</strong></p>
-                    </div>
-                </div>
-
-                <div class="intel-grid" style="margin-top:12px;">
-                    <div class="intel-card">
-                        <h4>Readiness Gate</h4>
-                        <p><strong>{{ detail.engine_intelligence.gates.readiness }}</strong></p>
-                    </div>
-                    <div class="intel-card">
-                        <h4>Promotion Gate</h4>
-                        <p><strong>{{ detail.engine_intelligence.gates.promotion }}</strong></p>
-                    </div>
-                    <div class="intel-card">
-                        <h4>Rebuild Gate</h4>
-                        <p><strong>{{ detail.engine_intelligence.gates.rebuild }}</strong></p>
-                    </div>
-                </div>
-
-                {% if detail.engine_verdict %}
-                <div class="reason-list" style="margin-top:14px;">
-                    <div class="reason-item">
-                        <strong>{{ detail.engine_verdict.headline }}</strong><br>
-                        {{ detail.engine_verdict.summary }}
-                    </div>
-                    {% if detail.engine_verdict.notes %}
-                        {% for item in detail.engine_verdict.notes %}
-                        <div class="reason-item">{{ item }}</div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-                {% endif %}
-
-                {% if detail.engine_intelligence.learning_notes %}
-                <div class="reason-list" style="margin-top:14px;">
-                    {% for item in detail.engine_intelligence.learning_notes %}
-                    <div class="reason-item">{{ item }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-                {% if detail.engine_intelligence.promotion_notes %}
-                <div class="reason-list" style="margin-top:14px;">
-                    {% for item in detail.engine_intelligence.promotion_notes %}
-                    <div class="reason-item">{{ item }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-                {% if detail.engine_intelligence.rebuild_notes %}
-                <div class="reason-list" style="margin-top:14px;">
-                    {% for item in detail.engine_intelligence.rebuild_notes %}
-                    <div class="reason-item">{{ item }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-            {% endif %}
-
-            {% if news_items %}
-            <div class="observatory-panel">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-kicker">Raw Feed</div>
-                        <h3 style="margin:0 0 8px 0;">Recent News</h3>
-                    </div>
-                </div>
-                <div class="news-title-list">
-                    {% for item in news_items[:5] %}
-                    <div class="news-title-item">{{ item.get("title", "News item") }}</div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
+          </article>
+          {% endfor %}
         </div>
-    </div>
+        {% else %}
+        <div class="symbol-empty">
+          <h3 style="margin:0 0 8px;">No news items attached</h3>
+          <p style="margin:0;">
+            The route can refresh symbol news, but no news rows are available in this rendered snapshot.
+          </p>
+        </div>
+        {% endif %}
+      </section>
+
+      <details class="symbol-drawer">
+        <summary>Preserved symbol route payload</summary>
+        <div class="symbol-drawer-body">
+          <p>
+            This drawer keeps the raw route context available for inspection without making the main page feel cluttered.
+          </p>
+          <pre>{{ d }}</pre>
+        </div>
+      </details>
+
+    </aside>
+
+  </div>
 </div>
 {% endblock %}

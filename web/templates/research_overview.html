@@ -1,124 +1,709 @@
 {% extends "base.html" %}
+
+{% block title %}Research Command Room · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_PACK_RESEARCH_OVERVIEW_COMMAND_ROOM_001H_CLEAN_DARK_REWRITE -->
 
-<div class="page-hero card premium-hero gold-accent-card">
-    <h2>Research Overview</h2>
-    <div class="passage-frame">
-        <p>
-            The research layer organizes your deeper reading flow across signals, trade reasoning,
-            premium interpretation, and analytics.
+{% set leads = most_underrated if most_underrated is defined and most_underrated else [] %}
+{% set lead_count = leads|length %}
+{% set spotlight = underrated_spotlight if underrated_spotlight is defined and underrated_spotlight else none %}
+
+<style>
+  /* OBSERVATORY_PACK_RESEARCH_OVERVIEW_COMMAND_ROOM_001H_CLEAN_DARK_REWRITE_STYLES */
+
+  html body .research-room-shell,
+  html body .research-room-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .research-room-shell {
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .research-room-shell a {
+    color: inherit;
+  }
+
+  html body .research-room-hero,
+  html body .research-panel,
+  html body .soulaana-read-card,
+  html body .spotlight-card,
+  html body .lead-card,
+  html body .room-link-card,
+  html body .research-details,
+  html body .empty-research-card,
+  html body .spotlight-stat,
+  html body .research-chip,
+  html body .lead-score {
+    color-scheme: dark;
+  }
+
+  html body .research-room-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 88% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .research-room-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .research-room-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .research-room-kicker,
+  html body .research-panel-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .research-room-kicker {
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.35);
+    background: rgba(15, 23, 42, 0.78);
+  }
+
+  html body .research-room-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.25rem, 5vw, 4.7rem);
+    line-height: 0.92;
+    letter-spacing: -0.075em;
+  }
+
+  html body .research-room-copy,
+  html body .research-muted,
+  html body .lead-note,
+  html body .room-link-card span,
+  html body .research-details-body,
+  html body .spotlight-name,
+  html body .empty-research-card p {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .research-room-copy {
+    max-width: 760px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .research-room-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .research-room-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-weight: 850;
+    font-size: 0.9rem;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  }
+
+  html body .research-room-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.7);
+    background: linear-gradient(135deg, rgba(51, 65, 85, 0.96), rgba(15, 23, 42, 0.96));
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .research-room-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .soulaana-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .research-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .soulaana-read-card h2,
+  html body .research-panel h2,
+  html body .research-panel h3,
+  html body .lead-title,
+  html body .lead-symbol,
+  html body .room-link-card strong,
+  html body .research-details summary,
+  html body .empty-research-card h3 {
+    color: #f8fafc;
+  }
+
+  html body .soulaana-read-card h2 {
+    margin: 0 0 8px;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .soulaana-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .research-room-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .research-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .research-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .research-panel-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .research-panel h2,
+  html body .research-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .research-chip,
+  html body .lead-score {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.22), rgba(14, 165, 233, 0.14));
+    color: #e0e7ff;
+    font-size: 0.78rem;
+    font-weight: 850;
+    white-space: nowrap;
+  }
+
+  html body .spotlight-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid rgba(250, 204, 21, 0.30);
+    background:
+      radial-gradient(circle at top right, rgba(250, 204, 21, 0.14), transparent 38%),
+      radial-gradient(circle at bottom left, rgba(124, 58, 237, 0.16), transparent 38%),
+      linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.96));
+    color: #f8fafc;
+  }
+
+  html body .spotlight-symbol {
+    margin: 0;
+    color: #f8fafc;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    line-height: 0.95;
+    letter-spacing: -0.07em;
+  }
+
+  html body .spotlight-name {
+    margin: 8px 0 0;
+  }
+
+  html body .spotlight-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 18px 0;
+  }
+
+  html body .spotlight-stat {
+    padding: 12px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.78));
+  }
+
+  html body .spotlight-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  html body .spotlight-stat strong {
+    display: block;
+    margin-top: 5px;
+    color: #f8fafc;
+    font-size: 1.05rem;
+  }
+
+  html body .lead-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  html body .lead-card {
+    display: grid;
+    grid-template-columns: minmax(70px, 0.24fr) minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.88), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .lead-symbol {
+    font-size: 1.18rem;
+    font-weight: 950;
+    letter-spacing: -0.04em;
+  }
+
+  html body .lead-title {
+    margin: 0;
+    font-weight: 850;
+  }
+
+  html body .lead-note {
+    margin: 4px 0 0;
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  html body .lead-score {
+    min-width: 64px;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  html body .room-links-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  html body .room-link-card {
+    display: block;
+    min-height: 116px;
+    padding: 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    text-decoration: none;
+    color: #e5e7eb;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  }
+
+  html body .room-link-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(196, 181, 253, 0.58);
+    background:
+      radial-gradient(circle at top left, rgba(124, 58, 237, 0.22), transparent 36%),
+      linear-gradient(135deg, rgba(30, 41, 59, 0.94), rgba(2, 6, 23, 0.96));
+    text-decoration: none;
+    color: #e5e7eb;
+  }
+
+  html body .room-link-card strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1rem;
+  }
+
+  html body .room-link-card span {
+    display: block;
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  html body .research-details {
+    margin-top: 18px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .research-details summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .research-details-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .empty-research-card {
+    padding: 22px;
+    border-radius: 22px;
+    border: 1px dashed rgba(148, 163, 184, 0.42);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.82), rgba(2, 6, 23, 0.92));
+    color: #e5e7eb;
+  }
+
+  @media (max-width: 900px) {
+    html body .research-room-hero-inner,
+    html body .research-room-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .room-links-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .lead-card {
+      grid-template-columns: 1fr;
+    }
+
+    html body .lead-score {
+      width: fit-content;
+    }
+  }
+
+  @media (max-width: 640px) {
+    html body .research-room-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .research-room-hero-inner {
+      padding: 20px;
+    }
+
+    html body .spotlight-stats {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="research-room-shell">
+
+  <section class="research-room-hero">
+    <div class="research-room-hero-inner">
+
+      <div>
+        <div class="research-room-kicker">Research Command Room</div>
+
+        <h1 class="research-room-title">The Observatory’s research floor.</h1>
+
+        <p class="research-room-copy">
+          This room gathers the research lanes into one clean command view: symbol leads,
+          decision explanations, premium analysis, reports, analytics, and the market map.
+          No raw clutter — just the next places worth checking.
         </p>
-    </div>
-</div>
 
-{% if underrated_spotlight %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3 style="margin-bottom:6px;">Sleeping Giant</h3>
-    <p class="muted-line" style="margin-top:0;">A strong system-rated setup that users are not paying enough attention to yet.</p>
-
-    <a href="/signals/{{ underrated_spotlight.symbol }}" style="text-decoration:none; color:inherit;">
-        <div class="card" style="margin:0;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
-                <div>
-                    <h2 style="margin:0 0 6px 0;">{{ underrated_spotlight.symbol }}</h2>
-                    <p class="muted-line" style="margin:0;">
-                        Score {{ underrated_spotlight.score }}
-                        {% if underrated_spotlight.confidence %} | {{ underrated_spotlight.confidence }}{% endif %}
-                    </p>
-                </div>
-                <span class="signal-stat-chip">Underrated</span>
-            </div>
-
-            <div class="passage-frame" style="margin-top:12px;">
-                <p style="margin:0;">
-                    Views: {{ underrated_spotlight.views }} | Underrated score: {{ underrated_spotlight.underrated_score }}
-                </p>
-            </div>
+        <div class="research-room-actions">
+          <a class="research-room-btn primary" href="/signals">Open Signals</a>
+          <a class="research-room-btn" href="/why-this-trade">Decision Library</a>
+          <a class="research-room-btn" href="/premium-analysis">Premium Analysis</a>
+          <a class="research-room-btn" href="/market-map">Market Map</a>
         </div>
-    </a>
-</div>
-{% endif %}
+      </div>
 
-{% if most_underrated %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3 style="margin-bottom:6px;">Most Underrated Setups</h3>
-    <p class="muted-line" style="margin-top:0;">Strong system setups getting little attention.</p>
+      <aside class="soulaana-read-card">
+        <div class="research-orb" aria-hidden="true"></div>
+        <h2>Soulaana research read</h2>
+        <p>
+          Start with the underrated leads, then open the symbol room for context.
+          If a setup needs proof, move through the Decision Library, Premium Analysis,
+          Reports, and Analytics before treating it like a serious candidate.
+        </p>
+      </aside>
 
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-top:12px;">
-        {% for item in most_underrated %}
-        <a href="/signals/{{ item.symbol }}" style="text-decoration:none; color:inherit;">
-            <div class="card" style="margin:0;">
-                <h4 style="margin:0 0 4px 0;">{{ item.symbol }}</h4>
-                <p class="muted-line" style="margin:0;">
-                    Score {{ item.score }}{% if item.confidence %} | {{ item.confidence }}{% endif %}
-                </p>
+    </div>
+  </section>
 
-                <div class="passage-frame" style="margin-top:10px;">
-                    <p style="margin:0;">
-                        Views: {{ item.views }} | Underrated: {{ item.underrated_score }}
-                    </p>
-                </div>
+  <div class="research-room-grid">
+
+    <section class="research-panel">
+      <div class="research-panel-head">
+        <div>
+          <p class="research-panel-eyebrow">Underrated intelligence</p>
+          <h2>Research leads</h2>
+        </div>
+        <span class="research-chip">{{ lead_count }} active</span>
+      </div>
+
+      {% if spotlight %}
+      <article class="spotlight-card" style="margin-bottom: 16px;">
+        <div>
+          <p class="research-panel-eyebrow" style="color:#fde68a;">Current spotlight</p>
+
+          <h3 class="spotlight-symbol">
+            {{ spotlight.symbol if spotlight.symbol is defined else spotlight.get("symbol", "UNKNOWN") }}
+          </h3>
+
+          <p class="spotlight-name">
+            {{ spotlight.company_name
+               if spotlight.company_name is defined
+               else spotlight.name
+               if spotlight.name is defined
+               else spotlight.get("company_name", spotlight.get("name", "Underrated symbol lead")) }}
+          </p>
+
+          <div class="spotlight-stats">
+            <div class="spotlight-stat">
+              <span>Score</span>
+              <strong>
+                {{ spotlight.score
+                   if spotlight.score is defined
+                   else spotlight.latest_score
+                   if spotlight.latest_score is defined
+                   else spotlight.get("score", spotlight.get("latest_score", "N/A")) }}
+              </strong>
             </div>
-        </a>
+
+            <div class="spotlight-stat">
+              <span>Confidence</span>
+              <strong>
+                {{ spotlight.confidence
+                   if spotlight.confidence is defined
+                   else spotlight.latest_confidence
+                   if spotlight.latest_confidence is defined
+                   else spotlight.get("confidence", spotlight.get("latest_confidence", "N/A")) }}
+              </strong>
+            </div>
+
+            <div class="spotlight-stat">
+              <span>Status</span>
+              <strong>
+                {{ spotlight.status
+                   if spotlight.status is defined
+                   else spotlight.label
+                   if spotlight.label is defined
+                   else spotlight.get("status", spotlight.get("label", "Research")) }}
+              </strong>
+            </div>
+          </div>
+
+          <p style="color:#dbeafe; line-height:1.65; margin: 0 0 16px;">
+            {{ spotlight.opinion
+               if spotlight.opinion is defined
+               else spotlight.reason
+               if spotlight.reason is defined
+               else spotlight.blurb
+               if spotlight.blurb is defined
+               else spotlight.get("opinion", spotlight.get("reason", spotlight.get("blurb", "This symbol is being surfaced because the research layer sees potential value that deserves a closer look."))) }}
+          </p>
+
+          <a class="research-room-btn primary"
+             href="/signals/{{ spotlight.symbol if spotlight.symbol is defined else spotlight.get('symbol', '') }}">
+            Open spotlight symbol
+          </a>
+        </div>
+      </article>
+      {% else %}
+      <div class="empty-research-card" style="margin-bottom: 16px;">
+        <h3 style="margin:0 0 8px;">No spotlight loaded yet</h3>
+        <p style="margin:0;">
+          The research route is active, but there is no underrated spotlight in the current data snapshot.
+        </p>
+      </div>
+      {% endif %}
+
+      {% if leads %}
+      <div class="lead-list">
+        {% for item in leads %}
+          {% set item_symbol = item.symbol if item.symbol is defined else item.get("symbol", "UNKNOWN") %}
+          <article class="lead-card">
+            <div class="lead-symbol">{{ item_symbol }}</div>
+
+            <div>
+              <p class="lead-title">
+                {{ item.company_name
+                   if item.company_name is defined
+                   else item.name
+                   if item.name is defined
+                   else item.get("company_name", item.get("name", "Research lead")) }}
+              </p>
+
+              <p class="lead-note">
+                {{ item.opinion
+                   if item.opinion is defined
+                   else item.reason
+                   if item.reason is defined
+                   else item.blurb
+                   if item.blurb is defined
+                   else item.get("opinion", item.get("reason", item.get("blurb", "Open the symbol room for the full read."))) }}
+              </p>
+            </div>
+
+            <a class="lead-score" href="/signals/{{ item_symbol }}">
+              {{ item.score
+                 if item.score is defined
+                 else item.latest_score
+                 if item.latest_score is defined
+                 else item.get("score", item.get("latest_score", "View")) }}
+            </a>
+          </article>
         {% endfor %}
-    </div>
-</div>
-{% endif %}
+      </div>
+      {% else %}
+      <div class="empty-research-card">
+        <h3 style="margin:0 0 8px;">No underrated list loaded</h3>
+        <p style="margin:0;">
+          Once the research engine has fresh candidates, they will appear here as clean cards.
+        </p>
+      </div>
+      {% endif %}
 
-{% if most_underrated %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Most Underrated Setups</h3>
-    <p class="muted-line">Strong system setups getting little attention.</p>
+      <details class="research-details">
+        <summary>Preserved research details drawer</summary>
+        <div class="research-details-body">
+          <p>
+            This drawer keeps the research overview transparent without turning the page into a raw data dump.
+            The route still uses the original variables from the Flask view:
+            <strong>most_underrated</strong> and <strong>underrated_spotlight</strong>.
+          </p>
 
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-top:12px;">
-        {% for item in most_underrated %}
-        <a href="/signals/{{ item.symbol }}" style="text-decoration:none; color:inherit;">
-            <div class="card" style="margin:0;">
-                <h4 style="margin:0 0 4px 0;">{{ item.symbol }}</h4>
-                <p class="muted-line" style="margin:0;">
-                    Score {{ item.score }} | {{ item.confidence }}
-                </p>
+          {% if leads %}
+          <p style="margin-bottom: 0;">
+            Current lead count: <strong>{{ lead_count }}</strong>.
+            Open any symbol card to continue into its intelligence page.
+          </p>
+          {% else %}
+          <p style="margin-bottom: 0;">
+            No lead rows are currently available in this snapshot.
+          </p>
+          {% endif %}
+        </div>
+      </details>
+    </section>
 
-                <div class="passage-frame" style="margin-top:10px;">
-                    <p style="margin:0;">
-                        Views: {{ item.views }} | Underrated: {{ item.underrated_score }}
-                    </p>
-                </div>
-            </div>
+    <aside class="research-panel">
+      <div class="research-panel-head">
+        <div>
+          <p class="research-panel-eyebrow">Connected rooms</p>
+          <h2>Analysis path</h2>
+        </div>
+        <span class="research-chip">6 links</span>
+      </div>
+
+      <p class="research-muted" style="margin-top: -4px;">
+        Use this as the calm navigation layer for research. Each card points to an existing OB route.
+      </p>
+
+      <div class="room-links-grid">
+        <a class="room-link-card" href="/signals">
+          <strong>Signals Command Center</strong>
+          <span>Scan active signal cards and open symbol-level intelligence.</span>
         </a>
-        {% endfor %}
-    </div>
+
+        <a class="room-link-card" href="/why-this-trade">
+          <strong>Decision Library</strong>
+          <span>Review why the system acted, skipped, rejected, or preserved a setup.</span>
+        </a>
+
+        <a class="room-link-card" href="/premium-analysis">
+          <strong>Premium Analysis</strong>
+          <span>Open the deeper analysis feed and premium research stream.</span>
+        </a>
+
+        <a class="room-link-card" href="/reports">
+          <strong>Reports</strong>
+          <span>Move from research into exported proof, summaries, and records.</span>
+        </a>
+
+        <a class="room-link-card" href="/analytics-overview">
+          <strong>Analytics Overview</strong>
+          <span>Check performance, proof, portfolio, and behavior context.</span>
+        </a>
+
+        <a class="room-link-card" href="/market-map">
+          <strong>Market Map</strong>
+          <span>See the broader market layout before focusing on one ticker.</span>
+        </a>
+      </div>
+
+      <details class="research-details">
+        <summary>How to use this room</summary>
+        <div class="research-details-body">
+          <p>
+            Start with the spotlight, then compare it against the full lead list.
+            If the lead still looks interesting, open the symbol page. If it becomes a trade idea,
+            use the Decision Library and Premium Analysis before treating it as serious.
+          </p>
+        </div>
+      </details>
+    </aside>
+
+  </div>
 </div>
-{% endif %}
-
-<div class="section-nav-grid">
-    <a href="/signals" class="card section-nav-card">
-        <h3>Signals</h3>
-        <div class="passage-frame">
-            <p>Discover ranked symbols, clean spotlight views, and entry points into deeper symbol intelligence.</p>
-        </div>
-    </a>
-
-    <a href="/why-this-trade" class="card section-nav-card">
-        <h3>Why This Trade</h3>
-        <div class="passage-frame">
-            <p>Structured reasoning behind active opportunities, including thesis, pressure, and interpretation.</p>
-        </div>
-    </a>
-
-    <a href="/premium-analysis" class="card section-nav-card">
-        <h3>Premium Analysis</h3>
-        <div class="passage-frame">
-            <p>A feed-style macro layer showing what the system is seeing across the market.</p>
-        </div>
-    </a>
-
-    <a href="/analytics-overview" class="card section-nav-card">
-        <h3>Analytics Overview</h3>
-        <div class="passage-frame">
-            <p>Navigate into performance, strategy behavior, and risk with a cleaner analytics structure.</p>
-        </div>
-    </a>
-</div>
-
 {% endblock %}
