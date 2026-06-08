@@ -1,79 +1,636 @@
 {% extends "base.html" %}
+
+{% block title %}Premium Analysis · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ANALYSIS_PROOF_CLUSTER_SESSION_002B_PREMIUM_ANALYSIS_DARK_REWRITE -->
 
-<div class="card premium-hero gold-accent-card section-sparkle">
-    <h2>Premium Analysis</h2>
-    <div class="passage-frame">
-        <p>
-            Premium Analysis is a live research feed. It is designed to show what the system is seeing
-            across the market, not just what it sees in one trade.
+{% set items = feed_items if feed_items is defined and feed_items else [] %}
+{% set mode = premium_mode if premium_mode is defined and premium_mode else "free" %}
+{% set mode_lower = mode|string|lower %}
+{% set unlocked_depth = mode_lower in ["starter", "pro", "elite"] %}
+{% set elite_depth = mode_lower == "elite" %}
+{% set pro_depth = mode_lower in ["pro", "elite"] %}
+
+<style>
+  /* OBSERVATORY_ANALYSIS_PROOF_CLUSTER_SESSION_002B_PREMIUM_ANALYSIS_DARK_REWRITE_STYLES */
+
+  html body .premium-analysis-shell,
+  html body .premium-analysis-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .premium-analysis-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .premium-analysis-shell a {
+    color: inherit;
+  }
+
+  html body .pa-hero,
+  html body .pa-panel,
+  html body .pa-card,
+  html body .pa-chip,
+  html body .pa-stat,
+  html body .pa-lock,
+  html body .pa-drawer,
+  html body .pa-empty,
+  html body .pa-passage {
+    color-scheme: dark;
+  }
+
+  html body .pa-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .pa-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .pa-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .pa-kicker,
+  html body .pa-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .pa-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .pa-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .pa-copy,
+  html body .pa-muted,
+  html body .pa-card p,
+  html body .pa-passage,
+  html body .pa-lock p,
+  html body .pa-empty p,
+  html body .pa-drawer-body,
+  html body .pa-list li {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .pa-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .pa-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .pa-btn,
+  html body .pa-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .pa-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .pa-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .pa-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .pa-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .pa-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .pa-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .pa-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .pa-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .pa-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .pa-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .pa-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .pa-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.18rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .pa-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .pa-stack {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .pa-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .pa-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .pa-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .pa-panel h2,
+  html body .pa-panel h3,
+  html body .pa-card h3,
+  html body .pa-card h4,
+  html body .pa-lock h3,
+  html body .pa-empty h3,
+  html body .pa-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .pa-panel h2,
+  html body .pa-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .pa-card-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  html body .pa-card,
+  html body .pa-lock,
+  html body .pa-empty,
+  html body .pa-passage {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .pa-lock {
+    border-color: rgba(250, 204, 21, 0.25);
+    background:
+      radial-gradient(circle at top right, rgba(250, 204, 21, 0.11), transparent 34%),
+      linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+  }
+
+  html body .pa-card h3,
+  html body .pa-card h4,
+  html body .pa-lock h3 {
+    margin: 0 0 8px;
+  }
+
+  html body .pa-card p,
+  html body .pa-passage p,
+  html body .pa-lock p {
+    margin: 0;
+  }
+
+  html body .pa-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  html body .pa-list li + li {
+    margin-top: 8px;
+  }
+
+  html body .pa-feed-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  html body .pa-feed-card::after {
+    content: "";
+    position: absolute;
+    inset: auto 18px 0 18px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(196, 181, 253, 0.35), transparent);
+  }
+
+  html body .pa-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .pa-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .pa-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .pa-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .pa-hero-inner,
+    html body .pa-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .pa-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .premium-analysis-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .pa-hero-inner {
+      padding: 20px;
+    }
+  }
+</style>
+
+<div class="premium-analysis-shell">
+
+  <section class="pa-hero">
+    <div class="pa-hero-inner">
+
+      <div>
+        <span class="pa-kicker">Premium Analysis Feed</span>
+
+        <h1 class="pa-title">The deeper market read.</h1>
+
+        <p class="pa-copy">
+          Premium Analysis is the research stream behind the surface signal. It collects
+          broader market context, strategic reads, and deeper interpretation so a setup
+          does not get judged from one shallow card.
         </p>
-    </div>
-</div>
 
-{% if feed_items and feed_items|length > 0 %}
-    {% for item in feed_items %}
-    <div class="card premium-feed-card">
-        <div class="premium-feed-top">
-            <div>
-                <h3 style="margin-bottom:6px;">{{ item.title }}</h3>
-                <p class="muted-line" style="margin-top:0;">
-                    {{ item.timestamp[:16].replace("T", " ") if item.timestamp else "Now" }}
-                    {% if item.mode %} | {{ item.mode }}{% endif %}
+        <div class="pa-actions">
+          <a class="pa-btn primary" href="/research">Research Room</a>
+          <a class="pa-btn" href="/signals">Signals</a>
+          <a class="pa-btn" href="/why-this-trade">Decision Library</a>
+          <a class="pa-btn" href="/reports">Reports</a>
+        </div>
+
+        <div class="pa-stats-grid">
+          <div class="pa-stat">
+            <span>Feed items</span>
+            <strong>{{ items|length }}</strong>
+          </div>
+
+          <div class="pa-stat">
+            <span>Access mode</span>
+            <strong>{{ mode_lower|upper }}</strong>
+          </div>
+
+          <div class="pa-stat">
+            <span>Depth</span>
+            <strong>{% if elite_depth %}Elite{% elif pro_depth %}Pro{% elif unlocked_depth %}Starter{% else %}Preview{% endif %}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="pa-read-card">
+        <div class="pa-orb" aria-hidden="true"></div>
+        <h2>Soulaana analysis read</h2>
+        <p>
+          Use this feed after research and before reports. It should help explain why a
+          market view matters, what is locked, and what extra context belongs to higher tiers.
+        </p>
+      </aside>
+
+    </div>
+  </section>
+
+  <div class="pa-grid">
+
+    <main class="pa-stack">
+
+      <section class="pa-panel">
+        <div class="pa-panel-head">
+          <div>
+            <p class="pa-eyebrow">Live research stream</p>
+            <h2>Premium feed</h2>
+          </div>
+          <span class="pa-chip {% if unlocked_depth %}gold{% else %}blue{% endif %}">
+            {% if unlocked_depth %}Unlocked{% else %}Preview{% endif %}
+          </span>
+        </div>
+
+        {% if items %}
+        <div class="pa-card-grid">
+          {% for item in items %}
+          <article class="pa-card pa-feed-card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+              <div>
+                <p class="pa-eyebrow">Feed item</p>
+                <h3>{{ item.title if item.title is defined else item.get("title", "Premium analysis item") }}</h3>
+                <p class="pa-muted" style="margin:0;">
+                  {{ item.timestamp[:16].replace("T", " ") if item.timestamp else item.get("timestamp", "Now") if item.get is defined else "Now" }}
+                  {% if item.mode %} · {{ item.mode }}{% elif item.get is defined and item.get("mode") %} · {{ item.get("mode") }}{% endif %}
                 </p>
+              </div>
+
+              <span class="pa-chip">
+                {{ mode_lower|upper }}
+              </span>
             </div>
-        </div>
 
-        <div class="passage-frame">
-            <p><b>Summary:</b> {{ item.summary }}</p>
+            <div class="pa-passage" style="margin-top: 14px;">
+              <p>
+                <strong style="color:#f8fafc;">Summary:</strong>
+                {{ item.summary if item.summary is defined else item.get("summary", "No summary attached yet.") }}
+              </p>
+            </div>
 
-            {% if premium_mode in ["starter", "pro", "elite"] %}
-                <div class="structured-feed-block">
-                    <h4>Strategic Read</h4>
-                    {% for line in item.pro_lines %}
-                    <p>{{ line }}</p>
-                    {% endfor %}
-                </div>
+            {% if unlocked_depth %}
+            <div class="pa-card" style="margin-top: 12px;">
+              <h4>Strategic read</h4>
+              {% set pro_lines = item.pro_lines if item.pro_lines is defined else item.get("pro_lines", []) %}
+              {% if pro_lines %}
+              <ul class="pa-list">
+                {% for line in pro_lines %}
+                <li>{{ line }}</li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <p>No strategic read lines are attached to this item yet.</p>
+              {% endif %}
+            </div>
             {% else %}
-                <div class="upgrade-cutoff-box">
-                    <div class="lock-label">🔒 Premium Feed Depth Locked</div>
-                    <p>
-                        Upgrade to unlock the deeper strategic read behind this market view.
-                    </p>
-                    <a href="/upgrade" class="cta-btn premium-gold-btn">Upgrade Access</a>
-                </div>
+            <div class="pa-lock" style="margin-top: 12px;">
+              <h3>Premium feed depth locked</h3>
+              <p>
+                Upgrade to unlock the deeper strategic read behind this market view.
+              </p>
+              <div class="pa-actions" style="margin-top: 12px;">
+                <a href="/upgrade" class="pa-btn primary">Upgrade Access</a>
+              </div>
+            </div>
             {% endif %}
 
-            {% if premium_mode == "elite" %}
-                <div class="structured-feed-block elite-feed-block">
-                    <h4>⭐ Elite Insight</h4>
-                    {% for line in item.elite_lines %}
-                    <p>{{ line }}</p>
-                    {% endfor %}
-                </div>
-            {% elif premium_mode == "pro" %}
-                <div class="upgrade-cutoff-box">
-                    <div class="lock-label">🔒 Elite Insight Locked</div>
-                    <p>
-                        Elite members see deeper system interpretation and higher-order market context.
-                    </p>
-                    <a href="/upgrade" class="cta-btn premium-gold-btn">Go Elite</a>
-                </div>
+            {% if elite_depth %}
+            <div class="pa-card" style="margin-top: 12px;">
+              <h4>Elite insight</h4>
+              {% set elite_lines = item.elite_lines if item.elite_lines is defined else item.get("elite_lines", []) %}
+              {% if elite_lines %}
+              <ul class="pa-list">
+                {% for line in elite_lines %}
+                <li>{{ line }}</li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <p>No elite insight lines are attached to this item yet.</p>
+              {% endif %}
+            </div>
+            {% elif pro_depth %}
+            <div class="pa-lock" style="margin-top: 12px;">
+              <h3>Elite insight locked</h3>
+              <p>
+                Elite members see deeper system interpretation and higher-order market context.
+              </p>
+              <div class="pa-actions" style="margin-top: 12px;">
+                <a href="/upgrade" class="pa-btn">Go Elite</a>
+              </div>
+            </div>
             {% endif %}
+
+            <details class="pa-drawer">
+              <summary>Preserved feed payload</summary>
+              <div class="pa-drawer-body">
+                <pre>{{ item }}</pre>
+              </div>
+            </details>
+          </article>
+          {% endfor %}
         </div>
-    </div>
-    {% endfor %}
-{% else %}
-<div class="card">
-    <div class="passage-frame">
-        <p>No premium feed entries are available yet.</p>
-    </div>
-</div>
-{% endif %}
+        {% else %}
+        <div class="pa-empty">
+          <h3 style="margin:0 0 8px;">No premium feed entries yet</h3>
+          <p style="margin:0;">
+            The premium route is active, but no feed items are available in the current snapshot.
+          </p>
+        </div>
+        {% endif %}
+      </section>
 
-{% endblock %}
-<div style="margin-bottom:14px;">
-    <a href="javascript:history.back()" class="signal-stat-chip" style="text-decoration:none;">
-        ← Back
-    </a>
+    </main>
+
+    <aside class="pa-stack">
+
+      <section class="pa-panel">
+        <div class="pa-panel-head">
+          <div>
+            <p class="pa-eyebrow">Analysis path</p>
+            <h2>Use this with</h2>
+          </div>
+        </div>
+
+        <div class="pa-card-grid">
+          <a class="pa-card" href="/research" style="text-decoration:none;">
+            <h3>Research Room</h3>
+            <p>Start with symbol leads and the broader research lane.</p>
+          </a>
+
+          <a class="pa-card" href="/why-this-trade" style="text-decoration:none;">
+            <h3>Decision Library</h3>
+            <p>Compare analysis against what the system actually acted on or rejected.</p>
+          </a>
+
+          <a class="pa-card" href="/analytics-overview" style="text-decoration:none;">
+            <h3>Analytics Overview</h3>
+            <p>Check performance and proof context before trusting a pattern.</p>
+          </a>
+
+          <a class="pa-card" href="/reports" style="text-decoration:none;">
+            <h3>Reports</h3>
+            <p>Move from analysis into exported proof and records.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="pa-panel">
+        <div class="pa-panel-head">
+          <div>
+            <p class="pa-eyebrow">Access clarity</p>
+            <h2>Current depth</h2>
+          </div>
+          <span class="pa-chip gold">{{ mode_lower|upper }}</span>
+        </div>
+
+        <div class="pa-card-grid">
+          <article class="pa-card">
+            <h3>Preview</h3>
+            <p>Shows the summary layer and the purpose of the analysis feed.</p>
+          </article>
+
+          <article class="pa-card">
+            <h3>Starter / Pro</h3>
+            <p>Unlocks the strategic read attached to each feed item.</p>
+          </article>
+
+          <article class="pa-card">
+            <h3>Elite</h3>
+            <p>Unlocks higher-order interpretation and deeper market context.</p>
+          </article>
+        </div>
+      </section>
+
+    </aside>
+
+  </div>
 </div>
+{% endblock %}

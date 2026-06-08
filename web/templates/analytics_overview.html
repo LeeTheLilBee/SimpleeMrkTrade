@@ -1,39 +1,659 @@
 {% extends "base.html" %}
+
+{% block title %}Analytics Overview · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ANALYSIS_PROOF_CLUSTER_SESSION_002F_ANALYTICS_OVERVIEW_DARK_REWRITE -->
 
-<a href="/research" class="back-link" aria-label="Back">←</a>
+{% set s = stats if stats is defined and stats else {} %}
+{% set p = proof if proof is defined and proof else {} %}
+{% set portfolio = portfolio_summary if portfolio_summary is defined and portfolio_summary else {} %}
 
-<div class="page-hero card premium-hero gold-accent-card">
-    <h2>Analytics Overview</h2>
-    <div class="passage-frame">
-        <p>
-            Use this page as the central doorway into the analytics system.
+<style>
+  /* OBSERVATORY_ANALYSIS_PROOF_CLUSTER_SESSION_002F_ANALYTICS_OVERVIEW_DARK_REWRITE_STYLES */
+
+  html body .analytics-overview-shell,
+  html body .analytics-overview-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .analytics-overview-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .analytics-overview-shell a {
+    color: inherit;
+  }
+
+  html body .analytics-hero,
+  html body .analytics-panel,
+  html body .analytics-card,
+  html body .analytics-chip,
+  html body .analytics-stat,
+  html body .analytics-drawer,
+  html body .analytics-empty,
+  html body .analytics-metric {
+    color-scheme: dark;
+  }
+
+  html body .analytics-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .analytics-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .analytics-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .analytics-kicker,
+  html body .analytics-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .analytics-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .analytics-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .analytics-copy,
+  html body .analytics-muted,
+  html body .analytics-card p,
+  html body .analytics-empty p,
+  html body .analytics-drawer-body,
+  html body .analytics-list li {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .analytics-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .analytics-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .analytics-btn,
+  html body .analytics-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .analytics-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .analytics-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .analytics-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .analytics-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .analytics-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .analytics-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .analytics-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .analytics-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .analytics-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .analytics-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .analytics-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .analytics-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.18rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .analytics-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .analytics-stack {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .analytics-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .analytics-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .analytics-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .analytics-panel h2,
+  html body .analytics-panel h3,
+  html body .analytics-card h3,
+  html body .analytics-card h4,
+  html body .analytics-empty h3,
+  html body .analytics-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .analytics-panel h2,
+  html body .analytics-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .analytics-card-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  html body .analytics-card,
+  html body .analytics-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .analytics-card h3,
+  html body .analytics-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .analytics-card p {
+    margin: 0;
+  }
+
+  html body .analytics-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+    gap: 12px;
+  }
+
+  html body .analytics-metric {
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(2, 6, 23, 0.92));
+  }
+
+  html body .analytics-metric span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .analytics-metric strong {
+    color: #f8fafc;
+    font-size: 1.08rem;
+    font-weight: 950;
+  }
+
+  html body .analytics-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  html body .analytics-list li + li {
+    margin-top: 8px;
+  }
+
+  html body .analytics-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .analytics-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .analytics-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .analytics-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .analytics-hero-inner,
+    html body .analytics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .analytics-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .analytics-overview-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .analytics-hero-inner {
+      padding: 20px;
+    }
+  }
+</style>
+
+<div class="analytics-overview-shell">
+
+  <section class="analytics-hero">
+    <div class="analytics-hero-inner">
+
+      <div>
+        <span class="analytics-kicker">Analytics Overview</span>
+
+        <h1 class="analytics-title">The proof dashboard.</h1>
+
+        <p class="analytics-copy">
+          Analytics Overview is the clean doorway into performance, strategy behavior,
+          risk metrics, and proof. It gives the important numbers first, then routes you
+          into the deeper analytics rooms.
         </p>
+
+        <div class="analytics-actions">
+          <a class="analytics-btn primary" href="/analytics">Analytics</a>
+          <a class="analytics-btn" href="/analytics/performance">Performance</a>
+          <a class="analytics-btn" href="/analytics/strategy">Strategy Behavior</a>
+          <a class="analytics-btn" href="/analytics/risk">Risk Metrics</a>
+        </div>
+
+        <div class="analytics-stats-grid">
+          <div class="analytics-stat">
+            <span>Trades</span>
+            <strong>{{ s.trades if s.trades is defined else s.get("trades", "N/A") }}</strong>
+          </div>
+
+          <div class="analytics-stat">
+            <span>Win rate</span>
+            <strong>{{ p.winrate if p.winrate is defined else p.get("winrate", "N/A") }}</strong>
+          </div>
+
+          <div class="analytics-stat">
+            <span>Max drawdown</span>
+            <strong>{{ p.max_drawdown if p.max_drawdown is defined else p.get("max_drawdown", "N/A") }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="analytics-read-card">
+        <div class="analytics-orb" aria-hidden="true"></div>
+        <h2>Soulaana analytics read</h2>
+        <p>
+          Use this room after reports. If the numbers look strong, check whether
+          performance, behavior, and risk all agree before trusting the pattern.
+        </p>
+      </aside>
+
     </div>
+  </section>
+
+  <div class="analytics-grid">
+
+    <main class="analytics-stack">
+
+      <section class="analytics-panel">
+        <div class="analytics-panel-head">
+          <div>
+            <p class="analytics-eyebrow">Core metrics</p>
+            <h2>Performance snapshot</h2>
+          </div>
+          <span class="analytics-chip gold">Proof layer</span>
+        </div>
+
+        <div class="analytics-metric-grid">
+          <div class="analytics-metric">
+            <span>Total trades</span>
+            <strong>{{ s.trades if s.trades is defined else s.get("trades", "N/A") }}</strong>
+          </div>
+
+          <div class="analytics-metric">
+            <span>Win rate</span>
+            <strong>{{ p.winrate if p.winrate is defined else p.get("winrate", "N/A") }}</strong>
+          </div>
+
+          <div class="analytics-metric">
+            <span>Max drawdown</span>
+            <strong>{{ p.max_drawdown if p.max_drawdown is defined else p.get("max_drawdown", "N/A") }}</strong>
+          </div>
+
+          <div class="analytics-metric">
+            <span>Total return</span>
+            <strong>{{ p.total_return if p.total_return is defined else p.get("total_return", "N/A") }}</strong>
+          </div>
+
+          <div class="analytics-metric">
+            <span>Closed trades</span>
+            <strong>{{ p.closed_trades if p.closed_trades is defined else p.get("closed_trades", "N/A") }}</strong>
+          </div>
+
+          <div class="analytics-metric">
+            <span>Open positions</span>
+            <strong>{{ portfolio.open_positions if portfolio.open_positions is defined else portfolio.get("open_positions", "N/A") }}</strong>
+          </div>
+        </div>
+
+        <details class="analytics-drawer">
+          <summary>Preserved analytics payload</summary>
+          <div class="analytics-drawer-body">
+            <pre>{{ s }}</pre>
+          </div>
+        </details>
+
+        <details class="analytics-drawer">
+          <summary>Preserved proof payload</summary>
+          <div class="analytics-drawer-body">
+            <pre>{{ p }}</pre>
+          </div>
+        </details>
+      </section>
+
+      <section class="analytics-panel">
+        <div class="analytics-panel-head">
+          <div>
+            <p class="analytics-eyebrow">Portfolio context</p>
+            <h2>Account and exposure read</h2>
+          </div>
+          <span class="analytics-chip blue">Portfolio</span>
+        </div>
+
+        {% if portfolio %}
+        <div class="analytics-metric-grid">
+          <div class="analytics-metric">
+            <span>Estimated value</span>
+            <strong>{{ portfolio.estimated_account_value if portfolio.estimated_account_value is defined else portfolio.get("estimated_account_value", "N/A") }}</strong>
+          </div>
+
+          <div class="analytics-metric">
+            <span>Cash</span>
+            <strong>{{ portfolio.cash if portfolio.cash is defined else portfolio.get("cash", "N/A") }}</strong>
+          </div>
+
+          <div class="analytics-metric">
+            <span>Buying power</span>
+            <strong>{{ portfolio.buying_power if portfolio.buying_power is defined else portfolio.get("buying_power", "N/A") }}</strong>
+          </div>
+
+          <div class="analytics-metric">
+            <span>Unrealized PnL</span>
+            <strong>{{ portfolio.unrealized_pnl if portfolio.unrealized_pnl is defined else portfolio.get("unrealized_pnl", "N/A") }}</strong>
+          </div>
+        </div>
+
+        <details class="analytics-drawer">
+          <summary>Preserved portfolio payload</summary>
+          <div class="analytics-drawer-body">
+            <pre>{{ portfolio }}</pre>
+          </div>
+        </details>
+        {% else %}
+        <div class="analytics-empty">
+          <h3 style="margin:0 0 8px;">No portfolio summary loaded</h3>
+          <p style="margin:0;">
+            The analytics route is active, but the current snapshot did not attach portfolio summary data.
+          </p>
+        </div>
+        {% endif %}
+      </section>
+
+    </main>
+
+    <aside class="analytics-stack">
+
+      <section class="analytics-panel">
+        <div class="analytics-panel-head">
+          <div>
+            <p class="analytics-eyebrow">Analytics rooms</p>
+            <h2>Deeper doors</h2>
+          </div>
+        </div>
+
+        <div class="analytics-card-grid">
+          <a class="analytics-card" href="/analytics" style="text-decoration:none;">
+            <h3>Full Analytics</h3>
+            <p>Open the broader analytics room for full system metrics.</p>
+          </a>
+
+          <a class="analytics-card" href="/analytics/performance" style="text-decoration:none;">
+            <h3>Performance</h3>
+            <p>Focus on performance proof, win rate, drawdown, and closed-trade results.</p>
+          </a>
+
+          <a class="analytics-card" href="/analytics/strategy" style="text-decoration:none;">
+            <h3>Strategy Behavior</h3>
+            <p>Check whether strategies are behaving cleanly or degrading.</p>
+          </a>
+
+          <a class="analytics-card" href="/analytics/risk" style="text-decoration:none;">
+            <h3>Risk Metrics</h3>
+            <p>Review risk, drawdown, containment, and exposure behavior.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="analytics-panel">
+        <div class="analytics-panel-head">
+          <div>
+            <p class="analytics-eyebrow">Proof path</p>
+            <h2>Use analytics with</h2>
+          </div>
+        </div>
+
+        <div class="analytics-card-grid">
+          <a class="analytics-card" href="/reports" style="text-decoration:none;">
+            <h3>Reports</h3>
+            <p>Compare the analytics snapshot against saved proof packets.</p>
+          </a>
+
+          <a class="analytics-card" href="/why-this-trade" style="text-decoration:none;">
+            <h3>Decision Library</h3>
+            <p>Connect performance back to the system’s actual trade decisions.</p>
+          </a>
+
+          <a class="analytics-card" href="/premium-analysis" style="text-decoration:none;">
+            <h3>Premium Analysis</h3>
+            <p>Compare performance to the deeper market reads.</p>
+          </a>
+
+          <a class="analytics-card" href="/research" style="text-decoration:none;">
+            <h3>Research Room</h3>
+            <p>Return to symbol leads and analysis flow.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="analytics-panel">
+        <div class="analytics-panel-head">
+          <div>
+            <p class="analytics-eyebrow">Reading rule</p>
+            <h2>Trust the agreement</h2>
+          </div>
+        </div>
+
+        <div class="analytics-card-grid">
+          <article class="analytics-card">
+            <h3>Performance alone is not enough</h3>
+            <p>Check whether risk, strategy behavior, and reports agree with the headline metrics.</p>
+          </article>
+
+          <article class="analytics-card">
+            <h3>Drawdown matters</h3>
+            <p>High returns with messy containment should not be treated as clean proof.</p>
+          </article>
+
+          <article class="analytics-card">
+            <h3>Proof should be repeatable</h3>
+            <p>The goal is a system that can explain, repeat, and preserve its results.</p>
+          </article>
+        </div>
+      </section>
+
+    </aside>
+
+  </div>
 </div>
-
-<div class="dashboard-subnav">
-    <a href="/analytics" class="cta-btn secondary">Analytics</a>
-    <a href="/analytics/performance" class="cta-btn secondary">Performance</a>
-    <a href="/analytics/strategy" class="cta-btn secondary">Strategy Behavior</a>
-    <a href="/analytics/risk" class="cta-btn secondary">Risk Metrics</a>
-</div>
-
-<div class="grid">
-    <div class="card gold-accent-card">
-        <h3>Trades</h3>
-        <div class="metric">{{ stats.trades if stats is defined and stats.trades is defined else "N/A" }}</div>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Win Rate</h3>
-        <div class="metric">{{ proof.winrate if proof is defined and proof.winrate is defined else "N/A" }}</div>
-    </div>
-
-    <div class="card gold-accent-card">
-        <h3>Max Drawdown</h3>
-        <div class="metric">{{ proof.max_drawdown if proof is defined and proof.max_drawdown is defined else "N/A" }}</div>
-    </div>
-</div>
-
 {% endblock %}
