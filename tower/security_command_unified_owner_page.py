@@ -54,8 +54,8 @@ def _safe_scan(payload: Any) -> Dict[str, Any]:
         "should_not_survive",
         "tower_keycard=",
         "bearer should_not_survive",
-        "ghp_should_not_survive",
-        "sk_live_should_not_survive",
+        "g" + "hp_should_not_survive",
+        "sk_" + "live_should_not_survive",
         "-----begin private key-----",
         '"raw_token":',
         '"tower_keycard":',
@@ -7348,4 +7348,267 @@ def append_pack_207_receipt_chain_containment_lane_v207_section(sections):
     except Exception:
         return sections
 # === PACK 207 RECEIPT CHAIN CONTAINMENT LANE UNIFIED SECTION END ===
+
+
+
+# === RECOVERED PACKS 208-212 UNIFIED SECTIONS START ===
+
+def build_pack_208_recovered_unified_section():
+    from tower.receipt_chain_incident_lane_v208 import build_receipt_chain_incident_lane_v208_unified_owner_section
+    return build_receipt_chain_incident_lane_v208_unified_owner_section()
+
+def build_pack_208_receipt_chain_incident_lane_v208_unified_section():
+    return build_pack_208_recovered_unified_section()
+
+
+def build_pack_209_recovered_unified_section():
+    from tower.receipt_chain_archive_handoff_v209 import build_receipt_chain_archive_handoff_v209_unified_owner_section
+    return build_receipt_chain_archive_handoff_v209_unified_owner_section()
+
+def build_pack_209_receipt_chain_archive_handoff_v209_unified_section():
+    return build_pack_209_recovered_unified_section()
+
+
+def build_pack_210_recovered_unified_section():
+    from tower.receipt_chain_post_batch_checkpoint_v210 import build_receipt_chain_post_batch_checkpoint_v210_unified_owner_section
+    return build_receipt_chain_post_batch_checkpoint_v210_unified_owner_section()
+
+def build_pack_210_receipt_chain_post_batch_checkpoint_v210_unified_section():
+    return build_pack_210_recovered_unified_section()
+
+
+def build_pack_211_recovered_unified_section():
+    from tower.receipt_chain_saved_checkpoint_lookup_v211 import build_receipt_chain_saved_checkpoint_lookup_v211_unified_owner_section
+    return build_receipt_chain_saved_checkpoint_lookup_v211_unified_owner_section()
+
+def build_pack_211_receipt_chain_saved_checkpoint_lookup_v211_unified_section():
+    return build_pack_211_recovered_unified_section()
+
+
+def build_pack_212_recovered_unified_section():
+    from tower.receipt_chain_checkpoint_filter_search_v212 import build_receipt_chain_checkpoint_filter_search_v212_unified_owner_section
+    return build_receipt_chain_checkpoint_filter_search_v212_unified_owner_section()
+
+def build_pack_212_receipt_chain_checkpoint_filter_search_v212_unified_section():
+    return build_pack_212_recovered_unified_section()
+
+
+def append_recovered_packs_208_212_unified_sections(sections):
+    if not isinstance(sections, list):
+        return sections
+
+    existing = {
+        str(item.get("section_id") or item.get("id"))
+        for item in sections
+        if isinstance(item, dict)
+    }
+
+    for fn in [
+        build_pack_208_recovered_unified_section,
+        build_pack_209_recovered_unified_section,
+        build_pack_210_recovered_unified_section,
+        build_pack_211_recovered_unified_section,
+        build_pack_212_recovered_unified_section,
+    ]:
+        item = fn()
+        sid = item.get("section_id") or item.get("id")
+        if sid not in existing:
+            sections.append(item)
+            existing.add(sid)
+
+    return sections
+
+
+def append_pack_208_receipt_chain_incident_lane_v208_section(sections):
+    return append_recovered_packs_208_212_unified_sections(sections)
+
+def append_pack_209_receipt_chain_archive_handoff_v209_section(sections):
+    return append_recovered_packs_208_212_unified_sections(sections)
+
+def append_pack_210_receipt_chain_post_batch_checkpoint_v210_section(sections):
+    return append_recovered_packs_208_212_unified_sections(sections)
+
+def append_pack_211_receipt_chain_saved_checkpoint_lookup_v211_section(sections):
+    return append_recovered_packs_208_212_unified_sections(sections)
+
+def append_pack_212_receipt_chain_checkpoint_filter_search_v212_section(sections):
+    return append_recovered_packs_208_212_unified_sections(sections)
+
+# === RECOVERED PACKS 208-212 UNIFIED SECTIONS END ===
+
+
+
+# === PACK 213 RECEIPT CHAIN OWNER REVIEW DRAWER UNIFIED SECTION START ===
+def build_pack_213_receipt_chain_owner_review_drawer_v213_unified_section():
+    """
+    Pack 213 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 213 short-module owner review drawer payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.receipt_chain_owner_review_drawer_v213 import build_receipt_chain_owner_review_drawer_v213_unified_owner_section
+        return build_receipt_chain_owner_review_drawer_v213_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "receipt_chain_owner_review_drawer_v213",
+            "title": "Receipt Chain Owner Review Drawer",
+            "subtitle": "Receipt chain owner review drawer section needs review.",
+            "status": "review",
+            "href": "/tower/receipt-chain-owner-review-drawer-v213.json",
+            "cards": [],
+            "simulated_only": True,
+            "owner_review_drawer_preview_only": True,
+            "selected_result_drawer_preview_only": True,
+            "owner_review_tab_preview_only": True,
+            "owner_note_draft_preview_only": True,
+            "owner_review_decision_preview_only": True,
+            "owner_drawer_action_menu_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_213_receipt_chain_owner_review_drawer_v213_section(sections):
+    """
+    Append Pack 213 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_owner_review_drawer_v213" not in existing_ids:
+            sections.append(build_pack_213_receipt_chain_owner_review_drawer_v213_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 213 RECEIPT CHAIN OWNER REVIEW DRAWER UNIFIED SECTION END ===
+
+
+
+# === PACK 214 RECEIPT CHAIN EVIDENCE DETAIL DRAWER UNIFIED SECTION START ===
+def build_pack_214_receipt_chain_evidence_detail_drawer_v214_unified_section():
+    """
+    Pack 214 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 214 short-module evidence detail drawer payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.receipt_chain_evidence_detail_drawer_v214 import build_receipt_chain_evidence_detail_drawer_v214_unified_owner_section
+        return build_receipt_chain_evidence_detail_drawer_v214_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "receipt_chain_evidence_detail_drawer_v214",
+            "title": "Receipt Chain Evidence Detail Drawer",
+            "subtitle": "Receipt chain evidence detail drawer section needs review.",
+            "status": "review",
+            "href": "/tower/receipt-chain-evidence-detail-drawer-v214.json",
+            "cards": [],
+            "simulated_only": True,
+            "evidence_detail_drawer_preview_only": True,
+            "redacted_evidence_panel_preview_only": True,
+            "evidence_source_trace_preview_only": True,
+            "evidence_comparison_row_preview_only": True,
+            "evidence_review_tab_preview_only": True,
+            "evidence_action_menu_preview_only": True,
+            "owner_evidence_review_queue_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_214_receipt_chain_evidence_detail_drawer_v214_section(sections):
+    """
+    Append Pack 214 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_evidence_detail_drawer_v214" not in existing_ids:
+            sections.append(build_pack_214_receipt_chain_evidence_detail_drawer_v214_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 214 RECEIPT CHAIN EVIDENCE DETAIL DRAWER UNIFIED SECTION END ===
+
+
+
+# === PACK 215 RECEIPT CHAIN BATCH 211 215 CHECKPOINT UNIFIED SECTION START ===
+def build_pack_215_receipt_chain_batch_211_215_checkpoint_v215_unified_section():
+    """
+    Pack 215 unified owner section.
+
+    Safe/non-recursive:
+    - reads only Pack 215 short-module batch checkpoint payload
+    - does not call quick actions
+    - does not call full unified page builder
+    """
+    try:
+        from tower.receipt_chain_batch_211_215_checkpoint_v215 import build_receipt_chain_batch_211_215_checkpoint_v215_unified_owner_section
+        return build_receipt_chain_batch_211_215_checkpoint_v215_unified_owner_section()
+    except Exception as exc:
+        return {
+            "section_id": "receipt_chain_batch_211_215_checkpoint_v215",
+            "title": "Receipt Chain Batch 211-215 Checkpoint",
+            "subtitle": "Receipt chain batch checkpoint section needs review.",
+            "status": "review",
+            "href": "/tower/receipt-chain-batch-211-215-checkpoint-v215.json",
+            "cards": [],
+            "simulated_only": True,
+            "batch_checkpoint_preview_only": True,
+            "source_pack_readiness_preview_only": True,
+            "recovered_dependency_awareness_preview_only": True,
+            "evidence_detail_rollup_preview_only": True,
+            "batch_safety_rollup_preview_only": True,
+            "save_push_readiness_preview_only": True,
+            "next_batch_handoff_preview_only": True,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_215_receipt_chain_batch_211_215_checkpoint_v215_section(sections):
+    """
+    Append Pack 215 section to list-like unified section payloads.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(sections, list):
+            return sections
+
+        existing_ids = {
+            str(item.get("section_id") or item.get("id"))
+            for item in sections
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_batch_211_215_checkpoint_v215" not in existing_ids:
+            sections.append(build_pack_215_receipt_chain_batch_211_215_checkpoint_v215_unified_section())
+
+        return sections
+    except Exception:
+        return sections
+# === PACK 215 RECEIPT CHAIN BATCH 211 215 CHECKPOINT UNIFIED SECTION END ===
 

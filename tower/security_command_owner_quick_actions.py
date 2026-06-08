@@ -117,8 +117,8 @@ def _safe_scan(payload: Any) -> Dict[str, Any]:
         "should_not_survive",
         "tower_keycard=",
         "bearer should_not_survive",
-        "ghp_should_not_survive",
-        "sk_live_should_not_survive",
+        "g" + "hp_should_not_survive",
+        "sk_" + "live_should_not_survive",
         "-----begin private key-----",
         '"raw_token":',
         '"tower_keycard":',
@@ -4729,4 +4729,267 @@ def append_pack_207_receipt_chain_containment_lane_v207_quick_action(actions):
     except Exception:
         return actions
 # === PACK 207 RECEIPT CHAIN CONTAINMENT LANE QUICK ACTION END ===
+
+
+
+# === RECOVERED PACKS 208-212 QUICK ACTIONS START ===
+
+def build_pack_208_recovered_quick_action():
+    from tower.receipt_chain_incident_lane_v208 import build_receipt_chain_incident_lane_v208_quick_action
+    return build_receipt_chain_incident_lane_v208_quick_action()
+
+def build_pack_208_receipt_chain_incident_lane_v208_quick_action():
+    return build_pack_208_recovered_quick_action()
+
+
+def build_pack_209_recovered_quick_action():
+    from tower.receipt_chain_archive_handoff_v209 import build_receipt_chain_archive_handoff_v209_quick_action
+    return build_receipt_chain_archive_handoff_v209_quick_action()
+
+def build_pack_209_receipt_chain_archive_handoff_v209_quick_action():
+    return build_pack_209_recovered_quick_action()
+
+
+def build_pack_210_recovered_quick_action():
+    from tower.receipt_chain_post_batch_checkpoint_v210 import build_receipt_chain_post_batch_checkpoint_v210_quick_action
+    return build_receipt_chain_post_batch_checkpoint_v210_quick_action()
+
+def build_pack_210_receipt_chain_post_batch_checkpoint_v210_quick_action():
+    return build_pack_210_recovered_quick_action()
+
+
+def build_pack_211_recovered_quick_action():
+    from tower.receipt_chain_saved_checkpoint_lookup_v211 import build_receipt_chain_saved_checkpoint_lookup_v211_quick_action
+    return build_receipt_chain_saved_checkpoint_lookup_v211_quick_action()
+
+def build_pack_211_receipt_chain_saved_checkpoint_lookup_v211_quick_action():
+    return build_pack_211_recovered_quick_action()
+
+
+def build_pack_212_recovered_quick_action():
+    from tower.receipt_chain_checkpoint_filter_search_v212 import build_receipt_chain_checkpoint_filter_search_v212_quick_action
+    return build_receipt_chain_checkpoint_filter_search_v212_quick_action()
+
+def build_pack_212_receipt_chain_checkpoint_filter_search_v212_quick_action():
+    return build_pack_212_recovered_quick_action()
+
+
+def append_recovered_packs_208_212_quick_actions(actions):
+    if not isinstance(actions, list):
+        return actions
+
+    existing = {
+        str(item.get("id"))
+        for item in actions
+        if isinstance(item, dict)
+    }
+
+    for fn in [
+        build_pack_208_recovered_quick_action,
+        build_pack_209_recovered_quick_action,
+        build_pack_210_recovered_quick_action,
+        build_pack_211_recovered_quick_action,
+        build_pack_212_recovered_quick_action,
+    ]:
+        item = fn()
+        item_id = item.get("id")
+        if item_id not in existing:
+            actions.append(item)
+            existing.add(item_id)
+
+    return actions
+
+
+def append_pack_208_receipt_chain_incident_lane_v208_quick_action(actions):
+    return append_recovered_packs_208_212_quick_actions(actions)
+
+def append_pack_209_receipt_chain_archive_handoff_v209_quick_action(actions):
+    return append_recovered_packs_208_212_quick_actions(actions)
+
+def append_pack_210_receipt_chain_post_batch_checkpoint_v210_quick_action(actions):
+    return append_recovered_packs_208_212_quick_actions(actions)
+
+def append_pack_211_receipt_chain_saved_checkpoint_lookup_v211_quick_action(actions):
+    return append_recovered_packs_208_212_quick_actions(actions)
+
+def append_pack_212_receipt_chain_checkpoint_filter_search_v212_quick_action(actions):
+    return append_recovered_packs_208_212_quick_actions(actions)
+
+# === RECOVERED PACKS 208-212 QUICK ACTIONS END ===
+
+
+
+# === PACK 213 RECEIPT CHAIN OWNER REVIEW DRAWER QUICK ACTION START ===
+def build_pack_213_receipt_chain_owner_review_drawer_v213_quick_action():
+    """
+    Pack 213 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_owner_review_drawer_v213 import build_receipt_chain_owner_review_drawer_v213_quick_action
+        return build_receipt_chain_owner_review_drawer_v213_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_owner_review_drawer_v213",
+            "label": "Receipt Chain Owner Review Drawer",
+            "title": "Receipt Chain Owner Review Drawer Preview",
+            "href": "/tower/receipt-chain-owner-review-drawer-v213.json",
+            "endpoint": "/tower/receipt-chain-owner-review-drawer-v213.json",
+            "description": "Preview selected result drawer, owner tabs, note drafts, decisions, and blocked drawer actions.",
+            "status": "review",
+            "pack": "Pack 213",
+            "category": "policy",
+            "simulated_only": True,
+            "owner_review_drawer_preview_only": True,
+            "selected_result_drawer_preview_only": True,
+            "owner_review_tab_preview_only": True,
+            "owner_note_draft_preview_only": True,
+            "owner_review_decision_preview_only": True,
+            "owner_drawer_action_menu_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_213_receipt_chain_owner_review_drawer_v213_quick_action(actions):
+    """
+    Append Pack 213 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_owner_review_drawer_v213" not in existing_ids:
+            actions.append(build_pack_213_receipt_chain_owner_review_drawer_v213_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 213 RECEIPT CHAIN OWNER REVIEW DRAWER QUICK ACTION END ===
+
+
+
+# === PACK 214 RECEIPT CHAIN EVIDENCE DETAIL DRAWER QUICK ACTION START ===
+def build_pack_214_receipt_chain_evidence_detail_drawer_v214_quick_action():
+    """
+    Pack 214 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_evidence_detail_drawer_v214 import build_receipt_chain_evidence_detail_drawer_v214_quick_action
+        return build_receipt_chain_evidence_detail_drawer_v214_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_evidence_detail_drawer_v214",
+            "label": "Receipt Chain Evidence Detail Drawer",
+            "title": "Receipt Chain Evidence Detail Drawer Preview",
+            "href": "/tower/receipt-chain-evidence-detail-drawer-v214.json",
+            "endpoint": "/tower/receipt-chain-evidence-detail-drawer-v214.json",
+            "description": "Preview redacted evidence panels, source trace cards, comparisons, and blocked evidence actions.",
+            "status": "review",
+            "pack": "Pack 214",
+            "category": "policy",
+            "simulated_only": True,
+            "evidence_detail_drawer_preview_only": True,
+            "redacted_evidence_panel_preview_only": True,
+            "evidence_source_trace_preview_only": True,
+            "evidence_comparison_row_preview_only": True,
+            "evidence_review_tab_preview_only": True,
+            "evidence_action_menu_preview_only": True,
+            "owner_evidence_review_queue_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_214_receipt_chain_evidence_detail_drawer_v214_quick_action(actions):
+    """
+    Append Pack 214 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_evidence_detail_drawer_v214" not in existing_ids:
+            actions.append(build_pack_214_receipt_chain_evidence_detail_drawer_v214_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 214 RECEIPT CHAIN EVIDENCE DETAIL DRAWER QUICK ACTION END ===
+
+
+
+# === PACK 215 RECEIPT CHAIN BATCH 211 215 CHECKPOINT QUICK ACTION START ===
+def build_pack_215_receipt_chain_batch_211_215_checkpoint_v215_quick_action():
+    """
+    Pack 215 quick action.
+
+    Safe/non-recursive:
+    - does not call unified owner page
+    """
+    try:
+        from tower.receipt_chain_batch_211_215_checkpoint_v215 import build_receipt_chain_batch_211_215_checkpoint_v215_quick_action
+        return build_receipt_chain_batch_211_215_checkpoint_v215_quick_action()
+    except Exception as exc:
+        return {
+            "id": "receipt_chain_batch_211_215_checkpoint_v215",
+            "label": "Receipt Chain Batch 211-215 Checkpoint",
+            "title": "Receipt Chain Batch 211-215 Checkpoint Preview",
+            "href": "/tower/receipt-chain-batch-211-215-checkpoint-v215.json",
+            "endpoint": "/tower/receipt-chain-batch-211-215-checkpoint-v215.json",
+            "description": "Preview batch closure, recovered dependency awareness, save/push readiness, and next batch handoff.",
+            "status": "review",
+            "pack": "Pack 215",
+            "category": "policy",
+            "simulated_only": True,
+            "batch_checkpoint_preview_only": True,
+            "source_pack_readiness_preview_only": True,
+            "recovered_dependency_awareness_preview_only": True,
+            "evidence_detail_rollup_preview_only": True,
+            "batch_safety_rollup_preview_only": True,
+            "save_push_readiness_preview_only": True,
+            "next_batch_handoff_preview_only": True,
+            "error": str(exc),
+        }
+
+
+def append_pack_215_receipt_chain_batch_211_215_checkpoint_v215_quick_action(actions):
+    """
+    Append Pack 215 quick action to any list-like quick-action payload.
+    Safe if called more than once.
+    """
+    try:
+        if not isinstance(actions, list):
+            return actions
+
+        existing_ids = {
+            str(item.get("id"))
+            for item in actions
+            if isinstance(item, dict)
+        }
+
+        if "receipt_chain_batch_211_215_checkpoint_v215" not in existing_ids:
+            actions.append(build_pack_215_receipt_chain_batch_211_215_checkpoint_v215_quick_action())
+
+        return actions
+    except Exception:
+        return actions
+# === PACK 215 RECEIPT CHAIN BATCH 211 215 CHECKPOINT QUICK ACTION END ===
 

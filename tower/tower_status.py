@@ -3827,3 +3827,228 @@ def get_pack_207_receipt_chain_containment_lane_v207_status_bridge():
     return build_pack_207_receipt_chain_containment_lane_v207_status_bridge()
 # === PACK 207 RECEIPT CHAIN CONTAINMENT LANE STATUS BRIDGE END ===
 
+
+
+
+# === RECOVERED PACKS 208-212 STATUS BRIDGES START ===
+
+def build_pack_208_recovered_status_bridge():
+    from tower.receipt_chain_incident_lane_v208 import build_receipt_chain_incident_lane_v208_status_bridge
+    return build_receipt_chain_incident_lane_v208_status_bridge()
+
+def get_pack_208_recovered_status_bridge():
+    return build_pack_208_recovered_status_bridge()
+
+def build_pack_208_receipt_chain_incident_lane_v208_status_bridge():
+    return build_pack_208_recovered_status_bridge()
+
+def get_pack_208_receipt_chain_incident_lane_v208_status_bridge():
+    return build_pack_208_recovered_status_bridge()
+
+
+def build_pack_209_recovered_status_bridge():
+    from tower.receipt_chain_archive_handoff_v209 import build_receipt_chain_archive_handoff_v209_status_bridge
+    return build_receipt_chain_archive_handoff_v209_status_bridge()
+
+def get_pack_209_recovered_status_bridge():
+    return build_pack_209_recovered_status_bridge()
+
+def build_pack_209_receipt_chain_archive_handoff_v209_status_bridge():
+    return build_pack_209_recovered_status_bridge()
+
+def get_pack_209_receipt_chain_archive_handoff_v209_status_bridge():
+    return build_pack_209_recovered_status_bridge()
+
+
+def build_pack_210_recovered_status_bridge():
+    from tower.receipt_chain_post_batch_checkpoint_v210 import build_receipt_chain_post_batch_checkpoint_v210_status_bridge
+    return build_receipt_chain_post_batch_checkpoint_v210_status_bridge()
+
+def get_pack_210_recovered_status_bridge():
+    return build_pack_210_recovered_status_bridge()
+
+def build_pack_210_receipt_chain_post_batch_checkpoint_v210_status_bridge():
+    return build_pack_210_recovered_status_bridge()
+
+def get_pack_210_receipt_chain_post_batch_checkpoint_v210_status_bridge():
+    return build_pack_210_recovered_status_bridge()
+
+
+def build_pack_211_recovered_status_bridge():
+    from tower.receipt_chain_saved_checkpoint_lookup_v211 import build_receipt_chain_saved_checkpoint_lookup_v211_status_bridge
+    return build_receipt_chain_saved_checkpoint_lookup_v211_status_bridge()
+
+def get_pack_211_recovered_status_bridge():
+    return build_pack_211_recovered_status_bridge()
+
+def build_pack_211_receipt_chain_saved_checkpoint_lookup_v211_status_bridge():
+    return build_pack_211_recovered_status_bridge()
+
+def get_pack_211_receipt_chain_saved_checkpoint_lookup_v211_status_bridge():
+    return build_pack_211_recovered_status_bridge()
+
+
+def build_pack_212_recovered_status_bridge():
+    from tower.receipt_chain_checkpoint_filter_search_v212 import build_receipt_chain_checkpoint_filter_search_v212_status_bridge
+    return build_receipt_chain_checkpoint_filter_search_v212_status_bridge()
+
+def get_pack_212_recovered_status_bridge():
+    return build_pack_212_recovered_status_bridge()
+
+def build_pack_212_receipt_chain_checkpoint_filter_search_v212_status_bridge():
+    return build_pack_212_recovered_status_bridge()
+
+def get_pack_212_receipt_chain_checkpoint_filter_search_v212_status_bridge():
+    return build_pack_212_recovered_status_bridge()
+
+# === RECOVERED PACKS 208-212 STATUS BRIDGES END ===
+
+
+
+# === PACK 213 RECEIPT CHAIN OWNER REVIEW DRAWER STATUS BRIDGE START ===
+def build_pack_213_receipt_chain_owner_review_drawer_v213_status_bridge():
+    """
+    Pack 213 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 213 short-module owner review drawer payload
+    """
+    try:
+        from tower.receipt_chain_owner_review_drawer_v213 import build_receipt_chain_owner_review_drawer_v213_status_bridge
+        return build_receipt_chain_owner_review_drawer_v213_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_213",
+            "pack_number": 213,
+            "status": "review",
+            "endpoint": "/tower/receipt-chain-owner-review-drawer-v213.json",
+            "source_endpoint": "/tower/receipt-chain-checkpoint-filter-search-v212.json",
+            "readiness_score": 0,
+            "readiness_label": "Receipt chain owner review drawer bridge error",
+            "simulated_only": True,
+            "owner_review_drawer_preview_only": True,
+            "selected_result_drawer_preview_only": True,
+            "owner_review_tab_preview_only": True,
+            "owner_note_draft_preview_only": True,
+            "owner_review_decision_preview_only": True,
+            "owner_drawer_action_menu_preview_only": True,
+            "real_owner_note_saved": False,
+            "real_owner_review_decision_saved": False,
+            "real_drawer_selection_saved": False,
+            "real_drawer_state_persisted": False,
+            "real_owner_drawer_action_executed": False,
+            "real_archive_written": False,
+            "real_evidence_exported": False,
+            "real_raw_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_213_receipt_chain_owner_review_drawer_v213_status_bridge():
+    return build_pack_213_receipt_chain_owner_review_drawer_v213_status_bridge()
+# === PACK 213 RECEIPT CHAIN OWNER REVIEW DRAWER STATUS BRIDGE END ===
+
+
+
+# === PACK 214 RECEIPT CHAIN EVIDENCE DETAIL DRAWER STATUS BRIDGE START ===
+def build_pack_214_receipt_chain_evidence_detail_drawer_v214_status_bridge():
+    """
+    Pack 214 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 214 short-module evidence detail drawer payload
+    """
+    try:
+        from tower.receipt_chain_evidence_detail_drawer_v214 import build_receipt_chain_evidence_detail_drawer_v214_status_bridge
+        return build_receipt_chain_evidence_detail_drawer_v214_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_214",
+            "pack_number": 214,
+            "status": "review",
+            "endpoint": "/tower/receipt-chain-evidence-detail-drawer-v214.json",
+            "source_endpoint": "/tower/receipt-chain-owner-review-drawer-v213.json",
+            "readiness_score": 0,
+            "readiness_label": "Receipt chain evidence detail drawer bridge error",
+            "simulated_only": True,
+            "evidence_detail_drawer_preview_only": True,
+            "redacted_evidence_panel_preview_only": True,
+            "evidence_source_trace_preview_only": True,
+            "evidence_comparison_row_preview_only": True,
+            "evidence_review_tab_preview_only": True,
+            "evidence_action_menu_preview_only": True,
+            "owner_evidence_review_queue_preview_only": True,
+            "real_evidence_exported": False,
+            "real_evidence_panel_saved": False,
+            "real_evidence_trace_saved": False,
+            "real_evidence_comparison_saved": False,
+            "real_evidence_review_saved": False,
+            "real_evidence_action_executed": False,
+            "real_archive_written": False,
+            "real_archive_packet_written": False,
+            "real_archive_packet_sealed": False,
+            "real_archive_exported": False,
+            "real_raw_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_214_receipt_chain_evidence_detail_drawer_v214_status_bridge():
+    return build_pack_214_receipt_chain_evidence_detail_drawer_v214_status_bridge()
+# === PACK 214 RECEIPT CHAIN EVIDENCE DETAIL DRAWER STATUS BRIDGE END ===
+
+
+
+# === PACK 215 RECEIPT CHAIN BATCH 211 215 CHECKPOINT STATUS BRIDGE START ===
+def build_pack_215_receipt_chain_batch_211_215_checkpoint_v215_status_bridge():
+    """
+    Pack 215 status bridge.
+
+    Safe/non-recursive:
+    - does not call unified owner UI
+    - does not call quick-action builders
+    - only reads Pack 215 short-module batch checkpoint payload
+    """
+    try:
+        from tower.receipt_chain_batch_211_215_checkpoint_v215 import build_receipt_chain_batch_211_215_checkpoint_v215_status_bridge
+        return build_receipt_chain_batch_211_215_checkpoint_v215_status_bridge()
+    except Exception as exc:
+        return {
+            "pack_id": "PACK_215",
+            "pack_number": 215,
+            "status": "review",
+            "endpoint": "/tower/receipt-chain-batch-211-215-checkpoint-v215.json",
+            "source_endpoint": "/tower/receipt-chain-evidence-detail-drawer-v214.json",
+            "readiness_score": 0,
+            "readiness_label": "Receipt chain batch 211-215 checkpoint bridge error",
+            "simulated_only": True,
+            "batch_checkpoint_preview_only": True,
+            "source_pack_readiness_preview_only": True,
+            "recovered_dependency_awareness_preview_only": True,
+            "evidence_detail_rollup_preview_only": True,
+            "batch_safety_rollup_preview_only": True,
+            "save_push_readiness_preview_only": True,
+            "next_batch_handoff_preview_only": True,
+            "real_save_executed": False,
+            "real_push_executed": False,
+            "real_commit_executed": False,
+            "real_batch_checkpoint_written": False,
+            "real_batch_checkpoint_sealed": False,
+            "real_evidence_exported": False,
+            "real_archive_written": False,
+            "real_raw_evidence_revealed": False,
+            "cached_non_recursive": True,
+            "error": str(exc),
+        }
+
+
+def get_pack_215_receipt_chain_batch_211_215_checkpoint_v215_status_bridge():
+    return build_pack_215_receipt_chain_batch_211_215_checkpoint_v215_status_bridge()
+# === PACK 215 RECEIPT CHAIN BATCH 211 215 CHECKPOINT STATUS BRIDGE END ===
+
