@@ -1,54 +1,602 @@
 {% extends "base.html" %}
+
+{% block title %}Archived Positions · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ARCHIVED_REVIEW_SESSION_005B_ARCHIVED_POSITIONS_DARK_REWRITE -->
 
-<div style="margin-bottom:14px;">
-    <a href="/my-positions" class="signal-stat-chip" style="text-decoration:none;">
-        ← Back to Active Positions
-    </a>
-</div>
+{% set rows = positions if positions is defined and positions else [] %}
+{% set archived_count = rows|length %}
+{% set strong_close = namespace(value=0) %}
+{% set weak_close = namespace(value=0) %}
+{% for pos in rows %}
+  {% set health = pos.health if pos.health is defined else pos.get("health", {}) if pos.get is defined else {} %}
+  {% set health_score = health.score if health.score is defined else health.get("score", 0) if health else 0 %}
+  {% if health_score >= 70 %}
+    {% set strong_close.value = strong_close.value + 1 %}
+  {% elif health_score < 40 %}
+    {% set weak_close.value = weak_close.value + 1 %}
+  {% endif %}
+{% endfor %}
 
-<div class="page-hero card premium-hero gold-accent-card">
-    <h2>Archived Positions</h2>
-    <div class="passage-frame">
+<style>
+  /* OBSERVATORY_ARCHIVED_REVIEW_SESSION_005B_ARCHIVED_POSITIONS_DARK_REWRITE_STYLES */
+
+  html body .archived-positions-shell,
+  html body .archived-positions-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .archived-positions-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .archived-positions-shell a {
+    color: inherit;
+  }
+
+  html body .ap-hero,
+  html body .ap-panel,
+  html body .ap-card,
+  html body .ap-chip,
+  html body .ap-stat,
+  html body .ap-empty,
+  html body .ap-metric,
+  html body .ap-drawer {
+    color-scheme: dark;
+  }
+
+  html body .ap-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .ap-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .ap-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .ap-kicker,
+  html body .ap-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .ap-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .ap-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .ap-copy,
+  html body .ap-muted,
+  html body .ap-card p,
+  html body .ap-empty p,
+  html body .ap-list li,
+  html body .ap-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .ap-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .ap-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .ap-btn,
+  html body .ap-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .ap-btn:hover,
+  html body .ap-card-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .ap-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .ap-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .ap-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .ap-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .ap-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .ap-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .ap-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .ap-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .ap-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .ap-stat,
+  html body .ap-metric {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .ap-stat span,
+  html body .ap-metric span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .ap-stat strong,
+  html body .ap-metric strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .ap-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .ap-stack,
+  html body .ap-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .ap-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+
+  html body .ap-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .ap-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .ap-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .ap-panel h2,
+  html body .ap-panel h3,
+  html body .ap-card h3,
+  html body .ap-card h4,
+  html body .ap-empty h3,
+  html body .ap-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .ap-panel h2,
+  html body .ap-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .ap-card,
+  html body .ap-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .ap-card-link {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  html body .ap-card h3,
+  html body .ap-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .ap-card p {
+    margin: 0;
+  }
+
+  html body .ap-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  html body .ap-note {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(2, 6, 23, 0.92));
+  }
+
+  html body .ap-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  html body .ap-list li + li {
+    margin-top: 8px;
+  }
+
+  html body .ap-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .ap-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .ap-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .ap-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .ap-hero-inner,
+    html body .ap-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .ap-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .archived-positions-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .ap-hero-inner {
+      padding: 20px;
+    }
+
+    html body .ap-metric-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="archived-positions-shell">
+
+  <section class="ap-hero">
+    <div class="ap-hero-inner">
+      <div>
+        <span class="ap-kicker">Archived Positions</span>
+        <h1 class="ap-title">Closed trades, preserved lessons.</h1>
+
+        <p class="ap-copy">
+          Archived Positions is the record room for closed user positions.
+          It keeps the final state, health at close, thesis, and lesson context readable
+          without turning your trade history into raw clutter.
+        </p>
+
+        <div class="ap-actions">
+          <a class="ap-btn primary" href="/my-positions">Active Positions</a>
+          <a class="ap-btn" href="/my-positions/analyze">Analyze My Trades</a>
+          <a class="ap-btn" href="/analytics-overview">Analytics Overview</a>
+          <a class="ap-btn" href="/reports">Reports</a>
+        </div>
+
+        <div class="ap-stats-grid">
+          <div class="ap-stat">
+            <span>Archived</span>
+            <strong>{{ archived_count }}</strong>
+          </div>
+          <div class="ap-stat">
+            <span>Strong close</span>
+            <strong>{{ strong_close.value }}</strong>
+          </div>
+          <div class="ap-stat">
+            <span>Weak close</span>
+            <strong>{{ weak_close.value }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="ap-read-card">
+        <div class="ap-orb" aria-hidden="true"></div>
+        <h2>Soulaana archive read</h2>
         <p>
-            Your closed positions — a record of your past decisions and outcomes.
+          Closed trades are not dead pages. They teach whether the thesis, conviction,
+          risk plan, and actual management matched each other.
         </p>
+      </aside>
     </div>
-</div>
+  </section>
 
-{% if positions %}
-<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px;">
-    {% for pos in positions %}
-    <div class="card premium-card">
-        <h3 style="margin-bottom:6px;">{{ pos.symbol }}</h3>
-        <p class="muted-line">
-            {{ pos.direction }} | Entry {{ pos.entry }} → Target {{ pos.target }}
-        </p>
-
-        <div class="card" style="margin-top:12px;">
-            <h4>Final State</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>Status:</strong> {{ pos.status }}</p>
-                <p style="margin:6px 0 0 0;"><strong>Health Score:</strong> {{ pos.health.score }}</p>
-                <p style="margin:6px 0 0 0;">{{ pos.health.note }}</p>
-            </div>
+  <div class="ap-grid">
+    <main class="ap-stack">
+      <section class="ap-panel">
+        <div class="ap-panel-head">
+          <div>
+            <p class="ap-eyebrow">History</p>
+            <h2>Closed position archive</h2>
+          </div>
+          <span class="ap-chip blue">{{ archived_count }} records</span>
         </div>
 
-        <div class="card" style="margin-top:12px;">
-            <h4>Original Thesis</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ pos.thesis or "No thesis recorded." }}</p>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% else %}
-<div class="card premium-card">
-    <div class="passage-frame">
-        <p>No archived positions yet.</p>
-    </div>
-</div>
-{% endif %}
+        {% if rows %}
+        <div class="ap-card-grid">
+          {% for pos in rows %}
+          {% set health = pos.health if pos.health is defined else pos.get("health", {}) if pos.get is defined else {} %}
+          {% set health_score = health.score if health.score is defined else health.get("score", 0) if health else 0 %}
+          {% set health_note = health.note if health.note is defined else health.get("note", "No health note recorded.") if health else "No health note recorded." %}
+          {% set pos_id = pos.position_id if pos.position_id is defined else pos.get("position_id", "") if pos.get is defined else "" %}
 
+          <a class="ap-card ap-card-link" href="/my-positions/{{ pos_id }}">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+              <div>
+                <p class="ap-eyebrow">Closed position</p>
+                <h3>{{ pos.symbol }}</h3>
+                <p class="ap-muted">{{ pos.direction }} · Entry {{ pos.entry }} → Target {{ pos.target }}</p>
+              </div>
+
+              <span class="ap-chip {% if health_score >= 70 %}gold{% elif health_score < 40 %}red{% else %}blue{% endif %}">
+                {{ pos.status }}
+              </span>
+            </div>
+
+            <div class="ap-metric-grid">
+              <div class="ap-metric">
+                <span>Health at close</span>
+                <strong>{{ health_score }}</strong>
+              </div>
+              <div class="ap-metric">
+                <span>Conviction</span>
+                <strong>{{ pos.conviction if pos.conviction is defined else pos.get("conviction", "N/A") }}</strong>
+              </div>
+              <div class="ap-metric">
+                <span>Stop</span>
+                <strong>{{ pos.stop if pos.stop is defined else pos.get("stop", "N/A") }}</strong>
+              </div>
+              <div class="ap-metric">
+                <span>Close status</span>
+                <strong>{{ pos.status }}</strong>
+              </div>
+            </div>
+
+            <div class="ap-note">
+              <h4>Final State</h4>
+              <p>{{ health_note }}</p>
+            </div>
+
+            <div class="ap-note">
+              <h4>Original Thesis</h4>
+              <p>{{ pos.thesis or "No thesis recorded." }}</p>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="ap-empty">
+          <h3 style="margin:0 0 8px;">No archived positions yet</h3>
+          <p style="margin:0;">
+            Closed user positions will appear here once active positions are finished.
+          </p>
+        </div>
+        {% endif %}
+      </section>
+    </main>
+
+    <aside class="ap-stack">
+      <section class="ap-panel">
+        <div class="ap-panel-head">
+          <div>
+            <p class="ap-eyebrow">Archive workflow</p>
+            <h2>Use this with</h2>
+          </div>
+        </div>
+
+        <div class="ap-stack">
+          <a class="ap-card" href="/my-positions/analyze" style="text-decoration:none;">
+            <h3>Analyze My Trades</h3>
+            <p>Turn archived positions into behavior patterns, conviction lessons, and management review.</p>
+          </a>
+
+          <a class="ap-card" href="/my-positions" style="text-decoration:none;">
+            <h3>Active Positions</h3>
+            <p>Return to the live user-position desk.</p>
+          </a>
+
+          <a class="ap-card" href="/analytics-overview" style="text-decoration:none;">
+            <h3>Analytics Overview</h3>
+            <p>Compare closed-trade lessons against broader proof and performance.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="ap-panel">
+        <div class="ap-panel-head">
+          <div>
+            <p class="ap-eyebrow">Reading rule</p>
+            <h2>Closed means teachable</h2>
+          </div>
+        </div>
+
+        <div class="ap-stack">
+          <article class="ap-card">
+            <h3>Good close</h3>
+            <p>The exit respected the original thesis, risk plan, and evidence.</p>
+          </article>
+
+          <article class="ap-card">
+            <h3>Bad close</h3>
+            <p>The trade drifted, ignored risk, or stayed open after the reason disappeared.</p>
+          </article>
+
+          <article class="ap-card">
+            <h3>Review close</h3>
+            <p>The outcome may be mixed, but it still has a lesson worth preserving.</p>
+          </article>
+        </div>
+      </section>
+
+      <details class="ap-drawer">
+        <summary>Preserved archive payload</summary>
+        <div class="ap-drawer-body">
+          <pre>{{ rows }}</pre>
+        </div>
+      </details>
+    </aside>
+  </div>
+</div>
 {% endblock %}

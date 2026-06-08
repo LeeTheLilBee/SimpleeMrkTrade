@@ -1,152 +1,706 @@
 {% extends "base.html" %}
-{% from "_ui_macros.html" import summary_card, stat_grid, note_card, behavior_flags, reason_list, passage_item %}
+
+{% block title %}Analyze My Trades · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ARCHIVED_REVIEW_SESSION_005D_MY_TRADE_ANALYSIS_DARK_REWRITE -->
 
-<div style="margin-bottom:14px;">
-    <a href="/my-positions" class="signal-stat-chip" style="text-decoration:none;">
-        ← Back to My Positions
-    </a>
-</div>
+{% set a = analysis if analysis is defined and analysis else {} %}
+{% set summary = page_summary if page_summary is defined and page_summary else {} %}
+{% set totals = a.totals if a.totals is defined else a.get("totals", {}) %}
+{% set insights = a.insights if a.insights is defined else a.get("insights", []) %}
+{% set behavior_summary = a.behavior_summary if a.behavior_summary is defined else a.get("behavior_summary", {}) %}
+{% set behavior_cards = behavior_summary.cards if behavior_summary.cards is defined else behavior_summary.get("cards", []) if behavior_summary else [] %}
+{% set direction_counts = a.direction_counts if a.direction_counts is defined else a.get("direction_counts", {}) %}
+{% set conviction_counts = a.conviction_counts if a.conviction_counts is defined else a.get("conviction_counts", {}) %}
+{% set trade_rows = a.trades if a.trades is defined else a.get("trades", []) %}
+{% set archived_total = totals.archived if totals.archived is defined else totals.get("archived", 0) if totals else 0 %}
+{% set wins_total = totals.wins if totals.wins is defined else totals.get("wins", 0) if totals else 0 %}
+{% set losses_total = totals.losses if totals.losses is defined else totals.get("losses", 0) if totals else 0 %}
+{% set flat_total = totals.flat if totals.flat is defined else totals.get("flat", 0) if totals else 0 %}
+{% set average_health = a.average_health if a.average_health is defined else a.get("average_health", "N/A") %}
 
-<div class="page-hero card premium-hero gold-accent-card">
-    <h2>Analyze My Trades</h2>
-    <div class="passage-frame">
-        <p>
-            A decision review layer showing what your archived trades are teaching you about alignment, conviction, execution, and behavior.
+<style>
+  /* OBSERVATORY_ARCHIVED_REVIEW_SESSION_005D_MY_TRADE_ANALYSIS_DARK_REWRITE_STYLES */
+
+  html body .trade-analysis-shell,
+  html body .trade-analysis-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .trade-analysis-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .trade-analysis-shell a {
+    color: inherit;
+  }
+
+  html body .ta-hero,
+  html body .ta-panel,
+  html body .ta-card,
+  html body .ta-chip,
+  html body .ta-stat,
+  html body .ta-empty,
+  html body .ta-metric,
+  html body .ta-drawer {
+    color-scheme: dark;
+  }
+
+  html body .ta-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .ta-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .ta-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .ta-kicker,
+  html body .ta-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .ta-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .ta-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .ta-copy,
+  html body .ta-muted,
+  html body .ta-card p,
+  html body .ta-empty p,
+  html body .ta-list li,
+  html body .ta-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .ta-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .ta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .ta-btn,
+  html body .ta-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .ta-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .ta-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .ta-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .ta-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .ta-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .ta-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .ta-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .ta-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .ta-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .ta-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .ta-stat,
+  html body .ta-metric {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .ta-stat span,
+  html body .ta-metric span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .ta-stat strong,
+  html body .ta-metric strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .ta-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .ta-stack,
+  html body .ta-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .ta-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  html body .ta-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .ta-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .ta-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .ta-panel h2,
+  html body .ta-panel h3,
+  html body .ta-card h3,
+  html body .ta-card h4,
+  html body .ta-empty h3,
+  html body .ta-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .ta-panel h2,
+  html body .ta-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .ta-card,
+  html body .ta-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .ta-card h3,
+  html body .ta-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .ta-card p {
+    margin: 0;
+  }
+
+  html body .ta-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  html body .ta-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  html body .ta-list li + li {
+    margin-top: 8px;
+  }
+
+  html body .ta-note {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(2, 6, 23, 0.92));
+  }
+
+  html body .ta-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .ta-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+    color: #f8fafc;
+  }
+
+  html body .ta-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .ta-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 1040px) {
+    html body .ta-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 940px) {
+    html body .ta-hero-inner,
+    html body .ta-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .trade-analysis-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .ta-hero-inner {
+      padding: 20px;
+    }
+
+    html body .ta-stats-grid,
+    html body .ta-metric-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="trade-analysis-shell">
+
+  <section class="ta-hero">
+    <div class="ta-hero-inner">
+      <div>
+        <span class="ta-kicker">Analyze My Trades</span>
+        <h1 class="ta-title">Your behavior review desk.</h1>
+
+        <p class="ta-copy">
+          This room turns archived trades into lessons. It looks for alignment,
+          conviction, behavior signals, direction mix, trade quality, and patterns
+          that should change how the next position gets managed.
         </p>
-    </div>
-</div>
 
-{{ summary_card(page_summary.headline, page_summary.summary, page_summary.chip) }}
+        <div class="ta-actions">
+          <a class="ta-btn primary" href="/my-positions">Active Positions</a>
+          <a class="ta-btn" href="/my-positions/archived">Archived Positions</a>
+          <a class="ta-btn" href="/analytics-overview">Analytics Overview</a>
+          <a class="ta-btn" href="/reports">Reports</a>
+        </div>
 
-{{ stat_grid([
-    {"title": "Archived Trades", "value": analysis.totals.archived},
-    {"title": "Wins", "value": analysis.totals.wins},
-    {"title": "Losses", "value": analysis.totals.losses},
-    {"title": "Flat", "value": analysis.totals.flat},
-    {"title": "Average Health at Close", "value": analysis.average_health},
-]) }}
+        <div class="ta-stats-grid">
+          <div class="ta-stat">
+            <span>Archived</span>
+            <strong>{{ archived_total }}</strong>
+          </div>
+          <div class="ta-stat">
+            <span>Wins</span>
+            <strong>{{ wins_total }}</strong>
+          </div>
+          <div class="ta-stat">
+            <span>Losses</span>
+            <strong>{{ losses_total }}</strong>
+          </div>
+          <div class="ta-stat">
+            <span>Flat</span>
+            <strong>{{ flat_total }}</strong>
+          </div>
+          <div class="ta-stat">
+            <span>Avg health close</span>
+            <strong>{{ average_health }}</strong>
+          </div>
+        </div>
+      </div>
 
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>What Your Trading Is Showing</h3>
-    {% if analysis.insights %}
-    <div style="display:grid; gap:10px; margin-top:12px;">
-        {% for line in analysis.insights %}
-        {{ passage_item(line) }}
-        {% endfor %}
+      <aside class="ta-read-card">
+        <div class="ta-orb" aria-hidden="true"></div>
+        <h2>Soulaana review read</h2>
+        <p>
+          Look for repeated behavior first. One trade can be random; repeated conviction,
+          timing, and management patterns are the real lesson.
+        </p>
+      </aside>
     </div>
-    {% else %}
-    <div class="passage-frame" style="margin-top:12px;">
-        <p style="margin:0;">No trade insights yet.</p>
-    </div>
-    {% endif %}
-</div>
+  </section>
 
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Habit Signals Emerging</h3>
-    {% if analysis.behavior_summary and analysis.behavior_summary.cards %}
-    <div style="display:grid; gap:10px; margin-top:12px;">
-        {% for line in analysis.behavior_summary.cards %}
-        {{ passage_item(line) }}
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="passage-frame" style="margin-top:12px;">
-        <p style="margin:0;">No strong behavior signals yet.</p>
-    </div>
-    {% endif %}
-</div>
+  <div class="ta-grid">
+    <main class="ta-stack">
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h3>Direction Mix</h3>
-        {% if analysis.direction_counts %}
-        <div style="display:grid; gap:8px; margin-top:12px;">
-            {% for direction, count in analysis.direction_counts.items() %}
-            {{ passage_item(direction ~ " — " ~ count) }}
-            {% endfor %}
+      <section class="ta-panel">
+        <div class="ta-panel-head">
+          <div>
+            <p class="ta-eyebrow">Summary</p>
+            <h2>{{ summary.headline if summary.headline is defined else summary.get("headline", "Trade review summary") }}</h2>
+            <p class="ta-muted" style="margin:8px 0 0;">
+              {{ summary.summary if summary.summary is defined else summary.get("summary", "Review your archived trades for repeatable lessons.") }}
+            </p>
+          </div>
+          <span class="ta-chip gold">{{ summary.chip if summary.chip is defined else summary.get("chip", "Review") }}</span>
+        </div>
+      </section>
+
+      <section class="ta-panel">
+        <div class="ta-panel-head">
+          <div>
+            <p class="ta-eyebrow">Insights</p>
+            <h2>What your trading is showing</h2>
+          </div>
+          <span class="ta-chip blue">{{ insights|length }} insights</span>
+        </div>
+
+        {% if insights %}
+        <div class="ta-card-grid">
+          {% for line in insights %}
+          <article class="ta-card">
+            <p>{{ line }}</p>
+          </article>
+          {% endfor %}
         </div>
         {% else %}
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">No direction data yet.</p>
+        <div class="ta-empty">
+          <h3 style="margin:0 0 8px;">No trade insights yet</h3>
+          <p style="margin:0;">Archived trade data will produce review insights once enough records exist.</p>
         </div>
         {% endif %}
-    </div>
+      </section>
 
-    <div class="card premium-card">
-        <h3>Conviction Mix</h3>
-        {% if analysis.conviction_counts %}
-        <div style="display:grid; gap:8px; margin-top:12px;">
-            {% for conviction, count in analysis.conviction_counts.items() %}
-            {{ passage_item(conviction ~ " — " ~ count) }}
-            {% endfor %}
+      <section class="ta-panel">
+        <div class="ta-panel-head">
+          <div>
+            <p class="ta-eyebrow">Behavior</p>
+            <h2>Habit signals emerging</h2>
+          </div>
+          <span class="ta-chip">{{ behavior_cards|length }} signals</span>
+        </div>
+
+        {% if behavior_cards %}
+        <div class="ta-card-grid">
+          {% for line in behavior_cards %}
+          <article class="ta-card">
+            <p>{{ line }}</p>
+          </article>
+          {% endfor %}
         </div>
         {% else %}
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">No conviction data yet.</p>
+        <div class="ta-empty">
+          <h3 style="margin:0 0 8px;">No strong behavior signals yet</h3>
+          <p style="margin:0;">Patterns will appear here after more archived trades are reviewed.</p>
         </div>
         {% endif %}
-    </div>
-</div>
+      </section>
 
-<div class="card premium-card">
-    <h3>Trade Lessons</h3>
-    {% if analysis.trades %}
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-top:14px;">
-        {% for trade in analysis.trades %}
-        <div class="card" style="margin:0; height:100%;">
+      <section class="ta-panel">
+        <div class="ta-panel-head">
+          <div>
+            <p class="ta-eyebrow">Trade lessons</p>
+            <h2>Archived trade cards</h2>
+          </div>
+          <span class="ta-chip blue">{{ trade_rows|length }} trades</span>
+        </div>
+
+        {% if trade_rows %}
+        <div class="ta-card-grid">
+          {% for trade in trade_rows %}
+          <article class="ta-card">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-                <div>
-                    <h4 style="margin:0 0 6px 0;">{{ trade.symbol }}</h4>
-                    <p class="muted-line" style="margin:0;">
-                        {{ trade.direction }} | Entry {{ trade.entry }} | Current {{ trade.current_price }}
-                    </p>
-                </div>
-                <span class="signal-stat-chip">{{ trade.lesson.tag if trade.lesson else trade.outcome }}</span>
+              <div>
+                <p class="ta-eyebrow">Trade</p>
+                <h3>{{ trade.symbol }}</h3>
+                <p class="ta-muted">
+                  {{ trade.direction if trade.direction is defined else trade.get("direction", "N/A") }}
+                  · {{ trade.outcome if trade.outcome is defined else trade.get("outcome", "Outcome pending") }}
+                </p>
+              </div>
+
+              <span class="ta-chip {% if trade.outcome == 'win' or trade.get('outcome') == 'win' %}gold{% elif trade.outcome == 'loss' or trade.get('outcome') == 'loss' %}red{% else %}blue{% endif %}">
+                {{ trade.outcome if trade.outcome is defined else trade.get("outcome", "Review") }}
+              </span>
             </div>
 
-            <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px;">
-                <div class="card" style="margin:0;">
-                    <h4>Outcome</h4>
-                    <div class="passage-frame"><p style="margin:0;"><strong>{{ trade.outcome }}</strong></p></div>
-                </div>
-                <div class="card" style="margin:0;">
-                    <h4>Health</h4>
-                    <div class="passage-frame"><p style="margin:0;"><strong>{{ trade.health.score }}</strong></p></div>
-                </div>
-                <div class="card" style="margin:0;">
-                    <h4>Conviction</h4>
-                    <div class="passage-frame"><p style="margin:0;"><strong>{{ trade.conviction }}</strong></p></div>
-                </div>
-                <div class="card" style="margin:0;">
-                    <h4>Agreement</h4>
-                    <div class="passage-frame"><p style="margin:0;"><strong>{{ trade.system_agreement.score }}</strong></p></div>
-                </div>
+            <div class="ta-metric-grid">
+              <div class="ta-metric">
+                <span>Health close</span>
+                <strong>{{ trade.health_score if trade.health_score is defined else trade.get("health_score", "N/A") }}</strong>
+              </div>
+              <div class="ta-metric">
+                <span>Conviction</span>
+                <strong>{{ trade.conviction if trade.conviction is defined else trade.get("conviction", "N/A") }}</strong>
+              </div>
             </div>
 
-            {% if trade.lesson %}
-            {{ note_card(trade.lesson.headline, trade.lesson.lesson) }}
+            {% set lessons = trade.lessons if trade.lessons is defined else trade.get("lessons", []) %}
+            {% if lessons %}
+            <div class="ta-note">
+              <h4>Lessons</h4>
+              <ul class="ta-list">
+                {% for line in lessons[:4] %}
+                <li>{{ line }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% elif trade.summary is defined or (trade.get is defined and trade.get("summary")) %}
+            <div class="ta-note">
+              <h4>Review note</h4>
+              <p>{{ trade.summary if trade.summary is defined else trade.get("summary") }}</p>
+            </div>
             {% endif %}
-
-            {{ behavior_flags(trade.behavior_flags) }}
-
-            {% if trade.behavior_coaching %}
-            {{ note_card("Behavior Coaching", trade.behavior_coaching) }}
-            {% endif %}
-
-            {{ note_card("Original Thesis", trade.thesis or "No thesis recorded.") }}
-
-            {% if trade.system_feedback %}
-            {{ reason_list("System Context at Review", trade.system_feedback, 3) }}
-            {% endif %}
+          </article>
+          {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="passage-frame" style="margin-top:12px;">
-        <p style="margin:0;">No archived trades to analyze yet.</p>
-    </div>
-    {% endif %}
-</div>
+        {% else %}
+        <div class="ta-empty">
+          <h3 style="margin:0 0 8px;">No archived trade cards yet</h3>
+          <p style="margin:0;">Closed positions will appear here after they are available to the analysis engine.</p>
+        </div>
+        {% endif %}
+      </section>
 
+    </main>
+
+    <aside class="ta-stack">
+
+      <section class="ta-panel">
+        <div class="ta-panel-head">
+          <div>
+            <p class="ta-eyebrow">Mix</p>
+            <h2>Direction and conviction</h2>
+          </div>
+        </div>
+
+        <div class="ta-card-grid" style="grid-template-columns:1fr;">
+          <article class="ta-card">
+            <h3>Direction Mix</h3>
+            {% if direction_counts %}
+            <ul class="ta-list">
+              {% for direction, count in direction_counts.items() %}
+              <li>{{ direction }} — {{ count }}</li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p>No direction data yet.</p>
+            {% endif %}
+          </article>
+
+          <article class="ta-card">
+            <h3>Conviction Mix</h3>
+            {% if conviction_counts %}
+            <ul class="ta-list">
+              {% for conviction, count in conviction_counts.items() %}
+              <li>{{ conviction }} — {{ count }}</li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p>No conviction data yet.</p>
+            {% endif %}
+          </article>
+        </div>
+      </section>
+
+      <section class="ta-panel">
+        <div class="ta-panel-head">
+          <div>
+            <p class="ta-eyebrow">Review workflow</p>
+            <h2>Use this with</h2>
+          </div>
+        </div>
+
+        <div class="ta-stack">
+          <a class="ta-card" href="/my-positions/archived" style="text-decoration:none;">
+            <h3>Archived Positions</h3>
+            <p>Return to closed positions and inspect the final state for each trade.</p>
+          </a>
+
+          <a class="ta-card" href="/my-positions" style="text-decoration:none;">
+            <h3>Active Positions</h3>
+            <p>Apply lessons from closed trades to current position management.</p>
+          </a>
+
+          <a class="ta-card" href="/analytics-overview" style="text-decoration:none;">
+            <h3>Analytics Overview</h3>
+            <p>Compare personal trade behavior with broader proof and performance.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="ta-panel">
+        <div class="ta-panel-head">
+          <div>
+            <p class="ta-eyebrow">Reading rule</p>
+            <h2>Repeat patterns matter</h2>
+          </div>
+        </div>
+
+        <div class="ta-stack">
+          <article class="ta-card">
+            <h3>Conviction mismatch</h3>
+            <p>High conviction with weak evidence is a behavior flag, not confidence.</p>
+          </article>
+
+          <article class="ta-card">
+            <h3>Exit discipline</h3>
+            <p>Review whether trades closed because the thesis changed or because emotion took over.</p>
+          </article>
+
+          <article class="ta-card">
+            <h3>Next position</h3>
+            <p>The point of review is to make the next active position cleaner.</p>
+          </article>
+        </div>
+      </section>
+
+      <details class="ta-drawer">
+        <summary>Preserved analysis payload</summary>
+        <div class="ta-drawer-body">
+          <pre>{{ a }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
+</div>
 {% endblock %}
