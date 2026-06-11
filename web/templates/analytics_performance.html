@@ -1,42 +1,594 @@
 {% extends "base.html" %}
+
+{% block title %}Performance Analytics · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ANALYTICS_DEEP_ROOMS_SESSION_006D_ANALYTICS_PERFORMANCE_DARK_REWRITE -->
 
-<div class="card premium-hero gold-accent-card section-sparkle">
-    <h2>Performance</h2>
-    <div class="passage-frame">
-        <p>
-            This page focuses on account results, proof metrics, and consistency over time.
+{% set pf = proof if proof is defined and proof else {} %}
+{% set report_rows = reports if reports is defined and reports else [] %}
+{% set portfolio = summary if summary is defined and summary else {} %}
+
+<style>
+  /* OBSERVATORY_ANALYTICS_DEEP_ROOMS_SESSION_006D_ANALYTICS_PERFORMANCE_DARK_REWRITE_STYLES */
+
+  html body .performance-room-shell,
+  html body .performance-room-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .performance-room-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .performance-room-shell a {
+    color: inherit;
+  }
+
+  html body .pr-hero,
+  html body .pr-panel,
+  html body .pr-card,
+  html body .pr-chip,
+  html body .pr-stat,
+  html body .pr-empty,
+  html body .pr-metric,
+  html body .pr-drawer {
+    color-scheme: dark;
+  }
+
+  html body .pr-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .pr-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .pr-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .pr-kicker,
+  html body .pr-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .pr-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .pr-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .pr-copy,
+  html body .pr-muted,
+  html body .pr-card p,
+  html body .pr-empty p,
+  html body .pr-list li,
+  html body .pr-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .pr-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .pr-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .pr-btn,
+  html body .pr-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .pr-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .pr-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .pr-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .pr-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .pr-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .pr-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .pr-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .pr-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .pr-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .pr-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .pr-stat,
+  html body .pr-metric {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .pr-stat span,
+  html body .pr-metric span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .pr-stat strong,
+  html body .pr-metric strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .pr-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .pr-stack,
+  html body .pr-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .pr-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  html body .pr-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .pr-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .pr-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .pr-panel h2,
+  html body .pr-panel h3,
+  html body .pr-card h3,
+  html body .pr-card h4,
+  html body .pr-empty h3,
+  html body .pr-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .pr-panel h2,
+  html body .pr-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .pr-card,
+  html body .pr-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .pr-card h3,
+  html body .pr-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .pr-card p {
+    margin: 0;
+  }
+
+  html body .pr-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  html body .pr-list li + li {
+    margin-top: 8px;
+  }
+
+  html body .pr-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .pr-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .pr-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .pr-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .pr-hero-inner,
+    html body .pr-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .pr-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .performance-room-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .pr-hero-inner {
+      padding: 20px;
+    }
+
+    html body .pr-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="performance-room-shell">
+
+  <section class="pr-hero">
+    <div class="pr-hero-inner">
+      <div>
+        <span class="pr-kicker">Performance Analytics</span>
+        <h1 class="pr-title">Proof before pride.</h1>
+
+        <p class="pr-copy">
+          Performance focuses on results, consistency, win rate, drawdown, closed-trade proof,
+          and account state. It should tell the truth even when the headline looks good.
         </p>
-    </div>
-</div>
 
-<div class="analytics-subnav">
-    <a href="/analytics-overview" class="cta-btn secondary">Overview</a>
-    <a href="/analytics" class="cta-btn secondary">Analytics</a>
-    <a href="/analytics/strategy" class="cta-btn secondary">Strategy Behavior</a>
-    <a href="/analytics/risk" class="cta-btn secondary">Risk Metrics</a>
-</div>
+        <div class="pr-actions">
+          <a class="pr-btn primary" href="/analytics-overview">Overview</a>
+          <a class="pr-btn" href="/analytics">Analytics</a>
+          <a class="pr-btn" href="/analytics/strategy">Strategy Behavior</a>
+          <a class="pr-btn" href="/analytics/risk">Risk Metrics</a>
+        </div>
 
-<div class="grid">
-    <div class="card gold-accent-card">
-        <h3>Trades</h3>
-        <div class="metric">{{ proof.trades }}</div>
-    </div>
-    <div class="card gold-accent-card">
-        <h3>Win Rate</h3>
-        <div class="metric">{{ proof.winrate }}</div>
-    </div>
-    <div class="card gold-accent-card">
-        <h3>Max Drawdown</h3>
-        <div class="metric">{{ proof.max_drawdown }}</div>
-    </div>
-</div>
+        <div class="pr-stats-grid">
+          <div class="pr-stat">
+            <span>Trades</span>
+            <strong>{{ pf.trades if pf.trades is defined else pf.get("trades", "N/A") }}</strong>
+          </div>
+          <div class="pr-stat">
+            <span>Win rate</span>
+            <strong>{{ pf.winrate if pf.winrate is defined else pf.get("winrate", "N/A") }}</strong>
+          </div>
+          <div class="pr-stat">
+            <span>Max drawdown</span>
+            <strong>{{ pf.max_drawdown if pf.max_drawdown is defined else pf.get("max_drawdown", "N/A") }}</strong>
+          </div>
+          <div class="pr-stat">
+            <span>Total return</span>
+            <strong>{{ pf.total_return if pf.total_return is defined else pf.get("total_return", "N/A") }}</strong>
+          </div>
+        </div>
+      </div>
 
-<div class="card">
-    <h3>Recent Reports</h3>
-    <div class="passage-frame">
-        <pre>{{ reports }}</pre>
+      <aside class="pr-read-card">
+        <div class="pr-orb" aria-hidden="true"></div>
+        <h2>Soulaana performance read</h2>
+        <p>
+          Performance is not just wins. Good proof means return, drawdown, repeatability,
+          and clean behavior agree with each other.
+        </p>
+      </aside>
     </div>
-</div>
+  </section>
 
+  <div class="pr-grid">
+    <main class="pr-stack">
+
+      <section class="pr-panel">
+        <div class="pr-panel-head">
+          <div>
+            <p class="pr-eyebrow">Core proof</p>
+            <h2>Result summary</h2>
+          </div>
+          <span class="pr-chip gold">Performance</span>
+        </div>
+
+        <div class="pr-card-grid">
+          <article class="pr-card">
+            <h3>Trades</h3>
+            <p>{{ pf.trades if pf.trades is defined else pf.get("trades", "N/A") }}</p>
+          </article>
+          <article class="pr-card">
+            <h3>Wins</h3>
+            <p>{{ pf.wins if pf.wins is defined else pf.get("wins", "N/A") }}</p>
+          </article>
+          <article class="pr-card">
+            <h3>Losses</h3>
+            <p>{{ pf.losses if pf.losses is defined else pf.get("losses", "N/A") }}</p>
+          </article>
+          <article class="pr-card">
+            <h3>Closed Trades</h3>
+            <p>{{ pf.closed_trades if pf.closed_trades is defined else pf.get("closed_trades", "N/A") }}</p>
+          </article>
+        </div>
+
+        <details class="pr-drawer">
+          <summary>Preserved proof payload</summary>
+          <div class="pr-drawer-body">
+            <pre>{{ pf }}</pre>
+          </div>
+        </details>
+      </section>
+
+      <section class="pr-panel">
+        <div class="pr-panel-head">
+          <div>
+            <p class="pr-eyebrow">Account state</p>
+            <h2>Portfolio proof context</h2>
+          </div>
+          <span class="pr-chip blue">Portfolio</span>
+        </div>
+
+        {% if portfolio %}
+        <div class="pr-card-grid">
+          <article class="pr-card">
+            <h3>Estimated Value</h3>
+            <p>{{ portfolio.estimated_account_value if portfolio.estimated_account_value is defined else portfolio.get("estimated_account_value", "N/A") }}</p>
+          </article>
+          <article class="pr-card">
+            <h3>Cash</h3>
+            <p>{{ portfolio.cash if portfolio.cash is defined else portfolio.get("cash", "N/A") }}</p>
+          </article>
+          <article class="pr-card">
+            <h3>Buying Power</h3>
+            <p>{{ portfolio.buying_power if portfolio.buying_power is defined else portfolio.get("buying_power", "N/A") }}</p>
+          </article>
+        </div>
+        {% else %}
+        <div class="pr-empty">
+          <h3 style="margin:0 0 8px;">No portfolio summary loaded</h3>
+          <p style="margin:0;">Portfolio proof context is not attached to this performance snapshot yet.</p>
+        </div>
+        {% endif %}
+
+        <details class="pr-drawer">
+          <summary>Preserved portfolio payload</summary>
+          <div class="pr-drawer-body">
+            <pre>{{ portfolio }}</pre>
+          </div>
+        </details>
+      </section>
+
+    </main>
+
+    <aside class="pr-stack">
+
+      <section class="pr-panel">
+        <div class="pr-panel-head">
+          <div>
+            <p class="pr-eyebrow">Recent reports</p>
+            <h2>Report feed</h2>
+          </div>
+          <span class="pr-chip">{{ report_rows|length }} reports</span>
+        </div>
+
+        {% if report_rows %}
+        <div class="pr-card-grid" style="grid-template-columns:1fr;">
+          {% for report in report_rows[:6] %}
+          <article class="pr-card">
+            <p>{{ report }}</p>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="pr-empty">
+          <h3 style="margin:0 0 8px;">No recent reports attached</h3>
+          <p style="margin:0;">This route currently receives an empty report list, so proof packets live in the Reports room.</p>
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="pr-panel">
+        <div class="pr-panel-head">
+          <div>
+            <p class="pr-eyebrow">Performance rules</p>
+            <h2>Read it correctly</h2>
+          </div>
+        </div>
+
+        <div class="pr-stack">
+          <article class="pr-card">
+            <h3>Win rate is not enough</h3>
+            <p>A high win rate with ugly drawdown is not clean performance.</p>
+          </article>
+          <article class="pr-card">
+            <h3>Drawdown is truth</h3>
+            <p>Drawdown shows whether the system can survive its own decisions.</p>
+          </article>
+          <article class="pr-card">
+            <h3>Repeatability matters</h3>
+            <p>One good run is not proof. Repeated, explainable performance is proof.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="pr-panel">
+        <div class="pr-panel-head">
+          <div>
+            <p class="pr-eyebrow">Deep rooms</p>
+            <h2>Follow the proof</h2>
+          </div>
+        </div>
+
+        <div class="pr-stack">
+          <a class="pr-card" href="/analytics" style="text-decoration:none;">
+            <h3>Full Analytics</h3>
+            <p>Return to the full analytics workspace.</p>
+          </a>
+          <a class="pr-card" href="/analytics/risk" style="text-decoration:none;">
+            <h3>Risk Metrics</h3>
+            <p>Check if performance is clean under drawdown and risk pressure.</p>
+          </a>
+          <a class="pr-card" href="/reports" style="text-decoration:none;">
+            <h3>Reports</h3>
+            <p>Move from performance summary into saved proof packets.</p>
+          </a>
+        </div>
+      </section>
+
+    </aside>
+  </div>
+</div>
 {% endblock %}

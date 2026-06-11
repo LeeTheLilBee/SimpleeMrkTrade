@@ -1,0 +1,555 @@
+{% extends "base.html" %}
+
+{% block title %}Strategy Behavior · The Observatory{% endblock %}
+
+{% block content %}
+<!-- OBSERVATORY_ANALYTICS_DEEP_ROOMS_SESSION_006H_STRATEGY_BEHAVIOR_CREATE_TEMPLATE -->
+<!-- OBSERVATORY_ANALYTICS_DEEP_ROOMS_SESSION_006H5_STRATEGY_BEHAVIOR_BRACKET_ITEMS_FIX -->
+
+{% set b = behavior if behavior is defined and behavior else {} %}
+{% set summary_text = b["summary"] if "summary" in b else "Strategy behavior view is active." %}
+{% set behavior_rows = b["items"] if "items" in b else [] %}
+
+<style>
+  /* OBSERVATORY_ANALYTICS_DEEP_ROOMS_SESSION_006H_STRATEGY_BEHAVIOR_CREATE_TEMPLATE_STYLES */
+
+  html body .strategy-room-shell,
+  html body .strategy-room-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .strategy-room-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .strategy-room-shell a {
+    color: inherit;
+  }
+
+  html body .sr-hero,
+  html body .sr-panel,
+  html body .sr-card,
+  html body .sr-chip,
+  html body .sr-stat,
+  html body .sr-empty,
+  html body .sr-drawer {
+    color-scheme: dark;
+  }
+
+  html body .sr-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .sr-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .sr-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .sr-kicker,
+  html body .sr-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .sr-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .sr-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .sr-copy,
+  html body .sr-muted,
+  html body .sr-card p,
+  html body .sr-empty p,
+  html body .sr-list li,
+  html body .sr-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .sr-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .sr-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .sr-btn,
+  html body .sr-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .sr-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .sr-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .sr-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .sr-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .sr-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .sr-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .sr-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .sr-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .sr-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .sr-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .sr-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .sr-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .sr-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .sr-stack,
+  html body .sr-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .sr-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  html body .sr-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .sr-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .sr-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .sr-panel h2,
+  html body .sr-panel h3,
+  html body .sr-card h3,
+  html body .sr-card h4,
+  html body .sr-empty h3,
+  html body .sr-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .sr-panel h2,
+  html body .sr-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .sr-card,
+  html body .sr-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .sr-card h3,
+  html body .sr-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .sr-card p {
+    margin: 0;
+  }
+
+  html body .sr-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  html body .sr-list li + li {
+    margin-top: 8px;
+  }
+
+  html body .sr-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .sr-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .sr-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .sr-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .sr-hero-inner,
+    html body .sr-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .sr-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .strategy-room-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .sr-hero-inner {
+      padding: 20px;
+    }
+  }
+</style>
+
+<div class="strategy-room-shell">
+
+  <section class="sr-hero">
+    <div class="sr-hero-inner">
+      <div>
+        <span class="sr-kicker">Strategy Behavior</span>
+        <h1 class="sr-title">Watch the edge, not the ego.</h1>
+
+        <p class="sr-copy">
+          Strategy Behavior is where the Observatory checks whether a strategy is still
+          acting clean, drifting, degrading, or waiting for the right market regime.
+        </p>
+
+        <div class="sr-actions">
+          <a class="sr-btn primary" href="/analytics-overview">Overview</a>
+          <a class="sr-btn" href="/analytics">Analytics</a>
+          <a class="sr-btn" href="/analytics/performance">Performance</a>
+          <a class="sr-btn" href="/analytics/risk">Risk Metrics</a>
+        </div>
+
+        <div class="sr-stats-grid">
+          <div class="sr-stat">
+            <span>Status</span>
+            <strong>Active</strong>
+          </div>
+          <div class="sr-stat">
+            <span>Behavior rows</span>
+            <strong>{{ behavior_rows|length }}</strong>
+          </div>
+          <div class="sr-stat">
+            <span>Route health</span>
+            <strong>Template restored</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="sr-read-card">
+        <div class="sr-orb" aria-hidden="true"></div>
+        <h2>Soulaana strategy read</h2>
+        <p>
+          A strategy can win and still be degrading. Watch repeatability, regime fit,
+          fatigue, and whether the edge still behaves the way it claims.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <div class="sr-grid">
+    <main class="sr-stack">
+
+      <section class="sr-panel">
+        <div class="sr-panel-head">
+          <div>
+            <p class="sr-eyebrow">Behavior summary</p>
+            <h2>Current strategy read</h2>
+          </div>
+          <span class="sr-chip gold">Behavior</span>
+        </div>
+
+        <article class="sr-card">
+          <p>{{ summary_text }}</p>
+        </article>
+
+        <details class="sr-drawer">
+          <summary>Preserved behavior payload</summary>
+          <div class="sr-drawer-body">
+            <pre>{{ b }}</pre>
+          </div>
+        </details>
+      </section>
+
+      <section class="sr-panel">
+        <div class="sr-panel-head">
+          <div>
+            <p class="sr-eyebrow">Strategy rows</p>
+            <h2>Behavior items</h2>
+          </div>
+          <span class="sr-chip blue">{{ behavior_rows|length }} items</span>
+        </div>
+
+        {% if behavior_rows %}
+        <div class="sr-card-grid">
+          {% for item in behavior_rows %}
+          <article class="sr-card">
+            {% if item.items is defined %}
+              <h3>{{ item.name if item.name is defined else item.get("name", "Strategy item") }}</h3>
+              <p>{{ item.summary if item.summary is defined else item.get("summary", item) }}</p>
+            {% else %}
+              <p>{{ item }}</p>
+            {% endif %}
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="sr-empty">
+          <h3 style="margin:0 0 8px;">No detailed strategy rows yet</h3>
+          <p style="margin:0;">
+            The route is active. Detailed strategy behavior rows can attach here once the engine sends them.
+          </p>
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="sr-panel">
+        <div class="sr-panel-head">
+          <div>
+            <p class="sr-eyebrow">Behavior lens</p>
+            <h2>What this room watches</h2>
+          </div>
+        </div>
+
+        <div class="sr-card-grid">
+          <article class="sr-card">
+            <h3>Edge decay</h3>
+            <p>Is the strategy losing expectancy, consistency, or clean signal quality?</p>
+          </article>
+          <article class="sr-card">
+            <h3>Regime fit</h3>
+            <p>Does the current market actually match the strategy’s preferred conditions?</p>
+          </article>
+          <article class="sr-card">
+            <h3>Fatigue</h3>
+            <p>Is the setup being reused after the evidence has stopped supporting it?</p>
+          </article>
+        </div>
+      </section>
+
+    </main>
+
+    <aside class="sr-stack">
+
+      <section class="sr-panel">
+        <div class="sr-panel-head">
+          <div>
+            <p class="sr-eyebrow">Connected proof</p>
+            <h2>Use this with</h2>
+          </div>
+        </div>
+
+        <div class="sr-stack">
+          <a class="sr-card" href="/analytics/performance" style="text-decoration:none;">
+            <h3>Performance</h3>
+            <p>Check whether strategy behavior is showing up in proof metrics.</p>
+          </a>
+          <a class="sr-card" href="/analytics/risk" style="text-decoration:none;">
+            <h3>Risk Metrics</h3>
+            <p>Check whether a strategy is increasing drawdown or pressure.</p>
+          </a>
+          <a class="sr-card" href="/reports" style="text-decoration:none;">
+            <h3>Reports</h3>
+            <p>Compare strategy behavior against saved proof packets.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="sr-panel">
+        <div class="sr-panel-head">
+          <div>
+            <p class="sr-eyebrow">Reading rule</p>
+            <h2>Strategy discipline</h2>
+          </div>
+        </div>
+
+        <div class="sr-stack">
+          <article class="sr-card">
+            <h3>Do not marry one setup</h3>
+            <p>A strong strategy still needs the right environment.</p>
+          </article>
+          <article class="sr-card">
+            <h3>Decay is quiet</h3>
+            <p>Edge degradation usually shows up before the losses feel dramatic.</p>
+          </article>
+          <article class="sr-card">
+            <h3>Pause is a position</h3>
+            <p>Not forcing a strategy can be the cleanest risk decision.</p>
+          </article>
+        </div>
+      </section>
+
+    </aside>
+  </div>
+</div>
+{% endblock %}

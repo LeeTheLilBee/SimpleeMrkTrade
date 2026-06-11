@@ -1,44 +1,622 @@
 {% extends "base.html" %}
+
+{% block title %}Risk Metrics · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ANALYTICS_DEEP_ROOMS_SESSION_006F_ANALYTICS_RISK_DARK_REWRITE -->
 
-<div class="card premium-hero gold-accent-card section-sparkle">
-    <h2>Risk Metrics</h2>
-    <div class="passage-frame">
-        <p>
-            This page focuses on drawdown, capital posture, and how defensive controls shape behavior.
+{% set pf = proof if proof is defined and proof else {} %}
+{% set portfolio = summary if summary is defined and summary else {} %}
+{% set sys_state = system if system is defined and system else {} %}
+{% set dd = drawdown if drawdown is defined and drawdown else [] %}
+
+<style>
+  /* OBSERVATORY_ANALYTICS_DEEP_ROOMS_SESSION_006F_ANALYTICS_RISK_DARK_REWRITE_STYLES */
+
+  html body .risk-room-shell,
+  html body .risk-room-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .risk-room-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .risk-room-shell a {
+    color: inherit;
+  }
+
+  html body .rr-hero,
+  html body .rr-panel,
+  html body .rr-card,
+  html body .rr-chip,
+  html body .rr-stat,
+  html body .rr-empty,
+  html body .rr-metric,
+  html body .rr-drawer {
+    color-scheme: dark;
+  }
+
+  html body .rr-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(248, 113, 113, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .rr-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(248, 113, 113, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .rr-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .rr-kicker,
+  html body .rr-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .rr-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .rr-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .rr-copy,
+  html body .rr-muted,
+  html body .rr-card p,
+  html body .rr-empty p,
+  html body .rr-list li,
+  html body .rr-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .rr-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .rr-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .rr-btn,
+  html body .rr-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .rr-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .rr-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(248, 113, 113, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .rr-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .rr-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .rr-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .rr-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .rr-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .rr-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .rr-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .rr-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .rr-stat,
+  html body .rr-metric {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .rr-stat span,
+  html body .rr-metric span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .rr-stat strong,
+  html body .rr-metric strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .rr-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .rr-stack,
+  html body .rr-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .rr-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  html body .rr-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(248, 113, 113, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .rr-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .rr-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .rr-panel h2,
+  html body .rr-panel h3,
+  html body .rr-card h3,
+  html body .rr-card h4,
+  html body .rr-empty h3,
+  html body .rr-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .rr-panel h2,
+  html body .rr-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .rr-card,
+  html body .rr-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .rr-card h3,
+  html body .rr-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .rr-card p {
+    margin: 0;
+  }
+
+  html body .rr-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  html body .rr-list li + li {
+    margin-top: 8px;
+  }
+
+  html body .rr-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .rr-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .rr-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .rr-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .rr-hero-inner,
+    html body .rr-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .rr-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .risk-room-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .rr-hero-inner {
+      padding: 20px;
+    }
+
+    html body .rr-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="risk-room-shell">
+
+  <section class="rr-hero">
+    <div class="rr-hero-inner">
+      <div>
+        <span class="rr-kicker">Risk Metrics</span>
+        <h1 class="rr-title">Defense is part of performance.</h1>
+
+        <p class="rr-copy">
+          Risk Metrics focuses on drawdown, defensive controls, account posture, and the
+          system’s ability to stay alive when trades get uncomfortable.
         </p>
-    </div>
-</div>
 
-<div class="analytics-subnav">
-    <a href="/analytics-overview" class="cta-btn secondary">Overview</a>
-    <a href="/analytics" class="cta-btn secondary">Analytics</a>
-    <a href="/analytics/performance" class="cta-btn secondary">Performance</a>
-    <a href="/strategy-behavior" class="cta-btn secondary">Strategy Behavior</a>
-
-<div class="grid">
-    <div class="card gold-accent-card">
-        <h3>Proof Summary</h3>
-        <div class="passage-frame">
-            <p><b>Max Drawdown:</b> {{ proof.max_drawdown }}</p>
-            <p><b>Trades:</b> {{ proof.trades }}</p>
-            <p><b>Win Rate:</b> {{ proof.winrate }}</p>
+        <div class="rr-actions">
+          <a class="rr-btn primary" href="/analytics-overview">Overview</a>
+          <a class="rr-btn" href="/analytics">Analytics</a>
+          <a class="rr-btn" href="/analytics/performance">Performance</a>
+          <a class="rr-btn" href="/analytics/strategy">Strategy Behavior</a>
         </div>
-    </div>
 
-    <div class="card gold-accent-card">
-        <h3>System Controls</h3>
-        <div class="passage-frame">
-            <pre>{{ system }}</pre>
+        <div class="rr-stats-grid">
+          <div class="rr-stat">
+            <span>Max drawdown</span>
+            <strong>{{ pf.max_drawdown if pf.max_drawdown is defined else pf.get("max_drawdown", "N/A") }}</strong>
+          </div>
+          <div class="rr-stat">
+            <span>Trades</span>
+            <strong>{{ pf.trades if pf.trades is defined else pf.get("trades", "N/A") }}</strong>
+          </div>
+          <div class="rr-stat">
+            <span>Win rate</span>
+            <strong>{{ pf.winrate if pf.winrate is defined else pf.get("winrate", "N/A") }}</strong>
+          </div>
+          <div class="rr-stat">
+            <span>Drawdown records</span>
+            <strong>{{ dd|length }}</strong>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
 
-<div class="card">
-    <h3>Portfolio Summary</h3>
-    <div class="passage-frame">
-        <pre>{{ summary }}</pre>
+      <aside class="rr-read-card">
+        <div class="rr-orb" aria-hidden="true"></div>
+        <h2>Soulaana risk read</h2>
+        <p>
+          Strong systems do not just make money. They survive drawdowns, respect limits,
+          and know when defense is the highest-return move.
+        </p>
+      </aside>
     </div>
-</div>
+  </section>
 
+  <div class="rr-grid">
+    <main class="rr-stack">
+
+      <section class="rr-panel">
+        <div class="rr-panel-head">
+          <div>
+            <p class="rr-eyebrow">Proof risk</p>
+            <h2>Drawdown and proof summary</h2>
+          </div>
+          <span class="rr-chip red">Risk proof</span>
+        </div>
+
+        <div class="rr-card-grid">
+          <article class="rr-card">
+            <h3>Max Drawdown</h3>
+            <p>{{ pf.max_drawdown if pf.max_drawdown is defined else pf.get("max_drawdown", "N/A") }}</p>
+          </article>
+          <article class="rr-card">
+            <h3>Trades</h3>
+            <p>{{ pf.trades if pf.trades is defined else pf.get("trades", "N/A") }}</p>
+          </article>
+          <article class="rr-card">
+            <h3>Win Rate</h3>
+            <p>{{ pf.winrate if pf.winrate is defined else pf.get("winrate", "N/A") }}</p>
+          </article>
+        </div>
+
+        <details class="rr-drawer">
+          <summary>Preserved proof payload</summary>
+          <div class="rr-drawer-body">
+            <pre>{{ pf }}</pre>
+          </div>
+        </details>
+      </section>
+
+      <section class="rr-panel">
+        <div class="rr-panel-head">
+          <div>
+            <p class="rr-eyebrow">System controls</p>
+            <h2>Defensive control state</h2>
+          </div>
+          <span class="rr-chip gold">Controls</span>
+        </div>
+
+        {% if sys_state %}
+        <div class="rr-card-grid">
+          {% if sys_state.items is defined %}
+            {% for key, value in sys_state.items() %}
+            <article class="rr-card">
+              <h3>{{ key }}</h3>
+              <p>{{ value }}</p>
+            </article>
+            {% endfor %}
+          {% else %}
+          <article class="rr-card">
+            <p>{{ sys_state }}</p>
+          </article>
+          {% endif %}
+        </div>
+        {% else %}
+        <div class="rr-empty">
+          <h3 style="margin:0 0 8px;">No system control payload loaded</h3>
+          <p style="margin:0;">Risk controls are not attached to this snapshot yet.</p>
+        </div>
+        {% endif %}
+
+        <details class="rr-drawer">
+          <summary>Preserved system payload</summary>
+          <div class="rr-drawer-body">
+            <pre>{{ sys_state }}</pre>
+          </div>
+        </details>
+      </section>
+
+      <section class="rr-panel">
+        <div class="rr-panel-head">
+          <div>
+            <p class="rr-eyebrow">Drawdown</p>
+            <h2>Drawdown history</h2>
+          </div>
+          <span class="rr-chip">{{ dd|length }} records</span>
+        </div>
+
+        {% if dd %}
+        <div class="rr-card-grid">
+          {% for row in dd[:8] %}
+          <article class="rr-card">
+            <p>{{ row }}</p>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="rr-empty">
+          <h3 style="margin:0 0 8px;">No drawdown history yet</h3>
+          <p style="margin:0;">Drawdown records will appear here after they are captured in the canonical snapshot.</p>
+        </div>
+        {% endif %}
+      </section>
+
+    </main>
+
+    <aside class="rr-stack">
+
+      <section class="rr-panel">
+        <div class="rr-panel-head">
+          <div>
+            <p class="rr-eyebrow">Account posture</p>
+            <h2>Portfolio context</h2>
+          </div>
+        </div>
+
+        {% if portfolio %}
+        <div class="rr-card-grid" style="grid-template-columns:1fr;">
+          <article class="rr-card">
+            <h3>Estimated Value</h3>
+            <p>{{ portfolio.estimated_account_value if portfolio.estimated_account_value is defined else portfolio.get("estimated_account_value", "N/A") }}</p>
+          </article>
+          <article class="rr-card">
+            <h3>Cash</h3>
+            <p>{{ portfolio.cash if portfolio.cash is defined else portfolio.get("cash", "N/A") }}</p>
+          </article>
+          <article class="rr-card">
+            <h3>Buying Power</h3>
+            <p>{{ portfolio.buying_power if portfolio.buying_power is defined else portfolio.get("buying_power", "N/A") }}</p>
+          </article>
+        </div>
+        {% else %}
+        <div class="rr-empty">
+          <h3 style="margin:0 0 8px;">No portfolio context loaded</h3>
+          <p style="margin:0;">Account posture is not attached to this risk snapshot yet.</p>
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="rr-panel">
+        <div class="rr-panel-head">
+          <div>
+            <p class="rr-eyebrow">Risk rules</p>
+            <h2>Read risk correctly</h2>
+          </div>
+        </div>
+
+        <div class="rr-stack">
+          <article class="rr-card">
+            <h3>Risk is not fear</h3>
+            <p>Risk is the structure that keeps the engine alive long enough to compound.</p>
+          </article>
+          <article class="rr-card">
+            <h3>Drawdown tells the truth</h3>
+            <p>A system that cannot tolerate drawdown honestly cannot scale safely.</p>
+          </article>
+          <article class="rr-card">
+            <h3>Controls are alpha</h3>
+            <p>Good defense prevents bad trades from erasing good strategy.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="rr-panel">
+        <div class="rr-panel-head">
+          <div>
+            <p class="rr-eyebrow">Deep rooms</p>
+            <h2>Follow the risk</h2>
+          </div>
+        </div>
+
+        <div class="rr-stack">
+          <a class="rr-card" href="/analytics/performance" style="text-decoration:none;">
+            <h3>Performance</h3>
+            <p>Check whether performance remains clean after drawdown pressure.</p>
+          </a>
+          <a class="rr-card" href="/analytics" style="text-decoration:none;">
+            <h3>Full Analytics</h3>
+            <p>Return to the full analytics workspace.</p>
+          </a>
+          <a class="rr-card" href="/reports" style="text-decoration:none;">
+            <h3>Reports</h3>
+            <p>Compare risk posture against saved proof packets.</p>
+          </a>
+        </div>
+      </section>
+
+    </aside>
+  </div>
+</div>
 {% endblock %}

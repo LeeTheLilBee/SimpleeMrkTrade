@@ -1,56 +1,628 @@
 {% extends "base.html" %}
+
+{% block title %}Analytics Workspace · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ANALYTICS_DEEP_ROOMS_SESSION_006B_ANALYTICS_WORKSPACE_DARK_REWRITE -->
 
-<div class="card premium-hero gold-accent-card section-sparkle">
-    <h2>Analytics</h2>
-    <div class="passage-frame">
-        <p>
-            The full analytics workspace pulls together results, drawdown, strategy behavior,
-            and portfolio state into one view.
+{% set st = stats if stats is defined and stats else {} %}
+{% set portfolio = summary if summary is defined and summary else {} %}
+{% set pf = proof if proof is defined and proof else {} %}
+{% set unrealized = unreal if unreal is defined and unreal else {} %}
+{% set strategy_map = strategies if strategies is defined and strategies else {} %}
+{% set dd = drawdown if drawdown is defined and drawdown else [] %}
+{% set report_rows = reports if reports is defined and reports else [] %}
+{% set snap = snapshot if snapshot is defined and snapshot else {} %}
+
+<style>
+  /* OBSERVATORY_ANALYTICS_DEEP_ROOMS_SESSION_006B_ANALYTICS_WORKSPACE_DARK_REWRITE_STYLES */
+
+  html body .analytics-workspace-shell,
+  html body .analytics-workspace-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .analytics-workspace-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .analytics-workspace-shell a {
+    color: inherit;
+  }
+
+  html body .aw-hero,
+  html body .aw-panel,
+  html body .aw-card,
+  html body .aw-chip,
+  html body .aw-stat,
+  html body .aw-empty,
+  html body .aw-metric,
+  html body .aw-drawer {
+    color-scheme: dark;
+  }
+
+  html body .aw-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .aw-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .aw-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .aw-kicker,
+  html body .aw-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .aw-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .aw-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .aw-copy,
+  html body .aw-muted,
+  html body .aw-card p,
+  html body .aw-empty p,
+  html body .aw-list li,
+  html body .aw-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .aw-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .aw-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .aw-btn,
+  html body .aw-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .aw-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .aw-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .aw-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .aw-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .aw-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .aw-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .aw-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .aw-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .aw-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .aw-stat,
+  html body .aw-metric {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .aw-stat span,
+  html body .aw-metric span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .aw-stat strong,
+  html body .aw-metric strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .aw-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .aw-stack,
+  html body .aw-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .aw-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  html body .aw-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .aw-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .aw-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .aw-panel h2,
+  html body .aw-panel h3,
+  html body .aw-card h3,
+  html body .aw-card h4,
+  html body .aw-empty h3,
+  html body .aw-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .aw-panel h2,
+  html body .aw-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .aw-card,
+  html body .aw-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .aw-card h3,
+  html body .aw-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .aw-card p {
+    margin: 0;
+  }
+
+  html body .aw-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  html body .aw-list li + li {
+    margin-top: 8px;
+  }
+
+  html body .aw-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .aw-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .aw-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .aw-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .aw-hero-inner,
+    html body .aw-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .aw-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .analytics-workspace-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .aw-hero-inner {
+      padding: 20px;
+    }
+
+    html body .aw-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="analytics-workspace-shell">
+
+  <section class="aw-hero">
+    <div class="aw-hero-inner">
+      <div>
+        <span class="aw-kicker">Analytics Workspace</span>
+        <h1 class="aw-title">The full proof room.</h1>
+
+        <p class="aw-copy">
+          This room pulls performance, portfolio state, unrealized behavior, strategy results,
+          drawdown history, and account snapshot context into one readable workspace.
         </p>
-    </div>
-</div>
 
-<div class="analytics-subnav">
-    <a href="/analytics-overview" class="cta-btn secondary">Overview</a>
-    <a href="/analytics/performance" class="cta-btn secondary">Performance</a>
-    <a href="/analytics/strategy" class="cta-btn secondary">Strategy Behavior</a>
-    <a href="/analytics/risk" class="cta-btn secondary">Risk Metrics</a>
-</div>
-
-<div class="grid">
-    <div class="card gold-accent-card">
-        <h3>Performance Summary</h3>
-        <div class="passage-frame">
-            <p><b>Trades:</b> {{ proof.trades }}</p>
-            <p><b>Win Rate:</b> {{ proof.winrate }}</p>
-            <p><b>Wins:</b> {{ proof.wins }}</p>
-            <p><b>Losses:</b> {{ proof.losses }}</p>
+        <div class="aw-actions">
+          <a class="aw-btn primary" href="/analytics-overview">Overview</a>
+          <a class="aw-btn" href="/analytics/performance">Performance</a>
+          <a class="aw-btn" href="/analytics/strategy">Strategy Behavior</a>
+          <a class="aw-btn" href="/analytics/risk">Risk Metrics</a>
         </div>
-    </div>
 
-    <div class="card gold-accent-card">
-        <h3>Portfolio Summary</h3>
-        <div class="passage-frame">
-            <pre>{{ summary }}</pre>
+        <div class="aw-stats-grid">
+          <div class="aw-stat">
+            <span>Trades</span>
+            <strong>{{ pf.trades if pf.trades is defined else pf.get("trades", st.get("trades", "N/A")) }}</strong>
+          </div>
+          <div class="aw-stat">
+            <span>Win rate</span>
+            <strong>{{ pf.winrate if pf.winrate is defined else pf.get("winrate", "N/A") }}</strong>
+          </div>
+          <div class="aw-stat">
+            <span>Wins</span>
+            <strong>{{ pf.wins if pf.wins is defined else pf.get("wins", "N/A") }}</strong>
+          </div>
+          <div class="aw-stat">
+            <span>Losses</span>
+            <strong>{{ pf.losses if pf.losses is defined else pf.get("losses", "N/A") }}</strong>
+          </div>
         </div>
+      </div>
+
+      <aside class="aw-read-card">
+        <div class="aw-orb" aria-hidden="true"></div>
+        <h2>Soulaana analytics read</h2>
+        <p>
+          Do not judge the system by one metric. Check proof, risk, strategy behavior,
+          drawdown, and account state together before trusting the story.
+        </p>
+      </aside>
     </div>
+  </section>
+
+  <div class="aw-grid">
+    <main class="aw-stack">
+
+      <section class="aw-panel">
+        <div class="aw-panel-head">
+          <div>
+            <p class="aw-eyebrow">Performance</p>
+            <h2>Performance summary</h2>
+          </div>
+          <span class="aw-chip gold">Proof</span>
+        </div>
+
+        <div class="aw-card-grid">
+          <article class="aw-card">
+            <h3>Trades</h3>
+            <p>{{ pf.trades if pf.trades is defined else pf.get("trades", st.get("trades", "N/A")) }}</p>
+          </article>
+          <article class="aw-card">
+            <h3>Win Rate</h3>
+            <p>{{ pf.winrate if pf.winrate is defined else pf.get("winrate", "N/A") }}</p>
+          </article>
+          <article class="aw-card">
+            <h3>Max Drawdown</h3>
+            <p>{{ pf.max_drawdown if pf.max_drawdown is defined else pf.get("max_drawdown", "N/A") }}</p>
+          </article>
+        </div>
+
+        <details class="aw-drawer">
+          <summary>Preserved proof payload</summary>
+          <div class="aw-drawer-body">
+            <pre>{{ pf }}</pre>
+          </div>
+        </details>
+      </section>
+
+      <section class="aw-panel">
+        <div class="aw-panel-head">
+          <div>
+            <p class="aw-eyebrow">Portfolio</p>
+            <h2>Portfolio summary</h2>
+          </div>
+          <span class="aw-chip blue">State</span>
+        </div>
+
+        {% if portfolio %}
+        <div class="aw-card-grid">
+          <article class="aw-card">
+            <h3>Estimated Value</h3>
+            <p>{{ portfolio.estimated_account_value if portfolio.estimated_account_value is defined else portfolio.get("estimated_account_value", "N/A") }}</p>
+          </article>
+          <article class="aw-card">
+            <h3>Cash</h3>
+            <p>{{ portfolio.cash if portfolio.cash is defined else portfolio.get("cash", "N/A") }}</p>
+          </article>
+          <article class="aw-card">
+            <h3>Buying Power</h3>
+            <p>{{ portfolio.buying_power if portfolio.buying_power is defined else portfolio.get("buying_power", "N/A") }}</p>
+          </article>
+        </div>
+        {% else %}
+        <div class="aw-empty">
+          <h3 style="margin:0 0 8px;">No portfolio summary loaded</h3>
+          <p style="margin:0;">The analytics route is active, but portfolio summary data is not attached yet.</p>
+        </div>
+        {% endif %}
+
+        <details class="aw-drawer">
+          <summary>Preserved portfolio payload</summary>
+          <div class="aw-drawer-body">
+            <pre>{{ portfolio }}</pre>
+          </div>
+        </details>
+      </section>
+
+      <section class="aw-panel">
+        <div class="aw-panel-head">
+          <div>
+            <p class="aw-eyebrow">Strategy</p>
+            <h2>Strategy breakdown</h2>
+          </div>
+          <span class="aw-chip">{{ strategy_map|length if strategy_map else 0 }} rows</span>
+        </div>
+
+        {% if strategy_map %}
+        <div class="aw-card-grid">
+          {% for name, row in strategy_map.items() %}
+          <article class="aw-card">
+            <h3>{{ name }}</h3>
+            <p>{{ row }}</p>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="aw-empty">
+          <h3 style="margin:0 0 8px;">No strategy breakdown yet</h3>
+          <p style="margin:0;">Strategy-level results will appear here once the snapshot includes them.</p>
+        </div>
+        {% endif %}
+
+        <details class="aw-drawer">
+          <summary>Preserved strategy payload</summary>
+          <div class="aw-drawer-body">
+            <pre>{{ strategy_map }}</pre>
+          </div>
+        </details>
+      </section>
+
+    </main>
+
+    <aside class="aw-stack">
+
+      <section class="aw-panel">
+        <div class="aw-panel-head">
+          <div>
+            <p class="aw-eyebrow">Unrealized</p>
+            <h2>Current open behavior</h2>
+          </div>
+        </div>
+
+        {% if unrealized %}
+        <div class="aw-card">
+          <p>{{ unrealized }}</p>
+        </div>
+        {% else %}
+        <div class="aw-empty">
+          <h3 style="margin:0 0 8px;">No unrealized payload loaded</h3>
+          <p style="margin:0;">Open-position PnL detail is not attached to this snapshot yet.</p>
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="aw-panel">
+        <div class="aw-panel-head">
+          <div>
+            <p class="aw-eyebrow">Drawdown</p>
+            <h2>Drawdown history</h2>
+          </div>
+          <span class="aw-chip">{{ dd|length }} records</span>
+        </div>
+
+        {% if dd %}
+        <div class="aw-card-grid" style="grid-template-columns:1fr;">
+          {% for row in dd[:6] %}
+          <article class="aw-card">
+            <p>{{ row }}</p>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="aw-empty">
+          <h3 style="margin:0 0 8px;">No drawdown records yet</h3>
+          <p style="margin:0;">Drawdown history will appear here after the engine records it.</p>
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="aw-panel">
+        <div class="aw-panel-head">
+          <div>
+            <p class="aw-eyebrow">Deep rooms</p>
+            <h2>Follow the proof</h2>
+          </div>
+        </div>
+
+        <div class="aw-stack">
+          <a class="aw-card" href="/analytics/performance" style="text-decoration:none;">
+            <h3>Performance</h3>
+            <p>Focus on account results, proof metrics, and consistency.</p>
+          </a>
+
+          <a class="aw-card" href="/analytics/risk" style="text-decoration:none;">
+            <h3>Risk Metrics</h3>
+            <p>Review drawdown, defensive controls, and capital posture.</p>
+          </a>
+
+          <a class="aw-card" href="/analytics/strategy" style="text-decoration:none;">
+            <h3>Strategy Behavior</h3>
+            <p>Check strategy behavior and degradation signals.</p>
+          </a>
+        </div>
+      </section>
+
+      <details class="aw-drawer">
+        <summary>Preserved final account snapshot</summary>
+        <div class="aw-drawer-body">
+          <pre>{{ snap }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
 </div>
-
-<div class="grid">
-    <div class="card">
-        <h3>Unrealized PnL</h3>
-        <div class="passage-frame">
-            <pre>{{ unreal }}</pre>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>Strategy Breakdown</h3>
-        <div class="passage-frame">
-            <pre>{{ strategies }}</pre>
-        </div>
-    </div>
-</div>
-
 {% endblock %}
