@@ -14156,3 +14156,43 @@ def tower_receipt_chain_saved_view_owner_review_governance_batch_close_readiness
 
     return jsonify(build_receipt_chain_saved_view_owner_review_governance_batch_close_readiness_preview())
 
+# --- SEARCHABLE LABEL: TOWER_PACK_246_REBUILT_AFTER_WAKEUP_FAIL_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-governance-decision-trace-v246.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_governance_decision_trace_v246_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_governance_decision_trace_v246 import build_receipt_chain_saved_view_owner_review_governance_decision_trace_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_governance_decision_trace_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_247_REBUILT_AFTER_WAKEUP_FAIL_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-governance-decision-detail-evidence-drawer-v247.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_governance_decision_detail_evidence_drawer_v247_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_governance_decision_detail_evidence_drawer_v247 import build_receipt_chain_saved_view_owner_review_governance_decision_detail_evidence_drawer_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_governance_decision_detail_evidence_drawer_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_248_REBUILT_AFTER_WAKEUP_FAIL_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-governance-decision-note-draft-v248.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_governance_decision_note_draft_v248_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_governance_decision_note_draft_v248 import build_receipt_chain_saved_view_owner_review_governance_decision_note_draft_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_governance_decision_note_draft_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_249_REBUILT_AFTER_WAKEUP_FAIL_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-governance-decision-note-version-v249.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_governance_decision_note_version_v249_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_governance_decision_note_version_v249 import build_receipt_chain_saved_view_owner_review_governance_decision_note_version_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_governance_decision_note_version_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_250_REBUILT_AFTER_WAKEUP_FAIL_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-governance-decision-batch-close-readiness-v250.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_governance_decision_batch_close_readiness_v250_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_governance_decision_batch_close_readiness_v250 import build_receipt_chain_saved_view_owner_review_governance_decision_batch_close_readiness_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_governance_decision_batch_close_readiness_preview())
+
