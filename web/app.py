@@ -13931,3 +13931,30 @@ def tower_receipt_chain_saved_view_batch_close_readiness_v220_json():
 
     return jsonify(build_receipt_chain_saved_view_batch_close_readiness_preview())
 
+# --- SEARCHABLE LABEL: TOWER_PACK_221_RECEIPT_CHAIN_SAVED_VIEW_OWNER_REVIEW_QUEUE_PREVIEW_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-queue-v221.json", methods=["GET"])
+@_pack_218_receipt_chain_saved_view_edit_v218_route_guard
+def tower_receipt_chain_saved_view_owner_review_queue_v221_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_queue_v221 import build_receipt_chain_saved_view_owner_review_queue_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_queue_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_222_RECEIPT_CHAIN_SAVED_VIEW_OWNER_REVIEW_DETAIL_DRAWER_PREVIEW_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-detail-drawer-v222.json", methods=["GET"])
+@_pack_218_receipt_chain_saved_view_edit_v218_route_guard
+def tower_receipt_chain_saved_view_owner_review_detail_drawer_v222_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_detail_drawer_v222 import build_receipt_chain_saved_view_owner_review_detail_drawer_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_detail_drawer_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_223_RECEIPT_CHAIN_SAVED_VIEW_OWNER_REVIEW_NOTE_DRAFT_PREVIEW_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-note-draft-v223.json", methods=["GET"])
+@_pack_218_receipt_chain_saved_view_edit_v218_route_guard
+def tower_receipt_chain_saved_view_owner_review_note_draft_v223_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_note_draft_v223 import build_receipt_chain_saved_view_owner_review_note_draft_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_note_draft_preview())
+
