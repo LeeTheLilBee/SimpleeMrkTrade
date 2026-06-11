@@ -1,68 +1,490 @@
 {% extends "base.html" %}
+
+{% block title %}The Observatory · SimpleeMrkTrade{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_AUTH_ACCESS_SESSION_008B_LANDING_DARK_REWRITE -->
 
-<section class="landing-shell landing-clean-shell">
+<style>
+  /* OBSERVATORY_AUTH_ACCESS_SESSION_008B_LANDING_DARK_REWRITE_STYLES */
 
-    <div class="landing-clean-hero card premium-hero gold-accent-card">
-        <div class="landing-clean-logo-wrap">
-            {% if theme == "light" %}
-                <img src="/static/2.png" alt="SimpleeMrkTrade" class="landing-clean-logo">
-            {% else %}
-                <img src="/static/1.png" alt="SimpleeMrkTrade" class="landing-clean-logo">
-            {% endif %}
+  html body .landing-room-shell,
+  html body .landing-room-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .landing-room-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .landing-room-shell a {
+    color: inherit;
+  }
+
+  html body .land-hero,
+  html body .land-panel,
+  html body .land-card,
+  html body .land-chip,
+  html body .land-stat {
+    color-scheme: dark;
+  }
+
+  html body .land-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 34px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.30), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.16), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.10), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 30px 100px rgba(2, 6, 23, 0.50);
+  }
+
+  html body .land-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .land-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+    gap: 22px;
+    padding: 30px;
+    align-items: stretch;
+  }
+
+  html body .land-kicker,
+  html body .land-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .land-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .land-title {
+    margin: 18px 0 12px;
+    color: #f8fafc;
+    font-size: clamp(2.55rem, 7vw, 6rem);
+    line-height: 0.88;
+    letter-spacing: -0.09em;
+  }
+
+  html body .land-copy,
+  html body .land-muted,
+  html body .land-card p,
+  html body .land-list li {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .land-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.04rem;
+    line-height: 1.7;
+  }
+
+  html body .land-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .land-btn,
+  html body .land-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .land-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .land-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .land-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .land-orb-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 26px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .land-orb {
+    width: 70px;
+    height: 70px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 52px rgba(167, 139, 250, 0.56);
+  }
+
+  html body .land-orb-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.18rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .land-orb-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.95rem;
+  }
+
+  html body .land-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  html body .land-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .land-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .land-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.05rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .land-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .land-stack,
+  html body .land-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .land-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  html body .land-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .land-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .land-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .land-panel h2,
+  html body .land-panel h3,
+  html body .land-card h3,
+  html body .land-card h4 {
+    color: #f8fafc;
+  }
+
+  html body .land-panel h2,
+  html body .land-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .land-card {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .land-card h3,
+  html body .land-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .land-card p {
+    margin: 0;
+  }
+
+  html body .land-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  html body .land-list li + li {
+    margin-top: 8px;
+  }
+
+  @media (max-width: 940px) {
+    html body .land-hero-inner,
+    html body .land-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .land-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .landing-room-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .land-hero-inner {
+      padding: 20px;
+    }
+  }
+</style>
+
+<div class="landing-room-shell">
+
+  <section class="land-hero">
+    <div class="land-hero-inner">
+      <div>
+        <span class="land-kicker">SimpleeMrkTrade presents The Observatory</span>
+        <h1 class="land-title">Investment intelligence with proof.</h1>
+
+        <p class="land-copy">
+          The Observatory is a private market intelligence system for structured signals,
+          paper-mode learning, trade explanation, research, analytics, risk review, and proof.
+        </p>
+
+        <div class="land-actions">
+          {% if user and user.username %}
+            <a href="/dashboard" class="land-btn primary">Open Dashboard</a>
+          {% else %}
+            <a href="/signup" class="land-btn primary">Create Account</a>
+            <a href="/login" class="land-btn">Log In</a>
+          {% endif %}
+          <a href="/signals" class="land-btn">Explore Signals</a>
+          <a href="/proof" class="land-btn">View Proof</a>
         </div>
 
-        <div class="landing-clean-actions">
-            <a href="/signals" class="cta-btn">Explore Signals</a>
-            <a href="/proof" class="cta-btn secondary">View Proof</a>
-
-            {% if user and user.username %}
-                <a href="/dashboard" class="cta-btn premium-gold-btn">Open Dashboard</a>
-            {% else %}
-                <a href="/signup" class="cta-btn premium-gold-btn">Create Account</a>
-            {% endif %}
+        <div class="land-stats-grid">
+          <div class="land-stat">
+            <span>Mode path</span>
+            <strong>Survey → Paper → Live later</strong>
+          </div>
+          <div class="land-stat">
+            <span>Core layer</span>
+            <strong>Research + explanation</strong>
+          </div>
+          <div class="land-stat">
+            <span>Access</span>
+            <strong>Invite-first ecosystem</strong>
+          </div>
         </div>
+      </div>
 
-        <div class="landing-clean-blurb">
-            <p>
-                Structured market intelligence, simulation, and premium trade interpretation
-                built to help users understand not just what matters, but why it matters.
-            </p>
-        </div>
+      <aside class="land-orb-card">
+        <div class="land-orb" aria-hidden="true"></div>
+        <h2>Soulaana public read</h2>
+        <p>
+          The Observatory is not just showing trades. It is building understanding:
+          what the system sees, why it matters, and how risk changes the decision.
+        </p>
+      </aside>
     </div>
+  </section>
 
-    <section class="landing-feature-grid landing-clean-grid">
-        <div class="card gold-accent-card landing-feature-card">
+  <div class="land-grid">
+    <main class="land-stack">
+
+      <section class="land-panel">
+        <div class="land-panel-head">
+          <div>
+            <p class="land-eyebrow">Core rooms</p>
+            <h2>What the system gives you</h2>
+          </div>
+          <span class="land-chip gold">Premium Observatory</span>
+        </div>
+
+        <div class="land-card-grid">
+          <article class="land-card">
             <h3>Signals</h3>
-            <div class="passage-frame">
-                <p>
-                    Discover ranked symbols, spotlight setups, and cleaner scan flow that
-                    leads naturally into deeper symbol pages.
-                </p>
+            <p>Ranked symbols, spotlight setups, confidence context, and cleaner scan flow.</p>
+            <div class="land-actions">
+              <a href="/signals" class="land-btn">Open Signals</a>
             </div>
-        </div>
+          </article>
 
-        <div class="card gold-accent-card landing-feature-card">
+          <article class="land-card">
             <h3>Trade Intelligence</h3>
-            <div class="passage-frame">
-                <p>
-                    Move from raw signal visibility into structured reasoning, deeper interpretation,
-                    and clearer understanding of active opportunities.
-                </p>
+            <p>Structured reasoning, deeper interpretation, and plain-English setup explanation.</p>
+            <div class="land-actions">
+              <a href="/why-this-trade" class="land-btn">Decision Library</a>
             </div>
-        </div>
+          </article>
 
-        <div class="card gold-accent-card landing-feature-card">
+          <article class="land-card">
             <h3>Simulation + Proof</h3>
-            <div class="passage-frame">
-                <p>
-                    Follow the engine, evaluate results, and understand how the system behaves
-                    through simulation, analytics, and proof.
-                </p>
+            <p>Performance, analytics, reports, risk metrics, and behavior review.</p>
+            <div class="land-actions">
+              <a href="/proof" class="land-btn">View Proof</a>
             </div>
+          </article>
         </div>
-    </section>
+      </section>
 
-</section>
+      <section class="land-panel">
+        <div class="land-panel-head">
+          <div>
+            <p class="land-eyebrow">Lifecycle</p>
+            <h2>From research to review</h2>
+          </div>
+        </div>
 
+        <div class="land-card-grid">
+          <article class="land-card">
+            <h3>Research</h3>
+            <p>Start with market context, symbol intelligence, and premium analysis.</p>
+          </article>
+          <article class="land-card">
+            <h3>Observation</h3>
+            <p>Watch signals, compare candidates, and learn before execution matters.</p>
+          </article>
+          <article class="land-card">
+            <h3>Review</h3>
+            <p>Study proof, archived trades, performance, and strategy behavior.</p>
+          </article>
+        </div>
+      </section>
+
+    </main>
+
+    <aside class="land-stack">
+
+      <section class="land-panel">
+        <div class="land-panel-head">
+          <div>
+            <p class="land-eyebrow">Access path</p>
+            <h2>Start clean</h2>
+          </div>
+        </div>
+
+        <div class="land-stack">
+          <article class="land-card">
+            <h3>Create an account</h3>
+            <p>Enter the private Observatory layer and begin from the account dashboard.</p>
+            <div class="land-actions">
+              <a href="/signup" class="land-btn primary">Create Account</a>
+            </div>
+          </article>
+
+          <article class="land-card">
+            <h3>Already inside?</h3>
+            <p>Log in and continue from the dashboard, signals, or research rooms.</p>
+            <div class="land-actions">
+              <a href="/login" class="land-btn">Log In</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="land-panel">
+        <div class="land-panel-head">
+          <div>
+            <p class="land-eyebrow">Built for clarity</p>
+            <h2>Not raw pages</h2>
+          </div>
+        </div>
+
+        <ul class="land-list">
+          <li>Premium dark Observatory interface.</li>
+          <li>Plain-English research and decision reads.</li>
+          <li>Proof rooms for performance, risk, and strategy behavior.</li>
+          <li>Reserved visual system only; abstract visuals and placeholders only.</li>
+        </ul>
+      </section>
+
+    </aside>
+  </div>
+</div>
 {% endblock %}
