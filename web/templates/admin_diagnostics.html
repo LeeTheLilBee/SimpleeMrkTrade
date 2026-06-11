@@ -1,227 +1,633 @@
 {% extends "base.html" %}
+
+{% block title %}Admin Diagnostics · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ADMIN_OWNER_SESSION_012F_DIAGNOSTICS_DARK_REWRITE -->
 
-<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
-    <h2>Admin Diagnostics</h2>
-    <div class="passage-frame">
-        <p>{{ diagnostics.summary }}</p>
+{% set d = diagnostics if diagnostics is defined and diagnostics else {} %}
+{% set templates = d["templates"] if "templates" in d else [] %}
+{% set files = d["files"] if "files" in d else [] %}
+{% set market_universe = d["market_universe"] if "market_universe" in d else {} %}
+{% set symbols = d["symbols"] if "symbols" in d else [] %}
+{% set routes = d["routes"] if "routes" in d else [] %}
+{% set warnings = d["warnings"] if "warnings" in d else [] %}
+{% set errors = d["errors"] if "errors" in d else [] %}
+{% set health = d["health"] if "health" in d else {} %}
+{% set template_count = templates|length %}
+{% set file_count = files|length %}
+{% set symbol_count = symbols|length %}
+{% set route_count = routes|length %}
+{% set warning_count = warnings|length %}
+{% set error_count = errors|length %}
+{% set universe_count = market_universe["count"] if "count" in market_universe else (market_universe|length if market_universe else 0) %}
+
+<style>
+  /* OBSERVATORY_ADMIN_OWNER_SESSION_012F_DIAGNOSTICS_DARK_REWRITE_STYLES */
+
+  html body .admin-diagnostics-shell,
+  html body .admin-diagnostics-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .admin-diagnostics-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .admin-diagnostics-shell a {
+    color: inherit;
+  }
+
+  html body .adg-hero,
+  html body .adg-panel,
+  html body .adg-card,
+  html body .adg-chip,
+  html body .adg-stat,
+  html body .adg-empty,
+  html body .adg-drawer {
+    color-scheme: dark;
+  }
+
+  html body .adg-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .adg-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .adg-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .adg-kicker,
+  html body .adg-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .adg-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .adg-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .adg-copy,
+  html body .adg-muted,
+  html body .adg-card p,
+  html body .adg-empty p,
+  html body .adg-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .adg-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .adg-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .adg-btn,
+  html body .adg-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .adg-btn:hover,
+  html body .adg-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .adg-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .adg-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .adg-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .adg-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .adg-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .adg-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .adg-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .adg-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .adg-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .adg-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .adg-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .adg-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .adg-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .adg-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .adg-stack,
+  html body .adg-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .adg-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  html body .adg-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .adg-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .adg-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .adg-panel h2,
+  html body .adg-panel h3,
+  html body .adg-card h3,
+  html body .adg-empty h3,
+  html body .adg-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .adg-panel h2,
+  html body .adg-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .adg-card,
+  html body .adg-empty {
+    display: block;
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  html body .adg-card.warning {
+    border-color: rgba(250, 204, 21, 0.38);
+  }
+
+  html body .adg-card.error {
+    border-color: rgba(248, 113, 113, 0.42);
+  }
+
+  html body .adg-card h3 {
+    margin: 0 0 8px;
+  }
+
+  html body .adg-card p {
+    margin: 0;
+  }
+
+  html body .adg-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .adg-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .adg-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .adg-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .adg-hero-inner,
+    html body .adg-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .adg-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .admin-diagnostics-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .adg-hero-inner {
+      padding: 20px;
+    }
+
+    html body .adg-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="admin-diagnostics-shell">
+
+  <section class="adg-hero">
+    <div class="adg-hero-inner">
+      <div>
+        <span class="adg-kicker">Owner Diagnostics</span>
+        <h1 class="adg-title">Find the weak links fast.</h1>
+
+        <p class="adg-copy">
+          Diagnostics checks the operational surface: templates, files, routes, symbols,
+          market-universe coverage, warnings, and errors that need owner attention.
+        </p>
+
+        <div class="adg-actions">
+          <a class="adg-btn primary" href="/admin">Admin Home</a>
+          <a class="adg-btn" href="/admin/intelligence">Admin Intelligence</a>
+          <a class="adg-btn" href="/admin/product-monitoring">Product Monitoring</a>
+          <a class="adg-btn" href="/admin/product-analytics">Product Analytics</a>
+        </div>
+
+        <div class="adg-stats-grid">
+          <div class="adg-stat">
+            <span>Templates</span>
+            <strong>{{ template_count }}</strong>
+          </div>
+          <div class="adg-stat">
+            <span>Files</span>
+            <strong>{{ file_count }}</strong>
+          </div>
+          <div class="adg-stat">
+            <span>Symbols</span>
+            <strong>{{ symbol_count }}</strong>
+          </div>
+          <div class="adg-stat">
+            <span>Warnings</span>
+            <strong>{{ warning_count }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="adg-read-card">
+        <div class="adg-orb" aria-hidden="true"></div>
+        <h2>Owner diagnostics read</h2>
+        <p>
+          Diagnostics is not glamour. It is how we keep the product from quietly rotting:
+          missing templates, stale symbols, weak files, warnings, and errors get surfaced here.
+        </p>
+      </aside>
     </div>
-</div>
+  </section>
 
-<div style="display:flex; gap:10px; flex-wrap:wrap; margin: 14px 0 18px 0;">
-    <a href="/admin/refresh-market-universe" class="cta-btn secondary">Refresh Market Universe</a>
-    <a href="/admin/refresh-news-cache" class="cta-btn secondary">Refresh News Cache</a>
-    <a href="/admin/diagnostics" class="cta-btn secondary">Reload Diagnostics</a>
-</div>
+  <div class="adg-grid">
+    <main class="adg-stack">
 
-{% if diagnostics.cards %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Top Findings</h3>
-    <div style="display:grid; gap:12px; margin-top:12px;">
-        {% for card in diagnostics.cards %}
-        <div class="card" style="margin:0;">
-            <h4>{{ card.headline }}</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ card.body }}</p>
-            </div>
+      <section class="adg-panel">
+        <div class="adg-panel-head">
+          <div>
+            <p class="adg-eyebrow">Surface</p>
+            <h2>Template and route health</h2>
+          </div>
+          <span class="adg-chip blue">{{ route_count }} routes</span>
         </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
 
-{% if diagnostics.repair_recommendations %}
-<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Repair Recommendations</h3>
-            <p class="muted-line" style="margin:0;">
-                The system’s best read on what should be fixed first, why it matters, and who owns it.
-            </p>
+        <div class="adg-card-grid">
+          <article class="adg-card">
+            <h3>Templates</h3>
+            <p>{{ template_count }} template record(s) loaded in diagnostics.</p>
+          </article>
+          <article class="adg-card">
+            <h3>Routes</h3>
+            <p>{{ route_count }} route record(s) loaded in diagnostics.</p>
+          </article>
+          <article class="adg-card">
+            <h3>Files</h3>
+            <p>{{ file_count }} tracked file record(s) loaded in diagnostics.</p>
+          </article>
+          <article class="adg-card">
+            <h3>Market Universe</h3>
+            <p>{{ universe_count }} market universe record(s) or coverage item(s) loaded.</p>
+          </article>
         </div>
-        <span class="signal-stat-chip">Repair Layer</span>
-    </div>
+      </section>
 
-    <div class="passage-frame" style="margin-top:12px;">
-        <p style="margin:0;"><strong>{{ diagnostics.repair_recommendations.headline }}</strong></p>
-        <p style="margin:8px 0 0 0;">{{ diagnostics.repair_recommendations.summary }}</p>
-    </div>
+      <section class="adg-panel">
+        <div class="adg-panel-head">
+          <div>
+            <p class="adg-eyebrow">Warnings</p>
+            <h2>Warnings and errors</h2>
+          </div>
+          <span class="adg-chip {% if error_count %}red{% elif warning_count %}gold{% else %}green{% endif %}">
+            {{ error_count }} errors · {{ warning_count }} warnings
+          </span>
+        </div>
 
-    {% if diagnostics.repair_recommendations.top_fix %}
-    <div class="card" style="margin-top:14px;">
-        <h4>{{ diagnostics.repair_recommendations.top_fix.headline }}</h4>
-        <div class="passage-frame">
-            <p style="margin:0;"><strong>Why:</strong> {{ diagnostics.repair_recommendations.top_fix.why }}</p>
-            <p style="margin:8px 0 0 0;"><strong>Action:</strong> {{ diagnostics.repair_recommendations.top_fix.action }}</p>
-            <p style="margin:8px 0 0 0;"><strong>Owner:</strong> {{ diagnostics.repair_recommendations.top_fix.owner }}</p>
-            <p style="margin:8px 0 0 0;"><strong>Severity:</strong> {{ diagnostics.repair_recommendations.top_fix.severity|upper }}</p>
+        {% if errors %}
+        <div class="adg-card-grid" style="margin-bottom:18px;">
+          {% for item in errors[:8] %}
+            <article class="adg-card error">
+              {% if item is mapping %}
+                <h3>{{ item.headline if item.headline is defined else item.get("headline", "Error") }}</h3>
+                <p>{{ item.body if item.body is defined else item.get("body", item) }}</p>
+              {% else %}
+                <h3>Error</h3>
+                <p>{{ item }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
         </div>
-        <div style="margin-top:10px;">
-            <a href="{{ diagnostics.repair_recommendations.top_fix.target }}" class="cta-btn secondary">
-                {{ diagnostics.repair_recommendations.top_fix.target_label }}
-            </a>
-        </div>
-    </div>
-    {% endif %}
+        {% endif %}
 
-    {% if diagnostics.repair_recommendations.items %}
-    <div style="display:grid; gap:12px; margin-top:14px;">
-        {% for item in diagnostics.repair_recommendations.items %}
-        <div class="card" style="margin:0;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-                <h4 style="margin:0;">{{ item.headline }}</h4>
-                <span class="signal-stat-chip">{{ item.severity|upper }}</span>
-            </div>
-            <div class="passage-frame" style="margin-top:10px;">
-                <p style="margin:0;"><strong>Why:</strong> {{ item.why }}</p>
-                <p style="margin:8px 0 0 0;"><strong>Action:</strong> {{ item.action }}</p>
-                <p style="margin:8px 0 0 0;"><strong>Owner:</strong> {{ item.owner }}</p>
-            </div>
-            <div style="margin-top:10px;">
-                <a href="{{ item.target }}" class="cta-btn secondary">{{ item.target_label }}</a>
-            </div>
+        {% if warnings %}
+        <div class="adg-card-grid">
+          {% for item in warnings[:8] %}
+            <article class="adg-card warning">
+              {% if item is mapping %}
+                <h3>{{ item.headline if item.headline is defined else item.get("headline", "Warning") }}</h3>
+                <p>{{ item.body if item.body is defined else item.get("body", item) }}</p>
+              {% else %}
+                <h3>Warning</h3>
+                <p>{{ item }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-{% endif %}
+        {% elif not errors %}
+        <div class="adg-empty">
+          <h3 style="margin:0 0 8px;">No warnings loaded</h3>
+          <p style="margin:0;">Diagnostics did not provide warning or error rows for this render.</p>
+        </div>
+        {% endif %}
+      </section>
 
-{% if diagnostics.data_health %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Pipeline Freshness</h3>
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Engine</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ diagnostics.data_health.freshness.engine.label }}</strong></p>
-            </div>
+      <section class="adg-panel">
+        <div class="adg-panel-head">
+          <div>
+            <p class="adg-eyebrow">Coverage</p>
+            <h2>Symbol and file coverage</h2>
+          </div>
+          <span class="adg-chip gold">{{ symbol_count }} symbols</span>
         </div>
-        <div class="card" style="margin:0;">
-            <h4>Symbol Intel</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ diagnostics.data_health.freshness.symbol_intelligence.label }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>News</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ diagnostics.data_health.freshness.news.label }}</strong></p>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
 
-{% if diagnostics.file_diagnostics %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Core File Diagnostics</h3>
-    <div style="display:grid; gap:10px; margin-top:12px;">
-        {% for row in diagnostics.file_diagnostics.rows %}
-        <div class="card" style="margin:0;">
-            <div class="admin-stat-row">
-                <span>{{ row.path }}</span>
-                <strong>{{ row.status }}</strong>
-            </div>
-            <div class="passage-frame">
-                <p style="margin:0;">
-                    Type: {{ row.parsed_type }}{% if row.item_count is not none %} | Count: {{ row.item_count }}{% endif %} | Size: {{ row.size }}
-                </p>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-{% if diagnostics.template_diagnostics %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Template Diagnostics</h3>
-    <div style="display:grid; gap:10px; margin-top:12px;">
-        {% for row in diagnostics.template_diagnostics.rows %}
-        <div class="card" style="margin:0;">
-            <div class="admin-stat-row">
-                <span>{{ row.name }}</span>
-                <strong>{{ row.status }}</strong>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-{% if diagnostics.symbol_coverage %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Symbol Coverage Diagnostics</h3>
-
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Total Symbols</h4>
-            <p><strong>{{ diagnostics.symbol_coverage.total_symbols }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Missing Meta</h4>
-            <p><strong>{{ diagnostics.symbol_coverage.missing_meta }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Missing Intelligence</h4>
-            <p><strong>{{ diagnostics.symbol_coverage.missing_intelligence }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Missing News</h4>
-            <p><strong>{{ diagnostics.symbol_coverage.missing_news }}</strong></p>
-        </div>
-    </div>
-
-    {% if diagnostics.symbol_coverage.counts_by_type %}
-    <div class="card" style="margin-top:14px;">
-        <h4>Asset Type Mix</h4>
-        <div style="display:grid; gap:8px; margin-top:10px;">
-            {% for key, value in diagnostics.symbol_coverage.counts_by_type.items() %}
-            <div class="admin-stat-row">
-                <span>{{ key }}</span>
-                <strong>{{ value }}</strong>
-            </div>
+        <div class="adg-card-grid">
+          {% if symbols %}
+            {% for item in symbols[:8] %}
+              {% set symbol = item.symbol if item.symbol is defined else item.get("symbol", item) %}
+              <a class="adg-card" href="/signals/{{ symbol }}">
+                <h3>{{ symbol }}</h3>
+                <p>Open symbol room for coverage review.</p>
+              </a>
             {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if diagnostics.symbol_coverage.top_sources %}
-    <div class="card" style="margin-top:14px;">
-        <h4>Top Universe Sources</h4>
-        <div style="display:grid; gap:8px; margin-top:10px;">
-            {% for row in diagnostics.symbol_coverage.top_sources %}
-            <div class="admin-stat-row">
-                <span>{{ row.tag }}</span>
-                <strong>{{ row.count }}</strong>
+          {% else %}
+            <div class="adg-empty">
+              <h3 style="margin:0 0 8px;">No symbol records loaded</h3>
+              <p style="margin:0;">Diagnostics did not provide symbol rows for this render.</p>
             </div>
-            {% endfor %}
+          {% endif %}
         </div>
-    </div>
-    {% endif %}
+      </section>
 
-    <div style="display:grid; gap:10px; margin-top:14px;">
-        {% for row in diagnostics.symbol_coverage.rows %}
-        <div class="card" style="margin:0;">
-            <div class="admin-stat-row">
-                <span>{{ row.symbol }}</span>
-                <strong>
-                    Meta: {{ "Y" if row.has_meta else "N" }} |
-                    Intel: {{ "Y" if row.has_intelligence else "N" }} |
-                    News: {{ "Y" if row.has_news else "N" }}
-                </strong>
-            </div>
+    </main>
 
-            <div class="passage-frame">
-                <p style="margin:0;">
-                    Type: {{ row.asset_type }}
-                    {% if row.source_tags %} | Sources: {{ row.source_tags|join(", ") }}{% endif %}
-                    | Priority: {{ row.priority_rank }}
-                </p>
-            </div>
+    <aside class="adg-stack">
+
+      <section class="adg-panel">
+        <div class="adg-panel-head">
+          <div>
+            <p class="adg-eyebrow">Owner flow</p>
+            <h2>Admin rooms</h2>
+          </div>
         </div>
-        {% endfor %}
-    </div>
+
+        <div class="adg-stack">
+          <a class="adg-card" href="/admin" style="text-decoration:none;">
+            <h3>Admin Home</h3>
+            <p>Return to the main owner control center.</p>
+          </a>
+          <a class="adg-card" href="/admin/intelligence" style="text-decoration:none;">
+            <h3>Admin Intelligence</h3>
+            <p>Review operator intelligence and decision behavior.</p>
+          </a>
+          <a class="adg-card" href="/admin/product-monitoring" style="text-decoration:none;">
+            <h3>Product Monitoring</h3>
+            <p>Review friction, readiness, retention, and adoption.</p>
+          </a>
+          <a class="adg-card" href="/admin/product-analytics" style="text-decoration:none;">
+            <h3>Product Analytics</h3>
+            <p>Review usage, page activity, clicks, and symbol interest.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="adg-panel">
+        <div class="adg-panel-head">
+          <div>
+            <p class="adg-eyebrow">Health</p>
+            <h2>Health snapshot</h2>
+          </div>
+        </div>
+
+        {% if health %}
+        <div class="adg-card-grid" style="grid-template-columns:1fr;">
+          {% for key, value in health.items() %}
+            <article class="adg-card">
+              <h3>{{ key }}</h3>
+              <p>{{ value }}</p>
+            </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="adg-empty">
+          <h3 style="margin:0 0 8px;">No health payload loaded</h3>
+          <p style="margin:0;">Health snapshot rows will appear here when diagnostics provides them.</p>
+        </div>
+        {% endif %}
+      </section>
+
+      <details class="adg-drawer">
+        <summary>Preserved diagnostics payload</summary>
+        <div class="adg-drawer-body">
+          <pre>{{ d }}</pre>
+        </div>
+      </details>
+
+      <details class="adg-drawer">
+        <summary>Preserved file/template payloads</summary>
+        <div class="adg-drawer-body">
+          <pre>{{ templates }}</pre>
+          <pre style="margin-top:12px;">{{ files }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
 </div>
-{% endif %}
+{% endblock %}

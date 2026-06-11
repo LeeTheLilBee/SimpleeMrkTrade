@@ -1,138 +1,666 @@
 {% extends "base.html" %}
+
+{% block title %}Admin Product Monitoring · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ADMIN_OWNER_SESSION_012D_PRODUCT_MONITORING_DARK_REWRITE -->
 
-<div style="margin-bottom:14px; display:flex; gap:8px; flex-wrap:wrap;">
-    <a href="/admin" class="signal-stat-chip" style="text-decoration:none;">
-        ← Back to Admin Control Center
-    </a>
-    <a href="/admin/intelligence" class="signal-stat-chip" style="text-decoration:none;">
-        Admin Intelligence
-    </a>
-</div>
+{% set m = monitoring if monitoring is defined and monitoring else {} %}
+{% set alerts = surface_alerts if surface_alerts is defined and surface_alerts else {} %}
+{% set actions = quick_actions if quick_actions is defined and quick_actions else {} %}
+{% set active_filter = filter_key if filter_key is defined and filter_key else "overview" %}
+{% set spot_title = spotlight_title if spotlight_title is defined and spotlight_title else "Product Overview" %}
+{% set spot_note = spotlight_note if spotlight_note is defined and spotlight_note else "Showing the full product monitoring layer." %}
+{% set spot_cards = spotlight_cards if spotlight_cards is defined and spotlight_cards else [] %}
 
-<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
-    <h2>Product Monitoring</h2>
-    <div class="passage-frame">
-        <p>
-            A beta and product-health view showing usage flow, friction points, setup quality, and whether the experience is becoming more useful or more confusing.
+{% set readiness = m["readiness_buckets"] if "readiness_buckets" in m else {} %}
+{% set friction_points = m["friction_points"] if "friction_points" in m else [] %}
+{% set thesis_quality = m["thesis_quality"] if "thesis_quality" in m else {} %}
+{% set position_quality = m["position_quality"] if "position_quality" in m else {} %}
+{% set retention = m["retention"] if "retention" in m else {} %}
+{% set adoption = m["adoption"] if "adoption" in m else {} %}
+{% set strongest_friction = m["strongest_friction"] if "strongest_friction" in m else {} %}
+
+{% set ready_count = readiness["READY"] if "READY" in readiness else 0 %}
+{% set close_count = readiness["CLOSE"] if "CLOSE" in readiness else 0 %}
+{% set watch_count = readiness["WATCH"] if "WATCH" in readiness else 0 %}
+{% set weak_count = readiness["WEAK"] if "WEAK" in readiness else 0 %}
+{% set friction_count = friction_points|length %}
+{% set spotlight_count = spot_cards|length %}
+
+<style>
+  /* OBSERVATORY_ADMIN_OWNER_SESSION_012D_PRODUCT_MONITORING_DARK_REWRITE_STYLES */
+
+  html body .admin-product-monitoring-shell,
+  html body .admin-product-monitoring-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .admin-product-monitoring-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .admin-product-monitoring-shell a {
+    color: inherit;
+  }
+
+  html body .apm-hero,
+  html body .apm-panel,
+  html body .apm-card,
+  html body .apm-chip,
+  html body .apm-stat,
+  html body .apm-empty,
+  html body .apm-drawer {
+    color-scheme: dark;
+  }
+
+  html body .apm-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .apm-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .apm-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .apm-kicker,
+  html body .apm-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .apm-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .apm-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .apm-copy,
+  html body .apm-muted,
+  html body .apm-card p,
+  html body .apm-empty p,
+  html body .apm-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .apm-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .apm-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .apm-btn,
+  html body .apm-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .apm-btn:hover,
+  html body .apm-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .apm-btn.primary,
+  html body .apm-chip.active {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .apm-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .apm-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .apm-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .apm-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .apm-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .apm-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .apm-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .apm-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .apm-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .apm-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .apm-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .apm-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .apm-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .apm-stack,
+  html body .apm-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .apm-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  html body .apm-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .apm-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .apm-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .apm-panel h2,
+  html body .apm-panel h3,
+  html body .apm-card h3,
+  html body .apm-empty h3,
+  html body .apm-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .apm-panel h2,
+  html body .apm-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .apm-card,
+  html body .apm-empty {
+    display: block;
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  html body .apm-card h3 {
+    margin: 0 0 8px;
+  }
+
+  html body .apm-card p {
+    margin: 0;
+  }
+
+  html body .apm-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .apm-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .apm-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .apm-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .apm-hero-inner,
+    html body .apm-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .apm-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .admin-product-monitoring-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .apm-hero-inner {
+      padding: 20px;
+    }
+
+    html body .apm-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="admin-product-monitoring-shell">
+
+  <section class="apm-hero">
+    <div class="apm-hero-inner">
+      <div>
+        <span class="apm-kicker">Owner Product Monitoring</span>
+        <h1 class="apm-title">Watch the product behave.</h1>
+
+        <p class="apm-copy">
+          Product Monitoring watches friction, readiness, thesis quality, open-position quality,
+          retention signals, and adoption posture so the owner can improve the experience before users churn.
         </p>
-    </div>
-</div>
 
-{% include "_admin_surface_alerts.html" %}
-{% include "_operator_quick_actions.html" %}
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">{{ spotlight_title or "Product Overview" }}</h3>
-            <p class="muted-line" style="margin:0;">{{ spotlight_note or "Showing the full product monitoring layer." }}</p>
+        <div class="apm-actions">
+          <a class="apm-btn primary" href="/admin">Admin Home</a>
+          <a class="apm-btn" href="/admin/intelligence">Admin Intelligence</a>
+          <a class="apm-btn" href="/admin/product-analytics">Product Analytics</a>
+          <a class="apm-btn" href="/admin/diagnostics">Diagnostics</a>
         </div>
-        <span class="signal-stat-chip">{{ filter_key|upper }}</span>
-    </div>
 
-    <div class="dashboard-subnav" style="margin-top:14px;">
-        <a href="/admin/product-monitoring" class="cta-btn secondary">Overview</a>
-        <a href="/admin/product-monitoring?filter=friction" class="cta-btn secondary">Friction</a>
-        <a href="/admin/product-monitoring?filter=readiness" class="cta-btn secondary">Readiness</a>
-        <a href="/admin/product-monitoring?filter=thesis" class="cta-btn secondary">Thesis Quality</a>
-        <a href="/admin/product-monitoring?filter=positions" class="cta-btn secondary">Open Positions</a>
-        <a href="/admin/product-monitoring?filter=retention" class="cta-btn secondary">Retention</a>
-    </div>
-</div>
-
-{% if spotlight_cards %}
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-bottom:18px;">
-    {% for card in spotlight_cards %}
-    <div class="card premium-card gold-accent-card" style="height:100%;">
-        <h3>{{ card.headline }}</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ card.body }}</p>
+        <div class="apm-stats-grid">
+          <div class="apm-stat">
+            <span>Ready</span>
+            <strong>{{ ready_count }}</strong>
+          </div>
+          <div class="apm-stat">
+            <span>Close</span>
+            <strong>{{ close_count }}</strong>
+          </div>
+          <div class="apm-stat">
+            <span>Watch</span>
+            <strong>{{ watch_count }}</strong>
+          </div>
+          <div class="apm-stat">
+            <span>Weak</span>
+            <strong>{{ weak_count }}</strong>
+          </div>
         </div>
+      </div>
+
+      <aside class="apm-read-card">
+        <div class="apm-orb" aria-hidden="true"></div>
+        <h2>Owner monitoring read</h2>
+        <p>
+          Product health is not just traffic. Look for friction, unclear thesis quality,
+          weak readiness, and whether users are receiving enough confidence to continue.
+        </p>
+      </aside>
     </div>
-    {% endfor %}
-</div>
-{% endif %}
+  </section>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:18px;">
-    <div class="card premium-card"><h4>Total Plays</h4><p><strong>{{ monitoring.counts.plays }}</strong></p></div>
-    <div class="card premium-card"><h4>Open Plays</h4><p><strong>{{ monitoring.counts.open_plays }}</strong></p></div>
-    <div class="card premium-card"><h4>Watching Plays</h4><p><strong>{{ monitoring.counts.watching_plays }}</strong></p></div>
-    <div class="card premium-card"><h4>Archived Plays</h4><p><strong>{{ monitoring.counts.archived_plays }}</strong></p></div>
-    <div class="card premium-card"><h4>Open Positions</h4><p><strong>{{ monitoring.counts.open_positions }}</strong></p></div>
-    <div class="card premium-card"><h4>Closed Positions</h4><p><strong>{{ monitoring.counts.closed_positions }}</strong></p></div>
-</div>
+  <section class="apm-panel" style="margin-top:20px;">
+    <div class="apm-panel-head">
+      <div>
+        <p class="apm-eyebrow">Filters</p>
+        <h2>Monitoring lenses</h2>
+      </div>
+      <span class="apm-chip active">{{ active_filter }}</span>
+    </div>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card gold-accent-card"><h3>{{ monitoring.adoption.headline }}</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ monitoring.adoption.summary }}</p></div></div>
-    <div class="card premium-card"><h3>{{ monitoring.retention.headline }}</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ monitoring.retention.summary }}</p></div></div>
-</div>
+    <div class="apm-actions" style="margin-top:0;">
+      <a class="apm-chip {% if active_filter == 'overview' %}active{% endif %}" href="/admin/product-monitoring?filter=overview">Overview</a>
+      <a class="apm-chip {% if active_filter == 'friction' %}active{% endif %}" href="/admin/product-monitoring?filter=friction">Friction</a>
+      <a class="apm-chip {% if active_filter == 'readiness' %}active{% endif %}" href="/admin/product-monitoring?filter=readiness">Readiness</a>
+      <a class="apm-chip {% if active_filter == 'thesis' %}active{% endif %}" href="/admin/product-monitoring?filter=thesis">Thesis</a>
+      <a class="apm-chip {% if active_filter == 'positions' %}active{% endif %}" href="/admin/product-monitoring?filter=positions">Positions</a>
+      <a class="apm-chip {% if active_filter == 'retention' %}active{% endif %}" href="/admin/product-monitoring?filter=retention">Retention</a>
+    </div>
+  </section>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h3>Readiness Distribution</h3>
-        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-            <div class="card" style="margin:0;"><h4>Ready</h4><p><strong>{{ monitoring.readiness_buckets.READY }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>Close</h4><p><strong>{{ monitoring.readiness_buckets.CLOSE }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>Watch</h4><p><strong>{{ monitoring.readiness_buckets.WATCH }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>Weak</h4><p><strong>{{ monitoring.readiness_buckets.WEAK }}</strong></p></div>
+  <div class="apm-grid">
+    <main class="apm-stack">
+
+      <section class="apm-panel">
+        <div class="apm-panel-head">
+          <div>
+            <p class="apm-eyebrow">Spotlight</p>
+            <h2>{{ spot_title }}</h2>
+          </div>
+          <span class="apm-chip gold">{{ spotlight_count }} cards</span>
         </div>
-    </div>
 
-    <div class="card premium-card">
-        <h3>Setup Quality</h3>
-        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-            <div class="card" style="margin:0;"><h4>Strong Setups</h4><p><strong>{{ monitoring.setup_quality.strong }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>Soft Setups</h4><p><strong>{{ monitoring.setup_quality.soft }}</strong></p></div>
+        <p class="apm-muted" style="margin-top:-6px;">{{ spot_note }}</p>
+
+        {% if spot_cards %}
+        <div class="apm-card-grid" style="margin-top:18px;">
+          {% for card in spot_cards %}
+            <article class="apm-card">
+              <p class="apm-eyebrow">Spotlight</p>
+              <h3>{{ card.headline if card.headline is defined else card.get("headline", "Spotlight") }}</h3>
+              <p>{{ card.body if card.body is defined else card.get("body", "") }}</p>
+            </article>
+          {% endfor %}
         </div>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Thesis Quality</h3>
-        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-            <div class="card" style="margin:0;"><h4>With Thesis</h4><p><strong>{{ monitoring.thesis_quality.with_thesis }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>Without Thesis</h4><p><strong>{{ monitoring.thesis_quality.without_thesis }}</strong></p></div>
+        {% else %}
+        <div class="apm-empty" style="margin-top:18px;">
+          <h3 style="margin:0 0 8px;">No spotlight cards loaded</h3>
+          <p style="margin:0;">The selected filter is active, but no spotlight cards were provided.</p>
         </div>
-    </div>
+        {% endif %}
+      </section>
 
-    <div class="card premium-card">
-        <h3>Open Position Quality</h3>
-        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-            <div class="card" style="margin:0;"><h4>Strong Open</h4><p><strong>{{ monitoring.position_quality.strong_open_positions }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>Weak Open</h4><p><strong>{{ monitoring.position_quality.weak_open_positions }}</strong></p></div>
+      <section class="apm-panel">
+        <div class="apm-panel-head">
+          <div>
+            <p class="apm-eyebrow">Readiness</p>
+            <h2>Readiness distribution</h2>
+          </div>
+          <span class="apm-chip blue">Play quality</span>
         </div>
-    </div>
-</div>
 
-<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <h3>Strongest Friction Point</h3>
-    <div class="passage-frame" style="margin-top:12px;">
-        <p style="margin:0;"><strong>{{ monitoring.strongest_friction.headline }}</strong></p>
-        <p style="margin:8px 0 0 0;">{{ monitoring.strongest_friction.body }}</p>
-    </div>
-</div>
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Trade Outcomes</h3>
-    <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-        <div class="card" style="margin:0;"><h4>Wins</h4><p><strong>{{ monitoring.outcomes.wins }}</strong></p></div>
-        <div class="card" style="margin:0;"><h4>Losses</h4><p><strong>{{ monitoring.outcomes.losses }}</strong></p></div>
-        <div class="card" style="margin:0;"><h4>Flat</h4><p><strong>{{ monitoring.outcomes.flat }}</strong></p></div>
-    </div>
-</div>
-
-<div class="card premium-card">
-    <h3>Friction Cards</h3>
-    <div style="display:grid; gap:12px; margin-top:12px;">
-        {% for card in monitoring.friction_points %}
-        <div class="card" style="margin:0;">
-            <h4>{{ card.headline }}</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ card.body }}</p>
-            </div>
+        <div class="apm-card-grid">
+          <article class="apm-card">
+            <h3>Ready</h3>
+            <p>{{ ready_count }} play(s) currently look ready for activation.</p>
+          </article>
+          <article class="apm-card">
+            <h3>Close</h3>
+            <p>{{ close_count }} play(s) are close but still need confirmation.</p>
+          </article>
+          <article class="apm-card">
+            <h3>Watch</h3>
+            <p>{{ watch_count }} play(s) remain mixed or incomplete.</p>
+          </article>
+          <article class="apm-card">
+            <h3>Weak</h3>
+            <p>{{ weak_count }} play(s) currently look soft, conflicted, or low quality.</p>
+          </article>
         </div>
-        {% endfor %}
-    </div>
-</div>
+      </section>
 
+      <section class="apm-panel">
+        <div class="apm-panel-head">
+          <div>
+            <p class="apm-eyebrow">Friction</p>
+            <h2>Friction points</h2>
+          </div>
+          <span class="apm-chip gold">{{ friction_count }} points</span>
+        </div>
+
+        {% if strongest_friction %}
+        <article class="apm-card" style="margin-bottom:18px;">
+          <p class="apm-eyebrow">Strongest friction</p>
+          <h3>{{ strongest_friction.headline if strongest_friction.headline is defined else strongest_friction.get("headline", "Strongest friction") }}</h3>
+          <p>{{ strongest_friction.body if strongest_friction.body is defined else strongest_friction.get("body", "") }}</p>
+        </article>
+        {% endif %}
+
+        {% if friction_points %}
+        <div class="apm-card-grid">
+          {% for point in friction_points[:8] %}
+            <article class="apm-card">
+              {% if point is mapping %}
+                <h3>{{ point.headline if point.headline is defined else point.get("headline", "Friction") }}</h3>
+                <p>{{ point.body if point.body is defined else point.get("body", point) }}</p>
+              {% else %}
+                <h3>Friction</h3>
+                <p>{{ point }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="apm-empty">
+          <h3 style="margin:0 0 8px;">No friction points loaded</h3>
+          <p style="margin:0;">Friction patterns will appear here when the product monitoring layer detects them.</p>
+        </div>
+        {% endif %}
+      </section>
+
+    </main>
+
+    <aside class="apm-stack">
+
+      <section class="apm-panel">
+        <div class="apm-panel-head">
+          <div>
+            <p class="apm-eyebrow">Quality</p>
+            <h2>Thesis and position checks</h2>
+          </div>
+        </div>
+
+        <div class="apm-card-grid" style="grid-template-columns:1fr;">
+          <article class="apm-card">
+            <h3>With thesis</h3>
+            <p>{{ thesis_quality["with_thesis"] if "with_thesis" in thesis_quality else 0 }} play(s) include a written thesis.</p>
+          </article>
+          <article class="apm-card">
+            <h3>Without thesis</h3>
+            <p>{{ thesis_quality["without_thesis"] if "without_thesis" in thesis_quality else 0 }} play(s) need clearer reasoning.</p>
+          </article>
+          <article class="apm-card">
+            <h3>Strong open positions</h3>
+            <p>{{ position_quality["strong_open_positions"] if "strong_open_positions" in position_quality else 0 }} open position(s) look strong.</p>
+          </article>
+          <article class="apm-card">
+            <h3>Weak open positions</h3>
+            <p>{{ position_quality["weak_open_positions"] if "weak_open_positions" in position_quality else 0 }} open position(s) look weak or conflicted.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="apm-panel">
+        <div class="apm-panel-head">
+          <div>
+            <p class="apm-eyebrow">Retention</p>
+            <h2>Retention and adoption</h2>
+          </div>
+        </div>
+
+        <div class="apm-stack">
+          <article class="apm-card">
+            <h3>{{ retention["headline"] if "headline" in retention else "Retention signal" }}</h3>
+            <p>{{ retention["summary"] if "summary" in retention else "No retention summary loaded yet." }}</p>
+          </article>
+          <article class="apm-card">
+            <h3>{{ adoption["headline"] if "headline" in adoption else "Adoption signal" }}</h3>
+            <p>{{ adoption["summary"] if "summary" in adoption else "No adoption summary loaded yet." }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="apm-panel">
+        <div class="apm-panel-head">
+          <div>
+            <p class="apm-eyebrow">Owner flow</p>
+            <h2>Admin rooms</h2>
+          </div>
+        </div>
+
+        <div class="apm-stack">
+          <a class="apm-card" href="/admin" style="text-decoration:none;">
+            <h3>Admin Home</h3>
+            <p>Return to the main owner control center.</p>
+          </a>
+          <a class="apm-card" href="/admin/intelligence" style="text-decoration:none;">
+            <h3>Admin Intelligence</h3>
+            <p>Review operator intelligence and trade behavior patterns.</p>
+          </a>
+          <a class="apm-card" href="/admin/product-analytics" style="text-decoration:none;">
+            <h3>Product Analytics</h3>
+            <p>Review product usage, page views, clicks, and events.</p>
+          </a>
+          <a class="apm-card" href="/admin/diagnostics" style="text-decoration:none;">
+            <h3>Diagnostics</h3>
+            <p>Inspect system readiness and surface health.</p>
+          </a>
+        </div>
+      </section>
+
+      <details class="apm-drawer">
+        <summary>Preserved monitoring payload</summary>
+        <div class="apm-drawer-body">
+          <pre>{{ m }}</pre>
+        </div>
+      </details>
+
+      <details class="apm-drawer">
+        <summary>Preserved alert/action payloads</summary>
+        <div class="apm-drawer-body">
+          <pre>{{ alerts }}</pre>
+          <pre style="margin-top:12px;">{{ actions }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
+</div>
 {% endblock %}

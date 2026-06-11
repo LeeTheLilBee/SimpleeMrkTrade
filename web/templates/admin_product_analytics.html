@@ -1,136 +1,612 @@
 {% extends "base.html" %}
+
+{% block title %}Admin Product Intelligence · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ADMIN_OWNER_SESSION_012B_PRODUCT_ANALYTICS_DARK_REWRITE -->
 
-<div style="margin-bottom:14px;">
-    <a href="javascript:history.back()" class="signal-stat-chip" style="text-decoration:none;">
-        ← Back
-    </a>
-</div>
+{% set a = analytics if analytics is defined and analytics else {} %}
+{% set totals = a["totals"] if "totals" in a else {} %}
+{% set top_pages = a["top_pages"] if "top_pages" in a else [] %}
+{% set top_symbols = a["top_symbols"] if "top_symbols" in a else [] %}
+{% set recent_events = a["recent_events"] if "recent_events" in a else [] %}
+{% set timeline = a["timeline"] if "timeline" in a else (a["event_timeline"] if "event_timeline" in a else []) %}
+{% set friction = a["friction"] if "friction" in a else (a["friction_points"] if "friction_points" in a else []) %}
+{% set page_views = totals["page_views"] if "page_views" in totals else 0 %}
+{% set clicks = totals["clicks"] if "clicks" in totals else 0 %}
+{% set events = totals["events"] if "events" in totals else 0 %}
+{% set unique_pages = totals["unique_pages"] if "unique_pages" in totals else top_pages|length %}
+{% set symbol_count = top_symbols|length %}
+{% set recent_count = recent_events|length %}
 
-<div class="page-hero card premium-hero gold-accent-card">
-    <h2>Admin Product Intelligence</h2>
-    <div class="passage-frame">
-        <p>
-            A live behavioral view of what people are seeing, clicking, revisiting, and where the product is creating friction.
+<style>
+  /* OBSERVATORY_ADMIN_OWNER_SESSION_012B_PRODUCT_ANALYTICS_DARK_REWRITE_STYLES */
+
+  html body .admin-product-analytics-shell,
+  html body .admin-product-analytics-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .admin-product-analytics-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .admin-product-analytics-shell a {
+    color: inherit;
+  }
+
+  html body .apa-hero,
+  html body .apa-panel,
+  html body .apa-card,
+  html body .apa-chip,
+  html body .apa-stat,
+  html body .apa-empty,
+  html body .apa-drawer {
+    color-scheme: dark;
+  }
+
+  html body .apa-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .apa-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .apa-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .apa-kicker,
+  html body .apa-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .apa-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .apa-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .apa-copy,
+  html body .apa-muted,
+  html body .apa-card p,
+  html body .apa-empty p,
+  html body .apa-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .apa-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .apa-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .apa-btn,
+  html body .apa-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .apa-btn:hover,
+  html body .apa-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .apa-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .apa-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .apa-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .apa-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .apa-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .apa-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .apa-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .apa-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .apa-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .apa-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .apa-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .apa-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .apa-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .apa-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .apa-stack,
+  html body .apa-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .apa-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  html body .apa-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .apa-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .apa-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .apa-panel h2,
+  html body .apa-panel h3,
+  html body .apa-card h3,
+  html body .apa-empty h3,
+  html body .apa-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .apa-panel h2,
+  html body .apa-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .apa-card,
+  html body .apa-empty {
+    display: block;
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  html body .apa-card h3 {
+    margin: 0 0 8px;
+  }
+
+  html body .apa-card p {
+    margin: 0;
+  }
+
+  html body .apa-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .apa-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .apa-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .apa-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .apa-hero-inner,
+    html body .apa-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .apa-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .admin-product-analytics-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .apa-hero-inner {
+      padding: 20px;
+    }
+
+    html body .apa-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="admin-product-analytics-shell">
+
+  <section class="apa-hero">
+    <div class="apa-hero-inner">
+      <div>
+        <span class="apa-kicker">Owner Product Intelligence</span>
+        <h1 class="apa-title">See how the product is being used.</h1>
+
+        <p class="apa-copy">
+          Product Analytics gives the owner view of behavior: page views, clicks, symbol interest,
+          recent events, friction hints, and where users are spending attention.
         </p>
-    </div>
-</div>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 18px;">
-    <div class="card premium-card"><h4>Total Events</h4><p><strong>{{ analytics.totals.events }}</strong></p></div>
-    <div class="card premium-card"><h4>Page Views</h4><p><strong>{{ analytics.totals.page_views }}</strong></p></div>
-    <div class="card premium-card"><h4>Symbol Clicks</h4><p><strong>{{ analytics.totals.symbol_clicks }}</strong></p></div>
-    <div class="card premium-card"><h4>Trade Clicks</h4><p><strong>{{ analytics.totals.trade_clicks }}</strong></p></div>
-    <div class="card premium-card"><h4>Upgrade Clicks</h4><p><strong>{{ analytics.totals.upgrade_clicks }}</strong></p></div>
-    <div class="card premium-card"><h4>CTA Clicks</h4><p><strong>{{ analytics.totals.cta_clicks }}</strong></p></div>
-</div>
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>System Insights</h3>
-    {% if analytics.insights %}
-        <div style="display:grid; gap:10px;">
-            {% for line in analytics.insights %}
-            <div class="passage-frame"><p style="margin:0;">{{ line }}</p></div>
-            {% endfor %}
+        <div class="apa-actions">
+          <a class="apa-btn primary" href="/admin">Admin Home</a>
+          <a class="apa-btn" href="/admin/intelligence">Admin Intelligence</a>
+          <a class="apa-btn" href="/admin/product-monitoring">Product Monitoring</a>
+          <a class="apa-btn" href="/admin/diagnostics">Diagnostics</a>
         </div>
-    {% else %}
-        <div class="passage-frame"><p style="margin:0;">No insights generated yet.</p></div>
-    {% endif %}
-</div>
 
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Recommended Product Actions</h3>
-    {% if analytics.recommendations %}
-        <div style="display:grid; gap:10px;">
-            {% for line in analytics.recommendations %}
-            <div class="passage-frame"><p style="margin:0;">{{ line }}</p></div>
-            {% endfor %}
+        <div class="apa-stats-grid">
+          <div class="apa-stat">
+            <span>Total Events</span>
+            <strong>{{ events }}</strong>
+          </div>
+          <div class="apa-stat">
+            <span>Page Views</span>
+            <strong>{{ page_views }}</strong>
+          </div>
+          <div class="apa-stat">
+            <span>Clicks</span>
+            <strong>{{ clicks }}</strong>
+          </div>
+          <div class="apa-stat">
+            <span>Unique Pages</span>
+            <strong>{{ unique_pages }}</strong>
+          </div>
         </div>
-    {% else %}
-        <div class="passage-frame"><p style="margin:0;">No recommendations generated yet.</p></div>
-    {% endif %}
-</div>
+      </div>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px;">
-    <div class="card premium-card">
-        <h3>Top Pages</h3>
-        {% for page, count in analytics.top_pages %}
-        <div class="passage-frame" style="margin-bottom:8px;"><p style="margin:0;">{{ page }} — {{ count }}</p></div>
-        {% endfor %}
+      <aside class="apa-read-card">
+        <div class="apa-orb" aria-hidden="true"></div>
+        <h2>Owner product read</h2>
+        <p>
+          Usage is the product talking back. Watch what users revisit,
+          where they hesitate, and which rooms earn attention without being forced.
+        </p>
+      </aside>
     </div>
+  </section>
 
-    <div class="card premium-card">
-        <h3>Top Symbols</h3>
-        {% for symbol, count in analytics.top_symbols %}
-        <div class="passage-frame" style="margin-bottom:8px;"><p style="margin:0;">{{ symbol }} — {{ count }}</p></div>
-        {% endfor %}
-    </div>
+  <div class="apa-grid">
+    <main class="apa-stack">
 
-    <div class="card premium-card">
-        <h3>Most Revisited Symbols</h3>
-        {% if analytics.most_revisited %}
-            {% for row in analytics.most_revisited %}
-            <div class="passage-frame" style="margin-bottom:8px;"><p style="margin:0;">{{ row.symbol }} — {{ row.revisits }} revisits</p></div>
-            {% endfor %}
+      <section class="apa-panel">
+        <div class="apa-panel-head">
+          <div>
+            <p class="apa-eyebrow">Behavior</p>
+            <h2>Top page activity</h2>
+          </div>
+          <span class="apa-chip blue">{{ top_pages|length }} pages</span>
+        </div>
+
+        {% if top_pages %}
+        <div class="apa-card-grid">
+          {% for page in top_pages %}
+            {% set path = page.path if page.path is defined else page.get("path", page.get("page", "Unknown page")) %}
+            {% set count = page.count if page.count is defined else page.get("count", page.get("views", 0)) %}
+            <article class="apa-card">
+              <p class="apa-eyebrow">Page</p>
+              <h3>{{ path }}</h3>
+              <p>{{ count }} recorded view(s).</p>
+            </article>
+          {% endfor %}
+        </div>
         {% else %}
-            <div class="passage-frame"><p style="margin:0;">No revisit patterns detected yet.</p></div>
+        <div class="apa-empty">
+          <h3 style="margin:0 0 8px;">No page activity loaded</h3>
+          <p style="margin:0;">The analytics route is active, but top page rows are empty.</p>
+        </div>
         {% endif %}
-    </div>
+      </section>
 
-    <div class="card premium-card">
-        <h3>High Attention / Low Action</h3>
-        {% if analytics.high_attention_low_action %}
-            {% for row in analytics.high_attention_low_action %}
-            <div class="passage-frame" style="margin-bottom:8px;">
-                <p style="margin:0;">{{ row.symbol }} — Views: {{ row.views }}, Actions: {{ row.actions }}, Follow-through: {{ row.action_rate }}%</p>
-            </div>
-            {% endfor %}
+      <section class="apa-panel">
+        <div class="apa-panel-head">
+          <div>
+            <p class="apa-eyebrow">Symbols</p>
+            <h2>Top symbol interest</h2>
+          </div>
+          <span class="apa-chip gold">{{ symbol_count }} symbols</span>
+        </div>
+
+        {% if top_symbols %}
+        <div class="apa-card-grid">
+          {% for row in top_symbols %}
+            {% set symbol = row.symbol if row.symbol is defined else row.get("symbol", "UNKNOWN") %}
+            {% set count = row.count if row.count is defined else row.get("count", row.get("views", 0)) %}
+            <a class="apa-card" href="/signals/{{ symbol }}">
+              <p class="apa-eyebrow">Symbol</p>
+              <h3>{{ symbol }}</h3>
+              <p>{{ count }} recorded interaction(s).</p>
+            </a>
+          {% endfor %}
+        </div>
         {% else %}
-            <div class="passage-frame"><p style="margin:0;">No high-friction symbols detected yet.</p></div>
+        <div class="apa-empty">
+          <h3 style="margin:0 0 8px;">No symbol interest loaded</h3>
+          <p style="margin:0;">Symbol interest will appear here after users open symbol rooms.</p>
+        </div>
         {% endif %}
-    </div>
-</div>
+      </section>
 
-<div class="card premium-card" style="margin-top:18px;">
-    <h3>Premium Curiosity</h3>
-    {% if analytics.premium_curiosity %}
-        {% for row in analytics.premium_curiosity %}
-        <div class="passage-frame" style="margin-bottom:8px;">
-            <p style="margin:0;">{{ row.section }} | {{ row.source }} — Wall views: {{ row.wall_views }}, Content views: {{ row.content_views }}, Follow-through: {{ row.followthrough_rate }}%</p>
+      <section class="apa-panel">
+        <div class="apa-panel-head">
+          <div>
+            <p class="apa-eyebrow">Recent</p>
+            <h2>Recent product events</h2>
+          </div>
+          <span class="apa-chip green">{{ recent_count }} events</span>
         </div>
-        {% endfor %}
-    {% else %}
-        <div class="passage-frame"><p style="margin:0;">No premium curiosity patterns detected yet.</p></div>
-    {% endif %}
-</div>
 
-<div class="card premium-card" style="margin-top:18px;">
-    <h3>Rejection Interest</h3>
-    {% if analytics.rejection_interest %}
-        {% for row in analytics.rejection_interest %}
-        <div class="passage-frame" style="margin-bottom:8px;"><p style="margin:0;">{{ row.symbol }} — {{ row.count }} rejection-interest views</p></div>
-        {% endfor %}
-    {% else %}
-        <div class="passage-frame"><p style="margin:0;">No rejection-interest patterns detected yet.</p></div>
-    {% endif %}
-</div>
-
-<div class="card premium-card" style="margin-top:18px;">
-    <h3>Recent Events</h3>
-    {% if analytics.recent_events %}
-        {% for event in analytics.recent_events %}
-        <div class="passage-frame" style="margin-bottom:8px;">
-            <p style="margin:0;">
-                {{ event.timestamp }} — {{ event.event_type }}
-                {% if event.page %} | page: {{ event.page }}{% endif %}
-                {% if event.symbol %} | symbol: {{ event.symbol }}{% endif %}
-                {% if event.source %} | source: {{ event.source }}{% endif %}
-            </p>
+        {% if recent_events %}
+        <div class="apa-card-grid">
+          {% for event in recent_events[:12] %}
+            {% set event_type = event.event_type if event.event_type is defined else event.get("event_type", event.get("type", "event")) %}
+            {% set path = event.path if event.path is defined else event.get("path", "") %}
+            {% set symbol = event.symbol if event.symbol is defined else event.get("symbol", "") %}
+            {% set timestamp = event.timestamp if event.timestamp is defined else event.get("timestamp", "") %}
+            <article class="apa-card">
+              <p class="apa-eyebrow">Event</p>
+              <h3>{{ event_type }}</h3>
+              {% if path %}<p>{{ path }}</p>{% endif %}
+              {% if symbol %}<p>Symbol: {{ symbol }}</p>{% endif %}
+              {% if timestamp %}<p class="apa-muted">{{ timestamp }}</p>{% endif %}
+            </article>
+          {% endfor %}
         </div>
-        {% endfor %}
-    {% else %}
-        <div class="passage-frame"><p style="margin:0;">No events recorded yet.</p></div>
-    {% endif %}
-</div>
+        {% else %}
+        <div class="apa-empty">
+          <h3 style="margin:0 0 8px;">No recent events loaded</h3>
+          <p style="margin:0;">Recent event cards will appear after analytics events are collected.</p>
+        </div>
+        {% endif %}
+      </section>
 
+    </main>
+
+    <aside class="apa-stack">
+
+      <section class="apa-panel">
+        <div class="apa-panel-head">
+          <div>
+            <p class="apa-eyebrow">Owner flow</p>
+            <h2>Admin rooms</h2>
+          </div>
+        </div>
+
+        <div class="apa-stack">
+          <a class="apa-card" href="/admin" style="text-decoration:none;">
+            <h3>Admin Home</h3>
+            <p>Return to the main owner control center.</p>
+          </a>
+          <a class="apa-card" href="/admin/intelligence" style="text-decoration:none;">
+            <h3>Admin Intelligence</h3>
+            <p>Review operator intelligence, disagreement, activation, and coaching patterns.</p>
+          </a>
+          <a class="apa-card" href="/admin/product-monitoring" style="text-decoration:none;">
+            <h3>Product Monitoring</h3>
+            <p>Review product friction, readiness, retention, and user experience signals.</p>
+          </a>
+          <a class="apa-card" href="/admin/diagnostics" style="text-decoration:none;">
+            <h3>Diagnostics</h3>
+            <p>Inspect templates, files, market universe, and symbol coverage health.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="apa-panel">
+        <div class="apa-panel-head">
+          <div>
+            <p class="apa-eyebrow">Friction</p>
+            <h2>Friction hints</h2>
+          </div>
+        </div>
+
+        {% if friction %}
+        <div class="apa-card-grid" style="grid-template-columns:1fr;">
+          {% for line in friction[:6] %}
+            <article class="apa-card">
+              {% if line is mapping %}
+                <h3>{{ line.headline if line.headline is defined else line.get("headline", "Friction") }}</h3>
+                <p>{{ line.body if line.body is defined else line.get("body", line) }}</p>
+              {% else %}
+                <h3>Friction</h3>
+                <p>{{ line }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="apa-empty">
+          <h3 style="margin:0 0 8px;">No friction hints loaded</h3>
+          <p style="margin:0;">Friction will appear when analytics detects repeated struggle or drop-off patterns.</p>
+        </div>
+        {% endif %}
+      </section>
+
+      <details class="apa-drawer">
+        <summary>Preserved analytics payload</summary>
+        <div class="apa-drawer-body">
+          <pre>{{ a }}</pre>
+        </div>
+      </details>
+
+      <details class="apa-drawer">
+        <summary>Preserved timeline payload</summary>
+        <div class="apa-drawer-body">
+          <pre>{{ timeline }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
+</div>
 {% endblock %}

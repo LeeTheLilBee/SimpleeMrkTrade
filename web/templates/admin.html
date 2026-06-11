@@ -1,1102 +1,666 @@
 {% extends "base.html" %}
+
+{% block title %}Admin Home · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ADMIN_OWNER_SESSION_012J_ADMIN_HOME_DARK_REWRITE -->
 
-<!-- ADMIN ACTION BUTTONS -->
-<div style="display:flex; gap:10px; flex-wrap:wrap; margin: 14px 0 18px 0;">
-    <a href="/admin/intelligence" class="cta-btn secondary">Intelligence</a>
-    <a href="/admin/product-monitoring" class="cta-btn secondary">Product Monitoring</a>
-    <a href="/admin/product-analytics" class="cta-btn secondary">Product Analytics</a>
-    <a href="/admin/diagnostics" class="cta-btn secondary">Diagnostics</a>
-</div>
+{% set pos = positions if positions is defined and positions else [] %}
+{% set sig = signals if signals is defined and signals else [] %}
+{% set usr = users if users is defined and users else [] %}
+{% set met = metrics if metrics is defined and metrics else {} %}
+{% set prf = proof if proof is defined and proof else {} %}
+{% set snap = snapshot if snapshot is defined and snapshot else {} %}
+{% set sys = system if system is defined and system else {} %}
+{% set alerts = admin_alerts if admin_alerts is defined and admin_alerts else [] %}
+{% set surface = surface_alerts if surface_alerts is defined and surface_alerts else {} %}
+{% set actions = quick_actions if quick_actions is defined and quick_actions else {} %}
+{% set analytics = event_analytics if event_analytics is defined and event_analytics else {} %}
+{% set explanations = alert_explanations if alert_explanations is defined and alert_explanations else {} %}
+{% set priority = behavior_priority if behavior_priority is defined and behavior_priority else {} %}
+{% set insights = behavioral_insights if behavioral_insights is defined and behavioral_insights else {} %}
+{% set risk = behavior_risk if behavior_risk is defined and behavior_risk else {} %}
+{% set health = data_health if data_health is defined and data_health else {} %}
+{% set command = play_command if play_command is defined and play_command else {} %}
 
-<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
-    <h2>Admin Control Center</h2>
-    <div class="passage-frame">
-        <p>
-            Operator visibility across system intelligence, product monitoring, simulation health, proof, usage signals, behavior tracking, and tier preview.
+{% set position_count = pos|length %}
+{% set signal_count = sig|length %}
+{% set user_count = usr|length %}
+{% set alert_count = alerts|length if alerts is iterable and alerts is not mapping and alerts is not string else 0 %}
+{% set page_views = analytics["page_views"] if "page_views" in analytics else analytics.get("views", 0) if analytics.get is defined else 0 %}
+{% set winrate = prf["winrate"] if "winrate" in prf else prf.get("win_rate", "N/A") if prf.get is defined else "N/A" %}
+{% set equity = snap["equity"] if "equity" in snap else snap.get("estimated_account_value", "N/A") if snap.get is defined else "N/A" %}
+{% set mode = sys["mode"] if "mode" in sys else sys.get("market_mode", "N/A") if sys.get is defined else "N/A" %}
+
+<style>
+  /* OBSERVATORY_ADMIN_OWNER_SESSION_012J_ADMIN_HOME_DARK_REWRITE_STYLES */
+
+  html body .admin-home-shell,
+  html body .admin-home-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .admin-home-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .admin-home-shell a {
+    color: inherit;
+  }
+
+  html body .adm-hero,
+  html body .adm-panel,
+  html body .adm-card,
+  html body .adm-chip,
+  html body .adm-stat,
+  html body .adm-empty,
+  html body .adm-drawer {
+    color-scheme: dark;
+  }
+
+  html body .adm-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .adm-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .adm-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .adm-kicker,
+  html body .adm-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .adm-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .adm-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .adm-copy,
+  html body .adm-muted,
+  html body .adm-card p,
+  html body .adm-empty p,
+  html body .adm-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .adm-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .adm-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .adm-btn,
+  html body .adm-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .adm-btn:hover,
+  html body .adm-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .adm-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .adm-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .adm-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .adm-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .adm-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .adm-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .adm-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .adm-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .adm-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .adm-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .adm-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .adm-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .adm-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .adm-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .adm-stack,
+  html body .adm-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .adm-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  html body .adm-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .adm-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .adm-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .adm-panel h2,
+  html body .adm-panel h3,
+  html body .adm-card h3,
+  html body .adm-empty h3,
+  html body .adm-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .adm-panel h2,
+  html body .adm-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .adm-card,
+  html body .adm-empty {
+    display: block;
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  html body .adm-card.alert {
+    border-color: rgba(250, 204, 21, 0.38);
+  }
+
+  html body .adm-card.risk {
+    border-color: rgba(248, 113, 113, 0.42);
+  }
+
+  html body .adm-card h3 {
+    margin: 0 0 8px;
+  }
+
+  html body .adm-card p {
+    margin: 0;
+  }
+
+  html body .adm-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .adm-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .adm-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .adm-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .adm-hero-inner,
+    html body .adm-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .adm-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .admin-home-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .adm-hero-inner {
+      padding: 20px;
+    }
+
+    html body .adm-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="admin-home-shell">
+
+  <section class="adm-hero">
+    <div class="adm-hero-inner">
+      <div>
+        <span class="adm-kicker">Owner Control Center</span>
+        <h1 class="adm-title">The owner room stays awake.</h1>
+
+        <p class="adm-copy">
+          Admin Home gives the owner a clean command view across users, positions, signals,
+          proof, system state, alerts, product intelligence, and diagnostics.
         </p>
-    </div>
-</div>
 
-{% if play_command %}
-<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">{{ play_command.headline }}</h3>
-            <p class="muted-line" style="margin:0;">{{ play_command.summary }}</p>
+        <div class="adm-actions">
+          <a class="adm-btn primary" href="/admin/intelligence">Admin Intelligence</a>
+          <a class="adm-btn" href="/admin/product-monitoring">Product Monitoring</a>
+          <a class="adm-btn" href="/admin/product-analytics">Product Analytics</a>
+          <a class="adm-btn" href="/admin/diagnostics">Diagnostics</a>
         </div>
-        <span class="signal-stat-chip">Play Command</span>
-    </div>
 
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Total Plays</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ play_command.counts.total }}</strong></p>
-            </div>
+        <div class="adm-stats-grid">
+          <div class="adm-stat">
+            <span>Users</span>
+            <strong>{{ user_count }}</strong>
+          </div>
+          <div class="adm-stat">
+            <span>Positions</span>
+            <strong>{{ position_count }}</strong>
+          </div>
+          <div class="adm-stat">
+            <span>Signals</span>
+            <strong>{{ signal_count }}</strong>
+          </div>
+          <div class="adm-stat">
+            <span>Alerts</span>
+            <strong>{{ alert_count }}</strong>
+          </div>
         </div>
-        <div class="card" style="margin:0;">
-            <h4>READY</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ play_command.counts.ready }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>CLOSE</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ play_command.counts.close }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Weak / Watch</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ play_command.counts.weak }}</strong></p>
-            </div>
-        </div>
-    </div>
+      </div>
 
-    {% if play_command.top_failure_causes %}
-    <div class="card" style="margin-top:14px;">
-        <h4>Top Failure Causes</h4>
-        <div style="display:grid; gap:8px; margin-top:10px;">
-            {% for item in play_command.top_failure_causes %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ item.cause|replace('_', ' ')|title }} — {{ item.count }}</p>
-            </div>
-            {% endfor %}
-        </div>
+      <aside class="adm-read-card">
+        <div class="adm-orb" aria-hidden="true"></div>
+        <h2>Owner command read</h2>
+        <p>
+          This room is the overview, not the whole investigation.
+          Use it to spot what needs attention, then open intelligence, monitoring, analytics, or diagnostics.
+        </p>
+      </aside>
     </div>
-    {% endif %}
+  </section>
 
-    {% if play_command.top_promotion_candidate %}
-    <div class="card" style="margin-top:14px;">
-        <h4>Top Promotion Candidate</h4>
-        <div class="passage-frame">
-            <p style="margin:0;">
-                <strong>{{ play_command.top_promotion_candidate.symbol }}</strong>
-                — {{ play_command.top_promotion_candidate.headline }}
-            </p>
+  <div class="adm-grid">
+    <main class="adm-stack">
+
+      <section class="adm-panel">
+        <div class="adm-panel-head">
+          <div>
+            <p class="adm-eyebrow">Operating Snapshot</p>
+            <h2>System and proof overview</h2>
+          </div>
+          <span class="adm-chip blue">Mode {{ mode }}</span>
         </div>
-        {% if play_command.top_promotion_candidate.promotion_message %}
-        <div class="passage-frame" style="margin-top:10px;">
-            <p style="margin:0;">{{ play_command.top_promotion_candidate.promotion_message }}</p>
+
+        <div class="adm-card-grid">
+          <article class="adm-card">
+            <h3>Estimated equity</h3>
+            <p>{{ equity }}</p>
+          </article>
+          <article class="adm-card">
+            <h3>Win rate</h3>
+            <p>{{ winrate }}</p>
+          </article>
+          <article class="adm-card">
+            <h3>Page views</h3>
+            <p>{{ page_views }}</p>
+          </article>
+          <article class="adm-card">
+            <h3>System mode</h3>
+            <p>{{ mode }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="adm-panel">
+        <div class="adm-panel-head">
+          <div>
+            <p class="adm-eyebrow">Alerts</p>
+            <h2>Admin alert queue</h2>
+          </div>
+          <span class="adm-chip {% if alert_count %}gold{% else %}green{% endif %}">{{ alert_count }} alerts</span>
+        </div>
+
+        {% if alerts %}
+        <div class="adm-card-grid">
+          {% for item in alerts[:10] %}
+            <article class="adm-card alert">
+              {% if item is mapping %}
+                <h3>{{ item.headline if item.headline is defined else item.get("headline", item.get("title", "Alert")) }}</h3>
+                <p>{{ item.body if item.body is defined else item.get("body", item.get("summary", item)) }}</p>
+              {% else %}
+                <h3>Alert</h3>
+                <p>{{ item }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="adm-empty">
+          <h3 style="margin:0 0 8px;">No admin alerts loaded</h3>
+          <p style="margin:0;">Admin alerts will appear here when shared context provides them.</p>
         </div>
         {% endif %}
-    </div>
-    {% endif %}
+      </section>
 
-    {% if play_command.top_near_miss %}
-    <div class="card" style="margin-top:14px;">
-        <h4>Closest Developing Play</h4>
-        <div class="passage-frame">
-            <p style="margin:0;">
-                <strong>{{ play_command.top_near_miss.symbol }}</strong>
-                — {{ play_command.top_near_miss.headline }}
-            </p>
+      <section class="adm-panel">
+        <div class="adm-panel-head">
+          <div>
+            <p class="adm-eyebrow">Live Surface</p>
+            <h2>Signals and positions</h2>
+          </div>
+          <span class="adm-chip blue">{{ signal_count }} signals · {{ position_count }} positions</span>
         </div>
-        {% if play_command.top_near_miss.blockers %}
-        <div style="display:grid; gap:8px; margin-top:10px;">
-            {% for item in play_command.top_near_miss.blockers %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ item }}</p>
-            </div>
+
+        <div class="adm-card-grid">
+          {% if sig %}
+            {% for item in sig[:6] %}
+              {% set symbol = item.symbol if item.symbol is defined else item.get("symbol", "UNKNOWN") %}
+              <a class="adm-card" href="/signals/{{ symbol }}">
+                <h3>{{ symbol }}</h3>
+                <p>{{ item.summary if item.summary is defined else item.get("summary", "Open symbol intelligence.") }}</p>
+              </a>
             {% endfor %}
-        </div>
-        {% endif %}
-    </div>
-    {% endif %}
-
-    {% if play_command.top_rebuild %}
-    <div class="card" style="margin-top:14px;">
-        <h4>Top Rebuild Target</h4>
-        <div class="passage-frame">
-            <p style="margin:0;">
-                <strong>{{ play_command.top_rebuild.symbol }}</strong>
-                — {{ play_command.top_rebuild.headline }}
-            </p>
-        </div>
-        {% if play_command.top_rebuild.rebuild_suggestions %}
-        <div style="display:grid; gap:8px; margin-top:10px;">
-            {% for item in play_command.top_rebuild.rebuild_suggestions %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ item }}</p>
+          {% else %}
+            <div class="adm-empty">
+              <h3 style="margin:0 0 8px;">No signals loaded</h3>
+              <p style="margin:0;">Signals will appear here when the admin route provides them.</p>
             </div>
+          {% endif %}
+
+          {% if pos %}
+            {% for item in pos[:6] %}
+              {% set symbol = item.symbol if item.symbol is defined else item.get("symbol", "UNKNOWN") %}
+              <a class="adm-card" href="/my-positions">
+                <h3>{{ symbol }}</h3>
+                <p>{{ item.status if item.status is defined else item.get("status", "Position active.") }}</p>
+              </a>
             {% endfor %}
+          {% endif %}
         </div>
-        {% endif %}
-    </div>
-    {% endif %}
-</div>
-{% endif %}
+      </section>
 
-{% if play_command %}
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-bottom:18px;">
-    {% if play_command.strongest_play %}
-    <div class="card" style="margin:0;">
-        <h4>Strongest Play</h4>
-        <div class="passage-frame">
-            <p style="margin:0;">
-                <strong>{{ play_command.strongest_play.symbol }}</strong>
-                — {{ play_command.strongest_play.headline }}
-            </p>
-        </div>
-    </div>
-    {% endif %}
+    </main>
 
-    {% if play_command.weakest_play %}
-    <div class="card" style="margin:0;">
-        <h4>Weakest Play</h4>
-        <div class="passage-frame">
-            <p style="margin:0;">
-                <strong>{{ play_command.weakest_play.symbol }}</strong>
-                — {{ play_command.weakest_play.headline }}
-            </p>
-        </div>
-    </div>
-    {% endif %}
-</div>
-{% endif %}
+    <aside class="adm-stack">
 
-{% if admin_alerts and admin_alerts.top_alert %}
-<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Top Operator Alert</h3>
-            <p class="muted-line" style="margin:0;">The most important cross-system signal visible right now.</p>
+      <section class="adm-panel">
+        <div class="adm-panel-head">
+          <div>
+            <p class="adm-eyebrow">Owner rooms</p>
+            <h2>Admin navigation</h2>
+          </div>
         </div>
-        <span class="signal-stat-chip">{{ admin_alerts.top_alert.level|upper }}</span>
-    </div>
 
-    <a href="{{ admin_alerts.top_alert.target }}" style="text-decoration:none; color:inherit;">
-        <div class="card" style="margin-top:14px;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-                <div>
-                    <h4 style="margin:0 0 8px 0;">{{ admin_alerts.top_alert.headline }}</h4>
-                </div>
-                <span class="signal-stat-chip">{{ admin_alerts.top_alert.target_label }}</span>
-            </div>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ admin_alerts.top_alert.body }}</p>
-            </div>
-        </div>
-    </a>
-
-    {% if admin_alerts.alerts %}
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
-        {% for alert in admin_alerts.alerts %}
-        <a href="{{ alert.target }}" style="text-decoration:none; color:inherit;">
-            <div class="card" style="margin:0; height:100%;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
-                    <h4 style="margin:0;">{{ alert.headline }}</h4>
-                    <span class="signal-stat-chip">{{ alert.level|upper }}</span>
-                </div>
-                <div class="passage-frame" style="margin-top:10px;">
-                    <p style="margin:0;">{{ alert.body }}</p>
-                </div>
-                <div style="margin-top:10px;">
-                    <span class="signal-stat-chip">{{ alert.target_label }}</span>
-                </div>
-            </div>
-        </a>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-
-{% if alert_explanations and alert_explanations.get("items") %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Why These Alerts Exist</h3>
-            <p class="muted-line" style="margin:0;">
-                A deeper read on what triggered the current shared operator alerts and what to do next.
-            </p>
-        </div>
-        <span class="signal-stat-chip">Explainer Layer</span>
-    </div>
-
-    <div style="display:grid; gap:12px; margin-top:14px;">
-        {% for item in alert_explanations.get("items", []) %}
-        <div class="card" style="margin:0;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-                <h4 style="margin:0;">{{ item.headline }}</h4>
-                <span class="signal-stat-chip">{{ item.level|upper }}</span>
-            </div>
-            <div class="passage-frame" style="margin-top:10px;">
-                <p style="margin:0;"><strong>Trigger:</strong> {{ item.trigger }}</p>
-                <p style="margin:8px 0 0 0;"><strong>Why it matters:</strong> {{ item.why_it_matters }}</p>
-                <p style="margin:8px 0 0 0;"><strong>First action:</strong> {{ item.first_action }}</p>
-                <p style="margin:8px 0 0 0;"><strong>If ignored:</strong> {{ item.if_ignored }}</p>
-            </div>
-            <div style="margin-top:10px;">
-                <a href="{{ item.target }}" class="cta-btn secondary">{{ item.target_label }}</a>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-{% if data_health %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Data Health</h3>
-            <p class="muted-line" style="margin:0;">
-                Core pipeline freshness and file coverage across the app.
-            </p>
-        </div>
-        <span class="signal-stat-chip">Stability Layer</span>
-    </div>
-
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Signals</h4>
-            <p><strong>{{ data_health.counts.signals }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Symbol Intel</h4>
-            <p><strong>{{ data_health.counts.symbol_intelligence }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>News Cache</h4>
-            <p><strong>{{ data_health.counts.symbol_news }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Reports</h4>
-            <p><strong>{{ data_health.counts.recent_reports }}</strong></p>
-        </div>
-    </div>
-
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Engine Freshness</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ data_health.freshness.engine.label }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Symbol Freshness</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ data_health.freshness.symbol_intelligence.label }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>News Freshness</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ data_health.freshness.news.label }}</strong></p>
-            </div>
-        </div>
-    </div>
-
-    {% if data_health.cards %}
-    <div style="display:grid; gap:12px; margin-top:14px;">
-        {% for card in data_health.cards %}
-        <div class="card" style="margin:0;">
-            <h4>{{ card.headline }}</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ card.body }}</p>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-
-{% if quick_actions and quick_actions.actions %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Operator Quick Actions</h3>
-            <p class="muted-line" style="margin:0;">Jump directly into the zones that usually need the most attention.</p>
-        </div>
-        <span class="signal-stat-chip">{{ quick_actions.actions|length }} actions</span>
-    </div>
-
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:14px;">
-        {% for action in quick_actions.actions %}
-        <a href="{{ action.target }}" style="text-decoration:none; color:inherit;">
-            <div class="card {% if action.tone == 'gold' %}gold-accent-card{% endif %}" style="margin:0; height:100%;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
-                    <h4 style="margin:0;">{{ action.headline }}</h4>
-                    <span class="signal-stat-chip">{{ action.target_label }}</span>
-                </div>
-                <div class="passage-frame" style="margin-top:10px;">
-                    <p style="margin:0;">{{ action.body }}</p>
-                </div>
-            </div>
-        </a>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-{% if behavior_risk %}
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Behavior Risk</h3>
-            <p class="muted-line" style="margin:0;">
-                What your archived trades are revealing about decision discipline.
-            </p>
-        </div>
-        <span class="signal-stat-chip">Coaching Layer</span>
-    </div>
-
-    <div class="card" style="margin-top:14px;">
-        <h4>{{ behavior_risk.headline }}</h4>
-        <div class="passage-frame">
-            <p style="margin:0;">{{ behavior_risk.summary }}</p>
-        </div>
-    </div>
-
-    {% if behavior_risk.cards %}
-    <div style="display:grid; gap:12px; margin-top:14px;">
-        {% for card in behavior_risk.cards %}
-        <div class="card" style="margin:0;">
-            <h4>{{ card.headline }}</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ card.body }}</p>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-
-{% if behavior_priority %}
-<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Fix This First</h3>
-            <p class="muted-line" style="margin:0;">
-                The strongest behavior leak the system thinks deserves attention right now.
-            </p>
-        </div>
-        <span class="signal-stat-chip">Priority Engine</span>
-    </div>
-
-    <div class="passage-frame" style="margin-top:12px;">
-        <p style="margin:0;"><strong>{{ behavior_priority.headline }}</strong></p>
-        <p style="margin:8px 0 0 0;">{{ behavior_priority.summary }}</p>
-    </div>
-
-    {% if behavior_priority.top_fix %}
-    <div class="card" style="margin-top:14px;">
-        <h4>{{ behavior_priority.top_fix.headline }}</h4>
-        <div class="passage-frame">
-            <p style="margin:0;">{{ behavior_priority.top_fix.body }}</p>
-            <p style="margin:8px 0 0 0;"><strong>Damage Type:</strong> {{ behavior_priority.top_fix.damage_type }}</p>
-            <p style="margin:8px 0 0 0;"><strong>Impact Score:</strong> {{ behavior_priority.top_fix.impact_score }}</p>
-            <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ behavior_priority.top_fix.fix }}</p>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if behavior_priority.totals %}
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Archived</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ behavior_priority.totals.archived }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Wins</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ behavior_priority.totals.wins }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Losses</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ behavior_priority.totals.losses }}</strong></p>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if behavior_priority.items %}
-    <div style="display:grid; gap:12px; margin-top:14px;">
-        {% for item in behavior_priority.items() %}
-        <div class="card" style="margin:0;">
-            <h4>{{ item.headline }}</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ item.body }}</p>
-                <p style="margin:8px 0 0 0;"><strong>Damage Type:</strong> {{ item.damage_type }}</p>
-                <p style="margin:8px 0 0 0;"><strong>Impact Score:</strong> {{ item.impact_score }}</p>
-                <p style="margin:8px 0 0 0;"><strong>Fix:</strong> {{ item.fix }}</p>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-bottom:18px;">
-    <a href="/admin/intelligence" style="text-decoration:none; color:inherit;">
-        <div class="card premium-card gold-accent-card" style="height:100%;">
+        <div class="adm-stack">
+          <a class="adm-card" href="/admin/intelligence" style="text-decoration:none;">
             <h3>Admin Intelligence</h3>
-            <div class="passage-frame">
-                <p style="margin:0;">
-                    Review idea quality, activation discipline, disagreement behavior, and where system edge is being strengthened or leaked.
-                </p>
-            </div>
-        </div>
-    </a>
-
-    <a href="/admin/diagnostics" style="text-decoration:none; color:inherit;">
-        <div class="card premium-card" style="height:100%;">
-            <h3>Diagnostics</h3>
-            <div class="passage-frame">
-                <p style="margin:0;">
-                    Check pipeline freshness, missing files, symbol coverage gaps, and template health.
-                </p>
-            </div>
-        </div>
-    </a>
-
-    <a href="/admin/product-monitoring" style="text-decoration:none; color:inherit;">
-        <div class="card premium-card" style="height:100%;">
+            <p>Behavior priorities, risk patterns, insights, alerts, and command cues.</p>
+          </a>
+          <a class="adm-card" href="/admin/product-monitoring" style="text-decoration:none;">
             <h3>Product Monitoring</h3>
-            <div class="passage-frame">
-                <p style="margin:0;">
-                    Track product usage, friction points, setup quality, and whether the experience is getting stronger or more confusing.
-                </p>
-            </div>
+            <p>Friction, readiness, thesis quality, position quality, retention, and adoption.</p>
+          </a>
+          <a class="adm-card" href="/admin/product-analytics" style="text-decoration:none;">
+            <h3>Product Analytics</h3>
+            <p>Usage, page activity, symbol interest, events, and product behavior.</p>
+          </a>
+          <a class="adm-card" href="/admin/diagnostics" style="text-decoration:none;">
+            <h3>Diagnostics</h3>
+            <p>Templates, routes, files, warnings, errors, and system health checks.</p>
+          </a>
         </div>
-    </a>
-</div>
+      </section>
 
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Operator Navigation</h3>
-            <p class="muted-line" style="margin:0;">Jump between the core system surfaces without hunting through the app.</p>
+      <section class="adm-panel">
+        <div class="adm-panel-head">
+          <div>
+            <p class="adm-eyebrow">Users</p>
+            <h2>User surface</h2>
+          </div>
+          <span class="adm-chip green">{{ user_count }} users</span>
         </div>
-        <span class="signal-stat-chip">Control Layer</span>
-    </div>
 
-    <div class="dashboard-subnav" style="margin-top:14px;">
-        <a href="/dashboard" class="cta-btn secondary">Simulation Dashboard</a>
-        <a href="/signals" class="cta-btn secondary">Signals</a>
-        <a href="/all-symbols" class="cta-btn secondary">All Symbols</a>
-        <a href="/positions" class="cta-btn secondary">Positions</a>
-        <a href="/proof" class="cta-btn secondary">Proof</a>
-    </div>
-</div>
-
-<div class="card gold-accent-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Tier Preview</h3>
-            <p class="muted-line" style="margin:0;">
-                Switch product visibility states quickly so you can inspect the platform from each tier’s point of view.
-            </p>
-        </div>
-        <span class="signal-stat-chip">Preview Controls</span>
-    </div>
-
-    <div class="dashboard-subnav" style="margin-top:14px;">
-        <a href="/admin/preview-tier/Guest" class="cta-btn secondary">Guest</a>
-        <a href="/admin/preview-tier/Free" class="cta-btn secondary">Free</a>
-        <a href="/admin/preview-tier/Starter" class="cta-btn secondary">Starter</a>
-        <a href="/admin/preview-tier/Pro" class="cta-btn secondary">Pro</a>
-        <a href="/admin/preview-tier/Elite" class="cta-btn secondary">Elite</a>
-        <a href="/admin/preview-tier/clear" class="cta-btn premium-gold-btn">Clear Preview</a>
-    </div>
-</div>
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:18px;">
-    <div class="card gold-accent-card">
-        <h4>Estimated Value</h4>
-        <div class="metric">${{ snapshot.estimated_account_value }}</div>
-        <p class="muted-line">Simulation snapshot</p>
-    </div>
-    <div class="card gold-accent-card">
-        <h4>Open Positions</h4>
-        <div class="metric">{{ snapshot.open_positions }}</div>
-        <p class="muted-line">Current active positions</p>
-    </div>
-    <div class="card gold-accent-card">
-        <h4>Engine State</h4>
-        <div class="metric">{{ system.engine_state }}</div>
-        <p class="muted-line">Bot status</p>
-    </div>
-    <div class="card gold-accent-card">
-        <h4>Tracked Users</h4>
-        <div class="metric">{{ users|length }}</div>
-        <p class="muted-line">Loaded user records</p>
-    </div>
-</div>
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Behavior Event Layer</h3>
-            <p class="muted-line" style="margin:0;">Track how users actually move through the workflow, not just what the system currently looks like.</p>
-        </div>
-        <span class="signal-stat-chip">Live Behavior</span>
-    </div>
-
-    <div class="passage-frame" style="margin-top:12px;">
-        <p style="margin:0;"><strong>{{ event_analytics.headline }}</strong></p>
-        <p style="margin:8px 0 0 0;">{{ event_analytics.summary }}</p>
-    </div>
-
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Play Created</h4>
-            <p><strong>{{ event_analytics.counts.play_created }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Play Edited</h4>
-            <p><strong>{{ event_analytics.counts.play_edited }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Play Activated</h4>
-            <p><strong>{{ event_analytics.counts.play_activated }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Position Updated</h4>
-            <p><strong>{{ event_analytics.counts.position_updated }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Position Closed</h4>
-            <p><strong>{{ event_analytics.counts.position_closed }}</strong></p>
-        </div>
-    </div>
-</div>
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Behavior Pattern Signals</h3>
-            <p class="muted-line" style="margin:0;">Derived operator habits from event flow, not just static account state.</p>
-        </div>
-        <span class="signal-stat-chip">Behavioral Edge</span>
-    </div>
-
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Against Engine</h4>
-            <p><strong>{{ behavioral_insights.counts.activated_against_engine }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>High Conviction / No Thesis</h4>
-            <p><strong>{{ behavioral_insights.counts.high_conviction_no_thesis }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Edited After Weakness</h4>
-            <p><strong>{{ behavioral_insights.counts.edited_after_weak_health }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Late Weak Closes</h4>
-            <p><strong>{{ behavioral_insights.counts.closed_weak }}</strong></p>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Created After Loss</h4>
-            <p><strong>{{ behavioral_insights.counts.created_after_loss_close }}</strong></p>
-        </div>
-    </div>
-
-    <div style="display:grid; gap:12px; margin-top:14px;">
-        {% for card in behavioral_insights.cards %}
-        <div class="card" style="margin:0;">
-            <h4>{{ card.headline }}</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ card.body }}</p>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Recent Behavior Events</h3>
-    {% if event_analytics.recent_events %}
-    <div style="display:grid; gap:10px; margin-top:12px;">
-        {% for row in event_analytics.recent_events|reverse %}
-        <div class="card" style="margin:0;">
-            <div class="admin-stat-row">
-                <span>{{ row.event_type }}</span>
-                <strong>{{ row.created_at }}</strong>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="passage-frame" style="margin-top:12px;">
-        <p style="margin:0;">No events tracked yet.</p>
-    </div>
-    {% endif %}
-</div>
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h3>Traffic Signals</h3>
-        {% if metrics.page_views %}
-        <div style="display:grid; gap:8px; margin-top:12px;">
-            {% for path, count in metrics.page_views.items() %}
-            <div class="admin-stat-row">
-                <span>{{ path }}</span>
-                <strong>{{ count }}</strong>
-            </div>
-            {% endfor %}
+        {% if usr %}
+        <div class="adm-card-grid" style="grid-template-columns:1fr;">
+          {% for item in usr[:8] %}
+            <article class="adm-card">
+              <h3>{{ item.username if item.username is defined else item.get("username", item.get("email", "User")) }}</h3>
+              <p>{{ item.role if item.role is defined else item.get("role", "role unavailable") }}</p>
+            </article>
+          {% endfor %}
         </div>
         {% else %}
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">No page view data yet.</p>
+        <div class="adm-empty">
+          <h3 style="margin:0 0 8px;">No users loaded</h3>
+          <p style="margin:0;">User rows will appear here when the admin route provides them.</p>
         </div>
         {% endif %}
-    </div>
+      </section>
 
-    <div class="card premium-card">
-        <h3>Key Clicks</h3>
-        {% if metrics.clicks %}
-        <div style="display:grid; gap:8px; margin-top:12px;">
-            {% for key, count in metrics.clicks.items() %}
-            <div class="admin-stat-row">
-                <span>{{ key.replace("_", " ").title() }}</span>
-                <strong>{{ count }}</strong>
-            </div>
-            {% endfor %}
+      <section class="adm-panel">
+        <div class="adm-panel-head">
+          <div>
+            <p class="adm-eyebrow">Health</p>
+            <h2>Data health snapshot</h2>
+          </div>
+        </div>
+
+        {% if health %}
+        <div class="adm-card-grid" style="grid-template-columns:1fr;">
+          {% for key, value in health.items() %}
+            <article class="adm-card">
+              <h3>{{ key }}</h3>
+              <p>{{ value }}</p>
+            </article>
+          {% endfor %}
         </div>
         {% else %}
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">No click data yet.</p>
+        <div class="adm-empty">
+          <h3 style="margin:0 0 8px;">No data health payload loaded</h3>
+          <p style="margin:0;">Data health appears here when the admin shared context provides it.</p>
         </div>
         {% endif %}
-    </div>
+      </section>
+
+      <details class="adm-drawer">
+        <summary>Preserved metrics and proof payloads</summary>
+        <div class="adm-drawer-body">
+          <pre>{{ met }}</pre>
+          <pre style="margin-top:12px;">{{ prf }}</pre>
+        </div>
+      </details>
+
+      <details class="adm-drawer">
+        <summary>Preserved owner intelligence payloads</summary>
+        <div class="adm-drawer-body">
+          <pre>{{ surface }}</pre>
+          <pre style="margin-top:12px;">{{ actions }}</pre>
+          <pre style="margin-top:12px;">{{ priority }}</pre>
+          <pre style="margin-top:12px;">{{ insights }}</pre>
+          <pre style="margin-top:12px;">{{ risk }}</pre>
+          <pre style="margin-top:12px;">{{ command }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
 </div>
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h3>Friction Signals</h3>
-        {% if metrics.friction_signals %}
-        <div style="display:grid; gap:8px; margin-top:12px;">
-            {% for key, count in metrics.friction_signals.items() %}
-            <div class="admin-stat-row">
-                <span>{{ key.replace("_", " ").title() }}</span>
-                <strong>{{ count }}</strong>
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">No friction signals yet.</p>
-        </div>
-        {% endif %}
-    </div>
-
-    <div class="card premium-card">
-        <h3>Engagement</h3>
-        {% if metrics.engagement %}
-        <div style="display:grid; gap:8px; margin-top:12px;">
-            {% for key, value in metrics.engagement.items() %}
-            <div class="admin-stat-row">
-                <span>{{ key.replace("_", " ").title() }}</span>
-                <strong>{{ value }}</strong>
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">No engagement data yet.</p>
-        </div>
-        {% endif %}
-    </div>
-</div>
-
-{% if auto_learning_policy %}
-<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Auto Learning Policy</h3>
-            <p class="muted-line" style="margin:0;">
-                Live self-adjusting policy generated from failure clusters and behavior pressure.
-            </p>
-        </div>
-        <span class="signal-stat-chip">Self-Tuning Layer</span>
-    </div>
-
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Readiness Multiplier</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ auto_learning_policy.readiness_penalty_multiplier }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Promotion Multiplier</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ auto_learning_policy.promotion_penalty_multiplier }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Rebuild Multiplier</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ auto_learning_policy.rebuild_penalty_multiplier }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Execution Multiplier</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ auto_learning_policy.execution_penalty_multiplier }}</strong></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:12px;">
-        <div class="card" style="margin:0;">
-            <h4>Delay Exit Bias</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ auto_learning_policy.delay_exit_bias_active }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Manual Override Caution</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ auto_learning_policy.manual_override_caution }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Failed Momentum Pressure</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ auto_learning_policy.failed_high_score_momentum_pressure }}</strong></p>
-            </div>
-        </div>
-    </div>
-
-    {% if auto_learning_policy.notes %}
-    <div class="card" style="margin-top:12px;">
-        <h4>Policy Notes</h4>
-        <div style="display:grid; gap:8px; margin-top:10px;">
-            {% for item in auto_learning_policy.notes %}
-            <div class="passage-frame">
-                <p style="margin:0;">{{ item }}</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-
-{% if soulanna_admin_cards %}
-<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Soulanna</h3>
-            <p class="muted-line" style="margin:0;">
-                Soulanna’s live operator read on the top execution candidates.
-            </p>
-        </div>
-        <span class="signal-stat-chip">Operator Voice</span>
-    </div>
-
-    <div style="display:grid; gap:12px; margin-top:14px;">
-        {% for row in soulanna_admin_cards %}
-        <div class="card" style="margin:0;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-                <div>
-                    <h4 style="margin:0;">{{ row.symbol }}</h4>
-                    <p class="muted-line" style="margin:6px 0 0 0;">{{ row.headline }}</p>
-                </div>
-                <span class="signal-stat-chip">{{ row.verdict }}</span>
-            </div>
-
-            <div style="display:grid; gap:8px; margin-top:12px;">
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>Assessment:</strong> {{ row.assessment }}</p>
-                </div>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>Why:</strong> {{ row.why }}</p>
-                </div>
-                {% if row.risk %}
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>Risk:</strong> {{ row.risk }}</p>
-                </div>
-                {% endif %}
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>Next Action:</strong> {{ row.next_action }}</p>
-                </div>
-            </div>
-
-            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:10px; margin-top:12px;">
-                <div class="card" style="margin:0;">
-                    <h4>Readiness</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ row.readiness_score }}</strong></p>
-                    </div>
-                </div>
-                <div class="card" style="margin:0;">
-                    <h4>Promotion</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ row.promotion_score }}</strong></p>
-                    </div>
-                </div>
-                <div class="card" style="margin:0;">
-                    <h4>Rebuild</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ row.rebuild_pressure }}</strong></p>
-                    </div>
-                </div>
-                <div class="card" style="margin:0;">
-                    <h4>Execution</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ row.execution_quality }}</strong></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-{% if execution_universe %}
-<div class="card premium-card gold-accent-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Execution Intelligence</h3>
-            <p class="muted-line" style="margin:0;">
-                Readiness, promotion, rebuild, learning pressure, and gate visibility across the selected execution set.
-            </p>
-        </div>
-        <span class="signal-stat-chip">Adaptive Layer</span>
-    </div>
-
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Selected</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ execution_selected|length }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Eligible</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ execution_universe.eligible_count }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Rejected</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ execution_universe.rejected_count }}</strong></p>
-            </div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Cap</h4>
-            <div class="passage-frame">
-                <p style="margin:0;"><strong>{{ execution_universe.cap }}</strong></p>
-            </div>
-        </div>
-    </div>
-
-    {% if execution_selected %}
-    <div style="display:grid; gap:12px; margin-top:14px;">
-        {% for row in execution_selected[:6] %}
-        <div class="card" style="margin:0;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-                <div>
-                    <h4 style="margin:0;">{{ row.symbol }}</h4>
-                    <p class="muted-line" style="margin:6px 0 0 0;">
-                        {{ row.setup_family }} | {{ row.entry_quality }}
-                    </p>
-                </div>
-                <span class="signal-stat-chip">Exec {{ row.execution_quality }}</span>
-            </div>
-
-            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-top:12px;">
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>Readiness:</strong> {{ row.readiness_score }}</p>
-                </div>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>Promotion:</strong> {{ row.promotion_score }}</p>
-                </div>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>Rebuild:</strong> {{ row.rebuild_pressure }}</p>
-                </div>
-                <div class="passage-frame">
-                    <p style="margin:0;"><strong>Eligible:</strong> {{ row.eligible }}</p>
-                </div>
-            </div>
-
-            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:10px; margin-top:12px;">
-                <div class="card" style="margin:0;">
-                    <h4>Readiness Gate</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ row.readiness_gate_passed }}</strong></p>
-                    </div>
-                </div>
-                <div class="card" style="margin:0;">
-                    <h4>Promotion Gate</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ row.promotion_gate_passed }}</strong></p>
-                    </div>
-                </div>
-                <div class="card" style="margin:0;">
-                    <h4>Rebuild Gate</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ row.rebuild_gate_passed }}</strong></p>
-                    </div>
-                </div>
-                <div class="card" style="margin:0;">
-                    <h4>Learning Adjusted</h4>
-                    <div class="passage-frame">
-                        <p style="margin:0;"><strong>{{ row.learning_adjusted }}</strong></p>
-                    </div>
-                </div>
-            </div>
-
-            {% if row.learning_penalties %}
-            <div class="card" style="margin-top:12px;">
-                <h4>Learning Penalties</h4>
-                <div style="display:grid; gap:8px; margin-top:10px;">
-                    {% for item in row.learning_penalties %}
-                    <div class="passage-frame">
-                        <p style="margin:0;">
-                            {{ item.type }} | {{ item.setup or item.entry_quality or item.target }}
-                            {% if item.penalty is defined %} | -{{ item.penalty }}{% endif %}
-                        </p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            {% if row.learning_flags %}
-            <div class="card" style="margin-top:12px;">
-                <h4>Learning Flags</h4>
-                <div style="display:grid; gap:8px; margin-top:10px;">
-                    {% for item in row.learning_flags %}
-                    <div class="passage-frame">
-                        <p style="margin:0;">
-                            {{ item.type }} | {{ item.entry_quality or item.behavior }} | {{ item.action }}
-                        </p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            {% if row.learning_notes %}
-            <div class="card" style="margin-top:12px;">
-                <h4>Learning Notes</h4>
-                <div style="display:grid; gap:8px; margin-top:10px;">
-                    {% for item in row.learning_notes %}
-                    <div class="passage-frame">
-                        <p style="margin:0;">{{ item }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            {% if row.readiness_notes %}
-            <div class="card" style="margin-top:12px;">
-                <h4>Readiness Notes</h4>
-                <div style="display:grid; gap:8px; margin-top:10px;">
-                    {% for item in row.readiness_notes %}
-                    <div class="passage-frame">
-                        <p style="margin:0;">{{ item }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            {% if row.promotion_notes %}
-            <div class="card" style="margin-top:12px;">
-                <h4>Promotion Notes</h4>
-                <div style="display:grid; gap:8px; margin-top:10px;">
-                    {% for item in row.promotion_notes %}
-                    <div class="passage-frame">
-                        <p style="margin:0;">{{ item }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            {% if row.rebuild_notes %}
-            <div class="card" style="margin-top:12px;">
-                <h4>Rebuild Notes</h4>
-                <div style="display:grid; gap:8px; margin-top:10px;">
-                    {% for item in row.rebuild_notes %}
-                    <div class="passage-frame">
-                        <p style="margin:0;">{{ item }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="passage-frame" style="margin-top:14px;">
-        <p style="margin:0;">No execution candidates available right now.</p>
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-
-<div class="card gold-accent-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Proof Snapshot</h3>
-            <p class="muted-line" style="margin:0;">A quick pulse check on the public proof / simulation performance layer.</p>
-        </div>
-        <span class="signal-stat-chip">Proof Layer</span>
-    </div>
-
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top:14px;">
-        <div class="card" style="margin:0;">
-            <h4>Trades</h4>
-            <div class="metric">{{ proof.trades }}</div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Win Rate</h4>
-            <div class="metric">{{ proof.winrate }}</div>
-        </div>
-        <div class="card" style="margin:0;">
-            <h4>Max Drawdown</h4>
-            <div class="metric">{{ proof.max_drawdown }}</div>
-        </div>
-    </div>
-</div>
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">Most Recent Positions</h3>
-            <p class="muted-line" style="margin:0;">Recent loaded positions with their current health read.</p>
-        </div>
-        <span class="signal-stat-chip">{{ positions[:8]|length }} shown</span>
-    </div>
-
-    {% if positions %}
-    <div style="display:grid; gap:10px; margin-top:14px;">
-        {% for p in positions[:8] %}
-        <div class="card" style="margin:0;">
-            <div class="admin-stat-row">
-                <span>{{ p.symbol }}</span>
-                <strong>{{ p.health.label if p.health is defined else "Loaded" }}</strong>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="passage-frame" style="margin-top:12px;">
-        <p style="margin:0;">No positions loaded.</p>
-    </div>
-    {% endif %}
-</div>
-
 {% endblock %}

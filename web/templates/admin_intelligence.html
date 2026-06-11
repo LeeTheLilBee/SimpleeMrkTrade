@@ -1,150 +1,683 @@
 {% extends "base.html" %}
+
+{% block title %}Admin Intelligence · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ADMIN_OWNER_SESSION_012H_INTELLIGENCE_DARK_REWRITE -->
 
-<div style="margin-bottom:14px;">
-    <a href="/admin" class="signal-stat-chip" style="text-decoration:none;">
-        ← Back to Admin Control Center
-    </a>
-</div>
+{% set intel = intelligence if intelligence is defined and intelligence else {} %}
+{% set alerts = surface_alerts if surface_alerts is defined and surface_alerts else {} %}
+{% set actions = quick_actions if quick_actions is defined and quick_actions else {} %}
+{% set explanations = alert_explanations if alert_explanations is defined and alert_explanations else {} %}
+{% set priority = behavior_priority if behavior_priority is defined and behavior_priority else {} %}
+{% set insights = behavioral_insights if behavioral_insights is defined and behavioral_insights else {} %}
+{% set risk = behavior_risk if behavior_risk is defined and behavior_risk else {} %}
+{% set command = play_command if play_command is defined and play_command else {} %}
 
-<div class="page-hero card premium-hero gold-accent-card" style="margin-bottom:18px;">
-    <h2>Admin Intelligence</h2>
-    <div class="passage-frame">
-        <p>
-            A system-level view of idea quality, activation discipline, disagreement behavior, and where edge is actually being strengthened or leaked.
+{% set alert_rows = alerts["items"] if "items" in alerts else (alerts if alerts is iterable and alerts is not string and alerts is not mapping else []) %}
+{% set action_rows = actions["items"] if "items" in actions else (actions if actions is iterable and actions is not string and actions is not mapping else []) %}
+{% set explanation_rows = explanations["items"] if "items" in explanations else (explanations if explanations is iterable and explanations is not string and explanations is not mapping else []) %}
+{% set insight_rows = insights["items"] if "items" in insights else (insights if insights is iterable and insights is not string and insights is not mapping else []) %}
+{% set risk_rows = risk["items"] if "items" in risk else (risk if risk is iterable and risk is not string and risk is not mapping else []) %}
+{% set priority_rows = priority["items"] if "items" in priority else (priority if priority is iterable and priority is not string and priority is not mapping else []) %}
+{% set command_rows = command["items"] if "items" in command else (command if command is iterable and command is not string and command is not mapping else []) %}
+
+{% set alert_count = alert_rows|length %}
+{% set action_count = action_rows|length %}
+{% set explanation_count = explanation_rows|length %}
+{% set insight_count = insight_rows|length %}
+{% set risk_count = risk_rows|length %}
+{% set priority_count = priority_rows|length %}
+{% set command_count = command_rows|length %}
+
+<style>
+  /* OBSERVATORY_ADMIN_OWNER_SESSION_012H_INTELLIGENCE_DARK_REWRITE_STYLES */
+
+  html body .admin-intelligence-shell,
+  html body .admin-intelligence-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .admin-intelligence-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .admin-intelligence-shell a {
+    color: inherit;
+  }
+
+  html body .aiq-hero,
+  html body .aiq-panel,
+  html body .aiq-card,
+  html body .aiq-chip,
+  html body .aiq-stat,
+  html body .aiq-empty,
+  html body .aiq-drawer {
+    color-scheme: dark;
+  }
+
+  html body .aiq-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .aiq-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .aiq-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .aiq-kicker,
+  html body .aiq-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .aiq-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .aiq-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .aiq-copy,
+  html body .aiq-muted,
+  html body .aiq-card p,
+  html body .aiq-empty p,
+  html body .aiq-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .aiq-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .aiq-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .aiq-btn,
+  html body .aiq-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .aiq-btn:hover,
+  html body .aiq-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .aiq-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .aiq-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .aiq-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .aiq-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .aiq-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .aiq-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .aiq-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .aiq-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .aiq-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .aiq-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .aiq-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .aiq-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .aiq-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .aiq-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .aiq-stack,
+  html body .aiq-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .aiq-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  html body .aiq-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .aiq-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .aiq-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .aiq-panel h2,
+  html body .aiq-panel h3,
+  html body .aiq-card h3,
+  html body .aiq-empty h3,
+  html body .aiq-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .aiq-panel h2,
+  html body .aiq-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .aiq-card,
+  html body .aiq-empty {
+    display: block;
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  html body .aiq-card.priority {
+    border-color: rgba(250, 204, 21, 0.38);
+  }
+
+  html body .aiq-card.risk {
+    border-color: rgba(248, 113, 113, 0.42);
+  }
+
+  html body .aiq-card h3 {
+    margin: 0 0 8px;
+  }
+
+  html body .aiq-card p {
+    margin: 0;
+  }
+
+  html body .aiq-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .aiq-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .aiq-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .aiq-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .aiq-hero-inner,
+    html body .aiq-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .aiq-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .admin-intelligence-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .aiq-hero-inner {
+      padding: 20px;
+    }
+
+    html body .aiq-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="admin-intelligence-shell">
+
+  <section class="aiq-hero">
+    <div class="aiq-hero-inner">
+      <div>
+        <span class="aiq-kicker">Owner Intelligence Desk</span>
+        <h1 class="aiq-title">Read the system behind the system.</h1>
+
+        <p class="aiq-copy">
+          Admin Intelligence gathers behavioral priorities, product alerts, coaching signals,
+          risk patterns, and play command context so the owner can see what needs action first.
         </p>
-    </div>
-</div>
 
-{% include "_admin_surface_alerts.html" %}
-{% include "_operator_quick_actions.html" %}
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-        <div>
-            <h3 style="margin-bottom:8px;">{{ spotlight_title or "Operator Overview" }}</h3>
-            <p class="muted-line" style="margin:0;">{{ spotlight_note or "Showing the full operator intelligence layer." }}</p>
+        <div class="aiq-actions">
+          <a class="aiq-btn primary" href="/admin">Admin Home</a>
+          <a class="aiq-btn" href="/admin/product-monitoring">Product Monitoring</a>
+          <a class="aiq-btn" href="/admin/product-analytics">Product Analytics</a>
+          <a class="aiq-btn" href="/admin/diagnostics">Diagnostics</a>
         </div>
-        <span class="signal-stat-chip">{{ filter_key|upper }}</span>
-    </div>
 
-    <div class="dashboard-subnav" style="margin-top:14px;">
-        <a href="/admin/intelligence" class="cta-btn secondary">Overview</a>
-        <a href="/admin/intelligence?filter=disagreement" class="cta-btn secondary">Disagreement</a>
-        <a href="/admin/intelligence?filter=activation" class="cta-btn secondary">Activation</a>
-        <a href="/admin/intelligence?filter=failure" class="cta-btn secondary">Failure Cluster</a>
-        <a href="/admin/intelligence?filter=strong_zone" class="cta-btn secondary">Strong Zone</a>
-        <a href="/admin/intelligence?filter=weak_zone" class="cta-btn secondary">Weak Zone</a>
-    </div>
-</div>
-
-{% if spotlight_cards %}
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-bottom:18px;">
-    {% for card in spotlight_cards %}
-    <div class="card premium-card gold-accent-card" style="height:100%;">
-        <h3>{{ card.headline }}</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;">{{ card.body }}</p>
+        <div class="aiq-stats-grid">
+          <div class="aiq-stat">
+            <span>Alerts</span>
+            <strong>{{ alert_count }}</strong>
+          </div>
+          <div class="aiq-stat">
+            <span>Priority</span>
+            <strong>{{ priority_count }}</strong>
+          </div>
+          <div class="aiq-stat">
+            <span>Insights</span>
+            <strong>{{ insight_count }}</strong>
+          </div>
+          <div class="aiq-stat">
+            <span>Risk</span>
+            <strong>{{ risk_count }}</strong>
+          </div>
         </div>
+      </div>
+
+      <aside class="aiq-read-card">
+        <div class="aiq-orb" aria-hidden="true"></div>
+        <h2>Owner intelligence read</h2>
+        <p>
+          This room is for deciding what deserves attention. Alerts are not equal:
+          separate urgent risk, behavior patterns, product friction, and useful coaching signals.
+        </p>
+      </aside>
     </div>
-    {% endfor %}
-</div>
-{% endif %}
+  </section>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:18px;">
-    <div class="card premium-card"><h4>Total Plays</h4><p><strong>{{ admin.counts.plays }}</strong></p></div>
-    <div class="card premium-card"><h4>Total Positions</h4><p><strong>{{ admin.counts.positions }}</strong></p></div>
-    <div class="card premium-card"><h4>Closed Positions</h4><p><strong>{{ admin.counts.closed_positions }}</strong></p></div>
-    <div class="card premium-card"><h4>Ready Plays</h4><p><strong>{{ admin.counts.ready_plays }}</strong></p></div>
-    <div class="card premium-card"><h4>Close Plays</h4><p><strong>{{ admin.counts.close_plays }}</strong></p></div>
-    <div class="card premium-card"><h4>Weak Plays</h4><p><strong>{{ admin.counts.weak_plays }}</strong></p></div>
-    <div class="card premium-card"><h4>High Agreement</h4><p><strong>{{ admin.counts.high_agreement_plays }}</strong></p></div>
-    <div class="card premium-card"><h4>High Conviction</h4><p><strong>{{ admin.counts.high_conviction_plays }}</strong></p></div>
-</div>
+  <div class="aiq-grid">
+    <main class="aiq-stack">
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card gold-accent-card"><h3>{{ admin.performance.headline }}</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.performance.summary }}</p></div></div>
-    <div class="card premium-card"><h3>{{ admin.idea_quality.headline }}</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.idea_quality.summary }}</p></div></div>
-    <div class="card premium-card"><h3>{{ admin.activation_quality.headline }}</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.activation_quality.summary }}</p></div></div>
-    <div class="card premium-card"><h3>{{ admin.disagreement.headline }}</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.disagreement.summary }}</p></div></div>
-</div>
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card">
-        <h3>Trade Outcomes</h3>
-        <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-            <div class="card" style="margin:0;"><h4>Wins</h4><p><strong>{{ admin.trade_totals.wins }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>Losses</h4><p><strong>{{ admin.trade_totals.losses }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>Flat</h4><p><strong>{{ admin.trade_totals.flat }}</strong></p></div>
+      <section class="aiq-panel">
+        <div class="aiq-panel-head">
+          <div>
+            <p class="aiq-eyebrow">Priority</p>
+            <h2>Behavior priority queue</h2>
+          </div>
+          <span class="aiq-chip gold">{{ priority_count }} priorities</span>
         </div>
-    </div>
 
-    <div class="card premium-card">
-        <h3>Activation Quality</h3>
-        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-            <div class="card" style="margin:0;"><h4>Strong Activations</h4><p><strong>{{ admin.activation_quality.ready_activations }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>Weak Activations</h4><p><strong>{{ admin.activation_quality.weak_activations }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>Unclear Activations</h4><p><strong>{{ admin.activation_quality.unclear_activations }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>No Engine Tracking</h4><p><strong>{{ admin.activation_quality.without_candidate }}</strong></p></div>
+        {% if priority_rows %}
+        <div class="aiq-card-grid">
+          {% for item in priority_rows[:8] %}
+            <article class="aiq-card priority">
+              {% if item is mapping %}
+                <h3>{{ item.headline if item.headline is defined else item.get("headline", item.get("title", "Priority")) }}</h3>
+                <p>{{ item.body if item.body is defined else item.get("body", item.get("summary", item)) }}</p>
+              {% else %}
+                <h3>Priority</h3>
+                <p>{{ item }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
         </div>
-    </div>
-
-    <div class="card premium-card">
-        <h3>Alignment vs Disagreement</h3>
-        <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:12px;">
-            <div class="card" style="margin:0;"><h4>Aligned Ideas</h4><p><strong>{{ admin.disagreement.aligned_count }}</strong></p></div>
-            <div class="card" style="margin:0;"><h4>Disagreements</h4><p><strong>{{ admin.disagreement.disagreement_count }}</strong></p></div>
+        {% else %}
+        <div class="aiq-empty">
+          <h3 style="margin:0 0 8px;">No priority rows loaded</h3>
+          <p style="margin:0;">Behavior priorities will appear here when the intelligence builder provides them.</p>
         </div>
-    </div>
-</div>
+        {% endif %}
+      </section>
 
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    {% if admin.strongest_play %}
-    <div class="card premium-card gold-accent-card">
-        <h3>Strongest Play</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;"><strong>{{ admin.strongest_play.symbol }}</strong></p>
-            <p style="margin:8px 0 0 0;">Score {{ admin.strongest_play.score }} — {{ admin.strongest_play.headline }}</p>
+      <section class="aiq-panel">
+        <div class="aiq-panel-head">
+          <div>
+            <p class="aiq-eyebrow">Insights</p>
+            <h2>Behavioral insights</h2>
+          </div>
+          <span class="aiq-chip blue">{{ insight_count }} insights</span>
         </div>
-    </div>
-    {% endif %}
-    {% if admin.weakest_play %}
-    <div class="card premium-card">
-        <h3>Weakest Play</h3>
-        <div class="passage-frame" style="margin-top:12px;">
-            <p style="margin:0;"><strong>{{ admin.weakest_play.symbol }}</strong></p>
-            <p style="margin:8px 0 0 0;">Score {{ admin.weakest_play.score }} — {{ admin.weakest_play.headline }}</p>
+
+        {% if insight_rows %}
+        <div class="aiq-card-grid">
+          {% for item in insight_rows[:10] %}
+            <article class="aiq-card">
+              {% if item is mapping %}
+                <h3>{{ item.headline if item.headline is defined else item.get("headline", item.get("title", "Insight")) }}</h3>
+                <p>{{ item.body if item.body is defined else item.get("body", item.get("summary", item)) }}</p>
+              {% else %}
+                <h3>Insight</h3>
+                <p>{{ item }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
         </div>
-    </div>
-    {% endif %}
-</div>
-
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:18px;">
-    <div class="card premium-card"><h3>Strongest Condition Zone</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.zones.strongest_condition.label }}</p><p style="margin:8px 0 0 0;">Count: {{ admin.zones.strongest_condition.count }}</p></div></div>
-    <div class="card premium-card"><h3>Weakest Condition Zone</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.zones.weakest_condition.label }}</p><p style="margin:8px 0 0 0;">Count: {{ admin.zones.weakest_condition.count }}</p></div></div>
-    <div class="card premium-card"><h3>Top Failure Cluster</h3><div class="passage-frame" style="margin-top:12px;"><p style="margin:0;">{{ admin.zones.top_failure_cluster.label }}</p><p style="margin:8px 0 0 0;">Count: {{ admin.zones.top_failure_cluster.count }}</p></div></div>
-</div>
-
-<div class="card premium-card" style="margin-bottom:18px;">
-    <h3>Top Disagreement Cluster</h3>
-    <div class="passage-frame" style="margin-top:12px;">
-        <p style="margin:0;">{{ admin.disagreement.top_cluster.label }}</p>
-        <p style="margin:8px 0 0 0;">Count: {{ admin.disagreement.top_cluster.count }}</p>
-    </div>
-</div>
-
-<div class="card premium-card">
-    <h3>Operator Coaching</h3>
-    <div style="display:grid; gap:12px; margin-top:12px;">
-        {% for card in admin.coaching_cards %}
-        <div class="card" style="margin:0;">
-            <h4>{{ card.headline }}</h4>
-            <div class="passage-frame">
-                <p style="margin:0;">{{ card.body }}</p>
-            </div>
+        {% else %}
+        <div class="aiq-empty">
+          <h3 style="margin:0 0 8px;">No behavioral insights loaded</h3>
+          <p style="margin:0;">Insights will appear here after behavioral analytics produces them.</p>
         </div>
-        {% endfor %}
-    </div>
-</div>
+        {% endif %}
+      </section>
 
+      <section class="aiq-panel">
+        <div class="aiq-panel-head">
+          <div>
+            <p class="aiq-eyebrow">Risk</p>
+            <h2>Behavior risk</h2>
+          </div>
+          <span class="aiq-chip {% if risk_count %}red{% else %}green{% endif %}">{{ risk_count }} risk rows</span>
+        </div>
+
+        {% if risk_rows %}
+        <div class="aiq-card-grid">
+          {% for item in risk_rows[:10] %}
+            <article class="aiq-card risk">
+              {% if item is mapping %}
+                <h3>{{ item.headline if item.headline is defined else item.get("headline", item.get("title", "Risk")) }}</h3>
+                <p>{{ item.body if item.body is defined else item.get("body", item.get("summary", item)) }}</p>
+              {% else %}
+                <h3>Risk</h3>
+                <p>{{ item }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="aiq-empty">
+          <h3 style="margin:0 0 8px;">No behavior risk rows loaded</h3>
+          <p style="margin:0;">Risk rows will appear here when the system detects behavior patterns that need review.</p>
+        </div>
+        {% endif %}
+      </section>
+
+    </main>
+
+    <aside class="aiq-stack">
+
+      <section class="aiq-panel">
+        <div class="aiq-panel-head">
+          <div>
+            <p class="aiq-eyebrow">Surface alerts</p>
+            <h2>Alerts and explanations</h2>
+          </div>
+          <span class="aiq-chip blue">{{ alert_count }} alerts</span>
+        </div>
+
+        {% if alert_rows %}
+        <div class="aiq-stack">
+          {% for item in alert_rows[:6] %}
+            <article class="aiq-card">
+              {% if item is mapping %}
+                <h3>{{ item.headline if item.headline is defined else item.get("headline", item.get("title", "Alert")) }}</h3>
+                <p>{{ item.body if item.body is defined else item.get("body", item.get("summary", item)) }}</p>
+              {% else %}
+                <h3>Alert</h3>
+                <p>{{ item }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="aiq-empty">
+          <h3 style="margin:0 0 8px;">No surface alerts loaded</h3>
+          <p style="margin:0;">Alerts will appear here when the admin shared context provides them.</p>
+        </div>
+        {% endif %}
+
+        {% if explanation_rows %}
+        <div class="aiq-stack" style="margin-top:18px;">
+          {% for item in explanation_rows[:4] %}
+            <article class="aiq-card">
+              {% if item is mapping %}
+                <h3>{{ item.headline if item.headline is defined else item.get("headline", item.get("title", "Explanation")) }}</h3>
+                <p>{{ item.body if item.body is defined else item.get("body", item.get("summary", item)) }}</p>
+              {% else %}
+                <h3>Explanation</h3>
+                <p>{{ item }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="aiq-panel">
+        <div class="aiq-panel-head">
+          <div>
+            <p class="aiq-eyebrow">Play command</p>
+            <h2>Command cues</h2>
+          </div>
+          <span class="aiq-chip gold">{{ command_count }} cues</span>
+        </div>
+
+        {% if command_rows %}
+        <div class="aiq-stack">
+          {% for item in command_rows[:6] %}
+            <article class="aiq-card">
+              {% if item is mapping %}
+                <h3>{{ item.headline if item.headline is defined else item.get("headline", item.get("title", "Command cue")) }}</h3>
+                <p>{{ item.body if item.body is defined else item.get("body", item.get("summary", item)) }}</p>
+              {% else %}
+                <h3>Command cue</h3>
+                <p>{{ item }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="aiq-empty">
+          <h3 style="margin:0 0 8px;">No command cues loaded</h3>
+          <p style="margin:0;">Play command cues will appear here after the command builder provides them.</p>
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="aiq-panel">
+        <div class="aiq-panel-head">
+          <div>
+            <p class="aiq-eyebrow">Owner flow</p>
+            <h2>Admin rooms</h2>
+          </div>
+        </div>
+
+        <div class="aiq-stack">
+          <a class="aiq-card" href="/admin" style="text-decoration:none;">
+            <h3>Admin Home</h3>
+            <p>Return to the main owner control center.</p>
+          </a>
+          <a class="aiq-card" href="/admin/product-monitoring" style="text-decoration:none;">
+            <h3>Product Monitoring</h3>
+            <p>Review friction, readiness, retention, and adoption.</p>
+          </a>
+          <a class="aiq-card" href="/admin/product-analytics" style="text-decoration:none;">
+            <h3>Product Analytics</h3>
+            <p>Review usage, page views, clicks, and symbol interest.</p>
+          </a>
+          <a class="aiq-card" href="/admin/diagnostics" style="text-decoration:none;">
+            <h3>Diagnostics</h3>
+            <p>Inspect files, templates, routes, warnings, and errors.</p>
+          </a>
+        </div>
+      </section>
+
+      <details class="aiq-drawer">
+        <summary>Preserved intelligence payload</summary>
+        <div class="aiq-drawer-body">
+          <pre>{{ intel }}</pre>
+        </div>
+      </details>
+
+      <details class="aiq-drawer">
+        <summary>Preserved admin shared payloads</summary>
+        <div class="aiq-drawer-body">
+          <pre>{{ alerts }}</pre>
+          <pre style="margin-top:12px;">{{ actions }}</pre>
+          <pre style="margin-top:12px;">{{ explanations }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
+</div>
 {% endblock %}
