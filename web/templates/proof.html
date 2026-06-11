@@ -1,86 +1,544 @@
 {% extends "base.html" %}
+
+{% block title %}Proof Center · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_REMAINING_RAW_ROOMS_SESSION_009H_PROOF_DARK_REWRITE -->
 
-<h2>Public Proof Account</h2>
+{% set p = proof if proof is defined and proof else {} %}
+{% set total_trades = p.trades if p.trades is defined else p.get("trades", p.get("total_trades", "N/A")) %}
+{% set winrate = p.winrate if p.winrate is defined else p.get("winrate", p.get("win_rate", "N/A")) %}
+{% set max_drawdown = p.max_drawdown if p.max_drawdown is defined else p.get("max_drawdown", "N/A") %}
+{% set pnl = p.pnl if p.pnl is defined else p.get("pnl", p.get("total_pnl", "N/A")) %}
 
-<div class="card">
-    <p>This is a live simulated account used to publicly demonstrate system health, discipline, and ongoing track record behavior.</p>
-    <p><b>Disclosure:</b> This is simulated performance and should be viewed as a public proof layer, not a brokerage statement.</p>
-</div>
+<style>
+  /* OBSERVATORY_REMAINING_RAW_ROOMS_SESSION_009H_PROOF_DARK_REWRITE_STYLES */
 
-<div class="grid">
-    <div class="card">
-        <h3>Account Value</h3>
-        <p class="metric">${{ snapshot.estimated_account_value }}</p>
-    </div>
-
-    <div class="card">
-        <h3>Total Trades</h3>
-        <p class="metric">{{ proof.trades }}</p>
-    </div>
-
-    <div class="card">
-        <h3>Win Rate</h3>
-        <p class="metric">{{ proof.winrate }}</p>
-    </div>
-
-    <div class="card">
-        <h3>Max Drawdown</h3>
-        <p class="metric">{{ proof.max_drawdown }}</p>
-    </div>
-</div>
-
-<div class="card">
-    <h3>Equity Curve</h3>
-    <canvas id="proofChart"></canvas>
-</div>
-
-{% if proof_detail %}
-<div class="grid">
-    <div class="card">
-        <h3>Open Positions</h3>
-        {% if positions %}
-            {% for p in positions %}
-                <p>{{ p.symbol }} | {{ p.strategy }} | {{ p.price }}</p>
-            {% endfor %}
-        {% else %}
-            <p>No open positions.</p>
-        {% endif %}
-    </div>
-
-    <div class="card">
-        <h3>Recent Closed Trades</h3>
-        {% if closed %}
-            {% for t in closed[-10:] %}
-                <p>{{ t.symbol }} | {{ t.pnl }} | {{ t.reason }}</p>
-            {% endfor %}
-        {% else %}
-            <p>No closed trades yet.</p>
-        {% endif %}
-    </div>
-</div>
-{% else %}
-<div class="card">
-    <p>Detailed proof breakdowns unlock at higher access levels.</p>
-    <a href="/upgrade">Upgrade Access</a>
-</div>
-{% endif %}
-
-<script>
-new Chart(document.getElementById('proofChart'), {
-  type: 'line',
-  data: {
-    labels: {{ equity_labels|tojson }},
-    datasets: [{
-      label: 'Proof Equity',
-      data: {{ equity_values|tojson }},
-      borderColor: '#38bdf8',
-      backgroundColor: 'rgba(56,189,248,0.10)',
-      fill: true,
-      tension: 0.3
-    }]
+  html body .proof-room-shell,
+  html body .proof-room-shell * {
+    box-sizing: border-box;
   }
-});
-</script>
 
+  html body .proof-room-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .proof-room-shell a {
+    color: inherit;
+  }
+
+  html body .proof-hero,
+  html body .proof-panel,
+  html body .proof-card,
+  html body .proof-chip,
+  html body .proof-stat,
+  html body .proof-empty,
+  html body .proof-drawer {
+    color-scheme: dark;
+  }
+
+  html body .proof-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(34, 197, 94, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .proof-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34, 197, 94, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .proof-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .proof-kicker,
+  html body .proof-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .proof-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .proof-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .proof-copy,
+  html body .proof-muted,
+  html body .proof-card p,
+  html body .proof-empty p,
+  html body .proof-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .proof-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .proof-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .proof-btn,
+  html body .proof-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .proof-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .proof-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(34, 197, 94, 0.74));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .proof-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .proof-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .proof-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .proof-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .proof-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .proof-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .proof-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .proof-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .proof-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .proof-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .proof-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .proof-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .proof-stack,
+  html body .proof-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .proof-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  html body .proof-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(34, 197, 94, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .proof-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .proof-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .proof-panel h2,
+  html body .proof-panel h3,
+  html body .proof-card h3,
+  html body .proof-empty h3,
+  html body .proof-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .proof-panel h2,
+  html body .proof-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .proof-card,
+  html body .proof-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .proof-card h3 {
+    margin: 0 0 8px;
+  }
+
+  html body .proof-card p {
+    margin: 0;
+  }
+
+  html body .proof-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .proof-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .proof-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .proof-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .proof-hero-inner,
+    html body .proof-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .proof-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .proof-room-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .proof-hero-inner {
+      padding: 20px;
+    }
+
+    html body .proof-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="proof-room-shell">
+
+  <section class="proof-hero">
+    <div class="proof-hero-inner">
+      <div>
+        <span class="proof-kicker">Proof Center</span>
+        <h1 class="proof-title">Show the receipts.</h1>
+
+        <p class="proof-copy">
+          Proof turns the Observatory from a signal viewer into a measurable system.
+          This page summarizes performance, win rate, drawdown, and saved proof context.
+        </p>
+
+        <div class="proof-actions">
+          <a class="proof-btn primary" href="/analytics-overview">Analytics</a>
+          <a class="proof-btn" href="/analytics/performance">Performance</a>
+          <a class="proof-btn" href="/analytics/risk">Risk Metrics</a>
+          <a class="proof-btn" href="/reports">Reports</a>
+        </div>
+
+        <div class="proof-stats-grid">
+          <div class="proof-stat">
+            <span>Trades</span>
+            <strong>{{ total_trades }}</strong>
+          </div>
+          <div class="proof-stat">
+            <span>Win Rate</span>
+            <strong>{{ winrate }}</strong>
+          </div>
+          <div class="proof-stat">
+            <span>Max Drawdown</span>
+            <strong>{{ max_drawdown }}</strong>
+          </div>
+          <div class="proof-stat">
+            <span>PnL</span>
+            <strong>{{ pnl }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="proof-read-card">
+        <div class="proof-orb" aria-hidden="true"></div>
+        <h2>Soulaana proof read</h2>
+        <p>
+          Proof is not hype. Proof is what survives review:
+          performance, drawdown, consistency, and whether the system followed its own rules.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <div class="proof-grid">
+    <main class="proof-stack">
+
+      <section class="proof-panel">
+        <div class="proof-panel-head">
+          <div>
+            <p class="proof-eyebrow">Snapshot</p>
+            <h2>Performance proof snapshot</h2>
+          </div>
+          <span class="proof-chip green">Loaded</span>
+        </div>
+
+        <div class="proof-card-grid">
+          <article class="proof-card">
+            <h3>Total Trades</h3>
+            <p>{{ total_trades }}</p>
+          </article>
+          <article class="proof-card">
+            <h3>Win Rate</h3>
+            <p>{{ winrate }}</p>
+          </article>
+          <article class="proof-card">
+            <h3>Max Drawdown</h3>
+            <p>{{ max_drawdown }}</p>
+          </article>
+          <article class="proof-card">
+            <h3>Total PnL</h3>
+            <p>{{ pnl }}</p>
+          </article>
+        </div>
+
+        <details class="proof-drawer">
+          <summary>Preserved proof payload</summary>
+          <div class="proof-drawer-body">
+            <pre>{{ p }}</pre>
+          </div>
+        </details>
+      </section>
+
+      <section class="proof-panel">
+        <div class="proof-panel-head">
+          <div>
+            <p class="proof-eyebrow">Review logic</p>
+            <h2>What proof should answer</h2>
+          </div>
+        </div>
+
+        <div class="proof-card-grid">
+          <article class="proof-card">
+            <h3>Did the system win cleanly?</h3>
+            <p>Win rate matters, but only when paired with risk, expectancy, and repeatability.</p>
+          </article>
+          <article class="proof-card">
+            <h3>Did drawdown stay controlled?</h3>
+            <p>Drawdown shows whether the engine protected capital during bad periods.</p>
+          </article>
+          <article class="proof-card">
+            <h3>Can the result be explained?</h3>
+            <p>Proof should connect back to signals, decisions, reports, and trade rationale.</p>
+          </article>
+        </div>
+      </section>
+
+    </main>
+
+    <aside class="proof-stack">
+
+      <section class="proof-panel">
+        <div class="proof-panel-head">
+          <div>
+            <p class="proof-eyebrow">Connected rooms</p>
+            <h2>Follow the evidence</h2>
+          </div>
+        </div>
+
+        <div class="proof-stack">
+          <a class="proof-card" href="/analytics/performance" style="text-decoration:none;">
+            <h3>Performance Analytics</h3>
+            <p>Review the deeper performance layer behind the proof snapshot.</p>
+          </a>
+          <a class="proof-card" href="/analytics/risk" style="text-decoration:none;">
+            <h3>Risk Metrics</h3>
+            <p>Check whether proof is supported by disciplined drawdown behavior.</p>
+          </a>
+          <a class="proof-card" href="/reports" style="text-decoration:none;">
+            <h3>Reports Center</h3>
+            <p>Open saved reports and proof packets.</p>
+          </a>
+          <a class="proof-card" href="/equity" style="text-decoration:none;">
+            <h3>Equity Motion</h3>
+            <p>View the account movement curve.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="proof-panel">
+        <div class="proof-panel-head">
+          <div>
+            <p class="proof-eyebrow">Signal to proof</p>
+            <h2>Proof chain</h2>
+          </div>
+        </div>
+
+        <div class="proof-card-grid" style="grid-template-columns:1fr;">
+          <article class="proof-card">
+            <h3>Signal</h3>
+            <p>A candidate enters the system with context and score.</p>
+          </article>
+          <article class="proof-card">
+            <h3>Decision</h3>
+            <p>The setup is accepted, rejected, monitored, or explained.</p>
+          </article>
+          <article class="proof-card">
+            <h3>Result</h3>
+            <p>Performance and risk behavior become measurable evidence.</p>
+          </article>
+        </div>
+      </section>
+
+    </aside>
+  </div>
+</div>
 {% endblock %}

@@ -1,26 +1,571 @@
 {% extends "base.html" %}
+
+{% block title %}Bot Log · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_REMAINING_RAW_ROOMS_SESSION_009F_BOT_LOG_DARK_REWRITE -->
 
-<h2>Bot Log</h2>
+{% set rows = bot_log if bot_log is defined and bot_log else [] %}
+{% set total_rows = rows|length %}
+{% set error_count = namespace(value=0) %}
+{% set signal_count = namespace(value=0) %}
+{% set execution_count = namespace(value=0) %}
+{% set system_count = namespace(value=0) %}
 
-<div class="card">
-    <p>This page shows internal engine notes, operational events, and system messages produced during bot runs.</p>
-</div>
+{% for row in rows %}
+  {% set row_text = row|string|lower %}
+  {% if "error" in row_text or "fail" in row_text %}
+    {% set error_count.value = error_count.value + 1 %}
+  {% elif "signal" in row_text %}
+    {% set signal_count.value = signal_count.value + 1 %}
+  {% elif "execution" in row_text or "order" in row_text or "trade" in row_text %}
+    {% set execution_count.value = execution_count.value + 1 %}
+  {% else %}
+    {% set system_count.value = system_count.value + 1 %}
+  {% endif %}
+{% endfor %}
 
-{% if bot_log and bot_log|length > 0 %}
-    {% for row in bot_log[::-1] %}
-    <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-            <p style="margin:0;"><b>{{ row.level }}</b></p>
-            <p style="margin:0;"><b>{{ row.timestamp }}</b></p>
+<style>
+  /* OBSERVATORY_REMAINING_RAW_ROOMS_SESSION_009F_BOT_LOG_DARK_REWRITE_STYLES */
+
+  html body .bot-room-shell,
+  html body .bot-room-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .bot-room-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .bot-room-shell a {
+    color: inherit;
+  }
+
+  html body .bot-hero,
+  html body .bot-panel,
+  html body .bot-card,
+  html body .bot-chip,
+  html body .bot-stat,
+  html body .bot-empty,
+  html body .bot-drawer {
+    color-scheme: dark;
+  }
+
+  html body .bot-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .bot-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .bot-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .bot-kicker,
+  html body .bot-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .bot-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .bot-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .bot-copy,
+  html body .bot-muted,
+  html body .bot-card p,
+  html body .bot-empty p,
+  html body .bot-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .bot-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .bot-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .bot-btn,
+  html body .bot-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .bot-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .bot-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .bot-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .bot-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .bot-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .bot-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .bot-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .bot-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .bot-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .bot-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .bot-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .bot-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .bot-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .bot-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .bot-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .bot-stack,
+  html body .bot-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .bot-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  html body .bot-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .bot-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .bot-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .bot-panel h2,
+  html body .bot-panel h3,
+  html body .bot-card h3,
+  html body .bot-empty h3,
+  html body .bot-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .bot-panel h2,
+  html body .bot-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .bot-card,
+  html body .bot-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .bot-card h3 {
+    margin: 0 0 8px;
+  }
+
+  html body .bot-card p {
+    margin: 0;
+  }
+
+  html body .bot-card.error {
+    border-color: rgba(248, 113, 113, 0.46);
+  }
+
+  html body .bot-card.signal {
+    border-color: rgba(14, 165, 233, 0.34);
+  }
+
+  html body .bot-card.execution {
+    border-color: rgba(34, 197, 94, 0.34);
+  }
+
+  html body .bot-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .bot-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .bot-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .bot-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .bot-hero-inner,
+    html body .bot-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .bot-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .bot-room-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .bot-hero-inner {
+      padding: 20px;
+    }
+
+    html body .bot-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="bot-room-shell">
+
+  <section class="bot-hero">
+    <div class="bot-hero-inner">
+      <div>
+        <span class="bot-kicker">Bot Log</span>
+        <h1 class="bot-title">System journal, cleaned up.</h1>
+
+        <p class="bot-copy">
+          The bot log shows recorded engine, signal, execution, sync, and error notes.
+          This room keeps raw operational history readable without turning the page into clutter.
+        </p>
+
+        <div class="bot-actions">
+          <a class="bot-btn primary" href="/dashboard">Dashboard</a>
+          <a class="bot-btn" href="/live-activity">Live Activity</a>
+          <a class="bot-btn" href="/reports">Reports</a>
+          <a class="bot-btn" href="/analytics-overview">Analytics</a>
         </div>
-        <p style="margin-top:10px;">{{ row.message }}</p>
-    </div>
-    {% endfor %}
-{% else %}
-    <div class="card">
-        <p>No bot log entries yet.</p>
-    </div>
-{% endif %}
 
+        <div class="bot-stats-grid">
+          <div class="bot-stat">
+            <span>Total Rows</span>
+            <strong>{{ total_rows }}</strong>
+          </div>
+          <div class="bot-stat">
+            <span>Signals</span>
+            <strong>{{ signal_count.value }}</strong>
+          </div>
+          <div class="bot-stat">
+            <span>Execution</span>
+            <strong>{{ execution_count.value }}</strong>
+          </div>
+          <div class="bot-stat">
+            <span>Errors</span>
+            <strong>{{ error_count.value }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="bot-read-card">
+        <div class="bot-orb" aria-hidden="true"></div>
+        <h2>Soulaana log read</h2>
+        <p>
+          Logs are not decoration. They are proof of behavior. Read the newest entries first,
+          then chase errors, repeats, and execution notes before they turn into patterns.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <div class="bot-grid">
+    <main class="bot-stack">
+
+      <section class="bot-panel">
+        <div class="bot-panel-head">
+          <div>
+            <p class="bot-eyebrow">Journal</p>
+            <h2>Latest bot log entries</h2>
+          </div>
+          <span class="bot-chip blue">{{ total_rows }} rows</span>
+        </div>
+
+        {% if rows %}
+        <div class="bot-card-grid">
+          {% for row in rows[::-1] %}
+            {% set row_text = row|string %}
+            {% set lower_text = row_text|lower %}
+            <article class="bot-card {% if 'error' in lower_text or 'fail' in lower_text %}error{% elif 'signal' in lower_text %}signal{% elif 'execution' in lower_text or 'order' in lower_text or 'trade' in lower_text %}execution{% endif %}">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">
+                <div>
+                  <p class="bot-eyebrow">Entry</p>
+                  <h3>Log {{ loop.index }}</h3>
+                </div>
+
+                {% if "error" in lower_text or "fail" in lower_text %}
+                  <span class="bot-chip red">Error</span>
+                {% elif "signal" in lower_text %}
+                  <span class="bot-chip blue">Signal</span>
+                {% elif "execution" in lower_text or "order" in lower_text or "trade" in lower_text %}
+                  <span class="bot-chip green">Execution</span>
+                {% else %}
+                  <span class="bot-chip gold">System</span>
+                {% endif %}
+              </div>
+
+              {% if row is mapping %}
+                <p style="margin-top:10px;">{{ row.message if row.message is defined else row }}</p>
+                {% if row.timestamp is defined %}
+                  <p class="bot-muted" style="margin-top:12px;">{{ row.timestamp }}</p>
+                {% endif %}
+              {% else %}
+                <p style="margin-top:10px;">{{ row }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="bot-empty">
+          <h3 style="margin:0 0 8px;">No bot log entries yet</h3>
+          <p style="margin:0;">
+            The route is active, but the bot log payload is empty.
+          </p>
+        </div>
+        {% endif %}
+      </section>
+
+    </main>
+
+    <aside class="bot-stack">
+
+      <section class="bot-panel">
+        <div class="bot-panel-head">
+          <div>
+            <p class="bot-eyebrow">Reading order</p>
+            <h2>What to check first</h2>
+          </div>
+        </div>
+
+        <div class="bot-stack">
+          <article class="bot-card">
+            <h3>Errors</h3>
+            <p>{{ error_count.value }} error/failure row(s) detected in the loaded bot log payload.</p>
+          </article>
+          <article class="bot-card">
+            <h3>Signal notes</h3>
+            <p>{{ signal_count.value }} signal-related row(s) detected in the loaded bot log payload.</p>
+          </article>
+          <article class="bot-card">
+            <h3>Execution notes</h3>
+            <p>{{ execution_count.value }} execution/trade/order row(s) detected in the loaded bot log payload.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="bot-panel">
+        <div class="bot-panel-head">
+          <div>
+            <p class="bot-eyebrow">Connected rooms</p>
+            <h2>Follow the trail</h2>
+          </div>
+        </div>
+
+        <div class="bot-stack">
+          <a class="bot-card" href="/live-activity" style="text-decoration:none;">
+            <h3>Live Activity</h3>
+            <p>Use this for the freshest event stream.</p>
+          </a>
+          <a class="bot-card" href="/reports" style="text-decoration:none;">
+            <h3>Reports</h3>
+            <p>Use this for saved proof snapshots.</p>
+          </a>
+          <a class="bot-card" href="/analytics-overview" style="text-decoration:none;">
+            <h3>Analytics</h3>
+            <p>Use this when logs suggest performance or risk behavior changed.</p>
+          </a>
+        </div>
+      </section>
+
+      <details class="bot-drawer">
+        <summary>Preserved bot log payload</summary>
+        <div class="bot-drawer-body">
+          <pre>{{ rows }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
+</div>
 {% endblock %}

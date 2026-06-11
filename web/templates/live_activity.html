@@ -3,14 +3,34 @@
 {% block title %}Live Activity · The Observatory{% endblock %}
 
 {% block content %}
-<!-- OBSERVATORY_PORTFOLIO_ACTIVITY_CLUSTER_SESSION_003B_LIVE_ACTIVITY_DARK_REWRITE -->
+<!-- OBSERVATORY_REMAINING_RAW_ROOMS_SESSION_009B_LIVE_ACTIVITY_DARK_REWRITE -->
 
 {% set rows = activity if activity is defined and activity else [] %}
-{% set activity_count = rows|length %}
-{% set latest = rows[-1] if rows and rows|length > 0 else none %}
+{% set total_events = rows|length %}
+{% set symbol_count = namespace(value=0) %}
+{% set risk_count = namespace(value=0) %}
+{% set error_count = namespace(value=0) %}
+{% set signal_count = namespace(value=0) %}
+
+{% for row in rows %}
+  {% set event_type = row.event_type if row.event_type is defined else row.get("event_type", "event") %}
+  {% set symbol = row.symbol if row.symbol is defined else row.get("symbol", "") %}
+  {% if symbol %}
+    {% set symbol_count.value = symbol_count.value + 1 %}
+  {% endif %}
+  {% if "risk" in event_type|lower %}
+    {% set risk_count.value = risk_count.value + 1 %}
+  {% endif %}
+  {% if "error" in event_type|lower or "fail" in event_type|lower %}
+    {% set error_count.value = error_count.value + 1 %}
+  {% endif %}
+  {% if "signal" in event_type|lower %}
+    {% set signal_count.value = signal_count.value + 1 %}
+  {% endif %}
+{% endfor %}
 
 <style>
-  /* OBSERVATORY_PORTFOLIO_ACTIVITY_CLUSTER_SESSION_003B_LIVE_ACTIVITY_DARK_REWRITE_STYLES */
+  /* OBSERVATORY_REMAINING_RAW_ROOMS_SESSION_009B_LIVE_ACTIVITY_DARK_REWRITE_STYLES */
 
   html body .activity-room-shell,
   html body .activity-room-shell * {
@@ -29,16 +49,17 @@
     color: inherit;
   }
 
-  html body .activity-hero,
-  html body .activity-panel,
-  html body .activity-card,
-  html body .activity-chip,
-  html body .activity-stat,
-  html body .activity-empty {
+  html body .act-hero,
+  html body .act-panel,
+  html body .act-card,
+  html body .act-chip,
+  html body .act-stat,
+  html body .act-empty,
+  html body .act-drawer {
     color-scheme: dark;
   }
 
-  html body .activity-hero {
+  html body .act-hero {
     position: relative;
     overflow: hidden;
     border-radius: 30px;
@@ -52,7 +73,7 @@
     box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
   }
 
-  html body .activity-hero::before {
+  html body .act-hero::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -64,7 +85,7 @@
     mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
   }
 
-  html body .activity-hero-inner {
+  html body .act-hero-inner {
     position: relative;
     z-index: 1;
     display: grid;
@@ -73,8 +94,8 @@
     padding: 28px;
   }
 
-  html body .activity-kicker,
-  html body .activity-eyebrow {
+  html body .act-kicker,
+  html body .act-eyebrow {
     display: inline-flex;
     align-items: center;
     width: fit-content;
@@ -85,7 +106,7 @@
     text-transform: uppercase;
   }
 
-  html body .activity-kicker {
+  html body .act-kicker {
     min-height: 32px;
     padding: 7px 11px;
     border-radius: 999px;
@@ -93,7 +114,7 @@
     background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
   }
 
-  html body .activity-title {
+  html body .act-title {
     margin: 16px 0 10px;
     color: #f8fafc;
     font-size: clamp(2.35rem, 6vw, 5rem);
@@ -101,30 +122,31 @@
     letter-spacing: -0.08em;
   }
 
-  html body .activity-copy,
-  html body .activity-muted,
-  html body .activity-card p,
-  html body .activity-empty p {
+  html body .act-copy,
+  html body .act-muted,
+  html body .act-card p,
+  html body .act-empty p,
+  html body .act-drawer-body {
     color: #cbd5e1;
     line-height: 1.6;
   }
 
-  html body .activity-copy {
+  html body .act-copy {
     max-width: 780px;
     margin: 0;
     font-size: 1.02rem;
     line-height: 1.7;
   }
 
-  html body .activity-actions {
+  html body .act-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 22px;
   }
 
-  html body .activity-btn,
-  html body .activity-chip {
+  html body .act-btn,
+  html body .act-chip {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -139,30 +161,40 @@
     font-weight: 850;
   }
 
-  html body .activity-btn:hover {
+  html body .act-btn:hover {
     transform: translateY(-1px);
     border-color: rgba(196, 181, 253, 0.70);
     color: #ffffff;
     text-decoration: none;
   }
 
-  html body .activity-btn.primary {
+  html body .act-btn.primary {
     background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
     border-color: rgba(221, 214, 254, 0.52);
     color: #ffffff;
   }
 
-  html body .activity-chip.gold {
+  html body .act-chip.gold {
     border-color: rgba(250, 204, 21, 0.34);
     color: #fde68a;
   }
 
-  html body .activity-chip.blue {
+  html body .act-chip.blue {
     border-color: rgba(14, 165, 233, 0.34);
     color: #bae6fd;
   }
 
-  html body .activity-read-card {
+  html body .act-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .act-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .act-read-card {
     min-height: 100%;
     padding: 20px;
     border-radius: 24px;
@@ -173,7 +205,7 @@
     color: #e5e7eb;
   }
 
-  html body .activity-orb {
+  html body .act-orb {
     width: 54px;
     height: 54px;
     border-radius: 999px;
@@ -183,28 +215,28 @@
     box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
   }
 
-  html body .activity-read-card h2 {
+  html body .act-read-card h2 {
     margin: 0 0 8px;
     color: #f8fafc;
     font-size: 1.08rem;
     letter-spacing: -0.02em;
   }
 
-  html body .activity-read-card p {
+  html body .act-read-card p {
     margin: 0;
     color: #dbeafe;
     line-height: 1.65;
     font-size: 0.94rem;
   }
 
-  html body .activity-stats-grid {
+  html body .act-stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
     margin-top: 22px;
   }
 
-  html body .activity-stat {
+  html body .act-stat {
     min-height: 94px;
     padding: 14px;
     border-radius: 18px;
@@ -212,7 +244,7 @@
     background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
   }
 
-  html body .activity-stat span {
+  html body .act-stat span {
     display: block;
     color: #94a3b8;
     font-size: 0.72rem;
@@ -222,27 +254,32 @@
     margin-bottom: 7px;
   }
 
-  html body .activity-stat strong {
+  html body .act-stat strong {
     display: block;
     color: #f8fafc;
-    font-size: 1.18rem;
+    font-size: 1.12rem;
     font-weight: 950;
     line-height: 1.25;
   }
 
-  html body .activity-grid {
+  html body .act-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
     gap: 18px;
     margin-top: 20px;
   }
 
-  html body .activity-stack {
+  html body .act-stack,
+  html body .act-card-grid {
     display: grid;
     gap: 18px;
   }
 
-  html body .activity-panel {
+  html body .act-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  html body .act-panel {
     border-radius: 26px;
     border: 1px solid rgba(148, 163, 184, 0.22);
     background:
@@ -254,7 +291,7 @@
     color: #e5e7eb;
   }
 
-  html body .activity-panel-head {
+  html body .act-panel-head {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -262,31 +299,26 @@
     margin-bottom: 16px;
   }
 
-  html body .activity-eyebrow {
+  html body .act-eyebrow {
     margin: 0 0 5px;
   }
 
-  html body .activity-panel h2,
-  html body .activity-panel h3,
-  html body .activity-card h3,
-  html body .activity-card h4,
-  html body .activity-empty h3 {
+  html body .act-panel h2,
+  html body .act-panel h3,
+  html body .act-card h3,
+  html body .act-empty h3,
+  html body .act-drawer summary {
     color: #f8fafc;
   }
 
-  html body .activity-panel h2,
-  html body .activity-panel h3 {
+  html body .act-panel h2,
+  html body .act-panel h3 {
     margin: 0;
     letter-spacing: -0.035em;
   }
 
-  html body .activity-card-list {
-    display: grid;
-    gap: 12px;
-  }
-
-  html body .activity-card,
-  html body .activity-empty {
+  html body .act-card,
+  html body .act-empty {
     padding: 15px;
     border-radius: 20px;
     border: 1px solid rgba(148, 163, 184, 0.20);
@@ -294,60 +326,65 @@
     color: #e5e7eb;
   }
 
-  html body .activity-card h3,
-  html body .activity-card h4 {
+  html body .act-card h3 {
     margin: 0 0 8px;
   }
 
-  html body .activity-card p {
+  html body .act-card p {
     margin: 0;
   }
 
-  html body .activity-event-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    flex-wrap: wrap;
+  html body .act-card.risk {
+    border-color: rgba(248, 113, 113, 0.34);
   }
 
-  html body .activity-event-type {
-    color: #f8fafc;
-    font-weight: 950;
-    letter-spacing: -0.02em;
+  html body .act-card.signal {
+    border-color: rgba(14, 165, 233, 0.34);
   }
 
-  html body .activity-event-time {
-    color: #94a3b8;
-    font-size: 0.84rem;
-    font-weight: 850;
+  html body .act-card.error {
+    border-color: rgba(248, 113, 113, 0.48);
   }
 
-  html body .activity-card.error,
-  html body .activity-card.risk,
-  html body .activity-card.rejected {
-    border-color: rgba(248, 113, 113, 0.36);
+  html body .act-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
   }
 
-  html body .activity-card.approved,
-  html body .activity-card.signal,
-  html body .activity-card.close {
-    border-color: rgba(34, 197, 94, 0.28);
+  html body .act-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
   }
 
-  html body .activity-card.market,
-  html body .activity-card.info {
-    border-color: rgba(14, 165, 233, 0.30);
+  html body .act-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .act-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
   }
 
   @media (max-width: 940px) {
-    html body .activity-hero-inner,
-    html body .activity-grid {
+    html body .act-hero-inner,
+    html body .act-grid {
       grid-template-columns: 1fr;
     }
 
-    html body .activity-stats-grid {
-      grid-template-columns: 1fr;
+    html body .act-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
@@ -356,101 +393,123 @@
       padding: 18px 12px 38px;
     }
 
-    html body .activity-hero-inner {
+    html body .act-hero-inner {
       padding: 20px;
+    }
+
+    html body .act-stats-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
 
 <div class="activity-room-shell">
 
-  <section class="activity-hero">
-    <div class="activity-hero-inner">
-
+  <section class="act-hero">
+    <div class="act-hero-inner">
       <div>
-        <span class="activity-kicker">Live Activity Stream</span>
+        <span class="act-kicker">Live Activity Stream</span>
+        <h1 class="act-title">What just happened?</h1>
 
-        <h1 class="activity-title">The system heartbeat.</h1>
-
-        <p class="activity-copy">
-          Live Activity shows the latest important system events: market reads,
-          signal approvals, risk responses, closes, errors, and monitoring updates.
-          It refreshes automatically without turning into raw log clutter.
+        <p class="act-copy">
+          This room watches important system events: market reads, signal approvals,
+          risk responses, closes, errors, and engine status updates.
         </p>
 
-        <div class="activity-actions">
-          <a class="activity-btn primary" href="/signals">Signals</a>
-          <a class="activity-btn" href="/reports">Reports</a>
-          <a class="activity-btn" href="/analytics-overview">Analytics Overview</a>
-          <a class="activity-btn" href="/research">Research Room</a>
+        <div class="act-actions">
+          <a class="act-btn primary" href="/dashboard">Dashboard</a>
+          <a class="act-btn" href="/signals">Signals</a>
+          <a class="act-btn" href="/my-positions">My Positions</a>
+          <a class="act-btn" href="/analytics-overview">Analytics</a>
         </div>
 
-        <div class="activity-stats-grid">
-          <div class="activity-stat">
-            <span>Events loaded</span>
-            <strong id="activity-count">{{ activity_count }}</strong>
+        <div class="act-stats-grid">
+          <div class="act-stat">
+            <span>Total Events</span>
+            <strong>{{ total_events }}</strong>
           </div>
-
-          <div class="activity-stat">
-            <span>Refresh</span>
-            <strong>5 sec</strong>
+          <div class="act-stat">
+            <span>Symbol Events</span>
+            <strong>{{ symbol_count.value }}</strong>
           </div>
-
-          <div class="activity-stat">
-            <span>Latest symbol</span>
-            <strong id="activity-latest-symbol">
-              {% if latest and latest.symbol %}{{ latest.symbol }}{% else %}N/A{% endif %}
-            </strong>
+          <div class="act-stat">
+            <span>Risk Events</span>
+            <strong>{{ risk_count.value }}</strong>
+          </div>
+          <div class="act-stat">
+            <span>Auto Refresh</span>
+            <strong>5 seconds</strong>
           </div>
         </div>
       </div>
 
-      <aside class="activity-read-card">
-        <div class="activity-orb" aria-hidden="true"></div>
-        <h2>Soulaana activity read</h2>
+      <aside class="act-read-card">
+        <div class="act-orb" aria-hidden="true"></div>
+        <h2>Soulaana live read</h2>
         <p>
-          Watch for risk responses, repeated rejections, trade closes, and unusual errors.
-          This room is the heartbeat — not the place to overreact from one event.
+          This is the pulse room. Watch the newest system behavior first,
+          then move into signals, positions, or analytics when something needs review.
         </p>
       </aside>
-
     </div>
   </section>
 
-  <div class="activity-grid">
+  <div class="act-grid">
+    <main class="act-stack">
 
-    <main class="activity-stack">
-
-      <section class="activity-panel">
-        <div class="activity-panel-head">
+      <section class="act-panel">
+        <div class="act-panel-head">
           <div>
-            <p class="activity-eyebrow">Stream</p>
-            <h2>Latest events</h2>
+            <p class="act-eyebrow">Stream</p>
+            <h2>Latest system events</h2>
           </div>
-          <span class="activity-chip blue">Auto-refresh on</span>
+          <span class="act-chip blue">Refreshes every 5 seconds</span>
         </div>
 
-        <div id="activity-container" class="activity-card-list">
+        <div id="activity-container" class="act-card-grid">
           {% if rows %}
             {% for row in rows[::-1] %}
-            <article class="activity-card {{ row.event_type }}">
-              <div class="activity-event-head">
-                <div>
-                  <div class="activity-event-type">
-                    {{ row.event_type }}
-                    {% if row.symbol %}<span class="activity-chip" style="margin-left:8px;">{{ row.symbol }}</span>{% endif %}
+              {% set event_type = row.event_type if row.event_type is defined else row.get("event_type", "event") %}
+              {% set symbol = row.symbol if row.symbol is defined else row.get("symbol", "") %}
+              {% set timestamp = row.timestamp if row.timestamp is defined else row.get("timestamp", "") %}
+              {% set message = row.message if row.message is defined else row.get("message", "") %}
+              {% set lower_type = event_type|lower %}
+              <article class="act-card {% if 'risk' in lower_type %}risk{% elif 'signal' in lower_type %}signal{% elif 'error' in lower_type or 'fail' in lower_type %}error{% endif %}">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">
+                  <div>
+                    <p class="act-eyebrow">Event</p>
+                    <h3>{{ event_type }}</h3>
                   </div>
+
+                  {% if 'risk' in lower_type %}
+                    <span class="act-chip red">Risk</span>
+                  {% elif 'signal' in lower_type %}
+                    <span class="act-chip blue">Signal</span>
+                  {% elif 'error' in lower_type or 'fail' in lower_type %}
+                    <span class="act-chip red">Error</span>
+                  {% else %}
+                    <span class="act-chip gold">System</span>
+                  {% endif %}
                 </div>
-                <div class="activity-event-time">{{ row.timestamp }}</div>
-              </div>
-              <p style="margin-top:10px;">{{ row.message }}</p>
-            </article>
+
+                {% if symbol %}
+                  <p style="margin-top:10px;"><strong style="color:#f8fafc;">Symbol:</strong> {{ symbol }}</p>
+                {% endif %}
+
+                {% if message %}
+                  <p style="margin-top:10px;">{{ message }}</p>
+                {% else %}
+                  <p style="margin-top:10px;">No message attached.</p>
+                {% endif %}
+
+                <p class="act-muted" style="margin-top:12px;">{{ timestamp or "Timestamp unavailable" }}</p>
+              </article>
             {% endfor %}
           {% else %}
-            <div class="activity-empty">
-              <h3 style="margin:0 0 8px;">No live activity yet</h3>
+            <div class="act-empty">
+              <h3 style="margin:0 0 8px;">No activity yet</h3>
               <p style="margin:0;">
-                The Live Activity route is active, but no events are currently loaded.
+                The activity stream is active. Events will appear here after the system records them.
               </p>
             </div>
           {% endif %}
@@ -459,73 +518,74 @@
 
     </main>
 
-    <aside class="activity-stack">
+    <aside class="act-stack">
 
-      <section class="activity-panel">
-        <div class="activity-panel-head">
+      <section class="act-panel">
+        <div class="act-panel-head">
           <div>
-            <p class="activity-eyebrow">Watch rules</p>
-            <h2>What matters most</h2>
+            <p class="act-eyebrow">Status</p>
+            <h2>Stream health</h2>
           </div>
         </div>
 
-        <div class="activity-card-list">
-          <article class="activity-card">
-            <h3>Risk responses</h3>
-            <p>Stops, drawdown alerts, containment, and rejected actions should get attention first.</p>
+        <div class="act-card-grid" style="grid-template-columns:1fr;">
+          <article class="act-card">
+            <h3>Auto-refresh</h3>
+            <p>The client refreshes `/api/activity` every 5 seconds and repaints this stream.</p>
           </article>
-
-          <article class="activity-card">
-            <h3>Signal approvals</h3>
-            <p>Approved signals show what the system is willing to consider right now.</p>
+          <article class="act-card">
+            <h3>Risk Events</h3>
+            <p>{{ risk_count.value }} risk-tagged event(s) currently visible in the loaded payload.</p>
           </article>
-
-          <article class="activity-card">
+          <article class="act-card">
             <h3>Errors</h3>
-            <p>Repeated errors should be treated like system-health signals, not ignored noise.</p>
+            <p>{{ error_count.value }} error/failure event(s) currently visible in the loaded payload.</p>
           </article>
         </div>
       </section>
 
-      <section class="activity-panel">
-        <div class="activity-panel-head">
+      <section class="act-panel">
+        <div class="act-panel-head">
           <div>
-            <p class="activity-eyebrow">Connected rooms</p>
-            <h2>Follow the event</h2>
+            <p class="act-eyebrow">Follow-up rooms</p>
+            <h2>Where to go next</h2>
           </div>
         </div>
 
-        <div class="activity-card-list">
-          <a class="activity-card" href="/signals" style="text-decoration:none;">
+        <div class="act-stack">
+          <a class="act-card" href="/signals" style="text-decoration:none;">
             <h3>Signals</h3>
-            <p>Check whether activity is tied to current signal approvals or rejections.</p>
+            <p>Review new signal events and current candidate quality.</p>
           </a>
-
-          <a class="activity-card" href="/analytics-overview" style="text-decoration:none;">
-            <h3>Analytics Overview</h3>
-            <p>See whether live activity is matching the broader proof and performance picture.</p>
+          <a class="act-card" href="/my-positions" style="text-decoration:none;">
+            <h3>My Positions</h3>
+            <p>Check position health if activity references open trades.</p>
           </a>
-
-          <a class="activity-card" href="/reports" style="text-decoration:none;">
-            <h3>Reports</h3>
-            <p>Move from live events into saved proof packets and records.</p>
+          <a class="act-card" href="/analytics-overview" style="text-decoration:none;">
+            <h3>Analytics</h3>
+            <p>Use analytics when activity suggests performance, risk, or strategy behavior changed.</p>
           </a>
         </div>
       </section>
+
+      <details class="act-drawer">
+        <summary>Preserved activity payload</summary>
+        <div class="act-drawer-body">
+          <pre>{{ rows }}</pre>
+        </div>
+      </details>
 
     </aside>
-
   </div>
 </div>
 
 <script>
 (function () {
   const container = document.getElementById("activity-container");
-  const countEl = document.getElementById("activity-count");
-  const latestSymbolEl = document.getElementById("activity-latest-symbol");
+  if (!container) return;
 
   function escapeHtml(value) {
-    return String(value ?? "")
+    return String(value || "")
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
@@ -533,72 +593,62 @@
       .replaceAll("'", "&#039;");
   }
 
-  function renderRow(row) {
-    const eventType = escapeHtml(row.event_type || "event");
-    const symbol = row.symbol ? escapeHtml(row.symbol) : "";
-    const timestamp = escapeHtml(row.timestamp || "Now");
-    const message = escapeHtml(row.message || "Activity event received.");
-
-    const symbolChip = symbol
-      ? `<span class="activity-chip" style="margin-left:8px;">${symbol}</span>`
-      : "";
-
-    return `
-      <article class="activity-card ${eventType}">
-        <div class="activity-event-head">
-          <div>
-            <div class="activity-event-type">${eventType}${symbolChip}</div>
-          </div>
-          <div class="activity-event-time">${timestamp}</div>
-        </div>
-        <p style="margin-top:10px;">${message}</p>
-      </article>
-    `;
+  function classifyEvent(eventType) {
+    const lower = String(eventType || "").toLowerCase();
+    if (lower.includes("risk")) return ["risk", "Risk", "red"];
+    if (lower.includes("signal")) return ["signal", "Signal", "blue"];
+    if (lower.includes("error") || lower.includes("fail")) return ["error", "Error", "red"];
+    return ["", "System", "gold"];
   }
 
   async function refreshActivity() {
     try {
       const res = await fetch("/api/activity");
       const data = await res.json();
-      const rows = Array.isArray(data) ? data : [];
 
-      if (countEl) {
-        countEl.textContent = rows.length;
-      }
-
-      const latest = rows.length ? rows[rows.length - 1] : null;
-      if (latestSymbolEl) {
-        latestSymbolEl.textContent = latest && latest.symbol ? latest.symbol : "N/A";
-      }
-
-      if (!container) return;
-
-      if (!rows.length) {
+      if (!Array.isArray(data) || data.length === 0) {
         container.innerHTML = `
-          <div class="activity-empty">
-            <h3 style="margin:0 0 8px;">No live activity yet</h3>
-            <p style="margin:0;">The Live Activity route is active, but no events are currently loaded.</p>
+          <div class="act-empty">
+            <h3 style="margin:0 0 8px;">No activity yet</h3>
+            <p style="margin:0;">The activity stream is active. Events will appear here after the system records them.</p>
           </div>
         `;
         return;
       }
 
-      container.innerHTML = rows.slice().reverse().map(renderRow).join("");
+      let html = "";
+      data.slice().reverse().forEach((row) => {
+        const eventType = row.event_type || "event";
+        const symbol = row.symbol || "";
+        const timestamp = row.timestamp || "Timestamp unavailable";
+        const message = row.message || "No message attached.";
+        const [cardClass, label, chipClass] = classifyEvent(eventType);
+
+        html += `
+          <article class="act-card ${cardClass}">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">
+              <div>
+                <p class="act-eyebrow">Event</p>
+                <h3>${escapeHtml(eventType)}</h3>
+              </div>
+              <span class="act-chip ${chipClass}">${escapeHtml(label)}</span>
+            </div>
+
+            ${symbol ? `<p style="margin-top:10px;"><strong style="color:#f8fafc;">Symbol:</strong> ${escapeHtml(symbol)}</p>` : ""}
+            <p style="margin-top:10px;">${escapeHtml(message)}</p>
+            <p class="act-muted" style="margin-top:12px;">${escapeHtml(timestamp)}</p>
+          </article>
+        `;
+      });
+
+      container.innerHTML = html;
     } catch (error) {
-      if (!container) return;
-      container.insertAdjacentHTML("afterbegin", `
-        <article class="activity-card error">
-          <div class="activity-event-head">
-            <div class="activity-event-type">activity_refresh_error</div>
-            <div class="activity-event-time">Now</div>
-          </div>
-          <p style="margin-top:10px;">Unable to refresh live activity without changing the page.</p>
-        </article>
-      `);
+      console.warn("Activity refresh failed", error);
     }
   }
 
-  window.setInterval(refreshActivity, 5000);
+  window.refreshActivity = refreshActivity;
+  setInterval(refreshActivity, 5000);
 })();
 </script>
 {% endblock %}
