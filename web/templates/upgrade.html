@@ -1,59 +1,594 @@
 {% extends "base.html" %}
+
+{% block title %}Upgrade Access · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ACCOUNT_UTILITY_SESSION_007H_UPGRADE_DARK_REWRITE -->
 
-<h2>Membership Plans</h2>
+{% set tier_map = tiers if tiers is defined and tiers else {} %}
+{% set products = alacarte_products if alacarte_products is defined and alacarte_products else [] %}
+{% set current_tier = user.tier if user is defined and user.tier is defined else "Free" %}
+{% set visible_tiers = [] %}
 
-<div class="card premium-hero">
-    <h3>Choose Your Access Level</h3>
-    <p class="muted-line">
-        Plans control how much intelligence, explanation depth, and signal history is visible.
-    </p>
-</div>
+<style>
+  /* OBSERVATORY_ACCOUNT_UTILITY_SESSION_007H_UPGRADE_DARK_REWRITE_STYLES */
 
-<div class="pricing-grid">
-    {% for tier_name, tier_data in tiers.items() %}
-        {% if tier_name != "Guest" %}
-        <div class="card {% if tier_name in ['Pro', 'Elite'] %}premium-card gold-accent-card{% endif %}">
-            <h3>{{ tier_name }}</h3>
+  html body .upgrade-room-shell,
+  html body .upgrade-room-shell * {
+    box-sizing: border-box;
+  }
 
-            <p class="muted-line">
+  html body .upgrade-room-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .upgrade-room-shell a {
+    color: inherit;
+  }
+
+  html body .up-hero,
+  html body .up-panel,
+  html body .up-card,
+  html body .up-chip,
+  html body .up-stat,
+  html body .up-empty,
+  html body .up-drawer {
+    color-scheme: dark;
+  }
+
+  html body .up-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(250, 204, 21, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(14, 165, 233, 0.10), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .up-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(250, 204, 21, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .up-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .up-kicker,
+  html body .up-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .up-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .up-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .up-copy,
+  html body .up-muted,
+  html body .up-card p,
+  html body .up-empty p,
+  html body .up-list li,
+  html body .up-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .up-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .up-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .up-btn,
+  html body .up-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .up-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .up-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(250, 204, 21, 0.72));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .up-btn.disabled,
+  html body button.up-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.62;
+  }
+
+  html body .up-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .up-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .up-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .up-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .up-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .up-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .up-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .up-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .up-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .up-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .up-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .up-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .up-stack,
+  html body .up-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .up-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  html body .up-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(250, 204, 21, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .up-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .up-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .up-panel h2,
+  html body .up-panel h3,
+  html body .up-card h3,
+  html body .up-card h4,
+  html body .up-empty h3,
+  html body .up-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .up-panel h2,
+  html body .up-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .up-card,
+  html body .up-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .up-card.featured {
+    border-color: rgba(250, 204, 21, 0.32);
+    box-shadow: 0 18px 58px rgba(250, 204, 21, 0.08);
+  }
+
+  html body .up-card h3,
+  html body .up-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .up-card p {
+    margin: 0;
+  }
+
+  html body .up-list {
+    margin: 12px 0 0;
+    padding-left: 18px;
+  }
+
+  html body .up-list li + li {
+    margin-top: 8px;
+  }
+
+  html body .up-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .up-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .up-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .up-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .up-hero-inner,
+    html body .up-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .up-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .upgrade-room-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .up-hero-inner {
+      padding: 20px;
+    }
+  }
+</style>
+
+<div class="upgrade-room-shell">
+
+  <section class="up-hero">
+    <div class="up-hero-inner">
+      <div>
+        <span class="up-kicker">Upgrade Access</span>
+        <h1 class="up-title">Choose your intelligence depth.</h1>
+
+        <p class="up-copy">
+          Membership controls how much signal history, premium analysis, trade explanation,
+          and full analytics depth are visible inside the Observatory.
+        </p>
+
+        <div class="up-actions">
+          <a class="up-btn primary" href="/billing">Billing</a>
+          <a class="up-btn" href="/account">Account</a>
+          <a class="up-btn" href="/premium-analysis">Premium Analysis</a>
+          <a class="up-btn" href="/analytics-overview">Analytics</a>
+        </div>
+
+        <div class="up-stats-grid">
+          <div class="up-stat">
+            <span>Current tier</span>
+            <strong>{{ current_tier }}</strong>
+          </div>
+          <div class="up-stat">
+            <span>Available tiers</span>
+            <strong>{{ tier_map|length }}</strong>
+          </div>
+          <div class="up-stat">
+            <span>À la carte</span>
+            <strong>{{ products|length }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="up-read-card">
+        <div class="up-orb" aria-hidden="true"></div>
+        <h2>Soulaana upgrade read</h2>
+        <p>
+          Choose the tier that matches how deeply you want to understand the system.
+          More access should mean clearer decisions, not more clutter.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <div class="up-grid">
+    <main class="up-stack">
+
+      <section class="up-panel">
+        <div class="up-panel-head">
+          <div>
+            <p class="up-eyebrow">Plans</p>
+            <h2>Membership plans</h2>
+          </div>
+          <span class="up-chip gold">{{ current_tier }} active</span>
+        </div>
+
+        {% if tier_map %}
+        <div class="up-card-grid">
+          {% for tier_name, tier_data in tier_map.items() %}
+            {% if tier_name != "Guest" %}
+            <article class="up-card {% if tier_name in ['Pro', 'Elite'] %}featured{% endif %}">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+                <div>
+                  <p class="up-eyebrow">Tier</p>
+                  <h3>{{ tier_name }}</h3>
+                </div>
+                {% if tier_name == current_tier %}
+                  <span class="up-chip green">Current</span>
+                {% elif tier_name in ["Pro", "Elite"] %}
+                  <span class="up-chip gold">Premium</span>
+                {% else %}
+                  <span class="up-chip blue">Access</span>
+                {% endif %}
+              </div>
+
+              <p class="up-muted">
                 Premium Depth:
-                <b>{{ tier_data.premium_depth if tier_data.premium_depth is defined else "standard" }}</b>
-            </p>
+                <strong style="color:#f8fafc;">
+                  {{ tier_data.premium_depth if tier_data.premium_depth is defined else tier_data.get("premium_depth", "standard") }}
+                </strong>
+              </p>
 
-            <ul>
+              <ul class="up-list">
                 <li>Signals: {{ "Yes" if tier_data.signals else "No" }}</li>
                 <li>Premium Analysis: {{ "Yes" if tier_data.premium_analysis else "No" }}</li>
                 <li>Why This Trade: {{ "Yes" if tier_data.why_this_trade else "No" }}</li>
                 <li>Full Analytics: {{ "Yes" if tier_data.full_analytics else "No" }}</li>
-            </ul>
+              </ul>
 
-            {% if user.tier == tier_name %}
-                <button class="cta-btn secondary" disabled>Current Plan</button>
-            {% else %}
-                <a href="/upgrade-tier/{{ tier_name }}" class="cta-btn {% if tier_name in ['Pro','Elite'] %}premium-gold-btn{% endif %}">Choose {{ tier_name }}</a>
+              <div class="up-actions">
+                {% if current_tier == tier_name %}
+                  <button class="up-btn disabled" disabled>Current Plan</button>
+                {% else %}
+                  <a href="/upgrade-tier/{{ tier_name }}" class="up-btn {% if tier_name in ['Pro','Elite'] %}primary{% endif %}">Choose {{ tier_name }}</a>
+                {% endif %}
+              </div>
+            </article>
             {% endif %}
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="up-empty">
+          <h3 style="margin:0 0 8px;">No tiers loaded</h3>
+          <p style="margin:0;">The route is active, but subscription tier data is not loaded yet.</p>
         </div>
         {% endif %}
-    {% endfor %}
-</div>
+      </section>
 
-<div class="card premium-card gold-accent-card">
-    <h3>À La Carte Access</h3>
-    <p class="muted-line">
-        For users who do not want a full membership, selected premium modules can be offered individually.
-    </p>
+      <section class="up-panel">
+        <div class="up-panel-head">
+          <div>
+            <p class="up-eyebrow">À la carte</p>
+            <h2>Individual access modules</h2>
+          </div>
+          <span class="up-chip blue">{{ products|length }} products</span>
+        </div>
 
-    <div class="pricing-grid">
-        {% for item in alacarte_products %}
-        <div class="card">
+        {% if products %}
+        <div class="up-card-grid">
+          {% for item in products %}
+          <article class="up-card">
             <h3>{{ item.name }}</h3>
             <p>{{ item.description }}</p>
-            <p><b>Price:</b> {{ item.price_label }}</p>
-            <button class="cta-btn secondary" disabled>Coming Soon</button>
+            <p style="margin-top:10px;"><strong style="color:#f8fafc;">Price:</strong> {{ item.price_label }}</p>
+            <div class="up-actions">
+              <button class="up-btn disabled" disabled>Coming Soon</button>
+            </div>
+          </article>
+          {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-</div>
+        {% else %}
+        <div class="up-empty">
+          <h3 style="margin:0 0 8px;">No à la carte modules yet</h3>
+          <p style="margin:0;">
+            Selected premium modules can appear here later for users who do not want a full membership.
+          </p>
+        </div>
+        {% endif %}
+      </section>
 
+    </main>
+
+    <aside class="up-stack">
+
+      <section class="up-panel">
+        <div class="up-panel-head">
+          <div>
+            <p class="up-eyebrow">Access logic</p>
+            <h2>What upgrades unlock</h2>
+          </div>
+        </div>
+
+        <div class="up-stack">
+          <article class="up-card">
+            <h3>Signal depth</h3>
+            <p>More context, history, and explanation around why a signal matters.</p>
+          </article>
+          <article class="up-card">
+            <h3>Premium analysis</h3>
+            <p>Deeper market reads and higher-order interpretation of system behavior.</p>
+          </article>
+          <article class="up-card">
+            <h3>Full analytics</h3>
+            <p>More proof rooms, performance context, risk, and strategy behavior visibility.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="up-panel">
+        <div class="up-panel-head">
+          <div>
+            <p class="up-eyebrow">Membership workflow</p>
+            <h2>Connected rooms</h2>
+          </div>
+        </div>
+
+        <div class="up-stack">
+          <a class="up-card" href="/billing" style="text-decoration:none;">
+            <h3>Billing Control Center</h3>
+            <p>Manage membership state, mock switching, Stripe prep, and portal direction.</p>
+          </a>
+          <a class="up-card" href="/account" style="text-decoration:none;">
+            <h3>Account Control Room</h3>
+            <p>Review account settings, notification preferences, and access path.</p>
+          </a>
+          <a class="up-card" href="/premium-analysis" style="text-decoration:none;">
+            <h3>Premium Analysis</h3>
+            <p>See how membership depth affects the intelligence layer.</p>
+          </a>
+        </div>
+      </section>
+
+      <details class="up-drawer">
+        <summary>Preserved tier payload</summary>
+        <div class="up-drawer-body">
+          <pre>{{ tier_map }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
+</div>
 {% endblock %}

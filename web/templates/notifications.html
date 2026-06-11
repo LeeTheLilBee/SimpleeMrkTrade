@@ -1,54 +1,564 @@
 {% extends "base.html" %}
+
+{% block title %}Notification Feed · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_ACCOUNT_UTILITY_SESSION_007F_NOTIFICATIONS_DARK_REWRITE -->
 
-<h2>Notifications</h2>
+{% set rows = notifications if notifications is defined and notifications else [] %}
+{% set alert_count = rows|length %}
+{% set risk_count = namespace(value=0) %}
+{% set success_count = namespace(value=0) %}
+{% set info_count = namespace(value=0) %}
+{% for n in rows %}
+  {% set level = n.level if n.level is defined else n.get("level", "info") %}
+  {% if level == "warning" %}
+    {% set risk_count.value = risk_count.value + 1 %}
+  {% elif level == "success" %}
+    {% set success_count.value = success_count.value + 1 %}
+  {% else %}
+    {% set info_count.value = info_count.value + 1 %}
+  {% endif %}
+{% endfor %}
 
-<div class="card premium-hero">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
-        <div>
-            <h3 style="margin:0;">Alert Intelligence Feed</h3>
-            <p class="muted-line">
-                Alerts are filtered by your notification settings, conviction preferences, and access tier.
-            </p>
+<style>
+  /* OBSERVATORY_ACCOUNT_UTILITY_SESSION_007F_NOTIFICATIONS_DARK_REWRITE_STYLES */
+
+  html body .notifications-room-shell,
+  html body .notifications-room-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .notifications-room-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .notifications-room-shell a {
+    color: inherit;
+  }
+
+  html body .note-hero,
+  html body .note-panel,
+  html body .note-card,
+  html body .note-chip,
+  html body .note-stat,
+  html body .note-empty,
+  html body .note-drawer {
+    color-scheme: dark;
+  }
+
+  html body .note-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .note-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .note-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
+
+  html body .note-kicker,
+  html body .note-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .note-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .note-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .note-copy,
+  html body .note-muted,
+  html body .note-card p,
+  html body .note-empty p,
+  html body .note-list li,
+  html body .note-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .note-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .note-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  html body .note-btn,
+  html body .note-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .note-btn:hover,
+  html body .note-card-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .note-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .note-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .note-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .note-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .note-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .note-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .note-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .note-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .note-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .note-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .note-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .note-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .note-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .note-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .note-stack,
+  html body .note-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .note-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  html body .note-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .note-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .note-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .note-panel h2,
+  html body .note-panel h3,
+  html body .note-card h3,
+  html body .note-card h4,
+  html body .note-empty h3,
+  html body .note-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .note-panel h2,
+  html body .note-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .note-card,
+  html body .note-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .note-card-link {
+    display: block;
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  html body .note-card h3,
+  html body .note-card h4 {
+    margin: 0 0 8px;
+  }
+
+  html body .note-card p {
+    margin: 0;
+  }
+
+  html body .note-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .note-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .note-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .note-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .note-hero-inner,
+    html body .note-grid {
+      grid-template-columns: 1fr;
+    }
+
+    html body .note-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .notifications-room-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .note-hero-inner {
+      padding: 20px;
+    }
+
+    html body .note-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="notifications-room-shell">
+
+  <section class="note-hero">
+    <div class="note-hero-inner">
+      <div>
+        <span class="note-kicker">Notification Feed</span>
+        <h1 class="note-title">Alerts without the noise.</h1>
+
+        <p class="note-copy">
+          Notifications collect account, signal, risk, premium, and system alerts into one readable feed.
+          The goal is clarity: what happened, why it matters, and where to go next.
+        </p>
+
+        <div class="note-actions">
+          <a class="note-btn primary" href="/notification-settings">Control Center</a>
+          <a class="note-btn" href="/account">Account</a>
+          <a class="note-btn" href="/signals">Signals</a>
+          <a class="note-btn" href="/live-activity">Live Activity</a>
         </div>
-        <a href="/notification-settings" class="cta-btn secondary">Control Center</a>
+
+        <div class="note-stats-grid">
+          <div class="note-stat">
+            <span>Total alerts</span>
+            <strong>{{ alert_count }}</strong>
+          </div>
+          <div class="note-stat">
+            <span>Success</span>
+            <strong>{{ success_count.value }}</strong>
+          </div>
+          <div class="note-stat">
+            <span>Risk</span>
+            <strong>{{ risk_count.value }}</strong>
+          </div>
+          <div class="note-stat">
+            <span>Info</span>
+            <strong>{{ info_count.value }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="note-read-card">
+        <div class="note-orb" aria-hidden="true"></div>
+        <h2>Soulaana alert read</h2>
+        <p>
+          Alerts should guide decisions, not create panic. Risk alerts deserve attention,
+          success alerts need proof, and info alerts should stay quiet unless they matter.
+        </p>
+      </aside>
     </div>
-</div>
+  </section>
 
-{% if notifications and notifications|length > 0 %}
-    {% for n in notifications %}
-    <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;">
-            <div>
-                <h3 style="margin-bottom:8px;">{{ n.type }}</h3>
-                <p>{{ n.message }}</p>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                {% if n.level == "success" %}
-                    <span class="badge-green">High Priority</span>
-                {% elif n.level == "warning" %}
-                    <span class="badge-yellow">Risk</span>
-                {% else %}
-                    <span class="badge-blue">Info</span>
-                {% endif %}
+  <div class="note-grid">
+    <main class="note-stack">
 
-                {% if n.score %}
-                    <span class="pill">{{ n.score }}</span>
-                {% endif %}
-            </div>
+      <section class="note-panel">
+        <div class="note-panel-head">
+          <div>
+            <p class="note-eyebrow">Feed</p>
+            <h2>Alert intelligence feed</h2>
+          </div>
+          <span class="note-chip blue">{{ alert_count }} alerts</span>
         </div>
 
-        {% if n.trade_id %}
-            <p><a href="/trade/{{ n.trade_id }}">View Trade Detail</a></p>
+        {% if rows %}
+        <div class="note-card-grid">
+          {% for n in rows %}
+          {% set level = n.level if n.level is defined else n.get("level", "info") %}
+          {% set trade_id = n.trade_id if n.trade_id is defined else n.get("trade_id", "") %}
+          {% set score = n.score if n.score is defined else n.get("score", "") %}
+          <article class="note-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">
+              <div>
+                <p class="note-eyebrow">Alert</p>
+                <h3>{{ n.type }}</h3>
+              </div>
+
+              {% if level == "success" %}
+                <span class="note-chip green">High Priority</span>
+              {% elif level == "warning" %}
+                <span class="note-chip red">Risk</span>
+              {% else %}
+                <span class="note-chip blue">Info</span>
+              {% endif %}
+            </div>
+
+            <p style="margin-top:10px;">{{ n.message }}</p>
+
+            <div class="note-actions">
+              {% if score %}
+                <span class="note-chip gold">Score {{ score }}</span>
+              {% endif %}
+              {% if trade_id %}
+                <a href="/trade/{{ trade_id }}" class="note-btn">View Trade Detail</a>
+              {% endif %}
+            </div>
+
+            <p class="note-muted" style="margin-top:12px;">{{ n.timestamp }}</p>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="note-empty">
+          <h3 style="margin:0 0 8px;">No notifications yet</h3>
+          <p style="margin:0;">
+            The feed is active. Alerts will appear here when the system has something worth showing.
+          </p>
+        </div>
         {% endif %}
+      </section>
 
-        <p class="muted-line">{{ n.timestamp }}</p>
-    </div>
-    {% endfor %}
-{% else %}
-<div class="card">
-    <p>No notifications yet.</p>
+    </main>
+
+    <aside class="note-stack">
+
+      <section class="note-panel">
+        <div class="note-panel-head">
+          <div>
+            <p class="note-eyebrow">Controls</p>
+            <h2>Alert settings</h2>
+          </div>
+        </div>
+
+        <article class="note-card">
+          <h3>Notification control center</h3>
+          <p>
+            Adjust notification categories from account preferences and dedicated notification settings.
+          </p>
+          <div class="note-actions">
+            <a href="/notification-settings" class="note-btn primary">Open Control Center</a>
+            <a href="/account" class="note-btn">Account Preferences</a>
+          </div>
+        </article>
+      </section>
+
+      <section class="note-panel">
+        <div class="note-panel-head">
+          <div>
+            <p class="note-eyebrow">Reading rule</p>
+            <h2>Signal versus noise</h2>
+          </div>
+        </div>
+
+        <div class="note-stack">
+          <article class="note-card">
+            <h3>Risk alerts</h3>
+            <p>Risk alerts should be read first because they protect capital and account behavior.</p>
+          </article>
+          <article class="note-card">
+            <h3>Signal alerts</h3>
+            <p>Signal alerts deserve context before action. Look at confidence, mode, and supporting proof.</p>
+          </article>
+          <article class="note-card">
+            <h3>System alerts</h3>
+            <p>System alerts tell you whether the platform, data, or access layer needs attention.</p>
+          </article>
+        </div>
+      </section>
+
+      <details class="note-drawer">
+        <summary>Preserved notification payload</summary>
+        <div class="note-drawer-body">
+          <pre>{{ rows }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
 </div>
-{% endif %}
-
 {% endblock %}
