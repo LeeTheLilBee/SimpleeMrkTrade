@@ -1,853 +1,722 @@
 {% extends "base.html" %}
+
+{% block title %}Charts Watch Room · The Observatory{% endblock %}
+
 {% block content %}
-{% set soulaana_greeting = soulaana_bundle.get("greeting", {}) if soulaana_bundle else {} %}
+<!-- OBSERVATORY_MARKET_DISCOVERY_SESSION_010F_CHARTS_DARK_REWRITE -->
+
+{% set cards = chart_cards if chart_cards is defined and chart_cards else [] %}
+{% set current_tier = tier if tier is defined and tier else "Free" %}
+{% set mode = user_mode if user_mode is defined and user_mode else "manual" %}
+{% set sys = system if system is defined and system else {} %}
+{% set card_count = cards|length %}
+{% set news_count = namespace(value=0) %}
+{% set price_count = namespace(value=0) %}
+{% set up_count = namespace(value=0) %}
+{% set down_count = namespace(value=0) %}
+
+{% for item in cards %}
+  {% set news = item.news if item.news is defined else item.get("news", []) %}
+  {% set change = item.change_pct if item.change_pct is defined else item.get("change_pct", none) %}
+  {% set price = item.price if item.price is defined else item.get("price", none) %}
+  {% set news_count.value = news_count.value + (news|length if news else 0) %}
+  {% if price is not none and price != "" %}
+    {% set price_count.value = price_count.value + 1 %}
+  {% endif %}
+  {% if change is not none and change|string != "" %}
+    {% if change|float >= 0 %}
+      {% set up_count.value = up_count.value + 1 %}
+    {% else %}
+      {% set down_count.value = down_count.value + 1 %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
 
 <style>
-.charts-shell {
+  /* OBSERVATORY_MARKET_DISCOVERY_SESSION_010F_CHARTS_DARK_REWRITE_STYLES */
+
+  html body .charts-room-shell,
+  html body .charts-room-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .charts-room-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .charts-room-shell a {
+    color: inherit;
+  }
+
+  html body .chart-hero,
+  html body .chart-panel,
+  html body .chart-card,
+  html body .chart-chip,
+  html body .chart-stat,
+  html body .chart-empty,
+  html body .chart-drawer,
+  html body .chart-search-input {
+    color-scheme: dark;
+  }
+
+  html body .chart-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
+
+  html body .chart-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
+
+  html body .chart-hero-inner {
+    position: relative;
+    z-index: 1;
     display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
     gap: 22px;
-}
-
-/* ===== SOULAANA MODAL ===== */
-.soulaana-modal {
-    position: fixed;
-    inset: 0;
-    display: none;
-    z-index: 2400;
-}
-.soulaana-modal.is-open {
-    display: block;
-}
-.soulaana-modal-backdrop {
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(circle at top, rgba(124,77,255,0.16), transparent 30%),
-        rgba(3, 5, 12, 0.78);
-    backdrop-filter: blur(10px);
-}
-.soulaana-modal-dialog {
-    position: relative;
-    z-index: 2;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 22px;
-}
-.soulaana-modal-card {
-    width: min(760px, 94vw);
-    border-radius: 30px;
     padding: 28px;
-    background:
-        radial-gradient(circle at top left, rgba(124,77,255,0.18), transparent 34%),
-        radial-gradient(circle at 82% 18%, rgba(255,95,207,0.12), transparent 28%),
-        linear-gradient(135deg, rgba(14,11,29,0.98), rgba(8,7,18,0.98));
-    border: 1px solid rgba(255,255,255,0.10);
-    box-shadow: 0 28px 90px rgba(0,0,0,0.42);
-    position: relative;
-    overflow: hidden;
-}
-.soulaana-modal-card::before {
-    content: "";
-    position: absolute;
-    right: 34px;
-    top: 26px;
-    width: 118px;
-    height: 118px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.30) 46%, transparent 76%);
-    filter: blur(10px);
-    opacity: 0.9;
-    pointer-events: none;
-}
-.soulaana-modal-kicker {
-    font-size: 0.76rem;
+  }
+
+  html body .chart-kicker,
+  html body .chart-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
-    opacity: 0.72;
-    margin-bottom: 12px;
-}
-.soulaana-modal-title {
-    margin: 0 0 10px 0;
-    font-size: 1.9rem;
-    line-height: 1.12;
-    font-weight: 800;
-    max-width: 600px;
-}
-.soulaana-modal-subtext {
+  }
+
+  html body .chart-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
+
+  html body .chart-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
+
+  html body .chart-copy,
+  html body .chart-muted,
+  html body .chart-card p,
+  html body .chart-empty p,
+  html body .chart-drawer-body,
+  html body .chart-news-line {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .chart-copy {
+    max-width: 780px;
     margin: 0;
-    max-width: 640px;
-    opacity: 0.88;
-    line-height: 1.5;
-}
-.soulaana-modal-form {
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  html body .chart-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-top: 22px;
-}
-.soulaana-modal-chip-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-.soulaana-modal-chip {
-    border: 0;
-    border-radius: 999px;
-    padding: 11px 15px;
-    font-size: 0.94rem;
-    font-weight: 700;
-    cursor: pointer;
-    background: rgba(255,255,255,0.08);
-    color: inherit;
-    border: 1px solid rgba(255,255,255,0.08);
-    transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
-}
-.soulaana-modal-chip:hover {
-    transform: translateY(-1px);
-    background: rgba(255,255,255,0.12);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.18);
-}
-.soulaana-modal-skip {
-    margin-top: 18px;
-    border: 0;
-    background: transparent;
-    color: inherit;
-    opacity: 0.72;
-    cursor: pointer;
-    text-decoration: underline;
-    padding: 0;
-    font-size: 0.92rem;
-}
+  }
 
-/* ===== HERO ===== */
-.charts-hero {
-    position: relative;
-    overflow: hidden;
-    border-radius: 30px;
-    padding: 26px;
-    background:
-        radial-gradient(circle at top left, rgba(124,77,255,0.24), transparent 34%),
-        radial-gradient(circle at 78% 22%, rgba(255,95,207,0.16), transparent 28%),
-        linear-gradient(135deg, rgba(14,11,29,0.98), rgba(8,7,18,0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 24px 54px rgba(0,0,0,0.34);
-}
-.charts-hero::before {
-    content: "";
-    position: absolute;
-    right: 42px;
-    top: 28px;
-    width: 124px;
-    height: 124px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.34) 44%, transparent 74%);
-    filter: blur(10px);
-    opacity: 0.9;
-    pointer-events: none;
-}
-.charts-kicker {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-}
-.charts-pill,
-.info-chip {
+  html body .chart-btn,
+  html body .chart-chip {
     display: inline-flex;
     align-items: center;
-    padding: 6px 10px;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
     border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.10);
-}
-.charts-title {
-    margin: 0 0 10px 0;
-    font-size: 1.95rem;
-    font-weight: 800;
-    line-height: 1.1;
-}
-.charts-sub {
-    margin: 0;
-    max-width: 880px;
-    opacity: 0.9;
-    line-height: 1.5;
-}
-.info-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 14px;
-}
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
 
-/* ===== SOULAANA INLINE PANEL ===== */
-.soulaana-welcome-card {
-    border-radius: 28px;
-    padding: 1px;
-    background: linear-gradient(
-        135deg,
-        rgba(168,175,255,0.34),
-        rgba(255,175,214,0.24),
-        rgba(175,254,255,0.24)
-    );
-    box-shadow: 0 18px 48px rgba(0,0,0,0.16);
-}
-.soulaana-welcome-inner {
-    border-radius: 27px;
-    padding: 24px;
-    background:
-        radial-gradient(circle at top left, rgba(124,77,255,0.12), transparent 34%),
-        linear-gradient(135deg, rgba(10,14,24,0.94), rgba(8,10,20,0.94));
-    backdrop-filter: blur(10px);
-}
-.soulaana-kicker {
-    font-size: 0.78rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    opacity: 0.72;
-    margin-bottom: 8px;
-}
-.soulaana-headline {
-    margin: 0 0 8px 0;
-    font-size: 1.55rem;
-    line-height: 1.18;
-}
-.soulaana-subtext {
-    margin: 0;
-    opacity: 0.84;
-    max-width: 760px;
-    line-height: 1.5;
-}
-.soulaana-response {
-    margin-top: 18px;
-    padding: 16px 18px;
-    border-radius: 18px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-}
-.soulaana-response-title {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-}
-.soulaana-response-note {
-    font-size: 0.92rem;
-    opacity: 0.8;
-}
-.soulaana-response-encouraging {
-    box-shadow: inset 0 0 0 1px rgba(175,254,255,0.24);
-}
-.soulaana-response-protective {
-    box-shadow: inset 0 0 0 1px rgba(255,175,214,0.24);
-}
-.soulaana-response-steady {
-    box-shadow: inset 0 0 0 1px rgba(168,175,255,0.24);
-}
-.soulaana-mood-form {
-    margin-top: 18px;
-}
-.soulaana-chip-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-.soulaana-chip {
-    border: 0;
-    border-radius: 999px;
-    padding: 10px 14px;
-    font-size: 0.92rem;
-    font-weight: 700;
-    cursor: pointer;
-    background: rgba(255,255,255,0.07);
-    color: inherit;
-    transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
-}
-.soulaana-chip:hover {
+  html body .chart-btn:hover,
+  html body .chart-card:hover {
     transform: translateY(-1px);
-    background: rgba(255,255,255,0.12);
-}
-.soulaana-chip.is-active {
-    background: rgba(168,175,255,0.24);
-    box-shadow: inset 0 0 0 1px rgba(168,175,255,0.46);
-}
-.soulaana-reset-form {
-    margin-top: 14px;
-}
-.soulaana-reset-btn {
-    border: 0;
-    background: transparent;
-    color: inherit;
-    opacity: 0.78;
-    cursor: pointer;
-    text-decoration: underline;
-    padding: 0;
-}
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
 
-/* ===== PANELS ===== */
-.section-panel {
-    border-radius: 24px;
+  html body .chart-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .chart-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .chart-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .chart-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .chart-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .chart-read-card {
+    min-height: 100%;
     padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
     background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
-        linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
-}
-.section-top {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    align-items: flex-start;
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .chart-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
     margin-bottom: 14px;
-}
-.section-title {
-    margin: 0 0 8px 0;
-    font-size: 1.25rem;
-    font-weight: 800;
-}
-.section-copy {
-    margin: 0;
-    opacity: 0.82;
-    line-height: 1.45;
-}
-.action-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 14px;
-    border-radius: 999px;
-    text-decoration: none;
-    color: inherit;
-    background: rgba(168,175,255,0.18);
-    border: 1px solid rgba(168,175,255,0.24);
-    white-space: nowrap;
-}
-
-.chart-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-}
-.chart-card {
-    display: grid;
-    gap: 12px;
-    border-radius: 24px;
-    padding: 18px;
     background:
-        radial-gradient(circle at top left, rgba(124,77,255,0.12), transparent 34%),
-        linear-gradient(135deg, rgba(14,11,29,0.98), rgba(8,7,18,0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 14px 30px rgba(0,0,0,0.22);
-}
-.chart-card-top {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    align-items: flex-start;
-}
-.chart-symbol {
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .chart-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
     font-size: 1.08rem;
-    font-weight: 800;
-    margin-bottom: 4px;
-}
-.chart-company {
-    font-size: 0.92rem;
-    opacity: 0.8;
-    line-height: 1.4;
-}
-.chart-price-block {
-    text-align: right;
-}
-.chart-price {
-    font-size: 1rem;
-    font-weight: 800;
-}
-.chart-change {
-    font-size: 0.84rem;
-    opacity: 0.82;
-}
-.chart-notes {
-    font-size: 0.9rem;
-    line-height: 1.45;
-    opacity: 0.84;
-}
-.chart-chartbox {
-    min-height: 150px;
-    border-radius: 18px;
-    padding: 14px;
-    background:
-        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
-        radial-gradient(circle at center, rgba(168,175,255,0.10), transparent 62%);
-    border: 1px solid rgba(255,255,255,0.07);
-}
-.chart-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-.chart-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.08);
-}
-.chart-news-list {
-    display: grid;
-    gap: 8px;
-}
-.chart-news-item {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    padding: 10px 12px;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.06);
-    transition: transform 0.12s ease, background 0.12s ease;
-}
-.chart-news-item:hover {
-    transform: translateY(-1px);
-    background: rgba(255,255,255,0.07);
-}
-.chart-news-title {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    font-weight: 700;
-}
-.chart-actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-.chart-action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 12px;
-    border-radius: 999px;
-    text-decoration: none;
-    color: inherit;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.08);
-    font-size: 0.84rem;
-    font-weight: 700;
-    cursor: pointer;
-}
+    letter-spacing: -0.02em;
+  }
 
-/* ===== MODAL CHART ===== */
-.chart-modal {
-    position: fixed;
-    inset: 0;
-    display: none;
-    z-index: 2600;
-}
-.chart-modal.is-open {
-    display: block;
-}
-.chart-modal-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(3, 5, 12, 0.84);
-    backdrop-filter: blur(8px);
-}
-.chart-modal-dialog {
-    position: relative;
-    z-index: 2;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-.chart-modal-card {
-    width: min(1220px, 96vw);
-    height: min(84vh, 900px);
-    border-radius: 28px;
-    padding: 20px;
-    background:
-        radial-gradient(circle at top left, rgba(124,77,255,0.18), transparent 34%),
-        linear-gradient(135deg, rgba(14,11,29,0.98), rgba(8,7,18,0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 28px 90px rgba(0,0,0,0.42);
+  html body .chart-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .chart-stats-grid {
     display: grid;
-    grid-template-rows: auto 1fr;
-    gap: 14px;
-}
-.chart-modal-top {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .chart-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .chart-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .chart-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .chart-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .chart-stack,
+  html body .chart-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .chart-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  }
+
+  html body .chart-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .chart-panel-head {
     display: flex;
     justify-content: space-between;
-    gap: 16px;
-    align-items: center;
-}
-.chart-modal-title {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 800;
-}
-.chart-modal-close {
-    border: 0;
-    background: rgba(255,255,255,0.08);
-    color: inherit;
-    border-radius: 999px;
-    padding: 10px 14px;
-    font-weight: 700;
-    cursor: pointer;
-}
-.chart-modal-body {
-    min-height: 0;
-    border-radius: 18px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.06);
-    background: rgba(255,255,255,0.02);
-}
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1180px) {
-    .chart-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+  html body .chart-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .chart-panel h2,
+  html body .chart-panel h3,
+  html body .chart-card h3,
+  html body .chart-empty h3,
+  html body .chart-drawer summary,
+  html body .chart-symbol {
+    color: #f8fafc;
+  }
+
+  html body .chart-panel h2,
+  html body .chart-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .chart-search-wrap {
+    margin-top: 16px;
+  }
+
+  html body .chart-search-input {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    background: rgba(2, 6, 23, 0.72);
+    color: #e5e7eb;
+    padding: 12px 14px;
+    outline: none;
+    font-size: 0.95rem;
+  }
+
+  html body .chart-search-input:focus {
+    border-color: rgba(196, 181, 253, 0.72);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+  }
+
+  html body .chart-card,
+  html body .chart-empty {
+    display: block;
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  html body .chart-card h3 {
+    margin: 0 0 8px;
+  }
+
+  html body .chart-card p {
+    margin: 0;
+  }
+
+  html body .chart-mini {
+    height: 86px;
+    margin: 14px 0;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    background:
+      linear-gradient(rgba(15, 23, 42, 0.72), rgba(2, 6, 23, 0.84)),
+      repeating-linear-gradient(0deg, transparent 0, transparent 21px, rgba(148, 163, 184, 0.07) 22px),
+      repeating-linear-gradient(90deg, transparent 0, transparent 31px, rgba(148, 163, 184, 0.05) 32px);
+    overflow: hidden;
+  }
+
+  html body .chart-mini svg {
+    display: block;
+    width: 100%;
+    height: 86px;
+  }
+
+  html body .chart-news-list {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  html body .chart-news-line {
+    padding-top: 8px;
+    border-top: 1px solid rgba(148, 163, 184, 0.14);
+    font-size: 0.86rem;
+  }
+
+  html body .chart-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .chart-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .chart-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .chart-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .chart-hero-inner,
+    html body .chart-grid {
+      grid-template-columns: 1fr;
     }
-}
-@media (max-width: 900px) {
-    .chart-grid {
-        grid-template-columns: 1fr;
+
+    html body .chart-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .section-top {
-        flex-direction: column;
+  }
+
+  @media (max-width: 680px) {
+    html body .charts-room-shell {
+      padding: 18px 12px 38px;
     }
-    .chart-modal-card {
-        height: min(88vh, 900px);
+
+    html body .chart-hero-inner {
+      padding: 20px;
     }
-}
+
+    html body .chart-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
-<!-- Soulaana popup -->
-<div
-    id="soulaanaCheckinModal"
-    class="soulaana-modal {% if show_soulaana_popup %}is-open{% endif %}"
-    aria-hidden="{% if show_soulaana_popup %}false{% else %}true{% endif %}"
->
-    <div class="soulaana-modal-backdrop"></div>
-    <div class="soulaana-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="soulaanaModalTitle">
-        <div class="soulaana-modal-card">
-            <div class="soulaana-modal-kicker">Soulaana</div>
-            <h2 id="soulaanaModalTitle" class="soulaana-modal-title">
-                {{ soulaana_greeting.get("headline", "Hey love, how you feeling coming in today?") }}
-            </h2>
-            <p class="soulaana-modal-subtext">
-                {{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance and catch emotional pressure early.") }}
-            </p>
+<div class="charts-room-shell">
 
-            <form method="POST" action="{{ url_for('soulaana_checkin') }}" class="soulaana-modal-form">
-                <div class="soulaana-modal-chip-grid">
-                    {% for mood in soulaana_greeting.get("checkin_options", []) %}
-                    <button type="submit" name="emotional_state" value="{{ mood }}" class="soulaana-modal-chip">
-                        {{ mood.replace("_", " ").title() }}
-                    </button>
-                    {% endfor %}
-                </div>
-            </form>
+  <section class="chart-hero">
+    <div class="chart-hero-inner">
+      <div>
+        <span class="chart-kicker">Charts Watch Room</span>
+        <h1 class="chart-title">Watch the setup breathe.</h1>
 
-            <form method="POST" action="{{ url_for('soulaana_checkin_skip') }}">
-                <button type="submit" class="soulaana-modal-skip">I’ll answer later</button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Expanded chart modal -->
-<div id="expandedChartModal" class="chart-modal" aria-hidden="true">
-    <div class="chart-modal-backdrop" onclick="closeExpandedChart()"></div>
-    <div class="chart-modal-dialog">
-        <div class="chart-modal-card">
-            <div class="chart-modal-top">
-                <h3 id="expandedChartTitle" class="chart-modal-title">Expanded chart</h3>
-                <button type="button" class="chart-modal-close" onclick="closeExpandedChart()">Close</button>
-            </div>
-            <div class="chart-modal-body">
-                <div id="expanded_tv_chart" style="width:100%; height:100%;"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="charts-shell">
-
-    <!-- Hero -->
-    <div class="charts-hero">
-        <div class="charts-kicker">
-            <span class="charts-pill">chart board</span>
-            <span class="charts-pill">{{ user_mode|title }} mode</span>
-            {% if tier %}
-            <span class="charts-pill">{{ tier }}</span>
-            {% endif %}
-            <span class="charts-pill">{{ chart_cards|length }} symbols</span>
-        </div>
-
-        <h1 class="charts-title">Symbol Watch Command Center</h1>
-        <p class="charts-sub">
-            This is where manual and hybrid users stalk structure, watch pressure build, and decide what deserves more attention before they commit capital.
+        <p class="chart-copy">
+          Charts Watch is the manual and hybrid monitoring room. Use it to review watchlist symbols,
+          price posture, headlines, and the next symbol page to inspect.
         </p>
 
-        <div class="info-row">
-            <span class="info-chip">manual judgment lane</span>
-            <span class="info-chip">watchlist-first workflow</span>
-            <span class="info-chip">news + posture + context</span>
+        <div class="chart-actions">
+          <a class="chart-btn primary" href="/signals">Signals</a>
+          <a class="chart-btn" href="/market-map">Market Map</a>
+          <a class="chart-btn" href="/all-symbols">All Symbols</a>
+          <a class="chart-btn" href="/research">Research</a>
         </div>
+
+        <div class="chart-stats-grid">
+          <div class="chart-stat">
+            <span>Cards</span>
+            <strong>{{ card_count }}</strong>
+          </div>
+          <div class="chart-stat">
+            <span>Mode</span>
+            <strong>{{ mode }}</strong>
+          </div>
+          <div class="chart-stat">
+            <span>Tier</span>
+            <strong>{{ current_tier }}</strong>
+          </div>
+          <div class="chart-stat">
+            <span>Headlines</span>
+            <strong>{{ news_count.value }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="chart-read-card">
+        <div class="chart-orb" aria-hidden="true"></div>
+        <h2>Soulaana chart read</h2>
+        <p>
+          Charts are for patience. Let the setup prove itself with structure,
+          price behavior, and news context before you chase movement.
+        </p>
+      </aside>
     </div>
+  </section>
 
-    <!-- Soulaana -->
-    <div class="soulaana-welcome-card">
-        <div class="soulaana-welcome-inner">
-            <div class="soulaana-kicker">Soulaana</div>
-            <h2 class="soulaana-headline">
-                {{ soulaana_greeting.get("headline", "Hey love, how you feeling coming in today?") }}
-            </h2>
-            <p class="soulaana-subtext">
-                {{ soulaana_greeting.get("subtext", "Your check-in helps tailor guidance and catch emotional pressure early.") }}
-            </p>
+  <div class="chart-grid">
+    <main class="chart-stack">
 
-            {% if soulaana_checkin_headline %}
-            <div class="soulaana-response soulaana-response-{{ soulaana_checkin_tone }}">
-                <div class="soulaana-response-title">{{ soulaana_checkin_headline }}</div>
-                {% if soulaana_checkin_note %}
-                <div class="soulaana-response-note">{{ soulaana_checkin_note }}</div>
-                {% endif %}
-            </div>
-            {% endif %}
-
-            <form method="POST" action="{{ url_for('soulaana_checkin') }}" class="soulaana-mood-form">
-                <div class="soulaana-chip-grid">
-                    {% for mood in soulaana_greeting.get("checkin_options", []) %}
-                    <button
-                        type="submit"
-                        name="emotional_state"
-                        value="{{ mood }}"
-                        class="soulaana-chip {% if soulaana_state == mood %}is-active{% endif %}"
-                    >
-                        {{ mood.replace("_", " ").title() }}
-                    </button>
-                    {% endfor %}
-                </div>
-            </form>
-
-            {% if soulaana_state %}
-            <form method="POST" action="{{ url_for('soulaana_checkin_clear') }}" class="soulaana-reset-form">
-                <button type="submit" class="soulaana-reset-btn">Reset check-in</button>
-            </form>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Chart board -->
-    <div class="section-panel">
-        <div class="section-top">
-            <div>
-                <h2 class="section-title">Watched symbols</h2>
-                <p class="section-copy">
-                    These names are being watched for structure, trend, and timing. Use this page to study before you decide whether to sit still, stalk, or step in.
-                </p>
-            </div>
-            <a href="{{ url_for('dashboard_page') }}" class="action-link">Back to dashboard</a>
+      <section class="chart-panel">
+        <div class="chart-panel-head">
+          <div>
+            <p class="chart-eyebrow">Watchlist</p>
+            <h2>Manual/hybrid chart cards</h2>
+          </div>
+          <span class="chart-chip blue">{{ card_count }} symbols</span>
         </div>
 
-        {% if chart_cards %}
-        <div class="chart-grid">
-            {% for item in chart_cards %}
-            <div class="chart-card">
-                <div class="chart-card-top">
-                    <div>
-                        <div class="chart-symbol">{{ item.get("symbol", "") }}</div>
-                        <div class="chart-company">{{ item.get("company_name", "") }}</div>
-                    </div>
-                    <div class="chart-price-block">
-                        <div class="chart-price">
-                            {% if item.get("price") is not none %}
-                                {{ item.get("price") }}
-                            {% else %}
-                                --
-                            {% endif %}
-                        </div>
-                        <div class="chart-change">
-                            {% if item.get("change_pct") is not none %}
-                                {{ item.get("change_pct") }}%
-                            {% else %}
-                                no move data
-                            {% endif %}
-                        </div>
-                    </div>
+        <div class="chart-search-wrap">
+          <input
+            id="chartSearch"
+            class="chart-search-input"
+            type="text"
+            placeholder="Search symbol, company, headline, trend, or notes..."
+            oninput="filterChartCards()"
+          />
+        </div>
+
+        {% if cards %}
+        <div id="chartCardGrid" class="chart-card-grid" style="margin-top:18px;">
+          {% for item in cards %}
+            {% set symbol = item.symbol if item.symbol is defined else item.get("symbol", "") %}
+            {% set company = item.company_name if item.company_name is defined else item.get("company_name", symbol) %}
+            {% set notes = item.notes if item.notes is defined else item.get("notes", "") %}
+            {% set price = item.price if item.price is defined else item.get("price", none) %}
+            {% set change = item.change_pct if item.change_pct is defined else item.get("change_pct", none) %}
+            {% set trend = item.trend_label if item.trend_label is defined else item.get("trend_label", "") %}
+            {% set headline = item.headline if item.headline is defined else item.get("headline", "") %}
+            {% set news = item.news if item.news is defined else item.get("news", []) %}
+            {% set chart_url = item.chart_url if item.chart_url is defined else item.get("chart_url", "/signals/" ~ symbol) %}
+
+            <a
+              class="chart-card chart-watch-card"
+              href="{{ chart_url or '/signals/' ~ symbol }}"
+              data-search="{{ symbol }} {{ company }} {{ notes }} {{ trend }} {{ headline }}"
+            >
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">
+                <div>
+                  <p class="chart-eyebrow">Symbol</p>
+                  <h3 class="chart-symbol">{{ symbol or "UNKNOWN" }}</h3>
                 </div>
 
-                <div class="chart-badges">
-                    {% if item.get("trend_label") %}
-                    <span class="chart-badge">{{ item.get("trend_label") }}</span>
-                    {% endif %}
-                    {% if item.get("headline") %}
-                    <span class="chart-badge">{{ item.get("headline") }}</span>
-                    {% endif %}
-                    <span class="chart-badge">watch mode</span>
-                </div>
-
-                <div class="chart-chartbox">
-                    <div id="tv_chart_{{ item.symbol }}" style="width:100%; height:150px;"></div>
-                </div>
-
-                {% if item.get("notes") %}
-                <div class="chart-notes">{{ item.get("notes") }}</div>
+                {% if change is not none and change|string != "" %}
+                  {% if change|float >= 0 %}
+                    <span class="chart-chip green">{{ change }}%</span>
+                  {% else %}
+                    <span class="chart-chip red">{{ change }}%</span>
+                  {% endif %}
+                {% elif trend %}
+                  <span class="chart-chip blue">{{ trend }}</span>
+                {% else %}
+                  <span class="chart-chip gold">Watch</span>
                 {% endif %}
+              </div>
 
-                {% if item.get("news") %}
-                <div class="chart-news-list">
-                    {% for news_item in item.get("news", []) %}
-                    <a href="{{ news_item.get('url', '#') }}" class="chart-news-item" target="_blank" rel="noopener noreferrer">
-                        <div class="chart-news-title">{{ news_item.get("title", "Untitled update") }}</div>
-                    </a>
-                    {% endfor %}
-                </div>
-                {% endif %}
+              <p style="margin-top:10px;"><strong style="color:#f8fafc;">{{ company or symbol }}</strong></p>
 
-                <div class="chart-actions">
-                    <a href="{{ item.get('chart_url', '#') }}" class="chart-action">Open symbol</a>
-                    <button type="button" class="chart-action" onclick="openExpandedChart('{{ item.get('symbol', '') }}')">
-                        Expand chart
-                    </button>
-                    <button type="button" class="chart-action" onclick="addToPlay('{{ item.get('symbol', '') }}')">
-                        Add to My Plays
-                    </button>
-                </div>
-            </div>
-            {% endfor %}
+              <div class="chart-mini" aria-hidden="true">
+                <svg viewBox="0 0 320 86" preserveAspectRatio="none">
+                  <polyline
+                    points="0,62 38,56 74,60 110,44 146,48 182,34 218,38 254,24 320,30"
+                    fill="none"
+                    stroke="rgba(196,181,253,0.88)"
+                    stroke-width="4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+                  </polyline>
+                  <circle cx="320" cy="30" r="5" fill="rgba(34,197,94,0.92)"></circle>
+                </svg>
+              </div>
+
+              {% if price is not none and price|string != "" %}
+                <p><strong style="color:#f8fafc;">Price:</strong> {{ price }}</p>
+              {% endif %}
+
+              {% if trend %}
+                <p style="margin-top:8px;"><strong style="color:#f8fafc;">Trend:</strong> {{ trend }}</p>
+              {% endif %}
+
+              {% if headline %}
+                <p style="margin-top:8px;">{{ headline }}</p>
+              {% elif notes %}
+                <p style="margin-top:8px;">{{ notes }}</p>
+              {% else %}
+                <p style="margin-top:8px;">Open the symbol page for deeper intelligence.</p>
+              {% endif %}
+
+              {% if news %}
+              <div class="chart-news-list">
+                {% for news_item in news[:3] %}
+                  <div class="chart-news-line">
+                    {% if news_item is mapping %}
+                      {{ news_item.title if news_item.title is defined else news_item.get("title", news_item) }}
+                    {% else %}
+                      {{ news_item }}
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </a>
+          {% endfor %}
         </div>
         {% else %}
-        <p class="section-copy">No watch symbols are loaded yet.</p>
+        <div class="chart-empty" style="margin-top:18px;">
+          <h3 style="margin:0 0 8px;">No chart cards loaded</h3>
+          <p style="margin:0;">
+            The route is active, but the watchlist/chart payload is empty.
+          </p>
+        </div>
         {% endif %}
-    </div>
+      </section>
+
+    </main>
+
+    <aside class="chart-stack">
+
+      <section class="chart-panel">
+        <div class="chart-panel-head">
+          <div>
+            <p class="chart-eyebrow">Room posture</p>
+            <h2>Manual watch controls</h2>
+          </div>
+        </div>
+
+        <div class="chart-card-grid" style="grid-template-columns:1fr;">
+          <article class="chart-card">
+            <h3>Workflow mode</h3>
+            <p>{{ mode }} mode is active for this route.</p>
+          </article>
+          <article class="chart-card">
+            <h3>Priced cards</h3>
+            <p>{{ price_count.value }} symbol card(s) include current price context.</p>
+          </article>
+          <article class="chart-card">
+            <h3>Directional split</h3>
+            <p>{{ up_count.value }} positive/flat card(s), {{ down_count.value }} negative card(s).</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="chart-panel">
+        <div class="chart-panel-head">
+          <div>
+            <p class="chart-eyebrow">Connected rooms</p>
+            <h2>Discovery flow</h2>
+          </div>
+        </div>
+
+        <div class="chart-stack">
+          <a class="chart-card" href="/signals" style="text-decoration:none;">
+            <h3>Signals</h3>
+            <p>Move from chart watch to ranked signal context.</p>
+          </a>
+          <a class="chart-card" href="/market-map" style="text-decoration:none;">
+            <h3>Market Map</h3>
+            <p>Return to the atlas view for cluster and sector context.</p>
+          </a>
+          <a class="chart-card" href="/all-symbols" style="text-decoration:none;">
+            <h3>All Symbols</h3>
+            <p>Search broader symbol coverage.</p>
+          </a>
+          <a class="chart-card" href="/research" style="text-decoration:none;">
+            <h3>Research</h3>
+            <p>Use the research room to understand broader market pressure.</p>
+          </a>
+        </div>
+      </section>
+
+      {% if show_soulaana_popup %}
+      <section class="chart-panel">
+        <div class="chart-panel-head">
+          <div>
+            <p class="chart-eyebrow">Check-in</p>
+            <h2>{{ soulaana_checkin_headline or "Soulaana check-in" }}</h2>
+          </div>
+          <span class="chart-chip gold">{{ soulaana_checkin_tone or "steady" }}</span>
+        </div>
+        <p class="chart-muted">{{ soulaana_checkin_note or "Choose a steady watch posture before acting on chart movement." }}</p>
+      </section>
+      {% endif %}
+
+      <details class="chart-drawer">
+        <summary>Preserved system payload</summary>
+        <div class="chart-drawer-body">
+          <pre>{{ sys }}</pre>
+        </div>
+      </details>
+
+      <details class="chart-drawer">
+        <summary>Preserved chart payload</summary>
+        <div class="chart-drawer-body">
+          <pre>{{ cards }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
 </div>
 
-<script src="https://s3.tradingview.com/tv.js"></script>
 <script>
-(function () {
-    const cards = {{ chart_cards|tojson|safe }};
-    let expandedWidget = null;
+function filterChartCards() {
+  const input = document.getElementById("chartSearch");
+  const query = (input && input.value ? input.value : "").toLowerCase().trim();
+  const cards = document.querySelectorAll(".chart-watch-card");
 
-    function buildTvSymbol(symbol) {
-        const upper = String(symbol || "").toUpperCase().trim();
-        if (!upper) return "NASDAQ:AAPL";
-        return "NASDAQ:" + upper;
-    }
-
-    function mountMiniCharts() {
-        if (typeof TradingView === "undefined") return;
-
-        cards.forEach((item) => {
-            const symbol = item.symbol;
-            const containerId = "tv_chart_" + symbol;
-            const node = document.getElementById(containerId);
-            if (!node) return;
-
-            node.innerHTML = "";
-
-            new TradingView.widget({
-                autosize: true,
-                symbol: buildTvSymbol(symbol),
-                interval: "15",
-                timezone: "America/New_York",
-                theme: "dark",
-                style: "1",
-                locale: "en",
-                enable_publishing: false,
-                allow_symbol_change: false,
-                hide_top_toolbar: true,
-                hide_legend: true,
-                withdateranges: false,
-                save_image: false,
-                container_id: containerId,
-                backgroundColor: "rgba(0,0,0,0)",
-                gridColor: "rgba(255,255,255,0.04)"
-            });
-        });
-    }
-
-    window.openExpandedChart = function (symbol) {
-        const modal = document.getElementById("expandedChartModal");
-        const title = document.getElementById("expandedChartTitle");
-        const container = document.getElementById("expanded_tv_chart");
-
-        if (!modal || !title || !container || typeof TradingView === "undefined") return;
-
-        title.textContent = (symbol || "Symbol") + " — Expanded Chart";
-        modal.classList.add("is-open");
-        modal.setAttribute("aria-hidden", "false");
-        container.innerHTML = "";
-
-        expandedWidget = new TradingView.widget({
-            autosize: true,
-            symbol: buildTvSymbol(symbol),
-            interval: "5",
-            timezone: "America/New_York",
-            theme: "dark",
-            style: "1",
-            locale: "en",
-            enable_publishing: false,
-            allow_symbol_change: true,
-            hide_top_toolbar: false,
-            hide_legend: false,
-            withdateranges: true,
-            save_image: false,
-            container_id: "expanded_tv_chart",
-            backgroundColor: "rgba(0,0,0,0)",
-            gridColor: "rgba(255,255,255,0.05)"
-        });
-    };
-
-    window.closeExpandedChart = function () {
-        const modal = document.getElementById("expandedChartModal");
-        const container = document.getElementById("expanded_tv_chart");
-        if (!modal || !container) return;
-
-        modal.classList.remove("is-open");
-        modal.setAttribute("aria-hidden", "true");
-        container.innerHTML = "";
-        expandedWidget = null;
-    };
-
-    window.addToPlay = function (symbol) {
-        fetch("/add-to-play", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ symbol: symbol })
-        })
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error("Request failed");
-            }
-            return res.json().catch(() => ({}));
-        })
-        .then(() => {
-            alert(symbol + " was added to My Plays.");
-        })
-        .catch(() => {
-            alert("Could not add " + symbol + " to My Plays.");
-        });
-    };
-
-    document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape") {
-            window.closeExpandedChart();
-        }
-    });
-
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", mountMiniCharts);
-    } else {
-        mountMiniCharts();
-    }
-})();
+  cards.forEach((card) => {
+    const haystack = (card.getAttribute("data-search") || card.textContent || "").toLowerCase();
+    card.style.display = (!query || haystack.includes(query)) ? "" : "none";
+  });
+}
 </script>
-
 {% endblock %}

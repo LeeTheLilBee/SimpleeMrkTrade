@@ -1,228 +1,630 @@
 {% extends "base.html" %}
+
+{% block title %}Symbol Universe · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_MARKET_DISCOVERY_SESSION_010D_ALL_SYMBOLS_DARK_REWRITE -->
+
+{% set symbol_cards = final_all_symbol_cards if final_all_symbol_cards is defined and final_all_symbol_cards else [] %}
+{% set payloads = fusion_payloads if fusion_payloads is defined and fusion_payloads else [] %}
+{% set brain_map = final_brain_map if final_brain_map is defined and final_brain_map else {} %}
+{% set current_tier = tier if tier is defined and tier else "Free" %}
+{% set card_count = symbol_cards|length %}
+{% set payload_count = payloads|length %}
+{% set brain_count = brain_map|length %}
+{% set strong_count = namespace(value=0) %}
+{% set watch_count = namespace(value=0) %}
+{% set weak_count = namespace(value=0) %}
+
+{% for card in symbol_cards %}
+  {% set quality = card.quality if card.quality is defined else card.get("quality", card.get("bucket", card.get("confidence", ""))) %}
+  {% set score = card.score if card.score is defined else card.get("score", card.get("final_score", 0)) %}
+  {% set quality_text = quality|string|lower %}
+  {% if "strong" in quality_text or score|int >= 75 %}
+    {% set strong_count.value = strong_count.value + 1 %}
+  {% elif "weak" in quality_text or score|int < 50 %}
+    {% set weak_count.value = weak_count.value + 1 %}
+  {% else %}
+    {% set watch_count.value = watch_count.value + 1 %}
+  {% endif %}
+{% endfor %}
 
 <style>
-.all-symbols-shell {
-    display: grid;
-    gap: 20px;
-}
+  /* OBSERVATORY_MARKET_DISCOVERY_SESSION_010D_ALL_SYMBOLS_DARK_REWRITE_STYLES */
 
-.all-symbols-hero {
+  html body .symbols-room-shell,
+  html body .symbols-room-shell * {
+    box-sizing: border-box;
+  }
+
+  html body .symbols-room-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
+
+  html body .symbols-room-shell a {
+    color: inherit;
+  }
+
+  html body .sym-hero,
+  html body .sym-panel,
+  html body .sym-card,
+  html body .sym-chip,
+  html body .sym-stat,
+  html body .sym-empty,
+  html body .sym-drawer,
+  html body .sym-search-input {
+    color-scheme: dark;
+  }
+
+  html body .sym-hero {
     position: relative;
     overflow: hidden;
-    border-radius: 28px;
-    padding: 24px;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
     background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.22), transparent 32%),
-        radial-gradient(circle at 78% 22%, rgba(255, 95, 207, 0.16), transparent 26%),
-        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 22px 48px rgba(0,0,0,0.32);
-}
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
 
-.all-symbols-hero::before {
+  html body .sym-hero::before {
     content: "";
     position: absolute;
-    right: 46px;
-    top: 30px;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(143,199,255,0.60) 18%, rgba(124,77,255,0.34) 44%, transparent 74%);
-    filter: blur(10px);
-    opacity: 0.92;
+    inset: 0;
     pointer-events: none;
-}
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
 
-.all-symbols-kicker {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-}
+  html body .sym-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
 
-.all-symbols-pill,
-.info-chip {
+  html body .sym-kicker,
+  html body .sym-eyebrow {
     display: inline-flex;
     align-items: center;
-    padding: 6px 10px;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html body .sym-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
     border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.10);
-}
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
 
-.all-symbols-title {
-    margin: 0 0 8px 0;
-    font-size: 1.8rem;
-    font-weight: 800;
-}
+  html body .sym-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
 
-.all-symbols-sub {
+  html body .sym-copy,
+  html body .sym-muted,
+  html body .sym-card p,
+  html body .sym-empty p,
+  html body .sym-drawer-body {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  html body .sym-copy {
+    max-width: 780px;
     margin: 0;
-    max-width: 900px;
-    opacity: 0.9;
-    line-height: 1.48;
-}
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
 
-.search-panel {
-    border-radius: 24px;
-    padding: 18px;
-    background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.10), transparent 34%),
-        linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
-}
-
-.symbol-search-input {
-    width: 100%;
-    padding: 14px 16px;
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.10);
-    background: rgba(255,255,255,0.05);
-    color: white;
-    font-size: 0.95rem;
-    outline: none;
-}
-
-.symbol-search-input::placeholder {
-    color: rgba(255,255,255,0.45);
-}
-
-.symbol-universe-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-}
-
-.symbol-universe-card {
-    display: block;
-    padding: 18px;
-    border-radius: 24px;
-    background:
-        radial-gradient(circle at top left, rgba(124, 77, 255, 0.14), transparent 34%),
-        linear-gradient(135deg, rgba(14, 11, 29, 0.98), rgba(8, 7, 18, 0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    color: white;
-    text-decoration: none;
-    box-shadow: 0 14px 32px rgba(0,0,0,0.24);
-}
-
-.symbol-universe-card h3 {
-    margin: 0 0 4px 0;
-}
-
-.symbol-universe-company {
-    margin: 0 0 10px 0;
-    opacity: 0.7;
-    font-size: 0.92rem;
-}
-
-.symbol-universe-summary {
-    margin: 0;
-    opacity: 0.88;
-    line-height: 1.45;
-}
-
-.info-row {
+  html body .sym-actions {
     display: flex;
-    gap: 8px;
     flex-wrap: wrap;
-    margin-top: 12px;
-}
+    gap: 10px;
+    margin-top: 22px;
+  }
 
-.empty-state {
+  html body .sym-btn,
+  html body .sym-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
+
+  html body .sym-btn:hover,
+  html body .sym-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .sym-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .sym-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .sym-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .sym-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .sym-chip.red {
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #fecaca;
+  }
+
+  html body .sym-read-card {
+    min-height: 100%;
+    padding: 20px;
     border-radius: 24px;
-    padding: 22px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
     background:
-        linear-gradient(135deg, rgba(13, 11, 25, 0.98), rgba(8, 7, 18, 0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-}
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
 
-@media (max-width: 980px) {
-    .symbol-universe-grid {
-        grid-template-columns: 1fr;
+  html body .sym-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .sym-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .sym-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .sym-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .sym-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .sym-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .sym-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .sym-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .sym-stack,
+  html body .sym-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .sym-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  html body .sym-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .sym-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .sym-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .sym-panel h2,
+  html body .sym-panel h3,
+  html body .sym-card h3,
+  html body .sym-empty h3,
+  html body .sym-drawer summary {
+    color: #f8fafc;
+  }
+
+  html body .sym-panel h2,
+  html body .sym-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .sym-search-wrap {
+    margin-top: 16px;
+  }
+
+  html body .sym-search-input {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    background: rgba(2, 6, 23, 0.72);
+    color: #e5e7eb;
+    padding: 12px 14px;
+    outline: none;
+    font-size: 0.95rem;
+  }
+
+  html body .sym-search-input:focus {
+    border-color: rgba(196, 181, 253, 0.72);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+  }
+
+  html body .sym-card,
+  html body .sym-empty {
+    display: block;
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  html body .sym-card h3 {
+    margin: 0 0 8px;
+  }
+
+  html body .sym-card p {
+    margin: 0;
+  }
+
+  html body .sym-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .sym-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .sym-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .sym-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 940px) {
+    html body .sym-hero-inner,
+    html body .sym-grid {
+      grid-template-columns: 1fr;
     }
-}
+
+    html body .sym-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    html body .symbols-room-shell {
+      padding: 18px 12px 38px;
+    }
+
+    html body .sym-hero-inner {
+      padding: 20px;
+    }
+
+    html body .sym-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
-{% set card_count = all_symbol_cards|length if all_symbol_cards else 0 %}
+<div class="symbols-room-shell">
 
-<div class="all-symbols-shell">
+  <section class="sym-hero">
+    <div class="sym-hero-inner">
+      <div>
+        <span class="sym-kicker">Symbol Universe</span>
+        <h1 class="sym-title">Every symbol gets a read.</h1>
 
-    <div class="all-symbols-hero">
-        <div class="all-symbols-kicker">
-            <span class="all-symbols-pill">all symbols</span>
-            <span class="all-symbols-pill">{{ tier }}</span>
-            <span class="all-symbols-pill">{{ card_count }} visible</span>
+        <p class="sym-copy">
+          All Symbols is the broad discovery room. Search the fused symbol universe,
+          open a symbol intelligence page, and separate conviction from noise.
+        </p>
+
+        <div class="sym-actions">
+          <a class="sym-btn primary" href="/signals">Signals</a>
+          <a class="sym-btn" href="/market-map">Market Map</a>
+          <a class="sym-btn" href="/charts">Charts</a>
+          <a class="sym-btn" href="/research">Research</a>
         </div>
 
-        <h1 class="all-symbols-title">Symbol Universe</h1>
-        <p class="all-symbols-sub">
-            Search the full fused symbol universe. Every card reflects command posture, threat awareness, timeline phase, and the current fused summary.
+        <div class="sym-stats-grid">
+          <div class="sym-stat">
+            <span>Visible Cards</span>
+            <strong>{{ card_count }}</strong>
+          </div>
+          <div class="sym-stat">
+            <span>Fusion Payloads</span>
+            <strong>{{ payload_count }}</strong>
+          </div>
+          <div class="sym-stat">
+            <span>Final Brain</span>
+            <strong>{{ brain_count }}</strong>
+          </div>
+          <div class="sym-stat">
+            <span>Tier</span>
+            <strong>{{ current_tier }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="sym-read-card">
+        <div class="sym-orb" aria-hidden="true"></div>
+        <h2>Soulaana symbol read</h2>
+        <p>
+          Breadth is useful only when it has separation. Search wide, then favor symbols
+          with cleaner score, stronger context, and clearer follow-through.
         </p>
+      </aside>
     </div>
+  </section>
 
-    <div class="search-panel">
-        <input
+  <div class="sym-grid">
+    <main class="sym-stack">
+
+      <section class="sym-panel">
+        <div class="sym-panel-head">
+          <div>
+            <p class="sym-eyebrow">Directory</p>
+            <h2>Search the fused universe</h2>
+          </div>
+          <span class="sym-chip blue">{{ card_count }} visible</span>
+        </div>
+
+        <div class="sym-search-wrap">
+          <input
             id="symbolSearch"
-            class="symbol-search-input"
+            class="sym-search-input"
             type="text"
-            placeholder="Search symbol or company name..."
+            placeholder="Search symbol, company, setup, score, or summary..."
             oninput="filterSymbolCards()"
-        />
-    </div>
+          />
+        </div>
 
-    {% if all_symbol_cards %}
-    <div id="symbolUniverseGrid" class="symbol-universe-grid">
-        {% for card in all_symbol_cards %}
-        <a
-            href="/signals/{{ card.get('symbol') }}"
-            class="symbol-universe-card"
-            data-symbol="{{ (card.get('symbol') or '')|lower }}"
-            data-company="{{ (card.get('company_name') or '')|lower }}"
-        >
-            <h3>{{ card.get("symbol", "") }}</h3>
-            <p class="symbol-universe-company">{{ card.get("company_name", "") }}</p>
-            <p class="symbol-universe-summary">{{ card.get("summary", "") }}</p>
+        {% if symbol_cards %}
+        <div id="symbolUniverseGrid" class="sym-card-grid" style="margin-top:18px;">
+          {% for card in symbol_cards %}
+            {% set symbol = card.symbol if card.symbol is defined else card.get("symbol", "") %}
+            {% set company = card.company_name if card.company_name is defined else card.get("company_name", card.get("company", symbol)) %}
+            {% set summary = card.summary if card.summary is defined else card.get("summary", card.get("headline", "Symbol intelligence is available.")) %}
+            {% set score = card.score if card.score is defined else card.get("score", card.get("final_score", "")) %}
+            {% set confidence = card.confidence if card.confidence is defined else card.get("confidence", card.get("quality", "")) %}
+            {% set direction = card.direction if card.direction is defined else card.get("direction", "") %}
+            {% set setup = card.setup_type if card.setup_type is defined else card.get("setup_type", card.get("setup", "")) %}
 
-            <div class="info-row">
-                <span class="info-chip">{{ card.get("final_state", "unknown") }}</span>
-                <span class="info-chip">{{ card.get("command", "stand_down") }}</span>
-                <span class="info-chip">Threat: {{ card.get("threat_level", "low") }}</span>
-                <span class="info-chip">Phase: {{ card.get("timeline_phase", "unknown") }}</span>
-            </div>
+            <a
+              class="sym-card symbol-universe-card"
+              href="/signals/{{ symbol }}"
+              data-search="{{ symbol }} {{ company }} {{ summary }} {{ confidence }} {{ direction }} {{ setup }} {{ score }}"
+            >
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">
+                <div>
+                  <p class="sym-eyebrow">Symbol</p>
+                  <h3>{{ symbol or "UNKNOWN" }}</h3>
+                </div>
+                {% if score %}
+                  <span class="sym-chip gold">Score {{ score }}</span>
+                {% elif confidence %}
+                  <span class="sym-chip blue">{{ confidence }}</span>
+                {% else %}
+                  <span class="sym-chip blue">Research</span>
+                {% endif %}
+              </div>
 
-            <div class="info-row">
-                <span class="info-chip">Next: {{ card.get("next_action", "wait") }}</span>
-            </div>
-        </a>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="empty-state">
-        <h3>No Symbols Available</h3>
-        <p>There are no fused symbol cards available right now.</p>
-    </div>
-    {% endif %}
+              <p style="margin-top:10px;"><strong style="color:#f8fafc;">{{ company or symbol }}</strong></p>
+              <p style="margin-top:8px;">{{ summary }}</p>
 
+              <div class="sym-actions">
+                {% if confidence %}<span class="sym-chip blue">{{ confidence }}</span>{% endif %}
+                {% if direction %}<span class="sym-chip green">{{ direction }}</span>{% endif %}
+                {% if setup %}<span class="sym-chip gold">{{ setup }}</span>{% endif %}
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="sym-empty" style="margin-top:18px;">
+          <h3 style="margin:0 0 8px;">No symbol cards loaded</h3>
+          <p style="margin:0;">
+            The route is active, but the final symbol card payload is empty.
+          </p>
+        </div>
+        {% endif %}
+      </section>
+
+    </main>
+
+    <aside class="sym-stack">
+
+      <section class="sym-panel">
+        <div class="sym-panel-head">
+          <div>
+            <p class="sym-eyebrow">Quality split</p>
+            <h2>Coverage posture</h2>
+          </div>
+        </div>
+
+        <div class="sym-card-grid" style="grid-template-columns:1fr;">
+          <article class="sym-card">
+            <h3>Strong / high score</h3>
+            <p>{{ strong_count.value }} symbol(s) currently look stronger by simple score/quality read.</p>
+          </article>
+          <article class="sym-card">
+            <h3>Watch / middle</h3>
+            <p>{{ watch_count.value }} symbol(s) sit in the middle and need confirmation.</p>
+          </article>
+          <article class="sym-card">
+            <h3>Weak / low score</h3>
+            <p>{{ weak_count.value }} symbol(s) need caution or better context before action.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="sym-panel">
+        <div class="sym-panel-head">
+          <div>
+            <p class="sym-eyebrow">Connected rooms</p>
+            <h2>Discovery flow</h2>
+          </div>
+        </div>
+
+        <div class="sym-stack">
+          <a class="sym-card" href="/market-map" style="text-decoration:none;">
+            <h3>Market Map</h3>
+            <p>Use the visual atlas to see where clusters are forming.</p>
+          </a>
+          <a class="sym-card" href="/signals" style="text-decoration:none;">
+            <h3>Signals</h3>
+            <p>Compare symbols against active signal rankings and command posture.</p>
+          </a>
+          <a class="sym-card" href="/charts" style="text-decoration:none;">
+            <h3>Charts</h3>
+            <p>Open manual/hybrid chart watch mode for focused monitoring.</p>
+          </a>
+          <a class="sym-card" href="/research" style="text-decoration:none;">
+            <h3>Research</h3>
+            <p>Return to the research command room for broader interpretation.</p>
+          </a>
+        </div>
+      </section>
+
+      <details class="sym-drawer">
+        <summary>Preserved final brain map</summary>
+        <div class="sym-drawer-body">
+          <pre>{{ brain_map }}</pre>
+        </div>
+      </details>
+
+      <details class="sym-drawer">
+        <summary>Preserved fusion payload count</summary>
+        <div class="sym-drawer-body">
+          <pre>{{ payloads }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
 </div>
 
 <script>
 function filterSymbolCards() {
-    const input = document.getElementById("symbolSearch");
-    const query = (input.value || "").toLowerCase().trim();
-    const cards = document.querySelectorAll(".symbol-universe-card");
+  const input = document.getElementById("symbolSearch");
+  const query = (input && input.value ? input.value : "").toLowerCase().trim();
+  const cards = document.querySelectorAll(".symbol-universe-card");
 
-    cards.forEach((card) => {
-        const symbol = card.getAttribute("data-symbol") || "";
-        const company = card.getAttribute("data-company") || "";
-        const show = !query || symbol.includes(query) || company.includes(query);
-        card.style.display = show ? "block" : "none";
-    });
+  cards.forEach((card) => {
+    const haystack = (card.getAttribute("data-search") || card.textContent || "").toLowerCase();
+    card.style.display = (!query || haystack.includes(query)) ? "" : "none";
+  });
 }
 </script>
-
 {% endblock %}

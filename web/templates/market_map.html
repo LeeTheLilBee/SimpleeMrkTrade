@@ -1,630 +1,668 @@
 {% extends "base.html" %}
 
+{% block title %}Market Map · The Observatory{% endblock %}
+
 {% block content %}
+<!-- OBSERVATORY_MARKET_DISCOVERY_SESSION_010B_MARKET_MAP_DARK_REWRITE -->
+
+{% set map_data = v2_market_map if v2_market_map is defined and v2_market_map else {} %}
+{% set interactions = v2_market_interactions if v2_market_interactions is defined and v2_market_interactions else {} %}
+{% set layers = v2_map_layers if v2_map_layers is defined and v2_map_layers else [] %}
+{% set constellations = mapped_constellations if mapped_constellations is defined and mapped_constellations else {} %}
+{% set grouped_tiles = map_data.grouped_tiles if map_data.grouped_tiles is defined else map_data.get("grouped_tiles", {}) %}
+{% set summary = map_data.summary if map_data.summary is defined else map_data.get("summary", {}) %}
+{% set default_layer = layers[0] if layers else {} %}
+{% set constellation_count = constellations|length %}
+{% set layer_count = layers|length %}
+{% set total_stars = namespace(value=0) %}
+{% for bucket, constellation in constellations.items() %}
+  {% set stars = constellation.stars if constellation.stars is defined else constellation.get("stars", []) %}
+  {% set total_stars.value = total_stars.value + (stars|length) %}
+{% endfor %}
+
 <style>
-html, body {
-    min-height: 100%;
-    background: radial-gradient(ellipse at bottom, #07050f 0%, #020107 100%);
-}
+  /* OBSERVATORY_MARKET_DISCOVERY_SESSION_010B_MARKET_MAP_DARK_REWRITE_STYLES */
 
-body {
-    overflow-x: hidden;
-}
+  html body .market-map-room,
+  html body .market-map-room * {
+    box-sizing: border-box;
+  }
 
-.main-container, .container, main {
-    max-width: none !important;
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
+  html body .market-map-room {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    color: #e5e7eb;
+    color-scheme: dark;
+  }
 
-.map-shell {
+  html body .market-map-room a {
+    color: inherit;
+  }
+
+  html body .mm-hero,
+  html body .mm-panel,
+  html body .mm-card,
+  html body .mm-chip,
+  html body .mm-stat,
+  html body .mm-empty,
+  html body .mm-drawer,
+  html body .mm-atlas {
+    color-scheme: dark;
+  }
+
+  html body .mm-hero {
     position: relative;
-    width: 100%;
-    min-height: 100vh;
     overflow: hidden;
-    color: white;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
     background:
-        radial-gradient(circle at 22% 22%, rgba(120, 82, 255, 0.07), transparent 22%),
-        radial-gradient(circle at 78% 30%, rgba(255, 98, 196, 0.05), transparent 18%),
-        radial-gradient(circle at 58% 76%, rgba(96, 166, 255, 0.05), transparent 22%),
-        linear-gradient(180deg, #06040d 0%, #020107 100%);
-}
+      radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.26), transparent 34%),
+      radial-gradient(circle at 86% 12%, rgba(14, 165, 233, 0.14), transparent 32%),
+      radial-gradient(circle at 70% 88%, rgba(250, 204, 21, 0.08), transparent 28%),
+      linear-gradient(135deg, #090d1a 0%, #020617 100%);
+    color: #f8fafc;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+  }
 
-.map-header {
-    position: absolute;
-    top: 24px;
-    left: 26px;
-    z-index: 40;
-    display: grid;
-    gap: 10px;
-}
-
-.map-title {
-    font-size: 1.35rem;
-    font-weight: 800;
-    letter-spacing: 0.03em;
-    text-transform: lowercase;
-}
-
-.map-sub {
-    font-size: 0.9rem;
-    opacity: 0.72;
-    max-width: 420px;
-    line-height: 1.35;
-}
-
-.map-chip-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.map-chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    backdrop-filter: blur(6px);
-}
-
-.map-layers {
-    position: absolute;
-    right: 24px;
-    top: 24px;
-    z-index: 42;
-    width: 280px;
-    padding: 14px;
-    border-radius: 18px;
-    background: rgba(7, 7, 15, 0.92);
-    border: 1px solid rgba(255,255,255,0.10);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.35);
-}
-
-.map-layers h3 {
-    margin: 0 0 10px 0;
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.92;
-}
-
-.layer-list {
-    display: grid;
-    gap: 8px;
-}
-
-.layer-pill {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.06);
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 160ms ease;
-}
-
-.layer-pill:hover {
-    background: rgba(255,255,255,0.07);
-}
-
-.layer-pill.active {
-    background: rgba(124, 77, 255, 0.16);
-    border-color: rgba(124, 77, 255, 0.28);
-}
-
-.starfield {
+  html body .mm-hero::before {
+    content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
-    animation: fieldDrift 120s linear infinite alternate;
-}
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 55% 35%, black, transparent 76%);
+  }
 
-@keyframes fieldDrift {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-1.2%, 0.8%, 0); }
-}
-
-.bg-star {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-.bg-star.tiny { width: 1px; height: 1px; }
-.bg-star.small { width: 2px; height: 2px; }
-.bg-star.medium { width: 3px; height: 3px; }
-
-.bg-star.blue { background: #8fc8ff; box-shadow: 0 0 8px rgba(143, 200, 255, 0.34); }
-.bg-star.pink { background: #ffb3df; box-shadow: 0 0 8px rgba(255, 179, 223, 0.30); }
-.bg-star.gold { background: #ffe4ae; box-shadow: 0 0 8px rgba(255, 228, 174, 0.22); }
-.bg-star.purple { background: #d7b8ff; box-shadow: 0 0 8px rgba(215, 184, 255, 0.28); }
-
-@keyframes twinkleSlow {
-    0%,100% { opacity: 0.16; transform: scale(1); }
-    50% { opacity: 0.62; transform: scale(1.06); }
-}
-@keyframes twinkleMid {
-    0%,100% { opacity: 0.24; transform: scale(1); }
-    50% { opacity: 0.84; transform: scale(1.08); }
-}
-@keyframes twinkleFast {
-    0%,100% { opacity: 0.30; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.14); }
-}
-
-.map-field {
+  html body .mm-hero-inner {
     position: relative;
-    min-height: 100vh;
-    z-index: 10;
-}
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 22px;
+    padding: 28px;
+  }
 
-.map-cluster {
-    position: absolute;
-    width: 380px;
-    height: 300px;
-}
-
-.map-cluster::before {
-    content: "";
-    position: absolute;
-    inset: -34px;
-    border-radius: 50%;
-    filter: blur(28px);
-    opacity: 0.18;
-    pointer-events: none;
-}
-
-.map-cluster.energy::before {
-    background: radial-gradient(circle, rgba(255, 94, 180, 0.18), transparent 70%);
-}
-.map-cluster.technology::before {
-    background: radial-gradient(circle, rgba(90, 180, 255, 0.18), transparent 70%);
-}
-.map-cluster.healthcare::before {
-    background: radial-gradient(circle, rgba(180, 120, 255, 0.18), transparent 70%);
-}
-.map-cluster.general::before,
-.map-cluster.finance::before,
-.map-cluster.consumer::before,
-.map-cluster.industrials::before,
-.map-cluster.real_assets::before {
-    background: radial-gradient(circle, rgba(255, 214, 143, 0.14), transparent 70%);
-}
-
-.cluster-label {
-    position: absolute;
-    top: -18px;
-    left: 0;
-    font-size: 0.75rem;
-    font-weight: 800;
+  html body .mm-kicker,
+  html body .mm-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: #c4b5fd;
+    font-size: 0.74rem;
+    font-weight: 900;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    opacity: 0.62;
-}
+  }
 
-.cluster-constellation-name {
-    position: absolute;
-    top: -2px;
-    left: 0;
-    font-size: 0.72rem;
-    opacity: 0.42;
-    font-style: italic;
-}
-
-.constellation-line {
-    position: absolute;
-    height: 1px;
-    transform-origin: left center;
-    opacity: 0.22;
-    pointer-events: none;
-}
-
-.line-energy { background: linear-gradient(90deg, rgba(255, 94, 180, 0.00), rgba(255, 94, 180, 0.55), rgba(255, 94, 180, 0.00)); }
-.line-technology { background: linear-gradient(90deg, rgba(90, 180, 255, 0.00), rgba(90, 180, 255, 0.55), rgba(90, 180, 255, 0.00)); }
-.line-healthcare { background: linear-gradient(90deg, rgba(180, 120, 255, 0.00), rgba(180, 120, 255, 0.55), rgba(180, 120, 255, 0.00)); }
-.line-general,
-.line-finance,
-.line-consumer,
-.line-industrials,
-.line-real_assets {
-    background: linear-gradient(90deg, rgba(255, 214, 143, 0.00), rgba(255, 214, 143, 0.50), rgba(255, 214, 143, 0.00));
-}
-
-.map-star-wrap {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    width: 90px;
-    height: 90px;
-}
-
-.map-star-link {
-    position: absolute;
-    inset: 0;
-    text-decoration: none;
-    color: white;
-}
-
-.map-hover-zone {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: transparent;
-}
-
-.map-star-core {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: white;
-    transition: transform 160ms ease;
-}
-
-.map-star-core::before {
-    content: "";
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    filter: blur(10px);
-    opacity: 0.40;
-    z-index: -1;
-}
-
-.map-star-core::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 180%;
-    height: 2px;
-    transform: translate(-50%, -50%);
-    opacity: 0.20;
+  html body .mm-kicker {
+    min-height: 32px;
+    padding: 7px 11px;
     border-radius: 999px;
-    box-shadow: 0 0 10px currentColor;
-    z-index: -1;
-}
+    border: 1px solid rgba(196, 181, 253, 0.32);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+  }
 
-.map-star-flare {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 2px;
-    transform: translate(-50%, -50%);
-    opacity: 0.18;
-    border-radius: 999px;
-    box-shadow: 0 0 10px currentColor;
-}
+  html body .mm-title {
+    margin: 16px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(2.35rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.08em;
+  }
 
-.map-star-wrap:hover .map-star-core {
-    transform: translate(-50%, -50%) scale(1.08);
-}
+  html body .mm-copy,
+  html body .mm-muted,
+  html body .mm-card p,
+  html body .mm-empty p,
+  html body .mm-drawer-body,
+  html body .mm-star-meta {
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
 
-.map-star-wrap:hover .map-star-core::before {
-    opacity: 0.60;
-}
+  html body .mm-copy {
+    max-width: 780px;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
 
-.map-size-3 .map-star-core { width: 10px; height: 10px; }
-.map-size-3 .map-star-flare { height: 20px; }
-
-.map-size-2 .map-star-core { width: 7px; height: 7px; }
-.map-size-2 .map-star-flare { height: 16px; }
-
-.map-size-1 .map-star-core { width: 4px; height: 4px; }
-.map-size-1 .map-star-flare { height: 10px; }
-
-.map-layer-pressure .map-pressure-high .map-star-core {
-    animation: twinkleFast 2s ease-in-out infinite;
-    filter: saturate(1.18) brightness(1.16);
-}
-.map-layer-pressure .map-pressure-medium .map-star-core {
-    animation: twinkleMid 3s ease-in-out infinite;
-    filter: saturate(1.05) brightness(1.05);
-}
-.map-layer-pressure .map-pressure-low .map-star-core {
-    animation: twinkleSlow 4s ease-in-out infinite;
-    filter: saturate(0.95) brightness(0.96);
-}
-
-.map-layer-confidence .map-size-3 .map-star-core {
-    width: 12px; height: 12px; filter: brightness(1.18);
-}
-.map-layer-confidence .map-size-2 .map-star-core {
-    width: 8px; height: 8px; filter: brightness(1.06);
-}
-.map-layer-confidence .map-size-1 .map-star-core {
-    width: 4px; height: 4px; filter: brightness(0.96);
-}
-
-.map-layer-lane .map-lane-options .map-star-core {
-    background: #ff5fcf;
-    color: #ff2fb8;
-}
-.map-layer-lane .map-lane-options .map-star-core::before {
-    background: radial-gradient(circle, rgba(255, 47, 184, 0.88), rgba(170, 70, 255, 0.34), transparent 74%);
-}
-
-.map-layer-lane .map-lane-equity .map-star-core {
-    background: #59c7ff;
-    color: #2da8ff;
-}
-.map-layer-lane .map-lane-equity .map-star-core::before {
-    background: radial-gradient(circle, rgba(45, 168, 255, 0.88), rgba(124, 77, 255, 0.26), transparent 74%);
-}
-
-.map-layer-bucket .energy .map-star-core {
-    background: #ff79bf;
-    color: #ff4ea8;
-}
-.map-layer-bucket .technology .map-star-core {
-    background: #69caff;
-    color: #36b0ff;
-}
-.map-layer-bucket .healthcare .map-star-core {
-    background: #be8cff;
-    color: #9a64ff;
-}
-.map-layer-bucket .general .map-star-core,
-.map-layer-bucket .finance .map-star-core,
-.map-layer-bucket .consumer .map-star-core,
-.map-layer-bucket .industrials .map-star-core,
-.map-layer-bucket .real_assets .map-star-core {
-    background: #ffd56f;
-    color: #ffbe2e;
-}
-
-.map-star-core {
-    background: #dff0ff;
-    color: #7fbaff;
-}
-.map-star-core::before {
-    background: radial-gradient(circle, rgba(127, 186, 255, 0.62), rgba(124, 77, 255, 0.18), transparent 74%);
-}
-
-.map-hud {
-    position: absolute;
-    left: 58px;
-    top: 8px;
-    min-width: 210px;
-    max-width: 250px;
-    opacity: 0;
-    transform: translateY(6px) scale(0.99);
-    transition: opacity 160ms ease, transform 160ms ease;
-    transition-delay: 0ms;
-    pointer-events: none;
-    z-index: 20;
-    padding: 12px;
-    border-radius: 14px;
-    background: rgba(9, 9, 16, 0.96);
-    border: 1px solid rgba(255,255,255,0.10);
-    box-shadow: 0 16px 34px rgba(0,0,0,0.38);
-}
-
-.map-star-wrap:hover .map-hud {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    transition-delay: 80ms;
-}
-
-.map-hud-symbol {
-    font-size: 0.96rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-}
-
-.map-hud-line {
-    margin-top: 4px;
-    font-size: 0.8rem;
-    line-height: 1.34;
-    opacity: 0.90;
-}
-
-.map-hud-meta {
-    margin-top: 8px;
+  html body .mm-actions {
     display: flex;
-    gap: 6px;
     flex-wrap: wrap;
-}
+    gap: 10px;
+    margin-top: 22px;
+  }
 
-.map-hud-pill {
+  html body .mm-btn,
+  html body .mm-chip {
     display: inline-flex;
     align-items: center;
-    padding: 4px 8px;
+    justify-content: center;
+    min-height: 34px;
+    padding: 8px 12px;
     border-radius: 999px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.08);
-}
+    border: 1px solid rgba(196, 181, 253, 0.30);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.92));
+    color: #e0e7ff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 850;
+  }
 
-@media (max-width: 980px) {
-    .map-layers {
-        right: 16px;
-        top: auto;
-        bottom: 16px;
-        width: 240px;
+  html body .mm-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 181, 253, 0.70);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  html body .mm-btn.primary {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.98), rgba(14, 165, 233, 0.78));
+    border-color: rgba(221, 214, 254, 0.52);
+    color: #ffffff;
+  }
+
+  html body .mm-chip.gold {
+    border-color: rgba(250, 204, 21, 0.34);
+    color: #fde68a;
+  }
+
+  html body .mm-chip.blue {
+    border-color: rgba(14, 165, 233, 0.34);
+    color: #bae6fd;
+  }
+
+  html body .mm-chip.green {
+    border-color: rgba(34, 197, 94, 0.34);
+    color: #bbf7d0;
+  }
+
+  html body .mm-read-card {
+    min-height: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(196, 181, 253, 0.28);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(196, 181, 253, 0.16), transparent 38%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.78));
+    color: #e5e7eb;
+  }
+
+  html body .mm-orb {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(circle at 34% 27%, #f8fafc, rgba(221, 214, 254, 0.9) 20%, rgba(124, 58, 237, 0.72) 52%, rgba(15, 23, 42, 0.98) 78%);
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.52);
+  }
+
+  html body .mm-read-card h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+  }
+
+  html body .mm-read-card p {
+    margin: 0;
+    color: #dbeafe;
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+
+  html body .mm-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  html body .mm-stat {
+    min-height: 94px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.82));
+  }
+
+  html body .mm-stat span {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  html body .mm-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 1.12rem;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  html body .mm-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  html body .mm-stack,
+  html body .mm-card-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  html body .mm-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  html body .mm-panel {
+    border-radius: 26px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.18), transparent 34%),
+      radial-gradient(circle at 94% 88%, rgba(14, 165, 233, 0.10), transparent 36%),
+      linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94));
+    box-shadow: 0 22px 70px rgba(2, 6, 23, 0.34);
+    padding: 20px;
+    color: #e5e7eb;
+  }
+
+  html body .mm-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  html body .mm-eyebrow {
+    margin: 0 0 5px;
+  }
+
+  html body .mm-panel h2,
+  html body .mm-panel h3,
+  html body .mm-card h3,
+  html body .mm-empty h3,
+  html body .mm-drawer summary,
+  html body .mm-star-name {
+    color: #f8fafc;
+  }
+
+  html body .mm-panel h2,
+  html body .mm-panel h3 {
+    margin: 0;
+    letter-spacing: -0.035em;
+  }
+
+  html body .mm-card,
+  html body .mm-empty {
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.86), rgba(2, 6, 23, 0.94));
+    color: #e5e7eb;
+  }
+
+  html body .mm-card h3 {
+    margin: 0 0 8px;
+  }
+
+  html body .mm-card p {
+    margin: 0;
+  }
+
+  html body .mm-atlas {
+    position: relative;
+    min-height: 540px;
+    overflow: hidden;
+    border-radius: 28px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background:
+      radial-gradient(circle at 20% 18%, rgba(124, 58, 237, 0.18), transparent 28%),
+      radial-gradient(circle at 78% 22%, rgba(14, 165, 233, 0.12), transparent 30%),
+      radial-gradient(circle at 58% 76%, rgba(250, 204, 21, 0.08), transparent 30%),
+      linear-gradient(135deg, #050816, #020617);
+  }
+
+  html body .mm-atlas::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.035) 1px, transparent 1px);
+    background-size: 46px 46px;
+    opacity: 0.8;
+  }
+
+  html body .mm-constellation {
+    position: relative;
+    z-index: 1;
+    padding: 18px;
+    min-height: 160px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  }
+
+  html body .mm-constellation:last-child {
+    border-bottom: none;
+  }
+
+  html body .mm-constellation-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  html body .mm-star-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+  }
+
+  html body .mm-star {
+    position: relative;
+    min-height: 96px;
+    padding: 12px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.84), rgba(2, 6, 23, 0.90));
+    text-decoration: none;
+  }
+
+  html body .mm-star::before {
+    content: "";
+    display: block;
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    background: rgba(196, 181, 253, 0.92);
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.58);
+  }
+
+  html body .mm-star-name {
+    display: block;
+    font-weight: 950;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  html body .mm-star-meta {
+    font-size: 0.82rem;
+  }
+
+  html body .mm-drawer {
+    margin-top: 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.94));
+    overflow: hidden;
+  }
+
+  html body .mm-drawer summary {
+    cursor: pointer;
+    padding: 16px 18px;
+    font-weight: 900;
+  }
+
+  html body .mm-drawer-body {
+    padding: 0 18px 18px;
+  }
+
+  html body .mm-drawer-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    background: rgba(2, 6, 23, 0.72);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 980px) {
+    html body .mm-hero-inner,
+    html body .mm-grid {
+      grid-template-columns: 1fr;
     }
 
-    .map-hud {
-        left: 42px;
-        min-width: 170px;
-        max-width: 210px;
+    html body .mm-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-}
+  }
+
+  @media (max-width: 680px) {
+    html body .market-map-room {
+      padding: 18px 12px 38px;
+    }
+
+    html body .mm-hero-inner {
+      padding: 20px;
+    }
+
+    html body .mm-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
-{% set map_data = v2_market_map if v2_market_map else {} %}
-{% set layers = v2_map_layers if v2_map_layers else {} %}
-{% set default_layer = layers.get("default_layer", "pressure") %}
+<div class="market-map-room">
 
-{% set cluster_positions = {
-    "energy": {"left": "10%", "top": "18%"},
-    "technology": {"left": "56%", "top": "18%"},
-    "healthcare": {"left": "62%", "top": "56%"},
-    "general": {"left": "18%", "top": "56%"},
-    "finance": {"left": "36%", "top": "38%"},
-    "consumer": {"left": "72%", "top": "38%"},
-    "industrials": {"left": "30%", "top": "74%"},
-    "real_assets": {"left": "78%", "top": "72%"},
-} %}
+  <section class="mm-hero">
+    <div class="mm-hero-inner">
+      <div>
+        <span class="mm-kicker">Market Discovery Atlas</span>
+        <h1 class="mm-title">The market as a map.</h1>
 
-<div class="map-shell">
-    <div class="map-header">
-        <div class="map-title">market map</div>
-        <div class="map-sub">zoomed out, calmer, easier to scan</div>
-        <div class="map-chip-row">
-            <span class="map-chip">real constellations</span>
-            <span class="map-chip">{{ map_data.get("meta", {}).get("tile_count", 0) }} stars</span>
-            <span class="map-chip">{{ map_data.get("meta", {}).get("bucket_count", 0) }} regions</span>
+        <p class="mm-copy">
+          Market Map turns sectors, symbols, pressure zones, watch lanes, and fused intelligence
+          into a navigable discovery surface instead of a raw list.
+        </p>
+
+        <div class="mm-actions">
+          <a class="mm-btn primary" href="/signals">Signals</a>
+          <a class="mm-btn" href="/all-symbols">All Symbols</a>
+          <a class="mm-btn" href="/charts">Charts</a>
+          <a class="mm-btn" href="/research">Research</a>
         </div>
-    </div>
 
-    <div class="map-layers">
-        <h3>map layers</h3>
-        <div class="layer-list">
-            {% for layer in layers.get("layers", []) %}
-            <div class="layer-pill {% if layer.get('key') == default_layer %}active{% endif %}" data-layer="{{ layer.get('key') }}">
-                <span>{{ layer.get("label") }}</span>
-                <span style="opacity:.6;">{{ layer.get("best_for") }}</span>
-            </div>
+        <div class="mm-stats-grid">
+          <div class="mm-stat">
+            <span>Constellations</span>
+            <strong>{{ constellation_count }}</strong>
+          </div>
+          <div class="mm-stat">
+            <span>Visible Stars</span>
+            <strong>{{ total_stars.value }}</strong>
+          </div>
+          <div class="mm-stat">
+            <span>Layers</span>
+            <strong>{{ layer_count }}</strong>
+          </div>
+          <div class="mm-stat">
+            <span>Default Layer</span>
+            <strong>{{ default_layer.label if default_layer.label is defined else default_layer.get("label", "Map") }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <aside class="mm-read-card">
+        <div class="mm-orb" aria-hidden="true"></div>
+        <h2>Soulaana map read</h2>
+        <p>
+          Do not chase every star. Read the field first: where pressure is building,
+          where breadth is improving, and which symbols deserve deeper inspection.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <div class="mm-grid">
+    <main class="mm-stack">
+
+      <section class="mm-panel">
+        <div class="mm-panel-head">
+          <div>
+            <p class="mm-eyebrow">Atlas</p>
+            <h2>Market constellation field</h2>
+          </div>
+          <span class="mm-chip blue">{{ total_stars.value }} mapped stars</span>
+        </div>
+
+        <div class="mm-atlas" id="marketMapAtlas">
+          {% if constellations %}
+            {% for bucket, constellation in constellations.items() %}
+              {% set label = constellation.label if constellation.label is defined else constellation.get("label", bucket) %}
+              {% set stars = constellation.stars if constellation.stars is defined else constellation.get("stars", []) %}
+              {% set overflow = constellation.overflow if constellation.overflow is defined else constellation.get("overflow", []) %}
+              <div class="mm-constellation" data-bucket="{{ bucket }}">
+                <div class="mm-constellation-head">
+                  <div>
+                    <p class="mm-eyebrow">Constellation</p>
+                    <h3>{{ label }}</h3>
+                  </div>
+                  <span class="mm-chip gold">{{ stars|length }} stars{% if overflow %} · {{ overflow|length }} overflow{% endif %}</span>
+                </div>
+
+                {% if stars %}
+                <div class="mm-star-row">
+                  {% for star in stars[:12] %}
+                    {% set symbol = star.symbol if star.symbol is defined else star.get("symbol", "") %}
+                    {% set name = star.name if star.name is defined else star.get("name", symbol) %}
+                    {% set score = star.score if star.score is defined else star.get("score", "") %}
+                    {% set pressure = star.pressure if star.pressure is defined else star.get("pressure", "") %}
+                    <a class="mm-star" href="/signals/{{ symbol }}" aria-label="Open {{ symbol }}">
+                      <span class="mm-star-name">{{ symbol or name or "Unknown" }}</span>
+                      <span class="mm-star-meta">
+                        {{ name if name and name != symbol else "Symbol detail" }}
+                        {% if score %} · Score {{ score }}{% endif %}
+                        {% if pressure %} · {{ pressure }}{% endif %}
+                      </span>
+                    </a>
+                  {% endfor %}
+                </div>
+                {% else %}
+                <div class="mm-empty">
+                  <h3 style="margin:0 0 8px;">No stars mapped</h3>
+                  <p style="margin:0;">This constellation exists, but no visible symbols are attached yet.</p>
+                </div>
+                {% endif %}
+              </div>
             {% endfor %}
-        </div>
-    </div>
-
-    <div class="starfield">
-        {% for i in range(240) %}
-            {% set x = (i * 29 + 7) % 100 %}
-            {% set y = (i * 47 + 13) % 100 %}
-            {% set sz = "tiny" if i % 4 == 0 else "small" if i % 3 == 0 else "medium" %}
-            {% set col = "blue" if i % 5 == 0 else "pink" if i % 7 == 0 else "gold" if i % 11 == 0 else "purple" %}
-            <div class="bg-star {{ sz }} {{ col }}" style="left: {{ x }}%; top: {{ y }}%; animation: twinkleSlow {{ 2 + (i % 5) }}s ease-in-out infinite;"></div>
-        {% endfor %}
-    </div>
-
-    <div class="map-field map-layer-{{ default_layer }}" id="marketMapField">
-        {% for bucket, constellation in mapped_constellations.items() %}
-            {% set pos = cluster_positions.get(bucket, {"left": "50%", "top": "50%"}) %}
-            <div class="map-cluster {{ bucket }}" style="left: {{ pos.left }}; top: {{ pos.top }};">
-                <div class="cluster-label">{{ bucket.replace("_", " ") }}</div>
-                <div class="cluster-constellation-name">{{ constellation.get("label", "") }}</div>
-
-                {% for line in constellation.get("lines", []) %}
-                    {% set dx = line.x2 - line.x1 %}
-                    {% set dy = line.y2 - line.y1 %}
-                    {% set length = ((dx * dx + dy * dy) ** 0.5) %}
-                    {% set angle = (180 / 3.141592653589793) * (dy / (dx if dx != 0 else 0.0001)) %}
-                    <div
-                        class="constellation-line line-{{ bucket }}"
-                        style="
-                            left: {{ line.x1 }}%;
-                            top: {{ line.y1 }}%;
-                            width: {{ length }}%;
-                            transform: rotate({{ angle }}deg);
-                        "
-                    ></div>
-                {% endfor %}
-
-                {% for star in constellation.get("stars", []) %}
-                    {% set lane_class = "map-lane-options" if star.get("lane") == "options" else "map-lane-equity" %}
-                    {% set pressure_class = "map-pressure-high" if star.get("pressure_level") == "high" else "map-pressure-medium" if star.get("pressure_level") == "medium" else "map-pressure-low" %}
-                    {% set size_class = "map-size-" ~ star.get("size_score", 1) %}
-
-                    <div class="map-star-wrap {{ lane_class }} {{ pressure_class }} {{ size_class }}" style="left: {{ star.get('x', 50) }}%; top: {{ star.get('y', 50) }}%;">
-                        <a href="{{ star.get('destination', '/signals') }}" class="map-star-link">
-                            <div class="map-hover-zone"></div>
-                            <div class="map-star-core"></div>
-                            <div class="map-star-flare"></div>
-                        </a>
-
-                        <div class="map-hud">
-                            <div class="map-hud-symbol">{{ star.get("symbol") }}</div>
-                            <div class="map-hud-line">
-                                {% if star.get("pressure_level") == "high" %}
-                                    strong pressure here
-                                {% elif star.get("pressure_level") == "medium" %}
-                                    worth watching
-                                {% else %}
-                                    early read
-                                {% endif %}
-                            </div>
-                            <div class="map-hud-meta">
-                                {% if star.get("lane") %}
-                                <span class="map-hud-pill">{{ star.get("lane") }}</span>
-                                {% endif %}
-                                {% if star.get("direction") %}
-                                <span class="map-hud-pill">{{ star.get("direction") }}</span>
-                                {% endif %}
-                                {% if star.get("bucket") %}
-                                <span class="map-hud-pill">{{ star.get("bucket") }}</span>
-                                {% endif %}
-                            </div>
-                            {% if star.get("structure") %}
-                            <div class="map-hud-line">{{ star.get("structure") }}</div>
-                            {% endif %}
-                            {% if star.get("target_dte") %}
-                            <div class="map-hud-line">DTE {{ star.get("target_dte") }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
-
-                {% for star in constellation.get("overflow", []) %}
-                    {% set lane_class = "map-lane-options" if star.get("lane") == "options" else "map-lane-equity" %}
-                    {% set pressure_class = "map-pressure-high" if star.get("pressure_level") == "high" else "map-pressure-medium" if star.get("pressure_level") == "medium" else "map-pressure-low" %}
-                    {% set size_class = "map-size-" ~ star.get("size_score", 1) %}
-
-                    <div class="map-star-wrap {{ lane_class }} {{ pressure_class }} {{ size_class }}" style="left: {{ star.get('x', 84) }}%; top: {{ star.get('y', 60) }}%; opacity:.72;">
-                        <a href="{{ star.get('destination', '/signals') }}" class="map-star-link">
-                            <div class="map-hover-zone"></div>
-                            <div class="map-star-core"></div>
-                            <div class="map-star-flare"></div>
-                        </a>
-
-                        <div class="map-hud">
-                            <div class="map-hud-symbol">{{ star.get("symbol") }}</div>
-                            <div class="map-hud-line">outer satellite</div>
-                            <div class="map-hud-meta">
-                                {% if star.get("lane") %}
-                                <span class="map-hud-pill">{{ star.get("lane") }}</span>
-                                {% endif %}
-                                {% if star.get("direction") %}
-                                <span class="map-hud-pill">{{ star.get("direction") }}</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
+          {% else %}
+            <div class="mm-empty" style="margin:18px;">
+              <h3 style="margin:0 0 8px;">No market map loaded</h3>
+              <p style="margin:0;">The route is active, but the map payload is empty or unavailable.</p>
             </div>
-        {% endfor %}
-    </div>
+          {% endif %}
+        </div>
+
+        <details class="mm-drawer">
+          <summary>Preserved mapped constellation payload</summary>
+          <div class="mm-drawer-body">
+            <pre>{{ constellations }}</pre>
+          </div>
+        </details>
+      </section>
+
+    </main>
+
+    <aside class="mm-stack">
+
+      <section class="mm-panel">
+        <div class="mm-panel-head">
+          <div>
+            <p class="mm-eyebrow">Layers</p>
+            <h2>Map controls</h2>
+          </div>
+          <span class="mm-chip green">{{ layer_count }} layers</span>
+        </div>
+
+        {% if layers %}
+        <div class="mm-card-grid" style="grid-template-columns:1fr;">
+          {% for layer in layers %}
+            <article class="mm-card">
+              <h3>{{ layer.label if layer.label is defined else layer.get("label", "Layer") }}</h3>
+              <p>
+                {{ layer.description if layer.description is defined else layer.get("description", "Market map layer available for discovery.") }}
+              </p>
+              {% if layer.key is defined or layer.get("key", "") %}
+              <div class="mm-actions">
+                <span class="mm-chip blue">{{ layer.key if layer.key is defined else layer.get("key", "") }}</span>
+              </div>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="mm-empty">
+          <h3 style="margin:0 0 8px;">No layers loaded</h3>
+          <p style="margin:0;">Layer controls will appear here when the market map builder provides them.</p>
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="mm-panel">
+        <div class="mm-panel-head">
+          <div>
+            <p class="mm-eyebrow">Discovery flow</p>
+            <h2>Where to go next</h2>
+          </div>
+        </div>
+
+        <div class="mm-stack">
+          <a class="mm-card" href="/signals" style="text-decoration:none;">
+            <h3>Signals</h3>
+            <p>Turn mapped symbols into ranked signal candidates.</p>
+          </a>
+          <a class="mm-card" href="/all-symbols" style="text-decoration:none;">
+            <h3>All Symbols</h3>
+            <p>Search the broader fused symbol universe.</p>
+          </a>
+          <a class="mm-card" href="/charts" style="text-decoration:none;">
+            <h3>Charts</h3>
+            <p>Open chart watch mode for symbols you want to monitor manually.</p>
+          </a>
+          <a class="mm-card" href="/research" style="text-decoration:none;">
+            <h3>Research</h3>
+            <p>Return to the research command room for broader market interpretation.</p>
+          </a>
+        </div>
+      </section>
+
+      <details class="mm-drawer">
+        <summary>Preserved market map payload</summary>
+        <div class="mm-drawer-body">
+          <pre>{{ map_data }}</pre>
+        </div>
+      </details>
+
+      <details class="mm-drawer">
+        <summary>Preserved interaction payload</summary>
+        <div class="mm-drawer-body">
+          <pre>{{ interactions }}</pre>
+        </div>
+      </details>
+
+    </aside>
+  </div>
 </div>
-
-<script>
-(function () {
-    const field = document.getElementById("marketMapField");
-    const pills = document.querySelectorAll(".layer-pill");
-
-    pills.forEach((pill) => {
-        pill.addEventListener("click", () => {
-            const layer = pill.getAttribute("data-layer");
-            if (!layer || !field) return;
-
-            field.className = "map-field map-layer-" + layer;
-
-            pills.forEach((p) => p.classList.remove("active"));
-            pill.classList.add("active");
-        });
-    });
-})();
-</script>
 {% endblock %}
