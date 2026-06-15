@@ -9678,6 +9678,12 @@ def _pack053_register_mode_guard_once(_app):
 
 _pack053_register_mode_guard_once(app)
 
+# OBSERVATORY_MARKET_MAP_V10_TEMPLATE_READY_ROUTE
+@app.route("/market-map-v10")
+@app.route("/ob/market-map-v10")
+def ob_market_map_v10():
+    return render_template("market_map_v10.html")
+
 
 if __name__ == "__main__":
     try:

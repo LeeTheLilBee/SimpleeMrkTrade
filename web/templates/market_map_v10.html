@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>OB Market Map V10</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
+</head>
+<body>
+<!-- OBSERVATORY_MARKET_MAP_V10_TEMPLATE_READY -->
+<div id="ob-app">
+  <div class="ob-layer">
+    <div class="ob-header">
+      <div>
+        <h1 class="ob-title-xl">Market Map</h1>
+        <div class="ob-subtitle">OB://MarketMap · Paper Mode · Tower Clear · Full Sky View</div>
+      </div>
+
+      <div class="ob-panel soulaana-panel">
+        <div class="ob-label">Soulaana · Market Read</div>
+        <div class="soulaana-text">
+          Look at the sky, not the noise. The brightest stars are where OB has attention. The dim ones still exist, but they are not leading right now. We follow what is glowing, not what is begging.
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot legend-green"></span>Strong sector</div>
+          <div class="legend-item"><span class="legend-dot legend-gold"></span>Hot watched star</div>
+          <div class="legend-item"><span class="legend-dot legend-dim"></span>Background star</div>
+          <div class="legend-item"><span class="legend-dot legend-red"></span>Weak / gated risk</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sky-layout">
+      <div class="ob-panel sky-field" id="skyField"></div>
+      <div class="ob-panel detail-panel" id="detailPanel"></div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='ob/ob_market_data.js') }}"></script>
+<script src="{{ url_for('static', filename='ob/ob_market_map_symbol_page.js') }}"></script>
+</body>
+</html>
