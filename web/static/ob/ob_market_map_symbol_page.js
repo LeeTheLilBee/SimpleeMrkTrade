@@ -1,4 +1,5 @@
 // OBSERVATORY_MARKET_MAP_V10_APP_JS
+// OBSERVATORY_SYMBOL_PAGE_V12_REAL_ROUTE_HANDOFF
 const sectors = window.OB_MARKET_DATA.sectors;
 
 const skyField = document.getElementById("skyField");
@@ -341,7 +342,7 @@ function renderSectorZoom(sector) {
     star.style.top = p.y + "%";
     star.style.left = p.x + "%";
     star.title = symbolObj.symbol + " · " + symbolObj.starName;
-    star.onclick = () => openSymbolPage(sector.name, symbolObj.symbol);
+    star.onclick = () => { window.location.href = '/ob/symbol/' + encodeURIComponent(symbolObj.symbol); };
 
     const label = document.createElement("div");
     label.className = "symbol-label";

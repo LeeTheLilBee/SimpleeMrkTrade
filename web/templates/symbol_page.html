@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>OB Symbol Page</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
+</head>
+<body>
+<!-- OBSERVATORY_SYMBOL_PAGE_V12_REAL_STAR_ROOM -->
+<div id="ob-app" data-symbol="{{ symbol|default('MU') }}">
+  <div class="ob-layer">
+    <div class="ob-header">
+      <div>
+        <h1 class="ob-title-xl" id="symbolRoomTitle">Symbol Page</h1>
+        <div class="ob-subtitle" id="symbolRoomSubtitle">OB://SymbolPage · Paper Mode · Tower Clear · Star Observation Room</div>
+      </div>
+
+      <div class="ob-panel soulaana-panel">
+        <div class="ob-label">Soulaana · Star Room</div>
+        <div class="soulaana-text" id="symbolHeroSoulaana">
+          We are not looking at the whole sky anymore. We are inside one star now. Read what changed, respect the permission, and move clean.
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot legend-gold"></span>Star facts</div>
+          <div class="legend-item"><span class="legend-dot legend-green"></span>Paper allowed</div>
+          <div class="legend-item"><span class="legend-dot legend-red"></span>Live auto locked</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="symbolRoomMount"></div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='ob/ob_market_data.js') }}"></script>
+<script src="{{ url_for('static', filename='ob/ob_symbol_page.js') }}"></script>
+</body>
+</html>

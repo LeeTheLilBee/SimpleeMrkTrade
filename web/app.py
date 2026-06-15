@@ -9689,6 +9689,12 @@ def ob_market_map_v10():
 def ob_market_map_alias_v11():
     return render_template("market_map.html")
 
+# OBSERVATORY_SYMBOL_PAGE_V12_REAL_STAR_ROOM_ROUTE
+@app.route("/symbol/<symbol>")
+@app.route("/ob/symbol/<symbol>")
+def ob_symbol_page_v12(symbol):
+    return render_template("symbol_page.html", symbol=str(symbol).upper())
+
 
 if __name__ == "__main__":
     try:
