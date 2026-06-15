@@ -9684,6 +9684,11 @@ _pack053_register_mode_guard_once(app)
 def ob_market_map_v10():
     return render_template("market_map_v10.html")
 
+# OBSERVATORY_MARKET_MAP_V11_OB_ALIAS_ROUTE
+@app.route("/ob/market-map")
+def ob_market_map_alias_v11():
+    return render_template("market_map.html")
+
 
 if __name__ == "__main__":
     try:
