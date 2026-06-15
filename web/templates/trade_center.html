@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>OB Trade Center</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
+</head>
+<body>
+<!-- OBSERVATORY_TRADE_CENTER_V14_REAL_ROOM -->
+<div id="ob-app">
+  <div class="ob-layer">
+    <div class="ob-header">
+      <div>
+        <h1 class="ob-title-xl">Trade Center</h1>
+        <div class="ob-subtitle">OB://TradeCenter · Positions · Signals · Watchlist · Candidates · Manual Live Queue</div>
+      </div>
+
+      <div class="ob-panel soulaana-panel">
+        <div class="ob-label">Soulaana · Trade Center</div>
+        <div class="soulaana-text">
+          This is where attention becomes discipline. A star can be bright, a setup can be interesting, and the answer can still be no. We manage first. We act only when the whole chain is clean.
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot legend-green"></span>Allowed review</div>
+          <div class="legend-item"><span class="legend-dot legend-gold"></span>Needs discipline</div>
+          <div class="legend-item"><span class="legend-dot legend-red"></span>Blocked / locked</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tradeCenterMount"></div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='ob/ob_market_data.js') }}"></script>
+<script src="{{ url_for('static', filename='ob/ob_trade_center.js') }}"></script>
+<script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
+</body>
+</html>
