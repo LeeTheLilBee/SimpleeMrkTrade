@@ -14316,3 +14316,43 @@ def tower_receipt_chain_saved_view_owner_review_governance_continuity_batch_clos
 
     return jsonify(build_receipt_chain_saved_view_owner_review_governance_continuity_batch_close_readiness_preview())
 
+# --- SEARCHABLE LABEL: TOWER_PACK_266_RECEIPT_CHAIN_SAVED_VIEW_OWNER_REVIEW_GOVERNANCE_HANDOFF_INDEX_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-governance-handoff-index-v266.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_governance_handoff_index_v266_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_governance_handoff_index_v266 import build_receipt_chain_saved_view_owner_review_governance_handoff_index_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_governance_handoff_index_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_267_RECEIPT_CHAIN_SAVED_VIEW_OWNER_REVIEW_GOVERNANCE_HANDOFF_DETAIL_DRAWER_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-governance-handoff-detail-drawer-v267.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_governance_handoff_detail_drawer_v267_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_governance_handoff_detail_drawer_v267 import build_receipt_chain_saved_view_owner_review_governance_handoff_detail_drawer_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_governance_handoff_detail_drawer_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_268_RECEIPT_CHAIN_SAVED_VIEW_OWNER_REVIEW_GOVERNANCE_HANDOFF_NOTE_DRAFT_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-governance-handoff-note-draft-v268.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_governance_handoff_note_draft_v268_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_governance_handoff_note_draft_v268 import build_receipt_chain_saved_view_owner_review_governance_handoff_note_draft_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_governance_handoff_note_draft_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_269_RECEIPT_CHAIN_SAVED_VIEW_OWNER_REVIEW_GOVERNANCE_HANDOFF_NOTE_VERSION_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-governance-handoff-note-version-v269.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_governance_handoff_note_version_v269_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_governance_handoff_note_version_v269 import build_receipt_chain_saved_view_owner_review_governance_handoff_note_version_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_governance_handoff_note_version_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_270_RECEIPT_CHAIN_SAVED_VIEW_OWNER_REVIEW_GOVERNANCE_HANDOFF_BATCH_CLOSE_READINESS_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-governance-handoff-batch-close-readiness-v270.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_governance_handoff_batch_close_readiness_v270_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_governance_handoff_batch_close_readiness_v270 import build_receipt_chain_saved_view_owner_review_governance_handoff_batch_close_readiness_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_governance_handoff_batch_close_readiness_preview())
+
