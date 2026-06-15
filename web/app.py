@@ -9701,6 +9701,12 @@ def ob_symbol_page_v12(symbol):
 def ob_trade_center_v14():
     return render_template("trade_center.html")
 
+# OBSERVATORY_REVIEW_CENTER_V15_REAL_ROOM_ROUTE
+@app.route("/review-center")
+@app.route("/ob/review-center")
+def ob_review_center_v15():
+    return render_template("review_center.html")
+
 
 if __name__ == "__main__":
     try:

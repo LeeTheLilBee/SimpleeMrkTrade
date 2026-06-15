@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>OB Review Center</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
+</head>
+<body>
+<!-- OBSERVATORY_REVIEW_CENTER_V15_REAL_ROOM -->
+<div id="ob-app">
+  <div class="ob-layer">
+    <div class="ob-header">
+      <div>
+        <h1 class="ob-title-xl">Review Center</h1>
+        <div class="ob-subtitle">OB://ReviewCenter · Performance · Trade Replay · Reports · Journal · Private Proof</div>
+      </div>
+
+      <div class="ob-panel soulaana-panel">
+        <div class="ob-label">Soulaana · Review Center</div>
+        <div class="soulaana-text">
+          This room is not here to shame you. It is here to tell the truth. Wins get audited. Losses get lessons. Test records stay separate from official performance.
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot legend-green"></span>Clean lesson</div>
+          <div class="legend-item"><span class="legend-dot legend-gold"></span>Needs review</div>
+          <div class="legend-item"><span class="legend-dot legend-red"></span>Quarantine / exclude</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="reviewCenterMount"></div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='ob/ob_market_data.js') }}"></script>
+<script src="{{ url_for('static', filename='ob/ob_review_center.js') }}"></script>
+<script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
+</body>
+</html>
