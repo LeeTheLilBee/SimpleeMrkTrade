@@ -7297,3 +7297,309 @@ option {
   }
 }
 
+
+/* OBSERVATORY_V25_SAFE_ENGINE_FEED_ADAPTER_CSS */
+
+.ob-engine-feed-bar {
+  position: relative;
+  z-index: 71;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  margin: -8px 0 18px 28px;
+  border: 1px solid rgba(101,242,118,0.16);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.07), transparent 32%),
+    radial-gradient(circle at 90% 50%, rgba(126,252,255,0.05), transparent 34%),
+    rgba(0,0,0,0.18);
+  padding: 11px 13px;
+  backdrop-filter: blur(12px);
+}
+
+.ob-engine-feed-main {
+  display: grid;
+  gap: 4px;
+}
+
+.ob-engine-feed-title {
+  color: #fff2bf;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.ob-engine-feed-subtitle {
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.38;
+}
+
+.ob-engine-feed-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.ob-engine-feed-chip {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  padding: 7px 9px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-engine-feed-chip.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-engine-feed-chip.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.28);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-engine-feed-chip.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-engine-feed-chip.clickable {
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.ob-engine-feed-chip.clickable:hover {
+  transform: translateY(-1px);
+  background: rgba(101,242,118,0.075);
+  border-color: rgba(101,242,118,0.32);
+  box-shadow: 0 0 18px rgba(101,242,118,0.14);
+}
+
+.ob-engine-feed-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 235;
+  display: none;
+  background: rgba(0,0,0,0.58);
+  backdrop-filter: blur(8px);
+}
+
+.ob-engine-feed-backdrop.open {
+  display: block;
+}
+
+.ob-engine-feed-drawer {
+  position: fixed;
+  z-index: 240;
+  top: 22px;
+  right: 22px;
+  width: min(720px, calc(100vw - 44px));
+  max-height: calc(100vh - 44px);
+  overflow: auto;
+  border: 1px solid rgba(101,242,118,0.22);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.10), transparent 34%),
+    radial-gradient(circle at 100% 36%, rgba(126,252,255,0.08), transparent 36%),
+    rgba(2,7,14,0.96);
+  box-shadow:
+    0 34px 130px rgba(0,0,0,0.70),
+    inset 0 0 28px rgba(255,255,255,0.025);
+  padding: 18px;
+}
+
+.ob-engine-feed-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+.ob-engine-feed-head strong {
+  display: block;
+  color: #fff2bf;
+  font-size: 26px;
+  letter-spacing: -0.055em;
+}
+
+.ob-engine-feed-head span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 12px;
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+.ob-engine-feed-close {
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.28);
+  color: var(--ob-muted);
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+
+.ob-engine-feed-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.ob-engine-feed-card {
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.045), transparent 34%),
+    rgba(0,0,0,0.22);
+  padding: 12px;
+}
+
+.ob-engine-feed-card span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+.ob-engine-feed-card strong {
+  color: var(--ob-text);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.ob-engine-feed-list {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.ob-engine-feed-row {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: start;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px;
+  background: rgba(0,0,0,0.22);
+  padding: 12px;
+}
+
+.ob-engine-feed-dot {
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(101,242,118,0.28);
+  color: var(--ob-green);
+  background: rgba(101,242,118,0.055);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.ob-engine-feed-copy strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.ob-engine-feed-copy span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.ob-engine-feed-note {
+  margin-top: 12px;
+  border: 1px solid rgba(233,194,111,0.20);
+  border-radius: 14px;
+  background: rgba(233,194,111,0.045);
+  padding: 13px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.52;
+}
+
+.ob-engine-feed-warning {
+  margin-top: 12px;
+  border: 1px solid rgba(255,87,87,0.20);
+  border-radius: 14px;
+  background: rgba(255,87,87,0.045);
+  padding: 13px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.52;
+}
+
+.ob-engine-feed-warning strong {
+  color: var(--ob-red);
+}
+
+.ob-engine-feed-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.ob-engine-feed-button {
+  border: 1px solid rgba(101,242,118,0.30);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.26);
+  color: var(--ob-green);
+  padding: 9px 11px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: 0.18s ease;
+}
+
+.ob-engine-feed-button:hover {
+  background: rgba(101,242,118,0.075);
+  box-shadow: 0 0 18px rgba(101,242,118,0.14);
+}
+
+.ob-engine-feed-button.gold {
+  color: #fff3ce;
+  border-color: rgba(233,194,111,0.30);
+}
+
+.ob-engine-feed-button.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.26);
+}
+
+@media (max-width: 1080px) {
+  .ob-engine-feed-bar,
+  .ob-engine-feed-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-engine-feed-bar {
+    margin-left: 20px;
+  }
+
+  .ob-engine-feed-actions {
+    justify-content: flex-start;
+  }
+}
+

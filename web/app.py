@@ -9760,6 +9760,132 @@ def ob_beta_readiness_checkpoint_v24():
         ],
     }
 
+# OBSERVATORY_ENGINE_FEED_ADAPTER_V25_ROUTE
+@app.route("/ob/engine-feed-snapshot.json")
+def ob_engine_feed_snapshot_v25():
+    from pathlib import Path
+    import json
+
+    root = Path(__file__).resolve().parents[1]
+    data_dir = root / "data"
+
+    def read_json_safe(path):
+        try:
+            if not path.exists():
+                return None
+            with path.open("r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as exc:
+            return {"_error": str(exc), "_path": str(path)}
+
+    market_universe = read_json_safe(data_dir / "market_universe.json")
+    pipeline_status = read_json_safe(data_dir / "pipeline_status.json")
+
+    warnings = []
+    data_files = {
+        "market_universe": "present" if isinstance(market_universe, dict) else "missing_or_unreadable",
+        "pipeline_status": "present" if isinstance(pipeline_status, dict) else "missing_or_unreadable",
+    }
+
+    if not isinstance(market_universe, dict):
+        warnings.append("market_universe.json unavailable; frontend preview fallback should remain active.")
+        market_universe = {}
+
+    if not isinstance(pipeline_status, dict):
+        warnings.append("pipeline_status.json unavailable; status fallback should remain active.")
+        pipeline_status = {}
+
+    sectors = market_universe.get("sectors") if isinstance(market_universe.get("sectors"), list) else []
+    symbols = []
+    for sector in sectors:
+        if isinstance(sector, dict):
+            for symbol in sector.get("symbols", []) or []:
+                if isinstance(symbol, dict):
+                    safe_symbol = {
+                        "symbol": str(symbol.get("symbol", "UNKNOWN"))[:16],
+                        "company": str(symbol.get("company", symbol.get("symbol", "UNKNOWN")))[:120],
+                        "tier": str(symbol.get("tier", "background"))[:40],
+                        "tradeType": str(symbol.get("tradeType", "Option-first review"))[:80],
+                        "position": str(symbol.get("position", "Watch"))[:80],
+                        "permission": str(symbol.get("permission", "Paper Allowed · Live Auto Locked"))[:120],
+                        "risk": str(symbol.get("risk", "Guarded"))[:80],
+                    }
+                    symbols.append(safe_symbol)
+
+    hot_symbols = [s for s in symbols if s.get("tier") == "hot"]
+    watch_symbols = [s for s in symbols if s.get("tier") == "watch"]
+
+    positions_preview = [
+        s for s in symbols
+        if "open" in str(s.get("position", "")).lower()
+    ][:8]
+
+    if not positions_preview:
+        positions_preview = [
+            s for s in symbols
+            if s.get("symbol") in {"MU", "AMD", "INTC"}
+        ][:3]
+
+    candidates_preview = hot_symbols[:8]
+
+    manual_live_queue = [
+        {
+            "symbol": s.get("symbol"),
+            "company": s.get("company"),
+            "manualStatus": "Needs owner review",
+            "blocker": "Live Auto Locked. Manual placement only.",
+            "contract": f"{s.get('symbol')} next monthly call",
+        }
+        for s in candidates_preview[:5]
+    ]
+
+    market_health = {
+        "score": 82 if len(hot_symbols) >= 3 else 72 if hot_symbols else 58,
+        "label": "Healthy but guarded" if len(hot_symbols) >= 3 else "Selective" if hot_symbols else "Quiet / guarded",
+        "breadth": f"{len(hot_symbols)} hot · {len(watch_symbols)} watch · {max(0, len(symbols) - len(hot_symbols) - len(watch_symbols))} background",
+        "source": "market_universe_json" if sectors else "fallback_needed",
+    }
+
+    review_summary = {
+        "ledger_count": pipeline_status.get("ledger_count", None),
+        "snapshot_keys": list(pipeline_status.keys())[:20] if isinstance(pipeline_status, dict) else [],
+        "receipts": 0,
+    }
+
+    return {
+        "version": "OB_V25_SAFE_ENGINE_FEED_ADAPTER",
+        "source": "guarded_json_snapshot",
+        "adapter_status": "read_only_snapshot",
+        "market_health": market_health,
+        "positions_preview": positions_preview,
+        "candidates_preview": candidates_preview,
+        "manual_live_queue": manual_live_queue,
+        "review_summary": review_summary,
+        "data_files": data_files,
+        "tower_boundaries": {
+            "private_beta_only": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "manual_live_level": 1,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": warnings or [
+            "Read-only adapter. No broker API. No auto execution. Live Auto Locked."
+        ],
+        "room_contract_hint": {
+            "dashboard": "market_health + positions_preview",
+            "trade_center": "positions_preview + candidates_preview + manual_live_queue",
+            "review_center": "review_summary",
+            "owner_console": "data_files + tower_boundaries",
+        },
+        "raw_meta": {
+            "sector_count": len(sectors),
+            "symbol_count": len(symbols),
+            "pipeline_status_keys": list(pipeline_status.keys())[:20] if isinstance(pipeline_status, dict) else [],
+        },
+    }
+
 
 if __name__ == "__main__":
     try:
