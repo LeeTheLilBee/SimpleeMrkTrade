@@ -14532,3 +14532,27 @@ def tower_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement
 
     return jsonify(build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_detail_drawer_preview())
 
+# --- SEARCHABLE LABEL: TOWER_PACK_288_HANDOFF_POLICY_ROUTE_ENFORCEMENT_AUDIT_EVIDENCE_NOTE_DRAFT_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-handoff-policy-route-enforcement-audit-evidence-note-draft-v288.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_note_draft_v288_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_note_draft_v288 import build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_note_draft_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_note_draft_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_289_HANDOFF_POLICY_ROUTE_ENFORCEMENT_AUDIT_EVIDENCE_NOTE_VERSION_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-handoff-policy-route-enforcement-audit-evidence-note-version-v289.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_note_version_v289_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_note_version_v289 import build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_note_version_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_note_version_preview())
+
+# --- SEARCHABLE LABEL: TOWER_PACK_290_HANDOFF_POLICY_ROUTE_ENFORCEMENT_AUDIT_EVIDENCE_BATCH_CLOSE_READINESS_ROUTE ---
+@app.route("/tower/receipt-chain-saved-view-owner-review-handoff-policy-route-enforcement-audit-evidence-batch-close-readiness-v290.json", methods=["GET"])
+def tower_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_batch_close_readiness_v290_json():
+    from flask import jsonify
+    from tower.receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_batch_close_readiness_v290 import build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_batch_close_readiness_preview
+
+    return jsonify(build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_audit_evidence_batch_close_readiness_preview())
+
