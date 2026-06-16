@@ -7015,3 +7015,285 @@ option {
   }
 }
 
+
+/* OBSERVATORY_V24_BETA_READINESS_CHECKPOINT_ROOM_AUDIT_CSS */
+
+.ob-beta-checkpoint-float-button {
+  cursor: pointer;
+  border: 1px solid rgba(101,242,118,0.24);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.07), transparent 34%),
+    rgba(2,7,14,0.78);
+  color: var(--ob-green);
+  backdrop-filter: blur(12px);
+  padding: 10px 12px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.ob-beta-checkpoint-float-button:hover {
+  transform: translateY(-1px);
+  background: rgba(101,242,118,0.075);
+  box-shadow: 0 0 18px rgba(101,242,118,0.14);
+}
+
+.ob-beta-checkpoint-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  display: none;
+  background: rgba(0,0,0,0.58);
+  backdrop-filter: blur(8px);
+}
+
+.ob-beta-checkpoint-backdrop.open {
+  display: block;
+}
+
+.ob-beta-checkpoint-drawer {
+  position: fixed;
+  z-index: 225;
+  top: 22px;
+  right: 22px;
+  width: min(720px, calc(100vw - 44px));
+  max-height: calc(100vh - 44px);
+  overflow: auto;
+  border: 1px solid rgba(101,242,118,0.22);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.10), transparent 34%),
+    radial-gradient(circle at 100% 36%, rgba(233,194,111,0.10), transparent 36%),
+    rgba(2,7,14,0.96);
+  box-shadow:
+    0 34px 130px rgba(0,0,0,0.70),
+    inset 0 0 28px rgba(255,255,255,0.025);
+  padding: 18px;
+}
+
+.ob-beta-checkpoint-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+.ob-beta-checkpoint-head strong {
+  display: block;
+  color: #fff2bf;
+  font-size: 26px;
+  letter-spacing: -0.055em;
+}
+
+.ob-beta-checkpoint-head span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 12px;
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+.ob-beta-checkpoint-close {
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.28);
+  color: var(--ob-muted);
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+
+.ob-beta-score-card {
+  border: 1px solid rgba(101,242,118,0.24);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.08), transparent 34%),
+    rgba(0,0,0,0.22);
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+
+.ob-beta-score-number {
+  width: 94px;
+  height: 94px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(101,242,118,0.34);
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255,255,255,0.14), transparent 22%),
+    rgba(101,242,118,0.08);
+  box-shadow:
+    0 0 22px rgba(101,242,118,0.22),
+    inset 0 0 18px rgba(255,255,255,0.025);
+  color: var(--ob-green);
+  font-size: 28px;
+  font-weight: 950;
+  letter-spacing: -0.07em;
+}
+
+.ob-beta-score-copy strong {
+  display: block;
+  color: #fff2bf;
+  font-size: 18px;
+  margin-bottom: 6px;
+  letter-spacing: -0.04em;
+}
+
+.ob-beta-score-copy span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-beta-audit-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 13px;
+}
+
+.ob-beta-audit-row {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.045), transparent 34%),
+    rgba(0,0,0,0.22);
+  padding: 12px;
+}
+
+.ob-beta-audit-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(101,242,118,0.30);
+  color: var(--ob-green);
+  background: rgba(101,242,118,0.06);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.ob-beta-audit-copy strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.ob-beta-audit-copy span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.ob-beta-audit-status {
+  border: 1px solid rgba(101,242,118,0.24);
+  border-radius: 999px;
+  padding: 6px 8px;
+  background: rgba(101,242,118,0.045);
+  color: var(--ob-green);
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-beta-audit-status.warn {
+  border-color: rgba(233,194,111,0.28);
+  background: rgba(233,194,111,0.045);
+  color: var(--ob-gold);
+}
+
+.ob-beta-audit-status.fail {
+  border-color: rgba(255,87,87,0.28);
+  background: rgba(255,87,87,0.045);
+  color: var(--ob-red);
+}
+
+.ob-beta-checkpoint-note {
+  margin-top: 12px;
+  border: 1px solid rgba(233,194,111,0.20);
+  border-radius: 14px;
+  background: rgba(233,194,111,0.045);
+  padding: 13px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.52;
+}
+
+.ob-beta-checkpoint-warning {
+  margin-top: 12px;
+  border: 1px solid rgba(255,87,87,0.20);
+  border-radius: 14px;
+  background: rgba(255,87,87,0.045);
+  padding: 13px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.52;
+}
+
+.ob-beta-checkpoint-warning strong {
+  color: var(--ob-red);
+}
+
+.ob-beta-checkpoint-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.ob-beta-checkpoint-button {
+  border: 1px solid rgba(101,242,118,0.30);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.26);
+  color: var(--ob-green);
+  padding: 9px 11px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: 0.18s ease;
+}
+
+.ob-beta-checkpoint-button:hover {
+  background: rgba(101,242,118,0.075);
+  box-shadow: 0 0 18px rgba(101,242,118,0.14);
+}
+
+.ob-beta-checkpoint-button.gold {
+  color: #fff3ce;
+  border-color: rgba(233,194,111,0.30);
+}
+
+.ob-beta-checkpoint-button.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.26);
+}
+
+@media (max-width: 1080px) {
+  .ob-beta-score-card,
+  .ob-beta-audit-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-beta-audit-status {
+    width: fit-content;
+  }
+}
+

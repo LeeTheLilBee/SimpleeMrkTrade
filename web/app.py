@@ -9718,6 +9718,48 @@ def ob_dashboard_v16():
 def ob_owner_console_v17():
     return render_template("owner_console.html")
 
+# OBSERVATORY_BETA_READINESS_CHECKPOINT_V24_ROUTE
+@app.route("/ob/beta-readiness-checkpoint.json")
+def ob_beta_readiness_checkpoint_v24():
+    return {
+        "version": "OB_V24_BETA_READINESS_CHECKPOINT_ROOM_AUDIT",
+        "readiness_score": 100,
+        "state": "private_beta_checkpoint_ready",
+        "rooms": [
+            "Dashboard",
+            "Market Map",
+            "Symbol Page",
+            "Trade Center",
+            "Review Center",
+            "Owner Console",
+        ],
+        "shared_layers": [
+            "hover_nav",
+            "mission_account_switcher",
+            "session_continuity",
+            "manual_live_level_1",
+            "notifications_settings",
+            "beta_readiness",
+            "data_contracts",
+            "visual_consistency",
+        ],
+        "boundaries": {
+            "private_beta_only": True,
+            "nda_required": True,
+            "proof_demo_private": True,
+            "no_public_signup": True,
+            "no_public_proof": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "next": [
+            "real_engine_feed_wiring",
+            "tester_operations_docs",
+            "final_user_flow_qa",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:
