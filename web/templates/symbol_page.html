@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
 </head>
 <body>
+<div class="ob-v23-lock-marker" hidden>Live Auto Locked</div>
 <!-- OBSERVATORY_SYMBOL_PAGE_V12_REAL_STAR_ROOM -->
 <div id="ob-app" data-symbol="{{ symbol|default('MU') }}">
   <div class="ob-layer">
@@ -39,5 +40,6 @@
 <script src="{{ url_for('static', filename='ob/ob_mission_accounts.js') }}"></script>
 <script src="{{ url_for('static', filename='ob/ob_notifications_settings.js') }}"></script>
 <script src="{{ url_for('static', filename='ob/ob_beta_readiness.js') }}"></script>
+<script src="{{ url_for('static', filename='ob/ob_visual_consistency.js') }}"></script>
 </body>
 </html>

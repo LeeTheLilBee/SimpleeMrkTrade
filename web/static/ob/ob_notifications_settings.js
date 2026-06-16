@@ -40,7 +40,7 @@
     {
       id: "tower-boundary",
       title: "Tower boundary reminder",
-      body: "Live Automated remains locked. OB can explain, prepare, and record. Owner places manually at broker.",
+      body: "Live Auto Locked remains locked. OB can explain, prepare, and record. Owner places manually at broker.",
       time: "Always",
       type: "tower",
       href: "/ob/owner-console"

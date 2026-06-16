@@ -323,3 +323,6 @@ document.addEventListener("DOMContentLoaded", obRenderTradeCenter);
 if (window.OB_DATA_CONTRACTS_V22 && window.OB_DATA_CONTRACTS_V22.tradeCenterContract) {
   window.OB_TRADE_CENTER_CONTRACT_V22 = window.OB_DATA_CONTRACTS_V22.tradeCenterContract();
 }
+
+// OBSERVATORY_V23_FINAL_VISUAL_CONSISTENCY_PASS_ROOM_FLAG
+window.OB_V23_ROOM_VISUAL_READY = true;

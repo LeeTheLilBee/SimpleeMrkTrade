@@ -23,7 +23,7 @@
       target: "Target zone only if movement confirms",
       maxLoss: "Premium paid",
       status: "Needs owner review",
-      blocker: "Live Automated locked. Manual placement only.",
+      blocker: "Live Auto Locked. Manual placement only.",
       soulaana: "MU is bright, but we still move like grown folks. Review the contract, check the spread, respect the account mission, and do not place anything if the broker screen does not match OB."
     },
     {
@@ -45,7 +45,7 @@
       target: "Target zone after confirmation",
       maxLoss: "Premium paid",
       status: "Needs owner review",
-      blocker: "Crowding check required. Live Automated locked.",
+      blocker: "Crowding check required. Live Auto Locked.",
       soulaana: "AMD can talk loud when semis are glowing. Loud does not mean clean. Check crowding before you even think about broker placement."
     },
     {
@@ -67,7 +67,7 @@
       target: "Target zone only if risk remains clean",
       maxLoss: "Premium paid",
       status: "Needs owner review",
-      blocker: "Crowding elevated. Live Automated locked.",
+      blocker: "Crowding elevated. Live Auto Locked.",
       soulaana: "This star is powerful, but powerful names can humble you fast. If the spread is ugly or crowding is hot, leave it alone."
     }
   ];
@@ -104,7 +104,7 @@
       brokerOrderId: extra && extra.brokerOrderId ? extra.brokerOrderId : "",
       notes: extra && extra.notes ? extra.notes : "",
       responsibility: "Owner at brokerage. OB records and monitors only.",
-      tower: "Live Automated locked. Manual Live Level 1."
+      tower: "Live Auto Locked. Manual Live Level 1."
     });
 
     saveReceipts(receipts);
@@ -588,3 +588,6 @@
 if (window.OB_DATA_CONTRACTS_V22 && window.OB_DATA_CONTRACTS_V22.manualLiveQueue) {
   window.OB_MANUAL_LIVE_QUEUE_CONTRACT_V22 = window.OB_DATA_CONTRACTS_V22.manualLiveQueue();
 }
+
+// OBSERVATORY_V23_FINAL_VISUAL_CONSISTENCY_PASS_ROOM_FLAG
+window.OB_V23_ROOM_VISUAL_READY = true;

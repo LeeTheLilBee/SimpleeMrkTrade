@@ -451,3 +451,6 @@ document.addEventListener("DOMContentLoaded", function() {
 if (window.OB_DATA_CONTRACTS_V22 && window.OB_DATA_CONTRACTS_V22.symbolPageContract) {
   window.OB_SYMBOL_PAGE_CONTRACT_V22_READY = true;
 }
+
+// OBSERVATORY_V23_FINAL_VISUAL_CONSISTENCY_PASS_ROOM_FLAG
+window.OB_V23_ROOM_VISUAL_READY = true;

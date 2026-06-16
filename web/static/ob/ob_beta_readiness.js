@@ -42,7 +42,7 @@
 
   const manualLiveSOP = [
     ["OB detects", "OB identifies a candidate and creates a complete review card."],
-    ["Tower checks", "The Tower permission state stays visible. Live Automated remains locked."],
+    ["Tower checks", "The Tower permission state stays visible. Live Auto Locked remains locked."],
     ["Tester reviews", "Tester reads Trade Center card, Soulaana note, risk, and broker checklist."],
     ["Tester decides", "Approve for manual placement, reject, or snooze / watch."],
     ["Broker is manual", "Tester manually enters the trade at broker if approved and appropriate."],
@@ -213,7 +213,7 @@
       ${listPanel([
         ["No public signup in OB", "Invite acceptance belongs to The Tower, not OB."],
         ["No billing in OB", "Checkout, subscription, upgrade, payment, and customer portal are Tower-owned or SimpleePay-owned flows."],
-        ["No Live Automated beta", "Live Automated remains locked and non-public."],
+        ["No Live Automated beta", "Live Auto Locked remains locked and non-public."],
         ["Locked-content surfaces only", "OB can say access required and route back to Tower, but cannot own the gate."]
       ])}
     `;

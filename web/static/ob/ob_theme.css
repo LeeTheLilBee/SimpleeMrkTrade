@@ -338,7 +338,7 @@ body {
 .symbol-star.hot {
   width: 16px;
   height: 16px;
-  background: #fffbe2;
+  background: rgba(2, 7, 14, 0.96);
   box-shadow:
     0 0 22px rgba(233,194,111,0.90),
     0 0 44px rgba(101,242,118,0.48),
@@ -615,7 +615,7 @@ body {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #fffbe2;
+  background: rgba(2, 7, 14, 0.96);
   box-shadow: 0 0 16px rgba(233,194,111,0.68);
 }
 
@@ -705,7 +705,7 @@ body {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: #fffbe2;
+  background: rgba(2, 7, 14, 0.96);
   box-shadow:
     0 0 16px rgba(233,194,111,0.75),
     0 0 28px rgba(101,242,118,0.34);
@@ -4217,7 +4217,7 @@ body {
   transform-origin: 50% 90%;
   transform: translate(-50%, -90%) rotate(38deg);
   border-radius: 999px;
-  background: #fff2bf;
+  background: rgba(2, 7, 14, 0.96);
   box-shadow: 0 0 18px rgba(233,194,111,0.65);
   z-index: 3;
 }
@@ -4850,8 +4850,8 @@ body {
 }
 
 .ob-mission-select option {
-  color: #08101b;
-  background: #fff3ce;
+  color: #fff3ce;
+  background: #08101b;
 }
 
 .ob-mission-summary {
@@ -5856,8 +5856,8 @@ body {
 }
 
 .ob-setting-card select option {
-  color: #08101b;
-  background: #fff3ce;
+  color: #fff3ce;
+  background: #08101b;
 }
 
 .ob-settings-note {
@@ -6565,6 +6565,453 @@ body[data-ob-soulaana-intensity="strict"] .owner-console-note {
 
   .ob-data-status-actions {
     justify-content: flex-start;
+  }
+}
+
+
+/* OBSERVATORY_V23_FINAL_VISUAL_CONSISTENCY_PASS_CSS */
+
+html,
+body {
+  background: var(--ob-bg) !important;
+}
+
+body {
+  min-height: 100vh;
+}
+
+#ob-app {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 22% 35%, rgba(14, 173, 117, 0.13), transparent 28%),
+    radial-gradient(circle at 78% 22%, rgba(137, 81, 255, 0.13), transparent 30%),
+    radial-gradient(circle at 62% 78%, rgba(232, 194, 111, 0.07), transparent 32%),
+    linear-gradient(180deg, var(--ob-bg) 0%, var(--ob-space-1) 48%, var(--ob-bg) 100%);
+}
+
+.ob-layer,
+.ob-room {
+  box-sizing: border-box;
+}
+
+.ob-layer {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  padding: 24px 24px 34px 58px;
+}
+
+.ob-header {
+  position: relative;
+  z-index: 70;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 460px);
+  gap: 18px;
+  align-items: start;
+  margin: 0 0 18px 28px;
+}
+
+.soulaana-panel {
+  padding: 16px;
+}
+
+.soulaana-text {
+  color: var(--ob-text);
+  font-size: 13px;
+  line-height: 1.62;
+  margin-top: 8px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ob-muted);
+  font-size: 11px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-green {
+  background: var(--ob-green);
+  box-shadow: 0 0 12px rgba(101,242,118,0.55);
+}
+
+.legend-gold {
+  background: var(--ob-gold);
+  box-shadow: 0 0 12px rgba(233,194,111,0.55);
+}
+
+.legend-red {
+  background: var(--ob-red);
+  box-shadow: 0 0 12px rgba(255,87,87,0.45);
+}
+
+.ob-panel,
+.trade-control-strip,
+.dashboard-section-panel,
+.dashboard-hero-panel,
+.dashboard-health-panel,
+.trade-list-panel,
+.trade-selected-panel,
+.review-list-panel,
+.review-detail-panel,
+.owner-list-panel,
+.owner-detail-panel,
+.detail-panel,
+.star-facts-panel,
+.main-star-panel,
+.state-panel,
+.risk-permission-panel,
+.movement-panel {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.045), transparent 34%),
+    radial-gradient(circle at 96% 16%, rgba(126,252,255,0.035), transparent 32%),
+    rgba(2, 7, 14, 0.72) !important;
+  border-color: rgba(255,255,255,0.10);
+  box-shadow:
+    0 22px 70px rgba(0,0,0,0.45),
+    inset 0 0 22px rgba(255,255,255,0.022);
+}
+
+.ob-panel {
+  color: var(--ob-text);
+}
+
+.ob-panel,
+.ob-route-bar,
+.ob-mission-bar,
+.ob-data-status-bar,
+.ob-hover-rail,
+.ob-app-drawer,
+.ob-mission-drawer,
+.ob-beta-drawer,
+.ob-data-drawer,
+.manual-live-drawer {
+  backdrop-filter: blur(14px);
+}
+
+.ob-title-xl,
+.dashboard-welcome,
+.symbol-ticker,
+.trade-symbol,
+.review-row-title,
+.owner-row-title,
+.manual-live-symbol,
+.detail-title,
+.trade-selected-title,
+.review-detail-title,
+.owner-detail-title {
+  text-shadow:
+    0 0 18px rgba(233,194,111,0.16),
+    0 0 44px rgba(126,252,255,0.05);
+}
+
+.ob-subtitle,
+.detail-sub,
+.dashboard-subcopy,
+.dashboard-position-sub,
+.trade-name,
+.review-row-subtitle,
+.owner-row-subtitle,
+.manual-live-company {
+  color: var(--ob-muted);
+}
+
+button,
+select,
+input,
+textarea,
+a {
+  font-family: inherit;
+}
+
+button,
+.ob-button,
+.dashboard-action-button,
+.trade-action-button,
+.review-action-button,
+.owner-action-button,
+.manual-live-button,
+.manual-live-action,
+.ob-mission-button,
+.ob-drawer-button,
+.ob-beta-button,
+.ob-notify-float-button,
+.ob-beta-float-button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+select,
+input,
+textarea {
+  background: rgba(0,0,0,0.30) !important;
+  color: var(--ob-text) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
+select:focus,
+input:focus,
+textarea:focus,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(233,194,111,0.46);
+  outline-offset: 2px;
+}
+
+option {
+  background: #08101b !important;
+  color: #fff3ce !important;
+}
+
+.ob-chip,
+.ob-route-chip,
+.ob-mission-pill,
+.ob-data-chip,
+.dashboard-mini-chip,
+.trade-mini-chip,
+.review-mini-chip,
+.owner-mini-chip,
+.manual-live-chip {
+  white-space: nowrap;
+}
+
+.ob-route-bar,
+.ob-mission-bar,
+.ob-data-status-bar {
+  box-sizing: border-box;
+}
+
+.ob-route-actions,
+.ob-mission-actions,
+.ob-data-status-actions {
+  min-width: 0;
+}
+
+.ob-route-chip,
+.ob-data-chip {
+  user-select: none;
+}
+
+.ob-hover-rail {
+  z-index: 95;
+}
+
+.ob-route-bar {
+  z-index: 74;
+}
+
+.ob-mission-bar {
+  z-index: 73;
+}
+
+.ob-data-status-bar {
+  z-index: 72;
+}
+
+.ob-notify-float {
+  z-index: 96;
+}
+
+.ob-map-field,
+.movement-field,
+.main-star-stage,
+.permission-orbit,
+.health-gauge-wrap {
+  background:
+    radial-gradient(circle at 30% 30%, rgba(101,242,118,0.09), transparent 31%),
+    radial-gradient(circle at 70% 60%, rgba(126,252,255,0.08), transparent 34%),
+    rgba(0,0,0,0.18);
+}
+
+.ob-map-line {
+  stroke: rgba(101,242,118,0.42);
+  filter: drop-shadow(0 0 6px rgba(101,242,118,0.34));
+}
+
+.ob-map-star,
+.ob-star {
+  filter:
+    drop-shadow(0 0 10px rgba(101,242,118,0.45))
+    drop-shadow(0 0 20px rgba(233,194,111,0.10));
+}
+
+.ob-map-star-hot,
+.ob-star-hot {
+  filter:
+    drop-shadow(0 0 14px rgba(233,194,111,0.75))
+    drop-shadow(0 0 26px rgba(101,242,118,0.42));
+}
+
+.symbol-orb,
+.ob-orb,
+.ob-health-orb,
+.health-gauge {
+  will-change: transform, filter;
+}
+
+.dashboard-position-card,
+.trade-row,
+.review-row,
+.owner-row,
+.manual-live-card,
+.ob-notification-card,
+.ob-beta-list-item,
+.ob-data-contract-item,
+.ob-session-item,
+.ob-mission-detail-card,
+.ob-setting-card,
+.dashboard-list-item,
+.dashboard-alert-item {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.045), transparent 34%),
+    rgba(0,0,0,0.22) !important;
+}
+
+.dashboard-position-card:hover,
+.trade-row:hover,
+.review-row:hover,
+.owner-row:hover,
+.manual-live-card:hover {
+  border-color: rgba(233,194,111,0.26);
+  box-shadow: 0 0 26px rgba(233,194,111,0.10);
+}
+
+.ticket-box,
+.fun-facts,
+.movement-note,
+.tower-boundary-note,
+.review-receipt-box,
+.trade-receipt-preview,
+.owner-receipt-box,
+.manual-receipt-box,
+.ob-beta-receipt,
+.ob-data-note,
+.ob-settings-note,
+.ob-mission-note {
+  background: rgba(0,0,0,0.20);
+  border-color: rgba(233,194,111,0.16);
+}
+
+.ob-app-drawer,
+.ob-mission-drawer,
+.ob-beta-drawer,
+.ob-data-drawer,
+.manual-live-drawer {
+  color: var(--ob-text);
+}
+
+.ob-app-drawer::-webkit-scrollbar,
+.ob-mission-drawer::-webkit-scrollbar,
+.ob-beta-drawer::-webkit-scrollbar,
+.ob-data-drawer::-webkit-scrollbar,
+.manual-live-drawer::-webkit-scrollbar {
+  width: 10px;
+}
+
+.ob-app-drawer::-webkit-scrollbar-thumb,
+.ob-mission-drawer::-webkit-scrollbar-thumb,
+.ob-beta-drawer::-webkit-scrollbar-thumb,
+.ob-data-drawer::-webkit-scrollbar-thumb,
+.manual-live-drawer::-webkit-scrollbar-thumb {
+  background: rgba(233,194,111,0.22);
+  border-radius: 999px;
+}
+
+.ob-app-drawer::-webkit-scrollbar-track,
+.ob-mission-drawer::-webkit-scrollbar-track,
+.ob-beta-drawer::-webkit-scrollbar-track,
+.ob-data-drawer::-webkit-scrollbar-track,
+.manual-live-drawer::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.22);
+}
+
+.ob-visual-status {
+  position: fixed;
+  z-index: 92;
+  left: 58px;
+  bottom: 22px;
+  border: 1px solid rgba(233,194,111,0.20);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.08), transparent 34%),
+    rgba(2,7,14,0.78);
+  backdrop-filter: blur(12px);
+  color: var(--ob-muted);
+  padding: 9px 11px;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.ob-visual-status strong {
+  color: var(--ob-gold);
+}
+
+@media (max-width: 1180px) {
+  .ob-layer {
+    padding-left: 48px;
+  }
+
+  .ob-header {
+    grid-template-columns: 1fr;
+    margin-left: 22px;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-layer {
+    padding: 16px 12px 88px 42px;
+  }
+
+  .ob-header,
+  .ob-route-bar,
+  .ob-mission-bar,
+  .ob-data-status-bar {
+    margin-left: 0;
+  }
+
+  .ob-title-xl,
+  .dashboard-welcome {
+    font-size: clamp(32px, 11vw, 48px);
+  }
+
+  .ob-notify-float {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .ob-visual-status {
+    left: 42px;
+    bottom: 12px;
+    max-width: calc(100vw - 160px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

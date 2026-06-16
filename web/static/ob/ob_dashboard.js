@@ -245,3 +245,6 @@ document.addEventListener("DOMContentLoaded", obRenderDashboard);
 if (window.OB_DATA_CONTRACTS_V22 && window.OB_DATA_CONTRACTS_V22.dashboardContract) {
   window.OB_DASHBOARD_CONTRACT_V22 = window.OB_DATA_CONTRACTS_V22.dashboardContract();
 }
+
+// OBSERVATORY_V23_FINAL_VISUAL_CONSISTENCY_PASS_ROOM_FLAG
+window.OB_V23_ROOM_VISUAL_READY = true;

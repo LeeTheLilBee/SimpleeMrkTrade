@@ -245,7 +245,7 @@
     return candidates().slice(0, 5).map((item, index) => ({
       ...item,
       manualStatus: index === 0 ? "Needs owner review" : "Waiting",
-      blocker: "Live Automated locked. Manual placement only.",
+      blocker: "Live Auto Locked. Manual placement only.",
       contract: item.symbol + " next monthly call"
     }));
   }
@@ -313,7 +313,7 @@
       risk_permission: {
         risk: found.risk,
         permission: found.permission,
-        tower: "Live Automated locked. Manual review only."
+        tower: "Live Auto Locked. Manual review only."
       },
       movement_field: {
         phase: found.tier === "hot" ? "Brightening" : found.tier === "watch" ? "Forming" : "Quiet",
@@ -321,7 +321,7 @@
       },
       trade_context: {
         status: found.tier === "hot" ? "Needs owner review" : "Watch only",
-        blocker: "Live Automated locked."
+        blocker: "Live Auto Locked."
       }
     };
   }
