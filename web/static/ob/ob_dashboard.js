@@ -240,3 +240,8 @@ function obRenderDashboard() {
 }
 
 document.addEventListener("DOMContentLoaded", obRenderDashboard);
+
+// OBSERVATORY_V22_REAL_ENGINE_DATA_WIRING_PREP_CONTRACT_HOOK
+if (window.OB_DATA_CONTRACTS_V22 && window.OB_DATA_CONTRACTS_V22.dashboardContract) {
+  window.OB_DASHBOARD_CONTRACT_V22 = window.OB_DATA_CONTRACTS_V22.dashboardContract();
+}

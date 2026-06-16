@@ -318,3 +318,8 @@ function obRenderTradeCenter() {
 }
 
 document.addEventListener("DOMContentLoaded", obRenderTradeCenter);
+
+// OBSERVATORY_V22_REAL_ENGINE_DATA_WIRING_PREP_CONTRACT_HOOK
+if (window.OB_DATA_CONTRACTS_V22 && window.OB_DATA_CONTRACTS_V22.tradeCenterContract) {
+  window.OB_TRADE_CENTER_CONTRACT_V22 = window.OB_DATA_CONTRACTS_V22.tradeCenterContract();
+}

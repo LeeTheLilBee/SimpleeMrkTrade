@@ -446,3 +446,8 @@ document.addEventListener("DOMContentLoaded", function() {
   const symbol = app ? app.getAttribute("data-symbol") : "MU";
   obRenderSymbolRoom(symbol || "MU");
 });
+
+// OBSERVATORY_V22_REAL_ENGINE_DATA_WIRING_PREP_CONTRACT_HOOK
+if (window.OB_DATA_CONTRACTS_V22 && window.OB_DATA_CONTRACTS_V22.symbolPageContract) {
+  window.OB_SYMBOL_PAGE_CONTRACT_V22_READY = true;
+}
