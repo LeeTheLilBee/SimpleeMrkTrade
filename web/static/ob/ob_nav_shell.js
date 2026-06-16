@@ -49,7 +49,7 @@
 
         <div class="ob-nav-group">
           <div class="ob-nav-group-label">Observe</div>
-          ${navLink(path, "/dashboard", "Dashboard", "dashboard", false)}
+          ${navLink(path, "/ob/dashboard", "Dashboard", "dashboard", false)}
           ${navLink(path, "/ob/market-map", "Market Map", "market", false)}
         </div>
 

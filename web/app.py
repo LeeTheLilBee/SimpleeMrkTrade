@@ -9707,6 +9707,11 @@ def ob_trade_center_v14():
 def ob_review_center_v15():
     return render_template("review_center.html")
 
+# OBSERVATORY_DASHBOARD_V16_REAL_ROOM_ROUTE
+@app.route("/ob/dashboard")
+def ob_dashboard_v16():
+    return render_template("dashboard.html")
+
 
 if __name__ == "__main__":
     try:
