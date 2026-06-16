@@ -1,0 +1,359 @@
+// OBSERVATORY_OWNER_CONSOLE_V17_REAL_ROOM_JS
+
+const OB_OWNER_TABS = [
+  { key: "monitoring", label: "Monitoring" },
+  { key: "analytics", label: "Analytics" },
+  { key: "intelligence", label: "Intelligence" },
+  { key: "diagnostics", label: "Diagnostics" },
+  { key: "security", label: "Security / Audit" },
+  { key: "preview", label: "Preview Controls" }
+];
+
+const OB_OWNER_ROWS = {
+  monitoring: [
+    {
+      title: "OB room health",
+      subtitle: "Dashboard, Market Map, Symbol Page, Trade Center, Review Center",
+      status: "Healthy",
+      metricA: "5 real rooms",
+      metricB: "Nav connected",
+      metricC: "Private",
+      metricD: "Tower controlled",
+      risk: "Low",
+      action: "Keep route smoke checks active.",
+      soulaana: "This is good. The rooms are becoming real, but we still do not confuse real rooms with finished product. Keep checking flow."
+    },
+    {
+      title: "Manual Live readiness",
+      subtitle: "Trade Context, Manual Queue, Review receipts",
+      status: "Guarded",
+      metricA: "UI ready",
+      metricB: "Broker manual",
+      metricC: "Receipts preview",
+      metricD: "No API execution",
+      risk: "Moderate",
+      action: "Build full fill confirmation flow before beta.",
+      soulaana: "Manual Live is not automated. Keep saying that. OB may guide, but the owner is still the hand."
+    }
+  ],
+  analytics: [
+    {
+      title: "Room flow analytics",
+      subtitle: "Observe → Symbol → Trade → Review",
+      status: "Needs wiring",
+      metricA: "Preview data",
+      metricB: "Clicks later",
+      metricC: "No public funnel",
+      metricD: "Private beta",
+      risk: "Low",
+      action: "Track room transitions after beta users exist.",
+      soulaana: "Do not overbuild analytics before the flow is used. First make the path clean, then measure the path."
+    },
+    {
+      title: "Symbol engagement",
+      subtitle: "Clicked stars and watched candidates",
+      status: "Planned",
+      metricA: "Stars",
+      metricB: "Signals",
+      metricC: "Watchlist",
+      metricD: "Candidates",
+      risk: "Low",
+      action: "Connect to real event receipts later.",
+      soulaana: "The user should not feel watched. The system should feel accountable."
+    }
+  ],
+  intelligence: [
+    {
+      title: "Crowding and repeat behavior",
+      subtitle: "Sector concentration and duplicate pressure",
+      status: "Guarded",
+      metricA: "Tech bright",
+      metricB: "Semis active",
+      metricC: "Crowding visible",
+      metricD: "Tower gate",
+      risk: "Correlation",
+      action: "Keep anti-crowding visible across mission accounts.",
+      soulaana: "A lot of green in one lane can still be danger. Blessing does not mean overload."
+    },
+    {
+      title: "Strategy degradation watch",
+      subtitle: "Edge fatigue and regime mismatch",
+      status: "Planned",
+      metricA: "Future",
+      metricB: "Engine layer",
+      metricC: "Review needed",
+      metricD: "Receipts",
+      risk: "Drift",
+      action: "Wire after real engine state feeds the rooms.",
+      soulaana: "If the edge gets tired, the system has to admit it. No silent drifting."
+    }
+  ],
+  diagnostics: [
+    {
+      title: "Route coverage",
+      subtitle: "Protected room routes",
+      status: "Healthy",
+      metricA: "/ob/dashboard",
+      metricB: "/ob/market-map",
+      metricC: "/ob/trade-center",
+      metricD: "/ob/review-center",
+      risk: "Low",
+      action: "Add Owner Console route smoke to ongoing checks.",
+      soulaana: "Routes are doors. Doors need locks and checks."
+    },
+    {
+      title: "Static asset health",
+      subtitle: "Shared OB theme and room JS",
+      status: "Healthy",
+      metricA: "Theme",
+      metricB: "Nav shell",
+      metricC: "Room JS",
+      metricD: "Market data",
+      risk: "Low",
+      action: "Keep shared CSS from becoming cluttered.",
+      soulaana: "One universe, separate rooms. That is the visual law."
+    }
+  ],
+  security: [
+    {
+      title: "Tower boundary",
+      subtitle: "Access, identity, billing, permissions",
+      status: "Locked",
+      metricA: "Tower owns",
+      metricB: "OB displays",
+      metricC: "No billing",
+      metricD: "No public proof",
+      risk: "Boundary",
+      action: "Do not add OB billing, login, or public proof pages.",
+      soulaana: "The Tower is the lock. OB does not need to pretend it owns the keys."
+    },
+    {
+      title: "Private proof control",
+      subtitle: "Proof/Demo stays internal",
+      status: "Owner-only",
+      metricA: "Private",
+      metricB: "Redacted",
+      metricC: "Review Center",
+      metricD: "Tower clear",
+      risk: "Exposure",
+      action: "Keep proof/demo records private unless Tower explicitly clears export.",
+      soulaana: "Show the lesson, not the family wallet."
+    }
+  ],
+  preview: [
+    {
+      title: "Room preview controls",
+      subtitle: "Owner-only UI state toggles",
+      status: "Preview",
+      metricA: "Theme",
+      metricB: "Mode chips",
+      metricC: "Room states",
+      metricD: "Locked actions",
+      risk: "Low",
+      action: "Later add owner-only toggles for preview/demo states.",
+      soulaana: "Preview controls are for building, not pretending. Keep them owner-only."
+    },
+    {
+      title: "Beta readiness checklist",
+      subtitle: "NDA, tester flow, SOP, feedback",
+      status: "Needs review",
+      metricA: "NDA",
+      metricB: "SOP",
+      metricC: "Questions",
+      metricD: "Access rules",
+      risk: "Beta",
+      action: "Prepare beta operating docs while final rooms finish.",
+      soulaana: "Beta is not public. Beta is protected learning."
+    }
+  ]
+};
+
+function obOwnerRows(tab) {
+  return OB_OWNER_ROWS[tab] || OB_OWNER_ROWS.monitoring;
+}
+
+function obOwnerSummary() {
+  return [
+    { label: "Real Rooms", value: "5 / 6" },
+    { label: "Tower Boundary", value: "Locked" },
+    { label: "Live Auto", value: "Blocked" },
+    { label: "Proof", value: "Private" },
+    { label: "Manual Live", value: "Guarded" },
+    { label: "Beta State", value: "Build" }
+  ];
+}
+
+function obOwnerChipClass(row) {
+  const status = String(row.status || "").toLowerCase();
+  if (status.includes("healthy")) return "green";
+  if (status.includes("locked") || status.includes("owner")) return "red";
+  return "gold";
+}
+
+function obOwnerRecordAction(title, action) {
+  const receipt = document.getElementById("ownerReceiptBox");
+  if (!receipt) return;
+
+  const now = new Date().toLocaleString();
+
+  receipt.innerHTML = `
+    <strong>Owner receipt updated:</strong><br>
+    Console item: ${title}<br>
+    Action: ${action}<br>
+    Time: ${now}<br>
+    Scope: Owner Console preview record.<br>
+    Note: System truth remains Tower-controlled.
+  `;
+}
+
+function obRenderSelectedOwner(row, tab) {
+  const panel = document.getElementById("ownerDetailPanel");
+
+  panel.innerHTML = `
+    <div class="owner-detail-title">${row.title}</div>
+    <div class="owner-detail-subtitle">${row.subtitle}</div>
+
+    <div class="owner-detail-stack">
+      <div class="owner-detail-card ${obOwnerChipClass(row)}">
+        <span>Status</span>
+        <strong>${row.status}</strong>
+      </div>
+
+      <div class="owner-detail-card gold">
+        <span>Risk</span>
+        <strong>${row.risk}</strong>
+      </div>
+
+      <div class="owner-detail-card">
+        <span>Recommended action</span>
+        <strong>${row.action}</strong>
+      </div>
+
+      <div class="owner-console-note">
+        <strong style="color: var(--ob-gold);">Soulaana:</strong><br>
+        ${row.soulaana}
+      </div>
+
+      <div class="owner-warning-box">
+        <strong>Owner boundary:</strong><br>
+        This console can display system truth and preview controls, but The Tower owns identity, access, billing, permissions, locks, and emergency controls.
+      </div>
+
+      <div class="owner-action-stack">
+        <button class="owner-action-button aqua" onclick="obOwnerRecordAction('${row.title}', 'Marked reviewed')">Mark reviewed</button>
+        <button class="owner-action-button" onclick="obOwnerRecordAction('${row.title}', 'Add owner note')">Add owner note</button>
+        <button class="owner-action-button red" onclick="obOwnerRecordAction('${row.title}', 'Escalate to Tower review')">Escalate to Tower review</button>
+      </div>
+
+      <div class="owner-receipt-box" id="ownerReceiptBox">
+        <strong>No owner receipt yet.</strong><br>
+        Choose an action to create an Owner Console receipt preview.
+      </div>
+    </div>
+  `;
+}
+
+function obRenderOwnerRows(tab) {
+  const rows = obOwnerRows(tab);
+  const list = document.getElementById("ownerRowList");
+
+  list.innerHTML = rows.map((row, index) => `
+    <div class="owner-row ${index === 0 ? "active" : ""}" data-index="${index}">
+      <div class="owner-row-top">
+        <div>
+          <div class="owner-row-title">${row.title}</div>
+          <div class="owner-row-subtitle">${row.subtitle}</div>
+        </div>
+
+        <div class="owner-row-state">
+          <span class="owner-mini-chip ${obOwnerChipClass(row)}">${row.status}</span>
+          <span class="owner-mini-chip red">Owner-only</span>
+        </div>
+      </div>
+
+      <div class="owner-row-metrics">
+        <div class="owner-row-metric"><span>Metric A</span><strong>${row.metricA}</strong></div>
+        <div class="owner-row-metric"><span>Metric B</span><strong>${row.metricB}</strong></div>
+        <div class="owner-row-metric"><span>Metric C</span><strong>${row.metricC}</strong></div>
+        <div class="owner-row-metric"><span>Metric D</span><strong>${row.metricD}</strong></div>
+      </div>
+    </div>
+  `).join("");
+
+  list.querySelectorAll(".owner-row").forEach((item) => {
+    item.addEventListener("click", () => {
+      list.querySelectorAll(".owner-row").forEach(row => row.classList.remove("active"));
+      item.classList.add("active");
+      obRenderSelectedOwner(rows[Number(item.dataset.index)], tab);
+    });
+  });
+
+  if (rows[0]) {
+    obRenderSelectedOwner(rows[0], tab);
+  }
+}
+
+function obSetOwnerTab(tab) {
+  document.querySelectorAll(".owner-tab").forEach(button => {
+    button.classList.toggle("active", button.dataset.tab === tab);
+  });
+
+  const title = document.getElementById("ownerListTitle");
+  const subtitle = document.getElementById("ownerListSubtitle");
+
+  const label = OB_OWNER_TABS.find(item => item.key === tab).label;
+  title.textContent = label;
+  subtitle.textContent = tab === "security"
+    ? "Security/Audit shows boundaries. The Tower still owns the real locks."
+    : "Click an item to review system truth, Soulaana guidance, and owner action.";
+
+  obRenderOwnerRows(tab);
+}
+
+function obRenderOwnerConsole() {
+  const mount = document.getElementById("ownerConsoleMount");
+
+  mount.innerHTML = `
+    <div class="owner-console-shell">
+      <div class="ob-panel trade-control-strip">
+        <div class="ob-label">Owner Snapshot</div>
+
+        <div class="owner-status-grid">
+          ${obOwnerSummary().map(item => `
+            <div class="owner-status-card">
+              <span>${item.label}</span>
+              <strong>${item.value}</strong>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+
+      <div class="ob-panel owner-tabs">
+        ${OB_OWNER_TABS.map((tab, index) => `
+          <button class="owner-tab ${index === 0 ? "active" : ""}" data-tab="${tab.key}">
+            ${tab.label}
+          </button>
+        `).join("")}
+      </div>
+
+      <div class="owner-main-grid">
+        <div class="ob-panel owner-list-panel">
+          <div class="ob-label">Owner Console</div>
+          <div class="detail-title" id="ownerListTitle">Monitoring</div>
+          <div class="detail-sub" id="ownerListSubtitle">Click an item to review system truth, Soulaana guidance, and owner action.</div>
+          <div class="owner-row-list" id="ownerRowList"></div>
+        </div>
+
+        <div class="ob-panel owner-detail-panel" id="ownerDetailPanel"></div>
+      </div>
+    </div>
+  `;
+
+  document.querySelectorAll(".owner-tab").forEach(button => {
+    button.addEventListener("click", () => obSetOwnerTab(button.dataset.tab));
+  });
+
+  obSetOwnerTab("monitoring");
+}
+
+document.addEventListener("DOMContentLoaded", obRenderOwnerConsole);

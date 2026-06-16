@@ -9712,6 +9712,12 @@ def ob_review_center_v15():
 def ob_dashboard_v16():
     return render_template("dashboard.html")
 
+# OBSERVATORY_OWNER_CONSOLE_V17_REAL_ROOM_ROUTE
+@app.route("/owner-console")
+@app.route("/ob/owner-console")
+def ob_owner_console_v17():
+    return render_template("owner_console.html")
+
 
 if __name__ == "__main__":
     try:

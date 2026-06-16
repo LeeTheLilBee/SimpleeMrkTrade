@@ -65,7 +65,7 @@
 
         <div class="ob-nav-group">
           <div class="ob-nav-group-label">Owner</div>
-          ${navLink(path, "/owner-console", "Owner Console", "owner", true)}
+          ${navLink(path, "/ob/owner-console", "Owner Console", "owner", true)}
         </div>
 
         <div class="ob-nav-foot">
