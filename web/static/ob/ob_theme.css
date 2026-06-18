@@ -11199,3 +11199,325 @@ option {
   }
 }
 
+
+/* OBSERVATORY_V42_PRIVATE_BETA_ISSUE_TRIAGE_FIX_PRIORITY_CSS */
+
+.ob-beta-issue-triage-panel,
+.ob-beta-session-closeout-panel {
+  position: relative;
+  margin: 0 0 18px 28px;
+  border-radius: 18px;
+  box-shadow: 0 24px 78px rgba(0,0,0,0.42), inset 0 0 22px rgba(255,255,255,0.020);
+  padding: 14px;
+  backdrop-filter: blur(12px);
+}
+
+.ob-beta-issue-triage-panel {
+  z-index: 53;
+  border: 1px solid rgba(233,194,111,0.22);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.080), transparent 32%),
+    radial-gradient(circle at 92% 20%, rgba(255,87,87,0.052), transparent 34%),
+    rgba(0,0,0,0.23);
+}
+
+.ob-beta-session-closeout-panel {
+  z-index: 52;
+  border: 1px solid rgba(101,242,118,0.22);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.075), transparent 32%),
+    radial-gradient(circle at 92% 20%, rgba(126,252,255,0.055), transparent 34%),
+    rgba(0,0,0,0.23);
+}
+
+/* OBSERVATORY_V43_PRIVATE_BETA_SESSION_CLOSEOUT_REPORT_CSS */
+
+.ob-beta-issue-triage-head,
+.ob-beta-session-closeout-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.ob-beta-issue-triage-title,
+.ob-beta-session-closeout-title {
+  color: #fff2bf;
+  font-size: 20px;
+  font-weight: 950;
+  letter-spacing: -0.05em;
+}
+
+.ob-beta-issue-triage-subtitle,
+.ob-beta-session-closeout-subtitle {
+  margin-top: 4px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.44;
+}
+
+.ob-beta-issue-triage-chip-row,
+.ob-beta-session-closeout-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-beta-issue-triage-chip,
+.ob-beta-session-closeout-chip {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  padding: 7px 9px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-beta-issue-triage-chip.green,
+.ob-beta-session-closeout-chip.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-beta-issue-triage-chip.gold,
+.ob-beta-session-closeout-chip.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.28);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-beta-issue-triage-chip.red,
+.ob-beta-session-closeout-chip.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-beta-issue-triage-grid,
+.ob-beta-session-closeout-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ob-beta-issue-triage-card,
+.ob-beta-session-closeout-card {
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 13px;
+  background: radial-gradient(circle at 0% 0%, rgba(233,194,111,0.035), transparent 34%), rgba(0,0,0,0.20);
+  padding: 10px;
+}
+
+.ob-beta-session-closeout-card {
+  background: radial-gradient(circle at 0% 0%, rgba(101,242,118,0.035), transparent 34%), rgba(0,0,0,0.20);
+}
+
+.ob-beta-issue-triage-card span,
+.ob-beta-session-closeout-card span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-beta-issue-triage-card strong,
+.ob-beta-session-closeout-card strong {
+  color: var(--ob-text);
+  font-size: 12px;
+}
+
+.ob-beta-issue-triage-section,
+.ob-beta-session-closeout-section {
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 15px;
+  background: radial-gradient(circle at 0% 0%, rgba(126,252,255,0.035), transparent 34%), rgba(0,0,0,0.20);
+  padding: 12px;
+  margin-bottom: 11px;
+}
+
+.ob-beta-issue-triage-section-title,
+.ob-beta-session-closeout-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-beta-issue-triage-list,
+.ob-beta-session-closeout-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-beta-issue-triage-row,
+.ob-beta-session-closeout-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.065);
+  padding-top: 8px;
+}
+
+.ob-beta-issue-triage-row:first-child,
+.ob-beta-session-closeout-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-beta-issue-triage-dot,
+.ob-beta-session-closeout-dot {
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(233,194,111,0.28);
+  color: var(--ob-gold);
+  background: rgba(233,194,111,0.055);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.ob-beta-session-closeout-dot {
+  border-color: rgba(101,242,118,0.28);
+  color: var(--ob-green);
+  background: rgba(101,242,118,0.055);
+}
+
+.ob-beta-issue-triage-row strong,
+.ob-beta-session-closeout-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-beta-issue-triage-row span,
+.ob-beta-session-closeout-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-beta-issue-triage-status,
+.ob-beta-session-closeout-status {
+  border: 1px solid rgba(233,194,111,0.28);
+  border-radius: 999px;
+  background: rgba(233,194,111,0.045);
+  color: var(--ob-gold);
+  padding: 6px 8px;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-beta-issue-triage-status.green,
+.ob-beta-session-closeout-status.green {
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+  color: var(--ob-green);
+}
+
+.ob-beta-issue-triage-status.red,
+.ob-beta-session-closeout-status.red {
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+  color: var(--ob-red);
+}
+
+.ob-beta-issue-triage-callout,
+.ob-beta-session-closeout-callout,
+.ob-beta-issue-triage-note,
+.ob-beta-session-closeout-note {
+  margin-top: 10px;
+  border: 1px solid rgba(233,194,111,0.17);
+  border-radius: 13px;
+  background: rgba(233,194,111,0.040);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-beta-session-closeout-callout,
+.ob-beta-session-closeout-note {
+  border-color: rgba(101,242,118,0.17);
+  background: rgba(101,242,118,0.040);
+}
+
+.ob-beta-issue-triage-callout strong,
+.ob-beta-session-closeout-callout strong,
+.ob-beta-issue-triage-note strong,
+.ob-beta-session-closeout-note strong {
+  color: var(--ob-gold);
+}
+
+.ob-beta-session-closeout-callout strong,
+.ob-beta-session-closeout-note strong {
+  color: var(--ob-green);
+}
+
+.ob-beta-issue-triage-boundary,
+.ob-beta-session-closeout-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(255,87,87,0.18);
+  border-radius: 13px;
+  background: rgba(255,87,87,0.040);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-beta-issue-triage-boundary strong,
+.ob-beta-session-closeout-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-beta-issue-triage-grid,
+  .ob-beta-session-closeout-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ob-beta-issue-triage-row,
+  .ob-beta-session-closeout-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-beta-issue-triage-panel,
+  .ob-beta-session-closeout-panel {
+    margin-left: 0;
+  }
+
+  .ob-beta-issue-triage-head,
+  .ob-beta-session-closeout-head {
+    display: grid;
+  }
+
+  .ob-beta-issue-triage-chip-row,
+  .ob-beta-session-closeout-chip-row {
+    justify-content: flex-start;
+  }
+
+  .ob-beta-issue-triage-grid,
+  .ob-beta-session-closeout-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+

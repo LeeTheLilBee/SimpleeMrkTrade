@@ -11389,6 +11389,218 @@ def ob_private_beta_session_runbook_v41():
         ],
     }
 
+# OBSERVATORY_PRIVATE_BETA_ISSUE_TRIAGE_V42_ROUTE
+@app.route("/ob/private-beta-issue-triage.json")
+def ob_private_beta_issue_triage_v42():
+    issues = [
+        {
+            "id": "TRIAGE-FB-QUEUE-001",
+            "feedback_id": "FB-QUEUE-001",
+            "room": "Dashboard",
+            "issue_type": "wording issue",
+            "priority": "medium",
+            "must_fix_before_next_tester": False,
+            "summary": "Tester may not understand what OB wants first.",
+            "owner_action": "Rewrite guidance or add clarification.",
+            "decision_status": "owner-decision",
+            "private": True,
+        },
+        {
+            "id": "TRIAGE-FB-QUEUE-002",
+            "feedback_id": "FB-QUEUE-002",
+            "room": "Trade Center",
+            "issue_type": "safety issue",
+            "priority": "high",
+            "must_fix_before_next_tester": True,
+            "summary": "Tester may feel pressure to trade instead of review.",
+            "owner_action": "Strengthen review-only language before next tester.",
+            "decision_status": "must-fix",
+            "private": True,
+        },
+        {
+            "id": "TRIAGE-FB-QUEUE-003",
+            "feedback_id": "FB-QUEUE-003",
+            "room": "Market Map",
+            "issue_type": "data issue",
+            "priority": "high",
+            "must_fix_before_next_tester": True,
+            "summary": "Tester may not understand snapshot/stale/guarded/fallback data.",
+            "owner_action": "Run V36 source audit and refresh stale/fallback feed labels.",
+            "decision_status": "must-fix",
+            "private": True,
+        },
+        {
+            "id": "TRIAGE-FB-QUEUE-004",
+            "feedback_id": "FB-QUEUE-004",
+            "room": "Trade Center",
+            "issue_type": "safety issue",
+            "priority": "blocker",
+            "must_fix_before_next_tester": True,
+            "summary": "Tester must find Tower state, Live Auto Locked, and no-execution boundaries.",
+            "owner_action": "Pause tester expansion until safety wording and Tower boundaries are verified.",
+            "decision_status": "must-fix",
+            "private": True,
+        },
+    ]
+
+    return {
+        "version": "OB_V42_PRIVATE_BETA_ISSUE_TRIAGE_FIX_PRIORITY",
+        "source": "guarded_private_beta_issue_triage_json",
+        "triage_status": "owner_facing_read_only",
+        "next_tester_status": "NO-GO",
+        "issues": issues,
+        "summary": {
+            "total_issues": len(issues),
+            "blocker": sum(1 for item in issues if item["priority"] == "blocker"),
+            "high": sum(1 for item in issues if item["priority"] == "high"),
+            "medium": sum(1 for item in issues if item["priority"] == "medium"),
+            "low": sum(1 for item in issues if item["priority"] == "low"),
+            "polish": sum(1 for item in issues if item["priority"] == "polish"),
+            "must_fix_before_next_tester": sum(1 for item in issues if item["must_fix_before_next_tester"]),
+        },
+        "priority_labels": ["blocker", "high", "medium", "low", "polish"],
+        "issue_type_labels": ["UI issue", "safety issue", "data issue", "wording issue", "trust issue"],
+        "owner_decision_rules": [
+            "Blocker issues make the next tester no-go.",
+            "High safety/source-feed issues require owner decision before next tester.",
+            "Medium clarity/UI issues can be conditional if clearly labeled.",
+            "No issue may remove Tower, NDA, private beta, or no-execution boundaries.",
+            "Tester feedback cannot become public proof.",
+        ],
+        "must_fix_actions": [
+            "Strengthen review-only language before next tester.",
+            "Run V36 source audit and refresh stale/fallback feed labels.",
+            "Pause tester expansion until safety wording and Tower boundaries are verified.",
+        ],
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "issue_triage_private": True,
+            "owner_decides_next_tester": True,
+            "no_public_proof": True,
+            "no_public_launch": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "issue_triage_does_not_create_permission": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Issue triage is private.",
+            "Owner decides must-fix before next tester.",
+            "No public proof.",
+            "No broker wiring.",
+            "No execution permission changed.",
+        ],
+    }
+
+# OBSERVATORY_PRIVATE_BETA_SESSION_CLOSEOUT_V43_ROUTE
+@app.route("/ob/private-beta-session-closeout.json")
+def ob_private_beta_session_closeout_v43():
+    unresolved_issues = [
+        {
+            "id": "TRIAGE-FB-QUEUE-002",
+            "feedback_id": "FB-QUEUE-002",
+            "room": "Trade Center",
+            "issue_type": "safety issue",
+            "priority": "high",
+            "must_fix_before_next_tester": True,
+            "summary": "Tester may feel pressure to trade instead of review.",
+            "owner_action": "Strengthen review-only language before next tester.",
+        },
+        {
+            "id": "TRIAGE-FB-QUEUE-003",
+            "feedback_id": "FB-QUEUE-003",
+            "room": "Market Map",
+            "issue_type": "data issue",
+            "priority": "high",
+            "must_fix_before_next_tester": True,
+            "summary": "Tester may not understand snapshot/stale/guarded/fallback data.",
+            "owner_action": "Run V36 source audit and refresh stale/fallback feed labels.",
+        },
+        {
+            "id": "TRIAGE-FB-QUEUE-004",
+            "feedback_id": "FB-QUEUE-004",
+            "room": "Trade Center",
+            "issue_type": "safety issue",
+            "priority": "blocker",
+            "must_fix_before_next_tester": True,
+            "summary": "Tester must find Tower state, Live Auto Locked, and no-execution boundaries.",
+            "owner_action": "Pause tester expansion until safety wording and Tower boundaries are verified.",
+        },
+    ]
+
+    return {
+        "version": "OB_V43_PRIVATE_BETA_SESSION_CLOSEOUT_REPORT",
+        "source": "guarded_private_beta_session_closeout_json",
+        "closeout_status": "owner_facing_read_only",
+        "session_outcome": "NO-GO",
+        "next_tester_decision": "NO-GO",
+        "tester_session_result": "stop_next_tester_until_fixed",
+        "summary": {
+            "total_issues": 4,
+            "unresolved_issues": len(unresolved_issues),
+            "blocker": sum(1 for item in unresolved_issues if item["priority"] == "blocker"),
+            "high": sum(1 for item in unresolved_issues if item["priority"] == "high"),
+            "must_fix_before_next_tester": sum(1 for item in unresolved_issues if item["must_fix_before_next_tester"]),
+            "public_launch": "no",
+            "broker_wiring": "no",
+            "auto_execution": "no",
+        },
+        "unresolved_issues": unresolved_issues,
+        "closeout_sections": [
+            {
+                "title": "Session outcome",
+                "detail": "Private beta session closes with owner-facing next tester decision.",
+                "status": "NO-GO",
+            },
+            {
+                "title": "Unresolved issues",
+                "detail": "Unresolved high/blocker issues remain before next tester.",
+                "status": "needs-owner-review",
+            },
+            {
+                "title": "Public launch boundary",
+                "detail": "Closeout confirms this is not public launch and not public proof.",
+                "status": "confirmed-private",
+            },
+            {
+                "title": "Execution boundary",
+                "detail": "No broker wiring, no broker API, no auto execution, Live Auto Locked.",
+                "status": "locked",
+            },
+        ],
+        "owner_next_actions": [
+            "Fix blocker issues before another tester.",
+            "Re-run V40/V41/V42 after fixes.",
+            "Confirm no tester saw broker/API/execution implication.",
+            "Do not invite next tester yet.",
+        ],
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "session_closeout_private": True,
+            "owner_go_no_go_only": True,
+            "no_public_launch": True,
+            "no_public_proof": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "session_closeout_does_not_create_permission": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Session closeout is private.",
+            "Go/conditional/no-go is for private tester sequencing only.",
+            "No public launch.",
+            "No public proof.",
+            "No broker wiring.",
+            "No execution permission changed.",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:
