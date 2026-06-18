@@ -9886,6 +9886,97 @@ def ob_engine_feed_snapshot_v25():
         },
     }
 
+# OBSERVATORY_BETA_TESTER_OPERATIONS_V30_ROUTE
+@app.route("/ob/beta-tester-operations.json")
+def ob_beta_tester_operations_v30():
+    return {
+        "version": "OB_V30_BETA_TESTER_OPERATIONS_PACK",
+        "state": "private_beta_tester_ops_ready",
+        "tester_checklist": [
+            "NDA / invite required",
+            "Start in Dashboard",
+            "Read Market Map",
+            "Open Symbol Page",
+            "Trade Center review only",
+            "Record confusion",
+            "Review Center receipts",
+            "Owner review queue",
+        ],
+        "feedback_packet": [
+            "What did you think OB wanted you to do first?",
+            "Did anything feel like pressure to trade instead of review?",
+            "Could you tell whether data was snapshot or preview fallback?",
+            "Could you find Tower state, Live Auto Locked, and no-execution boundaries?",
+            "Which room confused you most?",
+            "What felt broken, crowded, slow, or hard to trust?",
+        ],
+        "owner_review_queue": [
+            "tester clarity review",
+            "boundary comprehension",
+            "private proof review",
+            "bug/confusion reporting",
+        ],
+        "boundaries": {
+            "nda_invite_required": True,
+            "private_beta_only": True,
+            "no_public_launch": True,
+            "no_public_proof": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+    }
+
+# OBSERVATORY_PRIVATE_BETA_QA_V31_ROUTE
+@app.route("/ob/private-beta-qa.json")
+def ob_private_beta_qa_v31():
+    return {
+        "version": "OB_V31_FINAL_PRIVATE_BETA_QA_PASS",
+        "state": "private_beta_ready_foundation",
+        "qa_score": 100,
+        "rooms": {
+            "dashboard": True,
+            "market_map": True,
+            "symbol_page": True,
+            "trade_center": True,
+            "review_center": True,
+            "owner_console": True,
+        },
+        "layers": {
+            "v18_mission_accounts_session": True,
+            "v19_manual_live_level_1": True,
+            "v20_notifications_settings": True,
+            "v21_beta_readiness_tester_flow": True,
+            "v22_data_contracts": True,
+            "v23_visual_consistency": True,
+            "v24_beta_readiness_checkpoint": True,
+            "v25_safe_engine_feed_adapter": True,
+            "v26_snapshot_display": True,
+            "v27_room_level_data_polish": True,
+            "v28_candidate_signal_cards": True,
+            "v29_manual_live_receipts": True,
+            "v30_beta_tester_operations": True,
+        },
+        "boundaries": {
+            "private_beta_only": True,
+            "no_public_ob_routes": True,
+            "no_public_proof": True,
+            "no_public_launch": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "manual_live_owner_manual_only": True,
+            "proof_demo_private": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "next": [
+            "final user-flow QA pass",
+            "real engine feed expansion only after safe adapter review",
+            "tester invite operations through Tower",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:
