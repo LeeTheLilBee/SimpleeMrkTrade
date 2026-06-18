@@ -11182,6 +11182,213 @@ def ob_private_beta_feedback_intake_v39():
         ],
     }
 
+# OBSERVATORY_PRIVATE_BETA_FEEDBACK_REVIEW_QUEUE_V40_ROUTE
+@app.route("/ob/private-beta-feedback-review-queue.json")
+def ob_private_beta_feedback_review_queue_v40():
+    queue_records = [
+        {
+            "id": "FB-QUEUE-001",
+            "type": "confusion",
+            "room": "Dashboard",
+            "severity": "medium",
+            "label": "clarity",
+            "prompt": "What did you think OB wanted you to do first?",
+            "status": "reviewed-pending",
+            "allowed_statuses": ["reviewed", "needs-fix", "accepted", "rejected"],
+            "owner_action": "Rewrite guidance or add clarification.",
+            "private": True,
+        },
+        {
+            "id": "FB-QUEUE-002",
+            "type": "pressure_to_trade",
+            "room": "Trade Center",
+            "severity": "high",
+            "label": "safety",
+            "prompt": "Did anything feel like pressure to trade instead of review?",
+            "status": "needs-fix",
+            "allowed_statuses": ["reviewed", "needs-fix", "accepted", "rejected"],
+            "owner_action": "Strengthen review-only language before next tester.",
+            "private": True,
+        },
+        {
+            "id": "FB-QUEUE-003",
+            "type": "source_feed",
+            "room": "Market Map",
+            "severity": "high",
+            "label": "source-feed",
+            "prompt": "Could you tell whether data was snapshot, stale, guarded, or fallback?",
+            "status": "needs-fix",
+            "allowed_statuses": ["reviewed", "needs-fix", "accepted", "rejected"],
+            "owner_action": "Run V36 source audit and refresh stale/fallback feed labels.",
+            "private": True,
+        },
+        {
+            "id": "FB-QUEUE-004",
+            "type": "safety_issue",
+            "room": "Trade Center",
+            "severity": "blocker",
+            "label": "safety/Manual Live",
+            "prompt": "Could you find Tower state, Live Auto Locked, and no-execution boundaries?",
+            "status": "needs-fix",
+            "allowed_statuses": ["reviewed", "needs-fix", "accepted", "rejected"],
+            "owner_action": "Pause tester expansion until safety wording and Tower boundaries are verified.",
+            "private": True,
+        },
+    ]
+
+    return {
+        "version": "OB_V40_OWNER_TESTER_FEEDBACK_REVIEW_QUEUE",
+        "source": "guarded_private_beta_feedback_review_queue_json",
+        "queue_status": "owner_facing_read_only",
+        "review_queue_label": "Owner review required",
+        "queue_records": queue_records,
+        "summary": {
+            "total_records": len(queue_records),
+            "blocker": sum(1 for item in queue_records if item["severity"] == "blocker"),
+            "high": sum(1 for item in queue_records if item["severity"] == "high"),
+            "needs_fix": sum(1 for item in queue_records if item["status"] == "needs-fix"),
+            "private_records": sum(1 for item in queue_records if item["private"]),
+            "owner_actions": len(queue_records),
+        },
+        "severity_labels": ["blocker", "high", "medium", "low", "polish"],
+        "issue_labels": ["clarity", "trust", "bug", "UI", "safety", "source-feed", "Manual Live"],
+        "status_labels": ["reviewed", "needs-fix", "accepted", "rejected"],
+        "owner_follow_up_actions": [
+            "Review blocker/high records before inviting another tester.",
+            "Route pressure-to-trade and safety issues to immediate fix queue.",
+            "Route source-feed issues to V36 source audit.",
+            "Route room/UI issues to room polish.",
+            "Never convert tester feedback into public proof.",
+        ],
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "private_feedback_review": True,
+            "owner_review_required": True,
+            "no_public_proof": True,
+            "no_public_launch": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "feedback_review_does_not_create_permission": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Feedback review queue is private.",
+            "Owner review is required.",
+            "No public proof.",
+            "No broker wiring.",
+            "No execution permission changed.",
+        ],
+    }
+
+# OBSERVATORY_PRIVATE_BETA_SESSION_RUNBOOK_V41_ROUTE
+@app.route("/ob/private-beta-session-runbook.json")
+def ob_private_beta_session_runbook_v41():
+    steps = [
+        {
+            "step": 1,
+            "room": "Dashboard",
+            "route": "/ob/dashboard",
+            "tester_goal": "Understand mode, Tower state, mission account, source trust, and next action.",
+            "owner_note": "Ask tester what they think they should do first.",
+            "stop_condition": "Stop if tester thinks OB is telling them to trade immediately.",
+        },
+        {
+            "step": 2,
+            "room": "Market Map",
+            "route": "/ob/market-map",
+            "tester_goal": "Read the constellation view and identify fresh/stale/fallback labels.",
+            "owner_note": "Ask tester whether the sky feels like observation, not orders.",
+            "stop_condition": "Stop if tester cannot identify source freshness labels.",
+        },
+        {
+            "step": 3,
+            "room": "Symbol Page",
+            "route": "/ob/symbol/MU",
+            "tester_goal": "Open one symbol and understand context, reasons, risk, and permission boundaries.",
+            "owner_note": "Ask tester whether one-symbol context feels explainable.",
+            "stop_condition": "Stop if tester reads the symbol page as an execution command.",
+        },
+        {
+            "step": 4,
+            "room": "Trade Center",
+            "route": "/ob/trade-center",
+            "tester_goal": "Review candidates and Manual Live wording without assuming broker connection.",
+            "owner_note": "Ask tester to find No broker API, No auto execution, and Live Auto Locked.",
+            "stop_condition": "Stop if tester thinks the system will place a trade.",
+        },
+        {
+            "step": 5,
+            "room": "Review Center",
+            "route": "/ob/review-center",
+            "tester_goal": "Confirm receipts, proof/demo, and feedback are private review materials.",
+            "owner_note": "Ask tester whether proof feels private or public.",
+            "stop_condition": "Stop if tester thinks proof/demo is public-facing.",
+        },
+    ]
+
+    stop_conditions = [
+        "Do not continue if tester feels pressured to trade.",
+        "Do not continue if tester cannot identify Live Auto Locked.",
+        "Do not continue if tester thinks OB has broker API access.",
+        "Do not continue if tester thinks proof/demo/receipts are public.",
+        "Do not continue if tester cannot tell fresh/stale/fallback labels apart.",
+        "Do not continue if owner-only controls appear to normal tester.",
+        "Do not continue if any safety issue or blocker feedback appears.",
+    ]
+
+    return {
+        "version": "OB_V41_GUIDED_PRIVATE_BETA_SESSION_RUNBOOK",
+        "source": "guarded_private_beta_session_runbook_json",
+        "runbook_status": "owner_guided_read_only",
+        "session_label": "Guided private beta session",
+        "steps": steps,
+        "stop_conditions": stop_conditions,
+        "owner_opening_script": [
+            "You are testing clarity and safety, not trading.",
+            "Tell me immediately if anything feels like a trading instruction.",
+            "Tell me immediately if you cannot tell whether data is fresh, stale, guarded, or fallback.",
+            "Do not screenshot, share, export, or invite anyone.",
+        ],
+        "owner_closeout_questions": [
+            "What did you think OB wanted you to do first?",
+            "Which room confused you most?",
+            "Did anything feel like pressure to trade?",
+            "Could you find Tower state and Live Auto Locked?",
+            "Did proof/demo feel private?",
+            "What should be fixed before another tester?",
+        ],
+        "runbook_summary": {
+            "total_steps": len(steps),
+            "stop_conditions": len(stop_conditions),
+            "owner_notes": len(steps),
+            "queue_blockers": 1,
+            "queue_high": 2,
+        },
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "guided_session_only": True,
+            "no_public_launch": True,
+            "no_public_proof": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "session_runbook_does_not_create_permission": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Runbook is private and owner-guided.",
+            "Stop if tester is confused about execution boundaries.",
+            "No public launch.",
+            "No broker wiring.",
+            "No execution permission changed.",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:
