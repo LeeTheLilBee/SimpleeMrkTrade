@@ -10692,6 +10692,115 @@ def ob_owner_source_audit_v36():
         ],
     }
 
+# OBSERVATORY_PRIVATE_BETA_LAUNCH_CONTROL_V37_ROUTE
+@app.route("/ob/private-beta-launch-control.json")
+def ob_private_beta_launch_control_v37():
+    checks = [
+        {
+            "id": "rooms",
+            "title": "Room readiness",
+            "detail": "Dashboard, Market Map, Symbol Page, Trade Center, Review Center, and Owner Console are protected and render together.",
+            "status": "pass",
+            "next": "Keep six-room shell private and Tower-controlled.",
+        },
+        {
+            "id": "tester",
+            "title": "Tester readiness",
+            "detail": "Tester checklist, feedback packet, NDA/invite reminders, and owner review queue are present.",
+            "status": "pass",
+            "next": "Use invite/NDA flow before adding testers.",
+        },
+        {
+            "id": "source",
+            "title": "Source/feed readiness",
+            "detail": "Source feed audit, staleness guard, trust labels, room mapping, and missing data action plan are present.",
+            "status": "warn",
+            "next": "Fix any V36 source warnings before testers rely on engine feed.",
+        },
+        {
+            "id": "nda",
+            "title": "NDA / invite readiness",
+            "detail": "Private beta remains invite-only, NDA-required, and not public.",
+            "status": "pass",
+            "next": "Tester access goes through Tower.",
+        },
+        {
+            "id": "manual_live",
+            "title": "Manual Live boundary readiness",
+            "detail": "Manual Live remains owner/manual only. No broker API. No auto execution. Live Auto Locked.",
+            "status": "pass",
+            "next": "Do not add broker wiring.",
+        },
+        {
+            "id": "proof_privacy",
+            "title": "Proof / privacy readiness",
+            "detail": "Proof, demo, receipts, tester feedback, and review records stay private unless Tower clears export later.",
+            "status": "pass",
+            "next": "No public proof in beta.",
+        },
+        {
+            "id": "tower",
+            "title": "Tower control readiness",
+            "detail": "Tower owns identity, access, invite, billing, permissions, locks, clearance, and export approval.",
+            "status": "pass",
+            "next": "No bypass routes.",
+        },
+    ]
+
+    pass_count = sum(1 for check in checks if check["status"] == "pass")
+    warn_count = sum(1 for check in checks if check["status"] == "warn")
+    fail_count = sum(1 for check in checks if check["status"] == "fail")
+    score = round((pass_count / len(checks)) * 100)
+
+    if fail_count:
+        go_no_go = "NO-GO"
+    elif warn_count:
+        go_no_go = "CONDITIONAL GO"
+    else:
+        go_no_go = "PRIVATE BETA READY"
+
+    return {
+        "version": "OB_V37_PRIVATE_BETA_LAUNCH_CONTROL_CHECKLIST",
+        "source": "guarded_private_beta_launch_control_json",
+        "launch_status": "owner_facing_read_only",
+        "score": score,
+        "go_no_go": go_no_go,
+        "checks": checks,
+        "summary": {
+            "pass": pass_count,
+            "warn": warn_count,
+            "fail": fail_count,
+            "total": len(checks),
+        },
+        "owner_final_actions": [
+            "Fix any V36 source/feed warnings before testers rely on engine feed.",
+            "Confirm tester invite list and NDA status through Tower.",
+            "Confirm Manual Live stays owner/manual only.",
+            "Confirm no public proof, no public launch, no broker wiring.",
+            "Run final visual room walkthrough before first tester.",
+        ],
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "tower_controlled_private_beta": True,
+            "no_public_launch": True,
+            "no_public_proof": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "launch_control_does_not_create_permission": True,
+            "manual_live_owner_manual_only": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Launch control is owner-facing only.",
+            "Conditional go is not public launch.",
+            "No broker wiring.",
+            "No execution permission changed.",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:
