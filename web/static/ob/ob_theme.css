@@ -8336,3 +8336,298 @@ option {
   }
 }
 
+
+/* OBSERVATORY_V29_MANUAL_LIVE_RECEIPTS_REVIEW_INTEGRATION_CSS */
+
+.ob-ml-receipts-panel {
+  position: relative;
+  z-index: 66;
+  margin: 0 0 18px 28px;
+  border: 1px solid rgba(233,194,111,0.19);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.080), transparent 32%),
+    radial-gradient(circle at 92% 20%, rgba(126,252,255,0.055), transparent 34%),
+    rgba(0,0,0,0.22);
+  box-shadow:
+    0 22px 70px rgba(0,0,0,0.40),
+    inset 0 0 22px rgba(255,255,255,0.020);
+  padding: 14px;
+  backdrop-filter: blur(12px);
+}
+
+.ob-ml-receipts-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.ob-ml-receipts-title {
+  color: #fff2bf;
+  font-size: 18px;
+  font-weight: 940;
+  letter-spacing: -0.045em;
+}
+
+.ob-ml-receipts-subtitle {
+  margin-top: 4px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.ob-ml-receipts-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-ml-receipts-chip {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  padding: 7px 9px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-ml-receipts-chip.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-ml-receipts-chip.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.28);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-ml-receipts-chip.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-ml-receipts-summary {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ob-ml-receipts-summary-card {
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 13px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.040), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 10px;
+}
+
+.ob-ml-receipts-summary-card span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-ml-receipts-summary-card strong {
+  color: var(--ob-text);
+  font-size: 12px;
+}
+
+.ob-ml-receipts-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ob-ml-receipts-tab {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: 0.18s ease;
+}
+
+.ob-ml-receipts-tab:hover,
+.ob-ml-receipts-tab.active {
+  color: #fff3ce;
+  border-color: rgba(233,194,111,0.30);
+  background: rgba(233,194,111,0.070);
+  box-shadow: 0 0 16px rgba(233,194,111,0.12);
+}
+
+.ob-ml-receipts-timeline {
+  display: grid;
+  gap: 10px;
+}
+
+.ob-ml-receipt-row {
+  display: grid;
+  grid-template-columns: 30px 0.42fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.040), transparent 34%),
+    rgba(0,0,0,0.22);
+  padding: 12px;
+}
+
+.ob-ml-receipt-dot {
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(233,194,111,0.30);
+  color: var(--ob-gold);
+  background: rgba(233,194,111,0.055);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.ob-ml-receipt-symbol {
+  color: #fff2bf;
+  font-size: 16px;
+  font-weight: 950;
+  letter-spacing: -0.045em;
+}
+
+.ob-ml-receipt-meta {
+  margin-top: 3px;
+  color: var(--ob-faint);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.ob-ml-receipt-copy strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.ob-ml-receipt-copy span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.ob-ml-receipt-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.ob-ml-receipt-badge {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 5px 7px;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-ml-receipt-badge.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-ml-receipt-badge.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.28);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-ml-receipt-badge.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-ml-receipts-boundary {
+  margin-top: 12px;
+  border: 1px solid rgba(255,87,87,0.18);
+  border-radius: 13px;
+  background: rgba(255,87,87,0.040);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-ml-receipts-boundary strong {
+  color: var(--ob-red);
+}
+
+.ob-ml-receipts-private-proof {
+  margin-top: 10px;
+  border: 1px solid rgba(126,252,255,0.16);
+  border-radius: 13px;
+  background: rgba(126,252,255,0.040);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-ml-receipts-private-proof strong {
+  color: var(--ob-aqua);
+}
+
+@media (max-width: 1180px) {
+  .ob-ml-receipts-summary {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .ob-ml-receipt-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-ml-receipt-badges {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-ml-receipts-panel {
+    margin-left: 0;
+  }
+
+  .ob-ml-receipts-head {
+    display: grid;
+  }
+
+  .ob-ml-receipts-chip-row {
+    justify-content: flex-start;
+  }
+
+  .ob-ml-receipts-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
