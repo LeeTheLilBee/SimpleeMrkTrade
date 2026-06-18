@@ -9977,6 +9977,136 @@ def ob_private_beta_qa_v31():
         ],
     }
 
+# OBSERVATORY_ENGINE_FEED_EXPANSION_V32_ROUTE
+@app.route("/ob/engine-feed-expanded.json")
+def ob_engine_feed_expanded_v32():
+    from pathlib import Path
+    import json
+
+    root = Path(__file__).resolve().parents[1]
+    data_dir = root / "data"
+
+    def read_json_safe(path):
+        try:
+            if not path.exists():
+                return None
+            with path.open("r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as exc:
+            return {"_error": str(exc), "_path": str(path)}
+
+    def as_list(value):
+        if isinstance(value, list):
+            return value
+        if isinstance(value, dict):
+            for key in ["items", "rows", "data", "records", "positions", "candidates", "ledger"]:
+                if isinstance(value.get(key), list):
+                    return value.get(key)
+        return []
+
+    def safe_row(row, symbol_key="symbol"):
+        if not isinstance(row, dict):
+            return {"symbol": "UNKNOWN", "summary": str(row)[:120]}
+
+        symbol = row.get(symbol_key) or row.get("ticker") or row.get("underlying") or row.get("contractSymbol") or "UNKNOWN"
+
+        return {
+            "symbol": str(symbol)[:32],
+            "company": str(row.get("company", row.get("name", symbol)))[:120],
+            "strategy": str(row.get("strategy", row.get("tradeType", row.get("role", "Review"))))[:120],
+            "status": str(row.get("status", row.get("state", row.get("position", "Read-only"))))[:120],
+            "risk": str(row.get("risk", row.get("blocker", row.get("permission", "Guarded"))))[:120],
+            "source": "expanded_engine_feed",
+        }
+
+    files = {
+        "candidate_log": read_json_safe(data_dir / "candidate_log.json"),
+        "open_positions": read_json_safe(data_dir / "open_positions.json"),
+        "ledger": read_json_safe(data_dir / "ledger.json"),
+        "trade_log": read_json_safe(data_dir / "trade_log.json"),
+        "market_universe": read_json_safe(data_dir / "market_universe.json"),
+        "pipeline_status": read_json_safe(data_dir / "pipeline_status.json"),
+    }
+
+    candidate_rows = as_list(files["candidate_log"])
+    open_position_rows = as_list(files["open_positions"])
+    ledger_rows = as_list(files["ledger"])
+    trade_log_rows = as_list(files["trade_log"])
+
+    market_symbols = []
+    market_sectors = []
+
+    if isinstance(files["market_universe"], dict):
+        sectors = files["market_universe"].get("sectors")
+        if isinstance(sectors, list):
+            market_sectors = sectors
+            for sector in sectors:
+                if isinstance(sector, dict):
+                    for symbol in sector.get("symbols", []) or []:
+                        if isinstance(symbol, dict):
+                            market_symbols.append(symbol)
+
+    pipeline_keys = []
+    if isinstance(files["pipeline_status"], dict):
+        pipeline_keys = list(files["pipeline_status"].keys())[:30]
+
+    data_files = {
+        key: "present" if value is not None else "missing"
+        for key, value in files.items()
+    }
+
+    warnings = []
+    for key, state in data_files.items():
+        if state == "missing":
+            warnings.append(f"{key}.json missing; UI fallback remains active.")
+
+    return {
+        "version": "OB_V32_REAL_ENGINE_FEED_EXPANSION_READ_ONLY",
+        "source": "guarded_expanded_engine_json",
+        "expansion_status": "read_only",
+        "counts": {
+            "candidate_log": len(candidate_rows),
+            "open_positions": len(open_position_rows),
+            "manual_live_queue": 0,
+            "ledger": len(ledger_rows),
+            "trade_log": len(trade_log_rows),
+            "market_symbols": len(market_symbols),
+            "sectors": len(market_sectors),
+            "review_receipts": 0,
+            "pipeline_keys": len(pipeline_keys),
+        },
+        "previews": {
+            "candidates": [safe_row(row) for row in candidate_rows[:8]],
+            "open_positions": [safe_row(row) for row in open_position_rows[:8]],
+            "ledger": [safe_row(row) for row in ledger_rows[:8]],
+            "trade_log": [safe_row(row) for row in trade_log_rows[:8]],
+            "market_symbols": [safe_row(row) for row in market_symbols[:8]],
+        },
+        "data_files": data_files,
+        "pipeline_keys": pipeline_keys,
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "proof_demo_private": True,
+            "manual_live_owner_manual_only": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": warnings or [
+            "Expanded feed is read-only.",
+            "No broker wiring.",
+            "No execution permissions changed.",
+        ],
+        "next": [
+            "map expanded candidate rows into canonical UI cards",
+            "add owner diagnostics for stale/missing data files",
+            "keep all execution paths locked",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:
