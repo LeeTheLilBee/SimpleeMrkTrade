@@ -10107,6 +10107,265 @@ def ob_engine_feed_expanded_v32():
         ],
     }
 
+# OBSERVATORY_ENGINE_FEED_DIAGNOSTICS_V33_ROUTE
+@app.route("/ob/engine-feed-diagnostics.json")
+def ob_engine_feed_diagnostics_v33():
+    return {
+        "version": "OB_V33_ENGINE_FEED_DIAGNOSTICS_STALENESS_GUARD",
+        "source": "recovered_engine_feed_diagnostics_json",
+        "diagnostics_status": "read_only_recovered",
+        "freshness_score": 72,
+        "display_label": "Fallback / guarded",
+        "files": [
+            {
+                "name": "candidate_log",
+                "exists": False,
+                "status": "fallback_only",
+                "age_minutes": None,
+                "safe_to_display": "fallback_only",
+                "label": "Fallback only",
+                "note": "Recovered route; label as fallback until full diagnostics confirms freshness.",
+            },
+            {
+                "name": "open_positions",
+                "exists": False,
+                "status": "fallback_only",
+                "age_minutes": None,
+                "safe_to_display": "fallback_only",
+                "label": "Fallback only",
+                "note": "Recovered route; label as fallback until full diagnostics confirms freshness.",
+            },
+            {
+                "name": "ledger",
+                "exists": False,
+                "status": "fallback_only",
+                "age_minutes": None,
+                "safe_to_display": "fallback_only",
+                "label": "Fallback only",
+                "note": "Recovered route; label as fallback until full diagnostics confirms freshness.",
+            },
+            {
+                "name": "market_universe",
+                "exists": False,
+                "status": "fallback_only",
+                "age_minutes": None,
+                "safe_to_display": "fallback_only",
+                "label": "Fallback only",
+                "note": "Recovered route; label as fallback until full diagnostics confirms freshness.",
+            },
+            {
+                "name": "pipeline_status",
+                "exists": False,
+                "status": "fallback_only",
+                "age_minutes": None,
+                "safe_to_display": "fallback_only",
+                "label": "Fallback only",
+                "note": "Recovered route; label as fallback until full diagnostics confirms freshness.",
+            },
+        ],
+        "summary": {
+            "present": 0,
+            "fresh": 0,
+            "stale": 0,
+            "missing": 0,
+            "fallback_only": 5,
+            "caution": 5,
+        },
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "manual_live_owner_manual_only": True,
+            "stale_data_cannot_create_permission": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Recovered diagnostics route is read-only.",
+            "Fallback-only data must be labeled.",
+            "No broker wiring.",
+        ],
+    }
+
+# OBSERVATORY_ENGINE_FEED_TRUST_LABELS_V34_ROUTE
+@app.route("/ob/engine-feed-trust-labels.json")
+def ob_engine_feed_trust_labels_v34():
+    from pathlib import Path
+    from datetime import datetime, timezone
+    import json
+
+    root = Path(__file__).resolve().parents[1]
+    data_dir = root / "data"
+
+    tracked_files = [
+        "candidate_log.json",
+        "open_positions.json",
+        "ledger.json",
+        "trade_log.json",
+        "market_universe.json",
+        "pipeline_status.json",
+    ]
+
+    stale_minutes = 240
+    old_minutes = 1440
+
+    def file_state(filename):
+        path = data_dir / filename
+
+        if not path.exists():
+            return {
+                "name": filename.replace(".json", ""),
+                "exists": False,
+                "status": "missing",
+                "age_minutes": None,
+                "safe_to_display": "fallback_only",
+                "label": "Missing / fallback",
+                "note": "Missing data must be labeled fallback before room display.",
+            }
+
+        modified = datetime.fromtimestamp(path.stat().st_mtime, timezone.utc)
+        age_minutes = int((datetime.now(timezone.utc) - modified).total_seconds() // 60)
+
+        if age_minutes <= stale_minutes:
+            return {
+                "name": filename.replace(".json", ""),
+                "exists": True,
+                "status": "fresh",
+                "age_minutes": age_minutes,
+                "safe_to_display": "safe",
+                "label": "Fresh read-only",
+                "note": "Fresh enough for read-only room display.",
+            }
+
+        if age_minutes <= old_minutes:
+            return {
+                "name": filename.replace(".json", ""),
+                "exists": True,
+                "status": "stale",
+                "age_minutes": age_minutes,
+                "safe_to_display": "caution",
+                "label": "Stale caution",
+                "note": "Display only with caution label.",
+            }
+
+        return {
+            "name": filename.replace(".json", ""),
+            "exists": True,
+            "status": "old",
+            "age_minutes": age_minutes,
+            "safe_to_display": "fallback_recommended",
+            "label": "Old / fallback recommended",
+            "note": "Too old to trust as current. Prefer fallback or visible warning.",
+        }
+
+    files = [file_state(filename) for filename in tracked_files]
+
+    summary = {
+        "present": sum(1 for item in files if item["exists"]),
+        "fresh": sum(1 for item in files if item["status"] == "fresh"),
+        "stale": sum(1 for item in files if item["status"] in {"stale", "old"}),
+        "missing": sum(1 for item in files if not item["exists"]),
+        "fallback_only": sum(1 for item in files if item["safe_to_display"] == "fallback_only"),
+        "caution": sum(1 for item in files if item["safe_to_display"] in {"caution", "fallback_recommended"}),
+    }
+
+    total = max(1, len(files))
+    freshness_score = round(((summary["fresh"] * 1.0) + (summary["present"] * 0.35) - (summary["missing"] * 0.25) - (summary["stale"] * 0.20)) / total * 100)
+    freshness_score = max(0, min(100, freshness_score))
+
+    if summary["missing"] > 0 or summary["fallback_only"] > 0:
+        trust = {
+            "level": "fallback",
+            "kind": "red",
+            "label": "Fallback / missing",
+            "roomAction": "Show warning before trusting room data.",
+            "safeToDisplay": "fallback_only",
+        }
+        display_label = "Fallback / missing"
+    elif summary["stale"] > 0 or summary["caution"] > 0:
+        trust = {
+            "level": "stale",
+            "kind": "gold",
+            "label": "Stale / caution",
+            "roomAction": "Display with caution labels.",
+            "safeToDisplay": "caution",
+        }
+        display_label = "Stale / caution"
+    else:
+        trust = {
+            "level": "fresh",
+            "kind": "green",
+            "label": "Fresh read-only",
+            "roomAction": "Safe to display as read-only context.",
+            "safeToDisplay": "safe",
+        }
+        display_label = "Fresh read-only"
+
+    room_warnings = {
+        "dashboard": {
+            "title": "Dashboard engine trust",
+            "detail": "Dashboard must show whether engine feed is fresh, stale, missing, guarded, or fallback before account/focus panels trust it.",
+            "label": trust["label"],
+        },
+        "market_map": {
+            "title": "Market Map sky trust",
+            "detail": "Market Map should label the sky as fresh, stale, or fallback so constellation counts are not over-trusted.",
+            "label": trust["label"],
+        },
+        "symbol_page": {
+            "title": "Symbol Page stale-data warning",
+            "detail": "Symbol Page should show a warning strip if source data is stale, missing, guarded, or fallback-only.",
+            "label": trust["label"],
+        },
+        "trade_center": {
+            "title": "Trade Center candidate caution",
+            "detail": "Trade Center candidate cards should carry caution labels when feed freshness is stale, missing, or fallback.",
+            "label": trust["label"],
+        },
+        "review_center": {
+            "title": "Review Center receipt/feed freshness",
+            "detail": "Review Center should label whether receipts/review feed context is fresh, stale, private, or fallback.",
+            "label": trust["label"],
+        },
+        "owner_console": {
+            "title": "Owner Console diagnostic warning summary",
+            "detail": "Owner Console should summarize all feed trust warnings before owner expands testing or engine reliance.",
+            "label": trust["label"],
+        },
+    }
+
+    return {
+        "version": "OB_V34_ENGINE_FEED_TRUST_LABELS_ROOM_WARNINGS",
+        "source": "guarded_engine_feed_trust_labels_json",
+        "trust_status": "read_only",
+        "trust": trust,
+        "freshness_score": freshness_score,
+        "display_label": display_label,
+        "files": files,
+        "summary": summary,
+        "room_warnings": room_warnings,
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "stale_data_cannot_create_permission": True,
+            "trust_labels_are_warnings_only": True,
+            "manual_live_owner_manual_only": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Trust labels are warnings only.",
+            "Stale data cannot create permission.",
+            "Fallback data must be labeled.",
+            "No broker wiring.",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:
