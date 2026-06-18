@@ -1,0 +1,195 @@
+"""
+SEARCHABLE LABEL: TOWER_PACK_359_HANDOFF_POLICY_ROUTE_ENFORCEMENT_OWNER_ACCEPTANCE_RECEIPT_SEAL_RELEASE_VERIFICATION_TESTS
+"""
+
+from __future__ import annotations
+
+import importlib
+
+
+def test_pack_359_contract_ready():
+    mod = importlib.import_module("tower.receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_note_version_v359")
+    payload = mod.build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_note_version_preview()
+
+    assert payload["pack"] == "359"
+    assert payload["pack_number"] == 359
+    assert payload["status"] == "ready"
+    assert payload["readiness"] == 100
+    assert payload["endpoint"] == "/tower/receipt-chain-saved-view-owner-review-handoff-policy-route-enforcement-owner-acceptance-receipt-seal-release-verification-note-version-v359.json"
+    assert payload["tower_sublayer"] == "Handoff Policy Route Enforcement Owner Acceptance Receipt Seal Release Verification layer"
+    assert payload["source_pack"] == "358"
+    assert payload["source_closed_batch"] == "351-355"
+    assert payload["save_batch"] == "356-360"
+    assert payload["save_after_pack"] == 360
+    assert payload["next_pack"] == "360"
+    assert payload["cached"] is True
+    assert payload["non_recursive"] is True
+    assert payload["preview_only"] is True
+    assert payload["release_verification_preview_only"] is True
+    assert payload["release_preview_only"] is True
+    assert payload["verification_preview_only"] is True
+    assert payload["seal_preview_only"] is True
+    assert payload["receipt_preview_only"] is True
+    assert payload["retrieval_preview_only"] is True
+    assert payload["archive_preview_only"] is True
+    assert payload["simulation_only"] is True
+    assert payload["source_status"] == "ready"
+    assert payload["source_readiness"] == 100
+    assert payload["source_safe_to_continue"] is True
+    assert payload["safe_to_continue_to_pack_360"] is True
+    assert payload["prepare_pack_360_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_batch_close_readiness"]["pack"] == "360"
+
+
+def test_pack_359_summary_safety_ready():
+    mod = importlib.import_module("tower.receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_note_version_v359")
+    payload = mod.build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_note_version_preview()
+    summary = payload["owner_acceptance_receipt_seal_release_verification_note_version_summary"]
+
+    assert summary["card_count"] >= 15
+    assert summary["field_count"] >= 120
+    assert summary["action_count"] >= 15
+    assert summary["checkpoint_count"] >= 20
+    assert summary["enabled_action_count"] >= 15
+    assert summary["blocked_action_count"] >= 15
+    assert summary["redacted_field_count"] >= 30
+
+    assert summary["all_cards_preview_only"] is True
+    assert summary["all_cards_pointer_only"] is True
+    assert summary["all_cards_release_verification_pointer_only"] is True
+    assert summary["all_cards_release_pointer_only"] is True
+    assert summary["all_cards_verification_pointer_only"] is True
+    assert summary["all_cards_seal_pointer_only"] is True
+    assert summary["all_cards_receipt_pointer_only"] is True
+    assert summary["all_cards_retrieval_pointer_only"] is True
+    assert summary["all_cards_archive_pointer_only"] is True
+    assert summary["all_cards_no_writes"] is True
+    assert summary["all_cards_non_executable"] is True
+    assert summary["all_cards_non_verifiable"] is True
+    assert summary["all_cards_non_passable"] is True
+    assert summary["all_cards_non_failable"] is True
+    assert summary["all_cards_non_releasable"] is True
+    assert summary["all_cards_non_publishable"] is True
+    assert summary["all_cards_non_approvable"] is True
+    assert summary["all_cards_non_deniable"] is True
+    assert summary["all_cards_non_signable"] is True
+    assert summary["all_cards_non_sealable"] is True
+    assert summary["all_cards_non_exportable"] is True
+    assert summary["all_cards_non_deletable"] is True
+    assert summary["all_cards_no_raw_evidence"] is True
+    assert summary["all_fields_no_writes"] is True
+    assert summary["all_fields_no_raw_evidence"] is True
+    assert summary["all_actions_safe"] is True
+    assert summary["all_checkpoints_passed"] is True
+    assert summary["all_checkpoints_no_writes"] is True
+    assert summary["owner_acceptance_receipt_seal_release_verification_note_version_ready"] is True
+
+    assert summary["real_owner_acceptance_receipt_seal_release_verification_execute_enabled"] is False
+    assert summary["real_owner_acceptance_receipt_seal_release_verification_write_enabled"] is False
+    assert summary["real_owner_acceptance_receipt_seal_release_verification_apply_enabled"] is False
+    assert summary["real_owner_acceptance_receipt_seal_release_verification_pass_enabled"] is False
+    assert summary["real_owner_acceptance_receipt_seal_release_verification_fail_enabled"] is False
+    assert summary["real_owner_acceptance_receipt_seal_release_verification_publish_enabled"] is False
+    assert summary["real_owner_acceptance_receipt_seal_release_verification_export_enabled"] is False
+    assert summary["real_owner_acceptance_receipt_seal_release_execute_enabled"] is False
+    assert summary["real_owner_acceptance_receipt_seal_release_publish_enabled"] is False
+    assert summary["real_owner_acceptance_receipt_seal_sign_enabled"] is False
+    assert summary["real_owner_acceptance_receipt_seal_seal_enabled"] is False
+    assert summary["real_receipt_write_enabled"] is False
+    assert summary["real_receipt_export_enabled"] is False
+    assert summary["real_evidence_reveal_enabled"] is False
+    assert summary["raw_evidence_visible"] is False
+    assert summary["real_action_execution_enabled"] is False
+
+
+def test_pack_359_payload_shapes_and_endpoint():
+    mod = importlib.import_module("tower.receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_note_version_v359")
+    payload = mod.build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_note_version_preview()
+
+    cards = payload["owner_acceptance_receipt_seal_release_verification_note_version_cards"]
+    fields = payload["owner_acceptance_receipt_seal_release_verification_note_version_fields"]
+    actions = payload["owner_acceptance_receipt_seal_release_verification_note_version_actions"]
+    checkpoints = payload["owner_acceptance_receipt_seal_release_verification_note_version_checkpoints"]
+
+    assert cards
+    assert fields
+    assert actions
+    assert checkpoints
+
+    assert all(row["preview_only"] is True for row in cards)
+    assert all(row["pointer_only"] is True for row in cards)
+    assert all(row["release_verification_pointer_only"] is True for row in cards)
+    assert all(row["release_pointer_only"] is True for row in cards)
+    assert all(row["verification_pointer_only"] is True for row in cards)
+    assert all(row["seal_pointer_only"] is True for row in cards)
+    assert all(row["receipt_pointer_only"] is True for row in cards)
+    assert all(row["retrieval_pointer_only"] is True for row in cards)
+    assert all(row["archive_pointer_only"] is True for row in cards)
+    assert all(row["writes_state"] is False for row in cards)
+    assert all(row["executable"] is False for row in cards)
+    assert all(row["verifiable"] is False for row in cards)
+    assert all(row["passable"] is False for row in cards)
+    assert all(row["failable"] is False for row in cards)
+    assert all(row["releasable"] is False for row in cards)
+    assert all(row["publishable"] is False for row in cards)
+    assert all(row["approvable"] is False for row in cards)
+    assert all(row["deniable"] is False for row in cards)
+    assert all(row["signable"] is False for row in cards)
+    assert all(row["sealable"] is False for row in cards)
+    assert all(row["exportable"] is False for row in cards)
+    assert all(row["deletable"] is False for row in cards)
+    assert all(row["raw_evidence_visible"] is False for row in cards)
+
+    assert all(row["writes_state"] is False for row in fields)
+    assert all(row["raw_evidence_visible"] is False for row in fields)
+
+    preview_actions = [row for row in actions if row["result"] == "preview_allowed"]
+    blocked_actions = [row for row in actions if row["result"] == "blocked_preview_only"]
+    assert preview_actions
+    assert blocked_actions
+    assert all(row["enabled"] is True for row in preview_actions)
+    assert all(row["enabled"] is False for row in blocked_actions)
+
+    assert all(row["passed"] is True for row in checkpoints)
+    assert all(row["writes_state"] is False for row in checkpoints)
+
+    import web.app as web_app
+    app = getattr(web_app, "app", None)
+    assert app is not None
+    rules = {rule.rule for rule in app.url_map.iter_rules()}
+    assert "/tower/receipt-chain-saved-view-owner-review-handoff-policy-route-enforcement-owner-acceptance-receipt-seal-release-verification-note-version-v359.json" in rules
+
+    response = app.test_client().get("/tower/receipt-chain-saved-view-owner-review-handoff-policy-route-enforcement-owner-acceptance-receipt-seal-release-verification-note-version-v359.json")
+    assert response.status_code in {200, 302, 401, 403}
+    if response.status_code == 200:
+        data = response.get_json()
+        assert data["pack"] == "359"
+        assert data["status"] == "ready"
+        assert data["readiness"] == 100
+        assert data["release_verification_preview_only"] is True
+        assert data["safe_to_continue_to_pack_360"] is True
+
+
+def test_pack_359_bridge_prep_and_defensive_copy():
+    mod = importlib.import_module("tower.receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_note_version_v359")
+
+    bridge = mod.build_pack_359_status_bridge()
+    assert bridge["pack"] == "359"
+    assert bridge["status"] == "ready"
+    assert bridge["readiness"] == 100
+    assert bridge["card_count"] >= 15
+    assert bridge["owner_acceptance_receipt_seal_release_verification_note_version_ready"] is True
+    assert bridge["safe_to_continue_to_pack_360"] is True
+
+    prep = mod.prepare_pack_360_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_batch_close_readiness()
+    assert prep["ready"] is True
+    assert prep["next_pack"] == "360"
+    assert prep["source_pack"] == "359"
+    assert prep["safe_to_continue"] is True
+
+    first = mod.build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_note_version_preview()
+    second = mod.build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_note_version_preview()
+    assert first == second
+    assert first is not second
+    first["status"] = "mutated"
+    third = mod.build_receipt_chain_saved_view_owner_review_handoff_policy_route_enforcement_owner_acceptance_receipt_seal_release_verification_note_version_preview()
+    assert third["status"] == "ready"
