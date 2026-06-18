@@ -10994,6 +10994,194 @@ def ob_private_beta_invite_packet_v38():
         ],
     }
 
+# OBSERVATORY_PRIVATE_BETA_FEEDBACK_INTAKE_V39_ROUTE
+@app.route("/ob/private-beta-feedback-intake.json")
+def ob_private_beta_feedback_intake_v39():
+    categories = [
+        {
+            "id": "confusion",
+            "label": "Confusion report",
+            "severity": "medium",
+            "description": "Tester did not understand what to do, what the room meant, or what a label meant.",
+            "owner_action": "Rewrite copy, add guidance, simplify flow, or add room-level explanation.",
+        },
+        {
+            "id": "pressure_to_trade",
+            "label": "Pressure-to-trade concern",
+            "severity": "high",
+            "description": "Tester felt pushed toward trading instead of reviewing.",
+            "owner_action": "Strengthen review-only language and remove pressure wording.",
+        },
+        {
+            "id": "bug",
+            "label": "Bug report",
+            "severity": "medium",
+            "description": "Tester found broken UI, missing panel, bad route, bad render, or confusing state.",
+            "owner_action": "Patch bug and rerun room render checks.",
+        },
+        {
+            "id": "trust_issue",
+            "label": "Trust issue",
+            "severity": "high",
+            "description": "Tester did not trust data source, freshness label, candidate card, or safety boundary.",
+            "owner_action": "Check source audit, trust labels, and room mapping.",
+        },
+        {
+            "id": "room_issue",
+            "label": "Room issue",
+            "severity": "medium",
+            "description": "Tester had a room-specific issue with Dashboard, Market Map, Symbol Page, Trade Center, Review Center, or Owner Console.",
+            "owner_action": "Assign issue to room owner queue.",
+        },
+        {
+            "id": "source_feed",
+            "label": "Source-feed issue",
+            "severity": "high",
+            "description": "Tester saw stale, missing, guarded, fallback-only, or unclear feed data.",
+            "owner_action": "Run V36 source audit and regenerate data before tester reliance.",
+        },
+        {
+            "id": "safety_issue",
+            "label": "Safety issue",
+            "severity": "blocker",
+            "description": "Tester saw public proof risk, broker/API implication, execution confusion, NDA concern, or Tower boundary confusion.",
+            "owner_action": "Stop beta expansion until fixed.",
+        },
+    ]
+
+    feedback_records = [
+        {
+            "id": "FB-INTAKE-001",
+            "type": "confusion",
+            "room": "Dashboard",
+            "severity": "medium",
+            "prompt": "What did you think OB wanted you to do first?",
+            "status": "private_intake",
+            "owner_review": "required",
+            "private": True,
+        },
+        {
+            "id": "FB-INTAKE-002",
+            "type": "pressure_to_trade",
+            "room": "Trade Center",
+            "severity": "high",
+            "prompt": "Did anything feel like pressure to trade instead of review?",
+            "status": "private_intake",
+            "owner_review": "required",
+            "private": True,
+        },
+        {
+            "id": "FB-INTAKE-003",
+            "type": "source_feed",
+            "room": "Market Map",
+            "severity": "high",
+            "prompt": "Could you tell whether data was snapshot, stale, guarded, or fallback?",
+            "status": "private_intake",
+            "owner_review": "required",
+            "private": True,
+        },
+        {
+            "id": "FB-INTAKE-004",
+            "type": "safety_issue",
+            "room": "Trade Center",
+            "severity": "blocker",
+            "prompt": "Could you find Tower state, Live Auto Locked, and no-execution boundaries?",
+            "status": "private_intake",
+            "owner_review": "required",
+            "private": True,
+        },
+        {
+            "id": "FB-INTAKE-005",
+            "type": "room_issue",
+            "room": "All Rooms",
+            "severity": "medium",
+            "prompt": "Which room confused you most?",
+            "status": "private_intake",
+            "owner_review": "required",
+            "private": True,
+        },
+        {
+            "id": "FB-INTAKE-006",
+            "type": "bug",
+            "room": "All Rooms",
+            "severity": "medium",
+            "prompt": "What felt broken, crowded, slow, or hard to trust?",
+            "status": "private_intake",
+            "owner_review": "required",
+            "private": True,
+        },
+    ]
+
+    feedback_questions = [
+        "What did you think OB wanted you to do first?",
+        "Did anything feel like pressure to trade instead of review?",
+        "Could you tell whether data was snapshot, stale, guarded, or fallback?",
+        "Could you find Tower state, Live Auto Locked, and no-execution boundaries?",
+        "Which room confused you most?",
+        "What felt broken, crowded, slow, or hard to trust?",
+    ]
+
+    return {
+        "version": "OB_V39_TESTER_FEEDBACK_INTAKE_CONFUSION_REPORT_PACKET",
+        "source": "guarded_private_beta_feedback_intake_json",
+        "intake_status": "owner_facing_read_only",
+        "feedback_packet_status": "private_owner_review",
+        "invite_status": "owner_review_required",
+        "nda_status": "required_before_access",
+        "categories": categories,
+        "feedback_records": feedback_records,
+        "feedback_questions": feedback_questions,
+        "rooms_available": ["Dashboard", "Market Map", "Symbol Page", "Trade Center", "Review Center", "Owner Console"],
+        "intake_summary": {
+            "total_categories": len(categories),
+            "total_records": len(feedback_records),
+            "required_questions": len(feedback_questions),
+            "private_records": sum(1 for item in feedback_records if item["private"]),
+            "owner_review_required": sum(1 for item in feedback_records if item["owner_review"] == "required"),
+            "blocker_categories": sum(1 for item in categories if item["severity"] == "blocker"),
+            "high_categories": sum(1 for item in categories if item["severity"] == "high"),
+        },
+        "report_packet": {
+            "confusion_report": True,
+            "pressure_to_trade_concern": True,
+            "bug_report": True,
+            "trust_issue": True,
+            "room_issue": True,
+            "source_feed_issue": True,
+            "safety_issue": True,
+            "private_feedback_records": True,
+            "owner_review_required": True,
+        },
+        "owner_instructions": [
+            "Read every tester feedback record before inviting another tester.",
+            "Treat pressure-to-trade and safety issues as high/blocker priority.",
+            "Do not turn tester feedback into public proof.",
+            "Do not change execution permissions because of feedback.",
+            "Route bugs and room issues into the owner review queue.",
+        ],
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "feedback_stays_private": True,
+            "owner_review_required": True,
+            "no_public_proof": True,
+            "no_public_launch": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "feedback_intake_does_not_create_permission": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Feedback intake is private.",
+            "Feedback does not grant access.",
+            "Feedback does not create execution permission.",
+            "No public proof.",
+            "No broker wiring.",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:
