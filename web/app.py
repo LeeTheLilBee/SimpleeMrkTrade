@@ -10801,6 +10801,199 @@ def ob_private_beta_launch_control_v37():
         ],
     }
 
+# OBSERVATORY_PRIVATE_BETA_INVITE_PACKET_V38_ROUTE
+@app.route("/ob/private-beta-invite-packet.json")
+def ob_private_beta_invite_packet_v38():
+    rooms_to_visit = [
+        {
+            "room": "Dashboard",
+            "route": "/ob/dashboard",
+            "tester_goal": "Confirm first screen explains mode, mission, Tower state, source trust, and next action.",
+            "owner_note": "Tester should not feel pushed to trade.",
+        },
+        {
+            "room": "Market Map",
+            "route": "/ob/market-map",
+            "tester_goal": "Confirm sky/constellation view is understandable and source-labeled.",
+            "owner_note": "Tester should understand fresh/stale/fallback labels.",
+        },
+        {
+            "room": "Symbol Page",
+            "route": "/ob/symbol/MU",
+            "tester_goal": "Confirm one-symbol context explains read-only engine context.",
+            "owner_note": "Tester should understand this is not an execution instruction.",
+        },
+        {
+            "room": "Trade Center",
+            "route": "/ob/trade-center",
+            "tester_goal": "Confirm candidate queue and Manual Live wording are review-only and owner/manual.",
+            "owner_note": "Tester should see No broker API, No auto execution, Live Auto Locked.",
+        },
+        {
+            "room": "Review Center",
+            "route": "/ob/review-center",
+            "tester_goal": "Confirm receipts, proof/demo, and feedback are private and classified.",
+            "owner_note": "Tester should not think proof is public.",
+        },
+        {
+            "room": "Owner Console",
+            "route": "/ob/owner-console",
+            "tester_goal": "Owner-only review of diagnostics, source audit, and launch control.",
+            "owner_note": "Do not expose owner-only controls to normal testers unless clearance allows.",
+        },
+    ]
+
+    feedback_requirements = [
+        {
+            "id": "feedback_1",
+            "question": "What did you think OB wanted you to do first?",
+            "required": True,
+            "route": "/ob/review-center",
+            "owner_use": "Owner reviews first-action clarity.",
+        },
+        {
+            "id": "feedback_2",
+            "question": "Did anything feel like pressure to trade instead of review?",
+            "required": True,
+            "route": "/ob/review-center",
+            "owner_use": "Owner reviews safety language.",
+        },
+        {
+            "id": "feedback_3",
+            "question": "Could you tell whether data was snapshot, stale, guarded, or fallback?",
+            "required": True,
+            "route": "/ob/review-center",
+            "owner_use": "Owner reviews trust-label clarity.",
+        },
+        {
+            "id": "feedback_4",
+            "question": "Could you find Tower state, Live Auto Locked, and no-execution boundaries?",
+            "required": True,
+            "route": "/ob/review-center",
+            "owner_use": "Owner reviews boundary visibility.",
+        },
+        {
+            "id": "feedback_5",
+            "question": "Which room confused you most?",
+            "required": True,
+            "route": "/ob/review-center",
+            "owner_use": "Owner reviews room usability.",
+        },
+        {
+            "id": "feedback_6",
+            "question": "What felt broken, crowded, slow, or hard to trust?",
+            "required": True,
+            "route": "/ob/review-center",
+            "owner_use": "Owner reviews defects and trust issues.",
+        },
+    ]
+
+    what_not_to_do = [
+        "Do not share OB links publicly.",
+        "Do not treat candidates as financial advice or execution orders.",
+        "Do not connect a broker.",
+        "Do not attempt automated execution.",
+        "Do not screenshot or export private proof/demo/receipt data without Tower clearance.",
+        "Do not invite another tester.",
+        "Do not bypass Tower, NDA, invite, or permission controls.",
+        "Do not rely on stale, missing, guarded, or fallback-only feed data as current.",
+    ]
+
+    pre_invite_checklist = [
+        {
+            "title": "Confirm invite clearance",
+            "detail": "Tester must be approved by owner/Tower before seeing OB.",
+            "status": "required",
+        },
+        {
+            "title": "Confirm NDA status",
+            "detail": "Tester must understand private beta, no sharing, no public proof, and no copying.",
+            "status": "required",
+        },
+        {
+            "title": "Confirm tester role",
+            "detail": "Tester is reviewing clarity and safety, not receiving trading access.",
+            "status": "required",
+        },
+        {
+            "title": "Confirm source/feed warning",
+            "detail": "Owner must tell tester whether feed is fresh, stale, guarded, or fallback-only.",
+            "status": "required",
+        },
+        {
+            "title": "Confirm Manual Live boundary",
+            "detail": "Manual Live is owner/manual only. No broker API. No auto execution. Live Auto Locked.",
+            "status": "required",
+        },
+        {
+            "title": "Confirm feedback path",
+            "detail": "Tester submits confusion, bug reports, and trust concerns to owner review.",
+            "status": "required",
+        },
+    ]
+
+    return {
+        "version": "OB_V38_PRIVATE_BETA_TESTER_INVITE_PACKET_BUILDER",
+        "source": "guarded_private_beta_invite_packet_json",
+        "packet_status": "owner_facing_read_only",
+        "invite_status": "owner_review_required",
+        "nda_status": "required_before_access",
+        "tester_access": "private_beta_invite_only",
+        "launch_control": {
+            "go_no_go": "CONDITIONAL GO",
+            "score": 86,
+        },
+        "packet_summary": {
+            "pre_invite_items": len(pre_invite_checklist),
+            "rooms_to_visit": len(rooms_to_visit),
+            "feedback_questions": len(feedback_requirements),
+            "what_not_to_do": len(what_not_to_do),
+            "owner_final_actions": 5,
+        },
+        "pre_invite_checklist": pre_invite_checklist,
+        "tester_instructions": [
+            "Start in Dashboard.",
+            "Move through Market Map, Symbol Page, Trade Center, and Review Center in order.",
+            "Write down confusion immediately.",
+            "Treat every engine/candidate/feed item as read-only context.",
+            "Do not trade from OB instructions.",
+            "Do not share screenshots, links, proof, receipts, or tester notes.",
+        ],
+        "rooms_to_visit": rooms_to_visit,
+        "feedback_requirements": feedback_requirements,
+        "what_not_to_do": what_not_to_do,
+        "owner_final_actions": [
+            "Confirm tester invite list and NDA status through Tower.",
+            "Confirm tester understands feedback requirements.",
+            "Confirm Manual Live stays owner/manual only.",
+            "Confirm no public proof, no public launch, no broker wiring.",
+            "Review tester packet before granting access.",
+        ],
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "tower_controlled_invite": True,
+            "nda_required": True,
+            "no_public_signup": True,
+            "no_public_launch": True,
+            "no_public_proof": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "invite_packet_does_not_create_permission": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Invite packet is owner-facing.",
+            "Packet does not grant access by itself.",
+            "Tester access must be Tower-controlled.",
+            "No public launch.",
+            "No broker wiring.",
+            "No execution permission changed.",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:

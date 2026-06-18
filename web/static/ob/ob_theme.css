@@ -10326,3 +10326,288 @@ option {
   }
 }
 
+
+/* OBSERVATORY_V38_PRIVATE_BETA_TESTER_INVITE_PACKET_BUILDER_CSS */
+
+.ob-beta-invite-packet-panel {
+  position: relative;
+  z-index: 57;
+  margin: 0 0 18px 28px;
+  border: 1px solid rgba(126,252,255,0.22);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.080), transparent 32%),
+    radial-gradient(circle at 92% 20%, rgba(233,194,111,0.060), transparent 34%),
+    rgba(0,0,0,0.23);
+  box-shadow:
+    0 24px 78px rgba(0,0,0,0.42),
+    inset 0 0 22px rgba(255,255,255,0.020);
+  padding: 14px;
+  backdrop-filter: blur(12px);
+}
+
+.ob-beta-invite-packet-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.ob-beta-invite-packet-title {
+  color: #fff2bf;
+  font-size: 20px;
+  font-weight: 950;
+  letter-spacing: -0.05em;
+}
+
+.ob-beta-invite-packet-subtitle {
+  margin-top: 4px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.44;
+}
+
+.ob-beta-invite-packet-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-beta-invite-packet-chip {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  padding: 7px 9px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-beta-invite-packet-chip.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-beta-invite-packet-chip.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.28);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-beta-invite-packet-chip.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-beta-invite-packet-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ob-beta-invite-packet-card {
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 13px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.035), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 10px;
+}
+
+.ob-beta-invite-packet-card span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-beta-invite-packet-card strong {
+  color: var(--ob-text);
+  font-size: 12px;
+}
+
+.ob-beta-invite-packet-section {
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.035), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+  margin-bottom: 11px;
+}
+
+.ob-beta-invite-packet-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-beta-invite-packet-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-beta-invite-packet-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.065);
+  padding-top: 8px;
+}
+
+.ob-beta-invite-packet-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-beta-invite-packet-dot {
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(126,252,255,0.28);
+  color: var(--ob-aqua);
+  background: rgba(126,252,255,0.055);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.ob-beta-invite-packet-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-beta-invite-packet-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-beta-invite-packet-status {
+  border: 1px solid rgba(126,252,255,0.24);
+  border-radius: 999px;
+  background: rgba(126,252,255,0.045);
+  color: var(--ob-aqua);
+  padding: 6px 8px;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-beta-invite-packet-status.green {
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+  color: var(--ob-green);
+}
+
+.ob-beta-invite-packet-status.gold {
+  border-color: rgba(233,194,111,0.28);
+  background: rgba(233,194,111,0.045);
+  color: var(--ob-gold);
+}
+
+.ob-beta-invite-packet-status.red {
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+  color: var(--ob-red);
+}
+
+.ob-beta-invite-packet-callout {
+  border: 1px solid rgba(233,194,111,0.19);
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.050), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.ob-beta-invite-packet-callout strong {
+  display: block;
+  color: #fff2bf;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.ob-beta-invite-packet-callout span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-beta-invite-packet-note {
+  margin-top: 10px;
+  border: 1px solid rgba(233,194,111,0.17);
+  border-radius: 13px;
+  background: rgba(233,194,111,0.040);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-beta-invite-packet-note strong {
+  color: var(--ob-gold);
+}
+
+.ob-beta-invite-packet-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(255,87,87,0.18);
+  border-radius: 13px;
+  background: rgba(255,87,87,0.040);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-beta-invite-packet-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-beta-invite-packet-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ob-beta-invite-packet-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-beta-invite-packet-panel {
+    margin-left: 0;
+  }
+
+  .ob-beta-invite-packet-head {
+    display: grid;
+  }
+
+  .ob-beta-invite-packet-chip-row {
+    justify-content: flex-start;
+  }
+
+  .ob-beta-invite-packet-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
