@@ -9713,3 +9713,294 @@ option {
   }
 }
 
+
+/* OBSERVATORY_V36_OWNER_CONSOLE_SOURCE_AUDIT_ACTION_PLAN_CSS */
+
+.ob-owner-source-audit-panel {
+  position: relative;
+  z-index: 59;
+  margin: 0 0 18px 28px;
+  border: 1px solid rgba(233,194,111,0.22);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.080), transparent 32%),
+    radial-gradient(circle at 92% 20%, rgba(126,252,255,0.055), transparent 34%),
+    rgba(0,0,0,0.23);
+  box-shadow:
+    0 24px 78px rgba(0,0,0,0.42),
+    inset 0 0 22px rgba(255,255,255,0.020);
+  padding: 14px;
+  backdrop-filter: blur(12px);
+}
+
+.ob-owner-source-audit-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.ob-owner-source-audit-title {
+  color: #fff2bf;
+  font-size: 19px;
+  font-weight: 950;
+  letter-spacing: -0.05em;
+}
+
+.ob-owner-source-audit-subtitle {
+  margin-top: 4px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.44;
+}
+
+.ob-owner-source-audit-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-owner-source-audit-chip {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  padding: 7px 9px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-owner-source-audit-chip.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-owner-source-audit-chip.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.28);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-owner-source-audit-chip.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-owner-source-audit-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ob-owner-source-audit-card {
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 13px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.038), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 10px;
+}
+
+.ob-owner-source-audit-card span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-owner-source-audit-card strong {
+  color: var(--ob-text);
+  font-size: 12px;
+}
+
+.ob-owner-source-audit-section {
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.035), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+  margin-bottom: 11px;
+}
+
+.ob-owner-source-audit-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-owner-source-audit-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-owner-source-audit-row {
+  display: grid;
+  grid-template-columns: 0.34fr 0.32fr 0.32fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.065);
+  padding-top: 8px;
+}
+
+.ob-owner-source-audit-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-owner-source-audit-row strong {
+  color: var(--ob-text);
+  font-size: 12px;
+}
+
+.ob-owner-source-audit-row span {
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-owner-source-audit-status {
+  border: 1px solid rgba(126,252,255,0.24);
+  border-radius: 999px;
+  background: rgba(126,252,255,0.045);
+  color: var(--ob-aqua);
+  padding: 6px 8px;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-owner-source-audit-status.green {
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+  color: var(--ob-green);
+}
+
+.ob-owner-source-audit-status.gold {
+  border-color: rgba(233,194,111,0.28);
+  background: rgba(233,194,111,0.045);
+  color: var(--ob-gold);
+}
+
+.ob-owner-source-audit-status.red {
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+  color: var(--ob-red);
+}
+
+.ob-owner-source-audit-plan {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-owner-source-audit-plan-row {
+  display: grid;
+  grid-template-columns: 28px 0.44fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.045), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 11px;
+}
+
+.ob-owner-source-audit-dot {
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(233,194,111,0.28);
+  color: var(--ob-gold);
+  background: rgba(233,194,111,0.055);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.ob-owner-source-audit-plan-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-owner-source-audit-plan-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-owner-source-audit-note {
+  margin-top: 10px;
+  border: 1px solid rgba(233,194,111,0.17);
+  border-radius: 13px;
+  background: rgba(233,194,111,0.040);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-owner-source-audit-note strong {
+  color: var(--ob-gold);
+}
+
+.ob-owner-source-audit-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(255,87,87,0.18);
+  border-radius: 13px;
+  background: rgba(255,87,87,0.040);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-owner-source-audit-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-owner-source-audit-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ob-owner-source-audit-row,
+  .ob-owner-source-audit-plan-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-owner-source-audit-panel {
+    margin-left: 0;
+  }
+
+  .ob-owner-source-audit-head {
+    display: grid;
+  }
+
+  .ob-owner-source-audit-chip-row {
+    justify-content: flex-start;
+  }
+
+  .ob-owner-source-audit-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+

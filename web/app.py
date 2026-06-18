@@ -10482,6 +10482,216 @@ def ob_engine_room_mapping_v35():
         ],
     }
 
+# OBSERVATORY_OWNER_SOURCE_AUDIT_V36_ROUTE
+@app.route("/ob/owner-source-audit.json")
+def ob_owner_source_audit_v36():
+    from pathlib import Path
+    from datetime import datetime, timezone
+    import json
+
+    root = Path(__file__).resolve().parents[1]
+    data_dir = root / "data"
+
+    tracked_files = [
+        {"name": "candidate_log", "filename": "candidate_log.json", "room": "Trade Center", "purpose": "candidate queue mapping"},
+        {"name": "open_positions", "filename": "open_positions.json", "room": "Dashboard", "purpose": "open position snapshot"},
+        {"name": "ledger", "filename": "ledger.json", "room": "Review Center", "purpose": "ledger/review mapping"},
+        {"name": "trade_log", "filename": "trade_log.json", "room": "Review Center", "purpose": "trade review context"},
+        {"name": "market_universe", "filename": "market_universe.json", "room": "Market Map", "purpose": "constellation/source labels"},
+        {"name": "pipeline_status", "filename": "pipeline_status.json", "room": "Owner Console", "purpose": "engine pipeline diagnostics"},
+    ]
+
+    stale_minutes = 240
+    old_minutes = 1440
+
+    def row_count(path):
+        try:
+            if not path.exists():
+                return 0
+            with path.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, list):
+                return len(data)
+            if isinstance(data, dict):
+                for key in ["items", "rows", "data", "records", "positions", "candidates", "ledger"]:
+                    if isinstance(data.get(key), list):
+                        return len(data.get(key))
+                return len(data.keys())
+            return 1
+        except Exception:
+            return 0
+
+    def file_state(item):
+        path = data_dir / item["filename"]
+
+        if not path.exists():
+            return {
+                "name": item["name"],
+                "filename": item["filename"],
+                "room": item["room"],
+                "purpose": item["purpose"],
+                "exists": False,
+                "status": "missing",
+                "age_minutes": None,
+                "row_count": 0,
+                "safe_to_display": "fallback_only",
+                "label": "Missing / fallback",
+                "priority": "high",
+                "note": "File is missing. UI must use fallback and label it clearly.",
+                "action": f"Generate {item['filename']} before beta testers rely on {item['room']}.",
+            }
+
+        modified = datetime.fromtimestamp(path.stat().st_mtime, timezone.utc)
+        age_minutes = int((datetime.now(timezone.utc) - modified).total_seconds() // 60)
+        rows = row_count(path)
+
+        if age_minutes <= stale_minutes:
+            status = "fresh"
+            safe_to_display = "safe"
+            label = "Fresh read-only"
+            priority = "low"
+            note = "File is recent enough for read-only beta display."
+            action = "Monitor freshness before each tester session."
+        elif age_minutes <= old_minutes:
+            status = "stale"
+            safe_to_display = "caution"
+            label = "Stale caution"
+            priority = "medium"
+            note = "File is stale. UI can display only with caution label."
+            action = f"Refresh {item['filename']} before expanding tester reliance."
+        else:
+            status = "old"
+            safe_to_display = "fallback_recommended"
+            label = "Old / fallback recommended"
+            priority = "high"
+            note = "File is too old to trust as current."
+            action = f"Regenerate {item['filename']} and rerun diagnostics."
+
+        return {
+            "name": item["name"],
+            "filename": item["filename"],
+            "room": item["room"],
+            "purpose": item["purpose"],
+            "exists": True,
+            "status": status,
+            "age_minutes": age_minutes,
+            "row_count": rows,
+            "safe_to_display": safe_to_display,
+            "label": label,
+            "priority": priority,
+            "note": note,
+            "action": action,
+        }
+
+    files = [file_state(item) for item in tracked_files]
+
+    missing = [file for file in files if not file["exists"] or file["safe_to_display"] == "fallback_only"]
+    stale = [file for file in files if file["status"] in {"stale", "old"} or file["safe_to_display"] in {"caution", "fallback_recommended"}]
+    fresh = [file for file in files if file["status"] == "fresh" or file["safe_to_display"] == "safe"]
+
+    action_plan = []
+
+    if missing:
+        action_plan.append({
+            "priority": "high",
+            "title": "Fix missing / fallback-only sources",
+            "detail": ", ".join(file["name"] for file in missing) + " need generation or read-only snapshot wiring before testers rely on them.",
+            "action": "Run engine snapshot/export flow, then rerun V33/V34/V35/V36 diagnostics.",
+            "status": "owner action",
+        })
+
+    if stale:
+        action_plan.append({
+            "priority": "medium",
+            "title": "Refresh stale sources",
+            "detail": ", ".join(file["name"] for file in stale) + " are stale, old, or caution-labeled.",
+            "action": "Regenerate stale files and verify freshness score before beta tester expansion.",
+            "status": "owner action",
+        })
+
+    if not missing and not stale and fresh:
+        action_plan.append({
+            "priority": "low",
+            "title": "Sources are display-ready",
+            "detail": "All tracked engine sources are fresh enough for read-only private beta display.",
+            "action": "Keep monitoring freshness before each tester session.",
+            "status": "monitor",
+        })
+
+    action_plan.extend([
+        {
+            "priority": "required",
+            "title": "Keep permissions unchanged",
+            "detail": "Source audit can recommend data refresh, but cannot grant execution permission.",
+            "action": "Keep no broker wiring, no broker API, no auto execution, and Live Auto Locked.",
+            "status": "boundary",
+        },
+        {
+            "priority": "required",
+            "title": "Label tester-facing rooms",
+            "detail": "Any stale, missing, guarded, or fallback feed must remain visibly labeled in every room.",
+            "action": "Use V34 trust labels and V35 room mapping before tester reliance.",
+            "status": "boundary",
+        },
+    ])
+
+    summary = {
+        "total_files": len(files),
+        "present": sum(1 for file in files if file["exists"]),
+        "fresh": sum(1 for file in files if file["status"] == "fresh"),
+        "stale": sum(1 for file in files if file["status"] in {"stale", "old"}),
+        "missing": sum(1 for file in files if not file["exists"]),
+        "fallback_only": sum(1 for file in files if file["safe_to_display"] == "fallback_only"),
+        "actions": len(action_plan),
+    }
+
+    if summary["missing"] > 0 or summary["fallback_only"] > 0:
+        trust_label = "Fallback / missing"
+        safe_to_display = "fallback_only"
+    elif summary["stale"] > 0:
+        trust_label = "Stale / caution"
+        safe_to_display = "caution"
+    else:
+        trust_label = "Fresh read-only"
+        safe_to_display = "safe"
+
+    return {
+        "version": "OB_V36_OWNER_CONSOLE_SOURCE_AUDIT_ACTION_PLAN",
+        "source": "guarded_owner_source_audit_json",
+        "audit_status": "read_only",
+        "trust_label": trust_label,
+        "safe_to_display": safe_to_display,
+        "summary": summary,
+        "files": files,
+        "action_plan": action_plan,
+        "room_impact": {
+            "dashboard": "Account/focus/market panels must show trust label before relying on feed.",
+            "market_map": "Constellation labels must show source/freshness before beta tester interpretation.",
+            "symbol_page": "One-symbol context must show stale/fallback warning when applicable.",
+            "trade_center": "Candidate queue must show caution labels and remain review-only.",
+            "review_center": "Ledger/receipts must stay private and freshness-labeled.",
+            "owner_console": "Owner must review missing/stale/fallback sources before expanding beta reliance.",
+        },
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "source_audit_does_not_create_permission": True,
+            "stale_data_cannot_create_permission": True,
+            "manual_live_owner_manual_only": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Owner source audit is read-only.",
+            "Missing or stale data cannot create permission.",
+            "Beta testers should not rely on fallback-only engine feed.",
+            "No broker wiring.",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:
