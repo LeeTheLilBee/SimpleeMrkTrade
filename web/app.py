@@ -11601,6 +11601,204 @@ def ob_private_beta_session_closeout_v43():
         ],
     }
 
+# OBSERVATORY_PRIVATE_BETA_FIX_VERIFICATION_V44_ROUTE
+@app.route("/ob/private-beta-fix-verification.json")
+def ob_private_beta_fix_verification_v44():
+    items = [
+        {
+            "id": "VERIFY-FB-QUEUE-002",
+            "issue_id": "TRIAGE-FB-QUEUE-002",
+            "feedback_id": "FB-QUEUE-002",
+            "room": "Trade Center",
+            "issue_type": "safety issue",
+            "priority": "high",
+            "fix_required": True,
+            "verification_status": "pending-owner-verification",
+            "evidence_note": "Owner must verify Trade Center review-only language before next tester.",
+            "rerun_required": ["V40", "V41", "V42", "V43"],
+            "original_summary": "Tester may feel pressure to trade instead of review.",
+            "owner_action": "Strengthen review-only language before next tester.",
+            "private": True,
+        },
+        {
+            "id": "VERIFY-FB-QUEUE-003",
+            "issue_id": "TRIAGE-FB-QUEUE-003",
+            "feedback_id": "FB-QUEUE-003",
+            "room": "Market Map",
+            "issue_type": "data issue",
+            "priority": "high",
+            "fix_required": True,
+            "verification_status": "pending-owner-verification",
+            "evidence_note": "Owner must verify source/feed labels and V36 source audit before next tester.",
+            "rerun_required": ["V36", "V40", "V41", "V42", "V43"],
+            "original_summary": "Tester may not understand snapshot/stale/guarded/fallback data.",
+            "owner_action": "Run V36 source audit and refresh stale/fallback feed labels.",
+            "private": True,
+        },
+        {
+            "id": "VERIFY-FB-QUEUE-004",
+            "issue_id": "TRIAGE-FB-QUEUE-004",
+            "feedback_id": "FB-QUEUE-004",
+            "room": "Trade Center",
+            "issue_type": "safety issue",
+            "priority": "blocker",
+            "fix_required": True,
+            "verification_status": "pending-owner-verification",
+            "evidence_note": "Owner must verify Tower state, Live Auto Locked, and no-execution boundaries before next tester.",
+            "rerun_required": ["V40", "V41", "V42", "V43"],
+            "original_summary": "Tester must find Tower state, Live Auto Locked, and no-execution boundaries.",
+            "owner_action": "Pause tester expansion until safety wording and Tower boundaries are verified.",
+            "private": True,
+        },
+    ]
+
+    return {
+        "version": "OB_V44_PRIVATE_BETA_FIX_VERIFICATION_CHECKLIST",
+        "source": "guarded_private_beta_fix_verification_json",
+        "verification_status": "PENDING OWNER VERIFICATION",
+        "next_tester_fix_gate": "blocked_until_verified",
+        "items": items,
+        "summary": {
+            "total_items": len(items),
+            "blocker": sum(1 for item in items if item["priority"] == "blocker"),
+            "high": sum(1 for item in items if item["priority"] == "high"),
+            "pending": sum(1 for item in items if item["verification_status"] != "verified"),
+            "verified": sum(1 for item in items if item["verification_status"] == "verified"),
+            "rerun_required": sum(1 for item in items if item["rerun_required"]),
+        },
+        "verification_checklist": [
+            "Confirm the issue was fixed in the room where it appeared.",
+            "Confirm wording no longer feels like trading pressure.",
+            "Confirm stale/guarded/fallback data labels are visible.",
+            "Confirm Live Auto Locked and no-execution boundaries are visible.",
+            "Rerun V40, V41, V42, and V43 after fixes.",
+            "Document owner evidence notes before the next tester.",
+        ],
+        "owner_evidence_fields": [
+            "fix_summary",
+            "room_checked",
+            "before_after_note",
+            "rerun_receipt",
+            "owner_decision",
+            "next_tester_allowed",
+        ],
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "fix_verification_private": True,
+            "owner_verification_required": True,
+            "no_public_proof": True,
+            "no_public_launch": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "fix_verification_does_not_create_permission": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Fix verification is private.",
+            "Pending verification blocks next tester clearance.",
+            "No public proof.",
+            "No broker wiring.",
+            "No execution permission changed.",
+        ],
+    }
+
+# OBSERVATORY_PRIVATE_BETA_NEXT_TESTER_CLEARANCE_V45_ROUTE
+@app.route("/ob/private-beta-next-tester-clearance.json")
+def ob_private_beta_next_tester_clearance_v45():
+    gates = [
+        {
+            "id": "fix_verification",
+            "label": "V44 fix verification",
+            "status": "blocked",
+            "detail": "Must-fix and high/blocker issues must be owner-verified before another tester.",
+            "owner_action": "Complete V44 fix verification.",
+        },
+        {
+            "id": "session_closeout",
+            "label": "V43 session closeout",
+            "status": "blocked",
+            "detail": "Previous session closeout must allow another tester.",
+            "owner_action": "Resolve closeout decision before inviting next tester.",
+        },
+        {
+            "id": "nda_invite",
+            "label": "NDA / invite gate",
+            "status": "conditional",
+            "detail": "Next tester must be invite-only, NDA-bound, and Tower-controlled.",
+            "owner_action": "Confirm invite list, NDA status, and tester role before access.",
+        },
+        {
+            "id": "source_feed",
+            "label": "Source/feed gate",
+            "status": "conditional",
+            "detail": "Tester must be told whether feed data is fresh, stale, guarded, or fallback.",
+            "owner_action": "Run source audit and keep trust labels visible.",
+        },
+        {
+            "id": "boundary",
+            "label": "Execution boundary gate",
+            "status": "cleared",
+            "detail": "No broker wiring, no broker API, no auto execution, Live Auto Locked.",
+            "owner_action": "Do not loosen execution boundaries.",
+        },
+        {
+            "id": "privacy",
+            "label": "Privacy/proof gate",
+            "status": "cleared",
+            "detail": "No public proof, no public signup, no public launch.",
+            "owner_action": "Keep feedback, proof, receipts, and session notes private.",
+        },
+    ]
+
+    return {
+        "version": "OB_V45_NEXT_TESTER_CLEARANCE_GATE",
+        "source": "guarded_private_beta_next_tester_clearance_json",
+        "clearance_status": "INVITE BLOCKED",
+        "next_tester_gate": "INVITE BLOCKED",
+        "gates": gates,
+        "summary": {
+            "total_gates": len(gates),
+            "cleared": sum(1 for gate in gates if gate["status"] == "cleared"),
+            "conditional": sum(1 for gate in gates if gate["status"] == "conditional"),
+            "blocked": sum(1 for gate in gates if gate["status"] == "blocked"),
+            "tower_required": len(gates),
+        },
+        "owner_clearance_steps": [
+            "Verify V44 fix checklist.",
+            "Confirm V43 closeout allows next tester.",
+            "Confirm NDA/invite through Tower.",
+            "Confirm source/feed label warning for tester.",
+            "Confirm no public launch, no public proof, no broker wiring.",
+            "Only then send next private beta invite.",
+        ],
+        "invite_result_labels": ["INVITE BLOCKED", "CONDITIONAL CLEARANCE", "CLEARED FOR NEXT PRIVATE TESTER"],
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "tower_controlled_next_tester_clearance": True,
+            "owner_clearance_required": True,
+            "no_public_signup": True,
+            "no_public_launch": True,
+            "no_public_proof": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "next_tester_invite_does_not_create_permission": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Next tester clearance is private.",
+            "Clearance does not create trading or execution permission.",
+            "Tower controls invite access.",
+            "No public launch.",
+            "No broker wiring.",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:
