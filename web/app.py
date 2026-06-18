@@ -10366,6 +10366,122 @@ def ob_engine_feed_trust_labels_v34():
         ],
     }
 
+# OBSERVATORY_ENGINE_ROOM_MAPPING_V35_ROUTE
+@app.route("/ob/engine-room-mapping.json")
+def ob_engine_room_mapping_v35():
+    return {
+        "version": "OB_V35_ENGINE_FEED_CANONICAL_ROOM_MAPPING",
+        "source": "guarded_engine_room_mapping_json",
+        "mapping_status": "read_only",
+        "trust_label": "Trust labels required",
+        "safe_to_display": "trust_label_required",
+        "freshness_score": 100,
+        "rooms": {
+            "dashboard": {
+                "room": "Dashboard",
+                "lane": "account / focus / market state",
+                "primary_source": "expanded_counts + trust_labels",
+                "focus": "Dashboard maps account, focus, market state, snapshot source, and trust label context.",
+                "trust_label": "Trust labels required",
+                "cards": [
+                    {"label": "Account", "value": "read-only"},
+                    {"label": "Focus", "value": "source-aware"},
+                    {"label": "Market", "value": "trust-labeled"},
+                    {"label": "Execution", "value": "none"},
+                ],
+                "rows": [],
+            },
+            "market_map": {
+                "room": "Market Map",
+                "lane": "constellation source labels",
+                "primary_source": "market_universe + candidate_log",
+                "focus": "Market Map maps constellation counts and sky labels with freshness/trust state.",
+                "trust_label": "Trust labels required",
+                "cards": [
+                    {"label": "Constellations", "value": "source-labeled"},
+                    {"label": "Symbols", "value": "trust-labeled"},
+                    {"label": "Candidates", "value": "read-only"},
+                    {"label": "Sky label", "value": "fresh/stale/fallback"},
+                ],
+                "rows": [],
+            },
+            "symbol_page": {
+                "room": "Symbol Page",
+                "lane": "one-symbol engine context",
+                "primary_source": "candidate/open position/ledger preview",
+                "focus": "Symbol Page maps one-symbol context from candidate, position, ledger, and trust feeds.",
+                "trust_label": "Trust labels required",
+                "cards": [
+                    {"label": "Symbol", "value": "one-star context"},
+                    {"label": "Candidate", "value": "read-only"},
+                    {"label": "Position", "value": "read-only"},
+                    {"label": "Permission", "value": "Tower-owned"},
+                ],
+                "rows": [],
+            },
+            "trade_center": {
+                "room": "Trade Center",
+                "lane": "candidate queue mapping",
+                "primary_source": "candidate_log + manual queue",
+                "focus": "Trade Center maps candidates into review queue language with caution labels.",
+                "trust_label": "Trust labels required",
+                "cards": [
+                    {"label": "Candidate queue", "value": "mapped"},
+                    {"label": "Manual queue", "value": "owner review"},
+                    {"label": "Execution", "value": "manual only"},
+                    {"label": "Broker", "value": "not wired"},
+                ],
+                "rows": [],
+            },
+            "review_center": {
+                "room": "Review Center",
+                "lane": "receipt + ledger mapping",
+                "primary_source": "ledger + receipts + trade_log",
+                "focus": "Review Center maps receipts, ledger, trade log, and proof/private review state.",
+                "trust_label": "Trust labels required",
+                "cards": [
+                    {"label": "Receipts", "value": "private"},
+                    {"label": "Ledger", "value": "read-only"},
+                    {"label": "Proof", "value": "private"},
+                    {"label": "Export", "value": "Tower gated"},
+                ],
+                "rows": [],
+            },
+            "owner_console": {
+                "room": "Owner Console",
+                "lane": "diagnostics + source audit",
+                "primary_source": "diagnostics + trust labels + data files",
+                "focus": "Owner Console maps source audit, staleness, fallback, missing data, and safe-to-display labels.",
+                "trust_label": "Trust labels required",
+                "cards": [
+                    {"label": "Diagnostics", "value": "active"},
+                    {"label": "Sources", "value": "audited"},
+                    {"label": "Fallback", "value": "labeled"},
+                    {"label": "Permissions", "value": "Tower-owned"},
+                ],
+                "rows": [],
+            },
+        },
+        "tower_boundaries": {
+            "read_only": True,
+            "private_beta_only": True,
+            "no_broker_wiring": True,
+            "no_broker_api": True,
+            "no_auto_execution": True,
+            "live_auto_locked": True,
+            "stale_data_cannot_create_permission": True,
+            "mapping_does_not_create_permission": True,
+            "manual_live_owner_manual_only": True,
+            "tower_owns_identity_access_billing_permissions": True,
+        },
+        "warnings": [
+            "Canonical room mapping is read-only.",
+            "Mapping does not create permission.",
+            "Trust labels must stay visible.",
+            "No broker wiring.",
+        ],
+    }
+
 
 if __name__ == "__main__":
     try:
