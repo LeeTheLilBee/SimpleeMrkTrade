@@ -13091,3 +13091,261 @@ option {
   }
 }
 
+
+/* OB_GIANT_PACK_006_MANUAL_LIVE_DECISION_PACKET_CSS */
+
+.ob-manual-live-decision-packet-panel {
+  position: relative;
+  z-index: 66;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(233,194,111,0.24);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.075), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(101,242,118,0.055), transparent 38%),
+    rgba(0,0,0,0.30);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.50), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-manual-live-decision-packet-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-manual-live-decision-packet-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-manual-live-decision-packet-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-manual-live-decision-packet-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-manual-live-decision-packet-chip,
+.ob-manual-live-decision-packet-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-manual-live-decision-packet-chip.green,
+.ob-manual-live-decision-packet-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-manual-live-decision-packet-chip.gold,
+.ob-manual-live-decision-packet-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-manual-live-decision-packet-chip.red,
+.ob-manual-live-decision-packet-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-manual-live-decision-packet-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-manual-live-decision-packet-card,
+.ob-manual-live-decision-packet-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-manual-live-decision-packet-section {
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-decision-packet-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-manual-live-decision-packet-card span,
+.ob-manual-live-decision-packet-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-manual-live-decision-packet-card strong,
+.ob-manual-live-decision-packet-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-manual-live-decision-packet-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-decision-packet-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-manual-live-decision-packet-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-manual-live-decision-packet-row {
+  display: grid;
+  grid-template-columns: 28px 0.34fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-manual-live-decision-packet-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-manual-live-decision-packet-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(233,194,111,0.28);
+  color: var(--ob-gold);
+  background: rgba(233,194,111,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-manual-live-decision-packet-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-manual-live-decision-packet-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-manual-live-decision-packet-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ob-manual-live-decision-packet-action {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ob-manual-live-decision-packet-callout,
+.ob-manual-live-decision-packet-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(233,194,111,0.17);
+  border-radius: 13px;
+  background: rgba(233,194,111,0.040);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-manual-live-decision-packet-callout strong {
+  color: var(--ob-gold);
+}
+
+.ob-manual-live-decision-packet-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-manual-live-decision-packet-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-manual-live-decision-packet-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-manual-live-decision-packet-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-manual-live-decision-packet-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-manual-live-decision-packet-panel {
+    margin-left: 0;
+  }
+
+  .ob-manual-live-decision-packet-head {
+    display: grid;
+  }
+
+  .ob-manual-live-decision-packet-chip-row {
+    justify-content: flex-start;
+  }
+}
+
