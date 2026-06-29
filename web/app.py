@@ -21424,3 +21424,411 @@ def tower_giant_pack_638_687_pack_687_json():
 
     return jsonify(build_tower_post_stack_owner_console_clouds_snapshot_closeout_batch_close_readiness_preview())
 
+# --- SEARCHABLE LABEL: TOWER_PACK_688_POST_STACK_GIANT_SAVE_READINESS_ROUTE ---
+@app.route("/tower/post-stack-giant-save-readiness-index-v688.json", methods=["GET"])
+def tower_pack_688_post_stack_giant_save_readiness_index_json():
+    from flask import jsonify
+    from tower.tower_post_stack_giant_save_readiness_index_v688 import build_tower_post_stack_giant_save_readiness_index_preview
+
+    return jsonify(build_tower_post_stack_giant_save_readiness_index_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_689_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-summary-index-v689.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_689_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_summary_index_v689 import build_tower_post_stack_owner_console_action_summary_index_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_summary_index_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_690_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-summary-registry-contract-v690.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_690_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_summary_registry_contract_v690 import build_tower_post_stack_owner_console_action_summary_registry_contract_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_summary_registry_contract_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_691_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-summary-action-matrix-v691.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_691_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_summary_action_matrix_v691 import build_tower_post_stack_owner_console_action_summary_action_matrix_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_summary_action_matrix_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_692_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-summary-detail-drawer-v692.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_692_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_summary_detail_drawer_v692 import build_tower_post_stack_owner_console_action_summary_detail_drawer_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_summary_detail_drawer_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_693_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-summary-owner-summary-v693.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_693_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_summary_owner_summary_v693 import build_tower_post_stack_owner_console_action_summary_owner_summary_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_summary_owner_summary_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_694_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-summary-note-draft-v694.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_694_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_summary_note_draft_v694 import build_tower_post_stack_owner_console_action_summary_note_draft_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_summary_note_draft_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_695_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-summary-note-version-v695.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_695_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_summary_note_version_v695 import build_tower_post_stack_owner_console_action_summary_note_version_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_summary_note_version_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_696_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-summary-handoff-contract-v696.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_696_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_summary_handoff_contract_v696 import build_tower_post_stack_owner_console_action_summary_handoff_contract_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_summary_handoff_contract_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_697_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-summary-readiness-bridge-v697.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_697_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_summary_readiness_bridge_v697 import build_tower_post_stack_owner_console_action_summary_readiness_bridge_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_summary_readiness_bridge_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_698_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-summary-batch-close-readiness-v698.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_698_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_summary_batch_close_readiness_v698 import build_tower_post_stack_owner_console_action_summary_batch_close_readiness_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_summary_batch_close_readiness_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_699_ROUTE ---
+@app.route("/tower/tower-clouds-focus-queue-bridge-index-v699.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_699_json():
+    from flask import jsonify
+    from tower.tower_tower_clouds_focus_queue_bridge_index_v699 import build_tower_clouds_focus_queue_bridge_index_preview
+
+    return jsonify(build_tower_clouds_focus_queue_bridge_index_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_700_ROUTE ---
+@app.route("/tower/tower-clouds-focus-queue-bridge-registry-contract-v700.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_700_json():
+    from flask import jsonify
+    from tower.tower_tower_clouds_focus_queue_bridge_registry_contract_v700 import build_tower_clouds_focus_queue_bridge_registry_contract_preview
+
+    return jsonify(build_tower_clouds_focus_queue_bridge_registry_contract_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_701_ROUTE ---
+@app.route("/tower/tower-clouds-focus-queue-bridge-action-matrix-v701.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_701_json():
+    from flask import jsonify
+    from tower.tower_tower_clouds_focus_queue_bridge_action_matrix_v701 import build_tower_clouds_focus_queue_bridge_action_matrix_preview
+
+    return jsonify(build_tower_clouds_focus_queue_bridge_action_matrix_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_702_ROUTE ---
+@app.route("/tower/tower-clouds-focus-queue-bridge-detail-drawer-v702.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_702_json():
+    from flask import jsonify
+    from tower.tower_tower_clouds_focus_queue_bridge_detail_drawer_v702 import build_tower_clouds_focus_queue_bridge_detail_drawer_preview
+
+    return jsonify(build_tower_clouds_focus_queue_bridge_detail_drawer_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_703_ROUTE ---
+@app.route("/tower/tower-clouds-focus-queue-bridge-owner-summary-v703.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_703_json():
+    from flask import jsonify
+    from tower.tower_tower_clouds_focus_queue_bridge_owner_summary_v703 import build_tower_clouds_focus_queue_bridge_owner_summary_preview
+
+    return jsonify(build_tower_clouds_focus_queue_bridge_owner_summary_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_704_ROUTE ---
+@app.route("/tower/tower-clouds-focus-queue-bridge-note-draft-v704.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_704_json():
+    from flask import jsonify
+    from tower.tower_tower_clouds_focus_queue_bridge_note_draft_v704 import build_tower_clouds_focus_queue_bridge_note_draft_preview
+
+    return jsonify(build_tower_clouds_focus_queue_bridge_note_draft_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_705_ROUTE ---
+@app.route("/tower/tower-clouds-focus-queue-bridge-note-version-v705.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_705_json():
+    from flask import jsonify
+    from tower.tower_tower_clouds_focus_queue_bridge_note_version_v705 import build_tower_clouds_focus_queue_bridge_note_version_preview
+
+    return jsonify(build_tower_clouds_focus_queue_bridge_note_version_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_706_ROUTE ---
+@app.route("/tower/tower-clouds-focus-queue-bridge-handoff-contract-v706.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_706_json():
+    from flask import jsonify
+    from tower.tower_tower_clouds_focus_queue_bridge_handoff_contract_v706 import build_tower_clouds_focus_queue_bridge_handoff_contract_preview
+
+    return jsonify(build_tower_clouds_focus_queue_bridge_handoff_contract_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_707_ROUTE ---
+@app.route("/tower/tower-clouds-focus-queue-bridge-readiness-bridge-v707.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_707_json():
+    from flask import jsonify
+    from tower.tower_tower_clouds_focus_queue_bridge_readiness_bridge_v707 import build_tower_clouds_focus_queue_bridge_readiness_bridge_preview
+
+    return jsonify(build_tower_clouds_focus_queue_bridge_readiness_bridge_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_708_ROUTE ---
+@app.route("/tower/tower-clouds-focus-queue-bridge-batch-close-readiness-v708.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_708_json():
+    from flask import jsonify
+    from tower.tower_tower_clouds_focus_queue_bridge_batch_close_readiness_v708 import build_tower_clouds_focus_queue_bridge_batch_close_readiness_preview
+
+    return jsonify(build_tower_clouds_focus_queue_bridge_batch_close_readiness_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_709_ROUTE ---
+@app.route("/tower/tower-capital-safety-next-action-bridge-index-v709.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_709_json():
+    from flask import jsonify
+    from tower.tower_tower_capital_safety_next_action_bridge_index_v709 import build_tower_capital_safety_next_action_bridge_index_preview
+
+    return jsonify(build_tower_capital_safety_next_action_bridge_index_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_710_ROUTE ---
+@app.route("/tower/tower-capital-safety-next-action-bridge-registry-contract-v710.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_710_json():
+    from flask import jsonify
+    from tower.tower_tower_capital_safety_next_action_bridge_registry_contract_v710 import build_tower_capital_safety_next_action_bridge_registry_contract_preview
+
+    return jsonify(build_tower_capital_safety_next_action_bridge_registry_contract_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_711_ROUTE ---
+@app.route("/tower/tower-capital-safety-next-action-bridge-action-matrix-v711.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_711_json():
+    from flask import jsonify
+    from tower.tower_tower_capital_safety_next_action_bridge_action_matrix_v711 import build_tower_capital_safety_next_action_bridge_action_matrix_preview
+
+    return jsonify(build_tower_capital_safety_next_action_bridge_action_matrix_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_712_ROUTE ---
+@app.route("/tower/tower-capital-safety-next-action-bridge-detail-drawer-v712.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_712_json():
+    from flask import jsonify
+    from tower.tower_tower_capital_safety_next_action_bridge_detail_drawer_v712 import build_tower_capital_safety_next_action_bridge_detail_drawer_preview
+
+    return jsonify(build_tower_capital_safety_next_action_bridge_detail_drawer_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_713_ROUTE ---
+@app.route("/tower/tower-capital-safety-next-action-bridge-owner-summary-v713.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_713_json():
+    from flask import jsonify
+    from tower.tower_tower_capital_safety_next_action_bridge_owner_summary_v713 import build_tower_capital_safety_next_action_bridge_owner_summary_preview
+
+    return jsonify(build_tower_capital_safety_next_action_bridge_owner_summary_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_714_ROUTE ---
+@app.route("/tower/tower-capital-safety-next-action-bridge-note-draft-v714.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_714_json():
+    from flask import jsonify
+    from tower.tower_tower_capital_safety_next_action_bridge_note_draft_v714 import build_tower_capital_safety_next_action_bridge_note_draft_preview
+
+    return jsonify(build_tower_capital_safety_next_action_bridge_note_draft_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_715_ROUTE ---
+@app.route("/tower/tower-capital-safety-next-action-bridge-note-version-v715.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_715_json():
+    from flask import jsonify
+    from tower.tower_tower_capital_safety_next_action_bridge_note_version_v715 import build_tower_capital_safety_next_action_bridge_note_version_preview
+
+    return jsonify(build_tower_capital_safety_next_action_bridge_note_version_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_716_ROUTE ---
+@app.route("/tower/tower-capital-safety-next-action-bridge-handoff-contract-v716.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_716_json():
+    from flask import jsonify
+    from tower.tower_tower_capital_safety_next_action_bridge_handoff_contract_v716 import build_tower_capital_safety_next_action_bridge_handoff_contract_preview
+
+    return jsonify(build_tower_capital_safety_next_action_bridge_handoff_contract_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_717_ROUTE ---
+@app.route("/tower/tower-capital-safety-next-action-bridge-readiness-bridge-v717.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_717_json():
+    from flask import jsonify
+    from tower.tower_tower_capital_safety_next_action_bridge_readiness_bridge_v717 import build_tower_capital_safety_next_action_bridge_readiness_bridge_preview
+
+    return jsonify(build_tower_capital_safety_next_action_bridge_readiness_bridge_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_718_ROUTE ---
+@app.route("/tower/tower-capital-safety-next-action-bridge-batch-close-readiness-v718.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_718_json():
+    from flask import jsonify
+    from tower.tower_tower_capital_safety_next_action_bridge_batch_close_readiness_v718 import build_tower_capital_safety_next_action_bridge_batch_close_readiness_preview
+
+    return jsonify(build_tower_capital_safety_next_action_bridge_batch_close_readiness_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_719_ROUTE ---
+@app.route("/tower/tower-security-boundary-next-action-bridge-index-v719.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_719_json():
+    from flask import jsonify
+    from tower.tower_tower_security_boundary_next_action_bridge_index_v719 import build_tower_security_boundary_next_action_bridge_index_preview
+
+    return jsonify(build_tower_security_boundary_next_action_bridge_index_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_720_ROUTE ---
+@app.route("/tower/tower-security-boundary-next-action-bridge-registry-contract-v720.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_720_json():
+    from flask import jsonify
+    from tower.tower_tower_security_boundary_next_action_bridge_registry_contract_v720 import build_tower_security_boundary_next_action_bridge_registry_contract_preview
+
+    return jsonify(build_tower_security_boundary_next_action_bridge_registry_contract_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_721_ROUTE ---
+@app.route("/tower/tower-security-boundary-next-action-bridge-action-matrix-v721.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_721_json():
+    from flask import jsonify
+    from tower.tower_tower_security_boundary_next_action_bridge_action_matrix_v721 import build_tower_security_boundary_next_action_bridge_action_matrix_preview
+
+    return jsonify(build_tower_security_boundary_next_action_bridge_action_matrix_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_722_ROUTE ---
+@app.route("/tower/tower-security-boundary-next-action-bridge-detail-drawer-v722.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_722_json():
+    from flask import jsonify
+    from tower.tower_tower_security_boundary_next_action_bridge_detail_drawer_v722 import build_tower_security_boundary_next_action_bridge_detail_drawer_preview
+
+    return jsonify(build_tower_security_boundary_next_action_bridge_detail_drawer_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_723_ROUTE ---
+@app.route("/tower/tower-security-boundary-next-action-bridge-owner-summary-v723.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_723_json():
+    from flask import jsonify
+    from tower.tower_tower_security_boundary_next_action_bridge_owner_summary_v723 import build_tower_security_boundary_next_action_bridge_owner_summary_preview
+
+    return jsonify(build_tower_security_boundary_next_action_bridge_owner_summary_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_724_ROUTE ---
+@app.route("/tower/tower-security-boundary-next-action-bridge-note-draft-v724.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_724_json():
+    from flask import jsonify
+    from tower.tower_tower_security_boundary_next_action_bridge_note_draft_v724 import build_tower_security_boundary_next_action_bridge_note_draft_preview
+
+    return jsonify(build_tower_security_boundary_next_action_bridge_note_draft_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_725_ROUTE ---
+@app.route("/tower/tower-security-boundary-next-action-bridge-note-version-v725.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_725_json():
+    from flask import jsonify
+    from tower.tower_tower_security_boundary_next_action_bridge_note_version_v725 import build_tower_security_boundary_next_action_bridge_note_version_preview
+
+    return jsonify(build_tower_security_boundary_next_action_bridge_note_version_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_726_ROUTE ---
+@app.route("/tower/tower-security-boundary-next-action-bridge-handoff-contract-v726.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_726_json():
+    from flask import jsonify
+    from tower.tower_tower_security_boundary_next_action_bridge_handoff_contract_v726 import build_tower_security_boundary_next_action_bridge_handoff_contract_preview
+
+    return jsonify(build_tower_security_boundary_next_action_bridge_handoff_contract_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_727_ROUTE ---
+@app.route("/tower/tower-security-boundary-next-action-bridge-readiness-bridge-v727.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_727_json():
+    from flask import jsonify
+    from tower.tower_tower_security_boundary_next_action_bridge_readiness_bridge_v727 import build_tower_security_boundary_next_action_bridge_readiness_bridge_preview
+
+    return jsonify(build_tower_security_boundary_next_action_bridge_readiness_bridge_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_728_ROUTE ---
+@app.route("/tower/tower-security-boundary-next-action-bridge-batch-close-readiness-v728.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_728_json():
+    from flask import jsonify
+    from tower.tower_tower_security_boundary_next_action_bridge_batch_close_readiness_v728 import build_tower_security_boundary_next_action_bridge_batch_close_readiness_preview
+
+    return jsonify(build_tower_security_boundary_next_action_bridge_batch_close_readiness_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_729_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-focus-closeout-index-v729.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_729_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_focus_closeout_index_v729 import build_tower_post_stack_owner_console_action_focus_closeout_index_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_focus_closeout_index_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_730_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-focus-closeout-registry-contract-v730.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_730_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_focus_closeout_registry_contract_v730 import build_tower_post_stack_owner_console_action_focus_closeout_registry_contract_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_focus_closeout_registry_contract_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_731_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-focus-closeout-action-matrix-v731.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_731_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_focus_closeout_action_matrix_v731 import build_tower_post_stack_owner_console_action_focus_closeout_action_matrix_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_focus_closeout_action_matrix_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_732_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-focus-closeout-detail-drawer-v732.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_732_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_focus_closeout_detail_drawer_v732 import build_tower_post_stack_owner_console_action_focus_closeout_detail_drawer_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_focus_closeout_detail_drawer_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_733_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-focus-closeout-owner-summary-v733.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_733_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_focus_closeout_owner_summary_v733 import build_tower_post_stack_owner_console_action_focus_closeout_owner_summary_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_focus_closeout_owner_summary_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_734_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-focus-closeout-note-draft-v734.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_734_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_focus_closeout_note_draft_v734 import build_tower_post_stack_owner_console_action_focus_closeout_note_draft_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_focus_closeout_note_draft_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_735_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-focus-closeout-note-version-v735.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_735_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_focus_closeout_note_version_v735 import build_tower_post_stack_owner_console_action_focus_closeout_note_version_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_focus_closeout_note_version_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_736_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-focus-closeout-handoff-contract-v736.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_736_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_focus_closeout_handoff_contract_v736 import build_tower_post_stack_owner_console_action_focus_closeout_handoff_contract_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_focus_closeout_handoff_contract_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_737_ROUTE ---
+@app.route("/tower/tower-post-stack-owner-console-action-focus-closeout-readiness-bridge-v737.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_737_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_focus_closeout_readiness_bridge_v737 import build_tower_post_stack_owner_console_action_focus_closeout_readiness_bridge_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_focus_closeout_readiness_bridge_preview())
+
+# --- SEARCHABLE LABEL: TOWER_GIANT_PACK_689_738_PACK_738_ROUTE ---
+@app.route("/tower/post-stack-owner-console-action-focus-giant-closeout-v738.json", methods=["GET"])
+def tower_giant_pack_689_738_pack_738_json():
+    from flask import jsonify
+    from tower.tower_tower_post_stack_owner_console_action_focus_closeout_batch_close_readiness_v738 import build_tower_post_stack_owner_console_action_focus_closeout_batch_close_readiness_preview
+
+    return jsonify(build_tower_post_stack_owner_console_action_focus_closeout_batch_close_readiness_preview())
+
