@@ -13349,3 +13349,243 @@ option {
   }
 }
 
+
+/* OB_GIANT_PACK_007_MANUAL_BROKER_CHECKLIST_FILL_CAPTURE_CSS */
+
+.ob-broker-checklist-capture-panel {
+  position: relative;
+  z-index: 67;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(126,252,255,0.22);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.070), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(233,194,111,0.058), transparent 38%),
+    rgba(0,0,0,0.31);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.50), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-broker-checklist-capture-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-broker-checklist-capture-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-broker-checklist-capture-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-broker-checklist-capture-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-broker-checklist-capture-chip,
+.ob-broker-checklist-capture-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-broker-checklist-capture-chip.green,
+.ob-broker-checklist-capture-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-broker-checklist-capture-chip.gold,
+.ob-broker-checklist-capture-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-broker-checklist-capture-chip.red,
+.ob-broker-checklist-capture-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-broker-checklist-capture-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-broker-checklist-capture-card,
+.ob-broker-checklist-capture-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-broker-checklist-capture-section {
+  margin-bottom: 11px;
+}
+
+.ob-broker-checklist-capture-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-broker-checklist-capture-card span,
+.ob-broker-checklist-capture-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-broker-checklist-capture-card strong,
+.ob-broker-checklist-capture-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-broker-checklist-capture-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-broker-checklist-capture-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-broker-checklist-capture-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-broker-checklist-capture-row {
+  display: grid;
+  grid-template-columns: 28px 0.34fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-broker-checklist-capture-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-broker-checklist-capture-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(126,252,255,0.28);
+  color: var(--ob-cyan);
+  background: rgba(126,252,255,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-broker-checklist-capture-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-broker-checklist-capture-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-broker-checklist-capture-callout,
+.ob-broker-checklist-capture-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(126,252,255,0.17);
+  border-radius: 13px;
+  background: rgba(126,252,255,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-broker-checklist-capture-callout strong {
+  color: var(--ob-cyan);
+}
+
+.ob-broker-checklist-capture-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-broker-checklist-capture-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-broker-checklist-capture-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-broker-checklist-capture-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-broker-checklist-capture-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-broker-checklist-capture-panel {
+    margin-left: 0;
+  }
+
+  .ob-broker-checklist-capture-head {
+    display: grid;
+  }
+
+  .ob-broker-checklist-capture-chip-row {
+    justify-content: flex-start;
+  }
+}
+
