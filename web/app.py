@@ -11799,6 +11799,20 @@ def ob_private_beta_next_tester_clearance_v45():
         ],
     }
 
+# OBSERVATORY_SESSION_0_LEGACY_PUBLIC_ROUTE_QUARANTINE
+@app.before_request
+def ob_session_0_legacy_public_route_quarantine():
+    from flask import abort as _ob_abort
+    from flask import request as _ob_request
+
+    legacy_public_routes = {
+        "/proof",
+        "/premium-analysis",
+    }
+
+    if _ob_request.path in legacy_public_routes:
+        return _ob_abort(404)
+
 
 if __name__ == "__main__":
     try:
