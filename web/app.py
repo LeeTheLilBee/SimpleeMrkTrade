@@ -27903,3 +27903,64 @@ def vault_gp039_status_json():
 # ============================================================
 # VAULT GP039 RECEIPT CLOSE SUMMARY ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP040 CONTROLLED PACKET ASSEMBLY READINESS CHECKPOINT ROUTES START
+# ============================================================
+
+@app.route("/vault/controlled-packet-assembly-readiness-checkpoint")
+def vault_gp040_controlled_packet_assembly_readiness_checkpoint_page():
+    from vault.controlled_packet_assembly_readiness_checkpoint_service import render_controlled_packet_assembly_readiness_checkpoint_page
+    return render_controlled_packet_assembly_readiness_checkpoint_page()
+
+@app.route("/vault/controlled-packet-assembly-readiness-checkpoint.json")
+def vault_gp040_controlled_packet_assembly_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_readiness_checkpoint_service import get_controlled_packet_assembly_readiness_checkpoint_home
+    return jsonify(get_controlled_packet_assembly_readiness_checkpoint_home())
+
+@app.route("/vault/controlled-packet-section-matrix.json")
+def vault_gp040_controlled_packet_section_matrix_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_readiness_checkpoint_service import get_controlled_packet_section_matrix
+    return jsonify(get_controlled_packet_section_matrix())
+
+@app.route("/vault/controlled-packet-boundary-verification.json")
+def vault_gp040_controlled_packet_boundary_verification_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_readiness_checkpoint_service import get_controlled_packet_boundary_verification
+    return jsonify(get_controlled_packet_boundary_verification())
+
+@app.route("/vault/controlled-packet-readiness-summary.json")
+def vault_gp040_controlled_packet_readiness_summary_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_readiness_checkpoint_service import get_controlled_packet_readiness_summary
+    return jsonify(get_controlled_packet_readiness_summary())
+
+@app.route("/vault/controlled-packet-safe-continue.json")
+def vault_gp040_controlled_packet_safe_continue_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_readiness_checkpoint_service import get_controlled_packet_safe_continue
+    return jsonify(get_controlled_packet_safe_continue())
+
+@app.route("/vault/controlled-packet-next-section-handoff.json")
+def vault_gp040_controlled_packet_next_section_handoff_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_readiness_checkpoint_service import get_controlled_packet_next_section_handoff
+    return jsonify(get_controlled_packet_next_section_handoff())
+
+@app.route("/vault/controlled-packet-owner-final-queue.json")
+def vault_gp040_controlled_packet_owner_final_queue_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_readiness_checkpoint_service import get_controlled_packet_owner_final_queue
+    return jsonify(get_controlled_packet_owner_final_queue())
+
+@app.route("/vault/gp040-status.json")
+def vault_gp040_status_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_readiness_checkpoint_service import get_gp040_status
+    return jsonify(get_gp040_status())
+
+# ============================================================
+# VAULT GP040 CONTROLLED PACKET ASSEMBLY READINESS CHECKPOINT ROUTES END
+# ============================================================
