@@ -91,3 +91,44 @@ def clouds_gp002_status_json():
     from .clouds_app_registry_service import get_clouds_gp002_status_payload
     return jsonify(get_clouds_gp002_status_payload())
 # === CLOUDS GIANT PACK 002 ROUTES END ===
+
+# === CLOUDS GIANT PACK 003 ROUTES START ===
+@clouds_bp.route("/clouds/owner-focus")
+@clouds_bp.route("/the-clouds/owner-focus")
+def clouds_owner_focus_room():
+    from .clouds_owner_focus_service import get_clouds_owner_focus_dashboard_payload
+    return render_template(
+        "clouds_owner_focus.html",
+        payload=get_clouds_owner_focus_dashboard_payload(),
+    )
+
+
+@clouds_bp.route("/clouds/owner-focus-queue.json")
+def clouds_owner_focus_queue_json():
+    from .clouds_owner_focus_service import get_clouds_owner_focus_queue_payload
+    return jsonify(get_clouds_owner_focus_queue_payload())
+
+
+@clouds_bp.route("/clouds/focus-lanes.json")
+def clouds_focus_lanes_json():
+    from .clouds_owner_focus_service import get_clouds_focus_lanes_payload
+    return jsonify(get_clouds_focus_lanes_payload())
+
+
+@clouds_bp.route("/clouds/blocked-watch.json")
+def clouds_blocked_watch_json():
+    from .clouds_owner_focus_service import get_clouds_blocked_watch_payload
+    return jsonify(get_clouds_blocked_watch_payload())
+
+
+@clouds_bp.route("/clouds/owner-focus-dashboard.json")
+def clouds_owner_focus_dashboard_json():
+    from .clouds_owner_focus_service import get_clouds_owner_focus_dashboard_payload
+    return jsonify(get_clouds_owner_focus_dashboard_payload())
+
+
+@clouds_bp.route("/clouds/gp003-status.json")
+def clouds_gp003_status_json():
+    from .clouds_owner_focus_service import get_clouds_gp003_status_payload
+    return jsonify(get_clouds_gp003_status_payload())
+# === CLOUDS GIANT PACK 003 ROUTES END ===

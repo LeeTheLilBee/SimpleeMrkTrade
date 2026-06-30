@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Clouds Owner Focus</title>
+  <link rel="stylesheet" href="/static/clouds/clouds.css">
+  <link rel="stylesheet" href="/static/clouds/clouds_owner_focus.css">
+</head>
+<body class="clouds-body">
+  <main class="clouds-shell clouds-focus-shell">
+    <section class="clouds-hero clouds-focus-hero">
+      <p class="clouds-eyebrow">The Clouds / Owner Focus Queue</p>
+      <h1>One queue for what matters next.</h1>
+      <p class="clouds-subtitle">
+        GP003 turns Clouds into a daily owner focus board: Vault-ready actions,
+        blocked watches, and placeholder reminders for Tower, OB, and Teller source contracts.
+      </p>
+      <div class="clouds-chip-row">
+        <span class="clouds-chip"><em>Focus</em><strong>{{ payload.focus_summary.focus_count }}</strong></span>
+        <span class="clouds-chip clouds-chip-locked"><em>Critical</em><strong>{{ payload.focus_summary.critical_count }}</strong></span>
+        <span class="clouds-chip"><em>Ready</em><strong>{{ payload.focus_summary.ready_count }}</strong></span>
+        <span class="clouds-chip clouds-chip-locked"><em>Blocked</em><strong>{{ payload.focus_summary.blocked_count }}</strong></span>
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Focus Queue</p>
+          <h2>Priority-sorted owner actions with open-app handoffs.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/owner-focus-queue.json">Queue JSON</a>
+      </div>
+
+      <div class="clouds-focus-list">
+        {% for item in payload.focus_items %}
+        <article class="clouds-focus-item clouds-priority-{{ item.priority }}">
+          <div>
+            <span>{{ item.business_lane }} / {{ item.source_app }}</span>
+            <h3>{{ item.label }}</h3>
+            <p>{{ item.owner_action }}</p>
+            <div class="clouds-focus-flags">
+              <em>{{ item.status }}</em>
+              <em>{{ item.action_type }}</em>
+              {% if item.blocked_by %}
+                {% for reason in item.blocked_by %}
+                <em>{{ reason }}</em>
+                {% endfor %}
+              {% else %}
+                <em>ready_now</em>
+              {% endif %}
+            </div>
+          </div>
+          <aside>
+            <strong>{{ item.priority }}</strong>
+            <small>Clouds routes only</small>
+            <a href="{{ item.open_app_target }}">Open owning app</a>
+          </aside>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Focus Lanes</p>
+          <h2>See where attention is clustering.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/focus-lanes.json">Lanes JSON</a>
+      </div>
+
+      <div class="clouds-focus-lane-grid">
+        {% for lane in payload.lane_summary.lanes %}
+        <article>
+          <span>{{ lane.lane_id }}</span>
+          <strong>{{ lane.focus_count }} focus</strong>
+          <p>{{ lane.critical_count }} critical / {{ lane.high_count }} high / {{ lane.blocked_count }} blocked</p>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Blocked Watch</p>
+          <h2>Blocked means stay blocked unless the owning app clears it.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/blocked-watch.json">Blocked JSON</a>
+      </div>
+
+      <div class="clouds-blocked-grid">
+        {% for item in payload.blocked_watch.watch_items %}
+        <article>
+          <span>{{ item.blocked_reason }}</span>
+          <strong>{{ item.item_count }} items</strong>
+          <p>{{ item.default_owner_action }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel clouds-handoff-panel">
+      <p class="clouds-eyebrow">Open-App Targets</p>
+      <h2>Clouds points. The owning app acts.</h2>
+
+      <div class="clouds-link-panel">
+        {% for target in payload.open_app_targets %}
+        <a href="{{ target }}">{{ target }}</a>
+        {% endfor %}
+        <a href="/clouds/owner-focus-dashboard.json">Dashboard JSON</a>
+        <a href="/clouds/gp003-status.json">GP003 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

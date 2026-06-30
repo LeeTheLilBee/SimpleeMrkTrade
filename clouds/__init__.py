@@ -33,3 +33,21 @@ __all__.extend([
     "get_clouds_gp002_status_payload",
 ])
 # === CLOUDS GIANT PACK 002 EXPORTS END ===
+
+# === CLOUDS GIANT PACK 003 EXPORTS START ===
+from .clouds_owner_focus_service import (
+    get_clouds_blocked_watch_payload,
+    get_clouds_focus_lanes_payload,
+    get_clouds_gp003_status_payload,
+    get_clouds_owner_focus_dashboard_payload,
+    get_clouds_owner_focus_queue_payload,
+)
+
+__all__.extend([
+    "get_clouds_owner_focus_queue_payload",
+    "get_clouds_focus_lanes_payload",
+    "get_clouds_blocked_watch_payload",
+    "get_clouds_owner_focus_dashboard_payload",
+    "get_clouds_gp003_status_payload",
+])
+# === CLOUDS GIANT PACK 003 EXPORTS END ===
