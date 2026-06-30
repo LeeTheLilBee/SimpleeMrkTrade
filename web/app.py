@@ -24806,3 +24806,70 @@ def vault_gp031_status_json():
 # ============================================================
 # VAULT GP031 CONTROLLED PACKET ASSEMBLY ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP032 PACKET COMPONENT DETAIL ROUTES START
+# ============================================================
+
+@app.route("/vault/packet-component-detail")
+def vault_gp032_packet_component_detail_page():
+    from vault.packet_component_detail_service import render_packet_component_detail_page
+    return render_packet_component_detail_page()
+
+@app.route("/vault/packet-component-detail.json")
+def vault_gp032_packet_component_detail_json():
+    from flask import jsonify
+    from vault.packet_component_detail_service import get_packet_component_detail_home
+    return jsonify(get_packet_component_detail_home())
+
+@app.route("/vault/packet-component-detail-records.json")
+def vault_gp032_packet_component_detail_records_json():
+    from flask import jsonify
+    from vault.packet_component_detail_service import get_packet_component_detail_records
+    return jsonify(get_packet_component_detail_records())
+
+@app.route("/vault/packet-component-detail-requirements.json")
+def vault_gp032_packet_component_detail_requirements_json():
+    from flask import jsonify
+    from vault.packet_component_detail_service import get_packet_component_detail_requirements
+    return jsonify(get_packet_component_detail_requirements())
+
+@app.route("/vault/packet-component-detail-redacted-preview.json")
+def vault_gp032_packet_component_detail_redacted_preview_json():
+    from flask import jsonify
+    from vault.packet_component_detail_service import get_packet_component_detail_redacted_preview
+    return jsonify(get_packet_component_detail_redacted_preview())
+
+@app.route("/vault/packet-component-detail-tower-gates.json")
+def vault_gp032_packet_component_detail_tower_gates_json():
+    from flask import jsonify
+    from vault.packet_component_detail_service import get_packet_component_detail_tower_gates
+    return jsonify(get_packet_component_detail_tower_gates())
+
+@app.route("/vault/packet-component-detail-blockers.json")
+def vault_gp032_packet_component_detail_blockers_json():
+    from flask import jsonify
+    from vault.packet_component_detail_service import get_packet_component_detail_blockers
+    return jsonify(get_packet_component_detail_blockers())
+
+@app.route("/vault/packet-component-detail-owner-queue.json")
+def vault_gp032_packet_component_detail_owner_queue_json():
+    from flask import jsonify
+    from vault.packet_component_detail_service import get_packet_component_detail_owner_queue
+    return jsonify(get_packet_component_detail_owner_queue())
+
+@app.route("/vault/packet-component-detail-carry-forward.json")
+def vault_gp032_packet_component_detail_carry_forward_json():
+    from flask import jsonify
+    from vault.packet_component_detail_service import get_packet_component_detail_carry_forward
+    return jsonify(get_packet_component_detail_carry_forward())
+
+@app.route("/vault/gp032-status.json")
+def vault_gp032_status_json():
+    from flask import jsonify
+    from vault.packet_component_detail_service import get_gp032_status
+    return jsonify(get_gp032_status())
+
+# ============================================================
+# VAULT GP032 PACKET COMPONENT DETAIL ROUTES END
+# ============================================================
