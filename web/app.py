@@ -31605,3 +31605,63 @@ def tower_one_cell_pack_1248_1298_pack_1298_json():
 
     return jsonify(build_tower_beta_launch_receipt_close_review_closeout_batch_close_readiness_preview())
 
+# ============================================================
+# VAULT GP049 STORAGE AUDIT ACTION RECEIPT PREVIEW ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-audit-action-receipt-preview")
+def vault_gp049_storage_audit_action_receipt_preview_page():
+    from vault.storage_audit_action_receipt_preview_service import render_storage_audit_action_receipt_preview_page
+    return render_storage_audit_action_receipt_preview_page()
+
+@app.route("/vault/storage-audit-action-receipt-preview.json")
+def vault_gp049_storage_audit_action_receipt_preview_json():
+    from flask import jsonify
+    from vault.storage_audit_action_receipt_preview_service import get_storage_audit_action_receipt_preview_home
+    return jsonify(get_storage_audit_action_receipt_preview_home())
+
+@app.route("/vault/storage-audit-action-receipt-cards.json")
+def vault_gp049_storage_audit_action_receipt_cards_json():
+    from flask import jsonify
+    from vault.storage_audit_action_receipt_preview_service import get_storage_audit_action_receipt_cards
+    return jsonify(get_storage_audit_action_receipt_cards())
+
+@app.route("/vault/storage-audit-blocked-action-receipt-labels.json")
+def vault_gp049_storage_audit_blocked_action_receipt_labels_json():
+    from flask import jsonify
+    from vault.storage_audit_action_receipt_preview_service import get_storage_audit_blocked_action_receipt_labels
+    return jsonify(get_storage_audit_blocked_action_receipt_labels())
+
+@app.route("/vault/storage-tower-action-gate-receipts.json")
+def vault_gp049_storage_tower_action_gate_receipts_json():
+    from flask import jsonify
+    from vault.storage_audit_action_receipt_preview_service import get_storage_tower_action_gate_receipts
+    return jsonify(get_storage_tower_action_gate_receipts())
+
+@app.route("/vault/storage-audit-followup-receipt-placeholders.json")
+def vault_gp049_storage_audit_followup_receipt_placeholders_json():
+    from flask import jsonify
+    from vault.storage_audit_action_receipt_preview_service import get_storage_audit_followup_receipt_placeholders
+    return jsonify(get_storage_audit_followup_receipt_placeholders())
+
+@app.route("/vault/storage-audit-no-execution-receipts.json")
+def vault_gp049_storage_audit_no_execution_receipts_json():
+    from flask import jsonify
+    from vault.storage_audit_action_receipt_preview_service import get_storage_audit_no_execution_receipts
+    return jsonify(get_storage_audit_no_execution_receipts())
+
+@app.route("/vault/storage-audit-action-receipt-next-step.json")
+def vault_gp049_storage_audit_action_receipt_next_step_json():
+    from flask import jsonify
+    from vault.storage_audit_action_receipt_preview_service import get_storage_audit_action_receipt_next_step
+    return jsonify(get_storage_audit_action_receipt_next_step())
+
+@app.route("/vault/gp049-status.json")
+def vault_gp049_status_json():
+    from flask import jsonify
+    from vault.storage_audit_action_receipt_preview_service import get_gp049_status
+    return jsonify(get_gp049_status())
+
+# ============================================================
+# VAULT GP049 STORAGE AUDIT ACTION RECEIPT PREVIEW ROUTES END
+# ============================================================
