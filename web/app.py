@@ -24174,3 +24174,64 @@ def vault_gp029_status_json():
 # ============================================================
 # VAULT GP029 RECEIPT CHAIN REVIEW BOARD ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP030 OWNER ACTION RECEIPT READINESS ROUTES START
+# ============================================================
+
+@app.route("/vault/owner-action-receipt-readiness")
+def vault_gp030_owner_action_receipt_readiness_page():
+    from vault.owner_action_receipt_readiness_checkpoint_service import render_owner_action_receipt_readiness_page
+    return render_owner_action_receipt_readiness_page()
+
+@app.route("/vault/owner-action-receipt-readiness.json")
+def vault_gp030_owner_action_receipt_readiness_json():
+    from flask import jsonify
+    from vault.owner_action_receipt_readiness_checkpoint_service import get_owner_action_receipt_readiness_home
+    return jsonify(get_owner_action_receipt_readiness_home())
+
+@app.route("/vault/owner-action-receipt-readiness-pack-matrix.json")
+def vault_gp030_owner_action_receipt_readiness_pack_matrix_json():
+    from flask import jsonify
+    from vault.owner_action_receipt_readiness_checkpoint_service import get_owner_action_receipt_readiness_pack_matrix
+    return jsonify(get_owner_action_receipt_readiness_pack_matrix())
+
+@app.route("/vault/owner-action-receipt-readiness-boundaries.json")
+def vault_gp030_owner_action_receipt_readiness_boundaries_json():
+    from flask import jsonify
+    from vault.owner_action_receipt_readiness_checkpoint_service import get_owner_action_receipt_readiness_boundaries
+    return jsonify(get_owner_action_receipt_readiness_boundaries())
+
+@app.route("/vault/owner-action-receipt-readiness-routes.json")
+def vault_gp030_owner_action_receipt_readiness_routes_json():
+    from flask import jsonify
+    from vault.owner_action_receipt_readiness_checkpoint_service import get_owner_action_receipt_readiness_routes
+    return jsonify(get_owner_action_receipt_readiness_routes())
+
+@app.route("/vault/owner-action-receipt-readiness-summary.json")
+def vault_gp030_owner_action_receipt_readiness_summary_json():
+    from flask import jsonify
+    from vault.owner_action_receipt_readiness_checkpoint_service import get_owner_action_receipt_readiness_summary
+    return jsonify(get_owner_action_receipt_readiness_summary())
+
+@app.route("/vault/owner-action-receipt-readiness-owner-queue.json")
+def vault_gp030_owner_action_receipt_readiness_owner_queue_json():
+    from flask import jsonify
+    from vault.owner_action_receipt_readiness_checkpoint_service import get_owner_action_receipt_readiness_owner_queue
+    return jsonify(get_owner_action_receipt_readiness_owner_queue())
+
+@app.route("/vault/owner-action-receipt-readiness-carry-forward.json")
+def vault_gp030_owner_action_receipt_readiness_carry_forward_json():
+    from flask import jsonify
+    from vault.owner_action_receipt_readiness_checkpoint_service import get_owner_action_receipt_readiness_carry_forward
+    return jsonify(get_owner_action_receipt_readiness_carry_forward())
+
+@app.route("/vault/gp030-status.json")
+def vault_gp030_status_json():
+    from flask import jsonify
+    from vault.owner_action_receipt_readiness_checkpoint_service import get_gp030_status
+    return jsonify(get_gp030_status())
+
+# ============================================================
+# VAULT GP030 OWNER ACTION RECEIPT READINESS ROUTES END
+# ============================================================
