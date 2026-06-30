@@ -22766,3 +22766,58 @@ def vault_gp015_status_json():
 # ============================================================
 # VAULT GP015 VERSION HISTORY ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP016 EVIDENCE BINDER BUILDER ROUTES START
+# ============================================================
+
+@app.route("/vault/evidence-binder")
+def vault_gp016_evidence_binder_page():
+    from vault.evidence_binder_builder_service import render_evidence_binder_page
+    return render_evidence_binder_page()
+
+@app.route("/vault/evidence-binder.json")
+def vault_gp016_evidence_binder_json():
+    from flask import jsonify
+    from vault.evidence_binder_builder_service import get_evidence_binder_home
+    return jsonify(get_evidence_binder_home())
+
+@app.route("/vault/evidence-binder-builder.json")
+def vault_gp016_evidence_binder_builder_json():
+    from flask import jsonify
+    from vault.evidence_binder_builder_service import get_evidence_binder_builder
+    return jsonify(get_evidence_binder_builder())
+
+@app.route("/vault/evidence-binder-packets.json")
+def vault_gp016_evidence_binder_packets_json():
+    from flask import jsonify
+    from vault.evidence_binder_builder_service import get_evidence_binder_packets
+    return jsonify(get_evidence_binder_packets())
+
+@app.route("/vault/evidence-binder-requirements.json")
+def vault_gp016_evidence_binder_requirements_json():
+    from flask import jsonify
+    from vault.evidence_binder_builder_service import get_evidence_binder_requirements
+    return jsonify(get_evidence_binder_requirements())
+
+@app.route("/vault/evidence-binder-export-preview.json")
+def vault_gp016_evidence_binder_export_preview_json():
+    from flask import jsonify
+    from vault.evidence_binder_builder_service import get_evidence_binder_export_preview
+    return jsonify(get_evidence_binder_export_preview())
+
+@app.route("/vault/evidence-binder-blocked-reasons.json")
+def vault_gp016_evidence_binder_blocked_reasons_json():
+    from flask import jsonify
+    from vault.evidence_binder_builder_service import get_evidence_binder_blocked_reasons
+    return jsonify(get_evidence_binder_blocked_reasons())
+
+@app.route("/vault/gp016-status.json")
+def vault_gp016_status_json():
+    from flask import jsonify
+    from vault.evidence_binder_builder_service import get_gp016_status
+    return jsonify(get_gp016_status())
+
+# ============================================================
+# VAULT GP016 EVIDENCE BINDER BUILDER ROUTES END
+# ============================================================
