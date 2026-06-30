@@ -1,7 +1,7 @@
 """Flask routes for Archive Vault.
 
-Vault Giant Pack 003 adds acquisition builders for ATM route acquisition and
-apartment lender due diligence while preserving GP001/GP002 routes.
+Vault Giant Pack 004 adds Trust/Entity Packet Vault and OB Manual Live Proof
+Vault while preserving GP001-GP003 routes.
 """
 
 from __future__ import annotations
@@ -34,6 +34,13 @@ from .vault_service import (
     get_redacted_view_policy_payload,
     get_vault_status,
 )
+from .vault_trust_ob_service import (
+    get_ob_manual_live_proof_vault_payload,
+    get_trust_entity_vault_payload,
+    get_trust_ob_owner_queue_payload,
+    get_trust_ob_vault_payload,
+    get_vault_gp004_status_payload,
+)
 
 
 vault_bp = Blueprint("vault", __name__)
@@ -57,6 +64,15 @@ def vault_acquisition_builders_room():
     return render_template(
         "vault_acquisition_builders.html",
         payload=get_acquisition_builders_payload(),
+    )
+
+
+@vault_bp.route("/vault/trust-ob")
+@vault_bp.route("/archive-vault/trust-ob")
+def vault_trust_ob_room():
+    return render_template(
+        "vault_trust_ob.html",
+        payload=get_trust_ob_vault_payload(),
     )
 
 
@@ -115,6 +131,31 @@ def vault_acquisition_owner_queue_json():
 @vault_bp.route("/vault/gp003-status.json")
 def vault_gp003_status_json():
     return jsonify(get_vault_gp003_status_payload())
+
+
+@vault_bp.route("/vault/trust-ob-vault.json")
+def vault_trust_ob_vault_json():
+    return jsonify(get_trust_ob_vault_payload())
+
+
+@vault_bp.route("/vault/trust-entity-vault.json")
+def vault_trust_entity_vault_json():
+    return jsonify(get_trust_entity_vault_payload())
+
+
+@vault_bp.route("/vault/ob-manual-live-proof-vault.json")
+def vault_ob_manual_live_proof_vault_json():
+    return jsonify(get_ob_manual_live_proof_vault_payload())
+
+
+@vault_bp.route("/vault/trust-ob-owner-queue.json")
+def vault_trust_ob_owner_queue_json():
+    return jsonify(get_trust_ob_owner_queue_payload())
+
+
+@vault_bp.route("/vault/gp004-status.json")
+def vault_gp004_status_json():
+    return jsonify(get_vault_gp004_status_payload())
 
 
 @vault_bp.route("/vault/document-registry.json")

@@ -26,6 +26,13 @@ from .vault_service import (
     get_redacted_view_policy_payload,
     get_vault_status,
 )
+from .vault_trust_ob_service import (
+    get_ob_manual_live_proof_vault_payload,
+    get_trust_entity_vault_payload,
+    get_trust_ob_owner_queue_payload,
+    get_trust_ob_vault_payload,
+    get_vault_gp004_status_payload,
+)
 
 __all__ = [
     "get_vault_status",
@@ -48,4 +55,9 @@ __all__ = [
     "get_apartment_lender_builder_payload",
     "get_acquisition_owner_queue_payload",
     "get_vault_gp003_status_payload",
+    "get_trust_entity_vault_payload",
+    "get_ob_manual_live_proof_vault_payload",
+    "get_trust_ob_owner_queue_payload",
+    "get_trust_ob_vault_payload",
+    "get_vault_gp004_status_payload",
 ]

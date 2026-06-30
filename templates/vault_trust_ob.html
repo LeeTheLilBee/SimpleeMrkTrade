@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault Trust + OB Proof</title>
+  <link rel="stylesheet" href="/static/vault/vault.css">
+  <link rel="stylesheet" href="/static/vault/vault_trust_ob.css">
+</head>
+<body class="vault-body">
+  <main class="vault-shell vault-trust-ob-shell">
+    <section class="vault-hero vault-trust-ob-hero">
+      <p class="vault-eyebrow">Archive Vault / Trust + OB Proof</p>
+      <h1>Ownership protected. Proof private. Boundaries locked.</h1>
+      <p class="vault-subtitle">
+        This room preserves trust/entity authority and OB Manual Live proof without exposing
+        bank details, beneficiary details, broker secrets, auto-execution paths, or public proof.
+      </p>
+      <div class="vault-chip-row">
+        <span class="vault-chip vault-chip-ready"><em>Vaults</em><strong>{{ payload.vaults | length }}</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>Public Proof</em><strong>Blocked</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>Broker Secrets</em><strong>Blocked</strong></span>
+        <span class="vault-chip vault-chip-ready"><em>Clouds View</em><strong>Summary</strong></span>
+      </div>
+    </section>
+
+    <section class="vault-trust-ob-grid">
+      {% for vault in payload.vaults %}
+      <article class="vault-panel vault-trust-ob-card">
+        <div class="vault-section-heading">
+          <div>
+            <p class="vault-eyebrow">{{ vault.business_lane }}</p>
+            <h2>{{ vault.vault_name }}</h2>
+          </div>
+          <span class="vault-trust-ob-score">{{ vault.readiness.setup_score }}%</span>
+        </div>
+
+        <p class="vault-muted">{{ vault.purpose }}</p>
+
+        {% if vault.documents %}
+        <section class="vault-trust-ob-subpanel">
+          <h3>Trust / Entity Documents</h3>
+          <div class="vault-trust-ob-list">
+            {% for doc in vault.documents %}
+            <article>
+              <div>
+                <span>{{ doc.category }}</span>
+                <strong>{{ doc.label }}</strong>
+                <p>{{ doc.summary }}</p>
+              </div>
+              <aside>
+                <em>{{ doc.status }}</em>
+                <small>{{ doc.blocked_reason }}</small>
+                <b>{{ doc.sensitivity }}</b>
+              </aside>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="vault-trust-ob-subpanel">
+          <h3>Authority Matrix</h3>
+          <div class="vault-authority-grid">
+            {% for role in vault.authority_matrix %}
+            <article>
+              <span>{{ role.role }}</span>
+              <strong>{{ role.scope }}</strong>
+              <em>Step-up: {{ role.requires_step_up }}</em>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+        {% endif %}
+
+        {% if vault.proof_documents %}
+        <section class="vault-trust-ob-subpanel">
+          <h3>Manual Live Proof Documents</h3>
+          <div class="vault-trust-ob-list">
+            {% for proof in vault.proof_documents %}
+            <article>
+              <div>
+                <span>{{ proof.proof_type }}</span>
+                <strong>{{ proof.label }}</strong>
+                <p>{{ proof.summary }}</p>
+              </div>
+              <aside>
+                <em>{{ proof.status }}</em>
+                <small>{{ proof.redaction_profile }}</small>
+                <b>{{ proof.sensitivity }}</b>
+              </aside>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="vault-trust-ob-subpanel">
+          <h3>OB Mode Boundaries</h3>
+          <div class="vault-boundary-grid">
+            {% for boundary in vault.mode_boundaries %}
+            <article>
+              <span>{{ boundary.boundary_id }}</span>
+              <strong>{{ boundary.label }}</strong>
+              <em>Enforced: {{ boundary.enforced }}</em>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+        {% endif %}
+
+        <section class="vault-trust-ob-subpanel">
+          <h3>Approval Chain</h3>
+          <div class="vault-approval-chain">
+            {% for step in vault.approval_chain %}
+            <article>
+              <span>{{ step.receipt_type }}</span>
+              <strong>{{ step.label }}</strong>
+              <em>{{ step.status }}</em>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <div class="vault-card-footer">
+          <strong>Owner next action</strong>
+          <small>{{ vault.owner_next_action }}</small>
+        </div>
+      </article>
+      {% endfor %}
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Trust + OB Owner Queue</p>
+          <h2>Protect the core while proof starts forming.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/trust-ob-owner-queue.json">Queue JSON</a>
+      </div>
+
+      <div class="vault-action-list">
+        {% for action in payload.owner_queue.actions %}
+        <article class="vault-action-card vault-priority-{{ action.priority }}">
+          <div>
+            <span>{{ action.business_lane }}</span>
+            <h3>{{ action.label }}</h3>
+            <p>{{ action.next_step }}</p>
+          </div>
+          <aside>
+            <strong>{{ action.status }}</strong>
+            <em>{{ action.priority }}</em>
+            {% if action.blocked_by %}
+            <small>Blocked: {{ action.blocked_by | join(", ") }}</small>
+            {% else %}
+            <small>Ready now</small>
+            {% endif %}
+          </aside>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-panel vault-clouds-panel">
+      <p class="vault-eyebrow">Clouds Safe Trust + OB Source</p>
+      <h2>Clouds sees readiness, not secrets.</h2>
+
+      <div class="vault-clouds-grid">
+        {% for summary in payload.clouds_safe_source.summaries %}
+        <article>
+          <span>{{ summary.business_lane }}</span>
+          <strong>{{ summary.setup_score }}% setup</strong>
+          <p class="vault-muted">{{ summary.owner_next_action }}</p>
+        </article>
+        {% endfor %}
+      </div>
+
+      <div class="vault-link-panel">
+        <a href="/vault">Vault Room</a>
+        <a href="/vault/acquisition-builders">Acquisition Builders</a>
+        <a href="/vault/trust-ob-vault.json">Trust + OB JSON</a>
+        <a href="/vault/trust-entity-vault.json">Trust Entity JSON</a>
+        <a href="/vault/ob-manual-live-proof-vault.json">OB Proof JSON</a>
+        <a href="/vault/gp004-status.json">GP004 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
