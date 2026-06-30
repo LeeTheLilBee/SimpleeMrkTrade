@@ -23273,3 +23273,70 @@ def vault_gp024_status_json():
 # ============================================================
 # VAULT GP024 OWNER ACTION EXECUTION PREP ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP025 OWNER ACTION RECEIPTS CHECKLISTS ROUTES START
+# ============================================================
+
+@app.route("/vault/owner-action-receipts")
+def vault_gp025_owner_action_receipts_page():
+    from vault.owner_action_receipts_checklists_service import render_owner_action_receipts_page
+    return render_owner_action_receipts_page()
+
+@app.route("/vault/owner-action-receipts.json")
+def vault_gp025_owner_action_receipts_json():
+    from flask import jsonify
+    from vault.owner_action_receipts_checklists_service import get_owner_action_receipts_home
+    return jsonify(get_owner_action_receipts_home())
+
+@app.route("/vault/owner-action-receipt-records.json")
+def vault_gp025_owner_action_receipt_records_json():
+    from flask import jsonify
+    from vault.owner_action_receipts_checklists_service import get_owner_action_receipt_records
+    return jsonify(get_owner_action_receipt_records())
+
+@app.route("/vault/owner-action-checklists.json")
+def vault_gp025_owner_action_checklists_json():
+    from flask import jsonify
+    from vault.owner_action_receipts_checklists_service import get_owner_action_checklists
+    return jsonify(get_owner_action_checklists())
+
+@app.route("/vault/owner-action-prep-receipt-map.json")
+def vault_gp025_owner_action_prep_receipt_map_json():
+    from flask import jsonify
+    from vault.owner_action_receipts_checklists_service import get_owner_action_prep_receipt_map
+    return jsonify(get_owner_action_prep_receipt_map())
+
+@app.route("/vault/owner-action-confirmation-ledger-seed.json")
+def vault_gp025_owner_action_confirmation_ledger_seed_json():
+    from flask import jsonify
+    from vault.owner_action_receipts_checklists_service import get_owner_action_confirmation_ledger_seed
+    return jsonify(get_owner_action_confirmation_ledger_seed())
+
+@app.route("/vault/owner-action-receipt-chain.json")
+def vault_gp025_owner_action_receipt_chain_json():
+    from flask import jsonify
+    from vault.owner_action_receipts_checklists_service import get_owner_action_receipt_chain
+    return jsonify(get_owner_action_receipt_chain())
+
+@app.route("/vault/owner-action-receipt-blocked.json")
+def vault_gp025_owner_action_receipt_blocked_json():
+    from flask import jsonify
+    from vault.owner_action_receipts_checklists_service import get_owner_action_receipt_blocked
+    return jsonify(get_owner_action_receipt_blocked())
+
+@app.route("/vault/owner-action-receipt-owner-queue.json")
+def vault_gp025_owner_action_receipt_owner_queue_json():
+    from flask import jsonify
+    from vault.owner_action_receipts_checklists_service import get_owner_action_receipt_owner_queue
+    return jsonify(get_owner_action_receipt_owner_queue())
+
+@app.route("/vault/gp025-status.json")
+def vault_gp025_status_json():
+    from flask import jsonify
+    from vault.owner_action_receipts_checklists_service import get_gp025_status
+    return jsonify(get_gp025_status())
+
+# ============================================================
+# VAULT GP025 OWNER ACTION RECEIPTS CHECKLISTS ROUTES END
+# ============================================================
