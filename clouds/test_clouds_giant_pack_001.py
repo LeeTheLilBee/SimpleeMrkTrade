@@ -99,7 +99,13 @@ def test_clouds_gp001_status_is_ready_and_safe_to_continue():
 
 
 def test_clouds_gp001_status_alias_matches_status():
-    assert get_clouds_gp001_status_payload() == get_clouds_status_payload()
+    alias_payload = get_clouds_gp001_status_payload()
+    status_payload = get_clouds_status_payload()
+
+    alias_payload.pop("generated_at", None)
+    status_payload.pop("generated_at", None)
+
+    assert alias_payload == status_payload
 
 
 def test_clouds_gp001_routes_template_and_css_exist():

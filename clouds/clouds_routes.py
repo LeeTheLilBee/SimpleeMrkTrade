@@ -50,3 +50,44 @@ def clouds_dashboard_json():
 @clouds_bp.route("/clouds/gp001-status.json")
 def clouds_gp001_status_json():
     return jsonify(get_clouds_gp001_status_payload())
+
+# === CLOUDS GIANT PACK 002 ROUTES START ===
+@clouds_bp.route("/clouds/app-registry")
+@clouds_bp.route("/the-clouds/app-registry")
+def clouds_app_registry_room():
+    from .clouds_app_registry_service import get_clouds_app_registry_dashboard_payload
+    return render_template(
+        "clouds_app_registry.html",
+        payload=get_clouds_app_registry_dashboard_payload(),
+    )
+
+
+@clouds_bp.route("/clouds/app-registry.json")
+def clouds_app_registry_json():
+    from .clouds_app_registry_service import get_clouds_app_registry_payload
+    return jsonify(get_clouds_app_registry_payload())
+
+
+@clouds_bp.route("/clouds/placeholder-sources.json")
+def clouds_placeholder_sources_json():
+    from .clouds_app_registry_service import get_clouds_placeholder_sources_payload
+    return jsonify(get_clouds_placeholder_sources_payload())
+
+
+@clouds_bp.route("/clouds/authority-map.json")
+def clouds_authority_map_json():
+    from .clouds_app_registry_service import get_clouds_authority_map_payload
+    return jsonify(get_clouds_authority_map_payload())
+
+
+@clouds_bp.route("/clouds/app-registry-dashboard.json")
+def clouds_app_registry_dashboard_json():
+    from .clouds_app_registry_service import get_clouds_app_registry_dashboard_payload
+    return jsonify(get_clouds_app_registry_dashboard_payload())
+
+
+@clouds_bp.route("/clouds/gp002-status.json")
+def clouds_gp002_status_json():
+    from .clouds_app_registry_service import get_clouds_gp002_status_payload
+    return jsonify(get_clouds_gp002_status_payload())
+# === CLOUDS GIANT PACK 002 ROUTES END ===

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Clouds App Registry</title>
+  <link rel="stylesheet" href="/static/clouds/clouds.css">
+  <link rel="stylesheet" href="/static/clouds/clouds_app_registry.css">
+</head>
+<body class="clouds-body">
+  <main class="clouds-shell clouds-registry-shell">
+    <section class="clouds-hero clouds-registry-hero">
+      <p class="clouds-eyebrow">The Clouds / App Registry</p>
+      <h1>Every app gets a place. Authority stays where it belongs.</h1>
+      <p class="clouds-subtitle">
+        GP002 adds the App Registry shell and placeholder source cards for Tower, OB,
+        and Teller without pretending they are connected yet.
+      </p>
+      <div class="clouds-chip-row">
+        <span class="clouds-chip"><em>Registered</em><strong>{{ payload.registered_app_count }}</strong></span>
+        <span class="clouds-chip"><em>Ready</em><strong>{{ payload.ready_app_count }}</strong></span>
+        <span class="clouds-chip clouds-chip-locked"><em>Placeholders</em><strong>{{ payload.locked_placeholder_count }}</strong></span>
+        <span class="clouds-chip clouds-chip-locked"><em>Authority</em><strong>Owning App</strong></span>
+      </div>
+    </section>
+
+    <section class="clouds-registry-grid">
+      {% for card in payload.app_cards %}
+      <article class="clouds-registry-card clouds-registry-card-{{ card.tone }}" id="{{ card.card_id }}">
+        <div class="clouds-registry-top">
+          <span>{{ card.short_label }}</span>
+          <em>{{ card.source_status }}</em>
+        </div>
+        <h2>{{ card.label }}</h2>
+        <p>{{ card.clouds_role }}</p>
+        <div class="clouds-registry-meta">
+          <strong>{{ card.status }}</strong>
+          <small>{{ card.authority_owner }}</small>
+        </div>
+        <div class="clouds-registry-lanes">
+          {% for lane in card.business_lanes %}
+          <span>{{ lane }}</span>
+          {% endfor %}
+        </div>
+        {% if card.primary_route != "not_connected" %}
+        <a href="{{ card.primary_route }}">Open owning route</a>
+        {% else %}
+        <a href="/clouds/app-registry.json">View registry source</a>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Authority Map</p>
+          <h2>Clouds is the command layer, not the system of record.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/authority-map.json">Authority JSON</a>
+      </div>
+
+      <div class="clouds-authority-grid">
+        {% for row in payload.authority_map %}
+        <article>
+          <span>{{ row.system }}</span>
+          <strong>{{ row.authority_id }}</strong>
+          <p>Owns: {{ row.owns | join(", ") }}</p>
+          <small>Clouds cannot: {{ row.clouds_cannot | join(", ") }}</small>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Placeholder Sources</p>
+          <h2>Tower, OB, and Teller are visible slots, not live source claims.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/placeholder-sources.json">Placeholder JSON</a>
+      </div>
+
+      <div class="clouds-placeholder-row">
+        {% for app_id in payload.placeholder_apps %}
+        <span>{{ app_id }}</span>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel clouds-handoff-panel">
+      <p class="clouds-eyebrow">Open-App Handoff</p>
+      <h2>Use the registry to navigate. Use the owning app to act.</h2>
+
+      <div class="clouds-link-panel">
+        <a href="/clouds">Clouds Home</a>
+        <a href="/clouds/app-registry.json">Registry JSON</a>
+        <a href="/clouds/app-registry-dashboard.json">Dashboard JSON</a>
+        <a href="/clouds/source-map.json">Source Map</a>
+        <a href="/clouds/gp002-status.json">GP002 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
