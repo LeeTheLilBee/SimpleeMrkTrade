@@ -27964,3 +27964,64 @@ def vault_gp040_status_json():
 # ============================================================
 # VAULT GP040 CONTROLLED PACKET ASSEMBLY READINESS CHECKPOINT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP041 STORAGE PROVIDER CONTRACT STARTER ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-provider-contract")
+def vault_gp041_storage_provider_contract_page():
+    from vault.storage_provider_contract_starter_service import render_storage_provider_contract_page
+    return render_storage_provider_contract_page()
+
+@app.route("/vault/storage-provider-contract.json")
+def vault_gp041_storage_provider_contract_json():
+    from flask import jsonify
+    from vault.storage_provider_contract_starter_service import get_storage_provider_contract_home
+    return jsonify(get_storage_provider_contract_home())
+
+@app.route("/vault/storage-provider-options.json")
+def vault_gp041_storage_provider_options_json():
+    from flask import jsonify
+    from vault.storage_provider_contract_starter_service import get_storage_provider_options
+    return jsonify(get_storage_provider_options())
+
+@app.route("/vault/storage-object-key-contract.json")
+def vault_gp041_storage_object_key_contract_json():
+    from flask import jsonify
+    from vault.storage_provider_contract_starter_service import get_storage_object_key_contract
+    return jsonify(get_storage_object_key_contract())
+
+@app.route("/vault/storage-retention-redaction-gates.json")
+def vault_gp041_storage_retention_redaction_gates_json():
+    from flask import jsonify
+    from vault.storage_provider_contract_starter_service import get_storage_retention_redaction_gates
+    return jsonify(get_storage_retention_redaction_gates())
+
+@app.route("/vault/storage-provider-tower-gates.json")
+def vault_gp041_storage_provider_tower_gates_json():
+    from flask import jsonify
+    from vault.storage_provider_contract_starter_service import get_storage_provider_tower_gates
+    return jsonify(get_storage_provider_tower_gates())
+
+@app.route("/vault/storage-provider-boundary-check.json")
+def vault_gp041_storage_provider_boundary_check_json():
+    from flask import jsonify
+    from vault.storage_provider_contract_starter_service import get_storage_provider_boundary_check
+    return jsonify(get_storage_provider_boundary_check())
+
+@app.route("/vault/storage-provider-next-step.json")
+def vault_gp041_storage_provider_next_step_json():
+    from flask import jsonify
+    from vault.storage_provider_contract_starter_service import get_storage_provider_next_step
+    return jsonify(get_storage_provider_next_step())
+
+@app.route("/vault/gp041-status.json")
+def vault_gp041_status_json():
+    from flask import jsonify
+    from vault.storage_provider_contract_starter_service import get_gp041_status
+    return jsonify(get_gp041_status())
+
+# ============================================================
+# VAULT GP041 STORAGE PROVIDER CONTRACT STARTER ROUTES END
+# ============================================================
