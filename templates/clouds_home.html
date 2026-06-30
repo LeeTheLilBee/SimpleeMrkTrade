@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Clouds</title>
+  <link rel="stylesheet" href="/static/clouds/clouds.css">
+</head>
+<body class="clouds-body">
+  <main class="clouds-shell">
+    <aside class="clouds-rail" aria-label="Clouds navigation">
+      <span>CLOUDS</span>
+      <a href="#command">Command</a>
+      <a href="#vault">Vault</a>
+      <a href="#boundaries">Locks</a>
+      <a href="#handoff">Handoff</a>
+    </aside>
+
+    <section class="clouds-hero">
+      <div>
+        <p class="clouds-eyebrow">Simplee World / The Clouds</p>
+        <h1>Owner command dashboard.</h1>
+        <p class="clouds-subtitle">
+          The Clouds reads summary-only redacted status from the apps that own the work.
+          GP001 starts with Vault because Vault is ready and safe to hand off.
+        </p>
+      </div>
+
+      <div class="clouds-orb" aria-hidden="true">
+        <span></span>
+      </div>
+
+      <div class="clouds-chip-row">
+        <span class="clouds-chip"><em>Status</em><strong>{{ status.status }}</strong></span>
+        <span class="clouds-chip"><em>Vault Score</em><strong>{{ status.vault_final_score }}%</strong></span>
+        <span class="clouds-chip"><em>Sources</em><strong>{{ status.source_count }}</strong></span>
+        <span class="clouds-chip clouds-chip-locked"><em>View</em><strong>{{ status.clouds_view }}</strong></span>
+      </div>
+    </section>
+
+    <section id="command" class="clouds-card-grid">
+      {% for card in dashboard.cards %}
+      <article class="clouds-card clouds-card-{{ card.status }}">
+        <span>{{ card.source_app }}</span>
+        <h2>{{ card.label }}</h2>
+        <strong>{{ card.value }} <em>{{ card.unit }}</em></strong>
+        <p>{{ card.summary }}</p>
+        <small>{{ card.owner_next_action }}</small>
+        <a href="{{ card.open_app_target }}">Open owning app</a>
+      </article>
+      {% endfor %}
+    </section>
+
+    <section id="vault" class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Vault Source</p>
+          <h2>Vault GP001-GP010 is the first Clouds source.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/vault-summary.json">Vault Summary JSON</a>
+      </div>
+
+      <div class="clouds-metric-grid">
+        <article><span>Lanes</span><strong>{{ dashboard.vault_summary.lane_count }}</strong></article>
+        <article><span>Records</span><strong>{{ dashboard.vault_summary.search_record_count }}</strong></article>
+        <article><span>Requirements</span><strong>{{ dashboard.vault_summary.requirement_count }}</strong></article>
+        <article><span>Receipts</span><strong>{{ dashboard.vault_summary.receipt_count }}</strong></article>
+        <article><span>Controls</span><strong>{{ dashboard.vault_summary.control_rule_count }}</strong></article>
+        <article><span>Locked Exports</span><strong>{{ dashboard.vault_summary.locked_export_count }}</strong></article>
+      </div>
+    </section>
+
+    <section id="boundaries" class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Clouds Boundaries</p>
+          <h2>Clouds sees the map. The owning app keeps the keys.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/source-map.json">Source Map JSON</a>
+      </div>
+
+      <div class="clouds-boundary-grid">
+        {% for boundary in dashboard.boundaries %}
+        <article>
+          <span>{{ boundary.boundary_id }}</span>
+          <strong>{{ boundary.label }}</strong>
+          <p>{{ boundary.summary }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Owner Focus</p>
+          <h2>What Vault says matters next.</h2>
+        </div>
+      </div>
+
+      <div class="clouds-action-list">
+        {% for action in dashboard.owner_focus %}
+        <article class="clouds-action clouds-priority-{{ action.priority }}">
+          <div>
+            <span>{{ action.business_lane }}</span>
+            <strong>{{ action.label }}</strong>
+            <p>{{ action.next_step }}</p>
+          </div>
+          <aside>
+            <em>{{ action.status }}</em>
+            {% if action.blocked_by %}
+            <small>Blocked: {{ action.blocked_by | join(", ") }}</small>
+            {% else %}
+            <small>Ready now</small>
+            {% endif %}
+          </aside>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="handoff" class="clouds-panel clouds-handoff-panel">
+      <p class="clouds-eyebrow">Open-App Handoff</p>
+      <h2>Clouds routes you to the room that owns the action.</h2>
+
+      <div class="clouds-link-panel">
+        {% for target in dashboard.open_app_targets %}
+        <a href="{{ target.route }}">{{ target.label }}</a>
+        {% endfor %}
+        <a href="/clouds/status.json">Clouds Status JSON</a>
+        <a href="/clouds/dashboard.json">Dashboard JSON</a>
+        <a href="/clouds/gp001-status.json">GP001 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -22512,3 +22512,12 @@ try:
 except Exception as _vault_gp001_error:
     print("[VAULT GP001] route registration skipped:", _vault_gp001_error)
 # === VAULT GIANT PACK 001 ROUTES END ===
+
+# === CLOUDS GIANT PACK 001 ROUTES START ===
+try:
+    from clouds.clouds_routes import clouds_bp as _clouds_gp001_bp
+    if "clouds" not in app.blueprints:
+        app.register_blueprint(_clouds_gp001_bp)
+except Exception as _clouds_gp001_error:
+    print("[CLOUDS GP001] route registration skipped:", _clouds_gp001_error)
+# === CLOUDS GIANT PACK 001 ROUTES END ===
