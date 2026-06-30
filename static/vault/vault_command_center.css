@@ -1,0 +1,218 @@
+.vault-command-shell {
+  padding-left: 0;
+}
+
+.vault-command-hero {
+  border-color: rgba(243, 209, 142, 0.36);
+}
+
+.vault-command-card-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.vault-command-card {
+  border: 1px solid var(--vault-line);
+  border-radius: 22px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: var(--vault-shadow);
+}
+
+.vault-command-card span,
+.vault-lane-top span,
+.vault-route-grid span,
+.vault-boundary-grid-command span {
+  color: var(--vault-gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.vault-command-card strong {
+  display: block;
+  margin: 12px 0 8px;
+  font-size: 1.5rem;
+  word-break: break-word;
+}
+
+.vault-command-card p {
+  margin: 0;
+  color: var(--vault-muted);
+  line-height: 1.45;
+  font-size: 0.9rem;
+}
+
+.vault-command-card-locked {
+  border-color: rgba(255, 157, 157, 0.28);
+}
+
+.vault-command-card-ready {
+  border-color: rgba(159, 255, 213, 0.24);
+}
+
+.vault-lane-wall {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.vault-lane-command-card {
+  border: 1px solid var(--vault-line);
+  border-radius: 24px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.052);
+}
+
+.vault-lane-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.vault-lane-top em {
+  color: var(--vault-muted);
+  font-style: normal;
+}
+
+.vault-lane-command-card h3 {
+  margin: 14px 0;
+  font-size: 1.18rem;
+}
+
+.vault-lane-score {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.vault-lane-score strong {
+  color: var(--vault-good);
+  font-size: 2rem;
+}
+
+.vault-lane-score small,
+.vault-lane-command-card p {
+  color: var(--vault-muted);
+  line-height: 1.45;
+}
+
+.vault-lane-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.vault-lane-meta span,
+.vault-blocked-reasons span,
+.vault-command-pill {
+  border: 1px solid var(--vault-line);
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: var(--vault-muted);
+  font-size: 0.78rem;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.vault-lane-command-card a,
+.vault-route-grid a {
+  color: var(--vault-text);
+  text-decoration: none;
+}
+
+.vault-lane-command-card a {
+  display: inline-flex;
+  border: 1px solid var(--vault-line);
+  border-radius: 999px;
+  padding: 9px 12px;
+  font-weight: 900;
+}
+
+.vault-boundary-panel {
+  display: grid;
+  gap: 20px;
+}
+
+.vault-boundary-grid-command {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.vault-boundary-grid-command article {
+  border: 1px solid var(--vault-line);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.vault-boundary-grid-command strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 1.1rem;
+}
+
+.vault-blocked-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.vault-command-action-list {
+  display: grid;
+  gap: 12px;
+}
+
+.vault-route-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.vault-route-grid a {
+  border: 1px solid var(--vault-line);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.vault-route-grid strong,
+.vault-route-grid em {
+  display: block;
+}
+
+.vault-route-grid strong {
+  margin: 8px 0;
+}
+
+.vault-route-grid em {
+  color: var(--vault-muted);
+  font-style: normal;
+  word-break: break-word;
+}
+
+@media (max-width: 1150px) {
+  .vault-command-card-grid,
+  .vault-boundary-grid-command {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .vault-lane-wall,
+  .vault-route-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .vault-command-card-grid,
+  .vault-boundary-grid-command,
+  .vault-lane-wall,
+  .vault-route-grid {
+    grid-template-columns: 1fr;
+  }
+}

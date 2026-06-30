@@ -7,6 +7,10 @@ from .vault_acquisition_service import (
     get_atm_route_builder_payload,
     get_vault_gp003_status_payload,
 )
+from .vault_command_center_service import (
+    get_unified_vault_command_center_payload,
+    get_vault_gp006_status_payload,
+)
 from .vault_room_service import (
     get_document_drawer_payload,
     get_owner_action_queue_payload,
@@ -72,4 +76,6 @@ __all__ = [
     "get_soulaana_beta_owner_queue_payload",
     "get_soulaana_beta_vault_payload",
     "get_vault_gp005_status_payload",
+    "get_unified_vault_command_center_payload",
+    "get_vault_gp006_status_payload",
 ]

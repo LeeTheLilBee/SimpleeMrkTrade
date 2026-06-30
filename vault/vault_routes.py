@@ -1,7 +1,7 @@
 """Flask routes for Archive Vault.
 
-Vault Giant Pack 005 adds Soulaana Artist/IP Package Vault and Private Beta
-Onboarding Vault while preserving GP001-GP004 routes.
+Vault Giant Pack 006 adds the Unified Vault Command Center while preserving
+GP001-GP005 routes.
 """
 
 from __future__ import annotations
@@ -14,6 +14,10 @@ from .vault_acquisition_service import (
     get_apartment_lender_builder_payload,
     get_atm_route_builder_payload,
     get_vault_gp003_status_payload,
+)
+from .vault_command_center_service import (
+    get_unified_vault_command_center_payload,
+    get_vault_gp006_status_payload,
 )
 from .vault_room_service import (
     get_document_drawer_payload,
@@ -65,6 +69,15 @@ def vault_home():
     )
 
 
+@vault_bp.route("/vault/command-center")
+@vault_bp.route("/archive-vault/command-center")
+def vault_command_center_room():
+    return render_template(
+        "vault_command_center.html",
+        payload=get_unified_vault_command_center_payload(),
+    )
+
+
 @vault_bp.route("/vault/acquisition-builders")
 @vault_bp.route("/archive-vault/acquisition-builders")
 def vault_acquisition_builders_room():
@@ -102,6 +115,12 @@ def vault_status_json():
 @vault_bp.route("/archive-vault/room.json")
 def vault_room_json():
     return jsonify(get_vault_room_payload())
+
+
+@vault_bp.route("/vault/command-center.json")
+@vault_bp.route("/archive-vault/command-center.json")
+def vault_command_center_json():
+    return jsonify(get_unified_vault_command_center_payload())
 
 
 @vault_bp.route("/vault/packet-board.json")
@@ -197,6 +216,11 @@ def vault_soulaana_beta_owner_queue_json():
 @vault_bp.route("/vault/gp005-status.json")
 def vault_gp005_status_json():
     return jsonify(get_vault_gp005_status_payload())
+
+
+@vault_bp.route("/vault/gp006-status.json")
+def vault_gp006_status_json():
+    return jsonify(get_vault_gp006_status_payload())
 
 
 @vault_bp.route("/vault/document-registry.json")

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault Command Center</title>
+  <link rel="stylesheet" href="/static/vault/vault.css">
+  <link rel="stylesheet" href="/static/vault/vault_command_center.css">
+</head>
+<body class="vault-body">
+  <main class="vault-shell vault-command-shell">
+    <section class="vault-hero vault-command-hero">
+      <p class="vault-eyebrow">Archive Vault / Unified Command Center</p>
+      <h1>Six lanes. One Vault command wall.</h1>
+      <p class="vault-subtitle">
+        The Vault command center links ATM, property, trust, OB proof, Soulaana,
+        and beta into one Tower-guarded, redacted, Clouds-safe owner view.
+      </p>
+
+      <div class="vault-chip-row">
+        <span class="vault-chip vault-chip-ready"><em>Command Level</em><strong>{{ payload.command_level }}</strong></span>
+        <span class="vault-chip vault-chip-ready"><em>Lanes</em><strong>{{ payload.lane_count }}</strong></span>
+        <span class="vault-chip vault-chip-ready"><em>Routes</em><strong>{{ payload.route_count }}</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>Direct Upload</em><strong>Locked</strong></span>
+      </div>
+    </section>
+
+    <section class="vault-command-card-grid">
+      {% for card in payload.command_cards %}
+      <article class="vault-command-card vault-command-card-{{ card.status }}">
+        <span>{{ card.label }}</span>
+        <strong>{{ card.value }}</strong>
+        <p>{{ card.summary }}</p>
+      </article>
+      {% endfor %}
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Six-Lane Readiness Wall</p>
+          <h2>Every Vault lane connected and ready for owner command.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/command-center.json">Command JSON</a>
+      </div>
+
+      <div class="vault-lane-wall">
+        {% for lane in payload.lane_cards %}
+        <article class="vault-lane-command-card">
+          <div class="vault-lane-top">
+            <span>{{ lane.lane_id }}</span>
+            <em>{{ lane.sensitivity }}</em>
+          </div>
+          <h3>{{ lane.label }}</h3>
+          <div class="vault-lane-score">
+            <strong>{{ lane.setup_score }}%</strong>
+            <small>{{ lane.status }}</small>
+          </div>
+          <p>{{ lane.owner_focus }}</p>
+          <div class="vault-lane-meta">
+            <span>{{ lane.record_count }} records</span>
+            <span>Tower Guard</span>
+            <span>Redacted</span>
+            <span>Upload Locked</span>
+          </div>
+          <a href="{{ lane.source_route }}">Open source</a>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-panel vault-boundary-panel">
+      <div>
+        <p class="vault-eyebrow">Boundary Wall</p>
+        <h2>Fast build. Locked boundaries.</h2>
+        <p class="vault-muted">
+          Vault can move aggressively because the dangerous doors remain closed:
+          permissions stay with Tower, direct upload stays locked, beta access stays scoped,
+          broker secrets stay out, and Clouds gets summaries only.
+        </p>
+      </div>
+
+      <div class="vault-boundary-grid-command">
+        <article><span>Tower permission</span><strong>{{ payload.boundary_wall.tower_permission_required }}</strong></article>
+        <article><span>Vault owns permissions</span><strong>{{ payload.boundary_wall.vault_owns_permissions }}</strong></article>
+        <article><span>Direct upload</span><strong>{{ payload.boundary_wall.direct_upload_allowed }}</strong></article>
+        <article><span>Clouds view</span><strong>{{ payload.boundary_wall.clouds_view }}</strong></article>
+        <article><span>Auto execution</span><strong>{{ payload.boundary_wall.auto_execution_allowed }}</strong></article>
+        <article><span>AI character art</span><strong>{{ payload.boundary_wall.ai_generated_character_art_allowed }}</strong></article>
+      </div>
+
+      <div class="vault-blocked-reasons">
+        {% for reason in payload.boundary_wall.blocked_reasons[:18] %}
+        <span>{{ reason }}</span>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Owner Focus Queue</p>
+          <h2>Critical and high-priority actions from every Vault room.</h2>
+        </div>
+        <span class="vault-command-pill">{{ payload.owner_action_count }} actions</span>
+      </div>
+
+      <div class="vault-command-action-list">
+        {% for action in payload.owner_focus_queue[:12] %}
+        <article class="vault-action-card vault-priority-{{ action.priority }}">
+          <div>
+            <span>{{ action.business_lane }} / {{ action.source }}</span>
+            <h3>{{ action.label }}</h3>
+            <p>{{ action.next_step or action.why_it_matters }}</p>
+          </div>
+          <aside>
+            <strong>{{ action.status }}</strong>
+            <em>{{ action.priority }}</em>
+            {% if action.blocked_by %}
+            <small>Blocked: {{ action.blocked_by | join(", ") }}</small>
+            {% else %}
+            <small>Ready now</small>
+            {% endif %}
+          </aside>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Route Index</p>
+          <h2>Every Vault room and source from one index.</h2>
+        </div>
+        <span class="vault-command-pill">{{ payload.route_count }} routes</span>
+      </div>
+
+      <div class="vault-route-grid">
+        {% for route in payload.route_index %}
+        <a href="{{ route.route }}">
+          <span>{{ route.type }} / {{ route.lane }}</span>
+          <strong>{{ route.label }}</strong>
+          <em>{{ route.route }}</em>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-panel vault-clouds-panel">
+      <p class="vault-eyebrow">Clouds Safe Source Map</p>
+      <h2>Clouds can read the Vault command center without touching sensitive packet bodies.</h2>
+
+      <div class="vault-clouds-grid">
+        {% for lane in payload.clouds_safe_source_map.lane_summaries %}
+        <article>
+          <span>{{ lane.lane_id }}</span>
+          <strong>{{ lane.setup_score }}% setup</strong>
+          <p class="vault-muted">{{ lane.owner_focus }}</p>
+        </article>
+        {% endfor %}
+      </div>
+
+      <div class="vault-link-panel">
+        <a href="/vault">Vault Room</a>
+        <a href="/vault/acquisition-builders">Acquisition</a>
+        <a href="/vault/trust-ob">Trust + OB</a>
+        <a href="/vault/soulaana-beta">Soulaana + Beta</a>
+        <a href="/vault/command-center.json">Command JSON</a>
+        <a href="/vault/gp006-status.json">GP006 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
