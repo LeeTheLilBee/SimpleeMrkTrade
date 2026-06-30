@@ -22821,3 +22821,58 @@ def vault_gp016_status_json():
 # ============================================================
 # VAULT GP016 EVIDENCE BINDER BUILDER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP017 ATM ROUTE PACKET WORKSPACE ROUTES START
+# ============================================================
+
+@app.route("/vault/atm-route-workspace")
+def vault_gp017_atm_route_workspace_page():
+    from vault.atm_route_packet_workspace_v2_service import render_atm_route_workspace_page
+    return render_atm_route_workspace_page()
+
+@app.route("/vault/atm-route-workspace.json")
+def vault_gp017_atm_route_workspace_json():
+    from flask import jsonify
+    from vault.atm_route_packet_workspace_v2_service import get_atm_route_workspace_home
+    return jsonify(get_atm_route_workspace_home())
+
+@app.route("/vault/atm-route-packet.json")
+def vault_gp017_atm_route_packet_json():
+    from flask import jsonify
+    from vault.atm_route_packet_workspace_v2_service import get_atm_route_packet
+    return jsonify(get_atm_route_packet())
+
+@app.route("/vault/atm-route-due-diligence.json")
+def vault_gp017_atm_route_due_diligence_json():
+    from flask import jsonify
+    from vault.atm_route_packet_workspace_v2_service import get_atm_route_due_diligence
+    return jsonify(get_atm_route_due_diligence())
+
+@app.route("/vault/atm-route-financial-review.json")
+def vault_gp017_atm_route_financial_review_json():
+    from flask import jsonify
+    from vault.atm_route_packet_workspace_v2_service import get_atm_route_financial_review
+    return jsonify(get_atm_route_financial_review())
+
+@app.route("/vault/atm-route-owner-actions.json")
+def vault_gp017_atm_route_owner_actions_json():
+    from flask import jsonify
+    from vault.atm_route_packet_workspace_v2_service import get_atm_route_owner_actions
+    return jsonify(get_atm_route_owner_actions())
+
+@app.route("/vault/atm-route-blocked-reasons.json")
+def vault_gp017_atm_route_blocked_reasons_json():
+    from flask import jsonify
+    from vault.atm_route_packet_workspace_v2_service import get_atm_route_blocked_reasons
+    return jsonify(get_atm_route_blocked_reasons())
+
+@app.route("/vault/gp017-status.json")
+def vault_gp017_status_json():
+    from flask import jsonify
+    from vault.atm_route_packet_workspace_v2_service import get_gp017_status
+    return jsonify(get_gp017_status())
+
+# ============================================================
+# VAULT GP017 ATM ROUTE PACKET WORKSPACE ROUTES END
+# ============================================================
