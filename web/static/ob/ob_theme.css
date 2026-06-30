@@ -18400,3 +18400,723 @@ option {
   }
 }
 
+
+/* OB_GIANT_PACK_031_MANUAL_LIVE_OPERATOR_CONFIDENCE_BOARD_CSS */
+
+.ob-manual-live-operator-confidence-board-panel {
+  position: relative;
+  z-index: 91;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(233,194,111,0.32);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.082), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(101,242,118,0.055), transparent 38%),
+    rgba(0,0,0,0.36);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.52), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-manual-live-operator-confidence-board-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-manual-live-operator-confidence-board-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-manual-live-operator-confidence-board-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-manual-live-operator-confidence-board-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-manual-live-operator-confidence-board-chip,
+.ob-manual-live-operator-confidence-board-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-manual-live-operator-confidence-board-chip.green,
+.ob-manual-live-operator-confidence-board-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-manual-live-operator-confidence-board-chip.gold,
+.ob-manual-live-operator-confidence-board-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-manual-live-operator-confidence-board-chip.red,
+.ob-manual-live-operator-confidence-board-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-manual-live-operator-confidence-board-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-manual-live-operator-confidence-board-card,
+.ob-manual-live-operator-confidence-board-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-manual-live-operator-confidence-board-section {
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-operator-confidence-board-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-manual-live-operator-confidence-board-card span,
+.ob-manual-live-operator-confidence-board-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-manual-live-operator-confidence-board-card strong,
+.ob-manual-live-operator-confidence-board-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-manual-live-operator-confidence-board-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-operator-confidence-board-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-manual-live-operator-confidence-board-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-manual-live-operator-confidence-board-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-manual-live-operator-confidence-board-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-manual-live-operator-confidence-board-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(233,194,111,0.28);
+  color: var(--ob-gold);
+  background: rgba(233,194,111,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-manual-live-operator-confidence-board-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-manual-live-operator-confidence-board-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-manual-live-operator-confidence-board-callout,
+.ob-manual-live-operator-confidence-board-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(233,194,111,0.17);
+  border-radius: 13px;
+  background: rgba(233,194,111,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-manual-live-operator-confidence-board-callout strong {
+  color: var(--ob-gold);
+}
+
+.ob-manual-live-operator-confidence-board-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-manual-live-operator-confidence-board-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-manual-live-operator-confidence-board-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-manual-live-operator-confidence-board-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-manual-live-operator-confidence-board-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-manual-live-operator-confidence-board-panel {
+    margin-left: 0;
+  }
+
+  .ob-manual-live-operator-confidence-board-head {
+    display: grid;
+  }
+
+  .ob-manual-live-operator-confidence-board-chip-row {
+    justify-content: flex-start;
+  }
+}
+
+
+/* OB_GIANT_PACK_032_MANUAL_LIVE_OPERATOR_STEP_CONFIDENCE_CHECKLIST_CSS */
+
+.ob-manual-live-operator-step-confidence-checklist-panel {
+  position: relative;
+  z-index: 92;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(126,252,255,0.31);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.082), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(233,194,111,0.055), transparent 38%),
+    rgba(0,0,0,0.36);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.52), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-manual-live-operator-step-confidence-checklist-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-chip,
+.ob-manual-live-operator-step-confidence-checklist-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-chip.green,
+.ob-manual-live-operator-step-confidence-checklist-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-manual-live-operator-step-confidence-checklist-chip.gold,
+.ob-manual-live-operator-step-confidence-checklist-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-manual-live-operator-step-confidence-checklist-chip.red,
+.ob-manual-live-operator-step-confidence-checklist-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-manual-live-operator-step-confidence-checklist-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-card,
+.ob-manual-live-operator-step-confidence-checklist-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-section {
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-card span,
+.ob-manual-live-operator-step-confidence-checklist-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-card strong,
+.ob-manual-live-operator-step-confidence-checklist-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(126,252,255,0.28);
+  color: var(--ob-cyan);
+  background: rgba(126,252,255,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-callout,
+.ob-manual-live-operator-step-confidence-checklist-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(126,252,255,0.17);
+  border-radius: 13px;
+  background: rgba(126,252,255,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-manual-live-operator-step-confidence-checklist-callout strong {
+  color: var(--ob-cyan);
+}
+
+.ob-manual-live-operator-step-confidence-checklist-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-manual-live-operator-step-confidence-checklist-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-manual-live-operator-step-confidence-checklist-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-manual-live-operator-step-confidence-checklist-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-manual-live-operator-step-confidence-checklist-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-manual-live-operator-step-confidence-checklist-panel {
+    margin-left: 0;
+  }
+
+  .ob-manual-live-operator-step-confidence-checklist-head {
+    display: grid;
+  }
+
+  .ob-manual-live-operator-step-confidence-checklist-chip-row {
+    justify-content: flex-start;
+  }
+}
+
+
+/* OB_GIANT_PACK_033_MANUAL_LIVE_OPERATOR_SCENARIO_CONFIDENCE_REVIEW_CSS */
+
+.ob-manual-live-operator-scenario-confidence-review-panel {
+  position: relative;
+  z-index: 93;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(101,242,118,0.31);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.082), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(126,252,255,0.055), transparent 38%),
+    rgba(0,0,0,0.36);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.52), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-manual-live-operator-scenario-confidence-review-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-chip,
+.ob-manual-live-operator-scenario-confidence-review-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-chip.green,
+.ob-manual-live-operator-scenario-confidence-review-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-manual-live-operator-scenario-confidence-review-chip.gold,
+.ob-manual-live-operator-scenario-confidence-review-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-manual-live-operator-scenario-confidence-review-chip.red,
+.ob-manual-live-operator-scenario-confidence-review-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-manual-live-operator-scenario-confidence-review-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-card,
+.ob-manual-live-operator-scenario-confidence-review-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-section {
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-card span,
+.ob-manual-live-operator-scenario-confidence-review-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-card strong,
+.ob-manual-live-operator-scenario-confidence-review-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(101,242,118,0.28);
+  color: var(--ob-green);
+  background: rgba(101,242,118,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-callout,
+.ob-manual-live-operator-scenario-confidence-review-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(101,242,118,0.17);
+  border-radius: 13px;
+  background: rgba(101,242,118,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-manual-live-operator-scenario-confidence-review-callout strong {
+  color: var(--ob-green);
+}
+
+.ob-manual-live-operator-scenario-confidence-review-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-manual-live-operator-scenario-confidence-review-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-manual-live-operator-scenario-confidence-review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-manual-live-operator-scenario-confidence-review-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-manual-live-operator-scenario-confidence-review-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-manual-live-operator-scenario-confidence-review-panel {
+    margin-left: 0;
+  }
+
+  .ob-manual-live-operator-scenario-confidence-review-head {
+    display: grid;
+  }
+
+  .ob-manual-live-operator-scenario-confidence-review-chip-row {
+    justify-content: flex-start;
+  }
+}
+
