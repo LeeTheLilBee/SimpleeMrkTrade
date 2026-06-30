@@ -23145,3 +23145,64 @@ def vault_gp022_status_json():
 # ============================================================
 # VAULT GP022 PACKET GAP DETAIL ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP023 PACKET ACTION PLAN ROUTES START
+# ============================================================
+
+@app.route("/vault/packet-action-plan")
+def vault_gp023_packet_action_plan_page():
+    from vault.packet_action_plan_service import render_packet_action_plan_page
+    return render_packet_action_plan_page()
+
+@app.route("/vault/packet-action-plan.json")
+def vault_gp023_packet_action_plan_json():
+    from flask import jsonify
+    from vault.packet_action_plan_service import get_packet_action_plan_home
+    return jsonify(get_packet_action_plan_home())
+
+@app.route("/vault/packet-action-plan-board.json")
+def vault_gp023_packet_action_plan_board_json():
+    from flask import jsonify
+    from vault.packet_action_plan_service import get_packet_action_plan_board
+    return jsonify(get_packet_action_plan_board())
+
+@app.route("/vault/packet-action-plan-steps.json")
+def vault_gp023_packet_action_plan_steps_json():
+    from flask import jsonify
+    from vault.packet_action_plan_service import get_packet_action_plan_steps
+    return jsonify(get_packet_action_plan_steps())
+
+@app.route("/vault/packet-action-plan-dependencies.json")
+def vault_gp023_packet_action_plan_dependencies_json():
+    from flask import jsonify
+    from vault.packet_action_plan_service import get_packet_action_plan_dependencies
+    return jsonify(get_packet_action_plan_dependencies())
+
+@app.route("/vault/packet-action-plan-priority.json")
+def vault_gp023_packet_action_plan_priority_json():
+    from flask import jsonify
+    from vault.packet_action_plan_service import get_packet_action_plan_priority
+    return jsonify(get_packet_action_plan_priority())
+
+@app.route("/vault/packet-action-plan-blocked.json")
+def vault_gp023_packet_action_plan_blocked_json():
+    from flask import jsonify
+    from vault.packet_action_plan_service import get_packet_action_plan_blocked
+    return jsonify(get_packet_action_plan_blocked())
+
+@app.route("/vault/packet-action-plan-owner-queue.json")
+def vault_gp023_packet_action_plan_owner_queue_json():
+    from flask import jsonify
+    from vault.packet_action_plan_service import get_packet_action_plan_owner_queue
+    return jsonify(get_packet_action_plan_owner_queue())
+
+@app.route("/vault/gp023-status.json")
+def vault_gp023_status_json():
+    from flask import jsonify
+    from vault.packet_action_plan_service import get_gp023_status
+    return jsonify(get_gp023_status())
+
+# ============================================================
+# VAULT GP023 PACKET ACTION PLAN ROUTES END
+# ============================================================
