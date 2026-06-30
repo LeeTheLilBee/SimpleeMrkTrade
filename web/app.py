@@ -25730,3 +25730,82 @@ def vault_gp034_status_json():
 # ============================================================
 # VAULT GP034 PACKET REVIEW PRIORITY ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP035 PACKET REVIEW DECISION PREP ROUTES START
+# ============================================================
+
+@app.route("/vault/packet-review-decision-prep")
+def vault_gp035_packet_review_decision_prep_page():
+    from vault.packet_review_decision_prep_service import render_packet_review_decision_prep_page
+    return render_packet_review_decision_prep_page()
+
+@app.route("/vault/packet-review-decision-prep.json")
+def vault_gp035_packet_review_decision_prep_json():
+    from flask import jsonify
+    from vault.packet_review_decision_prep_service import get_packet_review_decision_prep_home
+    return jsonify(get_packet_review_decision_prep_home())
+
+@app.route("/vault/packet-review-decision-prep-records.json")
+def vault_gp035_packet_review_decision_prep_records_json():
+    from flask import jsonify
+    from vault.packet_review_decision_prep_service import get_packet_review_decision_prep_records
+    return jsonify(get_packet_review_decision_prep_records())
+
+@app.route("/vault/packet-review-decision-prep-options.json")
+def vault_gp035_packet_review_decision_prep_options_json():
+    from flask import jsonify
+    from vault.packet_review_decision_prep_service import get_packet_review_decision_prep_options
+    return jsonify(get_packet_review_decision_prep_options())
+
+@app.route("/vault/packet-review-decision-prep-readiness.json")
+def vault_gp035_packet_review_decision_prep_readiness_json():
+    from flask import jsonify
+    from vault.packet_review_decision_prep_service import get_packet_review_decision_prep_readiness
+    return jsonify(get_packet_review_decision_prep_readiness())
+
+@app.route("/vault/packet-review-decision-prep-prompts.json")
+def vault_gp035_packet_review_decision_prep_prompts_json():
+    from flask import jsonify
+    from vault.packet_review_decision_prep_service import get_packet_review_decision_prep_prompts
+    return jsonify(get_packet_review_decision_prep_prompts())
+
+@app.route("/vault/packet-review-decision-prep-tower-requirements.json")
+def vault_gp035_packet_review_decision_prep_tower_requirements_json():
+    from flask import jsonify
+    from vault.packet_review_decision_prep_service import get_packet_review_decision_prep_tower_requirements
+    return jsonify(get_packet_review_decision_prep_tower_requirements())
+
+@app.route("/vault/packet-review-decision-prep-blocker-limits.json")
+def vault_gp035_packet_review_decision_prep_blocker_limits_json():
+    from flask import jsonify
+    from vault.packet_review_decision_prep_service import get_packet_review_decision_prep_blocker_limits
+    return jsonify(get_packet_review_decision_prep_blocker_limits())
+
+@app.route("/vault/packet-review-decision-prep-paths.json")
+def vault_gp035_packet_review_decision_prep_paths_json():
+    from flask import jsonify
+    from vault.packet_review_decision_prep_service import get_packet_review_decision_prep_paths
+    return jsonify(get_packet_review_decision_prep_paths())
+
+@app.route("/vault/packet-review-decision-prep-next-decisions.json")
+def vault_gp035_packet_review_decision_prep_next_decisions_json():
+    from flask import jsonify
+    from vault.packet_review_decision_prep_service import get_packet_review_decision_prep_next_decisions
+    return jsonify(get_packet_review_decision_prep_next_decisions())
+
+@app.route("/vault/packet-review-decision-prep-carry-forward.json")
+def vault_gp035_packet_review_decision_prep_carry_forward_json():
+    from flask import jsonify
+    from vault.packet_review_decision_prep_service import get_packet_review_decision_prep_carry_forward
+    return jsonify(get_packet_review_decision_prep_carry_forward())
+
+@app.route("/vault/gp035-status.json")
+def vault_gp035_status_json():
+    from flask import jsonify
+    from vault.packet_review_decision_prep_service import get_gp035_status
+    return jsonify(get_gp035_status())
+
+# ============================================================
+# VAULT GP035 PACKET REVIEW DECISION PREP ROUTES END
+# ============================================================
