@@ -7,56 +7,203 @@
   <link rel="stylesheet" href="/static/vault/vault.css">
 </head>
 <body class="vault-body">
-  <main class="vault-shell">
+  <main class="vault-shell" data-vault-room="gp002">
+    <aside class="vault-side-rail" aria-label="Vault navigation">
+      <span>VAULT</span>
+      <a href="#packet-board">Packets</a>
+      <a href="#document-drawer">Docs</a>
+      <a href="#owner-queue">Queue</a>
+      <a href="#clouds-preview">Clouds</a>
+    </aside>
+
     <section class="vault-hero">
-      <p class="vault-eyebrow">Simplee World / Archive Vault</p>
-      <h1>Protected proof, packets, documents, and receipts.</h1>
-      <p class="vault-subtitle">
-        Vault is private, Tower-controlled, redacted by default, and prepared for ATM routes,
-        apartment lender diligence, OB Manual Live proof, trust/entity preservation, Soulaana IP,
-        and private beta onboarding.
-      </p>
+      <div class="vault-hero-top">
+        <div>
+          <p class="vault-eyebrow">Simplee World / Archive Vault</p>
+          <h1>Private proof room. Packet board. Owner control.</h1>
+          <p class="vault-subtitle">
+            Vault is now a real protected room for acquisition packets, document indexes,
+            owner actions, redacted summaries, and future Clouds handoff.
+          </p>
+        </div>
+        <div class="vault-orb" aria-hidden="true">
+          <span></span>
+        </div>
+      </div>
+
       <div class="vault-chip-row">
-        <span class="vault-chip">Readiness {{ status.readiness_score }}%</span>
-        <span class="vault-chip">Direct Upload Locked</span>
-        <span class="vault-chip">Clouds Source Ready</span>
-        <span class="vault-chip">Tower Guard Required</span>
+        {% for chip in room.command_chips %}
+        <span class="vault-chip vault-chip-{{ chip.tone }}">
+          <em>{{ chip.label }}</em>
+          <strong>{{ chip.value }}</strong>
+        </span>
+        {% endfor %}
       </div>
     </section>
 
-    <section class="vault-grid">
-      {% for card in owner_console.summary_cards %}
+    <section class="vault-grid vault-command-grid">
       <article class="vault-card">
-        <p>{{ card.label }}</p>
-        <strong>{{ card.value }}</strong>
-        <span>{{ card.unit }}</span>
+        <p>Readiness</p>
+        <strong>{{ room.readiness_score }}%</strong>
+        <span>{{ room.readiness_label }}</span>
       </article>
-      {% endfor %}
+      <article class="vault-card">
+        <p>Packet cards</p>
+        <strong>{{ room.packet_board.card_count }}</strong>
+        <span>aggressive lanes</span>
+      </article>
+      <article class="vault-card">
+        <p>Document records</p>
+        <strong>{{ room.document_drawer.record_count }}</strong>
+        <span>indexed, redacted</span>
+      </article>
+      <article class="vault-card">
+        <p>Owner actions</p>
+        <strong>{{ room.owner_action_queue.action_count }}</strong>
+        <span>{{ room.owner_action_queue.ready_count }} ready</span>
+      </article>
     </section>
 
-    <section class="vault-panel">
-      <div>
-        <p class="vault-eyebrow">Owner Focus</p>
-        <h2>Built for aggressive acquisition and proof growth.</h2>
+    <section id="packet-board" class="vault-panel vault-board-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Packet Board</p>
+          <h2>Acquisition and proof packets ready for aggressive growth.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/packet-board.json">Packet JSON</a>
       </div>
-      <div class="vault-lanes">
-        {% for lane in owner_console.focus_lanes %}
-        <article class="vault-lane">
-          <span>{{ lane.lane }}</span>
-          <strong>{{ lane.label }}</strong>
-          <em>{{ lane.status }}</em>
+
+      <div class="vault-filter-row" data-vault-filters>
+        {% for filter_name in room.packet_board.board_filters %}
+        <button type="button" data-filter="{{ filter_name }}">{{ filter_name }}</button>
+        {% endfor %}
+      </div>
+
+      <div class="vault-packet-grid" data-vault-packet-grid>
+        {% for card in room.packet_board.cards %}
+        <article class="vault-packet-card" data-lane="{{ card.business_lane }}" data-status="{{ card.setup_status }}">
+          <div class="vault-packet-top">
+            <span>{{ card.business_lane }}</span>
+            <em>{{ card.urgency }}</em>
+          </div>
+          <h3>{{ card.packet_name }}</h3>
+          <p>{{ card.purpose }}</p>
+          <div class="vault-mini-stats">
+            <span>{{ card.required_document_count }} docs</span>
+            <span>{{ card.required_receipt_count }} receipts</span>
+            <span>{{ card.readiness_weight }} weight</span>
+          </div>
+          <div class="vault-card-footer">
+            <strong>{{ card.setup_status }}</strong>
+            <small>{{ card.owner_next_action }}</small>
+          </div>
         </article>
         {% endfor %}
       </div>
     </section>
 
-    <section class="vault-link-panel">
-      <a href="/vault/status.json">Status JSON</a>
-      <a href="/vault/packet-templates.json">Packet Templates</a>
-      <a href="/vault/document-registry.json">Document Registry</a>
-      <a href="/vault/clouds-source.json">Clouds Source</a>
-      <a href="/vault/readiness.json">Readiness</a>
+    <section id="document-drawer" class="vault-panel vault-document-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Document Drawer</p>
+          <h2>Indexed records with receipts, freshness, redaction, and next action.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/document-drawer.json">Drawer JSON</a>
+      </div>
+
+      <div class="vault-document-layout">
+        <div class="vault-document-list" data-vault-document-list>
+          {% for record in room.document_drawer.records %}
+          <button
+            type="button"
+            data-doc-index="{{ loop.index0 }}"
+            class="{% if loop.first %}active{% endif %}">
+            <span>{{ record.business_lane }}</span>
+            <strong>{{ record.title }}</strong>
+            <em>{{ record.status }}</em>
+          </button>
+          {% endfor %}
+        </div>
+
+        <article class="vault-document-detail" data-vault-document-detail>
+          <p class="vault-muted">Select a document index to review details.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="owner-queue" class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Owner Action Queue</p>
+          <h2>What needs action, what is ready, and what stays locked.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/owner-action-queue.json">Queue JSON</a>
+      </div>
+
+      <div class="vault-action-list">
+        {% for action in room.owner_action_queue.actions %}
+        <article class="vault-action-card vault-priority-{{ action.priority }}">
+          <div>
+            <span>{{ action.business_lane }}</span>
+            <h3>{{ action.label }}</h3>
+            <p>{{ action.why_it_matters }}</p>
+          </div>
+          <aside>
+            <strong>{{ action.status }}</strong>
+            <em>{{ action.owning_authority }}</em>
+            {% if action.blocked_by %}
+            <small>Blocked: {{ action.blocked_by | join(", ") }}</small>
+            {% else %}
+            <small>Ready now</small>
+            {% endif %}
+          </aside>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="clouds-preview" class="vault-panel vault-clouds-panel">
+      <div>
+        <p class="vault-eyebrow">Clouds Preview</p>
+        <h2>Summary-only source for the future owner command dashboard.</h2>
+        <p>
+          Clouds can read Vault readiness, packet counts, document counts, owner actions,
+          and blocked reasons without exposing sensitive fields.
+        </p>
+      </div>
+
+      <div class="vault-clouds-grid">
+        <article>
+          <span>Safe for Clouds</span>
+          <strong>{{ room.clouds_preview.safe_for_clouds }}</strong>
+        </article>
+        <article>
+          <span>View</span>
+          <strong>{{ room.clouds_preview.view }}</strong>
+        </article>
+        <article>
+          <span>Hidden fields</span>
+          <strong>{{ room.clouds_preview.sensitive_fields_hidden | length }}</strong>
+        </article>
+        <article>
+          <span>Blocked reasons</span>
+          <strong>{{ room.clouds_preview.blocked_reasons | length }}</strong>
+        </article>
+      </div>
+
+      <div class="vault-link-panel">
+        <a href="/vault/room.json">Room JSON</a>
+        <a href="/vault/clouds-source.json">Clouds Source</a>
+        <a href="/vault/gp002-status.json">GP002 Status</a>
+        <a href="/vault/readiness.json">Readiness</a>
+        <a href="/vault/no-direct-upload.json">No Direct Upload</a>
+      </div>
     </section>
   </main>
+
+  <script>
+    window.VAULT_ROOM_BOOTSTRAP = {{ room | tojson }};
+  </script>
+  <script src="/static/vault/vault_room.js"></script>
 </body>
 </html>
