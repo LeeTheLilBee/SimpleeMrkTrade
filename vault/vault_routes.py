@@ -266,3 +266,50 @@ def vault_receipt_chain_json():
 @vault_bp.route("/vault/clouds-source.json")
 def vault_clouds_source_json():
     return jsonify(get_clouds_source_payload())
+
+# === VAULT GIANT PACK 007 ROUTES START ===
+@vault_bp.route("/vault/search-tracker")
+@vault_bp.route("/archive-vault/search-tracker")
+def vault_search_tracker_room():
+    from .vault_tracking_service import get_vault_search_tracker_payload
+    return render_template(
+        "vault_search_tracker.html",
+        payload=get_vault_search_tracker_payload(),
+    )
+
+
+@vault_bp.route("/vault/search-tracker.json")
+def vault_search_tracker_json():
+    from .vault_tracking_service import get_vault_search_tracker_payload
+    return jsonify(get_vault_search_tracker_payload())
+
+
+@vault_bp.route("/vault/search-index.json")
+def vault_search_index_json():
+    from .vault_tracking_service import get_vault_search_index_payload
+    return jsonify(get_vault_search_index_payload())
+
+
+@vault_bp.route("/vault/requirement-tracker.json")
+def vault_requirement_tracker_json():
+    from .vault_tracking_service import get_requirement_tracker_payload
+    return jsonify(get_requirement_tracker_payload())
+
+
+@vault_bp.route("/vault/expiration-renewal-wall.json")
+def vault_expiration_renewal_wall_json():
+    from .vault_tracking_service import get_expiration_renewal_wall_payload
+    return jsonify(get_expiration_renewal_wall_payload())
+
+
+@vault_bp.route("/vault/data-freshness-wall.json")
+def vault_data_freshness_wall_json():
+    from .vault_tracking_service import get_data_freshness_wall_payload
+    return jsonify(get_data_freshness_wall_payload())
+
+
+@vault_bp.route("/vault/gp007-status.json")
+def vault_gp007_status_json():
+    from .vault_tracking_service import get_vault_gp007_status_payload
+    return jsonify(get_vault_gp007_status_payload())
+# === VAULT GIANT PACK 007 ROUTES END ===

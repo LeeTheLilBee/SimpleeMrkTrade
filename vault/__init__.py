@@ -79,3 +79,23 @@ __all__ = [
     "get_unified_vault_command_center_payload",
     "get_vault_gp006_status_payload",
 ]
+
+# === VAULT GIANT PACK 007 EXPORTS START ===
+from .vault_tracking_service import (
+    get_data_freshness_wall_payload,
+    get_expiration_renewal_wall_payload,
+    get_requirement_tracker_payload,
+    get_vault_gp007_status_payload,
+    get_vault_search_index_payload,
+    get_vault_search_tracker_payload,
+)
+
+__all__.extend([
+    "get_vault_search_index_payload",
+    "get_requirement_tracker_payload",
+    "get_expiration_renewal_wall_payload",
+    "get_data_freshness_wall_payload",
+    "get_vault_search_tracker_payload",
+    "get_vault_gp007_status_payload",
+])
+# === VAULT GIANT PACK 007 EXPORTS END ===

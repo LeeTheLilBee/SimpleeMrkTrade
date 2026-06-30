@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault Search + Tracker</title>
+  <link rel="stylesheet" href="/static/vault/vault.css">
+  <link rel="stylesheet" href="/static/vault/vault_search_tracker.css">
+</head>
+<body class="vault-body">
+  <main class="vault-shell vault-search-shell">
+    <section class="vault-hero vault-search-hero">
+      <p class="vault-eyebrow">Archive Vault / Search + Requirement Tracker</p>
+      <h1>Find it. Track it. Renew it before it goes stale.</h1>
+      <p class="vault-subtitle">
+        GP007 gives Vault a searchable index, requirement tracker, expiration wall,
+        freshness standard, and Clouds-safe tracking source across all six lanes.
+      </p>
+      <div class="vault-chip-row">
+        <span class="vault-chip vault-chip-ready"><em>Search Records</em><strong>{{ payload.search_index.record_count }}</strong></span>
+        <span class="vault-chip vault-chip-ready"><em>Requirements</em><strong>{{ payload.requirement_tracker.requirement_count }}</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>Blocked</em><strong>{{ payload.requirement_tracker.blocked_count }}</strong></span>
+        <span class="vault-chip vault-chip-ready"><em>Freshness Lanes</em><strong>{{ payload.data_freshness_wall.lane_count }}</strong></span>
+      </div>
+    </section>
+
+    <section class="vault-search-grid">
+      <article class="vault-panel">
+        <p class="vault-eyebrow">Search Index</p>
+        <h2>{{ payload.search_index.record_count }} searchable Vault records.</h2>
+        <p class="vault-muted">
+          Search covers record IDs, titles, lanes, statuses, summaries, next actions,
+          and blocked reasons without exposing sensitive document bodies.
+        </p>
+        <div class="vault-search-pill-row">
+          {% for lane in payload.search_index.filters.lanes %}
+          <span>{{ lane }}</span>
+          {% endfor %}
+        </div>
+      </article>
+
+      <article class="vault-panel">
+        <p class="vault-eyebrow">Requirement Tracker</p>
+        <h2>{{ payload.requirement_tracker.setup_score }}% tracker setup.</h2>
+        <p class="vault-muted">
+          Packet completion remains {{ payload.requirement_tracker.packet_completion_score }}%
+          because evidence is not attached yet and direct upload is still locked.
+        </p>
+        <div class="vault-search-pill-row">
+          <span>{{ payload.requirement_tracker.required_count }} required</span>
+          <span>{{ payload.requirement_tracker.blocked_count }} blocked</span>
+          <span>{{ payload.requirement_tracker.packet_completion_score }}% completion</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Lane Requirement Wall</p>
+          <h2>Every lane has tracked requirements.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/requirement-tracker.json">Requirement JSON</a>
+      </div>
+
+      <div class="vault-requirement-lanes">
+        {% for lane, summary in payload.requirement_tracker.lane_summary.items() %}
+        <article>
+          <span>{{ lane }}</span>
+          <strong>{{ summary.required }} required</strong>
+          <em>{{ summary.blocked }} blocked / {{ summary.attached }} attached</em>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Expiration + Renewal Wall</p>
+          <h2>{{ payload.expiration_renewal_wall.renewal_item_count }} renewal items are ready to track.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/expiration-renewal-wall.json">Renewal JSON</a>
+      </div>
+
+      <div class="vault-renewal-grid">
+        <article><span>Expired</span><strong>{{ payload.expiration_renewal_wall.expired_count }}</strong></article>
+        <article><span>Expiring Soon</span><strong>{{ payload.expiration_renewal_wall.expiring_soon_count }}</strong></article>
+        <article><span>Expiration Not Set</span><strong>{{ payload.expiration_renewal_wall.expiration_not_set_count }}</strong></article>
+      </div>
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Data Freshness Wall</p>
+          <h2>Freshness standards by lane.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/data-freshness-wall.json">Freshness JSON</a>
+      </div>
+
+      <div class="vault-freshness-grid">
+        {% for lane in payload.data_freshness_wall.freshness_lanes %}
+        <article>
+          <span>{{ lane.lane }}</span>
+          <strong>{{ lane.freshness_days }} days</strong>
+          <em>{{ lane.status }}</em>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-panel vault-clouds-panel">
+      <p class="vault-eyebrow">Clouds Safe Tracking Source</p>
+      <h2>Clouds can see counts, status, and stale/blocked risk without sensitive bodies.</h2>
+
+      <div class="vault-clouds-grid">
+        <article><span>Records</span><strong>{{ payload.clouds_safe_source.record_count }}</strong></article>
+        <article><span>Requirements</span><strong>{{ payload.clouds_safe_source.requirement_count }}</strong></article>
+        <article><span>Blocked</span><strong>{{ payload.clouds_safe_source.blocked_count }}</strong></article>
+        <article><span>Renewals</span><strong>{{ payload.clouds_safe_source.renewal_item_count }}</strong></article>
+      </div>
+
+      <div class="vault-link-panel">
+        <a href="/vault/command-center">Command Center</a>
+        <a href="/vault/search-index.json">Search JSON</a>
+        <a href="/vault/search-tracker.json">Tracker JSON</a>
+        <a href="/vault/gp007-status.json">GP007 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
