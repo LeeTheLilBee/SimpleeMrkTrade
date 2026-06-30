@@ -23090,3 +23090,58 @@ def vault_gp021_status_json():
 # ============================================================
 # VAULT GP021 OWNER PACKET REVIEW ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP022 PACKET GAP DETAIL ROUTES START
+# ============================================================
+
+@app.route("/vault/packet-gap-detail")
+def vault_gp022_packet_gap_detail_page():
+    from vault.packet_gap_detail_service import render_packet_gap_detail_page
+    return render_packet_gap_detail_page()
+
+@app.route("/vault/packet-gap-detail.json")
+def vault_gp022_packet_gap_detail_json():
+    from flask import jsonify
+    from vault.packet_gap_detail_service import get_packet_gap_detail_home
+    return jsonify(get_packet_gap_detail_home())
+
+@app.route("/vault/packet-gap-detail-board.json")
+def vault_gp022_packet_gap_detail_board_json():
+    from flask import jsonify
+    from vault.packet_gap_detail_service import get_packet_gap_detail_board
+    return jsonify(get_packet_gap_detail_board())
+
+@app.route("/vault/packet-gap-detail-records.json")
+def vault_gp022_packet_gap_detail_records_json():
+    from flask import jsonify
+    from vault.packet_gap_detail_service import get_packet_gap_detail_records
+    return jsonify(get_packet_gap_detail_records())
+
+@app.route("/vault/packet-gap-detail-requirements.json")
+def vault_gp022_packet_gap_detail_requirements_json():
+    from flask import jsonify
+    from vault.packet_gap_detail_service import get_packet_gap_detail_requirements
+    return jsonify(get_packet_gap_detail_requirements())
+
+@app.route("/vault/packet-gap-detail-blockers.json")
+def vault_gp022_packet_gap_detail_blockers_json():
+    from flask import jsonify
+    from vault.packet_gap_detail_service import get_packet_gap_detail_blockers
+    return jsonify(get_packet_gap_detail_blockers())
+
+@app.route("/vault/packet-gap-detail-owner-queue.json")
+def vault_gp022_packet_gap_detail_owner_queue_json():
+    from flask import jsonify
+    from vault.packet_gap_detail_service import get_packet_gap_detail_owner_queue
+    return jsonify(get_packet_gap_detail_owner_queue())
+
+@app.route("/vault/gp022-status.json")
+def vault_gp022_status_json():
+    from flask import jsonify
+    from vault.packet_gap_detail_service import get_gp022_status
+    return jsonify(get_gp022_status())
+
+# ============================================================
+# VAULT GP022 PACKET GAP DETAIL ROUTES END
+# ============================================================
