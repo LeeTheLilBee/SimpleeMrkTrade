@@ -29148,3 +29148,64 @@ def vault_gp043_status_json():
 # ============================================================
 # VAULT GP043 STORAGE ACCESS REQUEST PREVIEW ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP044 STORAGE ACCESS DECISION QUEUE ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-access-decision-queue")
+def vault_gp044_storage_access_decision_queue_page():
+    from vault.storage_access_decision_queue_service import render_storage_access_decision_queue_page
+    return render_storage_access_decision_queue_page()
+
+@app.route("/vault/storage-access-decision-queue.json")
+def vault_gp044_storage_access_decision_queue_json():
+    from flask import jsonify
+    from vault.storage_access_decision_queue_service import get_storage_access_decision_queue_home
+    return jsonify(get_storage_access_decision_queue_home())
+
+@app.route("/vault/storage-access-decision-cards.json")
+def vault_gp044_storage_access_decision_cards_json():
+    from flask import jsonify
+    from vault.storage_access_decision_queue_service import get_storage_access_decision_cards
+    return jsonify(get_storage_access_decision_cards())
+
+@app.route("/vault/storage-access-tower-approval-requirements.json")
+def vault_gp044_storage_access_tower_approval_requirements_json():
+    from flask import jsonify
+    from vault.storage_access_decision_queue_service import get_storage_access_tower_approval_requirements
+    return jsonify(get_storage_access_tower_approval_requirements())
+
+@app.route("/vault/storage-access-owner-review-placeholders.json")
+def vault_gp044_storage_access_owner_review_placeholders_json():
+    from flask import jsonify
+    from vault.storage_access_decision_queue_service import get_storage_access_owner_review_placeholders
+    return jsonify(get_storage_access_owner_review_placeholders())
+
+@app.route("/vault/storage-access-denial-reason-labels.json")
+def vault_gp044_storage_access_denial_reason_labels_json():
+    from flask import jsonify
+    from vault.storage_access_decision_queue_service import get_storage_access_denial_reason_labels
+    return jsonify(get_storage_access_denial_reason_labels())
+
+@app.route("/vault/storage-access-no-grant-enforcement.json")
+def vault_gp044_storage_access_no_grant_enforcement_json():
+    from flask import jsonify
+    from vault.storage_access_decision_queue_service import get_storage_access_no_grant_enforcement
+    return jsonify(get_storage_access_no_grant_enforcement())
+
+@app.route("/vault/storage-access-decision-next-step.json")
+def vault_gp044_storage_access_decision_next_step_json():
+    from flask import jsonify
+    from vault.storage_access_decision_queue_service import get_storage_access_decision_next_step
+    return jsonify(get_storage_access_decision_next_step())
+
+@app.route("/vault/gp044-status.json")
+def vault_gp044_status_json():
+    from flask import jsonify
+    from vault.storage_access_decision_queue_service import get_gp044_status
+    return jsonify(get_gp044_status())
+
+# ============================================================
+# VAULT GP044 STORAGE ACCESS DECISION QUEUE ROUTES END
+# ============================================================
