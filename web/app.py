@@ -31136,3 +31136,63 @@ def tower_one_cell_pack_1197_1247_pack_1247_json():
 
     return jsonify(build_tower_beta_launch_command_receipt_review_closeout_batch_close_readiness_preview())
 
+# ============================================================
+# VAULT GP048 STORAGE AUDIT ACTION PREVIEW ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-audit-action-preview")
+def vault_gp048_storage_audit_action_preview_page():
+    from vault.storage_audit_action_preview_service import render_storage_audit_action_preview_page
+    return render_storage_audit_action_preview_page()
+
+@app.route("/vault/storage-audit-action-preview.json")
+def vault_gp048_storage_audit_action_preview_json():
+    from flask import jsonify
+    from vault.storage_audit_action_preview_service import get_storage_audit_action_preview_home
+    return jsonify(get_storage_audit_action_preview_home())
+
+@app.route("/vault/storage-audit-action-suggestions.json")
+def vault_gp048_storage_audit_action_suggestions_json():
+    from flask import jsonify
+    from vault.storage_audit_action_preview_service import get_storage_audit_action_suggestions
+    return jsonify(get_storage_audit_action_suggestions())
+
+@app.route("/vault/storage-audit-blocked-action-labels.json")
+def vault_gp048_storage_audit_blocked_action_labels_json():
+    from flask import jsonify
+    from vault.storage_audit_action_preview_service import get_storage_audit_blocked_action_labels
+    return jsonify(get_storage_audit_blocked_action_labels())
+
+@app.route("/vault/storage-tower-action-authority-gates.json")
+def vault_gp048_storage_tower_action_authority_gates_json():
+    from flask import jsonify
+    from vault.storage_audit_action_preview_service import get_storage_tower_action_authority_gates
+    return jsonify(get_storage_tower_action_authority_gates())
+
+@app.route("/vault/storage-audit-reviewer-followup-placeholders.json")
+def vault_gp048_storage_audit_reviewer_followup_placeholders_json():
+    from flask import jsonify
+    from vault.storage_audit_action_preview_service import get_storage_audit_reviewer_followup_placeholders
+    return jsonify(get_storage_audit_reviewer_followup_placeholders())
+
+@app.route("/vault/storage-audit-no-execution-enforcement.json")
+def vault_gp048_storage_audit_no_execution_enforcement_json():
+    from flask import jsonify
+    from vault.storage_audit_action_preview_service import get_storage_audit_no_execution_enforcement
+    return jsonify(get_storage_audit_no_execution_enforcement())
+
+@app.route("/vault/storage-audit-action-next-step.json")
+def vault_gp048_storage_audit_action_next_step_json():
+    from flask import jsonify
+    from vault.storage_audit_action_preview_service import get_storage_audit_action_next_step
+    return jsonify(get_storage_audit_action_next_step())
+
+@app.route("/vault/gp048-status.json")
+def vault_gp048_status_json():
+    from flask import jsonify
+    from vault.storage_audit_action_preview_service import get_gp048_status
+    return jsonify(get_gp048_status())
+
+# ============================================================
+# VAULT GP048 STORAGE AUDIT ACTION PREVIEW ROUTES END
+# ============================================================
