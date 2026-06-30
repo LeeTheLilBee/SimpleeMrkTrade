@@ -22717,3 +22717,52 @@ def vault_gp014_status_json():
 # ============================================================
 # VAULT GP014 MANUAL UPLOAD REVIEW ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP015 VERSION HISTORY ROUTES START
+# ============================================================
+
+@app.route("/vault/version-history")
+def vault_gp015_version_history_page():
+    from vault.version_history_replace_supersede_flow_service import render_version_history_page
+    return render_version_history_page()
+
+@app.route("/vault/version-history.json")
+def vault_gp015_version_history_json():
+    from flask import jsonify
+    from vault.version_history_replace_supersede_flow_service import get_version_history_home
+    return jsonify(get_version_history_home())
+
+@app.route("/vault/version-records.json")
+def vault_gp015_version_records_json():
+    from flask import jsonify
+    from vault.version_history_replace_supersede_flow_service import get_version_records
+    return jsonify(get_version_records())
+
+@app.route("/vault/replace-supersede-flow.json")
+def vault_gp015_replace_supersede_flow_json():
+    from flask import jsonify
+    from vault.version_history_replace_supersede_flow_service import get_replace_supersede_flow
+    return jsonify(get_replace_supersede_flow())
+
+@app.route("/vault/version-lineage.json")
+def vault_gp015_version_lineage_json():
+    from flask import jsonify
+    from vault.version_history_replace_supersede_flow_service import get_version_lineage
+    return jsonify(get_version_lineage())
+
+@app.route("/vault/version-blocked-reasons.json")
+def vault_gp015_version_blocked_reasons_json():
+    from flask import jsonify
+    from vault.version_history_replace_supersede_flow_service import get_version_blocked_reasons
+    return jsonify(get_version_blocked_reasons())
+
+@app.route("/vault/gp015-status.json")
+def vault_gp015_status_json():
+    from flask import jsonify
+    from vault.version_history_replace_supersede_flow_service import get_gp015_status
+    return jsonify(get_gp015_status())
+
+# ============================================================
+# VAULT GP015 VERSION HISTORY ROUTES END
+# ============================================================
