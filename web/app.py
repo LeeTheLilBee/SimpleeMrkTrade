@@ -22876,3 +22876,58 @@ def vault_gp017_status_json():
 # ============================================================
 # VAULT GP017 ATM ROUTE PACKET WORKSPACE ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP018 APARTMENT LENDER PACKET WORKSPACE ROUTES START
+# ============================================================
+
+@app.route("/vault/apartment-lender-workspace")
+def vault_gp018_apartment_lender_workspace_page():
+    from vault.apartment_lender_packet_workspace_v2_service import render_apartment_lender_workspace_page
+    return render_apartment_lender_workspace_page()
+
+@app.route("/vault/apartment-lender-workspace.json")
+def vault_gp018_apartment_lender_workspace_json():
+    from flask import jsonify
+    from vault.apartment_lender_packet_workspace_v2_service import get_apartment_lender_workspace_home
+    return jsonify(get_apartment_lender_workspace_home())
+
+@app.route("/vault/apartment-lender-packet.json")
+def vault_gp018_apartment_lender_packet_json():
+    from flask import jsonify
+    from vault.apartment_lender_packet_workspace_v2_service import get_apartment_lender_packet
+    return jsonify(get_apartment_lender_packet())
+
+@app.route("/vault/apartment-due-diligence.json")
+def vault_gp018_apartment_due_diligence_json():
+    from flask import jsonify
+    from vault.apartment_lender_packet_workspace_v2_service import get_apartment_due_diligence
+    return jsonify(get_apartment_due_diligence())
+
+@app.route("/vault/apartment-financial-review.json")
+def vault_gp018_apartment_financial_review_json():
+    from flask import jsonify
+    from vault.apartment_lender_packet_workspace_v2_service import get_apartment_financial_review
+    return jsonify(get_apartment_financial_review())
+
+@app.route("/vault/apartment-owner-actions.json")
+def vault_gp018_apartment_owner_actions_json():
+    from flask import jsonify
+    from vault.apartment_lender_packet_workspace_v2_service import get_apartment_owner_actions
+    return jsonify(get_apartment_owner_actions())
+
+@app.route("/vault/apartment-blocked-reasons.json")
+def vault_gp018_apartment_blocked_reasons_json():
+    from flask import jsonify
+    from vault.apartment_lender_packet_workspace_v2_service import get_apartment_blocked_reasons
+    return jsonify(get_apartment_blocked_reasons())
+
+@app.route("/vault/gp018-status.json")
+def vault_gp018_status_json():
+    from flask import jsonify
+    from vault.apartment_lender_packet_workspace_v2_service import get_gp018_status
+    return jsonify(get_gp018_status())
+
+# ============================================================
+# VAULT GP018 APARTMENT LENDER PACKET WORKSPACE ROUTES END
+# ============================================================
