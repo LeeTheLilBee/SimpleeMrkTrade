@@ -24739,3 +24739,70 @@ def tower_hard_recovery_790_839_pack_839_json():
     from tower.tower_tower_beta_readiness_scoreboard_closeout_batch_close_readiness_v839 import build_tower_beta_readiness_scoreboard_closeout_batch_close_readiness_preview
 
     return jsonify(build_tower_beta_readiness_scoreboard_closeout_batch_close_readiness_preview())
+
+# ============================================================
+# VAULT GP031 CONTROLLED PACKET ASSEMBLY ROUTES START
+# ============================================================
+
+@app.route("/vault/controlled-packet-assembly")
+def vault_gp031_controlled_packet_assembly_page():
+    from vault.controlled_packet_assembly_board_service import render_controlled_packet_assembly_page
+    return render_controlled_packet_assembly_page()
+
+@app.route("/vault/controlled-packet-assembly.json")
+def vault_gp031_controlled_packet_assembly_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_board_service import get_controlled_packet_assembly_home
+    return jsonify(get_controlled_packet_assembly_home())
+
+@app.route("/vault/controlled-packet-assembly-records.json")
+def vault_gp031_controlled_packet_assembly_records_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_board_service import get_controlled_packet_assembly_records
+    return jsonify(get_controlled_packet_assembly_records())
+
+@app.route("/vault/controlled-packet-assembly-components.json")
+def vault_gp031_controlled_packet_assembly_components_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_board_service import get_controlled_packet_assembly_components
+    return jsonify(get_controlled_packet_assembly_components())
+
+@app.route("/vault/controlled-packet-assembly-lanes.json")
+def vault_gp031_controlled_packet_assembly_lanes_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_board_service import get_controlled_packet_assembly_lanes
+    return jsonify(get_controlled_packet_assembly_lanes())
+
+@app.route("/vault/controlled-packet-assembly-blockers.json")
+def vault_gp031_controlled_packet_assembly_blockers_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_board_service import get_controlled_packet_assembly_blockers
+    return jsonify(get_controlled_packet_assembly_blockers())
+
+@app.route("/vault/controlled-packet-assembly-readiness.json")
+def vault_gp031_controlled_packet_assembly_readiness_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_board_service import get_controlled_packet_assembly_readiness
+    return jsonify(get_controlled_packet_assembly_readiness())
+
+@app.route("/vault/controlled-packet-assembly-owner-queue.json")
+def vault_gp031_controlled_packet_assembly_owner_queue_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_board_service import get_controlled_packet_assembly_owner_queue
+    return jsonify(get_controlled_packet_assembly_owner_queue())
+
+@app.route("/vault/controlled-packet-assembly-carry-forward.json")
+def vault_gp031_controlled_packet_assembly_carry_forward_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_board_service import get_controlled_packet_assembly_carry_forward
+    return jsonify(get_controlled_packet_assembly_carry_forward())
+
+@app.route("/vault/gp031-status.json")
+def vault_gp031_status_json():
+    from flask import jsonify
+    from vault.controlled_packet_assembly_board_service import get_gp031_status
+    return jsonify(get_gp031_status())
+
+# ============================================================
+# VAULT GP031 CONTROLLED PACKET ASSEMBLY ROUTES END
+# ============================================================
