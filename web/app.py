@@ -32981,3 +32981,70 @@ def vault_gp052_status_json():
 # ============================================================
 # VAULT GP052 STORAGE PROVIDER CRITERIA BOARD ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP053 STORAGE PROVIDER RISK MATRIX ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-provider-risk-matrix")
+def vault_gp053_storage_provider_risk_matrix_page():
+    from vault.storage_provider_risk_matrix_service import render_storage_provider_risk_matrix_page
+    return render_storage_provider_risk_matrix_page()
+
+@app.route("/vault/storage-provider-risk-matrix.json")
+def vault_gp053_storage_provider_risk_matrix_json():
+    from flask import jsonify
+    from vault.storage_provider_risk_matrix_service import get_storage_provider_risk_matrix_home
+    return jsonify(get_storage_provider_risk_matrix_home())
+
+@app.route("/vault/storage-provider-risk-cards.json")
+def vault_gp053_storage_provider_risk_cards_json():
+    from flask import jsonify
+    from vault.storage_provider_risk_matrix_service import get_storage_provider_risk_cards
+    return jsonify(get_storage_provider_risk_cards())
+
+@app.route("/vault/storage-provider-risk-rollups.json")
+def vault_gp053_storage_provider_risk_rollups_json():
+    from flask import jsonify
+    from vault.storage_provider_risk_matrix_service import get_storage_provider_risk_rollups
+    return jsonify(get_storage_provider_risk_rollups())
+
+@app.route("/vault/storage-provider-risk-severity-placeholders.json")
+def vault_gp053_storage_provider_risk_severity_placeholders_json():
+    from flask import jsonify
+    from vault.storage_provider_risk_matrix_service import get_storage_provider_risk_severity_placeholders
+    return jsonify(get_storage_provider_risk_severity_placeholders())
+
+@app.route("/vault/storage-provider-risk-mitigation-placeholders.json")
+def vault_gp053_storage_provider_risk_mitigation_placeholders_json():
+    from flask import jsonify
+    from vault.storage_provider_risk_matrix_service import get_storage_provider_risk_mitigation_placeholders
+    return jsonify(get_storage_provider_risk_mitigation_placeholders())
+
+@app.route("/vault/storage-provider-risk-tower-review-gates.json")
+def vault_gp053_storage_provider_risk_tower_review_gates_json():
+    from flask import jsonify
+    from vault.storage_provider_risk_matrix_service import get_storage_provider_risk_tower_review_gates
+    return jsonify(get_storage_provider_risk_tower_review_gates())
+
+@app.route("/vault/storage-provider-risk-selection-blockers.json")
+def vault_gp053_storage_provider_risk_selection_blockers_json():
+    from flask import jsonify
+    from vault.storage_provider_risk_matrix_service import get_storage_provider_risk_selection_blockers
+    return jsonify(get_storage_provider_risk_selection_blockers())
+
+@app.route("/vault/storage-provider-risk-next-step.json")
+def vault_gp053_storage_provider_risk_next_step_json():
+    from flask import jsonify
+    from vault.storage_provider_risk_matrix_service import get_storage_provider_risk_next_step
+    return jsonify(get_storage_provider_risk_next_step())
+
+@app.route("/vault/gp053-status.json")
+def vault_gp053_status_json():
+    from flask import jsonify
+    from vault.storage_provider_risk_matrix_service import get_gp053_status
+    return jsonify(get_gp053_status())
+
+# ============================================================
+# VAULT GP053 STORAGE PROVIDER RISK MATRIX ROUTES END
+# ============================================================
