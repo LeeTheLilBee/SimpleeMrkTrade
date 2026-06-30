@@ -23912,3 +23912,76 @@ def vault_gp028_status_json():
 # ============================================================
 # VAULT GP028 CHECKLIST COMPLETION STATE ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP029 RECEIPT CHAIN REVIEW BOARD ROUTES START
+# ============================================================
+
+@app.route("/vault/receipt-chain-review-board")
+def vault_gp029_receipt_chain_review_board_page():
+    from vault.receipt_chain_review_board_service import render_receipt_chain_review_board_page
+    return render_receipt_chain_review_board_page()
+
+@app.route("/vault/receipt-chain-review-board.json")
+def vault_gp029_receipt_chain_review_board_json():
+    from flask import jsonify
+    from vault.receipt_chain_review_board_service import get_receipt_chain_review_board_home
+    return jsonify(get_receipt_chain_review_board_home())
+
+@app.route("/vault/receipt-chain-review-board-records.json")
+def vault_gp029_receipt_chain_review_board_records_json():
+    from flask import jsonify
+    from vault.receipt_chain_review_board_service import get_receipt_chain_review_board_records
+    return jsonify(get_receipt_chain_review_board_records())
+
+@app.route("/vault/receipt-chain-review-board-rows.json")
+def vault_gp029_receipt_chain_review_board_rows_json():
+    from flask import jsonify
+    from vault.receipt_chain_review_board_service import get_receipt_chain_review_board_rows
+    return jsonify(get_receipt_chain_review_board_rows())
+
+@app.route("/vault/receipt-chain-review-board-lanes.json")
+def vault_gp029_receipt_chain_review_board_lanes_json():
+    from flask import jsonify
+    from vault.receipt_chain_review_board_service import get_receipt_chain_review_board_lanes
+    return jsonify(get_receipt_chain_review_board_lanes())
+
+@app.route("/vault/receipt-chain-review-board-priority.json")
+def vault_gp029_receipt_chain_review_board_priority_json():
+    from flask import jsonify
+    from vault.receipt_chain_review_board_service import get_receipt_chain_review_board_priority
+    return jsonify(get_receipt_chain_review_board_priority())
+
+@app.route("/vault/receipt-chain-review-board-completion-summary.json")
+def vault_gp029_receipt_chain_review_board_completion_summary_json():
+    from flask import jsonify
+    from vault.receipt_chain_review_board_service import get_receipt_chain_review_board_completion_summary
+    return jsonify(get_receipt_chain_review_board_completion_summary())
+
+@app.route("/vault/receipt-chain-review-board-blockers.json")
+def vault_gp029_receipt_chain_review_board_blockers_json():
+    from flask import jsonify
+    from vault.receipt_chain_review_board_service import get_receipt_chain_review_board_blockers
+    return jsonify(get_receipt_chain_review_board_blockers())
+
+@app.route("/vault/receipt-chain-review-board-carry-forward.json")
+def vault_gp029_receipt_chain_review_board_carry_forward_json():
+    from flask import jsonify
+    from vault.receipt_chain_review_board_service import get_receipt_chain_review_board_carry_forward
+    return jsonify(get_receipt_chain_review_board_carry_forward())
+
+@app.route("/vault/receipt-chain-review-board-owner-queue.json")
+def vault_gp029_receipt_chain_review_board_owner_queue_json():
+    from flask import jsonify
+    from vault.receipt_chain_review_board_service import get_receipt_chain_review_board_owner_queue
+    return jsonify(get_receipt_chain_review_board_owner_queue())
+
+@app.route("/vault/gp029-status.json")
+def vault_gp029_status_json():
+    from flask import jsonify
+    from vault.receipt_chain_review_board_service import get_gp029_status
+    return jsonify(get_gp029_status())
+
+# ============================================================
+# VAULT GP029 RECEIPT CHAIN REVIEW BOARD ROUTES END
+# ============================================================
