@@ -23206,3 +23206,70 @@ def vault_gp023_status_json():
 # ============================================================
 # VAULT GP023 PACKET ACTION PLAN ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP024 OWNER ACTION EXECUTION PREP ROUTES START
+# ============================================================
+
+@app.route("/vault/owner-action-execution-prep")
+def vault_gp024_owner_action_execution_prep_page():
+    from vault.owner_action_execution_prep_service import render_owner_action_execution_prep_page
+    return render_owner_action_execution_prep_page()
+
+@app.route("/vault/owner-action-execution-prep.json")
+def vault_gp024_owner_action_execution_prep_json():
+    from flask import jsonify
+    from vault.owner_action_execution_prep_service import get_owner_action_execution_prep_home
+    return jsonify(get_owner_action_execution_prep_home())
+
+@app.route("/vault/owner-action-execution-prep-records.json")
+def vault_gp024_owner_action_execution_prep_records_json():
+    from flask import jsonify
+    from vault.owner_action_execution_prep_service import get_owner_action_execution_prep_records
+    return jsonify(get_owner_action_execution_prep_records())
+
+@app.route("/vault/owner-action-execution-prep-confirmations.json")
+def vault_gp024_owner_action_execution_prep_confirmations_json():
+    from flask import jsonify
+    from vault.owner_action_execution_prep_service import get_owner_action_execution_prep_confirmations
+    return jsonify(get_owner_action_execution_prep_confirmations())
+
+@app.route("/vault/owner-action-execution-prep-tower-gates.json")
+def vault_gp024_owner_action_execution_prep_tower_gates_json():
+    from flask import jsonify
+    from vault.owner_action_execution_prep_service import get_owner_action_execution_prep_tower_gates
+    return jsonify(get_owner_action_execution_prep_tower_gates())
+
+@app.route("/vault/owner-action-execution-prep-receipts.json")
+def vault_gp024_owner_action_execution_prep_receipts_json():
+    from flask import jsonify
+    from vault.owner_action_execution_prep_service import get_owner_action_execution_prep_receipts
+    return jsonify(get_owner_action_execution_prep_receipts())
+
+@app.route("/vault/owner-action-execution-prep-blocked.json")
+def vault_gp024_owner_action_execution_prep_blocked_json():
+    from flask import jsonify
+    from vault.owner_action_execution_prep_service import get_owner_action_execution_prep_blocked
+    return jsonify(get_owner_action_execution_prep_blocked())
+
+@app.route("/vault/owner-action-execution-prep-readiness.json")
+def vault_gp024_owner_action_execution_prep_readiness_json():
+    from flask import jsonify
+    from vault.owner_action_execution_prep_service import get_owner_action_execution_prep_readiness
+    return jsonify(get_owner_action_execution_prep_readiness())
+
+@app.route("/vault/owner-action-execution-prep-owner-queue.json")
+def vault_gp024_owner_action_execution_prep_owner_queue_json():
+    from flask import jsonify
+    from vault.owner_action_execution_prep_service import get_owner_action_execution_prep_owner_queue
+    return jsonify(get_owner_action_execution_prep_owner_queue())
+
+@app.route("/vault/gp024-status.json")
+def vault_gp024_status_json():
+    from flask import jsonify
+    from vault.owner_action_execution_prep_service import get_gp024_status
+    return jsonify(get_gp024_status())
+
+# ============================================================
+# VAULT GP024 OWNER ACTION EXECUTION PREP ROUTES END
+# ============================================================
