@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault Final Readiness</title>
+  <link rel="stylesheet" href="/static/vault/vault.css">
+  <link rel="stylesheet" href="/static/vault/vault_final_readiness.css">
+</head>
+<body class="vault-body">
+  <main class="vault-shell vault-final-shell">
+    <section class="vault-hero vault-final-hero">
+      <p class="vault-eyebrow">Archive Vault / Final Readiness</p>
+      <h1>Vault foundation complete. Clouds can start.</h1>
+      <p class="vault-subtitle">
+        GP010 verifies GP001-GP009, locks the final boundaries, and exposes a
+        summary-only handoff contract for The Clouds owner command dashboard.
+      </p>
+      <div class="vault-chip-row">
+        <span class="vault-chip vault-chip-ready"><em>Final Score</em><strong>{{ payload.final_score }}%</strong></span>
+        <span class="vault-chip vault-chip-ready"><em>Ready Gates</em><strong>{{ payload.final_gate_summary.ready_gate_count }}/{{ payload.final_gate_summary.gate_count }}</strong></span>
+        <span class="vault-chip vault-chip-ready"><em>Safe for Clouds</em><strong>{{ payload.safe_to_start_clouds }}</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>Clouds View</em><strong>{{ payload.clouds_handoff_summary.clouds_view }}</strong></span>
+      </div>
+    </section>
+
+    <section class="vault-final-grid">
+      <article class="vault-panel">
+        <p class="vault-eyebrow">Foundation Summary</p>
+        <h2>{{ payload.foundation_summary.lane_count }} lanes, {{ payload.foundation_summary.route_count }} routes.</h2>
+        <p class="vault-muted">
+          Vault now has command center, search, requirements, freshness, receipts,
+          approval chains, export locks, and redacted packet previews.
+        </p>
+        <div class="vault-final-metrics">
+          <article><span>Records</span><strong>{{ payload.foundation_summary.search_record_count }}</strong></article>
+          <article><span>Requirements</span><strong>{{ payload.foundation_summary.requirement_count }}</strong></article>
+          <article><span>Receipts</span><strong>{{ payload.foundation_summary.receipt_count }}</strong></article>
+          <article><span>Locked Exports</span><strong>{{ payload.foundation_summary.locked_export_count }}</strong></article>
+        </div>
+      </article>
+
+      <article class="vault-panel">
+        <p class="vault-eyebrow">Clouds Handoff</p>
+        <h2>{{ payload.clouds_handoff_summary.source_route_count }} source routes ready.</h2>
+        <p class="vault-muted">
+          The Clouds receives readiness, counts, owner focus, and blocked reasons only.
+          Sensitive packet bodies stay inside Vault.
+        </p>
+        <div class="vault-final-metrics">
+          <article><span>Cards</span><strong>{{ payload.clouds_handoff_summary.handoff_card_count }}</strong></article>
+          <article><span>Allowed Fields</span><strong>{{ payload.clouds_handoff_summary.allowed_field_count }}</strong></article>
+          <article><span>Hidden Fields</span><strong>{{ payload.clouds_handoff_summary.hidden_field_count }}</strong></article>
+          <article><span>Legacy Source</span><strong>{{ payload.clouds_handoff_summary.legacy_clouds_source_ready }}</strong></article>
+        </div>
+      </article>
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Final Boundary Wall</p>
+          <h2>Done does not mean unlocked.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/clouds-handoff-contract.json">Clouds Contract</a>
+      </div>
+
+      <div class="vault-final-boundary-grid">
+        <article><span>Tower Guard</span><strong>{{ payload.boundary_final.tower_guard_required }}</strong></article>
+        <article><span>Vault Owns Permissions</span><strong>{{ payload.boundary_final.vault_owns_permissions }}</strong></article>
+        <article><span>Direct Upload</span><strong>{{ payload.boundary_final.direct_upload_allowed }}</strong></article>
+        <article><span>Exports Locked</span><strong>{{ payload.boundary_final.exports_locked_by_default }}</strong></article>
+        <article><span>External Access</span><strong>{{ payload.boundary_final.external_access_default_deny }}</strong></article>
+        <article><span>Clouds View</span><strong>{{ payload.boundary_final.clouds_view }}</strong></article>
+      </div>
+
+      <div class="vault-final-locks">
+        {% for lock in payload.intentional_locks %}
+        <span>{{ lock }}</span>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Owner Final Queue</p>
+          <h2>What stays locked and what can start next.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/owner-final-queue.json">Queue JSON</a>
+      </div>
+
+      <div class="vault-action-list">
+        {% for action in payload.owner_final_queue.actions %}
+        <article class="vault-action-card vault-priority-{{ action.priority }}">
+          <div>
+            <span>{{ action.business_lane }}</span>
+            <h3>{{ action.label }}</h3>
+            <p>{{ action.next_step }}</p>
+          </div>
+          <aside>
+            <strong>{{ action.status }}</strong>
+            <em>{{ action.priority }}</em>
+            {% if action.blocked_by %}
+            <small>Blocked: {{ action.blocked_by | join(", ") }}</small>
+            {% else %}
+            <small>Ready now</small>
+            {% endif %}
+          </aside>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-panel vault-clouds-panel">
+      <p class="vault-eyebrow">Clouds Start Sources</p>
+      <h2>Use these as The Clouds GP001 source map.</h2>
+
+      <div class="vault-route-grid">
+        {% for route in payload.clouds_start_sources %}
+        <a href="{{ route }}">
+          <span>summary source</span>
+          <strong>{{ route }}</strong>
+          <em>Clouds-safe redacted handoff</em>
+        </a>
+        {% endfor %}
+      </div>
+
+      <div class="vault-link-panel">
+        <a href="/vault/command-center">Command Center</a>
+        <a href="/vault/search-tracker">Search Tracker</a>
+        <a href="/vault/receipt-control">Receipt Control</a>
+        <a href="/vault/export-preview">Export Preview</a>
+        <a href="/vault/final-readiness.json">Final JSON</a>
+        <a href="/vault/gp010-status.json">GP010 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

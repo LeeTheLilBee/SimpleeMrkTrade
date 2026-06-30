@@ -1,0 +1,81 @@
+.vault-final-shell {
+  padding-left: 0;
+}
+
+.vault-final-hero {
+  border-color: rgba(159, 255, 213, 0.40);
+}
+
+.vault-final-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.vault-final-grid .vault-panel {
+  margin-top: 0;
+}
+
+.vault-final-metrics,
+.vault-final-boundary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.vault-final-boundary-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.vault-final-metrics article,
+.vault-final-boundary-grid article {
+  border: 1px solid var(--vault-line);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.vault-final-metrics span,
+.vault-final-boundary-grid span,
+.vault-route-grid span {
+  display: block;
+  color: var(--vault-gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.vault-final-metrics strong,
+.vault-final-boundary-grid strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 1.45rem;
+  word-break: break-word;
+}
+
+.vault-final-locks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.vault-final-locks span {
+  border: 1px solid var(--vault-line);
+  border-radius: 999px;
+  color: var(--vault-muted);
+  padding: 8px 11px;
+  font-size: 0.82rem;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+@media (max-width: 1050px) {
+  .vault-final-grid,
+  .vault-final-metrics,
+  .vault-final-boundary-grid {
+    grid-template-columns: 1fr;
+  }
+}

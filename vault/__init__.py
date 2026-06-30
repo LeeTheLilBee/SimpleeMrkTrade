@@ -139,3 +139,21 @@ __all__.extend([
     "get_vault_gp009_status_payload",
 ])
 # === VAULT GIANT PACK 009 EXPORTS END ===
+
+# === VAULT GIANT PACK 010 EXPORTS START ===
+from .vault_final_readiness_service import (
+    get_clouds_handoff_contract_payload,
+    get_vault_final_readiness_payload,
+    get_vault_gp010_status_payload,
+    get_vault_owner_final_queue_payload,
+    get_vault_pack_gate_payload,
+)
+
+__all__.extend([
+    "get_vault_pack_gate_payload",
+    "get_clouds_handoff_contract_payload",
+    "get_vault_owner_final_queue_payload",
+    "get_vault_final_readiness_payload",
+    "get_vault_gp010_status_payload",
+])
+# === VAULT GIANT PACK 010 EXPORTS END ===

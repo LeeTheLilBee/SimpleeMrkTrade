@@ -407,3 +407,44 @@ def vault_gp009_status_json():
     from .vault_export_service import get_vault_gp009_status_payload
     return jsonify(get_vault_gp009_status_payload())
 # === VAULT GIANT PACK 009 ROUTES END ===
+
+# === VAULT GIANT PACK 010 ROUTES START ===
+@vault_bp.route("/vault/final-readiness")
+@vault_bp.route("/archive-vault/final-readiness")
+def vault_final_readiness_room():
+    from .vault_final_readiness_service import get_vault_final_readiness_payload
+    return render_template(
+        "vault_final_readiness.html",
+        payload=get_vault_final_readiness_payload(),
+    )
+
+
+@vault_bp.route("/vault/final-readiness.json")
+def vault_final_readiness_json():
+    from .vault_final_readiness_service import get_vault_final_readiness_payload
+    return jsonify(get_vault_final_readiness_payload())
+
+
+@vault_bp.route("/vault/pack-gate.json")
+def vault_pack_gate_json():
+    from .vault_final_readiness_service import get_vault_pack_gate_payload
+    return jsonify(get_vault_pack_gate_payload())
+
+
+@vault_bp.route("/vault/clouds-handoff-contract.json")
+def vault_clouds_handoff_contract_json():
+    from .vault_final_readiness_service import get_clouds_handoff_contract_payload
+    return jsonify(get_clouds_handoff_contract_payload())
+
+
+@vault_bp.route("/vault/owner-final-queue.json")
+def vault_owner_final_queue_json():
+    from .vault_final_readiness_service import get_vault_owner_final_queue_payload
+    return jsonify(get_vault_owner_final_queue_payload())
+
+
+@vault_bp.route("/vault/gp010-status.json")
+def vault_gp010_status_json():
+    from .vault_final_readiness_service import get_vault_gp010_status_payload
+    return jsonify(get_vault_gp010_status_payload())
+# === VAULT GIANT PACK 010 ROUTES END ===
