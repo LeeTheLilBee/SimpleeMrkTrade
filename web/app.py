@@ -22931,3 +22931,58 @@ def vault_gp018_status_json():
 # ============================================================
 # VAULT GP018 APARTMENT LENDER PACKET WORKSPACE ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP019 TRUST ENTITY BINDER WORKSPACE ROUTES START
+# ============================================================
+
+@app.route("/vault/trust-entity-workspace")
+def vault_gp019_trust_entity_workspace_page():
+    from vault.trust_entity_binder_workspace_v2_service import render_trust_entity_workspace_page
+    return render_trust_entity_workspace_page()
+
+@app.route("/vault/trust-entity-workspace.json")
+def vault_gp019_trust_entity_workspace_json():
+    from flask import jsonify
+    from vault.trust_entity_binder_workspace_v2_service import get_trust_entity_workspace_home
+    return jsonify(get_trust_entity_workspace_home())
+
+@app.route("/vault/trust-entity-binder.json")
+def vault_gp019_trust_entity_binder_json():
+    from flask import jsonify
+    from vault.trust_entity_binder_workspace_v2_service import get_trust_entity_binder
+    return jsonify(get_trust_entity_binder())
+
+@app.route("/vault/trust-entity-authority-map.json")
+def vault_gp019_trust_entity_authority_map_json():
+    from flask import jsonify
+    from vault.trust_entity_binder_workspace_v2_service import get_trust_entity_authority_map
+    return jsonify(get_trust_entity_authority_map())
+
+@app.route("/vault/trust-entity-review.json")
+def vault_gp019_trust_entity_review_json():
+    from flask import jsonify
+    from vault.trust_entity_binder_workspace_v2_service import get_trust_entity_review
+    return jsonify(get_trust_entity_review())
+
+@app.route("/vault/trust-entity-owner-actions.json")
+def vault_gp019_trust_entity_owner_actions_json():
+    from flask import jsonify
+    from vault.trust_entity_binder_workspace_v2_service import get_trust_entity_owner_actions
+    return jsonify(get_trust_entity_owner_actions())
+
+@app.route("/vault/trust-entity-blocked-reasons.json")
+def vault_gp019_trust_entity_blocked_reasons_json():
+    from flask import jsonify
+    from vault.trust_entity_binder_workspace_v2_service import get_trust_entity_blocked_reasons
+    return jsonify(get_trust_entity_blocked_reasons())
+
+@app.route("/vault/gp019-status.json")
+def vault_gp019_status_json():
+    from flask import jsonify
+    from vault.trust_entity_binder_workspace_v2_service import get_gp019_status
+    return jsonify(get_gp019_status())
+
+# ============================================================
+# VAULT GP019 TRUST ENTITY BINDER WORKSPACE ROUTES END
+# ============================================================
