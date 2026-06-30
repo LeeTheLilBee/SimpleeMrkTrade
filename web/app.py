@@ -26765,3 +26765,82 @@ def tower_hard_recovery_942_992_pack_992_json():
     from tower.tower_tower_beta_final_owner_review_closeout_batch_close_readiness_v992 import build_tower_beta_final_owner_review_closeout_batch_close_readiness_preview
 
     return jsonify(build_tower_beta_final_owner_review_closeout_batch_close_readiness_preview())
+
+# ============================================================
+# VAULT GP038 RECEIPT REVIEW CLOSE STAGING ROUTES START
+# ============================================================
+
+@app.route("/vault/receipt-review-close-staging")
+def vault_gp038_receipt_review_close_staging_page():
+    from vault.receipt_review_close_staging_service import render_receipt_review_close_staging_page
+    return render_receipt_review_close_staging_page()
+
+@app.route("/vault/receipt-review-close-staging.json")
+def vault_gp038_receipt_review_close_staging_json():
+    from flask import jsonify
+    from vault.receipt_review_close_staging_service import get_receipt_review_close_staging_home
+    return jsonify(get_receipt_review_close_staging_home())
+
+@app.route("/vault/receipt-review-close-cards.json")
+def vault_gp038_receipt_review_close_cards_json():
+    from flask import jsonify
+    from vault.receipt_review_close_staging_service import get_receipt_review_close_cards
+    return jsonify(get_receipt_review_close_cards())
+
+@app.route("/vault/receipt-review-close-readiness.json")
+def vault_gp038_receipt_review_close_readiness_json():
+    from flask import jsonify
+    from vault.receipt_review_close_staging_service import get_receipt_review_close_readiness
+    return jsonify(get_receipt_review_close_readiness())
+
+@app.route("/vault/receipt-review-missing-ack-checks.json")
+def vault_gp038_receipt_review_missing_ack_checks_json():
+    from flask import jsonify
+    from vault.receipt_review_close_staging_service import get_receipt_review_missing_ack_checks
+    return jsonify(get_receipt_review_missing_ack_checks())
+
+@app.route("/vault/receipt-review-draft-final-warnings.json")
+def vault_gp038_receipt_review_draft_final_warnings_json():
+    from flask import jsonify
+    from vault.receipt_review_close_staging_service import get_receipt_review_draft_final_warnings
+    return jsonify(get_receipt_review_draft_final_warnings())
+
+@app.route("/vault/receipt-review-tower-close-gates.json")
+def vault_gp038_receipt_review_tower_close_gates_json():
+    from flask import jsonify
+    from vault.receipt_review_close_staging_service import get_receipt_review_tower_close_gates
+    return jsonify(get_receipt_review_tower_close_gates())
+
+@app.route("/vault/receipt-review-blocker-close-gates.json")
+def vault_gp038_receipt_review_blocker_close_gates_json():
+    from flask import jsonify
+    from vault.receipt_review_close_staging_service import get_receipt_review_blocker_close_gates
+    return jsonify(get_receipt_review_blocker_close_gates())
+
+@app.route("/vault/receipt-review-no-execution-close-proof.json")
+def vault_gp038_receipt_review_no_execution_close_proof_json():
+    from flask import jsonify
+    from vault.receipt_review_close_staging_service import get_receipt_review_no_execution_close_proof
+    return jsonify(get_receipt_review_no_execution_close_proof())
+
+@app.route("/vault/receipt-review-next-close-staging.json")
+def vault_gp038_receipt_review_next_close_staging_json():
+    from flask import jsonify
+    from vault.receipt_review_close_staging_service import get_receipt_review_next_close_staging
+    return jsonify(get_receipt_review_next_close_staging())
+
+@app.route("/vault/receipt-review-close-carry-forward.json")
+def vault_gp038_receipt_review_close_carry_forward_json():
+    from flask import jsonify
+    from vault.receipt_review_close_staging_service import get_receipt_review_close_carry_forward
+    return jsonify(get_receipt_review_close_carry_forward())
+
+@app.route("/vault/gp038-status.json")
+def vault_gp038_status_json():
+    from flask import jsonify
+    from vault.receipt_review_close_staging_service import get_gp038_status
+    return jsonify(get_gp038_status())
+
+# ============================================================
+# VAULT GP038 RECEIPT REVIEW CLOSE STAGING ROUTES END
+# ============================================================
