@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Clouds Today</title>
+  <link rel="stylesheet" href="/static/clouds/clouds.css">
+  <link rel="stylesheet" href="/static/clouds/clouds_today.css">
+</head>
+<body class="clouds-body">
+  <main class="clouds-shell clouds-today-shell">
+    <section class="clouds-hero clouds-today-hero">
+      <p class="clouds-eyebrow">The Clouds / Today View</p>
+      <h1>Today’s command view.</h1>
+      <p class="clouds-subtitle">
+        GP005 gives the owner a daily snapshot: what is ready, what is critical,
+        what stays locked, and where to open the owning app.
+      </p>
+      <div class="clouds-chip-row">
+        <span class="clouds-chip"><em>Vault</em><strong>{{ payload.snapshot.vault_final_score }}%</strong></span>
+        <span class="clouds-chip clouds-chip-locked"><em>Critical</em><strong>{{ payload.today_focus.critical_count }}</strong></span>
+        <span class="clouds-chip"><em>Ready</em><strong>{{ payload.today_focus.ready_count }}</strong></span>
+        <span class="clouds-chip clouds-chip-locked"><em>Blocked</em><strong>{{ payload.today_focus.blocked_count }}</strong></span>
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Owner Snapshot Header</p>
+          <h2>Fast read before you open any room.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/owner-snapshot.json">Snapshot JSON</a>
+      </div>
+
+      <div class="clouds-today-snapshot-grid">
+        {% for card in payload.snapshot.cards %}
+        <article class="clouds-today-snapshot-card clouds-today-status-{{ card.status }}">
+          <span>{{ card.card_id }}</span>
+          <h3>{{ card.label }}</h3>
+          <strong>{{ card.value }} <em>{{ card.unit }}</em></strong>
+          <p>{{ card.summary }}</p>
+          <a href="{{ card.open_app_target }}">Open</a>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Today Focus</p>
+          <h2>Priority work, grouped by owner decision mode.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/today-focus.json">Today Focus JSON</a>
+      </div>
+
+      <div class="clouds-today-section-grid">
+        {% for section in payload.today_focus.today_sections %}
+        <article class="clouds-today-section clouds-today-status-{{ section.status }}">
+          <span>{{ section.section_id }}</span>
+          <h3>{{ section.label }}</h3>
+          <strong>{{ section.item_count }} items</strong>
+          <p>{{ section.owner_instruction }}</p>
+        </article>
+        {% endfor %}
+      </div>
+
+      <div class="clouds-today-list">
+        {% for item in payload.today_focus.today_top_items %}
+        <article class="clouds-today-item clouds-priority-{{ item.priority }}">
+          <div>
+            <span>{{ item.business_lane }} / {{ item.source_app }}</span>
+            <h3>{{ item.label }}</h3>
+            <p>{{ item.owner_action }}</p>
+          </div>
+          <aside>
+            <strong>{{ item.priority }}</strong>
+            {% if item.blocked_by %}
+            <small>{{ item.blocked_by | join(", ") }}</small>
+            {% else %}
+            <small>ready_now</small>
+            {% endif %}
+            <a href="{{ item.open_app_target }}">Open owning app</a>
+          </aside>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Today Watch</p>
+          <h2>These stay visible, not unlocked.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/today-watch.json">Watch JSON</a>
+      </div>
+
+      <div class="clouds-today-watch-grid">
+        {% for card in payload.today_watch.watch_cards %}
+        <article class="clouds-today-watch-card clouds-today-status-{{ card.status }}">
+          <span>{{ card.watch_id }}</span>
+          <h3>{{ card.label }}</h3>
+          <strong>{{ card.value }} <em>{{ card.unit }}</em></strong>
+          <p>{{ card.summary }}</p>
+          <a href="{{ card.open_app_target }}">Open source</a>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel clouds-handoff-panel">
+      <p class="clouds-eyebrow">Open-App Targets</p>
+      <h2>Clouds routes. Owning apps act.</h2>
+
+      <div class="clouds-link-panel">
+        {% for target in payload.open_targets.targets[:18] %}
+        <a href="{{ target.route }}">{{ target.label }}</a>
+        {% endfor %}
+        <a href="/clouds/today-dashboard.json">Today Dashboard JSON</a>
+        <a href="/clouds/gp005-status.json">GP005 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

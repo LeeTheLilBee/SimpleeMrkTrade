@@ -179,3 +179,50 @@ def clouds_gp004_status_json():
     from .clouds_app_lane_status_service import get_clouds_gp004_status_payload
     return jsonify(get_clouds_gp004_status_payload())
 # === CLOUDS GIANT PACK 004 ROUTES END ===
+
+# === CLOUDS GIANT PACK 005 ROUTES START ===
+@clouds_bp.route("/clouds/today")
+@clouds_bp.route("/the-clouds/today")
+def clouds_today_room():
+    from .clouds_today_service import get_clouds_today_dashboard_payload
+    return render_template(
+        "clouds_today.html",
+        payload=get_clouds_today_dashboard_payload(),
+    )
+
+
+@clouds_bp.route("/clouds/owner-snapshot.json")
+def clouds_owner_snapshot_json():
+    from .clouds_today_service import get_clouds_owner_snapshot_header_payload
+    return jsonify(get_clouds_owner_snapshot_header_payload())
+
+
+@clouds_bp.route("/clouds/today-focus.json")
+def clouds_today_focus_json():
+    from .clouds_today_service import get_clouds_today_focus_payload
+    return jsonify(get_clouds_today_focus_payload())
+
+
+@clouds_bp.route("/clouds/today-watch.json")
+def clouds_today_watch_json():
+    from .clouds_today_service import get_clouds_today_watch_payload
+    return jsonify(get_clouds_today_watch_payload())
+
+
+@clouds_bp.route("/clouds/open-targets.json")
+def clouds_open_targets_json():
+    from .clouds_today_service import get_clouds_open_targets_payload
+    return jsonify(get_clouds_open_targets_payload())
+
+
+@clouds_bp.route("/clouds/today-dashboard.json")
+def clouds_today_dashboard_json():
+    from .clouds_today_service import get_clouds_today_dashboard_payload
+    return jsonify(get_clouds_today_dashboard_payload())
+
+
+@clouds_bp.route("/clouds/gp005-status.json")
+def clouds_gp005_status_json():
+    from .clouds_today_service import get_clouds_gp005_status_payload
+    return jsonify(get_clouds_gp005_status_payload())
+# === CLOUDS GIANT PACK 005 ROUTES END ===

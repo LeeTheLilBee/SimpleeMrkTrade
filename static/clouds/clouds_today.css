@@ -1,0 +1,173 @@
+.clouds-today-shell {
+  padding-left: 0;
+}
+
+.clouds-today-hero {
+  border-color: rgba(234, 213, 150, 0.36);
+}
+
+.clouds-today-snapshot-grid,
+.clouds-today-section-grid,
+.clouds-today-watch-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.clouds-today-snapshot-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.clouds-today-section-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 18px;
+}
+
+.clouds-today-watch-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.clouds-today-snapshot-card,
+.clouds-today-section,
+.clouds-today-watch-card,
+.clouds-today-item {
+  border: 1px solid var(--clouds-line);
+  border-radius: 22px;
+  padding: 18px;
+  background: var(--clouds-panel-strong);
+  box-shadow: var(--clouds-shadow);
+}
+
+.clouds-today-status-ready,
+.clouds-today-status-active {
+  border-color: rgba(158, 255, 210, 0.24);
+}
+
+.clouds-today-status-watch,
+.clouds-today-status-locked,
+.clouds-today-status-placeholder {
+  border-color: rgba(255, 157, 186, 0.32);
+}
+
+.clouds-today-snapshot-card span,
+.clouds-today-section span,
+.clouds-today-watch-card span,
+.clouds-today-item span {
+  color: var(--clouds-gold);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 950;
+}
+
+.clouds-today-snapshot-card h3,
+.clouds-today-section h3,
+.clouds-today-watch-card h3,
+.clouds-today-item h3 {
+  margin: 12px 0;
+  font-size: 1.08rem;
+}
+
+.clouds-today-snapshot-card strong,
+.clouds-today-section strong,
+.clouds-today-watch-card strong {
+  display: block;
+  color: var(--clouds-good);
+  font-size: 1.75rem;
+  margin-bottom: 10px;
+}
+
+.clouds-today-snapshot-card strong em,
+.clouds-today-watch-card strong em {
+  color: var(--clouds-muted);
+  font-size: 0.82rem;
+  font-style: normal;
+}
+
+.clouds-today-snapshot-card p,
+.clouds-today-section p,
+.clouds-today-watch-card p,
+.clouds-today-item p,
+.clouds-today-item small {
+  color: var(--clouds-muted);
+  line-height: 1.45;
+}
+
+.clouds-today-snapshot-card a,
+.clouds-today-watch-card a,
+.clouds-today-item a {
+  color: var(--clouds-text);
+  text-decoration: none;
+  border: 1px solid var(--clouds-line);
+  border-radius: 999px;
+  padding: 9px 12px;
+  width: fit-content;
+  font-weight: 900;
+  display: inline-flex;
+}
+
+.clouds-today-list {
+  display: grid;
+  gap: 12px;
+}
+
+.clouds-today-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 18px;
+}
+
+.clouds-today-item aside {
+  border-left: 1px solid var(--clouds-line);
+  padding-left: 16px;
+}
+
+.clouds-today-item aside strong,
+.clouds-today-item aside small,
+.clouds-today-item aside a {
+  display: block;
+}
+
+.clouds-today-item aside strong {
+  color: var(--clouds-good);
+  font-size: 1.35rem;
+  margin-bottom: 8px;
+}
+
+.clouds-priority-critical {
+  border-color: rgba(255, 157, 186, 0.36);
+}
+
+.clouds-priority-high {
+  border-color: rgba(234, 213, 150, 0.34);
+}
+
+.clouds-priority-medium {
+  border-color: rgba(158, 220, 255, 0.28);
+}
+
+@media (max-width: 1150px) {
+  .clouds-today-snapshot-grid,
+  .clouds-today-section-grid,
+  .clouds-today-watch-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .clouds-today-item {
+    grid-template-columns: 1fr;
+  }
+
+  .clouds-today-item aside {
+    border-left: 0;
+    border-top: 1px solid var(--clouds-line);
+    padding-left: 0;
+    padding-top: 14px;
+  }
+}
+
+@media (max-width: 680px) {
+  .clouds-today-snapshot-grid,
+  .clouds-today-section-grid,
+  .clouds-today-watch-grid {
+    grid-template-columns: 1fr;
+  }
+}

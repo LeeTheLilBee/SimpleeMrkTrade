@@ -71,3 +71,23 @@ __all__.extend([
     "get_clouds_gp004_status_payload",
 ])
 # === CLOUDS GIANT PACK 004 EXPORTS END ===
+
+# === CLOUDS GIANT PACK 005 EXPORTS START ===
+from .clouds_today_service import (
+    get_clouds_gp005_status_payload,
+    get_clouds_open_targets_payload,
+    get_clouds_owner_snapshot_header_payload,
+    get_clouds_today_dashboard_payload,
+    get_clouds_today_focus_payload,
+    get_clouds_today_watch_payload,
+)
+
+__all__.extend([
+    "get_clouds_owner_snapshot_header_payload",
+    "get_clouds_today_focus_payload",
+    "get_clouds_today_watch_payload",
+    "get_clouds_open_targets_payload",
+    "get_clouds_today_dashboard_payload",
+    "get_clouds_gp005_status_payload",
+])
+# === CLOUDS GIANT PACK 005 EXPORTS END ===
