@@ -32920,3 +32920,64 @@ def vault_gp051_status_json():
 # ============================================================
 # VAULT GP051 STORAGE PROVIDER SELECTION PREP ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP052 STORAGE PROVIDER CRITERIA BOARD ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-provider-criteria-board")
+def vault_gp052_storage_provider_criteria_board_page():
+    from vault.storage_provider_criteria_board_service import render_storage_provider_criteria_board_page
+    return render_storage_provider_criteria_board_page()
+
+@app.route("/vault/storage-provider-criteria-board.json")
+def vault_gp052_storage_provider_criteria_board_json():
+    from flask import jsonify
+    from vault.storage_provider_criteria_board_service import get_storage_provider_criteria_board_home
+    return jsonify(get_storage_provider_criteria_board_home())
+
+@app.route("/vault/storage-provider-criteria-cards.json")
+def vault_gp052_storage_provider_criteria_cards_json():
+    from flask import jsonify
+    from vault.storage_provider_criteria_board_service import get_storage_provider_criteria_cards
+    return jsonify(get_storage_provider_criteria_cards())
+
+@app.route("/vault/storage-provider-criteria-rollups.json")
+def vault_gp052_storage_provider_criteria_rollups_json():
+    from flask import jsonify
+    from vault.storage_provider_criteria_board_service import get_storage_provider_criteria_rollups
+    return jsonify(get_storage_provider_criteria_rollups())
+
+@app.route("/vault/storage-provider-scoring-placeholders.json")
+def vault_gp052_storage_provider_scoring_placeholders_json():
+    from flask import jsonify
+    from vault.storage_provider_criteria_board_service import get_storage_provider_scoring_placeholders
+    return jsonify(get_storage_provider_scoring_placeholders())
+
+@app.route("/vault/storage-provider-criteria-tower-review-gates.json")
+def vault_gp052_storage_provider_criteria_tower_review_gates_json():
+    from flask import jsonify
+    from vault.storage_provider_criteria_board_service import get_storage_provider_criteria_tower_review_gates
+    return jsonify(get_storage_provider_criteria_tower_review_gates())
+
+@app.route("/vault/storage-provider-criteria-selection-blockers.json")
+def vault_gp052_storage_provider_criteria_selection_blockers_json():
+    from flask import jsonify
+    from vault.storage_provider_criteria_board_service import get_storage_provider_criteria_selection_blockers
+    return jsonify(get_storage_provider_criteria_selection_blockers())
+
+@app.route("/vault/storage-provider-criteria-next-step.json")
+def vault_gp052_storage_provider_criteria_next_step_json():
+    from flask import jsonify
+    from vault.storage_provider_criteria_board_service import get_storage_provider_criteria_next_step
+    return jsonify(get_storage_provider_criteria_next_step())
+
+@app.route("/vault/gp052-status.json")
+def vault_gp052_status_json():
+    from flask import jsonify
+    from vault.storage_provider_criteria_board_service import get_gp052_status
+    return jsonify(get_gp052_status())
+
+# ============================================================
+# VAULT GP052 STORAGE PROVIDER CRITERIA BOARD ROUTES END
+# ============================================================
