@@ -22570,3 +22570,52 @@ def vault_gp011_status_json():
 # ============================================================
 # VAULT GP011 DOCUMENT INTAKE ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP012 FILE ATTACHMENT REGISTRY ROUTES START
+# ============================================================
+
+@app.route("/vault/attachments")
+def vault_gp012_attachments_page():
+    from vault.file_attachment_registry_service import render_attachment_registry_page
+    return render_attachment_registry_page()
+
+@app.route("/vault/attachments.json")
+def vault_gp012_attachments_json():
+    from flask import jsonify
+    from vault.file_attachment_registry_service import get_attachments_home
+    return jsonify(get_attachments_home())
+
+@app.route("/vault/file-attachment-registry.json")
+def vault_gp012_file_attachment_registry_json():
+    from flask import jsonify
+    from vault.file_attachment_registry_service import get_file_attachment_registry
+    return jsonify(get_file_attachment_registry())
+
+@app.route("/vault/packet-links.json")
+def vault_gp012_packet_links_json():
+    from flask import jsonify
+    from vault.file_attachment_registry_service import get_packet_links
+    return jsonify(get_packet_links())
+
+@app.route("/vault/attachment-requirement-links.json")
+def vault_gp012_attachment_requirement_links_json():
+    from flask import jsonify
+    from vault.file_attachment_registry_service import get_attachment_requirement_links
+    return jsonify(get_attachment_requirement_links())
+
+@app.route("/vault/attachment-orphan-state.json")
+def vault_gp012_attachment_orphan_state_json():
+    from flask import jsonify
+    from vault.file_attachment_registry_service import get_attachment_orphan_state
+    return jsonify(get_attachment_orphan_state())
+
+@app.route("/vault/gp012-status.json")
+def vault_gp012_status_json():
+    from flask import jsonify
+    from vault.file_attachment_registry_service import get_gp012_status
+    return jsonify(get_gp012_status())
+
+# ============================================================
+# VAULT GP012 FILE ATTACHMENT REGISTRY ROUTES END
+# ============================================================
