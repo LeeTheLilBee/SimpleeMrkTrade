@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Clouds App + Lane Status</title>
+  <link rel="stylesheet" href="/static/clouds/clouds.css">
+  <link rel="stylesheet" href="/static/clouds/clouds_app_lane_status.css">
+</head>
+<body class="clouds-body">
+  <main class="clouds-shell clouds-status-shell">
+    <section class="clouds-hero clouds-status-hero">
+      <p class="clouds-eyebrow">The Clouds / App + Lane Status</p>
+      <h1>See the whole board without stealing the controls.</h1>
+      <p class="clouds-subtitle">
+        GP004 adds app health, lane status, Vault live summaries, and placeholder
+        health cards for Tower, OB, and Teller.
+      </p>
+      <div class="clouds-chip-row">
+        <span class="clouds-chip"><em>Apps</em><strong>{{ payload.app_board.app_count }}</strong></span>
+        <span class="clouds-chip"><em>Lanes</em><strong>{{ payload.lane_board.lane_count }}</strong></span>
+        <span class="clouds-chip"><em>Vault Score</em><strong>{{ payload.vault_live_status.vault_final_score }}%</strong></span>
+        <span class="clouds-chip clouds-chip-locked"><em>Placeholders</em><strong>{{ payload.placeholder_health.placeholder_health_count }}</strong></span>
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Vault Live Status</p>
+          <h2>Vault is the first live summary source.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/vault-live-status.json">Vault Live JSON</a>
+      </div>
+
+      <div class="clouds-status-card-grid">
+        {% for card in payload.vault_live_cards %}
+        <article class="clouds-status-card clouds-status-card-{{ card.status }}">
+          <span>{{ card.card_id }}</span>
+          <h3>{{ card.label }}</h3>
+          <strong>{{ card.value }} <em>{{ card.unit }}</em></strong>
+          <a href="{{ card.open_app_target }}">Open Vault</a>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">App Status Board</p>
+          <h2>Live sources, Vault-backed summaries, and placeholders.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/app-status-board.json">App Board JSON</a>
+      </div>
+
+      <div class="clouds-app-status-grid">
+        {% for app in payload.app_status_cards %}
+        <article class="clouds-app-status clouds-app-status-{{ app.tone }}">
+          <div class="clouds-status-top">
+            <span>{{ app.short_label }}</span>
+            <em>{{ app.health }}</em>
+          </div>
+          <h3>{{ app.label }}</h3>
+          <p>{{ app.clouds_role }}</p>
+          <div class="clouds-status-meta">
+            <strong>{{ app.source_status }}</strong>
+            <small>{{ app.authority_owner }}</small>
+          </div>
+          <div class="clouds-status-pills">
+            <span>{{ app.focus_count }} focus</span>
+            <span>{{ app.blocked_focus_count }} blocked</span>
+            <span>{{ app.ready_focus_count }} ready</span>
+          </div>
+          <a href="{{ app.primary_route }}">Open route</a>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Lane Status Board</p>
+          <h2>Attention grouped by business lane.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/lane-status-board.json">Lane Board JSON</a>
+      </div>
+
+      <div class="clouds-lane-status-grid">
+        {% for lane in payload.lane_status_cards %}
+        <article>
+          <span>{{ lane.lane_id }}</span>
+          <strong>{{ lane.focus_count }} focus</strong>
+          <p>{{ lane.status }} / {{ lane.source_type }}</p>
+          <small>{{ lane.blocked_count }} blocked · {{ lane.critical_count }} critical · {{ lane.high_count }} high</small>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Placeholder Health</p>
+          <h2>These apps have a visible slot, not a live source yet.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/placeholder-health.json">Placeholder Health JSON</a>
+      </div>
+
+      <div class="clouds-placeholder-health-grid">
+        {% for card in payload.placeholder_health_cards %}
+        <article>
+          <span>{{ card.app_id }}</span>
+          <strong>{{ card.label }}</strong>
+          <p>{{ card.reason }}</p>
+          <small>{{ card.blocked_by | join(", ") }}</small>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel clouds-handoff-panel">
+      <p class="clouds-eyebrow">Open-App Handoffs</p>
+      <h2>Status is here. Action stays in the owning app.</h2>
+
+      <div class="clouds-link-panel">
+        {% for target in payload.open_app_targets %}
+        <a href="{{ target }}">{{ target }}</a>
+        {% endfor %}
+        <a href="/clouds/app-lane-status-dashboard.json">Dashboard JSON</a>
+        <a href="/clouds/gp004-status.json">GP004 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

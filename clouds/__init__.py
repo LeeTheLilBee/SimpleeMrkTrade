@@ -51,3 +51,23 @@ __all__.extend([
     "get_clouds_gp003_status_payload",
 ])
 # === CLOUDS GIANT PACK 003 EXPORTS END ===
+
+# === CLOUDS GIANT PACK 004 EXPORTS START ===
+from .clouds_app_lane_status_service import (
+    get_clouds_app_lane_status_dashboard_payload,
+    get_clouds_app_status_board_payload,
+    get_clouds_gp004_status_payload,
+    get_clouds_lane_status_board_payload,
+    get_clouds_placeholder_health_payload,
+    get_clouds_vault_live_status_payload,
+)
+
+__all__.extend([
+    "get_clouds_app_status_board_payload",
+    "get_clouds_lane_status_board_payload",
+    "get_clouds_placeholder_health_payload",
+    "get_clouds_vault_live_status_payload",
+    "get_clouds_app_lane_status_dashboard_payload",
+    "get_clouds_gp004_status_payload",
+])
+# === CLOUDS GIANT PACK 004 EXPORTS END ===

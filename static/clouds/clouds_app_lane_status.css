@@ -1,0 +1,171 @@
+.clouds-status-shell {
+  padding-left: 0;
+}
+
+.clouds-status-hero {
+  border-color: rgba(158, 220, 255, 0.34);
+}
+
+.clouds-status-card-grid,
+.clouds-app-status-grid,
+.clouds-lane-status-grid,
+.clouds-placeholder-health-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.clouds-status-card-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.clouds-app-status-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.clouds-lane-status-grid,
+.clouds-placeholder-health-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.clouds-status-card,
+.clouds-app-status,
+.clouds-lane-status-grid article,
+.clouds-placeholder-health-grid article {
+  border: 1px solid var(--clouds-line);
+  border-radius: 22px;
+  padding: 18px;
+  background: var(--clouds-panel-strong);
+  box-shadow: var(--clouds-shadow);
+}
+
+.clouds-status-card-redacted,
+.clouds-status-card-locked,
+.clouds-app-status-locked {
+  border-color: rgba(255, 157, 186, 0.32);
+}
+
+.clouds-status-card-ready,
+.clouds-app-status-ready {
+  border-color: rgba(158, 255, 210, 0.24);
+}
+
+.clouds-status-card span,
+.clouds-app-status span,
+.clouds-lane-status-grid span,
+.clouds-placeholder-health-grid span,
+.clouds-status-top span {
+  color: var(--clouds-gold);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 950;
+}
+
+.clouds-status-card h3,
+.clouds-app-status h3 {
+  margin: 12px 0;
+  font-size: 1.12rem;
+}
+
+.clouds-status-card strong {
+  display: block;
+  color: var(--clouds-good);
+  font-size: 2rem;
+  margin-bottom: 18px;
+}
+
+.clouds-status-card strong em {
+  color: var(--clouds-muted);
+  font-size: 0.9rem;
+  font-style: normal;
+}
+
+.clouds-status-card a,
+.clouds-app-status a {
+  color: var(--clouds-text);
+  text-decoration: none;
+  border: 1px solid var(--clouds-line);
+  border-radius: 999px;
+  padding: 9px 12px;
+  width: fit-content;
+  font-weight: 900;
+  display: inline-flex;
+}
+
+.clouds-status-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.clouds-status-top em {
+  color: var(--clouds-muted);
+  font-style: normal;
+  font-size: 0.76rem;
+}
+
+.clouds-app-status p,
+.clouds-lane-status-grid p,
+.clouds-lane-status-grid small,
+.clouds-placeholder-health-grid p,
+.clouds-placeholder-health-grid small,
+.clouds-status-meta small {
+  color: var(--clouds-muted);
+  line-height: 1.45;
+}
+
+.clouds-status-meta {
+  border-top: 1px solid var(--clouds-line);
+  padding-top: 12px;
+  margin-top: 14px;
+}
+
+.clouds-status-meta strong,
+.clouds-status-meta small {
+  display: block;
+}
+
+.clouds-status-meta strong {
+  color: var(--clouds-good);
+  margin-bottom: 8px;
+}
+
+.clouds-status-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.clouds-status-pills span {
+  border: 1px solid var(--clouds-line);
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: var(--clouds-muted);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.clouds-lane-status-grid strong,
+.clouds-placeholder-health-grid strong {
+  display: block;
+  margin: 10px 0;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 1150px) {
+  .clouds-status-card-grid,
+  .clouds-app-status-grid,
+  .clouds-lane-status-grid,
+  .clouds-placeholder-health-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .clouds-status-card-grid,
+  .clouds-app-status-grid,
+  .clouds-lane-status-grid,
+  .clouds-placeholder-health-grid {
+    grid-template-columns: 1fr;
+  }
+}

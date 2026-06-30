@@ -132,3 +132,50 @@ def clouds_gp003_status_json():
     from .clouds_owner_focus_service import get_clouds_gp003_status_payload
     return jsonify(get_clouds_gp003_status_payload())
 # === CLOUDS GIANT PACK 003 ROUTES END ===
+
+# === CLOUDS GIANT PACK 004 ROUTES START ===
+@clouds_bp.route("/clouds/app-lane-status")
+@clouds_bp.route("/the-clouds/app-lane-status")
+def clouds_app_lane_status_room():
+    from .clouds_app_lane_status_service import get_clouds_app_lane_status_dashboard_payload
+    return render_template(
+        "clouds_app_lane_status.html",
+        payload=get_clouds_app_lane_status_dashboard_payload(),
+    )
+
+
+@clouds_bp.route("/clouds/app-status-board.json")
+def clouds_app_status_board_json():
+    from .clouds_app_lane_status_service import get_clouds_app_status_board_payload
+    return jsonify(get_clouds_app_status_board_payload())
+
+
+@clouds_bp.route("/clouds/lane-status-board.json")
+def clouds_lane_status_board_json():
+    from .clouds_app_lane_status_service import get_clouds_lane_status_board_payload
+    return jsonify(get_clouds_lane_status_board_payload())
+
+
+@clouds_bp.route("/clouds/placeholder-health.json")
+def clouds_placeholder_health_json():
+    from .clouds_app_lane_status_service import get_clouds_placeholder_health_payload
+    return jsonify(get_clouds_placeholder_health_payload())
+
+
+@clouds_bp.route("/clouds/vault-live-status.json")
+def clouds_vault_live_status_json():
+    from .clouds_app_lane_status_service import get_clouds_vault_live_status_payload
+    return jsonify(get_clouds_vault_live_status_payload())
+
+
+@clouds_bp.route("/clouds/app-lane-status-dashboard.json")
+def clouds_app_lane_status_dashboard_json():
+    from .clouds_app_lane_status_service import get_clouds_app_lane_status_dashboard_payload
+    return jsonify(get_clouds_app_lane_status_dashboard_payload())
+
+
+@clouds_bp.route("/clouds/gp004-status.json")
+def clouds_gp004_status_json():
+    from .clouds_app_lane_status_service import get_clouds_gp004_status_payload
+    return jsonify(get_clouds_gp004_status_payload())
+# === CLOUDS GIANT PACK 004 ROUTES END ===
