@@ -23035,3 +23035,58 @@ def vault_gp020_status_json():
 # ============================================================
 # VAULT GP020 OPERATIONAL READINESS ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP021 OWNER PACKET REVIEW ROUTES START
+# ============================================================
+
+@app.route("/vault/owner-packet-review")
+def vault_gp021_owner_packet_review_page():
+    from vault.owner_packet_review_depth_service import render_owner_packet_review_page
+    return render_owner_packet_review_page()
+
+@app.route("/vault/owner-packet-review.json")
+def vault_gp021_owner_packet_review_json():
+    from flask import jsonify
+    from vault.owner_packet_review_depth_service import get_owner_packet_review_home
+    return jsonify(get_owner_packet_review_home())
+
+@app.route("/vault/owner-packet-review-board.json")
+def vault_gp021_owner_packet_review_board_json():
+    from flask import jsonify
+    from vault.owner_packet_review_depth_service import get_owner_packet_review_board
+    return jsonify(get_owner_packet_review_board())
+
+@app.route("/vault/owner-packet-review-detail.json")
+def vault_gp021_owner_packet_review_detail_json():
+    from flask import jsonify
+    from vault.owner_packet_review_depth_service import get_owner_packet_review_detail
+    return jsonify(get_owner_packet_review_detail())
+
+@app.route("/vault/owner-packet-review-decision-desk.json")
+def vault_gp021_owner_packet_review_decision_desk_json():
+    from flask import jsonify
+    from vault.owner_packet_review_depth_service import get_owner_packet_review_decision_desk
+    return jsonify(get_owner_packet_review_decision_desk())
+
+@app.route("/vault/owner-packet-review-blockers.json")
+def vault_gp021_owner_packet_review_blockers_json():
+    from flask import jsonify
+    from vault.owner_packet_review_depth_service import get_owner_packet_review_blockers
+    return jsonify(get_owner_packet_review_blockers())
+
+@app.route("/vault/owner-packet-review-owner-queue.json")
+def vault_gp021_owner_packet_review_owner_queue_json():
+    from flask import jsonify
+    from vault.owner_packet_review_depth_service import get_owner_packet_review_owner_queue
+    return jsonify(get_owner_packet_review_owner_queue())
+
+@app.route("/vault/gp021-status.json")
+def vault_gp021_status_json():
+    from flask import jsonify
+    from vault.owner_packet_review_depth_service import get_gp021_status
+    return jsonify(get_gp021_status())
+
+# ============================================================
+# VAULT GP021 OWNER PACKET REVIEW ROUTES END
+# ============================================================
