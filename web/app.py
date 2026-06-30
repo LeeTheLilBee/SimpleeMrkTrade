@@ -13813,6 +13813,114 @@ def ob_giant_pack_011_owner_rehearsal_engine_json():
         },
     }
 
+# OB_GIANT_PACK_012_REHEARSAL_RECORD_PERSISTENCE_CONTRACT_ROUTE
+@app.route("/ob/rehearsal-record-contracts.json")
+def ob_giant_pack_012_rehearsal_record_contracts_json():
+    shared_fields = [
+        "record_id",
+        "session_id",
+        "source_app",
+        "mission_account",
+        "mode",
+        "owner_action",
+        "timestamp",
+        "status",
+        "linked_receipts",
+        "linked_packet",
+        "blocked_reason",
+        "confidence_label",
+        "freshness_label",
+        "sensitivity",
+        "vault_ready",
+    ]
+
+    def contract(contract_id, label, purpose, extra_fields, linked_gp):
+        return {
+            "contract_id": contract_id,
+            "label": label,
+            "purpose": purpose,
+            "required_fields": shared_fields + extra_fields,
+            "linked_gp": linked_gp,
+            "status": "ready",
+        }
+
+    return {
+        "version": "OB_GIANT_PACK_012_REHEARSAL_RECORD_PERSISTENCE_CONTRACT",
+        "source": "guarded_ob_rehearsal_record_contracts_json",
+        "contract_state": {
+            "contract_id": "ob_rehearsal_record_persistence_contract_001",
+            "label": "Rehearsal Record Persistence Contract",
+            "status": "contract_ready",
+            "purpose": "Define future-persistent record shapes for every owner rehearsal step.",
+            "owner_only": True,
+            "contract_only_no_database_write": True,
+            "no_broker_data": True,
+            "no_order_data_from_broker": True,
+        },
+        "shared_record_fields": shared_fields,
+        "record_contracts": [
+            contract("rehearsal_session_record", "Rehearsal Session Record", "Top-level session for one owner Manual Live L1 rehearsal.", ["session_type", "selected_candidate_id", "selected_mission_account", "started_at", "completed_at", "completion_status", "current_step", "owner_readiness_label"], "GP011"),
+            contract("rehearsal_candidate_record", "Rehearsal Candidate Record", "Stores fake/demo candidate selected for rehearsal.", ["candidate_id", "symbol", "asset_type", "strategy", "side", "risk_label", "demo_static", "candidate_source"], "GP011"),
+            contract("rehearsal_decision_record", "Rehearsal Decision Record", "Stores approve/reject/watch rehearsal decision.", ["decision", "decision_reason", "decision_packet_id", "tower_clearance_state", "creates_checklist_receipt_only"], "GP006"),
+            contract("rehearsal_preflight_record", "Rehearsal Preflight Record", "Stores safety preflight checklist results.", ["account_policy_state", "mode_permission_state", "kill_switch_state", "data_freshness_state", "source_confidence_state", "exposure_state", "protected_floor_state", "owner_step_up_state"], "GP005"),
+            contract("rehearsal_checklist_record", "Rehearsal Checklist Record", "Stores manual broker checklist rehearsal answers.", ["broker_account_confirmed", "symbol_contract_confirmed", "action_side_confirmed", "limit_order_confirmed", "entry_limit", "do_not_enter_above", "stop_plan", "target_plan", "spread_liquidity_confirmed", "options_approval_confirmed", "pdt_margin_cash_acknowledged"], "GP007"),
+            contract("rehearsal_fill_record", "Rehearsal Fill Record", "Stores fake owner-entered fill details.", ["fill_time", "fill_price", "quantity", "symbol_or_contract", "order_type", "manual_broker_confirmation", "commission_or_fee_optional", "owner_note"], "GP007"),
+            contract("rehearsal_not_placed_record", "Rehearsal Not-Placed Record", "Stores fake not-placed reason and blocker.", ["not_placed_reason", "price_moved", "spread_too_wide", "broker_restriction", "owner_changed_mind", "tower_gate_blocked", "data_stale", "liquidity_failed", "manual_note"], "GP007"),
+            contract("rehearsal_monitor_record", "Rehearsal Monitor Record", "Stores fake position monitor state and exit alert state.", ["position_id", "entry_receipt_linked", "fill_receipt_linked", "stop_target_plan_visible", "manual_risk_watch_state", "exit_alert_state", "exit_alert_reason", "tower_kill_switch_watch", "data_freshness_watch"], "GP008"),
+            contract("rehearsal_close_record", "Rehearsal Close Record", "Stores fake manual close confirmation.", ["close_decision", "close_reason", "close_time", "close_price", "close_quantity", "symbol_or_contract", "manual_broker_confirmation", "realized_result", "owner_note"], "GP008"),
+            contract("rehearsal_final_review_record", "Rehearsal Final Review Record", "Stores final review, rule review, discipline, and lesson fields.", ["realized_result_summary", "setup_quality_review", "entry_quality_review", "exit_quality_review", "risk_management_review", "rule_violation_review", "discipline_score_placeholder", "lesson_record", "owner_final_notes"], "GP009"),
+            contract("rehearsal_receipt_record", "Rehearsal Receipt Record", "Stores final rehearsal receipt preview and Review Center handoff.", ["receipt_id", "receipt_type", "rehearsal_result", "review_center_destination", "vault_destination_placeholder", "public_exposure", "no_direct_vault_upload"], "GP003_GP009_GP011"),
+        ],
+        "record_relationships": [
+            {"relationship_id": "session_links_all_records", "label": "Session links all records", "from": "rehearsal_session_record", "to": "all_rehearsal_step_records", "key": "session_id", "status": "required"},
+            {"relationship_id": "candidate_links_decision", "label": "Candidate links decision", "from": "rehearsal_candidate_record", "to": "rehearsal_decision_record", "key": "candidate_id", "status": "required"},
+            {"relationship_id": "decision_links_preflight", "label": "Decision links preflight", "from": "rehearsal_decision_record", "to": "rehearsal_preflight_record", "key": "linked_packet", "status": "required"},
+            {"relationship_id": "fill_links_monitor", "label": "Fill links monitor", "from": "rehearsal_fill_record", "to": "rehearsal_monitor_record", "key": "linked_receipts", "status": "required"},
+            {"relationship_id": "close_links_final_review", "label": "Close links final review", "from": "rehearsal_close_record", "to": "rehearsal_final_review_record", "key": "linked_receipts", "status": "required"},
+            {"relationship_id": "final_review_links_receipt", "label": "Final review links receipt", "from": "rehearsal_final_review_record", "to": "rehearsal_receipt_record", "key": "receipt_id", "status": "required"},
+        ],
+        "persistence_rules": [
+            {"rule_id": "contract_only_no_database_write", "label": "Contract only", "rule": "GP012 defines record shapes only; it does not write to database or disk.", "status": "locked"},
+            {"rule_id": "owner_only_records", "label": "Owner-only records", "rule": "Rehearsal records are owner-only and not visible to beta users.", "status": "locked"},
+            {"rule_id": "fake_demo_data_only", "label": "Fake/demo data only", "rule": "Rehearsal records must not imply real broker execution.", "status": "locked"},
+            {"rule_id": "vault_ready_no_direct_upload", "label": "Vault-ready, no direct upload", "rule": "Records may be Vault-ready placeholders, but OB does not upload directly to Vault.", "status": "locked"},
+            {"rule_id": "review_center_destination", "label": "Review Center destination", "rule": "Records are shaped for Review Center rollup in the next pack.", "status": "ready"},
+        ],
+        "blocked_actions": [
+            "write_rehearsal_database_now",
+            "store_real_broker_data",
+            "read_broker_account",
+            "submit_order_from_ob",
+            "auto_execute",
+            "publish_rehearsal",
+            "create_public_proof",
+            "upload_direct_to_vault",
+            "show_rehearsal_records_to_beta_user",
+        ],
+        "boundaries": {
+            "private_beta_only": True,
+            "owner_rehearsal_only": True,
+            "contract_only_no_database_write": True,
+            "fake_candidate_only": True,
+            "manual_live_owner_only": True,
+            "beta_survey_paper_only": True,
+            "no_real_market_order": True,
+            "no_public_proof": True,
+            "no_public_receipts": True,
+            "no_broker_api": True,
+            "no_broker_read": True,
+            "no_order_submit": True,
+            "no_auto_close": True,
+            "no_auto_execution": True,
+            "no_hybrid_submit": True,
+            "no_automated_live": True,
+            "no_direct_vault_upload": True,
+            "hybrid_locked": True,
+            "automated_locked": True,
+            "live_auto_locked": True,
+        },
+    }
+
 
 if __name__ == "__main__":
     try:
