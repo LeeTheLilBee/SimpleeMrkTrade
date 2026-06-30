@@ -22668,3 +22668,52 @@ def vault_gp013_status_json():
 # ============================================================
 # VAULT GP013 DOCUMENT TYPE CLASSIFIER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP014 MANUAL UPLOAD REVIEW ROUTES START
+# ============================================================
+
+@app.route("/vault/manual-upload-review")
+def vault_gp014_manual_upload_review_page():
+    from vault.manual_upload_review_queue_service import render_manual_upload_review_page
+    return render_manual_upload_review_page()
+
+@app.route("/vault/manual-upload-review.json")
+def vault_gp014_manual_upload_review_json():
+    from flask import jsonify
+    from vault.manual_upload_review_queue_service import get_manual_upload_review_home
+    return jsonify(get_manual_upload_review_home())
+
+@app.route("/vault/manual-upload-review-queue.json")
+def vault_gp014_manual_upload_review_queue_json():
+    from flask import jsonify
+    from vault.manual_upload_review_queue_service import get_manual_upload_review_queue
+    return jsonify(get_manual_upload_review_queue())
+
+@app.route("/vault/upload-review-decisions.json")
+def vault_gp014_upload_review_decisions_json():
+    from flask import jsonify
+    from vault.manual_upload_review_queue_service import get_upload_review_decisions
+    return jsonify(get_upload_review_decisions())
+
+@app.route("/vault/upload-review-checklist.json")
+def vault_gp014_upload_review_checklist_json():
+    from flask import jsonify
+    from vault.manual_upload_review_queue_service import get_upload_review_checklist
+    return jsonify(get_upload_review_checklist())
+
+@app.route("/vault/upload-review-blocked-reasons.json")
+def vault_gp014_upload_review_blocked_reasons_json():
+    from flask import jsonify
+    from vault.manual_upload_review_queue_service import get_upload_review_blocked_reasons
+    return jsonify(get_upload_review_blocked_reasons())
+
+@app.route("/vault/gp014-status.json")
+def vault_gp014_status_json():
+    from flask import jsonify
+    from vault.manual_upload_review_queue_service import get_gp014_status
+    return jsonify(get_gp014_status())
+
+# ============================================================
+# VAULT GP014 MANUAL UPLOAD REVIEW ROUTES END
+# ============================================================
