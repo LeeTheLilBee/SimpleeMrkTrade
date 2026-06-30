@@ -32074,3 +32074,57 @@ def tower_one_cell_pack_1299_1349_pack_1349_json():
 
     return jsonify(build_tower_beta_launch_receipt_archive_review_closeout_batch_close_readiness_preview())
 
+# ============================================================
+# VAULT GP050 NEXT PRODUCT DEPTH READINESS CHECKPOINT ROUTES START
+# ============================================================
+
+@app.route("/vault/next-product-depth-readiness-checkpoint")
+def vault_gp050_next_product_depth_readiness_checkpoint_page():
+    from vault.next_product_depth_readiness_checkpoint_service import render_next_product_depth_readiness_checkpoint_page
+    return render_next_product_depth_readiness_checkpoint_page()
+
+@app.route("/vault/next-product-depth-readiness-checkpoint.json")
+def vault_gp050_next_product_depth_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.next_product_depth_readiness_checkpoint_service import get_next_product_depth_readiness_checkpoint_home
+    return jsonify(get_next_product_depth_readiness_checkpoint_home())
+
+@app.route("/vault/gp050-section-rollup.json")
+def vault_gp050_section_rollup_json():
+    from flask import jsonify
+    from vault.next_product_depth_readiness_checkpoint_service import get_gp050_section_rollup
+    return jsonify(get_gp050_section_rollup())
+
+@app.route("/vault/gp050-readiness-board.json")
+def vault_gp050_readiness_board_json():
+    from flask import jsonify
+    from vault.next_product_depth_readiness_checkpoint_service import get_gp050_readiness_board
+    return jsonify(get_gp050_readiness_board())
+
+@app.route("/vault/gp050-unresolved-locks.json")
+def vault_gp050_unresolved_locks_json():
+    from flask import jsonify
+    from vault.next_product_depth_readiness_checkpoint_service import get_gp050_unresolved_locks
+    return jsonify(get_gp050_unresolved_locks())
+
+@app.route("/vault/gp050-tower-closeout-checks.json")
+def vault_gp050_tower_closeout_checks_json():
+    from flask import jsonify
+    from vault.next_product_depth_readiness_checkpoint_service import get_gp050_tower_closeout_checks
+    return jsonify(get_gp050_tower_closeout_checks())
+
+@app.route("/vault/gp050-next-section-preview.json")
+def vault_gp050_next_section_preview_json():
+    from flask import jsonify
+    from vault.next_product_depth_readiness_checkpoint_service import get_gp050_next_section_preview
+    return jsonify(get_gp050_next_section_preview())
+
+@app.route("/vault/gp050-status.json")
+def vault_gp050_status_json():
+    from flask import jsonify
+    from vault.next_product_depth_readiness_checkpoint_service import get_gp050_status
+    return jsonify(get_gp050_status())
+
+# ============================================================
+# VAULT GP050 NEXT PRODUCT DEPTH READINESS CHECKPOINT ROUTES END
+# ============================================================
