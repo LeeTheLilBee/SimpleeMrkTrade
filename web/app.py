@@ -23479,3 +23479,64 @@ def vault_gp025_status_json():
 # ============================================================
 # VAULT GP025 OWNER ACTION RECEIPTS CHECKLISTS ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP026 OWNER CONFIRMATION LEDGER ROUTES START
+# ============================================================
+
+@app.route("/vault/owner-confirmation-ledger")
+def vault_gp026_owner_confirmation_ledger_page():
+    from vault.owner_confirmation_ledger_service import render_owner_confirmation_ledger_page
+    return render_owner_confirmation_ledger_page()
+
+@app.route("/vault/owner-confirmation-ledger.json")
+def vault_gp026_owner_confirmation_ledger_json():
+    from flask import jsonify
+    from vault.owner_confirmation_ledger_service import get_owner_confirmation_ledger_home
+    return jsonify(get_owner_confirmation_ledger_home())
+
+@app.route("/vault/owner-confirmation-ledger-entries.json")
+def vault_gp026_owner_confirmation_ledger_entries_json():
+    from flask import jsonify
+    from vault.owner_confirmation_ledger_service import get_owner_confirmation_ledger_entries
+    return jsonify(get_owner_confirmation_ledger_entries())
+
+@app.route("/vault/owner-confirmation-ledger-review-state.json")
+def vault_gp026_owner_confirmation_ledger_review_state_json():
+    from flask import jsonify
+    from vault.owner_confirmation_ledger_service import get_owner_confirmation_ledger_review_state
+    return jsonify(get_owner_confirmation_ledger_review_state())
+
+@app.route("/vault/owner-confirmation-ledger-receipt-links.json")
+def vault_gp026_owner_confirmation_ledger_receipt_links_json():
+    from flask import jsonify
+    from vault.owner_confirmation_ledger_service import get_owner_confirmation_ledger_receipt_links
+    return jsonify(get_owner_confirmation_ledger_receipt_links())
+
+@app.route("/vault/owner-confirmation-ledger-blockers.json")
+def vault_gp026_owner_confirmation_ledger_blockers_json():
+    from flask import jsonify
+    from vault.owner_confirmation_ledger_service import get_owner_confirmation_ledger_blockers
+    return jsonify(get_owner_confirmation_ledger_blockers())
+
+@app.route("/vault/owner-confirmation-ledger-carry-forward.json")
+def vault_gp026_owner_confirmation_ledger_carry_forward_json():
+    from flask import jsonify
+    from vault.owner_confirmation_ledger_service import get_owner_confirmation_ledger_carry_forward
+    return jsonify(get_owner_confirmation_ledger_carry_forward())
+
+@app.route("/vault/owner-confirmation-ledger-owner-queue.json")
+def vault_gp026_owner_confirmation_ledger_owner_queue_json():
+    from flask import jsonify
+    from vault.owner_confirmation_ledger_service import get_owner_confirmation_ledger_owner_queue
+    return jsonify(get_owner_confirmation_ledger_owner_queue())
+
+@app.route("/vault/gp026-status.json")
+def vault_gp026_status_json():
+    from flask import jsonify
+    from vault.owner_confirmation_ledger_service import get_gp026_status
+    return jsonify(get_gp026_status())
+
+# ============================================================
+# VAULT GP026 OWNER CONFIRMATION LEDGER ROUTES END
+# ============================================================
