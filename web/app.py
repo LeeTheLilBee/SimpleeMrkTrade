@@ -23648,3 +23648,70 @@ def vault_gp026_status_json():
 # ============================================================
 # VAULT GP026 OWNER CONFIRMATION LEDGER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP027 ACTION RECEIPT DETAIL DRAWER ROUTES START
+# ============================================================
+
+@app.route("/vault/action-receipt-detail-drawer")
+def vault_gp027_action_receipt_detail_drawer_page():
+    from vault.action_receipt_detail_drawer_service import render_action_receipt_detail_drawer_page
+    return render_action_receipt_detail_drawer_page()
+
+@app.route("/vault/action-receipt-detail-drawer.json")
+def vault_gp027_action_receipt_detail_drawer_json():
+    from flask import jsonify
+    from vault.action_receipt_detail_drawer_service import get_action_receipt_detail_drawer_home
+    return jsonify(get_action_receipt_detail_drawer_home())
+
+@app.route("/vault/action-receipt-detail-drawer-records.json")
+def vault_gp027_action_receipt_detail_drawer_records_json():
+    from flask import jsonify
+    from vault.action_receipt_detail_drawer_service import get_action_receipt_detail_drawer_records
+    return jsonify(get_action_receipt_detail_drawer_records())
+
+@app.route("/vault/action-receipt-detail-drawer-panels.json")
+def vault_gp027_action_receipt_detail_drawer_panels_json():
+    from flask import jsonify
+    from vault.action_receipt_detail_drawer_service import get_action_receipt_detail_drawer_panels
+    return jsonify(get_action_receipt_detail_drawer_panels())
+
+@app.route("/vault/action-receipt-detail-drawer-checklist.json")
+def vault_gp027_action_receipt_detail_drawer_checklist_json():
+    from flask import jsonify
+    from vault.action_receipt_detail_drawer_service import get_action_receipt_detail_drawer_checklist
+    return jsonify(get_action_receipt_detail_drawer_checklist())
+
+@app.route("/vault/action-receipt-detail-drawer-tower-gates.json")
+def vault_gp027_action_receipt_detail_drawer_tower_gates_json():
+    from flask import jsonify
+    from vault.action_receipt_detail_drawer_service import get_action_receipt_detail_drawer_tower_gates
+    return jsonify(get_action_receipt_detail_drawer_tower_gates())
+
+@app.route("/vault/action-receipt-detail-drawer-blockers.json")
+def vault_gp027_action_receipt_detail_drawer_blockers_json():
+    from flask import jsonify
+    from vault.action_receipt_detail_drawer_service import get_action_receipt_detail_drawer_blockers
+    return jsonify(get_action_receipt_detail_drawer_blockers())
+
+@app.route("/vault/action-receipt-detail-drawer-carry-forward.json")
+def vault_gp027_action_receipt_detail_drawer_carry_forward_json():
+    from flask import jsonify
+    from vault.action_receipt_detail_drawer_service import get_action_receipt_detail_drawer_carry_forward
+    return jsonify(get_action_receipt_detail_drawer_carry_forward())
+
+@app.route("/vault/action-receipt-detail-drawer-owner-queue.json")
+def vault_gp027_action_receipt_detail_drawer_owner_queue_json():
+    from flask import jsonify
+    from vault.action_receipt_detail_drawer_service import get_action_receipt_detail_drawer_owner_queue
+    return jsonify(get_action_receipt_detail_drawer_owner_queue())
+
+@app.route("/vault/gp027-status.json")
+def vault_gp027_status_json():
+    from flask import jsonify
+    from vault.action_receipt_detail_drawer_service import get_gp027_status
+    return jsonify(get_gp027_status())
+
+# ============================================================
+# VAULT GP027 ACTION RECEIPT DETAIL DRAWER ROUTES END
+# ============================================================
