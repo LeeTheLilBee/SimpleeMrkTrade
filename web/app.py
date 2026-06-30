@@ -22619,3 +22619,52 @@ def vault_gp012_status_json():
 # ============================================================
 # VAULT GP012 FILE ATTACHMENT REGISTRY ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP013 DOCUMENT TYPE CLASSIFIER ROUTES START
+# ============================================================
+
+@app.route("/vault/document-classifier")
+def vault_gp013_document_classifier_page():
+    from vault.document_type_classifier_service import render_document_classifier_page
+    return render_document_classifier_page()
+
+@app.route("/vault/document-classifier.json")
+def vault_gp013_document_classifier_json():
+    from flask import jsonify
+    from vault.document_type_classifier_service import get_document_classifier_home
+    return jsonify(get_document_classifier_home())
+
+@app.route("/vault/document-type-classifier.json")
+def vault_gp013_document_type_classifier_json():
+    from flask import jsonify
+    from vault.document_type_classifier_service import get_document_type_classifier
+    return jsonify(get_document_type_classifier())
+
+@app.route("/vault/requirement-match.json")
+def vault_gp013_requirement_match_json():
+    from flask import jsonify
+    from vault.document_type_classifier_service import get_requirement_match
+    return jsonify(get_requirement_match())
+
+@app.route("/vault/classifier-review-queue.json")
+def vault_gp013_classifier_review_queue_json():
+    from flask import jsonify
+    from vault.document_type_classifier_service import get_classifier_review_queue
+    return jsonify(get_classifier_review_queue())
+
+@app.route("/vault/classification-blocked-reasons.json")
+def vault_gp013_classification_blocked_reasons_json():
+    from flask import jsonify
+    from vault.document_type_classifier_service import get_classification_blocked_reasons
+    return jsonify(get_classification_blocked_reasons())
+
+@app.route("/vault/gp013-status.json")
+def vault_gp013_status_json():
+    from flask import jsonify
+    from vault.document_type_classifier_service import get_gp013_status
+    return jsonify(get_gp013_status())
+
+# ============================================================
+# VAULT GP013 DOCUMENT TYPE CLASSIFIER ROUTES END
+# ============================================================
