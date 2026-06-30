@@ -32860,3 +32860,63 @@ def tower_one_cell_pack_1350_1400_pack_1400_json():
 
     return jsonify(build_tower_beta_launch_archive_receipt_review_closeout_batch_close_readiness_preview())
 
+# ============================================================
+# VAULT GP051 STORAGE PROVIDER SELECTION PREP ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-provider-selection-prep")
+def vault_gp051_storage_provider_selection_prep_page():
+    from vault.storage_provider_selection_prep_service import render_storage_provider_selection_prep_page
+    return render_storage_provider_selection_prep_page()
+
+@app.route("/vault/storage-provider-selection-prep.json")
+def vault_gp051_storage_provider_selection_prep_json():
+    from flask import jsonify
+    from vault.storage_provider_selection_prep_service import get_storage_provider_selection_prep_home
+    return jsonify(get_storage_provider_selection_prep_home())
+
+@app.route("/vault/storage-provider-candidates.json")
+def vault_gp051_storage_provider_candidates_json():
+    from flask import jsonify
+    from vault.storage_provider_selection_prep_service import get_storage_provider_candidates
+    return jsonify(get_storage_provider_candidates())
+
+@app.route("/vault/storage-provider-selection-criteria.json")
+def vault_gp051_storage_provider_selection_criteria_json():
+    from flask import jsonify
+    from vault.storage_provider_selection_prep_service import get_storage_provider_selection_criteria
+    return jsonify(get_storage_provider_selection_criteria())
+
+@app.route("/vault/storage-provider-selection-locks.json")
+def vault_gp051_storage_provider_selection_locks_json():
+    from flask import jsonify
+    from vault.storage_provider_selection_prep_service import get_storage_provider_selection_locks
+    return jsonify(get_storage_provider_selection_locks())
+
+@app.route("/vault/storage-provider-tower-authority-gates.json")
+def vault_gp051_storage_provider_tower_authority_gates_json():
+    from flask import jsonify
+    from vault.storage_provider_selection_prep_service import get_storage_provider_tower_authority_gates
+    return jsonify(get_storage_provider_tower_authority_gates())
+
+@app.route("/vault/storage-provider-prep-notes.json")
+def vault_gp051_storage_provider_prep_notes_json():
+    from flask import jsonify
+    from vault.storage_provider_selection_prep_service import get_storage_provider_prep_notes
+    return jsonify(get_storage_provider_prep_notes())
+
+@app.route("/vault/storage-provider-selection-next-step.json")
+def vault_gp051_storage_provider_selection_next_step_json():
+    from flask import jsonify
+    from vault.storage_provider_selection_prep_service import get_storage_provider_selection_next_step
+    return jsonify(get_storage_provider_selection_next_step())
+
+@app.route("/vault/gp051-status.json")
+def vault_gp051_status_json():
+    from flask import jsonify
+    from vault.storage_provider_selection_prep_service import get_gp051_status
+    return jsonify(get_gp051_status())
+
+# ============================================================
+# VAULT GP051 STORAGE PROVIDER SELECTION PREP ROUTES END
+# ============================================================
