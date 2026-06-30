@@ -29987,3 +29987,64 @@ def vault_gp045_status_json():
 # ============================================================
 # VAULT GP045 STORAGE ACCESS RECEIPT PREVIEW ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP046 STORAGE AUDIT TRAIL PREVIEW ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-audit-trail-preview")
+def vault_gp046_storage_audit_trail_preview_page():
+    from vault.storage_audit_trail_preview_service import render_storage_audit_trail_preview_page
+    return render_storage_audit_trail_preview_page()
+
+@app.route("/vault/storage-audit-trail-preview.json")
+def vault_gp046_storage_audit_trail_preview_json():
+    from flask import jsonify
+    from vault.storage_audit_trail_preview_service import get_storage_audit_trail_preview_home
+    return jsonify(get_storage_audit_trail_preview_home())
+
+@app.route("/vault/storage-audit-event-cards.json")
+def vault_gp046_storage_audit_event_cards_json():
+    from flask import jsonify
+    from vault.storage_audit_trail_preview_service import get_storage_audit_event_cards
+    return jsonify(get_storage_audit_event_cards())
+
+@app.route("/vault/storage-denied-access-audit-rows.json")
+def vault_gp046_storage_denied_access_audit_rows_json():
+    from flask import jsonify
+    from vault.storage_audit_trail_preview_service import get_storage_denied_access_audit_rows
+    return jsonify(get_storage_denied_access_audit_rows())
+
+@app.route("/vault/storage-tower-gate-audit-snapshots.json")
+def vault_gp046_storage_tower_gate_audit_snapshots_json():
+    from flask import jsonify
+    from vault.storage_audit_trail_preview_service import get_storage_tower_gate_audit_snapshots
+    return jsonify(get_storage_tower_gate_audit_snapshots())
+
+@app.route("/vault/storage-receipt-preview-audit-links.json")
+def vault_gp046_storage_receipt_preview_audit_links_json():
+    from flask import jsonify
+    from vault.storage_audit_trail_preview_service import get_storage_receipt_preview_audit_links
+    return jsonify(get_storage_receipt_preview_audit_links())
+
+@app.route("/vault/storage-immutable-log-placeholders.json")
+def vault_gp046_storage_immutable_log_placeholders_json():
+    from flask import jsonify
+    from vault.storage_audit_trail_preview_service import get_storage_immutable_log_placeholders
+    return jsonify(get_storage_immutable_log_placeholders())
+
+@app.route("/vault/storage-audit-trail-next-step.json")
+def vault_gp046_storage_audit_trail_next_step_json():
+    from flask import jsonify
+    from vault.storage_audit_trail_preview_service import get_storage_audit_trail_next_step
+    return jsonify(get_storage_audit_trail_next_step())
+
+@app.route("/vault/gp046-status.json")
+def vault_gp046_status_json():
+    from flask import jsonify
+    from vault.storage_audit_trail_preview_service import get_gp046_status
+    return jsonify(get_gp046_status())
+
+# ============================================================
+# VAULT GP046 STORAGE AUDIT TRAIL PREVIEW ROUTES END
+# ============================================================
