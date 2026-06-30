@@ -25663,3 +25663,70 @@ def vault_gp033_status_json():
 # ============================================================
 # VAULT GP033 PACKET REVIEW GROUPING ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP034 PACKET REVIEW PRIORITY ROUTES START
+# ============================================================
+
+@app.route("/vault/packet-review-priority")
+def vault_gp034_packet_review_priority_page():
+    from vault.packet_review_priority_service import render_packet_review_priority_page
+    return render_packet_review_priority_page()
+
+@app.route("/vault/packet-review-priority.json")
+def vault_gp034_packet_review_priority_json():
+    from flask import jsonify
+    from vault.packet_review_priority_service import get_packet_review_priority_home
+    return jsonify(get_packet_review_priority_home())
+
+@app.route("/vault/packet-review-priority-records.json")
+def vault_gp034_packet_review_priority_records_json():
+    from flask import jsonify
+    from vault.packet_review_priority_service import get_packet_review_priority_records
+    return jsonify(get_packet_review_priority_records())
+
+@app.route("/vault/packet-review-priority-reasons.json")
+def vault_gp034_packet_review_priority_reasons_json():
+    from flask import jsonify
+    from vault.packet_review_priority_service import get_packet_review_priority_reasons
+    return jsonify(get_packet_review_priority_reasons())
+
+@app.route("/vault/packet-review-priority-owner-focus.json")
+def vault_gp034_packet_review_priority_owner_focus_json():
+    from flask import jsonify
+    from vault.packet_review_priority_service import get_packet_review_priority_owner_focus
+    return jsonify(get_packet_review_priority_owner_focus())
+
+@app.route("/vault/packet-review-priority-blocker-severity.json")
+def vault_gp034_packet_review_priority_blocker_severity_json():
+    from flask import jsonify
+    from vault.packet_review_priority_service import get_packet_review_priority_blocker_severity
+    return jsonify(get_packet_review_priority_blocker_severity())
+
+@app.route("/vault/packet-review-priority-tower-urgency.json")
+def vault_gp034_packet_review_priority_tower_urgency_json():
+    from flask import jsonify
+    from vault.packet_review_priority_service import get_packet_review_priority_tower_urgency
+    return jsonify(get_packet_review_priority_tower_urgency())
+
+@app.route("/vault/packet-review-priority-next-actions.json")
+def vault_gp034_packet_review_priority_next_actions_json():
+    from flask import jsonify
+    from vault.packet_review_priority_service import get_packet_review_priority_next_actions
+    return jsonify(get_packet_review_priority_next_actions())
+
+@app.route("/vault/packet-review-priority-carry-forward.json")
+def vault_gp034_packet_review_priority_carry_forward_json():
+    from flask import jsonify
+    from vault.packet_review_priority_service import get_packet_review_priority_carry_forward
+    return jsonify(get_packet_review_priority_carry_forward())
+
+@app.route("/vault/gp034-status.json")
+def vault_gp034_status_json():
+    from flask import jsonify
+    from vault.packet_review_priority_service import get_gp034_status
+    return jsonify(get_gp034_status())
+
+# ============================================================
+# VAULT GP034 PACKET REVIEW PRIORITY ROUTES END
+# ============================================================
