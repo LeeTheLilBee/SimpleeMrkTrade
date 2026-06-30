@@ -22986,3 +22986,52 @@ def vault_gp019_status_json():
 # ============================================================
 # VAULT GP019 TRUST ENTITY BINDER WORKSPACE ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP020 OPERATIONAL READINESS ROUTES START
+# ============================================================
+
+@app.route("/vault/operational-readiness")
+def vault_gp020_operational_readiness_page():
+    from vault.operational_readiness_checkpoint_service import render_operational_readiness_page
+    return render_operational_readiness_page()
+
+@app.route("/vault/operational-readiness.json")
+def vault_gp020_operational_readiness_json():
+    from flask import jsonify
+    from vault.operational_readiness_checkpoint_service import get_operational_readiness_home
+    return jsonify(get_operational_readiness_home())
+
+@app.route("/vault/operational-readiness-checkpoint.json")
+def vault_gp020_operational_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.operational_readiness_checkpoint_service import get_operational_readiness_checkpoint
+    return jsonify(get_operational_readiness_checkpoint())
+
+@app.route("/vault/operational-readiness-routes.json")
+def vault_gp020_operational_readiness_routes_json():
+    from flask import jsonify
+    from vault.operational_readiness_checkpoint_service import get_operational_readiness_routes
+    return jsonify(get_operational_readiness_routes())
+
+@app.route("/vault/operational-readiness-boundaries.json")
+def vault_gp020_operational_readiness_boundaries_json():
+    from flask import jsonify
+    from vault.operational_readiness_checkpoint_service import get_operational_readiness_boundaries
+    return jsonify(get_operational_readiness_boundaries())
+
+@app.route("/vault/operational-readiness-owner-queue.json")
+def vault_gp020_operational_readiness_owner_queue_json():
+    from flask import jsonify
+    from vault.operational_readiness_checkpoint_service import get_operational_readiness_owner_queue
+    return jsonify(get_operational_readiness_owner_queue())
+
+@app.route("/vault/gp020-status.json")
+def vault_gp020_status_json():
+    from flask import jsonify
+    from vault.operational_readiness_checkpoint_service import get_gp020_status
+    return jsonify(get_gp020_status())
+
+# ============================================================
+# VAULT GP020 OPERATIONAL READINESS ROUTES END
+# ============================================================
