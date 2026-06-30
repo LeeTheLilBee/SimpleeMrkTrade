@@ -27831,3 +27831,75 @@ def tower_giant_pack_994_1043_pack_1043_json():
 
     return jsonify(build_tower_beta_launch_lock_review_closeout_batch_close_readiness_preview())
 
+# ============================================================
+# VAULT GP039 RECEIPT CLOSE SUMMARY ROUTES START
+# ============================================================
+
+@app.route("/vault/receipt-close-summary")
+def vault_gp039_receipt_close_summary_page():
+    from vault.receipt_close_summary_service import render_receipt_close_summary_page
+    return render_receipt_close_summary_page()
+
+@app.route("/vault/receipt-close-summary.json")
+def vault_gp039_receipt_close_summary_json():
+    from flask import jsonify
+    from vault.receipt_close_summary_service import get_receipt_close_summary_home
+    return jsonify(get_receipt_close_summary_home())
+
+@app.route("/vault/receipt-close-summary-board.json")
+def vault_gp039_receipt_close_summary_board_json():
+    from flask import jsonify
+    from vault.receipt_close_summary_service import get_receipt_close_summary_board
+    return jsonify(get_receipt_close_summary_board())
+
+@app.route("/vault/receipt-close-unresolved-blockers.json")
+def vault_gp039_receipt_close_unresolved_blockers_json():
+    from flask import jsonify
+    from vault.receipt_close_summary_service import get_receipt_close_unresolved_blockers
+    return jsonify(get_receipt_close_unresolved_blockers())
+
+@app.route("/vault/receipt-close-not-final-warnings.json")
+def vault_gp039_receipt_close_not_final_warnings_json():
+    from flask import jsonify
+    from vault.receipt_close_summary_service import get_receipt_close_not_final_warnings
+    return jsonify(get_receipt_close_not_final_warnings())
+
+@app.route("/vault/receipt-close-tower-owner-readiness.json")
+def vault_gp039_receipt_close_tower_owner_readiness_json():
+    from flask import jsonify
+    from vault.receipt_close_summary_service import get_receipt_close_tower_owner_readiness
+    return jsonify(get_receipt_close_tower_owner_readiness())
+
+@app.route("/vault/receipt-close-no-execution-summary-proof.json")
+def vault_gp039_receipt_close_no_execution_summary_proof_json():
+    from flask import jsonify
+    from vault.receipt_close_summary_service import get_receipt_close_no_execution_summary_proof
+    return jsonify(get_receipt_close_no_execution_summary_proof())
+
+@app.route("/vault/controlled-packet-assembly-rollup.json")
+def vault_gp039_controlled_packet_assembly_rollup_json():
+    from flask import jsonify
+    from vault.receipt_close_summary_service import get_controlled_packet_assembly_rollup
+    return jsonify(get_controlled_packet_assembly_rollup())
+
+@app.route("/vault/receipt-close-next-summary.json")
+def vault_gp039_receipt_close_next_summary_json():
+    from flask import jsonify
+    from vault.receipt_close_summary_service import get_receipt_close_next_summary
+    return jsonify(get_receipt_close_next_summary())
+
+@app.route("/vault/receipt-close-carry-forward.json")
+def vault_gp039_receipt_close_carry_forward_json():
+    from flask import jsonify
+    from vault.receipt_close_summary_service import get_receipt_close_carry_forward
+    return jsonify(get_receipt_close_carry_forward())
+
+@app.route("/vault/gp039-status.json")
+def vault_gp039_status_json():
+    from flask import jsonify
+    from vault.receipt_close_summary_service import get_gp039_status
+    return jsonify(get_gp039_status())
+
+# ============================================================
+# VAULT GP039 RECEIPT CLOSE SUMMARY ROUTES END
+# ============================================================
