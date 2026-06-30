@@ -1,7 +1,7 @@
 """Flask routes for Archive Vault.
 
-Vault Giant Pack 004 adds Trust/Entity Packet Vault and OB Manual Live Proof
-Vault while preserving GP001-GP003 routes.
+Vault Giant Pack 005 adds Soulaana Artist/IP Package Vault and Private Beta
+Onboarding Vault while preserving GP001-GP004 routes.
 """
 
 from __future__ import annotations
@@ -33,6 +33,13 @@ from .vault_service import (
     get_receipt_chain_payload,
     get_redacted_view_policy_payload,
     get_vault_status,
+)
+from .vault_soulaana_beta_service import (
+    get_private_beta_onboarding_vault_payload,
+    get_soulaana_artist_ip_vault_payload,
+    get_soulaana_beta_owner_queue_payload,
+    get_soulaana_beta_vault_payload,
+    get_vault_gp005_status_payload,
 )
 from .vault_trust_ob_service import (
     get_ob_manual_live_proof_vault_payload,
@@ -73,6 +80,15 @@ def vault_trust_ob_room():
     return render_template(
         "vault_trust_ob.html",
         payload=get_trust_ob_vault_payload(),
+    )
+
+
+@vault_bp.route("/vault/soulaana-beta")
+@vault_bp.route("/archive-vault/soulaana-beta")
+def vault_soulaana_beta_room():
+    return render_template(
+        "vault_soulaana_beta.html",
+        payload=get_soulaana_beta_vault_payload(),
     )
 
 
@@ -156,6 +172,31 @@ def vault_trust_ob_owner_queue_json():
 @vault_bp.route("/vault/gp004-status.json")
 def vault_gp004_status_json():
     return jsonify(get_vault_gp004_status_payload())
+
+
+@vault_bp.route("/vault/soulaana-beta-vault.json")
+def vault_soulaana_beta_vault_json():
+    return jsonify(get_soulaana_beta_vault_payload())
+
+
+@vault_bp.route("/vault/soulaana-artist-ip-vault.json")
+def vault_soulaana_artist_ip_vault_json():
+    return jsonify(get_soulaana_artist_ip_vault_payload())
+
+
+@vault_bp.route("/vault/private-beta-onboarding-vault.json")
+def vault_private_beta_onboarding_vault_json():
+    return jsonify(get_private_beta_onboarding_vault_payload())
+
+
+@vault_bp.route("/vault/soulaana-beta-owner-queue.json")
+def vault_soulaana_beta_owner_queue_json():
+    return jsonify(get_soulaana_beta_owner_queue_payload())
+
+
+@vault_bp.route("/vault/gp005-status.json")
+def vault_gp005_status_json():
+    return jsonify(get_vault_gp005_status_payload())
 
 
 @vault_bp.route("/vault/document-registry.json")

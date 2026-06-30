@@ -1,0 +1,159 @@
+.vault-sb-shell {
+  padding-left: 0;
+}
+
+.vault-sb-hero {
+  border-color: rgba(201, 169, 255, 0.38);
+}
+
+.vault-sb-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.vault-sb-card {
+  margin-top: 0;
+}
+
+.vault-sb-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 82px;
+  height: 82px;
+  border: 1px solid rgba(201, 169, 255, 0.42);
+  border-radius: 50%;
+  color: var(--vault-accent);
+  font-size: 1.25rem;
+  font-weight: 950;
+  background: rgba(201, 169, 255, 0.08);
+}
+
+.vault-sb-subpanel {
+  border-top: 1px solid var(--vault-line);
+  padding-top: 18px;
+  margin-top: 18px;
+}
+
+.vault-sb-subpanel h3 {
+  margin: 0 0 14px;
+}
+
+.vault-sb-slot-grid,
+.vault-sb-boundaries,
+.vault-sb-chain {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.vault-sb-slot-grid article,
+.vault-sb-boundaries article,
+.vault-sb-chain article {
+  border: 1px solid var(--vault-line);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.vault-sb-slot-grid span,
+.vault-sb-boundaries span,
+.vault-sb-chain span,
+.vault-sb-list span {
+  color: var(--vault-gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.vault-sb-slot-grid strong,
+.vault-sb-boundaries strong,
+.vault-sb-chain strong {
+  display: block;
+  margin: 8px 0;
+  line-height: 1.35;
+}
+
+.vault-sb-slot-grid p {
+  color: var(--vault-muted);
+  line-height: 1.45;
+}
+
+.vault-sb-slot-grid em,
+.vault-sb-boundaries em,
+.vault-sb-chain em {
+  display: block;
+  color: var(--vault-muted);
+  font-style: normal;
+}
+
+.vault-sb-list {
+  display: grid;
+  gap: 10px;
+}
+
+.vault-sb-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 165px;
+  gap: 12px;
+  border: 1px solid var(--vault-line);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.vault-sb-list p {
+  margin: 8px 0 0;
+  color: var(--vault-muted);
+  line-height: 1.45;
+}
+
+.vault-sb-list aside {
+  border-left: 1px solid var(--vault-line);
+  padding-left: 12px;
+}
+
+.vault-sb-list aside em,
+.vault-sb-list aside small,
+.vault-sb-list aside b {
+  display: block;
+}
+
+.vault-sb-list aside em {
+  color: var(--vault-good);
+  font-style: normal;
+  margin-bottom: 7px;
+}
+
+.vault-sb-list aside small {
+  color: var(--vault-muted);
+  line-height: 1.35;
+}
+
+.vault-sb-list aside b {
+  margin-top: 10px;
+  color: var(--vault-gold);
+}
+
+@media (max-width: 1050px) {
+  .vault-sb-grid,
+  .vault-sb-slot-grid,
+  .vault-sb-boundaries,
+  .vault-sb-chain {
+    grid-template-columns: 1fr;
+  }
+
+  .vault-sb-list article {
+    grid-template-columns: 1fr;
+  }
+
+  .vault-sb-list aside {
+    border-left: 0;
+    border-top: 1px solid var(--vault-line);
+    padding-left: 0;
+    padding-top: 12px;
+  }
+}

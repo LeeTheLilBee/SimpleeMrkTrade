@@ -26,6 +26,13 @@ from .vault_service import (
     get_redacted_view_policy_payload,
     get_vault_status,
 )
+from .vault_soulaana_beta_service import (
+    get_private_beta_onboarding_vault_payload,
+    get_soulaana_artist_ip_vault_payload,
+    get_soulaana_beta_owner_queue_payload,
+    get_soulaana_beta_vault_payload,
+    get_vault_gp005_status_payload,
+)
 from .vault_trust_ob_service import (
     get_ob_manual_live_proof_vault_payload,
     get_trust_entity_vault_payload,
@@ -60,4 +67,9 @@ __all__ = [
     "get_trust_ob_owner_queue_payload",
     "get_trust_ob_vault_payload",
     "get_vault_gp004_status_payload",
+    "get_soulaana_artist_ip_vault_payload",
+    "get_private_beta_onboarding_vault_payload",
+    "get_soulaana_beta_owner_queue_payload",
+    "get_soulaana_beta_vault_payload",
+    "get_vault_gp005_status_payload",
 ]

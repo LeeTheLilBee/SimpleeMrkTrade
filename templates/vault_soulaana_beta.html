@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault Soulaana + Private Beta</title>
+  <link rel="stylesheet" href="/static/vault/vault.css">
+  <link rel="stylesheet" href="/static/vault/vault_soulaana_beta.css">
+</head>
+<body class="vault-body">
+  <main class="vault-shell vault-sb-shell">
+    <section class="vault-hero vault-sb-hero">
+      <p class="vault-eyebrow">Archive Vault / Soulaana + Private Beta</p>
+      <h1>Art slots reserved. IP protected. Beta access controlled.</h1>
+      <p class="vault-subtitle">
+        This room protects Soulaana artist/IP records and private beta onboarding records
+        without generating character art, exposing NDA bodies, or letting Vault become the access authority.
+      </p>
+      <div class="vault-chip-row">
+        <span class="vault-chip vault-chip-ready"><em>Vaults</em><strong>{{ payload.vaults | length }}</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>AI Character Art</em><strong>Blocked</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>Beta Access</em><strong>Tower</strong></span>
+        <span class="vault-chip vault-chip-ready"><em>Clouds View</em><strong>Summary</strong></span>
+      </div>
+    </section>
+
+    <section class="vault-sb-grid">
+      {% for vault in payload.vaults %}
+      <article class="vault-panel vault-sb-card">
+        <div class="vault-section-heading">
+          <div>
+            <p class="vault-eyebrow">{{ vault.business_lane }}</p>
+            <h2>{{ vault.vault_name }}</h2>
+          </div>
+          <span class="vault-sb-score">{{ vault.readiness.setup_score }}%</span>
+        </div>
+
+        <p class="vault-muted">{{ vault.purpose }}</p>
+
+        {% if vault.reserved_art_slots %}
+        <section class="vault-sb-subpanel">
+          <h3>Reserved Art Slots</h3>
+          <div class="vault-sb-slot-grid">
+            {% for slot in vault.reserved_art_slots %}
+            <article>
+              <span>{{ slot.slot_type }}</span>
+              <strong>{{ slot.label }}</strong>
+              <p>{{ slot.summary }}</p>
+              <em>{{ slot.status }}</em>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="vault-sb-subpanel">
+          <h3>Soulaana Package Records</h3>
+          <div class="vault-sb-list">
+            {% for record in vault.package_records %}
+            <article>
+              <div>
+                <span>{{ record.category }}</span>
+                <strong>{{ record.label }}</strong>
+                <p>{{ record.summary }}</p>
+              </div>
+              <aside>
+                <em>{{ record.status }}</em>
+                <small>{{ record.blocked_reason }}</small>
+                <b>{{ record.sensitivity }}</b>
+              </aside>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="vault-sb-subpanel">
+          <h3>IP Receipt Chain</h3>
+          <div class="vault-sb-chain">
+            {% for receipt in vault.ip_receipt_chain %}
+            <article>
+              <span>{{ receipt.receipt_type }}</span>
+              <strong>{{ receipt.label }}</strong>
+              <em>{{ receipt.status }}</em>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+        {% endif %}
+
+        {% if vault.onboarding_records %}
+        <section class="vault-sb-subpanel">
+          <h3>Beta Onboarding Records</h3>
+          <div class="vault-sb-list">
+            {% for record in vault.onboarding_records %}
+            <article>
+              <div>
+                <span>{{ record.category }}</span>
+                <strong>{{ record.label }}</strong>
+                <p>{{ record.summary }}</p>
+              </div>
+              <aside>
+                <em>{{ record.status }}</em>
+                <small>{{ record.blocked_reason }}</small>
+                <b>{{ record.sensitivity }}</b>
+              </aside>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="vault-sb-subpanel">
+          <h3>Beta Access Boundaries</h3>
+          <div class="vault-sb-boundaries">
+            {% for boundary in vault.access_boundaries %}
+            <article>
+              <span>{{ boundary.boundary_id }}</span>
+              <strong>{{ boundary.label }}</strong>
+              <em>Enforced: {{ boundary.enforced }}</em>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="vault-sb-subpanel">
+          <h3>Onboarding Flow</h3>
+          <div class="vault-sb-chain">
+            {% for step in vault.onboarding_flow %}
+            <article>
+              <span>{{ step.owning_authority }}</span>
+              <strong>{{ step.label }}</strong>
+              <em>{{ step.status }}</em>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+        {% endif %}
+
+        <div class="vault-card-footer">
+          <strong>Owner next action</strong>
+          <small>{{ vault.owner_next_action }}</small>
+        </div>
+      </article>
+      {% endfor %}
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Soulaana + Beta Owner Queue</p>
+          <h2>Protect creative IP and private access before scale.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/soulaana-beta-owner-queue.json">Queue JSON</a>
+      </div>
+
+      <div class="vault-action-list">
+        {% for action in payload.owner_queue.actions %}
+        <article class="vault-action-card vault-priority-{{ action.priority }}">
+          <div>
+            <span>{{ action.business_lane }}</span>
+            <h3>{{ action.label }}</h3>
+            <p>{{ action.next_step }}</p>
+          </div>
+          <aside>
+            <strong>{{ action.status }}</strong>
+            <em>{{ action.priority }}</em>
+            {% if action.blocked_by %}
+            <small>Blocked: {{ action.blocked_by | join(", ") }}</small>
+            {% else %}
+            <small>Ready now</small>
+            {% endif %}
+          </aside>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-panel vault-clouds-panel">
+      <p class="vault-eyebrow">Clouds Safe Soulaana + Beta Source</p>
+      <h2>Clouds sees readiness, not art files or private tester details.</h2>
+
+      <div class="vault-clouds-grid">
+        {% for summary in payload.clouds_safe_source.summaries %}
+        <article>
+          <span>{{ summary.business_lane }}</span>
+          <strong>{{ summary.setup_score }}% setup</strong>
+          <p class="vault-muted">{{ summary.owner_next_action }}</p>
+        </article>
+        {% endfor %}
+      </div>
+
+      <div class="vault-link-panel">
+        <a href="/vault">Vault Room</a>
+        <a href="/vault/trust-ob">Trust + OB</a>
+        <a href="/vault/acquisition-builders">Acquisition Builders</a>
+        <a href="/vault/soulaana-beta-vault.json">Soulaana/Beta JSON</a>
+        <a href="/vault/soulaana-artist-ip-vault.json">Soulaana JSON</a>
+        <a href="/vault/private-beta-onboarding-vault.json">Beta JSON</a>
+        <a href="/vault/gp005-status.json">GP005 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
