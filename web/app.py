@@ -29081,3 +29081,70 @@ def vault_gp042_status_json():
 # ============================================================
 # VAULT GP042 STORAGE OBJECT INVENTORY PREVIEW ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP043 STORAGE ACCESS REQUEST PREVIEW ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-access-request")
+def vault_gp043_storage_access_request_page():
+    from vault.storage_access_request_preview_service import render_storage_access_request_preview_page
+    return render_storage_access_request_preview_page()
+
+@app.route("/vault/storage-access-request.json")
+def vault_gp043_storage_access_request_json():
+    from flask import jsonify
+    from vault.storage_access_request_preview_service import get_storage_access_request_home
+    return jsonify(get_storage_access_request_home())
+
+@app.route("/vault/storage-access-request-cards.json")
+def vault_gp043_storage_access_request_cards_json():
+    from flask import jsonify
+    from vault.storage_access_request_preview_service import get_storage_access_request_cards
+    return jsonify(get_storage_access_request_cards())
+
+@app.route("/vault/storage-access-requester-placeholders.json")
+def vault_gp043_storage_access_requester_placeholders_json():
+    from flask import jsonify
+    from vault.storage_access_request_preview_service import get_storage_access_requester_placeholders
+    return jsonify(get_storage_access_requester_placeholders())
+
+@app.route("/vault/storage-access-tower-gates.json")
+def vault_gp043_storage_access_tower_gates_json():
+    from flask import jsonify
+    from vault.storage_access_request_preview_service import get_storage_access_tower_gates
+    return jsonify(get_storage_access_tower_gates())
+
+@app.route("/vault/storage-access-visibility-limits.json")
+def vault_gp043_storage_access_visibility_limits_json():
+    from flask import jsonify
+    from vault.storage_access_request_preview_service import get_storage_access_visibility_limits
+    return jsonify(get_storage_access_visibility_limits())
+
+@app.route("/vault/storage-access-denied-labels.json")
+def vault_gp043_storage_access_denied_labels_json():
+    from flask import jsonify
+    from vault.storage_access_request_preview_service import get_storage_access_denied_labels
+    return jsonify(get_storage_access_denied_labels())
+
+@app.route("/vault/storage-access-reason-fields.json")
+def vault_gp043_storage_access_reason_fields_json():
+    from flask import jsonify
+    from vault.storage_access_request_preview_service import get_storage_access_reason_fields
+    return jsonify(get_storage_access_reason_fields())
+
+@app.route("/vault/storage-access-next-step.json")
+def vault_gp043_storage_access_next_step_json():
+    from flask import jsonify
+    from vault.storage_access_request_preview_service import get_storage_access_next_step
+    return jsonify(get_storage_access_next_step())
+
+@app.route("/vault/gp043-status.json")
+def vault_gp043_status_json():
+    from flask import jsonify
+    from vault.storage_access_request_preview_service import get_gp043_status
+    return jsonify(get_gp043_status())
+
+# ============================================================
+# VAULT GP043 STORAGE ACCESS REQUEST PREVIEW ROUTES END
+# ============================================================
