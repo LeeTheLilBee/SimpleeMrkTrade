@@ -22521,3 +22521,52 @@ try:
 except Exception as _clouds_gp001_error:
     print("[CLOUDS GP001] route registration skipped:", _clouds_gp001_error)
 # === CLOUDS GIANT PACK 001 ROUTES END ===
+
+# ============================================================
+# VAULT GP011 DOCUMENT INTAKE ROUTES START
+# ============================================================
+
+@app.route("/vault/inbox")
+def vault_gp011_inbox_page():
+    from vault.document_intake_service import render_vault_inbox_page
+    return render_vault_inbox_page()
+
+@app.route("/vault/inbox.json")
+def vault_gp011_inbox_json():
+    from flask import jsonify
+    from vault.document_intake_service import get_inbox_status
+    return jsonify(get_inbox_status())
+
+@app.route("/vault/intake-queue.json")
+def vault_gp011_intake_queue_json():
+    from flask import jsonify
+    from vault.document_intake_service import get_intake_queue
+    return jsonify(get_intake_queue())
+
+@app.route("/vault/document-intake-records.json")
+def vault_gp011_document_intake_records_json():
+    from flask import jsonify
+    from vault.document_intake_service import get_document_intake_records
+    return jsonify(get_document_intake_records())
+
+@app.route("/vault/blocked-intake-reasons.json")
+def vault_gp011_blocked_intake_reasons_json():
+    from flask import jsonify
+    from vault.document_intake_service import get_blocked_intake_reasons
+    return jsonify(get_blocked_intake_reasons())
+
+@app.route("/vault/owner-review-state.json")
+def vault_gp011_owner_review_state_json():
+    from flask import jsonify
+    from vault.document_intake_service import get_owner_review_state
+    return jsonify(get_owner_review_state())
+
+@app.route("/vault/gp011-status.json")
+def vault_gp011_status_json():
+    from flask import jsonify
+    from vault.document_intake_service import get_gp011_status
+    return jsonify(get_gp011_status())
+
+# ============================================================
+# VAULT GP011 DOCUMENT INTAKE ROUTES END
+# ============================================================
