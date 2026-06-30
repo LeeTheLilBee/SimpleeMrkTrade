@@ -91,3 +91,23 @@ __all__.extend([
     "get_clouds_gp005_status_payload",
 ])
 # === CLOUDS GIANT PACK 005 EXPORTS END ===
+
+# === CLOUDS GIANT PACK 006 EXPORTS START ===
+from .clouds_mission_lane_service import (
+    get_clouds_future_lane_slots_payload,
+    get_clouds_gp006_status_payload,
+    get_clouds_mission_lane_dashboard_payload,
+    get_clouds_mission_lane_focus_payload,
+    get_clouds_mission_lane_registry_payload,
+    get_clouds_mission_lane_status_payload,
+)
+
+__all__.extend([
+    "get_clouds_mission_lane_registry_payload",
+    "get_clouds_mission_lane_status_payload",
+    "get_clouds_mission_lane_focus_payload",
+    "get_clouds_future_lane_slots_payload",
+    "get_clouds_mission_lane_dashboard_payload",
+    "get_clouds_gp006_status_payload",
+])
+# === CLOUDS GIANT PACK 006 EXPORTS END ===

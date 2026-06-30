@@ -1,0 +1,148 @@
+.clouds-mission-shell {
+  padding-left: 0;
+}
+
+.clouds-mission-hero {
+  border-color: rgba(158, 255, 210, 0.34);
+}
+
+.clouds-mission-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.clouds-mission-card,
+.clouds-mission-focus-grid article,
+.clouds-future-grid article {
+  border: 1px solid var(--clouds-line);
+  border-radius: 24px;
+  padding: 20px;
+  background: var(--clouds-panel-strong);
+  box-shadow: var(--clouds-shadow);
+}
+
+.clouds-mission-status-ready,
+.clouds-mission-status-active {
+  border-color: rgba(158, 255, 210, 0.25);
+}
+
+.clouds-mission-status-watch,
+.clouds-mission-status-placeholder {
+  border-color: rgba(255, 157, 186, 0.32);
+}
+
+.clouds-mission-status-future {
+  border-color: rgba(158, 220, 255, 0.28);
+}
+
+.clouds-mission-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.clouds-mission-top span,
+.clouds-mission-card span,
+.clouds-mission-focus-grid span,
+.clouds-future-grid span {
+  color: var(--clouds-gold);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 950;
+}
+
+.clouds-mission-top em {
+  color: var(--clouds-muted);
+  font-style: normal;
+  font-size: 0.78rem;
+}
+
+.clouds-mission-card h3 {
+  margin: 12px 0;
+  font-size: 1.25rem;
+}
+
+.clouds-mission-card p,
+.clouds-mission-card small,
+.clouds-mission-focus-grid p,
+.clouds-mission-focus-grid small,
+.clouds-future-grid p,
+.clouds-future-grid small {
+  color: var(--clouds-muted);
+  line-height: 1.45;
+}
+
+.clouds-mission-metrics {
+  border-top: 1px solid var(--clouds-line);
+  padding-top: 14px;
+  margin-top: 14px;
+}
+
+.clouds-mission-metrics strong,
+.clouds-mission-metrics small {
+  display: block;
+}
+
+.clouds-mission-metrics strong {
+  color: var(--clouds-good);
+  font-size: 1.75rem;
+  margin-bottom: 6px;
+}
+
+.clouds-mission-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.clouds-mission-pills span {
+  border: 1px solid var(--clouds-line);
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: var(--clouds-muted);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.clouds-mission-card a {
+  color: var(--clouds-text);
+  text-decoration: none;
+  border: 1px solid var(--clouds-line);
+  border-radius: 999px;
+  padding: 9px 12px;
+  width: fit-content;
+  font-weight: 900;
+  display: inline-flex;
+}
+
+.clouds-mission-focus-grid,
+.clouds-future-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.clouds-mission-focus-grid strong,
+.clouds-future-grid strong {
+  display: block;
+  margin: 10px 0;
+  font-size: 1.3rem;
+}
+
+@media (max-width: 1050px) {
+  .clouds-mission-grid,
+  .clouds-mission-focus-grid,
+  .clouds-future-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .clouds-mission-grid,
+  .clouds-mission-focus-grid,
+  .clouds-future-grid {
+    grid-template-columns: 1fr;
+  }
+}

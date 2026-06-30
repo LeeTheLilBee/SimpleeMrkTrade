@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Clouds Mission Lanes</title>
+  <link rel="stylesheet" href="/static/clouds/clouds.css">
+  <link rel="stylesheet" href="/static/clouds/clouds_mission_lanes.css">
+</head>
+<body class="clouds-body">
+  <main class="clouds-shell clouds-mission-shell">
+    <section class="clouds-hero clouds-mission-hero">
+      <p class="clouds-eyebrow">The Clouds / Mission Lane Board</p>
+      <h1>Every mission in its lane.</h1>
+      <p class="clouds-subtitle">
+        GP006 organizes Trust, ATM, Property, OB, Soulaana, Beta, Tower/Teller placeholders,
+        and future businesses into one owner mission board.
+      </p>
+      <div class="clouds-chip-row">
+        <span class="clouds-chip"><em>Mission Lanes</em><strong>{{ payload.mission_registry.mission_lane_count }}</strong></span>
+        <span class="clouds-chip"><em>Vault Backed</em><strong>{{ payload.mission_registry.vault_backed_lane_count }}</strong></span>
+        <span class="clouds-chip clouds-chip-locked"><em>Watch</em><strong>{{ payload.mission_status.watch_count }}</strong></span>
+        <span class="clouds-chip"><em>Future Slots</em><strong>{{ payload.future_slots.future_slot_count }}</strong></span>
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Mission Lane Status</p>
+          <h2>Clouds shows mission status. Owning apps keep authority.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/mission-lane-status.json">Status JSON</a>
+      </div>
+
+      <div class="clouds-mission-grid">
+        {% for card in payload.mission_cards %}
+        <article class="clouds-mission-card clouds-mission-status-{{ card.status }}">
+          <div class="clouds-mission-top">
+            <span>{{ card.short_label }}</span>
+            <em>{{ card.status }}</em>
+          </div>
+          <h3>{{ card.label }}</h3>
+          <p>{{ card.owner_intent }}</p>
+          <div class="clouds-mission-metrics">
+            <strong>{% if card.setup_score is not none %}{{ card.setup_score }}%{% else %}slot{% endif %}</strong>
+            <small>{{ card.focus_count }} focus · {{ card.blocked_focus_count }} blocked · {{ card.required_count }} requirements</small>
+          </div>
+          <div class="clouds-mission-pills">
+            {% for app in card.owning_apps %}
+            <span>{{ app }}</span>
+            {% endfor %}
+          </div>
+          <a href="{{ card.primary_open_target }}">Open owning route</a>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Mission Focus</p>
+          <h2>Owner attention grouped by mission lane.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/mission-lane-focus.json">Focus JSON</a>
+      </div>
+
+      <div class="clouds-mission-focus-grid">
+        {% for lane in payload.lane_focus %}
+        <article>
+          <span>{{ lane.mission_lane_id }}</span>
+          <strong>{{ lane.focus_count }} focus</strong>
+          <p>{{ lane.owner_next_action }}</p>
+          <small>{{ lane.critical_count }} critical · {{ lane.high_count }} high · {{ lane.blocked_focus_count }} blocked</small>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel">
+      <div class="clouds-section-heading">
+        <div>
+          <p class="clouds-eyebrow">Future Lane Slots</p>
+          <h2>Reserved now. Not live until source contracts exist.</h2>
+        </div>
+        <a class="clouds-json-link" href="/clouds/future-lane-slots.json">Future JSON</a>
+      </div>
+
+      <div class="clouds-future-grid">
+        {% for slot in payload.future_slots.slots %}
+        <article>
+          <span>{{ slot.future_slot_id }}</span>
+          <strong>{{ slot.label }}</strong>
+          <p>{{ slot.not_live_reason }}</p>
+          <small>{{ slot.clouds_role }}</small>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="clouds-panel clouds-handoff-panel">
+      <p class="clouds-eyebrow">Open-App Handoff</p>
+      <h2>Mission route opens the owning room. Clouds does not take over.</h2>
+
+      <div class="clouds-link-panel">
+        {% for target in payload.open_app_targets %}
+        <a href="{{ target }}">{{ target }}</a>
+        {% endfor %}
+        <a href="/clouds/mission-lane-dashboard.json">Dashboard JSON</a>
+        <a href="/clouds/gp006-status.json">GP006 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

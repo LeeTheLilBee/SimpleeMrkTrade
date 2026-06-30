@@ -226,3 +226,50 @@ def clouds_gp005_status_json():
     from .clouds_today_service import get_clouds_gp005_status_payload
     return jsonify(get_clouds_gp005_status_payload())
 # === CLOUDS GIANT PACK 005 ROUTES END ===
+
+# === CLOUDS GIANT PACK 006 ROUTES START ===
+@clouds_bp.route("/clouds/mission-lanes")
+@clouds_bp.route("/the-clouds/mission-lanes")
+def clouds_mission_lanes_room():
+    from .clouds_mission_lane_service import get_clouds_mission_lane_dashboard_payload
+    return render_template(
+        "clouds_mission_lanes.html",
+        payload=get_clouds_mission_lane_dashboard_payload(),
+    )
+
+
+@clouds_bp.route("/clouds/mission-lane-registry.json")
+def clouds_mission_lane_registry_json():
+    from .clouds_mission_lane_service import get_clouds_mission_lane_registry_payload
+    return jsonify(get_clouds_mission_lane_registry_payload())
+
+
+@clouds_bp.route("/clouds/mission-lane-status.json")
+def clouds_mission_lane_status_json():
+    from .clouds_mission_lane_service import get_clouds_mission_lane_status_payload
+    return jsonify(get_clouds_mission_lane_status_payload())
+
+
+@clouds_bp.route("/clouds/mission-lane-focus.json")
+def clouds_mission_lane_focus_json():
+    from .clouds_mission_lane_service import get_clouds_mission_lane_focus_payload
+    return jsonify(get_clouds_mission_lane_focus_payload())
+
+
+@clouds_bp.route("/clouds/future-lane-slots.json")
+def clouds_future_lane_slots_json():
+    from .clouds_mission_lane_service import get_clouds_future_lane_slots_payload
+    return jsonify(get_clouds_future_lane_slots_payload())
+
+
+@clouds_bp.route("/clouds/mission-lane-dashboard.json")
+def clouds_mission_lane_dashboard_json():
+    from .clouds_mission_lane_service import get_clouds_mission_lane_dashboard_payload
+    return jsonify(get_clouds_mission_lane_dashboard_payload())
+
+
+@clouds_bp.route("/clouds/gp006-status.json")
+def clouds_gp006_status_json():
+    from .clouds_mission_lane_service import get_clouds_gp006_status_payload
+    return jsonify(get_clouds_gp006_status_payload())
+# === CLOUDS GIANT PACK 006 ROUTES END ===
