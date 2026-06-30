@@ -23715,3 +23715,64 @@ def vault_gp027_status_json():
 # ============================================================
 # VAULT GP027 ACTION RECEIPT DETAIL DRAWER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP028 CHECKLIST COMPLETION STATE ROUTES START
+# ============================================================
+
+@app.route("/vault/checklist-completion-state")
+def vault_gp028_checklist_completion_state_page():
+    from vault.checklist_completion_state_service import render_checklist_completion_state_page
+    return render_checklist_completion_state_page()
+
+@app.route("/vault/checklist-completion-state.json")
+def vault_gp028_checklist_completion_state_json():
+    from flask import jsonify
+    from vault.checklist_completion_state_service import get_checklist_completion_state_home
+    return jsonify(get_checklist_completion_state_home())
+
+@app.route("/vault/checklist-completion-state-records.json")
+def vault_gp028_checklist_completion_state_records_json():
+    from flask import jsonify
+    from vault.checklist_completion_state_service import get_checklist_completion_state_records
+    return jsonify(get_checklist_completion_state_records())
+
+@app.route("/vault/checklist-completion-state-rows.json")
+def vault_gp028_checklist_completion_state_rows_json():
+    from flask import jsonify
+    from vault.checklist_completion_state_service import get_checklist_completion_state_rows
+    return jsonify(get_checklist_completion_state_rows())
+
+@app.route("/vault/checklist-completion-state-blockers.json")
+def vault_gp028_checklist_completion_state_blockers_json():
+    from flask import jsonify
+    from vault.checklist_completion_state_service import get_checklist_completion_state_blockers
+    return jsonify(get_checklist_completion_state_blockers())
+
+@app.route("/vault/checklist-completion-state-readiness.json")
+def vault_gp028_checklist_completion_state_readiness_json():
+    from flask import jsonify
+    from vault.checklist_completion_state_service import get_checklist_completion_state_readiness
+    return jsonify(get_checklist_completion_state_readiness())
+
+@app.route("/vault/checklist-completion-state-carry-forward.json")
+def vault_gp028_checklist_completion_state_carry_forward_json():
+    from flask import jsonify
+    from vault.checklist_completion_state_service import get_checklist_completion_state_carry_forward
+    return jsonify(get_checklist_completion_state_carry_forward())
+
+@app.route("/vault/checklist-completion-state-owner-queue.json")
+def vault_gp028_checklist_completion_state_owner_queue_json():
+    from flask import jsonify
+    from vault.checklist_completion_state_service import get_checklist_completion_state_owner_queue
+    return jsonify(get_checklist_completion_state_owner_queue())
+
+@app.route("/vault/gp028-status.json")
+def vault_gp028_status_json():
+    from flask import jsonify
+    from vault.checklist_completion_state_service import get_gp028_status
+    return jsonify(get_gp028_status())
+
+# ============================================================
+# VAULT GP028 CHECKLIST COMPLETION STATE ROUTES END
+# ============================================================
