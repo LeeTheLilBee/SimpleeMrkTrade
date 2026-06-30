@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault Receipt Control</title>
+  <link rel="stylesheet" href="/static/vault/vault.css">
+  <link rel="stylesheet" href="/static/vault/vault_receipt_control.css">
+</head>
+<body class="vault-body">
+  <main class="vault-shell vault-receipt-shell">
+    <section class="vault-hero vault-receipt-hero">
+      <p class="vault-eyebrow">Archive Vault / Receipt Chain + Control Center</p>
+      <h1>Proof chains, approvals, freezes, revokes, and undo paths.</h1>
+      <p class="vault-subtitle">
+        GP008 gives Vault a control layer for receipts, approval chains,
+        freeze/revoke/undo rules, blocked decisions, and Clouds-safe proof summaries.
+      </p>
+      <div class="vault-chip-row">
+        <span class="vault-chip vault-chip-ready"><em>Receipts</em><strong>{{ payload.receipt_chain_console.receipt_count }}</strong></span>
+        <span class="vault-chip vault-chip-ready"><em>Approval Chains</em><strong>{{ payload.approval_chain_console.chain_count }}</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>Control Rules</em><strong>{{ payload.freeze_revoke_undo_wall.rule_count }}</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>Blocked Decisions</em><strong>{{ payload.blocked_decision_review.blocked_decision_count }}</strong></span>
+      </div>
+    </section>
+
+    <section class="vault-receipt-grid">
+      <article class="vault-panel">
+        <p class="vault-eyebrow">Receipt Chain Console</p>
+        <h2>{{ payload.receipt_chain_console.receipt_count }} receipts preserved.</h2>
+        <p class="vault-muted">
+          Build, security boundary, privacy boundary, execution boundary, creative boundary,
+          and beta access receipts are tracked as private proof.
+        </p>
+        <div class="vault-receipt-pill-row">
+          {% for receipt_type in payload.receipt_chain_console.receipt_types %}
+          <span>{{ receipt_type }}</span>
+          {% endfor %}
+        </div>
+      </article>
+
+      <article class="vault-panel">
+        <p class="vault-eyebrow">Approval Chain Console</p>
+        <h2>{{ payload.approval_chain_console.chain_count }} approval chains.</h2>
+        <p class="vault-muted">
+          Exports stay locked by default and sensitive actions require owner/Tower review,
+          step-up, and role-scoped approval.
+        </p>
+        <div class="vault-receipt-pill-row">
+          <span>{{ payload.approval_chain_console.export_locked_count }} export locked</span>
+          <span>{{ payload.approval_chain_console.step_up_required_count }} step-up</span>
+          <span>{{ payload.approval_chain_console.role_count }} roles</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Freeze / Revoke / Undo Wall</p>
+          <h2>Dangerous doors stay blocked. Safe drafts get undo paths.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/freeze-revoke-undo-wall.json">Control JSON</a>
+      </div>
+
+      <div class="vault-control-metrics">
+        <article><span>Rules</span><strong>{{ payload.freeze_revoke_undo_wall.rule_count }}</strong></article>
+        <article><span>Active</span><strong>{{ payload.freeze_revoke_undo_wall.active_rule_count }}</strong></article>
+        <article><span>Templates</span><strong>{{ payload.freeze_revoke_undo_wall.template_rule_count }}</strong></article>
+        <article><span>Undo Allowed</span><strong>{{ payload.freeze_revoke_undo_wall.undo_allowed_count }}</strong></article>
+        <article><span>Tower Required</span><strong>{{ payload.freeze_revoke_undo_wall.tower_required_count }}</strong></article>
+      </div>
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Blocked Decision Review</p>
+          <h2>{{ payload.blocked_decision_review.blocked_decision_count }} blocked decisions default to stay blocked.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/blocked-decision-review.json">Blocked JSON</a>
+      </div>
+
+      <p class="vault-muted">
+        The default action is <strong>{{ payload.blocked_decision_review.default_action }}</strong>.
+        Unlocking anything dangerous requires owner intent and Tower clearance.
+      </p>
+    </section>
+
+    <section class="vault-panel vault-clouds-panel">
+      <p class="vault-eyebrow">Clouds Safe Receipt Control Source</p>
+      <h2>Clouds sees counts and control state, not sensitive receipt bodies.</h2>
+
+      <div class="vault-clouds-grid">
+        <article><span>Receipts</span><strong>{{ payload.clouds_safe_source.receipt_count }}</strong></article>
+        <article><span>Approvals</span><strong>{{ payload.clouds_safe_source.approval_chain_count }}</strong></article>
+        <article><span>Rules</span><strong>{{ payload.clouds_safe_source.control_rule_count }}</strong></article>
+        <article><span>Blocked</span><strong>{{ payload.clouds_safe_source.blocked_decision_count }}</strong></article>
+      </div>
+
+      <div class="vault-link-panel">
+        <a href="/vault/command-center">Command Center</a>
+        <a href="/vault/search-tracker">Search Tracker</a>
+        <a href="/vault/receipt-control-center.json">Receipt Control JSON</a>
+        <a href="/vault/receipt-chain-console.json">Receipt Chain JSON</a>
+        <a href="/vault/approval-chain-console.json">Approval Chain JSON</a>
+        <a href="/vault/gp008-status.json">GP008 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

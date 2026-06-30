@@ -313,3 +313,50 @@ def vault_gp007_status_json():
     from .vault_tracking_service import get_vault_gp007_status_payload
     return jsonify(get_vault_gp007_status_payload())
 # === VAULT GIANT PACK 007 ROUTES END ===
+
+# === VAULT GIANT PACK 008 ROUTES START ===
+@vault_bp.route("/vault/receipt-control")
+@vault_bp.route("/archive-vault/receipt-control")
+def vault_receipt_control_room():
+    from .vault_receipt_control_service import get_receipt_control_center_payload
+    return render_template(
+        "vault_receipt_control.html",
+        payload=get_receipt_control_center_payload(),
+    )
+
+
+@vault_bp.route("/vault/receipt-control-center.json")
+def vault_receipt_control_center_json():
+    from .vault_receipt_control_service import get_receipt_control_center_payload
+    return jsonify(get_receipt_control_center_payload())
+
+
+@vault_bp.route("/vault/receipt-chain-console.json")
+def vault_receipt_chain_console_json():
+    from .vault_receipt_control_service import get_receipt_chain_console_payload
+    return jsonify(get_receipt_chain_console_payload())
+
+
+@vault_bp.route("/vault/approval-chain-console.json")
+def vault_approval_chain_console_json():
+    from .vault_receipt_control_service import get_approval_chain_console_payload
+    return jsonify(get_approval_chain_console_payload())
+
+
+@vault_bp.route("/vault/freeze-revoke-undo-wall.json")
+def vault_freeze_revoke_undo_wall_json():
+    from .vault_receipt_control_service import get_freeze_revoke_undo_wall_payload
+    return jsonify(get_freeze_revoke_undo_wall_payload())
+
+
+@vault_bp.route("/vault/blocked-decision-review.json")
+def vault_blocked_decision_review_json():
+    from .vault_receipt_control_service import get_blocked_decision_review_payload
+    return jsonify(get_blocked_decision_review_payload())
+
+
+@vault_bp.route("/vault/gp008-status.json")
+def vault_gp008_status_json():
+    from .vault_receipt_control_service import get_vault_gp008_status_payload
+    return jsonify(get_vault_gp008_status_payload())
+# === VAULT GIANT PACK 008 ROUTES END ===

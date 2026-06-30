@@ -99,3 +99,23 @@ __all__.extend([
     "get_vault_gp007_status_payload",
 ])
 # === VAULT GIANT PACK 007 EXPORTS END ===
+
+# === VAULT GIANT PACK 008 EXPORTS START ===
+from .vault_receipt_control_service import (
+    get_approval_chain_console_payload,
+    get_blocked_decision_review_payload,
+    get_freeze_revoke_undo_wall_payload,
+    get_receipt_chain_console_payload,
+    get_receipt_control_center_payload,
+    get_vault_gp008_status_payload,
+)
+
+__all__.extend([
+    "get_receipt_chain_console_payload",
+    "get_approval_chain_console_payload",
+    "get_freeze_revoke_undo_wall_payload",
+    "get_blocked_decision_review_payload",
+    "get_receipt_control_center_payload",
+    "get_vault_gp008_status_payload",
+])
+# === VAULT GIANT PACK 008 EXPORTS END ===
