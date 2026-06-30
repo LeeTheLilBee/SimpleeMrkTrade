@@ -28433,3 +28433,70 @@ def tower_hard_recovery_1044_1094_pack_1094_json():
     from tower.tower_tower_beta_launch_authorization_review_closeout_batch_close_readiness_v1094 import build_tower_beta_launch_authorization_review_closeout_batch_close_readiness_preview
 
     return jsonify(build_tower_beta_launch_authorization_review_closeout_batch_close_readiness_preview())
+
+# ============================================================
+# VAULT GP042 STORAGE OBJECT INVENTORY PREVIEW ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-object-inventory")
+def vault_gp042_storage_object_inventory_page():
+    from vault.storage_object_inventory_preview_service import render_storage_object_inventory_preview_page
+    return render_storage_object_inventory_preview_page()
+
+@app.route("/vault/storage-object-inventory.json")
+def vault_gp042_storage_object_inventory_json():
+    from flask import jsonify
+    from vault.storage_object_inventory_preview_service import get_storage_object_inventory_home
+    return jsonify(get_storage_object_inventory_home())
+
+@app.route("/vault/storage-object-inventory-rows.json")
+def vault_gp042_storage_object_inventory_rows_json():
+    from flask import jsonify
+    from vault.storage_object_inventory_preview_service import get_storage_object_inventory_rows
+    return jsonify(get_storage_object_inventory_rows())
+
+@app.route("/vault/storage-object-status-labels.json")
+def vault_gp042_storage_object_status_labels_json():
+    from flask import jsonify
+    from vault.storage_object_inventory_preview_service import get_storage_object_status_labels
+    return jsonify(get_storage_object_status_labels())
+
+@app.route("/vault/storage-object-provider-links.json")
+def vault_gp042_storage_object_provider_links_json():
+    from flask import jsonify
+    from vault.storage_object_inventory_preview_service import get_storage_object_provider_links
+    return jsonify(get_storage_object_provider_links())
+
+@app.route("/vault/storage-object-checksum-status.json")
+def vault_gp042_storage_object_checksum_status_json():
+    from flask import jsonify
+    from vault.storage_object_inventory_preview_service import get_storage_object_checksum_status
+    return jsonify(get_storage_object_checksum_status())
+
+@app.route("/vault/storage-object-missing-warnings.json")
+def vault_gp042_storage_object_missing_warnings_json():
+    from flask import jsonify
+    from vault.storage_object_inventory_preview_service import get_storage_object_missing_warnings
+    return jsonify(get_storage_object_missing_warnings())
+
+@app.route("/vault/storage-object-tower-visibility-gates.json")
+def vault_gp042_storage_object_tower_visibility_gates_json():
+    from flask import jsonify
+    from vault.storage_object_inventory_preview_service import get_storage_object_tower_visibility_gates
+    return jsonify(get_storage_object_tower_visibility_gates())
+
+@app.route("/vault/storage-object-next-step.json")
+def vault_gp042_storage_object_next_step_json():
+    from flask import jsonify
+    from vault.storage_object_inventory_preview_service import get_storage_object_next_step
+    return jsonify(get_storage_object_next_step())
+
+@app.route("/vault/gp042-status.json")
+def vault_gp042_status_json():
+    from flask import jsonify
+    from vault.storage_object_inventory_preview_service import get_gp042_status
+    return jsonify(get_gp042_status())
+
+# ============================================================
+# VAULT GP042 STORAGE OBJECT INVENTORY PREVIEW ROUTES END
+# ============================================================
