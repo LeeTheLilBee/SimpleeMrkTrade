@@ -25281,3 +25281,70 @@ def tower_hard_recovery_840_890_pack_890_json():
     from tower.tower_tower_beta_owner_go_no_go_closeout_batch_close_readiness_v890 import build_tower_beta_owner_go_no_go_closeout_batch_close_readiness_preview
 
     return jsonify(build_tower_beta_owner_go_no_go_closeout_batch_close_readiness_preview())
+
+# ============================================================
+# VAULT GP033 PACKET REVIEW GROUPING ROUTES START
+# ============================================================
+
+@app.route("/vault/packet-review-grouping")
+def vault_gp033_packet_review_grouping_page():
+    from vault.packet_review_grouping_service import render_packet_review_grouping_page
+    return render_packet_review_grouping_page()
+
+@app.route("/vault/packet-review-grouping.json")
+def vault_gp033_packet_review_grouping_json():
+    from flask import jsonify
+    from vault.packet_review_grouping_service import get_packet_review_grouping_home
+    return jsonify(get_packet_review_grouping_home())
+
+@app.route("/vault/packet-review-grouping-groups.json")
+def vault_gp033_packet_review_grouping_groups_json():
+    from flask import jsonify
+    from vault.packet_review_grouping_service import get_packet_review_grouping_groups
+    return jsonify(get_packet_review_grouping_groups())
+
+@app.route("/vault/packet-review-grouping-lanes.json")
+def vault_gp033_packet_review_grouping_lanes_json():
+    from flask import jsonify
+    from vault.packet_review_grouping_service import get_packet_review_grouping_lanes
+    return jsonify(get_packet_review_grouping_lanes())
+
+@app.route("/vault/packet-review-grouping-redacted-preview.json")
+def vault_gp033_packet_review_grouping_redacted_preview_json():
+    from flask import jsonify
+    from vault.packet_review_grouping_service import get_packet_review_grouping_redacted_preview
+    return jsonify(get_packet_review_grouping_redacted_preview())
+
+@app.route("/vault/packet-review-grouping-tower-gates.json")
+def vault_gp033_packet_review_grouping_tower_gates_json():
+    from flask import jsonify
+    from vault.packet_review_grouping_service import get_packet_review_grouping_tower_gates
+    return jsonify(get_packet_review_grouping_tower_gates())
+
+@app.route("/vault/packet-review-grouping-blockers.json")
+def vault_gp033_packet_review_grouping_blockers_json():
+    from flask import jsonify
+    from vault.packet_review_grouping_service import get_packet_review_grouping_blockers
+    return jsonify(get_packet_review_grouping_blockers())
+
+@app.route("/vault/packet-review-grouping-owner-queue.json")
+def vault_gp033_packet_review_grouping_owner_queue_json():
+    from flask import jsonify
+    from vault.packet_review_grouping_service import get_packet_review_grouping_owner_queue
+    return jsonify(get_packet_review_grouping_owner_queue())
+
+@app.route("/vault/packet-review-grouping-carry-forward.json")
+def vault_gp033_packet_review_grouping_carry_forward_json():
+    from flask import jsonify
+    from vault.packet_review_grouping_service import get_packet_review_grouping_carry_forward
+    return jsonify(get_packet_review_grouping_carry_forward())
+
+@app.route("/vault/gp033-status.json")
+def vault_gp033_status_json():
+    from flask import jsonify
+    from vault.packet_review_grouping_service import get_gp033_status
+    return jsonify(get_gp033_status())
+
+# ============================================================
+# VAULT GP033 PACKET REVIEW GROUPING ROUTES END
+# ============================================================
