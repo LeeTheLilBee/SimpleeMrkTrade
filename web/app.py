@@ -33048,3 +33048,70 @@ def vault_gp053_status_json():
 # ============================================================
 # VAULT GP053 STORAGE PROVIDER RISK MATRIX ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP054 STORAGE PROVIDER COMPARISON BOARD ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-provider-comparison-board")
+def vault_gp054_storage_provider_comparison_board_page():
+    from vault.storage_provider_comparison_board_service import render_storage_provider_comparison_board_page
+    return render_storage_provider_comparison_board_page()
+
+@app.route("/vault/storage-provider-comparison-board.json")
+def vault_gp054_storage_provider_comparison_board_json():
+    from flask import jsonify
+    from vault.storage_provider_comparison_board_service import get_storage_provider_comparison_board_home
+    return jsonify(get_storage_provider_comparison_board_home())
+
+@app.route("/vault/storage-provider-comparison-rows.json")
+def vault_gp054_storage_provider_comparison_rows_json():
+    from flask import jsonify
+    from vault.storage_provider_comparison_board_service import get_storage_provider_comparison_rows
+    return jsonify(get_storage_provider_comparison_rows())
+
+@app.route("/vault/storage-provider-criteria-comparison-rollups.json")
+def vault_gp054_storage_provider_criteria_comparison_rollups_json():
+    from flask import jsonify
+    from vault.storage_provider_comparison_board_service import get_storage_provider_criteria_comparison_rollups
+    return jsonify(get_storage_provider_criteria_comparison_rollups())
+
+@app.route("/vault/storage-provider-risk-comparison-rollups.json")
+def vault_gp054_storage_provider_risk_comparison_rollups_json():
+    from flask import jsonify
+    from vault.storage_provider_comparison_board_service import get_storage_provider_risk_comparison_rollups
+    return jsonify(get_storage_provider_risk_comparison_rollups())
+
+@app.route("/vault/storage-provider-ranking-placeholders.json")
+def vault_gp054_storage_provider_ranking_placeholders_json():
+    from flask import jsonify
+    from vault.storage_provider_comparison_board_service import get_storage_provider_ranking_placeholders
+    return jsonify(get_storage_provider_ranking_placeholders())
+
+@app.route("/vault/storage-provider-comparison-tower-review-gates.json")
+def vault_gp054_storage_provider_comparison_tower_review_gates_json():
+    from flask import jsonify
+    from vault.storage_provider_comparison_board_service import get_storage_provider_comparison_tower_review_gates
+    return jsonify(get_storage_provider_comparison_tower_review_gates())
+
+@app.route("/vault/storage-provider-recommendation-blockers.json")
+def vault_gp054_storage_provider_recommendation_blockers_json():
+    from flask import jsonify
+    from vault.storage_provider_comparison_board_service import get_storage_provider_recommendation_blockers
+    return jsonify(get_storage_provider_recommendation_blockers())
+
+@app.route("/vault/storage-provider-comparison-next-step.json")
+def vault_gp054_storage_provider_comparison_next_step_json():
+    from flask import jsonify
+    from vault.storage_provider_comparison_board_service import get_storage_provider_comparison_next_step
+    return jsonify(get_storage_provider_comparison_next_step())
+
+@app.route("/vault/gp054-status.json")
+def vault_gp054_status_json():
+    from flask import jsonify
+    from vault.storage_provider_comparison_board_service import get_gp054_status
+    return jsonify(get_gp054_status())
+
+# ============================================================
+# VAULT GP054 STORAGE PROVIDER COMPARISON BOARD ROUTES END
+# ============================================================
