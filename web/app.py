@@ -14350,6 +14350,321 @@ def ob_giant_pack_015_mission_account_capital_rule_rehearsal_overlay_json():
         },
     }
 
+# OB_GIANT_PACK_016_TOWER_STEP_UP_ENFORCEMENT_WIRING_PREP_ROUTE
+@app.route("/ob/tower-step-up-enforcement-prep.json")
+def ob_giant_pack_016_tower_step_up_enforcement_prep_json():
+    return {
+        "version": "OB_GIANT_PACK_016_TOWER_STEP_UP_ENFORCEMENT_WIRING_PREP",
+        "source": "guarded_ob_tower_step_up_enforcement_prep_json",
+        "prep_state": {
+            "prep_id": "ob_tower_step_up_enforcement_prep_001",
+            "label": "Tower Step-Up Enforcement Wiring Prep",
+            "status": "step_up_wiring_prep_ready",
+            "purpose": "Prepare OB to request future Tower step-up for owner overrides, capital blocks, and Manual Live rehearsal submits.",
+            "owner_only": True,
+            "tower_owns_approval": True,
+            "ob_requests_only": True,
+            "no_active_auth_change": True,
+            "no_tower_file_modification": True,
+            "no_database_write": True,
+            "no_broker_data": True,
+            "capital_overlay_source": "/ob/mission-account-capital-rule-rehearsal-overlay.json",
+            "owner_input_prep_source": "/ob/owner-input-persistence-prep.json",
+            "tower_source_of_truth": "Tower",
+        },
+        "step_up_request_contract": {
+            "contract_id": "tower_step_up_request_contract_001",
+            "label": "Owner Step-Up Request Contract",
+            "purpose": "Shape future OB requests to Tower when owner wants to proceed through a guarded action.",
+            "required_fields": [
+                "step_up_request_id",
+                "source_app",
+                "requesting_room",
+                "actor",
+                "actor_role",
+                "business_lane",
+                "mission_account",
+                "requested_action",
+                "blocked_reason",
+                "severity",
+                "linked_policy",
+                "linked_rehearsal_session",
+                "linked_receipts",
+                "linked_packet",
+                "owner_acknowledgement_required",
+                "tower_clearance_required",
+                "expires_at",
+                "revocation_status",
+            ],
+            "status": "ready",
+        },
+        "step_up_session_placeholder": {
+            "session_id": "tower_step_up_session_placeholder_001",
+            "label": "Step-Up Session Placeholder",
+            "enabled_now": False,
+            "future_behavior": "Tower creates/verifies step-up session and returns clearance state to OB.",
+            "status_values": ["not_requested", "requested", "pending_owner_step_up", "approved", "denied", "expired", "revoked"],
+            "timeout_policy": "future_tower_policy",
+            "owner_reauth_required": True,
+            "status": "placeholder",
+        },
+        "tower_approval_receipt_placeholder": {
+            "receipt_id": "tower_approval_receipt_placeholder_001",
+            "label": "Tower Approval Receipt Placeholder",
+            "enabled_now": False,
+            "future_receipt_fields": [
+                "receipt_id",
+                "timestamp",
+                "source_app",
+                "actor",
+                "approved_action",
+                "scope",
+                "expiration",
+                "linked_policy",
+                "linked_block_reason",
+                "linked_rehearsal_session",
+                "revocation_status",
+                "vault_ready",
+            ],
+            "no_direct_vault_upload": True,
+            "status": "placeholder",
+        },
+        "enforcement_gates": [
+            {
+                "gate_id": "capital_override_step_up_gate",
+                "label": "Capital override step-up gate",
+                "purpose": "Future owner override of capital block requires Tower step-up approval receipt.",
+                "source_block_reasons": ["atm_reserve_boundary_at_risk", "apartment_reserve_boundary_at_risk", "trust_capital_requires_review", "protected_floor_would_be_breached", "deployment_limit_exceeded"],
+                "required_clearance": "owner_step_up_plus_tower_approval_receipt",
+                "enabled_now": False,
+                "status": "locked",
+            },
+            {
+                "gate_id": "owner_input_submit_step_up_gate",
+                "label": "Owner input submit step-up gate",
+                "purpose": "Future write submit requires Tower step-up and valid owner input draft.",
+                "source_block_reasons": ["owner_step_up_required", "required_field_gate", "sensitive_field_lock"],
+                "required_clearance": "owner_step_up_before_persistence_write",
+                "enabled_now": False,
+                "status": "locked",
+            },
+            {
+                "gate_id": "manual_live_real_activation_gate",
+                "label": "Manual Live real activation gate",
+                "purpose": "Real Manual Live remains locked until Tower clearance and readiness conditions are satisfied.",
+                "source_block_reasons": ["manual_live_real_not_active", "rehearsal_only_mode", "capital_rules_not_live"],
+                "required_clearance": "future_manual_live_owner_clearance",
+                "enabled_now": False,
+                "status": "locked",
+            },
+            {
+                "gate_id": "hybrid_automated_gate",
+                "label": "Hybrid / Automated gate",
+                "purpose": "Hybrid and Automated remain locked behind future Tower policy.",
+                "source_block_reasons": ["hybrid_locked", "automated_locked", "live_auto_locked"],
+                "required_clearance": "future_high_risk_tower_clearance",
+                "enabled_now": False,
+                "status": "locked",
+            },
+        ],
+        "blocked_reason_acknowledgement_contract": {
+            "acknowledgement_id": "blocked_reason_acknowledgement_contract_001",
+            "label": "Blocked Reason Acknowledgement Contract",
+            "purpose": "Owner must acknowledge why a request is blocked before future step-up can proceed.",
+            "required_fields": [
+                "acknowledgement_id",
+                "blocked_reason",
+                "blocking_app",
+                "severity",
+                "owner_acknowledged",
+                "acknowledged_at",
+                "linked_policy",
+                "linked_account",
+                "linked_rehearsal_session",
+                "next_allowed_action",
+            ],
+            "enabled_now": False,
+            "status": "placeholder",
+        },
+        "approval_scope_contract": {
+            "scope_id": "tower_approval_scope_contract_001",
+            "label": "Approval Scope Contract",
+            "purpose": "Future Tower approval must be scoped and expiring, not a permanent blank check.",
+            "scopes": [
+                "single_rehearsal_submit",
+                "single_capital_override_review",
+                "single_manual_live_owner_action",
+                "single_receipt_confirmation",
+                "readiness_checkpoint_only",
+            ],
+            "required_limits": ["scope", "expiration", "linked_action", "linked_policy", "linked_receipt", "revocation_status"],
+            "status": "ready",
+        },
+        "tower_clearance_states": [
+            {"state_id": "not_requested", "label": "Not requested", "meaning": "OB has not requested Tower step-up.", "owner_next_action": "Resolve normal requirements first.", "status": "ready"},
+            {"state_id": "requested", "label": "Requested", "meaning": "OB has shaped a future step-up request.", "owner_next_action": "Tower must own approval.", "status": "placeholder"},
+            {"state_id": "pending_owner_step_up", "label": "Pending owner step-up", "meaning": "Owner must complete future Tower verification.", "owner_next_action": "Complete Tower step-up when wired.", "status": "placeholder"},
+            {"state_id": "approved", "label": "Approved", "meaning": "Tower approves a scoped action with expiration.", "owner_next_action": "Proceed only within scope.", "status": "placeholder"},
+            {"state_id": "denied", "label": "Denied", "meaning": "Tower denies requested action.", "owner_next_action": "Do not proceed.", "status": "placeholder"},
+            {"state_id": "expired", "label": "Expired", "meaning": "Approval expired.", "owner_next_action": "Request new step-up if still needed.", "status": "placeholder"},
+            {"state_id": "revoked", "label": "Revoked", "meaning": "Tower revoked approval.", "owner_next_action": "Stop action and create review receipt.", "status": "placeholder"},
+        ],
+        "step_up_flow_prep": [
+            {"step_id": "detect_blocked_action", "label": "Detect blocked action", "purpose": "OB sees capital rule, owner input, or Manual Live gate block.", "status": "ready"},
+            {"step_id": "shape_step_up_request", "label": "Shape step-up request", "purpose": "OB builds future Tower request payload without submitting it.", "status": "ready"},
+            {"step_id": "require_block_reason_acknowledgement", "label": "Require blocked reason acknowledgement", "purpose": "Owner must understand why the request is blocked.", "status": "ready"},
+            {"step_id": "handoff_to_tower", "label": "Handoff to Tower", "purpose": "Future Tower route/session handles actual verification.", "status": "placeholder"},
+            {"step_id": "receive_clearance_state", "label": "Receive clearance state", "purpose": "OB will later receive approved/denied/expired/revoked status.", "status": "placeholder"},
+            {"step_id": "enforce_scope_expiration", "label": "Enforce scope and expiration", "purpose": "Future approval applies only to exact scoped action.", "status": "placeholder"},
+            {"step_id": "write_approval_receipt_placeholder", "label": "Write approval receipt placeholder", "purpose": "Future Tower receipt becomes Vault-ready without OB direct upload.", "status": "placeholder"},
+        ],
+        "blocked_actions": [
+            "approve_step_up_inside_ob",
+            "change_tower_permission_inside_ob",
+            "create_active_auth_session_now",
+            "write_tower_receipt_now",
+            "write_rehearsal_database_now",
+            "override_capital_rule_now",
+            "submit_owner_input_now",
+            "submit_order_from_ob",
+            "read_broker_account",
+            "auto_execute",
+            "upload_direct_to_vault",
+            "show_step_up_controls_to_beta_user",
+            "make_approval_permanent",
+        ],
+        "boundaries": {
+            "private_beta_only": True,
+            "owner_rehearsal_only": True,
+            "tower_step_up_wiring_prep_only": True,
+            "tower_owns_approval": True,
+            "ob_requests_only": True,
+            "no_active_auth_change": True,
+            "no_tower_file_modification": True,
+            "no_permission_mutation": True,
+            "no_database_write": True,
+            "no_file_write": True,
+            "no_real_capital_movement": True,
+            "no_bank_integration": True,
+            "no_broker_api": True,
+            "no_broker_read": True,
+            "no_order_submit": True,
+            "no_auto_close": True,
+            "no_auto_execution": True,
+            "no_direct_vault_upload": True,
+            "owner_override_placeholder_only": True,
+            "submit_gate_placeholder_only": True,
+            "manual_live_real_locked": True,
+            "hybrid_locked": True,
+            "automated_locked": True,
+            "live_auto_locked": True,
+        },
+    }
+
+# OB_GIANT_PACK_017_REAL_CANDIDATE_REHEARSAL_ADAPTER_ROUTE
+@app.route("/ob/real-candidate-rehearsal-adapter.json")
+def ob_giant_pack_017_real_candidate_rehearsal_adapter_json():
+    return {
+        "version": "OB_GIANT_PACK_017_REAL_CANDIDATE_REHEARSAL_ADAPTER",
+        "source": "guarded_ob_real_candidate_rehearsal_adapter_json",
+        "status": "real_candidate_rehearsal_adapter_ready",
+        "primary_items": [
+            {"item_id": "candidate_normalization", "label": "Candidate normalization", "purpose": "Normalize real engine candidates into rehearsal-safe shape.", "status": "ready"},
+            {"item_id": "candidate_to_rehearsal_mapping", "label": "Candidate to rehearsal mapping", "purpose": "Map symbol, strategy, score, account fit, confidence, and freshness into rehearsal.", "status": "ready"},
+            {"item_id": "option_candidate_rehearsal_mapping", "label": "Option candidate rehearsal mapping", "purpose": "Option candidates can be rehearsed without live order selection.", "status": "ready"},
+            {"item_id": "stock_fallback_rehearsal_mapping", "label": "Stock fallback rehearsal mapping", "purpose": "Stock fallback can be rehearsed safely.", "status": "ready"}
+        ],
+        "secondary_items": [
+            {"item_id": "observed_only_support", "label": "Observed-only candidate support", "purpose": "Observed-only candidates can be rehearsed as watch/reject scenarios.", "status": "ready"},
+            {"item_id": "candidate_source_confidence", "label": "Candidate source confidence", "purpose": "Confidence label enters rehearsal.", "status": "ready"},
+            {"item_id": "candidate_freshness_label", "label": "Candidate freshness label", "purpose": "Freshness label enters rehearsal.", "status": "ready"}
+        ],
+        "tertiary_items": [
+            {"item_id": "no_order_intent", "label": "No order intent", "purpose": "Adapter strips execution meaning.", "status": "locked"}
+        ],
+        "blocked_actions": ["submit_order_from_candidate", "read_broker_chain", "create_real_contract_selection", "auto_execute_candidate", "publish_candidate_proof"],
+        "boundaries": {"real_candidate_adapter_only": True, "read_only_candidate_handoff": True, "no_order_intent": True, "no_database_write": True, "no_broker_api": True, "no_broker_read": True, "no_order_submit": True, "no_auto_execution": True, "live_auto_locked": True}
+    }
+
+# OB_GIANT_PACK_018_MANUAL_LIVE_OWNER_REHEARSAL_FINAL_READINESS_ROUTE
+@app.route("/ob/manual-live-owner-rehearsal-final-readiness.json")
+def ob_giant_pack_018_manual_live_owner_rehearsal_final_readiness_json():
+    return {
+        "version": "OB_GIANT_PACK_018_MANUAL_LIVE_OWNER_REHEARSAL_FINAL_READINESS",
+        "source": "guarded_ob_manual_live_owner_rehearsal_final_readiness_json",
+        "status": "owner_rehearsal_final_readiness_ready",
+        "primary_items": [
+            {"item_id": "gp011_ready", "label": "GP011 rehearsal engine", "purpose": "Owner rehearsal engine exists.", "status": "ready"},
+            {"item_id": "gp012_ready", "label": "GP012 record contracts", "purpose": "Rehearsal record contracts exist.", "status": "ready"},
+            {"item_id": "gp013_ready", "label": "GP013 command board", "purpose": "Review Center command board exists.", "status": "ready"},
+            {"item_id": "gp014_ready", "label": "GP014 owner input prep", "purpose": "Owner input prep exists.", "status": "ready"},
+            {"item_id": "gp015_ready", "label": "GP015 capital rules", "purpose": "Capital rules exist.", "status": "ready"},
+            {"item_id": "gp016_ready", "label": "GP016 Tower step-up prep", "purpose": "Tower step-up prep exists.", "status": "ready"},
+            {"item_id": "gp017_ready", "label": "GP017 candidate adapter", "purpose": "Candidate adapter exists.", "status": "ready"}
+        ],
+        "secondary_items": [
+            {"item_id": "owner_practice_ready", "label": "Owner practice ready", "purpose": "Safe repeated rehearsal is available.", "status": "ready"},
+            {"item_id": "real_manual_live_locked", "label": "Real Manual Live locked", "purpose": "Real Manual Live remains locked.", "status": "locked"}
+        ],
+        "tertiary_items": [
+            {"item_id": "manual_live_readiness_label", "label": "Manual Live readiness label", "purpose": "manual_live_owner_rehearsal_ready, not real_manual_live_ready.", "status": "ready"}
+        ],
+        "blocked_actions": ["start_real_manual_live", "enable_hybrid", "enable_automated", "submit_order_from_ob", "read_broker_account"],
+        "boundaries": {"owner_practice_ready": True, "real_manual_live_locked": True, "manual_live_real_locked": True, "hybrid_locked": True, "automated_locked": True, "no_broker_api": True, "no_order_submit": True, "live_auto_locked": True}
+    }
+
+# OB_GIANT_PACK_019_REHEARSAL_QUALITY_FRESHNESS_GATE_ROUTE
+@app.route("/ob/rehearsal-quality-freshness-gate.json")
+def ob_giant_pack_019_rehearsal_quality_freshness_gate_json():
+    return {
+        "version": "OB_GIANT_PACK_019_REHEARSAL_QUALITY_FRESHNESS_GATE",
+        "source": "guarded_ob_rehearsal_quality_freshness_gate_json",
+        "status": "quality_freshness_gate_ready",
+        "primary_items": [
+            {"rule_id": "data_freshness_check", "label": "Data freshness check", "purpose": "Shows fresh/aging/stale/unknown.", "status": "ready"},
+            {"rule_id": "source_confidence_check", "label": "Source confidence check", "purpose": "Shows confidence/source label.", "status": "ready"},
+            {"rule_id": "stale_candidate_block", "label": "Stale candidate block", "purpose": "Stale candidate cannot look ready without warning.", "status": "ready"},
+            {"rule_id": "missing_field_block", "label": "Missing field block", "purpose": "Missing fields block final readiness.", "status": "ready"}
+        ],
+        "secondary_items": [
+            {"rule_id": "incomplete_rehearsal_block", "label": "Incomplete rehearsal block", "purpose": "Incomplete rehearsal cannot count as owner-ready.", "status": "ready"},
+            {"rule_id": "low_confidence_warning", "label": "Low confidence warning", "purpose": "Low confidence data requires owner note.", "status": "ready"},
+            {"rule_id": "owner_note_required", "label": "Owner note required", "purpose": "Owner note required on confidence/freshness fail.", "status": "ready"}
+        ],
+        "tertiary_items": [
+            {"rule_id": "review_center_quality_warning", "label": "Review Center quality warning", "purpose": "Review Center shows quality warnings.", "status": "ready"}
+        ],
+        "blocked_actions": ["mark_stale_candidate_ready", "complete_without_required_fields", "hide_quality_warning", "claim_verified_without_source"],
+        "boundaries": {"quality_gate_only": True, "no_database_write": True, "no_broker_api": True, "no_order_submit": True, "live_auto_locked": True}
+    }
+
+# OB_GIANT_PACK_020_MANUAL_LIVE_PRE_LIVE_LOCK_WALL_ROUTE
+@app.route("/ob/manual-live-pre-live-lock-wall.json")
+def ob_giant_pack_020_manual_live_pre_live_lock_wall_json():
+    return {
+        "version": "OB_GIANT_PACK_020_MANUAL_LIVE_PRE_LIVE_LOCK_WALL",
+        "source": "guarded_ob_manual_live_pre_live_lock_wall_json",
+        "status": "pre_live_lock_wall_ready",
+        "primary_items": [
+            {"lock_id": "owner_rehearsal_allowed", "label": "Owner rehearsal allowed", "purpose": "Owner may continue safe fake/demo rehearsal.", "status": "ready"},
+            {"lock_id": "real_manual_live_locked", "label": "Real Manual Live locked", "purpose": "Real Manual Live remains blocked.", "status": "locked"},
+            {"lock_id": "broker_action_blocked", "label": "Broker action blocked", "purpose": "No broker read/order/close.", "status": "locked"},
+            {"lock_id": "bank_action_blocked", "label": "Bank action blocked", "purpose": "No bank read/capital movement.", "status": "locked"},
+            {"lock_id": "database_write_blocked", "label": "Database write blocked", "purpose": "No DB write yet.", "status": "locked"}
+        ],
+        "secondary_items": [
+            {"lock_id": "vault_direct_upload_blocked", "label": "Vault direct upload blocked", "purpose": "No OB direct Vault upload.", "status": "locked"},
+            {"lock_id": "hybrid_locked", "label": "Hybrid locked", "purpose": "Hybrid locked.", "status": "locked"},
+            {"lock_id": "automated_locked", "label": "Automated locked", "purpose": "Automated locked.", "status": "locked"},
+            {"lock_id": "live_auto_locked", "label": "Live Auto Locked", "purpose": "Live Auto Locked preserved.", "status": "locked"}
+        ],
+        "tertiary_items": [
+            {"item_id": "batch_close_readiness", "label": "Batch close readiness", "purpose": "GP017-GP020 can be saved together after passing.", "status": "ready"}
+        ],
+        "blocked_actions": ["enable_real_manual_live", "connect_broker_api", "read_bank_account", "write_database", "upload_direct_to_vault", "enable_hybrid", "enable_automated"],
+        "boundaries": {"pre_live_lock_wall": True, "owner_rehearsal_allowed": True, "real_manual_live_locked": True, "manual_live_real_locked": True, "hybrid_locked": True, "automated_locked": True, "no_broker_api": True, "no_order_submit": True, "live_auto_locked": True}
+    }
+
 
 if __name__ == "__main__":
     try:
