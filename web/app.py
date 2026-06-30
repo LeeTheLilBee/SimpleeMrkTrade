@@ -26290,3 +26290,70 @@ def vault_gp036_status_json():
 # ============================================================
 # VAULT GP036 OWNER DECISION REVIEW ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP037 REVIEWED DECISION RECEIPT STAGING ROUTES START
+# ============================================================
+
+@app.route("/vault/reviewed-decision-receipt-staging")
+def vault_gp037_reviewed_decision_receipt_staging_page():
+    from vault.reviewed_decision_receipt_staging_service import render_reviewed_decision_receipt_staging_page
+    return render_reviewed_decision_receipt_staging_page()
+
+@app.route("/vault/reviewed-decision-receipt-staging.json")
+def vault_gp037_reviewed_decision_receipt_staging_json():
+    from flask import jsonify
+    from vault.reviewed_decision_receipt_staging_service import get_reviewed_decision_receipt_staging_home
+    return jsonify(get_reviewed_decision_receipt_staging_home())
+
+@app.route("/vault/reviewed-decision-receipt-drafts.json")
+def vault_gp037_reviewed_decision_receipt_drafts_json():
+    from flask import jsonify
+    from vault.reviewed_decision_receipt_staging_service import get_reviewed_decision_receipt_drafts
+    return jsonify(get_reviewed_decision_receipt_drafts())
+
+@app.route("/vault/reviewed-decision-ack-receipt-previews.json")
+def vault_gp037_reviewed_decision_ack_receipt_previews_json():
+    from flask import jsonify
+    from vault.reviewed_decision_receipt_staging_service import get_reviewed_decision_ack_receipt_previews
+    return jsonify(get_reviewed_decision_ack_receipt_previews())
+
+@app.route("/vault/reviewed-decision-no-execution-proof.json")
+def vault_gp037_reviewed_decision_no_execution_proof_json():
+    from flask import jsonify
+    from vault.reviewed_decision_receipt_staging_service import get_reviewed_decision_no_execution_proof
+    return jsonify(get_reviewed_decision_no_execution_proof())
+
+@app.route("/vault/reviewed-decision-tower-receipt-refs.json")
+def vault_gp037_reviewed_decision_tower_receipt_refs_json():
+    from flask import jsonify
+    from vault.reviewed_decision_receipt_staging_service import get_reviewed_decision_tower_receipt_refs
+    return jsonify(get_reviewed_decision_tower_receipt_refs())
+
+@app.route("/vault/reviewed-decision-blocker-receipt-refs.json")
+def vault_gp037_reviewed_decision_blocker_receipt_refs_json():
+    from flask import jsonify
+    from vault.reviewed_decision_receipt_staging_service import get_reviewed_decision_blocker_receipt_refs
+    return jsonify(get_reviewed_decision_blocker_receipt_refs())
+
+@app.route("/vault/reviewed-decision-next-receipts.json")
+def vault_gp037_reviewed_decision_next_receipts_json():
+    from flask import jsonify
+    from vault.reviewed_decision_receipt_staging_service import get_reviewed_decision_next_receipts
+    return jsonify(get_reviewed_decision_next_receipts())
+
+@app.route("/vault/reviewed-decision-receipt-carry-forward.json")
+def vault_gp037_reviewed_decision_receipt_carry_forward_json():
+    from flask import jsonify
+    from vault.reviewed_decision_receipt_staging_service import get_reviewed_decision_receipt_carry_forward
+    return jsonify(get_reviewed_decision_receipt_carry_forward())
+
+@app.route("/vault/gp037-status.json")
+def vault_gp037_status_json():
+    from flask import jsonify
+    from vault.reviewed_decision_receipt_staging_service import get_gp037_status
+    return jsonify(get_gp037_status())
+
+# ============================================================
+# VAULT GP037 REVIEWED DECISION RECEIPT STAGING ROUTES END
+# ============================================================
