@@ -16343,6 +16343,329 @@ def ob_giant_pack_035_manual_live_operator_confidence_readiness_checkpoint_json(
         },
     }
 
+# OB_GIANT_PACK_036_REAL_MANUAL_LIVE_DRY_RUN_PERSISTENCE_ENGINE_ROUTE
+@app.route("/ob/manual-live-dry-run-persistence.json", methods=["GET"])
+def ob_giant_pack_036_manual_live_dry_run_persistence_json():
+    from flask import jsonify, request
+    from web.ob_manual_live_dry_run_persistence import service_status, list_dry_run_records
+
+    owner_id = request.args.get("owner_id") or None
+    symbol = request.args.get("symbol") or None
+    limit = int(request.args.get("limit") or 25)
+
+    service = service_status()
+    records = list_dry_run_records(owner_id=owner_id, symbol=symbol, limit=limit)
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_036_REAL_MANUAL_LIVE_DRY_RUN_PERSISTENCE_ENGINE",
+        "source": "guarded_real_manual_live_dry_run_persistence_status",
+        "service": service,
+        "records": records,
+        "record_count": len(records),
+        "real_sqlite_persistence": True,
+        "real_durable_dry_run_records": True,
+        "real_create_endpoint": "/ob/manual-live-dry-run-records.json",
+        "real_list_endpoint": "/ob/manual-live-dry-run-records.json",
+        "real_read_endpoint_pattern": "/ob/manual-live-dry-run-records/<record_id>.json",
+        "boundaries": service["boundaries"],
+        "blocked_actions": service["blocked_actions"],
+    })
+
+
+@app.route("/ob/manual-live-dry-run-records.json", methods=["GET"])
+def ob_giant_pack_036_manual_live_dry_run_records_list_json():
+    from flask import jsonify, request
+    from web.ob_manual_live_dry_run_persistence import list_dry_run_records, service_status
+
+    owner_id = request.args.get("owner_id") or None
+    symbol = request.args.get("symbol") or None
+    limit = int(request.args.get("limit") or 25)
+
+    records = list_dry_run_records(owner_id=owner_id, symbol=symbol, limit=limit)
+    service = service_status()
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_036_REAL_MANUAL_LIVE_DRY_RUN_PERSISTENCE_ENGINE",
+        "source": "guarded_real_manual_live_dry_run_records_list",
+        "records": records,
+        "record_count": len(records),
+        "real_sqlite_persistence": True,
+        "boundaries": service["boundaries"],
+        "blocked_actions": service["blocked_actions"],
+    })
+
+
+@app.route("/ob/manual-live-dry-run-records.json", methods=["POST"])
+def ob_giant_pack_036_manual_live_dry_run_records_create_json():
+    from flask import jsonify, request
+    from web.ob_manual_live_dry_run_persistence import create_dry_run_record
+
+    payload = request.get_json(silent=True) or {}
+    created = create_dry_run_record(payload)
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_036_REAL_MANUAL_LIVE_DRY_RUN_PERSISTENCE_ENGINE",
+        "source": "guarded_real_manual_live_dry_run_records_create",
+        **created,
+    }), 201
+
+
+@app.route("/ob/manual-live-dry-run-records/<record_id>.json", methods=["GET"])
+def ob_giant_pack_036_manual_live_dry_run_records_read_json(record_id):
+    from flask import jsonify
+    from web.ob_manual_live_dry_run_persistence import get_dry_run_record, service_status
+
+    record = get_dry_run_record(record_id)
+    service = service_status()
+
+    if record is None:
+        return jsonify({
+            "version": "OB_GIANT_PACK_036_REAL_MANUAL_LIVE_DRY_RUN_PERSISTENCE_ENGINE",
+            "ok": False,
+            "error": "record_not_found",
+            "record_id": record_id,
+            "boundaries": service["boundaries"],
+            "blocked_actions": service["blocked_actions"],
+        }), 404
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_036_REAL_MANUAL_LIVE_DRY_RUN_PERSISTENCE_ENGINE",
+        "source": "guarded_real_manual_live_dry_run_records_read",
+        "ok": True,
+        "record": record,
+        "real_sqlite_persistence": True,
+        "boundaries": service["boundaries"],
+        "blocked_actions": service["blocked_actions"],
+    })
+
+# OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW_ROUTE
+@app.route("/ob/manual-live-dry-run-history.json", methods=["GET"])
+def ob_giant_pack_037_manual_live_dry_run_history_json():
+    from flask import jsonify, request
+    from web.ob_manual_live_dry_run_history import build_history_overview
+
+    owner_id = request.args.get("owner_id") or None
+    symbol = request.args.get("symbol") or None
+    limit = int(request.args.get("limit") or 25)
+
+    overview = build_history_overview(owner_id=owner_id, symbol=symbol, limit=limit)
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW",
+        "source": "guarded_real_manual_live_dry_run_history_overview",
+        **overview,
+    })
+
+
+@app.route("/ob/manual-live-dry-run-history-status.json", methods=["GET"])
+def ob_giant_pack_037_manual_live_dry_run_history_status_json():
+    from flask import jsonify
+    from web.ob_manual_live_dry_run_history import history_status
+
+    status = history_status()
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW",
+        "source": "guarded_real_manual_live_dry_run_history_status",
+        **status,
+    })
+
+
+@app.route("/ob/manual-live-dry-run-record-detail/<record_id>.json", methods=["GET"])
+def ob_giant_pack_037_manual_live_dry_run_record_detail_json(record_id):
+    from flask import jsonify
+    from web.ob_manual_live_dry_run_history import build_record_detail
+
+    detail = build_record_detail(record_id)
+
+    if not detail.get("ok"):
+        return jsonify({
+            "version": "OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW",
+            "source": "guarded_real_manual_live_dry_run_record_detail",
+            **detail,
+        }), 404
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW",
+        "source": "guarded_real_manual_live_dry_run_record_detail",
+        **detail,
+    })
+
+
+@app.route("/ob/manual-live-dry-run-review-events.json", methods=["GET"])
+def ob_giant_pack_037_manual_live_dry_run_review_events_list_json():
+    from flask import jsonify, request
+    from web.ob_manual_live_dry_run_history import list_review_events, history_boundaries, LOCKED_ACTIONS
+
+    record_id = request.args.get("record_id") or None
+    review_status = request.args.get("review_status") or None
+    limit = int(request.args.get("limit") or 50)
+
+    events = list_review_events(record_id=record_id, review_status=review_status, limit=limit)
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW",
+        "source": "guarded_real_manual_live_dry_run_review_events_list",
+        "ok": True,
+        "events": events,
+        "event_count": len(events),
+        "real_review_event_persistence": True,
+        "boundaries": history_boundaries(),
+        "blocked_actions": LOCKED_ACTIONS,
+    })
+
+
+@app.route("/ob/manual-live-dry-run-records/<record_id>/review-events.json", methods=["POST"])
+def ob_giant_pack_037_manual_live_dry_run_review_events_create_json(record_id):
+    from flask import jsonify, request
+    from web.ob_manual_live_dry_run_history import create_review_event, history_boundaries, LOCKED_ACTIONS
+
+    payload = request.get_json(silent=True) or {}
+
+    try:
+        created = create_review_event(record_id, payload)
+    except KeyError:
+        return jsonify({
+            "version": "OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW",
+            "ok": False,
+            "error": "record_not_found",
+            "record_id": record_id,
+            "boundaries": history_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 404
+    except ValueError as exc:
+        return jsonify({
+            "version": "OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW",
+            "ok": False,
+            "error": "blocked_live_action_flag",
+            "message": str(exc),
+            "boundaries": history_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 400
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW",
+        "source": "guarded_real_manual_live_dry_run_review_events_create",
+        **created,
+    }), 201
+
+# OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE_ROUTE
+@app.route("/ob/manual-live-dry-run-receipts.json", methods=["GET"])
+def ob_giant_pack_038_manual_live_dry_run_receipts_json():
+    from flask import jsonify, request
+    from web.ob_manual_live_dry_run_receipts import receipt_overview
+    from web.ob_manual_live_dry_run_history import build_history_overview
+
+    limit = int(request.args.get("limit") or 50)
+    overview = receipt_overview(limit=limit)
+    history_overview = build_history_overview(limit=25)
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE",
+        "source": "guarded_real_manual_live_dry_run_receipts_overview",
+        **overview,
+        "records": history_overview.get("records", []),
+    })
+
+
+@app.route("/ob/manual-live-dry-run-receipts-status.json", methods=["GET"])
+def ob_giant_pack_038_manual_live_dry_run_receipts_status_json():
+    from flask import jsonify
+    from web.ob_manual_live_dry_run_receipts import receipt_status
+
+    status = receipt_status()
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE",
+        "source": "guarded_real_manual_live_dry_run_receipts_status",
+        **status,
+    })
+
+
+@app.route("/ob/manual-live-dry-run-records/<record_id>/receipt-packets.json", methods=["GET"])
+def ob_giant_pack_038_manual_live_dry_run_record_receipts_list_json(record_id):
+    from flask import jsonify
+    from web.ob_manual_live_dry_run_receipts import list_receipt_packets, receipt_boundaries, LOCKED_ACTIONS
+
+    packets = list_receipt_packets(record_id=record_id, limit=100)
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE",
+        "source": "guarded_real_manual_live_dry_run_record_receipts_list",
+        "ok": True,
+        "record_id": record_id,
+        "packets": packets,
+        "packet_count": len(packets),
+        "real_receipt_packet_persistence": True,
+        "boundaries": receipt_boundaries(),
+        "blocked_actions": LOCKED_ACTIONS,
+    })
+
+
+@app.route("/ob/manual-live-dry-run-records/<record_id>/receipt-packets.json", methods=["POST"])
+def ob_giant_pack_038_manual_live_dry_run_record_receipts_create_json(record_id):
+    from flask import jsonify, request
+    from web.ob_manual_live_dry_run_receipts import create_receipt_packet, receipt_boundaries, LOCKED_ACTIONS
+
+    payload = request.get_json(silent=True) or {}
+
+    try:
+        created = create_receipt_packet(record_id, payload)
+    except KeyError:
+        return jsonify({
+            "version": "OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE",
+            "ok": False,
+            "error": "record_not_found",
+            "record_id": record_id,
+            "boundaries": receipt_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 404
+    except ValueError as exc:
+        return jsonify({
+            "version": "OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE",
+            "ok": False,
+            "error": "blocked_live_action_flag",
+            "message": str(exc),
+            "boundaries": receipt_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 400
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE",
+        "source": "guarded_real_manual_live_dry_run_record_receipts_create",
+        **created,
+    }), 201
+
+
+@app.route("/ob/manual-live-dry-run-receipt-packets/<packet_id>.json", methods=["GET"])
+def ob_giant_pack_038_manual_live_dry_run_receipt_packet_read_json(packet_id):
+    from flask import jsonify
+    from web.ob_manual_live_dry_run_receipts import get_receipt_packet, receipt_boundaries, LOCKED_ACTIONS
+
+    packet = get_receipt_packet(packet_id)
+
+    if packet is None:
+        return jsonify({
+            "version": "OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE",
+            "ok": False,
+            "error": "packet_not_found",
+            "packet_id": packet_id,
+            "boundaries": receipt_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 404
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE",
+        "source": "guarded_real_manual_live_dry_run_receipt_packet_read",
+        "ok": True,
+        "packet": packet,
+        "real_receipt_packet_persistence": True,
+        "real_receipt_json_file_write": True,
+        "real_receipt_packet_hash": True,
+        "boundaries": receipt_boundaries(),
+        "blocked_actions": LOCKED_ACTIONS,
+    })
+
 
 if __name__ == "__main__":
     try:

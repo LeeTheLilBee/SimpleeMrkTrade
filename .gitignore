@@ -31,3 +31,6 @@ engine/*.backup_*
 data/canonical_ledger.json
 data/recent_reports.json
 data/test_logs/
+data/ob_manual_live_dry_run.sqlite3
+data/ob_manual_live_dry_run.sqlite3-*
+data/ob_manual_live_receipt_packets/

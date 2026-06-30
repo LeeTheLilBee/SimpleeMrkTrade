@@ -19600,3 +19600,819 @@ option {
   }
 }
 
+
+/* OB_GIANT_PACK_036_REAL_MANUAL_LIVE_DRY_RUN_PERSISTENCE_ENGINE_CSS */
+
+.ob-manual-live-dry-run-persistence-panel {
+  position: relative;
+  z-index: 96;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(126,252,255,0.34);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.090), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(101,242,118,0.060), transparent 38%),
+    rgba(0,0,0,0.38);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.52), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-manual-live-dry-run-persistence-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-manual-live-dry-run-persistence-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-manual-live-dry-run-persistence-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-manual-live-dry-run-persistence-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-manual-live-dry-run-persistence-chip,
+.ob-manual-live-dry-run-persistence-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-manual-live-dry-run-persistence-chip.green,
+.ob-manual-live-dry-run-persistence-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-manual-live-dry-run-persistence-chip.gold,
+.ob-manual-live-dry-run-persistence-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-manual-live-dry-run-persistence-chip.red,
+.ob-manual-live-dry-run-persistence-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-manual-live-dry-run-persistence-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-manual-live-dry-run-persistence-card,
+.ob-manual-live-dry-run-persistence-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-manual-live-dry-run-persistence-section {
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-dry-run-persistence-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-manual-live-dry-run-persistence-card span,
+.ob-manual-live-dry-run-persistence-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-manual-live-dry-run-persistence-card strong,
+.ob-manual-live-dry-run-persistence-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-manual-live-dry-run-persistence-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-dry-run-persistence-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-manual-live-dry-run-persistence-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-manual-live-dry-run-persistence-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-manual-live-dry-run-persistence-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-manual-live-dry-run-persistence-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(126,252,255,0.28);
+  color: var(--ob-cyan);
+  background: rgba(126,252,255,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-manual-live-dry-run-persistence-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-manual-live-dry-run-persistence-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-manual-live-dry-run-persistence-callout,
+.ob-manual-live-dry-run-persistence-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(126,252,255,0.17);
+  border-radius: 13px;
+  background: rgba(126,252,255,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-manual-live-dry-run-persistence-callout strong {
+  color: var(--ob-cyan);
+}
+
+.ob-manual-live-dry-run-persistence-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-manual-live-dry-run-persistence-boundary strong {
+  color: var(--ob-red);
+}
+
+.ob-manual-live-dry-run-persistence-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ob-manual-live-dry-run-persistence-form input,
+.ob-manual-live-dry-run-persistence-form select,
+.ob-manual-live-dry-run-persistence-form textarea {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.28);
+  color: var(--ob-text);
+  padding: 10px;
+  font-size: 12px;
+  outline: none;
+}
+
+.ob-manual-live-dry-run-persistence-form textarea {
+  min-height: 76px;
+  resize: vertical;
+}
+
+.ob-manual-live-dry-run-persistence-button {
+  border: 1px solid rgba(126,252,255,0.28);
+  border-radius: 999px;
+  background: rgba(126,252,255,0.08);
+  color: var(--ob-cyan);
+  padding: 10px 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ob-manual-live-dry-run-persistence-button:hover {
+  background: rgba(126,252,255,0.13);
+}
+
+@media (max-width: 1180px) {
+  .ob-manual-live-dry-run-persistence-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-manual-live-dry-run-persistence-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-manual-live-dry-run-persistence-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-manual-live-dry-run-persistence-panel {
+    margin-left: 0;
+  }
+
+  .ob-manual-live-dry-run-persistence-head {
+    display: grid;
+  }
+
+  .ob-manual-live-dry-run-persistence-chip-row {
+    justify-content: flex-start;
+  }
+}
+
+
+/* OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW_CSS */
+
+.ob-manual-live-dry-run-history-review-panel {
+  position: relative;
+  z-index: 97;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(101,242,118,0.34);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.090), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(126,252,255,0.060), transparent 38%),
+    rgba(0,0,0,0.38);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.52), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-manual-live-dry-run-history-review-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-manual-live-dry-run-history-review-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-manual-live-dry-run-history-review-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-manual-live-dry-run-history-review-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-manual-live-dry-run-history-review-chip,
+.ob-manual-live-dry-run-history-review-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-manual-live-dry-run-history-review-chip.green,
+.ob-manual-live-dry-run-history-review-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-manual-live-dry-run-history-review-chip.gold,
+.ob-manual-live-dry-run-history-review-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-manual-live-dry-run-history-review-chip.red,
+.ob-manual-live-dry-run-history-review-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-manual-live-dry-run-history-review-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-manual-live-dry-run-history-review-card,
+.ob-manual-live-dry-run-history-review-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-manual-live-dry-run-history-review-section {
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-dry-run-history-review-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-manual-live-dry-run-history-review-card span,
+.ob-manual-live-dry-run-history-review-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-manual-live-dry-run-history-review-card strong,
+.ob-manual-live-dry-run-history-review-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-manual-live-dry-run-history-review-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-dry-run-history-review-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-manual-live-dry-run-history-review-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-manual-live-dry-run-history-review-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-manual-live-dry-run-history-review-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-manual-live-dry-run-history-review-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(101,242,118,0.28);
+  color: var(--ob-green);
+  background: rgba(101,242,118,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-manual-live-dry-run-history-review-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-manual-live-dry-run-history-review-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-manual-live-dry-run-history-review-callout,
+.ob-manual-live-dry-run-history-review-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(101,242,118,0.17);
+  border-radius: 13px;
+  background: rgba(101,242,118,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-manual-live-dry-run-history-review-callout strong {
+  color: var(--ob-green);
+}
+
+.ob-manual-live-dry-run-history-review-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-manual-live-dry-run-history-review-boundary strong {
+  color: var(--ob-red);
+}
+
+.ob-manual-live-dry-run-history-review-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ob-manual-live-dry-run-history-review-form input,
+.ob-manual-live-dry-run-history-review-form select,
+.ob-manual-live-dry-run-history-review-form textarea {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.28);
+  color: var(--ob-text);
+  padding: 10px;
+  font-size: 12px;
+  outline: none;
+}
+
+.ob-manual-live-dry-run-history-review-form textarea {
+  min-height: 76px;
+  resize: vertical;
+}
+
+.ob-manual-live-dry-run-history-review-button {
+  border: 1px solid rgba(101,242,118,0.28);
+  border-radius: 999px;
+  background: rgba(101,242,118,0.08);
+  color: var(--ob-green);
+  padding: 10px 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ob-manual-live-dry-run-history-review-button:hover {
+  background: rgba(101,242,118,0.13);
+}
+
+@media (max-width: 1180px) {
+  .ob-manual-live-dry-run-history-review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-manual-live-dry-run-history-review-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-manual-live-dry-run-history-review-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-manual-live-dry-run-history-review-panel {
+    margin-left: 0;
+  }
+
+  .ob-manual-live-dry-run-history-review-head {
+    display: grid;
+  }
+
+  .ob-manual-live-dry-run-history-review-chip-row {
+    justify-content: flex-start;
+  }
+}
+
+
+/* OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE_CSS */
+
+.ob-manual-live-dry-run-receipts-panel {
+  position: relative;
+  z-index: 98;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(233,194,111,0.36);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.090), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(101,242,118,0.060), transparent 38%),
+    rgba(0,0,0,0.38);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.52), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-manual-live-dry-run-receipts-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-manual-live-dry-run-receipts-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-manual-live-dry-run-receipts-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-manual-live-dry-run-receipts-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-manual-live-dry-run-receipts-chip,
+.ob-manual-live-dry-run-receipts-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-manual-live-dry-run-receipts-chip.green,
+.ob-manual-live-dry-run-receipts-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-manual-live-dry-run-receipts-chip.gold,
+.ob-manual-live-dry-run-receipts-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-manual-live-dry-run-receipts-chip.red,
+.ob-manual-live-dry-run-receipts-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-manual-live-dry-run-receipts-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-manual-live-dry-run-receipts-card,
+.ob-manual-live-dry-run-receipts-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-manual-live-dry-run-receipts-section {
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-dry-run-receipts-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-manual-live-dry-run-receipts-card span,
+.ob-manual-live-dry-run-receipts-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-manual-live-dry-run-receipts-card strong,
+.ob-manual-live-dry-run-receipts-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-manual-live-dry-run-receipts-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-dry-run-receipts-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-manual-live-dry-run-receipts-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-manual-live-dry-run-receipts-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-manual-live-dry-run-receipts-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-manual-live-dry-run-receipts-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(233,194,111,0.28);
+  color: var(--ob-gold);
+  background: rgba(233,194,111,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-manual-live-dry-run-receipts-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-manual-live-dry-run-receipts-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-manual-live-dry-run-receipts-callout,
+.ob-manual-live-dry-run-receipts-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(233,194,111,0.17);
+  border-radius: 13px;
+  background: rgba(233,194,111,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-manual-live-dry-run-receipts-callout strong {
+  color: var(--ob-gold);
+}
+
+.ob-manual-live-dry-run-receipts-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-manual-live-dry-run-receipts-boundary strong {
+  color: var(--ob-red);
+}
+
+.ob-manual-live-dry-run-receipts-button {
+  border: 1px solid rgba(233,194,111,0.28);
+  border-radius: 999px;
+  background: rgba(233,194,111,0.08);
+  color: var(--ob-gold);
+  padding: 10px 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ob-manual-live-dry-run-receipts-button:hover {
+  background: rgba(233,194,111,0.13);
+}
+
+@media (max-width: 1180px) {
+  .ob-manual-live-dry-run-receipts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-manual-live-dry-run-receipts-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-manual-live-dry-run-receipts-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-manual-live-dry-run-receipts-panel {
+    margin-left: 0;
+  }
+
+  .ob-manual-live-dry-run-receipts-head {
+    display: grid;
+  }
+
+  .ob-manual-live-dry-run-receipts-chip-row {
+    justify-content: flex-start;
+  }
+}
+
