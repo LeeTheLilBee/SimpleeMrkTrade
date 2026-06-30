@@ -22504,3 +22504,11 @@ def tower_giant_pack_740_789_pack_789_json():
 
     return jsonify(build_tower_post_stack_beta_preflight_closeout_batch_close_readiness_preview())
 
+# === VAULT GIANT PACK 001 ROUTES START ===
+try:
+    from vault.vault_routes import vault_bp as _vault_gp001_bp
+    if "vault" not in app.blueprints:
+        app.register_blueprint(_vault_gp001_bp)
+except Exception as _vault_gp001_error:
+    print("[VAULT GP001] route registration skipped:", _vault_gp001_error)
+# === VAULT GIANT PACK 001 ROUTES END ===

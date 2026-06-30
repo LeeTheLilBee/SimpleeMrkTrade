@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Archive Vault</title>
+  <link rel="stylesheet" href="/static/vault/vault.css">
+</head>
+<body class="vault-body">
+  <main class="vault-shell">
+    <section class="vault-hero">
+      <p class="vault-eyebrow">Simplee World / Archive Vault</p>
+      <h1>Protected proof, packets, documents, and receipts.</h1>
+      <p class="vault-subtitle">
+        Vault is private, Tower-controlled, redacted by default, and prepared for ATM routes,
+        apartment lender diligence, OB Manual Live proof, trust/entity preservation, Soulaana IP,
+        and private beta onboarding.
+      </p>
+      <div class="vault-chip-row">
+        <span class="vault-chip">Readiness {{ status.readiness_score }}%</span>
+        <span class="vault-chip">Direct Upload Locked</span>
+        <span class="vault-chip">Clouds Source Ready</span>
+        <span class="vault-chip">Tower Guard Required</span>
+      </div>
+    </section>
+
+    <section class="vault-grid">
+      {% for card in owner_console.summary_cards %}
+      <article class="vault-card">
+        <p>{{ card.label }}</p>
+        <strong>{{ card.value }}</strong>
+        <span>{{ card.unit }}</span>
+      </article>
+      {% endfor %}
+    </section>
+
+    <section class="vault-panel">
+      <div>
+        <p class="vault-eyebrow">Owner Focus</p>
+        <h2>Built for aggressive acquisition and proof growth.</h2>
+      </div>
+      <div class="vault-lanes">
+        {% for lane in owner_console.focus_lanes %}
+        <article class="vault-lane">
+          <span>{{ lane.lane }}</span>
+          <strong>{{ lane.label }}</strong>
+          <em>{{ lane.status }}</em>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-link-panel">
+      <a href="/vault/status.json">Status JSON</a>
+      <a href="/vault/packet-templates.json">Packet Templates</a>
+      <a href="/vault/document-registry.json">Document Registry</a>
+      <a href="/vault/clouds-source.json">Clouds Source</a>
+      <a href="/vault/readiness.json">Readiness</a>
+    </section>
+  </main>
+</body>
+</html>
