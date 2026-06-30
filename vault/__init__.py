@@ -119,3 +119,23 @@ __all__.extend([
     "get_vault_gp008_status_payload",
 ])
 # === VAULT GIANT PACK 008 EXPORTS END ===
+
+# === VAULT GIANT PACK 009 EXPORTS START ===
+from .vault_export_service import (
+    get_export_lock_console_payload,
+    get_export_preview_center_payload,
+    get_external_access_review_payload,
+    get_packet_export_request_queue_payload,
+    get_redacted_packet_preview_payload,
+    get_vault_gp009_status_payload,
+)
+
+__all__.extend([
+    "get_export_lock_console_payload",
+    "get_redacted_packet_preview_payload",
+    "get_packet_export_request_queue_payload",
+    "get_external_access_review_payload",
+    "get_export_preview_center_payload",
+    "get_vault_gp009_status_payload",
+])
+# === VAULT GIANT PACK 009 EXPORTS END ===

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault Export Preview</title>
+  <link rel="stylesheet" href="/static/vault/vault.css">
+  <link rel="stylesheet" href="/static/vault/vault_export_preview.css">
+</head>
+<body class="vault-body">
+  <main class="vault-shell vault-export-shell">
+    <section class="vault-hero vault-export-hero">
+      <p class="vault-eyebrow">Archive Vault / Export Lock + Redacted Preview</p>
+      <h1>Preview safely. Export only after approval.</h1>
+      <p class="vault-subtitle">
+        GP009 locks sensitive exports, creates redacted packet previews, queues export requests,
+        and keeps external access default-denied until Tower and approval chains clear it.
+      </p>
+      <div class="vault-chip-row">
+        <span class="vault-chip vault-chip-ready"><em>Exports</em><strong>{{ payload.export_lock_console.export_record_count }}</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>Locked</em><strong>{{ payload.export_lock_console.locked_export_count }}</strong></span>
+        <span class="vault-chip vault-chip-ready"><em>Previews</em><strong>{{ payload.redacted_packet_preview.preview_count }}</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>External Reviews</em><strong>{{ payload.external_access_review.review_item_count }}</strong></span>
+      </div>
+    </section>
+
+    <section class="vault-export-grid">
+      <article class="vault-panel">
+        <p class="vault-eyebrow">Export Lock Console</p>
+        <h2>{{ payload.export_lock_console.locked_export_count }} exports locked by default.</h2>
+        <p class="vault-muted">
+          Sensitive exports require owner approval, Tower clearance, approval chains,
+          redacted previews, and scope limits before anything leaves Vault.
+        </p>
+        <div class="vault-export-pill-row">
+          <span>{{ payload.export_lock_console.step_up_required_count }} step-up</span>
+          <span>{{ payload.export_lock_console.tower_clearance_required_count }} Tower</span>
+          <span>{{ payload.export_lock_console.owner_approval_required_count }} owner approval</span>
+        </div>
+      </article>
+
+      <article class="vault-panel">
+        <p class="vault-eyebrow">Redacted Packet Preview</p>
+        <h2>{{ payload.redacted_packet_preview.preview_count }} safe previews.</h2>
+        <p class="vault-muted">
+          Preview mode is watermarked, summary-first, and blocked from exporting
+          unredacted packet bodies.
+        </p>
+        <div class="vault-export-pill-row">
+          {% for lane in payload.redacted_packet_preview.preview_lanes %}
+          <span>{{ lane }}</span>
+          {% endfor %}
+        </div>
+      </article>
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Packet Export Request Queue</p>
+          <h2>{{ payload.packet_export_request_queue.request_count }} export request slots ready.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/packet-export-request-queue.json">Request JSON</a>
+      </div>
+
+      <div class="vault-export-metrics">
+        <article><span>Not Requested</span><strong>{{ payload.packet_export_request_queue.not_requested_count }}</strong></article>
+        <article><span>Summary Allowed</span><strong>{{ payload.packet_export_request_queue.summary_handoff_allowed_count }}</strong></article>
+        <article><span>Hidden Fields</span><strong>{{ payload.redacted_packet_preview.hidden_field_count }}</strong></article>
+      </div>
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">External Access Review</p>
+          <h2>External access stays denied unless scoped and cleared.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/external-access-review.json">External JSON</a>
+      </div>
+
+      <div class="vault-export-metrics">
+        <article><span>Review Items</span><strong>{{ payload.external_access_review.review_item_count }}</strong></article>
+        <article><span>Policies</span><strong>{{ payload.external_access_review.policy_count }}</strong></article>
+        <article><span>Default</span><strong>deny</strong></article>
+      </div>
+    </section>
+
+    <section class="vault-panel vault-clouds-panel">
+      <p class="vault-eyebrow">Clouds Safe Export Source</p>
+      <h2>Clouds sees export safety status, not sensitive packet bodies.</h2>
+
+      <div class="vault-clouds-grid">
+        <article><span>Exports</span><strong>{{ payload.clouds_safe_source.export_record_count }}</strong></article>
+        <article><span>Locked</span><strong>{{ payload.clouds_safe_source.locked_export_count }}</strong></article>
+        <article><span>Previews</span><strong>{{ payload.clouds_safe_source.preview_count }}</strong></article>
+        <article><span>Requests</span><strong>{{ payload.clouds_safe_source.request_count }}</strong></article>
+      </div>
+
+      <div class="vault-link-panel">
+        <a href="/vault/command-center">Command Center</a>
+        <a href="/vault/receipt-control">Receipt Control</a>
+        <a href="/vault/export-preview-center.json">Export Preview JSON</a>
+        <a href="/vault/export-lock-console.json">Export Lock JSON</a>
+        <a href="/vault/redacted-packet-preview.json">Redacted Preview JSON</a>
+        <a href="/vault/gp009-status.json">GP009 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

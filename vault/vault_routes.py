@@ -360,3 +360,50 @@ def vault_gp008_status_json():
     from .vault_receipt_control_service import get_vault_gp008_status_payload
     return jsonify(get_vault_gp008_status_payload())
 # === VAULT GIANT PACK 008 ROUTES END ===
+
+# === VAULT GIANT PACK 009 ROUTES START ===
+@vault_bp.route("/vault/export-preview")
+@vault_bp.route("/archive-vault/export-preview")
+def vault_export_preview_room():
+    from .vault_export_service import get_export_preview_center_payload
+    return render_template(
+        "vault_export_preview.html",
+        payload=get_export_preview_center_payload(),
+    )
+
+
+@vault_bp.route("/vault/export-preview-center.json")
+def vault_export_preview_center_json():
+    from .vault_export_service import get_export_preview_center_payload
+    return jsonify(get_export_preview_center_payload())
+
+
+@vault_bp.route("/vault/export-lock-console.json")
+def vault_export_lock_console_json():
+    from .vault_export_service import get_export_lock_console_payload
+    return jsonify(get_export_lock_console_payload())
+
+
+@vault_bp.route("/vault/redacted-packet-preview.json")
+def vault_redacted_packet_preview_json():
+    from .vault_export_service import get_redacted_packet_preview_payload
+    return jsonify(get_redacted_packet_preview_payload())
+
+
+@vault_bp.route("/vault/packet-export-request-queue.json")
+def vault_packet_export_request_queue_json():
+    from .vault_export_service import get_packet_export_request_queue_payload
+    return jsonify(get_packet_export_request_queue_payload())
+
+
+@vault_bp.route("/vault/external-access-review.json")
+def vault_external_access_review_json():
+    from .vault_export_service import get_external_access_review_payload
+    return jsonify(get_external_access_review_payload())
+
+
+@vault_bp.route("/vault/gp009-status.json")
+def vault_gp009_status_json():
+    from .vault_export_service import get_vault_gp009_status_payload
+    return jsonify(get_vault_gp009_status_payload())
+# === VAULT GIANT PACK 009 ROUTES END ===
