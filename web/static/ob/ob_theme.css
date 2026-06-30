@@ -17200,3 +17200,1203 @@ option {
   }
 }
 
+
+/* OB_GIANT_PACK_026_PRACTICE_REPETITION_METRICS_BOARD_CSS */
+
+.ob-practice-repetition-metrics-board-panel {
+  position: relative;
+  z-index: 86;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(126,252,255,0.30);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.078), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(233,194,111,0.055), transparent 38%),
+    rgba(0,0,0,0.36);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.52), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-practice-repetition-metrics-board-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-practice-repetition-metrics-board-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-practice-repetition-metrics-board-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-practice-repetition-metrics-board-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-practice-repetition-metrics-board-chip,
+.ob-practice-repetition-metrics-board-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-practice-repetition-metrics-board-chip.green,
+.ob-practice-repetition-metrics-board-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-practice-repetition-metrics-board-chip.gold,
+.ob-practice-repetition-metrics-board-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-practice-repetition-metrics-board-chip.red,
+.ob-practice-repetition-metrics-board-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-practice-repetition-metrics-board-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-practice-repetition-metrics-board-card,
+.ob-practice-repetition-metrics-board-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-practice-repetition-metrics-board-section {
+  margin-bottom: 11px;
+}
+
+.ob-practice-repetition-metrics-board-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-practice-repetition-metrics-board-card span,
+.ob-practice-repetition-metrics-board-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-practice-repetition-metrics-board-card strong,
+.ob-practice-repetition-metrics-board-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-practice-repetition-metrics-board-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-practice-repetition-metrics-board-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-practice-repetition-metrics-board-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-practice-repetition-metrics-board-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-practice-repetition-metrics-board-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-practice-repetition-metrics-board-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(126,252,255,0.28);
+  color: var(--ob-cyan);
+  background: rgba(126,252,255,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-practice-repetition-metrics-board-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-practice-repetition-metrics-board-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-practice-repetition-metrics-board-callout,
+.ob-practice-repetition-metrics-board-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(126,252,255,0.17);
+  border-radius: 13px;
+  background: rgba(126,252,255,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-practice-repetition-metrics-board-callout strong {
+  color: var(--ob-cyan);
+}
+
+.ob-practice-repetition-metrics-board-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-practice-repetition-metrics-board-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-practice-repetition-metrics-board-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-practice-repetition-metrics-board-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-practice-repetition-metrics-board-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-practice-repetition-metrics-board-panel {
+    margin-left: 0;
+  }
+
+  .ob-practice-repetition-metrics-board-head {
+    display: grid;
+  }
+
+  .ob-practice-repetition-metrics-board-chip-row {
+    justify-content: flex-start;
+  }
+}
+
+
+/* OB_GIANT_PACK_027_OWNER_REVIEW_POLISH_GUIDANCE_CSS */
+
+.ob-owner-review-polish-guidance-panel {
+  position: relative;
+  z-index: 87;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(233,194,111,0.30);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.078), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(126,252,255,0.055), transparent 38%),
+    rgba(0,0,0,0.36);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.52), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-owner-review-polish-guidance-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-owner-review-polish-guidance-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-owner-review-polish-guidance-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-owner-review-polish-guidance-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-owner-review-polish-guidance-chip,
+.ob-owner-review-polish-guidance-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-owner-review-polish-guidance-chip.green,
+.ob-owner-review-polish-guidance-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-owner-review-polish-guidance-chip.gold,
+.ob-owner-review-polish-guidance-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-owner-review-polish-guidance-chip.red,
+.ob-owner-review-polish-guidance-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-owner-review-polish-guidance-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-owner-review-polish-guidance-card,
+.ob-owner-review-polish-guidance-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(233,194,111,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-owner-review-polish-guidance-section {
+  margin-bottom: 11px;
+}
+
+.ob-owner-review-polish-guidance-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-owner-review-polish-guidance-card span,
+.ob-owner-review-polish-guidance-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-owner-review-polish-guidance-card strong,
+.ob-owner-review-polish-guidance-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-owner-review-polish-guidance-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-owner-review-polish-guidance-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-owner-review-polish-guidance-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-owner-review-polish-guidance-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-owner-review-polish-guidance-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-owner-review-polish-guidance-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(233,194,111,0.28);
+  color: var(--ob-gold);
+  background: rgba(233,194,111,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-owner-review-polish-guidance-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-owner-review-polish-guidance-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-owner-review-polish-guidance-callout,
+.ob-owner-review-polish-guidance-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(233,194,111,0.17);
+  border-radius: 13px;
+  background: rgba(233,194,111,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-owner-review-polish-guidance-callout strong {
+  color: var(--ob-gold);
+}
+
+.ob-owner-review-polish-guidance-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-owner-review-polish-guidance-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-owner-review-polish-guidance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-owner-review-polish-guidance-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-owner-review-polish-guidance-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-owner-review-polish-guidance-panel {
+    margin-left: 0;
+  }
+
+  .ob-owner-review-polish-guidance-head {
+    display: grid;
+  }
+
+  .ob-owner-review-polish-guidance-chip-row {
+    justify-content: flex-start;
+  }
+}
+
+
+/* OB_GIANT_PACK_028_OWNER_PRACTICE_FOCUS_QUEUE_CSS */
+
+.ob-owner-practice-focus-queue-panel {
+  position: relative;
+  z-index: 88;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(101,242,118,0.30);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.078), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(233,194,111,0.055), transparent 38%),
+    rgba(0,0,0,0.36);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.52), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-owner-practice-focus-queue-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-owner-practice-focus-queue-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-owner-practice-focus-queue-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-owner-practice-focus-queue-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-owner-practice-focus-queue-chip,
+.ob-owner-practice-focus-queue-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-owner-practice-focus-queue-chip.green,
+.ob-owner-practice-focus-queue-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-owner-practice-focus-queue-chip.gold,
+.ob-owner-practice-focus-queue-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-owner-practice-focus-queue-chip.red,
+.ob-owner-practice-focus-queue-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-owner-practice-focus-queue-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-owner-practice-focus-queue-card,
+.ob-owner-practice-focus-queue-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-owner-practice-focus-queue-section {
+  margin-bottom: 11px;
+}
+
+.ob-owner-practice-focus-queue-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-owner-practice-focus-queue-card span,
+.ob-owner-practice-focus-queue-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-owner-practice-focus-queue-card strong,
+.ob-owner-practice-focus-queue-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-owner-practice-focus-queue-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-owner-practice-focus-queue-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-owner-practice-focus-queue-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-owner-practice-focus-queue-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-owner-practice-focus-queue-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-owner-practice-focus-queue-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(101,242,118,0.28);
+  color: var(--ob-green);
+  background: rgba(101,242,118,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-owner-practice-focus-queue-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-owner-practice-focus-queue-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-owner-practice-focus-queue-callout,
+.ob-owner-practice-focus-queue-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(101,242,118,0.17);
+  border-radius: 13px;
+  background: rgba(101,242,118,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-owner-practice-focus-queue-callout strong {
+  color: var(--ob-green);
+}
+
+.ob-owner-practice-focus-queue-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-owner-practice-focus-queue-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-owner-practice-focus-queue-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-owner-practice-focus-queue-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-owner-practice-focus-queue-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-owner-practice-focus-queue-panel {
+    margin-left: 0;
+  }
+
+  .ob-owner-practice-focus-queue-head {
+    display: grid;
+  }
+
+  .ob-owner-practice-focus-queue-chip-row {
+    justify-content: flex-start;
+  }
+}
+
+
+/* OB_GIANT_PACK_029_PRACTICE_REVIEW_COMPACT_SNAPSHOT_CSS */
+
+.ob-practice-review-compact-snapshot-panel {
+  position: relative;
+  z-index: 89;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(126,252,255,0.30);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.078), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(101,242,118,0.055), transparent 38%),
+    rgba(0,0,0,0.36);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.52), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-practice-review-compact-snapshot-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-practice-review-compact-snapshot-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-practice-review-compact-snapshot-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-practice-review-compact-snapshot-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-practice-review-compact-snapshot-chip,
+.ob-practice-review-compact-snapshot-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-practice-review-compact-snapshot-chip.green,
+.ob-practice-review-compact-snapshot-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-practice-review-compact-snapshot-chip.gold,
+.ob-practice-review-compact-snapshot-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-practice-review-compact-snapshot-chip.red,
+.ob-practice-review-compact-snapshot-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-practice-review-compact-snapshot-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-practice-review-compact-snapshot-card,
+.ob-practice-review-compact-snapshot-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(126,252,255,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-practice-review-compact-snapshot-section {
+  margin-bottom: 11px;
+}
+
+.ob-practice-review-compact-snapshot-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-practice-review-compact-snapshot-card span,
+.ob-practice-review-compact-snapshot-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-practice-review-compact-snapshot-card strong,
+.ob-practice-review-compact-snapshot-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-practice-review-compact-snapshot-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-practice-review-compact-snapshot-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-practice-review-compact-snapshot-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-practice-review-compact-snapshot-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-practice-review-compact-snapshot-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-practice-review-compact-snapshot-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(126,252,255,0.28);
+  color: var(--ob-cyan);
+  background: rgba(126,252,255,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-practice-review-compact-snapshot-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-practice-review-compact-snapshot-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-practice-review-compact-snapshot-callout,
+.ob-practice-review-compact-snapshot-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(126,252,255,0.17);
+  border-radius: 13px;
+  background: rgba(126,252,255,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-practice-review-compact-snapshot-callout strong {
+  color: var(--ob-cyan);
+}
+
+.ob-practice-review-compact-snapshot-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-practice-review-compact-snapshot-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-practice-review-compact-snapshot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-practice-review-compact-snapshot-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-practice-review-compact-snapshot-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-practice-review-compact-snapshot-panel {
+    margin-left: 0;
+  }
+
+  .ob-practice-review-compact-snapshot-head {
+    display: grid;
+  }
+
+  .ob-practice-review-compact-snapshot-chip-row {
+    justify-content: flex-start;
+  }
+}
+
+
+/* OB_GIANT_PACK_030_PRACTICE_REVIEW_POLISH_READINESS_CHECKPOINT_CSS */
+
+.ob-practice-review-polish-readiness-checkpoint-panel {
+  position: relative;
+  z-index: 90;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(101,242,118,0.32);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.082), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(126,252,255,0.055), transparent 38%),
+    rgba(0,0,0,0.36);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.52), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-practice-review-polish-readiness-checkpoint-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-chip,
+.ob-practice-review-polish-readiness-checkpoint-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-chip.green,
+.ob-practice-review-polish-readiness-checkpoint-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-practice-review-polish-readiness-checkpoint-chip.gold,
+.ob-practice-review-polish-readiness-checkpoint-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-practice-review-polish-readiness-checkpoint-chip.red,
+.ob-practice-review-polish-readiness-checkpoint-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-practice-review-polish-readiness-checkpoint-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-card,
+.ob-practice-review-polish-readiness-checkpoint-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-section {
+  margin-bottom: 11px;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-card span,
+.ob-practice-review-polish-readiness-checkpoint-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-card strong,
+.ob-practice-review-polish-readiness-checkpoint-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-row {
+  display: grid;
+  grid-template-columns: 28px 0.36fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(101,242,118,0.28);
+  color: var(--ob-green);
+  background: rgba(101,242,118,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-callout,
+.ob-practice-review-polish-readiness-checkpoint-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(101,242,118,0.17);
+  border-radius: 13px;
+  background: rgba(101,242,118,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-practice-review-polish-readiness-checkpoint-callout strong {
+  color: var(--ob-green);
+}
+
+.ob-practice-review-polish-readiness-checkpoint-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-practice-review-polish-readiness-checkpoint-boundary strong {
+  color: var(--ob-red);
+}
+
+@media (max-width: 1180px) {
+  .ob-practice-review-polish-readiness-checkpoint-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-practice-review-polish-readiness-checkpoint-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-practice-review-polish-readiness-checkpoint-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-practice-review-polish-readiness-checkpoint-panel {
+    margin-left: 0;
+  }
+
+  .ob-practice-review-polish-readiness-checkpoint-head {
+    display: grid;
+  }
+
+  .ob-practice-review-polish-readiness-checkpoint-chip-row {
+    justify-content: flex-start;
+  }
+}
+
