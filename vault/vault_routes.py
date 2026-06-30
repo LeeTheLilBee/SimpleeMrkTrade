@@ -1,13 +1,20 @@
 """Flask routes for Archive Vault.
 
-Vault Giant Pack 002 upgrades the room into a real owner-facing Vault interface
-while preserving the GP001 JSON foundation and Tower-controlled boundary.
+Vault Giant Pack 003 adds acquisition builders for ATM route acquisition and
+apartment lender due diligence while preserving GP001/GP002 routes.
 """
 
 from __future__ import annotations
 
 from flask import Blueprint, jsonify, render_template
 
+from .vault_acquisition_service import (
+    get_acquisition_builders_payload,
+    get_acquisition_owner_queue_payload,
+    get_apartment_lender_builder_payload,
+    get_atm_route_builder_payload,
+    get_vault_gp003_status_payload,
+)
 from .vault_room_service import (
     get_document_drawer_payload,
     get_owner_action_queue_payload,
@@ -44,6 +51,15 @@ def vault_home():
     )
 
 
+@vault_bp.route("/vault/acquisition-builders")
+@vault_bp.route("/archive-vault/acquisition-builders")
+def vault_acquisition_builders_room():
+    return render_template(
+        "vault_acquisition_builders.html",
+        payload=get_acquisition_builders_payload(),
+    )
+
+
 @vault_bp.route("/vault/status.json")
 @vault_bp.route("/archive-vault/status.json")
 def vault_status_json():
@@ -74,6 +90,31 @@ def vault_owner_action_queue_json():
 @vault_bp.route("/vault/gp002-status.json")
 def vault_gp002_status_json():
     return jsonify(get_vault_gp002_status_payload())
+
+
+@vault_bp.route("/vault/acquisition-builders.json")
+def vault_acquisition_builders_json():
+    return jsonify(get_acquisition_builders_payload())
+
+
+@vault_bp.route("/vault/atm-route-builder.json")
+def vault_atm_route_builder_json():
+    return jsonify(get_atm_route_builder_payload())
+
+
+@vault_bp.route("/vault/apartment-lender-builder.json")
+def vault_apartment_lender_builder_json():
+    return jsonify(get_apartment_lender_builder_payload())
+
+
+@vault_bp.route("/vault/acquisition-owner-queue.json")
+def vault_acquisition_owner_queue_json():
+    return jsonify(get_acquisition_owner_queue_payload())
+
+
+@vault_bp.route("/vault/gp003-status.json")
+def vault_gp003_status_json():
+    return jsonify(get_vault_gp003_status_payload())
 
 
 @vault_bp.route("/vault/document-registry.json")

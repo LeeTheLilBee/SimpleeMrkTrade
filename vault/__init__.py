@@ -1,5 +1,12 @@
-"""Archive Vault foundation and room services for the Simplee ecosystem."""
+"""Archive Vault services for the Simplee ecosystem."""
 
+from .vault_acquisition_service import (
+    get_acquisition_builders_payload,
+    get_acquisition_owner_queue_payload,
+    get_apartment_lender_builder_payload,
+    get_atm_route_builder_payload,
+    get_vault_gp003_status_payload,
+)
 from .vault_room_service import (
     get_document_drawer_payload,
     get_owner_action_queue_payload,
@@ -36,4 +43,9 @@ __all__ = [
     "get_document_drawer_payload",
     "get_owner_action_queue_payload",
     "get_vault_gp002_status_payload",
+    "get_acquisition_builders_payload",
+    "get_atm_route_builder_payload",
+    "get_apartment_lender_builder_payload",
+    "get_acquisition_owner_queue_payload",
+    "get_vault_gp003_status_payload",
 ]

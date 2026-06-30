@@ -1,0 +1,185 @@
+.vault-acq-shell {
+  padding-left: 0;
+}
+
+.vault-acq-hero {
+  border-color: rgba(243, 209, 142, 0.34);
+}
+
+.vault-acq-builder-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.vault-acq-builder {
+  margin-top: 0;
+}
+
+.vault-acq-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 82px;
+  height: 82px;
+  border: 1px solid var(--vault-line-strong);
+  border-radius: 50%;
+  color: var(--vault-gold);
+  font-size: 1.25rem;
+  font-weight: 950;
+  background: rgba(243, 209, 142, 0.08);
+}
+
+.vault-acq-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.vault-acq-metrics article,
+.vault-acq-field-grid div,
+.vault-acq-risk {
+  border: 1px solid var(--vault-line);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.vault-acq-metrics span,
+.vault-acq-field-grid span,
+.vault-acq-field-grid em,
+.vault-acq-risk span {
+  display: block;
+  color: var(--vault-muted);
+  font-size: 0.76rem;
+  font-style: normal;
+  margin-bottom: 8px;
+}
+
+.vault-acq-metrics strong {
+  font-size: 1.45rem;
+}
+
+.vault-acq-subpanel {
+  border-top: 1px solid var(--vault-line);
+  padding-top: 18px;
+  margin-top: 18px;
+}
+
+.vault-acq-subpanel h3 {
+  margin: 0 0 14px;
+}
+
+.vault-acq-field-grid,
+.vault-acq-risk-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.vault-acq-field-grid strong {
+  display: block;
+  line-height: 1.2;
+}
+
+.vault-acq-requirements {
+  display: grid;
+  gap: 10px;
+}
+
+.vault-acq-requirements article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  gap: 12px;
+  border: 1px solid var(--vault-line);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.vault-acq-requirements span {
+  color: var(--vault-gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.vault-acq-requirements p {
+  margin: 8px 0 0;
+  color: var(--vault-muted);
+  line-height: 1.45;
+}
+
+.vault-acq-requirements aside {
+  border-left: 1px solid var(--vault-line);
+  padding-left: 12px;
+}
+
+.vault-acq-requirements aside em,
+.vault-acq-requirements aside small,
+.vault-acq-requirements aside b {
+  display: block;
+}
+
+.vault-acq-requirements aside em {
+  color: var(--vault-good);
+  font-style: normal;
+  margin-bottom: 7px;
+}
+
+.vault-acq-requirements aside small {
+  color: var(--vault-muted);
+  line-height: 1.35;
+}
+
+.vault-acq-requirements aside b {
+  margin-top: 10px;
+  color: var(--vault-gold);
+}
+
+.vault-acq-risk strong {
+  display: block;
+  line-height: 1.25;
+}
+
+.vault-risk-critical {
+  border-color: rgba(255, 157, 157, 0.42);
+}
+
+.vault-risk-high {
+  border-color: rgba(243, 209, 142, 0.34);
+}
+
+.vault-risk-medium {
+  border-color: rgba(201, 169, 255, 0.32);
+}
+
+.vault-acq-questions {
+  margin: 0;
+  padding-left: 22px;
+  color: var(--vault-muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 1050px) {
+  .vault-acq-builder-grid,
+  .vault-acq-metrics,
+  .vault-acq-field-grid,
+  .vault-acq-risk-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vault-acq-requirements article {
+    grid-template-columns: 1fr;
+  }
+
+  .vault-acq-requirements aside {
+    border-left: 0;
+    border-top: 1px solid var(--vault-line);
+    padding-left: 0;
+    padding-top: 12px;
+  }
+}

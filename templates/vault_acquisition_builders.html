@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault Acquisition Builders</title>
+  <link rel="stylesheet" href="/static/vault/vault.css">
+  <link rel="stylesheet" href="/static/vault/vault_acquisition.css">
+</head>
+<body class="vault-body">
+  <main class="vault-shell vault-acq-shell">
+    <section class="vault-hero vault-acq-hero">
+      <p class="vault-eyebrow">Archive Vault / Acquisition Builders</p>
+      <h1>ATM route builder. Apartment lender builder. Owner packet control.</h1>
+      <p class="vault-subtitle">
+        This room prepares acquisition packets before target evidence exists. It keeps direct upload locked,
+        redaction on by default, and Tower as the permission authority.
+      </p>
+      <div class="vault-chip-row">
+        <span class="vault-chip vault-chip-ready"><em>Builder Count</em><strong>{{ payload.builder_count }}</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>Direct Upload</em><strong>Locked</strong></span>
+        <span class="vault-chip vault-chip-ready"><em>Clouds View</em><strong>Summary</strong></span>
+        <span class="vault-chip vault-chip-locked"><em>Tower Guard</em><strong>Required</strong></span>
+      </div>
+    </section>
+
+    <section class="vault-acq-builder-grid">
+      {% for builder in payload.builders %}
+      <article class="vault-panel vault-acq-builder">
+        <div class="vault-section-heading">
+          <div>
+            <p class="vault-eyebrow">{{ builder.business_lane }}</p>
+            <h2>{{ builder.builder_name }}</h2>
+          </div>
+          <span class="vault-acq-score">{{ builder.readiness.builder_setup_score }}%</span>
+        </div>
+
+        <p class="vault-muted">{{ builder.purpose }}</p>
+
+        <div class="vault-acq-metrics">
+          <article>
+            <span>Required docs</span>
+            <strong>{{ builder.readiness.required_document_count }}</strong>
+          </article>
+          <article>
+            <span>Evidence attached</span>
+            <strong>{{ builder.readiness.evidence_attached_count }}</strong>
+          </article>
+          <article>
+            <span>Packet completion</span>
+            <strong>{{ builder.readiness.packet_completion_score }}%</strong>
+          </article>
+          <article>
+            <span>Risk flags</span>
+            <strong>{{ builder.risk_flags | length }}</strong>
+          </article>
+        </div>
+
+        <section class="vault-acq-subpanel">
+          <h3>Target Intake</h3>
+          <div class="vault-acq-field-grid">
+            {% for field in builder.target_intake_fields %}
+            <div>
+              <span>{{ field.sensitivity }}</span>
+              <strong>{{ field.label }}</strong>
+              {% if field.required %}<em>required</em>{% else %}<em>optional</em>{% endif %}
+            </div>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="vault-acq-subpanel">
+          <h3>Required Packet Evidence</h3>
+          <div class="vault-acq-requirements">
+            {% for req in builder.required_documents %}
+            <article>
+              <div>
+                <span>{{ req.category }}</span>
+                <strong>{{ req.label }}</strong>
+                <p>{{ req.notes }}</p>
+              </div>
+              <aside>
+                <em>{{ req.status }}</em>
+                <small>{{ req.blocked_reason }}</small>
+                <b>{{ req.readiness_weight }}</b>
+              </aside>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="vault-acq-subpanel">
+          <h3>Risk Flags</h3>
+          <div class="vault-acq-risk-grid">
+            {% for flag in builder.risk_flags %}
+            <div class="vault-acq-risk vault-risk-{{ flag.severity }}">
+              <span>{{ flag.severity }}</span>
+              <strong>{{ flag.label }}</strong>
+            </div>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="vault-acq-subpanel">
+          <h3>Owner Questions</h3>
+          <ul class="vault-acq-questions">
+            {% for question in builder.owner_questions %}
+            <li>{{ question }}</li>
+            {% endfor %}
+          </ul>
+        </section>
+
+        <div class="vault-card-footer">
+          <strong>Owner next action</strong>
+          <small>{{ builder.owner_next_action }}</small>
+        </div>
+      </article>
+      {% endfor %}
+    </section>
+
+    <section class="vault-panel">
+      <div class="vault-section-heading">
+        <div>
+          <p class="vault-eyebrow">Acquisition Owner Queue</p>
+          <h2>Move fast without breaking the Vault boundary.</h2>
+        </div>
+        <a class="vault-json-link" href="/vault/acquisition-owner-queue.json">Queue JSON</a>
+      </div>
+
+      <div class="vault-action-list">
+        {% for action in payload.owner_queue.actions %}
+        <article class="vault-action-card vault-priority-{{ action.priority }}">
+          <div>
+            <span>{{ action.business_lane }}</span>
+            <h3>{{ action.label }}</h3>
+            <p>{{ action.next_step }}</p>
+          </div>
+          <aside>
+            <strong>{{ action.status }}</strong>
+            <em>{{ action.priority }}</em>
+            {% if action.blocked_by %}
+            <small>Blocked: {{ action.blocked_by | join(", ") }}</small>
+            {% else %}
+            <small>Ready now</small>
+            {% endif %}
+          </aside>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="vault-panel vault-clouds-panel">
+      <p class="vault-eyebrow">Clouds Safe Acquisition Source</p>
+      <h2>Clouds gets the summary, not the sensitive packet body.</h2>
+      <div class="vault-clouds-grid">
+        {% for summary in payload.clouds_safe_source.builder_summaries %}
+        <article>
+          <span>{{ summary.business_lane }}</span>
+          <strong>{{ summary.builder_setup_score }}% setup</strong>
+          <p class="vault-muted">{{ summary.next_owner_action }}</p>
+        </article>
+        {% endfor %}
+      </div>
+
+      <div class="vault-link-panel">
+        <a href="/vault">Vault Room</a>
+        <a href="/vault/acquisition-builders.json">Builders JSON</a>
+        <a href="/vault/atm-route-builder.json">ATM Builder JSON</a>
+        <a href="/vault/apartment-lender-builder.json">Apartment Builder JSON</a>
+        <a href="/vault/gp003-status.json">GP003 Status</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
