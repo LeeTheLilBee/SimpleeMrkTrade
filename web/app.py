@@ -26217,3 +26217,76 @@ def tower_resume_hard_recovery_891_941_pack_941_json():
     from tower.tower_tower_beta_release_candidate_closeout_batch_close_readiness_v941 import build_tower_beta_release_candidate_closeout_batch_close_readiness_preview
 
     return jsonify(build_tower_beta_release_candidate_closeout_batch_close_readiness_preview())
+
+# ============================================================
+# VAULT GP036 OWNER DECISION REVIEW ROUTES START
+# ============================================================
+
+@app.route("/vault/owner-decision-review")
+def vault_gp036_owner_decision_review_page():
+    from vault.owner_decision_review_service import render_owner_decision_review_page
+    return render_owner_decision_review_page()
+
+@app.route("/vault/owner-decision-review.json")
+def vault_gp036_owner_decision_review_json():
+    from flask import jsonify
+    from vault.owner_decision_review_service import get_owner_decision_review_home
+    return jsonify(get_owner_decision_review_home())
+
+@app.route("/vault/owner-decision-review-cards.json")
+def vault_gp036_owner_decision_review_cards_json():
+    from flask import jsonify
+    from vault.owner_decision_review_service import get_owner_decision_review_cards
+    return jsonify(get_owner_decision_review_cards())
+
+@app.route("/vault/owner-decision-review-status.json")
+def vault_gp036_owner_decision_review_status_json():
+    from flask import jsonify
+    from vault.owner_decision_review_service import get_owner_decision_review_status
+    return jsonify(get_owner_decision_review_status())
+
+@app.route("/vault/owner-decision-review-selection-preview.json")
+def vault_gp036_owner_decision_review_selection_preview_json():
+    from flask import jsonify
+    from vault.owner_decision_review_service import get_owner_decision_review_selection_preview
+    return jsonify(get_owner_decision_review_selection_preview())
+
+@app.route("/vault/owner-decision-review-tower-ack.json")
+def vault_gp036_owner_decision_review_tower_ack_json():
+    from flask import jsonify
+    from vault.owner_decision_review_service import get_owner_decision_review_tower_ack
+    return jsonify(get_owner_decision_review_tower_ack())
+
+@app.route("/vault/owner-decision-review-blocker-ack.json")
+def vault_gp036_owner_decision_review_blocker_ack_json():
+    from flask import jsonify
+    from vault.owner_decision_review_service import get_owner_decision_review_blocker_ack
+    return jsonify(get_owner_decision_review_blocker_ack())
+
+@app.route("/vault/owner-decision-review-no-execution.json")
+def vault_gp036_owner_decision_review_no_execution_json():
+    from flask import jsonify
+    from vault.owner_decision_review_service import get_owner_decision_review_no_execution
+    return jsonify(get_owner_decision_review_no_execution())
+
+@app.route("/vault/owner-decision-review-next-reviews.json")
+def vault_gp036_owner_decision_review_next_reviews_json():
+    from flask import jsonify
+    from vault.owner_decision_review_service import get_owner_decision_review_next_reviews
+    return jsonify(get_owner_decision_review_next_reviews())
+
+@app.route("/vault/owner-decision-review-carry-forward.json")
+def vault_gp036_owner_decision_review_carry_forward_json():
+    from flask import jsonify
+    from vault.owner_decision_review_service import get_owner_decision_review_carry_forward
+    return jsonify(get_owner_decision_review_carry_forward())
+
+@app.route("/vault/gp036-status.json")
+def vault_gp036_status_json():
+    from flask import jsonify
+    from vault.owner_decision_review_service import get_gp036_status
+    return jsonify(get_gp036_status())
+
+# ============================================================
+# VAULT GP036 OWNER DECISION REVIEW ROUTES END
+# ============================================================
