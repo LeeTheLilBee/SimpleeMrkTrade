@@ -36652,3 +36652,70 @@ def vault_gp065_status_json():
 # ============================================================
 # VAULT GP065 REAL STORAGE PROVIDER ENCRYPTION POLICY CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP066 REAL STORAGE PROVIDER CONNECTION TEST LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-connection-test-lock-contract")
+def vault_gp066_real_storage_provider_connection_test_lock_contract_page():
+    from vault.real_storage_provider_connection_test_lock_contract_service import render_real_storage_provider_connection_test_lock_contract_page
+    return render_real_storage_provider_connection_test_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-connection-test-lock-contract.json")
+def vault_gp066_real_storage_provider_connection_test_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_connection_test_lock_contract_service import get_real_storage_provider_connection_test_lock_contract_home
+    return jsonify(get_real_storage_provider_connection_test_lock_contract_home())
+
+@app.route("/vault/storage-provider-connection-test-lock-contract-record.json")
+def vault_gp066_storage_provider_connection_test_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_connection_test_lock_contract_service import get_storage_provider_connection_test_lock_contract_record
+    return jsonify(get_storage_provider_connection_test_lock_contract_record())
+
+@app.route("/vault/storage-provider-connection-test-requirements.json")
+def vault_gp066_storage_provider_connection_test_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_connection_test_lock_contract_service import get_storage_provider_connection_test_requirements
+    return jsonify(get_storage_provider_connection_test_requirements())
+
+@app.route("/vault/storage-provider-connection-test-policies.json")
+def vault_gp066_storage_provider_connection_test_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_connection_test_lock_contract_service import get_storage_provider_connection_test_policies
+    return jsonify(get_storage_provider_connection_test_policies())
+
+@app.route("/vault/storage-provider-connection-test-blockers.json")
+def vault_gp066_storage_provider_connection_test_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_connection_test_lock_contract_service import get_storage_provider_connection_test_blockers
+    return jsonify(get_storage_provider_connection_test_blockers())
+
+@app.route("/vault/storage-provider-connection-test-events.json")
+def vault_gp066_storage_provider_connection_test_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_connection_test_lock_contract_service import get_storage_provider_connection_test_events
+    return jsonify(get_storage_provider_connection_test_events())
+
+@app.route("/vault/storage-provider-connection-test-validation.json")
+def vault_gp066_storage_provider_connection_test_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_connection_test_lock_contract_service import validate_storage_provider_connection_test_lock_contract
+    return jsonify(validate_storage_provider_connection_test_lock_contract())
+
+@app.route("/vault/storage-provider-connection-test-next-step.json")
+def vault_gp066_storage_provider_connection_test_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_connection_test_lock_contract_service import get_storage_provider_connection_test_next_step
+    return jsonify(get_storage_provider_connection_test_next_step())
+
+@app.route("/vault/gp066-status.json")
+def vault_gp066_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_connection_test_lock_contract_service import get_gp066_status
+    return jsonify(get_gp066_status())
+
+# ============================================================
+# VAULT GP066 REAL STORAGE PROVIDER CONNECTION TEST LOCK CONTRACT ROUTES END
+# ============================================================
