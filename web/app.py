@@ -36518,3 +36518,70 @@ def vault_gp063_status_json():
 # ============================================================
 # VAULT GP063 REAL STORAGE PROVIDER SECRET REFERENCE LEDGER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP064 REAL STORAGE PROVIDER ENDPOINT NAMESPACE CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-endpoint-namespace-contract")
+def vault_gp064_real_storage_provider_endpoint_namespace_contract_page():
+    from vault.real_storage_provider_endpoint_namespace_contract_service import render_real_storage_provider_endpoint_namespace_contract_page
+    return render_real_storage_provider_endpoint_namespace_contract_page()
+
+@app.route("/vault/real-storage-provider-endpoint-namespace-contract.json")
+def vault_gp064_real_storage_provider_endpoint_namespace_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_endpoint_namespace_contract_service import get_real_storage_provider_endpoint_namespace_contract_home
+    return jsonify(get_real_storage_provider_endpoint_namespace_contract_home())
+
+@app.route("/vault/storage-provider-endpoint-namespace-contract-record.json")
+def vault_gp064_storage_provider_endpoint_namespace_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_endpoint_namespace_contract_service import get_storage_provider_endpoint_namespace_contract_record
+    return jsonify(get_storage_provider_endpoint_namespace_contract_record())
+
+@app.route("/vault/storage-provider-endpoint-namespace-requirements.json")
+def vault_gp064_storage_provider_endpoint_namespace_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_endpoint_namespace_contract_service import get_storage_provider_endpoint_namespace_requirements
+    return jsonify(get_storage_provider_endpoint_namespace_requirements())
+
+@app.route("/vault/storage-provider-endpoint-namespace-policies.json")
+def vault_gp064_storage_provider_endpoint_namespace_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_endpoint_namespace_contract_service import get_storage_provider_endpoint_namespace_policies
+    return jsonify(get_storage_provider_endpoint_namespace_policies())
+
+@app.route("/vault/storage-provider-endpoint-namespace-blockers.json")
+def vault_gp064_storage_provider_endpoint_namespace_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_endpoint_namespace_contract_service import get_storage_provider_endpoint_namespace_blockers
+    return jsonify(get_storage_provider_endpoint_namespace_blockers())
+
+@app.route("/vault/storage-provider-endpoint-namespace-events.json")
+def vault_gp064_storage_provider_endpoint_namespace_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_endpoint_namespace_contract_service import get_storage_provider_endpoint_namespace_events
+    return jsonify(get_storage_provider_endpoint_namespace_events())
+
+@app.route("/vault/storage-provider-endpoint-namespace-validation.json")
+def vault_gp064_storage_provider_endpoint_namespace_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_endpoint_namespace_contract_service import validate_storage_provider_endpoint_namespace_contract
+    return jsonify(validate_storage_provider_endpoint_namespace_contract())
+
+@app.route("/vault/storage-provider-endpoint-namespace-next-step.json")
+def vault_gp064_storage_provider_endpoint_namespace_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_endpoint_namespace_contract_service import get_storage_provider_endpoint_namespace_next_step
+    return jsonify(get_storage_provider_endpoint_namespace_next_step())
+
+@app.route("/vault/gp064-status.json")
+def vault_gp064_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_endpoint_namespace_contract_service import get_gp064_status
+    return jsonify(get_gp064_status())
+
+# ============================================================
+# VAULT GP064 REAL STORAGE PROVIDER ENDPOINT NAMESPACE CONTRACT ROUTES END
+# ============================================================
