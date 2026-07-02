@@ -16801,6 +16801,96 @@ def ob_giant_pack_039_manual_live_receipt_packet_review_queue_materialize_json(p
         **created,
     }), 201
 
+# OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT_ROUTE
+@app.route("/ob/manual-live-evidence-layer-readiness-checkpoint.json", methods=["GET"])
+def ob_giant_pack_040_manual_live_evidence_layer_readiness_checkpoint_json():
+    from flask import jsonify
+    from web.ob_manual_live_evidence_readiness_checkpoint import readiness_overview
+
+    overview = readiness_overview()
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT",
+        "source": "guarded_manual_live_evidence_layer_readiness_checkpoint",
+        **overview,
+    })
+
+
+@app.route("/ob/manual-live-evidence-layer-readiness-snapshots.json", methods=["GET"])
+def ob_giant_pack_040_manual_live_evidence_layer_readiness_snapshots_list_json():
+    from flask import jsonify, request
+    from web.ob_manual_live_evidence_readiness_checkpoint import list_readiness_snapshots, readiness_boundaries, LOCKED_ACTIONS
+
+    limit = int(request.args.get("limit") or 50)
+    snapshots = list_readiness_snapshots(limit=limit)
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT",
+        "source": "guarded_manual_live_evidence_layer_readiness_snapshots_list",
+        "ok": True,
+        "snapshots": snapshots,
+        "snapshot_count": len(snapshots),
+        "real_readiness_snapshot_persistence": True,
+        "real_readiness_snapshot_hash": True,
+        "boundaries": readiness_boundaries(),
+        "blocked_actions": LOCKED_ACTIONS,
+    })
+
+
+@app.route("/ob/manual-live-evidence-layer-readiness-snapshots.json", methods=["POST"])
+def ob_giant_pack_040_manual_live_evidence_layer_readiness_snapshots_create_json():
+    from flask import jsonify, request
+    from web.ob_manual_live_evidence_readiness_checkpoint import create_readiness_snapshot, readiness_boundaries, LOCKED_ACTIONS
+
+    payload = request.get_json(silent=True) or {}
+
+    try:
+        created = create_readiness_snapshot(payload)
+    except ValueError as exc:
+        return jsonify({
+            "version": "OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT",
+            "ok": False,
+            "error": "blocked_live_action_flag",
+            "message": str(exc),
+            "boundaries": readiness_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 400
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT",
+        "source": "guarded_manual_live_evidence_layer_readiness_snapshots_create",
+        **created,
+    }), 201
+
+
+@app.route("/ob/manual-live-evidence-layer-readiness-snapshots/<snapshot_id>.json", methods=["GET"])
+def ob_giant_pack_040_manual_live_evidence_layer_readiness_snapshot_read_json(snapshot_id):
+    from flask import jsonify
+    from web.ob_manual_live_evidence_readiness_checkpoint import get_readiness_snapshot, readiness_boundaries, LOCKED_ACTIONS
+
+    snapshot = get_readiness_snapshot(snapshot_id)
+
+    if snapshot is None:
+        return jsonify({
+            "version": "OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT",
+            "ok": False,
+            "error": "snapshot_not_found",
+            "snapshot_id": snapshot_id,
+            "boundaries": readiness_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 404
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT",
+        "source": "guarded_manual_live_evidence_layer_readiness_snapshot_read",
+        "ok": True,
+        "snapshot_record": snapshot,
+        "real_readiness_snapshot_persistence": True,
+        "real_readiness_snapshot_hash": True,
+        "boundaries": readiness_boundaries(),
+        "blocked_actions": LOCKED_ACTIONS,
+    })
+
 
 if __name__ == "__main__":
     try:

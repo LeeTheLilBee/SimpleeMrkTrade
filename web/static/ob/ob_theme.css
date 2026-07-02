@@ -20690,3 +20690,268 @@ option {
   }
 }
 
+
+/* OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT_CSS */
+
+.ob-manual-live-evidence-readiness-panel {
+  position: relative;
+  z-index: 100;
+  margin: 0 0 18px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(101,242,118,0.38);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.100), transparent 34%),
+    radial-gradient(circle at 100% 12%, rgba(126,252,255,0.060), transparent 38%),
+    rgba(0,0,0,0.40);
+  box-shadow: 0 24px 82px rgba(0,0,0,0.54), inset 0 0 25px rgba(255,255,255,0.020);
+  padding: 15px;
+  backdrop-filter: blur(13px);
+}
+
+.ob-manual-live-evidence-readiness-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.ob-manual-live-evidence-readiness-title {
+  color: #fff2bf;
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.055em;
+}
+
+.ob-manual-live-evidence-readiness-subtitle {
+  margin-top: 5px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ob-manual-live-evidence-readiness-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.ob-manual-live-evidence-readiness-chip,
+.ob-manual-live-evidence-readiness-status {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--ob-muted);
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ob-manual-live-evidence-readiness-chip.green,
+.ob-manual-live-evidence-readiness-status.green {
+  color: var(--ob-green);
+  border-color: rgba(101,242,118,0.24);
+  background: rgba(101,242,118,0.045);
+}
+
+.ob-manual-live-evidence-readiness-chip.gold,
+.ob-manual-live-evidence-readiness-status.gold {
+  color: var(--ob-gold);
+  border-color: rgba(233,194,111,0.27);
+  background: rgba(233,194,111,0.045);
+}
+
+.ob-manual-live-evidence-readiness-chip.red,
+.ob-manual-live-evidence-readiness-status.red {
+  color: var(--ob-red);
+  border-color: rgba(255,87,87,0.24);
+  background: rgba(255,87,87,0.045);
+}
+
+.ob-manual-live-evidence-readiness-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 11px;
+}
+
+.ob-manual-live-evidence-readiness-card,
+.ob-manual-live-evidence-readiness-section {
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(101,242,118,0.034), transparent 34%),
+    rgba(0,0,0,0.20);
+  padding: 12px;
+}
+
+.ob-manual-live-evidence-readiness-section {
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-evidence-readiness-section-title {
+  color: #fff2bf;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+
+.ob-manual-live-evidence-readiness-card span,
+.ob-manual-live-evidence-readiness-stat span {
+  display: block;
+  color: var(--ob-faint);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ob-manual-live-evidence-readiness-card strong,
+.ob-manual-live-evidence-readiness-stat strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.ob-manual-live-evidence-readiness-score {
+  font-size: 52px;
+  line-height: 0.95;
+  color: var(--ob-green);
+  font-weight: 950;
+  letter-spacing: -0.075em;
+  margin: 10px 0;
+}
+
+.ob-manual-live-evidence-readiness-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.ob-manual-live-evidence-readiness-stat {
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 13px;
+  background: rgba(0,0,0,0.18);
+  padding: 9px;
+}
+
+.ob-manual-live-evidence-readiness-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ob-manual-live-evidence-readiness-row {
+  display: grid;
+  grid-template-columns: 28px 0.38fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+  border-top: 1px solid rgba(255,255,255,0.060);
+  padding-top: 9px;
+}
+
+.ob-manual-live-evidence-readiness-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ob-manual-live-evidence-readiness-dot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(101,242,118,0.28);
+  color: var(--ob-green);
+  background: rgba(101,242,118,0.055);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.ob-manual-live-evidence-readiness-row strong {
+  display: block;
+  color: var(--ob-text);
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.ob-manual-live-evidence-readiness-row span {
+  display: block;
+  color: var(--ob-muted);
+  font-size: 11px;
+  line-height: 1.40;
+}
+
+.ob-manual-live-evidence-readiness-callout,
+.ob-manual-live-evidence-readiness-boundary {
+  margin-top: 10px;
+  border: 1px solid rgba(101,242,118,0.17);
+  border-radius: 13px;
+  background: rgba(101,242,118,0.038);
+  padding: 11px;
+  color: var(--ob-muted);
+  font-size: 12px;
+  line-height: 1.46;
+}
+
+.ob-manual-live-evidence-readiness-callout strong {
+  color: var(--ob-green);
+}
+
+.ob-manual-live-evidence-readiness-boundary {
+  border-color: rgba(255,87,87,0.18);
+  background: rgba(255,87,87,0.040);
+}
+
+.ob-manual-live-evidence-readiness-boundary strong {
+  color: var(--ob-red);
+}
+
+.ob-manual-live-evidence-readiness-button {
+  border: 1px solid rgba(101,242,118,0.28);
+  border-radius: 999px;
+  background: rgba(101,242,118,0.08);
+  color: var(--ob-green);
+  padding: 10px 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ob-manual-live-evidence-readiness-button:hover {
+  background: rgba(101,242,118,0.13);
+}
+
+@media (max-width: 1180px) {
+  .ob-manual-live-evidence-readiness-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ob-manual-live-evidence-readiness-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ob-manual-live-evidence-readiness-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ob-manual-live-evidence-readiness-panel {
+    margin-left: 0;
+  }
+
+  .ob-manual-live-evidence-readiness-head {
+    display: grid;
+  }
+
+  .ob-manual-live-evidence-readiness-chip-row {
+    justify-content: flex-start;
+  }
+}
+
