@@ -35494,3 +35494,70 @@ def vault_gp061_status_json():
 # ============================================================
 # VAULT GP061 REAL STORAGE PROVIDER CONFIG CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP062 REAL STORAGE PROVIDER CREDENTIAL BOUNDARY ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-credential-boundary")
+def vault_gp062_real_storage_provider_credential_boundary_page():
+    from vault.real_storage_provider_credential_boundary_service import render_real_storage_provider_credential_boundary_page
+    return render_real_storage_provider_credential_boundary_page()
+
+@app.route("/vault/real-storage-provider-credential-boundary.json")
+def vault_gp062_real_storage_provider_credential_boundary_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_real_storage_provider_credential_boundary_home
+    return jsonify(get_real_storage_provider_credential_boundary_home())
+
+@app.route("/vault/storage-provider-credential-boundary-record.json")
+def vault_gp062_storage_provider_credential_boundary_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_credential_boundary_record
+    return jsonify(get_storage_provider_credential_boundary_record())
+
+@app.route("/vault/storage-provider-credential-boundary-rules.json")
+def vault_gp062_storage_provider_credential_boundary_rules_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_credential_boundary_rules
+    return jsonify(get_storage_provider_credential_boundary_rules())
+
+@app.route("/vault/storage-provider-secret-reference-slots.json")
+def vault_gp062_storage_provider_secret_reference_slots_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_secret_reference_slots
+    return jsonify(get_storage_provider_secret_reference_slots())
+
+@app.route("/vault/storage-provider-credential-boundary-blockers.json")
+def vault_gp062_storage_provider_credential_boundary_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_credential_boundary_blockers
+    return jsonify(get_storage_provider_credential_boundary_blockers())
+
+@app.route("/vault/storage-provider-credential-boundary-events.json")
+def vault_gp062_storage_provider_credential_boundary_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_credential_boundary_events
+    return jsonify(get_storage_provider_credential_boundary_events())
+
+@app.route("/vault/storage-provider-credential-boundary-validation.json")
+def vault_gp062_storage_provider_credential_boundary_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import validate_storage_provider_credential_boundary
+    return jsonify(validate_storage_provider_credential_boundary())
+
+@app.route("/vault/storage-provider-credential-boundary-next-step.json")
+def vault_gp062_storage_provider_credential_boundary_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_credential_boundary_next_step
+    return jsonify(get_storage_provider_credential_boundary_next_step())
+
+@app.route("/vault/gp062-status.json")
+def vault_gp062_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_gp062_status
+    return jsonify(get_gp062_status())
+
+# ============================================================
+# VAULT GP062 REAL STORAGE PROVIDER CREDENTIAL BOUNDARY ROUTES END
+# ============================================================
