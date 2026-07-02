@@ -35103,3 +35103,57 @@ def tower_one_cell_pack_1554_1604_pack_1604_json():
 
     return jsonify(build_tower_beta_owner_go_no_go_decision_closeout_batch_close_readiness_preview())
 
+# ============================================================
+# VAULT GP059 REAL PROVIDER SELECTION REVIEW RECEIPT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-provider-selection-review-receipt")
+def vault_gp059_real_provider_selection_review_receipt_page():
+    from vault.real_provider_selection_review_receipt_service import render_real_provider_selection_review_receipt_page
+    return render_real_provider_selection_review_receipt_page()
+
+@app.route("/vault/real-provider-selection-review-receipt.json")
+def vault_gp059_real_provider_selection_review_receipt_json():
+    from flask import jsonify
+    from vault.real_provider_selection_review_receipt_service import get_real_provider_selection_review_receipt_home
+    return jsonify(get_real_provider_selection_review_receipt_home())
+
+@app.route("/vault/provider-selection-review-receipt-record.json")
+def vault_gp059_provider_selection_review_receipt_record_json():
+    from flask import jsonify
+    from vault.real_provider_selection_review_receipt_service import get_provider_selection_review_receipt_record
+    return jsonify(get_provider_selection_review_receipt_record())
+
+@app.route("/vault/provider-selection-review-receipt-lines.json")
+def vault_gp059_provider_selection_review_receipt_lines_json():
+    from flask import jsonify
+    from vault.real_provider_selection_review_receipt_service import get_provider_selection_review_receipt_lines
+    return jsonify(get_provider_selection_review_receipt_lines())
+
+@app.route("/vault/provider-selection-review-receipt-events.json")
+def vault_gp059_provider_selection_review_receipt_events_json():
+    from flask import jsonify
+    from vault.real_provider_selection_review_receipt_service import get_provider_selection_review_receipt_events
+    return jsonify(get_provider_selection_review_receipt_events())
+
+@app.route("/vault/provider-selection-review-receipt-validation.json")
+def vault_gp059_provider_selection_review_receipt_validation_json():
+    from flask import jsonify
+    from vault.real_provider_selection_review_receipt_service import validate_provider_selection_review_receipt
+    return jsonify(validate_provider_selection_review_receipt())
+
+@app.route("/vault/provider-selection-review-receipt-next-step.json")
+def vault_gp059_provider_selection_review_receipt_next_step_json():
+    from flask import jsonify
+    from vault.real_provider_selection_review_receipt_service import get_provider_selection_review_receipt_next_step
+    return jsonify(get_provider_selection_review_receipt_next_step())
+
+@app.route("/vault/gp059-status.json")
+def vault_gp059_status_json():
+    from flask import jsonify
+    from vault.real_provider_selection_review_receipt_service import get_gp059_status
+    return jsonify(get_gp059_status())
+
+# ============================================================
+# VAULT GP059 REAL PROVIDER SELECTION REVIEW RECEIPT ROUTES END
+# ============================================================
