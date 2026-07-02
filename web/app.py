@@ -36719,3 +36719,70 @@ def vault_gp066_status_json():
 # ============================================================
 # VAULT GP066 REAL STORAGE PROVIDER CONNECTION TEST LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP067 REAL STORAGE PROVIDER WRITE PATH LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-write-path-lock-contract")
+def vault_gp067_real_storage_provider_write_path_lock_contract_page():
+    from vault.real_storage_provider_write_path_lock_contract_service import render_real_storage_provider_write_path_lock_contract_page
+    return render_real_storage_provider_write_path_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-write-path-lock-contract.json")
+def vault_gp067_real_storage_provider_write_path_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_write_path_lock_contract_service import get_real_storage_provider_write_path_lock_contract_home
+    return jsonify(get_real_storage_provider_write_path_lock_contract_home())
+
+@app.route("/vault/storage-provider-write-path-lock-contract-record.json")
+def vault_gp067_storage_provider_write_path_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_write_path_lock_contract_service import get_storage_provider_write_path_lock_contract_record
+    return jsonify(get_storage_provider_write_path_lock_contract_record())
+
+@app.route("/vault/storage-provider-write-path-requirements.json")
+def vault_gp067_storage_provider_write_path_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_write_path_lock_contract_service import get_storage_provider_write_path_requirements
+    return jsonify(get_storage_provider_write_path_requirements())
+
+@app.route("/vault/storage-provider-write-path-policies.json")
+def vault_gp067_storage_provider_write_path_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_write_path_lock_contract_service import get_storage_provider_write_path_policies
+    return jsonify(get_storage_provider_write_path_policies())
+
+@app.route("/vault/storage-provider-write-path-blockers.json")
+def vault_gp067_storage_provider_write_path_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_write_path_lock_contract_service import get_storage_provider_write_path_blockers
+    return jsonify(get_storage_provider_write_path_blockers())
+
+@app.route("/vault/storage-provider-write-path-events.json")
+def vault_gp067_storage_provider_write_path_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_write_path_lock_contract_service import get_storage_provider_write_path_events
+    return jsonify(get_storage_provider_write_path_events())
+
+@app.route("/vault/storage-provider-write-path-validation.json")
+def vault_gp067_storage_provider_write_path_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_write_path_lock_contract_service import validate_storage_provider_write_path_lock_contract
+    return jsonify(validate_storage_provider_write_path_lock_contract())
+
+@app.route("/vault/storage-provider-write-path-next-step.json")
+def vault_gp067_storage_provider_write_path_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_write_path_lock_contract_service import get_storage_provider_write_path_next_step
+    return jsonify(get_storage_provider_write_path_next_step())
+
+@app.route("/vault/gp067-status.json")
+def vault_gp067_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_write_path_lock_contract_service import get_gp067_status
+    return jsonify(get_gp067_status())
+
+# ============================================================
+# VAULT GP067 REAL STORAGE PROVIDER WRITE PATH LOCK CONTRACT ROUTES END
+# ============================================================
