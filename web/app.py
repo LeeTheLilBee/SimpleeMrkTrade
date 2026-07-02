@@ -33524,3 +33524,57 @@ def tower_one_cell_pack_1401_1451_pack_1451_json():
 
     return jsonify(build_tower_final_archive_receipt_save_readiness_closeout_batch_close_readiness_preview())
 
+# ============================================================
+# VAULT GP055 REAL STORAGE PROVIDER DECISION RECORD ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-decision-record")
+def vault_gp055_real_storage_provider_decision_record_page():
+    from vault.real_storage_provider_decision_record_service import render_real_storage_provider_decision_record_page
+    return render_real_storage_provider_decision_record_page()
+
+@app.route("/vault/real-storage-provider-decision-record.json")
+def vault_gp055_real_storage_provider_decision_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_decision_record_service import get_real_storage_provider_decision_record_home
+    return jsonify(get_real_storage_provider_decision_record_home())
+
+@app.route("/vault/storage-provider-decision-records.json")
+def vault_gp055_storage_provider_decision_records_json():
+    from flask import jsonify
+    from vault.real_storage_provider_decision_record_service import get_storage_provider_decision_records
+    return jsonify(get_storage_provider_decision_records())
+
+@app.route("/vault/storage-provider-current-decision-record.json")
+def vault_gp055_storage_provider_current_decision_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_decision_record_service import get_current_storage_provider_decision_record
+    return jsonify(get_current_storage_provider_decision_record())
+
+@app.route("/vault/storage-provider-decision-events.json")
+def vault_gp055_storage_provider_decision_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_decision_record_service import get_storage_provider_decision_events
+    return jsonify(get_storage_provider_decision_events())
+
+@app.route("/vault/storage-provider-decision-validation.json")
+def vault_gp055_storage_provider_decision_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_decision_record_service import validate_storage_provider_decision_record
+    return jsonify(validate_storage_provider_decision_record())
+
+@app.route("/vault/storage-provider-decision-next-step.json")
+def vault_gp055_storage_provider_decision_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_decision_record_service import get_storage_provider_decision_next_step
+    return jsonify(get_storage_provider_decision_next_step())
+
+@app.route("/vault/gp055-status.json")
+def vault_gp055_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_decision_record_service import get_gp055_status
+    return jsonify(get_gp055_status())
+
+# ============================================================
+# VAULT GP055 REAL STORAGE PROVIDER DECISION RECORD ROUTES END
+# ============================================================
