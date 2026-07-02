@@ -16666,6 +16666,141 @@ def ob_giant_pack_038_manual_live_dry_run_receipt_packet_read_json(packet_id):
         "blocked_actions": LOCKED_ACTIONS,
     })
 
+# OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE_ROUTE
+@app.route("/ob/manual-live-proof-packet-review-queue.json", methods=["GET"])
+def ob_giant_pack_039_manual_live_proof_packet_review_queue_json():
+    from flask import jsonify, request
+    from web.ob_manual_live_proof_packet_review_queue import queue_overview
+
+    overview = queue_overview(
+        q=request.args.get("q") or None,
+        symbol=request.args.get("symbol") or None,
+        queue_status=request.args.get("queue_status") or None,
+        dry_run_outcome=request.args.get("dry_run_outcome") or None,
+        packet_status=request.args.get("packet_status") or None,
+        owner_id=request.args.get("owner_id") or None,
+        limit=int(request.args.get("limit") or 100),
+        materialize=True,
+    )
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE",
+        "source": "guarded_real_manual_live_proof_packet_review_queue",
+        **overview,
+    })
+
+
+@app.route("/ob/manual-live-proof-packet-review-queue-status.json", methods=["GET"])
+def ob_giant_pack_039_manual_live_proof_packet_review_queue_status_json():
+    from flask import jsonify
+    from web.ob_manual_live_proof_packet_review_queue import queue_status_payload
+
+    status = queue_status_payload()
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE",
+        "source": "guarded_real_manual_live_proof_packet_review_queue_status",
+        **status,
+    })
+
+
+@app.route("/ob/manual-live-proof-packet-review-queue/<queue_item_id>.json", methods=["GET"])
+def ob_giant_pack_039_manual_live_proof_packet_review_queue_item_read_json(queue_item_id):
+    from flask import jsonify
+    from web.ob_manual_live_proof_packet_review_queue import get_queue_item, queue_boundaries, LOCKED_ACTIONS
+
+    item = get_queue_item(queue_item_id)
+
+    if item is None:
+        return jsonify({
+            "version": "OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE",
+            "ok": False,
+            "error": "queue_item_not_found",
+            "queue_item_id": queue_item_id,
+            "boundaries": queue_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 404
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE",
+        "source": "guarded_real_manual_live_proof_packet_review_queue_item_read",
+        "ok": True,
+        "queue_item": item,
+        "real_owner_review_queue_persistence": True,
+        "boundaries": queue_boundaries(),
+        "blocked_actions": LOCKED_ACTIONS,
+    })
+
+
+@app.route("/ob/manual-live-proof-packet-review-queue/<queue_item_id>.json", methods=["PATCH"])
+def ob_giant_pack_039_manual_live_proof_packet_review_queue_item_update_json(queue_item_id):
+    from flask import jsonify, request
+    from web.ob_manual_live_proof_packet_review_queue import update_queue_item, queue_boundaries, LOCKED_ACTIONS
+
+    payload = request.get_json(silent=True) or {}
+
+    try:
+        updated = update_queue_item(queue_item_id, payload)
+    except KeyError:
+        return jsonify({
+            "version": "OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE",
+            "ok": False,
+            "error": "queue_item_not_found",
+            "queue_item_id": queue_item_id,
+            "boundaries": queue_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 404
+    except ValueError as exc:
+        return jsonify({
+            "version": "OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE",
+            "ok": False,
+            "error": "blocked_live_action_flag",
+            "message": str(exc),
+            "boundaries": queue_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 400
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE",
+        "source": "guarded_real_manual_live_proof_packet_review_queue_item_update",
+        **updated,
+    })
+
+
+@app.route("/ob/manual-live-dry-run-receipt-packets/<packet_id>/review-queue.json", methods=["POST"])
+def ob_giant_pack_039_manual_live_receipt_packet_review_queue_materialize_json(packet_id):
+    from flask import jsonify, request
+    from web.ob_manual_live_proof_packet_review_queue import materialize_queue_item, queue_boundaries, LOCKED_ACTIONS
+
+    payload = request.get_json(silent=True) or {}
+
+    try:
+        created = materialize_queue_item(packet_id, payload)
+    except KeyError:
+        return jsonify({
+            "version": "OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE",
+            "ok": False,
+            "error": "packet_not_found",
+            "packet_id": packet_id,
+            "boundaries": queue_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 404
+    except ValueError as exc:
+        return jsonify({
+            "version": "OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE",
+            "ok": False,
+            "error": "blocked_live_action_flag",
+            "message": str(exc),
+            "boundaries": queue_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 400
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE",
+        "source": "guarded_real_manual_live_receipt_packet_review_queue_materialize",
+        **created,
+    }), 201
+
 
 if __name__ == "__main__":
     try:
