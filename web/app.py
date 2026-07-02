@@ -33987,3 +33987,57 @@ def tower_one_cell_pack_1452_1502_pack_1502_json():
 
     return jsonify(build_tower_beta_launch_master_readiness_closeout_batch_close_readiness_preview())
 
+# ============================================================
+# VAULT GP056 REAL STORAGE PROVIDER SELECTION REGISTRY ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-selection-registry")
+def vault_gp056_real_storage_provider_selection_registry_page():
+    from vault.real_storage_provider_selection_registry_service import render_real_storage_provider_selection_registry_page
+    return render_real_storage_provider_selection_registry_page()
+
+@app.route("/vault/real-storage-provider-selection-registry.json")
+def vault_gp056_real_storage_provider_selection_registry_json():
+    from flask import jsonify
+    from vault.real_storage_provider_selection_registry_service import get_real_storage_provider_selection_registry_home
+    return jsonify(get_real_storage_provider_selection_registry_home())
+
+@app.route("/vault/storage-provider-selection-registry-record.json")
+def vault_gp056_storage_provider_selection_registry_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_selection_registry_service import get_storage_provider_selection_registry_record
+    return jsonify(get_storage_provider_selection_registry_record())
+
+@app.route("/vault/storage-provider-selection-candidates.json")
+def vault_gp056_storage_provider_selection_candidates_json():
+    from flask import jsonify
+    from vault.real_storage_provider_selection_registry_service import get_storage_provider_selection_candidates
+    return jsonify(get_storage_provider_selection_candidates())
+
+@app.route("/vault/storage-provider-selection-events.json")
+def vault_gp056_storage_provider_selection_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_selection_registry_service import get_storage_provider_selection_events
+    return jsonify(get_storage_provider_selection_events())
+
+@app.route("/vault/storage-provider-selection-validation.json")
+def vault_gp056_storage_provider_selection_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_selection_registry_service import validate_storage_provider_selection_registry
+    return jsonify(validate_storage_provider_selection_registry())
+
+@app.route("/vault/storage-provider-selection-next-step.json")
+def vault_gp056_storage_provider_selection_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_selection_registry_service import get_storage_provider_selection_next_step
+    return jsonify(get_storage_provider_selection_next_step())
+
+@app.route("/vault/gp056-status.json")
+def vault_gp056_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_selection_registry_service import get_gp056_status
+    return jsonify(get_gp056_status())
+
+# ============================================================
+# VAULT GP056 REAL STORAGE PROVIDER SELECTION REGISTRY ROUTES END
+# ============================================================
