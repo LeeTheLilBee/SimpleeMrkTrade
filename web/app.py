@@ -34505,3 +34505,57 @@ def tower_one_cell_pack_1503_1553_pack_1553_json():
 
     return jsonify(build_tower_beta_blocker_risk_resolution_closeout_batch_close_readiness_preview())
 
+# ============================================================
+# VAULT GP058 REAL PROVIDER RISK CRITERIA VALIDATION ENGINE ROUTES START
+# ============================================================
+
+@app.route("/vault/real-provider-risk-criteria-validation-engine")
+def vault_gp058_real_provider_risk_criteria_validation_engine_page():
+    from vault.real_provider_risk_criteria_validation_engine_service import render_real_provider_risk_criteria_validation_engine_page
+    return render_real_provider_risk_criteria_validation_engine_page()
+
+@app.route("/vault/real-provider-risk-criteria-validation-engine.json")
+def vault_gp058_real_provider_risk_criteria_validation_engine_json():
+    from flask import jsonify
+    from vault.real_provider_risk_criteria_validation_engine_service import get_real_provider_risk_criteria_validation_engine_home
+    return jsonify(get_real_provider_risk_criteria_validation_engine_home())
+
+@app.route("/vault/provider-risk-criteria-validation-run.json")
+def vault_gp058_provider_risk_criteria_validation_run_json():
+    from flask import jsonify
+    from vault.real_provider_risk_criteria_validation_engine_service import get_provider_risk_criteria_validation_run
+    return jsonify(get_provider_risk_criteria_validation_run())
+
+@app.route("/vault/provider-risk-criteria-validation-findings.json")
+def vault_gp058_provider_risk_criteria_validation_findings_json():
+    from flask import jsonify
+    from vault.real_provider_risk_criteria_validation_engine_service import get_provider_risk_criteria_validation_findings
+    return jsonify(get_provider_risk_criteria_validation_findings())
+
+@app.route("/vault/provider-risk-criteria-validation-events.json")
+def vault_gp058_provider_risk_criteria_validation_events_json():
+    from flask import jsonify
+    from vault.real_provider_risk_criteria_validation_engine_service import get_provider_risk_criteria_validation_events
+    return jsonify(get_provider_risk_criteria_validation_events())
+
+@app.route("/vault/provider-risk-criteria-validation-summary.json")
+def vault_gp058_provider_risk_criteria_validation_summary_json():
+    from flask import jsonify
+    from vault.real_provider_risk_criteria_validation_engine_service import validate_provider_risk_criteria_validation_engine
+    return jsonify(validate_provider_risk_criteria_validation_engine())
+
+@app.route("/vault/provider-risk-criteria-validation-next-step.json")
+def vault_gp058_provider_risk_criteria_validation_next_step_json():
+    from flask import jsonify
+    from vault.real_provider_risk_criteria_validation_engine_service import get_provider_risk_criteria_validation_next_step
+    return jsonify(get_provider_risk_criteria_validation_next_step())
+
+@app.route("/vault/gp058-status.json")
+def vault_gp058_status_json():
+    from flask import jsonify
+    from vault.real_provider_risk_criteria_validation_engine_service import get_gp058_status
+    return jsonify(get_gp058_status())
+
+# ============================================================
+# VAULT GP058 REAL PROVIDER RISK CRITERIA VALIDATION ENGINE ROUTES END
+# ============================================================
