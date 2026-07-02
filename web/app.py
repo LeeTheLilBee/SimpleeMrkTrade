@@ -35308,3 +35308,64 @@ def vault_gp060_status_json():
 # ============================================================
 # VAULT GP060 STORAGE PROVIDER PREP READINESS CHECKPOINT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP061 REAL STORAGE PROVIDER CONFIG CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-config-contract")
+def vault_gp061_real_storage_provider_config_contract_page():
+    from vault.real_storage_provider_config_contract_service import render_real_storage_provider_config_contract_page
+    return render_real_storage_provider_config_contract_page()
+
+@app.route("/vault/real-storage-provider-config-contract.json")
+def vault_gp061_real_storage_provider_config_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_real_storage_provider_config_contract_home
+    return jsonify(get_real_storage_provider_config_contract_home())
+
+@app.route("/vault/storage-provider-config-contract-record.json")
+def vault_gp061_storage_provider_config_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_storage_provider_config_contract_record
+    return jsonify(get_storage_provider_config_contract_record())
+
+@app.route("/vault/storage-provider-config-requirements.json")
+def vault_gp061_storage_provider_config_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_storage_provider_config_requirements
+    return jsonify(get_storage_provider_config_requirements())
+
+@app.route("/vault/storage-provider-config-blockers.json")
+def vault_gp061_storage_provider_config_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_storage_provider_config_blockers
+    return jsonify(get_storage_provider_config_blockers())
+
+@app.route("/vault/storage-provider-config-events.json")
+def vault_gp061_storage_provider_config_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_storage_provider_config_events
+    return jsonify(get_storage_provider_config_events())
+
+@app.route("/vault/storage-provider-config-validation.json")
+def vault_gp061_storage_provider_config_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import validate_storage_provider_config_contract
+    return jsonify(validate_storage_provider_config_contract())
+
+@app.route("/vault/storage-provider-config-next-step.json")
+def vault_gp061_storage_provider_config_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_storage_provider_config_next_step
+    return jsonify(get_storage_provider_config_next_step())
+
+@app.route("/vault/gp061-status.json")
+def vault_gp061_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_gp061_status
+    return jsonify(get_gp061_status())
+
+# ============================================================
+# VAULT GP061 REAL STORAGE PROVIDER CONFIG CONTRACT ROUTES END
+# ============================================================
