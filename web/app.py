@@ -36786,3 +36786,70 @@ def vault_gp067_status_json():
 # ============================================================
 # VAULT GP067 REAL STORAGE PROVIDER WRITE PATH LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP068 REAL STORAGE PROVIDER READ PATH LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-read-path-lock-contract")
+def vault_gp068_real_storage_provider_read_path_lock_contract_page():
+    from vault.real_storage_provider_read_path_lock_contract_service import render_real_storage_provider_read_path_lock_contract_page
+    return render_real_storage_provider_read_path_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-read-path-lock-contract.json")
+def vault_gp068_real_storage_provider_read_path_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_read_path_lock_contract_service import get_real_storage_provider_read_path_lock_contract_home
+    return jsonify(get_real_storage_provider_read_path_lock_contract_home())
+
+@app.route("/vault/storage-provider-read-path-lock-contract-record.json")
+def vault_gp068_storage_provider_read_path_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_read_path_lock_contract_service import get_storage_provider_read_path_lock_contract_record
+    return jsonify(get_storage_provider_read_path_lock_contract_record())
+
+@app.route("/vault/storage-provider-read-path-requirements.json")
+def vault_gp068_storage_provider_read_path_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_read_path_lock_contract_service import get_storage_provider_read_path_requirements
+    return jsonify(get_storage_provider_read_path_requirements())
+
+@app.route("/vault/storage-provider-read-path-policies.json")
+def vault_gp068_storage_provider_read_path_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_read_path_lock_contract_service import get_storage_provider_read_path_policies
+    return jsonify(get_storage_provider_read_path_policies())
+
+@app.route("/vault/storage-provider-read-path-blockers.json")
+def vault_gp068_storage_provider_read_path_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_read_path_lock_contract_service import get_storage_provider_read_path_blockers
+    return jsonify(get_storage_provider_read_path_blockers())
+
+@app.route("/vault/storage-provider-read-path-events.json")
+def vault_gp068_storage_provider_read_path_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_read_path_lock_contract_service import get_storage_provider_read_path_events
+    return jsonify(get_storage_provider_read_path_events())
+
+@app.route("/vault/storage-provider-read-path-validation.json")
+def vault_gp068_storage_provider_read_path_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_read_path_lock_contract_service import validate_storage_provider_read_path_lock_contract
+    return jsonify(validate_storage_provider_read_path_lock_contract())
+
+@app.route("/vault/storage-provider-read-path-next-step.json")
+def vault_gp068_storage_provider_read_path_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_read_path_lock_contract_service import get_storage_provider_read_path_next_step
+    return jsonify(get_storage_provider_read_path_next_step())
+
+@app.route("/vault/gp068-status.json")
+def vault_gp068_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_read_path_lock_contract_service import get_gp068_status
+    return jsonify(get_gp068_status())
+
+# ============================================================
+# VAULT GP068 REAL STORAGE PROVIDER READ PATH LOCK CONTRACT ROUTES END
+# ============================================================
