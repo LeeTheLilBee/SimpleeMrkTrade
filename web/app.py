@@ -16891,6 +16891,131 @@ def ob_giant_pack_040_manual_live_evidence_layer_readiness_snapshot_read_json(sn
         "blocked_actions": LOCKED_ACTIONS,
     })
 
+# OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF_ROUTE
+@app.route("/ob/manual-live-candidate-decision-handoffs.json", methods=["GET"])
+def ob_giant_pack_041_manual_live_candidate_decision_handoffs_list_json():
+    from flask import jsonify, request
+    from web.ob_manual_live_candidate_decision_handoff import handoff_overview
+
+    overview = handoff_overview(
+        q=request.args.get("q") or None,
+        symbol=request.args.get("symbol") or None,
+        decision_status=request.args.get("decision_status") or None,
+        owner_id=request.args.get("owner_id") or None,
+        limit=int(request.args.get("limit") or 100),
+    )
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF",
+        "source": "guarded_manual_live_candidate_decision_handoffs_list",
+        **overview,
+    })
+
+
+@app.route("/ob/manual-live-candidate-decision-handoffs-status.json", methods=["GET"])
+def ob_giant_pack_041_manual_live_candidate_decision_handoffs_status_json():
+    from flask import jsonify
+    from web.ob_manual_live_candidate_decision_handoff import handoff_status_payload
+
+    status = handoff_status_payload()
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF",
+        "source": "guarded_manual_live_candidate_decision_handoffs_status",
+        **status,
+    })
+
+
+@app.route("/ob/manual-live-candidate-decision-handoffs.json", methods=["POST"])
+def ob_giant_pack_041_manual_live_candidate_decision_handoffs_create_json():
+    from flask import jsonify, request
+    from web.ob_manual_live_candidate_decision_handoff import create_candidate_decision_handoff, handoff_boundaries, LOCKED_ACTIONS
+
+    payload = request.get_json(silent=True) or {}
+
+    try:
+        created = create_candidate_decision_handoff(payload)
+    except ValueError as exc:
+        return jsonify({
+            "version": "OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF",
+            "ok": False,
+            "error": "blocked_live_action_flag",
+            "message": str(exc),
+            "boundaries": handoff_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 400
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF",
+        "source": "guarded_manual_live_candidate_decision_handoffs_create",
+        **created,
+    }), 201
+
+
+@app.route("/ob/manual-live-candidate-decision-handoffs/<handoff_id>.json", methods=["GET"])
+def ob_giant_pack_041_manual_live_candidate_decision_handoff_read_json(handoff_id):
+    from flask import jsonify
+    from web.ob_manual_live_candidate_decision_handoff import get_candidate_decision_handoff, handoff_boundaries, LOCKED_ACTIONS
+
+    handoff = get_candidate_decision_handoff(handoff_id)
+
+    if handoff is None:
+        return jsonify({
+            "version": "OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF",
+            "ok": False,
+            "error": "handoff_not_found",
+            "handoff_id": handoff_id,
+            "boundaries": handoff_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 404
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF",
+        "source": "guarded_manual_live_candidate_decision_handoff_read",
+        "ok": True,
+        "handoff": handoff,
+        "real_candidate_decision_handoff_persistence": True,
+        "real_candidate_payload_fingerprint": True,
+        "real_owner_decision_state": True,
+        "boundaries": handoff_boundaries(),
+        "blocked_actions": LOCKED_ACTIONS,
+    })
+
+
+@app.route("/ob/manual-live-candidate-decision-handoffs/<handoff_id>.json", methods=["PATCH"])
+def ob_giant_pack_041_manual_live_candidate_decision_handoff_update_json(handoff_id):
+    from flask import jsonify, request
+    from web.ob_manual_live_candidate_decision_handoff import update_candidate_decision_handoff, handoff_boundaries, LOCKED_ACTIONS
+
+    payload = request.get_json(silent=True) or {}
+
+    try:
+        updated = update_candidate_decision_handoff(handoff_id, payload)
+    except KeyError:
+        return jsonify({
+            "version": "OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF",
+            "ok": False,
+            "error": "handoff_not_found",
+            "handoff_id": handoff_id,
+            "boundaries": handoff_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 404
+    except ValueError as exc:
+        return jsonify({
+            "version": "OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF",
+            "ok": False,
+            "error": "blocked_live_action_flag",
+            "message": str(exc),
+            "boundaries": handoff_boundaries(),
+            "blocked_actions": LOCKED_ACTIONS,
+        }), 400
+
+    return jsonify({
+        "version": "OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF",
+        "source": "guarded_manual_live_candidate_decision_handoff_update",
+        **updated,
+    })
+
 
 if __name__ == "__main__":
     try:
