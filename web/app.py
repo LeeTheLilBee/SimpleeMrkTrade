@@ -34041,3 +34041,58 @@ def vault_gp056_status_json():
 # ============================================================
 # VAULT GP056 REAL STORAGE PROVIDER SELECTION REGISTRY ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP057 REAL STORAGE PROVIDER CAPABILITY CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-capability-contract")
+def vault_gp057_real_storage_provider_capability_contract_page():
+    from vault.real_storage_provider_capability_contract_service import render_real_storage_provider_capability_contract_page
+    return render_real_storage_provider_capability_contract_page()
+
+@app.route("/vault/real-storage-provider-capability-contract.json")
+def vault_gp057_real_storage_provider_capability_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_capability_contract_service import get_real_storage_provider_capability_contract_home
+    return jsonify(get_real_storage_provider_capability_contract_home())
+
+@app.route("/vault/storage-provider-capability-contract-record.json")
+def vault_gp057_storage_provider_capability_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_capability_contract_service import get_storage_provider_capability_contract_record
+    return jsonify(get_storage_provider_capability_contract_record())
+
+@app.route("/vault/storage-provider-capability-requirements.json")
+def vault_gp057_storage_provider_capability_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_capability_contract_service import get_storage_provider_capability_requirements
+    return jsonify(get_storage_provider_capability_requirements())
+
+@app.route("/vault/storage-provider-capability-events.json")
+def vault_gp057_storage_provider_capability_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_capability_contract_service import get_storage_provider_capability_events
+    return jsonify(get_storage_provider_capability_events())
+
+@app.route("/vault/storage-provider-capability-validation.json")
+def vault_gp057_storage_provider_capability_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_capability_contract_service import validate_storage_provider_capability_contract
+    return jsonify(validate_storage_provider_capability_contract())
+
+@app.route("/vault/storage-provider-capability-next-step.json")
+def vault_gp057_storage_provider_capability_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_capability_contract_service import get_storage_provider_capability_next_step
+    return jsonify(get_storage_provider_capability_next_step())
+
+@app.route("/vault/gp057-status.json")
+def vault_gp057_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_capability_contract_service import get_gp057_status
+    return jsonify(get_gp057_status())
+
+# ============================================================
+# VAULT GP057 REAL STORAGE PROVIDER CAPABILITY CONTRACT ROUTES END
+# ============================================================
