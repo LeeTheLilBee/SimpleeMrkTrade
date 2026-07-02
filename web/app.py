@@ -36451,3 +36451,70 @@ def vault_gp062_status_json():
 # ============================================================
 # VAULT GP062 REAL STORAGE PROVIDER CREDENTIAL BOUNDARY ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP063 REAL STORAGE PROVIDER SECRET REFERENCE LEDGER ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-secret-reference-ledger")
+def vault_gp063_real_storage_provider_secret_reference_ledger_page():
+    from vault.real_storage_provider_secret_reference_ledger_service import render_real_storage_provider_secret_reference_ledger_page
+    return render_real_storage_provider_secret_reference_ledger_page()
+
+@app.route("/vault/real-storage-provider-secret-reference-ledger.json")
+def vault_gp063_real_storage_provider_secret_reference_ledger_json():
+    from flask import jsonify
+    from vault.real_storage_provider_secret_reference_ledger_service import get_real_storage_provider_secret_reference_ledger_home
+    return jsonify(get_real_storage_provider_secret_reference_ledger_home())
+
+@app.route("/vault/storage-provider-secret-reference-ledger-record.json")
+def vault_gp063_storage_provider_secret_reference_ledger_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_secret_reference_ledger_service import get_storage_provider_secret_reference_ledger_record
+    return jsonify(get_storage_provider_secret_reference_ledger_record())
+
+@app.route("/vault/storage-provider-secret-reference-ledger-entries.json")
+def vault_gp063_storage_provider_secret_reference_ledger_entries_json():
+    from flask import jsonify
+    from vault.real_storage_provider_secret_reference_ledger_service import get_storage_provider_secret_reference_ledger_entries
+    return jsonify(get_storage_provider_secret_reference_ledger_entries())
+
+@app.route("/vault/storage-provider-secret-reference-ledger-policies.json")
+def vault_gp063_storage_provider_secret_reference_ledger_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_secret_reference_ledger_service import get_storage_provider_secret_reference_ledger_policies
+    return jsonify(get_storage_provider_secret_reference_ledger_policies())
+
+@app.route("/vault/storage-provider-secret-reference-ledger-blockers.json")
+def vault_gp063_storage_provider_secret_reference_ledger_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_secret_reference_ledger_service import get_storage_provider_secret_reference_ledger_blockers
+    return jsonify(get_storage_provider_secret_reference_ledger_blockers())
+
+@app.route("/vault/storage-provider-secret-reference-ledger-events.json")
+def vault_gp063_storage_provider_secret_reference_ledger_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_secret_reference_ledger_service import get_storage_provider_secret_reference_ledger_events
+    return jsonify(get_storage_provider_secret_reference_ledger_events())
+
+@app.route("/vault/storage-provider-secret-reference-ledger-validation.json")
+def vault_gp063_storage_provider_secret_reference_ledger_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_secret_reference_ledger_service import validate_storage_provider_secret_reference_ledger
+    return jsonify(validate_storage_provider_secret_reference_ledger())
+
+@app.route("/vault/storage-provider-secret-reference-ledger-next-step.json")
+def vault_gp063_storage_provider_secret_reference_ledger_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_secret_reference_ledger_service import get_storage_provider_secret_reference_ledger_next_step
+    return jsonify(get_storage_provider_secret_reference_ledger_next_step())
+
+@app.route("/vault/gp063-status.json")
+def vault_gp063_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_secret_reference_ledger_service import get_gp063_status
+    return jsonify(get_gp063_status())
+
+# ============================================================
+# VAULT GP063 REAL STORAGE PROVIDER SECRET REFERENCE LEDGER ROUTES END
+# ============================================================
