@@ -35247,3 +35247,64 @@ def vault_gp059_status_json():
 # ============================================================
 # VAULT GP059 REAL PROVIDER SELECTION REVIEW RECEIPT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP060 STORAGE PROVIDER PREP READINESS CHECKPOINT ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-provider-prep-readiness-checkpoint")
+def vault_gp060_storage_provider_prep_readiness_checkpoint_page():
+    from vault.storage_provider_prep_readiness_checkpoint_service import render_storage_provider_prep_readiness_checkpoint_page
+    return render_storage_provider_prep_readiness_checkpoint_page()
+
+@app.route("/vault/storage-provider-prep-readiness-checkpoint.json")
+def vault_gp060_storage_provider_prep_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.storage_provider_prep_readiness_checkpoint_service import get_storage_provider_prep_readiness_checkpoint_home
+    return jsonify(get_storage_provider_prep_readiness_checkpoint_home())
+
+@app.route("/vault/storage-provider-prep-readiness-record.json")
+def vault_gp060_storage_provider_prep_readiness_record_json():
+    from flask import jsonify
+    from vault.storage_provider_prep_readiness_checkpoint_service import get_storage_provider_prep_readiness_checkpoint_record
+    return jsonify(get_storage_provider_prep_readiness_checkpoint_record())
+
+@app.route("/vault/storage-provider-prep-readiness-components.json")
+def vault_gp060_storage_provider_prep_readiness_components_json():
+    from flask import jsonify
+    from vault.storage_provider_prep_readiness_checkpoint_service import get_storage_provider_prep_readiness_components
+    return jsonify(get_storage_provider_prep_readiness_components())
+
+@app.route("/vault/storage-provider-prep-readiness-blockers.json")
+def vault_gp060_storage_provider_prep_readiness_blockers_json():
+    from flask import jsonify
+    from vault.storage_provider_prep_readiness_checkpoint_service import get_storage_provider_prep_readiness_blockers
+    return jsonify(get_storage_provider_prep_readiness_blockers())
+
+@app.route("/vault/storage-provider-prep-readiness-events.json")
+def vault_gp060_storage_provider_prep_readiness_events_json():
+    from flask import jsonify
+    from vault.storage_provider_prep_readiness_checkpoint_service import get_storage_provider_prep_readiness_events
+    return jsonify(get_storage_provider_prep_readiness_events())
+
+@app.route("/vault/storage-provider-prep-readiness-validation.json")
+def vault_gp060_storage_provider_prep_readiness_validation_json():
+    from flask import jsonify
+    from vault.storage_provider_prep_readiness_checkpoint_service import validate_storage_provider_prep_readiness_checkpoint
+    return jsonify(validate_storage_provider_prep_readiness_checkpoint())
+
+@app.route("/vault/storage-provider-prep-readiness-next-step.json")
+def vault_gp060_storage_provider_prep_readiness_next_step_json():
+    from flask import jsonify
+    from vault.storage_provider_prep_readiness_checkpoint_service import get_storage_provider_prep_readiness_next_step
+    return jsonify(get_storage_provider_prep_readiness_next_step())
+
+@app.route("/vault/gp060-status.json")
+def vault_gp060_status_json():
+    from flask import jsonify
+    from vault.storage_provider_prep_readiness_checkpoint_service import get_gp060_status
+    return jsonify(get_gp060_status())
+
+# ============================================================
+# VAULT GP060 STORAGE PROVIDER PREP READINESS CHECKPOINT ROUTES END
+# ============================================================
