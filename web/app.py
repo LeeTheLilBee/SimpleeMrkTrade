@@ -36189,3 +36189,265 @@ def tower_one_cell_pack_1656_1706_pack_1706_json():
 
     return jsonify(build_tower_beta_access_monitoring_first_user_safety_closeout_batch_close_readiness_preview())
 
+# ============================================================
+# VAULT GP060-GP062 ROUTE REPAIR HELPERS START
+# ============================================================
+
+def _vault_route_repair_call(module_name, function_candidates):
+    import importlib
+    module = importlib.import_module(module_name)
+    for function_name in function_candidates:
+        fn = getattr(module, function_name, None)
+        if callable(fn):
+            return fn()
+    raise RuntimeError(
+        "Vault route repair could not find callable in "
+        + module_name
+        + ": "
+        + ", ".join(function_candidates)
+    )
+
+# ============================================================
+# VAULT GP060-GP062 ROUTE REPAIR HELPERS END
+# ============================================================
+
+# ============================================================
+# VAULT GP060 STORAGE PROVIDER PREP READINESS CHECKPOINT ROUTES START
+# ============================================================
+
+@app.route("/vault/storage-provider-prep-readiness-checkpoint")
+def vault_gp060_storage_provider_prep_readiness_checkpoint_page():
+    return _vault_route_repair_call(
+        "vault.storage_provider_prep_readiness_checkpoint_service",
+        [
+            "render_storage_provider_prep_readiness_checkpoint_page",
+            "render_storage_provider_prep_readiness_page",
+            "render_storage_provider_readiness_checkpoint_page",
+        ],
+    )
+
+@app.route("/vault/storage-provider-prep-readiness-checkpoint.json")
+def vault_gp060_storage_provider_prep_readiness_checkpoint_json():
+    from flask import jsonify
+    return jsonify(_vault_route_repair_call(
+        "vault.storage_provider_prep_readiness_checkpoint_service",
+        [
+            "get_storage_provider_prep_readiness_checkpoint_home",
+            "get_storage_provider_prep_readiness_home",
+            "get_gp060_status",
+        ],
+    ))
+
+@app.route("/vault/storage-provider-prep-readiness-record.json")
+@app.route("/vault/storage-provider-prep-readiness-checkpoint-record.json")
+def vault_gp060_storage_provider_prep_readiness_record_json():
+    from flask import jsonify
+    return jsonify(_vault_route_repair_call(
+        "vault.storage_provider_prep_readiness_checkpoint_service",
+        [
+            "get_storage_provider_prep_readiness_checkpoint_record",
+            "get_storage_provider_prep_readiness_record",
+            "get_storage_provider_readiness_checkpoint_record",
+            "get_gp060_status",
+        ],
+    ))
+
+@app.route("/vault/storage-provider-prep-readiness-components.json")
+def vault_gp060_storage_provider_prep_readiness_components_json():
+    from flask import jsonify
+    return jsonify(_vault_route_repair_call(
+        "vault.storage_provider_prep_readiness_checkpoint_service",
+        [
+            "get_storage_provider_prep_readiness_components",
+            "get_storage_provider_prep_readiness_checkpoint_components",
+            "get_gp060_status",
+        ],
+    ))
+
+@app.route("/vault/storage-provider-prep-readiness-blockers.json")
+def vault_gp060_storage_provider_prep_readiness_blockers_json():
+    from flask import jsonify
+    return jsonify(_vault_route_repair_call(
+        "vault.storage_provider_prep_readiness_checkpoint_service",
+        [
+            "get_storage_provider_prep_readiness_blockers",
+            "get_storage_provider_prep_readiness_checkpoint_blockers",
+            "get_gp060_status",
+        ],
+    ))
+
+@app.route("/vault/storage-provider-prep-readiness-events.json")
+def vault_gp060_storage_provider_prep_readiness_events_json():
+    from flask import jsonify
+    return jsonify(_vault_route_repair_call(
+        "vault.storage_provider_prep_readiness_checkpoint_service",
+        [
+            "get_storage_provider_prep_readiness_events",
+            "get_storage_provider_prep_readiness_checkpoint_events",
+            "get_gp060_status",
+        ],
+    ))
+
+@app.route("/vault/storage-provider-prep-readiness-validation.json")
+def vault_gp060_storage_provider_prep_readiness_validation_json():
+    from flask import jsonify
+    return jsonify(_vault_route_repair_call(
+        "vault.storage_provider_prep_readiness_checkpoint_service",
+        [
+            "validate_storage_provider_prep_readiness_checkpoint",
+            "validate_storage_provider_prep_readiness",
+            "get_gp060_status",
+        ],
+    ))
+
+@app.route("/vault/storage-provider-prep-readiness-next-step.json")
+def vault_gp060_storage_provider_prep_readiness_next_step_json():
+    from flask import jsonify
+    return jsonify(_vault_route_repair_call(
+        "vault.storage_provider_prep_readiness_checkpoint_service",
+        [
+            "get_storage_provider_prep_readiness_next_step",
+            "get_storage_provider_prep_readiness_checkpoint_next_step",
+            "get_gp060_status",
+        ],
+    ))
+
+@app.route("/vault/gp060-status.json")
+def vault_gp060_status_json():
+    from flask import jsonify
+    return jsonify(_vault_route_repair_call(
+        "vault.storage_provider_prep_readiness_checkpoint_service",
+        ["get_gp060_status"],
+    ))
+
+# ============================================================
+# VAULT GP060 STORAGE PROVIDER PREP READINESS CHECKPOINT ROUTES END
+# ============================================================
+
+# ============================================================
+# VAULT GP061 REAL STORAGE PROVIDER CONFIG CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-config-contract")
+def vault_gp061_real_storage_provider_config_contract_page():
+    from vault.real_storage_provider_config_contract_service import render_real_storage_provider_config_contract_page
+    return render_real_storage_provider_config_contract_page()
+
+@app.route("/vault/real-storage-provider-config-contract.json")
+def vault_gp061_real_storage_provider_config_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_real_storage_provider_config_contract_home
+    return jsonify(get_real_storage_provider_config_contract_home())
+
+@app.route("/vault/storage-provider-config-contract-record.json")
+def vault_gp061_storage_provider_config_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_storage_provider_config_contract_record
+    return jsonify(get_storage_provider_config_contract_record())
+
+@app.route("/vault/storage-provider-config-requirements.json")
+def vault_gp061_storage_provider_config_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_storage_provider_config_requirements
+    return jsonify(get_storage_provider_config_requirements())
+
+@app.route("/vault/storage-provider-config-blockers.json")
+def vault_gp061_storage_provider_config_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_storage_provider_config_blockers
+    return jsonify(get_storage_provider_config_blockers())
+
+@app.route("/vault/storage-provider-config-events.json")
+def vault_gp061_storage_provider_config_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_storage_provider_config_events
+    return jsonify(get_storage_provider_config_events())
+
+@app.route("/vault/storage-provider-config-validation.json")
+def vault_gp061_storage_provider_config_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import validate_storage_provider_config_contract
+    return jsonify(validate_storage_provider_config_contract())
+
+@app.route("/vault/storage-provider-config-next-step.json")
+def vault_gp061_storage_provider_config_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_storage_provider_config_next_step
+    return jsonify(get_storage_provider_config_next_step())
+
+@app.route("/vault/gp061-status.json")
+def vault_gp061_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_config_contract_service import get_gp061_status
+    return jsonify(get_gp061_status())
+
+# ============================================================
+# VAULT GP061 REAL STORAGE PROVIDER CONFIG CONTRACT ROUTES END
+# ============================================================
+
+# ============================================================
+# VAULT GP062 REAL STORAGE PROVIDER CREDENTIAL BOUNDARY ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-credential-boundary")
+def vault_gp062_real_storage_provider_credential_boundary_page():
+    from vault.real_storage_provider_credential_boundary_service import render_real_storage_provider_credential_boundary_page
+    return render_real_storage_provider_credential_boundary_page()
+
+@app.route("/vault/real-storage-provider-credential-boundary.json")
+def vault_gp062_real_storage_provider_credential_boundary_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_real_storage_provider_credential_boundary_home
+    return jsonify(get_real_storage_provider_credential_boundary_home())
+
+@app.route("/vault/storage-provider-credential-boundary-record.json")
+def vault_gp062_storage_provider_credential_boundary_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_credential_boundary_record
+    return jsonify(get_storage_provider_credential_boundary_record())
+
+@app.route("/vault/storage-provider-credential-boundary-rules.json")
+def vault_gp062_storage_provider_credential_boundary_rules_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_credential_boundary_rules
+    return jsonify(get_storage_provider_credential_boundary_rules())
+
+@app.route("/vault/storage-provider-secret-reference-slots.json")
+def vault_gp062_storage_provider_secret_reference_slots_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_secret_reference_slots
+    return jsonify(get_storage_provider_secret_reference_slots())
+
+@app.route("/vault/storage-provider-credential-boundary-blockers.json")
+def vault_gp062_storage_provider_credential_boundary_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_credential_boundary_blockers
+    return jsonify(get_storage_provider_credential_boundary_blockers())
+
+@app.route("/vault/storage-provider-credential-boundary-events.json")
+def vault_gp062_storage_provider_credential_boundary_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_credential_boundary_events
+    return jsonify(get_storage_provider_credential_boundary_events())
+
+@app.route("/vault/storage-provider-credential-boundary-validation.json")
+def vault_gp062_storage_provider_credential_boundary_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import validate_storage_provider_credential_boundary
+    return jsonify(validate_storage_provider_credential_boundary())
+
+@app.route("/vault/storage-provider-credential-boundary-next-step.json")
+def vault_gp062_storage_provider_credential_boundary_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_storage_provider_credential_boundary_next_step
+    return jsonify(get_storage_provider_credential_boundary_next_step())
+
+@app.route("/vault/gp062-status.json")
+def vault_gp062_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_credential_boundary_service import get_gp062_status
+    return jsonify(get_gp062_status())
+
+# ============================================================
+# VAULT GP062 REAL STORAGE PROVIDER CREDENTIAL BOUNDARY ROUTES END
+# ============================================================
