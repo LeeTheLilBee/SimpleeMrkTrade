@@ -36585,3 +36585,70 @@ def vault_gp064_status_json():
 # ============================================================
 # VAULT GP064 REAL STORAGE PROVIDER ENDPOINT NAMESPACE CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP065 REAL STORAGE PROVIDER ENCRYPTION POLICY CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-encryption-policy-contract")
+def vault_gp065_real_storage_provider_encryption_policy_contract_page():
+    from vault.real_storage_provider_encryption_policy_contract_service import render_real_storage_provider_encryption_policy_contract_page
+    return render_real_storage_provider_encryption_policy_contract_page()
+
+@app.route("/vault/real-storage-provider-encryption-policy-contract.json")
+def vault_gp065_real_storage_provider_encryption_policy_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_encryption_policy_contract_service import get_real_storage_provider_encryption_policy_contract_home
+    return jsonify(get_real_storage_provider_encryption_policy_contract_home())
+
+@app.route("/vault/storage-provider-encryption-policy-contract-record.json")
+def vault_gp065_storage_provider_encryption_policy_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_encryption_policy_contract_service import get_storage_provider_encryption_policy_contract_record
+    return jsonify(get_storage_provider_encryption_policy_contract_record())
+
+@app.route("/vault/storage-provider-encryption-requirements.json")
+def vault_gp065_storage_provider_encryption_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_encryption_policy_contract_service import get_storage_provider_encryption_requirements
+    return jsonify(get_storage_provider_encryption_requirements())
+
+@app.route("/vault/storage-provider-encryption-policies.json")
+def vault_gp065_storage_provider_encryption_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_encryption_policy_contract_service import get_storage_provider_encryption_policies
+    return jsonify(get_storage_provider_encryption_policies())
+
+@app.route("/vault/storage-provider-encryption-blockers.json")
+def vault_gp065_storage_provider_encryption_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_encryption_policy_contract_service import get_storage_provider_encryption_blockers
+    return jsonify(get_storage_provider_encryption_blockers())
+
+@app.route("/vault/storage-provider-encryption-events.json")
+def vault_gp065_storage_provider_encryption_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_encryption_policy_contract_service import get_storage_provider_encryption_events
+    return jsonify(get_storage_provider_encryption_events())
+
+@app.route("/vault/storage-provider-encryption-validation.json")
+def vault_gp065_storage_provider_encryption_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_encryption_policy_contract_service import validate_storage_provider_encryption_policy_contract
+    return jsonify(validate_storage_provider_encryption_policy_contract())
+
+@app.route("/vault/storage-provider-encryption-next-step.json")
+def vault_gp065_storage_provider_encryption_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_encryption_policy_contract_service import get_storage_provider_encryption_next_step
+    return jsonify(get_storage_provider_encryption_next_step())
+
+@app.route("/vault/gp065-status.json")
+def vault_gp065_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_encryption_policy_contract_service import get_gp065_status
+    return jsonify(get_gp065_status())
+
+# ============================================================
+# VAULT GP065 REAL STORAGE PROVIDER ENCRYPTION POLICY CONTRACT ROUTES END
+# ============================================================
