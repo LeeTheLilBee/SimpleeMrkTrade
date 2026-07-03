@@ -37584,3 +37584,64 @@ def vault_gp079_status_json():
 # ============================================================
 # VAULT GP079 REAL STORAGE PROVIDER OWNER REVIEW CLOSEOUT LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP080 REAL PROVIDER RECEIPT AND REDACTED ACCESS READINESS CHECKPOINT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-provider-receipt-redacted-access-readiness-checkpoint")
+def vault_gp080_real_provider_receipt_redacted_access_readiness_checkpoint_page():
+    from vault.real_provider_receipt_redacted_access_readiness_checkpoint_service import render_real_provider_receipt_redacted_access_readiness_checkpoint_page
+    return render_real_provider_receipt_redacted_access_readiness_checkpoint_page()
+
+@app.route("/vault/real-provider-receipt-redacted-access-readiness-checkpoint.json")
+def vault_gp080_real_provider_receipt_redacted_access_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.real_provider_receipt_redacted_access_readiness_checkpoint_service import get_real_provider_receipt_redacted_access_readiness_checkpoint_home
+    return jsonify(get_real_provider_receipt_redacted_access_readiness_checkpoint_home())
+
+@app.route("/vault/provider-receipt-redacted-access-readiness-checkpoint-record.json")
+def vault_gp080_provider_receipt_redacted_access_readiness_checkpoint_record_json():
+    from flask import jsonify
+    from vault.real_provider_receipt_redacted_access_readiness_checkpoint_service import get_provider_receipt_redacted_access_readiness_checkpoint_record
+    return jsonify(get_provider_receipt_redacted_access_readiness_checkpoint_record())
+
+@app.route("/vault/provider-receipt-redacted-access-readiness-components.json")
+def vault_gp080_provider_receipt_redacted_access_readiness_components_json():
+    from flask import jsonify
+    from vault.real_provider_receipt_redacted_access_readiness_checkpoint_service import get_provider_receipt_redacted_access_readiness_components
+    return jsonify(get_provider_receipt_redacted_access_readiness_components())
+
+@app.route("/vault/provider-receipt-redacted-access-readiness-blockers.json")
+def vault_gp080_provider_receipt_redacted_access_readiness_blockers_json():
+    from flask import jsonify
+    from vault.real_provider_receipt_redacted_access_readiness_checkpoint_service import get_provider_receipt_redacted_access_readiness_blockers
+    return jsonify(get_provider_receipt_redacted_access_readiness_blockers())
+
+@app.route("/vault/provider-receipt-redacted-access-readiness-events.json")
+def vault_gp080_provider_receipt_redacted_access_readiness_events_json():
+    from flask import jsonify
+    from vault.real_provider_receipt_redacted_access_readiness_checkpoint_service import get_provider_receipt_redacted_access_readiness_events
+    return jsonify(get_provider_receipt_redacted_access_readiness_events())
+
+@app.route("/vault/provider-receipt-redacted-access-readiness-validation.json")
+def vault_gp080_provider_receipt_redacted_access_readiness_validation_json():
+    from flask import jsonify
+    from vault.real_provider_receipt_redacted_access_readiness_checkpoint_service import validate_provider_receipt_redacted_access_readiness_checkpoint
+    return jsonify(validate_provider_receipt_redacted_access_readiness_checkpoint())
+
+@app.route("/vault/provider-receipt-redacted-access-readiness-next-step.json")
+def vault_gp080_provider_receipt_redacted_access_readiness_next_step_json():
+    from flask import jsonify
+    from vault.real_provider_receipt_redacted_access_readiness_checkpoint_service import get_provider_receipt_redacted_access_readiness_next_step
+    return jsonify(get_provider_receipt_redacted_access_readiness_next_step())
+
+@app.route("/vault/gp080-status.json")
+def vault_gp080_status_json():
+    from flask import jsonify
+    from vault.real_provider_receipt_redacted_access_readiness_checkpoint_service import get_gp080_status
+    return jsonify(get_gp080_status())
+
+# ============================================================
+# VAULT GP080 REAL PROVIDER RECEIPT AND REDACTED ACCESS READINESS CHECKPOINT ROUTES END
+# ============================================================
