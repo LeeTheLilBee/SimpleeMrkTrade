@@ -37383,3 +37383,70 @@ def vault_gp076_status_json():
 # ============================================================
 # VAULT GP076 REAL STORAGE PROVIDER OWNER REVIEW QUEUE LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP077 REAL STORAGE PROVIDER OWNER REVIEW DECISION LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-owner-review-decision-lock-contract")
+def vault_gp077_real_storage_provider_owner_review_decision_lock_contract_page():
+    from vault.real_storage_provider_owner_review_decision_lock_contract_service import render_real_storage_provider_owner_review_decision_lock_contract_page
+    return render_real_storage_provider_owner_review_decision_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-owner-review-decision-lock-contract.json")
+def vault_gp077_real_storage_provider_owner_review_decision_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_decision_lock_contract_service import get_real_storage_provider_owner_review_decision_lock_contract_home
+    return jsonify(get_real_storage_provider_owner_review_decision_lock_contract_home())
+
+@app.route("/vault/storage-provider-owner-review-decision-lock-contract-record.json")
+def vault_gp077_storage_provider_owner_review_decision_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_decision_lock_contract_service import get_storage_provider_owner_review_decision_lock_contract_record
+    return jsonify(get_storage_provider_owner_review_decision_lock_contract_record())
+
+@app.route("/vault/storage-provider-owner-review-decision-requirements.json")
+def vault_gp077_storage_provider_owner_review_decision_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_decision_lock_contract_service import get_storage_provider_owner_review_decision_requirements
+    return jsonify(get_storage_provider_owner_review_decision_requirements())
+
+@app.route("/vault/storage-provider-owner-review-decision-policies.json")
+def vault_gp077_storage_provider_owner_review_decision_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_decision_lock_contract_service import get_storage_provider_owner_review_decision_policies
+    return jsonify(get_storage_provider_owner_review_decision_policies())
+
+@app.route("/vault/storage-provider-owner-review-decision-blockers.json")
+def vault_gp077_storage_provider_owner_review_decision_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_decision_lock_contract_service import get_storage_provider_owner_review_decision_blockers
+    return jsonify(get_storage_provider_owner_review_decision_blockers())
+
+@app.route("/vault/storage-provider-owner-review-decision-events.json")
+def vault_gp077_storage_provider_owner_review_decision_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_decision_lock_contract_service import get_storage_provider_owner_review_decision_events
+    return jsonify(get_storage_provider_owner_review_decision_events())
+
+@app.route("/vault/storage-provider-owner-review-decision-validation.json")
+def vault_gp077_storage_provider_owner_review_decision_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_decision_lock_contract_service import validate_storage_provider_owner_review_decision_lock_contract
+    return jsonify(validate_storage_provider_owner_review_decision_lock_contract())
+
+@app.route("/vault/storage-provider-owner-review-decision-next-step.json")
+def vault_gp077_storage_provider_owner_review_decision_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_decision_lock_contract_service import get_storage_provider_owner_review_decision_next_step
+    return jsonify(get_storage_provider_owner_review_decision_next_step())
+
+@app.route("/vault/gp077-status.json")
+def vault_gp077_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_decision_lock_contract_service import get_gp077_status
+    return jsonify(get_gp077_status())
+
+# ============================================================
+# VAULT GP077 REAL STORAGE PROVIDER OWNER REVIEW DECISION LOCK CONTRACT ROUTES END
+# ============================================================
