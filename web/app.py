@@ -37182,3 +37182,70 @@ def vault_gp073_status_json():
 # ============================================================
 # VAULT GP073 REAL STORAGE PROVIDER RECEIPT LINEAGE LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP074 REAL STORAGE PROVIDER REDACTED ACCESS VIEW LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-redacted-access-view-lock-contract")
+def vault_gp074_real_storage_provider_redacted_access_view_lock_contract_page():
+    from vault.real_storage_provider_redacted_access_view_lock_contract_service import render_real_storage_provider_redacted_access_view_lock_contract_page
+    return render_real_storage_provider_redacted_access_view_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-redacted-access-view-lock-contract.json")
+def vault_gp074_real_storage_provider_redacted_access_view_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_access_view_lock_contract_service import get_real_storage_provider_redacted_access_view_lock_contract_home
+    return jsonify(get_real_storage_provider_redacted_access_view_lock_contract_home())
+
+@app.route("/vault/storage-provider-redacted-access-view-lock-contract-record.json")
+def vault_gp074_storage_provider_redacted_access_view_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_access_view_lock_contract_service import get_storage_provider_redacted_access_view_lock_contract_record
+    return jsonify(get_storage_provider_redacted_access_view_lock_contract_record())
+
+@app.route("/vault/storage-provider-redacted-access-view-requirements.json")
+def vault_gp074_storage_provider_redacted_access_view_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_access_view_lock_contract_service import get_storage_provider_redacted_access_view_requirements
+    return jsonify(get_storage_provider_redacted_access_view_requirements())
+
+@app.route("/vault/storage-provider-redacted-access-view-policies.json")
+def vault_gp074_storage_provider_redacted_access_view_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_access_view_lock_contract_service import get_storage_provider_redacted_access_view_policies
+    return jsonify(get_storage_provider_redacted_access_view_policies())
+
+@app.route("/vault/storage-provider-redacted-access-view-blockers.json")
+def vault_gp074_storage_provider_redacted_access_view_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_access_view_lock_contract_service import get_storage_provider_redacted_access_view_blockers
+    return jsonify(get_storage_provider_redacted_access_view_blockers())
+
+@app.route("/vault/storage-provider-redacted-access-view-events.json")
+def vault_gp074_storage_provider_redacted_access_view_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_access_view_lock_contract_service import get_storage_provider_redacted_access_view_events
+    return jsonify(get_storage_provider_redacted_access_view_events())
+
+@app.route("/vault/storage-provider-redacted-access-view-validation.json")
+def vault_gp074_storage_provider_redacted_access_view_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_access_view_lock_contract_service import validate_storage_provider_redacted_access_view_lock_contract
+    return jsonify(validate_storage_provider_redacted_access_view_lock_contract())
+
+@app.route("/vault/storage-provider-redacted-access-view-next-step.json")
+def vault_gp074_storage_provider_redacted_access_view_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_access_view_lock_contract_service import get_storage_provider_redacted_access_view_next_step
+    return jsonify(get_storage_provider_redacted_access_view_next_step())
+
+@app.route("/vault/gp074-status.json")
+def vault_gp074_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_access_view_lock_contract_service import get_gp074_status
+    return jsonify(get_gp074_status())
+
+# ============================================================
+# VAULT GP074 REAL STORAGE PROVIDER REDACTED ACCESS VIEW LOCK CONTRACT ROUTES END
+# ============================================================
