@@ -37517,3 +37517,70 @@ def vault_gp078_status_json():
 # ============================================================
 # VAULT GP078 REAL STORAGE PROVIDER OWNER REVIEW DECISION RECEIPT LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP079 REAL STORAGE PROVIDER OWNER REVIEW CLOSEOUT LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-owner-review-closeout-lock-contract")
+def vault_gp079_real_storage_provider_owner_review_closeout_lock_contract_page():
+    from vault.real_storage_provider_owner_review_closeout_lock_contract_service import render_real_storage_provider_owner_review_closeout_lock_contract_page
+    return render_real_storage_provider_owner_review_closeout_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-owner-review-closeout-lock-contract.json")
+def vault_gp079_real_storage_provider_owner_review_closeout_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_closeout_lock_contract_service import get_real_storage_provider_owner_review_closeout_lock_contract_home
+    return jsonify(get_real_storage_provider_owner_review_closeout_lock_contract_home())
+
+@app.route("/vault/storage-provider-owner-review-closeout-lock-contract-record.json")
+def vault_gp079_storage_provider_owner_review_closeout_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_closeout_lock_contract_service import get_storage_provider_owner_review_closeout_lock_contract_record
+    return jsonify(get_storage_provider_owner_review_closeout_lock_contract_record())
+
+@app.route("/vault/storage-provider-owner-review-closeout-requirements.json")
+def vault_gp079_storage_provider_owner_review_closeout_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_closeout_lock_contract_service import get_storage_provider_owner_review_closeout_requirements
+    return jsonify(get_storage_provider_owner_review_closeout_requirements())
+
+@app.route("/vault/storage-provider-owner-review-closeout-policies.json")
+def vault_gp079_storage_provider_owner_review_closeout_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_closeout_lock_contract_service import get_storage_provider_owner_review_closeout_policies
+    return jsonify(get_storage_provider_owner_review_closeout_policies())
+
+@app.route("/vault/storage-provider-owner-review-closeout-blockers.json")
+def vault_gp079_storage_provider_owner_review_closeout_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_closeout_lock_contract_service import get_storage_provider_owner_review_closeout_blockers
+    return jsonify(get_storage_provider_owner_review_closeout_blockers())
+
+@app.route("/vault/storage-provider-owner-review-closeout-events.json")
+def vault_gp079_storage_provider_owner_review_closeout_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_closeout_lock_contract_service import get_storage_provider_owner_review_closeout_events
+    return jsonify(get_storage_provider_owner_review_closeout_events())
+
+@app.route("/vault/storage-provider-owner-review-closeout-validation.json")
+def vault_gp079_storage_provider_owner_review_closeout_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_closeout_lock_contract_service import validate_storage_provider_owner_review_closeout_lock_contract
+    return jsonify(validate_storage_provider_owner_review_closeout_lock_contract())
+
+@app.route("/vault/storage-provider-owner-review-closeout-next-step.json")
+def vault_gp079_storage_provider_owner_review_closeout_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_closeout_lock_contract_service import get_storage_provider_owner_review_closeout_next_step
+    return jsonify(get_storage_provider_owner_review_closeout_next_step())
+
+@app.route("/vault/gp079-status.json")
+def vault_gp079_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_owner_review_closeout_lock_contract_service import get_gp079_status
+    return jsonify(get_gp079_status())
+
+# ============================================================
+# VAULT GP079 REAL STORAGE PROVIDER OWNER REVIEW CLOSEOUT LOCK CONTRACT ROUTES END
+# ============================================================
