@@ -37115,3 +37115,70 @@ def vault_gp072_status_json():
 # ============================================================
 # VAULT GP072 REAL STORAGE PROVIDER REDACTED METADATA RECEIPT CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP073 REAL STORAGE PROVIDER RECEIPT LINEAGE LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-receipt-lineage-lock-contract")
+def vault_gp073_real_storage_provider_receipt_lineage_lock_contract_page():
+    from vault.real_storage_provider_receipt_lineage_lock_contract_service import render_real_storage_provider_receipt_lineage_lock_contract_page
+    return render_real_storage_provider_receipt_lineage_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-receipt-lineage-lock-contract.json")
+def vault_gp073_real_storage_provider_receipt_lineage_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_receipt_lineage_lock_contract_service import get_real_storage_provider_receipt_lineage_lock_contract_home
+    return jsonify(get_real_storage_provider_receipt_lineage_lock_contract_home())
+
+@app.route("/vault/storage-provider-receipt-lineage-lock-contract-record.json")
+def vault_gp073_storage_provider_receipt_lineage_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_receipt_lineage_lock_contract_service import get_storage_provider_receipt_lineage_lock_contract_record
+    return jsonify(get_storage_provider_receipt_lineage_lock_contract_record())
+
+@app.route("/vault/storage-provider-receipt-lineage-requirements.json")
+def vault_gp073_storage_provider_receipt_lineage_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_receipt_lineage_lock_contract_service import get_storage_provider_receipt_lineage_requirements
+    return jsonify(get_storage_provider_receipt_lineage_requirements())
+
+@app.route("/vault/storage-provider-receipt-lineage-policies.json")
+def vault_gp073_storage_provider_receipt_lineage_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_receipt_lineage_lock_contract_service import get_storage_provider_receipt_lineage_policies
+    return jsonify(get_storage_provider_receipt_lineage_policies())
+
+@app.route("/vault/storage-provider-receipt-lineage-blockers.json")
+def vault_gp073_storage_provider_receipt_lineage_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_receipt_lineage_lock_contract_service import get_storage_provider_receipt_lineage_blockers
+    return jsonify(get_storage_provider_receipt_lineage_blockers())
+
+@app.route("/vault/storage-provider-receipt-lineage-events.json")
+def vault_gp073_storage_provider_receipt_lineage_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_receipt_lineage_lock_contract_service import get_storage_provider_receipt_lineage_events
+    return jsonify(get_storage_provider_receipt_lineage_events())
+
+@app.route("/vault/storage-provider-receipt-lineage-validation.json")
+def vault_gp073_storage_provider_receipt_lineage_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_receipt_lineage_lock_contract_service import validate_storage_provider_receipt_lineage_lock_contract
+    return jsonify(validate_storage_provider_receipt_lineage_lock_contract())
+
+@app.route("/vault/storage-provider-receipt-lineage-next-step.json")
+def vault_gp073_storage_provider_receipt_lineage_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_receipt_lineage_lock_contract_service import get_storage_provider_receipt_lineage_next_step
+    return jsonify(get_storage_provider_receipt_lineage_next_step())
+
+@app.route("/vault/gp073-status.json")
+def vault_gp073_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_receipt_lineage_lock_contract_service import get_gp073_status
+    return jsonify(get_gp073_status())
+
+# ============================================================
+# VAULT GP073 REAL STORAGE PROVIDER RECEIPT LINEAGE LOCK CONTRACT ROUTES END
+# ============================================================
