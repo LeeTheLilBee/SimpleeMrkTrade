@@ -37645,3 +37645,70 @@ def vault_gp080_status_json():
 # ============================================================
 # VAULT GP080 REAL PROVIDER RECEIPT AND REDACTED ACCESS READINESS CHECKPOINT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP081 REAL STORAGE PROVIDER RESTORE REQUEST LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-restore-request-lock-contract")
+def vault_gp081_real_storage_provider_restore_request_lock_contract_page():
+    from vault.real_storage_provider_restore_request_lock_contract_service import render_real_storage_provider_restore_request_lock_contract_page
+    return render_real_storage_provider_restore_request_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-restore-request-lock-contract.json")
+def vault_gp081_real_storage_provider_restore_request_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_request_lock_contract_service import get_real_storage_provider_restore_request_lock_contract_home
+    return jsonify(get_real_storage_provider_restore_request_lock_contract_home())
+
+@app.route("/vault/storage-provider-restore-request-lock-contract-record.json")
+def vault_gp081_storage_provider_restore_request_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_request_lock_contract_service import get_storage_provider_restore_request_lock_contract_record
+    return jsonify(get_storage_provider_restore_request_lock_contract_record())
+
+@app.route("/vault/storage-provider-restore-request-requirements.json")
+def vault_gp081_storage_provider_restore_request_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_request_lock_contract_service import get_storage_provider_restore_request_requirements
+    return jsonify(get_storage_provider_restore_request_requirements())
+
+@app.route("/vault/storage-provider-restore-request-policies.json")
+def vault_gp081_storage_provider_restore_request_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_request_lock_contract_service import get_storage_provider_restore_request_policies
+    return jsonify(get_storage_provider_restore_request_policies())
+
+@app.route("/vault/storage-provider-restore-request-blockers.json")
+def vault_gp081_storage_provider_restore_request_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_request_lock_contract_service import get_storage_provider_restore_request_blockers
+    return jsonify(get_storage_provider_restore_request_blockers())
+
+@app.route("/vault/storage-provider-restore-request-events.json")
+def vault_gp081_storage_provider_restore_request_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_request_lock_contract_service import get_storage_provider_restore_request_events
+    return jsonify(get_storage_provider_restore_request_events())
+
+@app.route("/vault/storage-provider-restore-request-validation.json")
+def vault_gp081_storage_provider_restore_request_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_request_lock_contract_service import validate_storage_provider_restore_request_lock_contract
+    return jsonify(validate_storage_provider_restore_request_lock_contract())
+
+@app.route("/vault/storage-provider-restore-request-next-step.json")
+def vault_gp081_storage_provider_restore_request_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_request_lock_contract_service import get_storage_provider_restore_request_next_step
+    return jsonify(get_storage_provider_restore_request_next_step())
+
+@app.route("/vault/gp081-status.json")
+def vault_gp081_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_request_lock_contract_service import get_gp081_status
+    return jsonify(get_gp081_status())
+
+# ============================================================
+# VAULT GP081 REAL STORAGE PROVIDER RESTORE REQUEST LOCK CONTRACT ROUTES END
+# ============================================================
