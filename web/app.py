@@ -37048,3 +37048,70 @@ def vault_gp071_status_json():
 # ============================================================
 # VAULT GP071 REAL STORAGE PROVIDER OBJECT CATALOG LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP072 REAL STORAGE PROVIDER REDACTED METADATA RECEIPT CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-redacted-metadata-receipt-contract")
+def vault_gp072_real_storage_provider_redacted_metadata_receipt_contract_page():
+    from vault.real_storage_provider_redacted_metadata_receipt_contract_service import render_real_storage_provider_redacted_metadata_receipt_contract_page
+    return render_real_storage_provider_redacted_metadata_receipt_contract_page()
+
+@app.route("/vault/real-storage-provider-redacted-metadata-receipt-contract.json")
+def vault_gp072_real_storage_provider_redacted_metadata_receipt_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_metadata_receipt_contract_service import get_real_storage_provider_redacted_metadata_receipt_contract_home
+    return jsonify(get_real_storage_provider_redacted_metadata_receipt_contract_home())
+
+@app.route("/vault/storage-provider-redacted-metadata-receipt-contract-record.json")
+def vault_gp072_storage_provider_redacted_metadata_receipt_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_metadata_receipt_contract_service import get_storage_provider_redacted_metadata_receipt_contract_record
+    return jsonify(get_storage_provider_redacted_metadata_receipt_contract_record())
+
+@app.route("/vault/storage-provider-redacted-metadata-receipt-requirements.json")
+def vault_gp072_storage_provider_redacted_metadata_receipt_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_metadata_receipt_contract_service import get_storage_provider_redacted_metadata_receipt_requirements
+    return jsonify(get_storage_provider_redacted_metadata_receipt_requirements())
+
+@app.route("/vault/storage-provider-redacted-metadata-receipt-policies.json")
+def vault_gp072_storage_provider_redacted_metadata_receipt_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_metadata_receipt_contract_service import get_storage_provider_redacted_metadata_receipt_policies
+    return jsonify(get_storage_provider_redacted_metadata_receipt_policies())
+
+@app.route("/vault/storage-provider-redacted-metadata-receipt-blockers.json")
+def vault_gp072_storage_provider_redacted_metadata_receipt_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_metadata_receipt_contract_service import get_storage_provider_redacted_metadata_receipt_blockers
+    return jsonify(get_storage_provider_redacted_metadata_receipt_blockers())
+
+@app.route("/vault/storage-provider-redacted-metadata-receipt-events.json")
+def vault_gp072_storage_provider_redacted_metadata_receipt_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_metadata_receipt_contract_service import get_storage_provider_redacted_metadata_receipt_events
+    return jsonify(get_storage_provider_redacted_metadata_receipt_events())
+
+@app.route("/vault/storage-provider-redacted-metadata-receipt-validation.json")
+def vault_gp072_storage_provider_redacted_metadata_receipt_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_metadata_receipt_contract_service import validate_storage_provider_redacted_metadata_receipt_contract
+    return jsonify(validate_storage_provider_redacted_metadata_receipt_contract())
+
+@app.route("/vault/storage-provider-redacted-metadata-receipt-next-step.json")
+def vault_gp072_storage_provider_redacted_metadata_receipt_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_metadata_receipt_contract_service import get_storage_provider_redacted_metadata_receipt_next_step
+    return jsonify(get_storage_provider_redacted_metadata_receipt_next_step())
+
+@app.route("/vault/gp072-status.json")
+def vault_gp072_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_redacted_metadata_receipt_contract_service import get_gp072_status
+    return jsonify(get_gp072_status())
+
+# ============================================================
+# VAULT GP072 REAL STORAGE PROVIDER REDACTED METADATA RECEIPT CONTRACT ROUTES END
+# ============================================================
