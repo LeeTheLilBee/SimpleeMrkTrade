@@ -36981,3 +36981,70 @@ def vault_gp070_status_json():
 # ============================================================
 # VAULT GP070 REAL STORAGE PROVIDER CONFIGURATION READINESS CHECKPOINT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP071 REAL STORAGE PROVIDER OBJECT CATALOG LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-object-catalog-lock-contract")
+def vault_gp071_real_storage_provider_object_catalog_lock_contract_page():
+    from vault.real_storage_provider_object_catalog_lock_contract_service import render_real_storage_provider_object_catalog_lock_contract_page
+    return render_real_storage_provider_object_catalog_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-object-catalog-lock-contract.json")
+def vault_gp071_real_storage_provider_object_catalog_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_object_catalog_lock_contract_service import get_real_storage_provider_object_catalog_lock_contract_home
+    return jsonify(get_real_storage_provider_object_catalog_lock_contract_home())
+
+@app.route("/vault/storage-provider-object-catalog-lock-contract-record.json")
+def vault_gp071_storage_provider_object_catalog_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_object_catalog_lock_contract_service import get_storage_provider_object_catalog_lock_contract_record
+    return jsonify(get_storage_provider_object_catalog_lock_contract_record())
+
+@app.route("/vault/storage-provider-object-catalog-requirements.json")
+def vault_gp071_storage_provider_object_catalog_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_object_catalog_lock_contract_service import get_storage_provider_object_catalog_requirements
+    return jsonify(get_storage_provider_object_catalog_requirements())
+
+@app.route("/vault/storage-provider-object-catalog-policies.json")
+def vault_gp071_storage_provider_object_catalog_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_object_catalog_lock_contract_service import get_storage_provider_object_catalog_policies
+    return jsonify(get_storage_provider_object_catalog_policies())
+
+@app.route("/vault/storage-provider-object-catalog-blockers.json")
+def vault_gp071_storage_provider_object_catalog_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_object_catalog_lock_contract_service import get_storage_provider_object_catalog_blockers
+    return jsonify(get_storage_provider_object_catalog_blockers())
+
+@app.route("/vault/storage-provider-object-catalog-events.json")
+def vault_gp071_storage_provider_object_catalog_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_object_catalog_lock_contract_service import get_storage_provider_object_catalog_events
+    return jsonify(get_storage_provider_object_catalog_events())
+
+@app.route("/vault/storage-provider-object-catalog-validation.json")
+def vault_gp071_storage_provider_object_catalog_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_object_catalog_lock_contract_service import validate_storage_provider_object_catalog_lock_contract
+    return jsonify(validate_storage_provider_object_catalog_lock_contract())
+
+@app.route("/vault/storage-provider-object-catalog-next-step.json")
+def vault_gp071_storage_provider_object_catalog_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_object_catalog_lock_contract_service import get_storage_provider_object_catalog_next_step
+    return jsonify(get_storage_provider_object_catalog_next_step())
+
+@app.route("/vault/gp071-status.json")
+def vault_gp071_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_object_catalog_lock_contract_service import get_gp071_status
+    return jsonify(get_gp071_status())
+
+# ============================================================
+# VAULT GP071 REAL STORAGE PROVIDER OBJECT CATALOG LOCK CONTRACT ROUTES END
+# ============================================================
