@@ -37779,3 +37779,70 @@ def vault_gp082_status_json():
 # ============================================================
 # VAULT GP082 REAL STORAGE PROVIDER RESTORE ELIGIBILITY LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP083 REAL STORAGE PROVIDER RESTORE AUTHORITY LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-restore-authority-lock-contract")
+def vault_gp083_real_storage_provider_restore_authority_lock_contract_page():
+    from vault.real_storage_provider_restore_authority_lock_contract_service import render_real_storage_provider_restore_authority_lock_contract_page
+    return render_real_storage_provider_restore_authority_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-restore-authority-lock-contract.json")
+def vault_gp083_real_storage_provider_restore_authority_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_authority_lock_contract_service import get_real_storage_provider_restore_authority_lock_contract_home
+    return jsonify(get_real_storage_provider_restore_authority_lock_contract_home())
+
+@app.route("/vault/storage-provider-restore-authority-lock-contract-record.json")
+def vault_gp083_storage_provider_restore_authority_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_authority_lock_contract_service import get_storage_provider_restore_authority_lock_contract_record
+    return jsonify(get_storage_provider_restore_authority_lock_contract_record())
+
+@app.route("/vault/storage-provider-restore-authority-requirements.json")
+def vault_gp083_storage_provider_restore_authority_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_authority_lock_contract_service import get_storage_provider_restore_authority_requirements
+    return jsonify(get_storage_provider_restore_authority_requirements())
+
+@app.route("/vault/storage-provider-restore-authority-policies.json")
+def vault_gp083_storage_provider_restore_authority_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_authority_lock_contract_service import get_storage_provider_restore_authority_policies
+    return jsonify(get_storage_provider_restore_authority_policies())
+
+@app.route("/vault/storage-provider-restore-authority-blockers.json")
+def vault_gp083_storage_provider_restore_authority_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_authority_lock_contract_service import get_storage_provider_restore_authority_blockers
+    return jsonify(get_storage_provider_restore_authority_blockers())
+
+@app.route("/vault/storage-provider-restore-authority-events.json")
+def vault_gp083_storage_provider_restore_authority_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_authority_lock_contract_service import get_storage_provider_restore_authority_events
+    return jsonify(get_storage_provider_restore_authority_events())
+
+@app.route("/vault/storage-provider-restore-authority-validation.json")
+def vault_gp083_storage_provider_restore_authority_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_authority_lock_contract_service import validate_storage_provider_restore_authority_lock_contract
+    return jsonify(validate_storage_provider_restore_authority_lock_contract())
+
+@app.route("/vault/storage-provider-restore-authority-next-step.json")
+def vault_gp083_storage_provider_restore_authority_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_authority_lock_contract_service import get_storage_provider_restore_authority_next_step
+    return jsonify(get_storage_provider_restore_authority_next_step())
+
+@app.route("/vault/gp083-status.json")
+def vault_gp083_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_authority_lock_contract_service import get_gp083_status
+    return jsonify(get_gp083_status())
+
+# ============================================================
+# VAULT GP083 REAL STORAGE PROVIDER RESTORE AUTHORITY LOCK CONTRACT ROUTES END
+# ============================================================
