@@ -38181,3 +38181,70 @@ def vault_gp088_status_json():
 # ============================================================
 # VAULT GP088 REAL STORAGE PROVIDER RESTORE API LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP089 REAL STORAGE PROVIDER RESTORE EXPORT LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-restore-export-lock-contract")
+def vault_gp089_real_storage_provider_restore_export_lock_contract_page():
+    from vault.real_storage_provider_restore_export_lock_contract_service import render_real_storage_provider_restore_export_lock_contract_page
+    return render_real_storage_provider_restore_export_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-restore-export-lock-contract.json")
+def vault_gp089_real_storage_provider_restore_export_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_export_lock_contract_service import get_real_storage_provider_restore_export_lock_contract_home
+    return jsonify(get_real_storage_provider_restore_export_lock_contract_home())
+
+@app.route("/vault/storage-provider-restore-export-lock-contract-record.json")
+def vault_gp089_storage_provider_restore_export_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_export_lock_contract_service import get_storage_provider_restore_export_lock_contract_record
+    return jsonify(get_storage_provider_restore_export_lock_contract_record())
+
+@app.route("/vault/storage-provider-restore-export-requirements.json")
+def vault_gp089_storage_provider_restore_export_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_export_lock_contract_service import get_storage_provider_restore_export_requirements
+    return jsonify(get_storage_provider_restore_export_requirements())
+
+@app.route("/vault/storage-provider-restore-export-policies.json")
+def vault_gp089_storage_provider_restore_export_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_export_lock_contract_service import get_storage_provider_restore_export_policies
+    return jsonify(get_storage_provider_restore_export_policies())
+
+@app.route("/vault/storage-provider-restore-export-blockers.json")
+def vault_gp089_storage_provider_restore_export_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_export_lock_contract_service import get_storage_provider_restore_export_blockers
+    return jsonify(get_storage_provider_restore_export_blockers())
+
+@app.route("/vault/storage-provider-restore-export-events.json")
+def vault_gp089_storage_provider_restore_export_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_export_lock_contract_service import get_storage_provider_restore_export_events
+    return jsonify(get_storage_provider_restore_export_events())
+
+@app.route("/vault/storage-provider-restore-export-validation.json")
+def vault_gp089_storage_provider_restore_export_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_export_lock_contract_service import validate_storage_provider_restore_export_lock_contract
+    return jsonify(validate_storage_provider_restore_export_lock_contract())
+
+@app.route("/vault/storage-provider-restore-export-next-step.json")
+def vault_gp089_storage_provider_restore_export_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_export_lock_contract_service import get_storage_provider_restore_export_next_step
+    return jsonify(get_storage_provider_restore_export_next_step())
+
+@app.route("/vault/gp089-status.json")
+def vault_gp089_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_export_lock_contract_service import get_gp089_status
+    return jsonify(get_gp089_status())
+
+# ============================================================
+# VAULT GP089 REAL STORAGE PROVIDER RESTORE EXPORT LOCK CONTRACT ROUTES END
+# ============================================================
