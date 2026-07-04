@@ -38114,3 +38114,70 @@ def vault_gp087_status_json():
 # ============================================================
 # VAULT GP087 REAL STORAGE PROVIDER RESTORE JOB LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP088 REAL STORAGE PROVIDER RESTORE API LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-restore-api-lock-contract")
+def vault_gp088_real_storage_provider_restore_api_lock_contract_page():
+    from vault.real_storage_provider_restore_api_lock_contract_service import render_real_storage_provider_restore_api_lock_contract_page
+    return render_real_storage_provider_restore_api_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-restore-api-lock-contract.json")
+def vault_gp088_real_storage_provider_restore_api_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_api_lock_contract_service import get_real_storage_provider_restore_api_lock_contract_home
+    return jsonify(get_real_storage_provider_restore_api_lock_contract_home())
+
+@app.route("/vault/storage-provider-restore-api-lock-contract-record.json")
+def vault_gp088_storage_provider_restore_api_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_api_lock_contract_service import get_storage_provider_restore_api_lock_contract_record
+    return jsonify(get_storage_provider_restore_api_lock_contract_record())
+
+@app.route("/vault/storage-provider-restore-api-requirements.json")
+def vault_gp088_storage_provider_restore_api_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_api_lock_contract_service import get_storage_provider_restore_api_requirements
+    return jsonify(get_storage_provider_restore_api_requirements())
+
+@app.route("/vault/storage-provider-restore-api-policies.json")
+def vault_gp088_storage_provider_restore_api_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_api_lock_contract_service import get_storage_provider_restore_api_policies
+    return jsonify(get_storage_provider_restore_api_policies())
+
+@app.route("/vault/storage-provider-restore-api-blockers.json")
+def vault_gp088_storage_provider_restore_api_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_api_lock_contract_service import get_storage_provider_restore_api_blockers
+    return jsonify(get_storage_provider_restore_api_blockers())
+
+@app.route("/vault/storage-provider-restore-api-events.json")
+def vault_gp088_storage_provider_restore_api_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_api_lock_contract_service import get_storage_provider_restore_api_events
+    return jsonify(get_storage_provider_restore_api_events())
+
+@app.route("/vault/storage-provider-restore-api-validation.json")
+def vault_gp088_storage_provider_restore_api_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_api_lock_contract_service import validate_storage_provider_restore_api_lock_contract
+    return jsonify(validate_storage_provider_restore_api_lock_contract())
+
+@app.route("/vault/storage-provider-restore-api-next-step.json")
+def vault_gp088_storage_provider_restore_api_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_api_lock_contract_service import get_storage_provider_restore_api_next_step
+    return jsonify(get_storage_provider_restore_api_next_step())
+
+@app.route("/vault/gp088-status.json")
+def vault_gp088_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_api_lock_contract_service import get_gp088_status
+    return jsonify(get_gp088_status())
+
+# ============================================================
+# VAULT GP088 REAL STORAGE PROVIDER RESTORE API LOCK CONTRACT ROUTES END
+# ============================================================
