@@ -38382,3 +38382,70 @@ def vault_gp091_status_json():
 # ============================================================
 # VAULT GP091 REAL PROVIDER POST-CLOSEOUT HANDOFF LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP092 REAL PROVIDER POST-CLOSEOUT HANDOFF RECEIPT LEDGER ROUTES START
+# ============================================================
+
+@app.route("/vault/real-provider-post-closeout-handoff-receipt-ledger")
+def vault_gp092_real_provider_post_closeout_handoff_receipt_ledger_page():
+    from vault.real_provider_post_closeout_handoff_receipt_ledger_service import render_real_provider_post_closeout_handoff_receipt_ledger_page
+    return render_real_provider_post_closeout_handoff_receipt_ledger_page()
+
+@app.route("/vault/real-provider-post-closeout-handoff-receipt-ledger.json")
+def vault_gp092_real_provider_post_closeout_handoff_receipt_ledger_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_receipt_ledger_service import get_real_provider_post_closeout_handoff_receipt_ledger_home
+    return jsonify(get_real_provider_post_closeout_handoff_receipt_ledger_home())
+
+@app.route("/vault/post-closeout-handoff-receipt-ledger-record.json")
+def vault_gp092_post_closeout_handoff_receipt_ledger_record_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_receipt_ledger_service import get_post_closeout_handoff_receipt_ledger_record
+    return jsonify(get_post_closeout_handoff_receipt_ledger_record())
+
+@app.route("/vault/post-closeout-handoff-receipts.json")
+def vault_gp092_post_closeout_handoff_receipts_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_receipt_ledger_service import get_post_closeout_handoff_receipts
+    return jsonify(get_post_closeout_handoff_receipts())
+
+@app.route("/vault/post-closeout-handoff-receipt-policies.json")
+def vault_gp092_post_closeout_handoff_receipt_policies_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_receipt_ledger_service import get_post_closeout_handoff_receipt_policies
+    return jsonify(get_post_closeout_handoff_receipt_policies())
+
+@app.route("/vault/post-closeout-handoff-receipt-blockers.json")
+def vault_gp092_post_closeout_handoff_receipt_blockers_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_receipt_ledger_service import get_post_closeout_handoff_receipt_blockers
+    return jsonify(get_post_closeout_handoff_receipt_blockers())
+
+@app.route("/vault/post-closeout-handoff-receipt-events.json")
+def vault_gp092_post_closeout_handoff_receipt_events_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_receipt_ledger_service import get_post_closeout_handoff_receipt_events
+    return jsonify(get_post_closeout_handoff_receipt_events())
+
+@app.route("/vault/post-closeout-handoff-receipt-validation.json")
+def vault_gp092_post_closeout_handoff_receipt_validation_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_receipt_ledger_service import validate_post_closeout_handoff_receipt_ledger
+    return jsonify(validate_post_closeout_handoff_receipt_ledger())
+
+@app.route("/vault/post-closeout-handoff-receipt-next-step.json")
+def vault_gp092_post_closeout_handoff_receipt_next_step_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_receipt_ledger_service import get_post_closeout_handoff_receipt_next_step
+    return jsonify(get_post_closeout_handoff_receipt_next_step())
+
+@app.route("/vault/gp092-status.json")
+def vault_gp092_status_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_receipt_ledger_service import get_gp092_status
+    return jsonify(get_gp092_status())
+
+# ============================================================
+# VAULT GP092 REAL PROVIDER POST-CLOSEOUT HANDOFF RECEIPT LEDGER ROUTES END
+# ============================================================
