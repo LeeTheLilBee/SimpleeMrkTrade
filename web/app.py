@@ -38729,3 +38729,142 @@ def vault_gp100_status_json():
 # ============================================================
 # VAULT GP096-GP100 POST-CLOSEOUT HANDOFF GOVERNANCE CLOSEOUT LAYER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP101-GP110 REAL PROVIDER RECOVERY CASE WORKSPACE LAYER ROUTES START
+# ============================================================
+
+@app.route("/vault/recovery-case-workspace-layer")
+def vault_gp101_110_recovery_case_workspace_layer_page():
+    from vault.real_provider_recovery_case_workspace_layer_service import render_recovery_case_workspace_layer_page
+    return render_recovery_case_workspace_layer_page()
+
+@app.route("/vault/recovery-case-workspace-layer.json")
+def vault_gp101_110_recovery_case_workspace_layer_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_recovery_case_workspace_layer_home
+    return jsonify(get_recovery_case_workspace_layer_home())
+
+@app.route("/vault/recovery-case-workspace-index.json")
+def vault_gp101_recovery_case_workspace_index_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp101_recovery_case_workspace_index
+    return jsonify(get_gp101_recovery_case_workspace_index())
+
+@app.route("/vault/recovery-case-receipt-ledger.json")
+def vault_gp102_recovery_case_receipt_ledger_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp102_recovery_case_receipt_ledger
+    return jsonify(get_gp102_recovery_case_receipt_ledger())
+
+@app.route("/vault/recovery-case-owner-review-queue.json")
+def vault_gp103_recovery_case_owner_review_queue_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp103_recovery_case_owner_review_queue
+    return jsonify(get_gp103_recovery_case_owner_review_queue())
+
+@app.route("/vault/recovery-case-detail-room.json")
+def vault_gp104_recovery_case_detail_room_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp104_recovery_case_detail_room
+    return jsonify(get_gp104_recovery_case_detail_room())
+
+@app.route("/vault/recovery-case-evidence-link-map.json")
+def vault_gp105_recovery_case_evidence_link_map_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp105_recovery_case_evidence_link_map
+    return jsonify(get_gp105_recovery_case_evidence_link_map())
+
+@app.route("/vault/recovery-case-redacted-object-reference-view.json")
+def vault_gp106_redacted_object_reference_view_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp106_redacted_object_reference_view
+    return jsonify(get_gp106_redacted_object_reference_view())
+
+@app.route("/vault/recovery-case-export-package-lock-preview.json")
+def vault_gp107_export_package_lock_preview_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp107_export_package_lock_preview
+    return jsonify(get_gp107_export_package_lock_preview())
+
+@app.route("/vault/recovery-case-restore-job-lock-preview.json")
+def vault_gp108_restore_job_lock_preview_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp108_restore_job_lock_preview
+    return jsonify(get_gp108_restore_job_lock_preview())
+
+@app.route("/vault/recovery-case-blocker-review-board.json")
+def vault_gp109_recovery_case_blocker_review_board_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp109_recovery_case_blocker_review_board
+    return jsonify(get_gp109_recovery_case_blocker_review_board())
+
+@app.route("/vault/recovery-case-workspace-readiness-checkpoint.json")
+def vault_gp110_recovery_case_workspace_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp110_recovery_case_workspace_readiness_checkpoint
+    return jsonify(get_gp110_recovery_case_workspace_readiness_checkpoint())
+
+@app.route("/vault/gp101-status.json")
+def vault_gp101_status_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp101_status
+    return jsonify(get_gp101_status())
+
+@app.route("/vault/gp102-status.json")
+def vault_gp102_status_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp102_status
+    return jsonify(get_gp102_status())
+
+@app.route("/vault/gp103-status.json")
+def vault_gp103_status_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp103_status
+    return jsonify(get_gp103_status())
+
+@app.route("/vault/gp104-status.json")
+def vault_gp104_status_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp104_status
+    return jsonify(get_gp104_status())
+
+@app.route("/vault/gp105-status.json")
+def vault_gp105_status_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp105_status
+    return jsonify(get_gp105_status())
+
+@app.route("/vault/gp106-status.json")
+def vault_gp106_status_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp106_status
+    return jsonify(get_gp106_status())
+
+@app.route("/vault/gp107-status.json")
+def vault_gp107_status_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp107_status
+    return jsonify(get_gp107_status())
+
+@app.route("/vault/gp108-status.json")
+def vault_gp108_status_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp108_status
+    return jsonify(get_gp108_status())
+
+@app.route("/vault/gp109-status.json")
+def vault_gp109_status_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp109_status
+    return jsonify(get_gp109_status())
+
+@app.route("/vault/gp110-status.json")
+def vault_gp110_status_json():
+    from flask import jsonify
+    from vault.real_provider_recovery_case_workspace_layer_service import get_gp110_status
+    return jsonify(get_gp110_status())
+
+# ============================================================
+# VAULT GP101-GP110 REAL PROVIDER RECOVERY CASE WORKSPACE LAYER ROUTES END
+# ============================================================
