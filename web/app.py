@@ -37712,3 +37712,70 @@ def vault_gp081_status_json():
 # ============================================================
 # VAULT GP081 REAL STORAGE PROVIDER RESTORE REQUEST LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP082 REAL STORAGE PROVIDER RESTORE ELIGIBILITY LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-restore-eligibility-lock-contract")
+def vault_gp082_real_storage_provider_restore_eligibility_lock_contract_page():
+    from vault.real_storage_provider_restore_eligibility_lock_contract_service import render_real_storage_provider_restore_eligibility_lock_contract_page
+    return render_real_storage_provider_restore_eligibility_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-restore-eligibility-lock-contract.json")
+def vault_gp082_real_storage_provider_restore_eligibility_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_eligibility_lock_contract_service import get_real_storage_provider_restore_eligibility_lock_contract_home
+    return jsonify(get_real_storage_provider_restore_eligibility_lock_contract_home())
+
+@app.route("/vault/storage-provider-restore-eligibility-lock-contract-record.json")
+def vault_gp082_storage_provider_restore_eligibility_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_eligibility_lock_contract_service import get_storage_provider_restore_eligibility_lock_contract_record
+    return jsonify(get_storage_provider_restore_eligibility_lock_contract_record())
+
+@app.route("/vault/storage-provider-restore-eligibility-requirements.json")
+def vault_gp082_storage_provider_restore_eligibility_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_eligibility_lock_contract_service import get_storage_provider_restore_eligibility_requirements
+    return jsonify(get_storage_provider_restore_eligibility_requirements())
+
+@app.route("/vault/storage-provider-restore-eligibility-policies.json")
+def vault_gp082_storage_provider_restore_eligibility_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_eligibility_lock_contract_service import get_storage_provider_restore_eligibility_policies
+    return jsonify(get_storage_provider_restore_eligibility_policies())
+
+@app.route("/vault/storage-provider-restore-eligibility-blockers.json")
+def vault_gp082_storage_provider_restore_eligibility_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_eligibility_lock_contract_service import get_storage_provider_restore_eligibility_blockers
+    return jsonify(get_storage_provider_restore_eligibility_blockers())
+
+@app.route("/vault/storage-provider-restore-eligibility-events.json")
+def vault_gp082_storage_provider_restore_eligibility_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_eligibility_lock_contract_service import get_storage_provider_restore_eligibility_events
+    return jsonify(get_storage_provider_restore_eligibility_events())
+
+@app.route("/vault/storage-provider-restore-eligibility-validation.json")
+def vault_gp082_storage_provider_restore_eligibility_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_eligibility_lock_contract_service import validate_storage_provider_restore_eligibility_lock_contract
+    return jsonify(validate_storage_provider_restore_eligibility_lock_contract())
+
+@app.route("/vault/storage-provider-restore-eligibility-next-step.json")
+def vault_gp082_storage_provider_restore_eligibility_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_eligibility_lock_contract_service import get_storage_provider_restore_eligibility_next_step
+    return jsonify(get_storage_provider_restore_eligibility_next_step())
+
+@app.route("/vault/gp082-status.json")
+def vault_gp082_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_eligibility_lock_contract_service import get_gp082_status
+    return jsonify(get_gp082_status())
+
+# ============================================================
+# VAULT GP082 REAL STORAGE PROVIDER RESTORE ELIGIBILITY LOCK CONTRACT ROUTES END
+# ============================================================
