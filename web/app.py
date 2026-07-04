@@ -38047,3 +38047,70 @@ def vault_gp086_status_json():
 # ============================================================
 # VAULT GP086 REAL STORAGE PROVIDER RESTORE OBJECT LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP087 REAL STORAGE PROVIDER RESTORE JOB LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-restore-job-lock-contract")
+def vault_gp087_real_storage_provider_restore_job_lock_contract_page():
+    from vault.real_storage_provider_restore_job_lock_contract_service import render_real_storage_provider_restore_job_lock_contract_page
+    return render_real_storage_provider_restore_job_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-restore-job-lock-contract.json")
+def vault_gp087_real_storage_provider_restore_job_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_job_lock_contract_service import get_real_storage_provider_restore_job_lock_contract_home
+    return jsonify(get_real_storage_provider_restore_job_lock_contract_home())
+
+@app.route("/vault/storage-provider-restore-job-lock-contract-record.json")
+def vault_gp087_storage_provider_restore_job_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_job_lock_contract_service import get_storage_provider_restore_job_lock_contract_record
+    return jsonify(get_storage_provider_restore_job_lock_contract_record())
+
+@app.route("/vault/storage-provider-restore-job-requirements.json")
+def vault_gp087_storage_provider_restore_job_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_job_lock_contract_service import get_storage_provider_restore_job_requirements
+    return jsonify(get_storage_provider_restore_job_requirements())
+
+@app.route("/vault/storage-provider-restore-job-policies.json")
+def vault_gp087_storage_provider_restore_job_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_job_lock_contract_service import get_storage_provider_restore_job_policies
+    return jsonify(get_storage_provider_restore_job_policies())
+
+@app.route("/vault/storage-provider-restore-job-blockers.json")
+def vault_gp087_storage_provider_restore_job_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_job_lock_contract_service import get_storage_provider_restore_job_blockers
+    return jsonify(get_storage_provider_restore_job_blockers())
+
+@app.route("/vault/storage-provider-restore-job-events.json")
+def vault_gp087_storage_provider_restore_job_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_job_lock_contract_service import get_storage_provider_restore_job_events
+    return jsonify(get_storage_provider_restore_job_events())
+
+@app.route("/vault/storage-provider-restore-job-validation.json")
+def vault_gp087_storage_provider_restore_job_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_job_lock_contract_service import validate_storage_provider_restore_job_lock_contract
+    return jsonify(validate_storage_provider_restore_job_lock_contract())
+
+@app.route("/vault/storage-provider-restore-job-next-step.json")
+def vault_gp087_storage_provider_restore_job_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_job_lock_contract_service import get_storage_provider_restore_job_next_step
+    return jsonify(get_storage_provider_restore_job_next_step())
+
+@app.route("/vault/gp087-status.json")
+def vault_gp087_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_job_lock_contract_service import get_gp087_status
+    return jsonify(get_gp087_status())
+
+# ============================================================
+# VAULT GP087 REAL STORAGE PROVIDER RESTORE JOB LOCK CONTRACT ROUTES END
+# ============================================================
