@@ -38315,3 +38315,70 @@ def vault_gp090_status_json():
 # ============================================================
 # VAULT GP090 RESTORE EXPORT GOVERNANCE READINESS CHECKPOINT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP091 REAL PROVIDER POST-CLOSEOUT HANDOFF LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-provider-post-closeout-handoff-lock-contract")
+def vault_gp091_real_provider_post_closeout_handoff_lock_contract_page():
+    from vault.real_provider_post_closeout_handoff_lock_contract_service import render_real_provider_post_closeout_handoff_lock_contract_page
+    return render_real_provider_post_closeout_handoff_lock_contract_page()
+
+@app.route("/vault/real-provider-post-closeout-handoff-lock-contract.json")
+def vault_gp091_real_provider_post_closeout_handoff_lock_contract_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_lock_contract_service import get_real_provider_post_closeout_handoff_lock_contract_home
+    return jsonify(get_real_provider_post_closeout_handoff_lock_contract_home())
+
+@app.route("/vault/post-closeout-handoff-lock-contract-record.json")
+def vault_gp091_post_closeout_handoff_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_lock_contract_service import get_post_closeout_handoff_lock_contract_record
+    return jsonify(get_post_closeout_handoff_lock_contract_record())
+
+@app.route("/vault/post-closeout-handoff-requirements.json")
+def vault_gp091_post_closeout_handoff_requirements_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_lock_contract_service import get_post_closeout_handoff_requirements
+    return jsonify(get_post_closeout_handoff_requirements())
+
+@app.route("/vault/post-closeout-handoff-policies.json")
+def vault_gp091_post_closeout_handoff_policies_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_lock_contract_service import get_post_closeout_handoff_policies
+    return jsonify(get_post_closeout_handoff_policies())
+
+@app.route("/vault/post-closeout-handoff-blockers.json")
+def vault_gp091_post_closeout_handoff_blockers_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_lock_contract_service import get_post_closeout_handoff_blockers
+    return jsonify(get_post_closeout_handoff_blockers())
+
+@app.route("/vault/post-closeout-handoff-events.json")
+def vault_gp091_post_closeout_handoff_events_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_lock_contract_service import get_post_closeout_handoff_events
+    return jsonify(get_post_closeout_handoff_events())
+
+@app.route("/vault/post-closeout-handoff-validation.json")
+def vault_gp091_post_closeout_handoff_validation_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_lock_contract_service import validate_post_closeout_handoff_lock_contract
+    return jsonify(validate_post_closeout_handoff_lock_contract())
+
+@app.route("/vault/post-closeout-handoff-next-step.json")
+def vault_gp091_post_closeout_handoff_next_step_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_lock_contract_service import get_post_closeout_handoff_next_step
+    return jsonify(get_post_closeout_handoff_next_step())
+
+@app.route("/vault/gp091-status.json")
+def vault_gp091_status_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_lock_contract_service import get_gp091_status
+    return jsonify(get_gp091_status())
+
+# ============================================================
+# VAULT GP091 REAL PROVIDER POST-CLOSEOUT HANDOFF LOCK CONTRACT ROUTES END
+# ============================================================
