@@ -38650,3 +38650,82 @@ def vault_gp095_status_json():
 # ============================================================
 # VAULT GP095 REAL PROVIDER POST-CLOSEOUT HANDOFF OWNER REVIEW DECISION RECEIPT LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP096-GP100 POST-CLOSEOUT HANDOFF GOVERNANCE CLOSEOUT LAYER ROUTES START
+# ============================================================
+
+@app.route("/vault/post-closeout-handoff-governance-closeout-layer")
+def vault_gp096_100_post_closeout_handoff_governance_closeout_layer_page():
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import render_post_closeout_handoff_governance_closeout_layer_page
+    return render_post_closeout_handoff_governance_closeout_layer_page()
+
+@app.route("/vault/post-closeout-handoff-governance-closeout-layer.json")
+def vault_gp096_100_post_closeout_handoff_governance_closeout_layer_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import get_post_closeout_handoff_governance_closeout_layer_home
+    return jsonify(get_post_closeout_handoff_governance_closeout_layer_home())
+
+@app.route("/vault/post-closeout-handoff-owner-review-closeout-lock-contract.json")
+def vault_gp096_owner_review_closeout_lock_contract_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import get_gp096_closeout_lock_contract
+    return jsonify(get_gp096_closeout_lock_contract())
+
+@app.route("/vault/post-closeout-handoff-owner-review-closeout-receipt-ledger.json")
+def vault_gp097_owner_review_closeout_receipt_ledger_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import get_gp097_closeout_receipt_ledger
+    return jsonify(get_gp097_closeout_receipt_ledger())
+
+@app.route("/vault/post-closeout-handoff-owner-summary.json")
+def vault_gp098_owner_summary_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import get_gp098_owner_summary
+    return jsonify(get_gp098_owner_summary())
+
+@app.route("/vault/post-closeout-handoff-section-closeout-packet.json")
+def vault_gp099_section_closeout_packet_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import get_gp099_section_closeout_packet
+    return jsonify(get_gp099_section_closeout_packet())
+
+@app.route("/vault/post-closeout-handoff-governance-readiness-checkpoint.json")
+def vault_gp100_governance_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import get_gp100_governance_readiness_checkpoint
+    return jsonify(get_gp100_governance_readiness_checkpoint())
+
+@app.route("/vault/gp096-status.json")
+def vault_gp096_status_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import get_gp096_status
+    return jsonify(get_gp096_status())
+
+@app.route("/vault/gp097-status.json")
+def vault_gp097_status_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import get_gp097_status
+    return jsonify(get_gp097_status())
+
+@app.route("/vault/gp098-status.json")
+def vault_gp098_status_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import get_gp098_status
+    return jsonify(get_gp098_status())
+
+@app.route("/vault/gp099-status.json")
+def vault_gp099_status_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import get_gp099_status
+    return jsonify(get_gp099_status())
+
+@app.route("/vault/gp100-status.json")
+def vault_gp100_status_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_closeout_layer_service import get_gp100_status
+    return jsonify(get_gp100_status())
+
+# ============================================================
+# VAULT GP096-GP100 POST-CLOSEOUT HANDOFF GOVERNANCE CLOSEOUT LAYER ROUTES END
+# ============================================================
