@@ -38449,3 +38449,70 @@ def vault_gp092_status_json():
 # ============================================================
 # VAULT GP092 REAL PROVIDER POST-CLOSEOUT HANDOFF RECEIPT LEDGER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP093 REAL PROVIDER POST-CLOSEOUT HANDOFF OWNER REVIEW QUEUE ROUTES START
+# ============================================================
+
+@app.route("/vault/real-provider-post-closeout-handoff-owner-review-queue")
+def vault_gp093_real_provider_post_closeout_handoff_owner_review_queue_page():
+    from vault.real_provider_post_closeout_handoff_owner_review_queue_service import render_real_provider_post_closeout_handoff_owner_review_queue_page
+    return render_real_provider_post_closeout_handoff_owner_review_queue_page()
+
+@app.route("/vault/real-provider-post-closeout-handoff-owner-review-queue.json")
+def vault_gp093_real_provider_post_closeout_handoff_owner_review_queue_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_queue_service import get_real_provider_post_closeout_handoff_owner_review_queue_home
+    return jsonify(get_real_provider_post_closeout_handoff_owner_review_queue_home())
+
+@app.route("/vault/post-closeout-handoff-owner-review-queue-record.json")
+def vault_gp093_post_closeout_handoff_owner_review_queue_record_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_queue_service import get_post_closeout_handoff_owner_review_queue_record
+    return jsonify(get_post_closeout_handoff_owner_review_queue_record())
+
+@app.route("/vault/post-closeout-handoff-owner-review-items.json")
+def vault_gp093_post_closeout_handoff_owner_review_items_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_queue_service import get_post_closeout_handoff_owner_review_items
+    return jsonify(get_post_closeout_handoff_owner_review_items())
+
+@app.route("/vault/post-closeout-handoff-owner-review-policies.json")
+def vault_gp093_post_closeout_handoff_owner_review_policies_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_queue_service import get_post_closeout_handoff_owner_review_policies
+    return jsonify(get_post_closeout_handoff_owner_review_policies())
+
+@app.route("/vault/post-closeout-handoff-owner-review-blockers.json")
+def vault_gp093_post_closeout_handoff_owner_review_blockers_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_queue_service import get_post_closeout_handoff_owner_review_blockers
+    return jsonify(get_post_closeout_handoff_owner_review_blockers())
+
+@app.route("/vault/post-closeout-handoff-owner-review-events.json")
+def vault_gp093_post_closeout_handoff_owner_review_events_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_queue_service import get_post_closeout_handoff_owner_review_events
+    return jsonify(get_post_closeout_handoff_owner_review_events())
+
+@app.route("/vault/post-closeout-handoff-owner-review-validation.json")
+def vault_gp093_post_closeout_handoff_owner_review_validation_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_queue_service import validate_post_closeout_handoff_owner_review_queue
+    return jsonify(validate_post_closeout_handoff_owner_review_queue())
+
+@app.route("/vault/post-closeout-handoff-owner-review-next-step.json")
+def vault_gp093_post_closeout_handoff_owner_review_next_step_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_queue_service import get_post_closeout_handoff_owner_review_next_step
+    return jsonify(get_post_closeout_handoff_owner_review_next_step())
+
+@app.route("/vault/gp093-status.json")
+def vault_gp093_status_json():
+    from flask import jsonify
+    from vault.real_provider_post_closeout_handoff_owner_review_queue_service import get_gp093_status
+    return jsonify(get_gp093_status())
+
+# ============================================================
+# VAULT GP093 REAL PROVIDER POST-CLOSEOUT HANDOFF OWNER REVIEW QUEUE ROUTES END
+# ============================================================
