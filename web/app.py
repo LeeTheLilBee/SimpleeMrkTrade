@@ -37846,3 +37846,70 @@ def vault_gp083_status_json():
 # ============================================================
 # VAULT GP083 REAL STORAGE PROVIDER RESTORE AUTHORITY LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP084 REAL STORAGE PROVIDER RESTORE SCOPE LOCK CONTRACT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-storage-provider-restore-scope-lock-contract")
+def vault_gp084_real_storage_provider_restore_scope_lock_contract_page():
+    from vault.real_storage_provider_restore_scope_lock_contract_service import render_real_storage_provider_restore_scope_lock_contract_page
+    return render_real_storage_provider_restore_scope_lock_contract_page()
+
+@app.route("/vault/real-storage-provider-restore-scope-lock-contract.json")
+def vault_gp084_real_storage_provider_restore_scope_lock_contract_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_scope_lock_contract_service import get_real_storage_provider_restore_scope_lock_contract_home
+    return jsonify(get_real_storage_provider_restore_scope_lock_contract_home())
+
+@app.route("/vault/storage-provider-restore-scope-lock-contract-record.json")
+def vault_gp084_storage_provider_restore_scope_lock_contract_record_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_scope_lock_contract_service import get_storage_provider_restore_scope_lock_contract_record
+    return jsonify(get_storage_provider_restore_scope_lock_contract_record())
+
+@app.route("/vault/storage-provider-restore-scope-requirements.json")
+def vault_gp084_storage_provider_restore_scope_requirements_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_scope_lock_contract_service import get_storage_provider_restore_scope_requirements
+    return jsonify(get_storage_provider_restore_scope_requirements())
+
+@app.route("/vault/storage-provider-restore-scope-policies.json")
+def vault_gp084_storage_provider_restore_scope_policies_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_scope_lock_contract_service import get_storage_provider_restore_scope_policies
+    return jsonify(get_storage_provider_restore_scope_policies())
+
+@app.route("/vault/storage-provider-restore-scope-blockers.json")
+def vault_gp084_storage_provider_restore_scope_blockers_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_scope_lock_contract_service import get_storage_provider_restore_scope_blockers
+    return jsonify(get_storage_provider_restore_scope_blockers())
+
+@app.route("/vault/storage-provider-restore-scope-events.json")
+def vault_gp084_storage_provider_restore_scope_events_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_scope_lock_contract_service import get_storage_provider_restore_scope_events
+    return jsonify(get_storage_provider_restore_scope_events())
+
+@app.route("/vault/storage-provider-restore-scope-validation.json")
+def vault_gp084_storage_provider_restore_scope_validation_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_scope_lock_contract_service import validate_storage_provider_restore_scope_lock_contract
+    return jsonify(validate_storage_provider_restore_scope_lock_contract())
+
+@app.route("/vault/storage-provider-restore-scope-next-step.json")
+def vault_gp084_storage_provider_restore_scope_next_step_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_scope_lock_contract_service import get_storage_provider_restore_scope_next_step
+    return jsonify(get_storage_provider_restore_scope_next_step())
+
+@app.route("/vault/gp084-status.json")
+def vault_gp084_status_json():
+    from flask import jsonify
+    from vault.real_storage_provider_restore_scope_lock_contract_service import get_gp084_status
+    return jsonify(get_gp084_status())
+
+# ============================================================
+# VAULT GP084 REAL STORAGE PROVIDER RESTORE SCOPE LOCK CONTRACT ROUTES END
+# ============================================================
