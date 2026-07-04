@@ -38248,3 +38248,70 @@ def vault_gp089_status_json():
 # ============================================================
 # VAULT GP089 REAL STORAGE PROVIDER RESTORE EXPORT LOCK CONTRACT ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP090 RESTORE EXPORT GOVERNANCE READINESS CHECKPOINT ROUTES START
+# ============================================================
+
+@app.route("/vault/real-provider-restore-export-governance-readiness-checkpoint")
+def vault_gp090_real_provider_restore_export_governance_readiness_checkpoint_page():
+    from vault.real_provider_restore_and_export_governance_readiness_checkpoint_service import render_real_provider_restore_export_governance_readiness_checkpoint_page
+    return render_real_provider_restore_export_governance_readiness_checkpoint_page()
+
+@app.route("/vault/real-provider-restore-export-governance-readiness-checkpoint.json")
+def vault_gp090_real_provider_restore_export_governance_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.real_provider_restore_and_export_governance_readiness_checkpoint_service import get_real_provider_restore_export_governance_readiness_home
+    return jsonify(get_real_provider_restore_export_governance_readiness_home())
+
+@app.route("/vault/restore-export-governance-readiness-checkpoint-record.json")
+def vault_gp090_restore_export_governance_readiness_checkpoint_record_json():
+    from flask import jsonify
+    from vault.real_provider_restore_and_export_governance_readiness_checkpoint_service import get_restore_export_governance_readiness_checkpoint_record
+    return jsonify(get_restore_export_governance_readiness_checkpoint_record())
+
+@app.route("/vault/restore-export-governance-components.json")
+def vault_gp090_restore_export_governance_components_json():
+    from flask import jsonify
+    from vault.real_provider_restore_and_export_governance_readiness_checkpoint_service import get_restore_export_governance_components
+    return jsonify(get_restore_export_governance_components())
+
+@app.route("/vault/restore-export-governance-criteria.json")
+def vault_gp090_restore_export_governance_criteria_json():
+    from flask import jsonify
+    from vault.real_provider_restore_and_export_governance_readiness_checkpoint_service import get_restore_export_governance_criteria
+    return jsonify(get_restore_export_governance_criteria())
+
+@app.route("/vault/restore-export-governance-blockers.json")
+def vault_gp090_restore_export_governance_blockers_json():
+    from flask import jsonify
+    from vault.real_provider_restore_and_export_governance_readiness_checkpoint_service import get_restore_export_governance_blockers
+    return jsonify(get_restore_export_governance_blockers())
+
+@app.route("/vault/restore-export-governance-events.json")
+def vault_gp090_restore_export_governance_events_json():
+    from flask import jsonify
+    from vault.real_provider_restore_and_export_governance_readiness_checkpoint_service import get_restore_export_governance_events
+    return jsonify(get_restore_export_governance_events())
+
+@app.route("/vault/restore-export-governance-validation.json")
+def vault_gp090_restore_export_governance_validation_json():
+    from flask import jsonify
+    from vault.real_provider_restore_and_export_governance_readiness_checkpoint_service import validate_restore_export_governance_readiness_checkpoint
+    return jsonify(validate_restore_export_governance_readiness_checkpoint())
+
+@app.route("/vault/restore-export-governance-next-section.json")
+def vault_gp090_restore_export_governance_next_section_json():
+    from flask import jsonify
+    from vault.real_provider_restore_and_export_governance_readiness_checkpoint_service import get_restore_export_governance_next_section
+    return jsonify(get_restore_export_governance_next_section())
+
+@app.route("/vault/gp090-status.json")
+def vault_gp090_status_json():
+    from flask import jsonify
+    from vault.real_provider_restore_and_export_governance_readiness_checkpoint_service import get_gp090_status
+    return jsonify(get_gp090_status())
+
+# ============================================================
+# VAULT GP090 RESTORE EXPORT GOVERNANCE READINESS CHECKPOINT ROUTES END
+# ============================================================
