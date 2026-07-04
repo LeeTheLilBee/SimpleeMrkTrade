@@ -39007,3 +39007,142 @@ def vault_gp120_status_json():
 # ============================================================
 # VAULT GP111-GP120 REDACTED ARCHIVE BROWSER LAYER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP121-GP130 OWNER CONSOLE OPERATING DASHBOARD LAYER ROUTES START
+# ============================================================
+
+@app.route("/vault/owner-console-operating-dashboard-layer")
+def vault_gp121_130_owner_console_operating_dashboard_layer_page():
+    from vault.owner_console_operating_dashboard_layer_service import render_owner_console_operating_dashboard_layer_page
+    return render_owner_console_operating_dashboard_layer_page()
+
+@app.route("/vault/owner-console-operating-dashboard-layer.json")
+def vault_gp121_130_owner_console_operating_dashboard_layer_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_owner_console_operating_dashboard_layer_home
+    return jsonify(get_owner_console_operating_dashboard_layer_home())
+
+@app.route("/vault/owner-console-shell.json")
+def vault_gp121_owner_console_shell_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp121_owner_console_shell
+    return jsonify(get_gp121_owner_console_shell())
+
+@app.route("/vault/owner-operating-dashboard-snapshot.json")
+def vault_gp122_operating_dashboard_snapshot_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp122_operating_dashboard_snapshot
+    return jsonify(get_gp122_operating_dashboard_snapshot())
+
+@app.route("/vault/owner-archive-health-summary.json")
+def vault_gp123_archive_health_summary_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp123_archive_health_summary
+    return jsonify(get_gp123_archive_health_summary())
+
+@app.route("/vault/owner-open-recovery-case-summary-board.json")
+def vault_gp124_open_case_summary_board_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp124_open_recovery_case_summary_board
+    return jsonify(get_gp124_open_recovery_case_summary_board())
+
+@app.route("/vault/owner-receipt-proof-summary-board.json")
+def vault_gp125_receipt_proof_summary_board_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp125_receipt_and_proof_summary_board
+    return jsonify(get_gp125_receipt_and_proof_summary_board())
+
+@app.route("/vault/owner-provider-lock-status-panel.json")
+def vault_gp126_provider_lock_status_panel_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp126_provider_lock_status_panel
+    return jsonify(get_gp126_provider_lock_status_panel())
+
+@app.route("/vault/owner-tower-gate-status-panel.json")
+def vault_gp127_tower_gate_status_panel_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp127_tower_gate_status_panel
+    return jsonify(get_gp127_tower_gate_status_panel())
+
+@app.route("/vault/owner-next-safe-action-board.json")
+def vault_gp128_next_safe_action_board_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp128_owner_next_safe_action_board
+    return jsonify(get_gp128_owner_next_safe_action_board())
+
+@app.route("/vault/owner-console-blocker-board.json")
+def vault_gp129_owner_console_blocker_board_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp129_owner_console_blocker_board
+    return jsonify(get_gp129_owner_console_blocker_board())
+
+@app.route("/vault/owner-console-readiness-checkpoint.json")
+def vault_gp130_owner_console_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp130_owner_console_readiness_checkpoint
+    return jsonify(get_gp130_owner_console_readiness_checkpoint())
+
+@app.route("/vault/gp121-status.json")
+def vault_gp121_status_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp121_status
+    return jsonify(get_gp121_status())
+
+@app.route("/vault/gp122-status.json")
+def vault_gp122_status_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp122_status
+    return jsonify(get_gp122_status())
+
+@app.route("/vault/gp123-status.json")
+def vault_gp123_status_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp123_status
+    return jsonify(get_gp123_status())
+
+@app.route("/vault/gp124-status.json")
+def vault_gp124_status_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp124_status
+    return jsonify(get_gp124_status())
+
+@app.route("/vault/gp125-status.json")
+def vault_gp125_status_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp125_status
+    return jsonify(get_gp125_status())
+
+@app.route("/vault/gp126-status.json")
+def vault_gp126_status_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp126_status
+    return jsonify(get_gp126_status())
+
+@app.route("/vault/gp127-status.json")
+def vault_gp127_status_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp127_status
+    return jsonify(get_gp127_status())
+
+@app.route("/vault/gp128-status.json")
+def vault_gp128_status_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp128_status
+    return jsonify(get_gp128_status())
+
+@app.route("/vault/gp129-status.json")
+def vault_gp129_status_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp129_status
+    return jsonify(get_gp129_status())
+
+@app.route("/vault/gp130-status.json")
+def vault_gp130_status_json():
+    from flask import jsonify
+    from vault.owner_console_operating_dashboard_layer_service import get_gp130_status
+    return jsonify(get_gp130_status())
+
+# ============================================================
+# VAULT GP121-GP130 OWNER CONSOLE OPERATING DASHBOARD LAYER ROUTES END
+# ============================================================
