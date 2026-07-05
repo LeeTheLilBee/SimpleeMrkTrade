@@ -39702,3 +39702,142 @@ def vault_gp170_status_json():
 # ============================================================
 # VAULT GP161-GP170 CONTROLLED PROVIDER CONNECTION TEST LOCK LAYER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP171-GP180 CONTROLLED READ ONLY METADATA TEST LAYER ROUTES START
+# ============================================================
+
+@app.route("/vault/controlled-read-only-metadata-test-layer")
+def vault_gp171_180_controlled_read_only_metadata_test_layer_page():
+    from vault.controlled_read_only_metadata_test_layer_service import render_controlled_read_only_metadata_test_layer_page
+    return render_controlled_read_only_metadata_test_layer_page()
+
+@app.route("/vault/controlled-read-only-metadata-test-layer.json")
+def vault_gp171_180_controlled_read_only_metadata_test_layer_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_controlled_read_only_metadata_test_layer_home
+    return jsonify(get_controlled_read_only_metadata_test_layer_home())
+
+@app.route("/vault/controlled-read-only-metadata-test-shell.json")
+def vault_gp171_controlled_metadata_test_shell_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp171_controlled_read_only_metadata_test_shell
+    return jsonify(get_gp171_controlled_read_only_metadata_test_shell())
+
+@app.route("/vault/metadata-test-request-draft-registry.json")
+def vault_gp172_metadata_test_request_draft_registry_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp172_metadata_test_request_draft_registry
+    return jsonify(get_gp172_metadata_test_request_draft_registry())
+
+@app.route("/vault/metadata-scope-contract.json")
+def vault_gp173_metadata_scope_contract_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp173_metadata_scope_contract
+    return jsonify(get_gp173_metadata_scope_contract())
+
+@app.route("/vault/metadata-read-approval-gate-lock.json")
+def vault_gp174_metadata_read_approval_gate_lock_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp174_metadata_read_approval_gate_lock
+    return jsonify(get_gp174_metadata_read_approval_gate_lock())
+
+@app.route("/vault/metadata-query-plan-lock-contract.json")
+def vault_gp175_metadata_query_plan_lock_contract_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp175_metadata_query_plan_lock_contract
+    return jsonify(get_gp175_metadata_query_plan_lock_contract())
+
+@app.route("/vault/metadata-result-placeholder-queue.json")
+def vault_gp176_metadata_result_placeholder_queue_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp176_metadata_result_placeholder_queue
+    return jsonify(get_gp176_metadata_result_placeholder_queue())
+
+@app.route("/vault/metadata-receipt-draft-ledger.json")
+def vault_gp177_metadata_receipt_draft_ledger_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp177_metadata_receipt_draft_ledger
+    return jsonify(get_gp177_metadata_receipt_draft_ledger())
+
+@app.route("/vault/object-body-download-prohibition-contract.json")
+def vault_gp178_object_body_download_prohibition_contract_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp178_object_body_download_prohibition_contract
+    return jsonify(get_gp178_object_body_download_prohibition_contract())
+
+@app.route("/vault/controlled-metadata-test-blocker-board.json")
+def vault_gp179_controlled_metadata_test_blocker_board_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp179_controlled_metadata_test_blocker_board
+    return jsonify(get_gp179_controlled_metadata_test_blocker_board())
+
+@app.route("/vault/controlled-metadata-test-readiness-checkpoint.json")
+def vault_gp180_controlled_metadata_test_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp180_controlled_metadata_test_readiness_checkpoint
+    return jsonify(get_gp180_controlled_metadata_test_readiness_checkpoint())
+
+@app.route("/vault/gp171-status.json")
+def vault_gp171_status_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp171_status
+    return jsonify(get_gp171_status())
+
+@app.route("/vault/gp172-status.json")
+def vault_gp172_status_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp172_status
+    return jsonify(get_gp172_status())
+
+@app.route("/vault/gp173-status.json")
+def vault_gp173_status_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp173_status
+    return jsonify(get_gp173_status())
+
+@app.route("/vault/gp174-status.json")
+def vault_gp174_status_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp174_status
+    return jsonify(get_gp174_status())
+
+@app.route("/vault/gp175-status.json")
+def vault_gp175_status_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp175_status
+    return jsonify(get_gp175_status())
+
+@app.route("/vault/gp176-status.json")
+def vault_gp176_status_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp176_status
+    return jsonify(get_gp176_status())
+
+@app.route("/vault/gp177-status.json")
+def vault_gp177_status_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp177_status
+    return jsonify(get_gp177_status())
+
+@app.route("/vault/gp178-status.json")
+def vault_gp178_status_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp178_status
+    return jsonify(get_gp178_status())
+
+@app.route("/vault/gp179-status.json")
+def vault_gp179_status_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp179_status
+    return jsonify(get_gp179_status())
+
+@app.route("/vault/gp180-status.json")
+def vault_gp180_status_json():
+    from flask import jsonify
+    from vault.controlled_read_only_metadata_test_layer_service import get_gp180_status
+    return jsonify(get_gp180_status())
+
+# ============================================================
+# VAULT GP171-GP180 CONTROLLED READ ONLY METADATA TEST LAYER ROUTES END
+# ============================================================
