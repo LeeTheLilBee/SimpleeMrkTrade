@@ -17212,6 +17212,103 @@ def vault_gp280_status_json():
 
 # VAULT GP271-GP280 OWNER UPLOAD INTAKE LOCK LAYER ROUTES END
 
+# VAULT GP281-GP290 OWNER FILE OBJECT WRITE QUARANTINE LAYER ROUTES START
+
+def _vault_gp281_290_json(function_name):
+    from flask import jsonify
+    from vault import owner_file_object_write_quarantine_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/owner-file-object-write-quarantine-layer")
+def vault_owner_file_object_write_quarantine_layer():
+    return _vault_gp281_290_json("get_owner_file_object_write_quarantine_home")
+
+@app.route("/vault/owner-file-object-write-quarantine-layer.json")
+def vault_owner_file_object_write_quarantine_layer_json():
+    return _vault_gp281_290_json("get_owner_file_object_write_quarantine_home")
+
+@app.route("/vault/owner-file-object-write-quarantine-shell.json")
+def vault_owner_file_object_write_quarantine_shell_json():
+    return _vault_gp281_290_json("get_owner_file_object_write_quarantine_shell")
+
+@app.route("/vault/controlled-owner-object-write-contract.json")
+def vault_controlled_owner_object_write_contract_json():
+    return _vault_gp281_290_json("get_controlled_owner_object_write_contract")
+
+@app.route("/vault/quarantine-object-body-writer.json")
+def vault_quarantine_object_body_writer_json():
+    return _vault_gp281_290_json("get_quarantine_object_body_writer")
+
+@app.route("/vault/file-object-registry-insert-handoff.json")
+def vault_file_object_registry_insert_handoff_json():
+    return _vault_gp281_290_json("get_file_object_registry_insert_handoff")
+
+@app.route("/vault/hash-verification-after-write-board.json")
+def vault_hash_verification_after_write_board_json():
+    return _vault_gp281_290_json("get_hash_verification_after_write_board")
+
+@app.route("/vault/quarantine-object-manifest-ledger.json")
+def vault_quarantine_object_manifest_ledger_json():
+    return _vault_gp281_290_json("get_quarantine_object_manifest_ledger")
+
+@app.route("/vault/write-failure-rollback-preview.json")
+def vault_write_failure_rollback_preview_json():
+    return _vault_gp281_290_json("get_write_failure_rollback_preview")
+
+@app.route("/vault/owner-write-queue-resolution-lock.json")
+def vault_owner_write_queue_resolution_lock_json():
+    return _vault_gp281_290_json("get_owner_write_queue_resolution_lock")
+
+@app.route("/vault/object-write-safety-blocker-board.json")
+def vault_object_write_safety_blocker_board_json():
+    return _vault_gp281_290_json("get_object_write_safety_blocker_board")
+
+@app.route("/vault/owner-file-object-write-quarantine-readiness-checkpoint.json")
+def vault_owner_file_object_write_quarantine_readiness_checkpoint_json():
+    return _vault_gp281_290_json("get_owner_file_object_write_quarantine_readiness_checkpoint")
+
+@app.route("/vault/gp281-status.json")
+def vault_gp281_status_json():
+    return _vault_gp281_290_json("get_gp281_status")
+
+@app.route("/vault/gp282-status.json")
+def vault_gp282_status_json():
+    return _vault_gp281_290_json("get_gp282_status")
+
+@app.route("/vault/gp283-status.json")
+def vault_gp283_status_json():
+    return _vault_gp281_290_json("get_gp283_status")
+
+@app.route("/vault/gp284-status.json")
+def vault_gp284_status_json():
+    return _vault_gp281_290_json("get_gp284_status")
+
+@app.route("/vault/gp285-status.json")
+def vault_gp285_status_json():
+    return _vault_gp281_290_json("get_gp285_status")
+
+@app.route("/vault/gp286-status.json")
+def vault_gp286_status_json():
+    return _vault_gp281_290_json("get_gp286_status")
+
+@app.route("/vault/gp287-status.json")
+def vault_gp287_status_json():
+    return _vault_gp281_290_json("get_gp287_status")
+
+@app.route("/vault/gp288-status.json")
+def vault_gp288_status_json():
+    return _vault_gp281_290_json("get_gp288_status")
+
+@app.route("/vault/gp289-status.json")
+def vault_gp289_status_json():
+    return _vault_gp281_290_json("get_gp289_status")
+
+@app.route("/vault/gp290-status.json")
+def vault_gp290_status_json():
+    return _vault_gp281_290_json("get_gp290_status")
+
+# VAULT GP281-GP290 OWNER FILE OBJECT WRITE QUARANTINE LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
