@@ -17309,6 +17309,103 @@ def vault_gp290_status_json():
 
 # VAULT GP281-GP290 OWNER FILE OBJECT WRITE QUARANTINE LAYER ROUTES END
 
+# VAULT GP291-GP300 OWNER FILE REGISTRY PROMOTION LOCK LAYER ROUTES START
+
+def _vault_gp291_300_json(function_name):
+    from flask import jsonify
+    from vault import owner_file_registry_promotion_lock_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/owner-file-registry-promotion-lock-layer")
+def vault_owner_file_registry_promotion_lock_layer():
+    return _vault_gp291_300_json("get_owner_file_registry_promotion_home")
+
+@app.route("/vault/owner-file-registry-promotion-lock-layer.json")
+def vault_owner_file_registry_promotion_lock_layer_json():
+    return _vault_gp291_300_json("get_owner_file_registry_promotion_home")
+
+@app.route("/vault/owner-file-registry-promotion-lock-shell.json")
+def vault_owner_file_registry_promotion_lock_shell_json():
+    return _vault_gp291_300_json("get_owner_file_registry_promotion_lock_shell")
+
+@app.route("/vault/quarantine-promotion-candidate-board.json")
+def vault_quarantine_promotion_candidate_board_json():
+    return _vault_gp291_300_json("get_quarantine_promotion_candidate_board")
+
+@app.route("/vault/promotion-eligibility-contract.json")
+def vault_promotion_eligibility_contract_json():
+    return _vault_gp291_300_json("get_promotion_eligibility_contract")
+
+@app.route("/vault/active-file-registry-preview.json")
+def vault_active_file_registry_preview_json():
+    return _vault_gp291_300_json("get_active_file_registry_preview")
+
+@app.route("/vault/promotion-approval-lock-board.json")
+def vault_promotion_approval_lock_board_json():
+    return _vault_gp291_300_json("get_promotion_approval_lock_board")
+
+@app.route("/vault/promotion-receipt-draft-ledger.json")
+def vault_promotion_receipt_draft_ledger_json():
+    return _vault_gp291_300_json("get_promotion_receipt_draft_ledger")
+
+@app.route("/vault/promotion-hash-continuity-board.json")
+def vault_promotion_hash_continuity_board_json():
+    return _vault_gp291_300_json("get_promotion_hash_continuity_board")
+
+@app.route("/vault/quarantine-release-prohibition-board.json")
+def vault_quarantine_release_prohibition_board_json():
+    return _vault_gp291_300_json("get_quarantine_release_prohibition_board")
+
+@app.route("/vault/registry-promotion-safety-blocker-board.json")
+def vault_registry_promotion_safety_blocker_board_json():
+    return _vault_gp291_300_json("get_registry_promotion_safety_blocker_board")
+
+@app.route("/vault/owner-file-registry-promotion-lock-readiness-checkpoint.json")
+def vault_owner_file_registry_promotion_lock_readiness_checkpoint_json():
+    return _vault_gp291_300_json("get_owner_file_registry_promotion_lock_readiness_checkpoint")
+
+@app.route("/vault/gp291-status.json")
+def vault_gp291_status_json():
+    return _vault_gp291_300_json("get_gp291_status")
+
+@app.route("/vault/gp292-status.json")
+def vault_gp292_status_json():
+    return _vault_gp291_300_json("get_gp292_status")
+
+@app.route("/vault/gp293-status.json")
+def vault_gp293_status_json():
+    return _vault_gp291_300_json("get_gp293_status")
+
+@app.route("/vault/gp294-status.json")
+def vault_gp294_status_json():
+    return _vault_gp291_300_json("get_gp294_status")
+
+@app.route("/vault/gp295-status.json")
+def vault_gp295_status_json():
+    return _vault_gp291_300_json("get_gp295_status")
+
+@app.route("/vault/gp296-status.json")
+def vault_gp296_status_json():
+    return _vault_gp291_300_json("get_gp296_status")
+
+@app.route("/vault/gp297-status.json")
+def vault_gp297_status_json():
+    return _vault_gp291_300_json("get_gp297_status")
+
+@app.route("/vault/gp298-status.json")
+def vault_gp298_status_json():
+    return _vault_gp291_300_json("get_gp298_status")
+
+@app.route("/vault/gp299-status.json")
+def vault_gp299_status_json():
+    return _vault_gp291_300_json("get_gp299_status")
+
+@app.route("/vault/gp300-status.json")
+def vault_gp300_status_json():
+    return _vault_gp291_300_json("get_gp300_status")
+
+# VAULT GP291-GP300 OWNER FILE REGISTRY PROMOTION LOCK LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
