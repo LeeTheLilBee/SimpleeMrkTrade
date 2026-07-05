@@ -17017,6 +17017,103 @@ def ob_giant_pack_041_manual_live_candidate_decision_handoff_update_json(handoff
     })
 
 
+# VAULT GP261-GP270 OWNER OWNED FILE STORAGE FOUNDATION LAYER ROUTES START
+
+def _vault_gp261_270_json(function_name):
+    from flask import jsonify
+    from vault import owner_owned_file_storage_foundation_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/owner-owned-file-storage-foundation-layer")
+def vault_owner_owned_file_storage_foundation_layer():
+    return _vault_gp261_270_json("get_owner_owned_file_storage_home")
+
+@app.route("/vault/owner-owned-file-storage-foundation-layer.json")
+def vault_owner_owned_file_storage_foundation_layer_json():
+    return _vault_gp261_270_json("get_owner_owned_file_storage_home")
+
+@app.route("/vault/owner-owned-file-storage-shell.json")
+def vault_owner_owned_file_storage_shell_json():
+    return _vault_gp261_270_json("get_owner_owned_file_storage_shell")
+
+@app.route("/vault/vault-storage-root-contract.json")
+def vault_storage_root_contract_json():
+    return _vault_gp261_270_json("get_vault_storage_root_contract")
+
+@app.route("/vault/physical-object-folder-registry.json")
+def vault_physical_object_folder_registry_json():
+    return _vault_gp261_270_json("get_physical_object_folder_registry")
+
+@app.route("/vault/file-object-metadata-registry.json")
+def vault_file_object_metadata_registry_json():
+    return _vault_gp261_270_json("get_file_object_metadata_registry")
+
+@app.route("/vault/file-hash-integrity-contract.json")
+def vault_file_hash_integrity_contract_json():
+    return _vault_gp261_270_json("get_file_hash_integrity_contract")
+
+@app.route("/vault/original-filename-safe-stored-name-contract.json")
+def vault_original_filename_safe_stored_name_contract_json():
+    return _vault_gp261_270_json("get_original_filename_safe_stored_name_contract")
+
+@app.route("/vault/mission-lane-folder-map.json")
+def vault_mission_lane_folder_map_json():
+    return _vault_gp261_270_json("get_mission_lane_folder_map")
+
+@app.route("/vault/upload-receipt-draft-lock.json")
+def vault_upload_receipt_draft_lock_json():
+    return _vault_gp261_270_json("get_upload_receipt_draft_lock")
+
+@app.route("/vault/file-storage-safety-blocker-board.json")
+def vault_file_storage_safety_blocker_board_json():
+    return _vault_gp261_270_json("get_file_storage_safety_blocker_board")
+
+@app.route("/vault/owner-owned-file-storage-readiness-checkpoint.json")
+def vault_owner_owned_file_storage_readiness_checkpoint_json():
+    return _vault_gp261_270_json("get_owner_owned_file_storage_readiness_checkpoint")
+
+@app.route("/vault/gp261-status.json")
+def vault_gp261_status_json():
+    return _vault_gp261_270_json("get_gp261_status")
+
+@app.route("/vault/gp262-status.json")
+def vault_gp262_status_json():
+    return _vault_gp261_270_json("get_gp262_status")
+
+@app.route("/vault/gp263-status.json")
+def vault_gp263_status_json():
+    return _vault_gp261_270_json("get_gp263_status")
+
+@app.route("/vault/gp264-status.json")
+def vault_gp264_status_json():
+    return _vault_gp261_270_json("get_gp264_status")
+
+@app.route("/vault/gp265-status.json")
+def vault_gp265_status_json():
+    return _vault_gp261_270_json("get_gp265_status")
+
+@app.route("/vault/gp266-status.json")
+def vault_gp266_status_json():
+    return _vault_gp261_270_json("get_gp266_status")
+
+@app.route("/vault/gp267-status.json")
+def vault_gp267_status_json():
+    return _vault_gp261_270_json("get_gp267_status")
+
+@app.route("/vault/gp268-status.json")
+def vault_gp268_status_json():
+    return _vault_gp261_270_json("get_gp268_status")
+
+@app.route("/vault/gp269-status.json")
+def vault_gp269_status_json():
+    return _vault_gp261_270_json("get_gp269_status")
+
+@app.route("/vault/gp270-status.json")
+def vault_gp270_status_json():
+    return _vault_gp261_270_json("get_gp270_status")
+
+# VAULT GP261-GP270 OWNER OWNED FILE STORAGE FOUNDATION LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
@@ -40953,3 +41050,4 @@ def vault_gp260_status_json():
 # ============================================================
 # VAULT GP251-GP260 BETA FIX RESPONSE LOCK LAYER ROUTES END
 # ============================================================
+
