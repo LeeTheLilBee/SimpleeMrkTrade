@@ -39563,3 +39563,142 @@ def vault_gp160_status_json():
 # ============================================================
 # VAULT GP151-GP160 REAL PROVIDER CONNECTION READINESS LAYER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP161-GP170 CONTROLLED PROVIDER CONNECTION TEST LOCK LAYER ROUTES START
+# ============================================================
+
+@app.route("/vault/controlled-provider-connection-test-lock-layer")
+def vault_gp161_170_controlled_provider_connection_test_lock_layer_page():
+    from vault.controlled_provider_connection_test_lock_layer_service import render_controlled_provider_connection_test_lock_layer_page
+    return render_controlled_provider_connection_test_lock_layer_page()
+
+@app.route("/vault/controlled-provider-connection-test-lock-layer.json")
+def vault_gp161_170_controlled_provider_connection_test_lock_layer_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_controlled_provider_connection_test_lock_layer_home
+    return jsonify(get_controlled_provider_connection_test_lock_layer_home())
+
+@app.route("/vault/controlled-connection-test-lock-shell.json")
+def vault_gp161_controlled_connection_test_lock_shell_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp161_controlled_connection_test_lock_shell
+    return jsonify(get_gp161_controlled_connection_test_lock_shell())
+
+@app.route("/vault/connection-test-request-draft-registry.json")
+def vault_gp162_connection_test_request_draft_registry_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp162_connection_test_request_draft_registry
+    return jsonify(get_gp162_connection_test_request_draft_registry())
+
+@app.route("/vault/connection-test-approval-gate-lock-contract.json")
+def vault_gp163_connection_test_approval_gate_lock_contract_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp163_connection_test_approval_gate_lock_contract
+    return jsonify(get_gp163_connection_test_approval_gate_lock_contract())
+
+@app.route("/vault/connection-test-denial-reason-board.json")
+def vault_gp164_connection_test_denial_reason_board_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp164_connection_test_denial_reason_board
+    return jsonify(get_gp164_connection_test_denial_reason_board())
+
+@app.route("/vault/connection-test-run-plan-lock-contract.json")
+def vault_gp165_connection_test_run_plan_lock_contract_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp165_connection_test_run_plan_lock_contract
+    return jsonify(get_gp165_connection_test_run_plan_lock_contract())
+
+@app.route("/vault/connection-test-receipt-draft-ledger.json")
+def vault_gp166_connection_test_receipt_draft_ledger_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp166_connection_test_receipt_draft_ledger
+    return jsonify(get_gp166_connection_test_receipt_draft_ledger())
+
+@app.route("/vault/connection-test-result-placeholder-queue.json")
+def vault_gp167_connection_test_result_placeholder_queue_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp167_connection_test_result_placeholder_queue
+    return jsonify(get_gp167_connection_test_result_placeholder_queue())
+
+@app.route("/vault/connection-test-emergency-stop-lock.json")
+def vault_gp168_connection_test_emergency_stop_lock_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp168_connection_test_emergency_stop_lock
+    return jsonify(get_gp168_connection_test_emergency_stop_lock())
+
+@app.route("/vault/controlled-connection-test-blocker-board.json")
+def vault_gp169_controlled_connection_test_blocker_board_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp169_controlled_connection_test_blocker_board
+    return jsonify(get_gp169_controlled_connection_test_blocker_board())
+
+@app.route("/vault/controlled-connection-test-readiness-checkpoint.json")
+def vault_gp170_controlled_connection_test_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp170_controlled_connection_test_readiness_checkpoint
+    return jsonify(get_gp170_controlled_connection_test_readiness_checkpoint())
+
+@app.route("/vault/gp161-status.json")
+def vault_gp161_status_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp161_status
+    return jsonify(get_gp161_status())
+
+@app.route("/vault/gp162-status.json")
+def vault_gp162_status_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp162_status
+    return jsonify(get_gp162_status())
+
+@app.route("/vault/gp163-status.json")
+def vault_gp163_status_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp163_status
+    return jsonify(get_gp163_status())
+
+@app.route("/vault/gp164-status.json")
+def vault_gp164_status_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp164_status
+    return jsonify(get_gp164_status())
+
+@app.route("/vault/gp165-status.json")
+def vault_gp165_status_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp165_status
+    return jsonify(get_gp165_status())
+
+@app.route("/vault/gp166-status.json")
+def vault_gp166_status_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp166_status
+    return jsonify(get_gp166_status())
+
+@app.route("/vault/gp167-status.json")
+def vault_gp167_status_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp167_status
+    return jsonify(get_gp167_status())
+
+@app.route("/vault/gp168-status.json")
+def vault_gp168_status_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp168_status
+    return jsonify(get_gp168_status())
+
+@app.route("/vault/gp169-status.json")
+def vault_gp169_status_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp169_status
+    return jsonify(get_gp169_status())
+
+@app.route("/vault/gp170-status.json")
+def vault_gp170_status_json():
+    from flask import jsonify
+    from vault.controlled_provider_connection_test_lock_layer_service import get_gp170_status
+    return jsonify(get_gp170_status())
+
+# ============================================================
+# VAULT GP161-GP170 CONTROLLED PROVIDER CONNECTION TEST LOCK LAYER ROUTES END
+# ============================================================
