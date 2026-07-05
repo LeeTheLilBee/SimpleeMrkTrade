@@ -39841,3 +39841,142 @@ def vault_gp180_status_json():
 # ============================================================
 # VAULT GP171-GP180 CONTROLLED READ ONLY METADATA TEST LAYER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP181-GP190 REAL ARCHIVE INDEX SEARCH LAYER ROUTES START
+# ============================================================
+
+@app.route("/vault/real-archive-index-search-layer")
+def vault_gp181_190_real_archive_index_search_layer_page():
+    from vault.real_archive_index_search_layer_service import render_real_archive_index_search_layer_page
+    return render_real_archive_index_search_layer_page()
+
+@app.route("/vault/real-archive-index-search-layer.json")
+def vault_gp181_190_real_archive_index_search_layer_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_real_archive_index_search_layer_home
+    return jsonify(get_real_archive_index_search_layer_home())
+
+@app.route("/vault/real-archive-index-shell.json")
+def vault_gp181_real_archive_index_shell_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp181_real_archive_index_shell
+    return jsonify(get_gp181_real_archive_index_shell())
+
+@app.route("/vault/archive-metadata-index-registry.json")
+def vault_gp182_archive_metadata_index_registry_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp182_archive_metadata_index_registry
+    return jsonify(get_gp182_archive_metadata_index_registry())
+
+@app.route("/vault/archive-search-query-contract.json")
+def vault_gp183_archive_search_query_contract_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp183_archive_search_query_contract
+    return jsonify(get_gp183_archive_search_query_contract())
+
+@app.route("/vault/search-result-redaction-contract.json")
+def vault_gp184_search_result_redaction_contract_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp184_search_result_redaction_contract
+    return jsonify(get_gp184_search_result_redaction_contract())
+
+@app.route("/vault/metadata-search-receipt-ledger.json")
+def vault_gp185_metadata_search_receipt_ledger_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp185_metadata_search_receipt_ledger
+    return jsonify(get_gp185_metadata_search_receipt_ledger())
+
+@app.route("/vault/search-filter-facet-map.json")
+def vault_gp186_search_filter_facet_map_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp186_search_filter_facet_map
+    return jsonify(get_gp186_search_filter_facet_map())
+
+@app.route("/vault/index-integrity-hash-board.json")
+def vault_gp187_index_integrity_hash_board_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp187_index_integrity_hash_board
+    return jsonify(get_gp187_index_integrity_hash_board())
+
+@app.route("/vault/object-body-download-search-prohibition.json")
+def vault_gp188_object_body_download_search_prohibition_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp188_object_body_download_search_prohibition
+    return jsonify(get_gp188_object_body_download_search_prohibition())
+
+@app.route("/vault/archive-index-search-blocker-board.json")
+def vault_gp189_archive_index_search_blocker_board_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp189_archive_index_search_blocker_board
+    return jsonify(get_gp189_archive_index_search_blocker_board())
+
+@app.route("/vault/archive-index-search-readiness-checkpoint.json")
+def vault_gp190_archive_index_search_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp190_archive_index_search_readiness_checkpoint
+    return jsonify(get_gp190_archive_index_search_readiness_checkpoint())
+
+@app.route("/vault/gp181-status.json")
+def vault_gp181_status_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp181_status
+    return jsonify(get_gp181_status())
+
+@app.route("/vault/gp182-status.json")
+def vault_gp182_status_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp182_status
+    return jsonify(get_gp182_status())
+
+@app.route("/vault/gp183-status.json")
+def vault_gp183_status_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp183_status
+    return jsonify(get_gp183_status())
+
+@app.route("/vault/gp184-status.json")
+def vault_gp184_status_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp184_status
+    return jsonify(get_gp184_status())
+
+@app.route("/vault/gp185-status.json")
+def vault_gp185_status_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp185_status
+    return jsonify(get_gp185_status())
+
+@app.route("/vault/gp186-status.json")
+def vault_gp186_status_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp186_status
+    return jsonify(get_gp186_status())
+
+@app.route("/vault/gp187-status.json")
+def vault_gp187_status_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp187_status
+    return jsonify(get_gp187_status())
+
+@app.route("/vault/gp188-status.json")
+def vault_gp188_status_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp188_status
+    return jsonify(get_gp188_status())
+
+@app.route("/vault/gp189-status.json")
+def vault_gp189_status_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp189_status
+    return jsonify(get_gp189_status())
+
+@app.route("/vault/gp190-status.json")
+def vault_gp190_status_json():
+    from flask import jsonify
+    from vault.real_archive_index_search_layer_service import get_gp190_status
+    return jsonify(get_gp190_status())
+
+# ============================================================
+# VAULT GP181-GP190 REAL ARCHIVE INDEX SEARCH LAYER ROUTES END
+# ============================================================
