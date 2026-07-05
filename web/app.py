@@ -17114,6 +17114,103 @@ def vault_gp270_status_json():
 
 # VAULT GP261-GP270 OWNER OWNED FILE STORAGE FOUNDATION LAYER ROUTES END
 
+# VAULT GP271-GP280 OWNER UPLOAD INTAKE LOCK LAYER ROUTES START
+
+def _vault_gp271_280_json(function_name):
+    from flask import jsonify
+    from vault import owner_upload_intake_lock_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/owner-upload-intake-lock-layer")
+def vault_owner_upload_intake_lock_layer():
+    return _vault_gp271_280_json("get_owner_upload_intake_home")
+
+@app.route("/vault/owner-upload-intake-lock-layer.json")
+def vault_owner_upload_intake_lock_layer_json():
+    return _vault_gp271_280_json("get_owner_upload_intake_home")
+
+@app.route("/vault/owner-upload-intake-lock-shell.json")
+def vault_owner_upload_intake_lock_shell_json():
+    return _vault_gp271_280_json("get_owner_upload_intake_lock_shell")
+
+@app.route("/vault/upload-request-draft-registry.json")
+def vault_upload_request_draft_registry_json():
+    return _vault_gp271_280_json("get_upload_request_draft_registry")
+
+@app.route("/vault/upload-validation-policy-board.json")
+def vault_upload_validation_policy_board_json():
+    return _vault_gp271_280_json("get_upload_validation_policy_board")
+
+@app.route("/vault/allowed-file-type-size-contract.json")
+def vault_allowed_file_type_size_contract_json():
+    return _vault_gp271_280_json("get_allowed_file_type_size_contract")
+
+@app.route("/vault/duplicate-hash-detection-preview-board.json")
+def vault_duplicate_hash_detection_preview_board_json():
+    return _vault_gp271_280_json("get_duplicate_hash_detection_preview_board")
+
+@app.route("/vault/quarantine-intake-status-lock.json")
+def vault_quarantine_intake_status_lock_json():
+    return _vault_gp271_280_json("get_quarantine_intake_status_lock")
+
+@app.route("/vault/owner-upload-queue-preview.json")
+def vault_owner_upload_queue_preview_json():
+    return _vault_gp271_280_json("get_owner_upload_queue_preview")
+
+@app.route("/vault/upload-receipt-draft-builder-lock.json")
+def vault_upload_receipt_draft_builder_lock_json():
+    return _vault_gp271_280_json("get_upload_receipt_draft_builder_lock")
+
+@app.route("/vault/upload-intake-safety-blocker-board.json")
+def vault_upload_intake_safety_blocker_board_json():
+    return _vault_gp271_280_json("get_upload_intake_safety_blocker_board")
+
+@app.route("/vault/owner-upload-intake-lock-readiness-checkpoint.json")
+def vault_owner_upload_intake_lock_readiness_checkpoint_json():
+    return _vault_gp271_280_json("get_owner_upload_intake_lock_readiness_checkpoint")
+
+@app.route("/vault/gp271-status.json")
+def vault_gp271_status_json():
+    return _vault_gp271_280_json("get_gp271_status")
+
+@app.route("/vault/gp272-status.json")
+def vault_gp272_status_json():
+    return _vault_gp271_280_json("get_gp272_status")
+
+@app.route("/vault/gp273-status.json")
+def vault_gp273_status_json():
+    return _vault_gp271_280_json("get_gp273_status")
+
+@app.route("/vault/gp274-status.json")
+def vault_gp274_status_json():
+    return _vault_gp271_280_json("get_gp274_status")
+
+@app.route("/vault/gp275-status.json")
+def vault_gp275_status_json():
+    return _vault_gp271_280_json("get_gp275_status")
+
+@app.route("/vault/gp276-status.json")
+def vault_gp276_status_json():
+    return _vault_gp271_280_json("get_gp276_status")
+
+@app.route("/vault/gp277-status.json")
+def vault_gp277_status_json():
+    return _vault_gp271_280_json("get_gp277_status")
+
+@app.route("/vault/gp278-status.json")
+def vault_gp278_status_json():
+    return _vault_gp271_280_json("get_gp278_status")
+
+@app.route("/vault/gp279-status.json")
+def vault_gp279_status_json():
+    return _vault_gp271_280_json("get_gp279_status")
+
+@app.route("/vault/gp280-status.json")
+def vault_gp280_status_json():
+    return _vault_gp271_280_json("get_gp280_status")
+
+# VAULT GP271-GP280 OWNER UPLOAD INTAKE LOCK LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
