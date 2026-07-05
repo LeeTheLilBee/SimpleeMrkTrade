@@ -40397,3 +40397,142 @@ def vault_gp220_status_json():
 # ============================================================
 # VAULT GP211-GP220 BETA ACCESS INVITE LOCK LAYER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP221-GP230 BETA ONBOARDING LOCKED EXPERIENCE LAYER ROUTES START
+# ============================================================
+
+@app.route("/vault/beta-onboarding-locked-experience-layer")
+def vault_gp221_230_beta_onboarding_locked_experience_layer_page():
+    from vault.beta_onboarding_locked_experience_layer_service import render_beta_onboarding_locked_experience_layer_page
+    return render_beta_onboarding_locked_experience_layer_page()
+
+@app.route("/vault/beta-onboarding-locked-experience-layer.json")
+def vault_gp221_230_beta_onboarding_locked_experience_layer_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_beta_onboarding_locked_experience_layer_home
+    return jsonify(get_beta_onboarding_locked_experience_layer_home())
+
+@app.route("/vault/beta-onboarding-locked-experience-shell.json")
+def vault_gp221_beta_onboarding_locked_experience_shell_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp221_beta_onboarding_locked_experience_shell
+    return jsonify(get_gp221_beta_onboarding_locked_experience_shell())
+
+@app.route("/vault/locked-welcome-orientation-draft-board.json")
+def vault_gp222_locked_welcome_orientation_draft_board_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp222_locked_welcome_orientation_draft_board
+    return jsonify(get_gp222_locked_welcome_orientation_draft_board())
+
+@app.route("/vault/beta-profile-setup-preview-lock.json")
+def vault_gp223_beta_profile_setup_preview_lock_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp223_beta_profile_setup_preview_lock
+    return jsonify(get_gp223_beta_profile_setup_preview_lock())
+
+@app.route("/vault/nda-policy-acknowledgment-preview-lock.json")
+def vault_gp224_nda_policy_acknowledgment_preview_lock_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp224_nda_policy_acknowledgment_preview_lock
+    return jsonify(get_gp224_nda_policy_acknowledgment_preview_lock())
+
+@app.route("/vault/beta-workspace-access-preview-lock.json")
+def vault_gp225_beta_workspace_access_preview_lock_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp225_beta_workspace_access_preview_lock
+    return jsonify(get_gp225_beta_workspace_access_preview_lock())
+
+@app.route("/vault/beta-support-channel-preview-board.json")
+def vault_gp226_beta_support_channel_preview_board_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp226_beta_support_channel_preview_board
+    return jsonify(get_gp226_beta_support_channel_preview_board())
+
+@app.route("/vault/beta-onboarding-qa-checklist.json")
+def vault_gp227_beta_onboarding_qa_checklist_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp227_beta_onboarding_qa_checklist
+    return jsonify(get_gp227_beta_onboarding_qa_checklist())
+
+@app.route("/vault/onboarding-safety-compliance-lock-board.json")
+def vault_gp228_onboarding_safety_compliance_lock_board_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp228_onboarding_safety_compliance_lock_board
+    return jsonify(get_gp228_onboarding_safety_compliance_lock_board())
+
+@app.route("/vault/beta-onboarding-receipt-draft-packet.json")
+def vault_gp229_beta_onboarding_receipt_draft_packet_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp229_beta_onboarding_receipt_draft_packet
+    return jsonify(get_gp229_beta_onboarding_receipt_draft_packet())
+
+@app.route("/vault/beta-onboarding-locked-experience-readiness-checkpoint.json")
+def vault_gp230_beta_onboarding_locked_experience_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp230_beta_onboarding_locked_experience_readiness_checkpoint
+    return jsonify(get_gp230_beta_onboarding_locked_experience_readiness_checkpoint())
+
+@app.route("/vault/gp221-status.json")
+def vault_gp221_status_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp221_status
+    return jsonify(get_gp221_status())
+
+@app.route("/vault/gp222-status.json")
+def vault_gp222_status_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp222_status
+    return jsonify(get_gp222_status())
+
+@app.route("/vault/gp223-status.json")
+def vault_gp223_status_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp223_status
+    return jsonify(get_gp223_status())
+
+@app.route("/vault/gp224-status.json")
+def vault_gp224_status_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp224_status
+    return jsonify(get_gp224_status())
+
+@app.route("/vault/gp225-status.json")
+def vault_gp225_status_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp225_status
+    return jsonify(get_gp225_status())
+
+@app.route("/vault/gp226-status.json")
+def vault_gp226_status_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp226_status
+    return jsonify(get_gp226_status())
+
+@app.route("/vault/gp227-status.json")
+def vault_gp227_status_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp227_status
+    return jsonify(get_gp227_status())
+
+@app.route("/vault/gp228-status.json")
+def vault_gp228_status_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp228_status
+    return jsonify(get_gp228_status())
+
+@app.route("/vault/gp229-status.json")
+def vault_gp229_status_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp229_status
+    return jsonify(get_gp229_status())
+
+@app.route("/vault/gp230-status.json")
+def vault_gp230_status_json():
+    from flask import jsonify
+    from vault.beta_onboarding_locked_experience_layer_service import get_gp230_status
+    return jsonify(get_gp230_status())
+
+# ============================================================
+# VAULT GP221-GP230 BETA ONBOARDING LOCKED EXPERIENCE LAYER ROUTES END
+# ============================================================
