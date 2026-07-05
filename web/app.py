@@ -39146,3 +39146,142 @@ def vault_gp130_status_json():
 # ============================================================
 # VAULT GP121-GP130 OWNER CONSOLE OPERATING DASHBOARD LAYER ROUTES END
 # ============================================================
+
+# ============================================================
+# VAULT GP131-GP140 TOWER GATED PERMISSION STEP UP LAYER ROUTES START
+# ============================================================
+
+@app.route("/vault/tower-gated-permission-step-up-layer")
+def vault_gp131_140_tower_gated_permission_step_up_layer_page():
+    from vault.tower_gated_permission_step_up_layer_service import render_tower_gated_permission_step_up_layer_page
+    return render_tower_gated_permission_step_up_layer_page()
+
+@app.route("/vault/tower-gated-permission-step-up-layer.json")
+def vault_gp131_140_tower_gated_permission_step_up_layer_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_tower_gated_permission_step_up_layer_home
+    return jsonify(get_tower_gated_permission_step_up_layer_home())
+
+@app.route("/vault/tower-permission-handoff-shell.json")
+def vault_gp131_permission_handoff_shell_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp131_tower_permission_handoff_shell
+    return jsonify(get_gp131_tower_permission_handoff_shell())
+
+@app.route("/vault/permission-request-draft-registry.json")
+def vault_gp132_permission_request_draft_registry_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp132_permission_request_draft_registry
+    return jsonify(get_gp132_permission_request_draft_registry())
+
+@app.route("/vault/step-up-challenge-lock-contract.json")
+def vault_gp133_step_up_challenge_lock_contract_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp133_step_up_challenge_lock_contract
+    return jsonify(get_gp133_step_up_challenge_lock_contract())
+
+@app.route("/vault/tower-gate-review-queue.json")
+def vault_gp134_tower_gate_review_queue_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp134_tower_gate_review_queue
+    return jsonify(get_gp134_tower_gate_review_queue())
+
+@app.route("/vault/owner-authority-boundary-view.json")
+def vault_gp135_owner_authority_boundary_view_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp135_owner_authority_boundary_view
+    return jsonify(get_gp135_owner_authority_boundary_view())
+
+@app.route("/vault/permission-receipt-draft-ledger.json")
+def vault_gp136_permission_receipt_draft_ledger_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp136_permission_receipt_draft_ledger
+    return jsonify(get_gp136_permission_receipt_draft_ledger())
+
+@app.route("/vault/permission-denial-block-reason-board.json")
+def vault_gp137_denial_block_reason_board_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp137_denial_and_block_reason_board
+    return jsonify(get_gp137_denial_and_block_reason_board())
+
+@app.route("/vault/tower-handoff-evidence-map.json")
+def vault_gp138_tower_handoff_evidence_map_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp138_tower_handoff_evidence_map
+    return jsonify(get_gp138_tower_handoff_evidence_map())
+
+@app.route("/vault/tower-gated-permission-blocker-board.json")
+def vault_gp139_tower_gated_permission_blocker_board_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp139_tower_gated_permission_blocker_board
+    return jsonify(get_gp139_tower_gated_permission_blocker_board())
+
+@app.route("/vault/tower-gated-permission-readiness-checkpoint.json")
+def vault_gp140_tower_gated_permission_readiness_checkpoint_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp140_tower_gated_permission_readiness_checkpoint
+    return jsonify(get_gp140_tower_gated_permission_readiness_checkpoint())
+
+@app.route("/vault/gp131-status.json")
+def vault_gp131_status_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp131_status
+    return jsonify(get_gp131_status())
+
+@app.route("/vault/gp132-status.json")
+def vault_gp132_status_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp132_status
+    return jsonify(get_gp132_status())
+
+@app.route("/vault/gp133-status.json")
+def vault_gp133_status_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp133_status
+    return jsonify(get_gp133_status())
+
+@app.route("/vault/gp134-status.json")
+def vault_gp134_status_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp134_status
+    return jsonify(get_gp134_status())
+
+@app.route("/vault/gp135-status.json")
+def vault_gp135_status_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp135_status
+    return jsonify(get_gp135_status())
+
+@app.route("/vault/gp136-status.json")
+def vault_gp136_status_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp136_status
+    return jsonify(get_gp136_status())
+
+@app.route("/vault/gp137-status.json")
+def vault_gp137_status_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp137_status
+    return jsonify(get_gp137_status())
+
+@app.route("/vault/gp138-status.json")
+def vault_gp138_status_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp138_status
+    return jsonify(get_gp138_status())
+
+@app.route("/vault/gp139-status.json")
+def vault_gp139_status_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp139_status
+    return jsonify(get_gp139_status())
+
+@app.route("/vault/gp140-status.json")
+def vault_gp140_status_json():
+    from flask import jsonify
+    from vault.tower_gated_permission_step_up_layer_service import get_gp140_status
+    return jsonify(get_gp140_status())
+
+# ============================================================
+# VAULT GP131-GP140 TOWER GATED PERMISSION STEP UP LAYER ROUTES END
+# ============================================================
