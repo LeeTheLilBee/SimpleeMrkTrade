@@ -17794,6 +17794,103 @@ def vault_gp340_status_json():
 
 # VAULT GP331-GP340 OWNER SAFE PREVIEW LOCK PREP LAYER ROUTES END
 
+# VAULT GP341-GP350 CONTROLLED OWNER SAFE PREVIEW EXECUTION LAYER ROUTES START
+
+def _vault_gp341_350_json(function_name):
+    from flask import jsonify
+    from vault import controlled_owner_safe_preview_execution_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/controlled-owner-safe-preview-execution-layer")
+def vault_controlled_owner_safe_preview_execution_layer():
+    return _vault_gp341_350_json("get_controlled_owner_safe_preview_execution_home")
+
+@app.route("/vault/controlled-owner-safe-preview-execution-layer.json")
+def vault_controlled_owner_safe_preview_execution_layer_json():
+    return _vault_gp341_350_json("get_controlled_owner_safe_preview_execution_home")
+
+@app.route("/vault/controlled-owner-safe-preview-execution-shell.json")
+def vault_controlled_owner_safe_preview_execution_shell_json():
+    return _vault_gp341_350_json("get_controlled_owner_safe_preview_execution_shell")
+
+@app.route("/vault/preview-execution-scope-contract.json")
+def vault_preview_execution_scope_contract_json():
+    return _vault_gp341_350_json("get_preview_execution_scope_contract")
+
+@app.route("/vault/controlled-preview-body-reader.json")
+def vault_controlled_preview_body_reader_json():
+    return _vault_gp341_350_json("get_controlled_preview_body_reader")
+
+@app.route("/vault/safe-preview-artifact-builder.json")
+def vault_safe_preview_artifact_builder_json():
+    return _vault_gp341_350_json("get_safe_preview_artifact_builder")
+
+@app.route("/vault/preview-cache-index.json")
+def vault_preview_cache_index_json():
+    return _vault_gp341_350_json("get_preview_cache_index")
+
+@app.route("/vault/preview-access-ledger.json")
+def vault_preview_access_ledger_json():
+    return _vault_gp341_350_json("get_preview_access_ledger")
+
+@app.route("/vault/preview-receipt-finalization-board.json")
+def vault_preview_receipt_finalization_board_json():
+    return _vault_gp341_350_json("get_preview_receipt_finalization_board")
+
+@app.route("/vault/preview-redaction-result-board.json")
+def vault_preview_redaction_result_board_json():
+    return _vault_gp341_350_json("get_preview_redaction_result_board")
+
+@app.route("/vault/preview-execution-safety-blocker-board.json")
+def vault_preview_execution_safety_blocker_board_json():
+    return _vault_gp341_350_json("get_preview_execution_safety_blocker_board")
+
+@app.route("/vault/controlled-owner-safe-preview-execution-readiness-checkpoint.json")
+def vault_controlled_owner_safe_preview_execution_readiness_checkpoint_json():
+    return _vault_gp341_350_json("get_controlled_owner_safe_preview_execution_readiness_checkpoint")
+
+@app.route("/vault/gp341-status.json")
+def vault_gp341_status_json():
+    return _vault_gp341_350_json("get_gp341_status")
+
+@app.route("/vault/gp342-status.json")
+def vault_gp342_status_json():
+    return _vault_gp341_350_json("get_gp342_status")
+
+@app.route("/vault/gp343-status.json")
+def vault_gp343_status_json():
+    return _vault_gp341_350_json("get_gp343_status")
+
+@app.route("/vault/gp344-status.json")
+def vault_gp344_status_json():
+    return _vault_gp341_350_json("get_gp344_status")
+
+@app.route("/vault/gp345-status.json")
+def vault_gp345_status_json():
+    return _vault_gp341_350_json("get_gp345_status")
+
+@app.route("/vault/gp346-status.json")
+def vault_gp346_status_json():
+    return _vault_gp341_350_json("get_gp346_status")
+
+@app.route("/vault/gp347-status.json")
+def vault_gp347_status_json():
+    return _vault_gp341_350_json("get_gp347_status")
+
+@app.route("/vault/gp348-status.json")
+def vault_gp348_status_json():
+    return _vault_gp341_350_json("get_gp348_status")
+
+@app.route("/vault/gp349-status.json")
+def vault_gp349_status_json():
+    return _vault_gp341_350_json("get_gp349_status")
+
+@app.route("/vault/gp350-status.json")
+def vault_gp350_status_json():
+    return _vault_gp341_350_json("get_gp350_status")
+
+# VAULT GP341-GP350 CONTROLLED OWNER SAFE PREVIEW EXECUTION LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
