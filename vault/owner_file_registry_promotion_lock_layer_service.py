@@ -183,7 +183,7 @@ def _receipt_draft_id(object_id: str) -> str:
     return "promotion_receipt_draft_" + calculate_sha256_bytes(("receipt|" + object_id).encode("utf-8"))[:24]
 
 
-def initialize_owner_file_registry_promotion_lock_layer() -> Dict[str, Any]:
+def _uncached_initialize_owner_file_registry_promotion_lock_layer() -> Dict[str, Any]:
     previous = validate_owner_file_object_write_quarantine_layer()
 
     with _connect() as conn:
@@ -841,3 +841,20 @@ def get_gp299_status() -> Dict[str, Any]:
 
 def get_gp300_status() -> Dict[str, Any]:
     return _gp_status(300)
+
+
+# GP291_INITIALIZER_CACHE_REPAIR
+_GP291_INIT_CACHE = None
+
+def initialize_owner_file_registry_promotion_lock_layer() -> Dict[str, Any]:
+    """
+    Cached wrapper added to prevent repeated dependency rebuilds during pytest corridors.
+    Runtime DBs are still cleaned between pack cells; this only caches inside one Python process.
+    """
+    global _GP291_INIT_CACHE
+    if _GP291_INIT_CACHE is not None and DB_PATH.exists():
+        return dict(_GP291_INIT_CACHE)
+
+    result = _uncached_initialize_owner_file_registry_promotion_lock_layer()
+    _GP291_INIT_CACHE = dict(result)
+    return result

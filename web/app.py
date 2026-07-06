@@ -17406,6 +17406,103 @@ def vault_gp300_status_json():
 
 # VAULT GP291-GP300 OWNER FILE REGISTRY PROMOTION LOCK LAYER ROUTES END
 
+# VAULT GP301-GP310 OWNER FILE REGISTRY PROMOTION EXECUTION LAYER ROUTES START
+
+def _vault_gp301_310_json(function_name):
+    from flask import jsonify
+    from vault import owner_file_registry_promotion_execution_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/owner-file-registry-promotion-execution-layer")
+def vault_owner_file_registry_promotion_execution_layer():
+    return _vault_gp301_310_json("get_owner_file_registry_promotion_execution_home")
+
+@app.route("/vault/owner-file-registry-promotion-execution-layer.json")
+def vault_owner_file_registry_promotion_execution_layer_json():
+    return _vault_gp301_310_json("get_owner_file_registry_promotion_execution_home")
+
+@app.route("/vault/owner-file-registry-promotion-execution-shell.json")
+def vault_owner_file_registry_promotion_execution_shell_json():
+    return _vault_gp301_310_json("get_owner_file_registry_promotion_execution_shell")
+
+@app.route("/vault/owner-approval-execution-contract.json")
+def vault_owner_approval_execution_contract_json():
+    return _vault_gp301_310_json("get_owner_approval_execution_contract")
+
+@app.route("/vault/active-file-registry-writer.json")
+def vault_active_file_registry_writer_json():
+    return _vault_gp301_310_json("get_active_file_registry_writer")
+
+@app.route("/vault/registry-promotion-execution-ledger.json")
+def vault_registry_promotion_execution_ledger_json():
+    return _vault_gp301_310_json("get_registry_promotion_execution_ledger")
+
+@app.route("/vault/promotion-receipt-finalization-board.json")
+def vault_promotion_receipt_finalization_board_json():
+    return _vault_gp301_310_json("get_promotion_receipt_finalization_board")
+
+@app.route("/vault/active-registry-hash-continuity-board.json")
+def vault_active_registry_hash_continuity_board_json():
+    return _vault_gp301_310_json("get_active_registry_hash_continuity_board")
+
+@app.route("/vault/quarantine-hold-after-promotion-contract.json")
+def vault_quarantine_hold_after_promotion_contract_json():
+    return _vault_gp301_310_json("get_quarantine_hold_after_promotion_contract")
+
+@app.route("/vault/promotion-execution-rollback-preview.json")
+def vault_promotion_execution_rollback_preview_json():
+    return _vault_gp301_310_json("get_promotion_execution_rollback_preview")
+
+@app.route("/vault/promotion-execution-safety-blocker-board.json")
+def vault_promotion_execution_safety_blocker_board_json():
+    return _vault_gp301_310_json("get_promotion_execution_safety_blocker_board")
+
+@app.route("/vault/owner-file-registry-promotion-execution-readiness-checkpoint.json")
+def vault_owner_file_registry_promotion_execution_readiness_checkpoint_json():
+    return _vault_gp301_310_json("get_owner_file_registry_promotion_execution_readiness_checkpoint")
+
+@app.route("/vault/gp301-status.json")
+def vault_gp301_status_json():
+    return _vault_gp301_310_json("get_gp301_status")
+
+@app.route("/vault/gp302-status.json")
+def vault_gp302_status_json():
+    return _vault_gp301_310_json("get_gp302_status")
+
+@app.route("/vault/gp303-status.json")
+def vault_gp303_status_json():
+    return _vault_gp301_310_json("get_gp303_status")
+
+@app.route("/vault/gp304-status.json")
+def vault_gp304_status_json():
+    return _vault_gp301_310_json("get_gp304_status")
+
+@app.route("/vault/gp305-status.json")
+def vault_gp305_status_json():
+    return _vault_gp301_310_json("get_gp305_status")
+
+@app.route("/vault/gp306-status.json")
+def vault_gp306_status_json():
+    return _vault_gp301_310_json("get_gp306_status")
+
+@app.route("/vault/gp307-status.json")
+def vault_gp307_status_json():
+    return _vault_gp301_310_json("get_gp307_status")
+
+@app.route("/vault/gp308-status.json")
+def vault_gp308_status_json():
+    return _vault_gp301_310_json("get_gp308_status")
+
+@app.route("/vault/gp309-status.json")
+def vault_gp309_status_json():
+    return _vault_gp301_310_json("get_gp309_status")
+
+@app.route("/vault/gp310-status.json")
+def vault_gp310_status_json():
+    return _vault_gp301_310_json("get_gp310_status")
+
+# VAULT GP301-GP310 OWNER FILE REGISTRY PROMOTION EXECUTION LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)

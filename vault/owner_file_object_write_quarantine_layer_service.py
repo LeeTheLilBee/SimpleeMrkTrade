@@ -202,7 +202,7 @@ def _relative(path: Path) -> str:
     return str(path.relative_to(PROJECT_ROOT))
 
 
-def initialize_owner_file_object_write_quarantine_layer() -> Dict[str, Any]:
+def _uncached_initialize_owner_file_object_write_quarantine_layer() -> Dict[str, Any]:
     previous_storage = validate_owner_owned_file_storage_foundation()
     previous_intake = validate_owner_upload_intake_lock_layer()
     _ensure_dirs()
@@ -897,3 +897,20 @@ def get_gp289_status() -> Dict[str, Any]:
 
 def get_gp290_status() -> Dict[str, Any]:
     return _gp_status(290)
+
+
+# GP281_INITIALIZER_CACHE_REPAIR
+_GP281_INIT_CACHE = None
+
+def initialize_owner_file_object_write_quarantine_layer() -> Dict[str, Any]:
+    """
+    Cached wrapper added to prevent repeated dependency rebuilds during pytest corridors.
+    Runtime DBs are still cleaned between pack cells; this only caches inside one Python process.
+    """
+    global _GP281_INIT_CACHE
+    if _GP281_INIT_CACHE is not None and DB_PATH.exists():
+        return dict(_GP281_INIT_CACHE)
+
+    result = _uncached_initialize_owner_file_object_write_quarantine_layer()
+    _GP281_INIT_CACHE = dict(result)
+    return result
