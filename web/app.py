@@ -17989,6 +17989,103 @@ def vault_gp360_status_json():
 
 # VAULT GP351-GP360 OWNER DOWNLOAD LOCK PREP LAYER ROUTES END
 
+# VAULT GP361-GP370 CONTROLLED OWNER DOWNLOAD EXECUTION LAYER ROUTES START
+
+def _vault_gp361_370_json(function_name):
+    from flask import jsonify
+    from vault import controlled_owner_download_execution_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/controlled-owner-download-execution-layer")
+def vault_controlled_owner_download_execution_layer():
+    return _vault_gp361_370_json("get_controlled_owner_download_execution_home")
+
+@app.route("/vault/controlled-owner-download-execution-layer.json")
+def vault_controlled_owner_download_execution_layer_json():
+    return _vault_gp361_370_json("get_controlled_owner_download_execution_home")
+
+@app.route("/vault/controlled-owner-download-execution-shell.json")
+def vault_controlled_owner_download_execution_shell_json():
+    return _vault_gp361_370_json("get_controlled_owner_download_execution_shell")
+
+@app.route("/vault/download-execution-scope-contract.json")
+def vault_download_execution_scope_contract_json():
+    return _vault_gp361_370_json("get_download_execution_scope_contract")
+
+@app.route("/vault/owner-download-approval-execution-board.json")
+def vault_owner_download_approval_execution_board_json():
+    return _vault_gp361_370_json("get_owner_download_approval_execution_board")
+
+@app.route("/vault/controlled-download-token-builder.json")
+def vault_controlled_download_token_builder_json():
+    return _vault_gp361_370_json("get_controlled_download_token_builder")
+
+@app.route("/vault/controlled-download-packet-builder.json")
+def vault_controlled_download_packet_builder_json():
+    return _vault_gp361_370_json("get_controlled_download_packet_builder")
+
+@app.route("/vault/download-hash-verification-board.json")
+def vault_download_hash_verification_board_json():
+    return _vault_gp361_370_json("get_download_hash_verification_board")
+
+@app.route("/vault/download-access-ledger.json")
+def vault_download_access_ledger_json():
+    return _vault_gp361_370_json("get_download_access_ledger")
+
+@app.route("/vault/download-receipt-finalization-board.json")
+def vault_download_receipt_finalization_board_json():
+    return _vault_gp361_370_json("get_download_receipt_finalization_board")
+
+@app.route("/vault/download-execution-safety-blocker-board.json")
+def vault_download_execution_safety_blocker_board_json():
+    return _vault_gp361_370_json("get_download_execution_safety_blocker_board")
+
+@app.route("/vault/controlled-owner-download-execution-readiness-checkpoint.json")
+def vault_controlled_owner_download_execution_readiness_checkpoint_json():
+    return _vault_gp361_370_json("get_controlled_owner_download_execution_readiness_checkpoint")
+
+@app.route("/vault/gp361-status.json")
+def vault_gp361_status_json():
+    return _vault_gp361_370_json("get_gp361_status")
+
+@app.route("/vault/gp362-status.json")
+def vault_gp362_status_json():
+    return _vault_gp361_370_json("get_gp362_status")
+
+@app.route("/vault/gp363-status.json")
+def vault_gp363_status_json():
+    return _vault_gp361_370_json("get_gp363_status")
+
+@app.route("/vault/gp364-status.json")
+def vault_gp364_status_json():
+    return _vault_gp361_370_json("get_gp364_status")
+
+@app.route("/vault/gp365-status.json")
+def vault_gp365_status_json():
+    return _vault_gp361_370_json("get_gp365_status")
+
+@app.route("/vault/gp366-status.json")
+def vault_gp366_status_json():
+    return _vault_gp361_370_json("get_gp366_status")
+
+@app.route("/vault/gp367-status.json")
+def vault_gp367_status_json():
+    return _vault_gp361_370_json("get_gp367_status")
+
+@app.route("/vault/gp368-status.json")
+def vault_gp368_status_json():
+    return _vault_gp361_370_json("get_gp368_status")
+
+@app.route("/vault/gp369-status.json")
+def vault_gp369_status_json():
+    return _vault_gp361_370_json("get_gp369_status")
+
+@app.route("/vault/gp370-status.json")
+def vault_gp370_status_json():
+    return _vault_gp361_370_json("get_gp370_status")
+
+# VAULT GP361-GP370 CONTROLLED OWNER DOWNLOAD EXECUTION LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
