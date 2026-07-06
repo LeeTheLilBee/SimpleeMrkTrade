@@ -17697,6 +17697,103 @@ def vault_gp330_status_json():
 
 # VAULT GP321-GP330 OWNER FOLDER BROWSE METADATA LAYER ROUTES END
 
+# VAULT GP331-GP340 OWNER SAFE PREVIEW LOCK PREP LAYER ROUTES START
+
+def _vault_gp331_340_json(function_name):
+    from flask import jsonify
+    from vault import owner_safe_preview_lock_prep_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/owner-safe-preview-lock-prep-layer")
+def vault_owner_safe_preview_lock_prep_layer():
+    return _vault_gp331_340_json("get_owner_safe_preview_lock_prep_home")
+
+@app.route("/vault/owner-safe-preview-lock-prep-layer.json")
+def vault_owner_safe_preview_lock_prep_layer_json():
+    return _vault_gp331_340_json("get_owner_safe_preview_lock_prep_home")
+
+@app.route("/vault/owner-safe-preview-lock-prep-shell.json")
+def vault_owner_safe_preview_lock_prep_shell_json():
+    return _vault_gp331_340_json("get_owner_safe_preview_lock_prep_shell")
+
+@app.route("/vault/preview-eligibility-policy-board.json")
+def vault_preview_eligibility_policy_board_json():
+    return _vault_gp331_340_json("get_preview_eligibility_policy_board")
+
+@app.route("/vault/preview-mime-type-contract.json")
+def vault_preview_mime_type_contract_json():
+    return _vault_gp331_340_json("get_preview_mime_type_contract")
+
+@app.route("/vault/preview-redaction-policy-board.json")
+def vault_preview_redaction_policy_board_json():
+    return _vault_gp331_340_json("get_preview_redaction_policy_board")
+
+@app.route("/vault/owner-preview-approval-lock-board.json")
+def vault_owner_preview_approval_lock_board_json():
+    return _vault_gp331_340_json("get_owner_preview_approval_lock_board")
+
+@app.route("/vault/preview-route-payload-draft-builder.json")
+def vault_preview_route_payload_draft_builder_json():
+    return _vault_gp331_340_json("get_preview_route_payload_draft_builder")
+
+@app.route("/vault/preview-receipt-draft-ledger.json")
+def vault_preview_receipt_draft_ledger_json():
+    return _vault_gp331_340_json("get_preview_receipt_draft_ledger")
+
+@app.route("/vault/preview-safety-review-queue.json")
+def vault_preview_safety_review_queue_json():
+    return _vault_gp331_340_json("get_preview_safety_review_queue")
+
+@app.route("/vault/preview-safety-blocker-board.json")
+def vault_preview_safety_blocker_board_json():
+    return _vault_gp331_340_json("get_preview_safety_blocker_board")
+
+@app.route("/vault/owner-safe-preview-lock-prep-readiness-checkpoint.json")
+def vault_owner_safe_preview_lock_prep_readiness_checkpoint_json():
+    return _vault_gp331_340_json("get_owner_safe_preview_lock_prep_readiness_checkpoint")
+
+@app.route("/vault/gp331-status.json")
+def vault_gp331_status_json():
+    return _vault_gp331_340_json("get_gp331_status")
+
+@app.route("/vault/gp332-status.json")
+def vault_gp332_status_json():
+    return _vault_gp331_340_json("get_gp332_status")
+
+@app.route("/vault/gp333-status.json")
+def vault_gp333_status_json():
+    return _vault_gp331_340_json("get_gp333_status")
+
+@app.route("/vault/gp334-status.json")
+def vault_gp334_status_json():
+    return _vault_gp331_340_json("get_gp334_status")
+
+@app.route("/vault/gp335-status.json")
+def vault_gp335_status_json():
+    return _vault_gp331_340_json("get_gp335_status")
+
+@app.route("/vault/gp336-status.json")
+def vault_gp336_status_json():
+    return _vault_gp331_340_json("get_gp336_status")
+
+@app.route("/vault/gp337-status.json")
+def vault_gp337_status_json():
+    return _vault_gp331_340_json("get_gp337_status")
+
+@app.route("/vault/gp338-status.json")
+def vault_gp338_status_json():
+    return _vault_gp331_340_json("get_gp338_status")
+
+@app.route("/vault/gp339-status.json")
+def vault_gp339_status_json():
+    return _vault_gp331_340_json("get_gp339_status")
+
+@app.route("/vault/gp340-status.json")
+def vault_gp340_status_json():
+    return _vault_gp331_340_json("get_gp340_status")
+
+# VAULT GP331-GP340 OWNER SAFE PREVIEW LOCK PREP LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
