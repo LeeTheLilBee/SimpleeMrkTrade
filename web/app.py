@@ -17600,6 +17600,103 @@ def vault_gp320_status_json():
 
 # VAULT GP311-GP320 OWNER FILE DETAIL METADATA VIEW LAYER ROUTES END
 
+# VAULT GP321-GP330 OWNER FOLDER BROWSE METADATA LAYER ROUTES START
+
+def _vault_gp321_330_json(function_name):
+    from flask import jsonify
+    from vault import owner_folder_browse_metadata_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/owner-folder-browse-metadata-layer")
+def vault_owner_folder_browse_metadata_layer():
+    return _vault_gp321_330_json("get_owner_folder_browse_metadata_home")
+
+@app.route("/vault/owner-folder-browse-metadata-layer.json")
+def vault_owner_folder_browse_metadata_layer_json():
+    return _vault_gp321_330_json("get_owner_folder_browse_metadata_home")
+
+@app.route("/vault/owner-folder-browse-metadata-shell.json")
+def vault_owner_folder_browse_metadata_shell_json():
+    return _vault_gp321_330_json("get_owner_folder_browse_metadata_shell")
+
+@app.route("/vault/folder-browse-index-builder.json")
+def vault_folder_browse_index_builder_json():
+    return _vault_gp321_330_json("get_folder_browse_index_builder")
+
+@app.route("/vault/mission-lane-folder-group-board.json")
+def vault_mission_lane_folder_group_board_json():
+    return _vault_gp321_330_json("get_mission_lane_folder_group_board")
+
+@app.route("/vault/folder-breadcrumb-metadata-contract.json")
+def vault_folder_breadcrumb_metadata_contract_json():
+    return _vault_gp321_330_json("get_folder_breadcrumb_metadata_contract")
+
+@app.route("/vault/folder-file-row-payload-builder.json")
+def vault_folder_file_row_payload_builder_json():
+    return _vault_gp321_330_json("get_folder_file_row_payload_builder")
+
+@app.route("/vault/empty-folder-placeholder-board.json")
+def vault_empty_folder_placeholder_board_json():
+    return _vault_gp321_330_json("get_empty_folder_placeholder_board")
+
+@app.route("/vault/folder-browse-sort-filter-contract.json")
+def vault_folder_browse_sort_filter_contract_json():
+    return _vault_gp321_330_json("get_folder_browse_sort_filter_contract")
+
+@app.route("/vault/folder-browse-audit-snapshot-ledger.json")
+def vault_folder_browse_audit_snapshot_ledger_json():
+    return _vault_gp321_330_json("get_folder_browse_audit_snapshot_ledger")
+
+@app.route("/vault/folder-browse-safety-blocker-board.json")
+def vault_folder_browse_safety_blocker_board_json():
+    return _vault_gp321_330_json("get_folder_browse_safety_blocker_board")
+
+@app.route("/vault/owner-folder-browse-metadata-readiness-checkpoint.json")
+def vault_owner_folder_browse_metadata_readiness_checkpoint_json():
+    return _vault_gp321_330_json("get_owner_folder_browse_metadata_readiness_checkpoint")
+
+@app.route("/vault/gp321-status.json")
+def vault_gp321_status_json():
+    return _vault_gp321_330_json("get_gp321_status")
+
+@app.route("/vault/gp322-status.json")
+def vault_gp322_status_json():
+    return _vault_gp321_330_json("get_gp322_status")
+
+@app.route("/vault/gp323-status.json")
+def vault_gp323_status_json():
+    return _vault_gp321_330_json("get_gp323_status")
+
+@app.route("/vault/gp324-status.json")
+def vault_gp324_status_json():
+    return _vault_gp321_330_json("get_gp324_status")
+
+@app.route("/vault/gp325-status.json")
+def vault_gp325_status_json():
+    return _vault_gp321_330_json("get_gp325_status")
+
+@app.route("/vault/gp326-status.json")
+def vault_gp326_status_json():
+    return _vault_gp321_330_json("get_gp326_status")
+
+@app.route("/vault/gp327-status.json")
+def vault_gp327_status_json():
+    return _vault_gp321_330_json("get_gp327_status")
+
+@app.route("/vault/gp328-status.json")
+def vault_gp328_status_json():
+    return _vault_gp321_330_json("get_gp328_status")
+
+@app.route("/vault/gp329-status.json")
+def vault_gp329_status_json():
+    return _vault_gp321_330_json("get_gp329_status")
+
+@app.route("/vault/gp330-status.json")
+def vault_gp330_status_json():
+    return _vault_gp321_330_json("get_gp330_status")
+
+# VAULT GP321-GP330 OWNER FOLDER BROWSE METADATA LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
