@@ -17503,6 +17503,103 @@ def vault_gp310_status_json():
 
 # VAULT GP301-GP310 OWNER FILE REGISTRY PROMOTION EXECUTION LAYER ROUTES END
 
+# VAULT GP311-GP320 OWNER FILE DETAIL METADATA VIEW LAYER ROUTES START
+
+def _vault_gp311_320_json(function_name):
+    from flask import jsonify
+    from vault import owner_file_detail_metadata_view_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/owner-file-detail-metadata-view-layer")
+def vault_owner_file_detail_metadata_view_layer():
+    return _vault_gp311_320_json("get_owner_file_detail_metadata_view_home")
+
+@app.route("/vault/owner-file-detail-metadata-view-layer.json")
+def vault_owner_file_detail_metadata_view_layer_json():
+    return _vault_gp311_320_json("get_owner_file_detail_metadata_view_home")
+
+@app.route("/vault/owner-file-detail-metadata-view-shell.json")
+def vault_owner_file_detail_metadata_view_shell_json():
+    return _vault_gp311_320_json("get_owner_file_detail_metadata_view_shell")
+
+@app.route("/vault/active-file-metadata-detail-contract.json")
+def vault_active_file_metadata_detail_contract_json():
+    return _vault_gp311_320_json("get_active_file_metadata_detail_contract")
+
+@app.route("/vault/file-identity-summary-board.json")
+def vault_file_identity_summary_board_json():
+    return _vault_gp311_320_json("get_file_identity_summary_board")
+
+@app.route("/vault/file-provenance-receipt-reference-board.json")
+def vault_file_provenance_receipt_reference_board_json():
+    return _vault_gp311_320_json("get_file_provenance_receipt_reference_board")
+
+@app.route("/vault/file-lock-status-board.json")
+def vault_file_lock_status_board_json():
+    return _vault_gp311_320_json("get_file_lock_status_board")
+
+@app.route("/vault/metadata-redaction-display-policy-board.json")
+def vault_metadata_redaction_display_policy_board_json():
+    return _vault_gp311_320_json("get_metadata_redaction_display_policy_board")
+
+@app.route("/vault/file-detail-route-payload-builder.json")
+def vault_file_detail_route_payload_builder_json():
+    return _vault_gp311_320_json("get_file_detail_route_payload_builder")
+
+@app.route("/vault/file-detail-audit-snapshot-ledger.json")
+def vault_file_detail_audit_snapshot_ledger_json():
+    return _vault_gp311_320_json("get_file_detail_audit_snapshot_ledger")
+
+@app.route("/vault/file-detail-safety-blocker-board.json")
+def vault_file_detail_safety_blocker_board_json():
+    return _vault_gp311_320_json("get_file_detail_safety_blocker_board")
+
+@app.route("/vault/owner-file-detail-metadata-view-readiness-checkpoint.json")
+def vault_owner_file_detail_metadata_view_readiness_checkpoint_json():
+    return _vault_gp311_320_json("get_owner_file_detail_metadata_view_readiness_checkpoint")
+
+@app.route("/vault/gp311-status.json")
+def vault_gp311_status_json():
+    return _vault_gp311_320_json("get_gp311_status")
+
+@app.route("/vault/gp312-status.json")
+def vault_gp312_status_json():
+    return _vault_gp311_320_json("get_gp312_status")
+
+@app.route("/vault/gp313-status.json")
+def vault_gp313_status_json():
+    return _vault_gp311_320_json("get_gp313_status")
+
+@app.route("/vault/gp314-status.json")
+def vault_gp314_status_json():
+    return _vault_gp311_320_json("get_gp314_status")
+
+@app.route("/vault/gp315-status.json")
+def vault_gp315_status_json():
+    return _vault_gp311_320_json("get_gp315_status")
+
+@app.route("/vault/gp316-status.json")
+def vault_gp316_status_json():
+    return _vault_gp311_320_json("get_gp316_status")
+
+@app.route("/vault/gp317-status.json")
+def vault_gp317_status_json():
+    return _vault_gp311_320_json("get_gp317_status")
+
+@app.route("/vault/gp318-status.json")
+def vault_gp318_status_json():
+    return _vault_gp311_320_json("get_gp318_status")
+
+@app.route("/vault/gp319-status.json")
+def vault_gp319_status_json():
+    return _vault_gp311_320_json("get_gp319_status")
+
+@app.route("/vault/gp320-status.json")
+def vault_gp320_status_json():
+    return _vault_gp311_320_json("get_gp320_status")
+
+# VAULT GP311-GP320 OWNER FILE DETAIL METADATA VIEW LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
