@@ -17891,6 +17891,103 @@ def vault_gp350_status_json():
 
 # VAULT GP341-GP350 CONTROLLED OWNER SAFE PREVIEW EXECUTION LAYER ROUTES END
 
+# VAULT GP351-GP360 OWNER DOWNLOAD LOCK PREP LAYER ROUTES START
+
+def _vault_gp351_360_json(function_name):
+    from flask import jsonify
+    from vault import owner_download_lock_prep_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/owner-download-lock-prep-layer")
+def vault_owner_download_lock_prep_layer():
+    return _vault_gp351_360_json("get_owner_download_lock_prep_home")
+
+@app.route("/vault/owner-download-lock-prep-layer.json")
+def vault_owner_download_lock_prep_layer_json():
+    return _vault_gp351_360_json("get_owner_download_lock_prep_home")
+
+@app.route("/vault/owner-download-lock-prep-shell.json")
+def vault_owner_download_lock_prep_shell_json():
+    return _vault_gp351_360_json("get_owner_download_lock_prep_shell")
+
+@app.route("/vault/download-eligibility-policy-board.json")
+def vault_download_eligibility_policy_board_json():
+    return _vault_gp351_360_json("get_download_eligibility_policy_board")
+
+@app.route("/vault/download-scope-contract.json")
+def vault_download_scope_contract_json():
+    return _vault_gp351_360_json("get_download_scope_contract")
+
+@app.route("/vault/owner-download-approval-lock-board.json")
+def vault_owner_download_approval_lock_board_json():
+    return _vault_gp351_360_json("get_owner_download_approval_lock_board")
+
+@app.route("/vault/download-expiration-policy-board.json")
+def vault_download_expiration_policy_board_json():
+    return _vault_gp351_360_json("get_download_expiration_policy_board")
+
+@app.route("/vault/download-route-payload-draft-builder.json")
+def vault_download_route_payload_draft_builder_json():
+    return _vault_gp351_360_json("get_download_route_payload_draft_builder")
+
+@app.route("/vault/download-receipt-draft-ledger.json")
+def vault_download_receipt_draft_ledger_json():
+    return _vault_gp351_360_json("get_download_receipt_draft_ledger")
+
+@app.route("/vault/download-safety-review-queue.json")
+def vault_download_safety_review_queue_json():
+    return _vault_gp351_360_json("get_download_safety_review_queue")
+
+@app.route("/vault/download-safety-blocker-board.json")
+def vault_download_safety_blocker_board_json():
+    return _vault_gp351_360_json("get_download_safety_blocker_board")
+
+@app.route("/vault/owner-download-lock-prep-readiness-checkpoint.json")
+def vault_owner_download_lock_prep_readiness_checkpoint_json():
+    return _vault_gp351_360_json("get_owner_download_lock_prep_readiness_checkpoint")
+
+@app.route("/vault/gp351-status.json")
+def vault_gp351_status_json():
+    return _vault_gp351_360_json("get_gp351_status")
+
+@app.route("/vault/gp352-status.json")
+def vault_gp352_status_json():
+    return _vault_gp351_360_json("get_gp352_status")
+
+@app.route("/vault/gp353-status.json")
+def vault_gp353_status_json():
+    return _vault_gp351_360_json("get_gp353_status")
+
+@app.route("/vault/gp354-status.json")
+def vault_gp354_status_json():
+    return _vault_gp351_360_json("get_gp354_status")
+
+@app.route("/vault/gp355-status.json")
+def vault_gp355_status_json():
+    return _vault_gp351_360_json("get_gp355_status")
+
+@app.route("/vault/gp356-status.json")
+def vault_gp356_status_json():
+    return _vault_gp351_360_json("get_gp356_status")
+
+@app.route("/vault/gp357-status.json")
+def vault_gp357_status_json():
+    return _vault_gp351_360_json("get_gp357_status")
+
+@app.route("/vault/gp358-status.json")
+def vault_gp358_status_json():
+    return _vault_gp351_360_json("get_gp358_status")
+
+@app.route("/vault/gp359-status.json")
+def vault_gp359_status_json():
+    return _vault_gp351_360_json("get_gp359_status")
+
+@app.route("/vault/gp360-status.json")
+def vault_gp360_status_json():
+    return _vault_gp351_360_json("get_gp360_status")
+
+# VAULT GP351-GP360 OWNER DOWNLOAD LOCK PREP LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
