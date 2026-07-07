@@ -19034,6 +19034,99 @@ def vault_gp470_status_json():
 
 # VAULT GP461-GP470 TOWER VAULT REQUEST PROTOCOL GATE LAYER ROUTES END
 
+# VAULT GP471-GP480 TOWER AUTHORIZED VIEW PROTOCOL LAYER ROUTES START
+
+def _vault_gp471_480_json(function_name):
+    from flask import jsonify
+    from vault import tower_authorized_view_protocol_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/tower-authorized-view-protocol-layer.json")
+def vault_tower_authorized_view_protocol_layer_json():
+    return _vault_gp471_480_json("get_tower_authorized_view_protocol_home")
+
+@app.route("/vault/tower-authorized-view-protocol-shell.json")
+def vault_tower_authorized_view_protocol_shell_json():
+    return _vault_gp471_480_json("get_tower_authorized_view_protocol_shell")
+
+@app.route("/vault/view-eligibility-gate-board.json")
+def vault_view_eligibility_gate_board_json():
+    return _vault_gp471_480_json("get_view_eligibility_gate_board")
+
+@app.route("/vault/redacted-view-projection-builder.json")
+def vault_redacted_view_projection_builder_json():
+    return _vault_gp471_480_json("get_redacted_view_projection_builder")
+
+@app.route("/vault/tower-view-session-draft-board.json")
+def vault_tower_view_session_draft_board_json():
+    return _vault_gp471_480_json("get_tower_view_session_draft_board")
+
+@app.route("/vault/tower-internal-vault-view-request-ledger.json")
+def vault_tower_internal_vault_view_request_ledger_json():
+    return _vault_gp471_480_json("get_tower_internal_vault_view_request_ledger")
+
+@app.route("/vault/vault-view-response-envelope-board.json")
+def vault_view_response_envelope_board_json():
+    return _vault_gp471_480_json("get_vault_view_response_envelope_board")
+
+@app.route("/vault/view-redaction-receipt-draft-ledger.json")
+def vault_view_redaction_receipt_draft_ledger_json():
+    return _vault_gp471_480_json("get_view_redaction_receipt_draft_ledger")
+
+@app.route("/vault/tower-view-result-delivery-preview-board.json")
+def vault_tower_view_result_delivery_preview_board_json():
+    return _vault_gp471_480_json("get_tower_view_result_delivery_preview_board")
+
+@app.route("/vault/tower-authorized-view-safety-blocker-board.json")
+def vault_tower_authorized_view_safety_blocker_board_json():
+    return _vault_gp471_480_json("get_tower_authorized_view_safety_blocker_board")
+
+@app.route("/vault/tower-authorized-view-protocol-readiness-checkpoint.json")
+def vault_tower_authorized_view_protocol_readiness_checkpoint_json():
+    return _vault_gp471_480_json("get_tower_authorized_view_protocol_readiness_checkpoint")
+
+@app.route("/vault/gp471-status.json")
+def vault_gp471_status_json():
+    return _vault_gp471_480_json("get_gp471_status")
+
+@app.route("/vault/gp472-status.json")
+def vault_gp472_status_json():
+    return _vault_gp471_480_json("get_gp472_status")
+
+@app.route("/vault/gp473-status.json")
+def vault_gp473_status_json():
+    return _vault_gp471_480_json("get_gp473_status")
+
+@app.route("/vault/gp474-status.json")
+def vault_gp474_status_json():
+    return _vault_gp471_480_json("get_gp474_status")
+
+@app.route("/vault/gp475-status.json")
+def vault_gp475_status_json():
+    return _vault_gp471_480_json("get_gp475_status")
+
+@app.route("/vault/gp476-status.json")
+def vault_gp476_status_json():
+    return _vault_gp471_480_json("get_gp476_status")
+
+@app.route("/vault/gp477-status.json")
+def vault_gp477_status_json():
+    return _vault_gp471_480_json("get_gp477_status")
+
+@app.route("/vault/gp478-status.json")
+def vault_gp478_status_json():
+    return _vault_gp471_480_json("get_gp478_status")
+
+@app.route("/vault/gp479-status.json")
+def vault_gp479_status_json():
+    return _vault_gp471_480_json("get_gp479_status")
+
+@app.route("/vault/gp480-status.json")
+def vault_gp480_status_json():
+    return _vault_gp471_480_json("get_gp480_status")
+
+# VAULT GP471-GP480 TOWER AUTHORIZED VIEW PROTOCOL LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
