@@ -18280,6 +18280,103 @@ def vault_gp390_status_json():
 
 # VAULT GP381-GP390 CONTROLLED SHARE GRANT EXECUTION LAYER ROUTES END
 
+# VAULT GP391-GP400 TRASH RESTORE RECOVERY PREP LAYER ROUTES START
+
+def _vault_gp391_400_json(function_name):
+    from flask import jsonify
+    from vault import trash_restore_recovery_prep_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/trash-restore-recovery-prep-layer")
+def vault_trash_restore_recovery_prep_layer():
+    return _vault_gp391_400_json("get_trash_restore_recovery_prep_home")
+
+@app.route("/vault/trash-restore-recovery-prep-layer.json")
+def vault_trash_restore_recovery_prep_layer_json():
+    return _vault_gp391_400_json("get_trash_restore_recovery_prep_home")
+
+@app.route("/vault/trash-restore-recovery-prep-shell.json")
+def vault_trash_restore_recovery_prep_shell_json():
+    return _vault_gp391_400_json("get_trash_restore_recovery_prep_shell")
+
+@app.route("/vault/trash-eligibility-policy-board.json")
+def vault_trash_eligibility_policy_board_json():
+    return _vault_gp391_400_json("get_trash_eligibility_policy_board")
+
+@app.route("/vault/soft-delete-scope-contract.json")
+def vault_soft_delete_scope_contract_json():
+    return _vault_gp391_400_json("get_soft_delete_scope_contract")
+
+@app.route("/vault/restore-scope-contract.json")
+def vault_restore_scope_contract_json():
+    return _vault_gp391_400_json("get_restore_scope_contract")
+
+@app.route("/vault/owner-trash-approval-lock-board.json")
+def vault_owner_trash_approval_lock_board_json():
+    return _vault_gp391_400_json("get_owner_trash_approval_lock_board")
+
+@app.route("/vault/restore-eligibility-lock-board.json")
+def vault_restore_eligibility_lock_board_json():
+    return _vault_gp391_400_json("get_restore_eligibility_lock_board")
+
+@app.route("/vault/recovery-receipt-draft-ledger.json")
+def vault_recovery_receipt_draft_ledger_json():
+    return _vault_gp391_400_json("get_recovery_receipt_draft_ledger")
+
+@app.route("/vault/trash-restore-route-payload-draft-builder.json")
+def vault_trash_restore_route_payload_draft_builder_json():
+    return _vault_gp391_400_json("get_trash_restore_route_payload_draft_builder")
+
+@app.route("/vault/trash-restore-safety-blocker-board.json")
+def vault_trash_restore_safety_blocker_board_json():
+    return _vault_gp391_400_json("get_trash_restore_safety_blocker_board")
+
+@app.route("/vault/trash-restore-recovery-prep-readiness-checkpoint.json")
+def vault_trash_restore_recovery_prep_readiness_checkpoint_json():
+    return _vault_gp391_400_json("get_trash_restore_recovery_prep_readiness_checkpoint")
+
+@app.route("/vault/gp391-status.json")
+def vault_gp391_status_json():
+    return _vault_gp391_400_json("get_gp391_status")
+
+@app.route("/vault/gp392-status.json")
+def vault_gp392_status_json():
+    return _vault_gp391_400_json("get_gp392_status")
+
+@app.route("/vault/gp393-status.json")
+def vault_gp393_status_json():
+    return _vault_gp391_400_json("get_gp393_status")
+
+@app.route("/vault/gp394-status.json")
+def vault_gp394_status_json():
+    return _vault_gp391_400_json("get_gp394_status")
+
+@app.route("/vault/gp395-status.json")
+def vault_gp395_status_json():
+    return _vault_gp391_400_json("get_gp395_status")
+
+@app.route("/vault/gp396-status.json")
+def vault_gp396_status_json():
+    return _vault_gp391_400_json("get_gp396_status")
+
+@app.route("/vault/gp397-status.json")
+def vault_gp397_status_json():
+    return _vault_gp391_400_json("get_gp397_status")
+
+@app.route("/vault/gp398-status.json")
+def vault_gp398_status_json():
+    return _vault_gp391_400_json("get_gp398_status")
+
+@app.route("/vault/gp399-status.json")
+def vault_gp399_status_json():
+    return _vault_gp391_400_json("get_gp399_status")
+
+@app.route("/vault/gp400-status.json")
+def vault_gp400_status_json():
+    return _vault_gp391_400_json("get_gp400_status")
+
+# VAULT GP391-GP400 TRASH RESTORE RECOVERY PREP LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
