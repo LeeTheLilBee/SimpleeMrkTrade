@@ -18569,6 +18569,99 @@ def vault_gp420_status_json():
 
 # VAULT GP411-GP420 HEADLESS SEALED MEMORY SERVICE LAYER ROUTES END
 
+# VAULT GP421-GP430 BLACKSEED CAPSULE INDEX REPAIR LAYER ROUTES START
+
+def _vault_gp421_430_json(function_name):
+    from flask import jsonify
+    from vault import blackseed_capsule_index_repair_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/blackseed-capsule-index-repair-layer.json")
+def vault_blackseed_capsule_index_repair_layer_json():
+    return _vault_gp421_430_json("get_blackseed_capsule_index_repair_home")
+
+@app.route("/vault/blackseed-capsule-index-repair-shell.json")
+def vault_blackseed_capsule_index_repair_shell_json():
+    return _vault_gp421_430_json("get_blackseed_capsule_index_repair_shell")
+
+@app.route("/vault/capsule-index-integrity-scanner.json")
+def vault_capsule_index_integrity_scanner_json():
+    return _vault_gp421_430_json("get_capsule_index_integrity_scanner")
+
+@app.route("/vault/capsule-hash-continuity-board.json")
+def vault_capsule_hash_continuity_board_json():
+    return _vault_gp421_430_json("get_capsule_hash_continuity_board")
+
+@app.route("/vault/capsule-to-pack-repair-map.json")
+def vault_capsule_to_pack_repair_map_json():
+    return _vault_gp421_430_json("get_capsule_to_pack_repair_map")
+
+@app.route("/vault/missing-capsule-repair-plan-builder.json")
+def vault_missing_capsule_repair_plan_builder_json():
+    return _vault_gp421_430_json("get_missing_capsule_repair_plan_builder")
+
+@app.route("/vault/opaque-metadata-rebuild-contract.json")
+def vault_opaque_metadata_rebuild_contract_json():
+    return _vault_gp421_430_json("get_opaque_metadata_rebuild_contract")
+
+@app.route("/vault/repair-receipt-chain-draft-ledger.json")
+def vault_repair_receipt_chain_draft_ledger_json():
+    return _vault_gp421_430_json("get_repair_receipt_chain_draft_ledger")
+
+@app.route("/vault/repaired-index-snapshot-preview-board.json")
+def vault_repaired_index_snapshot_preview_board_json():
+    return _vault_gp421_430_json("get_repaired_index_snapshot_preview_board")
+
+@app.route("/vault/capsule-repair-safety-blocker-board.json")
+def vault_capsule_repair_safety_blocker_board_json():
+    return _vault_gp421_430_json("get_capsule_repair_safety_blocker_board")
+
+@app.route("/vault/blackseed-capsule-index-repair-readiness-checkpoint.json")
+def vault_blackseed_capsule_index_repair_readiness_checkpoint_json():
+    return _vault_gp421_430_json("get_blackseed_capsule_index_repair_readiness_checkpoint")
+
+@app.route("/vault/gp421-status.json")
+def vault_gp421_status_json():
+    return _vault_gp421_430_json("get_gp421_status")
+
+@app.route("/vault/gp422-status.json")
+def vault_gp422_status_json():
+    return _vault_gp421_430_json("get_gp422_status")
+
+@app.route("/vault/gp423-status.json")
+def vault_gp423_status_json():
+    return _vault_gp421_430_json("get_gp423_status")
+
+@app.route("/vault/gp424-status.json")
+def vault_gp424_status_json():
+    return _vault_gp421_430_json("get_gp424_status")
+
+@app.route("/vault/gp425-status.json")
+def vault_gp425_status_json():
+    return _vault_gp421_430_json("get_gp425_status")
+
+@app.route("/vault/gp426-status.json")
+def vault_gp426_status_json():
+    return _vault_gp421_430_json("get_gp426_status")
+
+@app.route("/vault/gp427-status.json")
+def vault_gp427_status_json():
+    return _vault_gp421_430_json("get_gp427_status")
+
+@app.route("/vault/gp428-status.json")
+def vault_gp428_status_json():
+    return _vault_gp421_430_json("get_gp428_status")
+
+@app.route("/vault/gp429-status.json")
+def vault_gp429_status_json():
+    return _vault_gp421_430_json("get_gp429_status")
+
+@app.route("/vault/gp430-status.json")
+def vault_gp430_status_json():
+    return _vault_gp421_430_json("get_gp430_status")
+
+# VAULT GP421-GP430 BLACKSEED CAPSULE INDEX REPAIR LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
