@@ -18183,6 +18183,103 @@ def vault_gp380_status_json():
 
 # VAULT GP371-GP380 OWNER SHARE ACCESS LOCK PREP LAYER ROUTES END
 
+# VAULT GP381-GP390 CONTROLLED SHARE GRANT EXECUTION LAYER ROUTES START
+
+def _vault_gp381_390_json(function_name):
+    from flask import jsonify
+    from vault import controlled_share_grant_execution_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/controlled-share-grant-execution-layer")
+def vault_controlled_share_grant_execution_layer():
+    return _vault_gp381_390_json("get_controlled_share_grant_execution_home")
+
+@app.route("/vault/controlled-share-grant-execution-layer.json")
+def vault_controlled_share_grant_execution_layer_json():
+    return _vault_gp381_390_json("get_controlled_share_grant_execution_home")
+
+@app.route("/vault/controlled-share-grant-execution-shell.json")
+def vault_controlled_share_grant_execution_shell_json():
+    return _vault_gp381_390_json("get_controlled_share_grant_execution_shell")
+
+@app.route("/vault/share-grant-scope-contract.json")
+def vault_share_grant_scope_contract_json():
+    return _vault_gp381_390_json("get_share_grant_scope_contract")
+
+@app.route("/vault/owner-share-approval-execution-board.json")
+def vault_owner_share_approval_execution_board_json():
+    return _vault_gp381_390_json("get_owner_share_approval_execution_board")
+
+@app.route("/vault/controlled-share-token-builder.json")
+def vault_controlled_share_token_builder_json():
+    return _vault_gp381_390_json("get_controlled_share_token_builder")
+
+@app.route("/vault/controlled-share-grant-packet-builder.json")
+def vault_controlled_share_grant_packet_builder_json():
+    return _vault_gp381_390_json("get_controlled_share_grant_packet_builder")
+
+@app.route("/vault/tower-identity-recipient-grant-board.json")
+def vault_tower_identity_recipient_grant_board_json():
+    return _vault_gp381_390_json("get_tower_identity_recipient_grant_board")
+
+@app.route("/vault/share-access-ledger.json")
+def vault_share_access_ledger_json():
+    return _vault_gp381_390_json("get_share_access_ledger")
+
+@app.route("/vault/share-receipt-finalization-board.json")
+def vault_share_receipt_finalization_board_json():
+    return _vault_gp381_390_json("get_share_receipt_finalization_board")
+
+@app.route("/vault/share-grant-safety-blocker-board.json")
+def vault_share_grant_safety_blocker_board_json():
+    return _vault_gp381_390_json("get_share_grant_safety_blocker_board")
+
+@app.route("/vault/controlled-share-grant-execution-readiness-checkpoint.json")
+def vault_controlled_share_grant_execution_readiness_checkpoint_json():
+    return _vault_gp381_390_json("get_controlled_share_grant_execution_readiness_checkpoint")
+
+@app.route("/vault/gp381-status.json")
+def vault_gp381_status_json():
+    return _vault_gp381_390_json("get_gp381_status")
+
+@app.route("/vault/gp382-status.json")
+def vault_gp382_status_json():
+    return _vault_gp381_390_json("get_gp382_status")
+
+@app.route("/vault/gp383-status.json")
+def vault_gp383_status_json():
+    return _vault_gp381_390_json("get_gp383_status")
+
+@app.route("/vault/gp384-status.json")
+def vault_gp384_status_json():
+    return _vault_gp381_390_json("get_gp384_status")
+
+@app.route("/vault/gp385-status.json")
+def vault_gp385_status_json():
+    return _vault_gp381_390_json("get_gp385_status")
+
+@app.route("/vault/gp386-status.json")
+def vault_gp386_status_json():
+    return _vault_gp381_390_json("get_gp386_status")
+
+@app.route("/vault/gp387-status.json")
+def vault_gp387_status_json():
+    return _vault_gp381_390_json("get_gp387_status")
+
+@app.route("/vault/gp388-status.json")
+def vault_gp388_status_json():
+    return _vault_gp381_390_json("get_gp388_status")
+
+@app.route("/vault/gp389-status.json")
+def vault_gp389_status_json():
+    return _vault_gp381_390_json("get_gp389_status")
+
+@app.route("/vault/gp390-status.json")
+def vault_gp390_status_json():
+    return _vault_gp381_390_json("get_gp390_status")
+
+# VAULT GP381-GP390 CONTROLLED SHARE GRANT EXECUTION LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
