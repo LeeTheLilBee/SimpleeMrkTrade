@@ -18086,6 +18086,103 @@ def vault_gp370_status_json():
 
 # VAULT GP361-GP370 CONTROLLED OWNER DOWNLOAD EXECUTION LAYER ROUTES END
 
+# VAULT GP371-GP380 OWNER SHARE ACCESS LOCK PREP LAYER ROUTES START
+
+def _vault_gp371_380_json(function_name):
+    from flask import jsonify
+    from vault import owner_share_access_lock_prep_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/owner-share-access-lock-prep-layer")
+def vault_owner_share_access_lock_prep_layer():
+    return _vault_gp371_380_json("get_owner_share_access_lock_prep_home")
+
+@app.route("/vault/owner-share-access-lock-prep-layer.json")
+def vault_owner_share_access_lock_prep_layer_json():
+    return _vault_gp371_380_json("get_owner_share_access_lock_prep_home")
+
+@app.route("/vault/owner-share-access-lock-prep-shell.json")
+def vault_owner_share_access_lock_prep_shell_json():
+    return _vault_gp371_380_json("get_owner_share_access_lock_prep_shell")
+
+@app.route("/vault/share-eligibility-policy-board.json")
+def vault_share_eligibility_policy_board_json():
+    return _vault_gp371_380_json("get_share_eligibility_policy_board")
+
+@app.route("/vault/share-scope-contract.json")
+def vault_share_scope_contract_json():
+    return _vault_gp371_380_json("get_share_scope_contract")
+
+@app.route("/vault/share-recipient-policy-board.json")
+def vault_share_recipient_policy_board_json():
+    return _vault_gp371_380_json("get_share_recipient_policy_board")
+
+@app.route("/vault/owner-share-approval-lock-board.json")
+def vault_owner_share_approval_lock_board_json():
+    return _vault_gp371_380_json("get_owner_share_approval_lock_board")
+
+@app.route("/vault/share-expiration-policy-board.json")
+def vault_share_expiration_policy_board_json():
+    return _vault_gp371_380_json("get_share_expiration_policy_board")
+
+@app.route("/vault/share-route-payload-draft-builder.json")
+def vault_share_route_payload_draft_builder_json():
+    return _vault_gp371_380_json("get_share_route_payload_draft_builder")
+
+@app.route("/vault/share-receipt-draft-ledger.json")
+def vault_share_receipt_draft_ledger_json():
+    return _vault_gp371_380_json("get_share_receipt_draft_ledger")
+
+@app.route("/vault/share-safety-blocker-board.json")
+def vault_share_safety_blocker_board_json():
+    return _vault_gp371_380_json("get_share_safety_blocker_board")
+
+@app.route("/vault/owner-share-access-lock-prep-readiness-checkpoint.json")
+def vault_owner_share_access_lock_prep_readiness_checkpoint_json():
+    return _vault_gp371_380_json("get_owner_share_access_lock_prep_readiness_checkpoint")
+
+@app.route("/vault/gp371-status.json")
+def vault_gp371_status_json():
+    return _vault_gp371_380_json("get_gp371_status")
+
+@app.route("/vault/gp372-status.json")
+def vault_gp372_status_json():
+    return _vault_gp371_380_json("get_gp372_status")
+
+@app.route("/vault/gp373-status.json")
+def vault_gp373_status_json():
+    return _vault_gp371_380_json("get_gp373_status")
+
+@app.route("/vault/gp374-status.json")
+def vault_gp374_status_json():
+    return _vault_gp371_380_json("get_gp374_status")
+
+@app.route("/vault/gp375-status.json")
+def vault_gp375_status_json():
+    return _vault_gp371_380_json("get_gp375_status")
+
+@app.route("/vault/gp376-status.json")
+def vault_gp376_status_json():
+    return _vault_gp371_380_json("get_gp376_status")
+
+@app.route("/vault/gp377-status.json")
+def vault_gp377_status_json():
+    return _vault_gp371_380_json("get_gp377_status")
+
+@app.route("/vault/gp378-status.json")
+def vault_gp378_status_json():
+    return _vault_gp371_380_json("get_gp378_status")
+
+@app.route("/vault/gp379-status.json")
+def vault_gp379_status_json():
+    return _vault_gp371_380_json("get_gp379_status")
+
+@app.route("/vault/gp380-status.json")
+def vault_gp380_status_json():
+    return _vault_gp371_380_json("get_gp380_status")
+
+# VAULT GP371-GP380 OWNER SHARE ACCESS LOCK PREP LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
