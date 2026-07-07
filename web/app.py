@@ -18379,6 +18379,103 @@ def vault_gp400_status_json():
 
 # VAULT GP391-GP400 TRASH RESTORE RECOVERY PREP LAYER ROUTES END
 
+# VAULT GP401-GP410 CONTROLLED SOFT DELETE EXECUTION LAYER ROUTES START
+
+def _vault_gp401_410_json(function_name):
+    from flask import jsonify
+    from vault import controlled_soft_delete_execution_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/controlled-soft-delete-execution-layer")
+def vault_controlled_soft_delete_execution_layer():
+    return _vault_gp401_410_json("get_controlled_soft_delete_execution_home")
+
+@app.route("/vault/controlled-soft-delete-execution-layer.json")
+def vault_controlled_soft_delete_execution_layer_json():
+    return _vault_gp401_410_json("get_controlled_soft_delete_execution_home")
+
+@app.route("/vault/controlled-soft-delete-execution-shell.json")
+def vault_controlled_soft_delete_execution_shell_json():
+    return _vault_gp401_410_json("get_controlled_soft_delete_execution_shell")
+
+@app.route("/vault/soft-delete-execution-scope-contract.json")
+def vault_soft_delete_execution_scope_contract_json():
+    return _vault_gp401_410_json("get_soft_delete_execution_scope_contract")
+
+@app.route("/vault/owner-soft-delete-approval-execution-board.json")
+def vault_owner_soft_delete_approval_execution_board_json():
+    return _vault_gp401_410_json("get_owner_soft_delete_approval_execution_board")
+
+@app.route("/vault/soft-delete-state-writer.json")
+def vault_soft_delete_state_writer_json():
+    return _vault_gp401_410_json("get_soft_delete_state_writer")
+
+@app.route("/vault/trash-lifecycle-ledger.json")
+def vault_trash_lifecycle_ledger_json():
+    return _vault_gp401_410_json("get_trash_lifecycle_ledger")
+
+@app.route("/vault/soft-delete-receipt-finalization-board.json")
+def vault_soft_delete_receipt_finalization_board_json():
+    return _vault_gp401_410_json("get_soft_delete_receipt_finalization_board")
+
+@app.route("/vault/post-delete-access-lock-board.json")
+def vault_post_delete_access_lock_board_json():
+    return _vault_gp401_410_json("get_post_delete_access_lock_board")
+
+@app.route("/vault/restore-handoff-preview-board.json")
+def vault_restore_handoff_preview_board_json():
+    return _vault_gp401_410_json("get_restore_handoff_preview_board")
+
+@app.route("/vault/soft-delete-safety-blocker-board.json")
+def vault_soft_delete_safety_blocker_board_json():
+    return _vault_gp401_410_json("get_soft_delete_safety_blocker_board")
+
+@app.route("/vault/controlled-soft-delete-execution-readiness-checkpoint.json")
+def vault_controlled_soft_delete_execution_readiness_checkpoint_json():
+    return _vault_gp401_410_json("get_controlled_soft_delete_execution_readiness_checkpoint")
+
+@app.route("/vault/gp401-status.json")
+def vault_gp401_status_json():
+    return _vault_gp401_410_json("get_gp401_status")
+
+@app.route("/vault/gp402-status.json")
+def vault_gp402_status_json():
+    return _vault_gp401_410_json("get_gp402_status")
+
+@app.route("/vault/gp403-status.json")
+def vault_gp403_status_json():
+    return _vault_gp401_410_json("get_gp403_status")
+
+@app.route("/vault/gp404-status.json")
+def vault_gp404_status_json():
+    return _vault_gp401_410_json("get_gp404_status")
+
+@app.route("/vault/gp405-status.json")
+def vault_gp405_status_json():
+    return _vault_gp401_410_json("get_gp405_status")
+
+@app.route("/vault/gp406-status.json")
+def vault_gp406_status_json():
+    return _vault_gp401_410_json("get_gp406_status")
+
+@app.route("/vault/gp407-status.json")
+def vault_gp407_status_json():
+    return _vault_gp401_410_json("get_gp407_status")
+
+@app.route("/vault/gp408-status.json")
+def vault_gp408_status_json():
+    return _vault_gp401_410_json("get_gp408_status")
+
+@app.route("/vault/gp409-status.json")
+def vault_gp409_status_json():
+    return _vault_gp401_410_json("get_gp409_status")
+
+@app.route("/vault/gp410-status.json")
+def vault_gp410_status_json():
+    return _vault_gp401_410_json("get_gp410_status")
+
+# VAULT GP401-GP410 CONTROLLED SOFT DELETE EXECUTION LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
