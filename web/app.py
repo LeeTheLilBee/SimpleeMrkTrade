@@ -18662,6 +18662,99 @@ def vault_gp430_status_json():
 
 # VAULT GP421-GP430 BLACKSEED CAPSULE INDEX REPAIR LAYER ROUTES END
 
+# VAULT GP431-GP440 VAULT PACK REBUILD SERVICE LAYER ROUTES START
+
+def _vault_gp431_440_json(function_name):
+    from flask import jsonify
+    from vault import vault_pack_rebuild_service_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/vault-pack-rebuild-service-layer.json")
+def vault_pack_rebuild_service_layer_json():
+    return _vault_gp431_440_json("get_vault_pack_rebuild_service_home")
+
+@app.route("/vault/vault-pack-rebuild-service-shell.json")
+def vault_pack_rebuild_service_shell_json():
+    return _vault_gp431_440_json("get_vault_pack_rebuild_service_shell")
+
+@app.route("/vault/rebuild-source-contract.json")
+def vault_rebuild_source_contract_json():
+    return _vault_gp431_440_json("get_rebuild_source_contract")
+
+@app.route("/vault/sealed-pack-rebuild-candidate-board.json")
+def vault_sealed_pack_rebuild_candidate_board_json():
+    return _vault_gp431_440_json("get_sealed_pack_rebuild_candidate_board")
+
+@app.route("/vault/pack-chunk-reconstruction-plan-builder.json")
+def vault_pack_chunk_reconstruction_plan_builder_json():
+    return _vault_gp431_440_json("get_pack_chunk_reconstruction_plan_builder")
+
+@app.route("/vault/receipt-chain-rebuild-guard.json")
+def vault_receipt_chain_rebuild_guard_json():
+    return _vault_gp431_440_json("get_receipt_chain_rebuild_guard")
+
+@app.route("/vault/merkle-root-rebuild-verifier.json")
+def vault_merkle_root_rebuild_verifier_json():
+    return _vault_gp431_440_json("get_merkle_root_rebuild_verifier")
+
+@app.route("/vault/rebuilt-pack-index-preview-board.json")
+def vault_rebuilt_pack_index_preview_board_json():
+    return _vault_gp431_440_json("get_rebuilt_pack_index_preview_board")
+
+@app.route("/vault/tower-teller-rebuild-output-contract.json")
+def vault_tower_teller_rebuild_output_contract_json():
+    return _vault_gp431_440_json("get_tower_teller_rebuild_output_contract")
+
+@app.route("/vault/vault-pack-rebuild-safety-blocker-board.json")
+def vault_pack_rebuild_safety_blocker_board_json():
+    return _vault_gp431_440_json("get_vault_pack_rebuild_safety_blocker_board")
+
+@app.route("/vault/vault-pack-rebuild-service-readiness-checkpoint.json")
+def vault_pack_rebuild_service_readiness_checkpoint_json():
+    return _vault_gp431_440_json("get_vault_pack_rebuild_service_readiness_checkpoint")
+
+@app.route("/vault/gp431-status.json")
+def vault_gp431_status_json():
+    return _vault_gp431_440_json("get_gp431_status")
+
+@app.route("/vault/gp432-status.json")
+def vault_gp432_status_json():
+    return _vault_gp431_440_json("get_gp432_status")
+
+@app.route("/vault/gp433-status.json")
+def vault_gp433_status_json():
+    return _vault_gp431_440_json("get_gp433_status")
+
+@app.route("/vault/gp434-status.json")
+def vault_gp434_status_json():
+    return _vault_gp431_440_json("get_gp434_status")
+
+@app.route("/vault/gp435-status.json")
+def vault_gp435_status_json():
+    return _vault_gp431_440_json("get_gp435_status")
+
+@app.route("/vault/gp436-status.json")
+def vault_gp436_status_json():
+    return _vault_gp431_440_json("get_gp436_status")
+
+@app.route("/vault/gp437-status.json")
+def vault_gp437_status_json():
+    return _vault_gp431_440_json("get_gp437_status")
+
+@app.route("/vault/gp438-status.json")
+def vault_gp438_status_json():
+    return _vault_gp431_440_json("get_gp438_status")
+
+@app.route("/vault/gp439-status.json")
+def vault_gp439_status_json():
+    return _vault_gp431_440_json("get_gp439_status")
+
+@app.route("/vault/gp440-status.json")
+def vault_gp440_status_json():
+    return _vault_gp431_440_json("get_gp440_status")
+
+# VAULT GP431-GP440 VAULT PACK REBUILD SERVICE LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
