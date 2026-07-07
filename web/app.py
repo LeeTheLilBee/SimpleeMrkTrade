@@ -18941,6 +18941,99 @@ def vault_gp460_status_json():
 
 # VAULT GP451-GP460 TELLER TO TOWER REQUEST HANDOFF LAYER ROUTES END
 
+# VAULT GP461-GP470 TOWER VAULT REQUEST PROTOCOL GATE LAYER ROUTES START
+
+def _vault_gp461_470_json(function_name):
+    from flask import jsonify
+    from vault import tower_vault_request_protocol_gate_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/tower-vault-request-protocol-gate-layer.json")
+def vault_tower_vault_request_protocol_gate_layer_json():
+    return _vault_gp461_470_json("get_tower_vault_request_protocol_gate_home")
+
+@app.route("/vault/tower-vault-request-protocol-gate-shell.json")
+def vault_tower_vault_request_protocol_gate_shell_json():
+    return _vault_gp461_470_json("get_tower_vault_request_protocol_gate_shell")
+
+@app.route("/vault/tower-identity-permission-gate-board.json")
+def vault_tower_identity_permission_gate_board_json():
+    return _vault_gp461_470_json("get_tower_identity_permission_gate_board")
+
+@app.route("/vault/clearance-step-up-approval-gate-board.json")
+def vault_clearance_step_up_approval_gate_board_json():
+    return _vault_gp461_470_json("get_clearance_step_up_approval_gate_board")
+
+@app.route("/vault/protocol-type-decision-board.json")
+def vault_protocol_type_decision_board_json():
+    return _vault_gp461_470_json("get_protocol_type_decision_board")
+
+@app.route("/vault/redaction-scope-enforcement-board.json")
+def vault_redaction_scope_enforcement_board_json():
+    return _vault_gp461_470_json("get_redaction_scope_enforcement_board")
+
+@app.route("/vault/tower-authorized-vault-request-draft-builder.json")
+def vault_tower_authorized_vault_request_draft_builder_json():
+    return _vault_gp461_470_json("get_tower_authorized_vault_request_draft_builder")
+
+@app.route("/vault/tower-protocol-receipt-draft-ledger.json")
+def vault_tower_protocol_receipt_draft_ledger_json():
+    return _vault_gp461_470_json("get_tower_protocol_receipt_draft_ledger")
+
+@app.route("/vault/vault-call-pending-queue-preview-board.json")
+def vault_call_pending_queue_preview_board_json():
+    return _vault_gp461_470_json("get_vault_call_pending_queue_preview_board")
+
+@app.route("/vault/tower-protocol-gate-safety-blocker-board.json")
+def vault_tower_protocol_gate_safety_blocker_board_json():
+    return _vault_gp461_470_json("get_tower_protocol_gate_safety_blocker_board")
+
+@app.route("/vault/tower-vault-request-protocol-gate-readiness-checkpoint.json")
+def vault_tower_vault_request_protocol_gate_readiness_checkpoint_json():
+    return _vault_gp461_470_json("get_tower_vault_request_protocol_gate_readiness_checkpoint")
+
+@app.route("/vault/gp461-status.json")
+def vault_gp461_status_json():
+    return _vault_gp461_470_json("get_gp461_status")
+
+@app.route("/vault/gp462-status.json")
+def vault_gp462_status_json():
+    return _vault_gp461_470_json("get_gp462_status")
+
+@app.route("/vault/gp463-status.json")
+def vault_gp463_status_json():
+    return _vault_gp461_470_json("get_gp463_status")
+
+@app.route("/vault/gp464-status.json")
+def vault_gp464_status_json():
+    return _vault_gp461_470_json("get_gp464_status")
+
+@app.route("/vault/gp465-status.json")
+def vault_gp465_status_json():
+    return _vault_gp461_470_json("get_gp465_status")
+
+@app.route("/vault/gp466-status.json")
+def vault_gp466_status_json():
+    return _vault_gp461_470_json("get_gp466_status")
+
+@app.route("/vault/gp467-status.json")
+def vault_gp467_status_json():
+    return _vault_gp461_470_json("get_gp467_status")
+
+@app.route("/vault/gp468-status.json")
+def vault_gp468_status_json():
+    return _vault_gp461_470_json("get_gp468_status")
+
+@app.route("/vault/gp469-status.json")
+def vault_gp469_status_json():
+    return _vault_gp461_470_json("get_gp469_status")
+
+@app.route("/vault/gp470-status.json")
+def vault_gp470_status_json():
+    return _vault_gp461_470_json("get_gp470_status")
+
+# VAULT GP461-GP470 TOWER VAULT REQUEST PROTOCOL GATE LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
