@@ -18755,6 +18755,99 @@ def vault_gp440_status_json():
 
 # VAULT GP431-GP440 VAULT PACK REBUILD SERVICE LAYER ROUTES END
 
+# VAULT GP441-GP450 HEADLESS TOWER STATUS BRIDGE LAYER ROUTES START
+
+def _vault_gp441_450_json(function_name):
+    from flask import jsonify
+    from vault import headless_tower_status_bridge_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/headless-tower-status-bridge-layer.json")
+def vault_headless_tower_status_bridge_layer_json():
+    return _vault_gp441_450_json("get_headless_tower_status_bridge_home")
+
+@app.route("/vault/headless-tower-status-bridge-shell.json")
+def vault_headless_tower_status_bridge_shell_json():
+    return _vault_gp441_450_json("get_headless_tower_status_bridge_shell")
+
+@app.route("/vault/tower-vault-health-card-contract.json")
+def vault_tower_vault_health_card_contract_json():
+    return _vault_gp441_450_json("get_tower_vault_health_card_contract")
+
+@app.route("/vault/tower-security-receipt-summary-board.json")
+def vault_tower_security_receipt_summary_board_json():
+    return _vault_gp441_450_json("get_tower_security_receipt_summary_board")
+
+@app.route("/vault/tower-owner-clearance-status-bridge.json")
+def vault_tower_owner_clearance_status_bridge_json():
+    return _vault_gp441_450_json("get_tower_owner_clearance_status_bridge")
+
+@app.route("/vault/teller-workflow-proof-status-bridge.json")
+def vault_teller_workflow_proof_status_bridge_json():
+    return _vault_gp441_450_json("get_teller_workflow_proof_status_bridge")
+
+@app.route("/vault/vault-memory-integrity-signal-builder.json")
+def vault_memory_integrity_signal_builder_json():
+    return _vault_gp441_450_json("get_vault_memory_integrity_signal_builder")
+
+@app.route("/vault/sealed-rebuild-status-output-builder.json")
+def vault_sealed_rebuild_status_output_builder_json():
+    return _vault_gp441_450_json("get_sealed_rebuild_status_output_builder")
+
+@app.route("/vault/tower-teller-bridge-redaction-contract.json")
+def vault_tower_teller_bridge_redaction_contract_json():
+    return _vault_gp441_450_json("get_tower_teller_bridge_redaction_contract")
+
+@app.route("/vault/headless-bridge-safety-blocker-board.json")
+def vault_headless_bridge_safety_blocker_board_json():
+    return _vault_gp441_450_json("get_headless_bridge_safety_blocker_board")
+
+@app.route("/vault/headless-tower-status-bridge-readiness-checkpoint.json")
+def vault_headless_tower_status_bridge_readiness_checkpoint_json():
+    return _vault_gp441_450_json("get_headless_tower_status_bridge_readiness_checkpoint")
+
+@app.route("/vault/gp441-status.json")
+def vault_gp441_status_json():
+    return _vault_gp441_450_json("get_gp441_status")
+
+@app.route("/vault/gp442-status.json")
+def vault_gp442_status_json():
+    return _vault_gp441_450_json("get_gp442_status")
+
+@app.route("/vault/gp443-status.json")
+def vault_gp443_status_json():
+    return _vault_gp441_450_json("get_gp443_status")
+
+@app.route("/vault/gp444-status.json")
+def vault_gp444_status_json():
+    return _vault_gp441_450_json("get_gp444_status")
+
+@app.route("/vault/gp445-status.json")
+def vault_gp445_status_json():
+    return _vault_gp441_450_json("get_gp445_status")
+
+@app.route("/vault/gp446-status.json")
+def vault_gp446_status_json():
+    return _vault_gp441_450_json("get_gp446_status")
+
+@app.route("/vault/gp447-status.json")
+def vault_gp447_status_json():
+    return _vault_gp441_450_json("get_gp447_status")
+
+@app.route("/vault/gp448-status.json")
+def vault_gp448_status_json():
+    return _vault_gp441_450_json("get_gp448_status")
+
+@app.route("/vault/gp449-status.json")
+def vault_gp449_status_json():
+    return _vault_gp441_450_json("get_gp449_status")
+
+@app.route("/vault/gp450-status.json")
+def vault_gp450_status_json():
+    return _vault_gp441_450_json("get_gp450_status")
+
+# VAULT GP441-GP450 HEADLESS TOWER STATUS BRIDGE LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
