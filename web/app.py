@@ -18848,6 +18848,99 @@ def vault_gp450_status_json():
 
 # VAULT GP441-GP450 HEADLESS TOWER STATUS BRIDGE LAYER ROUTES END
 
+# VAULT GP451-GP460 TELLER TO TOWER REQUEST HANDOFF LAYER ROUTES START
+
+def _vault_gp451_460_json(function_name):
+    from flask import jsonify
+    from vault import teller_to_tower_request_handoff_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/teller-to-tower-request-handoff-layer.json")
+def vault_teller_to_tower_request_handoff_layer_json():
+    return _vault_gp451_460_json("get_teller_to_tower_request_handoff_home")
+
+@app.route("/vault/teller-to-tower-request-handoff-shell.json")
+def vault_teller_to_tower_request_handoff_shell_json():
+    return _vault_gp451_460_json("get_teller_to_tower_request_handoff_shell")
+
+@app.route("/vault/workflow-request-packet-contract.json")
+def vault_workflow_request_packet_contract_json():
+    return _vault_gp451_460_json("get_workflow_request_packet_contract")
+
+@app.route("/vault/requester-role-context-board.json")
+def vault_requester_role_context_board_json():
+    return _vault_gp451_460_json("get_requester_role_context_board")
+
+@app.route("/vault/document-proof-type-scope-board.json")
+def vault_document_proof_type_scope_board_json():
+    return _vault_gp451_460_json("get_document_proof_type_scope_board")
+
+@app.route("/vault/sensitivity-redaction-need-classifier.json")
+def vault_sensitivity_redaction_need_classifier_json():
+    return _vault_gp451_460_json("get_sensitivity_redaction_need_classifier")
+
+@app.route("/vault/tower-approval-required-flag-builder.json")
+def vault_tower_approval_required_flag_builder_json():
+    return _vault_gp451_460_json("get_tower_approval_required_flag_builder")
+
+@app.route("/vault/teller-workflow-receipt-draft-ledger.json")
+def vault_teller_workflow_receipt_draft_ledger_json():
+    return _vault_gp451_460_json("get_teller_workflow_receipt_draft_ledger")
+
+@app.route("/vault/tower-intake-payload-preview-board.json")
+def vault_tower_intake_payload_preview_board_json():
+    return _vault_gp451_460_json("get_tower_intake_payload_preview_board")
+
+@app.route("/vault/teller-to-tower-handoff-safety-blocker-board.json")
+def vault_teller_to_tower_handoff_safety_blocker_board_json():
+    return _vault_gp451_460_json("get_teller_to_tower_handoff_safety_blocker_board")
+
+@app.route("/vault/teller-to-tower-request-handoff-readiness-checkpoint.json")
+def vault_teller_to_tower_request_handoff_readiness_checkpoint_json():
+    return _vault_gp451_460_json("get_teller_to_tower_request_handoff_readiness_checkpoint")
+
+@app.route("/vault/gp451-status.json")
+def vault_gp451_status_json():
+    return _vault_gp451_460_json("get_gp451_status")
+
+@app.route("/vault/gp452-status.json")
+def vault_gp452_status_json():
+    return _vault_gp451_460_json("get_gp452_status")
+
+@app.route("/vault/gp453-status.json")
+def vault_gp453_status_json():
+    return _vault_gp451_460_json("get_gp453_status")
+
+@app.route("/vault/gp454-status.json")
+def vault_gp454_status_json():
+    return _vault_gp451_460_json("get_gp454_status")
+
+@app.route("/vault/gp455-status.json")
+def vault_gp455_status_json():
+    return _vault_gp451_460_json("get_gp455_status")
+
+@app.route("/vault/gp456-status.json")
+def vault_gp456_status_json():
+    return _vault_gp451_460_json("get_gp456_status")
+
+@app.route("/vault/gp457-status.json")
+def vault_gp457_status_json():
+    return _vault_gp451_460_json("get_gp457_status")
+
+@app.route("/vault/gp458-status.json")
+def vault_gp458_status_json():
+    return _vault_gp451_460_json("get_gp458_status")
+
+@app.route("/vault/gp459-status.json")
+def vault_gp459_status_json():
+    return _vault_gp451_460_json("get_gp459_status")
+
+@app.route("/vault/gp460-status.json")
+def vault_gp460_status_json():
+    return _vault_gp451_460_json("get_gp460_status")
+
+# VAULT GP451-GP460 TELLER TO TOWER REQUEST HANDOFF LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
