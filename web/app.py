@@ -19504,6 +19504,99 @@ def vault_gp520_status_json():
 
 # VAULT GP511-GP520 RECOVERY SAFE REBUILD EXECUTION PREP LAYER ROUTES END
 
+# VAULT GP521-GP530 BACKUP EXPORT COLD COPY LOCK LAYER ROUTES START
+
+def _vault_gp521_530_json(function_name):
+    from flask import jsonify
+    from vault import backup_export_cold_copy_lock_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/backup-export-cold-copy-lock-layer.json")
+def vault_backup_export_cold_copy_lock_layer_json():
+    return _vault_gp521_530_json("get_backup_export_cold_copy_lock_home")
+
+@app.route("/vault/backup-export-cold-copy-lock-shell.json")
+def vault_backup_export_cold_copy_lock_shell_json():
+    return _vault_gp521_530_json("get_backup_export_cold_copy_lock_shell")
+
+@app.route("/vault/cold-copy-eligibility-from-recovery-prep-board.json")
+def vault_cold_copy_eligibility_from_recovery_prep_board_json():
+    return _vault_gp521_530_json("get_cold_copy_eligibility_from_recovery_prep_board")
+
+@app.route("/vault/backup-export-manifest-draft-board.json")
+def vault_backup_export_manifest_draft_board_json():
+    return _vault_gp521_530_json("get_backup_export_manifest_draft_board")
+
+@app.route("/vault/cold-copy-target-lock-board.json")
+def vault_cold_copy_target_lock_board_json():
+    return _vault_gp521_530_json("get_cold_copy_target_lock_board")
+
+@app.route("/vault/offline-export-package-hash-board.json")
+def vault_offline_export_package_hash_board_json():
+    return _vault_gp521_530_json("get_offline_export_package_hash_board")
+
+@app.route("/vault/backup-chain-of-custody-receipt-draft-ledger.json")
+def vault_backup_chain_of_custody_receipt_draft_ledger_json():
+    return _vault_gp521_530_json("get_backup_chain_of_custody_receipt_draft_ledger")
+
+@app.route("/vault/tower-cold-copy-approval-requirement-board.json")
+def vault_tower_cold_copy_approval_requirement_board_json():
+    return _vault_gp521_530_json("get_tower_cold_copy_approval_requirement_board")
+
+@app.route("/vault/cold-copy-dry-run-verification-board.json")
+def vault_cold_copy_dry_run_verification_board_json():
+    return _vault_gp521_530_json("get_cold_copy_dry_run_verification_board")
+
+@app.route("/vault/backup-export-cold-copy-safety-blocker-board.json")
+def vault_backup_export_cold_copy_safety_blocker_board_json():
+    return _vault_gp521_530_json("get_backup_export_cold_copy_safety_blocker_board")
+
+@app.route("/vault/backup-export-cold-copy-lock-readiness-checkpoint.json")
+def vault_backup_export_cold_copy_lock_readiness_checkpoint_json():
+    return _vault_gp521_530_json("get_backup_export_cold_copy_lock_readiness_checkpoint")
+
+@app.route("/vault/gp521-status.json")
+def vault_gp521_status_json():
+    return _vault_gp521_530_json("get_gp521_status")
+
+@app.route("/vault/gp522-status.json")
+def vault_gp522_status_json():
+    return _vault_gp521_530_json("get_gp522_status")
+
+@app.route("/vault/gp523-status.json")
+def vault_gp523_status_json():
+    return _vault_gp521_530_json("get_gp523_status")
+
+@app.route("/vault/gp524-status.json")
+def vault_gp524_status_json():
+    return _vault_gp521_530_json("get_gp524_status")
+
+@app.route("/vault/gp525-status.json")
+def vault_gp525_status_json():
+    return _vault_gp521_530_json("get_gp525_status")
+
+@app.route("/vault/gp526-status.json")
+def vault_gp526_status_json():
+    return _vault_gp521_530_json("get_gp526_status")
+
+@app.route("/vault/gp527-status.json")
+def vault_gp527_status_json():
+    return _vault_gp521_530_json("get_gp527_status")
+
+@app.route("/vault/gp528-status.json")
+def vault_gp528_status_json():
+    return _vault_gp521_530_json("get_gp528_status")
+
+@app.route("/vault/gp529-status.json")
+def vault_gp529_status_json():
+    return _vault_gp521_530_json("get_gp529_status")
+
+@app.route("/vault/gp530-status.json")
+def vault_gp530_status_json():
+    return _vault_gp521_530_json("get_gp530_status")
+
+# VAULT GP521-GP530 BACKUP EXPORT COLD COPY LOCK LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
