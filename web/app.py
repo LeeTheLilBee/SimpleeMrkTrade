@@ -19128,6 +19128,103 @@ def vault_gp480_status_json():
 
 # VAULT GP471-GP480 TOWER AUTHORIZED VIEW PROTOCOL LAYER ROUTES END
 
+# VAULT GP481-GP490 TOWER AUTHORIZED DOWNLOAD PROTOCOL LAYER ROUTES START
+
+def _vault_gp481_490_json(function_name):
+    from flask import jsonify
+    from vault import tower_authorized_download_protocol_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/tower-authorized-download-protocol-layer.json")
+def vault_tower_authorized_download_protocol_layer_json():
+    return _vault_gp481_490_json("get_tower_authorized_download_protocol_home")
+
+@app.route("/vault/tower-authorized-download-protocol-shell.json")
+def vault_tower_authorized_download_protocol_shell_json():
+    return _vault_gp481_490_json("get_tower_authorized_download_protocol_shell")
+
+@app.route("/vault/download-eligibility-gate-board.json")
+def vault_download_eligibility_gate_board_json():
+    return _vault_gp481_490_json("get_download_eligibility_gate_board")
+
+@app.route("/vault/download-scope-redaction-gate-board.json")
+def vault_download_scope_redaction_gate_board_json():
+    return _vault_gp481_490_json("get_download_scope_redaction_gate_board")
+
+@app.route("/vault/tower-download-session-draft-board.json")
+def vault_tower_download_session_draft_board_json():
+    return _vault_gp481_490_json("get_tower_download_session_draft_board")
+
+@app.route("/vault/tower-internal-vault-download-request-ledger.json")
+def vault_tower_internal_vault_download_request_ledger_json():
+    return _vault_gp481_490_json("get_tower_internal_vault_download_request_ledger")
+
+@app.route("/vault/vault-download-response-envelope-board.json")
+def vault_download_response_envelope_board_json():
+    return _vault_gp481_490_json("get_vault_download_response_envelope_board")
+
+@app.route("/vault/download-handle-hash-guard-board.json")
+def vault_download_handle_hash_guard_board_json():
+    return _vault_gp481_490_json("get_download_handle_hash_guard_board")
+
+@app.route("/vault/download-receipt-draft-ledger.json")
+def vault_download_receipt_draft_ledger_json():
+    return _vault_gp481_490_json("get_download_receipt_draft_ledger")
+
+@app.route("/vault/tower-download-result-delivery-preview-board.json")
+def vault_tower_download_result_delivery_preview_board_json():
+    return _vault_gp481_490_json("get_tower_download_result_delivery_preview_board")
+
+@app.route("/vault/tower-authorized-download-safety-blocker-board.json")
+def vault_tower_authorized_download_safety_blocker_board_json():
+    return _vault_gp481_490_json("get_tower_authorized_download_safety_blocker_board")
+
+@app.route("/vault/tower-authorized-download-protocol-readiness-checkpoint.json")
+def vault_tower_authorized_download_protocol_readiness_checkpoint_json():
+    return _vault_gp481_490_json("get_tower_authorized_download_protocol_readiness_checkpoint")
+
+@app.route("/vault/gp481-status.json")
+def vault_gp481_status_json():
+    return _vault_gp481_490_json("get_gp481_status")
+
+@app.route("/vault/gp482-status.json")
+def vault_gp482_status_json():
+    return _vault_gp481_490_json("get_gp482_status")
+
+@app.route("/vault/gp483-status.json")
+def vault_gp483_status_json():
+    return _vault_gp481_490_json("get_gp483_status")
+
+@app.route("/vault/gp484-status.json")
+def vault_gp484_status_json():
+    return _vault_gp481_490_json("get_gp484_status")
+
+@app.route("/vault/gp485-status.json")
+def vault_gp485_status_json():
+    return _vault_gp481_490_json("get_gp485_status")
+
+@app.route("/vault/gp486-status.json")
+def vault_gp486_status_json():
+    return _vault_gp481_490_json("get_gp486_status")
+
+@app.route("/vault/gp487-status.json")
+def vault_gp487_status_json():
+    return _vault_gp481_490_json("get_gp487_status")
+
+@app.route("/vault/gp488-status.json")
+def vault_gp488_status_json():
+    return _vault_gp481_490_json("get_gp488_status")
+
+@app.route("/vault/gp489-status.json")
+def vault_gp489_status_json():
+    return _vault_gp481_490_json("get_gp489_status")
+
+@app.route("/vault/gp490-status.json")
+def vault_gp490_status_json():
+    return _vault_gp481_490_json("get_gp490_status")
+
+# VAULT GP481-GP490 TOWER AUTHORIZED DOWNLOAD PROTOCOL LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
