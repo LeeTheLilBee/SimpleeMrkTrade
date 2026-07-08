@@ -19225,6 +19225,99 @@ def vault_gp490_status_json():
 
 # VAULT GP481-GP490 TOWER AUTHORIZED DOWNLOAD PROTOCOL LAYER ROUTES END
 
+# VAULT GP491-GP500 TOWER AUTHORIZED PROOF PROTOCOL LAYER ROUTES START
+
+def _vault_gp491_500_json(function_name):
+    from flask import jsonify
+    from vault import tower_authorized_proof_protocol_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/tower-authorized-proof-protocol-layer.json")
+def vault_tower_authorized_proof_protocol_layer_json():
+    return _vault_gp491_500_json("get_tower_authorized_proof_protocol_home")
+
+@app.route("/vault/tower-authorized-proof-protocol-shell.json")
+def vault_tower_authorized_proof_protocol_shell_json():
+    return _vault_gp491_500_json("get_tower_authorized_proof_protocol_shell")
+
+@app.route("/vault/proof-eligibility-gate-board.json")
+def vault_proof_eligibility_gate_board_json():
+    return _vault_gp491_500_json("get_proof_eligibility_gate_board")
+
+@app.route("/vault/proof-scope-redaction-gate-board.json")
+def vault_proof_scope_redaction_gate_board_json():
+    return _vault_gp491_500_json("get_proof_scope_redaction_gate_board")
+
+@app.route("/vault/tower-internal-vault-proof-request-ledger.json")
+def vault_tower_internal_vault_proof_request_ledger_json():
+    return _vault_gp491_500_json("get_tower_internal_vault_proof_request_ledger")
+
+@app.route("/vault/vault-proof-response-envelope-board.json")
+def vault_proof_response_envelope_board_json():
+    return _vault_gp491_500_json("get_vault_proof_response_envelope_board")
+
+@app.route("/vault/proof-packet-hash-builder.json")
+def vault_proof_packet_hash_builder_json():
+    return _vault_gp491_500_json("get_proof_packet_hash_builder")
+
+@app.route("/vault/proof-receipt-draft-ledger.json")
+def vault_proof_receipt_draft_ledger_json():
+    return _vault_gp491_500_json("get_proof_receipt_draft_ledger")
+
+@app.route("/vault/tower-proof-result-delivery-preview-board.json")
+def vault_tower_proof_result_delivery_preview_board_json():
+    return _vault_gp491_500_json("get_tower_proof_result_delivery_preview_board")
+
+@app.route("/vault/tower-authorized-proof-safety-blocker-board.json")
+def vault_tower_authorized_proof_safety_blocker_board_json():
+    return _vault_gp491_500_json("get_tower_authorized_proof_safety_blocker_board")
+
+@app.route("/vault/tower-authorized-proof-protocol-readiness-checkpoint.json")
+def vault_tower_authorized_proof_protocol_readiness_checkpoint_json():
+    return _vault_gp491_500_json("get_tower_authorized_proof_protocol_readiness_checkpoint")
+
+@app.route("/vault/gp491-status.json")
+def vault_gp491_status_json():
+    return _vault_gp491_500_json("get_gp491_status")
+
+@app.route("/vault/gp492-status.json")
+def vault_gp492_status_json():
+    return _vault_gp491_500_json("get_gp492_status")
+
+@app.route("/vault/gp493-status.json")
+def vault_gp493_status_json():
+    return _vault_gp491_500_json("get_gp493_status")
+
+@app.route("/vault/gp494-status.json")
+def vault_gp494_status_json():
+    return _vault_gp491_500_json("get_gp494_status")
+
+@app.route("/vault/gp495-status.json")
+def vault_gp495_status_json():
+    return _vault_gp491_500_json("get_gp495_status")
+
+@app.route("/vault/gp496-status.json")
+def vault_gp496_status_json():
+    return _vault_gp491_500_json("get_gp496_status")
+
+@app.route("/vault/gp497-status.json")
+def vault_gp497_status_json():
+    return _vault_gp491_500_json("get_gp497_status")
+
+@app.route("/vault/gp498-status.json")
+def vault_gp498_status_json():
+    return _vault_gp491_500_json("get_gp498_status")
+
+@app.route("/vault/gp499-status.json")
+def vault_gp499_status_json():
+    return _vault_gp491_500_json("get_gp499_status")
+
+@app.route("/vault/gp500-status.json")
+def vault_gp500_status_json():
+    return _vault_gp491_500_json("get_gp500_status")
+
+# VAULT GP491-GP500 TOWER AUTHORIZED PROOF PROTOCOL LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
