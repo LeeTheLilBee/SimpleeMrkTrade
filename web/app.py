@@ -19411,6 +19411,99 @@ def vault_gp510_status_json():
 
 # VAULT GP501-GP510 TOWER PROTOCOL RECEIPT CLOSEOUT LAYER ROUTES END
 
+# VAULT GP511-GP520 RECOVERY SAFE REBUILD EXECUTION PREP LAYER ROUTES START
+
+def _vault_gp511_520_json(function_name):
+    from flask import jsonify
+    from vault import recovery_safe_rebuild_execution_prep_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/recovery-safe-rebuild-execution-prep-layer.json")
+def vault_recovery_safe_rebuild_execution_prep_layer_json():
+    return _vault_gp511_520_json("get_recovery_safe_rebuild_execution_prep_home")
+
+@app.route("/vault/recovery-safe-rebuild-execution-prep-shell.json")
+def vault_recovery_safe_rebuild_execution_prep_shell_json():
+    return _vault_gp511_520_json("get_recovery_safe_rebuild_execution_prep_shell")
+
+@app.route("/vault/rebuild-eligibility-from-receipt-closeout-board.json")
+def vault_rebuild_eligibility_from_receipt_closeout_board_json():
+    return _vault_gp511_520_json("get_rebuild_eligibility_from_receipt_closeout_board")
+
+@app.route("/vault/rebuild-source-proof-verification-board.json")
+def vault_rebuild_source_proof_verification_board_json():
+    return _vault_gp511_520_json("get_rebuild_source_proof_verification_board")
+
+@app.route("/vault/rebuild-execution-plan-draft-board.json")
+def vault_rebuild_execution_plan_draft_board_json():
+    return _vault_gp511_520_json("get_rebuild_execution_plan_draft_board")
+
+@app.route("/vault/dry-run-rebuild-simulation-board.json")
+def vault_dry_run_rebuild_simulation_board_json():
+    return _vault_gp511_520_json("get_dry_run_rebuild_simulation_board")
+
+@app.route("/vault/rebuild-mutation-lock-board.json")
+def vault_rebuild_mutation_lock_board_json():
+    return _vault_gp511_520_json("get_rebuild_mutation_lock_board")
+
+@app.route("/vault/tower-recovery-approval-requirement-board.json")
+def vault_tower_recovery_approval_requirement_board_json():
+    return _vault_gp511_520_json("get_tower_recovery_approval_requirement_board")
+
+@app.route("/vault/rebuild-execution-receipt-draft-ledger.json")
+def vault_rebuild_execution_receipt_draft_ledger_json():
+    return _vault_gp511_520_json("get_rebuild_execution_receipt_draft_ledger")
+
+@app.route("/vault/recovery-safe-rebuild-safety-blocker-board.json")
+def vault_recovery_safe_rebuild_safety_blocker_board_json():
+    return _vault_gp511_520_json("get_recovery_safe_rebuild_safety_blocker_board")
+
+@app.route("/vault/recovery-safe-rebuild-execution-prep-readiness-checkpoint.json")
+def vault_recovery_safe_rebuild_execution_prep_readiness_checkpoint_json():
+    return _vault_gp511_520_json("get_recovery_safe_rebuild_execution_prep_readiness_checkpoint")
+
+@app.route("/vault/gp511-status.json")
+def vault_gp511_status_json():
+    return _vault_gp511_520_json("get_gp511_status")
+
+@app.route("/vault/gp512-status.json")
+def vault_gp512_status_json():
+    return _vault_gp511_520_json("get_gp512_status")
+
+@app.route("/vault/gp513-status.json")
+def vault_gp513_status_json():
+    return _vault_gp511_520_json("get_gp513_status")
+
+@app.route("/vault/gp514-status.json")
+def vault_gp514_status_json():
+    return _vault_gp511_520_json("get_gp514_status")
+
+@app.route("/vault/gp515-status.json")
+def vault_gp515_status_json():
+    return _vault_gp511_520_json("get_gp515_status")
+
+@app.route("/vault/gp516-status.json")
+def vault_gp516_status_json():
+    return _vault_gp511_520_json("get_gp516_status")
+
+@app.route("/vault/gp517-status.json")
+def vault_gp517_status_json():
+    return _vault_gp511_520_json("get_gp517_status")
+
+@app.route("/vault/gp518-status.json")
+def vault_gp518_status_json():
+    return _vault_gp511_520_json("get_gp518_status")
+
+@app.route("/vault/gp519-status.json")
+def vault_gp519_status_json():
+    return _vault_gp511_520_json("get_gp519_status")
+
+@app.route("/vault/gp520-status.json")
+def vault_gp520_status_json():
+    return _vault_gp511_520_json("get_gp520_status")
+
+# VAULT GP511-GP520 RECOVERY SAFE REBUILD EXECUTION PREP LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
