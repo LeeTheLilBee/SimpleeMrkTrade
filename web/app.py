@@ -19318,6 +19318,99 @@ def vault_gp500_status_json():
 
 # VAULT GP491-GP500 TOWER AUTHORIZED PROOF PROTOCOL LAYER ROUTES END
 
+# VAULT GP501-GP510 TOWER PROTOCOL RECEIPT CLOSEOUT LAYER ROUTES START
+
+def _vault_gp501_510_json(function_name):
+    from flask import jsonify
+    from vault import tower_protocol_receipt_closeout_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+@app.route("/vault/tower-protocol-receipt-closeout-layer.json")
+def vault_tower_protocol_receipt_closeout_layer_json():
+    return _vault_gp501_510_json("get_tower_protocol_receipt_closeout_home")
+
+@app.route("/vault/tower-protocol-receipt-closeout-shell.json")
+def vault_tower_protocol_receipt_closeout_shell_json():
+    return _vault_gp501_510_json("get_tower_protocol_receipt_closeout_shell")
+
+@app.route("/vault/request-to-protocol-receipt-chain-board.json")
+def vault_request_to_protocol_receipt_chain_board_json():
+    return _vault_gp501_510_json("get_request_to_protocol_receipt_chain_board")
+
+@app.route("/vault/view-download-proof-receipt-linker.json")
+def vault_view_download_proof_receipt_linker_json():
+    return _vault_gp501_510_json("get_view_download_proof_receipt_linker")
+
+@app.route("/vault/tower-final-protocol-receipt-builder.json")
+def vault_tower_final_protocol_receipt_builder_json():
+    return _vault_gp501_510_json("get_tower_final_protocol_receipt_builder")
+
+@app.route("/vault/vault-service-receipt-verification-board.json")
+def vault_service_receipt_verification_board_json():
+    return _vault_gp501_510_json("get_vault_service_receipt_verification_board")
+
+@app.route("/vault/teller-workflow-safe-return-receipt-board.json")
+def vault_teller_workflow_safe_return_receipt_board_json():
+    return _vault_gp501_510_json("get_teller_workflow_safe_return_receipt_board")
+
+@app.route("/vault/protocol-denial-redaction-closeout-board.json")
+def vault_protocol_denial_redaction_closeout_board_json():
+    return _vault_gp501_510_json("get_protocol_denial_redaction_closeout_board")
+
+@app.route("/vault/receipt-chain-integrity-hash-board.json")
+def vault_receipt_chain_integrity_hash_board_json():
+    return _vault_gp501_510_json("get_receipt_chain_integrity_hash_board")
+
+@app.route("/vault/tower-protocol-receipt-closeout-safety-blocker-board.json")
+def vault_tower_protocol_receipt_closeout_safety_blocker_board_json():
+    return _vault_gp501_510_json("get_tower_protocol_receipt_closeout_safety_blocker_board")
+
+@app.route("/vault/tower-protocol-receipt-closeout-readiness-checkpoint.json")
+def vault_tower_protocol_receipt_closeout_readiness_checkpoint_json():
+    return _vault_gp501_510_json("get_tower_protocol_receipt_closeout_readiness_checkpoint")
+
+@app.route("/vault/gp501-status.json")
+def vault_gp501_status_json():
+    return _vault_gp501_510_json("get_gp501_status")
+
+@app.route("/vault/gp502-status.json")
+def vault_gp502_status_json():
+    return _vault_gp501_510_json("get_gp502_status")
+
+@app.route("/vault/gp503-status.json")
+def vault_gp503_status_json():
+    return _vault_gp501_510_json("get_gp503_status")
+
+@app.route("/vault/gp504-status.json")
+def vault_gp504_status_json():
+    return _vault_gp501_510_json("get_gp504_status")
+
+@app.route("/vault/gp505-status.json")
+def vault_gp505_status_json():
+    return _vault_gp501_510_json("get_gp505_status")
+
+@app.route("/vault/gp506-status.json")
+def vault_gp506_status_json():
+    return _vault_gp501_510_json("get_gp506_status")
+
+@app.route("/vault/gp507-status.json")
+def vault_gp507_status_json():
+    return _vault_gp501_510_json("get_gp507_status")
+
+@app.route("/vault/gp508-status.json")
+def vault_gp508_status_json():
+    return _vault_gp501_510_json("get_gp508_status")
+
+@app.route("/vault/gp509-status.json")
+def vault_gp509_status_json():
+    return _vault_gp501_510_json("get_gp509_status")
+
+@app.route("/vault/gp510-status.json")
+def vault_gp510_status_json():
+    return _vault_gp501_510_json("get_gp510_status")
+
+# VAULT GP501-GP510 TOWER PROTOCOL RECEIPT CLOSEOUT LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
