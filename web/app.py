@@ -19733,6 +19733,145 @@ def vault_gp540_status_json():
 
 # VAULT GP531-GP540 COLD COPY RESTORE DRILL LAYER ROUTES END
 
+# VAULT GP541-GP550 TOWER RECOVERY EXECUTION AUTHORIZATION GATE ROUTES START
+
+def _vault_gp541_550_json(function_name):
+    from flask import jsonify
+    from vault import (
+        tower_recovery_execution_authorization_gate_layer_service
+        as service
+    )
+    return jsonify(getattr(service, function_name)())
+
+
+@app.route("/vault/tower-recovery-execution-authorization-gate-layer.json")
+def vault_gp541_550_layer_json():
+    return _vault_gp541_550_json(
+        "get_tower_recovery_execution_authorization_gate_home"
+    )
+
+
+@app.route("/vault/tower-recovery-execution-authorization-gate-shell.json")
+def vault_gp541_shell_json():
+    return _vault_gp541_550_json(
+        "get_tower_recovery_execution_authorization_gate_shell"
+    )
+
+
+@app.route("/vault/recovery-authorization-intake-board.json")
+def vault_gp542_intake_json():
+    return _vault_gp541_550_json(
+        "get_recovery_authorization_intake_board"
+    )
+
+
+@app.route("/vault/tower-recovery-authority-gate.json")
+def vault_gp543_authority_json():
+    return _vault_gp541_550_json(
+        "get_tower_recovery_authority_gate"
+    )
+
+
+@app.route("/vault/owner-admin-step-up-dual-approval-gate.json")
+def vault_gp544_approval_json():
+    return _vault_gp541_550_json(
+        "get_owner_admin_step_up_dual_approval_gate"
+    )
+
+
+@app.route("/vault/recovery-evidence-receipt-prerequisite-board.json")
+def vault_gp545_prerequisite_json():
+    return _vault_gp541_550_json(
+        "get_recovery_evidence_receipt_prerequisite_board"
+    )
+
+
+@app.route("/vault/recovery-execution-scope-allowlist-board.json")
+def vault_gp546_scope_json():
+    return _vault_gp541_550_json(
+        "get_recovery_execution_scope_allowlist_board"
+    )
+
+
+@app.route("/vault/one-time-recovery-authorization-draft-board.json")
+def vault_gp547_draft_json():
+    return _vault_gp541_550_json(
+        "get_one_time_recovery_authorization_draft_board"
+    )
+
+
+@app.route("/vault/tower-recovery-authorization-receipt-draft-ledger.json")
+def vault_gp548_receipt_json():
+    return _vault_gp541_550_json(
+        "get_tower_recovery_authorization_receipt_draft_ledger"
+    )
+
+
+@app.route("/vault/recovery-authorization-safety-blocker-board.json")
+def vault_gp549_blocker_json():
+    return _vault_gp541_550_json(
+        "get_recovery_authorization_safety_blocker_board"
+    )
+
+
+@app.route("/vault/recovery-execution-authorization-gate-readiness-checkpoint.json")
+def vault_gp550_readiness_json():
+    return _vault_gp541_550_json(
+        "get_recovery_execution_authorization_gate_readiness_checkpoint"
+    )
+
+
+@app.route("/vault/gp541-status.json")
+def vault_gp541_status_json():
+    return _vault_gp541_550_json("get_gp541_status")
+
+
+@app.route("/vault/gp542-status.json")
+def vault_gp542_status_json():
+    return _vault_gp541_550_json("get_gp542_status")
+
+
+@app.route("/vault/gp543-status.json")
+def vault_gp543_status_json():
+    return _vault_gp541_550_json("get_gp543_status")
+
+
+@app.route("/vault/gp544-status.json")
+def vault_gp544_status_json():
+    return _vault_gp541_550_json("get_gp544_status")
+
+
+@app.route("/vault/gp545-status.json")
+def vault_gp545_status_json():
+    return _vault_gp541_550_json("get_gp545_status")
+
+
+@app.route("/vault/gp546-status.json")
+def vault_gp546_status_json():
+    return _vault_gp541_550_json("get_gp546_status")
+
+
+@app.route("/vault/gp547-status.json")
+def vault_gp547_status_json():
+    return _vault_gp541_550_json("get_gp547_status")
+
+
+@app.route("/vault/gp548-status.json")
+def vault_gp548_status_json():
+    return _vault_gp541_550_json("get_gp548_status")
+
+
+@app.route("/vault/gp549-status.json")
+def vault_gp549_status_json():
+    return _vault_gp541_550_json("get_gp549_status")
+
+
+@app.route("/vault/gp550-status.json")
+def vault_gp550_status_json():
+    return _vault_gp541_550_json("get_gp550_status")
+
+# VAULT GP541-GP550 TOWER RECOVERY EXECUTION AUTHORIZATION GATE ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
