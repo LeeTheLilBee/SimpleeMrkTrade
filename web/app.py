@@ -19872,6 +19872,145 @@ def vault_gp550_status_json():
 
 # VAULT GP541-GP550 TOWER RECOVERY EXECUTION AUTHORIZATION GATE ROUTES END
 
+# VAULT GP551-GP560 CONTROLLED RECOVERY EXECUTION STAGING ROUTES START
+
+def _vault_gp551_560_json(function_name):
+    from flask import jsonify
+    from vault import (
+        controlled_recovery_execution_staging_layer_service
+        as service
+    )
+    return jsonify(getattr(service, function_name)())
+
+
+@app.route("/vault/controlled-recovery-execution-staging-layer.json")
+def vault_gp551_560_layer_json():
+    return _vault_gp551_560_json(
+        "get_controlled_recovery_execution_staging_home"
+    )
+
+
+@app.route("/vault/controlled-recovery-execution-staging-shell.json")
+def vault_gp551_shell_json():
+    return _vault_gp551_560_json(
+        "get_controlled_recovery_execution_staging_shell"
+    )
+
+
+@app.route("/vault/authorized-recovery-staging-intake-board.json")
+def vault_gp552_intake_json():
+    return _vault_gp551_560_json(
+        "get_authorized_recovery_staging_intake_board"
+    )
+
+
+@app.route("/vault/isolated-recovery-staging-environment-board.json")
+def vault_gp553_environment_json():
+    return _vault_gp551_560_json(
+        "get_isolated_recovery_staging_environment_board"
+    )
+
+
+@app.route("/vault/recovery-action-plan-draft-board.json")
+def vault_gp554_plan_json():
+    return _vault_gp551_560_json(
+        "get_recovery_action_plan_draft_board"
+    )
+
+
+@app.route("/vault/recovery-write-simulation-queue.json")
+def vault_gp555_simulation_json():
+    return _vault_gp551_560_json(
+        "get_recovery_write_simulation_queue"
+    )
+
+
+@app.route("/vault/recovery-mutation-diff-preview-board.json")
+def vault_gp556_diff_json():
+    return _vault_gp551_560_json(
+        "get_recovery_mutation_diff_preview_board"
+    )
+
+
+@app.route("/vault/recovery-commit-point-lock-board.json")
+def vault_gp557_commit_lock_json():
+    return _vault_gp551_560_json(
+        "get_recovery_commit_point_lock_board"
+    )
+
+
+@app.route("/vault/tower-recovery-staging-receipt-draft-ledger.json")
+def vault_gp558_receipt_json():
+    return _vault_gp551_560_json(
+        "get_tower_recovery_staging_receipt_draft_ledger"
+    )
+
+
+@app.route("/vault/controlled-recovery-staging-safety-blocker-board.json")
+def vault_gp559_blocker_json():
+    return _vault_gp551_560_json(
+        "get_controlled_recovery_staging_safety_blocker_board"
+    )
+
+
+@app.route("/vault/controlled-recovery-execution-staging-readiness.json")
+def vault_gp560_readiness_json():
+    return _vault_gp551_560_json(
+        "get_controlled_recovery_execution_staging_readiness_checkpoint"
+    )
+
+
+@app.route("/vault/gp551-status.json")
+def vault_gp551_status_json():
+    return _vault_gp551_560_json("get_gp551_status")
+
+
+@app.route("/vault/gp552-status.json")
+def vault_gp552_status_json():
+    return _vault_gp551_560_json("get_gp552_status")
+
+
+@app.route("/vault/gp553-status.json")
+def vault_gp553_status_json():
+    return _vault_gp551_560_json("get_gp553_status")
+
+
+@app.route("/vault/gp554-status.json")
+def vault_gp554_status_json():
+    return _vault_gp551_560_json("get_gp554_status")
+
+
+@app.route("/vault/gp555-status.json")
+def vault_gp555_status_json():
+    return _vault_gp551_560_json("get_gp555_status")
+
+
+@app.route("/vault/gp556-status.json")
+def vault_gp556_status_json():
+    return _vault_gp551_560_json("get_gp556_status")
+
+
+@app.route("/vault/gp557-status.json")
+def vault_gp557_status_json():
+    return _vault_gp551_560_json("get_gp557_status")
+
+
+@app.route("/vault/gp558-status.json")
+def vault_gp558_status_json():
+    return _vault_gp551_560_json("get_gp558_status")
+
+
+@app.route("/vault/gp559-status.json")
+def vault_gp559_status_json():
+    return _vault_gp551_560_json("get_gp559_status")
+
+
+@app.route("/vault/gp560-status.json")
+def vault_gp560_status_json():
+    return _vault_gp551_560_json("get_gp560_status")
+
+# VAULT GP551-GP560 CONTROLLED RECOVERY EXECUTION STAGING ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
