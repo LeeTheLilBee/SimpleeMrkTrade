@@ -43942,3 +43942,15 @@ def tower_pack_1757_beta_operations_readiness_json():
 
     return jsonify(build_tower_beta_operations_readiness_closeout_batch_close_readiness_preview())
 
+# --- SEARCHABLE LABEL: TOWER_PACK_1758_BETA_OPERATIONS_COMMAND_READINESS_INDEX_ROUTE ---
+@app.route("/tower/beta-operations-command-readiness-index-v1758.json", methods=["GET"])
+def tower_pack_1758_beta_operations_command_readiness_index_json():
+    from flask import jsonify
+    from tower.tower_beta_operations_command_readiness_index_v1758 import (
+        build_tower_beta_operations_command_readiness_index_preview,
+    )
+
+    return jsonify(
+        build_tower_beta_operations_command_readiness_index_preview()
+    )
+
