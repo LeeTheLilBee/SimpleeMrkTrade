@@ -19597,6 +19597,142 @@ def vault_gp530_status_json():
 
 # VAULT GP521-GP530 BACKUP EXPORT COLD COPY LOCK LAYER ROUTES END
 
+# VAULT GP531-GP540 COLD COPY RESTORE DRILL LAYER ROUTES START
+
+def _vault_gp531_540_json(function_name):
+    from flask import jsonify
+    from vault import cold_copy_restore_drill_layer_service as service
+    return jsonify(getattr(service, function_name)())
+
+
+@app.route("/vault/cold-copy-restore-drill-layer.json")
+def vault_cold_copy_restore_drill_layer_json():
+    return _vault_gp531_540_json(
+        "get_cold_copy_restore_drill_home"
+    )
+
+
+@app.route("/vault/cold-copy-restore-drill-shell.json")
+def vault_cold_copy_restore_drill_shell_json():
+    return _vault_gp531_540_json(
+        "get_cold_copy_restore_drill_shell"
+    )
+
+
+@app.route("/vault/restore-drill-eligibility-board.json")
+def vault_restore_drill_eligibility_board_json():
+    return _vault_gp531_540_json(
+        "get_restore_drill_eligibility_board"
+    )
+
+
+@app.route("/vault/cold-copy-manifest-verification-board.json")
+def vault_cold_copy_manifest_verification_board_json():
+    return _vault_gp531_540_json(
+        "get_cold_copy_manifest_verification_board"
+    )
+
+
+@app.route("/vault/restore-target-sandbox-draft-board.json")
+def vault_restore_target_sandbox_draft_board_json():
+    return _vault_gp531_540_json(
+        "get_restore_target_sandbox_draft_board"
+    )
+
+
+@app.route("/vault/restore-reconstruction-dry-run-board.json")
+def vault_restore_reconstruction_dry_run_board_json():
+    return _vault_gp531_540_json(
+        "get_restore_reconstruction_dry_run_board"
+    )
+
+
+@app.route("/vault/restore-integrity-comparison-board.json")
+def vault_restore_integrity_comparison_board_json():
+    return _vault_gp531_540_json(
+        "get_restore_integrity_comparison_board"
+    )
+
+
+@app.route("/vault/restore-rollback-abort-guard-board.json")
+def vault_restore_rollback_abort_guard_board_json():
+    return _vault_gp531_540_json(
+        "get_restore_rollback_abort_guard_board"
+    )
+
+
+@app.route("/vault/tower-restore-drill-receipt-draft-ledger.json")
+def vault_tower_restore_drill_receipt_draft_ledger_json():
+    return _vault_gp531_540_json(
+        "get_tower_restore_drill_receipt_draft_ledger"
+    )
+
+
+@app.route("/vault/cold-copy-restore-drill-safety-blocker-board.json")
+def vault_cold_copy_restore_drill_safety_blocker_board_json():
+    return _vault_gp531_540_json(
+        "get_cold_copy_restore_drill_safety_blocker_board"
+    )
+
+
+@app.route("/vault/cold-copy-restore-drill-readiness-checkpoint.json")
+def vault_cold_copy_restore_drill_readiness_checkpoint_json():
+    return _vault_gp531_540_json(
+        "get_cold_copy_restore_drill_readiness_checkpoint"
+    )
+
+
+@app.route("/vault/gp531-status.json")
+def vault_gp531_status_json():
+    return _vault_gp531_540_json("get_gp531_status")
+
+
+@app.route("/vault/gp532-status.json")
+def vault_gp532_status_json():
+    return _vault_gp531_540_json("get_gp532_status")
+
+
+@app.route("/vault/gp533-status.json")
+def vault_gp533_status_json():
+    return _vault_gp531_540_json("get_gp533_status")
+
+
+@app.route("/vault/gp534-status.json")
+def vault_gp534_status_json():
+    return _vault_gp531_540_json("get_gp534_status")
+
+
+@app.route("/vault/gp535-status.json")
+def vault_gp535_status_json():
+    return _vault_gp531_540_json("get_gp535_status")
+
+
+@app.route("/vault/gp536-status.json")
+def vault_gp536_status_json():
+    return _vault_gp531_540_json("get_gp536_status")
+
+
+@app.route("/vault/gp537-status.json")
+def vault_gp537_status_json():
+    return _vault_gp531_540_json("get_gp537_status")
+
+
+@app.route("/vault/gp538-status.json")
+def vault_gp538_status_json():
+    return _vault_gp531_540_json("get_gp538_status")
+
+
+@app.route("/vault/gp539-status.json")
+def vault_gp539_status_json():
+    return _vault_gp531_540_json("get_gp539_status")
+
+
+@app.route("/vault/gp540-status.json")
+def vault_gp540_status_json():
+    return _vault_gp531_540_json("get_gp540_status")
+
+# VAULT GP531-GP540 COLD COPY RESTORE DRILL LAYER ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
