@@ -20150,6 +20150,145 @@ def vault_gp570_status_json():
 
 # VAULT GP561-GP570 RECOVERY COMMIT AUTHORIZATION CLOSEOUT ROUTES END
 
+# VAULT GP571-GP580 CONTROLLED RECOVERY COMMIT EXECUTION DRY-RUN ROUTES START
+
+def _vault_gp571_580_json(function_name):
+    from flask import jsonify
+    from vault import (
+        controlled_recovery_commit_execution_dry_run_layer_service
+        as service
+    )
+    return jsonify(getattr(service, function_name)())
+
+
+@app.route("/vault/controlled-recovery-commit-execution-dry-run-layer.json")
+def vault_gp571_580_layer_json():
+    return _vault_gp571_580_json(
+        "get_controlled_recovery_commit_execution_dry_run_home"
+    )
+
+
+@app.route("/vault/controlled-recovery-commit-execution-dry-run-shell.json")
+def vault_gp571_shell_json():
+    return _vault_gp571_580_json(
+        "get_controlled_recovery_commit_execution_dry_run_shell"
+    )
+
+
+@app.route("/vault/recovery-commit-closeout-intake-board.json")
+def vault_gp572_intake_json():
+    return _vault_gp571_580_json(
+        "get_recovery_commit_closeout_intake_board"
+    )
+
+
+@app.route("/vault/recovery-commit-preconditions-verification-board.json")
+def vault_gp573_preconditions_json():
+    return _vault_gp571_580_json(
+        "get_recovery_commit_preconditions_verification_board"
+    )
+
+
+@app.route("/vault/isolated-commit-execution-sandbox-board.json")
+def vault_gp574_sandbox_json():
+    return _vault_gp571_580_json(
+        "get_isolated_commit_execution_sandbox_board"
+    )
+
+
+@app.route("/vault/recovery-commit-command-simulation-queue.json")
+def vault_gp575_command_json():
+    return _vault_gp571_580_json(
+        "get_recovery_commit_command_simulation_queue"
+    )
+
+
+@app.route("/vault/recovery-write-barrier-rollback-simulation-board.json")
+def vault_gp576_barrier_json():
+    return _vault_gp571_580_json(
+        "get_recovery_write_barrier_rollback_simulation_board"
+    )
+
+
+@app.route("/vault/commit-outcome-diff-integrity-preview-board.json")
+def vault_gp577_outcome_json():
+    return _vault_gp571_580_json(
+        "get_commit_outcome_diff_integrity_preview_board"
+    )
+
+
+@app.route("/vault/tower-recovery-commit-dry-run-receipt-draft-ledger.json")
+def vault_gp578_receipt_json():
+    return _vault_gp571_580_json(
+        "get_tower_recovery_commit_dry_run_receipt_draft_ledger"
+    )
+
+
+@app.route("/vault/controlled-commit-dry-run-safety-blocker-board.json")
+def vault_gp579_blocker_json():
+    return _vault_gp571_580_json(
+        "get_controlled_commit_dry_run_safety_blocker_board"
+    )
+
+
+@app.route("/vault/controlled-recovery-commit-dry-run-readiness.json")
+def vault_gp580_readiness_json():
+    return _vault_gp571_580_json(
+        "get_controlled_recovery_commit_dry_run_readiness_checkpoint"
+    )
+
+
+@app.route("/vault/gp571-status.json")
+def vault_gp571_status_json():
+    return _vault_gp571_580_json("get_gp571_status")
+
+
+@app.route("/vault/gp572-status.json")
+def vault_gp572_status_json():
+    return _vault_gp571_580_json("get_gp572_status")
+
+
+@app.route("/vault/gp573-status.json")
+def vault_gp573_status_json():
+    return _vault_gp571_580_json("get_gp573_status")
+
+
+@app.route("/vault/gp574-status.json")
+def vault_gp574_status_json():
+    return _vault_gp571_580_json("get_gp574_status")
+
+
+@app.route("/vault/gp575-status.json")
+def vault_gp575_status_json():
+    return _vault_gp571_580_json("get_gp575_status")
+
+
+@app.route("/vault/gp576-status.json")
+def vault_gp576_status_json():
+    return _vault_gp571_580_json("get_gp576_status")
+
+
+@app.route("/vault/gp577-status.json")
+def vault_gp577_status_json():
+    return _vault_gp571_580_json("get_gp577_status")
+
+
+@app.route("/vault/gp578-status.json")
+def vault_gp578_status_json():
+    return _vault_gp571_580_json("get_gp578_status")
+
+
+@app.route("/vault/gp579-status.json")
+def vault_gp579_status_json():
+    return _vault_gp571_580_json("get_gp579_status")
+
+
+@app.route("/vault/gp580-status.json")
+def vault_gp580_status_json():
+    return _vault_gp571_580_json("get_gp580_status")
+
+# VAULT GP571-GP580 CONTROLLED RECOVERY COMMIT EXECUTION DRY-RUN ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
