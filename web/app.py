@@ -20011,6 +20011,145 @@ def vault_gp560_status_json():
 
 # VAULT GP551-GP560 CONTROLLED RECOVERY EXECUTION STAGING ROUTES END
 
+# VAULT GP561-GP570 RECOVERY COMMIT AUTHORIZATION CLOSEOUT ROUTES START
+
+def _vault_gp561_570_json(function_name):
+    from flask import jsonify
+    from vault import (
+        recovery_commit_authorization_closeout_layer_service
+        as service
+    )
+    return jsonify(getattr(service, function_name)())
+
+
+@app.route("/vault/recovery-commit-authorization-closeout-layer.json")
+def vault_gp561_570_layer_json():
+    return _vault_gp561_570_json(
+        "get_recovery_commit_authorization_closeout_home"
+    )
+
+
+@app.route("/vault/recovery-commit-authorization-closeout-shell.json")
+def vault_gp561_shell_json():
+    return _vault_gp561_570_json(
+        "get_recovery_commit_authorization_closeout_shell"
+    )
+
+
+@app.route("/vault/recovery-staging-evidence-closeout-intake-board.json")
+def vault_gp562_intake_json():
+    return _vault_gp561_570_json(
+        "get_recovery_staging_evidence_closeout_intake_board"
+    )
+
+
+@app.route("/vault/tower-recovery-commit-authority-reconfirmation-board.json")
+def vault_gp563_authority_json():
+    return _vault_gp561_570_json(
+        "get_tower_recovery_commit_authority_reconfirmation_board"
+    )
+
+
+@app.route("/vault/owner-admin-step-up-dual-receipt-closeout-board.json")
+def vault_gp564_approval_json():
+    return _vault_gp561_570_json(
+        "get_owner_admin_step_up_dual_receipt_closeout_board"
+    )
+
+
+@app.route("/vault/recovery-commit-scope-freeze-board.json")
+def vault_gp565_scope_json():
+    return _vault_gp561_570_json(
+        "get_recovery_commit_scope_freeze_board"
+    )
+
+
+@app.route("/vault/recovery-commit-window-draft-board.json")
+def vault_gp566_window_json():
+    return _vault_gp561_570_json(
+        "get_recovery_commit_window_draft_board"
+    )
+
+
+@app.route("/vault/one-time-commit-authorization-closeout-draft-board.json")
+def vault_gp567_draft_json():
+    return _vault_gp561_570_json(
+        "get_one_time_commit_authorization_closeout_draft_board"
+    )
+
+
+@app.route("/vault/tower-recovery-commit-authorization-receipt-draft-ledger.json")
+def vault_gp568_receipt_json():
+    return _vault_gp561_570_json(
+        "get_tower_recovery_commit_authorization_receipt_draft_ledger"
+    )
+
+
+@app.route("/vault/recovery-commit-authorization-closeout-safety-blocker-board.json")
+def vault_gp569_blocker_json():
+    return _vault_gp561_570_json(
+        "get_recovery_commit_authorization_closeout_safety_blocker_board"
+    )
+
+
+@app.route("/vault/recovery-commit-authorization-closeout-readiness.json")
+def vault_gp570_readiness_json():
+    return _vault_gp561_570_json(
+        "get_recovery_commit_authorization_closeout_readiness_checkpoint"
+    )
+
+
+@app.route("/vault/gp561-status.json")
+def vault_gp561_status_json():
+    return _vault_gp561_570_json("get_gp561_status")
+
+
+@app.route("/vault/gp562-status.json")
+def vault_gp562_status_json():
+    return _vault_gp561_570_json("get_gp562_status")
+
+
+@app.route("/vault/gp563-status.json")
+def vault_gp563_status_json():
+    return _vault_gp561_570_json("get_gp563_status")
+
+
+@app.route("/vault/gp564-status.json")
+def vault_gp564_status_json():
+    return _vault_gp561_570_json("get_gp564_status")
+
+
+@app.route("/vault/gp565-status.json")
+def vault_gp565_status_json():
+    return _vault_gp561_570_json("get_gp565_status")
+
+
+@app.route("/vault/gp566-status.json")
+def vault_gp566_status_json():
+    return _vault_gp561_570_json("get_gp566_status")
+
+
+@app.route("/vault/gp567-status.json")
+def vault_gp567_status_json():
+    return _vault_gp561_570_json("get_gp567_status")
+
+
+@app.route("/vault/gp568-status.json")
+def vault_gp568_status_json():
+    return _vault_gp561_570_json("get_gp568_status")
+
+
+@app.route("/vault/gp569-status.json")
+def vault_gp569_status_json():
+    return _vault_gp561_570_json("get_gp569_status")
+
+
+@app.route("/vault/gp570-status.json")
+def vault_gp570_status_json():
+    return _vault_gp561_570_json("get_gp570_status")
+
+# VAULT GP561-GP570 RECOVERY COMMIT AUTHORIZATION CLOSEOUT ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
