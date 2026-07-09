@@ -1,0 +1,109 @@
+"""
+SEARCHABLE LABEL:
+TOWER_PACK_1730_BETA_OPERATIONS_READINESS_TESTS
+"""
+
+import importlib
+
+
+def test_pack_1730_ready():
+    mod = importlib.import_module("tower.tower_tower_beta_operations_readiness_blocker_review_operations_matrix_v1730")
+    payload = mod.build_tower_beta_operations_readiness_blocker_review_operations_matrix_preview()
+
+    assert payload["pack"] == "1730"
+    assert payload["status"] == "ready"
+    assert payload["readiness"] == 100
+    assert payload["endpoint"] == "/tower/tower-beta-operations-readiness-blocker-review-operations-matrix-v1730.json"
+    assert payload["source_pack"] == "1729"
+    assert payload["current_packs"] == "1708-1757"
+    assert payload["save_block"] == "1707-1757"
+    assert payload["next_pack"] == "1731"
+    assert payload["cached"] is True
+    assert payload["non_recursive"] is True
+    assert payload["recursion_safe"] is True
+    assert payload["preview_only"] is True
+    assert payload["contract_only"] is True
+    assert payload["source_status"] == "ready"
+    assert payload["source_readiness"] == 100
+    assert payload["source_safe_to_continue"] is True
+    assert payload["safe_to_continue_to_pack_1731"] is True
+
+
+def test_pack_1730_protocol_authority_and_locks():
+    mod = importlib.import_module("tower.tower_tower_beta_operations_readiness_blocker_review_operations_matrix_v1730")
+    payload = mod.build_tower_beta_operations_readiness_blocker_review_operations_matrix_preview()
+    summary = payload["tower_beta_operations_readiness_blocker_review_operations_matrix_summary"]
+
+    assert summary["source_ready"] is True
+    assert summary["row_count"] >= 130
+    assert summary["check_count"] >= 35
+    assert summary["operations_category_count"] >= 30
+    assert summary["operations_item_count"] >= 40
+    assert summary["blocked_real_action_count"] >= 60
+    assert summary["tower_beta_operations_readiness_blocker_review_operations_matrix_ready"] is True
+
+    assert summary["tower_is_face"] is True
+    assert summary["teller_is_workflow"] is True
+    assert summary["vault_is_sealed_memory"] is True
+
+    assert summary["tower_is_only_vault_protocol_authority"] is True
+    assert summary["teller_to_vault_direct_calls_allowed"] is False
+    assert summary["user_to_vault_direct_calls_allowed"] is False
+    assert summary["vault_answers_tower_only"] is True
+
+    assert summary["tower_controls_identity"] is True
+    assert summary["tower_controls_permissions"] is True
+    assert summary["tower_controls_clearance"] is True
+    assert summary["tower_controls_step_up"] is True
+    assert summary["tower_controls_owner_admin_approval"] is True
+    assert summary["tower_controls_output_type"] is True
+    assert summary["tower_controls_redaction"] is True
+    assert summary["tower_controls_request_receipts"] is True
+
+    assert summary["real_beta_operations_activation_enabled"] is False
+    assert summary["real_vault_request_enabled"] is False
+    assert summary["real_view_execution_enabled"] is False
+    assert summary["real_download_execution_enabled"] is False
+    assert summary["real_proof_execution_enabled"] is False
+    assert summary["real_rebuild_status_execution_enabled"] is False
+
+    assert summary["raw_file_bytes_json_enabled"] is False
+    assert summary["raw_file_url_enabled"] is False
+    assert summary["raw_download_token_enabled"] is False
+    assert summary["public_vault_link_enabled"] is False
+    assert summary["shared_folder_browsing_enabled"] is False
+    assert summary["external_collaborator_browsing_enabled"] is False
+
+    assert summary["pivot_to_initial_setup"] is False
+    assert summary["pivot_to_access_home"] is False
+    assert summary["pivot_to_waitlist"] is False
+    assert summary["pivot_to_admin_dashboard"] is False
+    assert summary["save_push_performed"] is False
+
+
+def test_pack_1730_bridge_prep_copy():
+    mod = importlib.import_module("tower.tower_tower_beta_operations_readiness_blocker_review_operations_matrix_v1730")
+
+    bridge = mod.build_pack_1730_status_bridge()
+    prep = mod.prepare_pack_1731_tower_beta_operations_readiness_blocker_review_detail_drawer()
+
+    assert bridge["pack"] == "1730"
+    assert bridge["status"] == "ready"
+    assert bridge["readiness"] == 100
+    assert bridge["tower_beta_operations_readiness_blocker_review_operations_matrix_ready"] is True
+    assert bridge["safe_to_continue_to_pack_1731"] is True
+
+    assert prep["ready"] is True
+    assert prep["next_pack"] == "1731"
+    assert prep["source_pack"] == "1730"
+
+    first = mod.build_tower_beta_operations_readiness_blocker_review_operations_matrix_preview()
+    second = mod.build_tower_beta_operations_readiness_blocker_review_operations_matrix_preview()
+
+    assert first == second
+    assert first is not second
+
+    first["status"] = "mutated"
+
+    third = mod.build_tower_beta_operations_readiness_blocker_review_operations_matrix_preview()
+    assert third["status"] == "ready"
