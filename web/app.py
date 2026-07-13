@@ -21124,6 +21124,145 @@ def vault_gp640_status_json():
 
 # VAULT GP631-GP640 RECOVERY COMMIT OWNER DECISION TOWER HANDOFF ROUTES END
 
+# VAULT GP641-GP650 RECOVERY COMMIT OWNER DECISION TOWER HANDOFF ACCEPTANCE GATE ROUTES START
+
+def _vault_gp641_650_json(function_name):
+    from flask import jsonify
+    from vault import (
+        recovery_commit_owner_decision_tower_handoff_acceptance_gate_service
+        as service
+    )
+    return jsonify(getattr(service, function_name)())
+
+
+@app.route("/vault/recovery-commit-owner-decision-tower-handoff-acceptance-gate.json")
+def vault_gp641_650_home_json():
+    return _vault_gp641_650_json(
+        "get_recovery_commit_owner_decision_tower_handoff_acceptance_home"
+    )
+
+
+@app.route("/vault/tower-handoff-acceptance-gate-shell.json")
+def vault_gp641_shell_json():
+    return _vault_gp641_650_json(
+        "get_tower_handoff_acceptance_gate_shell"
+    )
+
+
+@app.route("/vault/tower-handoff-packet-intake-verification-board.json")
+def vault_gp642_intake_json():
+    return _vault_gp641_650_json(
+        "get_tower_handoff_packet_intake_verification_board"
+    )
+
+
+@app.route("/vault/tower-handoff-acceptance-authority-contract-board.json")
+def vault_gp643_authority_json():
+    return _vault_gp641_650_json(
+        "get_tower_handoff_acceptance_authority_contract_board"
+    )
+
+
+@app.route("/vault/tower-acceptance-session-prerequisite-board.json")
+def vault_gp644_session_json():
+    return _vault_gp641_650_json(
+        "get_tower_acceptance_session_prerequisite_board"
+    )
+
+
+@app.route("/vault/tower-handoff-acceptance-evidence-reference-gate.json")
+def vault_gp645_evidence_json():
+    return _vault_gp641_650_json(
+        "get_tower_handoff_acceptance_evidence_reference_gate"
+    )
+
+
+@app.route("/vault/tower-handoff-acceptance-decision-contract-board.json")
+def vault_gp646_decision_json():
+    return _vault_gp641_650_json(
+        "get_tower_handoff_acceptance_decision_contract_board"
+    )
+
+
+@app.route("/vault/tower-handoff-acceptance-record-draft-board.json")
+def vault_gp647_record_json():
+    return _vault_gp641_650_json(
+        "get_tower_handoff_acceptance_record_draft_board"
+    )
+
+
+@app.route("/vault/tower-handoff-acceptance-receipt-draft-ledger.json")
+def vault_gp648_receipt_json():
+    return _vault_gp641_650_json(
+        "get_tower_handoff_acceptance_receipt_draft_ledger"
+    )
+
+
+@app.route("/vault/tower-handoff-acceptance-safety-blocker-board.json")
+def vault_gp649_blocker_json():
+    return _vault_gp641_650_json(
+        "get_tower_handoff_acceptance_safety_blocker_board"
+    )
+
+
+@app.route("/vault/tower-handoff-acceptance-gate-readiness.json")
+def vault_gp650_readiness_json():
+    return _vault_gp641_650_json(
+        "get_tower_handoff_acceptance_gate_readiness_checkpoint"
+    )
+
+
+@app.route("/vault/gp641-status.json")
+def vault_gp641_status_json():
+    return _vault_gp641_650_json("get_gp641_status")
+
+
+@app.route("/vault/gp642-status.json")
+def vault_gp642_status_json():
+    return _vault_gp641_650_json("get_gp642_status")
+
+
+@app.route("/vault/gp643-status.json")
+def vault_gp643_status_json():
+    return _vault_gp641_650_json("get_gp643_status")
+
+
+@app.route("/vault/gp644-status.json")
+def vault_gp644_status_json():
+    return _vault_gp641_650_json("get_gp644_status")
+
+
+@app.route("/vault/gp645-status.json")
+def vault_gp645_status_json():
+    return _vault_gp641_650_json("get_gp645_status")
+
+
+@app.route("/vault/gp646-status.json")
+def vault_gp646_status_json():
+    return _vault_gp641_650_json("get_gp646_status")
+
+
+@app.route("/vault/gp647-status.json")
+def vault_gp647_status_json():
+    return _vault_gp641_650_json("get_gp647_status")
+
+
+@app.route("/vault/gp648-status.json")
+def vault_gp648_status_json():
+    return _vault_gp641_650_json("get_gp648_status")
+
+
+@app.route("/vault/gp649-status.json")
+def vault_gp649_status_json():
+    return _vault_gp641_650_json("get_gp649_status")
+
+
+@app.route("/vault/gp650-status.json")
+def vault_gp650_status_json():
+    return _vault_gp641_650_json("get_gp650_status")
+
+# VAULT GP641-GP650 RECOVERY COMMIT OWNER DECISION TOWER HANDOFF ACCEPTANCE GATE ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
