@@ -488,3 +488,220 @@ __all__ = [
     "build_history_overview",
     "history_boundaries",
 ]
+
+# OB_GP042_RECORD_REVIEW_EVENT_HELPERS_START
+
+def _gp042_review_event_db_path(path=None):
+    import os
+    from pathlib import Path
+
+    if path:
+        resolved = Path(path)
+    elif os.environ.get("OB_DRY_RUN_DB_PATH"):
+        resolved = Path(
+            os.environ["OB_DRY_RUN_DB_PATH"]
+        )
+    else:
+        try:
+            from web import (
+                ob_manual_live_dry_run_persistence
+                as _gp042_persistence
+            )
+
+            candidate = getattr(
+                _gp042_persistence,
+                "db_path",
+                None,
+            )
+
+            if callable(candidate):
+                resolved = Path(candidate())
+            else:
+                resolved = (
+                    Path(__file__).resolve().parents[1]
+                    / "data"
+                    / "ob_manual_live_dry_run.sqlite3"
+                )
+
+        except Exception:
+            resolved = (
+                Path(__file__).resolve().parents[1]
+                / "data"
+                / "ob_manual_live_dry_run.sqlite3"
+            )
+
+    resolved.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    return resolved
+
+
+def init_gp042_review_event_db(path=None):
+    import sqlite3
+
+    database = _gp042_review_event_db_path(
+        path
+    )
+
+    with sqlite3.connect(database) as conn:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS
+            ob_manual_live_gp042_review_events (
+                event_id TEXT PRIMARY KEY,
+                record_id TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                event_payload_json TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
+
+        conn.execute(
+            """
+            CREATE INDEX IF NOT EXISTS
+            idx_gp042_review_events_record
+            ON ob_manual_live_gp042_review_events (
+                record_id,
+                created_at
+            )
+            """
+        )
+
+        conn.commit()
+
+    return str(database)
+
+
+def record_gp042_review_event(
+    record_id,
+    event_type,
+    payload=None,
+    path=None,
+):
+    import json
+    import sqlite3
+    import uuid
+    from datetime import datetime, timezone
+
+    database = init_gp042_review_event_db(
+        path
+    )
+
+    event = {
+        "event_id": (
+            "ob-review-event-"
+            + uuid.uuid4().hex
+        ),
+        "record_id": str(record_id),
+        "event_type": str(event_type),
+        "event_payload": dict(
+            payload or {}
+        ),
+        "created_at": (
+            datetime.now(timezone.utc)
+            .isoformat()
+        ),
+    }
+
+    with sqlite3.connect(database) as conn:
+        conn.execute(
+            """
+            INSERT INTO
+            ob_manual_live_gp042_review_events (
+                event_id,
+                record_id,
+                event_type,
+                event_payload_json,
+                created_at
+            )
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (
+                event["event_id"],
+                event["record_id"],
+                event["event_type"],
+                json.dumps(
+                    event["event_payload"],
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ),
+                event["created_at"],
+            ),
+        )
+
+        conn.commit()
+
+    return event
+
+
+def list_review_events_for_record(
+    record_id,
+    limit=100,
+    path=None,
+):
+    import json
+    import sqlite3
+
+    database = init_gp042_review_event_db(
+        path
+    )
+
+    safe_limit = max(
+        1,
+        min(
+            int(limit or 100),
+            300,
+        ),
+    )
+
+    with sqlite3.connect(database) as conn:
+        conn.row_factory = sqlite3.Row
+
+        rows = conn.execute(
+            """
+            SELECT
+                event_id,
+                record_id,
+                event_type,
+                event_payload_json,
+                created_at
+            FROM
+                ob_manual_live_gp042_review_events
+            WHERE
+                record_id = ?
+            ORDER BY
+                created_at DESC
+            LIMIT ?
+            """,
+            (
+                str(record_id),
+                safe_limit,
+            ),
+        ).fetchall()
+
+    events = []
+
+    for row in rows:
+        event = dict(row)
+
+        try:
+            event["event_payload"] = json.loads(
+                event.pop(
+                    "event_payload_json"
+                )
+            )
+        except Exception:
+            event["event_payload"] = {}
+            event.pop(
+                "event_payload_json",
+                None,
+            )
+
+        events.append(event)
+
+    return events
+
+# OB_GP042_RECORD_REVIEW_EVENT_HELPERS_END

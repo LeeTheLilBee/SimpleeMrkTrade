@@ -19597,6 +19597,590 @@ def vault_gp530_status_json():
 
 # VAULT GP521-GP530 BACKUP EXPORT COLD COPY LOCK LAYER ROUTES END
 
+# OB_GIANT_PACK_042_REAL_CHECKLIST_TO_RECORD_SAVE_FLOW_ROUTES_START
+
+@app.route(
+    "/ob/manual-live-checklist-record-save-flows.json",
+    methods=["GET"],
+)
+def ob_manual_live_checklist_record_save_flows():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_checklist_record_save_flow
+        as gp042_flow
+    )
+
+    flows = gp042_flow.list_checklist_record_save_flows(
+        symbol=request.args.get("symbol"),
+        handoff_id=request.args.get("handoff_id"),
+        limit=request.args.get("limit", 100),
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "flows": flows,
+            "count": len(flows),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-checklist-record-save-flows-status.json",
+    methods=["GET"],
+)
+def ob_manual_live_checklist_record_save_flows_status():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_checklist_record_save_flow
+        as gp042_flow
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "status": gp042_flow.flow_overview(
+                symbol=request.args.get("symbol"),
+            ),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-checklist-record-save-flows/<flow_id>.json",
+    methods=["GET"],
+)
+def ob_manual_live_checklist_record_save_flow_detail(
+    flow_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_checklist_record_save_flow
+        as gp042_flow
+    )
+
+    flow = gp042_flow.get_checklist_record_save_flow(
+        flow_id
+    )
+
+    if flow is None:
+        return jsonify(
+            {
+                "ok": False,
+                "error": "flow_not_found",
+            }
+        ), 404
+
+    return jsonify(
+        {
+            "ok": True,
+            "flow": flow,
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-candidate-decision-handoffs/<handoff_id>/checklist-record-save.json",
+    methods=["POST"],
+)
+def ob_manual_live_candidate_handoff_checklist_record_save(
+    handoff_id,
+):
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_checklist_record_save_flow
+        as gp042_flow
+    )
+
+    payload = request.get_json(
+        silent=True
+    ) or {}
+
+    result = gp042_flow.create_checklist_record_save_flow(
+        handoff_id,
+        payload,
+    )
+
+    status_code = (
+        201
+        if result.get("ok")
+        and result.get("created")
+        else 400
+    )
+
+    return jsonify(result), status_code
+
+# OB_GIANT_PACK_042_REAL_CHECKLIST_TO_RECORD_SAVE_FLOW_ROUTES_END
+
+# OB_GIANT_PACK_043_DRY_RUN_OUTCOME_FINALIZATION_ROUTES_START
+
+@app.route(
+    "/ob/manual-live-dry-run-outcome-finalizations.json",
+    methods=["GET"],
+)
+def ob_manual_live_dry_run_outcome_finalizations():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_dry_run_outcome_finalization
+        as gp043_finalization
+    )
+
+    finalizations = (
+        gp043_finalization.list_dry_run_outcome_finalizations(
+            symbol=request.args.get("symbol"),
+            final_outcome=request.args.get(
+                "final_outcome"
+            ),
+            limit=request.args.get(
+                "limit",
+                100,
+            ),
+        )
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "finalizations": finalizations,
+            "count": len(finalizations),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-dry-run-outcome-finalizations-status.json",
+    methods=["GET"],
+)
+def ob_manual_live_dry_run_outcome_finalizations_status():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_dry_run_outcome_finalization
+        as gp043_finalization
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "status": (
+                gp043_finalization.outcome_finalization_overview(
+                    symbol=request.args.get(
+                        "symbol"
+                    ),
+                )
+            ),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-dry-run-outcome-finalizations/<finalization_id>.json",
+    methods=["GET"],
+)
+def ob_manual_live_dry_run_outcome_finalization_detail(
+    finalization_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_dry_run_outcome_finalization
+        as gp043_finalization
+    )
+
+    finalization = (
+        gp043_finalization.get_dry_run_outcome_finalization(
+            finalization_id
+        )
+    )
+
+    if finalization is None:
+        return jsonify(
+            {
+                "ok": False,
+                "error": (
+                    "finalization_not_found"
+                ),
+            }
+        ), 404
+
+    return jsonify(
+        {
+            "ok": True,
+            "finalization": finalization,
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-dry-run-outcome-finalizations/<finalization_id>/verify.json",
+    methods=["GET"],
+)
+def ob_manual_live_dry_run_outcome_finalization_verify(
+    finalization_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_dry_run_outcome_finalization
+        as gp043_finalization
+    )
+
+    result = (
+        gp043_finalization.verify_dry_run_outcome_finalization(
+            finalization_id
+        )
+    )
+
+    status_code = (
+        200
+        if result.get("verified")
+        else 409
+    )
+
+    return jsonify(result), status_code
+
+
+@app.route(
+    "/ob/manual-live-checklist-record-save-flows/<flow_id>/outcome-finalize.json",
+    methods=["POST"],
+)
+def ob_manual_live_dry_run_outcome_finalize(
+    flow_id,
+):
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_dry_run_outcome_finalization
+        as gp043_finalization
+    )
+
+    payload = request.get_json(
+        silent=True
+    ) or {}
+
+    result = (
+        gp043_finalization.finalize_dry_run_outcome(
+            flow_id,
+            payload,
+        )
+    )
+
+    if result.get("created"):
+        status_code = 201
+    elif result.get("ok"):
+        status_code = 200
+    else:
+        status_code = 400
+
+    return jsonify(result), status_code
+
+# OB_GIANT_PACK_043_DRY_RUN_OUTCOME_FINALIZATION_ROUTES_END
+
+# OB_GIANT_PACK_044_OUTCOME_TO_RECEIPT_ROUTES_START
+
+@app.route(
+    "/ob/manual-live-outcome-receipts.json",
+    methods=["GET"],
+)
+def ob_manual_live_outcome_receipts():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_outcome_receipt_materialization
+        as gp044_receipts
+    )
+
+    receipts = gp044_receipts.list_outcome_receipts(
+        symbol=request.args.get("symbol"),
+        final_outcome=request.args.get(
+            "final_outcome"
+        ),
+        limit=request.args.get("limit", 100),
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "receipts": receipts,
+            "count": len(receipts),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-outcome-receipts-status.json",
+    methods=["GET"],
+)
+def ob_manual_live_outcome_receipts_status():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_outcome_receipt_materialization
+        as gp044_receipts
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "status": gp044_receipts.receipt_overview(
+                symbol=request.args.get("symbol"),
+            ),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-outcome-receipts/<receipt_id>.json",
+    methods=["GET"],
+)
+def ob_manual_live_outcome_receipt_detail(
+    receipt_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_outcome_receipt_materialization
+        as gp044_receipts
+    )
+
+    receipt = gp044_receipts.get_outcome_receipt(
+        receipt_id
+    )
+
+    if receipt is None:
+        return jsonify(
+            {
+                "ok": False,
+                "error": "receipt_not_found",
+            }
+        ), 404
+
+    return jsonify(
+        {
+            "ok": True,
+            "receipt": receipt,
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-outcome-receipts/<receipt_id>/verify.json",
+    methods=["GET"],
+)
+def ob_manual_live_outcome_receipt_verify(
+    receipt_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_outcome_receipt_materialization
+        as gp044_receipts
+    )
+
+    result = gp044_receipts.verify_outcome_receipt(
+        receipt_id
+    )
+
+    status_code = (
+        200
+        if result.get("verified")
+        else 409
+    )
+
+    return jsonify(result), status_code
+
+
+@app.route(
+    "/ob/manual-live-dry-run-outcome-finalizations/<finalization_id>/receipt.json",
+    methods=["POST"],
+)
+def ob_manual_live_outcome_receipt_create(
+    finalization_id,
+):
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_outcome_receipt_materialization
+        as gp044_receipts
+    )
+
+    payload = request.get_json(
+        silent=True
+    ) or {}
+
+    result = gp044_receipts.materialize_outcome_receipt(
+        finalization_id,
+        payload,
+    )
+
+    status_code = (
+        201
+        if result.get("created")
+        else 200
+    )
+
+    return jsonify(result), status_code
+
+# OB_GIANT_PACK_044_OUTCOME_TO_RECEIPT_ROUTES_END
+
+# OB_GIANT_PACK_045_OWNER_FIRST_RUN_READINESS_ROUTES_START
+
+@app.route(
+    "/ob/manual-live-owner-first-run-readiness.json",
+    methods=["GET"],
+)
+def ob_manual_live_owner_first_run_readiness_list():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_owner_first_run_readiness
+        as gp045_readiness
+    )
+
+    checkpoints = (
+        gp045_readiness.list_owner_first_run_readiness_checkpoints(
+            owner_id=request.args.get(
+                "owner_id"
+            ),
+            readiness_status=request.args.get(
+                "readiness_status"
+            ),
+            limit=request.args.get(
+                "limit",
+                100,
+            ),
+        )
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "checkpoints": checkpoints,
+            "count": len(checkpoints),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-owner-first-run-readiness-status.json",
+    methods=["GET"],
+)
+def ob_manual_live_owner_first_run_readiness_status():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_owner_first_run_readiness
+        as gp045_readiness
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "status": (
+                gp045_readiness.owner_first_run_readiness_overview(
+                    owner_id=request.args.get(
+                        "owner_id"
+                    ),
+                )
+            ),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-owner-first-run-readiness/evaluate.json",
+    methods=["POST"],
+)
+def ob_manual_live_owner_first_run_readiness_evaluate():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_owner_first_run_readiness
+        as gp045_readiness
+    )
+
+    payload = request.get_json(
+        silent=True
+    ) or {}
+
+    receipt_id = payload.get(
+        "receipt_id"
+    )
+
+    if not receipt_id:
+        return jsonify(
+            {
+                "ok": False,
+                "error": (
+                    "receipt_id_required"
+                ),
+            }
+        ), 400
+
+    result = (
+        gp045_readiness.evaluate_owner_first_run_readiness(
+            receipt_id,
+            payload,
+        )
+    )
+
+    return jsonify(result), 201
+
+
+@app.route(
+    "/ob/manual-live-owner-first-run-readiness/<checkpoint_id>.json",
+    methods=["GET"],
+)
+def ob_manual_live_owner_first_run_readiness_detail(
+    checkpoint_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_owner_first_run_readiness
+        as gp045_readiness
+    )
+
+    checkpoint = (
+        gp045_readiness.get_owner_first_run_readiness_checkpoint(
+            checkpoint_id
+        )
+    )
+
+    if checkpoint is None:
+        return jsonify(
+            {
+                "ok": False,
+                "error": (
+                    "checkpoint_not_found"
+                ),
+            }
+        ), 404
+
+    return jsonify(
+        {
+            "ok": True,
+            "checkpoint": checkpoint,
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-owner-first-run-readiness/<checkpoint_id>/verify.json",
+    methods=["GET"],
+)
+def ob_manual_live_owner_first_run_readiness_verify(
+    checkpoint_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_owner_first_run_readiness
+        as gp045_readiness
+    )
+
+    result = (
+        gp045_readiness.verify_owner_first_run_readiness_checkpoint(
+            checkpoint_id
+        )
+    )
+
+    status_code = (
+        200
+        if result.get("verified")
+        else 409
+    )
+
+    return jsonify(result), status_code
+
+# OB_GIANT_PACK_045_OWNER_FIRST_RUN_READINESS_ROUTES_END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
