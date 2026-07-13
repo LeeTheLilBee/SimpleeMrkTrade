@@ -20289,6 +20289,145 @@ def vault_gp580_status_json():
 
 # VAULT GP571-GP580 CONTROLLED RECOVERY COMMIT EXECUTION DRY-RUN ROUTES END
 
+# VAULT GP581-GP590 RECOVERY COMMIT FINAL GO-NO-GO REVIEW ROUTES START
+
+def _vault_gp581_590_json(function_name):
+    from flask import jsonify
+    from vault import (
+        recovery_commit_final_go_no_go_review_layer_service
+        as service
+    )
+    return jsonify(getattr(service, function_name)())
+
+
+@app.route("/vault/recovery-commit-final-go-no-go-review-layer.json")
+def vault_gp581_590_layer_json():
+    return _vault_gp581_590_json(
+        "get_recovery_commit_final_go_no_go_review_home"
+    )
+
+
+@app.route("/vault/recovery-commit-final-go-no-go-review-shell.json")
+def vault_gp581_shell_json():
+    return _vault_gp581_590_json(
+        "get_recovery_commit_final_go_no_go_review_shell"
+    )
+
+
+@app.route("/vault/commit-dry-run-evidence-review-intake-board.json")
+def vault_gp582_intake_json():
+    return _vault_gp581_590_json(
+        "get_commit_dry_run_evidence_review_intake_board"
+    )
+
+
+@app.route("/vault/final-commit-preconditions-revalidation-board.json")
+def vault_gp583_preconditions_json():
+    return _vault_gp581_590_json(
+        "get_final_commit_preconditions_revalidation_board"
+    )
+
+
+@app.route("/vault/owner-admin-approval-decision-review-board.json")
+def vault_gp584_approval_json():
+    return _vault_gp581_590_json(
+        "get_owner_admin_approval_decision_review_board"
+    )
+
+
+@app.route("/vault/scope-freeze-commit-window-review-board.json")
+def vault_gp585_scope_window_json():
+    return _vault_gp581_590_json(
+        "get_scope_freeze_commit_window_review_board"
+    )
+
+
+@app.route("/vault/write-barrier-rollback-readiness-review-board.json")
+def vault_gp586_barrier_json():
+    return _vault_gp581_590_json(
+        "get_write_barrier_rollback_readiness_review_board"
+    )
+
+
+@app.route("/vault/tower-final-go-no-go-decision-draft-board.json")
+def vault_gp587_decision_json():
+    return _vault_gp581_590_json(
+        "get_tower_final_go_no_go_decision_draft_board"
+    )
+
+
+@app.route("/vault/tower-final-go-no-go-review-receipt-draft-ledger.json")
+def vault_gp588_receipt_json():
+    return _vault_gp581_590_json(
+        "get_tower_final_go_no_go_review_receipt_draft_ledger"
+    )
+
+
+@app.route("/vault/final-go-no-go-safety-blocker-board.json")
+def vault_gp589_blocker_json():
+    return _vault_gp581_590_json(
+        "get_final_go_no_go_safety_blocker_board"
+    )
+
+
+@app.route("/vault/final-go-no-go-review-readiness.json")
+def vault_gp590_readiness_json():
+    return _vault_gp581_590_json(
+        "get_final_go_no_go_review_readiness_checkpoint"
+    )
+
+
+@app.route("/vault/gp581-status.json")
+def vault_gp581_status_json():
+    return _vault_gp581_590_json("get_gp581_status")
+
+
+@app.route("/vault/gp582-status.json")
+def vault_gp582_status_json():
+    return _vault_gp581_590_json("get_gp582_status")
+
+
+@app.route("/vault/gp583-status.json")
+def vault_gp583_status_json():
+    return _vault_gp581_590_json("get_gp583_status")
+
+
+@app.route("/vault/gp584-status.json")
+def vault_gp584_status_json():
+    return _vault_gp581_590_json("get_gp584_status")
+
+
+@app.route("/vault/gp585-status.json")
+def vault_gp585_status_json():
+    return _vault_gp581_590_json("get_gp585_status")
+
+
+@app.route("/vault/gp586-status.json")
+def vault_gp586_status_json():
+    return _vault_gp581_590_json("get_gp586_status")
+
+
+@app.route("/vault/gp587-status.json")
+def vault_gp587_status_json():
+    return _vault_gp581_590_json("get_gp587_status")
+
+
+@app.route("/vault/gp588-status.json")
+def vault_gp588_status_json():
+    return _vault_gp581_590_json("get_gp588_status")
+
+
+@app.route("/vault/gp589-status.json")
+def vault_gp589_status_json():
+    return _vault_gp581_590_json("get_gp589_status")
+
+
+@app.route("/vault/gp590-status.json")
+def vault_gp590_status_json():
+    return _vault_gp581_590_json("get_gp590_status")
+
+# VAULT GP581-GP590 RECOVERY COMMIT FINAL GO-NO-GO REVIEW ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
