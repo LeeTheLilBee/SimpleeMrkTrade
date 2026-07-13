@@ -19712,6 +19712,166 @@ def ob_manual_live_candidate_handoff_checklist_record_save(
 
 # OB_GIANT_PACK_042_REAL_CHECKLIST_TO_RECORD_SAVE_FLOW_ROUTES_END
 
+# OB_GIANT_PACK_043_DRY_RUN_OUTCOME_FINALIZATION_ROUTES_START
+
+@app.route(
+    "/ob/manual-live-dry-run-outcome-finalizations.json",
+    methods=["GET"],
+)
+def ob_manual_live_dry_run_outcome_finalizations():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_dry_run_outcome_finalization
+        as gp043_finalization
+    )
+
+    finalizations = (
+        gp043_finalization.list_dry_run_outcome_finalizations(
+            symbol=request.args.get("symbol"),
+            final_outcome=request.args.get(
+                "final_outcome"
+            ),
+            limit=request.args.get(
+                "limit",
+                100,
+            ),
+        )
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "finalizations": finalizations,
+            "count": len(finalizations),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-dry-run-outcome-finalizations-status.json",
+    methods=["GET"],
+)
+def ob_manual_live_dry_run_outcome_finalizations_status():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_dry_run_outcome_finalization
+        as gp043_finalization
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "status": (
+                gp043_finalization.outcome_finalization_overview(
+                    symbol=request.args.get(
+                        "symbol"
+                    ),
+                )
+            ),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-dry-run-outcome-finalizations/<finalization_id>.json",
+    methods=["GET"],
+)
+def ob_manual_live_dry_run_outcome_finalization_detail(
+    finalization_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_dry_run_outcome_finalization
+        as gp043_finalization
+    )
+
+    finalization = (
+        gp043_finalization.get_dry_run_outcome_finalization(
+            finalization_id
+        )
+    )
+
+    if finalization is None:
+        return jsonify(
+            {
+                "ok": False,
+                "error": (
+                    "finalization_not_found"
+                ),
+            }
+        ), 404
+
+    return jsonify(
+        {
+            "ok": True,
+            "finalization": finalization,
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-dry-run-outcome-finalizations/<finalization_id>/verify.json",
+    methods=["GET"],
+)
+def ob_manual_live_dry_run_outcome_finalization_verify(
+    finalization_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_dry_run_outcome_finalization
+        as gp043_finalization
+    )
+
+    result = (
+        gp043_finalization.verify_dry_run_outcome_finalization(
+            finalization_id
+        )
+    )
+
+    status_code = (
+        200
+        if result.get("verified")
+        else 409
+    )
+
+    return jsonify(result), status_code
+
+
+@app.route(
+    "/ob/manual-live-checklist-record-save-flows/<flow_id>/outcome-finalize.json",
+    methods=["POST"],
+)
+def ob_manual_live_dry_run_outcome_finalize(
+    flow_id,
+):
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_dry_run_outcome_finalization
+        as gp043_finalization
+    )
+
+    payload = request.get_json(
+        silent=True
+    ) or {}
+
+    result = (
+        gp043_finalization.finalize_dry_run_outcome(
+            flow_id,
+            payload,
+        )
+    )
+
+    if result.get("created"):
+        status_code = 201
+    elif result.get("ok"):
+        status_code = 200
+    else:
+        status_code = 400
+
+    return jsonify(result), status_code
+
+# OB_GIANT_PACK_043_DRY_RUN_OUTCOME_FINALIZATION_ROUTES_END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
