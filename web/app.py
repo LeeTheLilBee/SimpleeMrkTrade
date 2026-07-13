@@ -20014,6 +20014,173 @@ def ob_manual_live_outcome_receipt_create(
 
 # OB_GIANT_PACK_044_OUTCOME_TO_RECEIPT_ROUTES_END
 
+# OB_GIANT_PACK_045_OWNER_FIRST_RUN_READINESS_ROUTES_START
+
+@app.route(
+    "/ob/manual-live-owner-first-run-readiness.json",
+    methods=["GET"],
+)
+def ob_manual_live_owner_first_run_readiness_list():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_owner_first_run_readiness
+        as gp045_readiness
+    )
+
+    checkpoints = (
+        gp045_readiness.list_owner_first_run_readiness_checkpoints(
+            owner_id=request.args.get(
+                "owner_id"
+            ),
+            readiness_status=request.args.get(
+                "readiness_status"
+            ),
+            limit=request.args.get(
+                "limit",
+                100,
+            ),
+        )
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "checkpoints": checkpoints,
+            "count": len(checkpoints),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-owner-first-run-readiness-status.json",
+    methods=["GET"],
+)
+def ob_manual_live_owner_first_run_readiness_status():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_owner_first_run_readiness
+        as gp045_readiness
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "status": (
+                gp045_readiness.owner_first_run_readiness_overview(
+                    owner_id=request.args.get(
+                        "owner_id"
+                    ),
+                )
+            ),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-owner-first-run-readiness/evaluate.json",
+    methods=["POST"],
+)
+def ob_manual_live_owner_first_run_readiness_evaluate():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_owner_first_run_readiness
+        as gp045_readiness
+    )
+
+    payload = request.get_json(
+        silent=True
+    ) or {}
+
+    receipt_id = payload.get(
+        "receipt_id"
+    )
+
+    if not receipt_id:
+        return jsonify(
+            {
+                "ok": False,
+                "error": (
+                    "receipt_id_required"
+                ),
+            }
+        ), 400
+
+    result = (
+        gp045_readiness.evaluate_owner_first_run_readiness(
+            receipt_id,
+            payload,
+        )
+    )
+
+    return jsonify(result), 201
+
+
+@app.route(
+    "/ob/manual-live-owner-first-run-readiness/<checkpoint_id>.json",
+    methods=["GET"],
+)
+def ob_manual_live_owner_first_run_readiness_detail(
+    checkpoint_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_owner_first_run_readiness
+        as gp045_readiness
+    )
+
+    checkpoint = (
+        gp045_readiness.get_owner_first_run_readiness_checkpoint(
+            checkpoint_id
+        )
+    )
+
+    if checkpoint is None:
+        return jsonify(
+            {
+                "ok": False,
+                "error": (
+                    "checkpoint_not_found"
+                ),
+            }
+        ), 404
+
+    return jsonify(
+        {
+            "ok": True,
+            "checkpoint": checkpoint,
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-owner-first-run-readiness/<checkpoint_id>/verify.json",
+    methods=["GET"],
+)
+def ob_manual_live_owner_first_run_readiness_verify(
+    checkpoint_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_owner_first_run_readiness
+        as gp045_readiness
+    )
+
+    result = (
+        gp045_readiness.verify_owner_first_run_readiness_checkpoint(
+            checkpoint_id
+        )
+    )
+
+    status_code = (
+        200
+        if result.get("verified")
+        else 409
+    )
+
+    return jsonify(result), status_code
+
+# OB_GIANT_PACK_045_OWNER_FIRST_RUN_READINESS_ROUTES_END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
