@@ -20567,6 +20567,145 @@ def vault_gp600_status_json():
 
 # VAULT GP591-GP600 RECOVERY COMMIT OWNER DECISION PREPARATION ROUTES END
 
+# VAULT GP601-GP610 RECOVERY COMMIT OWNER DECISION REVIEW ROUTES START
+
+def _vault_gp601_610_json(function_name):
+    from flask import jsonify
+    from vault import (
+        recovery_commit_owner_decision_review_layer_service
+        as service
+    )
+    return jsonify(getattr(service, function_name)())
+
+
+@app.route("/vault/recovery-commit-owner-decision-review-layer.json")
+def vault_gp601_610_layer_json():
+    return _vault_gp601_610_json(
+        "get_recovery_commit_owner_decision_review_home"
+    )
+
+
+@app.route("/vault/recovery-commit-owner-decision-review-shell.json")
+def vault_gp601_shell_json():
+    return _vault_gp601_610_json(
+        "get_recovery_commit_owner_decision_review_shell"
+    )
+
+
+@app.route("/vault/owner-decision-preparation-intake-board.json")
+def vault_gp602_intake_json():
+    return _vault_gp601_610_json(
+        "get_owner_decision_preparation_intake_board"
+    )
+
+
+@app.route("/vault/tower-owner-decision-review-session-board.json")
+def vault_gp603_session_json():
+    return _vault_gp601_610_json(
+        "get_tower_owner_decision_review_session_board"
+    )
+
+
+@app.route("/vault/owner-admin-control-satisfaction-review-board.json")
+def vault_gp604_controls_json():
+    return _vault_gp601_610_json(
+        "get_owner_admin_control_satisfaction_review_board"
+    )
+
+
+@app.route("/vault/scope-freeze-commit-window-decision-review-board.json")
+def vault_gp605_activation_json():
+    return _vault_gp601_610_json(
+        "get_scope_freeze_commit_window_decision_review_board"
+    )
+
+
+@app.route("/vault/recovery-decision-option-evaluation-board.json")
+def vault_gp606_options_json():
+    return _vault_gp601_610_json(
+        "get_recovery_decision_option_evaluation_board"
+    )
+
+
+@app.route("/vault/tower-owner-decision-review-draft-board.json")
+def vault_gp607_review_json():
+    return _vault_gp601_610_json(
+        "get_tower_owner_decision_review_draft_board"
+    )
+
+
+@app.route("/vault/tower-owner-decision-review-receipt-draft-ledger.json")
+def vault_gp608_receipt_json():
+    return _vault_gp601_610_json(
+        "get_tower_owner_decision_review_receipt_draft_ledger"
+    )
+
+
+@app.route("/vault/owner-decision-review-safety-blocker-board.json")
+def vault_gp609_blocker_json():
+    return _vault_gp601_610_json(
+        "get_owner_decision_review_safety_blocker_board"
+    )
+
+
+@app.route("/vault/owner-decision-review-readiness.json")
+def vault_gp610_readiness_json():
+    return _vault_gp601_610_json(
+        "get_owner_decision_review_readiness_checkpoint"
+    )
+
+
+@app.route("/vault/gp601-status.json")
+def vault_gp601_status_json():
+    return _vault_gp601_610_json("get_gp601_status")
+
+
+@app.route("/vault/gp602-status.json")
+def vault_gp602_status_json():
+    return _vault_gp601_610_json("get_gp602_status")
+
+
+@app.route("/vault/gp603-status.json")
+def vault_gp603_status_json():
+    return _vault_gp601_610_json("get_gp603_status")
+
+
+@app.route("/vault/gp604-status.json")
+def vault_gp604_status_json():
+    return _vault_gp601_610_json("get_gp604_status")
+
+
+@app.route("/vault/gp605-status.json")
+def vault_gp605_status_json():
+    return _vault_gp601_610_json("get_gp605_status")
+
+
+@app.route("/vault/gp606-status.json")
+def vault_gp606_status_json():
+    return _vault_gp601_610_json("get_gp606_status")
+
+
+@app.route("/vault/gp607-status.json")
+def vault_gp607_status_json():
+    return _vault_gp601_610_json("get_gp607_status")
+
+
+@app.route("/vault/gp608-status.json")
+def vault_gp608_status_json():
+    return _vault_gp601_610_json("get_gp608_status")
+
+
+@app.route("/vault/gp609-status.json")
+def vault_gp609_status_json():
+    return _vault_gp601_610_json("get_gp609_status")
+
+
+@app.route("/vault/gp610-status.json")
+def vault_gp610_status_json():
+    return _vault_gp601_610_json("get_gp610_status")
+
+# VAULT GP601-GP610 RECOVERY COMMIT OWNER DECISION REVIEW ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
