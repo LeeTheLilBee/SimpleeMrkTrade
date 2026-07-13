@@ -19872,6 +19872,148 @@ def ob_manual_live_dry_run_outcome_finalize(
 
 # OB_GIANT_PACK_043_DRY_RUN_OUTCOME_FINALIZATION_ROUTES_END
 
+# OB_GIANT_PACK_044_OUTCOME_TO_RECEIPT_ROUTES_START
+
+@app.route(
+    "/ob/manual-live-outcome-receipts.json",
+    methods=["GET"],
+)
+def ob_manual_live_outcome_receipts():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_outcome_receipt_materialization
+        as gp044_receipts
+    )
+
+    receipts = gp044_receipts.list_outcome_receipts(
+        symbol=request.args.get("symbol"),
+        final_outcome=request.args.get(
+            "final_outcome"
+        ),
+        limit=request.args.get("limit", 100),
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "receipts": receipts,
+            "count": len(receipts),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-outcome-receipts-status.json",
+    methods=["GET"],
+)
+def ob_manual_live_outcome_receipts_status():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_outcome_receipt_materialization
+        as gp044_receipts
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "status": gp044_receipts.receipt_overview(
+                symbol=request.args.get("symbol"),
+            ),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-outcome-receipts/<receipt_id>.json",
+    methods=["GET"],
+)
+def ob_manual_live_outcome_receipt_detail(
+    receipt_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_outcome_receipt_materialization
+        as gp044_receipts
+    )
+
+    receipt = gp044_receipts.get_outcome_receipt(
+        receipt_id
+    )
+
+    if receipt is None:
+        return jsonify(
+            {
+                "ok": False,
+                "error": "receipt_not_found",
+            }
+        ), 404
+
+    return jsonify(
+        {
+            "ok": True,
+            "receipt": receipt,
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-outcome-receipts/<receipt_id>/verify.json",
+    methods=["GET"],
+)
+def ob_manual_live_outcome_receipt_verify(
+    receipt_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_outcome_receipt_materialization
+        as gp044_receipts
+    )
+
+    result = gp044_receipts.verify_outcome_receipt(
+        receipt_id
+    )
+
+    status_code = (
+        200
+        if result.get("verified")
+        else 409
+    )
+
+    return jsonify(result), status_code
+
+
+@app.route(
+    "/ob/manual-live-dry-run-outcome-finalizations/<finalization_id>/receipt.json",
+    methods=["POST"],
+)
+def ob_manual_live_outcome_receipt_create(
+    finalization_id,
+):
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_outcome_receipt_materialization
+        as gp044_receipts
+    )
+
+    payload = request.get_json(
+        silent=True
+    ) or {}
+
+    result = gp044_receipts.materialize_outcome_receipt(
+        finalization_id,
+        payload,
+    )
+
+    status_code = (
+        201
+        if result.get("created")
+        else 200
+    )
+
+    return jsonify(result), status_code
+
+# OB_GIANT_PACK_044_OUTCOME_TO_RECEIPT_ROUTES_END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
