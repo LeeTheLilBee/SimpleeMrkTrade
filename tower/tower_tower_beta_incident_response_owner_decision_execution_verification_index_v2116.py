@@ -289,6 +289,23 @@ def build_pack_2116_status_bridge() -> Dict[str, Any]:
     }
 
 
+
+def prepare_pack_2117_tower_beta_incident_response_owner_decision_execution_verification_index() -> Dict[str, Any]:
+    """Prepare the preview-only Pack 2117 handoff contract."""
+    payload = _build_cached()
+
+    return {
+        "ready": payload[
+            "safe_to_continue_to_pack_2117"
+        ],
+        "source_pack": PACK_ID,
+        "next_pack": "2117",
+        "name": 'Tower Beta Incident Response Owner Decision Execution Verification Index',
+        "preview_only": True,
+        "contract_only": True,
+        "writes_state": False,
+    }
+
 __all__ = [
     "PACK_ID",
     "PACK_NUMBER",
@@ -305,4 +322,5 @@ __all__ = [
     "SAFE_TO_CONTINUE_FLAG",
     "build_tower_beta_incident_response_owner_decision_execution_verification_index_preview",
     "build_pack_2116_status_bridge",
+    "prepare_pack_2117_tower_beta_incident_response_owner_decision_execution_verification_index",
 ]

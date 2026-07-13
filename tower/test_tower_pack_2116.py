@@ -7,6 +7,7 @@ from __future__ import annotations
 from tower.tower_tower_beta_incident_response_owner_decision_execution_verification_index_v2116 import (
     build_tower_beta_incident_response_owner_decision_execution_verification_index_preview,
     build_pack_2116_status_bridge,
+    prepare_pack_2117_tower_beta_incident_response_owner_decision_execution_verification_index,
 )
 
 
@@ -84,3 +85,16 @@ def test_pack_2116_bridge_copy_safety():
 
     third = build_tower_beta_incident_response_owner_decision_execution_verification_index_preview()
     assert third["status"] == "ready"
+
+
+
+def test_pack_2116_handoff_to_pack_2117():
+    handoff = prepare_pack_2117_tower_beta_incident_response_owner_decision_execution_verification_index()
+
+    assert handoff["ready"] is True
+    assert handoff["source_pack"] == "2116"
+    assert handoff["next_pack"] == "2117"
+    assert handoff["name"] == 'Tower Beta Incident Response Owner Decision Execution Verification Index'
+    assert handoff["preview_only"] is True
+    assert handoff["contract_only"] is True
+    assert handoff["writes_state"] is False
