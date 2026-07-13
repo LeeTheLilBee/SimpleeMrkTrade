@@ -19597,6 +19597,121 @@ def vault_gp530_status_json():
 
 # VAULT GP521-GP530 BACKUP EXPORT COLD COPY LOCK LAYER ROUTES END
 
+# OB_GIANT_PACK_042_REAL_CHECKLIST_TO_RECORD_SAVE_FLOW_ROUTES_START
+
+@app.route(
+    "/ob/manual-live-checklist-record-save-flows.json",
+    methods=["GET"],
+)
+def ob_manual_live_checklist_record_save_flows():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_checklist_record_save_flow
+        as gp042_flow
+    )
+
+    flows = gp042_flow.list_checklist_record_save_flows(
+        symbol=request.args.get("symbol"),
+        handoff_id=request.args.get("handoff_id"),
+        limit=request.args.get("limit", 100),
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "flows": flows,
+            "count": len(flows),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-checklist-record-save-flows-status.json",
+    methods=["GET"],
+)
+def ob_manual_live_checklist_record_save_flows_status():
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_checklist_record_save_flow
+        as gp042_flow
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "status": gp042_flow.flow_overview(
+                symbol=request.args.get("symbol"),
+            ),
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-checklist-record-save-flows/<flow_id>.json",
+    methods=["GET"],
+)
+def ob_manual_live_checklist_record_save_flow_detail(
+    flow_id,
+):
+    from flask import jsonify
+    from web import (
+        ob_manual_live_checklist_record_save_flow
+        as gp042_flow
+    )
+
+    flow = gp042_flow.get_checklist_record_save_flow(
+        flow_id
+    )
+
+    if flow is None:
+        return jsonify(
+            {
+                "ok": False,
+                "error": "flow_not_found",
+            }
+        ), 404
+
+    return jsonify(
+        {
+            "ok": True,
+            "flow": flow,
+        }
+    )
+
+
+@app.route(
+    "/ob/manual-live-candidate-decision-handoffs/<handoff_id>/checklist-record-save.json",
+    methods=["POST"],
+)
+def ob_manual_live_candidate_handoff_checklist_record_save(
+    handoff_id,
+):
+    from flask import jsonify, request
+    from web import (
+        ob_manual_live_checklist_record_save_flow
+        as gp042_flow
+    )
+
+    payload = request.get_json(
+        silent=True
+    ) or {}
+
+    result = gp042_flow.create_checklist_record_save_flow(
+        handoff_id,
+        payload,
+    )
+
+    status_code = (
+        201
+        if result.get("ok")
+        and result.get("created")
+        else 400
+    )
+
+    return jsonify(result), status_code
+
+# OB_GIANT_PACK_042_REAL_CHECKLIST_TO_RECORD_SAVE_FLOW_ROUTES_END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
@@ -46801,4 +46916,3 @@ def tower_pack_2114_owner_decision_execution_json():
     from tower.tower_tower_beta_incident_response_owner_decision_execution_closeout_batch_close_readiness_v2114 import build_tower_beta_incident_response_owner_decision_execution_closeout_batch_close_readiness_preview
 
     return jsonify(build_tower_beta_incident_response_owner_decision_execution_closeout_batch_close_readiness_preview())
-
