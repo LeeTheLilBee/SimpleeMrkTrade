@@ -20985,6 +20985,145 @@ def vault_gp630_status_json():
 
 # VAULT GP621-GP630 RECOVERY COMMIT OWNER DECISION RECORDING CLOSEOUT ROUTES END
 
+# VAULT GP631-GP640 RECOVERY COMMIT OWNER DECISION TOWER HANDOFF ROUTES START
+
+def _vault_gp631_640_json(function_name):
+    from flask import jsonify
+    from vault import (
+        recovery_commit_owner_decision_tower_handoff_layer_service
+        as service
+    )
+    return jsonify(getattr(service, function_name)())
+
+
+@app.route("/vault/recovery-commit-owner-decision-tower-handoff-layer.json")
+def vault_gp631_640_layer_json():
+    return _vault_gp631_640_json(
+        "get_recovery_commit_owner_decision_tower_handoff_home"
+    )
+
+
+@app.route("/vault/owner-decision-tower-handoff-shell.json")
+def vault_gp631_shell_json():
+    return _vault_gp631_640_json(
+        "get_owner_decision_tower_handoff_shell"
+    )
+
+
+@app.route("/vault/recording-closeout-package-intake-board.json")
+def vault_gp632_intake_json():
+    return _vault_gp631_640_json(
+        "get_recording_closeout_package_intake_board"
+    )
+
+
+@app.route("/vault/tower-handoff-envelope-contract-board.json")
+def vault_gp633_envelope_json():
+    return _vault_gp631_640_json(
+        "get_tower_handoff_envelope_contract_board"
+    )
+
+
+@app.route("/vault/tower-owner-review-session-launch-prerequisite-board.json")
+def vault_gp634_session_json():
+    return _vault_gp631_640_json(
+        "get_tower_owner_review_session_launch_prerequisite_board"
+    )
+
+
+@app.route("/vault/owner-decision-input-handoff-contract-board.json")
+def vault_gp635_input_json():
+    return _vault_gp631_640_json(
+        "get_owner_decision_input_handoff_contract_board"
+    )
+
+
+@app.route("/vault/approval-receipt-reference-handoff-board.json")
+def vault_gp636_approval_json():
+    return _vault_gp631_640_json(
+        "get_approval_receipt_reference_handoff_board"
+    )
+
+
+@app.route("/vault/tower-owner-decision-handoff-packet-draft-board.json")
+def vault_gp637_packet_json():
+    return _vault_gp631_640_json(
+        "get_tower_owner_decision_handoff_packet_draft_board"
+    )
+
+
+@app.route("/vault/tower-owner-decision-handoff-receipt-draft-ledger.json")
+def vault_gp638_receipt_json():
+    return _vault_gp631_640_json(
+        "get_tower_owner_decision_handoff_receipt_draft_ledger"
+    )
+
+
+@app.route("/vault/tower-handoff-safety-blocker-board.json")
+def vault_gp639_blocker_json():
+    return _vault_gp631_640_json(
+        "get_tower_handoff_safety_blocker_board"
+    )
+
+
+@app.route("/vault/tower-handoff-readiness.json")
+def vault_gp640_readiness_json():
+    return _vault_gp631_640_json(
+        "get_tower_handoff_readiness_checkpoint"
+    )
+
+
+@app.route("/vault/gp631-status.json")
+def vault_gp631_status_json():
+    return _vault_gp631_640_json("get_gp631_status")
+
+
+@app.route("/vault/gp632-status.json")
+def vault_gp632_status_json():
+    return _vault_gp631_640_json("get_gp632_status")
+
+
+@app.route("/vault/gp633-status.json")
+def vault_gp633_status_json():
+    return _vault_gp631_640_json("get_gp633_status")
+
+
+@app.route("/vault/gp634-status.json")
+def vault_gp634_status_json():
+    return _vault_gp631_640_json("get_gp634_status")
+
+
+@app.route("/vault/gp635-status.json")
+def vault_gp635_status_json():
+    return _vault_gp631_640_json("get_gp635_status")
+
+
+@app.route("/vault/gp636-status.json")
+def vault_gp636_status_json():
+    return _vault_gp631_640_json("get_gp636_status")
+
+
+@app.route("/vault/gp637-status.json")
+def vault_gp637_status_json():
+    return _vault_gp631_640_json("get_gp637_status")
+
+
+@app.route("/vault/gp638-status.json")
+def vault_gp638_status_json():
+    return _vault_gp631_640_json("get_gp638_status")
+
+
+@app.route("/vault/gp639-status.json")
+def vault_gp639_status_json():
+    return _vault_gp631_640_json("get_gp639_status")
+
+
+@app.route("/vault/gp640-status.json")
+def vault_gp640_status_json():
+    return _vault_gp631_640_json("get_gp640_status")
+
+# VAULT GP631-GP640 RECOVERY COMMIT OWNER DECISION TOWER HANDOFF ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
