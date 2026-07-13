@@ -20706,6 +20706,145 @@ def vault_gp610_status_json():
 
 # VAULT GP601-GP610 RECOVERY COMMIT OWNER DECISION REVIEW ROUTES END
 
+# VAULT GP611-GP620 RECOVERY COMMIT OWNER DECISION RECORDING GATE ROUTES START
+
+def _vault_gp611_620_json(function_name):
+    from flask import jsonify
+    from vault import (
+        recovery_commit_owner_decision_recording_gate_service
+        as service
+    )
+    return jsonify(getattr(service, function_name)())
+
+
+@app.route("/vault/recovery-commit-owner-decision-recording-gate.json")
+def vault_gp611_620_layer_json():
+    return _vault_gp611_620_json(
+        "get_recovery_commit_owner_decision_recording_gate_home"
+    )
+
+
+@app.route("/vault/recovery-commit-owner-decision-recording-gate-shell.json")
+def vault_gp611_shell_json():
+    return _vault_gp611_620_json(
+        "get_recovery_commit_owner_decision_recording_gate_shell"
+    )
+
+
+@app.route("/vault/tower-owner-review-intake-verification-board.json")
+def vault_gp612_intake_json():
+    return _vault_gp611_620_json(
+        "get_tower_owner_review_intake_verification_board"
+    )
+
+
+@app.route("/vault/owner-identity-step-up-recording-prerequisite-board.json")
+def vault_gp613_identity_json():
+    return _vault_gp611_620_json(
+        "get_owner_identity_step_up_recording_prerequisite_board"
+    )
+
+
+@app.route("/vault/owner-admin-approval-dual-receipt-recording-gate.json")
+def vault_gp614_approval_json():
+    return _vault_gp611_620_json(
+        "get_owner_admin_approval_dual_receipt_recording_gate"
+    )
+
+
+@app.route("/vault/owner-decision-selection-recording-contract-board.json")
+def vault_gp615_contract_json():
+    return _vault_gp611_620_json(
+        "get_owner_decision_selection_recording_contract_board"
+    )
+
+
+@app.route("/vault/scope-freeze-commit-window-recording-boundary-board.json")
+def vault_gp616_boundary_json():
+    return _vault_gp611_620_json(
+        "get_scope_freeze_commit_window_recording_boundary_board"
+    )
+
+
+@app.route("/vault/tower-owner-decision-append-only-record-draft-board.json")
+def vault_gp617_record_json():
+    return _vault_gp611_620_json(
+        "get_tower_owner_decision_append_only_record_draft_board"
+    )
+
+
+@app.route("/vault/tower-owner-decision-recording-receipt-draft-ledger.json")
+def vault_gp618_receipt_json():
+    return _vault_gp611_620_json(
+        "get_tower_owner_decision_recording_receipt_draft_ledger"
+    )
+
+
+@app.route("/vault/owner-decision-recording-safety-blocker-board.json")
+def vault_gp619_blocker_json():
+    return _vault_gp611_620_json(
+        "get_owner_decision_recording_safety_blocker_board"
+    )
+
+
+@app.route("/vault/owner-decision-recording-gate-readiness.json")
+def vault_gp620_readiness_json():
+    return _vault_gp611_620_json(
+        "get_owner_decision_recording_gate_readiness_checkpoint"
+    )
+
+
+@app.route("/vault/gp611-status.json")
+def vault_gp611_status_json():
+    return _vault_gp611_620_json("get_gp611_status")
+
+
+@app.route("/vault/gp612-status.json")
+def vault_gp612_status_json():
+    return _vault_gp611_620_json("get_gp612_status")
+
+
+@app.route("/vault/gp613-status.json")
+def vault_gp613_status_json():
+    return _vault_gp611_620_json("get_gp613_status")
+
+
+@app.route("/vault/gp614-status.json")
+def vault_gp614_status_json():
+    return _vault_gp611_620_json("get_gp614_status")
+
+
+@app.route("/vault/gp615-status.json")
+def vault_gp615_status_json():
+    return _vault_gp611_620_json("get_gp615_status")
+
+
+@app.route("/vault/gp616-status.json")
+def vault_gp616_status_json():
+    return _vault_gp611_620_json("get_gp616_status")
+
+
+@app.route("/vault/gp617-status.json")
+def vault_gp617_status_json():
+    return _vault_gp611_620_json("get_gp617_status")
+
+
+@app.route("/vault/gp618-status.json")
+def vault_gp618_status_json():
+    return _vault_gp611_620_json("get_gp618_status")
+
+
+@app.route("/vault/gp619-status.json")
+def vault_gp619_status_json():
+    return _vault_gp611_620_json("get_gp619_status")
+
+
+@app.route("/vault/gp620-status.json")
+def vault_gp620_status_json():
+    return _vault_gp611_620_json("get_gp620_status")
+
+# VAULT GP611-GP620 RECOVERY COMMIT OWNER DECISION RECORDING GATE ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
