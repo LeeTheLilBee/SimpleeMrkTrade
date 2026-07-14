@@ -21263,6 +21263,145 @@ def vault_gp650_status_json():
 
 # VAULT GP641-GP650 RECOVERY COMMIT OWNER DECISION TOWER HANDOFF ACCEPTANCE GATE ROUTES END
 
+# VAULT GP651-GP660 RECOVERY COMMIT OWNER DECISION TOWER HANDOFF ACCEPTANCE CLOSEOUT ROUTES START
+
+def _vault_gp651_660_json(function_name):
+    from flask import jsonify
+    from vault import (
+        recovery_commit_owner_decision_tower_handoff_acceptance_closeout_layer_service
+        as service
+    )
+    return jsonify(getattr(service, function_name)())
+
+
+@app.route("/vault/recovery-commit-owner-decision-tower-handoff-acceptance-closeout-layer.json")
+def vault_gp651_660_home_json():
+    return _vault_gp651_660_json(
+        "get_recovery_commit_owner_decision_tower_handoff_acceptance_closeout_home"
+    )
+
+
+@app.route("/vault/tower-handoff-acceptance-closeout-shell.json")
+def vault_gp651_shell_json():
+    return _vault_gp651_660_json(
+        "get_tower_handoff_acceptance_closeout_shell"
+    )
+
+
+@app.route("/vault/acceptance-gate-evidence-closeout-intake-board.json")
+def vault_gp652_intake_json():
+    return _vault_gp651_660_json(
+        "get_acceptance_gate_evidence_closeout_intake_board"
+    )
+
+
+@app.route("/vault/tower-acceptance-authority-requirement-closeout-board.json")
+def vault_gp653_authority_json():
+    return _vault_gp651_660_json(
+        "get_tower_acceptance_authority_requirement_closeout_board"
+    )
+
+
+@app.route("/vault/tower-acceptance-session-requirement-closeout-board.json")
+def vault_gp654_session_json():
+    return _vault_gp651_660_json(
+        "get_tower_acceptance_session_requirement_closeout_board"
+    )
+
+
+@app.route("/vault/acceptance-evidence-reference-requirement-freeze-board.json")
+def vault_gp655_evidence_json():
+    return _vault_gp651_660_json(
+        "get_acceptance_evidence_reference_requirement_freeze_board"
+    )
+
+
+@app.route("/vault/tower-acceptance-decision-contract-freeze-board.json")
+def vault_gp656_decision_json():
+    return _vault_gp651_660_json(
+        "get_tower_acceptance_decision_contract_freeze_board"
+    )
+
+
+@app.route("/vault/tower-acceptance-closeout-record-draft-board.json")
+def vault_gp657_record_json():
+    return _vault_gp651_660_json(
+        "get_tower_acceptance_closeout_record_draft_board"
+    )
+
+
+@app.route("/vault/tower-acceptance-closeout-receipt-draft-ledger.json")
+def vault_gp658_receipt_json():
+    return _vault_gp651_660_json(
+        "get_tower_acceptance_closeout_receipt_draft_ledger"
+    )
+
+
+@app.route("/vault/tower-acceptance-closeout-safety-blocker-board.json")
+def vault_gp659_blocker_json():
+    return _vault_gp651_660_json(
+        "get_tower_acceptance_closeout_safety_blocker_board"
+    )
+
+
+@app.route("/vault/tower-acceptance-closeout-readiness.json")
+def vault_gp660_readiness_json():
+    return _vault_gp651_660_json(
+        "get_tower_acceptance_closeout_readiness_checkpoint"
+    )
+
+
+@app.route("/vault/gp651-status.json")
+def vault_gp651_status_json():
+    return _vault_gp651_660_json("get_gp651_status")
+
+
+@app.route("/vault/gp652-status.json")
+def vault_gp652_status_json():
+    return _vault_gp651_660_json("get_gp652_status")
+
+
+@app.route("/vault/gp653-status.json")
+def vault_gp653_status_json():
+    return _vault_gp651_660_json("get_gp653_status")
+
+
+@app.route("/vault/gp654-status.json")
+def vault_gp654_status_json():
+    return _vault_gp651_660_json("get_gp654_status")
+
+
+@app.route("/vault/gp655-status.json")
+def vault_gp655_status_json():
+    return _vault_gp651_660_json("get_gp655_status")
+
+
+@app.route("/vault/gp656-status.json")
+def vault_gp656_status_json():
+    return _vault_gp651_660_json("get_gp656_status")
+
+
+@app.route("/vault/gp657-status.json")
+def vault_gp657_status_json():
+    return _vault_gp651_660_json("get_gp657_status")
+
+
+@app.route("/vault/gp658-status.json")
+def vault_gp658_status_json():
+    return _vault_gp651_660_json("get_gp658_status")
+
+
+@app.route("/vault/gp659-status.json")
+def vault_gp659_status_json():
+    return _vault_gp651_660_json("get_gp659_status")
+
+
+@app.route("/vault/gp660-status.json")
+def vault_gp660_status_json():
+    return _vault_gp651_660_json("get_gp660_status")
+
+# VAULT GP651-GP660 RECOVERY COMMIT OWNER DECISION TOWER HANDOFF ACCEPTANCE CLOSEOUT ROUTES END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
