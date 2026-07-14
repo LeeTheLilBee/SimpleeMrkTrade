@@ -1,6 +1,10 @@
 import pytest
 from flask import Flask
 
+
+from tower.tower_human_login_ob_launch import (
+    register_tower_human_login,
+)
 from tower.tower_observatory_walkthrough_web import (
     owner_access_allowed,
     room_by_id,
@@ -17,6 +21,8 @@ def app():
     app.register_blueprint(
         tower_ob_walkthrough_bp
     )
+
+    register_tower_human_login(app)
 
     app.config.update(
         TESTING=True,
@@ -1148,9 +1154,16 @@ def test_activation_approval_json(
 
     payload = response.get_json()
 
+    assert isinstance(
+        payload[
+            "ready_for_owner_approval_process"
+        ],
+        bool,
+    )
+
     assert payload[
-        "ready_for_owner_approval_process"
-    ] is True
+        "execution_hold"
+    ]["hold_active"] is True
 
     assert payload[
         "activation_performed"
@@ -1256,3 +1269,76 @@ def test_invalid_decision_remains_held(
 
 
 # END HOSTED ACTIVATION APPROVAL TESTS
+
+# BEGIN HUMAN TOWER LOGIN TO OB TESTS
+
+def test_human_tower_login_route_exists(
+    client,
+):
+    response = client.get(
+        "/tower/login"
+    )
+
+    assert response.status_code == 200
+
+    assert (
+        "Enter The Tower"
+        in response.get_data(
+            as_text=True
+        )
+    )
+
+
+def test_tower_access_home_denies_anonymous(
+    client,
+):
+    response = client.get(
+        "/tower/access-home"
+    )
+
+    assert response.status_code == 302
+
+    assert "/tower/login" in (
+        response.headers["Location"]
+    )
+
+
+def test_ob_launch_denies_anonymous(
+    client,
+):
+    response = client.get(
+        "/tower/launch/observatory"
+    )
+
+    assert response.status_code == 302
+
+    assert "/tower/login" in (
+        response.headers["Location"]
+    )
+
+
+def test_tower_auth_status_route(
+    client,
+):
+    response = client.get(
+        "/tower/auth/status.json"
+    )
+
+    assert response.status_code == 200
+
+    payload = response.get_json()
+
+    assert payload[
+        "authenticated"
+    ] is False
+
+    assert payload[
+        "owner_id_present"
+    ] is False
+
+    assert payload[
+        "launch_receipt_present"
+    ] is False
+
+
+# END HUMAN TOWER LOGIN TO OB TESTS

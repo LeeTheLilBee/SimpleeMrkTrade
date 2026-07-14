@@ -50676,3 +50676,12 @@ def tower_ir_cert_pack_2422_json():
 
     return jsonify(build_ir_cert_p2422_preview())
 
+# BEGIN TOWER HUMAN LOGIN TO OB REGISTRATION
+
+from tower.tower_human_login_ob_launch import (
+    register_tower_human_login,
+)
+
+register_tower_human_login(app)
+
+# END TOWER HUMAN LOGIN TO OB REGISTRATION
