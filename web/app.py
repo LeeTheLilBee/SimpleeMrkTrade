@@ -20934,6 +20934,621 @@ def ob_gp047_protected_launch_session_close_json(
 
 # OB_GIANT_PACK_047_PROTECTED_LAUNCH_SESSION_ROUTES_END
 
+# OB_GIANT_PACK_048_PROTECTED_ROOM_ENTRY_ROUTES_START
+
+def _ob_gp048_http_enabled():
+    import os
+
+    return (
+        os.environ.get(
+            "OB_PROTECTED_ROOM_ENTRY_HTTP_ENABLED",
+            "0",
+        )
+        == "1"
+    )
+
+
+def _ob_gp048_guard_enabled():
+    import os
+
+    return (
+        os.environ.get(
+            "OB_PROTECTED_ROOM_ENTRY_GUARD_ENABLED",
+            "1",
+        )
+        == "1"
+    )
+
+
+@app.before_request
+def ob_gp048_protected_room_entry_guard():
+    from flask import g, jsonify, request
+
+    from web.ob_protected_room_entry_enforcement import (
+        authorize_protected_room_entry,
+        is_protected_room_path,
+    )
+
+    if not _ob_gp048_guard_enabled():
+        return None
+
+    if not is_protected_room_path(
+        request.path
+    ):
+        return None
+
+    context_id = str(
+        request.headers.get(
+            "X-OB-Protected-Room-Context"
+        )
+        or ""
+    ).strip()
+
+    owner_id = str(
+        request.headers.get(
+            "X-Tower-Owner-ID"
+        )
+        or ""
+    ).strip()
+
+    tower_session_id = str(
+        request.headers.get(
+            "X-Tower-Session-ID"
+        )
+        or ""
+    ).strip()
+
+    result = (
+        authorize_protected_room_entry(
+            context_id=(
+                context_id
+                or None
+            ),
+            owner_id=(
+                owner_id
+                or None
+            ),
+            tower_session_id=(
+                tower_session_id
+                or None
+            ),
+            requested_path=(
+                request.path
+            ),
+        )
+    )
+
+    if not result.get(
+        "allowed"
+    ):
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "allowed": False,
+                    "reason_code": result.get(
+                        "reason_code",
+                        "protected_room_entry_denied",
+                    ),
+                    "reason_codes": result.get(
+                        "reason_codes",
+                        [],
+                    ),
+                    "protected_room": True,
+                    "tower_authority_required": True,
+                    "ob_self_authorization_allowed": False,
+                    "production_authority_granted": False,
+                }
+            ),
+            403,
+        )
+
+    g.ob_protected_room_context = (
+        result[
+            "context"
+        ]
+    )
+
+    g.ob_protected_room_entry_attempt = (
+        result[
+            "attempt"
+        ]
+    )
+
+    return None
+
+
+@app.after_request
+def ob_gp048_propagate_protected_room_context(
+    response,
+):
+    from flask import g
+
+    context = getattr(
+        g,
+        "ob_protected_room_context",
+        None,
+    )
+
+    if isinstance(
+        context,
+        dict,
+    ):
+        response.headers[
+            "X-OB-Protected-Room-Context"
+        ] = str(
+            context[
+                "context_id"
+            ]
+        )
+
+        response.headers[
+            "X-OB-Protected-Session-State"
+        ] = str(
+            context[
+                "session_state_id"
+            ]
+        )
+
+        response.headers[
+            "X-OB-Protected-Room-ID"
+        ] = str(
+            context[
+                "room_id"
+            ]
+        )
+
+        response.headers[
+            "X-OB-Protected-Context-Expires"
+        ] = str(
+            context[
+                "expires_at"
+            ]
+        )
+
+        response.headers[
+            "X-OB-Production-Authority"
+        ] = "false"
+
+    return response
+
+
+@app.route(
+    "/ob/protected-room-entry/status.json",
+    methods=["GET"],
+)
+def ob_gp048_protected_room_entry_status_json():
+    from flask import jsonify
+
+    from web.ob_protected_room_entry_enforcement import (
+        protected_room_entry_status,
+    )
+
+    payload = (
+        protected_room_entry_status()
+    )
+
+    payload[
+        "http_context_mutation_enabled"
+    ] = _ob_gp048_http_enabled()
+
+    payload[
+        "room_entry_guard_enabled"
+    ] = _ob_gp048_guard_enabled()
+
+    return jsonify(payload)
+
+
+@app.route(
+    "/ob/protected-room-entry/contexts.json",
+    methods=["GET"],
+)
+def ob_gp048_protected_room_contexts_json():
+    from flask import jsonify, request
+
+    from web.ob_protected_room_entry_enforcement import (
+        list_protected_room_contexts,
+    )
+
+    if not _ob_gp048_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_context_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    owner_id = request.args.get(
+        "owner_id"
+    )
+
+    state = request.args.get(
+        "state"
+    )
+
+    try:
+        limit = int(
+            request.args.get(
+                "limit",
+                "100",
+            )
+        )
+
+    except ValueError:
+        limit = 100
+
+    items = (
+        list_protected_room_contexts(
+            owner_id=owner_id,
+            state=state,
+            limit=limit,
+        )
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "items": items,
+            "count": len(items),
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/protected-room-entry/contexts/issue.json",
+    methods=["POST"],
+)
+def ob_gp048_protected_room_context_issue_json():
+    from flask import jsonify, request
+
+    from web.ob_protected_room_entry_enforcement import (
+        issue_protected_room_context,
+    )
+
+    if not _ob_gp048_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_context_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = issue_protected_room_context(
+        payload.get(
+            "session_state_id",
+            "",
+        ),
+        owner_id=payload.get(
+            "owner_id",
+            "",
+        ),
+        tower_session_id=payload.get(
+            "tower_session_id",
+            "",
+        ),
+        requested_path=payload.get(
+            "requested_path",
+            "",
+        ),
+        ttl_seconds=payload.get(
+            "ttl_seconds",
+            120,
+        ),
+    )
+
+    if result.get("ok"):
+        status_code = (
+            200
+            if result.get(
+                "idempotent"
+            )
+            else 201
+        )
+
+    else:
+        status_code = 409
+
+    return (
+        jsonify(result),
+        status_code,
+    )
+
+
+@app.route(
+    "/ob/protected-room-entry/contexts/active.json",
+    methods=["GET"],
+)
+def ob_gp048_protected_room_context_active_json():
+    from flask import jsonify, request
+
+    from web.ob_protected_room_entry_enforcement import (
+        resolve_active_protected_room_context,
+    )
+
+    if not _ob_gp048_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_context_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    session_state_id = str(
+        request.args.get(
+            "session_state_id"
+        )
+        or ""
+    ).strip()
+
+    if not session_state_id:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "session_state_id_required"
+                    ),
+                }
+            ),
+            400,
+        )
+
+    return jsonify(
+        resolve_active_protected_room_context(
+            session_state_id=(
+                session_state_id
+            ),
+        )
+    )
+
+
+@app.route(
+    "/ob/protected-room-entry/contexts/<context_id>.json",
+    methods=["GET"],
+)
+def ob_gp048_protected_room_context_detail_json(
+    context_id,
+):
+    from flask import jsonify
+
+    from web.ob_protected_room_entry_enforcement import (
+        get_protected_room_context,
+    )
+
+    if not _ob_gp048_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_context_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    context = (
+        get_protected_room_context(
+            context_id
+        )
+    )
+
+    if context is None:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_context_not_found"
+                    ),
+                }
+            ),
+            404,
+        )
+
+    return jsonify(
+        {
+            "ok": True,
+            "context": context,
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/protected-room-entry/contexts/<context_id>/verify.json",
+    methods=["GET"],
+)
+def ob_gp048_protected_room_context_verify_json(
+    context_id,
+):
+    from flask import jsonify
+
+    from web.ob_protected_room_entry_enforcement import (
+        verify_protected_room_context,
+    )
+
+    if not _ob_gp048_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_context_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    result = (
+        verify_protected_room_context(
+            context_id
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get(
+                "verified"
+            )
+            else 409
+        ),
+    )
+
+
+@app.route(
+    "/ob/protected-room-entry/contexts/<context_id>/revoke.json",
+    methods=["POST"],
+)
+def ob_gp048_protected_room_context_revoke_json(
+    context_id,
+):
+    from flask import jsonify, request
+
+    from web.ob_protected_room_entry_enforcement import (
+        revoke_protected_room_context,
+    )
+
+    if not _ob_gp048_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_context_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        revoke_protected_room_context(
+            context_id,
+            reason=payload.get(
+                "reason",
+                "protected_room_context_revoked",
+            ),
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get("ok")
+            else 409
+        ),
+    )
+
+
+@app.route(
+    "/ob/protected-room-entry/check.json",
+    methods=["POST"],
+)
+def ob_gp048_protected_room_entry_check_json():
+    from flask import jsonify, request
+
+    from web.ob_protected_room_entry_enforcement import (
+        authorize_protected_room_entry,
+    )
+
+    if not _ob_gp048_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_context_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = authorize_protected_room_entry(
+        context_id=payload.get(
+            "context_id"
+        ),
+        owner_id=payload.get(
+            "owner_id"
+        ),
+        tower_session_id=payload.get(
+            "tower_session_id"
+        ),
+        requested_path=payload.get(
+            "requested_path",
+            "",
+        ),
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get(
+                "allowed"
+            )
+            else 403
+        ),
+    )
+
+# OB_GIANT_PACK_048_PROTECTED_ROOM_ENTRY_ROUTES_END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
