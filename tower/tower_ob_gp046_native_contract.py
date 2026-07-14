@@ -335,24 +335,6 @@ def build_native_gp046_handoff(
         ),
     }
 
-    if not packet[
-        "room_parameters"
-    ][
-        "mission_account_id"
-    ]:
-        raise ValueError(
-            "mission_account_id is required."
-        )
-
-    if not packet[
-        "room_parameters"
-    ][
-        "symbol"
-    ]:
-        raise ValueError(
-            "symbol is required."
-        )
-
     packet[
         "integrity_hash"
     ] = (

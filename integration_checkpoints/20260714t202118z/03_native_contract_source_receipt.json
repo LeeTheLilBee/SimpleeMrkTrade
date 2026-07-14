@@ -1,0 +1,43 @@
+{
+  "base_tower_head": "c749f55469c8601327d30938708598f010667e6a",
+  "created_at": "2026-07-14T19:56:34.754080Z",
+  "cross_repository_validation": {
+    "gp046_verified": true,
+    "gp047_verified": true,
+    "gp048_verified": true,
+    "gp049_verified": true,
+    "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_native_gp046_20260714T195623Z_68150455a4/02_native_gp046_gp049_validation.json",
+    "raw_tower_contract_compatible": true,
+    "runtime_adapter_used": false,
+    "sha256": "b9893b29aac4be09e9368c1e4b51caeaf52dba20a3bf3916adf10f1bb74a3c5f"
+  },
+  "feature_branch": "integration/tower-ob-gp046-native-contract",
+  "feature_commit": "215a11efc3a3a5599473c2b4069f4ea0689cc46e",
+  "feature_subject": "Add native Tower GP046 protected launch contract",
+  "native_module": {
+    "path": "/content/Simplee_Tower_OB_Integration/Tower_GP046_Native/tower/tower_ob_gp046_native_contract.py",
+    "sha256": "88f04c7a2b1d7b61ecdca56197d88772cbe7c0e4f7aeb4399a46fafd7e9a34a6"
+  },
+  "native_run_id": "tower_ob_native_gp046_20260714T195623Z_68150455a4",
+  "ob_contract_source": {
+    "contract_version": "ob.tower_protected_launch_handoff.v1",
+    "hash_functions_copied": [
+      "_canonical_json",
+      "_sha256_text",
+      "build_tower_launch_integrity_hash"
+    ],
+    "head": "dc94ca06f98f4650b103ee1e0a524c0412c02d0e",
+    "path": "/content/Simplee_Tower_OB_Integration/Observatory/web/ob_tower_protected_launch_handoff_consumer.py",
+    "sha256": "a3f62b3864ec938cf1b5c25867e6e7eb42d52d8baad660c0a8841ec05ea56a19"
+  },
+  "ob_source_modified": false,
+  "push_performed": false,
+  "receipt_hash": "390339a3cb1f520fb6f4163fefcf93a3c995e86cdccfcc20ed85a2eecf521a43",
+  "receipt_type": "tower_native_gp046_contract_source_receipt",
+  "regression_test": {
+    "passed": true,
+    "path": "/content/Simplee_Tower_OB_Integration/Tower_GP046_Native/tests/test_tower_ob_gp046_native_contract.py",
+    "sha256": "7714dcb0a7be6e6c7877ef0e0b7d0bd9f4bd813bd3071394f28531e87023ec71"
+  },
+  "source_files_modified_in_base_clone": false
+}

@@ -1,0 +1,106 @@
+{
+  "commit_created": false,
+  "created_at": "2026-07-14T19:48:41.640217Z",
+  "gp041_owner_decision_confirmed": true,
+  "gp042_checklist_passed": true,
+  "gp043_outcome_verified": true,
+  "gp044_receipt_verified": true,
+  "gp045_owner_first_run_ready": true,
+  "gp051_run_id": "ob_rehearsal_run_40dYVC6sASpogiqvHVCBYNXWRlY",
+  "identifiers": {
+    "candidate_id": "ob_candidate_rehearsal_8ad2fe9326b53d7b03d8",
+    "checkpoint_id": "ob-gp045-readiness-e5adeb7008c84ed0869d511c3535c1b3",
+    "evidence_record_id": "obdry_ed986f1ac5524f869efa54f25df9b3e1",
+    "finalization_id": "ob-gp043-finalization-c1b51a35ec914199aa5a181aa6837788",
+    "flow_id": "ob-gp042-flow-e9a539416a01442c870017da8a2d6aa5",
+    "handoff_id": "obhand_rehearsal_8ad2fe9326b53d7b03d8",
+    "receipt_id": "ob-gp044-receipt-d2f3bf28c6e843efa207c3649ffaede2"
+  },
+  "integration_run_id": "tower_ob_handshake_20260714T191455Z_cc7bac7ffe",
+  "mission_account_id": "proof_demo",
+  "mode": "paper",
+  "outcome": "not_placed",
+  "owner_id": "owner_solice",
+  "push_performed": false,
+  "receipt_type": "native_ob_gp041_gp045_operating_loop_summary",
+  "safety": {
+    "bank_account_read": false,
+    "broker_api_used": false,
+    "broker_order_submitted": false,
+    "direct_vault_upload": false,
+    "dry_run_only": true,
+    "final_outcome": "not_placed",
+    "live_auto_locked": true,
+    "mode": "paper",
+    "production_manual_live_authorized": false,
+    "real_capital_moved": false
+  },
+  "source_evidence": [
+    {
+      "description": "GP041 candidate handoff",
+      "filename": "38_gp041_candidate_handoff_created.json",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/38_gp041_candidate_handoff_created.json",
+      "sha256": "86ca3418d1e0b09f7232498d230fe7556c3b5cd270fb80f314645cc43891bb23",
+      "size_bytes": 3764
+    },
+    {
+      "description": "GP041 owner not_placed decision",
+      "filename": "39_gp041_owner_decision_confirmed.json",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/39_gp041_owner_decision_confirmed.json",
+      "sha256": "708e264ea2401940da5ac2f8118cd86654f4f9672c63af815b2503a9b5849078",
+      "size_bytes": 7862
+    },
+    {
+      "description": "GP042 six-item checklist record",
+      "filename": "40_gp042_checklist_saved.json",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/40_gp042_checklist_saved.json",
+      "sha256": "b778491ee6b64b1624c345a912c87cda2a623a2431b044b8e09568ab16cc6c6a",
+      "size_bytes": 3777
+    },
+    {
+      "description": "GP043 not_placed finalization",
+      "filename": "41_gp043_outcome_finalized.json",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/41_gp043_outcome_finalized.json",
+      "sha256": "e60c48a88e28ff6fa9697a32e3e6a8ce4bf503838685637eb2c42cce3cc829df",
+      "size_bytes": 3247
+    },
+    {
+      "description": "GP043 finalization verification",
+      "filename": "42_gp043_outcome_verified.json",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/42_gp043_outcome_verified.json",
+      "sha256": "c2a4d575cc11de8774ddda60393296810b132cb4408aef1eb5f7b3ffa0796c89",
+      "size_bytes": 473
+    },
+    {
+      "description": "GP044 Review Center receipt",
+      "filename": "43_gp044_receipt_materialized.json",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/43_gp044_receipt_materialized.json",
+      "sha256": "f67077265bad4fdd22f116712afcad3201207da4e45ea79a2f3b09e3b02f1e34",
+      "size_bytes": 6305
+    },
+    {
+      "description": "GP044 receipt verification",
+      "filename": "44_gp044_receipt_verified.json",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/44_gp044_receipt_verified.json",
+      "sha256": "b9c181dd1bbed01577d2a804c33fd95b0e257752f8c47dff74b91f1b16056f7c",
+      "size_bytes": 620
+    },
+    {
+      "description": "GP045 owner readiness checkpoint",
+      "filename": "45_gp045_readiness_evaluated.json",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/45_gp045_readiness_evaluated.json",
+      "sha256": "f9de06f2646e44f6d69db6fb91db5a80642b31deacfa7970a2caf8152b6004c4",
+      "size_bytes": 4050
+    },
+    {
+      "description": "GP045 checkpoint verification",
+      "filename": "46_gp045_readiness_verified.json",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/46_gp045_readiness_verified.json",
+      "sha256": "957fb9b900bc21739e2446e6d177adcb5fcca31c965a803c4ec67f8de6d5d2d7",
+      "size_bytes": 631
+    }
+  ],
+  "source_files_modified": false,
+  "summary_hash": "69d3a64d1393b785868445430eac15a2ca9d0457eec1ba0ddd07cca620de0c45",
+  "symbol": "AMD"
+}

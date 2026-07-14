@@ -1,0 +1,92 @@
+{
+  "binding_requirements": [
+    "Bind every GP051 step to its canonical evidence reference and hash.",
+    "Bind the native Tower packet to the GP046 intake and integrity result.",
+    "Bind GP041\u2013GP045 IDs to Steps 5\u20138.",
+    "Bind GP049 exit and Tower lockback to Steps 9\u201310.",
+    "Resolve every referenced record across its owning pack.",
+    "Reject missing, duplicated, reordered, or hash-mismatched evidence."
+  ],
+  "created_at": "2026-07-14T19:56:34.763462Z",
+  "evidence_source_count": 6,
+  "evidence_sources": [
+    {
+      "evidence_type": "native_tower_gp046_contract_source",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_native_gp046_20260714T195623Z_68150455a4/03_native_contract_source_receipt.json",
+      "sha256": "b344cbb47814c6fa6fcefb4b2430f2cee798c2acb7888789008e938fcb67076a"
+    },
+    {
+      "evidence_type": "native_tower_launch_handoff",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_native_gp046_20260714T195623Z_68150455a4/01_native_tower_handoff.json",
+      "sha256": "3aea5f5d2f5bcc199efa5b48196ea709a865e815b79042dd17fe853eea46f46c"
+    },
+    {
+      "evidence_type": "native_gp046_gp049_validation",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_native_gp046_20260714T195623Z_68150455a4/02_native_gp046_gp049_validation.json",
+      "sha256": "b9893b29aac4be09e9368c1e4b51caeaf52dba20a3bf3916adf10f1bb74a3c5f"
+    },
+    {
+      "evidence_type": "gp051_completed_owner_rehearsal",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/50_gp051_completed_rehearsal_verification.json",
+      "sha256": "f8b68cc38a4b99fae1808c69bbd5305ca54680d96f6158a8103620d4f704d2d0"
+    },
+    {
+      "evidence_type": "native_ob_gp041_gp045_summary",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/47_native_operating_loop_summary.json",
+      "sha256": "4d2bd149a4c63b0057ffea7964472b2ca00ee2850157439e8928cd2eac944936"
+    },
+    {
+      "evidence_type": "gp051_final_binding_execution",
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/49_gp051_final_binding_execution.json",
+      "sha256": "55b54c5e9033df9017267b480dea9c6dbbf6ebfe589e7ff8bd91ac4fc8af05b7"
+    }
+  ],
+  "final_outcome": "not_placed",
+  "gp051_completed_step_count": 10,
+  "gp051_run_id": "ob_rehearsal_run_40dYVC6sASpogiqvHVCBYNXWRlY",
+  "gp051_verified": true,
+  "manifest_hash": "67cf32de79b204257166b1f1721e371af2346dfc7c7de8bef59edcb28433418e",
+  "manifest_type": "ob_gp052_evidence_binding_preparation",
+  "native_run_id": "tower_ob_native_gp046_20260714T195623Z_68150455a4",
+  "native_validation_ids": {
+    "gp046_intake_id": "ob_launch_vGsrkYERyYqHtSdxpdL0ytDR",
+    "gp047_session_state_id": "ob_session_qSwdVXJCngCyccHrBf65y2",
+    "gp048_context_id": "ob_room_context_mGsNlWUQ9TEtckDmhpV1jYIl8m2CZ",
+    "gp049_closeout_id": "ob_room_exit_tAhuqe6XLzQPVLyGPZkMVX1VDB8",
+    "tower_lockback_ack_ref": "tower_native_lockback_255262ca31abdc99ec792dac46c1d83d"
+  },
+  "ob_source_modified": false,
+  "official_managed_staging_walkthrough_complete": false,
+  "operating_loop_ids": {
+    "candidate_id": "ob_candidate_rehearsal_8ad2fe9326b53d7b03d8",
+    "checkpoint_id": "ob-gp045-readiness-e5adeb7008c84ed0869d511c3535c1b3",
+    "evidence_record_id": "obdry_ed986f1ac5524f869efa54f25df9b3e1",
+    "finalization_id": "ob-gp043-finalization-c1b51a35ec914199aa5a181aa6837788",
+    "flow_id": "ob-gp042-flow-e9a539416a01442c870017da8a2d6aa5",
+    "handoff_id": "obhand_rehearsal_8ad2fe9326b53d7b03d8",
+    "receipt_id": "ob-gp044-receipt-d2f3bf28c6e843efa207c3649ffaede2"
+  },
+  "previous_integration_run_id": "tower_ob_handshake_20260714T191455Z_cc7bac7ffe",
+  "push_performed": false,
+  "ready_for_gp052_implementation": true,
+  "remaining_before_official_staging": [
+    "Move the validated Tower native contract commit into the permanent tower-dev workflow.",
+    "Wire the human Tower launch route to the native contract service.",
+    "Deploy the private managed staging Tower and OB services."
+  ],
+  "safety": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "source_files_modified_in_base_clone": false,
+  "tower_native_contract": {
+    "contract_version": "ob.tower_protected_launch_handoff.v1",
+    "feature_branch": "integration/tower-ob-gp046-native-contract",
+    "feature_commit": "215a11efc3a3a5599473c2b4069f4ea0689cc46e",
+    "raw_gp046_compatible": true,
+    "runtime_adapter_required": false
+  }
+}
